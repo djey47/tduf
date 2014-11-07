@@ -1,0 +1,12 @@
+apply plugin: 'java'
+
+sourceCompatibility = ext.sourceCompatibility
+version = ext.version
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: junit.version
+}
