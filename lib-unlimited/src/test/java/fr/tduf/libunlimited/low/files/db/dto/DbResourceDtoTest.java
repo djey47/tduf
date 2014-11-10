@@ -23,7 +23,7 @@ public class DbResourceDtoTest {
     public void isComment_whenEntryHasLocalizedValue_shouldReturnFalse() {
         //GIVEN
         DbResourceDto.LocalizedValue localizedValue = DbResourceDto.LocalizedValue.builder()
-                .withLocale(DbResourceDto.Locale.JA)
+                .withLocale(DbResourceDto.Locale.JAPAN)
                 .withValue("Value")
                 .build();
         DbResourceDto.Entry entry = DbResourceDto.Entry.builder()

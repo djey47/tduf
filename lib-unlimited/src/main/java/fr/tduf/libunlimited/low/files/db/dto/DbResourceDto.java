@@ -154,23 +154,23 @@ public class DbResourceDto implements Serializable {
      * All culture variants for game files
      */
     public enum Locale {
-        FR("France"),
-        GE("Germany"),
-        US("United States"),
-        KO("Korea"),
-        CH("China"),
-        JA("Japan"),
-        IT("Italy"),
-        SP("Spain");
+        FRANCE("fr"),
+        GERMANY("ge"),
+        UNITED_STATES("us"),
+        KOREA("ko"),
+        CHINA("ch"),
+        JAPAN("ja"),
+        ITALY("it"),
+        SPAIN("sp");
 
-        private final String label;
+        private final String code;
 
-        private Locale(String label) {
-            this.label = label;
+        private Locale(String code) {
+            this.code = code;
         }
 
-        public String getLabel() {
-            return label;
+        public String getCode() {
+            return code;
         }
     }
 

@@ -27,11 +27,11 @@ public class DbResourceMapperTest {
                 .withComment("TDU_Achievements.fr")
                 .build();
         DbResourceDto.LocalizedValue localizedValue1 = DbResourceDto.LocalizedValue.builder()
-                .withLocale(DbResourceDto.Locale.FR)
+                .withLocale(DbResourceDto.Locale.FRANCE)
                 .withValue("FR??")
                 .build();
         DbResourceDto.LocalizedValue localizedValue2 = DbResourceDto.LocalizedValue.builder()
-                .withLocale(DbResourceDto.Locale.IT)
+                .withLocale(DbResourceDto.Locale.ITALY)
                 .withValue("IT??")
                 .build();
         DbResourceDto.Entry normalEntry = DbResourceDto.Entry.builder()
@@ -55,10 +55,10 @@ public class DbResourceMapperTest {
                 "    \"reference\" : \"53410835\",\n" +
                 "    \"comment\" : false,\n" +
                 "    \"localizedValues\" : [ {\n" +
-                "      \"locale\" : \"FR\",\n" +
+                "      \"locale\" : \"FRANCE\",\n" +
                 "      \"value\" : \"FR??\"\n" +
                 "    }, {\n" +
-                "      \"locale\" : \"IT\",\n" +
+                "      \"locale\" : \"ITALY\",\n" +
                 "      \"value\" : \"IT??\"\n" +
                 "    } ]\n" +
                 "  } ]\n" +
