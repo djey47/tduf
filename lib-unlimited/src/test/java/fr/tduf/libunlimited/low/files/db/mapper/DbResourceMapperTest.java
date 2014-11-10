@@ -10,7 +10,6 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
 
-
 public class DbResourceMapperTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -69,6 +68,6 @@ public class DbResourceMapperTest {
         System.out.println("Actual JSON:" + jsonResult);
 
         //THEN
-        JSONAssert.assertEquals(expectedJson, jsonResult, JSONCompareMode.LENIENT);
+        JSONAssert.assertEquals(expectedJson, jsonResult, JSONCompareMode.NON_EXTENSIBLE);
     }
 }
