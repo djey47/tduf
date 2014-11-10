@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Arrays.asList;
 
 /**
  * Represents structure of TDU database topic
@@ -34,16 +35,12 @@ public class DbStructureDto implements Serializable {
         @JsonProperty("type")
         private Type type;
 
-        @JsonProperty("target")
-        private String target;
-
         /**
          * @return builder, used to generate custom values.
          */
         public static ItemBuilder builder() {
             return new ItemBuilder() {
                 private Type type;
-                private String target;
                 private String name;
                 private long id;
 
@@ -54,7 +51,7 @@ public class DbStructureDto implements Serializable {
                 }
 
                 @Override
-                public ItemBuilder withName(String name) {
+                public ItemBuilder forName(String name) {
                     this.name = name;
                     return this;
                 }
@@ -66,18 +63,11 @@ public class DbStructureDto implements Serializable {
                 }
 
                 @Override
-                public ItemBuilder forTarget(String target) {
-                    this.target = target;
-                    return this;
-                }
-
-                @Override
                 public Item build() {
                     Item item = new Item();
 
                     item.id = this.id;
                     item.name = this.name;
-                    item.target = this.target;
                     item.type = this.type;
 
                     return item;
@@ -88,11 +78,9 @@ public class DbStructureDto implements Serializable {
         public interface ItemBuilder {
             ItemBuilder withId(long id);
 
-            ItemBuilder withName(String name);
+            ItemBuilder forName(String name);
 
             ItemBuilder fromType(Type type);
-
-            ItemBuilder forTarget(String target);
 
             Item build();
         }
@@ -118,6 +106,26 @@ public class DbStructureDto implements Serializable {
         Type(String code) {
             this.code = code;
         }
+
+        /**
+         * @return type corresponding to provided code, or null if does not exist.
+         */
+        public static Type fromCode(String code) {
+            for (Type value : values()) {
+                if (value.code.equals(code)) {
+                    return value;
+                }
+            }
+            return null;
+        }
+    }
+
+    public String getRef() {
+        return ref;
+    }
+
+    public List<Item> getItems() {
+        return items;
     }
 
     /**
@@ -130,13 +138,18 @@ public class DbStructureDto implements Serializable {
 
             @Override
             public DbStructureDtoBuilder forReference(String reference) {
-                this.ref =  reference;
+                this.ref = reference;
                 return this;
             }
 
             @Override
-            public DbStructureDtoBuilder addItem(Item item) {
-                this.items.add(item);
+            public DbStructureDtoBuilder addItem(Item... items) {
+                return addItems(asList(items));
+            }
+
+            @Override
+            public DbStructureDtoBuilder addItems(List<Item> items) {
+                this.items.addAll(items);
                 return this;
             }
 
@@ -155,7 +168,9 @@ public class DbStructureDto implements Serializable {
     public interface DbStructureDtoBuilder {
         DbStructureDtoBuilder forReference(String reference);
 
-        DbStructureDtoBuilder addItem(Item item);
+        DbStructureDtoBuilder addItem(Item... items);
+
+        DbStructureDtoBuilder addItems(List<Item> items);
 
         DbStructureDto build();
     }

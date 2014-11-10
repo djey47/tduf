@@ -19,13 +19,12 @@ public class DbStructureMapperTest {
         DbStructureDto.Item item1 = DbStructureDto.Item.builder()
                 .withId(1L)
                 .fromType(DbStructureDto.Type.UID)
-                .withName("ID")
+                .forName("ID")
                 .build();
         DbStructureDto.Item item2 = DbStructureDto.Item.builder()
                 .withId(2L)
                 .fromType(DbStructureDto.Type.REFERENCE)
-                .withName("REF")
-                .forTarget("TARGET")
+                .forName("REF")
                 .build();
         DbStructureDto dbStructureDto = DbStructureDto.builder()
                 .forReference("2442784645")
@@ -41,8 +40,7 @@ public class DbStructureMapperTest {
                 "  }, {\n" +
                 "    \"id\" : 2,\n" +
                 "    \"name\" : \"REF\",\n" +
-                "    \"type\" : \"REFERENCE\",\n" +
-                "    \"target\" : \"TARGET\"\n" +
+                "    \"type\" : \"REFERENCE\"\n" +
                 "  } ]\n" +
                 "}";
 

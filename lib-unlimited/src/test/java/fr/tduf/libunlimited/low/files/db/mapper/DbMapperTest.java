@@ -42,12 +42,12 @@ public class DbMapperTest {
                 .build();
         item22.setValue("222");
         DbDto.Entry entry1 = DbDto.Entry.builder()
-                .withId(1L)
+                .forId(1L)
                 .addItem(item11)
                 .addItem(item12)
                 .build();
         DbDto.Entry entry2 = DbDto.Entry.builder()
-                .withId(1L)
+                .forId(1L)
                 .addItem(item21)
                 .addItem(item22)
                 .build();
