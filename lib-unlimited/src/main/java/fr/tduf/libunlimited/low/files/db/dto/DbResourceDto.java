@@ -19,7 +19,8 @@ public class DbResourceDto implements Serializable {
     @JsonProperty("entries")
     private List<Entry> entries;
 
-    @JsonTypeName("entry")
+    @JsonTypeName("dbResourceEntry")
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class Entry implements Serializable {
         @JsonProperty("id")
         private long id;
@@ -48,7 +49,7 @@ public class DbResourceDto implements Serializable {
                 private long id;
                 private String comment;
                 private String reference;
-                private List<LocalizedValue> localizedValues = newArrayList();
+                private final List<LocalizedValue> localizedValues = newArrayList();
 
                 @Override
                 public EntryBuilder withId(long id) {
@@ -101,7 +102,8 @@ public class DbResourceDto implements Serializable {
         }
     }
 
-    @JsonTypeName("localizedValue")
+    @JsonTypeName("dbResourceEntryLocalizedValue")
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class LocalizedValue implements Serializable {
         @JsonProperty("locale")
         private Locale locale;
@@ -179,14 +181,11 @@ public class DbResourceDto implements Serializable {
      */
     public static DbResourceDtoBuilder builder() {
         return new DbResourceDtoBuilder() {
-            private List<Entry> entries = newArrayList();
+            private final List<Entry> entries = newArrayList();
 
             @Override
             public DbResourceDtoBuilder addEntry(Entry entry) {
-
                 this.entries.add(entry);
-
-
                 return this;
             }
 
@@ -195,8 +194,6 @@ public class DbResourceDto implements Serializable {
                 DbResourceDto dbResourceDto = new DbResourceDto();
 
                 dbResourceDto.entries = this.entries;
-
-
 
                 return dbResourceDto;
             }

@@ -28,15 +28,16 @@ public class DbStructureMapperTest {
                 .forTarget("TARGET")
                 .build();
         DbStructureDto dbStructureDto = DbStructureDto.builder()
+                .forReference("2442784645")
                 .addItem(item1)
                 .addItem(item2)
                 .build();
         String expectedJson = "{\n" +
+                "  \"ref\" : \"2442784645\",\n" +
                 "  \"items\" : [ {\n" +
                 "    \"id\" : 1,\n" +
                 "    \"name\" : \"ID\",\n" +
-                "    \"type\" : \"UID\",\n" +
-                "    \"target\" : null\n" +
+                "    \"type\" : \"UID\"\n" +
                 "  }, {\n" +
                 "    \"id\" : 2,\n" +
                 "    \"name\" : \"REF\",\n" +

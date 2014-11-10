@@ -15,10 +15,15 @@ import static com.google.common.collect.Lists.newArrayList;
 @JsonTypeName("dbStructure")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class DbStructureDto implements Serializable {
+
+    @JsonProperty("ref")
+    private String ref;
+
     @JsonProperty("items")
     private List<Item> items;
 
-    @JsonTypeName("item")
+    @JsonTypeName("dbStructureItem")
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class Item implements Serializable {
         @JsonProperty("id")
         private long id;
@@ -93,6 +98,10 @@ public class DbStructureDto implements Serializable {
         }
     }
 
+    /**
+     * Enumerates all item types
+     */
+    @JsonTypeName("dbStructureItemType")
     public enum Type {
         BITFIELD("b"),
         F("f"),                 // TODO huh...?! what's this?
@@ -116,7 +125,14 @@ public class DbStructureDto implements Serializable {
      */
     public static DbStructureDtoBuilder builder() {
         return new DbStructureDtoBuilder() {
-            private List<Item> items = newArrayList();
+            private String ref;
+            private final List<Item> items = newArrayList();
+
+            @Override
+            public DbStructureDtoBuilder forReference(String reference) {
+                this.ref =  reference;
+                return this;
+            }
 
             @Override
             public DbStructureDtoBuilder addItem(Item item) {
@@ -128,6 +144,7 @@ public class DbStructureDto implements Serializable {
             public DbStructureDto build() {
                 DbStructureDto dbStructureDto = new DbStructureDto();
 
+                dbStructureDto.ref = this.ref;
                 dbStructureDto.items = this.items;
 
                 return dbStructureDto;
@@ -136,6 +153,8 @@ public class DbStructureDto implements Serializable {
     }
 
     public interface DbStructureDtoBuilder {
+        DbStructureDtoBuilder forReference(String reference);
+
         DbStructureDtoBuilder addItem(Item item);
 
         DbStructureDto build();

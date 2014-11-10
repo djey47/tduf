@@ -46,7 +46,6 @@ public class DbResourceMapperTest {
         String expectedJson = "{\n" +
                 "  \"entries\" : [ {\n" +
                 "    \"id\" : 1,\n" +
-                "    \"reference\" : null,\n" +
                 "    \"comment\" : true,\n" +
                 "    \"localizedValues\" : [ ]\n" +
                 "  }, {\n" +
