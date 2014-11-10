@@ -1,0 +1,38 @@
+// TDU_Achievements.fr
+// version: 1,2
+// categories: 6
+// Explanation
+{??} 53410835
+{Bravo ! Vous recevez §NB_PTS§ points.} 70410835
+{Bravo ! Vous avez remporté §NB_REQ§ coupes en OR sur les §NB_TOTAL§ possibles.} 54410835
+{Félicitations ! Vous avez remporté §NB_REQ§ coupes en OR sur les §NB_TOTAL§ possibles.} 55410835
+{Remarquable ! Vous avez remporté §NB_REQ§ coupes en OR sur les §NB_TOTAL§ possibles.} 56410835
+{Incroyable ! Vous avez réussi une performance exceptionnelle en remportant TOUTES les coupes en OR.} 57410835
+{Vous avez bien fait de persévérer ! Vos efforts vous ont permis de terminer toutes les épreuves de TEMPS solo. } 58410835
+{Vous vous êtes acharné avec succès sur les épreuves VITESSE Solo. Bravo, vous avez remporté toutes les coupes en OR.} 59410835
+{Votre persévérance a payé. Vous avez remporté toutes les coupes en OR des COURSES solo.} 60410835
+{Vous avez réussi « Le Tour de l'île », l'épreuve mythique de TEST DRIVE !  } 61410835
+{Vous avez remporté §NB_REQ§ courses multijoueurs.} 62410835
+{Vous devenez un redoutable compétiteur. Vous avez déjà remporté §NB_REQ§ courses multijoueurs.} 53510835
+{Votre nom en affole plus d'un maintenant ! Vous totalisez dorénavant §NB_REQ§ victoires en course multijoueur.} 54510835
+{Bravo, déjà §NB_REQ§ missions réussies sur les §NB_TOTAL§ possibles ! } 55510835
+{Un belle étape de plus dans votre progression. Vous avez réussi §NB_REQ§ missions sur les §NB_TOTAL§ possibles.} 56510835
+{Votre efficacité est redoutable. Vous totalisez §NB_REQ§ missions réussies sur les §NB_TOTAL§ possibles.} 57510835
+{Votre palmarès s'étoffe d'un nouvel exploit. Vous avez réussi TOUTES les missions.} 58510835
+{Déjà §NB_REQ§ victoires en DÉFIS IMMÉDIATS. } 59510835
+{Les DÉFIS IMMÉDIATS n'ont plus de secret pour vous. Vous totalisez §NB_REQ§ victoires.} 60510835
+{Les DÉFIS IMMÉDIATS sont maintenant votre spécialité ! Déjà §NB_REQ§ victoires.} 61510835
+{Vous avez partagé §NB_REQ§ Défi(s) Perso avec le reste de la communauté.} 62510835
+{§NB_REQ§ victoires sur les Défis Perso !} 53610835
+{Vous êtes membre d'un Club. } 54610835
+{Votre Club a remporté §NB_REQ§ victoires inter-club.} 55610835
+{Vous avez acheté ou vendu §NB_REQ§ véhicule(s) à d'autres membres de la communauté.} 56610835
+{Vous êtes décidément un fan de FERRARI ! Votre garage en compte §NB_REQ§.} 57610835
+{Vous êtes un vrai fana des LAMBORGHINI ! Déjà §NB_REQ§  !} 58610835
+{Vous avez un fort penchant pour les MERCEDES-BENZ, vous en possédez déjà §NB_REQ§ !} 59610835
+{Vous êtes un grand amateur de CHEVROLET, vous en totalisez §NB_REQ§ dans votre garage !} 60610835
+{Vous êtes un véritable amoureux des ASTON MARTIN. \nVous en possédez §NB_REQ§ !} 61610835
+{Vous possédez une superbe collection de §NB_REQ§ FORD ! Tout le monde ne peut pas s'en vanter.} 62610835
+{On ne peut pas encore parler de collection, mais §NB_REQ§ voitures, c'est déjà un bon début.} 53710835
+{Bien peu de joueurs en sont capables, vous l'avez fait !
+Vous possédez §NB_REQ§ modèles de voitures différents !} 54710835
