@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.parser;
 
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Test;
 
@@ -39,7 +39,7 @@ public class DbParserTest {
         List<String> dbLines = readLinesFromSample();
 
         //WHEN
-        DbDto dbContentsDto = DbParser.load(dbLines).parseContents();
+        DbDataDto dbContentsDto = DbParser.load(dbLines).parseContents();
 
         //THEN
         assertThat(dbContentsDto).isNotNull();

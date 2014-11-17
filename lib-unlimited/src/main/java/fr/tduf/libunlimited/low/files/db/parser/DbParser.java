@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.parser;
 
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.List;
@@ -39,9 +39,9 @@ public class DbParser {
         return new DbParser(lines);
     }
 
-    public DbDto parseContents() {
+    public DbDataDto parseContents() {
 
-        List<DbDto.Entry> entries = newArrayList();
+        List<DbDataDto.Entry> entries = newArrayList();
         long id = 0;
 
         for (String line : lines) {
@@ -51,21 +51,21 @@ public class DbParser {
                 continue;
             }
 
-            List<DbDto.Item> items = newArrayList();
+            List<DbDataDto.Item> items = newArrayList();
             for(String itemValue : line.split(VALUE_DELIMITER)) {
-                items.add(DbDto.Item.builder()
+                items.add(DbDataDto.Item.builder()
                         .forName("")
                         .withRawValue(itemValue)
                         .build());
             }
 
-            entries.add(DbDto.Entry.builder()
+            entries.add(DbDataDto.Entry.builder()
                     .forId(id++)
                     .addItems(items)
                     .build());
         }
 
-        return DbDto.builder()
+        return DbDataDto.builder()
                 .addEntries(entries)
                 .build();
 

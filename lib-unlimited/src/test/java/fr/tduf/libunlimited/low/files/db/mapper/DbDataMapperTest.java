@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.mapper;
 
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import static net.sf.json.test.JSONAssert.assertJsonEquals;
 
-public class DbMapperTest {
+public class DbDataMapperTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -20,37 +20,37 @@ public class DbMapperTest {
     @Test
     public void serialize_shouldWriteProperJson() throws IOException {
         //GIVEN
-        DbDto.Item item11 = DbDto.Item.builder()
+        DbDataDto.Item item11 = DbDataDto.Item.builder()
                 .forName("ID")
                 .withRawValue("111111")
                 .build();
         item11.setValue("0000000");
-        DbDto.Item item12 = DbDto.Item.builder()
+        DbDataDto.Item item12 = DbDataDto.Item.builder()
                 .forName("Speed")
                 .withRawValue("111")
                 .build();
         item12.setValue("111");
-        DbDto.Item item21 = DbDto.Item.builder()
+        DbDataDto.Item item21 = DbDataDto.Item.builder()
                 .forName("ID")
                 .withRawValue("222222")
                 .build();
         item21.setValue("0000000");
-        DbDto.Item item22 = DbDto.Item.builder()
+        DbDataDto.Item item22 = DbDataDto.Item.builder()
                 .forName("Speed")
                 .withRawValue("222")
                 .build();
         item22.setValue("222");
-        DbDto.Entry entry1 = DbDto.Entry.builder()
+        DbDataDto.Entry entry1 = DbDataDto.Entry.builder()
                 .forId(1L)
                 .addItem(item11)
                 .addItem(item12)
                 .build();
-        DbDto.Entry entry2 = DbDto.Entry.builder()
+        DbDataDto.Entry entry2 = DbDataDto.Entry.builder()
                 .forId(1L)
                 .addItem(item21)
                 .addItem(item22)
                 .build();
-        DbDto dbDto = DbDto.builder()
+        DbDataDto dbDataDto = DbDataDto.builder()
                 .addEntry(entry1)
                 .addEntry(entry2)
                 .build();
@@ -81,7 +81,7 @@ public class DbMapperTest {
                 "}";
 
         //WHEN
-        String jsonResult = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(dbDto);
+        String jsonResult = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(dbDataDto);
         System.out.println("Actual JSON:" + jsonResult);
 
         //THEN

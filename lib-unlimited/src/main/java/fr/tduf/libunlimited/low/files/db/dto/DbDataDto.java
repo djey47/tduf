@@ -5,10 +5,8 @@ import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
-import static com.google.common.collect.Lists.asList;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 
@@ -17,7 +15,7 @@ import static java.util.Arrays.asList;
  */
 @JsonTypeName("db")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class DbDto implements Serializable {
+public class DbDataDto implements Serializable {
     @JsonProperty("entries")
     private List<Entry> entries;
 
@@ -145,37 +143,37 @@ public class DbDto implements Serializable {
     /**
      * @return builder, used to generate custom values.
      */
-    public static DbDtoBuilder builder() {
-        return new DbDtoBuilder() {
+    public static DbDataDtoBuilder builder() {
+        return new DbDataDtoBuilder() {
             private List<Entry> entries = newArrayList();
 
             @Override
-            public DbDtoBuilder addEntry(Entry... entry) {
+            public DbDataDtoBuilder addEntry(Entry... entry) {
                 return addEntries(asList(entry));
             }
 
             @Override
-            public DbDtoBuilder addEntries(List<Entry> entries) {
+            public DbDataDtoBuilder addEntries(List<Entry> entries) {
                 this.entries.addAll(entries);
                 return this;
             }
 
             @Override
-            public DbDto build() {
-                DbDto dbDto = new DbDto();
+            public DbDataDto build() {
+                DbDataDto dbDataDto = new DbDataDto();
 
-                dbDto.entries = this.entries;
+                dbDataDto.entries = this.entries;
 
-                return dbDto;
+                return dbDataDto;
             }
         };
     }
 
-    public interface DbDtoBuilder {
-        DbDtoBuilder addEntry(Entry... entry);
+    public interface DbDataDtoBuilder {
+        DbDataDtoBuilder addEntry(Entry... entry);
 
-        DbDtoBuilder addEntries(List<Entry> entries);
+        DbDataDtoBuilder addEntries(List<Entry> entries);
 
-        DbDto build();
+        DbDataDto build();
     }
 }
