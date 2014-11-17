@@ -2,19 +2,18 @@ package fr.tduf.libunlimited.low.files.db.mapper;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.json.JSONException;
 import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
+
+import static net.sf.json.test.JSONAssert.assertJsonEquals;
 
 public class DbStructureMapperTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    public void serialize_shouldWriteProperJson() throws IOException, JSONException {
+    public void serialize_shouldWriteProperJson() throws IOException {
         //GIVEN
         DbStructureDto.Item item1 = DbStructureDto.Item.builder()
                 .withId(1L)
@@ -49,6 +48,6 @@ public class DbStructureMapperTest {
         System.out.println("Actual JSON:" + jsonResult);
 
         //THEN
-        JSONAssert.assertEquals(expectedJson, jsonResult, JSONCompareMode.NON_EXTENSIBLE);
+        assertJsonEquals(expectedJson, jsonResult);
     }
 }

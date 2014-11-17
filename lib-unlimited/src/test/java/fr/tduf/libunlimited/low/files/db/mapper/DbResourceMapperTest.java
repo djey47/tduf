@@ -2,13 +2,12 @@ package fr.tduf.libunlimited.low.files.db.mapper;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
+
+import static net.sf.json.test.JSONAssert.assertJsonEquals;
 
 public class DbResourceMapperTest {
 
@@ -19,7 +18,7 @@ public class DbResourceMapperTest {
     }
 
     @Test
-    public void serialize_shouldWriteProperJson() throws IOException, JSONException {
+    public void serialize_shouldWriteProperJson() throws IOException {
         //GIVEN
         DbResourceDto.Entry commentEntry = DbResourceDto.Entry.builder()
                 .withId(1L)
@@ -67,6 +66,6 @@ public class DbResourceMapperTest {
         System.out.println("Actual JSON:" + jsonResult);
 
         //THEN
-        JSONAssert.assertEquals(expectedJson, jsonResult, JSONCompareMode.NON_EXTENSIBLE);
+        assertJsonEquals(expectedJson, jsonResult);
     }
 }
