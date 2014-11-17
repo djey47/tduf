@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.db.mapper;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +12,7 @@ import static net.sf.json.test.JSONAssert.assertJsonEquals;
 
 public class DbResourceMapperTest {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
     @Before
     public void setUp() {
@@ -62,7 +63,7 @@ public class DbResourceMapperTest {
                 "}";
 
         //WHEN
-        String jsonResult = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(dbResourceDto);
+        String jsonResult = objectWriter.writeValueAsString(dbResourceDto);
         System.out.println("Actual JSON:" + jsonResult);
 
         //THEN

@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.db.mapper;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -10,7 +11,7 @@ import static net.sf.json.test.JSONAssert.assertJsonEquals;
 
 public class DbStructureMapperTest {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
     @Test
     public void serialize_shouldWriteProperJson() throws IOException {
@@ -44,7 +45,7 @@ public class DbStructureMapperTest {
                 "}";
 
         //WHEN
-        String jsonResult = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(dbStructureDto);
+        String jsonResult = objectWriter.writeValueAsString(dbStructureDto);
         System.out.println("Actual JSON:" + jsonResult);
 
         //THEN
