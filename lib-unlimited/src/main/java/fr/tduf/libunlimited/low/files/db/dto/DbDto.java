@@ -82,6 +82,26 @@ public class DbDto implements Serializable {
         };
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getRef() {
+        return ref;
+    }
+
+    public DbStructureDto getStructure() {
+        return structure;
+    }
+
+    public DbDataDto getData() {
+        return data;
+    }
+
+    public DbResourceDto getResources() {
+        return resources;
+    }
+
     public interface DbDtoBuilder {
         DbDtoBuilder forName(String name);
 

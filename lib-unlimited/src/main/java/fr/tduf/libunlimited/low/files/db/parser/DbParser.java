@@ -1,14 +1,16 @@
 package fr.tduf.libunlimited.low.files.db.parser;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Helper class to extract database structure and contents from clear db file.
@@ -20,31 +22,56 @@ public class DbParser {
     private static final String ITEM_PATTERN = "^\\{(.*)\\} (.)$";          //e.g {Nb_Achievement_Points_} i
     public static final String VALUE_DELIMITER = ";";
 
-    private final List<String> lines;
+    private final List<String> contentLines;
+    private final List<List<String>> resources;
 
-    private DbParser(List<String> lines) {
-        this.lines = lines;
+    private DbParser(List<String> contentlines, List<List<String>> resources) {
+        this.contentLines = contentlines;
+        this.resources = resources;
     }
 
     /**
      * Single entry point for this parser.
-     * @param lines lines from unencrypted database file
+     * @param contentLines contentLines from unencrypted database file
+     * @param resources list of contentLines from per-language resource files
      * @return a {@link DbParser} instance.
      */
-    public static DbParser load(List<String> lines) {
-        Objects.requireNonNull(lines, "Contents are required");
+    public static DbParser load(List<String> contentLines, List<List<String>> resources) {
+        requireNonNull(contentLines, "Contents are required");
+        requireNonNull(resources, "Resources are required");
 
-        //TODO Validate contents
+        //TODO Validate contents and resources
 
-        return new DbParser(lines);
+        return new DbParser(contentLines, resources);
     }
 
-    public DbDataDto parseContents() {
+    public DbDto parseAll() {
+        DbStructureDto structure = parseStructure(contentLines);
+        DbResourceDto resources = parseResources(this.resources);
+        DbDataDto data = parseContents(contentLines, structure, resources);
+
+        String name = "";
+        String ref = structure.getRef();
+
+        return DbDto.builder()
+                .forName(name)
+                .forRef(ref)
+                .withData(data)
+                .withResources(resources)
+                .withStructure(structure)
+                .build();
+    }
+
+    private DbResourceDto parseResources(List<List<String>> resources) {
+        return DbResourceDto.builder().build();
+    }
+
+    private DbDataDto parseContents(List<String> contentLines, DbStructureDto structure, DbResourceDto resources) {
 
         List<DbDataDto.Entry> entries = newArrayList();
         long id = 0;
 
-        for (String line : lines) {
+        for (String line : this.contentLines) {
             if (Pattern.matches(COMMENT_PATTERN, line)
                     || Pattern.matches(ITEM_REF_PATTERN, line)
                     || Pattern.matches(ITEM_PATTERN, line)) {
@@ -71,7 +98,7 @@ public class DbParser {
 
     }
 
-    public DbStructureDto parseStructure() {
+    private DbStructureDto parseStructure(List<String> contentLines) {
 
         Pattern itemPattern = Pattern.compile(ITEM_PATTERN);
         Pattern itemRefPattern = Pattern.compile(ITEM_REF_PATTERN);
@@ -80,7 +107,7 @@ public class DbParser {
         long id = 0;
         String reference = null;
 
-        for (String line : lines) {
+        for (String line : this.contentLines) {
             // Skips comments
             if (Pattern.matches(COMMENT_PATTERN, line)) {
                 continue;
@@ -113,7 +140,19 @@ public class DbParser {
                 .build();
     }
 
-    public long getLineCount() {
-        return lines.size();
+    public long getContentLineCount() {
+        return contentLines.size();
+    }
+
+    public long getResourceCount() {
+        return resources.size();
+    }
+
+    public long getResourceLinesCount() {
+
+        if (resources.isEmpty()) {
+            return 0;
+        }
+        return resources.get(0).size();
     }
 }

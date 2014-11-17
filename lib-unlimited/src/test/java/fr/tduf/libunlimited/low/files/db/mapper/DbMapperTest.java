@@ -33,13 +33,14 @@ public class DbMapperTest {
                 "  \"name\" : \"TDU_Achievements\",\n" +
                 "  \"ref\" : \"2442784645\",\n" +
                 "  \"structure\" : {\n" +
-                "    \"items\" : [ ]\n" +
+                "    \"fields\" : [ ]\n" +
                 "  },\n" +
                 "  \"data\" : {\n" +
                 "    \"entries\" : [ ]\n" +
                 "  },\n" +
                 "  \"resources\" : {\n" +
-                "    \"entries\" : [ ]\n" +
+                "    \"entries\" : [ ],\n" +
+                "    \"categoryCount\" : 0\n" +
                 "  }\n" +
                 "}";
 

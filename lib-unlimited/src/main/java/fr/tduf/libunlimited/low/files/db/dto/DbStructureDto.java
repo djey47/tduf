@@ -20,8 +20,8 @@ public class DbStructureDto implements Serializable {
     @JsonProperty("ref")
     private String ref;
 
-    @JsonProperty("items")
-    private List<Item> items;
+    @JsonProperty("fields")
+    private List<Item> fields;
 
     @JsonTypeName("dbStructureItem")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
@@ -38,26 +38,26 @@ public class DbStructureDto implements Serializable {
         /**
          * @return builder, used to generate custom values.
          */
-        public static ItemBuilder builder() {
-            return new ItemBuilder() {
+        public static FieldBuilder builder() {
+            return new FieldBuilder() {
                 private Type type;
                 private String name;
                 private long id;
 
                 @Override
-                public ItemBuilder withId(long id) {
+                public FieldBuilder withId(long id) {
                     this.id = id;
                     return this;
                 }
 
                 @Override
-                public ItemBuilder forName(String name) {
+                public FieldBuilder forName(String name) {
                     this.name = name;
                     return this;
                 }
 
                 @Override
-                public ItemBuilder fromType(Type type) {
+                public FieldBuilder fromType(Type type) {
                     this.type = type;
                     return this;
                 }
@@ -75,12 +75,12 @@ public class DbStructureDto implements Serializable {
             };
         }
 
-        public interface ItemBuilder {
-            ItemBuilder withId(long id);
+        public interface FieldBuilder {
+            FieldBuilder withId(long id);
 
-            ItemBuilder forName(String name);
+            FieldBuilder forName(String name);
 
-            ItemBuilder fromType(Type type);
+            FieldBuilder fromType(Type type);
 
             Item build();
         }
@@ -89,7 +89,7 @@ public class DbStructureDto implements Serializable {
     /**
      * Enumerates all item types
      */
-    @JsonTypeName("dbStructureItemType")
+    @JsonTypeName("dbStructureFieldType")
     public enum Type {
         BITFIELD("b"),
         F("f"),                 // TODO huh...?! what's this?
@@ -124,8 +124,8 @@ public class DbStructureDto implements Serializable {
         return ref;
     }
 
-    public List<Item> getItems() {
-        return items;
+    public List<Item> getFields() {
+        return fields;
     }
 
     /**
@@ -158,7 +158,7 @@ public class DbStructureDto implements Serializable {
                 DbStructureDto dbStructureDto = new DbStructureDto();
 
                 dbStructureDto.ref = this.ref;
-                dbStructureDto.items = this.items;
+                dbStructureDto.fields = this.items;
 
                 return dbStructureDto;
             }

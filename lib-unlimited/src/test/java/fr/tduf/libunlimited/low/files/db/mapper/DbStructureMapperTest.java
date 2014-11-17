@@ -33,7 +33,7 @@ public class DbStructureMapperTest {
                 .build();
         String expectedJson = "{\n" +
                 "  \"ref\" : \"2442784645\",\n" +
-                "  \"items\" : [ {\n" +
+                "  \"fields\" : [ {\n" +
                 "    \"id\" : 1,\n" +
                 "    \"name\" : \"ID\",\n" +
                 "    \"type\" : \"UID\"\n" +

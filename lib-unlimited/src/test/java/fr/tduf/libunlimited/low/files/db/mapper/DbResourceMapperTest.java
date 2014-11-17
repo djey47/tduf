@@ -44,6 +44,7 @@ public class DbResourceMapperTest {
                 .addEntry(normalEntry)
                 .build();
         String expectedJson = "{\n" +
+                "  \"categoryCount\" : 0,\n" +
                 "  \"entries\" : [ {\n" +
                 "    \"id\" : 1,\n" +
                 "    \"comment\" : true,\n" +

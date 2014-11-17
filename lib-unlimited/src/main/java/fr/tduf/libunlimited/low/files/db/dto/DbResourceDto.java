@@ -19,6 +19,12 @@ public class DbResourceDto implements Serializable {
     @JsonProperty("entries")
     private List<Entry> entries;
 
+    @JsonProperty("version")
+    private String version;
+
+    @JsonProperty("categoryCount")
+    private Integer categoryCount;
+
     @JsonTypeName("dbResourceEntry")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class Entry implements Serializable {
@@ -87,6 +93,10 @@ public class DbResourceDto implements Serializable {
                     return entry;
                 }
             };
+        }
+
+        public List<LocalizedValue> getLocalizedValues() {
+            return localizedValues;
         }
 
         public interface EntryBuilder {
@@ -181,6 +191,8 @@ public class DbResourceDto implements Serializable {
      */
     public static DbResourceDtoBuilder builder() {
         return new DbResourceDtoBuilder() {
+            private int categoryCount;
+            private String version;
             private final List<Entry> entries = newArrayList();
 
             @Override
@@ -190,19 +202,49 @@ public class DbResourceDto implements Serializable {
             }
 
             @Override
+            public DbResourceDtoBuilder withVersion(String version) {
+                this.version = version;
+                return this;
+            }
+
+            @Override
+            public DbResourceDtoBuilder withCategoryCount(int categoryCount) {
+                this.categoryCount = categoryCount;
+                return this;
+            }
+
+            @Override
             public DbResourceDto build() {
                 DbResourceDto dbResourceDto = new DbResourceDto();
 
                 dbResourceDto.entries = this.entries;
+                dbResourceDto.categoryCount = this.categoryCount;
+                dbResourceDto.version = this.version;
 
                 return dbResourceDto;
             }
         };
     }
 
-    public interface DbResourceDtoBuilder {
-        DbResourceDto build();
+    public String getVersion() {
+        return version;
+    }
 
+    public int getCategoryCount() {
+        return categoryCount;
+    }
+
+    public List<Entry> getEntries() {
+        return entries;
+    }
+
+    public interface DbResourceDtoBuilder {
         DbResourceDtoBuilder addEntry(Entry entry);
+
+        DbResourceDtoBuilder withVersion(String version);
+
+        DbResourceDtoBuilder withCategoryCount(int categoryCount);
+
+        DbResourceDto build();
     }
 }
