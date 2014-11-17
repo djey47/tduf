@@ -32,9 +32,15 @@ public class DbMapperTest {
         String expectedJson = "{\n" +
                 "  \"name\" : \"TDU_Achievements\",\n" +
                 "  \"ref\" : \"2442784645\",\n" +
-                "  \"structure\" : {},\n" +
-                "  \"data\" : {},\n" +
-                "  \"resources\" : {}\n" +
+                "  \"structure\" : {\n" +
+                "    \"items\" : [ ]\n" +
+                "  },\n" +
+                "  \"data\" : {\n" +
+                "    \"entries\" : [ ]\n" +
+                "  },\n" +
+                "  \"resources\" : {\n" +
+                "    \"entries\" : [ ]\n" +
+                "  }\n" +
                 "}";
 
         //WHEN
