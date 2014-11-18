@@ -10,21 +10,21 @@ public class DbStructureDtoTest {
     @Test
     public void itemTypeFromCode_whenCodeExists_shouldReturnProperType() throws Exception {
         //GIVEN
-        DbStructureDto.Type expectedType = DbStructureDto.Type.RESOURCE_CURRENT;
+        DbStructureDto.FieldType expectedFieldType = DbStructureDto.FieldType.RESOURCE_CURRENT;
 
         //WHEN
-        DbStructureDto.Type actualType = DbStructureDto.Type.fromCode("u");
+        DbStructureDto.FieldType actualFieldType = DbStructureDto.FieldType.fromCode("u");
 
         //THEN
-        assertThat(actualType).isEqualTo(expectedType);
+        assertThat(actualFieldType).isEqualTo(expectedFieldType);
     }
 
     @Test
     public void itemTypeFromCode_whenCodeDoesNotExist_shouldReturnNull() throws Exception {
         //GIVEN-WHEN
-        DbStructureDto.Type actualType = DbStructureDto.Type.fromCode("z");
+        DbStructureDto.FieldType actualFieldType = DbStructureDto.FieldType.fromCode("z");
 
         //THEN
-        assertThat(actualType).isNull();
+        assertThat(actualFieldType).isNull();
     }
 }

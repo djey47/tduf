@@ -16,23 +16,23 @@ public class DbStructureMapperTest {
     @Test
     public void serialize_shouldWriteProperJson() throws IOException {
         //GIVEN
-        DbStructureDto.Item item1 = DbStructureDto.Item.builder()
+        DbStructureDto.Field field1 = DbStructureDto.Field.builder()
                 .withId(1L)
-                .fromType(DbStructureDto.Type.UID)
+                .fromType(DbStructureDto.FieldType.UID)
                 .forName("ID")
                 .build();
-        DbStructureDto.Item item2 = DbStructureDto.Item.builder()
+        DbStructureDto.Field field2 = DbStructureDto.Field.builder()
                 .withId(2L)
-                .fromType(DbStructureDto.Type.REFERENCE)
+                .fromType(DbStructureDto.FieldType.REFERENCE)
                 .forName("REF")
+                .toTargetReference("2442784646")
                 .build();
         DbStructureDto dbStructureDto = DbStructureDto.builder()
                 .forReference("2442784645")
-                .addItem(item1)
-                .addItem(item2)
+                .addItem(field1)
+                .addItem(field2)
                 .build();
         String expectedJson = "{\n" +
-                "  \"ref\" : \"2442784645\",\n" +
                 "  \"fields\" : [ {\n" +
                 "    \"id\" : 1,\n" +
                 "    \"name\" : \"ID\",\n" +
@@ -40,7 +40,8 @@ public class DbStructureMapperTest {
                 "  }, {\n" +
                 "    \"id\" : 2,\n" +
                 "    \"name\" : \"REF\",\n" +
-                "    \"type\" : \"REFERENCE\"\n" +
+                "    \"type\" : \"REFERENCE\",\n" +
+                "    \"targetRef\" : \"2442784646\"\n" +
                 "  } ]\n" +
                 "}";
 

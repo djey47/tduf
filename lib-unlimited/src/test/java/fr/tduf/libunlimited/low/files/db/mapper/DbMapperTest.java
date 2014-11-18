@@ -19,12 +19,13 @@ public class DbMapperTest {
     @Test
     public void serialize_shouldWriteProperJson() throws IOException {
         //GIVEN
-        DbStructureDto dbStructureDto = DbStructureDto.builder().build();
+        DbStructureDto dbStructureDto = DbStructureDto.builder()
+                .forReference("2442784645")
+                .forName("TDU_Achievements")
+                .build();
         DbDataDto dbDataDto = DbDataDto.builder().build();
         DbResourceDto dbResourcesDto = DbResourceDto.builder().build();
         DbDto dbTopicDto = DbDto.builder()
-                .forName("TDU_Achievements")
-                .forRef("2442784645")
                 .withStructure(dbStructureDto)
                 .withData(dbDataDto)
                 .withResources(dbResourcesDto)

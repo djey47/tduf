@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -17,15 +18,19 @@ import static java.util.Arrays.asList;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class DbStructureDto implements Serializable {
 
-    @JsonProperty("ref")
+    @JsonIgnore
     private String ref;
 
-    @JsonProperty("fields")
-    private List<Item> fields;
+    @JsonIgnore
+    private String name;
 
-    @JsonTypeName("dbStructureItem")
+    @JsonProperty("fields")
+    private List<Field> fields;
+
+    @JsonTypeName("dbStructureField")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-    public static class Item implements Serializable {
+    public static class Field implements Serializable {
+
         @JsonProperty("id")
         private long id;
 
@@ -33,16 +38,20 @@ public class DbStructureDto implements Serializable {
         private String name;
 
         @JsonProperty("type")
-        private Type type;
+        private FieldType fieldType;
+
+        @JsonProperty("targetRef")
+        private String targetRef;
 
         /**
          * @return builder, used to generate custom values.
          */
         public static FieldBuilder builder() {
             return new FieldBuilder() {
-                private Type type;
-                private String name;
                 private long id;
+                private String name;
+                private FieldType fieldType;
+                private String targetRef;
 
                 @Override
                 public FieldBuilder withId(long id) {
@@ -57,20 +66,27 @@ public class DbStructureDto implements Serializable {
                 }
 
                 @Override
-                public FieldBuilder fromType(Type type) {
-                    this.type = type;
+                public FieldBuilder fromType(FieldType fieldType) {
+                    this.fieldType = fieldType;
                     return this;
                 }
 
                 @Override
-                public Item build() {
-                    Item item = new Item();
+                public FieldBuilder toTargetReference(String targetRef) {
+                    this.targetRef = targetRef;
+                    return this;
+                }
 
-                    item.id = this.id;
-                    item.name = this.name;
-                    item.type = this.type;
+                @Override
+                public Field build() {
+                    Field field = new Field();
 
-                    return item;
+                    field.id = this.id;
+                    field.name = this.name;
+                    field.fieldType = this.fieldType;
+                    field.targetRef = this.targetRef;
+
+                    return field;
                 }
             };
         }
@@ -80,9 +96,11 @@ public class DbStructureDto implements Serializable {
 
             FieldBuilder forName(String name);
 
-            FieldBuilder fromType(Type type);
+            FieldBuilder fromType(FieldType fieldType);
 
-            Item build();
+            FieldBuilder toTargetReference(String targetRef);
+
+            Field build();
         }
     }
 
@@ -90,7 +108,7 @@ public class DbStructureDto implements Serializable {
      * Enumerates all item types
      */
     @JsonTypeName("dbStructureFieldType")
-    public enum Type {
+    public enum FieldType {
         BITFIELD("b"),
         F("f"),                 // TODO huh...?! what's this?
         UID("x"),
@@ -103,15 +121,15 @@ public class DbStructureDto implements Serializable {
 
         private final String code;
 
-        Type(String code) {
+        FieldType(String code) {
             this.code = code;
         }
 
         /**
          * @return type corresponding to provided code, or null if does not exist.
          */
-        public static Type fromCode(String code) {
-            for (Type value : values()) {
+        public static FieldType fromCode(String code) {
+            for (FieldType value : values()) {
                 if (value.code.equals(code)) {
                     return value;
                 }
@@ -120,11 +138,15 @@ public class DbStructureDto implements Serializable {
         }
     }
 
+    public String getName() {
+        return name;
+    }
+
     public String getRef() {
         return ref;
     }
 
-    public List<Item> getFields() {
+    public List<Field> getFields() {
         return fields;
     }
 
@@ -133,8 +155,15 @@ public class DbStructureDto implements Serializable {
      */
     public static DbStructureDtoBuilder builder() {
         return new DbStructureDtoBuilder() {
+            private String name;
             private String ref;
-            private final List<Item> items = newArrayList();
+            private final List<Field> fields = newArrayList();
+
+            @Override
+            public DbStructureDtoBuilder forName(String name) {
+                this.name = name;
+                return this;
+            }
 
             @Override
             public DbStructureDtoBuilder forReference(String reference) {
@@ -143,13 +172,13 @@ public class DbStructureDto implements Serializable {
             }
 
             @Override
-            public DbStructureDtoBuilder addItem(Item... items) {
-                return addItems(asList(items));
+            public DbStructureDtoBuilder addItem(Field... fields) {
+                return addItems(asList(fields));
             }
 
             @Override
-            public DbStructureDtoBuilder addItems(List<Item> items) {
-                this.items.addAll(items);
+            public DbStructureDtoBuilder addItems(List<Field> fields) {
+                this.fields.addAll(fields);
                 return this;
             }
 
@@ -157,8 +186,9 @@ public class DbStructureDto implements Serializable {
             public DbStructureDto build() {
                 DbStructureDto dbStructureDto = new DbStructureDto();
 
+                dbStructureDto.name = this.name;
                 dbStructureDto.ref = this.ref;
-                dbStructureDto.fields = this.items;
+                dbStructureDto.fields = this.fields;
 
                 return dbStructureDto;
             }
@@ -168,9 +198,11 @@ public class DbStructureDto implements Serializable {
     public interface DbStructureDtoBuilder {
         DbStructureDtoBuilder forReference(String reference);
 
-        DbStructureDtoBuilder addItem(Item... items);
+        DbStructureDtoBuilder addItem(Field... fields);
 
-        DbStructureDtoBuilder addItems(List<Item> items);
+        DbStructureDtoBuilder addItems(List<Field> fields);
+
+        DbStructureDtoBuilder forName(String name);
 
         DbStructureDto build();
     }

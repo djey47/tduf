@@ -50,12 +50,7 @@ public class DbParser {
         DbResourceDto resources = parseResources(this.resources);
         DbDataDto data = parseContents(contentLines, structure, resources);
 
-        String name = "";
-        String ref = structure.getRef();
-
         return DbDto.builder()
-                .forName(name)
-                .forRef(ref)
                 .withData(data)
                 .withResources(resources)
                 .withStructure(structure)
@@ -103,7 +98,7 @@ public class DbParser {
         Pattern itemPattern = Pattern.compile(ITEM_PATTERN);
         Pattern itemRefPattern = Pattern.compile(ITEM_REF_PATTERN);
 
-        List<DbStructureDto.Item> items = newArrayList();
+        List<DbStructureDto.Field> fields = newArrayList();
         long id = 0;
         String reference = null;
 
@@ -124,19 +119,19 @@ public class DbParser {
             if(matcher.matches()) {
                 String name = matcher.group(1);
                 String code = matcher.group(2);
-                DbStructureDto.Type type = DbStructureDto.Type.fromCode(code);
+                DbStructureDto.FieldType fieldType = DbStructureDto.FieldType.fromCode(code);
 
-                items.add(DbStructureDto.Item.builder()
+                fields.add(DbStructureDto.Field.builder()
                         .withId(id++)
                         .forName(name)
-                        .fromType(type)
+                        .fromType(fieldType)
                         .build());
             }
         }
 
         return DbStructureDto.builder()
                 .forReference(reference)
-                .addItems(items)
+                .addItems(fields)
                 .build();
     }
 
