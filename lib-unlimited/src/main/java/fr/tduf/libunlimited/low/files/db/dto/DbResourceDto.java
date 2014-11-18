@@ -28,50 +28,27 @@ public class DbResourceDto implements Serializable {
     @JsonTypeName("dbResourceEntry")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class Entry implements Serializable {
-        @JsonProperty("id")
-        private long id;
-
-        @JsonProperty("reference")
+        @JsonProperty("ref")
         private String reference;
 
-        @JsonProperty("comment")
-        private String comment;
+        @JsonProperty("category")
+        private String category;
 
         @JsonProperty("localizedValues")
         private List<LocalizedValue> localizedValues;
-
-        /**
-         * @return true if current entry is a comment, false otherwise (it has localized values)
-         */
-        public boolean isComment() {
-            return comment != null;
-        }
 
         /**
          * @return builder, used to generate custom values.
          */
         public static EntryBuilder builder() {
             return new EntryBuilder() {
-                private long id;
-                private String comment;
+                private String category;
                 private String reference;
                 private final List<LocalizedValue> localizedValues = newArrayList();
 
                 @Override
-                public EntryBuilder withId(long id) {
-                    this.id = id;
-                    return this;
-                }
-
-                @Override
-                public EntryBuilder withReference(String reference) {
+                public EntryBuilder forReference(String reference) {
                     this.reference = reference;
-                    return this;
-                }
-
-                @Override
-                public EntryBuilder withComment(String comment) {
-                    this.comment = comment;
                     return this;
                 }
 
@@ -82,13 +59,18 @@ public class DbResourceDto implements Serializable {
                 }
 
                 @Override
+                public EntryBuilder fromCategory(String category) {
+                    this.category = category;
+                    return this;
+                }
+
+                @Override
                 public Entry build() {
                     Entry entry = new Entry();
 
-                    entry.comment = this.comment;
-                    entry.id = this.id;
                     entry.localizedValues = this.localizedValues;
                     entry.reference = this.reference;
+                    entry.category = this.category;
 
                     return entry;
                 }
@@ -100,13 +82,11 @@ public class DbResourceDto implements Serializable {
         }
 
         public interface EntryBuilder {
-            EntryBuilder withId(long id);
-
-            EntryBuilder withReference(String reference);
-
-            EntryBuilder withComment(String comment);
+            EntryBuilder forReference(String reference);
 
             EntryBuilder addLocalizedValue(LocalizedValue localizedValue);
+
+            EntryBuilder fromCategory(String category);
 
             Entry build();
         }
@@ -202,7 +182,7 @@ public class DbResourceDto implements Serializable {
             }
 
             @Override
-            public DbResourceDtoBuilder withVersion(String version) {
+            public DbResourceDtoBuilder atVersion(String version) {
                 this.version = version;
                 return this;
             }
@@ -241,7 +221,7 @@ public class DbResourceDto implements Serializable {
     public interface DbResourceDtoBuilder {
         DbResourceDtoBuilder addEntry(Entry entry);
 
-        DbResourceDtoBuilder withVersion(String version);
+        DbResourceDtoBuilder atVersion(String version);
 
         DbResourceDtoBuilder withCategoryCount(int categoryCount);
 

@@ -21,10 +21,6 @@ public class DbResourceMapperTest {
     @Test
     public void serialize_shouldWriteProperJson() throws IOException {
         //GIVEN
-        DbResourceDto.Entry commentEntry = DbResourceDto.Entry.builder()
-                .withId(1L)
-                .withComment("TDU_Achievements.fr")
-                .build();
         DbResourceDto.LocalizedValue localizedValue1 = DbResourceDto.LocalizedValue.builder()
                 .withLocale(DbResourceDto.Locale.FRANCE)
                 .withValue("FR??")
@@ -33,26 +29,23 @@ public class DbResourceMapperTest {
                 .withLocale(DbResourceDto.Locale.ITALY)
                 .withValue("IT??")
                 .build();
-        DbResourceDto.Entry normalEntry = DbResourceDto.Entry.builder()
-                .withId(2L)
-                .withReference("53410835")
+        DbResourceDto.Entry entry = DbResourceDto.Entry.builder()
+                .forReference("53410835")
+                .fromCategory("Explanation")
                 .addLocalizedValue(localizedValue1)
                 .addLocalizedValue(localizedValue2)
                 .build();
         DbResourceDto dbResourceDto = DbResourceDto.builder()
-                .addEntry(commentEntry)
-                .addEntry(normalEntry)
+                .atVersion("1,2")
+                .withCategoryCount(6)
+                .addEntry(entry)
                 .build();
         String expectedJson = "{\n" +
-                "  \"categoryCount\" : 0,\n" +
+                "  \"version\" : \"1,2\",\n" +
+                "  \"categoryCount\" : 6,\n" +
                 "  \"entries\" : [ {\n" +
-                "    \"id\" : 1,\n" +
-                "    \"comment\" : true,\n" +
-                "    \"localizedValues\" : [ ]\n" +
-                "  }, {\n" +
-                "    \"id\" : 2,\n" +
-                "    \"reference\" : \"53410835\",\n" +
-                "    \"comment\" : false,\n" +
+                "    \"ref\" : \"53410835\",\n" +
+                "    \"category\" : \"Explanation\",\n" +
                 "    \"localizedValues\" : [ {\n" +
                 "      \"locale\" : \"FRANCE\",\n" +
                 "      \"value\" : \"FR??\"\n" +
