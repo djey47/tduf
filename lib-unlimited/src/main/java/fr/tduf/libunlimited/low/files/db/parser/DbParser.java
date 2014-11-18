@@ -75,9 +75,9 @@ public class DbParser {
 
             List<DbDataDto.Item> items = newArrayList();
             for(String itemValue : line.split(VALUE_DELIMITER)) {
+                // TODO depends on value type
                 items.add(DbDataDto.Item.builder()
                         .forName("")
-                        .withRawValue(itemValue)
                         .build());
             }
 

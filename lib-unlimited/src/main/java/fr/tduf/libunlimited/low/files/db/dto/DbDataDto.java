@@ -91,15 +91,66 @@ public class DbDataDto implements Serializable {
         @JsonProperty("rawValue")
         private String raw;
 
-        /**
-         * @param value Final value, based on raw one and other data
-         */
-        public void setValue(String value) {
-            this.value = value;
+        @JsonProperty("bitfield")
+        private List<BitfieldSwitch> bitfield;
+
+        @JsonTypeName("dbEntryItemBitfieldSwitch")
+        @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+        public static class BitfieldSwitch {
+
+            @JsonProperty("name")
+            private String name;
+
+            @JsonProperty("status")
+            private boolean status;
+
+            /**
+             * @return builder, used to generate custom values.
+             */
+            public static BitfieldSwitchBuilder builder() {
+                return new BitfieldSwitchBuilder() {
+
+                    private String name;
+                    private boolean status;
+
+                    @Override
+                    public BitfieldSwitchBuilder forName(String name) {
+                        this.name = name;
+                        return this;
+                    }
+
+                    @Override
+                    public BitfieldSwitchBuilder status(boolean status) {
+                        this.status = status;
+                        return this;
+                    }
+
+                    @Override
+                    public BitfieldSwitch build() {
+                        BitfieldSwitch bitfieldSwitch = new BitfieldSwitch();
+
+                        bitfieldSwitch.name = this.name;
+                        bitfieldSwitch.status = this.status;
+
+                        return bitfieldSwitch;
+                    }
+                };
+            }
+
+            public interface BitfieldSwitchBuilder {
+
+                BitfieldSwitch build();
+
+                BitfieldSwitchBuilder forName(String name);
+
+                BitfieldSwitchBuilder status(boolean status);
+            }
         }
 
         public static ItemBuilder builder() {
             return new ItemBuilder() {
+                private List<BitfieldSwitch> bitfieldSwitches;
+                private String value;
                 private String name;
                 private String raw;
 
@@ -110,8 +161,22 @@ public class DbDataDto implements Serializable {
                 }
 
                 @Override
-                public ItemBuilder withRawValue(String rawValue) {
+                public ItemBuilder withSingleValue(String singleValue) {
+                    this.value = singleValue;
+                    return this;
+                }
+
+                @Override
+                public ItemBuilder withReferenceValue(String rawValue, String finalValue) {
                     this.raw = rawValue;
+                    this.value = finalValue;
+                    return this;
+                }
+
+                @Override
+                public ItemBuilder withBitfieldSwitches(String rawValue, List<BitfieldSwitch> bitfieldSwitches) {
+                    this.raw = rawValue;
+                    this.bitfieldSwitches = bitfieldSwitches;
                     return this;
                 }
 
@@ -119,8 +184,10 @@ public class DbDataDto implements Serializable {
                 public Item build() {
                     Item item = new Item();
 
+                    item.value = this.value;
                     item.raw = this.raw;
                     item.name = this.name;
+                    item.bitfield = this.bitfieldSwitches;
 
                     return item;
                 }
@@ -130,7 +197,11 @@ public class DbDataDto implements Serializable {
         public interface ItemBuilder {
             ItemBuilder forName(String name);
 
-            ItemBuilder withRawValue(String rawValue);
+            ItemBuilder withSingleValue(String singleValue);
+
+            ItemBuilder withReferenceValue(String rawValue, String finalValue);
+
+            ItemBuilder withBitfieldSwitches(String rawValue, List<BitfieldSwitch> bitfieldSwitches);
 
             Item build();
         }
