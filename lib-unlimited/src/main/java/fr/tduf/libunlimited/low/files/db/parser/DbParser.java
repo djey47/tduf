@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.low.files.db.parser;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.List;
@@ -17,10 +18,16 @@ import static java.util.Objects.requireNonNull;
  */
 public class DbParser {
 
-    private static final String COMMENT_PATTERN = "^\\/\\/ (.*)$";          //e.g // TDU_Achievements.db
+    private static final String COMMENT_PATTERN = "^// (.*)$";              //e.g // Blabla
     private static final String ITEM_REF_PATTERN = "^\\{(.*)\\} (\\d*)$";   //e.g {TDU_Achievements} 2442784645
     private static final String ITEM_PATTERN = "^\\{(.*)\\} (.)$";          //e.g {Nb_Achievement_Points_} i
-    public static final String VALUE_DELIMITER = ";";
+    private static final String CONTENT_PATTERN = "^(\\d+;)+$";             //e.g 55736935;5;20;54400734;54359455;54410835;561129540;5337472;211;
+    private static final String VALUE_DELIMITER = ";";
+
+    private static final String RES_NAME_PATTERN = "^// TDU_.+\\.(.+)$";                //e.g // TDU_Achievements.fr
+    private static final String RES_VERSION_PATTERN = "^// version: (.+)$";             //e.g // version: 1,2
+    private static final String RES_CATEGORY_COUNT_PATTERN = "^// categories: (.+)$";   //e.g // categories: 6
+    private static final String RES_ENTRY_PATTERN = "^\\{(.*)\\} (\\d*)$";              //e.g {??} 53410835
 
     private final List<String> contentLines;
     private final List<List<String>> resources;
@@ -46,9 +53,9 @@ public class DbParser {
     }
 
     public DbDto parseAll() {
-        DbStructureDto structure = parseStructure(contentLines);
-        DbResourceDto resources = parseResources(this.resources);
-        DbDataDto data = parseContents(contentLines, structure, resources);
+        DbStructureDto structure = parseStructure();
+        DbResourceDto resources = parseResources();
+        DbDataDto data = parseContents(structure, resources);
 
         return DbDto.builder()
                 .withData(data)
@@ -57,11 +64,72 @@ public class DbParser {
                 .build();
     }
 
-    private DbResourceDto parseResources(List<List<String>> resources) {
-        return DbResourceDto.builder().build();
+    private DbResourceDto parseResources() {
+
+        List<String> referenceResourceLines = this.resources.get(0);
+
+        Pattern resourceNamePattern = Pattern.compile(RES_NAME_PATTERN);
+        Pattern resourceVersionPattern = Pattern.compile(RES_VERSION_PATTERN);
+        Pattern categoryCountPattern = Pattern.compile(RES_CATEGORY_COUNT_PATTERN);
+        Pattern resourceEntryPattern = Pattern.compile(RES_ENTRY_PATTERN);
+
+        String localeCode = null;
+        String version = null;
+        int categoryCount = 0;
+        List<DbResourceDto.Entry> entries = newArrayList();
+
+        for (String line : referenceResourceLines) {
+
+            Matcher matcher = resourceNamePattern.matcher(line);
+            if (matcher.matches()) {
+                localeCode = matcher.group(1);
+                System.out.println("Locale found: " + localeCode);
+                continue;
+            }
+
+            matcher =  resourceVersionPattern.matcher(line);
+            if (matcher.matches()) {
+                version = matcher.group(1);
+                System.out.println("Version found: " + version);
+                continue;
+            }
+
+            matcher = categoryCountPattern.matcher(line);
+            if (matcher.matches()) {
+                categoryCount = Integer.valueOf(matcher.group(1));
+                System.out.println("Category count found: " + categoryCount);
+                continue;
+            }
+
+            if (Pattern.matches(COMMENT_PATTERN, line)) {
+                continue;
+            }
+
+            matcher = resourceEntryPattern.matcher(line);
+            if (matcher.matches()) {
+                String value = matcher.group(1);
+                String reference = matcher.group(2);
+                DbResourceDto.LocalizedValue localizedValue = DbResourceDto.LocalizedValue.builder()
+                        .withLocale(Locale.fromCode(localeCode))
+                        .withValue(value)
+                        .build();
+                DbResourceDto.Entry entry = DbResourceDto.Entry.builder()
+                        .addLocalizedValue(localizedValue)
+                        .forReference(reference)
+                        .build();
+                entries.add(entry);
+//                System.out.println("Entry found: " + reference + " - " + value);
+            }
+        }
+
+        return DbResourceDto.builder()
+                .atVersion(version)
+                .withCategoryCount(categoryCount)
+                .addEntries(entries)
+                .build();
     }
 
-    private DbDataDto parseContents(List<String> contentLines, DbStructureDto structure, DbResourceDto resources) {
+    private DbDataDto parseContents(DbStructureDto structure, DbResourceDto resources) {
 
         List<DbDataDto.Entry> entries = newArrayList();
         long id = 0;
@@ -70,6 +138,10 @@ public class DbParser {
             if (Pattern.matches(COMMENT_PATTERN, line)
                     || Pattern.matches(ITEM_REF_PATTERN, line)
                     || Pattern.matches(ITEM_PATTERN, line)) {
+                continue;
+            }
+
+            if(!Pattern.matches(CONTENT_PATTERN, line)) {
                 continue;
             }
 
@@ -93,7 +165,7 @@ public class DbParser {
 
     }
 
-    private DbStructureDto parseStructure(List<String> contentLines) {
+    private DbStructureDto parseStructure() {
 
         Pattern itemPattern = Pattern.compile(ITEM_PATTERN);
         Pattern itemRefPattern = Pattern.compile(ITEM_REF_PATTERN);

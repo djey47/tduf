@@ -6,11 +6,10 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Test;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Scanner;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
@@ -48,10 +47,10 @@ public class DbParserTest {
     }
 
     @Test
-    public void parseAll_whenAny_shouldReturnProperDto() throws Exception {
+    public void parseAll_whenRealFiles_shouldReturnProperDto() throws Exception {
         //GIVEN
-        List<String> dbLines = readContentsFromSample("/db/TDU_achievements.db");
-        List<List<String>> resourceLines = readResourcesFromSamples("/db/res/TDU_achievements.fr");
+        List<String> dbLines = readContentsFromSample("/db/TDU_achievements.db", "UTF-8");
+        List<List<String>> resourceLines = readResourcesFromSamples("/db/res/TDU_achievements.fr", "/db/res/TDU_achievements.it");
 
 
         //WHEN
@@ -61,7 +60,7 @@ public class DbParserTest {
         //THEN
         assertThat(dbDto).isNotNull();
         assertThat(dbDto.getRef()).isEqualTo("2442784645");
-//        assertThat(dbDto.getName()).isEqualTo("TDU_achievements");
+//        assertThat(dbDto.getName()).isEqualTo("Achievements");
 
         DbDataDto data = dbDto.getData();
         assertThat(data).isNotNull();
@@ -73,31 +72,33 @@ public class DbParserTest {
 
         DbResourceDto resources = dbDto.getResources();
         assertThat(resources).isNotNull();
-//        assertThat(resources.getVersion()).isEqualTo("1,2");
-//        assertThat(resources.getCategoryCount()).isEqualTo(6);
-//        assertThat(resources.getEntries()).hasSize(33);
-//        assertThat(resources.getEntries().get(0).getLocalizedValues()).hasSize(1);
+        assertThat(resources.getVersion()).isEqualTo("1,2");
+        assertThat(resources.getCategoryCount()).isEqualTo(6);
+        assertThat(resources.getEntries()).hasSize(237);
+        assertThat(resources.getEntries().get(0).getLocalizedValues()).hasSize(1);
     }
 
     private List<List<String>> readResourcesFromSamples(String... sampleFiles) throws IOException{
         List<List<String>> resourceLines = newArrayList();
 
         for (String sampleFile : sampleFiles) {
-            resourceLines.add(readContentsFromSample(sampleFile));
+            resourceLines.add(readContentsFromSample(sampleFile, "UTF-16"));
         }
 
         return resourceLines;
     }
 
-    private List<String> readContentsFromSample(String sampleFile) throws IOException {
+    private List<String> readContentsFromSample(String sampleFile, String encoding) throws IOException {
         List<String> lines = newArrayList();
 
         InputStream resourceAsStream = getClass().getResourceAsStream(sampleFile);
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resourceAsStream));
 
-        String line;
-        while((line = bufferedReader.readLine()) != null) {
-            lines.add(line);
+        Scanner scanner = new Scanner(resourceAsStream, encoding) ;
+        scanner.useDelimiter("\r\n");
+
+
+        while(scanner.hasNext()) {
+            lines.add(scanner.next());
         }
 
         return lines;

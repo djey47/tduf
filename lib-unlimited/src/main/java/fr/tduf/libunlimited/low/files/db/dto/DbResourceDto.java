@@ -31,9 +31,6 @@ public class DbResourceDto implements Serializable {
         @JsonProperty("ref")
         private String reference;
 
-        @JsonProperty("category")
-        private String category;
-
         @JsonProperty("localizedValues")
         private List<LocalizedValue> localizedValues;
 
@@ -42,7 +39,6 @@ public class DbResourceDto implements Serializable {
          */
         public static EntryBuilder builder() {
             return new EntryBuilder() {
-                private String category;
                 private String reference;
                 private final List<LocalizedValue> localizedValues = newArrayList();
 
@@ -59,18 +55,11 @@ public class DbResourceDto implements Serializable {
                 }
 
                 @Override
-                public EntryBuilder fromCategory(String category) {
-                    this.category = category;
-                    return this;
-                }
-
-                @Override
                 public Entry build() {
                     Entry entry = new Entry();
 
                     entry.localizedValues = this.localizedValues;
                     entry.reference = this.reference;
-                    entry.category = this.category;
 
                     return entry;
                 }
@@ -85,8 +74,6 @@ public class DbResourceDto implements Serializable {
             EntryBuilder forReference(String reference);
 
             EntryBuilder addLocalizedValue(LocalizedValue localizedValue);
-
-            EntryBuilder fromCategory(String category);
 
             Entry build();
         }
@@ -161,8 +148,16 @@ public class DbResourceDto implements Serializable {
             this.code = code;
         }
 
-        public String getCode() {
-            return code;
+        /**
+         * Retrieves a locale value from its code.
+         */
+        public static Locale fromCode(String code) {
+            for(Locale locale : values()) {
+                if (locale.code.equals(code)) {
+                    return locale;
+                }
+            }
+            throw new IllegalArgumentException("Unknown Locale code: " + code);
         }
     }
 
@@ -178,6 +173,12 @@ public class DbResourceDto implements Serializable {
             @Override
             public DbResourceDtoBuilder addEntry(Entry entry) {
                 this.entries.add(entry);
+                return this;
+            }
+
+            @Override
+            public DbResourceDtoBuilder addEntries(List<Entry> entries) {
+                this.entries.addAll(entries);
                 return this;
             }
 
@@ -220,6 +221,8 @@ public class DbResourceDto implements Serializable {
 
     public interface DbResourceDtoBuilder {
         DbResourceDtoBuilder addEntry(Entry entry);
+
+        DbResourceDtoBuilder addEntries(List<Entry> entries);
 
         DbResourceDtoBuilder atVersion(String version);
 

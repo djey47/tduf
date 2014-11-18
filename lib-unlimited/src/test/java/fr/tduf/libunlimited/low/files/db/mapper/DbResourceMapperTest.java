@@ -31,7 +31,6 @@ public class DbResourceMapperTest {
                 .build();
         DbResourceDto.Entry entry = DbResourceDto.Entry.builder()
                 .forReference("53410835")
-                .fromCategory("Explanation")
                 .addLocalizedValue(localizedValue1)
                 .addLocalizedValue(localizedValue2)
                 .build();
@@ -45,7 +44,6 @@ public class DbResourceMapperTest {
                 "  \"categoryCount\" : 6,\n" +
                 "  \"entries\" : [ {\n" +
                 "    \"ref\" : \"53410835\",\n" +
-                "    \"category\" : \"Explanation\",\n" +
                 "    \"localizedValues\" : [ {\n" +
                 "      \"locale\" : \"FRANCE\",\n" +
                 "      \"value\" : \"FR??\"\n" +
