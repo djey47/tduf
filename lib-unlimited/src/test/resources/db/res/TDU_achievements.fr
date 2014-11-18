@@ -36,3 +36,234 @@
 {On ne peut pas encore parler de collection, mais §NB_REQ§ voitures, c'est déjà un bon début.} 53710835
 {Bien peu de joueurs en sont capables, vous l'avez fait !
 Vous possédez §NB_REQ§ modèles de voitures différents !} 54710835
+{On en est sûrs maintenant, vous êtes un vrai motard ! Pas moins de §NB_REQ§ motos dans votre garage.} 55710835
+{Vous avez décidément du goût en matière de vêtements. On compte §NB_REQ§ articles de la marque Ben Sherman dans votre dressing.} 56710835
+{Vous adorez visiblement les vêtements *ecko unltd. Vous avez acheté §NB_REQ§ articles de cette marque.} 57710835
+{Vous avez effectué des modifications sur §NB_REQ§ de vos véhicules. } 58710835
+{BRAVO ! Vous connaissez les moindres recoins de l'île. Vous avez parcouru chaque portion de route.} 59710835
+{C'est un bon début. Vous avez déjà parcouru §NB_REQ§ miles.} 60710835
+{Vous commencez à totaliser un nombre important de kilomètres. A l'heure actuelle, vous avez parcouru §NB_REQ§ miles.} 61710835
+{§NB_REQ§ miles parcourus ! Vous pourrez bientôt devenir guide !} 62710835
+{Tenez-vous bien... vous avez parcouru l'équivalent de la distance New York - Sydney !} 53810835
+{Vous êtes maintenant l'heureux propriétaire de §NB_REQ§ demeures de luxe.} 54810835
+{Vous possédez toutes les demeures de luxe de l'île ! Toute l'équipe de TEST DRIVE s'agenouille devant vous !} 55810835
+{Les plus beaux points de vue de l'île n'ont plus de secret pour vous. Ils figurent tous dans votre album photo.} 56810835
+{Déjà §NB_REQ§ véhicules. On dirait bien le début d'une collection.} 57810835
+{Vous possédez §NB_REQ§ véhicules. Une très belle collection qui va rendre tout le monde vert de jalousie !} 58810835
+{Votre garage abrite désormais une superbe collection. Vous possédez déjà §NB_REQ§ véhicules.} 59810835
+{Quelle superbe performance ! Vous avez parcouru §NB_REQ§ miles !} 60810835
+{Bravo ! Vous avez terminé avec succès toutes les épreuves TOP-MODÈLES.
+Vous avez déverrouillé la §CARNAME§. Elle est disponible chez §SHOPNAME§
+} 547472
+{Bravo ! Vous avez terminé avec succès toutes les épreuves AUTO-STOPPEUR.
+Vous avez déverrouillé la §CARNAME§. Elle est disponible chez §SHOPNAME§
+} 557472
+{Bravo ! Vous avez terminé avec succès toutes les épreuves CONVOYEUR.
+Vous avez déverrouillé la §CARNAME§. Elle est disponible chez §SHOPNAME§
+} 567472
+{Félicitations ! Vous avez terminé avec succès toutes les épreuves COURSIER.
+Vous avez déverrouillé la §CARNAME§. Elle est disponible chez §SHOPNAME§
+} 577472
+{Félicitations ! Vous avez remporté toutes les épreuves de type TEMPS Solo.
+Vous avez déverrouillé la §CARNAME§. Elle est disponible chez §SHOPNAME§
+} 587472
+{Félicitations ! Vous avez remporté toutes les épreuves de type COURSE Solo.
+Vous avez déverrouillé la §CARNAME§. Elle est disponible chez §SHOPNAME§
+} 597472
+{Félicitations ! Vous avez remporté toutes les épreuves de type VITESSE Solo.
+Vous avez déverrouillé la §CARNAME§. Elle est disponible chez §SHOPNAME§
+} 607472
+{Vous possédez deux voitures. Grâce au CHRONOPACK vous pouvez comparer leurs performances. Ce gadget est maintenant accessible via les menus auxiliaires en appuyant sur le bouton multidirectionnel gauche.} 617472
+{Félicitations ! Vous venez d'atteindre le niveau Amateur, vous avez maintenant accès au mode PHOTOS.} 627472
+{Vous devenez Pro ! Dans le menu Pause, vous avez dorénavant accès au mode ÉDITEUR qui vous permet de créer vos
+challenges perso. } 538472
+{Vous avez atteint le niveau Expert. Cette performance vous donne maintenant accès au circuit de Ford Island.} 548472
+{Pour fêter votre niveau Champion, vous avez maintenant un libre accès au circuit de vitesse.} 558472
+{Vous avez découvert les moindres portions de routes de l'île. Vous méritez un cadeau hors du commun : la maison la plus haute de toutes !} 568472
+{Vous avez découvert tous les concessionnaires automobiles de l'île. Félicitations ! Vous avez maintenant accès aux concessionnaires moto.} 578472
+{Vous venez de réussir le défi le plus difficile. Vous avez débloqué la §CARNAME§. Vous pouvez la prendre à §SHOPNAME§.} 588472
+{Vous avez réussi l'une des plus belles courses de l'île. Vous avez maintenant accès à l'atelier de peinture de luxe.} 598472
+{Vous possédez deux voitures. Grâce au CHRONOPACK, vous allez pouvoir comparer leurs performances. Ce gadget est maintenant accessible via la touche K.} 608472
+{Pour fêter votre niveau Champion, vous avez maintenant un libre accès au circuit de vitesse. Le mode HARDCORE sera également disponible dans le menu de démarrage la prochaine fois que vous lancerez le jeu.} 618472
+// FailedExplain
+{??} 551129540
+{Vous ne pouvez pas encore y accéder.} 561129540
+{Vous devez réussir toutes les épreuves TEMPS solo pour déverrouiller cette voitures.} 571129540
+{Vous devez réussir toutes les COURSES solo pour débloquer cette voiture.} 581129540
+{Vous devez réussir tous les défis de VITESSE solo pour débloquer cette voiture.} 591129540
+{Vous devez réussir tous les défis TOP-MODÈLES pour débloquer cette voiture.} 601129540
+{Vous devez réussir tous les défis AUTO-STOPPEUR pour débloquer cette voiture.} 611129540
+{Vous devez réussir tous les défis CONVOYEUR pour débloquer cette voiture.} 621129540
+{Vous devez réussir tous les défis COURSIER pour débloquer cette voiture.} 631129540
+{Vous pourrez prendre des photos dès que vous aurez atteint le niveau Amateur.} 542129540
+{Vous pourrez accéder à l'éditeur de défi perso en devenant PRO.} 552129540
+{Pour accéder à cette île, vous devez atteindre le niveau EXPERT.} 562129540
+{Pour accéder à ce circuit, vous devez atteindre le niveau CHAMPION.} 572129540
+{Cette maison vous sera offerte lorsque vous aurez découvert TOUTES les routes de l'île.} 582129540
+{Pour y accéder, vous devez d'abord découvrir tous les concessionnaires autos.} 592129540
+{Vous devez réussir le défi " Tour de l'île " pour déverrouiller cette auto.} 602129540
+{Pour accéder à ce spot, vous devez réussir la course §RACE_LUX§} 612129540
+// Ach_Title
+{??} 53400734
+{VICTOIRES EN SOLO - NIVEAU 1} 54400734
+{VICTOIRES EN SOLO - NIVEAU 2} 55400734
+{VICTOIRES EN SOLO - NIVEAU 3} 56400734
+{VICTOIRES EN SOLO - NIVEAU 4} 57400734
+{VICTOIRES EN SOLO - NIVEAU 5} 58400734
+{CHALLENGES TEMPS SOLO} 59400734
+{CHALLENGES COURSES SOLO} 60400734
+{CHALLENGES VITESSES SOLO} 61400734
+{TOUR DE L'ÎLE} 62400734
+{VICTOIRES EN MULTI - NIVEAU 1} 53500734
+{VICTOIRES EN MULTI - NIVEAU 2} 54500734
+{VICTOIRES EN MULTI - NIVEAU 3} 55500734
+{MISSIONS RÉUSSIES - NIVEAU 1} 56500734
+{MISSIONS RÉUSSIES - NIVEAU 2} 57500734
+{MISSIONS RÉUSSIES - NIVEAU 3} 58500734
+{MISSIONS RÉUSSIES - NIVEAU 4} 59500734
+{VICTOIRES EN DÉFIS IMMÉDIATS} 60500734
+{PARTAGE DE CHALLENGES PERSO} 61500734
+{VICTOIRES CHALLENGES PERSO} 62500734
+{MEMBRE D'UN CLUB} 53600734
+{VICT. COURSES DE CLUB} 54600734
+{E-ACHAT} 55600734
+{COLLECTIONNEUR FERRARI} 56600734
+{COLLECTIONNEUR LAMBORGHINI} 57600734
+{COLLECTIONNEUR MERCEDES-BENZ} 58600734
+{COLLECTIONNEUR CHEVROLET} 59600734
+{COLLECTIONNEUR ASTON MARTIN} 60600734
+{COLLECTIONNEUR FORD} 61600734
+{GRAND COLLECTIONNEUR} 62600734
+{COLLECTIONNEUR MOTOS} 53700734
+{COLLECTIONNEUR BEN SHERMAN} 54700734
+{COLLECTIONNEUR *ecko unltd.} 55700734
+{TUNING} 56700734
+{EXPLORATEUR} 57700734
+{PHOTOGRAPHE} 58700734
+{TOURISTE TRANQUILLE} 59700734
+{TOURISTE ASSIDU} 60700734
+{VOYAGEUR} 61700734
+{GRAND VOYAGEUR} 62700734
+{AIGLE DE LA ROUTE !} 53800734
+{PROPRIÉTAIRE} 54800734
+{GÉANT DE L'IMMOBILIER} 55800734
+{PETIT COLLECTIONNEUR} 56800734
+{VICTOIRE EN SOLO - NIVEAU 6} 57800734
+{COLLECTIONNEUR AMATEUR} 58800734
+{COLLECTIONNEUR CONFIRMÉ} 59800734
+{COLLECTIONNEUR EXTRÊME} 60800734
+// Ach_Desc
+{??} 53359455
+{Gagner la coupe en or sur 5 challenges solo.} 54359455
+{Gagner la coupe en or sur 10 défis solo.} 55359455
+{Gagner la coupe en or sur 20 défis solo.} 56359455
+{Gagner la coupe en or sur 40 défis solo.} 57359455
+{Gagner la coupe en or sur tous les challenges solo} 58359455
+{Gagner la coupe en or sur tous les challenges de type TEMPS solo.} 59359455
+{Gagner la coupe en or sur tous les challenges de type COURSE solo.} 60359455
+{Gagner la coupe en or sur tous les challenges de type VITESSE solo.} 61359455
+{Gagner la coupe en or sur le défi \n"Tour de l'île".} 62359455
+{Remporter 3 victoires en courses MULTIJOUEUR.} 53459455
+{Remporter 15 victoires en courses multijoueurs.} 54459455
+{Remporter 30 victoires en courses multijoueurs.} 55459455
+{Réussir 3 missions de types Top-Modèle, Auto-Stoppeur, Convoyeur et Coursier.} 56459455
+{Réussir 15 missions de types Top-Modèle, Auto-Stoppeur, Convoyeur et Coursier.} 57459455
+{Réussir 40 missions de types Top-Modèle, Auto-Stoppeur, Convoyeur et Coursier.} 58459455
+{Réussir toutes les missions Top-Modèle, Auto-Stoppeur, Convoyeur et Coursier.} 59459455
+{Remporter 5 Défis Immédiats.} 60459455
+{Partager 3 challenges perso dans les Drive-In.} 61459455
+{Remporter 2 victoires dans les défis perso des Drive-In.} 62459455
+{Créer un Club ou devenir membre d'un club déjà existant.} 53559455
+{Remporter 3 victoires en courses inter-clubs.} 54559455
+{Acheter ou vendre un véhicule à un autre membre sur E-ACHAT.} 55559455
+{Posséder au moins 3 FERRARI différentes.} 56559455
+{Posséder au moins 3 LAMBORGHINI différentes.} 57559455
+{Posséder au moins 3 MERCEDES-BENZ différentes.} 58559455
+{Posséder au moins 3 CHEVROLET différentes.} 59559455
+{Posséder au moins 3 ASTON MARTIN différentes.} 60559455
+{Posséder au moins 3 FORD différentes.} 61559455
+{Posséder au moins 50 modèles de voitures différents.} 62559455
+{Posséder au moins 3 motos différentes.} 53659455
+{Posséder au moins 10 articles de la marque BEN SHERMAN.} 54659455
+{Posséder au moins 10 articles de la marque *ecko unltd.} 55659455
+{Acheter un kit de performance pour l'un de vos véhicules dans un atelier de Tuning.} 56659455
+{Découvrir toutes les routes de l'île.} 57659455
+{Photographier tous les plus beaux points de vue de l'île.} 58659455
+{Parcourir 30 miles (48 km).} 59659455
+{Parcourir 200 miles (320 km).} 60659455
+{Parcourir 400 miles (640 km).} 61659455
+{Parcourir 1000 miles (1600 km).} 62659455
+{Parcourir 5000 miles (8000 km).} 53759455
+{Être propriétaire d'au moins 2 maisons.} 54759455
+{Être propriétaire de toutes les maisons de l'île.} 55759455
+{Posséder au moins 2 voitures différentes.} 56759455
+{Gagner la coupe en or sur 60 défis solo.} 57759455
+{Posséder au moins 4 voitures différentes.} 58759455
+{Posséder au moins 10 voitures différentes.} 59759455
+{Posséder au moins 20 voitures différentes.} 60759455
+{Obtenez 3 victoires en courses multijoueur. Seules les PARTIES AVEC CLASSEMENT sont prises en compte.} 61759455
+{Obtenez 15 victoires en courses multijoueur. Seules les PARTIES AVEC CLASSEMENT sont prises en compte.} 62759455
+{Obtenez 30 victoires en courses multijoueur. Seules les PARTIES AVEC CLASSEMENT sont prises en compte.} 53859455
+{Posséder au moins 15 maisons.} 54859455
+{MinGoldCup} 54736935
+{MinSoloGoldCup} 55736935
+{MinMultiGoldCup} 56736935
+{MinExtraGoldCup} 57736935
+{AllGoldSolo} 58736935
+{AllGoldSoloTime} 59736935
+{AllGoldSoloRace} 60736935
+{AllGoldSoloSpeed} 61736935
+{AllGoldSoloExtra} 62736935
+{CarsOwned} 53836935
+{CarsOwned_Ferrari} 54836935
+{CarsOwned_Lambo} 55836935
+{CarsOwned_Merco} 56836935
+{CarsOwned_Chevy} 57836935
+{CarsOwned_Aston} 58836935
+{CarsOwned_Ford} 59836935
+{CarsOwned_All} 60836935
+{BikesOwned} 61836935
+{AllHousesOwned} 62836935
+{HousesOwned} 53936935
+{RoadExplored} 54936935
+{AllRoadExplored} 55936935
+{MinClubGoldCup} 56936935
+{IsClubMember} 57936935
+{CarTunedHistory} 58936935
+{GoldGeekCha} 59936935
+{GoldInstantCha} 60936935
+{GoldInstantChaOffline} 61936935
+{GoldInstantChaOnline} 62936935
+{GoldInstantChaAllBots} 54036935
+{UploadCustom} 55036935
+{MinGoldCustom} 56036935
+{MinETradeTransaction} 57036935
+{ClothesOwned_BenSherman} 58036935
+{ClothesOwned_Ecko} 59036935
+{MinSpecialPhotos } 60036935
+{LevelReached} 61036935
+{AllGoldSoloExtraShopping} 62036935
+{AllGoldSoloExtraHitch} 63036935
+{AllGoldSoloExtraTransp} 54136935
+{AllGoldSoloExtraConvoy} 55136935
+{GoldPaintDeluxeCha} 56136935
+{AllCarDealerUnlocked} 57136935
+{RoadTraveled} 58136935
+{Novice_Pts} 59136935
+{Pro_Pts} 60136935
+{Expert_Pts} 61136935
+{Master_Pts} 62136935
+{Ace_Pts} 63136935
+{CarsOwnedPC} 71366935
+{LevelReachedHardcore} 721036935
+{???} 5337472
+{ChronoPack} 5437472
+{Car} 5537472
+{SnapShot} 5637472
+{GameMode} 5737472
+{FordIsland} 5837472
+{CircuitAccess} 5937472
+{House} 6037472
+{CarPaintDeluxe} 6137472
+{BikeDealer} 6237472
+{BoatTrip} 5347472
