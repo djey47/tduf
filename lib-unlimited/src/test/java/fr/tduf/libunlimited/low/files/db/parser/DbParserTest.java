@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Scanner;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.ITALY;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,7 +45,6 @@ public class DbParserTest {
         assertThat(dbParser).isNotNull();
         assertThat(dbParser.getContentLineCount()).isEqualTo(4);
         assertThat(dbParser.getResourceCount()).isEqualTo(1);
-        assertThat(dbParser.getResourceLinesCount()).isEqualTo(6);
     }
 
     @Test
@@ -54,13 +55,17 @@ public class DbParserTest {
 
 
         //WHEN
-        DbDto dbDto = DbParser.load(dbLines, resourceLines).parseAll();
+        DbParser dbParser = DbParser.load(dbLines, resourceLines);
+        DbDto dbDto = dbParser.parseAll();
 
 
         //THEN
+        assertThat(dbParser.getContentLineCount()).isEqualTo(90);
+        assertThat(dbParser.getResourceCount()).isEqualTo(2);
+
         assertThat(dbDto).isNotNull();
         assertThat(dbDto.getRef()).isEqualTo("2442784645");
-//        assertThat(dbDto.getName()).isEqualTo("Achievements");
+//        assertThat(dbDto.getTopic()).isEqualTo(ACHIEVEMENTS);
 
         DbDataDto data = dbDto.getData();
         assertThat(data).isNotNull();
@@ -72,10 +77,11 @@ public class DbParserTest {
 
         List<DbResourceDto> resources = dbDto.getResources();
         assertThat(resources).isNotNull();
-//        assertThat(resources.getVersion()).isEqualTo("1,2");
-//        assertThat(resources.getCategoryCount()).isEqualTo(6);
-//        assertThat(resources.getEntries()).hasSize(237);
-//        assertThat(resources.getEntries().get(0).getLocalizedValues()).hasSize(1);
+        assertThat(resources).extracting("version").containsExactly("1,2", "1,2");
+        assertThat(resources).extracting("categoryCount").containsExactly(6, 6);
+        assertThat(resources).extracting("locale").containsExactly(FRANCE, ITALY);
+        assertThat(resources.get(0).getEntries()).hasSize(237);
+        assertThat(resources.get(1).getEntries()).hasSize(236); //FIXME Should be 237 as well.... why ?
     }
 
     private List<List<String>> readResourcesFromSamples(String... sampleFiles) throws IOException{
