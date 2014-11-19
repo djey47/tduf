@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
 import static net.sf.json.test.JSONAssert.assertJsonEquals;
 
 public class DbResourceMapperTest {
@@ -21,36 +22,31 @@ public class DbResourceMapperTest {
     @Test
     public void serialize_shouldWriteProperJson() throws IOException {
         //GIVEN
-        DbResourceDto.LocalizedValue localizedValue1 = DbResourceDto.LocalizedValue.builder()
-                .withLocale(DbResourceDto.Locale.FRANCE)
-                .withValue("FR??")
-                .build();
-        DbResourceDto.LocalizedValue localizedValue2 = DbResourceDto.LocalizedValue.builder()
-                .withLocale(DbResourceDto.Locale.ITALY)
-                .withValue("IT??")
-                .build();
-        DbResourceDto.Entry entry = DbResourceDto.Entry.builder()
+        DbResourceDto.Entry entry1 = DbResourceDto.Entry.builder()
                 .forReference("53410835")
-                .addLocalizedValue(localizedValue1)
-                .addLocalizedValue(localizedValue2)
+                .withValue("VAL1")
+                .build();
+        DbResourceDto.Entry entry2 = DbResourceDto.Entry.builder()
+                .forReference("54410835")
+                .withValue("VAL2")
                 .build();
         DbResourceDto dbResourceDto = DbResourceDto.builder()
                 .atVersion("1,2")
+                .withLocale(FRANCE)
                 .withCategoryCount(6)
-                .addEntry(entry)
+                .addEntry(entry1)
+                .addEntry(entry2)
                 .build();
         String expectedJson = "{\n" +
+                "  \"locale\" : \"FRANCE\",\n" +
                 "  \"version\" : \"1,2\",\n" +
                 "  \"categoryCount\" : 6,\n" +
                 "  \"entries\" : [ {\n" +
                 "    \"ref\" : \"53410835\",\n" +
-                "    \"localizedValues\" : [ {\n" +
-                "      \"locale\" : \"FRANCE\",\n" +
-                "      \"value\" : \"FR??\"\n" +
-                "    }, {\n" +
-                "      \"locale\" : \"ITALY\",\n" +
-                "      \"value\" : \"IT??\"\n" +
-                "    } ]\n" +
+                "    \"value\" : \"VAL1\"\n" +
+                "  }, {\n" +
+                "    \"ref\" : \"54410835\",\n" +
+                "    \"value\" : \"VAL2\"\n" +
                 "  } ]\n" +
                 "}";
 

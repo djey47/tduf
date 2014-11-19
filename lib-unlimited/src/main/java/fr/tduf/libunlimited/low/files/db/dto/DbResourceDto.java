@@ -25,22 +25,25 @@ public class DbResourceDto implements Serializable {
     @JsonProperty("categoryCount")
     private Integer categoryCount;
 
+    @JsonProperty("locale")
+    private Locale locale;
+
     @JsonTypeName("dbResourceEntry")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class Entry implements Serializable {
         @JsonProperty("ref")
         private String reference;
 
-        @JsonProperty("localizedValues")
-        private List<LocalizedValue> localizedValues;
+        @JsonProperty("value")
+        private String value;
 
         /**
          * @return builder, used to generate custom values.
          */
         public static EntryBuilder builder() {
             return new EntryBuilder() {
+                private String value;
                 private String reference;
-                private final List<LocalizedValue> localizedValues = newArrayList();
 
                 @Override
                 public EntryBuilder forReference(String reference) {
@@ -49,8 +52,8 @@ public class DbResourceDto implements Serializable {
                 }
 
                 @Override
-                public EntryBuilder addLocalizedValue(LocalizedValue localizedValue) {
-                    this.localizedValues.add(localizedValue);
+                public EntryBuilder withValue(String value) {
+                    this.value = value;
                     return this;
                 }
 
@@ -58,74 +61,20 @@ public class DbResourceDto implements Serializable {
                 public Entry build() {
                     Entry entry = new Entry();
 
-                    entry.localizedValues = this.localizedValues;
                     entry.reference = this.reference;
+                    entry.value = this.value;
 
                     return entry;
                 }
             };
         }
 
-        public List<LocalizedValue> getLocalizedValues() {
-            return localizedValues;
-        }
-
         public interface EntryBuilder {
             EntryBuilder forReference(String reference);
 
-            EntryBuilder addLocalizedValue(LocalizedValue localizedValue);
+            EntryBuilder withValue(String value);
 
             Entry build();
-        }
-    }
-
-    @JsonTypeName("dbResourceEntryLocalizedValue")
-    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-    public static class LocalizedValue implements Serializable {
-        @JsonProperty("locale")
-        private Locale locale;
-
-        @JsonProperty("value")
-        private String value;
-
-        /**
-         * @return builder, used to generate custom values.
-         */
-        public static LocalizedValueBuilder builder() {
-            return new LocalizedValueBuilder() {
-                private String value;
-                private Locale locale;
-
-                @Override
-                public LocalizedValueBuilder withLocale(Locale locale) {
-                    this.locale = locale;
-                    return this;
-                }
-
-                @Override
-                public LocalizedValueBuilder withValue(String value) {
-                    this.value = value;
-                    return this;
-                }
-
-                @Override
-                public LocalizedValue build() {
-                    LocalizedValue localizedValue = new LocalizedValue();
-
-                    localizedValue.locale = this.locale;
-                    localizedValue.value = this.value;
-
-                    return localizedValue;
-                }
-            };
-        }
-
-        public interface LocalizedValueBuilder {
-            LocalizedValueBuilder withLocale(Locale locale);
-
-            LocalizedValueBuilder withValue(String value);
-
-            LocalizedValue build();
         }
     }
 
@@ -168,7 +117,14 @@ public class DbResourceDto implements Serializable {
         return new DbResourceDtoBuilder() {
             private int categoryCount;
             private String version;
+            private Locale locale;
             private final List<Entry> entries = newArrayList();
+
+            @Override
+            public DbResourceDtoBuilder withLocale(Locale locale) {
+                this.locale = locale;
+                return this;
+            }
 
             @Override
             public DbResourceDtoBuilder addEntry(Entry entry) {
@@ -201,6 +157,7 @@ public class DbResourceDto implements Serializable {
                 dbResourceDto.entries = this.entries;
                 dbResourceDto.categoryCount = this.categoryCount;
                 dbResourceDto.version = this.version;
+                dbResourceDto.locale = this.locale;
 
                 return dbResourceDto;
             }
@@ -220,6 +177,8 @@ public class DbResourceDto implements Serializable {
     }
 
     public interface DbResourceDtoBuilder {
+        DbResourceDtoBuilder withLocale(Locale locale);
+
         DbResourceDtoBuilder addEntry(Entry entry);
 
         DbResourceDtoBuilder addEntries(List<Entry> entries);

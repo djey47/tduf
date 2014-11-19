@@ -3,10 +3,11 @@ package fr.tduf.libunlimited.low.files.db.parser;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,8 +67,6 @@ public class DbParser {
 
     private DbResourceDto parseResources() {
 
-        List<String> referenceResourceLines = this.resources.get(0);
-
         Pattern resourceNamePattern = Pattern.compile(RES_NAME_PATTERN);
         Pattern resourceVersionPattern = Pattern.compile(RES_VERSION_PATTERN);
         Pattern categoryCountPattern = Pattern.compile(RES_CATEGORY_COUNT_PATTERN);
@@ -76,51 +75,63 @@ public class DbParser {
         String localeCode = null;
         String version = null;
         int categoryCount = 0;
-        List<DbResourceDto.Entry> entries = newArrayList();
 
-        for (String line : referenceResourceLines) {
 
-            Matcher matcher = resourceNamePattern.matcher(line);
-            if (matcher.matches()) {
-                localeCode = matcher.group(1);
-                System.out.println("Locale found: " + localeCode);
-                continue;
-            }
+        Map<String, String> valueByLocalizedReference = new HashMap<>();
 
-            matcher =  resourceVersionPattern.matcher(line);
-            if (matcher.matches()) {
-                version = matcher.group(1);
-                System.out.println("Version found: " + version);
-                continue;
-            }
+        for (List<String> resourceLines : this.resources) {
 
-            matcher = categoryCountPattern.matcher(line);
-            if (matcher.matches()) {
-                categoryCount = Integer.valueOf(matcher.group(1));
-                System.out.println("Category count found: " + categoryCount);
-                continue;
-            }
+            for (String line : resourceLines) {
 
-            if (Pattern.matches(COMMENT_PATTERN, line)) {
-                continue;
-            }
+                Matcher matcher = resourceNamePattern.matcher(line);
+                if (matcher.matches()) {
+                    localeCode = matcher.group(1);
+                    System.out.println("Locale found: " + localeCode);
+                    continue;
+                }
 
-            matcher = resourceEntryPattern.matcher(line);
-            if (matcher.matches()) {
-                String value = matcher.group(1);
-                String reference = matcher.group(2);
-                DbResourceDto.LocalizedValue localizedValue = DbResourceDto.LocalizedValue.builder()
-                        .withLocale(Locale.fromCode(localeCode))
-                        .withValue(value)
-                        .build();
-                DbResourceDto.Entry entry = DbResourceDto.Entry.builder()
-                        .addLocalizedValue(localizedValue)
-                        .forReference(reference)
-                        .build();
-                entries.add(entry);
-//                System.out.println("Entry found: " + reference + " - " + value);
+                matcher = resourceVersionPattern.matcher(line);
+                if (matcher.matches() && version == null) {
+                    version = matcher.group(1);
+                    System.out.println("Version found: " + version);
+                    continue;
+                }
+
+                matcher = categoryCountPattern.matcher(line);
+                if (matcher.matches() && categoryCount == 0) {
+                    categoryCount = Integer.valueOf(matcher.group(1));
+                    System.out.println("Category count found: " + categoryCount);
+                    continue;
+                }
+
+                if (Pattern.matches(COMMENT_PATTERN, line)) {
+                    continue;
+                }
+
+                matcher = resourceEntryPattern.matcher(line);
+                if (matcher.matches()) {
+                    String value = matcher.group(1);
+                    String reference = matcher.group(2);
+
+                    String key = reference + "-" + localeCode;
+
+                    valueByLocalizedReference.put(key, value);
+                }
             }
         }
+
+        List<DbResourceDto.Entry> entries = newArrayList();
+
+
+
+//                    localizedValues.add(localizedValue);
+                    DbResourceDto.Entry entry = DbResourceDto.Entry.builder()
+//                            .addLocalizedValues(localizedValues)
+//                            .forReference(reference)
+                            .build();
+                    entries.add(entry);
+    //                System.out.println("Entry found: " + reference + " - " + value);
+//        }
 
         return DbResourceDto.builder()
                 .atVersion(version)
@@ -162,7 +173,6 @@ public class DbParser {
         return DbDataDto.builder()
                 .addEntries(entries)
                 .build();
-
     }
 
     private DbStructureDto parseStructure() {
