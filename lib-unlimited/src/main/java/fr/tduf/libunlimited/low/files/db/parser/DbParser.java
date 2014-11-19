@@ -26,7 +26,7 @@ public class DbParser {
     private static final String CONTENT_PATTERN = "^(\\d+;)+$";             //e.g 55736935;5;20;54400734;54359455;54410835;561129540;5337472;211;
     private static final String VALUE_DELIMITER = ";";
 
-    private static final String RES_NAME_PATTERN = "^// TDU_.+\\.(.+)$";                //e.g // TDU_Achievements.fr
+    private static final String RES_NAME_PATTERN = "^// (TDU_.+)\\.(.+)$";                //e.g // TDU_Achievements.fr
     private static final String RES_VERSION_PATTERN = "^// version: (.+)$";             //e.g // version: 1,2
     private static final String RES_CATEGORY_COUNT_PATTERN = "^// categories: (.+)$";   //e.g // categories: 6
     private static final String RES_ENTRY_PATTERN = "^\\{(.*)\\} (\\d*)$";              //e.g {??} 53410835
@@ -49,11 +49,12 @@ public class DbParser {
         requireNonNull(contentLines, "Contents are required");
         requireNonNull(resources, "Resources are required");
 
-        //TODO Validate contents and resources
-
         return new DbParser(contentLines, resources);
     }
 
+    /**
+     * Parses all contents.
+     */
     public DbDto parseAll() {
         DbStructureDto structure = parseStructure();
         List<DbResourceDto> resources = parseResources();
@@ -85,7 +86,7 @@ public class DbParser {
                 for (String line : resourceLines) {
                     Matcher matcher = resourceNamePattern.matcher(line);
                     if (matcher.matches()) {
-                        localeCode = matcher.group(1);
+                        localeCode = matcher.group(2);
                         continue;
                     }
 
@@ -161,21 +162,29 @@ public class DbParser {
 
     private DbStructureDto parseStructure() {
 
-        Pattern itemPattern = Pattern.compile(ITEM_PATTERN);
-        Pattern itemRefPattern = Pattern.compile(ITEM_REF_PATTERN);
+        final Pattern topicNamePattern = Pattern.compile(RES_NAME_PATTERN);
+        final Pattern itemPattern = Pattern.compile(ITEM_PATTERN);
+        final Pattern itemRefPattern = Pattern.compile(ITEM_REF_PATTERN);
 
         List<DbStructureDto.Field> fields = new ArrayList<>();
-        long id = 0;
         String reference = null;
+        String topicName = null;
 
         for (String line : this.contentLines) {
-            // Skips comments
+
+            Matcher matcher = topicNamePattern.matcher(line);
+            if (matcher.matches()) {
+                topicName = matcher.group(1);
+                continue;
+            }
+
+            // Skips other comments
             if (Pattern.matches(COMMENT_PATTERN, line)) {
                 continue;
             }
 
             // Current reference
-            Matcher matcher = itemRefPattern.matcher(line);
+            matcher = itemRefPattern.matcher(line);
             if(matcher.matches()) {
                 reference = matcher.group(2);
             }
@@ -188,7 +197,6 @@ public class DbParser {
                 DbStructureDto.FieldType fieldType = DbStructureDto.FieldType.fromCode(code);
 
                 fields.add(DbStructureDto.Field.builder()
-                        .withId(id++)
                         .forName(name)
                         .fromType(fieldType)
                         .build());
@@ -196,6 +204,7 @@ public class DbParser {
         }
 
         return DbStructureDto.builder()
+                .forTopic(DbDto.Topic.fromLabel(topicName))
                 .forReference(reference)
                 .addItems(fields)
                 .build();

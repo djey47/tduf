@@ -7,11 +7,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DbDtoTest {
 
     @Test
-    public void getTopicLabel_shouldReturnCorrectLabel() {
+    public void fromTopicLabel_whenTopicExists_shouldReturnCorrectTopic() {
         // WHEN
-        String actualLabel = DbDto.Topic.getLabel(DbDto.Topic.AFTER_MARKET_PACKS);
+        DbDto.Topic actualTopic = DbDto.Topic.fromLabel("TDU_AfterMarketPacks");
 
         //THEN
-        assertThat(actualLabel).isEqualTo("TDU_AfterMarketPacks");
+        assertThat(actualTopic).isEqualTo(DbDto.Topic.AFTER_MARKET_PACKS);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void fromTopicLabel_whenTopicDoesNotExist_shouldThrowException() {
+        // WHEN-THEN
+        DbDto.Topic.fromLabel("TDU_Babes");
     }
 }

@@ -38,39 +38,50 @@ public class DbDto implements Serializable {
      */
     @JsonTypeName("dbTopic")
     public enum Topic {
-        ACHIEVEMENTS,
-        AFTER_MARKET_PACKS,
-        BOTS,
-        BRANDS,
-        CAR_COLORS,
-        CAR_PACKS,
-        CAR_PHYSICS_DATA,
-        CAR_RIMS,
-        CAR_SHOPS,
-        CLOTHES,
-        HAIR,
-        HOUSES,
-        INTERIOR,
-        MENUS,
-        PNJ,
-        RIMS,
-        SUB_TITLES,
-        TUTORIALS;
+        ACHIEVEMENTS("TDU_Achievements"),
+        AFTER_MARKET_PACKS("TDU_AfterMarketPacks"),
+        BOTS("TDU_Bots"),
+        BRANDS("TDU_Brands"),
+        CAR_COLORS("TDU_CarColors"),
+        CAR_PACKS("TDU_CarPacks"),
+        CAR_PHYSICS_DATA("TDU_CarPhysicsData"),
+        CAR_RIMS("TDU_CarRims"),
+        CAR_SHOPS("TDU_CarShops"),
+        CLOTHES("TDU_Clothes"),
+        HAIR("TDU_Hair"),
+        HOUSES("TDU_Houses"),
+        INTERIOR("TDU_Interior"),
+        MENUS("TDU_Menus"),
+        PNJ("TDU_PNJ"),
+        RIMS("TDU_Rims"),
+        SUB_TITLES("TDU_SubTitles"),
+        TUTORIALS("TDU_Tutorials");
+
+        private String label;
+
+        Topic(String label) {
+            this.label = label;
+        }
 
         /**
-         * @return topic label, according to 'TDU_<topic name, each word capitalized>'
+         * @return topic, according to provided label.
          */
-        public static String getLabel(Topic topic) {
+        public static Topic fromLabel(String label) {
 
-            StringBuilder labelBuilder = new StringBuilder();
-            labelBuilder.append("TDU_");
-
-            for (String component : topic.name().split("_")) {
-                labelBuilder.append(component.substring(0, 1).toUpperCase());
-                labelBuilder.append(component.substring(1).toLowerCase());
+            for(Topic topic : Topic.values()) {
+                if(topic.getLabel().equals(label)) {
+                    return topic;
+                }
             }
 
-            return labelBuilder.toString();
+            throw new IllegalArgumentException("Unknown topic label: " + label);
+        }
+
+        /**
+         * @return topic label, according to 'TDU_<topic name, each word capitalized>'.
+         */
+        public String getLabel() {
+            return this.label;
         }
     }
 

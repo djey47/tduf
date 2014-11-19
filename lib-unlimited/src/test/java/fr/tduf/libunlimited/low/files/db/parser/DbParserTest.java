@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.ITALY;
 import static java.util.Arrays.asList;
@@ -65,7 +66,7 @@ public class DbParserTest {
 
         assertThat(dbDto).isNotNull();
         assertThat(dbDto.getRef()).isEqualTo("2442784645");
-//        assertThat(dbDto.getTopic()).isEqualTo(ACHIEVEMENTS);
+        assertThat(dbDto.getTopic()).isEqualTo(ACHIEVEMENTS);
 
         DbDataDto data = dbDto.getData();
         assertThat(data).isNotNull();
