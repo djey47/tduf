@@ -21,17 +21,17 @@ public class DbMapperTest {
         //GIVEN
         DbStructureDto dbStructureDto = DbStructureDto.builder()
                 .forReference("2442784645")
-                .forName("TDU_Achievements")
+                .forName("Achievements")
                 .build();
-        DbDataDto dbDataDto = DbDataDto.builder().build();
-        DbResourceDto dbResourcesDto = DbResourceDto.builder().build();
         DbDto dbTopicDto = DbDto.builder()
                 .withStructure(dbStructureDto)
-                .withData(dbDataDto)
-                .withResources(dbResourcesDto)
+                .withData(DbDataDto.builder().build())
+                .addResource(DbResourceDto.builder().build())
+                .addResource(DbResourceDto.builder().build())
                 .build();
+
         String expectedJson = "{\n" +
-                "  \"name\" : \"TDU_Achievements\",\n" +
+                "  \"name\" : \"Achievements\",\n" +
                 "  \"ref\" : \"2442784645\",\n" +
                 "  \"structure\" : {\n" +
                 "    \"fields\" : [ ]\n" +
@@ -39,15 +39,20 @@ public class DbMapperTest {
                 "  \"data\" : {\n" +
                 "    \"entries\" : [ ]\n" +
                 "  },\n" +
-                "  \"resources\" : {\n" +
+                "  \"resources\" : [ {\n" +
                 "    \"entries\" : [ ],\n" +
                 "    \"categoryCount\" : 0\n" +
-                "  }\n" +
+                "  }, {\n" +
+                "    \"entries\" : [ ],\n" +
+                "    \"categoryCount\" : 0\n" +
+                "  } ]\n" +
                 "}";
+
 
         //WHEN
         String jsonResult = objectWriter.writeValueAsString(dbTopicDto);
         System.out.println("Actual JSON:" + jsonResult);
+
 
         //THEN
         assertJsonEquals(expectedJson, jsonResult);

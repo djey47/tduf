@@ -60,7 +60,7 @@ public class DbParser {
 
         return DbDto.builder()
                 .withData(data)
-                .withResources(resources)
+//                .withResources(resources)
                 .withStructure(structure)
                 .build();
     }
@@ -76,8 +76,6 @@ public class DbParser {
         String version = null;
         int categoryCount = 0;
 
-
-        Map<String, String> valueByLocalizedReference = new HashMap<>();
 
         for (List<String> resourceLines : this.resources) {
 
@@ -115,7 +113,7 @@ public class DbParser {
 
                     String key = reference + "-" + localeCode;
 
-                    valueByLocalizedReference.put(key, value);
+//                    valueByLocalizedReference.put(key, value);
                 }
             }
         }

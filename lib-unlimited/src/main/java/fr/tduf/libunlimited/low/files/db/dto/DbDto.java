@@ -4,6 +4,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a TDU database topic.
@@ -18,7 +20,7 @@ public class DbDto implements Serializable {
     private DbDataDto data;
 
     @JsonProperty("resources")
-    private DbResourceDto resources;
+    private List<DbResourceDto> resources;
 
     @JsonProperty("ref")
     public String getRef() {
@@ -35,7 +37,7 @@ public class DbDto implements Serializable {
      */
     public static DbDtoBuilder builder() {
         return new DbDtoBuilder() {
-            private DbResourceDto resources;
+            private final List<DbResourceDto> resources = new ArrayList<>();
             private DbDataDto data;
             private DbStructureDto structure;
 
@@ -52,8 +54,14 @@ public class DbDto implements Serializable {
             }
 
             @Override
-            public DbDtoBuilder withResources(DbResourceDto dbResourcesDto) {
-                this.resources = dbResourcesDto;
+            public DbDtoBuilder addResources(List<DbResourceDto> dbResourcesDtos) {
+                this.resources.addAll(dbResourcesDtos);
+                return this;
+            }
+
+            @Override
+            public DbDtoBuilder addResource(DbResourceDto dbResourceDto) {
+                this.resources.add(dbResourceDto);
                 return this;
             }
 
@@ -78,7 +86,7 @@ public class DbDto implements Serializable {
         return data;
     }
 
-    public DbResourceDto getResources() {
+    public List<DbResourceDto> getResources() {
         return resources;
     }
 
@@ -87,7 +95,9 @@ public class DbDto implements Serializable {
 
         DbDtoBuilder withData(DbDataDto dbDataDto);
 
-        DbDtoBuilder withResources(DbResourceDto dbResourcesDto);
+        DbDtoBuilder addResources(List<DbResourceDto> dbResourcesDtos);
+
+        DbDtoBuilder addResource(DbResourceDto dbResourceDto);
 
         DbDto build();
     }
