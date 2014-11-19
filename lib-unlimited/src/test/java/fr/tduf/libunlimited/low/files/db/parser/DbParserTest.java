@@ -49,8 +49,8 @@ public class DbParserTest {
     @Test
     public void parseAll_whenRealFiles_shouldReturnProperDto() throws Exception {
         //GIVEN
-        List<String> dbLines = readContentsFromSample("/db/TDU_achievements.db", "UTF-8");
-        List<List<String>> resourceLines = readResourcesFromSamples("/db/res/TDU_achievements.fr", "/db/res/TDU_achievements.it");
+        List<String> dbLines = readContentsFromSample("/db/TDU_Achievements.db", "UTF-8");
+        List<List<String>> resourceLines = readResourcesFromSamples("/db/res/TDU_Achievements.fr", "/db/res/TDU_Achievements.it");
 
 
         //WHEN
