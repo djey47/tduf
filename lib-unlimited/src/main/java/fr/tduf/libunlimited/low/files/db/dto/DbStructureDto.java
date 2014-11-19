@@ -22,7 +22,7 @@ public class DbStructureDto implements Serializable {
     private String ref;
 
     @JsonIgnore
-    private String name;
+    private DbDto.Topic topic;
 
     @JsonProperty("fields")
     private List<Field> fields;
@@ -138,10 +138,6 @@ public class DbStructureDto implements Serializable {
         }
     }
 
-    public String getName() {
-        return name;
-    }
-
     public String getRef() {
         return ref;
     }
@@ -150,20 +146,18 @@ public class DbStructureDto implements Serializable {
         return fields;
     }
 
+    public DbDto.Topic getTopic() {
+        return topic;
+    }
+
     /**
      * @return builder, used to generate custom values.
      */
     public static DbStructureDtoBuilder builder() {
         return new DbStructureDtoBuilder() {
-            private String name;
+            private DbDto.Topic topic;
             private String ref;
             private final List<Field> fields = newArrayList();
-
-            @Override
-            public DbStructureDtoBuilder forName(String name) {
-                this.name = name;
-                return this;
-            }
 
             @Override
             public DbStructureDtoBuilder forReference(String reference) {
@@ -183,10 +177,16 @@ public class DbStructureDto implements Serializable {
             }
 
             @Override
+            public DbStructureDtoBuilder forTopic(DbDto.Topic topic) {
+                this.topic = topic;
+                return this;
+            }
+
+            @Override
             public DbStructureDto build() {
                 DbStructureDto dbStructureDto = new DbStructureDto();
 
-                dbStructureDto.name = this.name;
+                dbStructureDto.topic = this.topic;
                 dbStructureDto.ref = this.ref;
                 dbStructureDto.fields = this.fields;
 
@@ -202,7 +202,7 @@ public class DbStructureDto implements Serializable {
 
         DbStructureDtoBuilder addItems(List<Field> fields);
 
-        DbStructureDtoBuilder forName(String name);
+        DbStructureDtoBuilder forTopic(DbDto.Topic topic);
 
         DbStructureDto build();
     }
