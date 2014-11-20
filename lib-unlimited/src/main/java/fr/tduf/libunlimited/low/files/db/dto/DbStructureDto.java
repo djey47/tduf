@@ -91,6 +91,10 @@ public class DbStructureDto implements Serializable {
             };
         }
 
+        public String getName() {
+            return name;
+        }
+
         public interface FieldBuilder {
             FieldBuilder withId(long id);
 

@@ -142,10 +142,16 @@ public class DbParser {
             }
 
             List<DbDataDto.Item> items = new ArrayList<>();
+
+
+            int fieldIndex = 0;
             for(String itemValue : line.split(VALUE_DELIMITER)) {
+
+                String fieldName = structure.getFields().get(fieldIndex++).getName();
+
                 // TODO depends on value type
                 items.add(DbDataDto.Item.builder()
-                        .forName("")
+                        .forName(fieldName)
                         .build());
             }
 
