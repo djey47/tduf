@@ -26,10 +26,10 @@ public class DbParser {
     private static final String CONTENT_PATTERN = "^(\\d+;)+$";             //e.g 55736935;5;20;54400734;54359455;54410835;561129540;5337472;211;
     private static final String VALUE_DELIMITER = ";";
 
-    private static final String RES_NAME_PATTERN = "^// (TDU_.+)\\.(.+)$";                //e.g // TDU_Achievements.fr
+    private static final String RES_NAME_PATTERN = "^// (TDU_.+)\\.(.+)$";              //e.g // TDU_Achievements.fr
     private static final String RES_VERSION_PATTERN = "^// version: (.+)$";             //e.g // version: 1,2
     private static final String RES_CATEGORY_COUNT_PATTERN = "^// categories: (.+)$";   //e.g // categories: 6
-    private static final String RES_ENTRY_PATTERN = "^\\{(.*)\\} (\\d*)$";              //e.g {??} 53410835
+    private static final String RES_ENTRY_PATTERN = "^\\{(.*(\\n?.*)*)\\} (\\d+)$";     //e.g {??} 53410835
 
     private final List<String> contentLines;
     private final List<List<String>> resources;
@@ -109,7 +109,7 @@ public class DbParser {
                     matcher = resourceEntryPattern.matcher(line);
                     if (matcher.matches()) {
                         entries.add(DbResourceDto.Entry.builder()
-                                .forReference(matcher.group(2))
+                                .forReference(matcher.group(3))
                                 .withValue(matcher.group(1))
                                 .build());
                     }

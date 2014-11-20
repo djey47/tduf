@@ -81,8 +81,8 @@ public class DbParserTest {
         assertThat(resources).extracting("version").containsExactly("1,2", "1,2");
         assertThat(resources).extracting("categoryCount").containsExactly(6, 6);
         assertThat(resources).extracting("locale").containsExactly(FRANCE, ITALY);
-        assertThat(resources.get(0).getEntries()).hasSize(237);
-        assertThat(resources.get(1).getEntries()).hasSize(236); //FIXME Should be 237 as well.... why ?
+        assertThat(resources.get(0).getEntries()).hasSize(246);
+        assertThat(resources.get(1).getEntries()).hasSize(246);
     }
 
     private List<List<String>> readResourcesFromSamples(String... sampleFiles) throws IOException{
@@ -102,7 +102,6 @@ public class DbParserTest {
 
         Scanner scanner = new Scanner(resourceAsStream, encoding) ;
         scanner.useDelimiter("\r\n");
-
 
         while(scanner.hasNext()) {
             lines.add(scanner.next());
