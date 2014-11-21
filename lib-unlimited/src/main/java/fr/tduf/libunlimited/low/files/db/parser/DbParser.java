@@ -35,6 +35,8 @@ public class DbParser {
     private final List<String> contentLines;
     private final List<List<String>> resources;
 
+    private final List<IntegrityError> integrityErrors = new ArrayList<>();
+
     private DbParser(List<String> contentlines, List<List<String>> resources) {
         this.contentLines = contentlines;
         this.resources = resources;
@@ -57,6 +59,9 @@ public class DbParser {
      * Parses all contents.
      */
     public DbDto parseAll() {
+
+        integrityErrors.clear();
+
         List<DbResourceDto> resources = parseResources();
         DbStructureDto structure = parseStructure();
         DbDataDto data = parseContents(structure);
@@ -133,14 +138,13 @@ public class DbParser {
 
         List<DbDataDto.Entry> entries = new ArrayList<>();
         long id = 0;
-        long itemCount;
+        long itemCount = 0;
 
         for (String line : this.contentLines) {
 
             Matcher matcher = itemCountMatcher.matcher(line);
             if (matcher.matches()) {
                 itemCount = Long.valueOf(matcher.group(1));
-                System.out.println("itemCount=" + itemCount);
                 continue;
             }
 
@@ -170,7 +174,10 @@ public class DbParser {
                     .build());
         }
 
-        //TODO CHECK item count
+        // Integrity check
+        if (itemCount != entries.size()) {
+            integrityErrors.add(new IntegrityError());
+        }
 
         return DbDataDto.builder()
                 .addEntries(entries)
@@ -236,5 +243,15 @@ public class DbParser {
 
     public long getResourceCount() {
         return resources.size();
+    }
+
+    public List<IntegrityError> getIntegrityErrors() {
+        return integrityErrors;
+    }
+
+    /**
+     * Represents an error contained in database files
+     */
+    private class IntegrityError {
     }
 }

@@ -23,11 +23,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DbParserTest {
 
     @Test
-    public void load_whenProvidedContents_shouldReturnParserInstance() throws Exception {
+    public void load_whenProvidedContents_shouldReturnParserInstanceWithoutErrors() throws Exception {
         //GIVEN
         List<String> dbLines = asList(
                 "// TDU_Achievements.db",
                 "{TDU_Achievements} 2442784645",
+                "{Achievement_Event_} u",
+                "{TextIndex_} i",
+                "{Nb_Achievement_Points_} i",
+                "{Ach_Title_} h",
+                "{Ach_Desc_} h",
+                "{Explanation_} h",
+                "{FailedExplain_} h",
+                "{Reward_} u",
+                "{Reward_Param_} i",
+                "// items: 1",
                 "55736935;5;20;54400734;54359455;54410835;561129540;5337472;211;",
                 "\0");
         List<List<String>> resourceLines = asList(
@@ -46,12 +56,43 @@ public class DbParserTest {
 
         //THEN
         assertThat(dbParser).isNotNull();
-        assertThat(dbParser.getContentLineCount()).isEqualTo(4);
+        assertThat(dbParser.getContentLineCount()).isEqualTo(14);
         assertThat(dbParser.getResourceCount()).isEqualTo(1);
+        assertThat(dbParser.getIntegrityErrors()).isEmpty();
     }
 
     @Test
-    public void parseAll_whenRealFiles_shouldReturnProperDto() throws Exception {
+    public void parseAll_whenProvidedContents_andIntegrityError_shouldReturnError() throws Exception {
+        //GIVEN : item count != actual item count
+        List<String> dbLines = asList(
+                "// TDU_Achievements.db",
+                "{TDU_Achievements} 2442784645",
+                "{Achievement_Event_} u",
+                "// items: 10",
+                "55736935;",
+                "\0");
+        List<List<String>> resourceLines = asList(
+                asList(
+                        "// TDU_Achievements.fr",
+                        "// version: 1,2",
+                        "// categories: 6",
+                        "// Explanation",
+                        "{??} 53410835,",
+                        "{Bravo ! Vous recevez §NB_PTS§ points.} 70410835"
+                )
+        );
+
+        //WHEN
+        DbParser dbParser = DbParser.load(dbLines, resourceLines);
+        DbDto actualDb = dbParser.parseAll();
+
+        //THEN
+        assertThat(actualDb).isNotNull();
+        assertThat(dbParser.getIntegrityErrors()).hasSize(1);
+    }
+
+    @Test
+    public void parseAll_whenRealFiles_shouldReturnProperDto_andParserWithoutError() throws Exception {
         //GIVEN
         List<String> dbLines = readContentsFromSample("/db/TDU_Achievements.db", "UTF-8");
         List<List<String>> resourceLines = readResourcesFromSamples("/db/res/TDU_Achievements.fr", "/db/res/TDU_Achievements.it");
@@ -75,6 +116,7 @@ public class DbParserTest {
         //THEN
         assertThat(dbParser.getContentLineCount()).isEqualTo(90);
         assertThat(dbParser.getResourceCount()).isEqualTo(2);
+        assertThat(dbParser.getIntegrityErrors()).isEmpty();
 
         assertThat(db).isNotNull();
         assertThat(db.getRef()).isEqualTo("2442784645");
