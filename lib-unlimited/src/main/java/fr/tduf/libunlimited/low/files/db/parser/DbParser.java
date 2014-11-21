@@ -23,6 +23,7 @@ public class DbParser {
     private static final String COMMENT_PATTERN = "^// (.*)$";              //e.g // Blabla
     private static final String ITEM_REF_PATTERN = "^\\{(.*)\\} (\\d*)$";   //e.g {TDU_Achievements} 2442784645
     private static final String ITEM_PATTERN = "^\\{(.*)\\} (.)$";          //e.g {Nb_Achievement_Points_} i
+    private static final String ITEM_COUNT_PATTERN = "^// items: (\\d+)$";  //e.g // items: 74
     private static final String CONTENT_PATTERN = "^(\\d+;)+$";             //e.g 55736935;5;20;54400734;54359455;54410835;561129540;5337472;211;
     private static final String VALUE_DELIMITER = ";";
 
@@ -128,11 +129,21 @@ public class DbParser {
 
     private DbDataDto parseContents(DbStructureDto structure) {
 
+        final Pattern itemCountMatcher = Pattern.compile(ITEM_COUNT_PATTERN);
+
         List<DbDataDto.Entry> entries = new ArrayList<>();
         long id = 0;
+        long itemCount;
 
         for (String line : this.contentLines) {
-            //TODO GET item count
+
+            Matcher matcher = itemCountMatcher.matcher(line);
+            if (matcher.matches()) {
+                itemCount = Long.valueOf(matcher.group(1));
+                System.out.println("itemCount=" + itemCount);
+                continue;
+            }
+
             if (Pattern.matches(COMMENT_PATTERN, line)
                     || Pattern.matches(ITEM_REF_PATTERN, line)
                     || Pattern.matches(ITEM_PATTERN, line)
