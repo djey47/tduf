@@ -4,6 +4,8 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -60,6 +62,16 @@ public class DbParserTest {
         DbDto db = dbParser.parseAll();
 
 
+        // JSON DISPLAY
+        ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+        assertThat(objectWriter.canSerialize(db.getClass())).isTrue();
+
+        String jsonResult = objectWriter.writeValueAsString(db);
+
+        System.out.println("JSON DISPLAY");
+        System.out.println(jsonResult);
+
+
         //THEN
         assertThat(dbParser.getContentLineCount()).isEqualTo(90);
         assertThat(dbParser.getResourceCount()).isEqualTo(2);
@@ -90,6 +102,8 @@ public class DbParserTest {
         assertThat(resources).extracting("locale").containsExactly(FRANCE, ITALY);
         assertThat(resources.get(0).getEntries()).hasSize(246);
         assertThat(resources.get(1).getEntries()).hasSize(246);
+
+
     }
 
     private List<List<String>> readResourcesFromSamples(String... sampleFiles) throws IOException{
