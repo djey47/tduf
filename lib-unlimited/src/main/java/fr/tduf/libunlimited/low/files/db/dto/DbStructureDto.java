@@ -31,9 +31,6 @@ public class DbStructureDto implements Serializable {
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class Field implements Serializable {
 
-        @JsonProperty("id")
-        private long id;
-
         @JsonProperty("name")
         private String name;
 
@@ -48,16 +45,9 @@ public class DbStructureDto implements Serializable {
          */
         public static FieldBuilder builder() {
             return new FieldBuilder() {
-                private long id;
                 private String name;
                 private FieldType fieldType;
                 private String targetRef;
-
-                @Override
-                public FieldBuilder withId(long id) {
-                    this.id = id;
-                    return this;
-                }
 
                 @Override
                 public FieldBuilder forName(String name) {
@@ -81,7 +71,6 @@ public class DbStructureDto implements Serializable {
                 public Field build() {
                     Field field = new Field();
 
-                    field.id = this.id;
                     field.name = this.name;
                     field.fieldType = this.fieldType;
                     field.targetRef = this.targetRef;
@@ -96,7 +85,6 @@ public class DbStructureDto implements Serializable {
         }
 
         public interface FieldBuilder {
-            FieldBuilder withId(long id);
 
             FieldBuilder forName(String name);
 

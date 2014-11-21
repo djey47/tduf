@@ -17,12 +17,10 @@ public class DbStructureMapperTest {
     public void serialize_shouldWriteProperJson() throws IOException {
         //GIVEN
         DbStructureDto.Field field1 = DbStructureDto.Field.builder()
-                .withId(1L)
                 .fromType(DbStructureDto.FieldType.UID)
                 .forName("ID")
                 .build();
         DbStructureDto.Field field2 = DbStructureDto.Field.builder()
-                .withId(2L)
                 .fromType(DbStructureDto.FieldType.REFERENCE)
                 .forName("REF")
                 .toTargetReference("2442784646")
@@ -34,11 +32,9 @@ public class DbStructureMapperTest {
                 .build();
         String expectedJson = "{\n" +
                 "  \"fields\" : [ {\n" +
-                "    \"id\" : 1,\n" +
                 "    \"name\" : \"ID\",\n" +
                 "    \"type\" : \"UID\"\n" +
                 "  }, {\n" +
-                "    \"id\" : 2,\n" +
                 "    \"name\" : \"REF\",\n" +
                 "    \"type\" : \"REFERENCE\",\n" +
                 "    \"targetRef\" : \"2442784646\"\n" +
