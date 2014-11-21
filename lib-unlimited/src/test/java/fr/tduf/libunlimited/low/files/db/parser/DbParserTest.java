@@ -57,26 +57,33 @@ public class DbParserTest {
 
         //WHEN
         DbParser dbParser = DbParser.load(dbLines, resourceLines);
-        DbDto dbDto = dbParser.parseAll();
+        DbDto db = dbParser.parseAll();
 
 
         //THEN
         assertThat(dbParser.getContentLineCount()).isEqualTo(90);
         assertThat(dbParser.getResourceCount()).isEqualTo(2);
 
-        assertThat(dbDto).isNotNull();
-        assertThat(dbDto.getRef()).isEqualTo("2442784645");
-        assertThat(dbDto.getTopic()).isEqualTo(ACHIEVEMENTS);
+        assertThat(db).isNotNull();
+        assertThat(db.getRef()).isEqualTo("2442784645");
+        assertThat(db.getTopic()).isEqualTo(ACHIEVEMENTS);
 
-        DbDataDto data = dbDto.getData();
+        DbDataDto data = db.getData();
         assertThat(data).isNotNull();
         assertThat(data.getEntries()).hasSize(74);
+        DbDataDto.Entry firstEntry = data.getEntries().get(0);
+        assertThat(firstEntry.getId()).isEqualTo(0);
+        assertThat(firstEntry.getItems()).hasSize(9);
+        assertThat(firstEntry.getItems().get(0).getName()).isNotNull();
+        assertThat(firstEntry.getItems().get(0).getRawValue()).isNotNull();
 
-        DbStructureDto structure = dbDto.getStructure();
+        DbStructureDto structure = db.getStructure();
         assertThat(structure).isNotNull();
+        assertThat(structure.getRef()).isEqualTo("2442784645");
+        assertThat(structure.getTopic()).isEqualTo(ACHIEVEMENTS);
         assertThat(structure.getFields()).hasSize(9);
 
-        List<DbResourceDto> resources = dbDto.getResources();
+        List<DbResourceDto> resources = db.getResources();
         assertThat(resources).isNotNull();
         assertThat(resources).extracting("version").containsExactly("1,2", "1,2");
         assertThat(resources).extracting("categoryCount").containsExactly(6, 6);

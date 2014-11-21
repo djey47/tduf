@@ -58,7 +58,7 @@ public class DbParser {
     public DbDto parseAll() {
         DbStructureDto structure = parseStructure();
         List<DbResourceDto> resources = parseResources();
-        DbDataDto data = parseContents(structure, resources);
+        DbDataDto data = parseContents(structure);
 
         return DbDto.builder()
                 .withData(data)
@@ -74,6 +74,7 @@ public class DbParser {
         final Pattern categoryCountPattern = Pattern.compile(RES_CATEGORY_COUNT_PATTERN);
         final Pattern resourceEntryPattern = Pattern.compile(RES_ENTRY_PATTERN);
 
+        //TODO CHECK All Resource DTOs have same entry count
         return new ArrayList<>(Lists.transform(this.resources, new Function<List<String>, DbResourceDto>() {
             @Override
             public DbResourceDto apply(List<String> resourceLines) {
@@ -125,12 +126,13 @@ public class DbParser {
         }));
     }
 
-    private DbDataDto parseContents(DbStructureDto structure, List<DbResourceDto> resources) {
+    private DbDataDto parseContents(DbStructureDto structure) {
 
         List<DbDataDto.Entry> entries = new ArrayList<>();
         long id = 0;
 
         for (String line : this.contentLines) {
+            //TODO GET item count
             if (Pattern.matches(COMMENT_PATTERN, line)
                     || Pattern.matches(ITEM_REF_PATTERN, line)
                     || Pattern.matches(ITEM_PATTERN, line)
@@ -139,16 +141,15 @@ public class DbParser {
             }
 
             List<DbDataDto.Item> items = new ArrayList<>();
-
-
             int fieldIndex = 0;
             for(String itemValue : line.split(VALUE_DELIMITER)) {
 
+                //TODO CHECK field count vs structure.fields.size()
                 String fieldName = structure.getFields().get(fieldIndex++).getName();
 
-                // TODO depends on value type
                 items.add(DbDataDto.Item.builder()
                         .forName(fieldName)
+                        .withRawValue(itemValue)
                         .build());
             }
 
@@ -157,6 +158,8 @@ public class DbParser {
                     .addItems(items)
                     .build());
         }
+
+        //TODO CHECK item count
 
         return DbDataDto.builder()
                 .addEntries(entries)

@@ -66,6 +66,14 @@ public class DbDataDto implements Serializable {
             };
         }
 
+        public long getId() {
+            return id;
+        }
+
+        public List<Item> getItems() {
+            return items;
+        }
+
         public interface EntryBuilder {
 
             EntryBuilder forId(long id);
@@ -115,6 +123,14 @@ public class DbDataDto implements Serializable {
                     return item;
                 }
             };
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getRawValue() {
+            return rawValue;
         }
 
         public interface ItemBuilder {
