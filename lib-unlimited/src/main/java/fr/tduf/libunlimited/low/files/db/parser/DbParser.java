@@ -56,8 +56,8 @@ public class DbParser {
      * Parses all contents.
      */
     public DbDto parseAll() {
-        DbStructureDto structure = parseStructure();
         List<DbResourceDto> resources = parseResources();
+        DbStructureDto structure = parseStructure();
         DbDataDto data = parseContents(structure);
 
         return DbDto.builder()
@@ -196,15 +196,18 @@ public class DbParser {
             }
 
             // Regular item
+            // TODO CHANGE regex to handle remote ref
             matcher = itemPattern.matcher(line);
             if(matcher.matches()) {
                 String name = matcher.group(1);
-                String code = matcher.group(2);
-                DbStructureDto.FieldType fieldType = DbStructureDto.FieldType.fromCode(code);
+                String typeCode = matcher.group(2);
+                String remoteReference = "";
+                DbStructureDto.FieldType fieldType = DbStructureDto.FieldType.fromCode(typeCode);
 
                 fields.add(DbStructureDto.Field.builder()
                         .forName(name)
                         .fromType(fieldType)
+                        .toTargetReference(remoteReference)
                         .build());
             }
         }
