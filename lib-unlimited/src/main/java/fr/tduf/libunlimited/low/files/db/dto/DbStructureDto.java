@@ -113,14 +113,41 @@ public class DbStructureDto implements Serializable {
      */
     @JsonTypeName("dbStructureFieldType")
     public enum FieldType {
+        /**
+         * Bitfield : set of binary values (0/1)
+         */
         BITFIELD("b"),
+        /**
+         * To be defined
+         */
         F("f"),                 // TODO huh...?! what's this?
+        /**
+         * Unique identifier of entry
+         */
         UID("x"),
+        /**
+         * Value as Integer
+         */
         INTEGER("i"),
+        /**
+         * Value as percentage
+         */
         PERCENT("p"),
+        /**
+         * Identifier of entry in other Topic (aka. foreign key)
+         */
         REFERENCE("r"),
+        /**
+         * Identifier of resource in other Topic
+         */
         RESOURCE_REMOTE("l"),
+        /**
+         * Identifier of resource in current Topic
+         */
         RESOURCE_CURRENT("u"),
+        /**
+         * To be defined
+         */
         RESOURCE_H("h");        // TODO huh...?! what's this?
 
         private final String code;
