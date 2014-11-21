@@ -133,11 +133,8 @@ public class DbParser {
         for (String line : this.contentLines) {
             if (Pattern.matches(COMMENT_PATTERN, line)
                     || Pattern.matches(ITEM_REF_PATTERN, line)
-                    || Pattern.matches(ITEM_PATTERN, line)) {
-                continue;
-            }
-
-            if(!Pattern.matches(CONTENT_PATTERN, line)) {
+                    || Pattern.matches(ITEM_PATTERN, line)
+                    || !Pattern.matches(CONTENT_PATTERN, line)) {
                 continue;
             }
 
