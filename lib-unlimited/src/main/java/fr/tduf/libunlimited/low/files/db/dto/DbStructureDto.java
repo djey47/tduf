@@ -113,9 +113,9 @@ public class DbStructureDto implements Serializable {
          */
         BITFIELD("b"),
         /**
-         * To be defined
+         * Value as Float ( optional . decimal symbol)
          */
-        F("f"),                 // TODO huh...?! what's this?
+        FLOAT("f"),
         /**
          * Unique identifier of entry
          */
@@ -125,7 +125,7 @@ public class DbStructureDto implements Serializable {
          */
         INTEGER("i"),
         /**
-         * Value as percentage
+         * Value as percentage (0.0 -> 1, optional . decimal symbol)
          */
         PERCENT("p"),
         /**
