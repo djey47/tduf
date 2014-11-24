@@ -83,6 +83,14 @@ public class DbStructureDto implements Serializable {
             return name;
         }
 
+        public FieldType getFieldType() {
+            return fieldType;
+        }
+
+        public String getTargetRef() {
+            return targetRef;
+        }
+
         public interface FieldBuilder {
 
             FieldBuilder forName(String name);
@@ -153,6 +161,10 @@ public class DbStructureDto implements Serializable {
                 }
             }
             return null;
+        }
+
+        public String getCode() {
+            return code;
         }
     }
 
