@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static net.sf.json.test.JSONAssert.assertJsonEquals;
 
 public class DbStructureMapperTest {
@@ -27,10 +28,13 @@ public class DbStructureMapperTest {
                 .build();
         DbStructureDto dbStructureDto = DbStructureDto.builder()
                 .forReference("2442784645")
+                .forTopic(ACHIEVEMENTS)
                 .addItem(field1)
                 .addItem(field2)
                 .build();
         String expectedJson = "{\n" +
+                "  \"topic\" : \"ACHIEVEMENTS\",\n" +
+                "  \"ref\" : \"2442784645\",\n" +
                 "  \"fields\" : [ {\n" +
                 "    \"name\" : \"ID\",\n" +
                 "    \"type\" : \"UID\"\n" +

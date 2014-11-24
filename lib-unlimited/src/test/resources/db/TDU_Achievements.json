@@ -1,5 +1,7 @@
 {
   "structure" : {
+    "ref" : "2442784645",
+    "topic" : "ACHIEVEMENTS",
     "fields" : [ {
                    "name" : "Achievement_Event_",
                    "type" : "RESOURCE_CURRENT"
@@ -3738,7 +3740,5 @@
                     "version" : "1,2",
                     "categoryCount" : 6,
                     "locale" : "ITALY"
-                  } ],
-  "topic" : "ACHIEVEMENTS",
-  "ref" : "2442784645"
+                  } ]
 }

@@ -119,8 +119,6 @@ public class DbParserTest {
         assertThat(dbParser.getIntegrityErrors()).isEmpty();
 
         assertThat(db).isNotNull();
-        assertThat(db.getRef()).isEqualTo("2442784645");
-        assertThat(db.getTopic()).isEqualTo(ACHIEVEMENTS);
 
         DbDataDto data = db.getData();
         assertThat(data).isNotNull();

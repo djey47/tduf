@@ -23,16 +23,6 @@ public class DbDto implements Serializable {
     @JsonProperty("resources")
     private List<DbResourceDto> resources;
 
-    @JsonProperty("ref")
-    public String getRef() {
-        return structure.getRef();
-    }
-
-    @JsonProperty("topic")
-    public Topic getTopic() {
-        return structure.getTopic();
-    }
-
     /**
      * All TDU database topics
      */

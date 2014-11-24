@@ -1,6 +1,5 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -18,10 +17,10 @@ import static java.util.Arrays.asList;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class DbStructureDto implements Serializable {
 
-    @JsonIgnore
+    @JsonProperty("ref")
     private String ref;
 
-    @JsonIgnore
+    @JsonProperty("topic")
     private DbDto.Topic topic;
 
     @JsonProperty("fields")
