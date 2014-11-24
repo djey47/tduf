@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -9,6 +10,8 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
+import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 
 /**
  * Represents structure of TDU database topic
@@ -89,6 +92,16 @@ public class DbStructureDto implements Serializable {
 
         public String getTargetRef() {
             return targetRef;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return reflectionEquals(this, o, false);
+        }
+
+        @Override
+        public int hashCode() {
+            return reflectionHashCode(this);
         }
 
         public interface FieldBuilder {

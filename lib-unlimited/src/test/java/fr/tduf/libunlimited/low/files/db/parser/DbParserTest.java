@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.parser;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Test;
@@ -89,6 +90,49 @@ public class DbParserTest {
         //THEN
         assertThat(actualDb).isNotNull();
         assertThat(dbParser.getIntegrityErrors()).hasSize(1);
+    }
+
+    @Test
+    public void parseAll_whenProvidedContents_andRemoteReference_shouldReadAccordingly() throws Exception {
+        //GIVEN
+        List<String> dbLines = asList(
+                "// TDU_CarPhysicsData.db",
+                "// Version: 1,2,",
+                "// Categories: 20",
+                "// Fields: 3",
+                "{TDU_CarPhysicsData} 1975083164",
+                "{REF} x",
+                "{Car_Brand} r 1209165514",
+                "{Car_Model} u",
+                "// items: 1",
+                "606298799;735;59938407;",
+                "\0");
+        List<List<String>> resourceLines = asList(
+                asList(
+                        "// TDU_CarPhysicsData.fr",
+                        "// version: 1,2",
+                        "// categories: 6",
+                        "// Explanation",
+                        "{??} 53410835,"
+                )
+        );
+        DbStructureDto.Field expectedField =  DbStructureDto.Field.builder()
+                .forName("Car_Brand")
+                .fromType(DbStructureDto.FieldType.REFERENCE)
+                .toTargetReference("1209165514")
+                .build();
+
+        //WHEN
+        DbParser dbParser = DbParser.load(dbLines, resourceLines);
+        DbDto actualDb = dbParser.parseAll();
+
+        //THEN
+        assertThat(actualDb).isNotNull();
+        assertThat(dbParser.getIntegrityErrors()).isEmpty();
+
+        assertThat(actualDb.getStructure().getFields()).hasSize(3);
+        DbStructureDto.Field secondField = actualDb.getStructure().getFields().get(1);
+        assertThat(secondField).isEqualTo(expectedField);
     }
 
     @Test
