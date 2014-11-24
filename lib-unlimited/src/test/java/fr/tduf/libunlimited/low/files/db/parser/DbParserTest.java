@@ -1,23 +1,23 @@
 package fr.tduf.libunlimited.low.files.db.parser;
 
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.ITALY;
 import static java.util.Arrays.asList;
+import static net.sf.json.test.JSONAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbParserTest {
@@ -109,8 +109,10 @@ public class DbParserTest {
 
         String jsonResult = objectWriter.writeValueAsString(db);
 
-        System.out.println("JSON DISPLAY");
-        System.out.println(jsonResult);
+        // Uncomment to fetch and actualize JSON result
+//        System.out.println("JSON DISPLAY");
+//        System.out.println(jsonResult);
+        //
 
 
         //THEN
@@ -118,32 +120,8 @@ public class DbParserTest {
         assertThat(dbParser.getResourceCount()).isEqualTo(2);
         assertThat(dbParser.getIntegrityErrors()).isEmpty();
 
-        assertThat(db).isNotNull();
-
-        DbDataDto data = db.getData();
-        assertThat(data).isNotNull();
-        assertThat(data.getEntries()).hasSize(74);
-        DbDataDto.Entry firstEntry = data.getEntries().get(0);
-        assertThat(firstEntry.getId()).isEqualTo(0);
-        assertThat(firstEntry.getItems()).hasSize(9);
-        assertThat(firstEntry.getItems().get(0).getName()).isNotNull();
-        assertThat(firstEntry.getItems().get(0).getRawValue()).isNotNull();
-
-        DbStructureDto structure = db.getStructure();
-        assertThat(structure).isNotNull();
-        assertThat(structure.getRef()).isEqualTo("2442784645");
-        assertThat(structure.getTopic()).isEqualTo(ACHIEVEMENTS);
-        assertThat(structure.getFields()).hasSize(9);
-
-        List<DbResourceDto> resources = db.getResources();
-        assertThat(resources).isNotNull();
-        assertThat(resources).extracting("version").containsExactly("1,2", "1,2");
-        assertThat(resources).extracting("categoryCount").containsExactly(6, 6);
-        assertThat(resources).extracting("locale").containsExactly(FRANCE, ITALY);
-        assertThat(resources.get(0).getEntries()).hasSize(246);
-        assertThat(resources.get(1).getEntries()).hasSize(246);
-
-
+        String expectedJson = readTextFromSample("/db/TDU_Achievements.json", "UTF-8");
+        assertJsonEquals(expectedJson, jsonResult);
     }
 
     private List<List<String>> readResourcesFromSamples(String... sampleFiles) throws IOException{
@@ -169,5 +147,12 @@ public class DbParserTest {
         }
 
         return lines;
+    }
+
+    private String readTextFromSample(String sampleFile, String charsetName) throws IOException, URISyntaxException {
+        Path path = Paths.get(getClass().getResource(sampleFile).toURI());
+        byte[] encoded = Files.readAllBytes(path);
+
+        return new String(encoded, Charset.forName(charsetName));
     }
 }

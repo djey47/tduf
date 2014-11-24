@@ -220,7 +220,7 @@ public class DbParser {
             if(matcher.matches()) {
                 String name = matcher.group(1);
                 String typeCode = matcher.group(2);
-                String remoteReference = "";
+                String remoteReference = null;
                 DbStructureDto.FieldType fieldType = DbStructureDto.FieldType.fromCode(typeCode);
 
                 fields.add(DbStructureDto.Field.builder()
