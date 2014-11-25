@@ -51,23 +51,18 @@ public class DbWriterTest {
         DbWriter.load(dbDto).writeAll(tempDirectory.toString());
 
         //THEN
-        assertOutputFileExists("TDU_Achievements.db");
         assertOutputFileMatchesReference("TDU_Achievements.db", "/db/");
-
-        assertOutputFileExists("TDU_Achievements.fr");
-        assertOutputFileExists("TDU_Achievements.it");
+        assertOutputFileMatchesReference("TDU_Achievements.fr", "/db/res/clean/");
+        assertOutputFileMatchesReference("TDU_Achievements.it", "/db/res/clean/");
 
         //TODO load files and compare against dbDto
     }
 
     private void assertOutputFileMatchesReference(String outputFileName, String resourceDirectory) throws URISyntaxException {
         File actualContentsFile = new File(tempDirectory + "/" + outputFileName);
+        assertThat(actualContentsFile.exists()).describedAs("File must exist: " + actualContentsFile.getPath()).isTrue();
+
         File expectedContentsFile = new File(getClass().getResource(resourceDirectory + outputFileName).toURI());
         assertThat(actualContentsFile).describedAs("File must match reference one: " + expectedContentsFile.getPath()).hasContentEqualTo(expectedContentsFile);
-    }
-
-    private void assertOutputFileExists(String outputFileName) {
-        File actualContentsFile = new File(tempDirectory + "/" + outputFileName);
-        assertThat(actualContentsFile.exists()).describedAs("File must exist: " + actualContentsFile.getPath()).isTrue();
     }
 }

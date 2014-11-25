@@ -120,6 +120,10 @@ public class DbWriter {
             Path path = Paths.get(directoryPath + "/" + resourceFileName);
 
             try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardCharsets.UTF_16LE)) {
+
+                // Encoding
+                bufferedWriter.write("\uFEFF");
+
                 // Meta
                 writeAndEndWithCRLF(
                         format(COMMENT_PATTERN, resourceFileName), bufferedWriter);
