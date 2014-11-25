@@ -1,6 +1,5 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -28,6 +27,12 @@ public class DbStructureDto implements Serializable {
 
     @JsonProperty("fields")
     private List<Field> fields;
+
+    @JsonProperty("version")
+    private String version;
+
+    @JsonProperty("categoryCount")
+    private Integer categoryCount;
 
     @JsonTypeName("dbStructureField")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
@@ -193,11 +198,21 @@ public class DbStructureDto implements Serializable {
         return topic;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public Integer getCategoryCount() {
+        return categoryCount;
+    }
+
     /**
      * @return builder, used to generate custom values.
      */
     public static DbStructureDtoBuilder builder() {
         return new DbStructureDtoBuilder() {
+            private int categoryCount;
+            private String version;
             private DbDto.Topic topic;
             private String ref;
             private final List<Field> fields = newArrayList();
@@ -226,12 +241,26 @@ public class DbStructureDto implements Serializable {
             }
 
             @Override
+            public DbStructureDtoBuilder atVersion(String version) {
+                this.version = version;
+                return this;
+            }
+
+            @Override
+            public DbStructureDtoBuilder withCategoryCount(int categoryCount) {
+                this.categoryCount = categoryCount;
+                return this;
+            }
+
+            @Override
             public DbStructureDto build() {
                 DbStructureDto dbStructureDto = new DbStructureDto();
 
                 dbStructureDto.topic = this.topic;
                 dbStructureDto.ref = this.ref;
                 dbStructureDto.fields = this.fields;
+                dbStructureDto.version = this.version;
+                dbStructureDto.categoryCount = this.categoryCount;
 
                 return dbStructureDto;
             }
@@ -246,6 +275,10 @@ public class DbStructureDto implements Serializable {
         DbStructureDtoBuilder addItems(List<Field> fields);
 
         DbStructureDtoBuilder forTopic(DbDto.Topic topic);
+
+        DbStructureDtoBuilder atVersion(String version);
+
+        DbStructureDtoBuilder withCategoryCount(int categoryCount);
 
         DbStructureDto build();
     }

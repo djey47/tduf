@@ -69,11 +69,9 @@ public class DbWriter {
             // Header
             bufferedWriter.write(format(COMMENT_PATTERN, contentsFileName));
             bufferedWriter.newLine();
-            // TODO Real Version
-            bufferedWriter.write(format(COMMENT_INFO_PATTERN, "Version", "1,2"));
+            bufferedWriter.write(format(COMMENT_INFO_PATTERN, "Version", dbStructureDto.getVersion()));
             bufferedWriter.newLine();
-            // TODO Real Category count
-            bufferedWriter.write(format(COMMENT_INFO_PATTERN, "Categories", 6));
+            bufferedWriter.write(format(COMMENT_INFO_PATTERN, "Categories", dbStructureDto.getCategoryCount()));
             bufferedWriter.newLine();
 
             // Structure

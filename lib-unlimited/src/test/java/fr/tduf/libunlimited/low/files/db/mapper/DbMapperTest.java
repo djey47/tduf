@@ -23,6 +23,8 @@ public class DbMapperTest {
         DbStructureDto dbStructureDto = DbStructureDto.builder()
                 .forReference("2442784645")
                 .forTopic(ACHIEVEMENTS)
+                .atVersion("1,0")
+                .withCategoryCount(5)
                 .build();
         DbDto dbTopicDto = DbDto.builder()
                 .withStructure(dbStructureDto)
@@ -35,6 +37,8 @@ public class DbMapperTest {
                 "  \"structure\" : {\n" +
                 "    \"ref\" : \"2442784645\",\n" +
                 "    \"topic\" : \"ACHIEVEMENTS\",\n" +
+                "    \"version\" : \"1,0\",\n" +
+                "    \"categoryCount\" :  5,\n" +
                 "    \"fields\" : [ ]\n" +
                 "  },\n" +
                 "  \"data\" : {\n" +

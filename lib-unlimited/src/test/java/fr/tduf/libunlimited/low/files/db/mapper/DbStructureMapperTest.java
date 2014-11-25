@@ -29,12 +29,16 @@ public class DbStructureMapperTest {
         DbStructureDto dbStructureDto = DbStructureDto.builder()
                 .forReference("2442784645")
                 .forTopic(ACHIEVEMENTS)
+                .atVersion("1,0")
+                .withCategoryCount(5)
                 .addItem(field1)
                 .addItem(field2)
                 .build();
         String expectedJson = "{\n" +
                 "  \"topic\" : \"ACHIEVEMENTS\",\n" +
                 "  \"ref\" : \"2442784645\",\n" +
+                "  \"version\" : \"1,0\",\n" +
+                "  \"categoryCount\" : 5,\n" +
                 "  \"fields\" : [ {\n" +
                 "    \"name\" : \"ID\",\n" +
                 "    \"type\" : \"UID\"\n" +

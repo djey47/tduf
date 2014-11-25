@@ -29,6 +29,8 @@ public class DbWriterTest {
         //GIVEN
         DbDto dbDto = DbDto.builder()
                 .withStructure(DbStructureDto.builder()
+                        .atVersion("1,2")
+                        .withCategoryCount(6)
                         .build())
                 .withData(DbDataDto.builder()
                         .build())
