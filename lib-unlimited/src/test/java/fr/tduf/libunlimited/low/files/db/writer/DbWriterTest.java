@@ -29,8 +29,6 @@ public class DbWriterTest {
         //GIVEN
         DbDto dbDto = DbDto.builder()
                 .withStructure(DbStructureDto.builder()
-                        .atVersion("1,2")
-                        .withCategoryCount(6)
                         .build())
                 .withData(DbDataDto.builder()
                         .build())
@@ -47,19 +45,16 @@ public class DbWriterTest {
     public void writeAll_whenRealContents_shouldCreateFiles() throws IOException, URISyntaxException {
         //GIVEN
         InputStream resourceAsStream = getClass().getResourceAsStream("/db/TDU_Achievements.json");
-        ObjectMapper objectMapper = new ObjectMapper();
-        DbDto dbDto = objectMapper.readValue(resourceAsStream, DbDto.class);
-
+        DbDto dbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
         DbWriter.load(dbDto).writeAll(tempDirectory.toString());
 
-
         //THEN
-        String outputContentsFileName = tempDirectory + "/TDU_Achievements.db";
-        File actualContentsFile = new File(outputContentsFileName);
+        String outputContentsFileName = "/TDU_Achievements.db";
+        File actualContentsFile = new File(tempDirectory + outputContentsFileName);
         assertThat(actualContentsFile.exists()).isTrue();
-        File expectedContentsFile = new File(getClass().getResource("/db/TDU_Achievements.db").toURI());
+        File expectedContentsFile = new File(getClass().getResource("/db" + outputContentsFileName).toURI());
         assertThat(actualContentsFile).hasContentEqualTo(expectedContentsFile);
     }
 }
