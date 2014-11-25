@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.db.writer;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.parser.DbParser;
 
@@ -12,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
@@ -23,7 +25,7 @@ public class DbWriter {
 
     private static final String COMMENT_PATTERN = "// %s";
     private static final String COMMENT_INFO_PATTERN = "// %s: %s";
-    private static final String STRUCTURE_ENTRY_PATTERN = "{%s} %s";
+    private static final String ENTRY_PATTERN = "{%s} %s";
 
     private final DbDto databaseDto;
 
@@ -50,7 +52,7 @@ public class DbWriter {
      */
     public void writeAll(String path) throws FileNotFoundException {
         writeStructureAndContents(path);
-        writeResources();
+        writeResources(path);
     }
 
     private void writeStructureAndContents(String directoryPath) throws FileNotFoundException {
@@ -63,10 +65,10 @@ public class DbWriter {
         String topicLabel = currentTopic.getLabel();
         String contentsFileName = format("%s.db", topicLabel);
 
-        Path path = Paths.get(directoryPath + "/" +contentsFileName);
+        Path path = Paths.get(directoryPath + "/" + contentsFileName);
 
         try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-            // Header
+            // Meta
             bufferedWriter.write(format(COMMENT_PATTERN, contentsFileName));
             bufferedWriter.newLine();
             bufferedWriter.write(format(COMMENT_INFO_PATTERN, "Version", dbStructureDto.getVersion()));
@@ -77,10 +79,10 @@ public class DbWriter {
             // Structure
             bufferedWriter.write(format(COMMENT_INFO_PATTERN, "Fields", dbStructureDto.getFields().size()));
             bufferedWriter.newLine();
-            bufferedWriter.write(format(STRUCTURE_ENTRY_PATTERN, topicLabel, dbStructureDto.getRef()));
+            bufferedWriter.write(format(ENTRY_PATTERN, topicLabel, dbStructureDto.getRef()));
             bufferedWriter.newLine();
             for (DbStructureDto.Field field : dbStructureDto.getFields()) {
-                bufferedWriter.write(format(STRUCTURE_ENTRY_PATTERN, field.getName(), field.getFieldType().getCode()));
+                bufferedWriter.write(format(ENTRY_PATTERN, field.getName(), field.getFieldType().getCode()));
                 bufferedWriter.newLine();
             }
 
@@ -101,11 +103,45 @@ public class DbWriter {
             bufferedWriter.write("\0");
 
         } catch (IOException e) {
+            // TODO handle error
             e.printStackTrace();
         }
     }
 
-    private void writeResources() {
+    private void writeResources(String directoryPath) {
 
+        List<DbResourceDto> dbResourceDtos = this.databaseDto.getResources();
+        String topicLabel = this.databaseDto.getStructure().getTopic().getLabel();
+
+        for(DbResourceDto dbResourceDto : dbResourceDtos) {
+
+            String localeCode = dbResourceDto.getLocale().getCode();
+            String resourceFileName = format("%s.%s", topicLabel, localeCode);
+            Path path = Paths.get(directoryPath + "/" + resourceFileName);
+
+            try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardCharsets.UTF_16LE)) {
+                // Meta
+                writeAndEndWithCRLF(
+                        format(COMMENT_PATTERN, resourceFileName), bufferedWriter);
+                writeAndEndWithCRLF(
+                        format(COMMENT_INFO_PATTERN, "version", dbResourceDto.getVersion()), bufferedWriter);
+                writeAndEndWithCRLF(
+                        format(COMMENT_INFO_PATTERN, "categories", dbResourceDto.getCategoryCount()), bufferedWriter);
+
+                // Resources
+                for(DbResourceDto.Entry entry : dbResourceDto.getEntries()) {
+                    writeAndEndWithCRLF(
+                            format(ENTRY_PATTERN, entry.getValue(), entry.getReference()), bufferedWriter);
+                }
+            } catch (IOException e) {
+                // TODO handle error
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void writeAndEndWithCRLF(String text, BufferedWriter bufferedWriter) throws IOException {
+        bufferedWriter.write(text);
+        bufferedWriter.write("\r\n");
     }
 }

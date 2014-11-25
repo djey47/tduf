@@ -69,6 +69,14 @@ public class DbResourceDto implements Serializable {
             };
         }
 
+        public String getReference() {
+            return reference;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
         public interface EntryBuilder {
             EntryBuilder forReference(String reference);
 
@@ -107,6 +115,10 @@ public class DbResourceDto implements Serializable {
                 }
             }
             throw new IllegalArgumentException("Unknown Locale code: " + code);
+        }
+
+        public String getCode() {
+            return code;
         }
     }
 
@@ -162,6 +174,10 @@ public class DbResourceDto implements Serializable {
                 return dbResourceDto;
             }
         };
+    }
+
+    public Locale getLocale() {
+        return locale;
     }
 
     public String getVersion() {
