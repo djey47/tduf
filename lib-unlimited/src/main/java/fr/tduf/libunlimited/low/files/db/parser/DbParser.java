@@ -32,6 +32,7 @@ public class DbParser {
     private static final String META_NAME_PATTERN = "^// (TDU_.+)\\.(.+)$";                     //e.g // TDU_Achievements.fr
     private static final String META_VERSION_PATTERN = "^// (?:v|V)ersion: (.+)$";              //e.g // version: 1,2 OR // Version: 1,2
     private static final String META_CATEGORY_COUNT_PATTERN = "^// (?:c|C)ategories: (.+)$";    //e.g // categories: 6 OR // Categories: 6
+    private static final String META_FIELD_COUNT_PATTERN = "^// Fields: (.+)$";                 //e.g // Fields: 9
     private static final String RES_ENTRY_PATTERN = "^\\{(.*(\\n?.*)*)\\} (\\d+)$";             //e.g {??} 53410835
 
     private final List<String> contentLines;
@@ -191,6 +192,7 @@ public class DbParser {
         final Pattern topicNamePattern = Pattern.compile(META_NAME_PATTERN);
         final Pattern topicVersionPattern = Pattern.compile(META_VERSION_PATTERN);
         final Pattern categoryCountPattern = Pattern.compile(META_CATEGORY_COUNT_PATTERN);
+        final Pattern fieldCountPattern = Pattern.compile(META_FIELD_COUNT_PATTERN);
         final Pattern itemPattern = Pattern.compile(ITEM_PATTERN);
         final Pattern itemRefPattern = Pattern.compile(ITEM_REF_PATTERN);
 
@@ -199,8 +201,7 @@ public class DbParser {
         String topicName = null;
         String topicVersion = null;
         int categoryCount = 0;
-
-        // TODO get Field count
+        int fieldCount = 0;
 
         for (String line : this.contentLines) {
 
@@ -219,6 +220,12 @@ public class DbParser {
             matcher = categoryCountPattern.matcher(line);
             if (matcher.matches()) {
                 categoryCount = valueOf(matcher.group(1));
+                continue;
+            }
+
+            matcher = fieldCountPattern.matcher(line);
+            if (matcher.matches()) {
+                fieldCount = valueOf(matcher.group(1));
                 continue;
             }
 
@@ -250,7 +257,10 @@ public class DbParser {
             }
         }
 
-        // TODO CHECK field count
+        // Integrity check
+        if (fieldCount != fields.size()) {
+            integrityErrors.add(new IntegrityError());
+        }
 
         return DbStructureDto.builder()
                 .forTopic(DbDto.Topic.fromLabel(topicName))

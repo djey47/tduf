@@ -28,6 +28,7 @@ public class DbParserTest {
         //GIVEN
         List<String> dbLines = asList(
                 "// TDU_Achievements.db",
+                "// Fields: 9",
                 "{TDU_Achievements} 2442784645",
                 "{Achievement_Event_} u",
                 "{TextIndex_} i",
@@ -57,16 +58,18 @@ public class DbParserTest {
 
         //THEN
         assertThat(dbParser).isNotNull();
-        assertThat(dbParser.getContentLineCount()).isEqualTo(14);
+        assertThat(dbParser.getContentLineCount()).isEqualTo(15);
         assertThat(dbParser.getResourceCount()).isEqualTo(1);
         assertThat(dbParser.getIntegrityErrors()).isEmpty();
     }
 
     @Test
-    public void parseAll_whenProvidedContents_andIntegrityError_shouldReturnError() throws Exception {
+    public void parseAll_whenProvidedContents_andIntegrityErrors_shouldReturnErrors() throws Exception {
         //GIVEN : item count != actual item count
+        // field count != actual field count
         List<String> dbLines = asList(
                 "// TDU_Achievements.db",
+                "// Fields: 2",
                 "{TDU_Achievements} 2442784645",
                 "{Achievement_Event_} u",
                 "// items: 10",
@@ -89,7 +92,7 @@ public class DbParserTest {
 
         //THEN
         assertThat(actualDb).isNotNull();
-        assertThat(dbParser.getIntegrityErrors()).hasSize(1);
+        assertThat(dbParser.getIntegrityErrors()).hasSize(2);
     }
 
     @Test
