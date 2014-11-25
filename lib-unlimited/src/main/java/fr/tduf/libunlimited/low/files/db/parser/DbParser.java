@@ -254,5 +254,6 @@ public class DbParser {
      * Represents an error contained in database files
      */
     private class IntegrityError {
+        //TODO bring more information on error
     }
 }
