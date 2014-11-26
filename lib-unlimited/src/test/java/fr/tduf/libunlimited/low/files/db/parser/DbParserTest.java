@@ -1,22 +1,14 @@
 package fr.tduf.libunlimited.low.files.db.parser;
 
+import fr.tduf.libunlimited.low.files.db.common.DbHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Scanner;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static net.sf.json.test.JSONAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -141,8 +133,8 @@ public class DbParserTest {
     @Test
     public void parseAll_whenRealFiles_shouldReturnProperDto_andParserWithoutError() throws Exception {
         //GIVEN
-        List<String> dbLines = readContentsFromSample("/db/TDU_Achievements.db", "UTF-8");
-        List<List<String>> resourceLines = readResourcesFromSamples("/db/res/TDU_Achievements.fr", "/db/res/TDU_Achievements.it");
+        List<String> dbLines = DbHelper.readContentsFromSample("/db/TDU_Achievements.db", "UTF-8");
+        List<List<String>> resourceLines = DbHelper.readResourcesFromSamples("/db/res/TDU_Achievements.fr", "/db/res/TDU_Achievements.it");
 
 
         //WHEN
@@ -167,39 +159,7 @@ public class DbParserTest {
         assertThat(dbParser.getResourceCount()).isEqualTo(2);
         assertThat(dbParser.getIntegrityErrors()).isEmpty();
 
-        String expectedJson = readTextFromSample("/db/TDU_Achievements.json", "UTF-8");
+        String expectedJson = DbHelper.readTextFromSample("/db/TDU_Achievements.json", "UTF-8");
         assertJsonEquals(expectedJson, jsonResult);
-    }
-
-    private List<List<String>> readResourcesFromSamples(String... sampleFiles) throws IOException{
-        List<List<String>> resourceLines = newArrayList();
-
-        for (String sampleFile : sampleFiles) {
-            resourceLines.add(readContentsFromSample(sampleFile, "UTF-16"));
-        }
-
-        return resourceLines;
-    }
-
-    private List<String> readContentsFromSample(String sampleFile, String encoding) throws IOException {
-        List<String> lines = newArrayList();
-
-        InputStream resourceAsStream = getClass().getResourceAsStream(sampleFile);
-
-        Scanner scanner = new Scanner(resourceAsStream, encoding) ;
-        scanner.useDelimiter("\r\n");
-
-        while(scanner.hasNext()) {
-            lines.add(scanner.next());
-        }
-
-        return lines;
-    }
-
-    private String readTextFromSample(String sampleFile, String charsetName) throws IOException, URISyntaxException {
-        Path path = Paths.get(getClass().getResource(sampleFile).toURI());
-        byte[] encoded = Files.readAllBytes(path);
-
-        return new String(encoded, Charset.forName(charsetName));
     }
 }
