@@ -1,8 +1,10 @@
 package fr.tduf.libunlimited.low.files.db.writer;
 
+import fr.tduf.libunlimited.low.files.db.common.DbHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.parser.DbParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +15,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,17 +49,22 @@ public class DbWriterTest {
     public void writeAll_whenRealContents_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException {
         //GIVEN
         InputStream resourceAsStream = getClass().getResourceAsStream("/db/TDU_Achievements.json");
-        DbDto dbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
+        DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
-        DbWriter.load(dbDto).writeAll(tempDirectory.toString());
+        DbWriter.load(initialDbDto).writeAll(tempDirectory.toString());
 
         //THEN
         assertOutputFileMatchesReference("TDU_Achievements.db", "/db/");
         assertOutputFileMatchesReference("TDU_Achievements.fr", "/db/res/clean/");
         assertOutputFileMatchesReference("TDU_Achievements.it", "/db/res/clean/");
 
-        //TODO load files and compare against dbDto
+        List<String> dbContents = DbHelper.readContentsFromRealFile(tempDirectory + "/TDU_Achievements.db", "UTF-8", "\r\n");
+        List<List<String>> dbResources = DbHelper.readResourcesFromRealFiles(
+                tempDirectory + "/TDU_Achievements.fr",
+                tempDirectory + "/TDU_Achievements.it");
+        DbDto finalDbDto = DbParser.load(dbContents, dbResources).parseAll();
+        assertThat(finalDbDto).isEqualTo(initialDbDto);
     }
 
     private void assertOutputFileMatchesReference(String outputFileName, String resourceDirectory) throws URISyntaxException {

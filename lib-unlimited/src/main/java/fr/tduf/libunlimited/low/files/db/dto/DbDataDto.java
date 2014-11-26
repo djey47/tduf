@@ -9,6 +9,9 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
+import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
+import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * Represents contents of TDU database topic
@@ -74,6 +77,21 @@ public class DbDataDto implements Serializable {
             return items;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            return reflectionEquals(this, o, false);
+        }
+
+        @Override
+        public int hashCode() {
+            return reflectionHashCode(this);
+        }
+
+        @Override
+        public String toString() {
+            return reflectionToString(this);
+        }
+
         public interface EntryBuilder {
 
             EntryBuilder forId(long id);
@@ -86,6 +104,7 @@ public class DbDataDto implements Serializable {
 
         }
     }
+
     @JsonTypeName("dbEntryItem")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class Item {
@@ -133,6 +152,21 @@ public class DbDataDto implements Serializable {
             return rawValue;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            return reflectionEquals(this, o, false);
+        }
+
+        @Override
+        public int hashCode() {
+            return reflectionHashCode(this);
+        }
+
+        @Override
+        public String toString() {
+            return reflectionToString(this);
+        }
+
         public interface ItemBuilder {
             ItemBuilder forName(String name);
 
@@ -173,6 +207,21 @@ public class DbDataDto implements Serializable {
                 return dbDataDto;
             }
         };
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return reflectionEquals(this, o, false);
+    }
+
+    @Override
+    public int hashCode() {
+        return reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return reflectionToString(this);
     }
 
     public interface DbDataDtoBuilder {

@@ -1,5 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.common;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -22,7 +24,7 @@ public class DbHelper {
     /**
      * Reads provided resource text files and return contents as lines.
      * Eligible files are TDU_*.fr ... etc, having UTF-16LE as encoding.
-     * @param sampleFiles names of files to read
+     * @param sampleFiles resource names of files to read
      * @return a list of list of lines
      * @throws IOException
      */
@@ -30,7 +32,7 @@ public class DbHelper {
         List<List<String>> resourceLines = newArrayList();
 
         for (String sampleFile : sampleFiles) {
-            resourceLines.add(readContentsFromSample(sampleFile, "UTF-16"));
+            resourceLines.add(readContentsFromSample(sampleFile, "UTF-16", "\r\n"));
         }
 
         return resourceLines;
@@ -39,28 +41,20 @@ public class DbHelper {
     /**
      * Reads provided text file and return contents as lines.
      * Eligible files have CRLF as line delimiter
-     * @param sampleFile names of file to read
+     * @param sampleFile resource name of file to read
      * @return a list of lines
      * @throws IOException
      */
-    public static List<String> readContentsFromSample(String sampleFile, String encoding) throws IOException {
-        List<String> lines = newArrayList();
+    public static List<String> readContentsFromSample(String sampleFile, String encoding, String lineDelimiter) throws IOException {
 
         InputStream resourceAsStream = thisClass.getResourceAsStream(sampleFile);
 
-        Scanner scanner = new Scanner(resourceAsStream, encoding) ;
-        scanner.useDelimiter("\r\n");
-
-        while(scanner.hasNext()) {
-            lines.add(scanner.next());
-        }
-
-        return lines;
+        return readContentsFromStream(resourceAsStream, encoding, lineDelimiter);
     }
 
     /**
      * Reads provided text file and return contents.
-     * @param sampleFile name of file to read
+     * @param sampleFile resource name of file to read
      * @param charsetName name of character set used in provided file
      * @return a String containing all text in file
      * @throws IOException
@@ -71,5 +65,46 @@ public class DbHelper {
         byte[] encoded = Files.readAllBytes(path);
 
         return new String(encoded, Charset.forName(charsetName));
+    }
+
+    /**
+     *
+     * @param fileName
+     * @param encoding
+     * @return
+     */
+    public static List<String> readContentsFromRealFile(String fileName, String encoding, String lineDelimiter) throws FileNotFoundException {
+
+        InputStream inputStream = new FileInputStream(fileName);
+
+        return readContentsFromStream(inputStream, encoding, lineDelimiter);
+    }
+
+    /**
+     *
+     * @param fileNames
+     * @return
+     */
+    public static List<List<String>> readResourcesFromRealFiles(String... fileNames) throws FileNotFoundException {
+        List<List<String>> resourceLines = newArrayList();
+
+        for (String fileName : fileNames) {
+            resourceLines.add(readContentsFromRealFile(fileName, "UTF-16", "\r\n"));
+        }
+
+        return resourceLines;
+    }
+
+    private static List<String> readContentsFromStream(InputStream inputStream, String encoding, String lineDelimiter) {
+        List<String> lines = newArrayList();
+
+        Scanner scanner = new Scanner(inputStream, encoding) ;
+        scanner.useDelimiter(lineDelimiter);
+
+        while(scanner.hasNext()) {
+            lines.add(scanner.next());
+        }
+
+        return lines;
     }
 }

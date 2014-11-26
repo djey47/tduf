@@ -11,6 +11,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
+import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * Represents structure of TDU database topic
@@ -107,6 +108,11 @@ public class DbStructureDto implements Serializable {
         @Override
         public int hashCode() {
             return reflectionHashCode(this);
+        }
+
+        @Override
+        public String toString() {
+            return reflectionToString(this);
         }
 
         public interface FieldBuilder {
@@ -265,6 +271,21 @@ public class DbStructureDto implements Serializable {
                 return dbStructureDto;
             }
         };
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return reflectionEquals(this, o, false);
+    }
+
+    @Override
+    public int hashCode() {
+        return reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return reflectionToString(this);
     }
 
     public interface DbStructureDtoBuilder {
