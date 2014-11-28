@@ -1,0 +1,38 @@
+{
+  "name" : "TDU BNK Mapping",
+  "lowEndian" : false,
+  "fields" : [
+    {
+      "name" : "tag: MAP4_",
+      "type" : "string",
+      "size" : 5
+    },{
+      "name" : "entry list",
+      "type" : "repeater",
+      "subFields" : [
+        {
+          "name" : "file name hash",
+          "type" : "integer",
+          "size" : 4
+        },
+        {
+          "name": "size bytes 1",
+          "type": "integer",
+          "size": 4
+        }, {
+          "name" : "gap",
+          "type" : "delimiter",
+          "size" : 8
+        }, {
+          "name" : "size bytes 2",
+          "type" : "integer",
+          "size" : 4
+        }, {
+          "name" : "entry end",
+          "type" : "delimiter",
+          "size" : 4
+        }
+      ]
+    }
+  ]
+}
