@@ -1,6 +1,6 @@
 {
   "name" : "TDU BNK Mapping",
-  "lowEndian" : false,
+  "littleEndian" : false,
   "fields" : [
     {
       "name" : "tag: MAP4_",
@@ -22,10 +22,14 @@
         }, {
           "name" : "gap",
           "type" : "delimiter",
-          "size" : 8
+          "size" : 4
         }, {
           "name" : "size bytes 2",
           "type" : "integer",
+          "size" : 4
+        }, {
+          "name" : "gap",
+          "type" : "delimiter",
           "size" : 4
         }, {
           "name" : "entry end",
