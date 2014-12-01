@@ -1,7 +1,13 @@
 allprojects {
-    apply plugin: 'java'
     group = 'fr.tduf'
     version = '0.1'
+
+    apply plugin: 'java'
+
+    compileJava {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 }
 
 subprojects {
