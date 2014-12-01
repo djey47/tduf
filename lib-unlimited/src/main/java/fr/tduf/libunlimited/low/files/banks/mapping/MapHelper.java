@@ -40,8 +40,8 @@ public class MapHelper {
      */
     public static List<String> parseBanks(String bnkFolderName) throws IOException {
 
-        if (!bnkFolderName.endsWith("\\")) {
-            bnkFolderName += "\\";
+        if (!bnkFolderName.endsWith(File.separator)) {
+            bnkFolderName += File.separator;
         }
 
         final String rootFolderName = bnkFolderName;

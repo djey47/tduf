@@ -2,12 +2,52 @@ package fr.tduf.libunlimited.low.files.banks.mapping;
 
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
 
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapHelperTest {
 
-    //TODO map testing
+    private static Class<MapHelperTest> thisClass = MapHelperTest.class;
+
+    @Test
+    public void parseBanks_whenEmptyFiles_shouldReturnFileNameList() throws URISyntaxException, IOException {
+        // GIVEN
+        Path path = Paths.get(thisClass.getResource("/banks/Bnk1.map").toURI());
+        String bnkFolderName = path.getParent().toString();
+        List<String> expectedFileList = createExpectedFileList();
+
+        // WHEN
+        List<String> actualFileList = MapHelper.parseBanks(bnkFolderName);
+
+        // THEN
+        assertThat(actualFileList).isNotNull();
+        assertThat(actualFileList).hasSize(3);
+        assertThat(actualFileList).contains(expectedFileList.toArray(new String[expectedFileList.size()]));
+    }
+
+    @Test
+    public void computeChecksums_whenEmptyFiles_shouldReturnAllChecksums() {
+        // GIVEN
+        List<String> files = createExpectedFileList();
+
+        // WHEN
+        Map<Long, String> checksums = MapHelper.computeChecksums(files);
+
+        // THEN
+        assertThat(checksums).isNotNull();
+        assertThat(checksums).hasSameSizeAs(files);
+        assertThat(checksums.get(0xc48bdcaaL)).isEqualTo("avatar/barb.bnk");
+        assertThat(checksums.get(0xfe168a1cL)).isEqualTo("bnk1.map");
+        assertThat(checksums.get(0x0b6b3ea2L)).isEqualTo("frontend/hires/gauges/hud01.bnk");
+    }
 
     @Test
     public void computeChecksum_forGivenFileNames_shouldReturnMapHash() {
@@ -27,4 +67,10 @@ public class MapHelperTest {
         assertThat(checksum3).isEqualTo(0x0b6b3ea2L);
     }
 
+    private static List<String> createExpectedFileList() {
+        return asList(
+                "Bnk1.map",
+                String.format("Avatar%1$sBARB.BNK", File.separator),
+                String.format("FrontEnd%1$sHires%1$sGauges%1$shud01.bnk", File.separator));
+    }
 }
