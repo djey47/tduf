@@ -279,6 +279,7 @@ public class DbParser {
         return resources.size();
     }
 
+    //TODO check if parsing has been done
     public List<IntegrityError> getIntegrityErrors() {
         return integrityErrors;
     }
