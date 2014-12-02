@@ -75,34 +75,20 @@ public class DbWriter {
                     format(COMMENT_INFO_PATTERN, "Version", dbStructureDto.getVersion()), bufferedWriter);
             writeAndEndWithCRLF(
                     format(COMMENT_INFO_PATTERN, "Categories", dbStructureDto.getCategoryCount()), bufferedWriter);
-//            bufferedWriter.write(format(COMMENT_PATTERN, contentsFileName));
-//            bufferedWriter.newLine();
-//            bufferedWriter.write(format(COMMENT_INFO_PATTERN, "Version", dbStructureDto.getVersion()));
-//            bufferedWriter.newLine();
-//            bufferedWriter.write(format(COMMENT_INFO_PATTERN, "Categories", dbStructureDto.getCategoryCount()));
-//            bufferedWriter.newLine();
 
             // Structure
             writeAndEndWithCRLF(
                     format(COMMENT_INFO_PATTERN, "Fields", dbStructureDto.getFields().size()), bufferedWriter);
             writeAndEndWithCRLF(
                     format(ENTRY_PATTERN, topicLabel, dbStructureDto.getRef()), bufferedWriter);
-//            bufferedWriter.write(format(COMMENT_INFO_PATTERN, "Fields", dbStructureDto.getFields().size()));
-//            bufferedWriter.newLine();
-//            bufferedWriter.write(format(ENTRY_PATTERN, topicLabel, dbStructureDto.getRef()));
-//            bufferedWriter.newLine();
             for (DbStructureDto.Field field : dbStructureDto.getFields()) {
                 writeAndEndWithCRLF(
                         format(ENTRY_PATTERN, field.getName(), field.getFieldType().getCode()), bufferedWriter);
-//                bufferedWriter.write(format(ENTRY_PATTERN, field.getName(), field.getFieldType().getCode()));
-//                bufferedWriter.newLine();
             }
 
             // Contents
             writeAndEndWithCRLF(
                     format(COMMENT_INFO_PATTERN, "items", dbDataDto.getEntries().size()), bufferedWriter);
-//            bufferedWriter.write(format(COMMENT_INFO_PATTERN, "items", dbDataDto.getEntries().size()));
-//            bufferedWriter.newLine();
             for (DbDataDto.Entry entry : dbDataDto.getEntries()) {
 
                 for (DbDataDto.Item item : entry.getItems()) {
@@ -111,7 +97,6 @@ public class DbWriter {
                 }
 
                 writeAndEndWithCRLF("", bufferedWriter);
-//                bufferedWriter.newLine();
             }
 
             // Nul
