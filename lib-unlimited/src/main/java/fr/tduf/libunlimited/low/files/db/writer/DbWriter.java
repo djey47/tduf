@@ -5,8 +5,10 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.parser.DbParser;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -47,12 +49,32 @@ public class DbWriter {
     }
 
     /**
-     * Write all TDU database files to given path (must exist).
+     * Writes all TDU database files to given path (must exist).
      * @param path location to write db files
      */
     public void writeAll(String path) throws FileNotFoundException {
+        //TODO check if loading has been done
+
         writeStructureAndContents(path);
         writeResources(path);
+    }
+
+    /**
+     * Writes all contents to given path (must exist) as JSON file .
+     * @param path location to write db files
+     */
+    public void writeAllAsJson(String path) throws FileNotFoundException {
+        //TODO check if loading has been done
+
+        String outputFileName = String.format("%s.%s", this.databaseDto.getStructure().getTopic().getLabel(), "json");
+        Path outputPath = Paths.get(String.format("%s%s%s" ,path, File.separator , outputFileName));
+
+        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8)) {
+            new ObjectMapper().writer().writeValue(bufferedWriter, this.databaseDto);
+        } catch (IOException e) {
+            // TODO handle error
+            e.printStackTrace();
+        }
     }
 
     private void writeStructureAndContents(String directoryPath) throws FileNotFoundException {
@@ -65,7 +87,7 @@ public class DbWriter {
         String topicLabel = currentTopic.getLabel();
         String contentsFileName = format("%s.db", topicLabel);
 
-        Path path = Paths.get(directoryPath + "/" + contentsFileName);
+        Path path = Paths.get(directoryPath + File.separator + contentsFileName);
 
         try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
             // Meta
