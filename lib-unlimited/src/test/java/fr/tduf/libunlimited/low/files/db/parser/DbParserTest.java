@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.db.parser;
 
 import fr.tduf.libunlimited.low.files.db.common.DbHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
@@ -20,7 +21,7 @@ public class DbParserTest {
         //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
         List<List<String>> resourceLines = asList(
-                createValidResourcesWithTwoItemsForLocaleFr()
+                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE)
         );
 
         //WHEN
@@ -46,7 +47,7 @@ public class DbParserTest {
                 "55736935;",
                 "\0");
         List<List<String>> resourceLines = asList(
-                createValidResourcesWithTwoItemsForLocaleFr()
+                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE)
         );
 
         //WHEN
@@ -63,7 +64,7 @@ public class DbParserTest {
         //GIVEN : fr resource count  != it resource
         List<String> dbLines = createValidContentsWithOneItem();
         List<List<String>> resourceLines = asList(
-                createValidResourcesWithTwoItemsForLocaleFr(),
+                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE),
                 asList(
                         "// TDU_Achievements.it",
                         "// version: 1,2",
@@ -126,6 +127,30 @@ public class DbParserTest {
     }
 
     @Test
+    public void parseAll_whenProvidedContents_shouldReturnProperDto() throws Exception {
+        //GIVEN : fr resource count  != it resource
+        List<String> dbLines = createValidContentsWithOneItem();
+        List<List<String>> resourceLines = asList(
+                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE),
+                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.ITALY)
+        );
+
+        //WHEN
+        DbParser dbParser = DbParser.load(dbLines, resourceLines);
+        DbDto actualDb = dbParser.parseAll();
+
+        //THEN
+        assertThat(dbParser.getIntegrityErrors()).isEmpty();
+
+        assertThat(actualDb).isNotNull();
+
+        List<DbResourceDto> actualDbResources = actualDb.getResources();
+        assertThat(actualDbResources).hasSize(2);
+        assertThat(actualDbResources.get(0).getEntries()).hasSize(2);
+        assertThat(actualDbResources.get(0).getEntries()).hasSameSizeAs(actualDbResources.get(1).getEntries());
+    }
+
+    @Test
     public void parseAll_whenRealFiles_shouldReturnProperDto_andParserWithoutError() throws Exception {
         //GIVEN
         List<String> dbLines = DbHelper.readContentsFromSample("/db/TDU_Achievements.db", "UTF-8", "\r\n");
@@ -177,13 +202,13 @@ public class DbParserTest {
                 "\0");
     }
 
-    private List<String> createValidResourcesWithTwoItemsForLocaleFr() {
+    private List<String> createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale locale) {
         return asList(
-                "// TDU_Achievements.fr",
+                "// TDU_Achievements." + locale.getCode(),
                 "// version: 1,2",
                 "// categories: 6",
                 "// Explanation",
-                "{??} 53410835,",
+                "{??} 53410835",
                 "{Bravo ! Vous recevez §NB_PTS§ points.} 70410835"
         );
     }
