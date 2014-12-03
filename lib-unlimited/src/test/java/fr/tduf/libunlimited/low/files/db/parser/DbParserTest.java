@@ -18,31 +18,9 @@ public class DbParserTest {
     @Test
     public void load_whenProvidedContents_shouldReturnParserInstanceWithoutErrors() throws Exception {
         //GIVEN
-        List<String> dbLines = asList(
-                "// TDU_Achievements.db",
-                "// Fields: 9",
-                "{TDU_Achievements} 2442784645",
-                "{Achievement_Event_} u",
-                "{TextIndex_} i",
-                "{Nb_Achievement_Points_} i",
-                "{Ach_Title_} h",
-                "{Ach_Desc_} h",
-                "{Explanation_} h",
-                "{FailedExplain_} h",
-                "{Reward_} u",
-                "{Reward_Param_} i",
-                "// items: 1",
-                "55736935;5;20;54400734;54359455;54410835;561129540;5337472;211;",
-                "\0");
+        List<String> dbLines = createValidContentsWithOneItem();
         List<List<String>> resourceLines = asList(
-                asList(
-                        "// TDU_Achievements.fr",
-                        "// version: 1,2",
-                        "// categories: 6",
-                        "// Explanation",
-                        "{??} 53410835,",
-                        "{Bravo ! Vous recevez §NB_PTS§ points.} 70410835"
-                )
+                createValidResourcesWithTwoItemsForLocaleFr()
         );
 
         //WHEN
@@ -56,7 +34,7 @@ public class DbParserTest {
     }
 
     @Test
-    public void parseAll_whenProvidedContents_andIntegrityErrors_shouldReturnErrors() throws Exception {
+    public void parseAll_whenProvidedContents_andIntegrityErrorsOnItemAndFieldCount_shouldReturnErrors() throws Exception {
         //GIVEN : item count != actual item count
         // field count != actual field count
         List<String> dbLines = asList(
@@ -68,12 +46,29 @@ public class DbParserTest {
                 "55736935;",
                 "\0");
         List<List<String>> resourceLines = asList(
+                createValidResourcesWithTwoItemsForLocaleFr()
+        );
+
+        //WHEN
+        DbParser dbParser = DbParser.load(dbLines, resourceLines);
+        DbDto actualDb = dbParser.parseAll();
+
+        //THEN
+        assertThat(actualDb).isNotNull();
+        assertThat(dbParser.getIntegrityErrors()).hasSize(2);
+    }
+
+    @Test
+    public void parseAll_whenProvidedContents_andIntegrityErrorOnResourceCount_shouldReturnError() throws Exception {
+        //GIVEN : fr resource count  != it resource
+        List<String> dbLines = createValidContentsWithOneItem();
+        List<List<String>> resourceLines = asList(
+                createValidResourcesWithTwoItemsForLocaleFr(),
                 asList(
-                        "// TDU_Achievements.fr",
+                        "// TDU_Achievements.it",
                         "// version: 1,2",
                         "// categories: 6",
                         "// Explanation",
-                        "{??} 53410835,",
                         "{Bravo ! Vous recevez §NB_PTS§ points.} 70410835"
                 )
         );
@@ -84,7 +79,7 @@ public class DbParserTest {
 
         //THEN
         assertThat(actualDb).isNotNull();
-        assertThat(dbParser.getIntegrityErrors()).hasSize(2);
+        assertThat(dbParser.getIntegrityErrors()).hasSize(1);
     }
 
     @Test
@@ -161,5 +156,35 @@ public class DbParserTest {
 
         String expectedJson = DbHelper.readTextFromSample("/db/TDU_Achievements.json", "UTF-8");
         assertJsonEquals(expectedJson, jsonResult);
+    }
+
+    private List<String> createValidContentsWithOneItem() {
+        return asList(
+                "// TDU_Achievements.db",
+                "// Fields: 9",
+                "{TDU_Achievements} 2442784645",
+                "{Achievement_Event_} u",
+                "{TextIndex_} i",
+                "{Nb_Achievement_Points_} i",
+                "{Ach_Title_} h",
+                "{Ach_Desc_} h",
+                "{Explanation_} h",
+                "{FailedExplain_} h",
+                "{Reward_} u",
+                "{Reward_Param_} i",
+                "// items: 1",
+                "55736935;5;20;54400734;54359455;54410835;561129540;5337472;211;",
+                "\0");
+    }
+
+    private List<String> createValidResourcesWithTwoItemsForLocaleFr() {
+        return asList(
+                "// TDU_Achievements.fr",
+                "// version: 1,2",
+                "// categories: 6",
+                "// Explanation",
+                "{??} 53410835,",
+                "{Bravo ! Vous recevez §NB_PTS§ points.} 70410835"
+        );
     }
 }

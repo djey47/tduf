@@ -88,8 +88,7 @@ public class DbParser {
         final Pattern categoryCountPattern = Pattern.compile(META_CATEGORY_COUNT_PATTERN);
         final Pattern resourceEntryPattern = Pattern.compile(RES_ENTRY_PATTERN);
 
-        //TODO CHECK All Resource DTOs have same entry count
-        return new ArrayList<>(Lists.transform(this.resources, new Function<List<String>, DbResourceDto>() {
+        ArrayList<DbResourceDto> dbResourceDtos = new ArrayList<>(Lists.transform(this.resources, new Function<List<String>, DbResourceDto>() {
             @Override
             public DbResourceDto apply(List<String> resourceLines) {
 
@@ -138,6 +137,10 @@ public class DbParser {
                         .build();
             }
         }));
+
+        checkItemCountBetweenResources(dbResourceDtos);
+
+        return dbResourceDtos;
     }
 
     private DbDataDto parseContents(DbStructureDto structure) {
@@ -274,6 +277,17 @@ public class DbParser {
                 .withCategoryCount(categoryCount)
                 .addItems(fields)
                 .build();
+    }
+
+    private void checkItemCountBetweenResources(ArrayList<DbResourceDto> dbResourceDtos) {
+        int lastResourceCount = -1;
+        for(DbResourceDto dbResourceDto : dbResourceDtos) {
+            if (lastResourceCount != -1 && lastResourceCount != dbResourceDto.getEntries().size()) {
+                // TODO add more info on error: topic A / topic B / counts
+                this.integrityErrors.add(new IntegrityError());
+            }
+            lastResourceCount = dbResourceDto.getEntries().size();
+        }
     }
 
     public long getContentLineCount() {
