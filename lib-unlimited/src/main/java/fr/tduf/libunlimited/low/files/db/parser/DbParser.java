@@ -166,33 +166,40 @@ public class DbParser {
                 continue;
             }
 
-            List<DbDataDto.Item> items = new ArrayList<>();
-            int fieldIndex = 0;
-            for(String itemValue : line.split(VALUE_DELIMITER)) {
-
-                //TODO CHECK field count vs structure.fields.size()
-                String fieldName = structure.getFields().get(fieldIndex++).getName();
-
-                items.add(DbDataDto.Item.builder()
-                        .forName(fieldName)
-                        .withRawValue(itemValue)
-                        .build());
-            }
-
             entries.add(DbDataDto.Entry.builder()
                     .forId(id++)
-                    .addItems(items)
+                    .addItems(parseContentItems(structure, line))
                     .build());
         }
 
-        // Integrity check
-        if (itemCount != entries.size()) {
-            integrityErrors.add(new IntegrityError());
-        }
+        checkContentItemsCount(itemCount, entries);
 
         return DbDataDto.builder()
                 .addEntries(entries)
                 .build();
+    }
+
+    private void checkContentItemsCount(long expectedItemCount, List<DbDataDto.Entry> actualEntries) {
+        if (expectedItemCount != actualEntries.size()) {
+            // TODO add more info on error
+            integrityErrors.add(new IntegrityError());
+        }
+    }
+
+    private List<DbDataDto.Item> parseContentItems(DbStructureDto structure, String line) {
+        List<DbDataDto.Item> items = new ArrayList<>();
+        int fieldIndex = 0;
+        for(String itemValue : line.split(VALUE_DELIMITER)) {
+
+            //TODO CHECK field count vs structure.fields.size()
+            String fieldName = structure.getFields().get(fieldIndex++).getName();
+
+            items.add(DbDataDto.Item.builder()
+                    .forName(fieldName)
+                    .withRawValue(itemValue)
+                    .build());
+        }
+        return items;
     }
 
     private DbStructureDto parseStructure() {
