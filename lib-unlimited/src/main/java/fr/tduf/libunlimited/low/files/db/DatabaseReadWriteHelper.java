@@ -22,6 +22,7 @@ public class DatabaseReadWriteHelper {
      * Utility entry point - till a CLI comes
      */
     public static void main(String[] args) throws IOException {
+        //TODO Set as method args
         String databaseFolderName = "D:\\Jeux\\Test Drive Unlimited\\Euro\\NoBnk\\Database";
         String outputFolderSuffix = "tdu-database-dump";
 

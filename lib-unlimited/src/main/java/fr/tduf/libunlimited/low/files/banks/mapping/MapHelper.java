@@ -20,6 +20,7 @@ public class MapHelper {
      * Utility entry point - till a CLI comes
      */
     public static void main(String[] args) throws IOException {
+        //TODO Set as method arg
         String bnkFolderName = "D:\\Jeux\\Test Drive Unlimited\\Euro\\Bnk";
 
         List<String> banks = parseBanks(bnkFolderName);
