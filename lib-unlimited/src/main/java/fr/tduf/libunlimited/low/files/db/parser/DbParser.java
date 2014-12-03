@@ -52,8 +52,7 @@ public class DbParser {
      * @return a {@link DbParser} instance.
      */
     public static DbParser load(List<String> contentLines, List<List<String>> resources) {
-        requireNonNull(contentLines, "Contents are required");
-        requireNonNull(resources, "Resources are required");
+        checkPrerequisites(contentLines, resources);
 
         return new DbParser(contentLines, resources);
     }
@@ -62,6 +61,7 @@ public class DbParser {
      * Parses all contents.
      */
     public DbDto parseAll() {
+        checkPrerequisites(this.contentLines, this.resources);
 
         integrityErrors.clear();
 
@@ -74,6 +74,11 @@ public class DbParser {
                 .addResources(resources)
                 .withStructure(structure)
                 .build();
+    }
+
+    private static void checkPrerequisites(List<String> contentLines, List<List<String>> resources) {
+        requireNonNull(contentLines, "Contents are required");
+        requireNonNull(resources, "Resources are required");
     }
 
     private List<DbResourceDto> parseResources() {
@@ -272,14 +277,17 @@ public class DbParser {
     }
 
     public long getContentLineCount() {
+        checkPrerequisites(this.contentLines, this.resources);
+
         return contentLines.size();
     }
 
     public long getResourceCount() {
+        checkPrerequisites(this.contentLines, this.resources);
+
         return resources.size();
     }
 
-    //TODO check if parsing has been done
     public List<IntegrityError> getIntegrityErrors() {
         return integrityErrors;
     }

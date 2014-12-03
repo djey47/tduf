@@ -41,9 +41,7 @@ public class DbWriter {
      * @return writer instance.
      */
     public static DbWriter load(DbDto dbDto) {
-        requireNonNull(dbDto, "Full database information is required");
-        requireNonNull(dbDto.getStructure(), "Database structure information is required");
-        requireNonNull(dbDto.getData(), "Database contents are required");
+        checkPrerequisites(dbDto);
 
         return new DbWriter(dbDto);
     }
@@ -53,7 +51,7 @@ public class DbWriter {
      * @param path location to write db files
      */
     public void writeAll(String path) throws FileNotFoundException {
-        //TODO check if loading has been done
+        checkPrerequisites(this.databaseDto);
 
         writeStructureAndContents(path);
         writeResources(path);
@@ -64,7 +62,7 @@ public class DbWriter {
      * @param path location to write db files
      */
     public void writeAllAsJson(String path) throws FileNotFoundException {
-        //TODO check if loading has been done
+        checkPrerequisites(this.databaseDto);
 
         String outputFileName = String.format("%s.%s", this.databaseDto.getStructure().getTopic().getLabel(), "json");
         Path outputPath = Paths.get(String.format("%s%s%s" ,path, File.separator , outputFileName));
@@ -75,6 +73,12 @@ public class DbWriter {
             // TODO handle error
             e.printStackTrace();
         }
+    }
+
+    private static void checkPrerequisites(DbDto dbDto) {
+        requireNonNull(dbDto, "Full database information is required");
+        requireNonNull(dbDto.getStructure(), "Database structure information is required");
+        requireNonNull(dbDto.getData(), "Database contents are required");
     }
 
     private void writeStructureAndContents(String directoryPath) throws FileNotFoundException {
