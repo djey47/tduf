@@ -33,25 +33,9 @@ public class DatabaseReadWriteHelper {
         Path outputPath = outputDirectory.toPath();
 
         for(DbDto.Topic currentTopic : DbDto.Topic.values()) {
-            List<String> contentLines = parseTopicContentsFromDirectory(currentTopic, databaseFolderName);
+            DbDto dbDto = readDatabase(currentTopic, databaseFolderName);
 
-            List<List<String>> resources = parseTopicResourcesFromDirectory(currentTopic, databaseFolderName);
-
-            DbParser dbParser = DbParser.load(contentLines, resources);
-
-            DbDto dbDto = dbParser.parseAll();
-
-            System.out.println("Parsing done for topic: " + currentTopic);
-            System.out.println("Content line count: " + dbParser.getContentLineCount());
-            System.out.println("Resource count: " + dbParser.getResourceCount());
-            System.out.println("Integrity errors: " + dbParser.getIntegrityErrors());
-
-            DbWriter dbWriter = DbWriter.load(dbDto);
-
-            dbWriter.writeAllAsJson(outputPath.toString());
-
-            System.out.println("Writing done for topic: " + currentTopic);
-            System.out.println("Location: " + outputPath + File.pathSeparator + currentTopic.getLabel() + ".*");
+            writeDatabaseToJson(outputPath, currentTopic, dbDto);
         }
     }
 
@@ -59,7 +43,7 @@ public class DatabaseReadWriteHelper {
      * Reads database contents from specified topic into databaseDirectory.
      * @param topic             : topic to parse TDU contents from
      * @param databaseDirectory : location of database contents as db file
-     * @return all lines in database file.
+     * @return all lines in database file or empty list, if file for specified topic does not exist.
      */
     public static List<String> parseTopicContentsFromDirectory(DbDto.Topic topic, String databaseDirectory) throws FileNotFoundException {
         return parseLinesInFile(topic.getLabel(), databaseDirectory, "db", "UTF-8");
@@ -69,7 +53,7 @@ public class DatabaseReadWriteHelper {
      * Reads database resources from specified topic into databaseDirectory.
      * @param topic             : topic to parse TDU resources from
      * @param databaseDirectory : location of database resources as fr,it,ge... files
-     * @return All existing resources.
+     * @return All existing resources or empty list, if file for specified topic does not exist.
      */
     public static List<List<String>> parseTopicResourcesFromDirectory(DbDto.Topic topic, String databaseDirectory) throws FileNotFoundException {
         List<List<String>> resources = new ArrayList<>();
@@ -81,6 +65,42 @@ public class DatabaseReadWriteHelper {
         return resources;
     }
 
+    private static DbDto readDatabase(DbDto.Topic currentTopic, String databaseFolderName) throws FileNotFoundException {
+        List<String> contentLines = parseTopicContentsFromDirectory(currentTopic, databaseFolderName);
+        if(contentLines.isEmpty()) {
+            System.err.println("Database contents not found for topic: " + currentTopic);
+            return null;
+        }
+
+        List<List<String>> resources = parseTopicResourcesFromDirectory(currentTopic, databaseFolderName);
+        resources.stream()
+
+                .filter(List::isEmpty)
+
+                .forEach(resourceContents -> System.out.println("Some of database resources not found for topic: " + currentTopic));
+
+        DbParser dbParser = DbParser.load(contentLines, resources);
+
+        DbDto dbDto = dbParser.parseAll();
+
+        System.out.println("Parsing done for topic: " + currentTopic);
+
+        System.out.println("Content line count: " + dbParser.getContentLineCount());
+        System.out.println("Resource count: " + dbParser.getResourceCount());
+        System.out.println("Integrity errors: " + dbParser.getIntegrityErrors());
+
+        return dbDto;
+    }
+
+    private static void writeDatabaseToJson(Path outputPath, DbDto.Topic currentTopic, DbDto dbDto) throws FileNotFoundException {
+        DbWriter dbWriter = DbWriter.load(dbDto);
+
+        dbWriter.writeAllAsJson(outputPath.toString());
+
+        System.out.println("Writing done for topic: " + currentTopic);
+        System.out.println("Location: " + outputPath + File.pathSeparator + currentTopic.getLabel() + ".*");
+    }
+
     private static List<String> parseLinesInFile(String topicLabel, String databaseDirectory, String extension, String encoding) throws FileNotFoundException {
         List<String> resourceLines = new ArrayList<>() ;
 
@@ -88,7 +108,7 @@ public class DatabaseReadWriteHelper {
         File inputFile = new File(inputFileName);
 
         if (!inputFile.exists()) {
-            // TODO handle non-existent file
+            // Returns empty contents so far
             return resourceLines;
         }
 
