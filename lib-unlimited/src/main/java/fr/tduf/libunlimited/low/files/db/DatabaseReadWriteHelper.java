@@ -4,6 +4,9 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.parser.DbParser;
 import fr.tduf.libunlimited.low.files.db.writer.DbWriter;
+import org.kohsuke.args4j.Argument;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,26 +21,14 @@ import java.util.Scanner;
  */
 public class DatabaseReadWriteHelper {
 
+    @Argument
+    private List<String> arguments = new ArrayList<>();
+
     /**
      * Utility entry point - till a CLI comes
      */
     public static void main(String[] args) throws IOException {
-        //TODO Set as method args
-        String databaseFolderName = "D:\\Jeux\\Test Drive Unlimited\\Euro\\NoBnk\\DataBase";
-        String outputFolderSuffix = "tdu-database-dump";
-
-        File outputDirectory = new File(outputFolderSuffix);
-        if (!outputDirectory.exists()) {
-            outputDirectory.mkdirs();
-
-        }
-        Path outputPath = outputDirectory.toPath();
-
-        for(DbDto.Topic currentTopic : DbDto.Topic.values()) {
-            DbDto dbDto = readDatabase(currentTopic, databaseFolderName);
-
-            writeDatabaseToJson(outputPath, currentTopic, dbDto);
-        }
+        new DatabaseReadWriteHelper().doMain(args);
     }
 
     /**
@@ -120,5 +111,43 @@ public class DatabaseReadWriteHelper {
             resourceLines.add(scanner.next());
         }
         return resourceLines;
+    }
+
+    private void doMain(String[] args) throws FileNotFoundException {
+        if (!checkArguments(args)) {
+            return;
+        }
+        String databaseFolderName = arguments.get(0);
+        String outputFolderSuffix = "tdu-database-dump";
+
+        File outputDirectory = new File(outputFolderSuffix);
+        if (!outputDirectory.exists()) {
+            outputDirectory.mkdirs();
+
+        }
+        Path outputPath = outputDirectory.toPath();
+
+        for(DbDto.Topic currentTopic : DbDto.Topic.values()) {
+            DbDto dbDto = readDatabase(currentTopic, databaseFolderName);
+
+            writeDatabaseToJson(outputPath, currentTopic, dbDto);
+        }
+    }
+
+    private boolean checkArguments(String[] args) {
+        try {
+            CmdLineParser parser = new CmdLineParser(this);
+            parser.parseArgument(args);
+
+            if( arguments.isEmpty() ) {
+                throw new CmdLineException(parser, "Error: No argument is given", null);
+            }
+        } catch (CmdLineException e) {
+            System.err.println(e.getMessage());
+            System.err.println("java DatabaseReadWriteHelper <DATABASE FOLDER>");
+            System.err.println("  Example: java DatabaseReadWriteHelper  \"D:\\Jeux\\Test Drive Unlimited\\Euro\\NoBnk\\DataBase\"");
+            return false;
+        }
+        return true;
     }
 }
