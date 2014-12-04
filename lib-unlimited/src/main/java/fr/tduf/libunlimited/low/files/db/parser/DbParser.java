@@ -189,7 +189,14 @@ public class DbParser {
         }
     }
 
-    private void checkFieldCount(long expectedFieldCount, List<DbDataDto.Item> items) {
+    private void checkFieldCountInStructure(int expectedFieldCount, List<DbStructureDto.Field> fields) {
+        if (expectedFieldCount != fields.size()) {
+            // TODO add more info on error
+            integrityErrors.add(new IntegrityError());
+        }
+    }
+
+    private void checkFieldCountInContents(long expectedFieldCount, List<DbDataDto.Item> items) {
         if (expectedFieldCount != items.size()) {
             // TODO add more info on error
             integrityErrors.add(new IntegrityError());
@@ -208,7 +215,7 @@ public class DbParser {
                     .build());
         }
 
-        checkFieldCount(structure.getFields().size(), items);
+        checkFieldCountInContents(structure.getFields().size(), items);
 
         return items;
     }
@@ -283,11 +290,7 @@ public class DbParser {
             }
         }
 
-        // Integrity check
-        //TODO Extract check method
-        if (fieldCount != fields.size()) {
-            integrityErrors.add(new IntegrityError());
-        }
+        checkFieldCountInStructure(fieldCount, fields);
 
         return DbStructureDto.builder()
                 .forTopic(DbDto.Topic.fromLabel(topicName))
