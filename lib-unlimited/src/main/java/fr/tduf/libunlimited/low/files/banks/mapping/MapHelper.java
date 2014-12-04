@@ -1,12 +1,16 @@
 package fr.tduf.libunlimited.low.files.banks.mapping;
 
+import org.kohsuke.args4j.Argument;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -16,22 +20,14 @@ import static java.util.stream.Collectors.toMap;
  */
 public class MapHelper {
 
+    @Argument
+    private List<String> arguments = new ArrayList<>();
+
     /**
      * Utility entry point - till a CLI comes
      */
     public static void main(String[] args) throws IOException {
-        //TODO Set as method arg
-        String bnkFolderName = "D:\\Jeux\\Test Drive Unlimited\\Euro\\Bnk";
-
-        List<String> banks = parseBanks(bnkFolderName);
-
-        System.out.println("BNK root folder: " + bnkFolderName);
-        System.out.println("File count: " + banks.size());
-        System.out.println("Files: " + banks);
-
-        Map<Long, String> checksums = computeChecksums(banks);
-
-        System.out.println("Checksums: " + checksums);
+        new MapHelper().doMain(args);
     }
 
     /**
@@ -162,5 +158,41 @@ public class MapHelper {
         }
 
         return crc ^ fin;
+    }
+
+    private void doMain(String[] args) throws IOException {
+        if (!checkArguments(args)) {
+            return;
+        }
+        String bnkFolderName = arguments.get(0);
+
+        System.out.println("BNK root folder: " + bnkFolderName);
+
+        List<String> banks = parseBanks(bnkFolderName);
+
+        System.out.println("Bank parsing done.");
+        System.out.println("File count: " + banks.size());
+        System.out.println("Files: " + banks);
+
+        Map<Long, String> checksums = computeChecksums(banks);
+
+        System.out.println("Checksums: " + checksums);
+    }
+
+    private boolean checkArguments(String[] args) {
+        try {
+            CmdLineParser parser = new CmdLineParser(this);
+            parser.parseArgument(args);
+
+            if( arguments.isEmpty() ) {
+                throw new CmdLineException(parser, "Error: No argument is given", null);
+            }
+        } catch (CmdLineException e) {
+            System.err.println(e.getMessage());
+            System.err.println("java MapHelper <BNK FOLDER>");
+            System.err.println("  Example: java MapHelper \"D:\\Jeux\\Test Drive Unlimited\\Euro\\Bnk\"");
+            return false;
+        }
+        return true;
     }
 }
