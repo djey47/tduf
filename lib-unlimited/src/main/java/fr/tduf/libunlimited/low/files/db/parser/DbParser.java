@@ -189,12 +189,17 @@ public class DbParser {
         }
     }
 
+    private void checkFieldCount(long expectedFieldCount, List<DbDataDto.Item> items) {
+        if (expectedFieldCount != items.size()) {
+            // TODO add more info on error
+            integrityErrors.add(new IntegrityError());
+        }
+    }
+
     private List<DbDataDto.Item> parseContentItems(DbStructureDto structure, String line) {
         List<DbDataDto.Item> items = new ArrayList<>();
         int fieldIndex = 0;
         for(String itemValue : line.split(VALUE_DELIMITER)) {
-
-            //TODO CHECK field count vs structure.fields.size()
             String fieldName = structure.getFields().get(fieldIndex++).getName();
 
             items.add(DbDataDto.Item.builder()
@@ -202,6 +207,9 @@ public class DbParser {
                     .withRawValue(itemValue)
                     .build());
         }
+
+        checkFieldCount(structure.getFields().size(), items);
+
         return items;
     }
 
@@ -276,6 +284,7 @@ public class DbParser {
         }
 
         // Integrity check
+        //TODO Extract check method
         if (fieldCount != fields.size()) {
             integrityErrors.add(new IntegrityError());
         }

@@ -85,6 +85,24 @@ public class DbParserTest {
     }
 
     @Test
+    public void parseAll_whenProvidedContents_andIntegrityErrorOnFieldCount_shouldReturnError() throws Exception {
+        //GIVEN
+        List<String> dbLines = createInvalidContentsWithOneItemAndUnconsistentFieldCount();
+        List<List<String>> resourceLines = asList(
+                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE),
+                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.ITALY)
+        );
+
+        //WHEN
+        DbParser dbParser = DbParser.load(dbLines, resourceLines);
+        DbDto actualDb = dbParser.parseAll();
+
+        //THEN
+        assertThat(actualDb).isNotNull();
+        assertThat(dbParser.getIntegrityErrors()).hasSize(1);
+    }
+
+    @Test
     public void parseAll_whenProvidedContents_andRemoteReference_shouldReadAccordingly() throws Exception {
         //GIVEN
         List<String> dbLines = asList(
@@ -223,6 +241,26 @@ public class DbParserTest {
                 "{Reward_Param_} i",
                 "// items: 1",
                 "55736935;5;20;54400734;54359455;54410835;561129540;5337472;211;",
+                "\0");
+    }
+
+    private List<String> createInvalidContentsWithOneItemAndUnconsistentFieldCount() {
+        // 9 fields expected, 8 actual
+        return asList(
+                "// TDU_Achievements.db",
+                "// Fields: 9",
+                "{TDU_Achievements} 2442784645",
+                "{Achievement_Event_} u",
+                "{TextIndex_} i",
+                "{Nb_Achievement_Points_} i",
+                "{Ach_Title_} h",
+                "{Ach_Desc_} h",
+                "{Explanation_} h",
+                "{FailedExplain_} h",
+                "{Reward_} u",
+                "{Reward_Param_} i",
+                "// items: 1",
+                "55736935;5;20;54400734;54359455;54410835;561129540;5337472;",
                 "\0");
     }
 
