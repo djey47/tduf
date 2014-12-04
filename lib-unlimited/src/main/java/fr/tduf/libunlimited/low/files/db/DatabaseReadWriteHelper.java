@@ -23,7 +23,7 @@ public class DatabaseReadWriteHelper {
      */
     public static void main(String[] args) throws IOException {
         //TODO Set as method args
-        String databaseFolderName = "D:\\Jeux\\Test Drive Unlimited\\Euro\\NoBnk\\Database";
+        String databaseFolderName = "D:\\Jeux\\Test Drive Unlimited\\Euro\\NoBnk\\DataBase";
         String outputFolderSuffix = "tdu-database-dump";
 
         File outputDirectory = new File(outputFolderSuffix);
@@ -99,7 +99,7 @@ public class DatabaseReadWriteHelper {
         dbWriter.writeAllAsJson(outputPath.toString());
 
         System.out.println("Writing done for topic: " + currentTopic);
-        System.out.println("Location: " + outputPath + File.pathSeparator + currentTopic.getLabel() + ".*");
+        System.out.println("Location: " + outputPath + File.separator + currentTopic.getLabel() + ".json");
     }
 
     private static List<String> parseLinesInFile(String topicLabel, String databaseDirectory, String extension, String encoding) throws FileNotFoundException {
