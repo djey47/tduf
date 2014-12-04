@@ -1,7 +1,5 @@
 package fr.tduf.libunlimited.low.files.db.parser;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -9,12 +7,15 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.fromCode;
 import static java.lang.Integer.valueOf;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * Helper class to extract database structure and contents from clear db file.
@@ -88,55 +89,57 @@ public class DbParser {
         final Pattern categoryCountPattern = Pattern.compile(META_CATEGORY_COUNT_PATTERN);
         final Pattern resourceEntryPattern = Pattern.compile(RES_ENTRY_PATTERN);
 
-        ArrayList<DbResourceDto> dbResourceDtos = new ArrayList<>(Lists.transform(this.resources, new Function<List<String>, DbResourceDto>() {
-            @Override
-            public DbResourceDto apply(List<String> resourceLines) {
+        List<DbResourceDto> dbResourceDtos = this.resources.stream()
 
-                final List<DbResourceDto.Entry> entries = new ArrayList<>();
-                String version = null;
-                String localeCode = null;
-                int categoryCount = 0;
+                .filter(resourceLines -> !resourceLines.isEmpty())
 
-                for (String line : resourceLines) {
-                    Matcher matcher = resourceNamePattern.matcher(line);
-                    if (matcher.matches()) {
-                        localeCode = matcher.group(2);
-                        continue;
+                .map(resourceLines -> {
+                    final List<DbResourceDto.Entry> entries = new ArrayList<>();
+                    String version = null;
+                    String localeCode = null;
+                    int categoryCount = 0;
+
+                    for (String line : resourceLines) {
+                        Matcher matcher = resourceNamePattern.matcher(line);
+                        if (matcher.matches()) {
+                            localeCode = matcher.group(2);
+                            continue;
+                        }
+
+                        matcher = resourceVersionPattern.matcher(line);
+                        if (matcher.matches()) {
+                            version = matcher.group(1);
+                            continue;
+                        }
+
+                        matcher = categoryCountPattern.matcher(line);
+                        if (matcher.matches()) {
+                            categoryCount = valueOf(matcher.group(1));
+                            continue;
+                        }
+
+                        if (Pattern.matches(COMMENT_PATTERN, line)) {
+                            continue;
+                        }
+
+                        matcher = resourceEntryPattern.matcher(line);
+                        if (matcher.matches()) {
+                            entries.add(DbResourceDto.Entry.builder()
+                                    .forReference(matcher.group(3))
+                                    .withValue(matcher.group(1))
+                                    .build());
+                        }
                     }
 
-                    matcher = resourceVersionPattern.matcher(line);
-                    if (matcher.matches()) {
-                        version = matcher.group(1);
-                        continue;
-                    }
+                    return DbResourceDto.builder()
+                            .atVersion(version)
+                            .withLocale(fromCode(localeCode))
+                            .withCategoryCount(categoryCount)
+                            .addEntries(entries)
+                            .build();
+                })
 
-                    matcher = categoryCountPattern.matcher(line);
-                    if (matcher.matches()) {
-                        categoryCount = valueOf(matcher.group(1));
-                        continue;
-                    }
-
-                    if (Pattern.matches(COMMENT_PATTERN, line)) {
-                        continue;
-                    }
-
-                    matcher = resourceEntryPattern.matcher(line);
-                    if (matcher.matches()) {
-                        entries.add(DbResourceDto.Entry.builder()
-                                .forReference(matcher.group(3))
-                                .withValue(matcher.group(1))
-                                .build());
-                    }
-                }
-
-                return DbResourceDto.builder()
-                        .atVersion(version)
-                        .withLocale(fromCode(localeCode))
-                        .withCategoryCount(categoryCount)
-                        .addEntries(entries)
-                        .build();
-            }
-        }));
+                .collect(Collectors.toList());
 
         checkItemCountBetweenResources(dbResourceDtos);
 
@@ -286,14 +289,13 @@ public class DbParser {
                 .build();
     }
 
-    private void checkItemCountBetweenResources(ArrayList<DbResourceDto> dbResourceDtos) {
-        int lastResourceCount = -1;
-        for(DbResourceDto dbResourceDto : dbResourceDtos) {
-            if (lastResourceCount != -1 && lastResourceCount != dbResourceDto.getEntries().size()) {
-                // TODO add more info on error: topic A / topic B / counts
-                this.integrityErrors.add(new IntegrityError());
-            }
-            lastResourceCount = dbResourceDto.getEntries().size();
+    private void checkItemCountBetweenResources(List<DbResourceDto> dbResourceDtos) {
+        Map<Integer, List<DbResourceDto>> dbResourceDtosByItemCount = dbResourceDtos.stream()
+                .collect(groupingBy(dbResourceDto -> dbResourceDto.getEntries().size()));
+
+        if (dbResourceDtosByItemCount.size() > 1) {
+            // TODO add more info on error: locales and counts
+            integrityErrors.add(new IntegrityError());
         }
     }
 

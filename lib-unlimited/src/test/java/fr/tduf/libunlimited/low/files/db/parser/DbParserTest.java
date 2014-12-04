@@ -8,6 +8,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -128,7 +129,7 @@ public class DbParserTest {
 
     @Test
     public void parseAll_whenProvidedContents_shouldReturnProperDto() throws Exception {
-        //GIVEN : fr resource count  != it resource
+        //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
         List<List<String>> resourceLines = asList(
                 createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE),
@@ -148,6 +149,29 @@ public class DbParserTest {
         assertThat(actualDbResources).hasSize(2);
         assertThat(actualDbResources.get(0).getEntries()).hasSize(2);
         assertThat(actualDbResources.get(0).getEntries()).hasSameSizeAs(actualDbResources.get(1).getEntries());
+    }
+
+    @Test
+    public void parseAll_whenProvidedContents_andMissingLocale_shouldReturnProperDto_withValidLocales() throws Exception {
+        //GIVEN
+        List<String> dbLines = createValidContentsWithOneItem();
+        List<List<String>> resourceLines = asList(
+                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE),
+                new ArrayList<>(),
+                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.ITALY)
+        );
+
+        //WHEN
+        DbParser dbParser = DbParser.load(dbLines, resourceLines);
+        DbDto actualDb = dbParser.parseAll();
+
+        //THEN
+        assertThat(dbParser.getIntegrityErrors()).isEmpty();
+
+        List<DbResourceDto> actualDbResources = actualDb.getResources();
+        assertThat(actualDbResources).hasSize(2);
+        assertThat(actualDbResources.get(0).getLocale()).isEqualTo(DbResourceDto.Locale.FRANCE);
+        assertThat(actualDbResources.get(1).getLocale()).isEqualTo(DbResourceDto.Locale.ITALY);
     }
 
     @Test
