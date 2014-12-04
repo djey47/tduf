@@ -5,9 +5,9 @@ import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -221,7 +221,7 @@ public class DbStructureDto implements Serializable {
             private String version;
             private DbDto.Topic topic;
             private String ref;
-            private final List<Field> fields = newArrayList();
+            private final List<Field> fields = new ArrayList<>();
 
             @Override
             public DbStructureDtoBuilder forReference(String reference) {

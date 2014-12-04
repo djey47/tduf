@@ -5,9 +5,9 @@ import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -138,6 +138,11 @@ public class DbResourceDto implements Serializable {
         public String getCode() {
             return code;
         }
+
+        @Override
+        public String toString() {
+            return super.toString();
+        }
     }
 
     /**
@@ -148,7 +153,7 @@ public class DbResourceDto implements Serializable {
             private int categoryCount;
             private String version;
             private Locale locale;
-            private final List<Entry> entries = newArrayList();
+            private final List<Entry> entries = new ArrayList<>();
 
             @Override
             public DbResourceDtoBuilder withLocale(Locale locale) {

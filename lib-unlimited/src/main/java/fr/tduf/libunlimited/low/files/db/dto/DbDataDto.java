@@ -5,9 +5,9 @@ import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -37,7 +37,7 @@ public class DbDataDto implements Serializable {
          */
         public static EntryBuilder builder() {
             return new EntryBuilder() {
-                private final List<Item> items = newArrayList();
+                private final List<Item> items = new ArrayList<>();
                 private long id;
 
                 @Override
@@ -185,7 +185,7 @@ public class DbDataDto implements Serializable {
      */
     public static DbDataDtoBuilder builder() {
         return new DbDataDtoBuilder() {
-            private List<Entry> entries = newArrayList();
+            private List<Entry> entries = new ArrayList<>();
 
             @Override
             public DbDataDtoBuilder addEntry(Entry... entry) {

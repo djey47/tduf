@@ -9,10 +9,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Helper class to process TDU database.
@@ -29,7 +28,7 @@ public class DbHelper {
      * @throws IOException
      */
     public static List<List<String>> readResourcesFromSamples(String... sampleFiles) throws IOException {
-        List<List<String>> resourceLines = newArrayList();
+        List<List<String>> resourceLines = new ArrayList<>();
 
         for (String sampleFile : sampleFiles) {
             resourceLines.add(readContentsFromSample(sampleFile, "UTF-16", "\r\n"));
@@ -86,7 +85,7 @@ public class DbHelper {
      * @return
      */
     public static List<List<String>> readResourcesFromRealFiles(String... fileNames) throws FileNotFoundException {
-        List<List<String>> resourceLines = newArrayList();
+        List<List<String>> resourceLines = new ArrayList<>();
 
         for (String fileName : fileNames) {
             resourceLines.add(readContentsFromRealFile(fileName, "UTF-16", "\r\n"));
@@ -96,7 +95,7 @@ public class DbHelper {
     }
 
     private static List<String> readContentsFromStream(InputStream inputStream, String encoding, String lineDelimiter) {
-        List<String> lines = newArrayList();
+        List<String> lines = new ArrayList<>();
 
         Scanner scanner = new Scanner(inputStream, encoding) ;
         scanner.useDelimiter(lineDelimiter);
