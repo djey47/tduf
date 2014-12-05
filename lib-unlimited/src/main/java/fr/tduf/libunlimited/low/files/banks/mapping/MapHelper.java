@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * Class providing methods to manage BNK mapping.
@@ -203,7 +202,7 @@ public class MapHelper {
         BankMap map = new BankMap();
         Map<Long, String> newChecksums = findNewChecksums(map, checksums);
 
-        System.out.println("Contents which are absent from Bnk1.map: " + reflectionToString(newChecksums));
+        System.out.println("Contents which are absent from Bnk1.map: " + newChecksums);
     }
 
     private boolean checkArguments(String[] args) {
