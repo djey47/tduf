@@ -40,7 +40,7 @@ public class BankMap {
     /**
      * Structure representing a bank entry
      */
-    private class Entry {
+    public class Entry {
         private final  long hash;
         private final long size1;
         private final long size2;

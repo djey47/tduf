@@ -37,12 +37,16 @@ public class FileStructureDto implements Serializable {
 
     private FileStructureDto() {}
 
+    public List<Field> getFields() {
+        return fields;
+    }
+
     /**
      * Represents a field in structure.
      */
     @JsonTypeName("fileStructureField")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-    private class Field {
+    public class Field {
 
         @JsonProperty("name")
         private String name;
@@ -55,12 +59,28 @@ public class FileStructureDto implements Serializable {
 
         @JsonProperty("subFields")
         private List<Field> subFields;
+
+        public Integer getSize() {
+            return size;
+        }
+
+        public Type getType() {
+            return type;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public List<Field> getSubFields() {
+            return subFields;
+        }
     }
 
     /**
      * Describes all field types.
      */
-    private enum Type {
+    public enum Type {
         STRING,
         INTEGER,
         REPEATER,
