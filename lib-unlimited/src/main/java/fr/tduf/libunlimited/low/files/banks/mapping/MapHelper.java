@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.banks.mapping;
 
+import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -11,9 +12,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * Class providing methods to manage BNK mapping.
@@ -50,6 +53,22 @@ public class MapHelper {
                 .map(path -> path.toString().substring(rootFolderName.length()))
 
                 .collect(toList());
+    }
+
+    /**
+     * Returns a list of key-value pairs (key: checksum, value: fileName)
+     * corresponding to checksums which do not exist in provided bankMap, still.
+     * @param bankMap           : contents of bank map (Bnk1.map file)
+     * @param existingChecksums : checksums of acual files on disk
+     * @return associated checksum to each file name.
+     */
+    public static Map<Long, String> findNewChecksums(BankMap bankMap, Map<Long, String> existingChecksums) {
+
+        return existingChecksums.keySet().stream()
+
+                .filter(checksum -> !bankMap.getChecksums().contains(checksum))
+
+                .collect(Collectors.toMap(checksum -> checksum, existingChecksums::get));
     }
 
     /**
@@ -177,6 +196,14 @@ public class MapHelper {
         Map<Long, String> checksums = computeChecksums(banks);
 
         System.out.println("Checksums: " + checksums);
+
+        // TODO use parser
+//        ByteArrayInputStream mapInputStream = new ByteArrayInputStream(new byte[] {} );
+//        Map map = MapParser.load(mapInputStream).parse();
+        BankMap map = new BankMap();
+        Map<Long, String> newChecksums = findNewChecksums(map, checksums);
+
+        System.out.println("Contents which are absent from Bnk1.map: " + reflectionToString(newChecksums));
     }
 
     private boolean checkArguments(String[] args) {

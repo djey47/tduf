@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.banks.mapping;
 
+import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import org.junit.Test;
 
 import java.io.File;
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +67,30 @@ public class MapHelperTest {
         assertThat(checksum1).isEqualTo(0xc48bdcaaL);
         assertThat(checksum2).isEqualTo(0xfe168a1cL);
         assertThat(checksum3).isEqualTo(0x0b6b3ea2L);
+    }
+
+    @Test
+    public void findNewChecksums_forGivenValues_shouldReturnDifferences() {
+        // GIVEN
+        BankMap bankMap = new BankMap();
+        bankMap.addMagicEntry(0xc48bdcaaL);
+        bankMap.addMagicEntry(0x0b6b3ea2L);
+
+        Map<Long, String> existingChecksums = new HashMap<>();
+        existingChecksums.put(0xc48bdcaaL, "avatar/barb.bnk");
+        existingChecksums.put(0xfe168a1cL, "bnk1.map");
+        existingChecksums.put(0x0b6b3ea2L, "frontend/hires/gauges/hud01.bnk");
+
+
+        // WHEN
+        Map<Long, String> newChecksums = MapHelper.findNewChecksums(bankMap, existingChecksums);
+
+
+        // THEN
+        assertThat(newChecksums).isNotNull();
+        assertThat(newChecksums).hasSize(1);
+        assertThat(newChecksums.containsKey(0xfe168a1cL)).isTrue();
+        assertThat(newChecksums.containsValue("bnk1.map")).isTrue();
     }
 
     private static List<String> createExpectedFileList() {
