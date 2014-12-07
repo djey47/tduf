@@ -16,7 +16,8 @@ import static java.lang.Long.valueOf;
 import static java.util.Objects.requireNonNull;
 
 /**
- *
+ * Helper to read files whose file structure is available as separate asset.
+ * Make it possible to extract values from them.
  */
 public class GenericParser {
 
