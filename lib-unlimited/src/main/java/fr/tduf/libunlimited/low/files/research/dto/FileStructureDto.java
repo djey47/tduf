@@ -18,7 +18,7 @@ public class FileStructureDto implements Serializable {
     private String name;
 
     @JsonProperty("littleEndian")
-    private Boolean littlEndian;
+    private Boolean littleEndian;
 
     @JsonProperty("fields")
     private List<Field> fields;
@@ -44,9 +44,13 @@ public class FileStructureDto implements Serializable {
     /**
      * Represents a field in structure.
      */
+    public interface FileStructureDtoBuilder {
+        FileStructureDto build();
+    }
+
     @JsonTypeName("fileStructureField")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-    public class Field {
+    public static class Field implements Serializable {
 
         @JsonProperty("name")
         private String name;
@@ -60,6 +64,8 @@ public class FileStructureDto implements Serializable {
         @JsonProperty("subFields")
         private List<Field> subFields;
 
+        private Field() {}
+
         public Integer getSize() {
             return size;
         }
@@ -71,23 +77,31 @@ public class FileStructureDto implements Serializable {
         public String getName() {
             return name;
         }
-
         public List<Field> getSubFields() {
             return subFields;
         }
-    }
 
+    }
     /**
      * Describes all field types.
      */
     public enum Type {
-        STRING,
-        INTEGER,
-        REPEATER,
-        DELIMITER;
-    }
+        TEXT(true),
+        NUMBER(true),
+        REPEATER(false),
+        DELIMITER(false);
 
-    public interface FileStructureDtoBuilder {
-        FileStructureDto build();
+        /**
+         * Indicates if this type of value will be stored to allow requests on it.
+         */
+        private final boolean valuedToBeStored;
+
+        Type(boolean valueToBeStored) {
+            this.valuedToBeStored = valueToBeStored;
+        }
+
+        public boolean isValuedToBeStored() {
+            return valuedToBeStored;
+        }
     }
 }

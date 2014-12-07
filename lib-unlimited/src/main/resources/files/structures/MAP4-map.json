@@ -3,37 +3,37 @@
   "littleEndian" : false,
   "fields" : [
     {
-      "name" : "tag: MAP4_",
-      "type" : "string",
+      "name" : "tag",
+      "type" : "TEXT",
       "size" : 5
     },{
-      "name" : "entry list",
-      "type" : "repeater",
+      "name" : "entry_list",
+      "type" : "REPEATER",
       "subFields" : [
         {
-          "name" : "file name hash",
-          "type" : "integer",
+          "name" : "file_name_hash",
+          "type" : "NUMBER",
           "size" : 4
         },
         {
-          "name": "size bytes 1",
-          "type": "integer",
+          "name": "size_bytes_1",
+          "type": "NUMBER",
           "size": 4
         }, {
-          "name" : "gap",
-          "type" : "delimiter",
+          "name" : "gap_1",
+          "type" : "DELIMITER",
           "size" : 4
         }, {
-          "name" : "size bytes 2",
-          "type" : "integer",
+          "name" : "size_bytes_2",
+          "type" : "NUMBER",
           "size" : 4
         }, {
-          "name" : "gap",
-          "type" : "delimiter",
+          "name" : "gap_2",
+          "type" : "DELIMITER",
           "size" : 4
         }, {
-          "name" : "entry end",
-          "type" : "delimiter",
+          "name" : "entry_end",
+          "type" : "DELIMITER",
           "size" : 4
         }
       ]

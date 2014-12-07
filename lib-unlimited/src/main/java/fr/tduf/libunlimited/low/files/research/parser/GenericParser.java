@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.low.files.research.parser;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 
 import java.io.ByteArrayInputStream;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,8 @@ public class GenericParser {
     private final ByteArrayInputStream inputStream;
 
     private final FileStructureDto fileStructure;
+
+    private final Map<String, String> store = new HashMap<>();
 
     private GenericParser(ByteArrayInputStream inputStream, FileStructureDto fileStructure) {
         this.inputStream = inputStream;
@@ -38,22 +41,24 @@ public class GenericParser {
     }
 
     /**
-     *
+     * Extracts file contents according to provided structure.
      */
     public void parse() {
-
-        Map<String, String> store = new HashMap<>();
-
-        readFields(fileStructure.getFields(), "", store);
+        this.store.clear();
+        readFields(fileStructure.getFields(), "");
     }
 
-    private void readFields(List<FileStructureDto.Field> fields, String repeaterKey, Map<String, String> store) {
+    private void readFields(List<FileStructureDto.Field> fields, String repeaterKey) {
 
-        int fieldIndex = 0;
-        for(FileStructureDto.Field field : fileStructure.getFields()) {
+        for(FileStructureDto.Field field : fields) {
 
             String name = field.getName();
-            int length = field.getSize();
+
+            // TODO check null value when required
+            Integer length = field.getSize();
+
+            // TODO handle endianness
+
             FileStructureDto.Type type = field.getType();
             List<FileStructureDto.Field> subFields = field.getSubFields();
             String value = null;
@@ -64,28 +69,52 @@ public class GenericParser {
                     inputStream.skip(length);
                     break;
 
-                case INTEGER:
-                    value = valueOf(inputStream.read()).toString();
+                case NUMBER:
+                    byte[] numberAsBytes = new byte[length + 4]; // Prepare long values
+                    inputStream.read(numberAsBytes, 4, length); // TODO reverse for low endian
+                    ByteBuffer wrapped = ByteBuffer.wrap(numberAsBytes);
+                    value = valueOf(wrapped.getLong()).toString();
                     break;
 
-                case STRING:
-                    byte[] bytes = new byte[length];
-                    inputStream.read(bytes, 0, length);
-                    value = new String(bytes);
+                case TEXT:
+                    byte[] textAsBytes = new byte[length];
+                    inputStream.read(textAsBytes, 0, length);
+                    value = new String(textAsBytes);
                     break;
 
                 case REPEATER:
-                    String newRepeaterKey = name + '[' + fieldIndex + ']';
-                    readFields(subFields, newRepeaterKey, store);
+                    int itemIndex = 0 ;
+
+                    //TODO compute Size
+                    int subStructureSize = 24;
+
+                    while (true) {
+                        if ( length == null && inputStream.available() < subStructureSize
+                            || length != null && itemIndex == length ) {
+                            break;
+                        }
+
+                        String newRepeaterKey = name + '[' + itemIndex + "].";
+
+                        readFields(subFields, newRepeaterKey);
+
+                        itemIndex++;
+                    }
+
                     break;
 
                 default:
                     throw new IllegalArgumentException("Unknown field type: " + type);
             }
 
-            String key = repeaterKey + "." + name;
-            store.put(key, value);
+            if (type.isValuedToBeStored()) {
+                String key = repeaterKey + name;
+                this.store.put(key, value);
+            }
         }
+    }
 
+    Map<String, String> getStore() {
+        return store;
     }
 }
