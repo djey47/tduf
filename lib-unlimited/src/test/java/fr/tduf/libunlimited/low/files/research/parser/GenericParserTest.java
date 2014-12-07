@@ -93,6 +93,26 @@ public class GenericParserTest {
         assertThat(actualStructureSize).isEqualTo(101); // = 5 + 4*24
     }
 
+    @Test
+    public void getNumericListOf_whenProvidedStore_shouldReturnSelectedValues() {
+        // GIVEN
+        GenericParser genericParser = createDefaultGenericParser();
+        genericParser.getStore().put("entry_list[0].my_field", "10");
+        genericParser.getStore().put("entry_list[0].a_field", "az");
+        genericParser.getStore().put("entry_list[1].my_field", "20");
+        genericParser.getStore().put("entry_list[1].a_field", "bz");
+        genericParser.getStore().put("entry_list[2].my_field", "30");
+        genericParser.getStore().put("entry_list[2].a_field", "cz");
+
+        // WHEN
+        List<Long> values = genericParser.getNumericListOf("my_field");
+
+        // THEN
+        assertThat(values).isNotNull();
+        assertThat(values).hasSize(3);
+        assertThat(values).containsAll(asList(10L, 20L, 30L));
+    }
+
     private GenericParser createDefaultGenericParser() {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[] {});
         FileStructureDto fileStructure = FileStructureDto.builder()

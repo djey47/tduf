@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.lang.Long.valueOf;
 import static java.util.Objects.requireNonNull;
@@ -46,6 +47,24 @@ public class GenericParser {
     public void parse() {
         this.store.clear();
         readFields(fileStructure.getFields(), "");
+    }
+
+    /**
+     * Returns a list of numeric values from the store.
+     * @param fieldIdentifier : name of field to search
+     * @return all stored values whose key match provided identifier
+     */
+    public List<Long> getNumericListOf(String fieldIdentifier) {
+
+        return store.keySet().stream()
+
+                .filter (key -> key.endsWith(fieldIdentifier)) // TODO enhance key search (regex)
+
+                .map(store::get)
+
+                .map(Long::valueOf)
+
+                .collect(Collectors.toList());
     }
 
     private void readFields(List<FileStructureDto.Field> fields, String repeaterKey) {
