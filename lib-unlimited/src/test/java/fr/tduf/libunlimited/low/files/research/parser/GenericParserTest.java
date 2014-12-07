@@ -12,6 +12,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -97,12 +98,7 @@ public class GenericParserTest {
     public void getNumericListOf_whenProvidedStore_shouldReturnSelectedValues() {
         // GIVEN
         GenericParser genericParser = createDefaultGenericParser();
-        genericParser.getStore().put("entry_list[0].my_field", "10");
-        genericParser.getStore().put("entry_list[0].a_field", "az");
-        genericParser.getStore().put("entry_list[1].my_field", "20");
-        genericParser.getStore().put("entry_list[1].a_field", "bz");
-        genericParser.getStore().put("entry_list[2].my_field", "30");
-        genericParser.getStore().put("entry_list[2].a_field", "cz");
+        enhanceStoreWithEntries(genericParser);
 
         // WHEN
         List<Long> values = genericParser.getNumericListOf("my_field");
@@ -113,16 +109,40 @@ public class GenericParserTest {
         assertThat(values).containsAll(asList(10L, 20L, 30L));
     }
 
-    private GenericParser createDefaultGenericParser() {
+    @Test
+    public void getRepeatedValuesOf_whenProvidedStore_shouldReturnCorrespondingValues() {
+        // GIVEN
+        GenericParser genericParser = createDefaultGenericParser();
+        enhanceStoreWithEntries(genericParser);
+
+        // WHEN
+        List<Map<String, String>> values = genericParser.getRepeatedValuesOf("entry_list");
+
+        // THEN
+        assertThat(values).isNotNull();
+        assertThat(values).hasSize(3);
+        assertThat(values.get(0)).hasSize(2);
+        assertThat(values.get(1)).hasSize(2);
+        assertThat(values.get(2)).hasSize(2);
+    }
+
+    private static void enhanceStoreWithEntries(GenericParser genericParser) {
+        genericParser.getStore().put("entry_list[0].my_field", "10");
+        genericParser.getStore().put("entry_list[0].a_field", "az");
+        genericParser.getStore().put("entry_list[1].my_field", "20");
+        genericParser.getStore().put("entry_list[1].a_field", "bz");
+        genericParser.getStore().put("entry_list[2].my_field", "30");
+        genericParser.getStore().put("entry_list[2].a_field", "cz");
+    }
+
+    private static GenericParser createDefaultGenericParser() {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[] {});
         FileStructureDto fileStructure = FileStructureDto.builder()
                 .build();
-
-        // WHEN
         return GenericParser.load(inputStream, fileStructure);
     }
 
-    private List<FileStructureDto.Field> createFields() {
+    private static List<FileStructureDto.Field> createFields() {
         FileStructureDto.Field field1 = FileStructureDto.Field.builder()
                 .forName("file_name_hash")
                 .withType(FileStructureDto.Type.NUMBER)

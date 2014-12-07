@@ -4,9 +4,12 @@ import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 
 import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.lang.Long.valueOf;
@@ -65,6 +68,50 @@ public class GenericParser {
                 .map(Long::valueOf)
 
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns a list of name-value pairs contained by a repeater field.
+     * @param repeaterFieldName   : name of repeater field
+     */
+    public List<Map<String, String>> getRepeatedValuesOf(String repeaterFieldName) {
+
+        Pattern pattern = Pattern.compile("^(.+)\\[(\\d+)\\]\\.(.+)$"); // e.g 'entry_list[1].my_field'
+
+        Map<Integer, List<String>> groupedKeysByIndex = store.keySet().stream()
+
+                .filter(key -> key.startsWith(repeaterFieldName))
+
+                .collect(Collectors.groupingBy(key -> {
+                    Matcher matcher = pattern.matcher(key);
+                    return matcher.matches() ? Integer.valueOf(matcher.group(2)) : 0; // extracts index part
+                }));
+
+        List<Map<String, String>> repeatedValues = createEmptyList(groupedKeysByIndex.size());
+
+        for(Integer index : groupedKeysByIndex.keySet()) {
+
+            Map<String, String> valuesMap = repeatedValues.get(index);
+
+            for (String key : groupedKeysByIndex.get(index)) {
+                Matcher matcher = pattern.matcher(key);
+                if (matcher.matches()) {
+                    valuesMap.put(matcher.group(3), store.get(key));    // extracts field name part
+                }
+            }
+        }
+
+        return repeatedValues;
+    }
+
+    private static List<Map<String, String>> createEmptyList(int size) {
+        List<Map<String, String>> list = new ArrayList<>(size);
+
+        for (int i = 0 ; i < size ; i++) {
+            list.add(new HashMap<>());
+        }
+
+        return list;
     }
 
     private void readFields(List<FileStructureDto.Field> fields, String repeaterKey) {
