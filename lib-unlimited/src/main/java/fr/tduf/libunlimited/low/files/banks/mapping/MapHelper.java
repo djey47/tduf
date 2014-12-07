@@ -1,14 +1,17 @@
 package fr.tduf.libunlimited.low.files.banks.mapping;
 
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
+import fr.tduf.libunlimited.low.files.banks.mapping.parser.MapParser;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -196,10 +199,14 @@ public class MapHelper {
 
         System.out.println("Checksums: " + checksums);
 
-        // TODO use parser
-//        ByteArrayInputStream mapInputStream = new ByteArrayInputStream(new byte[] {} );
-//        Map map = MapParser.load(mapInputStream).parse();
-        BankMap map = new BankMap();
+        String mapFileName = bnkFolderName + File.separator + "Bnk1.map";
+        byte[] mapContents = Files.readAllBytes(Paths.get(mapFileName));
+        ByteArrayInputStream mapInputStream = new ByteArrayInputStream(mapContents);
+        BankMap map = MapParser.load(mapInputStream).parse();
+
+        System.out.println("Bnk1.map parsing done: " + mapFileName);
+        System.out.println("Entry count: " + map.getEntries().size());
+
         Map<Long, String> newChecksums = findNewChecksums(map, checksums);
 
         System.out.println("Contents which are absent from Bnk1.map: " + newChecksums);
