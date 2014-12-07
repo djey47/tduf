@@ -86,11 +86,8 @@ public class GenericParser {
                     List<FileStructureDto.Field> subFields = field.getSubFields();
                     int subStructureSize = computeStructureSize(subFields);
 
-                    while (true) {
-                        if ( length == null && inputStream.available() < subStructureSize
-                            || length != null && itemIndex == length ) {
-                            break;
-                        }
+                    while (inputStream.available() >= subStructureSize      // auto
+                            && (length == null || itemIndex < length)) {    // specified
 
                         String newRepeaterKey = name + '[' + itemIndex + "].";
 
@@ -98,7 +95,6 @@ public class GenericParser {
 
                         itemIndex++;
                     }
-
                     break;
 
                 default:
@@ -123,7 +119,11 @@ public class GenericParser {
                         case DELIMITER:
                             actualSize = field.getSize();
                             break;
-                        // TODO Handle repeater (auto + fixed)
+
+                        case REPEATER:
+                            // TODO Handle automatic (unknown item count)
+                            actualSize = computeStructureSize(field.getSubFields()) * field.getSize();
+                            break;
 
                         default:
                             throw new IllegalArgumentException("Unknown field type: " + field.getType());

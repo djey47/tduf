@@ -68,6 +68,7 @@ public class FileStructureDto implements Serializable {
 
         public static FieldBuilder builder() {
             return new FieldBuilder() {
+                private List<Field> subFields;
                 private Type type;
                 private Integer size;
                 private String name;
@@ -91,12 +92,25 @@ public class FileStructureDto implements Serializable {
                 }
 
                 @Override
+                public FieldBuilder withSubFields(List<Field> subFields) {
+                    this.subFields = subFields;
+                    return this;
+                }
+
+                @Override
+                public FieldBuilder ofSubItemCount(int count) {
+                    this.size = count;
+                    return this;
+                }
+
+                @Override
                 public Field build() {
                     Field field = new Field();
 
                     field.name = this.name;
                     field.size = this.size;
                     field.type = this.type;
+                    field.subFields = this.subFields;
 
                     return field;
                 }
@@ -126,6 +140,10 @@ public class FileStructureDto implements Serializable {
             FieldBuilder withType(Type type);
 
             FieldBuilder ofSizeBytes(int size);
+
+            FieldBuilder withSubFields(List<Field> subFields);
+
+            FieldBuilder ofSubItemCount(int count);
 
             Field build();
         }

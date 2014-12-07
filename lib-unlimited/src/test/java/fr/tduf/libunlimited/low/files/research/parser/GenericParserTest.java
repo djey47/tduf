@@ -56,6 +56,53 @@ public class GenericParserTest {
     @Test
     public void computeStructureSize_withoutSubFields_shouldReturnRealSizeInBytes() {
         // GIVEN
+        List<FileStructureDto.Field> fields = createFields();
+
+        // WHEN
+        int actualStructureSize = GenericParser.computeStructureSize(fields);
+
+        // THEN
+        assertThat(actualStructureSize).isEqualTo(24);
+    }
+
+    @Test
+    public void computeStructureSize_withSubFields_andFixedSize_shouldReturnRealSizeInBytes() {
+        // GIVEN
+        List<FileStructureDto.Field> subFields = createFields();
+
+        FileStructureDto.Field field1 = FileStructureDto.Field.builder()
+                .forName("tag")
+                .ofSizeBytes(5)
+                .withType(FileStructureDto.Type.TEXT)
+                .build();
+        FileStructureDto.Field field2 = FileStructureDto.Field.builder()
+                .forName("entry_list")
+                .withType(FileStructureDto.Type.REPEATER)
+                .withSubFields(subFields)
+                .ofSubItemCount(4)
+                .build();
+
+        List<FileStructureDto.Field> fields = asList(field1, field2);
+
+
+        // WHEN
+        int actualStructureSize = GenericParser.computeStructureSize(fields);
+
+
+        // THEN
+        assertThat(actualStructureSize).isEqualTo(101); // = 5 + 4*24
+    }
+
+    private GenericParser createDefaultGenericParser() {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[] {});
+        FileStructureDto fileStructure = FileStructureDto.builder()
+                .build();
+
+        // WHEN
+        return GenericParser.load(inputStream, fileStructure);
+    }
+
+    private List<FileStructureDto.Field> createFields() {
         FileStructureDto.Field field1 = FileStructureDto.Field.builder()
                 .forName("file_name_hash")
                 .withType(FileStructureDto.Type.NUMBER)
@@ -86,21 +133,6 @@ public class GenericParserTest {
                 .withType(FileStructureDto.Type.DELIMITER)
                 .ofSizeBytes(4)
                 .build();
-        List<FileStructureDto.Field> fields = asList(field1, field2, field3, field4, field5, field6);
-
-        // WHEN
-        int actualStructureSize = GenericParser.computeStructureSize(fields);
-
-        // THEN
-        assertThat(actualStructureSize).isEqualTo(24);
-    }
-
-    private GenericParser createDefaultGenericParser() {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[] {});
-        FileStructureDto fileStructure = FileStructureDto.builder()
-                .build();
-
-        // WHEN
-        return GenericParser.load(inputStream, fileStructure);
+        return asList(field1, field2, field3, field4, field5, field6);
     }
 }
