@@ -66,6 +66,43 @@ public class FileStructureDto implements Serializable {
 
         private Field() {}
 
+        public static FieldBuilder builder() {
+            return new FieldBuilder() {
+                private Type type;
+                private Integer size;
+                private String name;
+
+                @Override
+                public FieldBuilder forName(String name) {
+                    this.name = name;
+                    return this;
+                }
+
+                @Override
+                public FieldBuilder withType(Type type) {
+                    this.type = type;
+                    return this;
+                }
+
+                @Override
+                public FieldBuilder ofSizeBytes(int size) {
+                    this.size = size;
+                    return this;
+                }
+
+                @Override
+                public Field build() {
+                    Field field = new Field();
+
+                    field.name = this.name;
+                    field.size = this.size;
+                    field.type = this.type;
+
+                    return field;
+                }
+            };
+        }
+
         public Integer getSize() {
             return size;
         }
@@ -77,11 +114,23 @@ public class FileStructureDto implements Serializable {
         public String getName() {
             return name;
         }
+
         public List<Field> getSubFields() {
             return subFields;
         }
 
+        public interface FieldBuilder {
+
+            FieldBuilder forName(String name_hash);
+
+            FieldBuilder withType(Type type);
+
+            FieldBuilder ofSizeBytes(int size);
+
+            Field build();
+        }
     }
+
     /**
      * Describes all field types.
      */

@@ -60,7 +60,6 @@ public class GenericParser {
             // TODO handle endianness
 
             FileStructureDto.Type type = field.getType();
-            List<FileStructureDto.Field> subFields = field.getSubFields();
             String value = null;
 
             switch(type) {
@@ -84,9 +83,8 @@ public class GenericParser {
 
                 case REPEATER:
                     int itemIndex = 0 ;
-
-                    //TODO compute Size
-                    int subStructureSize = 24;
+                    List<FileStructureDto.Field> subFields = field.getSubFields();
+                    int subStructureSize = computeStructureSize(subFields);
 
                     while (true) {
                         if ( length == null && inputStream.available() < subStructureSize
@@ -112,6 +110,31 @@ public class GenericParser {
                 this.store.put(key, value);
             }
         }
+    }
+
+    static int computeStructureSize(List<FileStructureDto.Field> fields) {
+        return fields.stream()
+                .mapToInt(field -> {
+                    int actualSize = 0;
+
+                    switch (field.getType()) {
+                        case TEXT:
+                        case NUMBER:
+                        case DELIMITER:
+                            actualSize = field.getSize();
+                            break;
+                        // TODO Handle repeater (auto + fixed)
+
+                        default:
+                            throw new IllegalArgumentException("Unknown field type: " + field.getType());
+                    }
+
+                    return actualSize;
+                })
+
+                .reduce((left, right) -> left + right)
+
+                .getAsInt();
     }
 
     Map<String, String> getStore() {
