@@ -8,6 +8,13 @@ allprojects {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    task fatJar(type: Jar) {
+        baseName = 'tduf-' + project.name + '-all'
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
+    }
+
 }
 
 subprojects {
@@ -33,6 +40,5 @@ project(':cli') {
         compile project(':lib-unlimited')
 
         compile group: 'args4j', name: 'args4j', version: '2.0.29'
-
     }
 }
