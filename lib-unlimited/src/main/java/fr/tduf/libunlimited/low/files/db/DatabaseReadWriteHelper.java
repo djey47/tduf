@@ -4,14 +4,9 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.parser.DbParser;
 import fr.tduf.libunlimited.low.files.db.writer.DbWriter;
-import org.kohsuke.args4j.Argument;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -21,61 +16,32 @@ import java.util.Scanner;
  */
 public class DatabaseReadWriteHelper {
 
-    @Argument
-    private List<String> arguments = new ArrayList<>();
-
     /**
-     * Utility entry point - till a CLI comes
-     */
-    public static void main(String[] args) throws IOException {
-        new DatabaseReadWriteHelper().doMain(args);
-    }
-
-    /**
-     * Reads database contents from specified topic into databaseDirectory.
+     * Reads all database contents (+resources) from specified topic into databaseDirectory.
      * @param topic             : topic to parse TDU contents from
-     * @param databaseDirectory : location of database contents as db file
-     * @return all lines in database file or empty list, if file for specified topic does not exist.
+     * @param databaseDirectory : location of database contents as db + fr,it,ge... files
+     * @return a global object for topic.
+     * @throws FileNotFoundException
      */
-    public static List<String> parseTopicContentsFromDirectory(DbDto.Topic topic, String databaseDirectory) throws FileNotFoundException {
-        return parseLinesInFile(topic.getLabel(), databaseDirectory, "db", "UTF-8");
-    }
-
-    /**
-     * Reads database resources from specified topic into databaseDirectory.
-     * @param topic             : topic to parse TDU resources from
-     * @param databaseDirectory : location of database resources as fr,it,ge... files
-     * @return All existing resources or empty list, if file for specified topic does not exist.
-     */
-    public static List<List<String>> parseTopicResourcesFromDirectory(DbDto.Topic topic, String databaseDirectory) throws FileNotFoundException {
-        List<List<String>> resources = new ArrayList<>();
-
-        for (DbResourceDto.Locale currentLocale : DbResourceDto.Locale.values()) {
-            resources.add(parseLinesInFile(topic.getLabel(), databaseDirectory, currentLocale.getCode(), "UTF-16"));
-        }
-
-        return resources;
-    }
-
-    private static DbDto readDatabase(DbDto.Topic currentTopic, String databaseFolderName) throws FileNotFoundException {
-        List<String> contentLines = parseTopicContentsFromDirectory(currentTopic, databaseFolderName);
+    public static DbDto readDatabase(DbDto.Topic topic, String databaseDirectory) throws FileNotFoundException {
+        List<String> contentLines = parseTopicContentsFromDirectory(topic, databaseDirectory);
         if(contentLines.isEmpty()) {
-            System.err.println("Database contents not found for topic: " + currentTopic);
+            System.err.println("Database contents not found for topic: " + topic);
             return null;
         }
 
-        List<List<String>> resources = parseTopicResourcesFromDirectory(currentTopic, databaseFolderName);
+        List<List<String>> resources = parseTopicResourcesFromDirectory(topic, databaseDirectory);
         resources.stream()
 
                 .filter(List::isEmpty)
 
-                .forEach(resourceContents -> System.out.println("Some of database resources not found for topic: " + currentTopic));
+                .forEach(resourceContents -> System.out.println("Some of database resources not found for topic: " + topic));
 
         DbParser dbParser = DbParser.load(contentLines, resources);
 
         DbDto dbDto = dbParser.parseAll();
 
-        System.out.println("Parsing done for topic: " + currentTopic);
+        System.out.println("Parsing done for topic: " + topic);
 
         System.out.println("Content line count: " + dbParser.getContentLineCount());
         System.out.println("Resource count: " + dbParser.getResourceCount());
@@ -84,13 +50,31 @@ public class DatabaseReadWriteHelper {
         return dbDto;
     }
 
-    private static void writeDatabaseToJson(Path outputPath, DbDto.Topic currentTopic, DbDto dbDto) throws FileNotFoundException {
+    /**
+     * Writes all database contents (+resources) from specified topic into outputDirectory.
+     * @param dbDto             : topic contents to be written
+     * @param outputDirectory   : location of generated files
+     * @throws FileNotFoundException
+     */
+    public static void writeDatabaseToJson(DbDto dbDto, String outputDirectory) throws FileNotFoundException {
         DbWriter dbWriter = DbWriter.load(dbDto);
 
-        dbWriter.writeAllAsJson(outputPath.toString());
+        String jsonFilePath = outputDirectory + File.separator + ".json";
+        dbWriter.writeAllAsJson(jsonFilePath);
+    }
 
-        System.out.println("Writing done for topic: " + currentTopic);
-        System.out.println("Location: " + outputPath + File.separator + currentTopic.getLabel() + ".json");
+    static List<String> parseTopicContentsFromDirectory(DbDto.Topic topic, String databaseDirectory) throws FileNotFoundException {
+        return parseLinesInFile(topic.getLabel(), databaseDirectory, "db", "UTF-8");
+    }
+
+    static List<List<String>> parseTopicResourcesFromDirectory(DbDto.Topic topic, String databaseDirectory) throws FileNotFoundException {
+        List<List<String>> resources = new ArrayList<>();
+
+        for (DbResourceDto.Locale currentLocale : DbResourceDto.Locale.values()) {
+            resources.add(parseLinesInFile(topic.getLabel(), databaseDirectory, currentLocale.getCode(), "UTF-16"));
+        }
+
+        return resources;
     }
 
     private static List<String> parseLinesInFile(String topicLabel, String databaseDirectory, String extension, String encoding) throws FileNotFoundException {
@@ -111,43 +95,5 @@ public class DatabaseReadWriteHelper {
             resourceLines.add(scanner.next());
         }
         return resourceLines;
-    }
-
-    private void doMain(String[] args) throws FileNotFoundException {
-        if (!checkArguments(args)) {
-            return;
-        }
-        String databaseFolderName = arguments.get(0);
-        String outputFolderSuffix = "tdu-database-dump";
-
-        File outputDirectory = new File(outputFolderSuffix);
-        if (!outputDirectory.exists()) {
-            outputDirectory.mkdirs();
-
-        }
-        Path outputPath = outputDirectory.toPath();
-
-        for(DbDto.Topic currentTopic : DbDto.Topic.values()) {
-            DbDto dbDto = readDatabase(currentTopic, databaseFolderName);
-
-            writeDatabaseToJson(outputPath, currentTopic, dbDto);
-        }
-    }
-
-    private boolean checkArguments(String[] args) {
-        try {
-            CmdLineParser parser = new CmdLineParser(this);
-            parser.parseArgument(args);
-
-            if( arguments.isEmpty() ) {
-                throw new CmdLineException(parser, "Error: No argument is given", null);
-            }
-        } catch (CmdLineException e) {
-            System.err.println(e.getMessage());
-            System.err.println("java DatabaseReadWriteHelper <DATABASE FOLDER>");
-            System.err.println("  Example: java DatabaseReadWriteHelper  \"D:\\Jeux\\Test Drive Unlimited\\Euro\\NoBnk\\DataBase\"");
-            return false;
-        }
-        return true;
     }
 }
