@@ -41,11 +41,11 @@ public class MapParser {
     }
 
     /**
-     *
-     * @return
+     * @return a {@link fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap} instance from provided data.
      */
     public BankMap parse() {
         parser.parse();
+
         List<Map<String, String>> repeatedValues = parser.getRepeatedValuesOf("entry_list");
 
         BankMap bankMap = new BankMap();
