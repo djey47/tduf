@@ -21,6 +21,9 @@ import static java.util.Objects.requireNonNull;
  */
 public class GenericParser {
 
+    private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");                  // e.g 'entry_list[1].my_field', 'my_field'
+    private static final Pattern SUB_FIELD_NAME_PATTERN = Pattern.compile("^(.+)\\[(\\d+)\\]\\.(.+)$");     // e.g 'entry_list[1].my_field'
+
     private final ByteArrayInputStream inputStream;
 
     private final FileStructureDto fileStructure;
@@ -55,14 +58,17 @@ public class GenericParser {
 
     /**
      * Returns a list of numeric values from the store.
-     * @param fieldIdentifier : name of field to search
+     * @param fieldName : name of field to search
      * @return all stored values whose key match provided identifier
      */
-    public List<Long> getNumericListOf(String fieldIdentifier) {
+    public List<Long> getNumericListOf(String fieldName) {
 
         return store.keySet().stream()
 
-                .filter (key -> key.endsWith(fieldIdentifier)) // TODO enhance key search (regex)
+                .filter (key -> {
+                    Matcher matcher = FIELD_NAME_PATTERN.matcher(key);
+                    return matcher.matches() && matcher.group(1).equals(fieldName);
+                })
 
                 .map(store::get)
 
@@ -77,14 +83,12 @@ public class GenericParser {
      */
     public List<Map<String, String>> getRepeatedValuesOf(String repeaterFieldName) {
 
-        Pattern pattern = Pattern.compile("^(.+)\\[(\\d+)\\]\\.(.+)$"); // e.g 'entry_list[1].my_field'
-
         Map<Integer, List<String>> groupedKeysByIndex = store.keySet().stream()
 
                 .filter(key -> key.startsWith(repeaterFieldName))
 
                 .collect(Collectors.groupingBy(key -> {
-                    Matcher matcher = pattern.matcher(key);
+                    Matcher matcher = SUB_FIELD_NAME_PATTERN.matcher(key);
                     return matcher.matches() ? Integer.valueOf(matcher.group(2)) : 0; // extracts index part
                 }));
 
@@ -95,7 +99,7 @@ public class GenericParser {
             Map<String, String> valuesMap = repeatedValues.get(index);
 
             for (String key : groupedKeysByIndex.get(index)) {
-                Matcher matcher = pattern.matcher(key);
+                Matcher matcher = SUB_FIELD_NAME_PATTERN.matcher(key);
                 if (matcher.matches()) {
                     valuesMap.put(matcher.group(3), store.get(key));    // extracts field name part
                 }
