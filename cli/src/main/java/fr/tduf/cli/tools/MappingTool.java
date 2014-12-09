@@ -1,5 +1,6 @@
 package fr.tduf.cli.tools;
 
+import fr.tduf.libunlimited.low.files.banks.mapping.MapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.parser.MapParser;
 import org.kohsuke.args4j.Argument;
@@ -12,10 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
@@ -151,9 +149,7 @@ public class MappingTool {
 
         System.out.println("- BNK root folder: " + this.bankDirectory);
 
-        byte[] mapContents = Files.readAllBytes(Paths.get(this.mapFile));
-        ByteArrayInputStream mapInputStream = new ByteArrayInputStream(mapContents);
-        BankMap map = MapParser.load(mapInputStream).parse();
+        BankMap map = loadBankMap();
         Collection<BankMap.Entry> mapEntries = map.getEntries();
 
         System.out.println("- Bnk1.map parsing done: " + this.mapFile);
@@ -161,25 +157,28 @@ public class MappingTool {
         System.out.println("  -> Entries: " + mapEntries);
     }
 
-    private void listMissing() {
+    private void listMissing() throws IOException {
 
+        System.out.println("- BNK root folder: " + this.bankDirectory);
 
-//        List<String> banks = MapHelper.parseBanks(bnkFolderName);
-//
-//        System.out.println("Bank parsing done.");
-//        System.out.println("File count: " + banks.size());
-//        System.out.println("Files: " + banks);
-//
-//        Map<Long, String> checksums = MapHelper.computeChecksums(banks);
-//
-//        System.out.println("Checksums: " + checksums);
-//
-//
-//
-//        Map<Long, String> newChecksums = MapHelper.findNewChecksums(map, checksums);
-//
-//        System.out.println("Contents which are absent from Bnk1.map: " + newChecksums);
+        List<String> banks = MapHelper.parseBanks(this.bankDirectory);
+        Map<Long, String> checksums = MapHelper.computeChecksums(banks);
 
+        System.out.println("- Bank parsing done.");
+        System.out.println("  -> File count: " + banks.size());
+        System.out.println("  -> Files: " + banks);
+        System.out.println("  -> Checksums: " + checksums);
+
+        BankMap map = loadBankMap();
+        Map<Long, String> newChecksums = MapHelper.findNewChecksums(map, checksums);
+
+        System.out.println("  -> Absent from Bnk1.map: " + newChecksums);
+    }
+
+    private BankMap loadBankMap() throws IOException {
+        byte[] mapContents = Files.readAllBytes(Paths.get(this.mapFile));
+        ByteArrayInputStream mapInputStream = new ByteArrayInputStream(mapContents);
+        return MapParser.load(mapInputStream).parse();
     }
 
     String getBankDirectory() {
