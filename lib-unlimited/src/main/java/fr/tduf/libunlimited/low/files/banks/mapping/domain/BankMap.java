@@ -56,5 +56,14 @@ public class BankMap {
             this.size1 = size1;
             this.size2 = size2;
         }
+
+        @Override
+        public String toString() {
+            return '{' +
+                    "hash=" + hash +
+                    ", size1=" + size1 +
+                    ", size2=" + size2 +
+                    '}';
+        }
     }
 }

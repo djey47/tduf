@@ -1,6 +1,5 @@
 package fr.tduf.cli.tools;
 
-import fr.tduf.libunlimited.low.files.banks.mapping.MapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.parser.MapParser;
 import org.kohsuke.args4j.Argument;
@@ -14,8 +13,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
@@ -118,31 +117,19 @@ public class MappingTool {
             System.exit(1);
         }
 
-        String bnkFolderName = bankDirectory;
-
-        System.out.println("BNK root folder: " + bnkFolderName);
-
-        List<String> banks = MapHelper.parseBanks(bnkFolderName);
-
-        System.out.println("Bank parsing done.");
-        System.out.println("File count: " + banks.size());
-        System.out.println("Files: " + banks);
-
-        Map<Long, String> checksums = MapHelper.computeChecksums(banks);
-
-        System.out.println("Checksums: " + checksums);
-
-        String mapFileName = bnkFolderName + File.separator + "Bnk1.map";
-        byte[] mapContents = Files.readAllBytes(Paths.get(mapFileName));
-        ByteArrayInputStream mapInputStream = new ByteArrayInputStream(mapContents);
-        BankMap map = MapParser.load(mapInputStream).parse();
-
-        System.out.println("Bnk1.map parsing done: " + mapFileName);
-        System.out.println("Entry count: " + map.getEntries().size());
-
-        Map<Long, String> newChecksums = MapHelper.findNewChecksums(map, checksums);
-
-        System.out.println("Contents which are absent from Bnk1.map: " + newChecksums);
+        switch(command) {
+            case INFO:
+                info();
+                break;
+            case LIST_MISSING:
+                listMissing();
+                break;
+//            case FIX_MISSING:
+            default:
+                System.err.println("Error: command is not implemented, yet.");
+                System.exit(1);
+                break;
+        }
     }
 
     private void checkCommand(CmdLineParser parser) throws CmdLineException {
@@ -158,6 +145,41 @@ public class MappingTool {
         }
 
         this.command = Command.fromLabel(commandArgument);
+    }
+
+    private void info() throws IOException {
+
+        System.out.println("- BNK root folder: " + this.bankDirectory);
+
+        byte[] mapContents = Files.readAllBytes(Paths.get(this.mapFile));
+        ByteArrayInputStream mapInputStream = new ByteArrayInputStream(mapContents);
+        BankMap map = MapParser.load(mapInputStream).parse();
+        Collection<BankMap.Entry> mapEntries = map.getEntries();
+
+        System.out.println("- Bnk1.map parsing done: " + this.mapFile);
+        System.out.println("  -> Entry count: " + mapEntries.size());
+        System.out.println("  -> Entries: " + mapEntries);
+    }
+
+    private void listMissing() {
+
+
+//        List<String> banks = MapHelper.parseBanks(bnkFolderName);
+//
+//        System.out.println("Bank parsing done.");
+//        System.out.println("File count: " + banks.size());
+//        System.out.println("Files: " + banks);
+//
+//        Map<Long, String> checksums = MapHelper.computeChecksums(banks);
+//
+//        System.out.println("Checksums: " + checksums);
+//
+//
+//
+//        Map<Long, String> newChecksums = MapHelper.findNewChecksums(map, checksums);
+//
+//        System.out.println("Contents which are absent from Bnk1.map: " + newChecksums);
+
     }
 
     String getBankDirectory() {
