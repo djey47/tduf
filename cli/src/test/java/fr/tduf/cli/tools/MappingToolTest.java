@@ -36,6 +36,7 @@ public class MappingToolTest {
         assertThat(checkResult).isTrue();
         assertThat(mappingTool.getBankDirectory()).isEqualTo("./bnk/");
         assertThat(mappingTool.getMapFile()).isEqualTo("./bnk/Bnk1.map");
+        assertThat(mappingTool.getCommand()).isEqualTo(MappingTool.Command.INFO);
     }
 
     @Test

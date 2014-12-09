@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
@@ -35,6 +34,8 @@ public class MappingTool {
 
     @Argument
     private List<String> arguments = new ArrayList<>();
+
+    private Command command;
 
     /**
      * All available commands
@@ -56,6 +57,16 @@ public class MappingTool {
                     .map(cmd -> cmd.label)
 
                     .collect(toSet());
+        }
+
+        private static Command fromLabel(String label) {
+            return asList(values()).stream()
+
+                    .filter(cmd -> cmd.label.equals(label))
+
+                    .findAny()
+
+                    .get();
         }
     }
 
@@ -140,9 +151,13 @@ public class MappingTool {
             throw new CmdLineException(parser, "Error: No command is given.", null);
         }
 
-        if ( !Command.labels().contains(arguments.get(0)) ) {
+        String commandArgument = arguments.get(0);
+
+        if ( !Command.labels().contains(commandArgument) ) {
             throw new CmdLineException(parser, "Error: An unsupported command is given.", null);
         }
+
+        this.command = Command.fromLabel(commandArgument);
     }
 
     String getBankDirectory() {
@@ -151,5 +166,9 @@ public class MappingTool {
 
     String getMapFile() {
         return mapFile;
+    }
+
+    Command getCommand() {
+        return command;
     }
 }
