@@ -1,16 +1,14 @@
 package fr.tduf.libunlimited.low.files.research.parser;
 
+import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static java.lang.Long.valueOf;
 import static java.util.Objects.requireNonNull;
@@ -19,105 +17,74 @@ import static java.util.Objects.requireNonNull;
  * Helper to read files whose file structure is available as separate asset.
  * Make it possible to extract values from them.
  */
-public class GenericParser {
+public abstract class GenericParser<T> {
 
-    private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");                  // e.g 'entry_list[1].my_field', 'my_field'
-    private static final Pattern SUB_FIELD_NAME_PATTERN = Pattern.compile("^(.+)\\[(\\d+)\\]\\.(.+)$");     // e.g 'entry_list[1].my_field'
+    private static Class<GenericParser> thisClass = GenericParser.class;
 
     private final ByteArrayInputStream inputStream;
 
     private final FileStructureDto fileStructure;
 
-    private final Map<String, String> store = new HashMap<>();
+    private final DataStore dataStore = new DataStore();
 
-    private GenericParser(ByteArrayInputStream inputStream, FileStructureDto fileStructure) {
-        this.inputStream = inputStream;
-        this.fileStructure = fileStructure;
-    }
-
-    /**
-     * Single entry point for this parser.
-     * @param inputStream   : stream containing data to be parsed
-     * @param fileStructure : information about data structure
-     * @return a {@link GenericParser} instance.
-     */
-    public static GenericParser load(ByteArrayInputStream inputStream, FileStructureDto fileStructure) {
+    protected GenericParser(ByteArrayInputStream inputStream) throws IOException {
         requireNonNull(inputStream, "Data stream is required");
-        requireNonNull(fileStructure, "Data structure is required");
+        requireNonNull(getStructureResource(), "Data structure resource is required");
 
-        return new GenericParser(inputStream, fileStructure);
+        InputStream fileStructureStream = thisClass.getResourceAsStream(getStructureResource());
+
+        this.inputStream = inputStream;
+        this.fileStructure = new ObjectMapper().readValue(fileStructureStream, FileStructureDto.class);
     }
 
     /**
      * Extracts file contents according to provided structure.
      */
-    public void parse() {
-        this.store.clear();
+    public T parse() {
+        this.dataStore.clearAll();
         readFields(fileStructure.getFields(), "");
+
+        return generate();
     }
 
-    /**
-     * Returns a list of numeric values from the store.
-     * @param fieldName : name of field to search
-     * @return all stored values whose key match provided identifier
-     */
-    public List<Long> getNumericListOf(String fieldName) {
+    static int computeStructureSize(List<FileStructureDto.Field> fields) {
+        return fields.stream()
+                .mapToInt(field -> {
+                    int actualSize = 0;
 
-        return store.keySet().stream()
+                    switch (field.getType()) {
+                        case TEXT:
+                        case NUMBER:
+                        case DELIMITER:
+                            actualSize = field.getSize();
+                            break;
 
-                .filter (key -> {
-                    Matcher matcher = FIELD_NAME_PATTERN.matcher(key);
-                    return matcher.matches() && matcher.group(1).equals(fieldName);
+                        case REPEATER:
+                            // TODO Handle automatic (unknown item count)
+                            actualSize = computeStructureSize(field.getSubFields()) * field.getSize();
+                            break;
+
+                        default:
+                            throw new IllegalArgumentException("Unknown field type: " + field.getType());
+                    }
+
+                    return actualSize;
                 })
 
-                .map(store::get)
+                .reduce((left, right) -> left + right)
 
-                .map(Long::valueOf)
-
-                .collect(Collectors.toList());
+                .getAsInt();
     }
 
     /**
-     * Returns a list of name-value pairs contained by a repeater field.
-     * @param repeaterFieldName   : name of repeater field
+     * @return a parsed object instance from provided data.
      */
-    public List<Map<String, String>> getRepeatedValuesOf(String repeaterFieldName) {
+    protected abstract T generate();
 
-        Map<Integer, List<String>> groupedKeysByIndex = store.keySet().stream()
-
-                .filter(key -> key.startsWith(repeaterFieldName))
-
-                .collect(Collectors.groupingBy(key -> {
-                    Matcher matcher = SUB_FIELD_NAME_PATTERN.matcher(key);
-                    return matcher.matches() ? Integer.valueOf(matcher.group(2)) : 0; // extracts index part
-                }));
-
-        List<Map<String, String>> repeatedValues = createEmptyList(groupedKeysByIndex.size());
-
-        for(Integer index : groupedKeysByIndex.keySet()) {
-
-            Map<String, String> valuesMap = repeatedValues.get(index);
-
-            for (String key : groupedKeysByIndex.get(index)) {
-                Matcher matcher = SUB_FIELD_NAME_PATTERN.matcher(key);
-                if (matcher.matches()) {
-                    valuesMap.put(matcher.group(3), store.get(key));    // extracts field name part
-                }
-            }
-        }
-
-        return repeatedValues;
-    }
-
-    private static List<Map<String, String>> createEmptyList(int size) {
-        List<Map<String, String>> list = new ArrayList<>(size);
-
-        for (int i = 0 ; i < size ; i++) {
-            list.add(new HashMap<>());
-        }
-
-        return list;
-    }
+    /**
+     * @return location of resource used to describe parsed file structure (mandatory).
+     */
+    protected abstract String getStructureResource();
 
     private void readFields(List<FileStructureDto.Field> fields, String repeaterKey) {
 
@@ -172,43 +139,15 @@ public class GenericParser {
                     throw new IllegalArgumentException("Unknown field type: " + type);
             }
 
+            //TODO everything should be stored to allow complete rewrite
             if (type.isValuedToBeStored()) {
                 String key = repeaterKey + name;
-                this.store.put(key, value);
+                this.dataStore.add(key, value);
             }
         }
     }
 
-    static int computeStructureSize(List<FileStructureDto.Field> fields) {
-        return fields.stream()
-                .mapToInt(field -> {
-                    int actualSize = 0;
-
-                    switch (field.getType()) {
-                        case TEXT:
-                        case NUMBER:
-                        case DELIMITER:
-                            actualSize = field.getSize();
-                            break;
-
-                        case REPEATER:
-                            // TODO Handle automatic (unknown item count)
-                            actualSize = computeStructureSize(field.getSubFields()) * field.getSize();
-                            break;
-
-                        default:
-                            throw new IllegalArgumentException("Unknown field type: " + field.getType());
-                    }
-
-                    return actualSize;
-                })
-
-                .reduce((left, right) -> left + right)
-
-                .getAsInt();
-    }
-
-    Map<String, String> getStore() {
-        return store;
+    public DataStore getDataStore() {
+        return dataStore;
     }
 }

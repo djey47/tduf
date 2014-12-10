@@ -27,18 +27,18 @@ public class MapParserTest {
 
         //THEN
         assertThat(mapParser).isNotNull();
-        assertThat(mapParser.getParser()).isNotNull();
     }
 
     @Test
-    public void parse_whenRealFiles_shouldReadAllEntries() throws IOException, URISyntaxException {
+    public void parse_whenRealFiles_shouldFillStore_andReadAllEntries() throws IOException, URISyntaxException {
         // GIVEN
         URI uri = thisClass.getResource("/banks/Bnk1.map").toURI();
         byte[] mapContents = Files.readAllBytes(Paths.get(uri));
         ByteArrayInputStream mapInputStream = new ByteArrayInputStream(mapContents);
 
         // WHEN
-        BankMap actualBankMap = MapParser.load(mapInputStream).parse();
+        MapParser mapParser = MapParser.load(mapInputStream);
+        BankMap actualBankMap = mapParser.parse();
 
         // THEN
         assertThat(actualBankMap).isNotNull();
@@ -46,5 +46,11 @@ public class MapParserTest {
         assertThat(actualBankMap.getEntries()).extracting("hash").containsAll(asList(858241L, 1507153L, 1521845L, 1572722L));
         assertThat(actualBankMap.getEntries()).extracting("size1").containsAll(asList(0L, 0L, 0L, 0L));
         assertThat(actualBankMap.getEntries()).extracting("size2").containsAll(asList(0L, 0L, 0L, 0L));
+
+        assertThat(mapParser.getDataStore().size()).isEqualTo(13); // = Tag + 4*(Hash+Size1+Size2)
+        assertThat(mapParser.getDataStore().get("entry_list[0].file_name_hash")).isEqualTo("858241");
+        assertThat(mapParser.getDataStore().get("entry_list[1].file_name_hash")).isEqualTo("1507153");
+        assertThat(mapParser.getDataStore().get("entry_list[2].file_name_hash")).isEqualTo("1521845");
+        assertThat(mapParser.getDataStore().get("entry_list[3].file_name_hash")).isEqualTo("1572722");
     }
 }
