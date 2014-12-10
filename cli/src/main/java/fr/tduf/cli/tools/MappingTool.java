@@ -3,15 +3,18 @@ package fr.tduf.cli.tools;
 import fr.tduf.libunlimited.low.files.banks.mapping.MapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.parser.MapParser;
+import fr.tduf.libunlimited.low.files.banks.mapping.writer.MapWriter;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -128,7 +131,9 @@ public class MappingTool {
             case LIST_MISSING:
                 listMissing();
                 break;
-//            case FIX_MISSING:
+            case FIX_MISSING:
+                fixMissing();
+                break;
             default:
                 System.err.println("Error: command is not implemented, yet.");
                 System.exit(1);
@@ -191,10 +196,36 @@ public class MappingTool {
         System.out.println("  -> Absent from Bnk1.map: " + newChecksums);
     }
 
+    private void fixMissing() throws IOException {
+
+        List<String> banks = MapHelper.parseBanks(this.bankDirectory);
+        Map<Long, String> checksums = MapHelper.computeChecksums(banks);
+        BankMap map = loadBankMap();
+
+        MapHelper.findNewChecksums(map, checksums)
+
+                .keySet()
+
+                .forEach(map::addMagicEntry);
+
+        saveBankMap(map);
+
+        System.out.println("Bnk1.map fixing done: " + this.mapFile);
+    }
+
     private BankMap loadBankMap() throws IOException {
-        byte[] mapContents = Files.readAllBytes(Paths.get(this.mapFile));
+        Path mapFilePath = Paths.get(this.mapFile);
+
+        byte[] mapContents = Files.readAllBytes(mapFilePath);
         ByteArrayInputStream mapInputStream = new ByteArrayInputStream(mapContents);
         return MapParser.load(mapInputStream).parse();
+    }
+
+    private void saveBankMap(BankMap map) throws IOException {
+        Path mapFilePath = Paths.get(this.mapFile);
+
+        ByteArrayOutputStream outputStream = MapWriter.load(map).write();
+        Files.write(mapFilePath, outputStream.toByteArray());
     }
 
     String getBankDirectory() {
