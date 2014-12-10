@@ -15,7 +15,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static java.lang.Long.compare;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -39,6 +41,7 @@ public class MappingTool {
      */
     enum Command {
         INFO("info"),
+        LIST("list"),
         LIST_MISSING("list-missing"),
         FIX_MISSING("fix-missing");
 
@@ -119,6 +122,9 @@ public class MappingTool {
             case INFO:
                 info();
                 break;
+            case LIST:
+                list();
+                break;
             case LIST_MISSING:
                 listMissing();
                 break;
@@ -154,17 +160,27 @@ public class MappingTool {
 
         System.out.println("- Bnk1.map parsing done: " + this.mapFile);
         System.out.println("  -> Entry count: " + mapEntries.size());
-        System.out.println("  -> Entries: " + mapEntries);
+    }
+
+    private void list() throws IOException {
+
+        BankMap map = loadBankMap();
+        Collection<BankMap.Entry> sortedMapEntries = map.getEntries().stream()
+
+                .sorted((entry1, entry2) -> compare(entry1.getHash(), entry2.getHash()))
+
+                .collect(toList());
+
+        System.out.println("Bnk1.map parsing done: " + this.mapFile);
+        System.out.println("  -> All entries :" + sortedMapEntries);
     }
 
     private void listMissing() throws IOException {
 
-        System.out.println("- BNK root folder: " + this.bankDirectory);
-
         List<String> banks = MapHelper.parseBanks(this.bankDirectory);
         Map<Long, String> checksums = MapHelper.computeChecksums(banks);
 
-        System.out.println("- Bank parsing done.");
+        System.out.println("- Bank parsing done: " + this.bankDirectory);
         System.out.println("  -> File count: " + banks.size());
         System.out.println("  -> Files: " + banks);
         System.out.println("  -> Checksums: " + checksums);

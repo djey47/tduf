@@ -65,5 +65,9 @@ public class BankMap {
                     ", size2=" + size2 +
                     '}';
         }
+
+        public long getHash() {
+            return hash;
+        }
     }
 }
