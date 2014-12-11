@@ -140,7 +140,7 @@ public abstract class GenericParser<T> {
             }
 
             //TODO everything should be stored to allow complete rewrite
-            if (type.isValuedToBeStored()) {
+            if (type.isValueToBeStored()) {
                 String key = repeaterKey + name;
                 this.dataStore.add(key, value);
             }

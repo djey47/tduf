@@ -167,7 +167,7 @@ public class FileStructureDto implements Serializable {
             this.valuedToBeStored = valueToBeStored;
         }
 
-        public boolean isValuedToBeStored() {
+        public boolean isValueToBeStored() {
             return valuedToBeStored;
         }
     }
