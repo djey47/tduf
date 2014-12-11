@@ -17,7 +17,6 @@ public class MapWriterTest {
 
         //THEN
         assertThat(mapWriter).isNotNull();
-        assertThat(mapWriter.getWriter()).isNotNull();
     }
 
     @Test

@@ -1,33 +1,31 @@
 package fr.tduf.libunlimited.low.files.banks.mapping.writer;
 
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
-import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import fr.tduf.libunlimited.low.files.research.writer.GenericWriter;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * Helper class to persist {@link fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap} instance to specified Bnk1.map file.
  */
-public class MapWriter {
-
-    private final GenericWriter writer;
+public class MapWriter extends GenericWriter<BankMap> {
 
     private MapWriter(BankMap bankMap) throws IOException {
-        InputStream structureAsStream = getClass().getResourceAsStream("/files/structures/MAP4-map.json");
-        FileStructureDto fileStructure = new ObjectMapper().readValue(structureAsStream, FileStructureDto.class);
+        super(bankMap);
+    }
 
-        writer = GenericWriter.load(fileStructure);
+    @Override
+    public ByteArrayOutputStream write() {
+        return super.write();
     }
 
     /**
-     * @param bankMap
-     * @return
+     * Single entry point for this writer.
+     * @param bankMap   : mapping data to be written
+     * @return a {@link MapWriter} instance.
      */
     public static MapWriter load(BankMap bankMap) throws IOException {
         requireNonNull(bankMap, "Bank mapping is required");
@@ -35,15 +33,8 @@ public class MapWriter {
         return new MapWriter(bankMap);
     }
 
-    /**
-     *
-     * @return
-     */
-    public ByteArrayOutputStream write() {
-        return writer.write();
-    }
-
-     GenericWriter getWriter() {
-        return writer;
+    @Override
+    protected String getStructureResource() {
+        return "/files/structures/MAP4-map.json";
     }
 }
