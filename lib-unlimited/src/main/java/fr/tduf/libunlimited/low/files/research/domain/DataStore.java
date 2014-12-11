@@ -67,6 +67,18 @@ public class DataStore {
     }
 
     /**
+     * Returns all bytes from the store.
+     * @param fieldName : identifier of field hosting the value
+     * @return the stored raw value whose key match provided identifier, or null if it does not exist
+     */
+    public byte[] getRawValue(String fieldName) {
+        if (!this.store.containsKey(fieldName)) {
+            return null;
+        }
+        return this.store.get(fieldName);
+    }
+
+    /**
      * Returns a String value from the store.
      * @param fieldName :   name of field to search
      * @return the stored value whose key match provided identifier, or null if it does not exist

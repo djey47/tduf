@@ -85,6 +85,32 @@ public class DataStoreTest {
     }
 
     @Test
+    public void getRawValue_whenNoItem_shouldReturnNull() {
+        // GIVEN-WHEN-THEN
+        assertThat(dataStore.getRawValue("f1")).isNull();
+    }
+
+    @Test
+    public void getRawValue_whenOneItem_andSuccess_shouldReturnValue() {
+        // GIVEN
+        byte[] expectedBytes = { 0, 1, 2, 3};
+        dataStore.getStore().put("f1", expectedBytes);
+
+        // WHEN-THEN
+        assertThat(dataStore.getRawValue("f1")).isEqualTo(expectedBytes);
+    }
+
+    @Test
+    public void getRawValue_whenOneItem_andNoSuccess_shouldReturnNull() {
+        // GIVEN
+        byte[] bytes = { 0 };
+        dataStore.getStore().put("f1", bytes);
+
+        // WHEN-THEN
+        assertThat(dataStore.getRawValue("f2")).isNull();
+    }
+
+    @Test
     public void getString_whenNoItem_shouldReturnNull() {
         // GIVEN-WHEN-THEN
         assertThat(dataStore.getString("f1")).isNull();
