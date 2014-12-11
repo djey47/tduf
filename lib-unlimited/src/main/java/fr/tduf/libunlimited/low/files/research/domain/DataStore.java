@@ -17,10 +17,11 @@ public class DataStore {
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");              // e.g 'entry_list[1].my_field', 'my_field'
     private static final Pattern SUB_FIELD_NAME_PATTERN = Pattern.compile("^(.+)\\[(\\d+)\\]\\.(.+)$"); // e.g 'entry_list[1].my_field'
 
+    // TODO Store bytes
     private final Map<String, String> store = new HashMap<>();
 
     /**
-     * Remove all entries fro current store.
+     * Remove all entries from current store.
      */
     public void clearAll() {
         this.store.clear();
