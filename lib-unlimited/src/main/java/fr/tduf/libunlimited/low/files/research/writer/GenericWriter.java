@@ -7,6 +7,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -37,9 +39,78 @@ public abstract class GenericWriter<T> {
      * Writes current data object to byte stream.
      * @return a stream with serialized data according to provided structure
      */
-    public ByteArrayOutputStream write() {
-        return null;
+    public ByteArrayOutputStream write() throws IOException {
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        fillStore();
+
+        //TODO: handle value not found
+        writeFields(fileStructure.getFields(), outputStream, "");
+
+        return outputStream;
     }
+
+    private boolean writeFields(List<FileStructureDto.Field> fields, ByteArrayOutputStream outputStream, String repeaterKey) throws IOException {
+        for(FileStructureDto.Field field : fields) {
+            String name = field.getName();
+            Integer length = field.getSize();
+            FileStructureDto.Type type = field.getType();
+
+            byte[] valueBytes = null;
+            if (type.isValueToBeStored()) {
+                String key = repeaterKey + name;
+                valueBytes = dataStore.getRawValue(key);
+                if (valueBytes == null) {
+                    return false;
+                }
+            }
+
+            switch (type) {
+
+                case GAP:
+                    outputStream.write(ByteBuffer.allocate(length).array());
+                    break;
+
+                case DELIMITER:
+                case TEXT:
+                    outputStream.write(valueBytes);
+                    break;
+
+                case NUMBER:
+                    //TODO handle other than 4 bytes
+//                    byte[] numberAsBytes = ByteBuffer
+//                            .allocate(length)
+//                            .putInt(Integer.valueOf(valueBytes))
+//                            .array();
+                    outputStream.write(valueBytes);
+                    break;
+
+                case REPEATER:
+                    int itemIndex = 0;
+                    boolean hasMoreFields = true;
+
+                    while (hasMoreFields) {
+                        String newRepeaterKey = String.format("%s[%d].", name, itemIndex);
+
+                        hasMoreFields = writeFields(field.getSubFields(), outputStream, newRepeaterKey);
+
+                        itemIndex++;
+                    }
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Unknown field type: " + type);
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     *
+     */
+    protected abstract void fillStore();
 
     /**
      * @return location of resource used to describe parsed file structure (mandatory).
@@ -50,7 +121,11 @@ public abstract class GenericWriter<T> {
         return fileStructure;
     }
 
-    T getData() {
+    protected DataStore getDataStore() {
+        return dataStore;
+    }
+
+    protected T getData() {
         return data;
     }
 }

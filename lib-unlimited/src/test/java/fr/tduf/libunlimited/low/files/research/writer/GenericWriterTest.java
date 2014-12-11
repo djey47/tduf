@@ -16,6 +16,9 @@ public class GenericWriterTest {
         // WHEN
         GenericWriter<String> actualWriter = new GenericWriter<String>(data) {
             @Override
+            protected void fillStore() {}
+
+            @Override
             protected String getStructureResource() {
                 return "/files/structures/MAP4-map.json";
             }
@@ -27,7 +30,8 @@ public class GenericWriterTest {
     }
 
     @Test
-    public void write_whenRealFiles_shouldReturnBytes() throws IOException {
+    public void write_whenProvidedFiles_shouldReturnBytes() throws IOException {
+        // TODO test with light sample
         // GIVEN
 
         // WHEN
