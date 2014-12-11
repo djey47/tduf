@@ -28,10 +28,18 @@ public class BankMap {
         entries.put(hash, new Entry(hash, 0, 0));
     }
 
+    /**
+     * Returns all entries in this map.
+     * @return an unsorted collection of {@link Entry}
+     */
     public Collection<Entry> getEntries() {
         return entries.values();
     }
 
+    /**
+     * Returns all keys (checksums) in this map.
+     * @return an unsorted collection of checksums as {@link java.lang.Long}
+     */
     public Set<Long> getChecksums() {
         return entries.keySet();
     }
