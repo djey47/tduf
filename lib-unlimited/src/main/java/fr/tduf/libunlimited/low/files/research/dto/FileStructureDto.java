@@ -156,7 +156,7 @@ public class FileStructureDto implements Serializable {
         TEXT(true),
         NUMBER(true),
         REPEATER(false),
-        DELIMITER(false);
+        DELIMITER(true);
 
         /**
          * Indicates if this type of value will be stored to allow requests on it.
