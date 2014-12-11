@@ -15,7 +15,9 @@ import java.util.stream.Collectors;
 public class DataStore {
 
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");              // e.g 'entry_list[1].my_field', 'my_field'
+
     private static final Pattern SUB_FIELD_NAME_PATTERN = Pattern.compile("^(.+)\\[(\\d+)\\]\\.(.+)$"); // e.g 'entry_list[1].my_field'
+    private static final String SUB_FIELD_FORMAT = "%s[%d].%s";
 
     // TODO Store bytes
     private final Map<String, String> store = new HashMap<>();
@@ -34,6 +36,18 @@ public class DataStore {
      */
     public void add(String fieldName, String value) {
         this.store.put(fieldName, value);
+    }
+
+    /**
+     * Adds a repeated field to the store.
+     * @param repeaterFieldName : identifier of repeater field
+     * @param fieldName         : identifier of field hosting the value
+     * @param index             : rank in repeater
+     * @param value             : value to storel
+     */
+    public void addRepeatedValue(String repeaterFieldName, String fieldName, int index, String value) {
+        String key = String.format(SUB_FIELD_FORMAT, repeaterFieldName, index, fieldName);
+        this.store.put(key, value);
     }
 
     /**

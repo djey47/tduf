@@ -37,6 +37,15 @@ public class DataStoreTest {
     }
 
     @Test
+    public void addRepeatedValue_shouldCreateNewEntryInStore() {
+        // GIVEN - WHEN
+        dataStore.addRepeatedValue("repeater", "f1", 0, "v1");
+
+        // THEN
+        assertThat(dataStore.getStore()).contains(MapEntry.entry("repeater[0].f1", "v1"));
+    }
+
+    @Test
     public void size_whenNewStore_shouldReturnZero() {
         // GIVEN - WHEN
         int size = dataStore.size();
