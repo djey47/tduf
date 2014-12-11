@@ -20,13 +20,6 @@ public class BankMap {
     }
 
     /**
-     * Adds all specified entries. Entries with same hashes should not exist.
-     */
-    public void addAllEntries(Map<Long, Entry> entries) {
-        entries.putAll(entries);
-    }
-
-    /**
      * Adds a magic entry. An entry with the same hash should not exist.
      * A magic entry specifies sizes to 0, disabling file size control by the game.
      * @param hash  : unique identifier of bank file to add
@@ -68,6 +61,14 @@ public class BankMap {
 
         public long getHash() {
             return hash;
+        }
+
+        public long getSize1() {
+            return size1;
+        }
+
+        public long getSize2() {
+            return size2;
         }
     }
 }
