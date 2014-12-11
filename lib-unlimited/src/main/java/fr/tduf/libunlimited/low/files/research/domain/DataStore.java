@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,8 +20,7 @@ public class DataStore {
     private static final Pattern SUB_FIELD_NAME_PATTERN = Pattern.compile("^(.+)\\[(\\d+)\\]\\.(.+)$"); // e.g 'entry_list[1].my_field'
     private static final String SUB_FIELD_FORMAT = "%s[%d].%s";
 
-    // TODO Store bytes
-    private final Map<String, String> store = new HashMap<>();
+    private final Map<String, byte[]> store = new HashMap<>();
 
     /**
      * Remove all entries from current store.
@@ -30,12 +30,21 @@ public class DataStore {
     }
 
     /**
-     * Adds a value to the store.
+     * Adds all bytes to the store.
+     * @param fieldName : identifier of field hosting the value, should not exist already
+     * @param rawValue  : value to store
+     */
+    public void addRawValue(String fieldName, byte[] rawValue) {
+        this.store.put(fieldName, rawValue);
+    }
+
+    /**
+     * Adds a String value to the store.
      * @param fieldName : identifier of field hosting the value, should not exist already
      * @param value     : value to store
      */
-    public void add(String fieldName, String value) {
-        this.store.put(fieldName, value);
+    public void addString(String fieldName, String value) {
+        this.store.put(fieldName, value.getBytes());
     }
 
     /**
@@ -45,9 +54,9 @@ public class DataStore {
      * @param index             : rank in repeater
      * @param value             : value to storel
      */
-    public void addRepeatedValue(String repeaterFieldName, String fieldName, int index, String value) {
+    public void addRepeatedStringValue(String repeaterFieldName, String fieldName, int index, String value) {
         String key = String.format(SUB_FIELD_FORMAT, repeaterFieldName, index, fieldName);
-        this.store.put(key, value);
+        this.store.put(key, value.getBytes());
     }
 
     /**
@@ -58,12 +67,15 @@ public class DataStore {
     }
 
     /**
-     * Returns a raw value from the store.
+     * Returns a String value from the store.
      * @param fieldName :   name of field to search
      * @return the stored value whose key match provided identifier, or null if it does not exist
      */
-    public String get(String fieldName) {
-        return this.store.get(fieldName);
+    public String getString(String fieldName) {
+        if (!this.store.containsKey(fieldName)) {
+            return null;
+        }
+        return new String(this.store.get(fieldName));
     }
 
     /**
@@ -75,23 +87,24 @@ public class DataStore {
 
         return store.keySet().stream()
 
-                .filter (key -> {
+                .filter(key -> {
                     Matcher matcher = FIELD_NAME_PATTERN.matcher(key);
                     return matcher.matches() && matcher.group(1).equals(fieldName);
                 })
 
-                .map(store::get)
+                .map( store::get)
 
-                .map(Long::valueOf)
+                .map( bytes -> ByteBuffer.wrap(bytes).getLong() ) // TODO handle other than 4 bytes
 
-                .collect(Collectors.toList());
+                .collect( Collectors.toList() );
     }
 
     /**
      * Returns a list of name-value pairs contained by a repeater field.
      * @param repeaterFieldName   : name of repeater field
      */
-    public List<Map<String, String>> getRepeatedValuesOf(String repeaterFieldName) {
+    // TODO return DataStore !!
+    public List<Map<String, byte[]>> getRepeatedValuesOf(String repeaterFieldName) {
 
         Map<Integer, List<String>> groupedKeysByIndex = store.keySet().stream()
 
@@ -102,11 +115,11 @@ public class DataStore {
                     return matcher.matches() ? Integer.valueOf(matcher.group(2)) : 0; // extracts index part
                 }));
 
-        List<Map<String, String>> repeatedValues = createEmptyList(groupedKeysByIndex.size());
+        List<Map<String, byte[]>> repeatedValues = createEmptyList(groupedKeysByIndex.size());
 
         for(Integer index : groupedKeysByIndex.keySet()) {
 
-            Map<String, String> valuesMap = repeatedValues.get(index);
+            Map<String, byte[]> valuesMap = repeatedValues.get(index);
 
             for (String key : groupedKeysByIndex.get(index)) {
                 Matcher matcher = SUB_FIELD_NAME_PATTERN.matcher(key);
@@ -119,8 +132,8 @@ public class DataStore {
         return repeatedValues;
     }
 
-    private static List<Map<String, String>> createEmptyList(int size) {
-        List<Map<String, String>> list = new ArrayList<>(size);
+    private static List<Map<String, byte[]>> createEmptyList(int size) {
+        List<Map<String, byte[]>> list = new ArrayList<>(size);
 
         for (int i = 0 ; i < size ; i++) {
             list.add(new HashMap<>());
@@ -129,7 +142,7 @@ public class DataStore {
         return list;
     }
 
-    Map<String, String> getStore() {
+    Map<String, byte[]> getStore() {
         return store;
     }
 }

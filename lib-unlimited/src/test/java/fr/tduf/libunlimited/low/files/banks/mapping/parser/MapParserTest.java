@@ -48,9 +48,6 @@ public class MapParserTest {
         assertThat(actualBankMap.getEntries()).extracting("size2").containsAll(asList(0L, 0L, 0L, 0L));
 
         assertThat(mapParser.getDataStore().size()).isEqualTo(17); // = Tag + 4*(Hash+Size1+Size2+End)
-        assertThat(mapParser.getDataStore().get("entry_list[0].file_name_hash")).isEqualTo("858241");
-        assertThat(mapParser.getDataStore().get("entry_list[1].file_name_hash")).isEqualTo("1507153");
-        assertThat(mapParser.getDataStore().get("entry_list[2].file_name_hash")).isEqualTo("1521845");
-        assertThat(mapParser.getDataStore().get("entry_list[3].file_name_hash")).isEqualTo("1572722");
+        assertThat(mapParser.getDataStore().getString("tag")).isEqualTo("MAP4\0");
     }
 }

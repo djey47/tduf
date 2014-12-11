@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.low.files.research.parser.GenericParser;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 
@@ -32,15 +33,15 @@ public class MapParser extends GenericParser<BankMap> {
 
     @Override
     protected BankMap generate() {
-        List<Map<String, String>> repeatedValues = getDataStore().getRepeatedValuesOf("entry_list");
+        List<Map<String, byte[]>> repeatedValues = getDataStore().getRepeatedValuesOf("entry_list");
 
         BankMap bankMap = new BankMap();
 
-        for (Map<String, String> values : repeatedValues) {
+        for (Map<String, byte[]> values : repeatedValues) {
 
-            long checksum = Long.valueOf(values.get("file_name_hash"));
-            long size1 = Long.valueOf(values.get("size_bytes_1"));
-            long size2 = Long.valueOf(values.get("size_bytes_2"));
+            long checksum = toLong(values.get("file_name_hash"));
+            long size1 = toLong(values.get("size_bytes_1"));
+            long size2 = toLong(values.get("size_bytes_2"));
 
             bankMap.addEntry(checksum, size1, size2);
         }
@@ -51,5 +52,11 @@ public class MapParser extends GenericParser<BankMap> {
     @Override
     protected String getStructureResource() {
         return "/files/structures/MAP4-map.json";
+    }
+
+    private static long toLong(byte[] bytes) {
+        return ByteBuffer
+                .wrap(bytes)
+                .getLong();
     }
 }

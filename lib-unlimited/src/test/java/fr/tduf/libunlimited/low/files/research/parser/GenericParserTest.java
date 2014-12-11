@@ -4,6 +4,8 @@ import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;

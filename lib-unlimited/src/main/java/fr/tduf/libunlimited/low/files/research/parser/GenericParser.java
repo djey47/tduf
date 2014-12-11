@@ -7,10 +7,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.util.List;
 
-import static java.lang.Long.valueOf;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -99,26 +97,23 @@ public abstract class GenericParser<T> {
             // TODO handle endianness
 
             FileStructureDto.Type type = field.getType();
-            String value = null;
+            byte[] readValueAsBytes = null;
 
             switch(type) {
 
-                case DELIMITER:
                 case GAP:
                     inputStream.skip(length);
                     break;
 
-                case NUMBER:
-                    byte[] numberAsBytes = new byte[length + 4]; // Prepare long values
-                    inputStream.read(numberAsBytes, 4, length); // TODO reverse for low endian
-                    ByteBuffer wrapped = ByteBuffer.wrap(numberAsBytes);
-                    value = valueOf(wrapped.getLong()).toString();
+                case NUMBER:    // TODO handle other than 32 bit
+                    readValueAsBytes = new byte[length + 4]; // Prepare long values
+                    inputStream.read(readValueAsBytes, 4, length);
                     break;
 
+                case DELIMITER:
                 case TEXT:
-                    byte[] textAsBytes = new byte[length];
-                    inputStream.read(textAsBytes, 0, length);
-                    value = new String(textAsBytes);
+                    readValueAsBytes = new byte[length];
+                    inputStream.read(readValueAsBytes, 0, length);
                     break;
 
                 case REPEATER:
@@ -129,6 +124,7 @@ public abstract class GenericParser<T> {
                     while (inputStream.available() >= subStructureSize      // auto
                             && (length == null || itemIndex < length)) {    // specified
 
+                        // TODO externalize key format
                         String newRepeaterKey = name + '[' + itemIndex + "].";
 
                         readFields(subFields, newRepeaterKey);
@@ -141,10 +137,9 @@ public abstract class GenericParser<T> {
                     throw new IllegalArgumentException("Unknown field type: " + type);
             }
 
-            //TODO everything should be stored to allow complete rewrite
             if (type.isValueToBeStored()) {
                 String key = repeaterKey + name;
-                this.dataStore.add(key, value);
+                this.dataStore.addRawValue(key, readValueAsBytes);
             }
         }
     }
