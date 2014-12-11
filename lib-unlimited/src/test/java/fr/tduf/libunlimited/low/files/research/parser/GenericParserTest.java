@@ -3,12 +3,37 @@ package fr.tduf.libunlimited.low.files.research.parser;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericParserTest {
+
+    @Test
+    public void newParser_whenProvidedContents_shouldReturnParserInstance() throws Exception {
+        // GIVEN
+        byte[] bytes = {0x1, 0x2, 0x3, 0x4};
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+
+        // WHEN
+        GenericParser<String> actualParser = new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+                return null;
+            }
+
+            @Override
+            protected String getStructureResource() {
+                return "/files/structures/MAP4-map.json";
+            }
+        };
+
+        // THEN
+        assertThat(actualParser.getInputStream()).isEqualTo(inputStream);
+        assertThat(actualParser.getFileStructure()).isNotNull();
+    }
 
     @Test
     public void computeStructureSize_withoutSubFields_shouldReturnRealSizeInBytes() {

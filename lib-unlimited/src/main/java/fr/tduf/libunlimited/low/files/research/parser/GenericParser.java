@@ -150,4 +150,12 @@ public abstract class GenericParser<T> {
     public DataStore getDataStore() {
         return dataStore;
     }
+
+    FileStructureDto getFileStructure() {
+        return fileStructure;
+    }
+
+    ByteArrayInputStream getInputStream() {
+        return inputStream;
+    }
 }
