@@ -32,7 +32,7 @@ public class MapWriter extends GenericWriter<BankMap> {
     @Override
     protected void fillStore() {
 
-        getDataStore().addString("tag", "MAP4\0");
+        getDataStore().addText("tag", "MAP4\0");
 
         List<BankMap.Entry> sortedEntries = this.getData().getEntries().stream()
 
@@ -43,9 +43,12 @@ public class MapWriter extends GenericWriter<BankMap> {
         int index = 0;
         for(BankMap.Entry entry : sortedEntries) {
 
-            getDataStore().addRepeatedStringValue("entry_list", "file_name_hash", index, Long.toString(entry.getHash()));
-            getDataStore().addRepeatedStringValue("entry_list", "size_bytes_1", index, Long.toString(entry.getSize1()));
-            getDataStore().addRepeatedStringValue("entry_list", "size_bytes_2", index, Long.toString(entry.getSize2()));
+            getDataStore().addRepeatedNumericValue("entry_list", "file_name_hash", index, entry.getHash());
+            getDataStore().addRepeatedNumericValue("entry_list", "size_bytes_1", index, entry.getSize1());
+            getDataStore().addRepeatedNumericValue("entry_list", "size_bytes_2", index, entry.getSize2());
+            //TODO store delimiter in domain object to use it
+            byte[] delimiterBytes = { 0x0, (byte) 0xFE, 0x12, 0x0 };
+            getDataStore().addRepeatedRawValue("entry_list", "delimiter", index, delimiterBytes);
 
             index++;
         }

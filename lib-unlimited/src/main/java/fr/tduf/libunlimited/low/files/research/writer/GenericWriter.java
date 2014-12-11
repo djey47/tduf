@@ -74,7 +74,7 @@ public abstract class GenericWriter<T> {
 
                 case DELIMITER:
                 case TEXT:
-                    outputStream.write(valueBytes);
+                    outputStream.write(valueBytes, 0, length);
                     break;
 
                 case NUMBER:
@@ -83,7 +83,7 @@ public abstract class GenericWriter<T> {
 //                            .allocate(length)
 //                            .putInt(Integer.valueOf(valueBytes))
 //                            .array();
-                    outputStream.write(valueBytes);
+                    outputStream.write(valueBytes, 0, length);
                     break;
 
                 case REPEATER:

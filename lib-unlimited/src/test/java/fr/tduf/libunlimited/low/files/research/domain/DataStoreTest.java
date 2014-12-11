@@ -43,18 +43,18 @@ public class DataStoreTest {
     }
 
     @Test
-    public void addString_shouldCreateNewEntryInStore() throws Exception {
+    public void addText_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN - WHEN
-        dataStore.addString("f1", "v1");
+        dataStore.addText("f1", "v1");
 
         // THEN
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", "v1".getBytes()));
     }
 
     @Test
-    public void addRepeatedStringValue_shouldCreateNewEntryInStore() {
+    public void addRepeatedTextValue_shouldCreateNewEntryInStore() {
         // GIVEN - WHEN
-        dataStore.addRepeatedStringValue("repeater", "f1", 0, "v1");
+        dataStore.addRepeatedTextValue("repeater", "f1", 0, "v1");
 
         // THEN
         // FIXME does not work: bug submitted to AssertJ project: https://github.com/joel-costigliola/assertj-core/issues/293
@@ -111,27 +111,27 @@ public class DataStoreTest {
     }
 
     @Test
-    public void getString_whenNoItem_shouldReturnNull() {
+    public void getText_whenNoItem_shouldReturnNull() {
         // GIVEN-WHEN-THEN
-        assertThat(dataStore.getString("f1")).isNull();
+        assertThat(dataStore.getText("f1")).isNull();
     }
 
     @Test
-    public void getString_whenOneItem_andSuccess_shouldReturnValue() {
+    public void getText_whenOneItem_andSuccess_shouldReturnValue() {
         // GIVEN
         putStringInStore("f1", "v1");
 
         // WHEN-THEN
-        assertThat(dataStore.getString("f1")).isEqualTo("v1");
+        assertThat(dataStore.getText("f1")).isEqualTo("v1");
     }
 
     @Test
-    public void getString_whenOneItem_andNoSuccess_shouldReturnNull() {
+    public void getText_whenOneItem_andNoSuccess_shouldReturnNull() {
         // GIVEN
         putStringInStore("f1", "v1");
 
         // WHEN-THEN
-        assertThat(dataStore.getString("f2")).isNull();
+        assertThat(dataStore.getText("f2")).isNull();
     }
 
     @Test

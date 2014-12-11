@@ -43,7 +43,7 @@ public class DataStore {
      * @param fieldName : identifier of field hosting the value, should not exist already
      * @param value     : value to store
      */
-    public void addString(String fieldName, String value) {
+    public void addText(String fieldName, String value) {
         this.store.put(fieldName, value.getBytes());
     }
 
@@ -52,11 +52,33 @@ public class DataStore {
      * @param repeaterFieldName : identifier of repeater field
      * @param fieldName         : identifier of field hosting the value
      * @param index             : rank in repeater
-     * @param value             : value to storel
+     * @param valueBytes        : value to store
      */
-    public void addRepeatedStringValue(String repeaterFieldName, String fieldName, int index, String value) {
+    public void addRepeatedRawValue(String repeaterFieldName, String fieldName, int index, byte[] valueBytes) {
+        //TODO
+    }
+
+    /**
+     * Adds a repeated field to the store.
+     * @param repeaterFieldName : identifier of repeater field
+     * @param fieldName         : identifier of field hosting the value
+     * @param index             : rank in repeater
+     * @param value             : value to store
+     */
+    public void addRepeatedTextValue(String repeaterFieldName, String fieldName, int index, String value) {
         String key = String.format(SUB_FIELD_FORMAT, repeaterFieldName, index, fieldName);
         this.store.put(key, value.getBytes());
+    }
+
+    /**
+     * Adds a repeated field to the store.
+     * @param repeaterFieldName : identifier of repeater field
+     * @param fieldName         : identifier of field hosting the value
+     * @param index             : rank in repeater
+     * @param value             : value to store
+     */
+    public void addRepeatedNumericValue(String repeaterFieldName, String fieldName, int index, long value) {
+        //TODO
     }
 
     /**
@@ -83,7 +105,7 @@ public class DataStore {
      * @param fieldName :   name of field to search
      * @return the stored value whose key match provided identifier, or null if it does not exist
      */
-    public String getString(String fieldName) {
+    public String getText(String fieldName) {
         if (!this.store.containsKey(fieldName)) {
             return null;
         }
