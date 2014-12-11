@@ -56,6 +56,7 @@ public abstract class GenericParser<T> {
                         case TEXT:
                         case NUMBER:
                         case DELIMITER:
+                        case GAP:
                             actualSize = field.getSize();
                             break;
 
@@ -103,6 +104,7 @@ public abstract class GenericParser<T> {
             switch(type) {
 
                 case DELIMITER:
+                case GAP:
                     inputStream.skip(length);
                     break;
 

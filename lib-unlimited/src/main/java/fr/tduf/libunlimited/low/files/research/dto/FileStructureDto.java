@@ -153,10 +153,26 @@ public class FileStructureDto implements Serializable {
      * Describes all field types.
      */
     public enum Type {
+        /**
+         * Value as string
+         */
         TEXT(true),
+        /**
+         * Numeric value. Currently handled: 32bit only.
+         */
         NUMBER(true),
+        /**
+         * Delimiter with particular value
+         */
+        DELIMITER(true),
+        /**
+         * Allow to repeat a sub-structure
+         */
         REPEATER(false),
-        DELIMITER(true);
+        /**
+         * Hole in the file. Only contains zeros.
+         */
+        GAP(false);
 
         /**
          * Indicates if this type of value will be stored to allow requests on it.
