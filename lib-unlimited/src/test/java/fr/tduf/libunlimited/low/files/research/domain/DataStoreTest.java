@@ -160,6 +160,30 @@ public class DataStoreTest {
     }
 
     @Test
+    public void getNumeric_whenNoItem_shouldReturnNull() {
+        // GIVEN-WHEN-THEN
+        assertThat(dataStore.getNumeric("f1")).isNull();
+    }
+
+    @Test
+    public void getNumeric_whenOneItem_andSuccess_shouldReturnValue() {
+        // GIVEN
+        putLongInStore("f1", 100L);
+
+        // WHEN-THEN
+        assertThat(dataStore.getNumeric("f1")).isEqualTo(100L);
+    }
+
+    @Test
+    public void getNumeric_whenOneItem_andNoSuccess_shouldReturnNull() {
+        // GIVEN
+        putLongInStore("f1", 100L);
+
+        // WHEN-THEN
+        assertThat(dataStore.getText("f2")).isNull();
+    }
+
+    @Test
     public void getNumericListOf_whenProvidedStore_shouldReturnSelectedValues() {
         // GIVEN
         createStoreEntries();

@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
  * and {@link fr.tduf.libunlimited.low.files.research.writer.GenericWriter}
  */
 public class DataStore {
+    // TODO make get method return Optional
 
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");              // e.g 'entry_list[1].my_field', 'my_field'
 
@@ -117,6 +118,20 @@ public class DataStore {
             return null;
         }
         return new String(this.store.get(fieldName));
+    }
+
+    /**
+     * Returns a long value from the store.
+     * @param fieldName :   name of field to search
+     * @return the stored value whose key match provided identifier, or null if it does not exist
+     */
+    public Long getNumeric(String fieldName) {
+        if (!this.store.containsKey(fieldName)) {
+            return null;
+        }
+        return ByteBuffer
+                .wrap(this.store.get(fieldName))
+                .getLong();
     }
 
     /**
