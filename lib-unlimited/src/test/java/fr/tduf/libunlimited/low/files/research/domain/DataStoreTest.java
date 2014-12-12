@@ -37,8 +37,7 @@ public class DataStoreTest {
         dataStore.addRawValue("f1", expectedRawValue);
 
         // THEN
-        // FIXME does not work: bug submitted to AssertJ project: https://github.com/joel-costigliola/assertj-core/issues/293
-//        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedRawValue));
+        //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
         assertThat(dataStore.getStore().get("f1")).isEqualTo(expectedRawValue);
     }
 
@@ -69,8 +68,7 @@ public class DataStoreTest {
         dataStore.addRepeatedTextValue("repeater", "f1", 0, "v1");
 
         // THEN
-        // FIXME does not work: bug submitted to AssertJ project: https://github.com/joel-costigliola/assertj-core/issues/293
-//        assertThat(dataStore.getStore()).contains(MapEntry.entry("repeater[0].f1", "v1".getBytes()));
+        //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
         assertThat(dataStore.getStore().get("repeater[0].f1")).isEqualTo("v1".getBytes());
     }
 
