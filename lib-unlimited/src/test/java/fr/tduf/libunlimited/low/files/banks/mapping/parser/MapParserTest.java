@@ -36,12 +36,17 @@ public class MapParserTest {
         byte[] mapContents = Files.readAllBytes(Paths.get(uri));
         ByteArrayInputStream mapInputStream = new ByteArrayInputStream(mapContents);
 
+
         // WHEN
         MapParser mapParser = MapParser.load(mapInputStream);
         BankMap actualBankMap = mapParser.parse();
 
+
         // THEN
+        byte[] separatorBytes = {0x0, (byte) 0xFE, 0x12, 0x0};
+
         assertThat(actualBankMap).isNotNull();
+        assertThat(actualBankMap.getEntrySeparator()).isEqualTo(separatorBytes);
         assertThat(actualBankMap.getEntries()).hasSize(4);
         assertThat(actualBankMap.getEntries()).extracting("hash").containsAll(asList(858241L, 1507153L, 1521845L, 1572722L));
         assertThat(actualBankMap.getEntries()).extracting("size1").containsAll(asList(0L, 0L, 0L, 0L));

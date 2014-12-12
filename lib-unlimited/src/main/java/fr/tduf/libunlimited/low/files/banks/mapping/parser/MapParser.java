@@ -44,6 +44,10 @@ public class MapParser extends GenericParser<BankMap> {
             long size2 = toLong(values.get("size_bytes_2"));
 
             bankMap.addEntry(checksum, size1, size2);
+
+            if (bankMap.getEntrySeparator() == null) {
+                bankMap.setEntrySeparator(values.get("entry_end"));
+            }
         }
 
         return bankMap;

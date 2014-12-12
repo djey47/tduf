@@ -9,6 +9,8 @@ public class BankMap {
 
     private final Map<Long, Entry> entries = new HashMap<>();
 
+    private byte[] entrySeparator;
+
     /**
      * Adds a new entry. An entry with the same hash should not exist.
      * @param hash  : unique identifier of bank file to add
@@ -42,6 +44,14 @@ public class BankMap {
      */
     public Set<Long> getChecksums() {
         return entries.keySet();
+    }
+
+    public byte[] getEntrySeparator() {
+        return entrySeparator;
+    }
+
+    public void setEntrySeparator(byte[] entrySeparator) {
+        this.entrySeparator = entrySeparator;
     }
 
     /**
