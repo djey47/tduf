@@ -126,7 +126,7 @@ public abstract class GenericParser<T> {
                     while (inputStream.available() >= subStructureSize      // auto
                             && (length == null || parsedCount < length)) {    // specified
 
-                        String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(name, (int)parsedCount);
+                        String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(name, parsedCount);
                         readFields(subFields, newRepeaterKeyPrefix);
 
                         parsedCount++;

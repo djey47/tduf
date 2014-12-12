@@ -50,7 +50,7 @@ public class DataStore {
      * @param index             : rank in repeater
      * @param valueBytes        : value to store
      */
-    public void addRepeatedRawValue(String repeaterFieldName, String fieldName, int index, byte[] valueBytes) {
+    public void addRepeatedRawValue(String repeaterFieldName, String fieldName, long index, byte[] valueBytes) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
         this.store.put(key, valueBytes);
     }
@@ -62,7 +62,7 @@ public class DataStore {
      * @param index             : rank in repeater
      * @param value             : value to store
      */
-    public void addRepeatedTextValue(String repeaterFieldName, String fieldName, int index, String value) {
+    public void addRepeatedTextValue(String repeaterFieldName, String fieldName, long index, String value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
         this.store.put(key, value.getBytes());
     }
@@ -74,7 +74,7 @@ public class DataStore {
      * @param index             : rank in repeater
      * @param value             : value to store
      */
-    public void addRepeatedNumericValue(String repeaterFieldName, String fieldName, int index, long value) {
+    public void addRepeatedNumericValue(String repeaterFieldName, String fieldName, long index, long value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
         byte[] valueAsBytes = ByteBuffer
                 .allocate(8)
@@ -185,11 +185,11 @@ public class DataStore {
      * @param index             : item rank in repeater
      * @return a prefix allowing to parse sub-fields.
      */
-    public static String generateKeyPrefixForRepeatedField(String repeaterFieldName, int index) {
+    public static String generateKeyPrefixForRepeatedField(String repeaterFieldName, long index) {
         return String.format(SUB_FIELD_PREFIX_FORMAT, repeaterFieldName, index);
     }
 
-    private static String generateKeyForRepeatedField(String repeaterFieldName, String repeatedFieldName, int index) {
+    private static String generateKeyForRepeatedField(String repeaterFieldName, String repeatedFieldName, long index) {
         String keyPrefix = generateKeyPrefixForRepeatedField(repeaterFieldName, index);
         return keyPrefix + repeatedFieldName;
     }
