@@ -97,7 +97,7 @@ public class MappingTool {
                 mapFile = bankDirectory + File.separator + "Bnk1.map";
             }
         } catch (CmdLineException e) {
-            String displayedName = this.getClass().getCanonicalName();
+            String displayedName = this.getClass().getSimpleName();
 
             System.err.println(e.getMessage());
             System.err.println("Syntax: " + displayedName +  " command [-options]");
