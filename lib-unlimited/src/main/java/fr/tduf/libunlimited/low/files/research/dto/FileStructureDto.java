@@ -51,7 +51,6 @@ public class FileStructureDto implements Serializable {
     @JsonTypeName("fileStructureField")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class Field implements Serializable {
-
         @JsonProperty("name")
         private String name;
 
@@ -115,6 +114,15 @@ public class FileStructureDto implements Serializable {
                     return field;
                 }
             };
+        }
+
+        @Override
+        public String toString() {
+            return "Field{" +
+                    "name='" + name + '\'' +
+                    ", type=" + type +
+                    ", size=" + size +
+                    '}';
         }
 
         public Integer getSize() {

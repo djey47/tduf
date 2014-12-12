@@ -79,11 +79,7 @@ public abstract class GenericWriter<T> {
 
                 case NUMBER:
                     //TODO handle other than 4 bytes
-//                    byte[] numberAsBytes = ByteBuffer
-//                            .allocate(length)
-//                            .putInt(Integer.valueOf(valueBytes))
-//                            .array();
-                    outputStream.write(valueBytes, 0, length);
+                    outputStream.write(valueBytes, 4, length);
                     break;
 
                 case REPEATER:

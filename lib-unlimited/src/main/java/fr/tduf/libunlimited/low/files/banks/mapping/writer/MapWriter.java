@@ -48,7 +48,7 @@ public class MapWriter extends GenericWriter<BankMap> {
             getDataStore().addRepeatedNumericValue("entry_list", "size_bytes_2", index, entry.getSize2());
             //TODO store delimiter in domain object to use it
             byte[] delimiterBytes = { 0x0, (byte) 0xFE, 0x12, 0x0 };
-            getDataStore().addRepeatedRawValue("entry_list", "delimiter", index, delimiterBytes);
+            getDataStore().addRepeatedRawValue("entry_list", "entry_end", index, delimiterBytes);
 
             index++;
         }
