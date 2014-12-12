@@ -1,10 +1,7 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -14,13 +11,10 @@ import java.util.stream.Collectors;
  * and {@link fr.tduf.libunlimited.low.files.research.writer.GenericWriter}
  */
 public class DataStore {
-    // TODO make get method return Optional
-
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");              // e.g 'entry_list[1].my_field', 'my_field'
 
     private static final Pattern SUB_FIELD_NAME_PATTERN = Pattern.compile("^(.+)\\[(\\d+)\\]\\.(.+)$"); // e.g 'entry_list[1].my_field'
     private static final String SUB_FIELD_PREFIX_FORMAT = "%s[%d].";
-    private static final String SUB_FIELD_FORMAT = "%s%s";
 
     private final Map<String, byte[]> store = new HashMap<>();
 
@@ -101,11 +95,8 @@ public class DataStore {
      * @param fieldName : identifier of field hosting the value
      * @return the stored raw value whose key match provided identifier, or null if it does not exist
      */
-    public byte[] getRawValue(String fieldName) {
-        if (!this.store.containsKey(fieldName)) {
-            return null;
-        }
-        return this.store.get(fieldName);
+    public Optional<byte[]> getRawValue(String fieldName) {
+        return Optional.ofNullable(this.store.get(fieldName));
     }
 
     /**
@@ -113,11 +104,11 @@ public class DataStore {
      * @param fieldName :   name of field to search
      * @return the stored value whose key match provided identifier, or null if it does not exist
      */
-    public String getText(String fieldName) {
+    public Optional<String> getText(String fieldName) {
         if (!this.store.containsKey(fieldName)) {
-            return null;
+            return Optional.empty();
         }
-        return new String(this.store.get(fieldName));
+        return Optional.of(new String(this.store.get(fieldName)));
     }
 
     /**
@@ -125,13 +116,13 @@ public class DataStore {
      * @param fieldName :   name of field to search
      * @return the stored value whose key match provided identifier, or null if it does not exist
      */
-    public Long getNumeric(String fieldName) {
+    public Optional<Long> getNumeric(String fieldName) {
         if (!this.store.containsKey(fieldName)) {
-            return null;
+            return Optional.empty();
         }
-        return ByteBuffer
+        return Optional.of(ByteBuffer
                 .wrap(this.store.get(fieldName))
-                .getLong();
+                .getLong());
     }
 
     /**
@@ -200,7 +191,7 @@ public class DataStore {
 
     private static String generateKeyForRepeatedField(String repeaterFieldName, String repeatedFieldName, int index) {
         String keyPrefix = generateKeyPrefixForRepeatedField(repeaterFieldName, index);
-        return String.format(SUB_FIELD_FORMAT, keyPrefix, repeatedFieldName);
+        return keyPrefix + repeatedFieldName;
     }
 
     private static List<Map<String, byte[]>> createEmptyList(int size) {

@@ -108,9 +108,9 @@ public class DataStoreTest {
     }
 
     @Test
-    public void getRawValue_whenNoItem_shouldReturnNull() {
+    public void getRawValue_whenNoItem_shouldReturnAbsent() {
         // GIVEN-WHEN-THEN
-        assertThat(dataStore.getRawValue("f1")).isNull();
+        assertThat(dataStore.getRawValue("f1").isPresent()).isEqualTo(false);
     }
 
     @Test
@@ -120,23 +120,23 @@ public class DataStoreTest {
         dataStore.getStore().put("f1", expectedBytes);
 
         // WHEN-THEN
-        assertThat(dataStore.getRawValue("f1")).isEqualTo(expectedBytes);
+        assertThat(dataStore.getRawValue("f1").get()).isEqualTo(expectedBytes);
     }
 
     @Test
-    public void getRawValue_whenOneItem_andNoSuccess_shouldReturnNull() {
+    public void getRawValue_whenOneItem_andNoSuccess_shouldReturnAbsent() {
         // GIVEN
         byte[] bytes = { 0 };
         dataStore.getStore().put("f1", bytes);
 
         // WHEN-THEN
-        assertThat(dataStore.getRawValue("f2")).isNull();
+        assertThat(dataStore.getRawValue("f2").isPresent()).isEqualTo(false);
     }
 
     @Test
-    public void getText_whenNoItem_shouldReturnNull() {
+    public void getText_whenNoItem_shouldReturnAbsent() {
         // GIVEN-WHEN-THEN
-        assertThat(dataStore.getText("f1")).isNull();
+        assertThat(dataStore.getText("f1").isPresent()).isFalse();
     }
 
     @Test
@@ -145,22 +145,22 @@ public class DataStoreTest {
         putStringInStore("f1", "v1");
 
         // WHEN-THEN
-        assertThat(dataStore.getText("f1")).isEqualTo("v1");
+        assertThat(dataStore.getText("f1").get()).isEqualTo("v1");
     }
 
     @Test
-    public void getText_whenOneItem_andNoSuccess_shouldReturnNull() {
+    public void getText_whenOneItem_andNoSuccess_shouldReturnAbsent() {
         // GIVEN
         putStringInStore("f1", "v1");
 
         // WHEN-THEN
-        assertThat(dataStore.getText("f2")).isNull();
+        assertThat(dataStore.getText("f2").isPresent()).isFalse();
     }
 
     @Test
-    public void getNumeric_whenNoItem_shouldReturnNull() {
+    public void getNumeric_whenNoItem_shouldReturnAbsent() {
         // GIVEN-WHEN-THEN
-        assertThat(dataStore.getNumeric("f1")).isNull();
+        assertThat(dataStore.getNumeric("f1").isPresent()).isFalse();
     }
 
     @Test
@@ -169,16 +169,16 @@ public class DataStoreTest {
         putLongInStore("f1", 100L);
 
         // WHEN-THEN
-        assertThat(dataStore.getNumeric("f1")).isEqualTo(100L);
+        assertThat(dataStore.getNumeric("f1").get()).isEqualTo(100L);
     }
 
     @Test
-    public void getNumeric_whenOneItem_andNoSuccess_shouldReturnNull() {
+    public void getNumeric_whenOneItem_andNoSuccess_shouldReturnAbsent() {
         // GIVEN
         putLongInStore("f1", 100L);
 
         // WHEN-THEN
-        assertThat(dataStore.getText("f2")).isNull();
+        assertThat(dataStore.getNumeric("f2").isPresent()).isFalse();
     }
 
     @Test

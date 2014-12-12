@@ -94,16 +94,16 @@ public class GenericParserTest {
                 assertThat(getDataStore().size()).isEqualTo(7);
 
                 // Field 1
-                assertThat(getDataStore().getText("tag")).isEqualTo("ABCDEFGHIJ");
+                assertThat(getDataStore().getText("tag").get()).isEqualTo("ABCDEFGHIJ");
 
                 // Field 2 - item 0
-                assertThat(getDataStore().getNumeric("repeater[0].number")).isEqualTo(500L);
-                assertThat(getDataStore().getText("repeater[0].text")).isEqualTo("ABCD");
-                assertThat(getDataStore().getRawValue("repeater[0].delimiter")).isEqualTo(new byte[]{0xA});
+                assertThat(getDataStore().getNumeric("repeater[0].number").get()).isEqualTo(500L);
+                assertThat(getDataStore().getText("repeater[0].text").get()).isEqualTo("ABCD");
+                assertThat(getDataStore().getRawValue("repeater[0].delimiter").get()).isEqualTo(new byte[]{0xA});
                 // Field 2 - item 1
-                assertThat(getDataStore().getNumeric("repeater[1].number")).isEqualTo(1000L);
-                assertThat(getDataStore().getText("repeater[1].text")).isEqualTo("EFGH");
-                assertThat(getDataStore().getRawValue("repeater[1].delimiter")).isEqualTo(new byte[] {0xB});
+                assertThat(getDataStore().getNumeric("repeater[1].number").get()).isEqualTo(1000L);
+                assertThat(getDataStore().getText("repeater[1].text").get()).isEqualTo("EFGH");
+                assertThat(getDataStore().getRawValue("repeater[1].delimiter").get()).isEqualTo(new byte[] {0xB});
 
                 return DATA;
             }

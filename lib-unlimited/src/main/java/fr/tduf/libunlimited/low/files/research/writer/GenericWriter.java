@@ -60,7 +60,7 @@ public abstract class GenericWriter<T> {
             byte[] valueBytes = null;
             if (type.isValueToBeStored()) {
                 String key = repeaterKey + name;
-                valueBytes = dataStore.getRawValue(key);
+                valueBytes = dataStore.getRawValue(key).orElse(null);
                 if (valueBytes == null) {
                     return false;
                 }
