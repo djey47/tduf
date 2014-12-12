@@ -51,6 +51,7 @@ public class DatabaseTool {
     }
 
     private boolean checkArguments(String[] args) {
+        //TODO use same as Mapping Tool
         try {
             CmdLineParser parser = new CmdLineParser(this);
             parser.parseArgument(args);
