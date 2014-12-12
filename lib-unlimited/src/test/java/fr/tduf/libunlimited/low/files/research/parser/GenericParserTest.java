@@ -4,37 +4,46 @@ import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericParserTest {
+    private static final Class<GenericParserTest> thisClass = GenericParserTest.class;
+
+    private static final String DATA = "data";
 
     @Test
     public void newParser_whenProvidedContents_shouldReturnParserInstance() throws Exception {
         // GIVEN
-        byte[] bytes = {0x1, 0x2, 0x3, 0x4};
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile();
 
         // WHEN
-        GenericParser<String> actualParser = new GenericParser<String>(inputStream) {
-            @Override
-            protected String generate() {
-                return null;
-            }
-
-            @Override
-            protected String getStructureResource() {
-                return "/files/structures/MAP4-map.json";
-            }
-        };
+        GenericParser<String> actualParser = createGenericParser(inputStream);
 
         // THEN
         assertThat(actualParser.getInputStream()).isEqualTo(inputStream);
         assertThat(actualParser.getFileStructure()).isNotNull();
+    }
+
+    @Test
+    public void parse_whenProvidedFiles_shouldReturnDomainObject() throws IOException, URISyntaxException {
+        // GIVEN
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile();
+        GenericParser<String> actualParser = createGenericParser(inputStream);
+
+        // WHEN
+        String actualObject = actualParser.parse();
+
+        // THEN
+        assertThat(actualObject).isNotNull();
+        assertThat(actualObject).isEqualTo(DATA);
     }
 
     @Test
@@ -75,6 +84,41 @@ public class GenericParserTest {
 
         // THEN
         assertThat(actualStructureSize).isEqualTo(101); // = 5 + 4*24
+    }
+
+    private GenericParser<String> createGenericParser(final ByteArrayInputStream inputStream) throws IOException {
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+
+                assertThat(getDataStore().size()).isEqualTo(7);
+
+                // Field 1
+                assertThat(getDataStore().getText("tag")).isEqualTo("ABCDEFGHIJ");
+
+                // Field 2 - item 0
+                assertThat(getDataStore().getNumeric("repeater[0].number")).isEqualTo(500L);
+                assertThat(getDataStore().getText("repeater[0].text")).isEqualTo("ABCD");
+                assertThat(getDataStore().getRawValue("repeater[0].delimiter")).isEqualTo(new byte[]{0xA});
+                // Field 2 - item 1
+                assertThat(getDataStore().getNumeric("repeater[1].number")).isEqualTo(1000L);
+                assertThat(getDataStore().getText("repeater[1].text")).isEqualTo("EFGH");
+                assertThat(getDataStore().getRawValue("repeater[1].delimiter")).isEqualTo(new byte[] {0xB});
+
+                return DATA;
+            }
+
+            @Override
+            protected String getStructureResource() {
+                return "/files/structures/TEST-map.json";
+            }
+        };
+    }
+
+    private ByteArrayInputStream createInputStreamFromReferenceFile() throws IOException, URISyntaxException {
+        URI fileURI = thisClass.getResource("/files/samples/TEST.bin").toURI();
+        byte[] bytes = Files.readAllBytes(Paths.get(fileURI));
+        return new ByteArrayInputStream(bytes);
     }
 
     private static List<FileStructureDto.Field> createFields() {
