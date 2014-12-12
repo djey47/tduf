@@ -55,7 +55,8 @@ public class DataStore {
      * @param valueBytes        : value to store
      */
     public void addRepeatedRawValue(String repeaterFieldName, String fieldName, int index, byte[] valueBytes) {
-        //TODO
+        String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
+        this.store.put(key, valueBytes);
     }
 
     /**
@@ -66,7 +67,7 @@ public class DataStore {
      * @param value             : value to store
      */
     public void addRepeatedTextValue(String repeaterFieldName, String fieldName, int index, String value) {
-        String key = String.format(SUB_FIELD_FORMAT, repeaterFieldName, index, fieldName);
+        String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
         this.store.put(key, value.getBytes());
     }
 
@@ -78,7 +79,12 @@ public class DataStore {
      * @param value             : value to store
      */
     public void addRepeatedNumericValue(String repeaterFieldName, String fieldName, int index, long value) {
-        //TODO
+        String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
+        byte[] valueAsBytes = ByteBuffer
+                .allocate(8)
+                .putLong(value)
+                .array();
+        this.store.put(key, valueAsBytes);
     }
 
     /**
@@ -130,7 +136,7 @@ public class DataStore {
 
                 .map( bytes -> ByteBuffer.wrap(bytes).getLong() ) // TODO handle other than 4 bytes
 
-                .collect( Collectors.toList() );
+                .collect(Collectors.toList());
     }
 
     /**
@@ -164,6 +170,10 @@ public class DataStore {
         }
 
         return repeatedValues;
+    }
+
+    private String generateKeyForRepeatedField(String repeaterFieldName, String repeatedFieldName, int index) {
+        return String.format(SUB_FIELD_FORMAT, repeaterFieldName, index, repeatedFieldName);
     }
 
     private static List<Map<String, byte[]>> createEmptyList(int size) {

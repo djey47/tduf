@@ -52,6 +52,18 @@ public class DataStoreTest {
     }
 
     @Test
+    public void addRepeatedRawValue_shouldCreateNewEntryInStore() {
+        // GIVEN
+        byte[] expectedRawValue = { 0x0, 0x1, 0x2, 0x3 };
+
+        // WHEN
+        dataStore.addRepeatedRawValue("repeater", "f1", 0, expectedRawValue);
+        //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
+        assertThat(dataStore.getStore().get("repeater[0].f1")).isEqualTo(expectedRawValue);
+
+    }
+
+    @Test
     public void addRepeatedTextValue_shouldCreateNewEntryInStore() {
         // GIVEN - WHEN
         dataStore.addRepeatedTextValue("repeater", "f1", 0, "v1");
@@ -60,6 +72,19 @@ public class DataStoreTest {
         // FIXME does not work: bug submitted to AssertJ project: https://github.com/joel-costigliola/assertj-core/issues/293
 //        assertThat(dataStore.getStore()).contains(MapEntry.entry("repeater[0].f1", "v1".getBytes()));
         assertThat(dataStore.getStore().get("repeater[0].f1")).isEqualTo("v1".getBytes());
+    }
+
+    @Test
+    public void addRepeatedNumericValue_shouldCreateNewEntryInStore() {
+        // GIVEN
+        byte[] expectedBytes = { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, (byte)0xFF, (byte)0xFF};
+
+        // WHEN
+        dataStore.addRepeatedNumericValue("repeater", "f1", 0, 0xFFFFL);
+
+        // THEN
+        //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
+        assertThat(dataStore.getStore().get("repeater[0].f1")).isEqualTo(expectedBytes);
     }
 
     @Test
