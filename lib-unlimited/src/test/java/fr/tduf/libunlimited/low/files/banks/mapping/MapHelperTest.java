@@ -31,7 +31,7 @@ public class MapHelperTest {
 
         // THEN
         assertThat(actualFileList).isNotNull();
-        assertThat(actualFileList).hasSize(3);
+        assertThat(actualFileList).hasSize(4);
         assertThat(actualFileList).contains(expectedFileList.toArray(new String[expectedFileList.size()]));
     }
 
