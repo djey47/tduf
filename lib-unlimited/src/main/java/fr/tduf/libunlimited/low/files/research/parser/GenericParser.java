@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -85,6 +86,7 @@ public abstract class GenericParser<T> {
      */
     protected abstract String getStructureResource();
 
+    // TODO handle endianness
     private void readFields(List<FileStructureDto.Field> fields, String repeaterKey) {
 
         for(FileStructureDto.Field field : fields) {
@@ -94,46 +96,49 @@ public abstract class GenericParser<T> {
             // TODO check null value when required
             Integer length = field.getSize();
 
-            // TODO handle endianness
-
             FileStructureDto.Type type = field.getType();
             byte[] readValueAsBytes = null;
+            long parsedCount;
 
             switch(type) {
 
                 case GAP:
-                    inputStream.skip(length);
+                    parsedCount = inputStream.skip(length);
                     break;
 
                 case NUMBER:    // TODO handle other than 32 bit
                     readValueAsBytes = new byte[length + 4]; // Prepare long values
-                    inputStream.read(readValueAsBytes, 4, length);
+                    parsedCount = inputStream.read(readValueAsBytes, 4, length);
                     break;
 
                 case DELIMITER:
                 case TEXT:
                     readValueAsBytes = new byte[length];
-                    inputStream.read(readValueAsBytes, 0, length);
+                    parsedCount = inputStream.read(readValueAsBytes, 0, length);
                     break;
 
                 case REPEATER:
-                    int itemIndex = 0 ;
+                    parsedCount = 0 ;
+
                     List<FileStructureDto.Field> subFields = field.getSubFields();
                     int subStructureSize = computeStructureSize(subFields);
 
                     while (inputStream.available() >= subStructureSize      // auto
-                            && (length == null || itemIndex < length)) {    // specified
+                            && (length == null || parsedCount < length)) {    // specified
 
-                        String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(name, itemIndex);
+                        String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(name, (int)parsedCount);
                         readFields(subFields, newRepeaterKeyPrefix);
 
-                        itemIndex++;
+                        parsedCount++;
                     }
                     break;
 
                 default:
                     throw new IllegalArgumentException("Unknown field type: " + type);
             }
+
+            // Check
+            assert (parsedCount == Optional.ofNullable(length).orElse((int)parsedCount));
 
             if (type.isValueToBeStored()) {
                 String key = repeaterKey + name;

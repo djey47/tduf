@@ -74,11 +74,13 @@ public abstract class GenericWriter<T> {
 
                 case DELIMITER:
                 case TEXT:
+                    assert valueBytes != null;
                     outputStream.write(valueBytes, 0, length);
                     break;
 
                 case NUMBER:
                     //TODO handle other than 4 bytes
+                    assert valueBytes != null;
                     outputStream.write(valueBytes, 4, length);
                     break;
 
