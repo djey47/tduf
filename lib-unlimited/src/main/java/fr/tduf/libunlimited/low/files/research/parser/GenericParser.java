@@ -124,10 +124,8 @@ public abstract class GenericParser<T> {
                     while (inputStream.available() >= subStructureSize      // auto
                             && (length == null || itemIndex < length)) {    // specified
 
-                        // TODO externalize key format
-                        String newRepeaterKey = name + '[' + itemIndex + "].";
-
-                        readFields(subFields, newRepeaterKey);
+                        String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(name, itemIndex);
+                        readFields(subFields, newRepeaterKeyPrefix);
 
                         itemIndex++;
                     }

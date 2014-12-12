@@ -87,9 +87,9 @@ public abstract class GenericWriter<T> {
                     boolean hasMoreFields = true;
 
                     while (hasMoreFields) {
-                        String newRepeaterKey = String.format("%s[%d].", name, itemIndex);
 
-                        hasMoreFields = writeFields(field.getSubFields(), outputStream, newRepeaterKey);
+                        String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(name, itemIndex);
+                        hasMoreFields = writeFields(field.getSubFields(), outputStream, newRepeaterKeyPrefix);
 
                         itemIndex++;
                     }

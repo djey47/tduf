@@ -18,7 +18,8 @@ public class DataStore {
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");              // e.g 'entry_list[1].my_field', 'my_field'
 
     private static final Pattern SUB_FIELD_NAME_PATTERN = Pattern.compile("^(.+)\\[(\\d+)\\]\\.(.+)$"); // e.g 'entry_list[1].my_field'
-    private static final String SUB_FIELD_FORMAT = "%s[%d].%s";
+    private static final String SUB_FIELD_PREFIX_FORMAT = "%s[%d].";
+    private static final String SUB_FIELD_FORMAT = "%s%s";
 
     private final Map<String, byte[]> store = new HashMap<>();
 
@@ -172,8 +173,19 @@ public class DataStore {
         return repeatedValues;
     }
 
-    private String generateKeyForRepeatedField(String repeaterFieldName, String repeatedFieldName, int index) {
-        return String.format(SUB_FIELD_FORMAT, repeaterFieldName, index, repeatedFieldName);
+    /**
+     * Returns key prefix for repeated (under repeater) field.
+     * @param repeaterFieldName : name of parent, repeater field
+     * @param index             : item rank in repeater
+     * @return a prefix allowing to parse sub-fields.
+     */
+    public static String generateKeyPrefixForRepeatedField(String repeaterFieldName, int index) {
+        return String.format(SUB_FIELD_PREFIX_FORMAT, repeaterFieldName, index);
+    }
+
+    private static String generateKeyForRepeatedField(String repeaterFieldName, String repeatedFieldName, int index) {
+        String keyPrefix = generateKeyPrefixForRepeatedField(repeaterFieldName, index);
+        return String.format(SUB_FIELD_FORMAT, keyPrefix, repeatedFieldName);
     }
 
     private static List<Map<String, byte[]>> createEmptyList(int size) {

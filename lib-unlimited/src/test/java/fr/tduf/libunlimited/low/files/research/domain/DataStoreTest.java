@@ -189,6 +189,15 @@ public class DataStoreTest {
         assertThat(values.get(2)).hasSize(2);
     }
 
+    @Test
+    public void generateKeyPrefixForRepeatedField() {
+        // GIVEN-WHEN
+        String actualKeyPrefix = DataStore.generateKeyPrefixForRepeatedField("entry_list", 1);
+
+        // THEN
+        assertThat(actualKeyPrefix).isEqualTo("entry_list[1].");
+    }
+
     private void putLongInStore(String key, long value) {
         byte[] bytes = ByteBuffer
                 .allocate(8)
