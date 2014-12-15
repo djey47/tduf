@@ -1,8 +1,24 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+//        maven {
+//            url "http://repo1.maven.org/maven2/"
+//        }
+    }
+    dependencies {
+        classpath group: 'org.ajoberstar', name: 'gradle-git', version:'0.12.0'
+    }
+}
+
+
 allprojects {
     group = 'fr.tduf'
     version = '0.1'
 
     apply plugin: 'java'
+    apply plugin: 'org.ajoberstar.release-base'
+
 
     compileJava {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -10,15 +26,25 @@ allprojects {
     }
 
     task fatJar(type: Jar) {
+        mustRunAfter 'jar'
+
         baseName = 'tduf-' + project.name + '-all'
         from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
         with jar
     }
 
+//    ext.tag = "REL-${project.version.toString()}"
+
+
+    task pack {
+
+
+    }
 }
 
 subprojects {
     repositories {
+        mavenLocal()
         mavenCentral()
 //        maven {
 //            url "http://repo1.maven.org/maven2/"
@@ -41,4 +67,8 @@ project(':cli') {
 
         compile group: 'args4j', name: 'args4j', version: '2.0.29'
     }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.13'
 }
