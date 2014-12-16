@@ -1,55 +1,22 @@
 buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-//        maven {
-//            url "http://repo1.maven.org/maven2/"
-//        }
-    }
-    dependencies {
-        classpath group: 'org.ajoberstar', name: 'gradle-git', version:'0.12.0'
-    }
 }
 
-
-allprojects {
-    group = 'fr.tduf'
-    version = '0.1'
-
-    apply plugin: 'java'
-    apply plugin: 'org.ajoberstar.release-base'
-
-
-    compileJava {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    task fatJar(type: Jar) {
-        mustRunAfter 'jar'
-
-        baseName = 'tduf-' + project.name + '-all'
-        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-        with jar
-    }
-
-//    ext.tag = "REL-${project.version.toString()}"
-
-
-    task pack {
-
-
-    }
+plugins {
+    id 'pl.allegro.tech.build.axion-release' version '0.9.9'
 }
 
 subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+
+    group = 'fr.tduf'
+    version =  '0.1-SNAPSHOT'
+
     repositories {
-        mavenLocal()
         mavenCentral()
-//        maven {
-//            url "http://repo1.maven.org/maven2/"
-//        }
     }
+
     dependencies {
         compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
         compile group: 'com.google.guava', name: 'guava', version: '18.0'
@@ -58,6 +25,23 @@ subprojects {
         testCompile group: 'junit', name: 'junit', version: '4.11'
         testCompile group: 'org.assertj', name: 'assertj-core', version: '1.7.0'
         testCompile group: 'net.sf.json-lib', name: 'json-lib', classifier: 'jdk15', version: '2.4'
+    }
+
+    compileJava {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    jar {
+        manifest.attributes provider: 'gradle'
+    }
+
+    task fatJar(type: Jar) {
+        mustRunAfter 'jar'
+
+        baseName = 'tduf-' + project.name + '-all'
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
     }
 }
 
@@ -70,5 +54,5 @@ project(':cli') {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.13'
+    gradleVersion = '2.2'
 }
