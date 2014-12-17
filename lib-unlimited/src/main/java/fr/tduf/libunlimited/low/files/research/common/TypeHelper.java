@@ -31,4 +31,25 @@ public class TypeHelper {
                 .wrap(rawValueBytes)
                 .getLong();
     }
+
+    /**
+     * Converts a TEXT value to raw byte array.
+     * @param textValue  : text value to convert
+     * @return corresponding value with default encoding as byte array.
+     */
+    public static byte[] textToRaw(String textValue) {
+        return textValue.getBytes();
+    }
+
+    /**
+     * Converts a NUMERIC value to raw byte array.
+     * @param numericValue  : numeric value to convert
+     * @return corresponding value with long spec (64-bit, 8 bytes) as byte array.
+     */
+    public static byte[] numericToRaw(long numericValue) {
+        return ByteBuffer
+                .allocate(8)
+                .putLong(numericValue)
+                .array();
+    }
 }

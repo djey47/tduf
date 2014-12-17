@@ -33,4 +33,22 @@ public class TypeHelperTest {
         // WHEN-THEN
         assertThat(TypeHelper.rawToNumeric(bytes)).isEqualTo(858241L);
     }
+
+    @Test
+    public void textToRaw_shouldReturnByteArray() {
+        //GIVEN
+        byte[] expectedBytes = { 0x4d, 0x41, 0x50, 0x34,  0x00};
+
+        // WHEN-THEN
+        assertThat(TypeHelper.textToRaw("MAP4\0")).isEqualTo(expectedBytes);
+    }
+
+    @Test
+    public void numericToRaw_shouldReturnByteArray() {
+        //GIVEN
+        byte[] expectedBytes = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x0d, 0x18, (byte)0x81 };
+
+        // WHEN-THEN
+        assertThat(TypeHelper.numericToRaw(858241L)).isEqualTo(expectedBytes);
+    }
 }
