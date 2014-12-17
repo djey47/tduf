@@ -129,8 +129,8 @@ public abstract class GenericParser<T> {
                     readValueAsBytes = new byte[length + 4]; // Prepare long values
                     parsedCount = inputStream.read(readValueAsBytes, 4, length);
 
-                    // TODO display only 4 last bytes of array
-                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), TypeHelper.rawToNumeric(readValueAsBytes)));
+                    byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 4, length + 4);
+                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(displayedBytes), TypeHelper.rawToNumeric(readValueAsBytes)));
                     break;
 
                 case DELIMITER:
