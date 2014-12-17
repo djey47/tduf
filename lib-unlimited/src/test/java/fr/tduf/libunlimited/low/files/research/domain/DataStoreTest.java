@@ -5,7 +5,6 @@ import org.junit.Test;
 
 import java.nio.ByteBuffer;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -196,19 +195,19 @@ public class DataStoreTest {
     }
 
     @Test
-    public void getRepeatedValuesOf_whenProvidedStore_shouldReturnCorrespondingValues() {
+    public void getRepeatedValues_whenProvidedStore_shouldReturnCorrespondingValues() {
         // GIVEN
         createStoreEntries();
 
         // WHEN
-        List<Map<String, byte[]>> values = dataStore.getRepeatedValuesOf("entry_list");
+        List<DataStore> actualValues = dataStore.getRepeatedValues("entry_list");
 
         // THEN
-        assertThat(values).isNotNull();
-        assertThat(values).hasSize(3);
-        assertThat(values.get(0)).hasSize(2);
-        assertThat(values.get(1)).hasSize(2);
-        assertThat(values.get(2)).hasSize(2);
+        assertThat(actualValues).isNotNull();
+        assertThat(actualValues).hasSize(3);
+        assertThat(actualValues.get(0).getStore()).hasSize(2);
+        assertThat(actualValues.get(1).getStore()).hasSize(2);
+        assertThat(actualValues.get(2).getStore()).hasSize(2);
     }
 
     @Test

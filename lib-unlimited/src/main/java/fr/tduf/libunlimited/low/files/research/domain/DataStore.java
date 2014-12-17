@@ -146,12 +146,10 @@ public class DataStore {
     }
 
     /**
-     * Returns a list of name-value pairs contained by a repeater field.
+     * Returns sub-DataStores of items contained by a repeater field.
      * @param repeaterFieldName   : name of repeater field
      */
-    // TODO return DataStore !!
-    public List<Map<String, byte[]>> getRepeatedValuesOf(String repeaterFieldName) {
-
+    public List<DataStore> getRepeatedValues(String repeaterFieldName) {
         Map<Integer, List<String>> groupedKeysByIndex = store.keySet().stream()
 
                 .filter(key -> key.startsWith(repeaterFieldName))
@@ -161,16 +159,16 @@ public class DataStore {
                     return matcher.matches() ? Integer.valueOf(matcher.group(2)) : 0; // extracts index part
                 }));
 
-        List<Map<String, byte[]>> repeatedValues = createEmptyList(groupedKeysByIndex.size());
+        List<DataStore> repeatedValues = createEmptyList(groupedKeysByIndex.size());
 
         for(Integer index : groupedKeysByIndex.keySet()) {
 
-            Map<String, byte[]> valuesMap = repeatedValues.get(index);
+            DataStore subDataStore = repeatedValues.get(index);
 
             for (String key : groupedKeysByIndex.get(index)) {
                 Matcher matcher = SUB_FIELD_NAME_PATTERN.matcher(key);
                 if (matcher.matches()) {
-                    valuesMap.put(matcher.group(3), store.get(key));    // extracts field name part
+                    subDataStore.addRawValue(matcher.group(3), store.get(key));    // extracts field name part
                 }
             }
         }
@@ -193,11 +191,11 @@ public class DataStore {
         return keyPrefix + repeatedFieldName;
     }
 
-    private static List<Map<String, byte[]>> createEmptyList(int size) {
-        List<Map<String, byte[]>> list = new ArrayList<>(size);
+    private static List<DataStore> createEmptyList(int size) {
+        List<DataStore> list = new ArrayList<>(size);
 
         for (int i = 0 ; i < size ; i++) {
-            list.add(new HashMap<>());
+            list.add(new DataStore());
         }
 
         return list;

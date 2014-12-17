@@ -1,13 +1,12 @@
 package fr.tduf.libunlimited.low.files.banks.mapping.parser;
 
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
-import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
+import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.parser.GenericParser;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -33,22 +32,22 @@ public class MapParser extends GenericParser<BankMap> {
 
     @Override
     protected BankMap generate() {
-        List<Map<String, byte[]>> repeatedValues = getDataStore().getRepeatedValuesOf("entry_list");
+        List<DataStore> repeatedValues = getDataStore().getRepeatedValues("entry_list");
 
         BankMap bankMap = new BankMap();
 
         bankMap.setTag(getDataStore().getText("tag").get());
 
-        for (Map<String, byte[]> values : repeatedValues) {
+        for (DataStore subDataStore : repeatedValues) {
 
-            long checksum = TypeHelper.rawToNumeric(values.get("file_name_hash"));
-            long size1 = TypeHelper.rawToNumeric(values.get("size_bytes_1"));
-            long size2 = TypeHelper.rawToNumeric(values.get("size_bytes_2"));
+            long checksum = subDataStore.getNumeric("file_name_hash").get();
+            long size1 = subDataStore.getNumeric("size_bytes_1").get();
+            long size2 = subDataStore.getNumeric("size_bytes_2").get();
 
             bankMap.addEntry(checksum, size1, size2);
 
             if (bankMap.getEntrySeparator() == null) {
-                bankMap.setEntrySeparator(values.get("entry_end"));
+                bankMap.setEntrySeparator(subDataStore.getRawValue("entry_end").get());
             }
         }
 
