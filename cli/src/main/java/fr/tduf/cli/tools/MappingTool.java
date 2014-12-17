@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.Long.compare;
 import static java.util.Arrays.asList;
@@ -43,15 +44,17 @@ public class MappingTool {
      * All available commands
      */
     enum Command {
-        INFO("info"),
-        LIST("list"),
-        LIST_MISSING("list-missing"),
-        FIX_MISSING("fix-missing");
+        INFO("info", "Provides general information about Bnk1.map file."),
+        LIST("list", "Displays all entries in Bnk1.map file."),
+        LIST_MISSING("list-missing", "Displays all files in Bnk directory which have no entry in Bnk1.map file."),
+        FIX_MISSING("fix-missing", "Adds to Bnk1.map file all missing entries.");
 
         final String label;
+        final String description;
 
-        Command(String label) {
+        Command(String label, String description) {
             this.label = label;
+            this.description = description;
         }
 
         private static Set<String> labels() {
@@ -60,6 +63,12 @@ public class MappingTool {
                     .map(cmd -> cmd.label)
 
                     .collect(toSet());
+        }
+
+        private static Map<String, String> valuesAsMap() {
+            return asList(values()).stream()
+
+                    .collect(Collectors.toMap( command -> command.label, command -> command.description));
         }
 
         private static Command fromLabel(String label) {
@@ -101,14 +110,17 @@ public class MappingTool {
 
             System.err.println(e.getMessage());
             System.err.println("Syntax: " + displayedName +  " command [-options]");
+            System.err.println();
+
             System.err.println("  Commands:");
-
-            Command.labels().stream()
-
-                    .forEach(System.err::println);
+            Command.valuesAsMap()
+                    .forEach((label, description) -> System.err.println(label + " : " + description));
+            System.err.println();
 
             System.err.println("  Options:");
             e.getParser().printUsage(System.err);
+            System.err.println();
+
             System.err.println("  Example:");
             System.err.println(displayedName + " " + Command.INFO.label + " --bnkDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\"");
             return false;
