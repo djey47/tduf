@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.parser;
 
+import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -116,7 +117,6 @@ public abstract class GenericParser<T> {
             byte[] readValueAsBytes = null;
             long parsedCount;
 
-
             switch(type) {
 
                 case GAP:
@@ -130,8 +130,7 @@ public abstract class GenericParser<T> {
                     parsedCount = inputStream.read(readValueAsBytes, 4, length);
 
                     // TODO display only 4 last bytes of array
-                    // TODO display numeric value
-                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), "?"));
+                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), TypeHelper.rawToNumeric(readValueAsBytes)));
                     break;
 
                 case DELIMITER:
@@ -139,8 +138,7 @@ public abstract class GenericParser<T> {
                     readValueAsBytes = new byte[length];
                     parsedCount = inputStream.read(readValueAsBytes, 0, length);
 
-                    // TODO display text value
-                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), "?"));
+                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), "\"" +  TypeHelper.rawToText(readValueAsBytes) + "\""));
                     break;
 
                 case REPEATER:

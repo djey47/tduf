@@ -89,6 +89,17 @@ public class GenericParserTest {
     @Test
     public void dump_whenProvidedContents_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
+        String expectedDump = "tag\t<TEXT: 10 bytes>\t[65, 66, 67, 68, 69, 70, 71, 72, 73, 74]\t\"ABCDEFGHIJ\"\n" +
+                "repeater\t<REPEATER: 11 bytes>\t>>\t\n" +
+                "repeater[0].number\t<NUMBER: 4 bytes>\t[0, 0, 0, 0, 0, 0, 1, -12]\t500\n" +
+                "repeater[0].gap\t<GAP: 2 bytes>\t[0, 0]\t\n" +
+                "repeater[0].text\t<TEXT: 4 bytes>\t[65, 66, 67, 68]\t\"ABCD\"\n" +
+                "repeater[0].delimiter\t<DELIMITER: 1 bytes>\t[10]\t\"\n\"\n" +
+                "repeater[1].number\t<NUMBER: 4 bytes>\t[0, 0, 0, 0, 0, 0, 3, -24]\t1000\n" +
+                "repeater[1].gap\t<GAP: 2 bytes>\t[0, 0]\t\n" +
+                "repeater[1].text\t<TEXT: 4 bytes>\t[69, 70, 71, 72]\t\"EFGH\"\n" +
+                "repeater[1].delimiter\t<DELIMITER: 1 bytes>\t[11]\t\"\u000B\"\n" +
+                "repeater\t<REPEATER: 22 bytes>\t<<\t\n";
         ByteArrayInputStream inputStream = createInputStreamFromReferenceFile();
         GenericParser<String> actualParser = createGenericParser(inputStream);
         actualParser.parse();
@@ -98,7 +109,7 @@ public class GenericParserTest {
         System.out.println("Dumped contents:\n" + actualDump);
 
         // THEN
-        assertThat(actualDump).isNotNull();
+        assertThat(actualDump).isEqualTo(expectedDump);
     }
 
     private GenericParser<String> createGenericParser(final ByteArrayInputStream inputStream) throws IOException {
