@@ -86,6 +86,21 @@ public class GenericParserTest {
         assertThat(actualStructureSize).isEqualTo(101); // = 5 + 4*24
     }
 
+    @Test
+    public void dump_whenProvidedContents_shouldReturnAllParsedData() throws IOException, URISyntaxException {
+        // GIVEN
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile();
+        GenericParser<String> actualParser = createGenericParser(inputStream);
+        actualParser.parse();
+
+        // WHEN
+        String actualDump = actualParser.dump();
+        System.out.println("Dumped contents:\n" + actualDump);
+
+        // THEN
+        assertThat(actualDump).isNotNull();
+    }
+
     private GenericParser<String> createGenericParser(final ByteArrayInputStream inputStream) throws IOException {
         return new GenericParser<String>(inputStream) {
             @Override

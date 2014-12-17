@@ -7,6 +7,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,13 +19,17 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class GenericParser<T> {
 
-    private static Class<GenericParser> thisClass = GenericParser.class;
+    private static final Class<GenericParser> thisClass = GenericParser.class;
+
+    private static final String DUMP_ENTRY_FORMAT = "%s\t<%s: %d bytes>\t%s\t%s\n";
 
     private final ByteArrayInputStream inputStream;
 
     private final FileStructureDto fileStructure;
 
     private final DataStore dataStore = new DataStore();
+
+    private final StringBuilder dumpBuilder = new StringBuilder();
 
     protected GenericParser(ByteArrayInputStream inputStream) throws IOException {
         requireNonNull(inputStream, "Data stream is required");
@@ -41,9 +46,19 @@ public abstract class GenericParser<T> {
      */
     public T parse() {
         this.dataStore.clearAll();
+        this.dumpBuilder.setLength(0);
+
         readFields(fileStructure.getFields(), "");
 
         return generate();
+    }
+
+    /**
+     * Returns parsed contents of current file.
+     * @return a String with all entries.
+     */
+    public String dump() {
+        return this.dumpBuilder.toString();
     }
 
     static int computeStructureSize(List<FileStructureDto.Field> fields) {
@@ -92,6 +107,7 @@ public abstract class GenericParser<T> {
         for(FileStructureDto.Field field : fields) {
 
             String name = field.getName();
+            String key = repeaterKey + name;
 
             // TODO check null value when required
             Integer length = field.getSize();
@@ -100,21 +116,31 @@ public abstract class GenericParser<T> {
             byte[] readValueAsBytes = null;
             long parsedCount;
 
+
             switch(type) {
 
                 case GAP:
                     parsedCount = inputStream.skip(length);
+
+                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(new byte[length]), ""));
                     break;
 
                 case NUMBER:    // TODO handle other than 32 bit
                     readValueAsBytes = new byte[length + 4]; // Prepare long values
                     parsedCount = inputStream.read(readValueAsBytes, 4, length);
+
+                    // TODO display only 4 last bytes of array
+                    // TODO display numeric value
+                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), "?"));
                     break;
 
                 case DELIMITER:
                 case TEXT:
                     readValueAsBytes = new byte[length];
                     parsedCount = inputStream.read(readValueAsBytes, 0, length);
+
+                    // TODO display text value
+                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), "?"));
                     break;
 
                 case REPEATER:
@@ -122,6 +148,8 @@ public abstract class GenericParser<T> {
 
                     List<FileStructureDto.Field> subFields = field.getSubFields();
                     int subStructureSize = computeStructureSize(subFields);
+
+                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), subStructureSize, ">>", ""));
 
                     while (inputStream.available() >= subStructureSize      // auto
                             && (length == null || parsedCount < length)) {    // specified
@@ -131,6 +159,8 @@ public abstract class GenericParser<T> {
 
                         parsedCount++;
                     }
+
+                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), subStructureSize * parsedCount, "<<", ""));
                     break;
 
                 default:
@@ -141,7 +171,6 @@ public abstract class GenericParser<T> {
             assert (parsedCount == Optional.ofNullable(length).orElse((int)parsedCount));
 
             if (type.isValueToBeStored()) {
-                String key = repeaterKey + name;
                 this.dataStore.addRawValue(key, readValueAsBytes);
             }
         }

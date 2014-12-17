@@ -40,6 +40,7 @@ public class MapParserTest {
         // WHEN
         MapParser mapParser = MapParser.load(mapInputStream);
         BankMap actualBankMap = mapParser.parse();
+        System.out.println("Dumped contents:\n" + mapParser.dump());
 
 
         // THEN
