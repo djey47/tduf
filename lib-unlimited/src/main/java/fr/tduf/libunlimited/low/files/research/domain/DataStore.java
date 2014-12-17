@@ -2,7 +2,6 @@ package fr.tduf.libunlimited.low.files.research.domain;
 
 import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
 
-import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,8 +41,7 @@ public class DataStore {
      * @param value     : value to store
      */
     public void addText(String fieldName, String value) {
-        // TODO externalize to TypeHelper
-        this.store.put(fieldName, value.getBytes());
+        this.store.put(fieldName, TypeHelper.textToRaw(value));
     }
 
     /**
@@ -67,8 +65,7 @@ public class DataStore {
      */
     public void addRepeatedTextValue(String repeaterFieldName, String fieldName, long index, String value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        // TODO externalize to TypeHelper
-        this.store.put(key, value.getBytes());
+        this.store.put(key, TypeHelper.textToRaw(value));
     }
 
     /**
@@ -80,12 +77,7 @@ public class DataStore {
      */
     public void addRepeatedNumericValue(String repeaterFieldName, String fieldName, long index, long value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        // TODO externalize to TypeHelper
-        byte[] valueAsBytes = ByteBuffer
-                .allocate(8)
-                .putLong(value)
-                .array();
-        this.store.put(key, valueAsBytes);
+        this.store.put(key, TypeHelper.numericToRaw(value));
     }
 
     /**
