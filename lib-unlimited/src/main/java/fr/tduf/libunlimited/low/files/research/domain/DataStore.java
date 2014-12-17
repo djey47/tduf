@@ -1,5 +1,7 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
+import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
+
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -40,6 +42,7 @@ public class DataStore {
      * @param value     : value to store
      */
     public void addText(String fieldName, String value) {
+        // TODO externalize to TypeHelper
         this.store.put(fieldName, value.getBytes());
     }
 
@@ -64,6 +67,7 @@ public class DataStore {
      */
     public void addRepeatedTextValue(String repeaterFieldName, String fieldName, long index, String value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
+        // TODO externalize to TypeHelper
         this.store.put(key, value.getBytes());
     }
 
@@ -76,6 +80,7 @@ public class DataStore {
      */
     public void addRepeatedNumericValue(String repeaterFieldName, String fieldName, long index, long value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
+        // TODO externalize to TypeHelper
         byte[] valueAsBytes = ByteBuffer
                 .allocate(8)
                 .putLong(value)
@@ -108,7 +113,9 @@ public class DataStore {
         if (!this.store.containsKey(fieldName)) {
             return Optional.empty();
         }
-        return Optional.of(new String(this.store.get(fieldName)));
+        return Optional.of(TypeHelper
+                .rawToText(
+                        this.store.get(fieldName)));
     }
 
     /**
@@ -120,9 +127,9 @@ public class DataStore {
         if (!this.store.containsKey(fieldName)) {
             return Optional.empty();
         }
-        return Optional.of(ByteBuffer
-                .wrap(this.store.get(fieldName))
-                .getLong());
+        return Optional.of(TypeHelper
+                .rawToNumeric(
+                        this.store.get(fieldName)));
     }
 
     /**
@@ -139,9 +146,9 @@ public class DataStore {
                     return matcher.matches() && matcher.group(1).equals(fieldName);
                 })
 
-                .map( store::get)
+                .map(store::get)
 
-                .map( bytes -> ByteBuffer.wrap(bytes).getLong() ) // TODO handle other than 4 bytes
+                .map(TypeHelper::rawToNumeric)
 
                 .collect(Collectors.toList());
     }
