@@ -46,11 +46,12 @@ public abstract class GenericWriter<T> {
         fillStore();
 
         //TODO: handle value not found
-        writeFields(fileStructure.getFields(), outputStream, "");
+        writeFields(this.fileStructure.getFields(), outputStream, "");
 
         return outputStream;
     }
 
+    // TODO handle endianness
     private boolean writeFields(List<FileStructureDto.Field> fields, ByteArrayOutputStream outputStream, String repeaterKey) throws IOException {
         for(FileStructureDto.Field field : fields) {
             String name = field.getName();

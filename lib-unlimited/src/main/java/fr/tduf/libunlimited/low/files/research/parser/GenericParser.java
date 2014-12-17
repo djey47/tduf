@@ -76,7 +76,6 @@ public abstract class GenericParser<T> {
                             break;
 
                         case REPEATER:
-                            // TODO Handle automatic (unknown item count)
                             actualSize = computeStructureSize(field.getSubFields()) * field.getSize();
                             break;
 
@@ -109,8 +108,6 @@ public abstract class GenericParser<T> {
 
             String name = field.getName();
             String key = repeaterKey + name;
-
-            // TODO check null value when required
             Integer length = field.getSize();
 
             FileStructureDto.Type type = field.getType();
