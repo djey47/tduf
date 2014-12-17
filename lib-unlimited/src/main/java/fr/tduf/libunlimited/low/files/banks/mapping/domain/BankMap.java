@@ -10,6 +10,7 @@ public class BankMap {
     private final Map<Long, Entry> entries = new HashMap<>();
 
     private byte[] entrySeparator;
+    private String tag;
 
     /**
      * Adds a new entry. An entry with the same hash should not exist.
@@ -52,6 +53,14 @@ public class BankMap {
 
     public void setEntrySeparator(byte[] entrySeparator) {
         this.entrySeparator = entrySeparator;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String getTag() {
+        return tag;
     }
 
     /**

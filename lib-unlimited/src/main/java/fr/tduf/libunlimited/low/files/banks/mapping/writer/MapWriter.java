@@ -31,8 +31,7 @@ public class MapWriter extends GenericWriter<BankMap> {
 
     @Override
     protected void fillStore() {
-        // TODO store tag in domain object to prevent hard coded value
-        getDataStore().addText("tag", "MAP4\0");
+        getDataStore().addText("tag", this.getData().getTag());
 
         List<BankMap.Entry> sortedEntries = this.getData().getEntries().stream()
 

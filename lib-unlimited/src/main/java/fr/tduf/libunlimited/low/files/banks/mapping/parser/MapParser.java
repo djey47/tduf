@@ -37,6 +37,8 @@ public class MapParser extends GenericParser<BankMap> {
 
         BankMap bankMap = new BankMap();
 
+        bankMap.setTag(getDataStore().getText("tag").get());
+
         for (Map<String, byte[]> values : repeatedValues) {
 
             long checksum = TypeHelper.rawToNumeric(values.get("file_name_hash"));
