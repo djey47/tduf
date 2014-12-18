@@ -22,7 +22,7 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * How to run testsl
 * Deployment instructions
 
-### Contributiing to project ###
+### Contributing to project ###
 
 * Writing tests
 * Code review
