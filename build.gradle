@@ -8,7 +8,7 @@ plugins {
 // configure version
 scmVersion {
     tag {
-        prefix = 'tduf-R'
+        prefix = 'tduf'
     }
 }
 
