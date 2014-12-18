@@ -19,8 +19,15 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Configuration
 * Dependencies
 * Database configuration
-* How to run testsl
+* How to run tests
 * Deployment instructions
+
+### Releasing ###
+
+* Make working directory clean (commit/push or stash changes)
+* Check version: execute *currentVersion* task from Gradle
+* Execute *release* task from Gradle
+* Will set tag 'release-<version>'
 
 ### Contributing to project ###
 
