@@ -1,8 +1,5 @@
 .gradle/
 .idea/
 build/
-gradle/
 tdu-database-dump/
-gradlew
-gradlew.bat
 *.iml
