@@ -5,11 +5,20 @@ plugins {
     id 'pl.allegro.tech.build.axion-release' version '0.9.9'
 }
 
+// configure version
+scmVersion {
+    tag {
+        prefix = 'tduf-R'
+    }
+}
+
+allprojects {
+    project.group = 'fr.tduf'
+    project.version = scmVersion.version
+}
+
 subprojects {
     apply plugin: 'java'
-
-    group = 'fr.tduf'
-    version =  '0.1.0-SNAPSHOT'
 
     repositories {
         mavenCentral()
