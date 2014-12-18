@@ -25,6 +25,7 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 ### Releasing ###
 
 * Make working directory clean (commit/push or stash changes)
+* Check unit tests: execute *cleanTest test* tasks from Gradle
 * Check version: execute *currentVersion* task from Gradle
 * Execute *release* task from Gradle to automatically select release tag version, or *release -Prelease.forceVersion=[version]* to specify version
 
@@ -32,6 +33,10 @@ It will:
 
 * Set local tag *tdu-[version]*
 * Push it to remote.
+
+### Packaging ###
+
+This needs a release tag.
 
 ### Contributing to project ###
 
