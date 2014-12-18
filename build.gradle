@@ -45,6 +45,7 @@ subprojects {
 
     task fatJar(type: Jar) {
         mustRunAfter 'jar'
+        description 'Generates jar with all dependencies bundled into it.'
 
         baseName = 'tduf-' + project.name + '-all'
         from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
@@ -58,8 +59,22 @@ project(':cli') {
 
         compile group: 'args4j', name: 'args4j', version: '2.0.29'
     }
+
+    task copyJar(type: Copy) {
+        mustRunAfter 'fatJar'
+        println('copyJar')
+    }
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2'
+}
+
+task copyDoc(type: Copy) {
+    println('copyDoc')
+}
+
+task pack(dependsOn: ['copyDoc', ':cli:fatJar', ':lib-unlimited:fatJar']) {
+    description 'Packages fat jar with all distribution files.'
+    println('pack')
 }
