@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,6 +50,17 @@ public class GenericWriterTest {
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
+    @Test(expected = NoSuchElementException.class)
+    public void write_whenProvidedFiles_andMissingValue_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterWithMissingValues();
+
+        // WHEN
+        actualWriter.write();
+
+        // THEN: exception
+    }
+
     private GenericWriter<String> createGenericWriter() throws IOException {
         return new GenericWriter<String>(DATA) {
             @Override
@@ -66,6 +78,18 @@ public class GenericWriterTest {
                 getDataStore().addRepeatedTextValue("repeater", "text", 1, "EFGH");
                 getDataStore().addRepeatedRawValue("repeater", "delimiter", 1, new byte[]{0xB});
             }
+
+            @Override
+            protected String getStructureResource() {
+                return "/files/structures/TEST-map.json";
+            }
+        };
+    }
+
+    private GenericWriter<String> createGenericWriterWithMissingValues() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {}
 
             @Override
             protected String getStructureResource() {

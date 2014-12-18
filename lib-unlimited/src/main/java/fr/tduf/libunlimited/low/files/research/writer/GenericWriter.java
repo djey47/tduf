@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -38,6 +39,7 @@ public abstract class GenericWriter<T> {
     /**
      * Writes current data object to byte stream.
      * @return a stream with serialized data according to provided structure
+     * @throws NoSuchElementException when at least one value could not be found in store.
      */
     public ByteArrayOutputStream write() throws IOException {
 
@@ -45,7 +47,6 @@ public abstract class GenericWriter<T> {
 
         fillStore();
 
-        //TODO: handle value not found
         writeFields(this.fileStructure.getFields(), outputStream, "");
 
         return outputStream;
@@ -63,7 +64,7 @@ public abstract class GenericWriter<T> {
                 String key = repeaterKey + name;
                 valueBytes = dataStore.getRawValue(key).orElse(null);
                 if (valueBytes == null) {
-                    return false;
+                    throw new NoSuchElementException("Value does not exist in store for following key: " + key);
                 }
             }
 
@@ -92,7 +93,11 @@ public abstract class GenericWriter<T> {
                     while (hasMoreFields) {
 
                         String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(name, itemIndex);
-                        hasMoreFields = writeFields(field.getSubFields(), outputStream, newRepeaterKeyPrefix);
+                        try {
+                            writeFields(field.getSubFields(), outputStream, newRepeaterKeyPrefix);
+                        } catch (NoSuchElementException nsee) {
+                            hasMoreFields = false;
+                        }
 
                         itemIndex++;
                     }
