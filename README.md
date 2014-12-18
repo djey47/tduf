@@ -1,29 +1,33 @@
-# README #
+# TDUF(orever) #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This repository hosts all Java projects linked to TDUForever initiative.
 
-### What is this repository for? ###
+TDUForever aims at making Test Drive Unlmited modding easier:
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* Providing base modding features to save time
+* Capitalizing about reverse-engineering
+* ...
 
-### How do I get set up? ###
+### Modules ###
+
+* **cli** : Command Line Interface to use lib-unlimited library
+* **lib-unlimited** : Stand-alone component providing API for building TDU modding applications
+
+### Setting-up ###
 
 * Summary of set up
 * Configuration
 * Dependencies
 * Database configuration
-* How to run tests
+* How to run testsl
 * Deployment instructions
 
-### Contribution guidelines ###
+### Contributiing to project ###
 
 * Writing tests
 * Code review
 * Other guidelines
 
-### Who do I talk to? ###
+### Contact & useful links ###
 
-* Repo owner or admin
-* Other community or team contact
+* [Project homepage @ TurboDuck community](http://forum.turboduck.net/forums/57-Mod-Tools-Support)
