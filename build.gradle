@@ -1,5 +1,4 @@
-buildscript {
-}
+buildscript {}
 
 plugins {
     id 'pl.allegro.tech.build.axion-release' version '0.9.9'
@@ -14,6 +13,7 @@ scmVersion {
 
 allprojects {
     project.group = 'fr.tduf'
+    // version defined by plugin (if changes or ahead commits: x.y.z-SNAPSHOT)
     project.version = scmVersion.version
 }
 
@@ -38,6 +38,14 @@ subprojects {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+}
+
+project(':cli') {
+    dependencies {
+        compile project(':lib-unlimited')
+
+        compile group: 'args4j', name: 'args4j', version: '2.0.29'
+    }
 
     jar {
         manifest.attributes provider: 'gradle'
@@ -51,30 +59,53 @@ subprojects {
         from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
         with jar
     }
-}
-
-project(':cli') {
-    dependencies {
-        compile project(':lib-unlimited')
-
-        compile group: 'args4j', name: 'args4j', version: '2.0.29'
-    }
 
     task copyJar(type: Copy) {
-        mustRunAfter 'fatJar'
-        println('copyJar')
+        description 'Copies jar file to release directory.'
+
+        from fatJar
+        into '../pack/lib/'
     }
+
+    task copyScripts(type: Copy) {
+        description 'Copies CLI scripts to release directory.'
+
+        from 'src/main/shell/'
+        include '*.cmd'
+        into '../pack'
+    }
+}
+
+task copyDoc(type: Copy) {
+    description 'Copies README to release directory.'
+    mustRunAfter 'cleanPackDir'
+
+    from 'dist/'
+    include 'README.md'
+    into 'pack/'
+}
+
+task copyVersionInfo(type: Copy) {
+    description 'Copies version.info file to release libs directory.'
+    mustRunAfter 'cleanPackDir'
+
+    from 'dist/'
+    include 'version.info'
+    into 'pack/lib/'
+}
+
+task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', ':cli:copyScripts', ':cli:copyJar'], type: Zip) {
+    description 'Zips all distribution files from pack folder.'
+
+    archiveName project.name + "-" + project.version + ".zip"
+    destinationDir new File(projectDir, 'releases')
+    from  'pack/'
+}
+
+task cleanPackDir(type: Delete) {
+    delete 'pack/'
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2'
-}
-
-task copyDoc(type: Copy) {
-    println('copyDoc')
-}
-
-task pack(dependsOn: ['copyDoc', ':cli:fatJar', ':lib-unlimited:fatJar']) {
-    description 'Packages fat jar with all distribution files.'
-    println('pack')
 }
