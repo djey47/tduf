@@ -1,5 +1,6 @@
 package fr.tduf.cli.tools;
 
+import fr.tduf.cli.common.CommandHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.MapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.parser.MapParser;
@@ -16,13 +17,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
+import static fr.tduf.cli.tools.MappingTool.Command.INFO;
+import static fr.tduf.cli.tools.MappingTool.Command.LIST;
 import static java.lang.Long.compare;
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 /**
  * Command line interface for handling TDU file mapping.
@@ -43,7 +46,7 @@ public class MappingTool {
     /**
      * All available commands
      */
-    enum Command {
+    enum Command implements CommandHelper.CommandEnum {
         INFO("info", "Provides general information about Bnk1.map file."),
         LIST("list", "Displays all entries in Bnk1.map file."),
         LIST_MISSING("list-missing", "Displays all files in Bnk directory which have no entry in Bnk1.map file."),
@@ -57,28 +60,19 @@ public class MappingTool {
             this.description = description;
         }
 
-        private static Set<String> labels() {
-            return asList(values()).stream()
-
-                    .map(cmd -> cmd.label)
-
-                    .collect(toSet());
+        @Override
+        public String getLabel() {
+            return label;
         }
 
-        private static Map<String, String> valuesAsMap() {
-            return asList(values()).stream()
-
-                    .collect(Collectors.toMap( command -> command.label, command -> command.description));
+        @Override
+        public String getDescription() {
+            return description;
         }
 
-        private static Command fromLabel(String label) {
-            return asList(values()).stream()
-
-                    .filter(cmd -> cmd.label.equals(label))
-
-                    .findAny()
-
-                    .get();
+        @Override
+        public CommandHelper.CommandEnum[] getValues() {
+            return values();
         }
     }
 
@@ -113,7 +107,7 @@ public class MappingTool {
             System.err.println();
 
             System.err.println("  Commands:");
-            Command.valuesAsMap()
+            CommandHelper.getValuesAsMap(LIST)
                     .forEach((label, description) -> System.err.println(label + " : " + description));
             System.err.println();
 
@@ -122,7 +116,7 @@ public class MappingTool {
             System.err.println();
 
             System.err.println("  Example:");
-            System.err.println(displayedName + " " + Command.INFO.label + " --bnkDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\"");
+            System.err.println(displayedName + " " + INFO.label + " --bnkDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\"");
             return false;
         }
         return true;
@@ -161,11 +155,11 @@ public class MappingTool {
 
         String commandArgument = arguments.get(0);
 
-        if ( !Command.labels().contains(commandArgument) ) {
+        if ( !CommandHelper.getLabels(LIST).contains(commandArgument)) {
             throw new CmdLineException(parser, "Error: An unsupported command is given.", null);
         }
 
-        this.command = Command.fromLabel(commandArgument);
+        this.command = (Command) CommandHelper.fromLabel(LIST, commandArgument);
     }
 
     private void info() throws IOException {
