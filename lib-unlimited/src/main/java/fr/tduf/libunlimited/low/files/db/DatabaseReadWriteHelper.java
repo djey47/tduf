@@ -24,6 +24,7 @@ public class DatabaseReadWriteHelper {
      * @throws FileNotFoundException
      */
     public static DbDto readDatabase(DbDto.Topic topic, String databaseDirectory) throws FileNotFoundException {
+        // TODO move system.outs to CLI
         List<String> contentLines = parseTopicContentsFromDirectory(topic, databaseDirectory);
         if(contentLines.isEmpty()) {
             System.err.println("Database contents not found for topic: " + topic);
