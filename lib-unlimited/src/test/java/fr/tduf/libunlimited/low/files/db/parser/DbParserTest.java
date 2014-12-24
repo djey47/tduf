@@ -58,6 +58,7 @@ public class DbParserTest {
         //THEN
         assertThat(actualDb).isNotNull();
         assertThat(dbParser.getIntegrityErrors()).hasSize(2);
+        assertThat(dbParser.getIntegrityErrors()).extracting("error").containsExactly("STRUCTURE_FIELDS_COUNT_MISMATCH","CONTENT_ITEMS_COUNT_MISMATCH");
     }
 
     @Test
@@ -82,6 +83,8 @@ public class DbParserTest {
         //THEN
         assertThat(actualDb).isNotNull();
         assertThat(dbParser.getIntegrityErrors()).hasSize(1);
+        assertThat(dbParser.getIntegrityErrors()).extracting("error").containsExactly("RESOURCE_ITEMS_COUNT_MISMATCH");
+
     }
 
     @Test
@@ -100,6 +103,7 @@ public class DbParserTest {
         //THEN
         assertThat(actualDb).isNotNull();
         assertThat(dbParser.getIntegrityErrors()).hasSize(1);
+        assertThat(dbParser.getIntegrityErrors()).extracting("error").containsExactly("CONTENTS_FIELDS_COUNT_MISMATCH");
     }
 
     @Test

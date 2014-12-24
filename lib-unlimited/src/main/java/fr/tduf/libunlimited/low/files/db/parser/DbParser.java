@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.fromCode;
 import static java.lang.Integer.valueOf;
 import static java.util.Objects.requireNonNull;
@@ -183,27 +184,6 @@ public class DbParser {
                 .build();
     }
 
-    private void checkContentItemsCount(long expectedItemCount, List<DbDataDto.Entry> actualEntries) {
-        if (expectedItemCount != actualEntries.size()) {
-            // TODO add more info on error
-            integrityErrors.add(new IntegrityError());
-        }
-    }
-
-    private void checkFieldCountInStructure(int expectedFieldCount, List<DbStructureDto.Field> fields) {
-        if (expectedFieldCount != fields.size()) {
-            // TODO add more info on error
-            integrityErrors.add(new IntegrityError());
-        }
-    }
-
-    private void checkFieldCountInContents(long expectedFieldCount, List<DbDataDto.Item> items) {
-        if (expectedFieldCount != items.size()) {
-            // TODO add more info on error
-            integrityErrors.add(new IntegrityError());
-        }
-    }
-
     private List<DbDataDto.Item> parseContentItems(DbStructureDto structure, String line) {
         List<DbDataDto.Item> items = new ArrayList<>();
         int fieldIndex = 0;
@@ -302,14 +282,39 @@ public class DbParser {
                 .build();
     }
 
+    private void checkContentItemsCount(long expectedItemCount, List<DbDataDto.Entry> actualEntries) {
+        if (expectedItemCount != actualEntries.size()) {
+            // TODO add more info on error
+            addIntegrityError(CONTENT_ITEMS_COUNT_MISMATCH);
+        }
+    }
+
+    private void checkFieldCountInStructure(int expectedFieldCount, List<DbStructureDto.Field> fields) {
+        if (expectedFieldCount != fields.size()) {
+            // TODO add more info on error
+            addIntegrityError(STRUCTURE_FIELDS_COUNT_MISMATCH);
+        }
+    }
+
+    private void checkFieldCountInContents(long expectedFieldCount, List<DbDataDto.Item> items) {
+        if (expectedFieldCount != items.size()) {
+            // TODO add more info on error
+            addIntegrityError(CONTENTS_FIELDS_COUNT_MISMATCH);
+        }
+    }
+
     private void checkItemCountBetweenResources(List<DbResourceDto> dbResourceDtos) {
         Map<Integer, List<DbResourceDto>> dbResourceDtosByItemCount = dbResourceDtos.stream()
                 .collect(groupingBy(dbResourceDto -> dbResourceDto.getEntries().size()));
 
         if (dbResourceDtosByItemCount.size() > 1) {
             // TODO add more info on error: locales and counts
-            integrityErrors.add(new IntegrityError());
+            addIntegrityError(RESOURCE_ITEMS_COUNT_MISMATCH);
         }
+    }
+
+    private void addIntegrityError(IntegrityError.ErrorTypeEnum errorTypeEnum) {
+        integrityErrors.add(new IntegrityError(errorTypeEnum));
     }
 
     public long getContentLineCount() {
