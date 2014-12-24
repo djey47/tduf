@@ -1,6 +1,7 @@
 .gradle/
 .idea/
 build/
+lib-unlimited/tests/
 pack/
 releases/
 tdu-database-dump/
