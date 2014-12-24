@@ -83,6 +83,31 @@ public class MappingTool {
         new MappingTool().doMain(args);
     }
 
+    private void doMain(String[] args) throws IOException {
+        if (!checkArgumentsAndOptions(args)) {
+            System.exit(1);
+        }
+
+        switch(command) {
+            case INFO:
+                info();
+                break;
+            case LIST:
+                list();
+                break;
+            case LIST_MISSING:
+                listMissing();
+                break;
+            case FIX_MISSING:
+                fixMissing();
+                break;
+            default:
+                System.err.println("Error: command is not implemented, yet.");
+                System.exit(1);
+                break;
+        }
+    }
+
     boolean checkArgumentsAndOptions(String[] args) {
         try {
             CmdLineParser parser = new CmdLineParser(this);
@@ -120,31 +145,6 @@ public class MappingTool {
             return false;
         }
         return true;
-    }
-
-    private void doMain(String[] args) throws IOException {
-        if (!checkArgumentsAndOptions(args)) {
-            System.exit(1);
-        }
-
-        switch(command) {
-            case INFO:
-                info();
-                break;
-            case LIST:
-                list();
-                break;
-            case LIST_MISSING:
-                listMissing();
-                break;
-            case FIX_MISSING:
-                fixMissing();
-                break;
-            default:
-                System.err.println("Error: command is not implemented, yet.");
-                System.exit(1);
-                break;
-        }
     }
 
     private void checkCommand(CmdLineParser parser) throws CmdLineException {
