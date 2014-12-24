@@ -145,13 +145,20 @@ public class DatabaseTool {
             outputDirectory.mkdirs();
         }
 
+        System.out.println("Dumping TDU database to JSON, please wait...");
+
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
+            System.out.println("-> Now processing topic: " + currentTopic + "...");
+
             DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory);
 
-            DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, outputDirectory.getAbsolutePath());
+            DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, outputDirectory.toString());
 
             System.out.println("Writing done for topic: " + currentTopic);
             System.out.println("Location: " + outputDirectory + File.separator + currentTopic.getLabel() + ".json");
+            System.out.println();
         }
+
+        System.out.println("All done!");
     }
 }
