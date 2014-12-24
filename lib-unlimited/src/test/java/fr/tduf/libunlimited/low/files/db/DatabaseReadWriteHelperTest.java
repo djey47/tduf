@@ -1,7 +1,9 @@
 package fr.tduf.libunlimited.low.files.db;
 
 
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Test;
 
 import java.io.File;
@@ -49,5 +51,30 @@ public class DatabaseReadWriteHelperTest {
         assertThat(allResources.get(5)).hasSize(0);
         assertThat(allResources.get(6)).hasSize(253); //it
         assertThat(allResources.get(7)).hasSize(0);
+    }
+
+    @Test
+    public void writeDatabaseToJson_whenProvidedContents_shouldCreateFiles() throws FileNotFoundException {
+        // GIVEN
+        DbStructureDto dbStructureDto = DbStructureDto.builder()
+                .forTopic(DbDto.Topic.ACHIEVEMENTS)
+                .build();
+        DbDataDto dbDataDto = DbDataDto.builder()
+                .build();
+        DbDto dbDto = DbDto.builder()
+                .withStructure(dbStructureDto)
+                .withData(dbDataDto)
+                .build();
+
+        String outputDirectory = "./tests/";
+        new File(outputDirectory).mkdirs();
+
+
+        // WHEN
+        DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, outputDirectory);
+
+
+        // THEN
+        assertThat(new File(outputDirectory + "TDU_Achievements.json")).exists();
     }
 }

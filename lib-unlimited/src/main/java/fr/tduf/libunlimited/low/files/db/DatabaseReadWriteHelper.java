@@ -59,8 +59,7 @@ public class DatabaseReadWriteHelper {
     public static void writeDatabaseToJson(DbDto dbDto, String outputDirectory) throws FileNotFoundException {
         DbWriter dbWriter = DbWriter.load(dbDto);
 
-        String jsonFilePath = outputDirectory + File.separator + ".json";
-        dbWriter.writeAllAsJson(jsonFilePath);
+        dbWriter.writeAllAsJson(outputDirectory);
     }
 
     static List<String> parseTopicContentsFromDirectory(DbDto.Topic topic, String databaseDirectory) throws FileNotFoundException {
