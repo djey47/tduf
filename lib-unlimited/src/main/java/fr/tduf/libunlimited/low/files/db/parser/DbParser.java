@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.parser;
 
+import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -325,18 +326,5 @@ public class DbParser {
 
     public List<IntegrityError> getIntegrityErrors() {
         return integrityErrors;
-    }
-
-    /**
-     * Represents an error contained in database files
-     */
-    private class IntegrityError {
-        //TODO bring more information on error
-
-        @Override
-        public String toString() {
-            // TODO add more detailed output
-            return "DatabaseIntegrityError";
-        }
     }
 }
