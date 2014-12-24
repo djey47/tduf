@@ -332,5 +332,11 @@ public class DbParser {
      */
     private class IntegrityError {
         //TODO bring more information on error
+
+        @Override
+        public String toString() {
+            // TODO add more detailed output
+            return "DatabaseIntegrityError";
+        }
     }
 }
