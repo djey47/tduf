@@ -18,18 +18,36 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 ### Using Command Line Tools ###
 
+#### Database Tool ####
 
+To see all features, run *DatabaseTool*.
 
-### Using JAR library in your projects ###
+e.g, to convert the whole TDU database to JSON format:
 
+* Extract (with TDUMT) and uncrypt (with tdudec) all database files in a directory
+* Run *DatabaseTool dump -databaseDir "C:\tdudb" -outputDir "C:\tdudb\dump"*.
+
+#### Mapping Tool ####
+
+To see all features, run *MappingTool*.
+
+e.g, to add missing entries to Bnk1.map:
+
+* Run *MappingTool fix-missing -bnkDir "C:\Program Files(x86)\Test Drive Unlmited\Euro\Bnk"*
+
+### Using JAR library and/or CLI Tools in your projects ###
+
+It's for free, but you have to put a mention, kind of 'Powered By TDUF project' and give a link to thread @ [TurboDuck](http://forum.turboduck.net/threads/32570-Djey-Discussion-about-new-modding-possibilities)
 
 ###  And especially... ###
 
-Have fun!
+Have fun! As much as I had with developing those tools !
 
+If you wish to donate, please head to [this](http://bit.ly/13YI3bP)
 
 ### Contact & useful links ###
 
 * [Project homepage @ TurboDuck community](http://forum.turboduck.net/forums/57-Mod-Tools-Support)
+
 
 -[Djey](https://github.com/djey47)-
