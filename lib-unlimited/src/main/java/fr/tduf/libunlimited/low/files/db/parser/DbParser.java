@@ -7,6 +7,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -287,22 +288,31 @@ public class DbParser {
 
     private void checkContentItemsCount(long expectedItemCount, List<DbDataDto.Entry> actualEntries) {
         if (expectedItemCount != actualEntries.size()) {
-            // TODO add more info on error
-            addIntegrityError(CONTENT_ITEMS_COUNT_MISMATCH);
+            Map<String, Object> info = new HashMap<>();
+            info.put("Expected count", expectedItemCount);
+            info.put("Actual count", actualEntries.size());
+
+            addIntegrityError(CONTENT_ITEMS_COUNT_MISMATCH, info);
         }
     }
 
     private void checkFieldCountInStructure(int expectedFieldCount, List<DbStructureDto.Field> fields) {
         if (expectedFieldCount != fields.size()) {
-            // TODO add more info on error
-            addIntegrityError(STRUCTURE_FIELDS_COUNT_MISMATCH);
+            Map<String, Object> info = new HashMap<>();
+            info.put("Expected count", expectedFieldCount);
+            info.put("Actual count", fields.size());
+
+            addIntegrityError(STRUCTURE_FIELDS_COUNT_MISMATCH, info);
         }
     }
 
     private void checkFieldCountInContents(long expectedFieldCount, List<DbDataDto.Item> items) {
         if (expectedFieldCount != items.size()) {
-            // TODO add more info on error
-            addIntegrityError(CONTENTS_FIELDS_COUNT_MISMATCH);
+            Map<String, Object> info = new HashMap<>();
+            info.put("Expected count", expectedFieldCount);
+            info.put("Actual count", items.size());
+
+            addIntegrityError(CONTENTS_FIELDS_COUNT_MISMATCH, info);
         }
     }
 
@@ -311,13 +321,19 @@ public class DbParser {
                 .collect(groupingBy(dbResourceDto -> dbResourceDto.getEntries().size()));
 
         if (dbResourceDtosByItemCount.size() > 1) {
-            // TODO add more info on error: locales and counts
-            addIntegrityError(RESOURCE_ITEMS_COUNT_MISMATCH);
+            Map<String, Object> info = new HashMap<>();
+            info.put("Counts", dbResourceDtosByItemCount.keySet());
+            info.put("Differences between resources", dbResourceDtosByItemCount);
+            addIntegrityError(RESOURCE_ITEMS_COUNT_MISMATCH, info);
         }
     }
 
-    private void addIntegrityError(IntegrityError.ErrorTypeEnum errorTypeEnum) {
-        integrityErrors.add(new IntegrityError(errorTypeEnum));
+    private void addIntegrityError(IntegrityError.ErrorTypeEnum errorTypeEnum, Map<String, Object> info) {
+        IntegrityError integrityError = IntegrityError.builder()
+                .ofType(errorTypeEnum)
+                .addInformations(info)
+                .build();
+        integrityErrors.add(integrityError);
     }
 
     public long getContentLineCount() {

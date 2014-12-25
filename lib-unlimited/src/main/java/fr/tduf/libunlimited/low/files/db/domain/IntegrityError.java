@@ -1,15 +1,49 @@
 package fr.tduf.libunlimited.low.files.db.domain;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Represents an error contained in database files
  */
 public class IntegrityError {
-    //TODO bring more information on error
-
     private final ErrorTypeEnum errorTypeEnum;
 
-    public IntegrityError(ErrorTypeEnum errorTypeEnum) {
+    private final Map<String, Object> info;
+
+    private IntegrityError(ErrorTypeEnum errorTypeEnum, Map<String, Object> info) {
         this.errorTypeEnum = errorTypeEnum;
+        this.info = info;
+    }
+
+    public static IntegrityErrorBuilder builder() {
+        return new IntegrityErrorBuilder() {
+            private final Map<String, Object> info = new HashMap<>();
+            private ErrorTypeEnum errorTypeEnum;
+
+            @Override
+            public IntegrityErrorBuilder ofType(ErrorTypeEnum errorTypeEnum) {
+                this.errorTypeEnum = errorTypeEnum;
+                return this;
+            }
+
+            @Override
+            public IntegrityErrorBuilder addInformation(String label, String value) {
+                this.info.put(label, value);
+                return this;
+            }
+
+            @Override
+            public IntegrityErrorBuilder addInformations(Map<String, Object> info) {
+                this.info.putAll(info);
+                return this;
+            }
+
+            @Override
+            public IntegrityError build() {
+                return new IntegrityError(this.errorTypeEnum, this.info);
+            }
+        };
     }
 
     public String getError() {
@@ -18,7 +52,7 @@ public class IntegrityError {
 
     @Override
     public String toString() {
-        return "DatabaseIntegrityError: " + errorTypeEnum;
+        return "DatabaseIntegrityError: " + errorTypeEnum + ", " + info;
     }
 
     /**
@@ -44,5 +78,16 @@ public class IntegrityError {
          * Read resource items count not same over all language files
          */
         RESOURCE_ITEMS_COUNT_MISMATCH
+    }
+
+    public interface IntegrityErrorBuilder {
+
+        IntegrityErrorBuilder ofType(ErrorTypeEnum errorTypeEnum);
+
+        IntegrityErrorBuilder addInformation(String label, String value);
+
+        IntegrityErrorBuilder addInformations(Map<String, Object> info);
+
+        IntegrityError build();
     }
 }
