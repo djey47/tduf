@@ -85,7 +85,6 @@ public class DbParserTest {
         assertThat(actualDb).isNotNull();
         assertThat(dbParser.getIntegrityErrors()).hasSize(1);
         assertThat(dbParser.getIntegrityErrors()).extracting("error").containsExactly("RESOURCE_ITEMS_COUNT_MISMATCH");
-
     }
 
     @Test
@@ -266,9 +265,11 @@ public class DbParserTest {
                 createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.ITALY)
         );
 
+
         //WHEN
         DbParser dbParser = DbParser.load(dbLines, resourceLines);
         DbDto actualDb = dbParser.parseAll();
+
 
         //THEN
         assertThat(dbParser.getIntegrityErrors()).isEmpty();
@@ -289,7 +290,6 @@ public class DbParserTest {
         //WHEN
         DbParser dbParser = DbParser.load(dbLines, resourceLines);
         DbDto db = dbParser.parseAll();
-
 
         // JSON DISPLAY
         ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
