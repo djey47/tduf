@@ -19,6 +19,8 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 @JsonTypeName("db")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class DbDataDto implements Serializable {
+    //TODO implement proper toString
+
     @JsonProperty("entries")
     private List<Entry> entries;
 
