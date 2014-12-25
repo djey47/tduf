@@ -81,7 +81,7 @@ task copyDoc(type: Copy) {
     mustRunAfter 'cleanPackDir'
 
     from 'dist/'
-    include 'README.md'
+    include 'README.txt'
     into 'pack/'
 }
 
