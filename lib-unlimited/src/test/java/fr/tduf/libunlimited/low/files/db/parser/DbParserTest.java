@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.parser;
 
 import fr.tduf.libunlimited.low.files.db.common.DbHelper;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
@@ -147,6 +148,88 @@ public class DbParserTest {
         assertThat(actualDb.getStructure().getFields()).hasSize(3);
         DbStructureDto.Field secondField = actualDb.getStructure().getFields().get(1);
         assertThat(secondField).isEqualTo(expectedField);
+    }
+
+    @Test
+    public void parseAll_whenProvidedContents_andFloatNegativeValue_shouldReadAccordingly() throws Exception {
+        //GIVEN
+        List<String> dbLines = asList(
+                "// TDU_CarPhysicsData.db",
+                "// Version: 1,2,",
+                "// Categories: 20",
+                "// Fields: 1",
+                "{TDU_CarPhysicsData} 1975083164",
+                "{CX} f",
+                "// items: 1",
+                "-33,33;",
+                "\0");
+        List<List<String>> resourceLines = asList(
+                asList(
+                        "// TDU_CarPhysicsData.fr",
+                        "// version: 1,2",
+                        "// categories: 6",
+                        "// Explanation",
+                        "{??} 53410835,"
+                )
+        );
+
+
+        //WHEN
+        DbParser dbParser = DbParser.load(dbLines, resourceLines);
+        DbDto actualDb = dbParser.parseAll();
+
+
+        //THEN
+        assertThat(actualDb).isNotNull();
+        assertThat(dbParser.getIntegrityErrors()).isEmpty();
+
+        assertThat(actualDb.getData().getEntries()).hasSize(1);
+        assertThat(actualDb.getData().getEntries().get(0).getItems()).hasSize(1);
+        DbDataDto.Item item = actualDb.getData().getEntries().get(0).getItems().get(0);
+        assertThat(item.getName()).isEqualTo("CX");
+        assertThat(item.getRawValue()).isEqualTo("-33,33");
+    }
+
+    @Test
+    public void parseAll_whenProvidedContents_andEmptyValue_shouldReadAccordingly() throws Exception {
+        //GIVEN
+        List<String> dbLines = asList(
+                "// TDU_CarPhysicsData.db",
+                "// Version: 1,2,",
+                "// Categories: 20",
+                "// Fields: 3",
+                "{TDU_CarPhysicsData} 1975083164",
+                "{Pad1} i",
+                "{Pad2} i",
+                "{Pad3} i",
+                "// items: 1",
+                "1;;3;",
+                "\0");
+        List<List<String>> resourceLines = asList(
+                asList(
+                        "// TDU_CarPhysicsData.fr",
+                        "// version: 1,2",
+                        "// categories: 6",
+                        "// Explanation",
+                        "{??} 53410835,"
+                )
+        );
+
+
+        //WHEN
+        DbParser dbParser = DbParser.load(dbLines, resourceLines);
+        DbDto actualDb = dbParser.parseAll();
+
+
+        //THEN
+        assertThat(actualDb).isNotNull();
+        assertThat(dbParser.getIntegrityErrors()).isEmpty();
+
+        assertThat(actualDb.getData().getEntries()).hasSize(1);
+        assertThat(actualDb.getData().getEntries().get(0).getItems()).hasSize(3);
+        DbDataDto.Item item = actualDb.getData().getEntries().get(0).getItems().get(1);
+        assertThat(item.getName()).isEqualTo("Pad2");
+        assertThat(item.getRawValue()).isEqualTo("");
     }
 
     @Test
