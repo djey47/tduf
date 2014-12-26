@@ -12,7 +12,7 @@ public class CryptoHelper {
 
     /**
      * Converts encrypted contents in provided input stream to clear ones.
-     * @param inputStream           : contents to be decrypted
+     * @param inputStream           : contents to be decrypted - size must be multiple of 8
      * @param encryptionModeEnum    : encryption mode to be used
      * @return an output stream with clear contents.
      */
@@ -22,9 +22,7 @@ public class CryptoHelper {
             throw new IllegalArgumentException("Buffer to be decoded must have length multiple of 8. Current=" + contentsSize);
         }
 
-        byte[] inputBytes = new byte[contentsSize];
-        int readBytes = inputStream.read(inputBytes);
-        assert readBytes == contentsSize : "Unable to read till the end of the buffer.";
+        byte[] inputBytes = readBytesAndCheckSize(inputStream, contentsSize);
 
         XTEA.engineInit(encryptionModeEnum.key, true);
 
@@ -53,13 +51,41 @@ public class CryptoHelper {
     }
 
     /**
-     *
-     * @param byteArrayInputStream
-     * @param encryptionModeEnum
-     * @return
+     * Converts clear contents in provided input stream to encrypted ones.
+     * @param inputStream           : contents to be encrypted - size must be multiple of 8
+     * @param encryptionModeEnum    : encryption mode to be used
+     * @return an output stream with encrypted contents.
      */
-    public static ByteArrayOutputStream encryptXTEA(ByteArrayInputStream byteArrayInputStream, EncryptionModeEnum encryptionModeEnum) {
-        return null;
+    public static ByteArrayOutputStream encryptXTEA(ByteArrayInputStream inputStream, EncryptionModeEnum encryptionModeEnum) throws IOException, InvalidKeyException {
+        int contentsSize = inputStream.available();
+        if (contentsSize % 8 != 0) {
+            throw new IllegalArgumentException("Buffer to be decoded must have length multiple of 8. Current=" + contentsSize);
+        }
+
+        byte[] inputBytes = readBytesAndCheckSize(inputStream, contentsSize);
+
+        XTEA.engineInit(encryptionModeEnum.key, false);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        int position = 0;
+        while(position < contentsSize) {
+
+            byte[] outputBytes = XTEA.engineCrypt(inputBytes, position);
+            outputStream.write(outputBytes);
+
+            position += 8;
+        }
+
+        return outputStream;
+    }
+
+    private static byte[] readBytesAndCheckSize(ByteArrayInputStream inputStream, int contentsSize) throws IOException {
+        byte[] inputBytes = new byte[contentsSize];
+
+        int readBytes = inputStream.read(inputBytes);
+        assert readBytes == contentsSize : "Unable to read till the end of the buffer.";
+
+        return inputBytes;
     }
 
     /**
