@@ -45,59 +45,22 @@ public class CryptoHelperTest {
         assertThat(actualOutputStream.toByteArray()).isEqualTo(expectedBytes);
     }
 
-//    @Test
-//    public void decryptXTEA_withRealFile_andOtherMode_shouldGiveClearContentsBack() throws IOException, URISyntaxException, InvalidKeyException {
-//        // GIVEN
-//        byte[] contentBytes = getBytesFromResource("/common/crypto/other/encrypted.bin");
-//        ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes);
-//
-//        byte[] expectedBytes = getBytesFromResource("/common/crypto/clear.txt");
-//
-//
-//        // WHEN
-//        ByteArrayOutputStream actualOutputStream = CryptoHelper.decryptXTEA(inputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
-//
-//
-//        // THEN
-//        assertThat(actualOutputStream).isNotNull();
-//        assertThat(actualOutputStream.toByteArray()).isEqualTo(expectedBytes);
-//    }
-
     @Test
-    public void readInt32_withAtLeast4BytesToRead_shouldReturnProperValue() {
+    public void decryptXTEA_withRealFile_andOtherMode_shouldGiveClearContentsBack() throws IOException, URISyntaxException, InvalidKeyException {
         // GIVEN
-        byte[] buffer = {
-                0x00,
-                0x10,
-                0x20,
-                0X30,
-                0x40,
-        };
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(buffer);
+        byte[] contentBytes = getBytesFromResource("/common/crypto/other/encrypted.bin");
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes);
+
+        byte[] expectedBytes = getBytesFromResource("/common/crypto/clear.txt");
+
 
         // WHEN
-        int actualValue = CryptoHelper.readInt32(inputStream);
+        ByteArrayOutputStream actualOutputStream = CryptoHelper.decryptXTEA(inputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
+
 
         // THEN
-        assertThat(actualValue).isEqualTo(1056816);
-    }
-
-    @Test
-    public void writeInt32_shouldSetProperValue() {
-        // GIVEN
-        byte[] expectedBytes = {
-                0x00,
-                0x10,
-                0x20,
-                0X30
-        };
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        // WHEN
-        CryptoHelper.writeInt32(1056816, outputStream);
-
-        // THEN
-        assertThat(outputStream.toByteArray()).isEqualTo(expectedBytes);
+        assertThat(actualOutputStream).isNotNull();
+        assertThat(actualOutputStream.toByteArray()).isEqualTo(expectedBytes);
     }
 
     private static byte[] getBytesFromResource(String resourceName) throws URISyntaxException, IOException {

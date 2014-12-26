@@ -3,7 +3,6 @@ package fr.tduf.libunlimited.low.files.common.crypto;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 
 /**
@@ -11,22 +10,16 @@ import java.security.InvalidKeyException;
  */
 public class CryptoHelper {
 
-    /* Number of rounds each pair will be encrypted */
-    private final static int NUM_ROUNDS = 32;
-
-    /* Delta value */
-    private final static int DELTA = 0x9E3779B9;
-
     /**
-     *
-     * @param inputStream
-     * @param encryptionModeEnum
-     * @return
+     * Converts encrypted contents in provided input stream to clear ones.
+     * @param inputStream           : contents to be decrypted
+     * @param encryptionModeEnum    : encryption mode to be used
+     * @return an output stream with clear contents.
      */
     public static ByteArrayOutputStream decryptXTEA(ByteArrayInputStream inputStream, EncryptionModeEnum encryptionModeEnum) throws InvalidKeyException, IOException {
         int contentsSize = inputStream.available();
         if (contentsSize % 8 != 0) {
-            throw new IllegalArgumentException("Buffer to be decoded must have size multiple of 8. Current=" + contentsSize);
+            throw new IllegalArgumentException("Buffer to be decoded must have length multiple of 8. Current=" + contentsSize);
         }
 
         byte[] inputBytes = new byte[contentsSize];
@@ -36,12 +29,24 @@ public class CryptoHelper {
         XTEA.engineInit(encryptionModeEnum.key, true);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        int offset = 0;
-        while(offset < contentsSize) {
-            byte[] outputBytes = XTEA.engineCrypt(inputBytes, offset);
-            outputStream.write(outputBytes);
+        int position = 0;
+        while(position < contentsSize) {
 
-            offset += 8;
+            if (position >= encryptionModeEnum.contentsOffset) {
+                byte[] outputBytes = XTEA.engineCrypt(inputBytes, position);
+
+                if (encryptionModeEnum == EncryptionModeEnum.OTHER_AND_SPECIAL) {
+                    // XOR XTEA decipher result with input file data
+                    for (int i = 0 ; i < outputBytes.length ; i++) {
+                        int offset = position - encryptionModeEnum.contentsOffset;
+                        outputBytes[i] ^= inputBytes[offset + i];
+                    }
+                }
+
+                outputStream.write(outputBytes);
+            }
+
+            position += 8;
         }
 
         return outputStream;
@@ -57,28 +62,6 @@ public class CryptoHelper {
         return null;
     }
 
-    static int readInt32(ByteArrayInputStream inputStream) {
-        byte[] outBuffer = new byte[4];
-
-        int readBytes = inputStream.read(outBuffer, 0, 4);
-        assert readBytes == 4 : "Unconsistent buffer: expected 4 bytes remaining, got " + readBytes;
-
-        return ByteBuffer
-                .wrap(outBuffer)
-                .getInt();
-    }
-
-    static void writeInt32(int value, ByteArrayOutputStream outputStream) {
-        byte[] valueBytes = ByteBuffer
-                .allocate(4)
-                .putInt(value)
-                .array();
-
-        for (byte b : valueBytes) {
-            outputStream.write(b);
-        }
-    }
-
     /**
      * All encrypted file types with associated keys.
      */
@@ -90,23 +73,33 @@ public class CryptoHelper {
                 0x64EA432C,
                 0xF8A35B24,
                 0x018ECD81,
-                0x8326BEAC
-        }),
+                0x8326BEAC },
+                0),
 
         /**
-         * Other files (as database)
+         * Other files (as database).
+         * First 8 bytes of encrypted contents are timestamps so must be ignored.
          */
         OTHER_AND_SPECIAL(new int[] {
                 0x4FE23C4A,
                 0x80BAC211,
                 0x6917BD3A,
-                0xF0528EBD
-        });
+                0xF0528EBD },
+                8);
 
+        /**
+         * Encryption key
+         */
         private int[] key;
 
-        EncryptionModeEnum(int[] key) {
+        /**
+         * Position in bytes from which contents have to be taken into account.
+         */
+        private int contentsOffset;
+
+        EncryptionModeEnum(int[] key, int contentsOffset) {
             this.key = key;
+            this.contentsOffset = contentsOffset;
         }
     }
 }
