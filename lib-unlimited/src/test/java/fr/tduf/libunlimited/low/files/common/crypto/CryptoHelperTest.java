@@ -91,7 +91,7 @@ public class CryptoHelperTest {
         assertThat(actualOutputStream).isNotNull();
         assertThat(actualOutputStream.toByteArray()).isEqualTo(expectedBytes);
     }
-
+//
 //    @Test
 //    public void encryptXTEA_withRealFile_andOtherMode_shouldGiveEncryptedContentsBack() throws URISyntaxException, IOException, InvalidKeyException {
 //        // GIVEN
@@ -109,6 +109,22 @@ public class CryptoHelperTest {
 //        assertThat(actualOutputStream).isNotNull();
 //        assertThat(actualOutputStream.toByteArray()).isEqualTo(expectedBytes);
 //    }
+
+    @Test
+    public void introduceTimestamp_shouldPrependContentsWith8Bytes() {
+        // GIVEN
+        byte[] inputBytes = new byte[] { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 };
+
+        // WHEN
+        byte[] actualBytes = CryptoHelper.introduceTimeStamp(inputBytes);
+
+        // THEN
+        assertThat(actualBytes).hasSize(24);
+
+        byte[] contentsPart = new byte[16];
+        System.arraycopy(actualBytes, 8, contentsPart, 0, 16);
+        assertThat(contentsPart).isEqualTo(inputBytes);
+    }
 
     private static byte[] getBytesFromResource(String resourceName) throws URISyntaxException, IOException {
         Path encryptedPath = Paths.get(thisClass.getResource(resourceName).toURI()) ;

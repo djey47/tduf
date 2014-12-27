@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.low.files.common.crypto;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 
 /**
@@ -59,10 +60,14 @@ public class CryptoHelper {
     public static ByteArrayOutputStream encryptXTEA(ByteArrayInputStream inputStream, EncryptionModeEnum encryptionModeEnum) throws IOException, InvalidKeyException {
         int contentsSize = inputStream.available();
         if (contentsSize % 8 != 0) {
-            throw new IllegalArgumentException("Buffer to be decoded must have length multiple of 8. Current=" + contentsSize);
+            throw new IllegalArgumentException("Buffer to be encoded must have length multiple of 8. Current=" + contentsSize);
         }
 
         byte[] inputBytes = readBytesAndCheckSize(inputStream, contentsSize);
+
+        if(encryptionModeEnum == EncryptionModeEnum.OTHER_AND_SPECIAL) {
+            inputBytes = introduceTimeStamp(inputBytes);
+        }
 
         XTEA.engineInit(encryptionModeEnum.key, false);
 
@@ -77,6 +82,27 @@ public class CryptoHelper {
         }
 
         return outputStream;
+    }
+
+    static byte[] introduceTimeStamp(byte[] inputBytes) {
+
+        int currentTime = (int) (System.currentTimeMillis() / 1000L);
+
+        byte[] currentTimeBytes = ByteBuffer
+                .allocate(4)
+                .putInt(currentTime)
+                .array();
+        byte[] currentTimeComplementBytes = ByteBuffer
+                .allocate(4)
+                .putInt(~currentTime)
+                .array();
+
+        byte[] resultBytes = new byte[inputBytes.length + 8];
+        System.arraycopy(currentTimeBytes, 0, resultBytes, 0, 4);
+        System.arraycopy(currentTimeComplementBytes, 0, resultBytes, 4, 4);
+        System.arraycopy(inputBytes, 0, resultBytes, 8, inputBytes.length);
+
+        return resultBytes;
     }
 
     private static byte[] readBytesAndCheckSize(ByteArrayInputStream inputStream, int contentsSize) throws IOException {
