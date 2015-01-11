@@ -13,7 +13,7 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 ### Running it!
 
-* Launch *TDUF.cmd* script from Windows Explorer
+* Launch *TDUF.cmd* script from Windows Explorer *as Administrator* (right-click it)
 * You may need to create a desktop shortcut to this file.
 
 ### Using Command Line Tools
