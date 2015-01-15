@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static net.sf.json.test.JSONAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -216,9 +217,9 @@ public class DataStoreTest {
         // THEN
         assertThat(actualValues).isNotNull();
         assertThat(actualValues).hasSize(3);
-        assertThat(actualValues.get(0).getStore()).hasSize(2);
-        assertThat(actualValues.get(1).getStore()).hasSize(2);
-        assertThat(actualValues.get(2).getStore()).hasSize(2);
+        assertThat(actualValues.get(0).getStore()).hasSize(3);
+        assertThat(actualValues.get(1).getStore()).hasSize(3);
+        assertThat(actualValues.get(2).getStore()).hasSize(3);
     }
 
     @Test
@@ -228,6 +229,31 @@ public class DataStoreTest {
 
         // THEN
         assertThat(actualKeyPrefix).isEqualTo("entry_list[1].");
+    }
+
+    @Test
+    public void toJsonString_whenProvidedStore_shouldReturnJsonRepresentation() {
+        // GIVEN
+        String expectedJson = "{\n" +
+                "  \"entry_list[0].my_field\": 10,\n" +
+                "  \"entry_list[0].a_field\": \"az\",\n" +
+                "  \"entry_list[0].another_field\": \"AQIDBA==\",\n" +
+                "  \"entry_list[1].my_field\": 20,\n" +
+                "  \"entry_list[1].a_field\": \"bz\",\n" +
+                "  \"entry_list[1].another_field\": \"BQYHCA==\",\n" +
+                "  \"entry_list[2].my_field\": 30,\n" +
+                "  \"entry_list[2].a_field\": \"cz\",\n" +
+                "  \"entry_list[2].another_field\": \"CQoLDA==\"\n" +
+                "}";
+        createStoreEntries();
+
+        // WHEN
+        String actualJson = dataStore.toJsonString();
+        System.out.println(actualJson);
+
+        // THEN
+        assertThat(actualJson).isNotNull();
+        assertJsonEquals(expectedJson, actualJson);
     }
 
     private void putRawValueInStore(String key, byte[] bytes) {
@@ -251,9 +277,12 @@ public class DataStoreTest {
 
         putLongInStore("entry_list[0].my_field", 10L);
         putStringInStore("entry_list[0].a_field", "az");
+        putRawValueInStore("entry_list[0].another_field", new byte [] {0x1, 0x2, 0x3, 0x4});
         putLongInStore("entry_list[1].my_field", 20L);
         putStringInStore("entry_list[1].a_field", "bz");
+        putRawValueInStore("entry_list[1].another_field", new byte [] {0x5, 0x6, 0x7, 0x8});
         putLongInStore("entry_list[2].my_field", 30L);
         putStringInStore("entry_list[2].a_field", "cz");
-   }
+        putRawValueInStore("entry_list[2].another_field", new byte [] {0x9, 0xA, 0xB, 0xC});
+    }
 }

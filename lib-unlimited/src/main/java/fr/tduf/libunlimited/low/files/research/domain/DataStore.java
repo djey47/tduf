@@ -2,12 +2,16 @@ package fr.tduf.libunlimited.low.files.research.domain;
 
 import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
+import org.codehaus.jackson.node.JsonNodeFactory;
+import org.codehaus.jackson.node.ObjectNode;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToNumeric;
+import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToText;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 
@@ -115,8 +119,8 @@ public class DataStore {
         if (!this.store.containsKey(fieldName)) {
             return Optional.empty();
         }
-        return Optional.of(TypeHelper
-                .rawToText(
+        return Optional.of(
+                rawToText(
                         this.store.get(fieldName).rawValue));
     }
 
@@ -129,8 +133,8 @@ public class DataStore {
         if (!this.store.containsKey(fieldName)) {
             return Optional.empty();
         }
-        return Optional.of(TypeHelper
-                .rawToNumeric(
+        return Optional.of(
+                rawToNumeric(
                         this.store.get(fieldName).rawValue));
     }
 
@@ -184,6 +188,30 @@ public class DataStore {
         }
 
         return repeatedValues;
+    }
+
+    /**
+     * @return a String representation of store contents, based on JSON format.
+     */
+    public String toJsonString() {
+        // Simple conversion for now
+        ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
+
+        this.getStore().forEach( (key, entry) -> {
+            switch (entry.type) {
+                case TEXT:
+                    objectNode.put(key, rawToText(entry.rawValue));
+                    break;
+                case NUMBER:
+                    objectNode.put(key, rawToNumeric(entry.rawValue));
+                    break;
+                default:
+                    objectNode.put(key, entry.rawValue);
+                    break;
+            }
+        });
+
+        return objectNode.toString();
     }
 
     /**
