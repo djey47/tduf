@@ -2,9 +2,12 @@ package fr.tduf.libunlimited.low.files.research.domain;
 
 import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectReader;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -212,6 +215,43 @@ public class DataStore {
         });
 
         return objectNode.toString();
+    }
+
+    /**
+     * Replaces current store contents with those in provided JSON String.
+     * @param jsonInput : json String containing all values
+     */
+    public void fromJsonString(String jsonInput) throws IOException {
+        ObjectReader reader = new ObjectMapper().reader(Map.class);
+
+        Map<String, Object> intermediateMap = reader.readValue(jsonInput);
+
+        this.getStore().clear();
+        intermediateMap.forEach((key, value) -> {
+
+            FileStructureDto.Type type = FileStructureDto.Type.UNKNOWN;
+            byte[] rawValue = new byte[0];
+
+            if (value.getClass() == Integer.class) {
+                type = FileStructureDto.Type.NUMBER;
+                rawValue = TypeHelper.numericToRaw((Integer) value);
+            } else if (value.getClass() == Long.class) {
+                type = FileStructureDto.Type.NUMBER;
+                rawValue = TypeHelper.numericToRaw((Long) value);
+            } else if (value.getClass() == String.class) {
+                String stringValue = (String) value;
+
+                if (!stringValue.endsWith("==")) { //TODO make it more reliable with base 64 detection
+                    type = FileStructureDto.Type.TEXT;
+                    rawValue = TypeHelper.textToRaw(stringValue);
+                } else {
+                    rawValue = Base64.getDecoder().decode(stringValue);
+                }
+            }
+
+            Entry entry = new Entry(type, rawValue);
+            this.getStore().put(key, entry);
+        });
     }
 
     /**

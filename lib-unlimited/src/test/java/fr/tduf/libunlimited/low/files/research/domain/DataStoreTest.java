@@ -4,6 +4,7 @@ import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.assertj.core.data.MapEntry;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -234,17 +235,7 @@ public class DataStoreTest {
     @Test
     public void toJsonString_whenProvidedStore_shouldReturnJsonRepresentation() {
         // GIVEN
-        String expectedJson = "{\n" +
-                "  \"entry_list[0].my_field\": 10,\n" +
-                "  \"entry_list[0].a_field\": \"az\",\n" +
-                "  \"entry_list[0].another_field\": \"AQIDBA==\",\n" +
-                "  \"entry_list[1].my_field\": 20,\n" +
-                "  \"entry_list[1].a_field\": \"bz\",\n" +
-                "  \"entry_list[1].another_field\": \"BQYHCA==\",\n" +
-                "  \"entry_list[2].my_field\": 30,\n" +
-                "  \"entry_list[2].a_field\": \"cz\",\n" +
-                "  \"entry_list[2].another_field\": \"CQoLDA==\"\n" +
-                "}";
+        String expectedJson = getStoreContentsAsJson();
         createStoreEntries();
 
         // WHEN
@@ -254,6 +245,25 @@ public class DataStoreTest {
         // THEN
         assertThat(actualJson).isNotNull();
         assertJsonEquals(expectedJson, actualJson);
+    }
+
+    @Test
+    public void fromJsonString_whenProvidedJson_shouldSetStore() throws IOException {
+        // GIVEN
+        String jsonInput = getStoreContentsAsJson();
+
+        // WHEN
+        dataStore.fromJsonString(jsonInput);
+
+        // THEN
+        assertThat(dataStore.getStore()).hasSize(9);
+        assertThat(dataStore.getNumericListOf("my_field")).containsAll(asList(10L, 20L, 30L));
+        assertThat(dataStore.getText("entry_list[0].a_field").get()).isEqualTo("az");
+        assertThat(dataStore.getText("entry_list[1].a_field").get()).isEqualTo("bz");
+        assertThat(dataStore.getText("entry_list[2].a_field").get()).isEqualTo("cz");
+        assertThat(dataStore.getRawValue("entry_list[0].another_field").get()).isEqualTo(new byte [] {0x1, 0x2, 0x3, 0x4});
+        assertThat(dataStore.getRawValue("entry_list[1].another_field").get()).isEqualTo(new byte [] {0x5, 0x6, 0x7, 0x8});
+        assertThat(dataStore.getRawValue("entry_list[2].another_field").get()).isEqualTo(new byte [] {0x9, 0xA, 0xB, 0xC});
     }
 
     private void putRawValueInStore(String key, byte[] bytes) {
@@ -284,5 +294,19 @@ public class DataStoreTest {
         putLongInStore("entry_list[2].my_field", 30L);
         putStringInStore("entry_list[2].a_field", "cz");
         putRawValueInStore("entry_list[2].another_field", new byte [] {0x9, 0xA, 0xB, 0xC});
+    }
+
+    private static String getStoreContentsAsJson() {
+        return "{\n" +
+                "  \"entry_list[0].my_field\": 10,\n" +
+                "  \"entry_list[0].a_field\": \"az\",\n" +
+                "  \"entry_list[0].another_field\": \"AQIDBA==\",\n" +
+                "  \"entry_list[1].my_field\": 20,\n" +
+                "  \"entry_list[1].a_field\": \"bz\",\n" +
+                "  \"entry_list[1].another_field\": \"BQYHCA==\",\n" +
+                "  \"entry_list[2].my_field\": 30,\n" +
+                "  \"entry_list[2].a_field\": \"cz\",\n" +
+                "  \"entry_list[2].another_field\": \"CQoLDA==\"\n" +
+                "}";
     }
 }
