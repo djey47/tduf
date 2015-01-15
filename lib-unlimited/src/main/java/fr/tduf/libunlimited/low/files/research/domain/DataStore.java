@@ -1,11 +1,15 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
 import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
+import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
+import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 
 /**
  * Place to store and extract data with {@link fr.tduf.libunlimited.low.files.research.parser.GenericParser}
@@ -17,7 +21,7 @@ public class DataStore {
     private static final Pattern SUB_FIELD_NAME_PATTERN = Pattern.compile("^(.+)\\[(\\d+)\\]\\.(.+)$"); // e.g 'entry_list[1].my_field'
     private static final String SUB_FIELD_PREFIX_FORMAT = "%s[%d].";
 
-    private final Map<String, byte[]> store = new HashMap<>();
+    private final Map<String, Entry> store = new HashMap<>();
 
     /**
      * Remove all entries from current store.
@@ -32,7 +36,7 @@ public class DataStore {
      * @param rawValue  : value to store
      */
     public void addRawValue(String fieldName, byte[] rawValue) {
-        this.store.put(fieldName, rawValue);
+        this.store.put(fieldName, new Entry(FileStructureDto.Type.UNKNOWN, rawValue));
     }
 
     /**
@@ -41,7 +45,7 @@ public class DataStore {
      * @param value     : value to store
      */
     public void addText(String fieldName, String value) {
-        this.store.put(fieldName, TypeHelper.textToRaw(value));
+        this.store.put(fieldName, new Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw(value)));
     }
 
     /**
@@ -53,7 +57,7 @@ public class DataStore {
      */
     public void addRepeatedRawValue(String repeaterFieldName, String fieldName, long index, byte[] valueBytes) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        this.store.put(key, valueBytes);
+        this.store.put(key, new Entry(FileStructureDto.Type.UNKNOWN, valueBytes));
     }
 
     /**
@@ -65,7 +69,7 @@ public class DataStore {
      */
     public void addRepeatedTextValue(String repeaterFieldName, String fieldName, long index, String value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        this.store.put(key, TypeHelper.textToRaw(value));
+        this.store.put(key, new Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw(value)));
     }
 
     /**
@@ -77,7 +81,7 @@ public class DataStore {
      */
     public void addRepeatedNumericValue(String repeaterFieldName, String fieldName, long index, long value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        this.store.put(key, TypeHelper.numericToRaw(value));
+        this.store.put(key, new Entry(FileStructureDto.Type.NUMBER, TypeHelper.numericToRaw(value)));
     }
 
     /**
@@ -93,7 +97,13 @@ public class DataStore {
      * @return the stored raw value whose key match provided identifier, or null if it does not exist
      */
     public Optional<byte[]> getRawValue(String fieldName) {
-        return Optional.ofNullable(this.store.get(fieldName));
+        Entry entry = this.store.get(fieldName);
+
+        if(entry == null) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(entry.rawValue);
     }
 
     /**
@@ -107,7 +117,7 @@ public class DataStore {
         }
         return Optional.of(TypeHelper
                 .rawToText(
-                        this.store.get(fieldName)));
+                        this.store.get(fieldName).rawValue));
     }
 
     /**
@@ -121,7 +131,7 @@ public class DataStore {
         }
         return Optional.of(TypeHelper
                 .rawToNumeric(
-                        this.store.get(fieldName)));
+                        this.store.get(fieldName).rawValue));
     }
 
     /**
@@ -138,7 +148,7 @@ public class DataStore {
                     return matcher.matches() && matcher.group(1).equals(fieldName);
                 })
 
-                .map(store::get)
+                .map(key -> this.store.get(key).rawValue)
 
                 .map(TypeHelper::rawToNumeric)
 
@@ -168,7 +178,7 @@ public class DataStore {
             for (String key : groupedKeysByIndex.get(index)) {
                 Matcher matcher = SUB_FIELD_NAME_PATTERN.matcher(key);
                 if (matcher.matches()) {
-                    subDataStore.addRawValue(matcher.group(3), store.get(key));    // extracts field name part
+                    subDataStore.addRawValue(matcher.group(3), store.get(key).rawValue);    // extracts field name part
                 }
             }
         }
@@ -201,7 +211,38 @@ public class DataStore {
         return list;
     }
 
-    Map<String, byte[]> getStore() {
+    Map<String, Entry> getStore() {
         return store;
+    }
+
+    /**
+     * Represents a store entry to bring more information.
+     */
+    static class Entry {
+        private final FileStructureDto.Type type;
+        private final byte[] rawValue;
+
+        Entry(FileStructureDto.Type type, byte[] rawValue) {
+            this.type = type;
+            this.rawValue = rawValue;
+        }
+
+        byte[] getRawValue() {
+            return rawValue;
+        }
+
+        FileStructureDto.Type getType() {
+            return type;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return reflectionEquals(this, o);
+        }
+
+        @Override
+        public int hashCode() {
+            return reflectionHashCode(this);
+        }
     }
 }

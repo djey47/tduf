@@ -27,12 +27,7 @@ public class FileStructureDto implements Serializable {
      * @return builder, used to generate custom values.
      */
     public static FileStructureDtoBuilder builder() {
-        return new FileStructureDtoBuilder() {
-            @Override
-            public FileStructureDto build() {
-                return new FileStructureDto();
-            }
-        };
+        return FileStructureDto::new;
     }
 
     private FileStructureDto() {}
@@ -161,6 +156,7 @@ public class FileStructureDto implements Serializable {
      * Describes all field types.
      */
     public enum Type {
+        UNKNOWN(true),
         /**
          * Value as string
          */

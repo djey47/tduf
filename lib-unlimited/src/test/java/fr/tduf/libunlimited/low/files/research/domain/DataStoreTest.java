@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
+import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.assertj.core.data.MapEntry;
 import org.junit.Test;
 
@@ -36,8 +37,10 @@ public class DataStoreTest {
         dataStore.addRawValue("f1", expectedRawValue);
 
         // THEN
+        DataStore.Entry actualEntry = dataStore.getStore().get("f1");
         //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
-        assertThat(dataStore.getStore().get("f1")).isEqualTo(expectedRawValue);
+        assertThat(actualEntry.getRawValue()).isEqualTo(expectedRawValue);
+        assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.UNKNOWN);
     }
 
     @Test
@@ -46,7 +49,8 @@ public class DataStoreTest {
         dataStore.addText("f1", "v1");
 
         // THEN
-        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", "v1".getBytes()));
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.TEXT, "v1".getBytes());
+        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
     @Test
@@ -56,9 +60,12 @@ public class DataStoreTest {
 
         // WHEN
         dataStore.addRepeatedRawValue("repeater", "f1", 0, expectedRawValue);
-        //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
-        assertThat(dataStore.getStore().get("repeater[0].f1")).isEqualTo(expectedRawValue);
 
+        // THEN
+        //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
+        DataStore.Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
+        assertThat(actualEntry.getRawValue()).isEqualTo(expectedRawValue);
+        assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.UNKNOWN);
     }
 
     @Test
@@ -67,8 +74,10 @@ public class DataStoreTest {
         dataStore.addRepeatedTextValue("repeater", "f1", 0, "v1");
 
         // THEN
+        DataStore.Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
         //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
-        assertThat(dataStore.getStore().get("repeater[0].f1")).isEqualTo("v1".getBytes());
+        assertThat(actualEntry.getRawValue()).isEqualTo("v1".getBytes());
+        assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.TEXT);
     }
 
     @Test
@@ -80,8 +89,10 @@ public class DataStoreTest {
         dataStore.addRepeatedNumericValue("repeater", "f1", 0, 0xFFFFL);
 
         // THEN
+        DataStore.Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
         //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
-        assertThat(dataStore.getStore().get("repeater[0].f1")).isEqualTo(expectedBytes);
+        assertThat(actualEntry.getRawValue()).isEqualTo(expectedBytes);
+        assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.NUMBER);
     }
 
     @Test
@@ -116,7 +127,7 @@ public class DataStoreTest {
     public void getRawValue_whenOneItem_andSuccess_shouldReturnValue() {
         // GIVEN
         byte[] expectedBytes = { 0, 1, 2, 3};
-        dataStore.getStore().put("f1", expectedBytes);
+        putRawValueInStore("f1", expectedBytes);
 
         // WHEN-THEN
         assertThat(dataStore.getRawValue("f1").get()).isEqualTo(expectedBytes);
@@ -126,7 +137,7 @@ public class DataStoreTest {
     public void getRawValue_whenOneItem_andNoSuccess_shouldReturnAbsent() {
         // GIVEN
         byte[] bytes = { 0 };
-        dataStore.getStore().put("f1", bytes);
+        putRawValueInStore("f1", bytes);
 
         // WHEN-THEN
         assertThat(dataStore.getRawValue("f2").isPresent()).isEqualTo(false);
@@ -219,16 +230,20 @@ public class DataStoreTest {
         assertThat(actualKeyPrefix).isEqualTo("entry_list[1].");
     }
 
+    private void putRawValueInStore(String key, byte[] bytes) {
+        dataStore.getStore().put(key, new DataStore.Entry(FileStructureDto.Type.UNKNOWN, bytes));
+    }
+
     private void putLongInStore(String key, long value) {
         byte[] bytes = ByteBuffer
                 .allocate(8)
                 .putLong(value)
                 .array();
-        dataStore.getStore().put(key, bytes);
+        dataStore.getStore().put(key, new DataStore.Entry(FileStructureDto.Type.NUMBER, bytes));
     }
 
     private void putStringInStore(String key, String value) {
-        dataStore.getStore().put(key, value.getBytes());
+        dataStore.getStore().put(key, new DataStore.Entry(FileStructureDto.Type.TEXT, value.getBytes()));
     }
 
     private void createStoreEntries() {
