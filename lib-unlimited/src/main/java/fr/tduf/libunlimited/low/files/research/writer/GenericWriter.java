@@ -74,13 +74,14 @@ public abstract class GenericWriter<T> {
                     outputStream.write(ByteBuffer.allocate(length).array());
                     break;
 
+                case UNKNOWN:
                 case DELIMITER:
                 case TEXT:
                     assert valueBytes != null;
                     outputStream.write(valueBytes, 0, length);
                     break;
 
-                case NUMBER:
+                case INTEGER:
                     //TODO handle other than 4 bytes
                     assert valueBytes != null;
                     outputStream.write(valueBytes, 4, length);

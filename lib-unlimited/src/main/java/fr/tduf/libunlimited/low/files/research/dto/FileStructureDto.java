@@ -156,15 +156,22 @@ public class FileStructureDto implements Serializable {
      * Describes all field types.
      */
     public enum Type {
+        /**
+         * Values to be understood, still.
+         */
         UNKNOWN(true),
         /**
          * Value as string
          */
         TEXT(true),
         /**
-         * Numeric value. Currently handled: 32bit only.
+         * Numeric Integer value. Currently handled: 32bit only.
          */
-        NUMBER(true),
+        INTEGER(true),
+        /**
+         * Numeric Floating Point value. Currently handled: 32bit only.
+         */
+        FPOINT(true),
         /**
          * Delimiter with particular value
          */

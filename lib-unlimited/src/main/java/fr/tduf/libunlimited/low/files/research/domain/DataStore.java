@@ -88,7 +88,7 @@ public class DataStore {
      */
     public void addRepeatedNumericValue(String repeaterFieldName, String fieldName, long index, long value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        this.store.put(key, new Entry(FileStructureDto.Type.NUMBER, TypeHelper.numericToRaw(value)));
+        this.store.put(key, new Entry(FileStructureDto.Type.INTEGER, TypeHelper.numericToRaw(value)));
     }
 
     /**
@@ -205,7 +205,7 @@ public class DataStore {
                 case TEXT:
                     objectNode.put(key, rawToText(entry.rawValue));
                     break;
-                case NUMBER:
+                case INTEGER:
                     objectNode.put(key, rawToNumeric(entry.rawValue));
                     break;
                 default:
@@ -233,10 +233,10 @@ public class DataStore {
             byte[] rawValue = new byte[0];
 
             if (value.getClass() == Integer.class) {
-                type = FileStructureDto.Type.NUMBER;
+                type = FileStructureDto.Type.INTEGER;
                 rawValue = TypeHelper.numericToRaw((Integer) value);
             } else if (value.getClass() == Long.class) {
-                type = FileStructureDto.Type.NUMBER;
+                type = FileStructureDto.Type.INTEGER;
                 rawValue = TypeHelper.numericToRaw((Long) value);
             } else if (value.getClass() == String.class) {
                 String stringValue = (String) value;

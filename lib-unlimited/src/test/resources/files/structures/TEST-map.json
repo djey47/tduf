@@ -3,16 +3,20 @@
   "littleEndian" : false,
   "fields" : [
     {
-      "name" : "tag",
-      "type" : "TEXT",
-      "size" : 10
+      "name": "tag",
+      "type": "TEXT",
+      "size": 10
+    },{
+      "name" : "unknown",
+      "type" : "UNKNOWN",
+      "size" : 5
     },{
       "name" : "repeater",
       "type" : "REPEATER",
       "subFields" : [
         {
           "name" : "number",
-          "type" : "NUMBER",
+          "type" : "INTEGER",
           "size" : 4
         }, {
           "name" : "gap",

@@ -90,12 +90,13 @@ public class GenericParserTest {
     public void dump_whenProvidedContents_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
         String expectedDump = "tag\t<TEXT: 10 bytes>\t[65, 66, 67, 68, 69, 70, 71, 72, 73, 74]\t\"ABCDEFGHIJ\"\n" +
+                "unknown\t<UNKNOWN: 5 bytes>\t[1, 2, 3, 4, 5]\t\n" +
                 "repeater\t<REPEATER: 11 bytes>\t>>\t\n" +
-                "repeater[0].number\t<NUMBER: 4 bytes>\t[0, 0, 1, -12]\t500\n" +
+                "repeater[0].number\t<INTEGER: 4 bytes>\t[0, 0, 1, -12]\t500\n" +
                 "repeater[0].gap\t<GAP: 2 bytes>\t[0, 0]\t\n" +
                 "repeater[0].text\t<TEXT: 4 bytes>\t[65, 66, 67, 68]\t\"ABCD\"\n" +
                 "repeater[0].delimiter\t<DELIMITER: 1 bytes>\t[10]\t\"\n\"\n" +
-                "repeater[1].number\t<NUMBER: 4 bytes>\t[0, 0, 3, -24]\t1000\n" +
+                "repeater[1].number\t<INTEGER: 4 bytes>\t[0, 0, 3, -24]\t1000\n" +
                 "repeater[1].gap\t<GAP: 2 bytes>\t[0, 0]\t\n" +
                 "repeater[1].text\t<TEXT: 4 bytes>\t[69, 70, 71, 72]\t\"EFGH\"\n" +
                 "repeater[1].delimiter\t<DELIMITER: 1 bytes>\t[11]\t\"\u000B\"\n" +
@@ -117,16 +118,19 @@ public class GenericParserTest {
             @Override
             protected String generate() {
 
-                assertThat(getDataStore().size()).isEqualTo(7);
+                assertThat(getDataStore().size()).isEqualTo(8);
 
                 // Field 1
                 assertThat(getDataStore().getText("tag").get()).isEqualTo("ABCDEFGHIJ");
 
-                // Field 2 - item 0
+                // Field 2
+                assertThat(getDataStore().getRawValue("unknown").get()).isEqualTo(new byte[]{0x1,0x2,0x3,0x4,0x5});
+
+                // Field 3 - item 0
                 assertThat(getDataStore().getNumeric("repeater[0].number").get()).isEqualTo(500L);
                 assertThat(getDataStore().getText("repeater[0].text").get()).isEqualTo("ABCD");
                 assertThat(getDataStore().getRawValue("repeater[0].delimiter").get()).isEqualTo(new byte[]{0xA});
-                // Field 2 - item 1
+                // Field 3 - item 1
                 assertThat(getDataStore().getNumeric("repeater[1].number").get()).isEqualTo(1000L);
                 assertThat(getDataStore().getText("repeater[1].text").get()).isEqualTo("EFGH");
                 assertThat(getDataStore().getRawValue("repeater[1].delimiter").get()).isEqualTo(new byte[] {0xB});
@@ -150,12 +154,12 @@ public class GenericParserTest {
     private static List<FileStructureDto.Field> createFields() {
         FileStructureDto.Field field1 = FileStructureDto.Field.builder()
                 .forName("file_name_hash")
-                .withType(FileStructureDto.Type.NUMBER)
+                .withType(FileStructureDto.Type.INTEGER)
                 .ofSizeBytes(4)
                 .build();
         FileStructureDto.Field field2 = FileStructureDto.Field.builder()
                 .forName("size_bytes_1")
-                .withType(FileStructureDto.Type.NUMBER)
+                .withType(FileStructureDto.Type.INTEGER)
                 .ofSizeBytes(4)
                 .build();
         FileStructureDto.Field field3 = FileStructureDto.Field.builder()
@@ -165,7 +169,7 @@ public class GenericParserTest {
                 .build();
         FileStructureDto.Field field4 = FileStructureDto.Field.builder()
                 .forName("size_bytes_2")
-                .withType(FileStructureDto.Type.NUMBER)
+                .withType(FileStructureDto.Type.INTEGER)
                 .ofSizeBytes(4)
                 .build();
         FileStructureDto.Field field5 = FileStructureDto.Field.builder()

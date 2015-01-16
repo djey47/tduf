@@ -69,7 +69,7 @@ public abstract class GenericParser<T> {
 
                     switch (field.getType()) {
                         case TEXT:
-                        case NUMBER:
+                        case INTEGER:
                         case DELIMITER:
                         case GAP:
                             actualSize = field.getSize();
@@ -122,7 +122,7 @@ public abstract class GenericParser<T> {
                     dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(new byte[length]), ""));
                     break;
 
-                case NUMBER:    // TODO handle other than 32 bit
+                case INTEGER:    // TODO handle other than 32 bit
                     readValueAsBytes = new byte[length + 4]; // Prepare long values
                     parsedCount = inputStream.read(readValueAsBytes, 4, length);
 
@@ -156,6 +156,16 @@ public abstract class GenericParser<T> {
                     }
 
                     dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), subStructureSize * parsedCount, "<<", ""));
+                    break;
+
+                case UNKNOWN:
+                    if (length == null) {
+                        length = inputStream.available();
+                    }
+                    readValueAsBytes = new byte[length];
+                    parsedCount = inputStream.read(readValueAsBytes, 0, length);
+
+                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), ""));
                     break;
 
                 default:

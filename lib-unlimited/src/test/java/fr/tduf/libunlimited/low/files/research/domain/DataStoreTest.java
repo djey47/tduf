@@ -94,7 +94,7 @@ public class DataStoreTest {
         DataStore.Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
         //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
         assertThat(actualEntry.getRawValue()).isEqualTo(expectedBytes);
-        assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.NUMBER);
+        assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.INTEGER);
     }
 
     @Test
@@ -275,7 +275,7 @@ public class DataStoreTest {
                 .allocate(8)
                 .putLong(value)
                 .array();
-        dataStore.getStore().put(key, new DataStore.Entry(FileStructureDto.Type.NUMBER, bytes));
+        dataStore.getStore().put(key, new DataStore.Entry(FileStructureDto.Type.INTEGER, bytes));
     }
 
     private void putStringInStore(String key, String value) {

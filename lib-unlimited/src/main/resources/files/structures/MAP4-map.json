@@ -12,12 +12,12 @@
       "subFields" : [
         {
           "name" : "file_name_hash",
-          "type" : "NUMBER",
+          "type" : "INTEGER",
           "size" : 4
         },
         {
           "name": "size_bytes_1",
-          "type": "NUMBER",
+          "type": "INTEGER",
           "size": 4
         }, {
           "name" : "gap_1",
@@ -25,7 +25,7 @@
           "size" : 4
         }, {
           "name" : "size_bytes_2",
-          "type" : "NUMBER",
+          "type" : "INTEGER",
           "size" : 4
         }, {
           "name" : "gap_2",

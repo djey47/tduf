@@ -43,7 +43,7 @@ public class GenericWriterTest {
         assertThat(actualOutputStream).isNotNull();
 
         byte[] actualBytes = actualOutputStream.toByteArray();
-        assertThat(actualBytes).hasSize(32);
+        assertThat(actualBytes).hasSize(37);
 
         URI referenceFileURI = thisClass.getResource("/files/samples/TEST.bin").toURI();
         byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
@@ -68,12 +68,15 @@ public class GenericWriterTest {
                 // Field 1
                 getDataStore().addText("tag", "ABCDEFGHIJ");
 
-                // Field 2 - sub items, rank 0
+                // Field 2
+                getDataStore().addRawValue("unknown", new byte[]{0x1, 0x2, 0x3, 0x4, 0x5});
+
+                // Field 3 - sub items, rank 0
                 getDataStore().addRepeatedNumericValue("repeater", "number", 0, 500L);
                 getDataStore().addRepeatedTextValue("repeater", "text", 0, "ABCD");
                 getDataStore().addRepeatedRawValue("repeater", "delimiter", 0, new byte[] {0xA});
 
-                // Field 2 - sub items, rank 1
+                // Field 3 - sub items, rank 1
                 getDataStore().addRepeatedNumericValue("repeater", "number", 1, 1000L);
                 getDataStore().addRepeatedTextValue("repeater", "text", 1, "EFGH");
                 getDataStore().addRepeatedRawValue("repeater", "delimiter", 1, new byte[]{0xB});
