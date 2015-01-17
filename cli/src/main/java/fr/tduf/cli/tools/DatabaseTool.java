@@ -19,6 +19,7 @@ import static fr.tduf.cli.tools.DatabaseTool.Command.DUMP;
 /**
  * Command line interface for handling TDU database.
  */
+//TODO extends GenericTool
 public class DatabaseTool {
 
     @Option(name = "-d", aliases = "--databaseDir", usage = "UNPACKED TDU database directory, defaults to current directory.")

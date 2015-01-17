@@ -30,6 +30,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Command line interface for handling TDU file mapping.
  */
+//TODO extends GenericTool
 public class MappingTool {
 
     @Option(name="-b", aliases = "--bnkDir", usage = "TDU banks directory (Bnk), defaults to current directory." )
