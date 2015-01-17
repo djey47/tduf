@@ -16,6 +16,7 @@ public class TypeHelperTest {
         assertThat(TypeHelper.rawToText(bytes)).isEqualTo("MAP4\0");
     }
 
+    //TODO rename method names
     @Test
     public void rawToNumeric_whenArrayHasCorrectSize_shouldReturnNumeric() {
         //GIVEN
@@ -31,7 +32,25 @@ public class TypeHelperTest {
         byte[] bytes = { 0x00, 0x0d, 0x18, (byte)0x81 };
 
         // WHEN-THEN
-        assertThat(TypeHelper.rawToNumeric(bytes)).isEqualTo(858241L);
+        TypeHelper.rawToNumeric(bytes);
+    }
+
+    @Test
+    public void rawToFloatingPoint_whenArrayHasCorrectSize_shouldReturnNumeric() {
+        //GIVEN
+        byte[] bytes = { 0x43, (byte)0x90, (byte)0xb8, 0x04 };
+
+        // WHEN-THEN
+        assertThat(TypeHelper.rawToFloatingPoint(bytes)).isEqualTo(289.43762f);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void rawToFloatingPoint_whenArrayHasIncorrectSize_shouldThrowException() {
+        //GIVEN
+        byte[] bytes = { 0x00, 0x00, 0x00, 0x00, 0x04, (byte)0xB8, (byte)0x90, 0x43 };
+
+        // WHEN-THEN
+        TypeHelper.rawToFloatingPoint(bytes);
     }
 
     @Test
@@ -43,6 +62,7 @@ public class TypeHelperTest {
         assertThat(TypeHelper.textToRaw("MAP4\0")).isEqualTo(expectedBytes);
     }
 
+    // TODO rename method
     @Test
     public void numericToRaw_shouldReturnByteArray() {
         //GIVEN
@@ -50,5 +70,14 @@ public class TypeHelperTest {
 
         // WHEN-THEN
         assertThat(TypeHelper.numericToRaw(858241L)).isEqualTo(expectedBytes);
+    }
+
+    @Test
+    public void floatingPointToRaw_shouldReturnByteArray() {
+        //GIVEN
+        byte[] expectedBytes = { 0x43, (byte)0x90, (byte)0xb8, 0x04 };
+
+        // WHEN-THEN
+        assertThat(TypeHelper.floatingPointToRaw(289.43762f)).isEqualTo(expectedBytes);
     }
 }
