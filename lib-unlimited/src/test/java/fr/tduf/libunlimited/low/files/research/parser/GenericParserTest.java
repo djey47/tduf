@@ -148,11 +148,11 @@ public class GenericParserTest {
     public void dump_whenProvidedContents_andSizeGivenByAnotherField_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
         String expectedDump = "sizeIndicator\t<INTEGER: 4 bytes>\t[0, 0, 0, 3]\t3\n" +
-                "repeater\t<REPEATER: 4 bytes>\t>>\t\n" +
+                "repeater\t<REPEATER: 4 bytes>\t(per item size) >>\t\n" +
                 "repeater[0].number\t<INTEGER: 4 bytes>\t[0, 0, 0, 1]\t1\n" +
                 "repeater[1].number\t<INTEGER: 4 bytes>\t[0, 0, 0, 2]\t2\n" +
                 "repeater[2].number\t<INTEGER: 4 bytes>\t[0, 0, 0, 3]\t3\n" +
-                "repeater\t<REPEATER: 12 bytes>\t<<\t\n" +
+                "repeater\t<REPEATER: 12 bytes>\t(total size) <<\t\n" +
                 "aValue\t<TEXT: 10 bytes>\t[65, 66, 67, 68, 69, 70, 71, 72, 73, 74]\t\"ABCDEFGHIJ\"\n";
         ByteArrayInputStream inputStream = createInputStreamFromReferenceFileForFormulas();
         GenericParser<String> actualParser = createGenericParserForFormulas(inputStream);
@@ -171,7 +171,7 @@ public class GenericParserTest {
         // GIVEN
         String expectedDump = "tag\t<TEXT: 10 bytes>\t[65, 66, 67, 68, 69, 70, 71, 72, 73, 74]\t\"ABCDEFGHIJ\"\n" +
                 "unknown\t<UNKNOWN: 5 bytes>\t[1, 2, 3, 4, 5]\t\n" +
-                "repeater\t<REPEATER: 15 bytes>\t>>\t\n" +
+                "repeater\t<REPEATER: 15 bytes>\t(per item size) >>\t\n" +
                 "repeater[0].number\t<INTEGER: 4 bytes>\t[0, 0, 1, -12]\t500\n" +
                 "repeater[0].numberF\t<FPOINT: 4 bytes>\t[67, -128, -71, -48]\t257.45166\n" +
                 "repeater[0].gap\t<GAP: 2 bytes>\t[0, 0]\t\n" +
@@ -182,7 +182,7 @@ public class GenericParserTest {
                 "repeater[1].gap\t<GAP: 2 bytes>\t[0, 0]\t\n" +
                 "repeater[1].text\t<TEXT: 4 bytes>\t[69, 70, 71, 72]\t\"EFGH\"\n" +
                 "repeater[1].delimiter\t<DELIMITER: 1 bytes>\t[11]\t\"\u000B\"\n" +
-                "repeater\t<REPEATER: 30 bytes>\t<<\t\n";
+                "repeater\t<REPEATER: 30 bytes>\t(total size) <<\t\n";
         ByteArrayInputStream inputStream = createInputStreamFromReferenceFile();
         GenericParser<String> actualParser = createGenericParser(inputStream);
         actualParser.parse();

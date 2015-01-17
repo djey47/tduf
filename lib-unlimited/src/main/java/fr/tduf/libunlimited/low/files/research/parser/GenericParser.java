@@ -171,8 +171,7 @@ public abstract class GenericParser<T> {
                     List<FileStructureDto.Field> subFields = field.getSubFields();
                     int subStructureSize = computeStructureSize(subFields, this.dataStore);
 
-                    // TODO change label to more explicit
-                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), subStructureSize, ">>", ""));
+                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), subStructureSize, "(per item size) >>", ""));
 
                     while (inputStream.available() >= subStructureSize      // auto
                             && (length == null || parsedCount < length)) {    // specified
@@ -183,8 +182,7 @@ public abstract class GenericParser<T> {
                         parsedCount++;
                     }
 
-                    // TODO change label to more explicit
-                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), subStructureSize * parsedCount, "<<", ""));
+                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), subStructureSize * parsedCount, "(total size) <<", ""));
                     break;
 
                 case UNKNOWN:
