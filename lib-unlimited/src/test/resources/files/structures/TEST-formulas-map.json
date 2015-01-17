@@ -1,0 +1,26 @@
+{
+  "name" : "TEST file format (formulas)",
+  "littleEndian" : false,
+  "fields" : [
+    {
+      "name": "sizeIndicator",
+      "type": "INTEGER",
+      "size": 4
+    },{
+      "name" : "repeater",
+      "type" : "REPEATER",
+      "size" : "=?sizeIndicator?",
+      "subFields" : [
+        {
+          "name" : "number",
+          "type" : "INTEGER",
+          "size" : 4
+        }
+      ]
+    },{
+      "name": "aValue",
+      "type": "TEXT",
+      "size": 10
+    }
+  ]
+}

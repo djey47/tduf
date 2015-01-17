@@ -47,6 +47,20 @@ public class GenericParserTest {
     }
 
     @Test
+    public void parse_whenProvidedFiles_andSizeGivenByAnotherField_shouldReturnDomainObject() throws IOException, URISyntaxException {
+        // GIVEN
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileForFormulas();
+        GenericParser<String> actualParser = createGenericParserForFormulas(inputStream);
+
+        // WHEN
+        String actualObject = actualParser.parse();
+
+        // THEN
+        assertThat(actualObject).isNotNull();
+        assertThat(actualObject).isEqualTo(DATA);
+    }
+
+    @Test
     public void computeStructureSize_withoutSubFields_shouldReturnRealSizeInBytes() {
         // GIVEN
         List<FileStructureDto.Field> fields = createFields();
@@ -84,6 +98,28 @@ public class GenericParserTest {
 
         // THEN
         assertThat(actualStructureSize).isEqualTo(101); // = 5 + 4*24
+    }
+
+    @Test
+    public void dump_whenProvidedContents_andSizeGivenByAnotherField_shouldReturnAllParsedData() throws IOException, URISyntaxException {
+        // GIVEN
+        String expectedDump = "sizeIndicator\t<INTEGER: 4 bytes>\t[0, 0, 0, 3]\t3\n" +
+                "repeater\t<REPEATER: 4 bytes>\t>>\t\n" +
+                "repeater[0].number\t<INTEGER: 4 bytes>\t[0, 0, 0, 1]\t1\n" +
+                "repeater[1].number\t<INTEGER: 4 bytes>\t[0, 0, 0, 2]\t2\n" +
+                "repeater[2].number\t<INTEGER: 4 bytes>\t[0, 0, 0, 3]\t3\n" +
+                "repeater\t<REPEATER: 12 bytes>\t<<\t\n" +
+                "aValue\t<TEXT: 10 bytes>\t[65, 66, 67, 68, 69, 70, 71, 72, 73, 74]\t\"ABCDEFGHIJ\"\n";
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileForFormulas();
+        GenericParser<String> actualParser = createGenericParserForFormulas(inputStream);
+        actualParser.parse();
+
+        // WHEN
+        String actualDump = actualParser.dump();
+        System.out.println("Dumped contents:\n" + actualDump);
+
+        // THEN
+        assertThat(actualDump).isEqualTo(expectedDump);
     }
 
     @Test
@@ -151,6 +187,42 @@ public class GenericParserTest {
 
     private ByteArrayInputStream createInputStreamFromReferenceFile() throws IOException, URISyntaxException {
         URI fileURI = thisClass.getResource("/files/samples/TEST.bin").toURI();
+        byte[] bytes = Files.readAllBytes(Paths.get(fileURI));
+        return new ByteArrayInputStream(bytes);
+    }
+
+    private GenericParser<String> createGenericParserForFormulas(ByteArrayInputStream inputStream) throws IOException {
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+
+                assertThat(getDataStore().size()).isEqualTo(5);
+
+                // Field 1
+                assertThat(getDataStore().getInteger("sizeIndicator").get()).isEqualTo(3L);
+
+                // Field 2 - item 0
+                assertThat(getDataStore().getInteger("repeater[0].number").get()).isEqualTo(1L);
+                // Field 2 - item 1
+                assertThat(getDataStore().getInteger("repeater[1].number").get()).isEqualTo(2L);
+                // Field 2 - item 2
+                assertThat(getDataStore().getInteger("repeater[2].number").get()).isEqualTo(3L);
+
+                // Field 3
+                assertThat(getDataStore().getText("aValue").get()).isEqualTo("ABCDEFGHIJ");
+
+                return DATA;
+            }
+
+            @Override
+            protected String getStructureResource() {
+                return "/files/structures/TEST-formulas-map.json";
+            }
+        };
+    }
+
+    private ByteArrayInputStream createInputStreamFromReferenceFileForFormulas() throws URISyntaxException, IOException {
+        URI fileURI = thisClass.getResource("/files/samples/TEST-formulas.bin").toURI();
         byte[] bytes = Files.readAllBytes(Paths.get(fileURI));
         return new ByteArrayInputStream(bytes);
     }

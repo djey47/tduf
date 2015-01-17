@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.parser;
 
+import fr.tduf.libunlimited.low.files.research.common.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
@@ -111,8 +112,7 @@ public abstract class GenericParser<T> {
 
             String name = field.getName();
             String key = repeaterKey + name;
-            // TODO handle formulas
-            Integer length = field.getSizeFormula() == null ? null : Integer.parseInt(field.getSizeFormula());
+            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), this.dataStore);
 
             FileStructureDto.Type type = field.getType();
             byte[] readValueAsBytes = null;
