@@ -77,4 +77,24 @@ public class TypeHelperTest {
         // WHEN-THEN
         assertThat(TypeHelper.floatingPointToRaw(289.43762f)).isEqualTo(expectedBytes);
     }
+
+    @Test
+    public void changeEndianType_shouldReverseBytes() {
+        // GIVEN
+        byte[] valueBytes = {(byte)0xF4, 0x01, 0x00, 0x00};
+        byte[] expectedBytes = {0x00, 0x00, 0x01, (byte)0xF4};
+
+        // WHEN-THEN
+        assertThat(TypeHelper.changeEndianType(valueBytes)).isEqualTo(expectedBytes);
+    }
+
+    @Test
+    public void changeEndianType_whenSingleByte_shouldReturnIt() {
+        // GIVEN
+        byte[] valueBytes = {(byte)0xF4};
+        byte[] expectedBytes = {(byte)0xF4};
+
+        // WHEN-THEN
+        assertThat(TypeHelper.changeEndianType(valueBytes)).isEqualTo(expectedBytes);
+    }
 }

@@ -1,5 +1,7 @@
 package fr.tduf.libunlimited.low.files.research.common;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -75,6 +77,17 @@ public class TypeHelper {
                 .allocate(4)
                 .putFloat(numericValue)
                 .array();
+    }
+
+    /**
+     * Changes endian type of provided value.
+     * @param valueAsBytes  : value to change endian type, size must be >= 2 bytes
+     * @return corresponding value with inverted endian.
+     */
+    public static byte[] changeEndianType(byte[] valueAsBytes) {
+        byte[] targetArray = ArrayUtils.clone(valueAsBytes);
+        ArrayUtils.reverse(targetArray);
+        return targetArray;
     }
 
     private static void check64BitRawValue(byte[] rawValueBytes) {
