@@ -50,6 +50,27 @@ public class GenericWriterTest {
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
+    @Test
+    public void write_whenProvidedFiles_andSizeGivenByFormula_shouldReturnBytes() throws IOException, URISyntaxException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterForFormulas();
+
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = actualWriter.write();
+
+
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(26);
+
+        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-formulas.bin").toURI();
+        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        assertThat(actualBytes).isEqualTo(expectedBytes);
+    }
+
     @Test(expected = NoSuchElementException.class)
     public void write_whenProvidedFiles_andMissingValue_shouldThrowException() throws IOException, URISyntaxException {
         // GIVEN
@@ -90,6 +111,33 @@ public class GenericWriterTest {
             }
         };
     }
+
+    private GenericWriter<String> createGenericWriterForFormulas() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {
+                // Field 1
+                getDataStore().addInteger("sizeIndicator", 3);
+
+                // Field 2 - sub items, rank 0
+                getDataStore().addRepeatedIntegerValue("repeater", "number", 0, 1L);
+                // Field 2 - sub items, rank 1
+                getDataStore().addRepeatedIntegerValue("repeater", "number", 1, 2L);
+                // Field 2 - sub items, rank 2
+                getDataStore().addRepeatedIntegerValue("repeater", "number", 2, 3L);
+
+                // Field 3
+                getDataStore().addText("aValue", "ABCDEFGHIJ");
+            }
+
+            @Override
+            protected String getStructureResource() {
+                return "/files/structures/TEST-formulas-map.json";
+            }
+        };
+    }
+
+
 
     private GenericWriter<String> createGenericWriterWithMissingValues() throws IOException {
         return new GenericWriter<String>(DATA) {

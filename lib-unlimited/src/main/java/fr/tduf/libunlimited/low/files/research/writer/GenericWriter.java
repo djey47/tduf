@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.writer;
 
+import fr.tduf.libunlimited.low.files.research.common.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -56,8 +57,7 @@ public abstract class GenericWriter<T> {
     private boolean writeFields(List<FileStructureDto.Field> fields, ByteArrayOutputStream outputStream, String repeaterKey) throws IOException {
         for(FileStructureDto.Field field : fields) {
             String name = field.getName();
-            // TODO handle formulas
-            Integer length = field.getSizeFormula() == null ? null :  Integer.parseInt(field.getSizeFormula());
+            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), this.dataStore);
             FileStructureDto.Type type = field.getType();
 
             byte[] valueBytes = null;
