@@ -240,12 +240,11 @@ public class DataStore {
                 rawValue = TypeHelper.numericToRaw((Long) value);
             } else if (value.getClass() == String.class) {
                 String stringValue = (String) value;
-
-                if (!stringValue.endsWith("==")) { //TODO make it more reliable with base 64 detection
+                if (isBase64Encoded(stringValue)) {
+                    rawValue = Base64.getDecoder().decode(stringValue);
+                } else {
                     type = FileStructureDto.Type.TEXT;
                     rawValue = TypeHelper.textToRaw(stringValue);
-                } else {
-                    rawValue = Base64.getDecoder().decode(stringValue);
                 }
             }
 
@@ -262,6 +261,20 @@ public class DataStore {
      */
     public static String generateKeyPrefixForRepeatedField(String repeaterFieldName, long index) {
         return String.format(SUB_FIELD_PREFIX_FORMAT, repeaterFieldName, index);
+    }
+
+    /**
+     * Indicates whether provided String is Base64 encoded or not.
+     * @param value : string to test nature of
+     * @return true if base64 encoded, false else
+     */
+    static boolean isBase64Encoded(String value) {
+        if (value == null) {
+            return false;
+        }
+
+        Pattern base64Pattern = Pattern.compile("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$");
+        return base64Pattern.matcher(value).matches();
     }
 
     private static String generateKeyForRepeatedField(String repeaterFieldName, String repeatedFieldName, long index) {
