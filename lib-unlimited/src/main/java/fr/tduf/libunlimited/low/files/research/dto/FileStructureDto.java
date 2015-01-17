@@ -17,7 +17,6 @@ public class FileStructureDto implements Serializable {
     @JsonProperty("name")
     private String name;
 
-    // TODO Check correct usage
     @JsonProperty("littleEndian")
     private Boolean littleEndian;
 
@@ -35,6 +34,10 @@ public class FileStructureDto implements Serializable {
 
     public List<Field> getFields() {
         return fields;
+    }
+
+    public Boolean isLittleEndian() {
+        return littleEndian;
     }
 
     /**
