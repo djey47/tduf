@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.research.writer;
 
 import fr.tduf.libunlimited.low.files.research.common.FormulaHelper;
+import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -75,7 +76,6 @@ public abstract class GenericWriter<T> {
                     outputStream.write(ByteBuffer.allocate(length).array());
                     break;
 
-                case FPOINT:
                 case UNKNOWN:
                 case DELIMITER:
                 case TEXT:
@@ -85,7 +85,23 @@ public abstract class GenericWriter<T> {
 
                 case INTEGER:
                     assert valueBytes != null;
-                    outputStream.write(valueBytes, 4, length);
+
+                    if (this.fileStructure.isLittleEndian()) {
+                        valueBytes = TypeHelper.changeEndianType(valueBytes);
+                        outputStream.write(valueBytes, 0, length);
+                    } else {
+                        outputStream.write(valueBytes, 4, length);
+                    }
+                    break;
+
+                case FPOINT:
+                    assert valueBytes != null;
+
+                    if (this.fileStructure.isLittleEndian()) {
+                        valueBytes = TypeHelper.changeEndianType(valueBytes);
+                    }
+
+                    outputStream.write(valueBytes, 0, length);
                     break;
 
                 case REPEATER:
