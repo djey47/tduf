@@ -5,9 +5,11 @@ import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.assertj.core.data.MapEntry;
 import org.junit.Test;
 
+import java.beans.Statement;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static net.sf.json.test.JSONAssert.assertJsonEquals;
@@ -286,6 +288,12 @@ public class DataStoreTest {
         assertThat(actualValues.get(0).getStore()).hasSize(4);
         assertThat(actualValues.get(1).getStore()).hasSize(4);
         assertThat(actualValues.get(2).getStore()).hasSize(4);
+
+        Map<String, DataStore.Entry> subStore = actualValues.get(0).getStore();
+        assertThat(subStore.get("my_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(10L)));
+        assertThat(subStore.get("my_fp_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPointToRaw(235.666667f)));
+        assertThat(subStore.get("a_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw("az")));
+        assertThat(subStore.get("another_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.UNKNOWN, new byte[] {0x1, 0x2, 0x3, 0x4}));
     }
 
     @Test

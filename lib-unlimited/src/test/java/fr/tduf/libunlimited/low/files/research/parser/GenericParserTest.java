@@ -1,6 +1,5 @@
 package fr.tduf.libunlimited.low.files.research.parser;
 
-import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.Test;
@@ -134,7 +133,7 @@ public class GenericParserTest {
         List<FileStructureDto.Field> fields = asList(field1, field2);
 
         DataStore dataStore = new DataStore();
-        dataStore.addRawValue("sizeIndicator", TypeHelper.integerToRaw(4));
+        dataStore.addInteger("sizeIndicator", 4);
 
 
         // WHEN

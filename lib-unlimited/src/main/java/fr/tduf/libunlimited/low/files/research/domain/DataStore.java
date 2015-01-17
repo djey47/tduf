@@ -153,9 +153,12 @@ public class DataStore {
         if (!this.store.containsKey(fieldName)) {
             return Optional.empty();
         }
+
+        Entry entry = this.store.get(fieldName);
+        assert (entry.getType() == FileStructureDto.Type.TEXT);
+
         return Optional.of(
-                rawToText(
-                        this.store.get(fieldName).rawValue));
+                rawToText(entry.rawValue));
     }
 
     /**
@@ -167,9 +170,12 @@ public class DataStore {
         if (!this.store.containsKey(fieldName)) {
             return Optional.empty();
         }
+
+        Entry entry = this.store.get(fieldName);
+        assert (entry.getType() == FileStructureDto.Type.INTEGER);
+
         return Optional.of(
-                rawToInteger(
-                        this.store.get(fieldName).rawValue));
+                rawToInteger(entry.rawValue));
     }
 
     /**
@@ -181,12 +187,13 @@ public class DataStore {
         if (!this.store.containsKey(fieldName)) {
             return Optional.empty();
         }
+
+        Entry entry = this.store.get(fieldName);
+        assert (entry.getType() == FileStructureDto.Type.FPOINT);
+
         return Optional.of(
-                rawToFloatingPoint(
-                        this.store.get(fieldName).rawValue));
+                rawToFloatingPoint(entry.rawValue));
     }
-
-
 
     /**
      * Returns a list of numeric integer values from the store.
@@ -252,7 +259,7 @@ public class DataStore {
             for (String key : groupedKeysByIndex.get(index)) {
                 Matcher matcher = SUB_FIELD_NAME_PATTERN.matcher(key);
                 if (matcher.matches()) {
-                    subDataStore.addRawValue(matcher.group(3), store.get(key).rawValue);    // extracts field name part
+                    subDataStore.getStore().put(matcher.group(3), store.get(key)); // extracts field name part
                 }
             }
         }
