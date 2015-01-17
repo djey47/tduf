@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToFloatingPoint;
 import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToNumeric;
 import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToText;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
@@ -132,6 +133,7 @@ public class DataStore {
      * @param fieldName :   name of field to search
      * @return the stored value whose key match provided identifier, or null if it does not exist
      */
+    // TODO rename to getInteger
     public Optional<Long> getNumeric(String fieldName) {
         if (!this.store.containsKey(fieldName)) {
             return Optional.empty();
@@ -140,6 +142,22 @@ public class DataStore {
                 rawToNumeric(
                         this.store.get(fieldName).rawValue));
     }
+
+    /**
+     * Returns a flaoting point value from the store.
+     * @param fieldName :   name of field to search
+     * @return the stored value whose key match provided identifier, or null if it does not exist
+     */
+    public Optional<Float> getFloatingPoint(String fieldName) {
+        if (!this.store.containsKey(fieldName)) {
+            return Optional.empty();
+        }
+        return Optional.of(
+                rawToFloatingPoint(
+                        this.store.get(fieldName).rawValue));
+    }
+
+
 
     /**
      * Returns a list of numeric values from the store.
@@ -200,7 +218,7 @@ public class DataStore {
         // Simple conversion for now
         ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
 
-        this.getStore().forEach( (key, entry) -> {
+        this.getStore().forEach((key, entry) -> {
             switch (entry.type) {
                 case TEXT:
                     objectNode.put(key, rawToText(entry.rawValue));

@@ -169,6 +169,7 @@ public class DataStoreTest {
         assertThat(dataStore.getText("f2").isPresent()).isFalse();
     }
 
+    // TODO rename methods
     @Test
     public void getNumeric_whenNoItem_shouldReturnAbsent() {
         // GIVEN-WHEN-THEN
@@ -191,6 +192,21 @@ public class DataStoreTest {
 
         // WHEN-THEN
         assertThat(dataStore.getNumeric("f2").isPresent()).isFalse();
+    }
+
+    @Test
+    public void getFloatingPoint_whenNoItem_shouldReturnAbsent() {
+        // GIVEN-WHEN-THEN
+        assertThat(dataStore.getFloatingPoint("f1").isPresent()).isFalse();
+    }
+
+    @Test
+    public void getFloatingPoint_whenOneItem_andSuccess_shouldReturnValue() {
+        // GIVEN
+        putFloatInStore("f1", 691.44006f);
+
+        // WHEN-THEN
+        assertThat(dataStore.getFloatingPoint("f1").get()).isEqualTo(691.44006f);
     }
 
     @Test
@@ -306,6 +322,14 @@ public class DataStoreTest {
                 .putLong(value)
                 .array();
         dataStore.getStore().put(key, new DataStore.Entry(FileStructureDto.Type.INTEGER, bytes));
+    }
+
+    private void putFloatInStore(String key, float value) {
+        byte[] bytes = ByteBuffer
+                .allocate(4)
+                .putFloat(value)
+                .array();
+        dataStore.getStore().put(key, new DataStore.Entry(FileStructureDto.Type.FPOINT, bytes));
     }
 
     private void putStringInStore(String key, String value) {
