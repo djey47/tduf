@@ -31,7 +31,7 @@ public class FormulaHelperTest {
     public void resolveToInteger_whenFormulaWithPointer_shouldReturnValue() {
         // GIVEN
         DataStore dataStore = new DataStore();
-        dataStore.addRawValue("sizeIndicator", TypeHelper.integerToRaw(500L));
+        dataStore.addInteger("sizeIndicator", 500L);
 
         // WHEN-THEN
         assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?", dataStore)).isEqualTo(500);
