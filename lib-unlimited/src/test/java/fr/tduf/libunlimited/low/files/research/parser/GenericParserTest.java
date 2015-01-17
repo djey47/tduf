@@ -169,20 +169,6 @@ public class GenericParserTest {
     @Test
     public void dump_whenProvidedContents_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
-        String expectedDump = "tag\t<TEXT: 10 bytes>\t[65, 66, 67, 68, 69, 70, 71, 72, 73, 74]\t\"ABCDEFGHIJ\"\n" +
-                "unknown\t<UNKNOWN: 5 bytes>\t[1, 2, 3, 4, 5]\t\n" +
-                "repeater\t<REPEATER: 15 bytes>\t(per item size) >>\t\n" +
-                "repeater[0].number\t<INTEGER: 4 bytes>\t[0, 0, 1, -12]\t500\n" +
-                "repeater[0].numberF\t<FPOINT: 4 bytes>\t[67, -128, -71, -48]\t257.45166\n" +
-                "repeater[0].gap\t<GAP: 2 bytes>\t[0, 0]\t\n" +
-                "repeater[0].text\t<TEXT: 4 bytes>\t[65, 66, 67, 68]\t\"ABCD\"\n" +
-                "repeater[0].delimiter\t<DELIMITER: 1 bytes>\t[10]\t\"\n\"\n" +
-                "repeater[1].number\t<INTEGER: 4 bytes>\t[0, 0, 3, -24]\t1000\n" +
-                "repeater[1].numberF\t<FPOINT: 4 bytes>\t[66, -83, 109, -34]\t86.714584\n" +
-                "repeater[1].gap\t<GAP: 2 bytes>\t[0, 0]\t\n" +
-                "repeater[1].text\t<TEXT: 4 bytes>\t[69, 70, 71, 72]\t\"EFGH\"\n" +
-                "repeater[1].delimiter\t<DELIMITER: 1 bytes>\t[11]\t\"\u000B\"\n" +
-                "repeater\t<REPEATER: 30 bytes>\t(total size) <<\t\n";
         ByteArrayInputStream inputStream = createInputStreamFromReferenceFile();
         GenericParser<String> actualParser = createGenericParser(inputStream);
         actualParser.parse();
@@ -192,7 +178,39 @@ public class GenericParserTest {
         System.out.println("Dumped contents:\n" + actualDump);
 
         // THEN
-        assertThat(actualDump).isEqualTo(expectedDump);
+        assertThat(actualDump).isEqualTo(getExpectedDump());
+    }
+
+    @Test
+    public void dump_whenProvidedContentsInLittleEndian_shouldReturnAllParsedData() throws IOException, URISyntaxException {
+        // GIVEN
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileLittleEndian();
+        GenericParser<String> actualParser = createGenericParserLittleEndian(inputStream);
+        actualParser.parse();
+
+        // WHEN
+        String actualDump = actualParser.dump();
+        System.out.println("Dumped contents:\n" + actualDump);
+
+        // THEN
+        assertThat(actualDump).isEqualTo(getExpectedDump());
+    }
+
+    private String getExpectedDump() {
+        return "tag\t<TEXT: 10 bytes>\t[65, 66, 67, 68, 69, 70, 71, 72, 73, 74]\t\"ABCDEFGHIJ\"\n" +
+                    "unknown\t<UNKNOWN: 5 bytes>\t[1, 2, 3, 4, 5]\t\n" +
+                    "repeater\t<REPEATER: 15 bytes>\t(per item size) >>\t\n" +
+                    "repeater[0].number\t<INTEGER: 4 bytes>\t[0, 0, 1, -12]\t500\n" +
+                    "repeater[0].numberF\t<FPOINT: 4 bytes>\t[67, -128, -71, -48]\t257.45166\n" +
+                    "repeater[0].gap\t<GAP: 2 bytes>\t[0, 0]\t\n" +
+                    "repeater[0].text\t<TEXT: 4 bytes>\t[65, 66, 67, 68]\t\"ABCD\"\n" +
+                    "repeater[0].delimiter\t<DELIMITER: 1 bytes>\t[10]\t\"\n\"\n" +
+                    "repeater[1].number\t<INTEGER: 4 bytes>\t[0, 0, 3, -24]\t1000\n" +
+                    "repeater[1].numberF\t<FPOINT: 4 bytes>\t[66, -83, 109, -34]\t86.714584\n" +
+                    "repeater[1].gap\t<GAP: 2 bytes>\t[0, 0]\t\n" +
+                    "repeater[1].text\t<TEXT: 4 bytes>\t[69, 70, 71, 72]\t\"EFGH\"\n" +
+                    "repeater[1].delimiter\t<DELIMITER: 1 bytes>\t[11]\t\"\u000B\"\n" +
+                    "repeater\t<REPEATER: 30 bytes>\t(total size) <<\t\n";
     }
 
     private GenericParser<String> createGenericParser(final ByteArrayInputStream inputStream) throws IOException {
@@ -225,6 +243,40 @@ public class GenericParserTest {
             @Override
             protected String getStructureResource() {
                 return "/files/structures/TEST-map.json";
+            }
+        };
+    }
+
+    private GenericParser<String> createGenericParserLittleEndian(final ByteArrayInputStream inputStream) throws IOException {
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+
+                assertThat(getDataStore().size()).isEqualTo(10);
+
+                // Field 1
+                assertThat(getDataStore().getText("tag").get()).isEqualTo("ABCDEFGHIJ");
+
+                // Field 2
+                assertThat(getDataStore().getRawValue("unknown").get()).isEqualTo(new byte[]{0x1,0x2,0x3,0x4,0x5});
+
+                // Field 3 - item 0
+                assertThat(getDataStore().getInteger("repeater[0].number").get()).isEqualTo(500L);
+                assertThat(getDataStore().getFloatingPoint("repeater[0].numberF").get()).isEqualTo(257.45166f);
+                assertThat(getDataStore().getText("repeater[0].text").get()).isEqualTo("ABCD");
+                assertThat(getDataStore().getRawValue("repeater[0].delimiter").get()).isEqualTo(new byte[]{0xA});
+                // Field 3 - item 1
+                assertThat(getDataStore().getInteger("repeater[1].number").get()).isEqualTo(1000L);
+                assertThat(getDataStore().getFloatingPoint("repeater[1].numberF").get()).isEqualTo(86.714584f);
+                assertThat(getDataStore().getText("repeater[1].text").get()).isEqualTo("EFGH");
+                assertThat(getDataStore().getRawValue("repeater[1].delimiter").get()).isEqualTo(new byte[] {0xB});
+
+                return DATA;
+            }
+
+            @Override
+            protected String getStructureResource() {
+                return "/files/structures/TEST-littleEndian-map.json";
             }
         };
     }
@@ -275,6 +327,12 @@ public class GenericParserTest {
 
     private ByteArrayInputStream createInputStreamFromReferenceFile() throws IOException, URISyntaxException {
         URI fileURI = thisClass.getResource("/files/samples/TEST.bin").toURI();
+        byte[] bytes = Files.readAllBytes(Paths.get(fileURI));
+        return new ByteArrayInputStream(bytes);
+    }
+
+    private ByteArrayInputStream createInputStreamFromReferenceFileLittleEndian() throws IOException, URISyntaxException {
+        URI fileURI = thisClass.getResource("/files/samples/TEST-littleEndian.bin").toURI();
         byte[] bytes = Files.readAllBytes(Paths.get(fileURI));
         return new ByteArrayInputStream(bytes);
     }

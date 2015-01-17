@@ -113,7 +113,6 @@ public abstract class GenericParser<T> {
      */
     protected abstract String getStructureResource();
 
-    // TODO handle endianness
     private void readFields(List<FileStructureDto.Field> fields, String repeaterKey) {
 
         for(FileStructureDto.Field field : fields) {
@@ -136,7 +135,13 @@ public abstract class GenericParser<T> {
 
                 case INTEGER:
                     readValueAsBytes = new byte[length + 4]; // Prepare long values
-                    parsedCount = inputStream.read(readValueAsBytes, 4, length);
+
+                    if (fileStructure.isLittleEndian()) {
+                        parsedCount = inputStream.read(readValueAsBytes, 0, length);
+                        readValueAsBytes = TypeHelper.changeEndianType(readValueAsBytes);
+                    } else {
+                        parsedCount = inputStream.read(readValueAsBytes, 4, length);
+                    }
 
                     this.dataStore.addInteger(key, TypeHelper.rawToInteger(readValueAsBytes));
 
@@ -147,6 +152,10 @@ public abstract class GenericParser<T> {
                 case FPOINT:
                     readValueAsBytes = new byte[length];
                     parsedCount = inputStream.read(readValueAsBytes, 0, length);
+
+                    if (fileStructure.isLittleEndian()) {
+                        readValueAsBytes = TypeHelper.changeEndianType(readValueAsBytes);
+                    }
 
                     this.dataStore.addFloatingPoint(key, TypeHelper.rawToFloatingPoint(readValueAsBytes));
 

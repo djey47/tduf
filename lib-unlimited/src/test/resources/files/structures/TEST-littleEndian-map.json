@@ -1,0 +1,41 @@
+{
+  "name" : "TEST file format (little endian)",
+  "littleEndian" : true,
+  "fields" : [
+    {
+      "name": "tag",
+      "type": "TEXT",
+      "size": 10
+    },{
+      "name" : "unknown",
+      "type" : "UNKNOWN",
+      "size" : 5
+    },{
+      "name" : "repeater",
+      "type" : "REPEATER",
+      "subFields" : [
+        {
+          "name" : "number",
+          "type" : "INTEGER",
+          "size" : 4
+        }, {
+          "name" : "numberF",
+          "type" : "FPOINT",
+          "size" : 4
+        }, {
+          "name" : "gap",
+          "type" : "GAP",
+          "size" : 2
+        }, {
+          "name" : "text",
+          "type" : "TEXT",
+          "size" : 4
+        }, {
+          "name" : "delimiter",
+          "type" : "DELIMITER",
+          "size" : 1
+        }
+      ]
+    }
+  ]
+}
