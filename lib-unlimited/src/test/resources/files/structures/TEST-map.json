@@ -19,6 +19,10 @@
           "type" : "INTEGER",
           "size" : 4
         }, {
+          "name" : "numberF",
+          "type" : "FPOINT",
+          "size" : 4
+        }, {
           "name" : "gap",
           "type" : "GAP",
           "size" : 2

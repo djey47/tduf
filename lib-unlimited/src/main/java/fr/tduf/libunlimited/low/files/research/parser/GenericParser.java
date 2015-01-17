@@ -70,6 +70,7 @@ public abstract class GenericParser<T> {
                     switch (field.getType()) {
                         case TEXT:
                         case INTEGER:
+                        case FPOINT:
                         case DELIMITER:
                         case GAP:
                             actualSize = field.getSize();
@@ -128,6 +129,13 @@ public abstract class GenericParser<T> {
 
                     byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 4, length + 4);
                     dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(displayedBytes), TypeHelper.rawToNumeric(readValueAsBytes)));
+                    break;
+
+                case FPOINT:
+                    readValueAsBytes = new byte[length];
+                    parsedCount = inputStream.read(readValueAsBytes, 0, length);
+
+                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), TypeHelper.rawToFloatingPoint(readValueAsBytes)));
                     break;
 
                 case DELIMITER:
