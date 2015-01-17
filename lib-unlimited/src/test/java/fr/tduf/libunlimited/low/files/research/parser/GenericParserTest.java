@@ -1,5 +1,7 @@
 package fr.tduf.libunlimited.low.files.research.parser;
 
+import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
+import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.Test;
 
@@ -66,7 +68,7 @@ public class GenericParserTest {
         List<FileStructureDto.Field> fields = createFields();
 
         // WHEN
-        int actualStructureSize = GenericParser.computeStructureSize(fields);
+        int actualStructureSize = GenericParser.computeStructureSize(fields, null);
 
         // THEN
         assertThat(actualStructureSize).isEqualTo(24);
@@ -93,11 +95,42 @@ public class GenericParserTest {
 
 
         // WHEN
-        int actualStructureSize = GenericParser.computeStructureSize(fields);
+        int actualStructureSize = GenericParser.computeStructureSize(fields, null);
 
 
         // THEN
         assertThat(actualStructureSize).isEqualTo(101); // = 5 + 4*24
+    }
+
+    @Test
+    public void computeStructureSize_withSubFields_andSizeGivenByFormula_shouldReturnRealSizeInBytes() {
+        // GIVEN
+        List<FileStructureDto.Field> subFields = createFields();
+
+        FileStructureDto.Field field1 = FileStructureDto.Field.builder()
+                .forName("sizeIndicator")
+                .ofSize("4")
+                .withType(FileStructureDto.Type.INTEGER)
+                .build();
+        FileStructureDto.Field field2 = FileStructureDto.Field.builder()
+                .forName("entry_list")
+                .withType(FileStructureDto.Type.REPEATER)
+                .withSubFields(subFields)
+                .ofSubItemCount("=?sizeIndicator?")
+                .build();
+
+        List<FileStructureDto.Field> fields = asList(field1, field2);
+
+        DataStore dataStore = new DataStore();
+        dataStore.addRawValue("sizeIndicator", TypeHelper.integerToRaw(4));
+
+
+        // WHEN
+        int actualStructureSize = GenericParser.computeStructureSize(fields, dataStore);
+
+
+        // THEN
+        assertThat(actualStructureSize).isEqualTo(100); // = 4 + 4*24
     }
 
     @Test
