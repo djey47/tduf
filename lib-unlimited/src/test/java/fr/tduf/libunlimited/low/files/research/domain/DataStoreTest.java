@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
+import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.assertj.core.data.MapEntry;
 import org.junit.Test;
@@ -52,6 +53,26 @@ public class DataStoreTest {
 
         // THEN
         DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.TEXT, "v1".getBytes());
+        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
+    }
+
+    @Test
+    public void addInteger_shouldCreateNewEntryInStore() throws Exception {
+        // GIVEN - WHEN
+        dataStore.addInteger("f1", 500L);
+
+        // THEN
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(500L));
+        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
+    }
+
+    @Test
+    public void addFloatingPoint_shouldCreateNewEntryInStore() throws Exception {
+        // GIVEN - WHEN
+        dataStore.addFloatingPoint("f1", 83.666667f);
+
+        // THEN
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPointToRaw(83.666667f));
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 

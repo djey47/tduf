@@ -57,6 +57,24 @@ public class DataStore {
     }
 
     /**
+     * Adds an Integer value to the store.
+     * @param fieldName : identifier of field hosting the value, should not exist already
+     * @param value     : value to store
+     */
+    public void addInteger(String fieldName, long value) {
+        this.store.put(fieldName, new Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(value)));
+    }
+
+    /**
+     * Adds a Floating Point value to the store.
+     * @param fieldName : identifier of field hosting the value, should not exist already
+     * @param value     : value to store
+     */
+    public void addFloatingPoint(String fieldName, float value) {
+        this.store.put(fieldName, new Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPointToRaw(value)));
+    }
+
+    /**
      * Adds a repeated field to the store.
      * @param repeaterFieldName : identifier of repeater field
      * @param fieldName         : identifier of field hosting the value
