@@ -60,6 +60,20 @@ public class GenericParserTest {
     }
 
     @Test
+    public void parse_whenProvidedFilesInLittleEndian_shouldReturnDomainObject() throws IOException, URISyntaxException {
+        // GIVEN
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileLittleEndian();
+        GenericParser<String> actualParser = createGenericParserLittleEndian(inputStream);
+
+        // WHEN
+        String actualObject = actualParser.parse();
+
+        // THEN
+        assertThat(actualObject).isNotNull();
+        assertThat(actualObject).isEqualTo(DATA);
+    }
+
+    @Test
     public void parse_whenProvidedFiles_andSizeGivenByAnotherField_shouldReturnDomainObject() throws IOException, URISyntaxException {
         // GIVEN
         ByteArrayInputStream inputStream = createInputStreamFromReferenceFileForFormulas();
