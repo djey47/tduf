@@ -5,6 +5,7 @@ ECHO Welcome to TDUF: Command Line Interface v%TDUF_VERSION%.
 ECHO.
 ECHO Available modules :
 ECHO - DatabaseTool
+ECHO - FileTool
 ECHO - MappingTool
 ECHO.
 ECHO Enjoy!
