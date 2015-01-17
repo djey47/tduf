@@ -259,6 +259,20 @@ public class DataStoreTest {
     }
 
     @Test
+    public void getFloatingPointListOf_whenProvidedStore_shouldReturnSelectedValues() {
+        // GIVEN
+        createStoreEntries();
+
+        // WHEN
+        List<Float> values = dataStore.getFloatingPointListOf("my_fp_field");
+
+        // THEN
+        assertThat(values).isNotNull();
+        assertThat(values).hasSize(3);
+        assertThat(values).containsAll(asList(235.666667f, 335.666667f, 435.666667f));
+    }
+
+    @Test
     public void getRepeatedValues_whenProvidedStore_shouldReturnCorrespondingValues() {
         // GIVEN
         createStoreEntries();
@@ -269,9 +283,9 @@ public class DataStoreTest {
         // THEN
         assertThat(actualValues).isNotNull();
         assertThat(actualValues).hasSize(3);
-        assertThat(actualValues.get(0).getStore()).hasSize(3);
-        assertThat(actualValues.get(1).getStore()).hasSize(3);
-        assertThat(actualValues.get(2).getStore()).hasSize(3);
+        assertThat(actualValues.get(0).getStore()).hasSize(4);
+        assertThat(actualValues.get(1).getStore()).hasSize(4);
+        assertThat(actualValues.get(2).getStore()).hasSize(4);
     }
 
     @Test
@@ -307,8 +321,9 @@ public class DataStoreTest {
         dataStore.fromJsonString(jsonInput);
 
         // THEN
-        assertThat(dataStore.getStore()).hasSize(9);
+        assertThat(dataStore.getStore()).hasSize(12);
         assertThat(dataStore.getIntegerListOf("my_field")).containsAll(asList(10L, 20L, 30L));
+        assertThat(dataStore.getFloatingPointListOf("my_fp_field")).containsAll(asList(235.666667f, 335.666667f, 435.666667f));
         assertThat(dataStore.getText("entry_list[0].a_field").get()).isEqualTo("az");
         assertThat(dataStore.getText("entry_list[1].a_field").get()).isEqualTo("bz");
         assertThat(dataStore.getText("entry_list[2].a_field").get()).isEqualTo("cz");
@@ -375,12 +390,15 @@ public class DataStoreTest {
         dataStore.getStore().clear();
 
         putLongInStore("entry_list[0].my_field", 10L);
+        putFloatInStore("entry_list[0].my_fp_field", 235.666667f);
         putStringInStore("entry_list[0].a_field", "az");
-        putRawValueInStore("entry_list[0].another_field", new byte [] {0x1, 0x2, 0x3, 0x4});
+        putRawValueInStore("entry_list[0].another_field", new byte[]{0x1, 0x2, 0x3, 0x4});
         putLongInStore("entry_list[1].my_field", 20L);
+        putFloatInStore("entry_list[1].my_fp_field", 335.666667f);
         putStringInStore("entry_list[1].a_field", "bz");
-        putRawValueInStore("entry_list[1].another_field", new byte [] {0x5, 0x6, 0x7, 0x8});
+        putRawValueInStore("entry_list[1].another_field", new byte[]{0x5, 0x6, 0x7, 0x8});
         putLongInStore("entry_list[2].my_field", 30L);
+        putFloatInStore("entry_list[2].my_fp_field", 435.666667f);
         putStringInStore("entry_list[2].a_field", "cz");
         putRawValueInStore("entry_list[2].another_field", new byte [] {0x9, 0xA, 0xB, 0xC});
     }
@@ -388,12 +406,15 @@ public class DataStoreTest {
     private static String getStoreContentsAsJson() {
         return "{\n" +
                 "  \"entry_list[0].my_field\": 10,\n" +
+                "  \"entry_list[0].my_fp_field\": 235.666667,\n" +
                 "  \"entry_list[0].a_field\": \"az\",\n" +
                 "  \"entry_list[0].another_field\": \"AQIDBA==\",\n" +
                 "  \"entry_list[1].my_field\": 20,\n" +
+                "  \"entry_list[1].my_fp_field\": 335.666667,\n" +
                 "  \"entry_list[1].a_field\": \"bz\",\n" +
                 "  \"entry_list[1].another_field\": \"BQYHCA==\",\n" +
                 "  \"entry_list[2].my_field\": 30,\n" +
+                "  \"entry_list[2].my_fp_field\": 435.666667,\n" +
                 "  \"entry_list[2].a_field\": \"cz\",\n" +
                 "  \"entry_list[2].another_field\": \"CQoLDA==\"\n" +
                 "}";

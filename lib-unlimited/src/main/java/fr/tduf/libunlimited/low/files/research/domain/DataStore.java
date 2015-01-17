@@ -210,6 +210,26 @@ public class DataStore {
     }
 
     /**
+     * Returns a list of numeric floating point values from the store.
+     * @param fieldName : name of field to search
+     * @return all stored values whose key match provided identifier
+     */
+    public List<Float> getFloatingPointListOf(String fieldName) {
+        return store.keySet().stream()
+
+                .filter(key -> {
+                    Matcher matcher = FIELD_NAME_PATTERN.matcher(key);
+                    return matcher.matches() && matcher.group(1).equals(fieldName);
+                })
+
+                .map(key -> this.store.get(key).rawValue)
+
+                .map(TypeHelper::rawToFloatingPoint)
+
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Returns sub-DataStores of items contained by a repeater field.
      * @param repeaterFieldName   : name of repeater field
      */
@@ -252,6 +272,9 @@ public class DataStore {
                 case TEXT:
                     objectNode.put(key, rawToText(entry.rawValue));
                     break;
+                case FPOINT:
+                    objectNode.put(key, rawToFloatingPoint(entry.getRawValue()));
+                    break;
                 case INTEGER:
                     objectNode.put(key, rawToInteger(entry.rawValue));
                     break;
@@ -279,12 +302,13 @@ public class DataStore {
             FileStructureDto.Type type = FileStructureDto.Type.UNKNOWN;
             byte[] rawValue = new byte[0];
 
-            if (value.getClass() == Integer.class) {
+            if (value.getClass() == Double.class) {
+                type = FileStructureDto.Type.FPOINT;
+                Double doubleValue = (Double) value;
+                rawValue = TypeHelper.floatingPointToRaw(doubleValue.floatValue());
+            } else if (value.getClass() == Integer.class) {
                 type = FileStructureDto.Type.INTEGER;
                 rawValue = TypeHelper.integerToRaw((Integer) value);
-            } else if (value.getClass() == Long.class) {
-                type = FileStructureDto.Type.INTEGER;
-                rawValue = TypeHelper.integerToRaw((Long) value);
             } else if (value.getClass() == String.class) {
                 String stringValue = (String) value;
                 if (isBase64Encoded(stringValue)) {
