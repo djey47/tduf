@@ -122,7 +122,7 @@ public abstract class GenericParser<T> {
                     dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(new byte[length]), ""));
                     break;
 
-                case INTEGER:    // TODO handle other than 32 bit
+                case INTEGER:
                     readValueAsBytes = new byte[length + 4]; // Prepare long values
                     parsedCount = inputStream.read(readValueAsBytes, 4, length);
 

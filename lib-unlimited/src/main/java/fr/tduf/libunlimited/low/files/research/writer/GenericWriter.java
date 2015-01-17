@@ -82,7 +82,6 @@ public abstract class GenericWriter<T> {
                     break;
 
                 case INTEGER:
-                    //TODO handle other than 4 bytes
                     assert valueBytes != null;
                     outputStream.write(valueBytes, 4, length);
                     break;
