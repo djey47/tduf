@@ -80,7 +80,6 @@ public class DataStore {
         this.store.put(key, new Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw(value)));
     }
 
-    //TODO rename to addRepeatedIntegerValue
     /**
      * Adds a repeated field to the store.
      * @param repeaterFieldName : identifier of repeater field
@@ -88,7 +87,7 @@ public class DataStore {
      * @param index             : rank in repeater
      * @param value             : value to store
      */
-    public void addRepeatedNumericValue(String repeaterFieldName, String fieldName, long index, long value) {
+    public void addRepeatedIntegerValue(String repeaterFieldName, String fieldName, long index, long value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
         this.store.put(key, new Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(value)));
     }

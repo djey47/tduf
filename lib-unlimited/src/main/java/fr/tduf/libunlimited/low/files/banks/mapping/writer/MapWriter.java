@@ -42,9 +42,9 @@ public class MapWriter extends GenericWriter<BankMap> {
         int index = 0;
         for(BankMap.Entry entry : sortedEntries) {
 
-            getDataStore().addRepeatedNumericValue("entry_list", "file_name_hash", index, entry.getHash());
-            getDataStore().addRepeatedNumericValue("entry_list", "size_bytes_1", index, entry.getSize1());
-            getDataStore().addRepeatedNumericValue("entry_list", "size_bytes_2", index, entry.getSize2());
+            getDataStore().addRepeatedIntegerValue("entry_list", "file_name_hash", index, entry.getHash());
+            getDataStore().addRepeatedIntegerValue("entry_list", "size_bytes_1", index, entry.getSize1());
+            getDataStore().addRepeatedIntegerValue("entry_list", "size_bytes_2", index, entry.getSize2());
             getDataStore().addRepeatedRawValue("entry_list", "entry_end", index, this.getData().getEntrySeparator());
 
             index++;

@@ -82,14 +82,13 @@ public class DataStoreTest {
         assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.TEXT);
     }
 
-    // TODO rename
     @Test
-    public void addRepeatedNumericValue_shouldCreateNewEntryInStore() {
+    public void addRepeatedIntegerValue_shouldCreateNewEntryInStore() {
         // GIVEN
         byte[] expectedBytes = { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, (byte)0xFF, (byte)0xFF};
 
         // WHEN
-        dataStore.addRepeatedNumericValue("repeater", "f1", 0, 0xFFFFL);
+        dataStore.addRepeatedIntegerValue("repeater", "f1", 0, 0xFFFFL);
 
         // THEN
         DataStore.Entry actualEntry = dataStore.getStore().get("repeater[0].f1");

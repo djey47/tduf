@@ -72,13 +72,13 @@ public class GenericWriterTest {
                 getDataStore().addRawValue("unknown", new byte[]{0x1, 0x2, 0x3, 0x4, 0x5});
 
                 // Field 3 - sub items, rank 0
-                getDataStore().addRepeatedNumericValue("repeater", "number", 0, 500L);
+                getDataStore().addRepeatedIntegerValue("repeater", "number", 0, 500L);
                 getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 0, 257.45166f);
                 getDataStore().addRepeatedTextValue("repeater", "text", 0, "ABCD");
                 getDataStore().addRepeatedRawValue("repeater", "delimiter", 0, new byte[] {0xA});
 
                 // Field 3 - sub items, rank 1
-                getDataStore().addRepeatedNumericValue("repeater", "number", 1, 1000L);
+                getDataStore().addRepeatedIntegerValue("repeater", "number", 1, 1000L);
                 getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 1, 86.714584f);
                 getDataStore().addRepeatedTextValue("repeater", "text", 1, "EFGH");
                 getDataStore().addRepeatedRawValue("repeater", "delimiter", 1, new byte[]{0xB});
