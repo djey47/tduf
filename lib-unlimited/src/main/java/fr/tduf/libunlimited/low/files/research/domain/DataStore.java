@@ -171,11 +171,11 @@ public class DataStore {
 
 
     /**
-     * Returns a list of numeric values from the store.
+     * Returns a list of numeric integer values from the store.
      * @param fieldName : name of field to search
      * @return all stored values whose key match provided identifier
      */
-    public List<Long> getNumericListOf(String fieldName) {
+    public List<Long> getIntegerListOf(String fieldName) {
 
         return store.keySet().stream()
 

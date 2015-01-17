@@ -224,12 +224,12 @@ public class DataStoreTest {
     }
 
     @Test
-    public void getNumericListOf_whenProvidedStore_shouldReturnSelectedValues() {
+    public void getIntegerListOf_whenProvidedStore_shouldReturnSelectedValues() {
         // GIVEN
         createStoreEntries();
 
         // WHEN
-        List<Long> values = dataStore.getNumericListOf("my_field");
+        List<Long> values = dataStore.getIntegerListOf("my_field");
 
         // THEN
         assertThat(values).isNotNull();
@@ -287,7 +287,7 @@ public class DataStoreTest {
 
         // THEN
         assertThat(dataStore.getStore()).hasSize(9);
-        assertThat(dataStore.getNumericListOf("my_field")).containsAll(asList(10L, 20L, 30L));
+        assertThat(dataStore.getIntegerListOf("my_field")).containsAll(asList(10L, 20L, 30L));
         assertThat(dataStore.getText("entry_list[0].a_field").get()).isEqualTo("az");
         assertThat(dataStore.getText("entry_list[1].a_field").get()).isEqualTo("bz");
         assertThat(dataStore.getText("entry_list[2].a_field").get()).isEqualTo("cz");
