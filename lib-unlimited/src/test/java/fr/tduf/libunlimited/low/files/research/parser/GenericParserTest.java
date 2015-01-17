@@ -65,14 +65,14 @@ public class GenericParserTest {
 
         FileStructureDto.Field field1 = FileStructureDto.Field.builder()
                 .forName("tag")
-                .ofSizeBytes(5)
+                .ofSize("5")
                 .withType(FileStructureDto.Type.TEXT)
                 .build();
         FileStructureDto.Field field2 = FileStructureDto.Field.builder()
                 .forName("entry_list")
                 .withType(FileStructureDto.Type.REPEATER)
                 .withSubFields(subFields)
-                .ofSubItemCount(4)
+                .ofSubItemCount("4")
                 .build();
 
         List<FileStructureDto.Field> fields = asList(field1, field2);
@@ -159,32 +159,32 @@ public class GenericParserTest {
         FileStructureDto.Field field1 = FileStructureDto.Field.builder()
                 .forName("file_name_hash")
                 .withType(FileStructureDto.Type.INTEGER)
-                .ofSizeBytes(4)
+                .ofSize("4")
                 .build();
         FileStructureDto.Field field2 = FileStructureDto.Field.builder()
                 .forName("size_bytes_1")
                 .withType(FileStructureDto.Type.INTEGER)
-                .ofSizeBytes(4)
+                .ofSize("4")
                 .build();
         FileStructureDto.Field field3 = FileStructureDto.Field.builder()
                 .forName("gap_1")
                 .withType(FileStructureDto.Type.DELIMITER)
-                .ofSizeBytes(4)
+                .ofSize("4")
                 .build();
         FileStructureDto.Field field4 = FileStructureDto.Field.builder()
                 .forName("size_bytes_2")
                 .withType(FileStructureDto.Type.INTEGER)
-                .ofSizeBytes(4)
+                .ofSize("4")
                 .build();
         FileStructureDto.Field field5 = FileStructureDto.Field.builder()
                 .forName("gap_2")
                 .withType(FileStructureDto.Type.DELIMITER)
-                .ofSizeBytes(4)
+                .ofSize("4")
                 .build();
         FileStructureDto.Field field6 = FileStructureDto.Field.builder()
                 .forName("entry_end")
                 .withType(FileStructureDto.Type.DELIMITER)
-                .ofSizeBytes(4)
+                .ofSize("4")
                 .build();
         return asList(field1, field2, field3, field4, field5, field6);
     }

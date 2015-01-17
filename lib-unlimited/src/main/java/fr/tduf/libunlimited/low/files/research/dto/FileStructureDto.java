@@ -17,6 +17,7 @@ public class FileStructureDto implements Serializable {
     @JsonProperty("name")
     private String name;
 
+    // TODO Check correct usage
     @JsonProperty("littleEndian")
     private Boolean littleEndian;
 
@@ -53,7 +54,7 @@ public class FileStructureDto implements Serializable {
         private Type type;
 
         @JsonProperty("size")
-        private Integer size;
+        private String sizeFormula;
 
         @JsonProperty("subFields")
         private List<Field> subFields;
@@ -64,7 +65,7 @@ public class FileStructureDto implements Serializable {
             return new FieldBuilder() {
                 private List<Field> subFields;
                 private Type type;
-                private Integer size;
+                private String sizeFormula;
                 private String name;
 
                 @Override
@@ -80,8 +81,8 @@ public class FileStructureDto implements Serializable {
                 }
 
                 @Override
-                public FieldBuilder ofSizeBytes(int size) {
-                    this.size = size;
+                public FieldBuilder ofSize(String sizeFormula) {
+                    this.sizeFormula = sizeFormula;
                     return this;
                 }
 
@@ -92,8 +93,8 @@ public class FileStructureDto implements Serializable {
                 }
 
                 @Override
-                public FieldBuilder ofSubItemCount(int count) {
-                    this.size = count;
+                public FieldBuilder ofSubItemCount(String countFormula) {
+                    this.sizeFormula = countFormula;
                     return this;
                 }
 
@@ -102,7 +103,7 @@ public class FileStructureDto implements Serializable {
                     Field field = new Field();
 
                     field.name = this.name;
-                    field.size = this.size;
+                    field.sizeFormula = this.sizeFormula;
                     field.type = this.type;
                     field.subFields = this.subFields;
 
@@ -116,12 +117,12 @@ public class FileStructureDto implements Serializable {
             return "Field{" +
                     "name='" + name + '\'' +
                     ", type=" + type +
-                    ", size=" + size +
+                    ", sizeFormula=" + sizeFormula +
                     '}';
         }
 
-        public Integer getSize() {
-            return size;
+        public String getSizeFormula() {
+            return sizeFormula;
         }
 
         public Type getType() {
@@ -142,11 +143,11 @@ public class FileStructureDto implements Serializable {
 
             FieldBuilder withType(Type type);
 
-            FieldBuilder ofSizeBytes(int size);
+            FieldBuilder ofSize(String sizeFormula);
 
             FieldBuilder withSubFields(List<Field> subFields);
 
-            FieldBuilder ofSubItemCount(int count);
+            FieldBuilder ofSubItemCount(String countFormula);
 
             Field build();
         }

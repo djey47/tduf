@@ -62,6 +62,7 @@ public abstract class GenericParser<T> {
         return this.dumpBuilder.toString();
     }
 
+    // TODO handle size formulas
     static int computeStructureSize(List<FileStructureDto.Field> fields) {
         return fields.stream()
                 .mapToInt(field -> {
@@ -73,11 +74,12 @@ public abstract class GenericParser<T> {
                         case FPOINT:
                         case DELIMITER:
                         case GAP:
-                            actualSize = field.getSize();
+                            actualSize = Integer.parseInt(field.getSizeFormula());
                             break;
 
                         case REPEATER:
-                            actualSize = computeStructureSize(field.getSubFields()) * field.getSize();
+                            int fieldSize = Integer.parseInt(field.getSizeFormula());
+                            actualSize = computeStructureSize(field.getSubFields()) * fieldSize;
                             break;
 
                         default:
@@ -109,7 +111,8 @@ public abstract class GenericParser<T> {
 
             String name = field.getName();
             String key = repeaterKey + name;
-            Integer length = field.getSize();
+            // TODO handle formulas
+            Integer length = field.getSizeFormula() == null ? null : Integer.parseInt(field.getSizeFormula());
 
             FileStructureDto.Type type = field.getType();
             byte[] readValueAsBytes = null;
