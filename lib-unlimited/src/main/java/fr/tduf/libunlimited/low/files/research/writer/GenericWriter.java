@@ -74,6 +74,7 @@ public abstract class GenericWriter<T> {
                     outputStream.write(ByteBuffer.allocate(length).array());
                     break;
 
+                case FPOINT:
                 case UNKNOWN:
                 case DELIMITER:
                 case TEXT:
