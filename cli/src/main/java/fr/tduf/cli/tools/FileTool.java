@@ -1,13 +1,18 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.CommandHelper;
+import fr.tduf.libunlimited.low.files.research.parser.GenericParser;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.FileNotFoundException;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,7 +75,7 @@ public class FileTool {
         new FileTool().doMain(args);
     }
 
-    private void doMain(String[] args) throws FileNotFoundException {
+    private void doMain(String[] args) throws IOException {
         if (!checkArgumentsAndOptions(args)) {
             System.exit(1);
         }
@@ -151,7 +156,37 @@ public class FileTool {
         this.command = (Command) CommandHelper.fromLabel(JSONIFY, commandArgument);
     }
 
-    private void jsonify() {
+    private void jsonify() throws IOException {
+        System.out.println("Will use structure in file: " + this.structureFile);
 
+        byte[] fileContents = Files.readAllBytes(Paths.get(inputFile));
+        ByteArrayInputStream fileInputStream = new ByteArrayInputStream(fileContents);
+
+
+        GenericParser<String> genericParser = new GenericParser<String>(fileInputStream) {
+            @Override
+            protected String generate() {
+                return "BTRQ";
+            }
+
+            @Override
+            protected String getStructureResource() {
+                return structureFile;
+            }
+        };
+
+        genericParser.parse();
+
+        System.out.println("\t-> Provided file dump:\n" + genericParser.dump());
+
+        String jsonOutput = genericParser.getDataStore().toJsonString();
+
+        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(outputFile), StandardCharsets.UTF_8)) {
+            bufferedWriter.write(jsonOutput);
+        } catch (IOException e) {
+            throw e;
+        }
+
+        System.out.println("JSON conversion done: " + this.inputFile + " to " + this.outputFile);
     }
 }
