@@ -82,6 +82,7 @@ public class DataStoreTest {
         assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.TEXT);
     }
 
+    // TODO rename
     @Test
     public void addRepeatedNumericValue_shouldCreateNewEntryInStore() {
         // GIVEN
@@ -95,6 +96,21 @@ public class DataStoreTest {
         //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
         assertThat(actualEntry.getRawValue()).isEqualTo(expectedBytes);
         assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.INTEGER);
+    }
+
+    @Test
+    public void addRepeatedFloatingPointValue_shouldCreateNewEntryInStore() {
+        // GIVEN
+        byte[] expectedBytes = { 0x44, 0x21, (byte)0x9D, (byte)0xD6 };
+
+        // WHEN
+        dataStore.addRepeatedFloatingPointValue("repeater", "f1", 0, 646.46619f);
+
+        // THEN
+        DataStore.Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
+        //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
+        assertThat(actualEntry.getRawValue()).isEqualTo(expectedBytes);
+        assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.FPOINT);
     }
 
     @Test
