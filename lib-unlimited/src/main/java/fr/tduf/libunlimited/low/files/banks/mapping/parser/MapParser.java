@@ -40,9 +40,9 @@ public class MapParser extends GenericParser<BankMap> {
 
         for (DataStore subDataStore : repeatedValues) {
 
-            long checksum = subDataStore.getNumeric("file_name_hash").get();
-            long size1 = subDataStore.getNumeric("size_bytes_1").get();
-            long size2 = subDataStore.getNumeric("size_bytes_2").get();
+            long checksum = subDataStore.getInteger("file_name_hash").get();
+            long size1 = subDataStore.getInteger("size_bytes_1").get();
+            long size2 = subDataStore.getInteger("size_bytes_2").get();
 
             bankMap.addEntry(checksum, size1, size2);
 

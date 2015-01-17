@@ -22,8 +22,7 @@ public class TypeHelper {
      * @return corresponding value as 64-bit integer
      * @throws IllegalArgumentException when provided Array is not 64-bit (8 bytes)
      */
-    //TODO Rename to rawToInteger
-    public static long rawToNumeric(byte[] rawValueBytes) throws IllegalArgumentException {
+    public static long rawToInteger(byte[] rawValueBytes) throws IllegalArgumentException {
         check64BitRawValue(rawValueBytes);
 
         return ByteBuffer
@@ -59,8 +58,7 @@ public class TypeHelper {
      * @param numericValue  : numeric value to convert
      * @return corresponding value with long spec (64-bit, 8 bytes) as byte array.
      */
-    //TODO Rename to integerToRaw
-    public static byte[] numericToRaw(long numericValue) {
+    public static byte[] integerToRaw(long numericValue) {
         return ByteBuffer
                 .allocate(8)
                 .putLong(numericValue)

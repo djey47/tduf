@@ -128,7 +128,7 @@ public abstract class GenericParser<T> {
                     parsedCount = inputStream.read(readValueAsBytes, 4, length);
 
                     byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 4, length + 4);
-                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(displayedBytes), TypeHelper.rawToNumeric(readValueAsBytes)));
+                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(displayedBytes), TypeHelper.rawToInteger(readValueAsBytes)));
                     break;
 
                 case FPOINT:

@@ -169,29 +169,28 @@ public class DataStoreTest {
         assertThat(dataStore.getText("f2").isPresent()).isFalse();
     }
 
-    // TODO rename methods
     @Test
-    public void getNumeric_whenNoItem_shouldReturnAbsent() {
+    public void getInteger_whenNoItem_shouldReturnAbsent() {
         // GIVEN-WHEN-THEN
-        assertThat(dataStore.getNumeric("f1").isPresent()).isFalse();
+        assertThat(dataStore.getInteger("f1").isPresent()).isFalse();
     }
 
     @Test
-    public void getNumeric_whenOneItem_andSuccess_shouldReturnValue() {
+    public void getInteger_whenOneItem_andSuccess_shouldReturnValue() {
         // GIVEN
         putLongInStore("f1", 100L);
 
         // WHEN-THEN
-        assertThat(dataStore.getNumeric("f1").get()).isEqualTo(100L);
+        assertThat(dataStore.getInteger("f1").get()).isEqualTo(100L);
     }
 
     @Test
-    public void getNumeric_whenOneItem_andNoSuccess_shouldReturnAbsent() {
+    public void getInteger_whenOneItem_andNoSuccess_shouldReturnAbsent() {
         // GIVEN
         putLongInStore("f1", 100L);
 
         // WHEN-THEN
-        assertThat(dataStore.getNumeric("f2").isPresent()).isFalse();
+        assertThat(dataStore.getInteger("f2").isPresent()).isFalse();
     }
 
     @Test

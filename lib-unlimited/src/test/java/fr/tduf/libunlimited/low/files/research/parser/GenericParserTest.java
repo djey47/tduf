@@ -129,12 +129,12 @@ public class GenericParserTest {
                 assertThat(getDataStore().getRawValue("unknown").get()).isEqualTo(new byte[]{0x1,0x2,0x3,0x4,0x5});
 
                 // Field 3 - item 0
-                assertThat(getDataStore().getNumeric("repeater[0].number").get()).isEqualTo(500L);
+                assertThat(getDataStore().getInteger("repeater[0].number").get()).isEqualTo(500L);
                 assertThat(getDataStore().getFloatingPoint("repeater[0].numberF").get()).isEqualTo(257.45166f);
                 assertThat(getDataStore().getText("repeater[0].text").get()).isEqualTo("ABCD");
                 assertThat(getDataStore().getRawValue("repeater[0].delimiter").get()).isEqualTo(new byte[]{0xA});
                 // Field 3 - item 1
-                assertThat(getDataStore().getNumeric("repeater[1].number").get()).isEqualTo(1000L);
+                assertThat(getDataStore().getInteger("repeater[1].number").get()).isEqualTo(1000L);
                 assertThat(getDataStore().getFloatingPoint("repeater[1].numberF").get()).isEqualTo(86.714584f);
                 assertThat(getDataStore().getText("repeater[1].text").get()).isEqualTo("EFGH");
                 assertThat(getDataStore().getRawValue("repeater[1].delimiter").get()).isEqualTo(new byte[] {0xB});

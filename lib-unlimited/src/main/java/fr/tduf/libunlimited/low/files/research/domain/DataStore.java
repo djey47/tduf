@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToFloatingPoint;
-import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToNumeric;
+import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToInteger;
 import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToText;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -89,7 +89,7 @@ public class DataStore {
      */
     public void addRepeatedNumericValue(String repeaterFieldName, String fieldName, long index, long value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        this.store.put(key, new Entry(FileStructureDto.Type.INTEGER, TypeHelper.numericToRaw(value)));
+        this.store.put(key, new Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(value)));
     }
 
     /**
@@ -133,13 +133,12 @@ public class DataStore {
      * @param fieldName :   name of field to search
      * @return the stored value whose key match provided identifier, or null if it does not exist
      */
-    // TODO rename to getInteger
-    public Optional<Long> getNumeric(String fieldName) {
+    public Optional<Long> getInteger(String fieldName) {
         if (!this.store.containsKey(fieldName)) {
             return Optional.empty();
         }
         return Optional.of(
-                rawToNumeric(
+                rawToInteger(
                         this.store.get(fieldName).rawValue));
     }
 
@@ -175,7 +174,7 @@ public class DataStore {
 
                 .map(key -> this.store.get(key).rawValue)
 
-                .map(TypeHelper::rawToNumeric)
+                .map(TypeHelper::rawToInteger)
 
                 .collect(Collectors.toList());
     }
@@ -224,7 +223,7 @@ public class DataStore {
                     objectNode.put(key, rawToText(entry.rawValue));
                     break;
                 case INTEGER:
-                    objectNode.put(key, rawToNumeric(entry.rawValue));
+                    objectNode.put(key, rawToInteger(entry.rawValue));
                     break;
                 default:
                     objectNode.put(key, entry.rawValue);
@@ -252,10 +251,10 @@ public class DataStore {
 
             if (value.getClass() == Integer.class) {
                 type = FileStructureDto.Type.INTEGER;
-                rawValue = TypeHelper.numericToRaw((Integer) value);
+                rawValue = TypeHelper.integerToRaw((Integer) value);
             } else if (value.getClass() == Long.class) {
                 type = FileStructureDto.Type.INTEGER;
-                rawValue = TypeHelper.numericToRaw((Long) value);
+                rawValue = TypeHelper.integerToRaw((Long) value);
             } else if (value.getClass() == String.class) {
                 String stringValue = (String) value;
                 if (isBase64Encoded(stringValue)) {
