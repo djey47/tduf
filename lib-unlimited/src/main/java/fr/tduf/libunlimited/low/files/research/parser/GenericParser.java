@@ -7,6 +7,7 @@ import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -37,10 +38,17 @@ public abstract class GenericParser<T> {
         requireNonNull(inputStream, "Data stream is required");
         requireNonNull(getStructureResource(), "Data structure resource is required");
 
-        InputStream fileStructureStream = thisClass.getResourceAsStream(getStructureResource());
-
         this.inputStream = inputStream;
-        this.fileStructure = new ObjectMapper().readValue(fileStructureStream, FileStructureDto.class);
+
+        InputStream fileStructureStream = thisClass.getResourceAsStream(getStructureResource());
+        if (fileStructureStream == null) {
+            // Regular file
+            File file = new File(getStructureResource());
+            this.fileStructure = new ObjectMapper().readValue(file, FileStructureDto.class);
+        } else {
+            // Resource
+            this.fileStructure = new ObjectMapper().readValue(fileStructureStream, FileStructureDto.class);
+        }
     }
 
     /**
@@ -100,6 +108,7 @@ public abstract class GenericParser<T> {
     protected abstract T generate();
 
     /**
+     * Can be used: either resource in classpath, or file path.
      * @return location of resource used to describe parsed file structure (mandatory).
      */
     protected abstract String getStructureResource();

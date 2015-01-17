@@ -35,6 +35,18 @@ public class GenericParserTest {
     }
 
     @Test
+    public void newParser_whenProvidedContents_andStructureAsFilePath_shouldReturnParserInstance() throws Exception {
+        // GIVEN
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile();
+
+        // WHEN
+        GenericParser<String> actualParser = createGenericParserWithExternalStructure(inputStream);
+
+        // THEN
+        assertThat(actualParser.getFileStructure()).isNotNull();
+    }
+
+    @Test
     public void parse_whenProvidedFiles_shouldReturnDomainObject() throws IOException, URISyntaxException {
         // GIVEN
         ByteArrayInputStream inputStream = createInputStreamFromReferenceFile();
@@ -218,10 +230,18 @@ public class GenericParserTest {
         };
     }
 
-    private ByteArrayInputStream createInputStreamFromReferenceFile() throws IOException, URISyntaxException {
-        URI fileURI = thisClass.getResource("/files/samples/TEST.bin").toURI();
-        byte[] bytes = Files.readAllBytes(Paths.get(fileURI));
-        return new ByteArrayInputStream(bytes);
+    private GenericParser<String> createGenericParserWithExternalStructure(ByteArrayInputStream inputStream) throws IOException {
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+                return DATA;
+            }
+
+            @Override
+            protected String getStructureResource() {
+                return "./src/test/resources/files/structures/TEST-map.json";
+            }
+        };
     }
 
     private GenericParser<String> createGenericParserForFormulas(ByteArrayInputStream inputStream) throws IOException {
@@ -252,6 +272,12 @@ public class GenericParserTest {
                 return "/files/structures/TEST-formulas-map.json";
             }
         };
+    }
+
+    private ByteArrayInputStream createInputStreamFromReferenceFile() throws IOException, URISyntaxException {
+        URI fileURI = thisClass.getResource("/files/samples/TEST.bin").toURI();
+        byte[] bytes = Files.readAllBytes(Paths.get(fileURI));
+        return new ByteArrayInputStream(bytes);
     }
 
     private ByteArrayInputStream createInputStreamFromReferenceFileForFormulas() throws URISyntaxException, IOException {
