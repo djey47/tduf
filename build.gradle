@@ -76,6 +76,12 @@ project(':cli') {
     }
 }
 
+project('lib-unlimited') {
+    dependencies {
+        compile group: 'net.objecthunter', name: 'exp4j', version: '0.4.4'
+    }
+}
+
 task copyDoc(type: Copy) {
     description 'Copies README to release directory.'
     mustRunAfter 'cleanPackDir'

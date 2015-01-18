@@ -22,9 +22,15 @@ public class FormulaHelperTest {
     }
 
     @Test
-    public void resolveToInteger_whenSimpleFormula_shouldReturnValue() {
+    public void resolveToInteger_whenVerySimpleFormula_shouldReturnValue() {
         // GIVEN-WHEN-THEN
         assertThat(FormulaHelper.resolveToInteger("=100", null)).isEqualTo(100);
+    }
+
+    @Test
+    public void resolveToInteger_whenSimpleFormula_shouldReturnValue() {
+        // GIVEN-WHEN-THEN
+        assertThat(FormulaHelper.resolveToInteger("=1+1", null)).isEqualTo(2);
     }
 
     @Test

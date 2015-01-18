@@ -1,6 +1,8 @@
 package fr.tduf.libunlimited.low.files.research.common;
 
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,7 +32,8 @@ public class FormulaHelper {
 
         formula = handlePatternWithStore(formula, dataStore);
 
-        return Integer.valueOf(formula);
+        Expression expression = new ExpressionBuilder(formula).build();
+        return ((Double) expression.evaluate()).intValue();
     }
 
     private static String handlePatternWithStore(String formula, DataStore dataStore) {
