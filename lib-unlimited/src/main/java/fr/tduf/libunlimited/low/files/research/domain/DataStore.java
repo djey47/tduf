@@ -24,7 +24,6 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
  * Place to store and extract data with {@link fr.tduf.libunlimited.low.files.research.parser.GenericParser}
  * and {@link fr.tduf.libunlimited.low.files.research.writer.GenericWriter}
  */
-//TODO handle rank for entry
 public class DataStore {
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");              // e.g 'entry_list[1].my_field', 'my_field'
 
@@ -51,7 +50,7 @@ public class DataStore {
             return;
         }
 
-        this.store.put(fieldName, new Entry(type, rawValue));
+        putEntry(fieldName, type, rawValue);
     }
 
     /**
@@ -333,8 +332,7 @@ public class DataStore {
                 }
             }
 
-            Entry entry = new Entry(type, rawValue);
-            this.getStore().put(key, entry);
+            putEntry(key, type, rawValue);
         });
     }
 
@@ -377,6 +375,11 @@ public class DataStore {
         return list;
     }
 
+    private void putEntry(String key, FileStructureDto.Type type, byte[] rawValue) {
+        Entry entry = new Entry(type, rawValue, this.store.size());
+        this.getStore().put(key, entry);
+    }
+
     Map<String, Entry> getStore() {
         return store;
     }
@@ -387,10 +390,16 @@ public class DataStore {
     static class Entry {
         private final FileStructureDto.Type type;
         private final byte[] rawValue;
+        private final int rank;
 
-        Entry(FileStructureDto.Type type, byte[] rawValue) {
+        Entry(FileStructureDto.Type type, byte[] rawValue, int rank) {
             this.type = type;
             this.rawValue = rawValue;
+            this.rank = rank;
+        }
+
+        Entry(FileStructureDto.Type type, byte[] rawValue) {
+            this(type, rawValue, 0);
         }
 
         byte[] getRawValue() {
@@ -399,6 +408,10 @@ public class DataStore {
 
         FileStructureDto.Type getType() {
             return type;
+        }
+
+        int getRank() {
+            return rank;
         }
 
         @Override

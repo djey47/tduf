@@ -34,6 +34,22 @@ public class DataStoreTest {
     }
 
     @Test
+    public void addValue_shouldSetEntryRankSequentially() throws Exception {
+        // GIVEN
+        byte[] rawValue = { 0x0, 0x1, 0x2, 0x3 };
+
+        // WHEN
+        dataStore.addValue("f1", UNKNOWN, rawValue);
+        dataStore.addValue("f2", UNKNOWN, rawValue);
+        dataStore.addValue("f3", UNKNOWN, rawValue);
+
+        // THEN
+        assertThat(dataStore.getStore().get("f1").getRank()).isEqualTo(0);
+        assertThat(dataStore.getStore().get("f2").getRank()).isEqualTo(1);
+        assertThat(dataStore.getStore().get("f3").getRank()).isEqualTo(2);
+    }
+
+    @Test
     public void addValue_whenUnknowType_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN
         byte[] expectedRawValue = { 0x0, 0x1, 0x2, 0x3 };
