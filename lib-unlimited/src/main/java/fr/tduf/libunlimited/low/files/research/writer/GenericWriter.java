@@ -143,7 +143,7 @@ public abstract class GenericWriter<T> {
         return fileStructure;
     }
 
-    protected DataStore getDataStore() {
+    public DataStore getDataStore() {
         return dataStore;
     }
 
