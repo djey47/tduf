@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 
+import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.UNKNOWN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericWriterTest {
@@ -111,7 +112,7 @@ public class GenericWriterTest {
                 getDataStore().addText("tag", "ABCDEFGHIJ");
 
                 // Field 2
-                getDataStore().addRawValue("unknown", new byte[]{0x1, 0x2, 0x3, 0x4, 0x5});
+                getDataStore().addValue("unknown", UNKNOWN, new byte[]{0x1, 0x2, 0x3, 0x4, 0x5});
 
                 // Field 3 - sub items, rank 0
                 getDataStore().addRepeatedIntegerValue("repeater", "number", 0, 500L);
@@ -141,7 +142,7 @@ public class GenericWriterTest {
                 getDataStore().addText("tag", "ABCDEFGHIJ");
 
                 // Field 2
-                getDataStore().addRawValue("unknown", new byte[]{0x1, 0x2, 0x3, 0x4, 0x5});
+                getDataStore().addValue("unknown", UNKNOWN, new byte[]{0x1, 0x2, 0x3, 0x4, 0x5});
 
                 // Field 3 - sub items, rank 0
                 getDataStore().addRepeatedIntegerValue("repeater", "number", 0, 500L);

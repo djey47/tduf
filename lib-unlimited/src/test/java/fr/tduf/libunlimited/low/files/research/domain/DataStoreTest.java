@@ -88,21 +88,6 @@ public class DataStoreTest {
     }
 
     @Test
-    public void addRawValue_shouldCreateNewEntryInStore() throws Exception {
-        // GIVEN
-        byte[] expectedRawValue = { 0x0, 0x1, 0x2, 0x3 };
-
-        // WHEN
-        dataStore.addRawValue("f1", expectedRawValue);
-
-        // THEN
-        DataStore.Entry actualEntry = dataStore.getStore().get("f1");
-        //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
-        assertThat(actualEntry.getRawValue()).isEqualTo(expectedRawValue);
-        assertThat(actualEntry.getType()).isEqualTo(UNKNOWN);
-    }
-
-    @Test
     public void addText_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN - WHEN
         dataStore.addText("f1", "v1");

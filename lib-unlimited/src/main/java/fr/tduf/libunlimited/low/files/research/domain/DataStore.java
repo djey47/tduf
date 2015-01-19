@@ -55,15 +55,6 @@ public class DataStore {
     }
 
     /**
-     * Adds all bytes to the store.
-     * @param fieldName : identifier of field hosting the value, should not exist already
-     * @param rawValue  : value to store
-     */
-    public void addRawValue(String fieldName, byte[] rawValue) {
-        addValue(fieldName, UNKNOWN, rawValue);
-    }
-
-    /**
      * Adds a String value to the store.
      * @param fieldName : identifier of field hosting the value, should not exist already
      * @param value     : value to store
