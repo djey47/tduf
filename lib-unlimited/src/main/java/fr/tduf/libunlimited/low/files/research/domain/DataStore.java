@@ -23,6 +23,7 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
  * Place to store and extract data with {@link fr.tduf.libunlimited.low.files.research.parser.GenericParser}
  * and {@link fr.tduf.libunlimited.low.files.research.writer.GenericWriter}
  */
+//TODO handle rank for entry
 public class DataStore {
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");              // e.g 'entry_list[1].my_field', 'my_field'
 
@@ -36,6 +37,16 @@ public class DataStore {
      */
     public void clearAll() {
         this.store.clear();
+    }
+
+    /**
+     *
+     * @param fieldName
+     * @param type
+     * @param rawValue
+     */
+    public void addValue(String fieldName, FileStructureDto.Type type, byte[] rawValue) {
+        this.store.put(fieldName, new Entry(type, rawValue));
     }
 
     /**

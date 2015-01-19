@@ -5,12 +5,12 @@ import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.assertj.core.data.MapEntry;
 import org.junit.Test;
 
-import java.beans.Statement;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 
+import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.*;
 import static java.util.Arrays.asList;
 import static net.sf.json.test.JSONAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,6 +34,51 @@ public class DataStoreTest {
     }
 
     @Test
+    public void addValue_whenUnknowType_shouldCreateNewEntryInStore() throws Exception {
+        // GIVEN
+        byte[] expectedRawValue = { 0x0, 0x1, 0x2, 0x3 };
+
+        // WHEN
+        dataStore.addValue("f1", UNKNOWN, expectedRawValue);
+
+        // THEN
+        DataStore.Entry actualEntry = dataStore.getStore().get("f1");
+        //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
+        assertThat(actualEntry.getRawValue()).isEqualTo(expectedRawValue);
+        assertThat(actualEntry.getType()).isEqualTo(UNKNOWN);
+    }
+
+    @Test
+    public void addValue_whenTextType_shouldCreateNewEntryInStore() throws Exception {
+        // GIVEN - WHEN
+        dataStore.addValue("f1", TEXT, "v1".getBytes());
+
+        // THEN
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.TEXT, "v1".getBytes());
+        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
+    }
+
+    @Test
+    public void addValue_whenIntegerType_shouldCreateNewEntryInStore() throws Exception {
+        // GIVEN - WHEN
+        dataStore.addValue("f1", INTEGER, TypeHelper.integerToRaw(500L));
+
+        // THEN
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(500L));
+        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
+    }
+
+    @Test
+    public void addValue_whenFloatingPointType_shouldCreateNewEntryInStore() throws Exception {
+        // GIVEN - WHEN
+        dataStore.addValue("f1", FPOINT, TypeHelper.floatingPointToRaw(83.666667f));
+
+        // THEN
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPointToRaw(83.666667f));
+        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
+    }
+
+    @Test
     public void addRawValue_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN
         byte[] expectedRawValue = { 0x0, 0x1, 0x2, 0x3 };
@@ -45,7 +90,7 @@ public class DataStoreTest {
         DataStore.Entry actualEntry = dataStore.getStore().get("f1");
         //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
         assertThat(actualEntry.getRawValue()).isEqualTo(expectedRawValue);
-        assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.UNKNOWN);
+        assertThat(actualEntry.getType()).isEqualTo(UNKNOWN);
     }
 
     @Test
@@ -90,7 +135,7 @@ public class DataStoreTest {
         //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
         DataStore.Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
         assertThat(actualEntry.getRawValue()).isEqualTo(expectedRawValue);
-        assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.UNKNOWN);
+        assertThat(actualEntry.getType()).isEqualTo(UNKNOWN);
     }
 
     @Test
@@ -293,7 +338,7 @@ public class DataStoreTest {
         assertThat(subStore.get("my_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(10L)));
         assertThat(subStore.get("my_fp_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPointToRaw(235.666667f)));
         assertThat(subStore.get("a_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw("az")));
-        assertThat(subStore.get("another_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.UNKNOWN, new byte[] {0x1, 0x2, 0x3, 0x4}));
+        assertThat(subStore.get("another_field")).isEqualTo(new DataStore.Entry(UNKNOWN, new byte[] {0x1, 0x2, 0x3, 0x4}));
     }
 
     @Test
@@ -335,9 +380,9 @@ public class DataStoreTest {
         assertThat(dataStore.getText("entry_list[0].a_field").get()).isEqualTo("az");
         assertThat(dataStore.getText("entry_list[1].a_field").get()).isEqualTo("bz");
         assertThat(dataStore.getText("entry_list[2].a_field").get()).isEqualTo("cz");
-        assertThat(dataStore.getRawValue("entry_list[0].another_field").get()).isEqualTo(new byte [] {0x1, 0x2, 0x3, 0x4});
-        assertThat(dataStore.getRawValue("entry_list[1].another_field").get()).isEqualTo(new byte [] {0x5, 0x6, 0x7, 0x8});
-        assertThat(dataStore.getRawValue("entry_list[2].another_field").get()).isEqualTo(new byte [] {0x9, 0xA, 0xB, 0xC});
+        assertThat(dataStore.getRawValue("entry_list[0].another_field").get()).isEqualTo(new byte[]{0x1, 0x2, 0x3, 0x4});
+        assertThat(dataStore.getRawValue("entry_list[1].another_field").get()).isEqualTo(new byte[]{0x5, 0x6, 0x7, 0x8});
+        assertThat(dataStore.getRawValue("entry_list[2].another_field").get()).isEqualTo(new byte[]{0x9, 0xA, 0xB, 0xC});
     }
 
     @Test
@@ -371,7 +416,7 @@ public class DataStoreTest {
     }
 
     private void putRawValueInStore(String key, byte[] bytes) {
-        dataStore.getStore().put(key, new DataStore.Entry(FileStructureDto.Type.UNKNOWN, bytes));
+        dataStore.getStore().put(key, new DataStore.Entry(UNKNOWN, bytes));
     }
 
     private void putLongInStore(String key, long value) {
