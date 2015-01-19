@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.TEXT;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -167,8 +168,10 @@ public abstract class GenericParser<T> {
                     readValueAsBytes = new byte[length];
                     parsedCount = inputStream.read(readValueAsBytes, 0, length);
 
-                    if (type.isValueToBeStored()) {
+                    if (type == TEXT) {
                         this.dataStore.addText(key, TypeHelper.rawToText(readValueAsBytes));
+                    } else {
+                        this.dataStore.addRawValue(key, readValueAsBytes);
                     }
 
                     dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), "\"" +  TypeHelper.rawToText(readValueAsBytes) + "\""));
