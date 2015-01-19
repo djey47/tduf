@@ -7,6 +7,7 @@ import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -28,14 +29,22 @@ public abstract class GenericWriter<T> {
 
     private final T data;
 
+    // TODO factor structure resource + external file
     protected GenericWriter(T data) throws IOException {
         requireNonNull(data, "Data is required");
         requireNonNull(getStructureResource(), "Data structure resource is required");
 
-        InputStream fileStructureStream = thisClass.getResourceAsStream(getStructureResource());
-
         this.data = data;
-        this.fileStructure = new ObjectMapper().readValue(fileStructureStream, FileStructureDto.class);
+
+        InputStream fileStructureStream = thisClass.getResourceAsStream(getStructureResource());
+        if (fileStructureStream == null) {
+            // Regular file
+            File file = new File(getStructureResource());
+            this.fileStructure = new ObjectMapper().readValue(file, FileStructureDto.class);
+        } else {
+            // Resource
+            this.fileStructure = new ObjectMapper().readValue(fileStructureStream, FileStructureDto.class);
+        }
     }
 
     /**
@@ -130,11 +139,12 @@ public abstract class GenericWriter<T> {
     }
 
     /**
-     *
+     * To be implemented to fill datastore with contents of a domain Object.
      */
     protected abstract void fillStore();
 
     /**
+     * Can be used: either resource in classpath, or file path.
      * @return location of resource used to describe parsed file structure (mandatory).
      */
     protected abstract String getStructureResource();

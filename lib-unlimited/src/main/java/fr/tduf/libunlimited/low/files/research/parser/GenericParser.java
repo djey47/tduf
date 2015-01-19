@@ -34,6 +34,7 @@ public abstract class GenericParser<T> {
 
     private final StringBuilder dumpBuilder = new StringBuilder();
 
+    // TODO factor structure resource + external file
     protected GenericParser(ByteArrayInputStream inputStream) throws IOException {
         requireNonNull(inputStream, "Data stream is required");
         requireNonNull(getStructureResource(), "Data structure resource is required");

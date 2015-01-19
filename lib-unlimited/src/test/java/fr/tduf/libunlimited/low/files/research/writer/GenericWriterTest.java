@@ -20,10 +20,18 @@ public class GenericWriterTest {
 
     @Test
     public void newWriter_whenProvidedContents_shouldReturnWriterInstance() throws Exception {
-        // GIVEN
-
-        // WHEN
+        // GIVEN-WHEN
         GenericWriter<String> actualWriter = createGenericWriter();
+
+        // THEN
+        assertThat(actualWriter.getData()).isEqualTo(DATA);
+        assertThat(actualWriter.getFileStructure()).isNotNull();
+    }
+
+    @Test
+    public void newWriter_whenProvidedContents_andStructureAsFilePath_shouldReturnWriterInstance() throws Exception {
+        // GIVEN-WHEN
+        GenericWriter<String> actualWriter = createGenericWriterWithExternalStructure();
 
         // THEN
         assertThat(actualWriter.getData()).isEqualTo(DATA);
@@ -130,6 +138,18 @@ public class GenericWriterTest {
             @Override
             protected String getStructureResource() {
                 return "/files/structures/TEST-map.json";
+            }
+        };
+    }
+
+    private GenericWriter<String> createGenericWriterWithExternalStructure() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {}
+
+            @Override
+            protected String getStructureResource() {
+                return "./src/test/resources/files/structures/TEST-map.json";
             }
         };
     }
