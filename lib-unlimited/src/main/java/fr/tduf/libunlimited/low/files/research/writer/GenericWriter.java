@@ -1,15 +1,13 @@
 package fr.tduf.libunlimited.low.files.research.writer;
 
 import fr.tduf.libunlimited.low.files.research.common.FormulaHelper;
+import fr.tduf.libunlimited.low.files.research.common.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -21,30 +19,18 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class GenericWriter<T> {
 
-    private static Class<GenericWriter> thisClass = GenericWriter.class;
-
     private final FileStructureDto fileStructure;
 
     private final DataStore dataStore = new DataStore();
 
     private final T data;
 
-    // TODO factor structure resource + external file
     protected GenericWriter(T data) throws IOException {
         requireNonNull(data, "Data is required");
         requireNonNull(getStructureResource(), "Data structure resource is required");
 
         this.data = data;
-
-        InputStream fileStructureStream = thisClass.getResourceAsStream(getStructureResource());
-        if (fileStructureStream == null) {
-            // Regular file
-            File file = new File(getStructureResource());
-            this.fileStructure = new ObjectMapper().readValue(file, FileStructureDto.class);
-        } else {
-            // Resource
-            this.fileStructure = new ObjectMapper().readValue(fileStructureStream, FileStructureDto.class);
-        }
+        this.fileStructure = StructureHelper.retrieveStructureFromLocation(getStructureResource());
     }
 
     /**

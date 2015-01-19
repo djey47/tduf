@@ -1,15 +1,13 @@
 package fr.tduf.libunlimited.low.files.research.parser;
 
 import fr.tduf.libunlimited.low.files.research.common.FormulaHelper;
+import fr.tduf.libunlimited.low.files.research.common.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -22,8 +20,6 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class GenericParser<T> {
 
-    private static final Class<GenericParser> thisClass = GenericParser.class;
-
     private static final String DUMP_ENTRY_FORMAT = "%s\t<%s: %d bytes>\t%s\t%s\n";
 
     private final ByteArrayInputStream inputStream;
@@ -34,22 +30,12 @@ public abstract class GenericParser<T> {
 
     private final StringBuilder dumpBuilder = new StringBuilder();
 
-    // TODO factor structure resource + external file
     protected GenericParser(ByteArrayInputStream inputStream) throws IOException {
         requireNonNull(inputStream, "Data stream is required");
         requireNonNull(getStructureResource(), "Data structure resource is required");
 
         this.inputStream = inputStream;
-
-        InputStream fileStructureStream = thisClass.getResourceAsStream(getStructureResource());
-        if (fileStructureStream == null) {
-            // Regular file
-            File file = new File(getStructureResource());
-            this.fileStructure = new ObjectMapper().readValue(file, FileStructureDto.class);
-        } else {
-            // Resource
-            this.fileStructure = new ObjectMapper().readValue(fileStructureStream, FileStructureDto.class);
-        }
+        this.fileStructure = StructureHelper.retrieveStructureFromLocation(getStructureResource());
     }
 
     /**
