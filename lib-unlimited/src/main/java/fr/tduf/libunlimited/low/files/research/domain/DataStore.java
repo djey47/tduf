@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToFloatingPoint;
 import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToInteger;
 import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToText;
+import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.*;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 
@@ -59,7 +60,7 @@ public class DataStore {
      * @param rawValue  : value to store
      */
     public void addRawValue(String fieldName, byte[] rawValue) {
-        this.store.put(fieldName, new Entry(FileStructureDto.Type.UNKNOWN, rawValue));
+        addValue(fieldName, UNKNOWN, rawValue);
     }
 
     /**
@@ -68,7 +69,7 @@ public class DataStore {
      * @param value     : value to store
      */
     public void addText(String fieldName, String value) {
-        this.store.put(fieldName, new Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw(value)));
+        addValue(fieldName, TEXT, TypeHelper.textToRaw(value));
     }
 
     /**
@@ -77,7 +78,7 @@ public class DataStore {
      * @param value     : value to store
      */
     public void addInteger(String fieldName, long value) {
-        this.store.put(fieldName, new Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(value)));
+        addValue(fieldName, INTEGER, TypeHelper.integerToRaw(value));
     }
 
     /**
@@ -86,7 +87,7 @@ public class DataStore {
      * @param value     : value to store
      */
     public void addFloatingPoint(String fieldName, float value) {
-        this.store.put(fieldName, new Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPointToRaw(value)));
+        addValue(fieldName, FPOINT, TypeHelper.floatingPointToRaw(value));
     }
 
     /**
@@ -98,7 +99,7 @@ public class DataStore {
      */
     public void addRepeatedRawValue(String repeaterFieldName, String fieldName, long index, byte[] valueBytes) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        this.store.put(key, new Entry(FileStructureDto.Type.UNKNOWN, valueBytes));
+        addValue(key, UNKNOWN, valueBytes);
     }
 
     /**
@@ -110,7 +111,7 @@ public class DataStore {
      */
     public void addRepeatedTextValue(String repeaterFieldName, String fieldName, long index, String value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        this.store.put(key, new Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw(value)));
+        addValue(key, TEXT, TypeHelper.textToRaw(value));
     }
 
     /**
@@ -122,7 +123,7 @@ public class DataStore {
      */
     public void addRepeatedIntegerValue(String repeaterFieldName, String fieldName, long index, long value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        this.store.put(key, new Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(value)));
+        addValue(key, INTEGER, TypeHelper.integerToRaw(value));
     }
 
     /**
@@ -134,7 +135,7 @@ public class DataStore {
      */
     public void addRepeatedFloatingPointValue(String repeaterFieldName, String fieldName, int index, float value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        this.store.put(key, new Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPointToRaw(value)));
+        addValue(key, FPOINT, TypeHelper.floatingPointToRaw(value));
     }
 
     /**
@@ -321,7 +322,7 @@ public class DataStore {
         this.getStore().clear();
         intermediateMap.forEach((key, value) -> {
 
-            FileStructureDto.Type type = FileStructureDto.Type.UNKNOWN;
+            FileStructureDto.Type type = UNKNOWN;
             byte[] rawValue = new byte[0];
 
             if (value.getClass() == Double.class) {
