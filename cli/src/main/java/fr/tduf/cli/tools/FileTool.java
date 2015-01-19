@@ -1,7 +1,10 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.CommandHelper;
+import fr.tduf.libunlimited.low.files.banks.mapping.writer.MapWriter;
 import fr.tduf.libunlimited.low.files.research.parser.GenericParser;
+import fr.tduf.libunlimited.low.files.research.writer.GenericWriter;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -9,13 +12,16 @@ import org.kohsuke.args4j.Option;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fr.tduf.cli.tools.FileTool.Command.APPLYJSON;
 import static fr.tduf.cli.tools.FileTool.Command.JSONIFY;
 
 /**
@@ -30,7 +36,7 @@ public class FileTool {
     @Option(name="-o", aliases = "--outputFile", usage = "File to generate, defaults to inputFile.extension according to context." )
     private String outputFile;
 
-    @Option(name="-s", aliases = "--structureFile", usage = "File describing input file structure, as JSON (required for jsonify operation)." )
+    @Option(name="-s", aliases = "--structureFile", usage = "File describing input file structure, as JSON (required for jsonify and applyjson operations)." )
     private String structureFile;
 
     @Argument
@@ -42,7 +48,8 @@ public class FileTool {
      * All available commands
      */
     enum Command implements CommandHelper.CommandEnum {
-        JSONIFY("jsonify", "Converts TDU file with structure to JSON file.");
+        JSONIFY("jsonify", "Converts TDU file with structure to JSON file."),
+        APPLYJSON("applyjson", "Rewrites TDU file from JSON file with structure.");
 
         final String label;
         final String description;
@@ -84,6 +91,9 @@ public class FileTool {
             case JSONIFY:
                 jsonify();
                 break;
+            case APPLYJSON:
+                applyjson();
+                break;
             default:
                 System.err.println("Error: command is not implemented, yet.");
                 System.exit(1);
@@ -106,6 +116,9 @@ public class FileTool {
                     case JSONIFY:
                         extension = ".json";
                         break;
+                    case APPLYJSON:
+                        extension = ".tdu";
+                        break;
                     default:
                         extension = ".";
                         break;
@@ -114,8 +127,9 @@ public class FileTool {
                 outputFile = inputFile + extension;
             }
 
-            // Structure file :mandatory with jsonify
-            if (structureFile == null && command == JSONIFY) {
+            // Structure file: mandatory with jsonify/applyjson
+            if (structureFile == null
+                    &&  (command == JSONIFY || command == APPLYJSON)) {
                 throw new CmdLineException(parser, "Error: structureFile is required.", null);
             }
         } catch (CmdLineException e) {
@@ -134,8 +148,9 @@ public class FileTool {
             e.getParser().printUsage(System.err);
             System.err.println();
 
-            System.err.println("  Example:");
+            System.err.println("  Examples:");
             System.err.println(displayedName + " " + JSONIFY.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"");
+            System.err.println(displayedName + " " + APPLYJSON.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.json\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"");
             return false;
         }
         return true;
@@ -162,7 +177,6 @@ public class FileTool {
         byte[] fileContents = Files.readAllBytes(Paths.get(inputFile));
         ByteArrayInputStream fileInputStream = new ByteArrayInputStream(fileContents);
 
-
         GenericParser<String> genericParser = new GenericParser<String>(fileInputStream) {
             @Override
             protected String generate() {
@@ -187,6 +201,30 @@ public class FileTool {
             throw e;
         }
 
-        System.out.println("JSON conversion done: " + this.inputFile + " to " + this.outputFile);
+        System.out.println("TDU to JSON conversion done: " + this.inputFile + " to " + this.outputFile);
+    }
+
+    private void applyjson() throws IOException {
+        System.out.println("Will use structure in file: " + this.structureFile);
+
+        GenericWriter<String> genericWriter = new GenericWriter<String>("BTRQ") {
+            @Override
+            protected void fillStore() {}
+
+            @Override
+            protected String getStructureResource() {
+                return structureFile;
+            }
+        };
+
+        byte[] fileContents = Files.readAllBytes(Paths.get(inputFile));
+        String jsonContents = new String(fileContents, StandardCharsets.UTF_8);
+
+        genericWriter.getDataStore().fromJsonString(jsonContents);
+
+        ByteArrayOutputStream outputStream = genericWriter.write();
+        Files.write(Paths.get(outputFile), outputStream.toByteArray());
+
+        System.out.println("JSON to TDU conversion done: " + this.inputFile + " to " + this.outputFile);
     }
 }
