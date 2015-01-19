@@ -124,7 +124,7 @@ public class GenericWriterTest {
                 getDataStore().addRepeatedIntegerValue("repeater", "number", 1, 1000L);
                 getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 1, 86.714584f);
                 getDataStore().addRepeatedTextValue("repeater", "text", 1, "EFGH");
-                getDataStore().addRepeatedRawValue("repeater", "delimiter", 1, new byte[]{0xB});
+                getDataStore().addRepeatedRawValue("repeater", "delimiter", 1, new byte[] {0xB});
             }
 
             @Override
@@ -154,7 +154,7 @@ public class GenericWriterTest {
                 getDataStore().addRepeatedIntegerValue("repeater", "number", 1, 1000L);
                 getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 1, 86.714584f);
                 getDataStore().addRepeatedTextValue("repeater", "text", 1, "EFGH");
-                getDataStore().addRepeatedRawValue("repeater", "delimiter", 1, new byte[]{0xB});
+                getDataStore().addRepeatedRawValue("repeater", "delimiter", 1, new byte[] {0xB});
             }
 
             @Override
