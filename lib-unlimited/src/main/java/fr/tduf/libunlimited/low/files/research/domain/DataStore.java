@@ -19,6 +19,7 @@ import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToTex
 import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.*;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
+import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * Place to store and extract data with {@link fr.tduf.libunlimited.low.files.research.parser.GenericParser}
@@ -274,28 +275,33 @@ public class DataStore {
     }
 
     /**
-     * @return a String representation of store contents, based on JSON format.
+     * @return a String representation of store contents, on JSON format. Entries are ordered by rank.
      */
     public String toJsonString() {
-        // Simple conversion for now
         ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
 
-        this.getStore().forEach((key, entry) -> {
-            switch (entry.type) {
-                case TEXT:
-                    objectNode.put(key, rawToText(entry.rawValue));
-                    break;
-                case FPOINT:
-                    objectNode.put(key, rawToFloatingPoint(entry.getRawValue()));
-                    break;
-                case INTEGER:
-                    objectNode.put(key, rawToInteger(entry.rawValue));
-                    break;
-                default:
-                    objectNode.put(key, entry.rawValue);
-                    break;
-            }
-        });
+        this.getStore().entrySet().stream()
+
+                .sorted((mapEntry1, mapEntry2) -> mapEntry1.getValue().rank - mapEntry2.getValue().rank)
+
+                .forEach((mapEntry) -> {
+                    String key = mapEntry.getKey();
+                    Entry storeEntry = mapEntry.getValue();
+                    switch (storeEntry.type) {
+                        case TEXT:
+                            objectNode.put(key, rawToText(storeEntry.rawValue));
+                            break;
+                        case FPOINT:
+                            objectNode.put(key, rawToFloatingPoint(storeEntry.getRawValue()));
+                            break;
+                        case INTEGER:
+                            objectNode.put(key, rawToInteger(storeEntry.rawValue));
+                            break;
+                        default:
+                            objectNode.put(key, storeEntry.rawValue);
+                            break;
+                    }
+                });
 
         return objectNode.toString();
     }
@@ -422,6 +428,11 @@ public class DataStore {
         @Override
         public int hashCode() {
             return reflectionHashCode(this);
+        }
+
+        @Override
+        public String toString() {
+            return reflectionToString(this);
         }
     }
 }

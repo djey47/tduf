@@ -345,10 +345,10 @@ public class DataStoreTest {
         assertThat(actualValues.get(2).getStore()).hasSize(4);
 
         Map<String, DataStore.Entry> subStore = actualValues.get(0).getStore();
-        assertThat(subStore.get("my_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(10L)));
-        assertThat(subStore.get("my_fp_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPointToRaw(235.666667f)));
-        assertThat(subStore.get("a_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw("az")));
-        assertThat(subStore.get("another_field")).isEqualTo(new DataStore.Entry(UNKNOWN, new byte[] {0x1, 0x2, 0x3, 0x4}));
+        assertThat(subStore.get("my_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(10L), 0));
+        assertThat(subStore.get("my_fp_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPointToRaw(235.666667f), 1));
+        assertThat(subStore.get("a_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw("az"), 2));
+        assertThat(subStore.get("another_field")).isEqualTo(new DataStore.Entry(UNKNOWN, new byte[] {0x1, 0x2, 0x3, 0x4}, 3));
     }
 
     @Test
@@ -426,7 +426,7 @@ public class DataStoreTest {
     }
 
     private void putRawValueInStore(String key, byte[] bytes) {
-        dataStore.getStore().put(key, new DataStore.Entry(UNKNOWN, bytes));
+        dataStore.addValue(key, UNKNOWN, bytes);
     }
 
     private void putLongInStore(String key, long value) {
@@ -434,7 +434,7 @@ public class DataStoreTest {
                 .allocate(8)
                 .putLong(value)
                 .array();
-        dataStore.getStore().put(key, new DataStore.Entry(FileStructureDto.Type.INTEGER, bytes));
+        dataStore.addValue(key, INTEGER, bytes);
     }
 
     private void putFloatInStore(String key, float value) {
@@ -442,11 +442,11 @@ public class DataStoreTest {
                 .allocate(4)
                 .putFloat(value)
                 .array();
-        dataStore.getStore().put(key, new DataStore.Entry(FileStructureDto.Type.FPOINT, bytes));
+        dataStore.addValue(key, FPOINT, bytes);
     }
 
     private void putStringInStore(String key, String value) {
-        dataStore.getStore().put(key, new DataStore.Entry(FileStructureDto.Type.TEXT, value.getBytes()));
+        dataStore.addValue(key, TEXT, value.getBytes());
     }
 
     private void createStoreEntries() {
