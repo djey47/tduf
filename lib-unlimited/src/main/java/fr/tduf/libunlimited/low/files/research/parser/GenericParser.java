@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.TEXT;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -123,7 +122,7 @@ public abstract class GenericParser<T> {
             Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), this.dataStore);
 
             FileStructureDto.Type type = field.getType();
-            byte[] readValueAsBytes;
+            byte[] readValueAsBytes = null;
             long parsedCount;
 
             switch(type) {
@@ -144,8 +143,6 @@ public abstract class GenericParser<T> {
                         parsedCount = inputStream.read(readValueAsBytes, 4, length);
                     }
 
-                    this.dataStore.addInteger(key, TypeHelper.rawToInteger(readValueAsBytes));
-
                     byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 4, length + 4);
                     dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(displayedBytes), TypeHelper.rawToInteger(readValueAsBytes)));
                     break;
@@ -158,8 +155,6 @@ public abstract class GenericParser<T> {
                         readValueAsBytes = TypeHelper.changeEndianType(readValueAsBytes);
                     }
 
-                    this.dataStore.addFloatingPoint(key, TypeHelper.rawToFloatingPoint(readValueAsBytes));
-
                     dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), TypeHelper.rawToFloatingPoint(readValueAsBytes)));
                     break;
 
@@ -167,12 +162,6 @@ public abstract class GenericParser<T> {
                 case TEXT:
                     readValueAsBytes = new byte[length];
                     parsedCount = inputStream.read(readValueAsBytes, 0, length);
-
-                    if (type == TEXT) {
-                        this.dataStore.addText(key, TypeHelper.rawToText(readValueAsBytes));
-                    } else {
-                        this.dataStore.addRawValue(key, readValueAsBytes);
-                    }
 
                     dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), "\"" +  TypeHelper.rawToText(readValueAsBytes) + "\""));
                     break;
@@ -198,13 +187,13 @@ public abstract class GenericParser<T> {
                     break;
 
                 case UNKNOWN:
+                    // Autosize handle
                     if (length == null) {
                         length = inputStream.available();
                     }
+
                     readValueAsBytes = new byte[length];
                     parsedCount = inputStream.read(readValueAsBytes, 0, length);
-
-                    this.dataStore.addRawValue(key, readValueAsBytes);
 
                     dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), ""));
                     break;
@@ -215,6 +204,8 @@ public abstract class GenericParser<T> {
 
             // Check
             assert (parsedCount == Optional.ofNullable(length).orElse((int)parsedCount));
+
+            this.dataStore.addValue(key, type, readValueAsBytes);
         }
     }
 
