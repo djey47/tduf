@@ -40,12 +40,16 @@ public class DataStore {
     }
 
     /**
-     * Adds provided bytes to the store.
+     * Adds provided bytes to the store, if type is stor-able.
      * @param fieldName : identifier of field hosting the value, should not exist already
      * @param type      : value type
      * @param rawValue  : value to store
      */
     public void addValue(String fieldName, FileStructureDto.Type type, byte[] rawValue) {
+        if (!type.isValueToBeStored()) {
+            return;
+        }
+
         this.store.put(fieldName, new Entry(type, rawValue));
     }
 

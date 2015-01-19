@@ -79,6 +79,15 @@ public class DataStoreTest {
     }
 
     @Test
+    public void addValue_whenNonStoredType_shouldNotCreateEntryInStore() throws Exception {
+        // GIVEN - WHEN
+        dataStore.addValue("f1", GAP, new byte[] {0xA});
+
+        // THEN
+        assertThat(dataStore.getStore()).isEmpty();
+    }
+
+    @Test
     public void addRawValue_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN
         byte[] expectedRawValue = { 0x0, 0x1, 0x2, 0x3 };
