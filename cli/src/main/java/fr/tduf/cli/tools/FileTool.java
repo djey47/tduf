@@ -112,12 +112,14 @@ public class FileTool extends GenericTool {
         }
     }
 
+    // TODO no stderr usage - return String list
     @Override
     protected void printCommands(String displayedClassName) {
         CommandHelper.getValuesAsMap(JSONIFY)
                 .forEach((label, description) -> System.err.println(" " + label + " : " + description));
     }
 
+    // TODO no stderr usage - return String list
     @Override
     protected void printExamples(String displayedClassName) {
         System.err.println(" " + displayedClassName + " " + JSONIFY.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"");
