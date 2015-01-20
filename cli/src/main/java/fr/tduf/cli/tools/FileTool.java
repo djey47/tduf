@@ -1,11 +1,8 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.CommandHelper;
-import fr.tduf.libunlimited.low.files.banks.mapping.writer.MapWriter;
 import fr.tduf.libunlimited.low.files.research.parser.GenericParser;
 import fr.tduf.libunlimited.low.files.research.writer.GenericWriter;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -14,12 +11,9 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 import static fr.tduf.cli.tools.FileTool.Command.APPLYJSON;
 import static fr.tduf.cli.tools.FileTool.Command.JSONIFY;
@@ -27,8 +21,7 @@ import static fr.tduf.cli.tools.FileTool.Command.JSONIFY;
 /**
  * Command line interface for handling TDU files.
  */
-//TODO extends GenericTool
-public class FileTool {
+public class FileTool extends GenericTool {
 
     @Option(name="-i", aliases = "--inputFile", usage = "File to process, required.", required = true)
     private String inputFile;
@@ -38,9 +31,6 @@ public class FileTool {
 
     @Option(name="-s", aliases = "--structureFile", usage = "File describing input file structure, as JSON (required for jsonify and applyjson operations)." )
     private String structureFile;
-
-    @Argument
-    private List<String> arguments = new ArrayList<>();
 
     private Command command;
 
@@ -82,10 +72,60 @@ public class FileTool {
         new FileTool().doMain(args);
     }
 
-    private void doMain(String[] args) throws IOException {
-        if (!checkArgumentsAndOptions(args)) {
-            System.exit(1);
+    @Override
+    protected boolean checkAndAssignCommand(String commandArgument) {
+
+        if (!CommandHelper.getLabels(JSONIFY).contains(commandArgument)) {
+            return false;
         }
+
+        this.command = (Command) CommandHelper.fromLabel(JSONIFY, commandArgument);
+
+        return true;
+    }
+
+    @Override
+    protected void checkAndAssignDefaultParameters(CmdLineParser parser) throws CmdLineException {
+        // Output file: defaulted to input file.extension
+        if (outputFile == null) {
+            String extension;
+
+            switch(command) {
+                case JSONIFY:
+                    extension = ".json";
+                    break;
+                case APPLYJSON:
+                    extension = ".tdu";
+                    break;
+                default:
+                    extension = ".";
+                    break;
+            }
+
+            outputFile = inputFile + extension;
+        }
+
+        // Structure file: mandatory with jsonify/applyjson
+        if (structureFile == null
+                &&  (command == JSONIFY || command == APPLYJSON)) {
+            throw new CmdLineException(parser, "Error: structureFile is required.", null);
+        }
+    }
+
+    @Override
+    protected void printCommands(String displayedClassName) {
+        CommandHelper.getValuesAsMap(JSONIFY)
+                .forEach((label, description) -> System.err.println(" " + label + " : " + description));
+    }
+
+    @Override
+    protected void printExamples(String displayedClassName) {
+        System.err.println(" " + displayedClassName + " " + JSONIFY.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"");
+        System.err.println(" " + displayedClassName + " " + APPLYJSON.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.json\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"");
+    }
+
+    @Override
+    protected boolean commandDispatch() throws IOException {
 
         switch (command) {
             case JSONIFY:
@@ -95,80 +135,10 @@ public class FileTool {
                 applyjson();
                 break;
             default:
-                System.err.println("Error: command is not implemented, yet.");
-                System.exit(1);
-                break;
+                return false;
         }
-    }
 
-    private boolean checkArgumentsAndOptions(String[] args) {
-        try {
-            CmdLineParser parser = new CmdLineParser(this);
-            parser.parseArgument(args);
-
-            checkCommand(parser);
-
-            // Output file: defaulted to input file.extension
-            if (outputFile == null) {
-                String extension;
-
-                switch(command) {
-                    case JSONIFY:
-                        extension = ".json";
-                        break;
-                    case APPLYJSON:
-                        extension = ".tdu";
-                        break;
-                    default:
-                        extension = ".";
-                        break;
-                }
-
-                outputFile = inputFile + extension;
-            }
-
-            // Structure file: mandatory with jsonify/applyjson
-            if (structureFile == null
-                    &&  (command == JSONIFY || command == APPLYJSON)) {
-                throw new CmdLineException(parser, "Error: structureFile is required.", null);
-            }
-        } catch (CmdLineException e) {
-            String displayedName = this.getClass().getSimpleName();
-
-            System.err.println(e.getMessage());
-            System.err.println("Syntax: " + displayedName + " command [-options]");
-            System.err.println();
-
-            System.err.println("  Commands:");
-            CommandHelper.getValuesAsMap(JSONIFY)
-                    .forEach((label, description) -> System.err.println(label + " : " + description));
-            System.err.println();
-
-            System.err.println("  Options:");
-            e.getParser().printUsage(System.err);
-            System.err.println();
-
-            System.err.println("  Examples:");
-            System.err.println(displayedName + " " + JSONIFY.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"");
-            System.err.println(displayedName + " " + APPLYJSON.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.json\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"");
-            return false;
-        }
         return true;
-    }
-
-    private void checkCommand(CmdLineParser parser) throws CmdLineException {
-
-        if (arguments.isEmpty()) {
-            throw new CmdLineException(parser, "Error: No command is given.", null);
-        }
-
-        String commandArgument = arguments.get(0);
-
-        if (!CommandHelper.getLabels(JSONIFY).contains(commandArgument)) {
-            throw new CmdLineException(parser, "Error: An unsupported command is given.", null);
-        }
-
-        this.command = (Command) CommandHelper.fromLabel(JSONIFY, commandArgument);
     }
 
     private void jsonify() throws IOException {
@@ -197,8 +167,6 @@ public class FileTool {
 
         try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(outputFile), StandardCharsets.UTF_8)) {
             bufferedWriter.write(jsonOutput);
-        } catch (IOException e) {
-            throw e;
         }
 
         System.out.println("TDU to JSON conversion done: " + this.inputFile + " to " + this.outputFile);
