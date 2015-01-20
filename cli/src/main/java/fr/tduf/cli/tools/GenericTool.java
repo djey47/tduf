@@ -65,7 +65,7 @@ public abstract class GenericTool {
      */
     protected abstract List<String> getExamples();
 
-    private boolean checkArgumentsAndOptions(String[] args) {
+    boolean checkArgumentsAndOptions(String[] args) {
 
         CmdLineParser parser = new CmdLineParser(this);
 
