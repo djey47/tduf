@@ -5,7 +5,6 @@ import fr.tduf.libunlimited.low.files.banks.mapping.MapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.parser.MapParser;
 import fr.tduf.libunlimited.low.files.banks.mapping.writer.MapWriter;
-import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -17,30 +16,25 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static fr.tduf.cli.tools.MappingTool.Command.INFO;
-import static fr.tduf.cli.tools.MappingTool.Command.LIST;
+import static fr.tduf.cli.tools.MappingTool.Command.*;
 import static java.lang.Long.compare;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 /**
  * Command line interface for handling TDU file mapping.
  */
-//TODO extends GenericTool
-public class MappingTool {
+public class MappingTool extends GenericTool {
 
     @Option(name="-b", aliases = "--bnkDir", usage = "TDU banks directory (Bnk), defaults to current directory." )
     private String bankDirectory;
 
     @Option(name="-m", aliases = "--mapFile", usage = "Bnk1.map file, defaults to TDU banks directory\\Bnk1.map." )
     private String mapFile;
-
-    @Argument
-    private List<String> arguments = new ArrayList<>();
 
     private Command command;
 
@@ -84,11 +78,8 @@ public class MappingTool {
         new MappingTool().doMain(args);
     }
 
-    private void doMain(String[] args) throws IOException {
-        if (!checkArgumentsAndOptions(args)) {
-            System.exit(1);
-        }
-
+    @Override
+    protected boolean commandDispatch() throws IOException {
         switch(command) {
             case INFO:
                 info();
@@ -103,64 +94,47 @@ public class MappingTool {
                 fixMissing();
                 break;
             default:
-                System.err.println("Error: command is not implemented, yet.");
-                System.exit(1);
-                break;
-        }
-    }
-
-    boolean checkArgumentsAndOptions(String[] args) {
-        try {
-            CmdLineParser parser = new CmdLineParser(this);
-            parser.parseArgument(args);
-
-            checkCommand(parser);
-
-            // Bnk directory: defaulted to current
-            if (bankDirectory == null) {
-                bankDirectory = ".";
-            }
-
-            // Map file: defaulted to current directory\Bnk1.map
-            if (mapFile == null) {
-                mapFile = bankDirectory + File.separator + "Bnk1.map";
-            }
-        } catch (CmdLineException e) {
-            String displayedName = this.getClass().getSimpleName();
-
-            System.err.println(e.getMessage());
-            System.err.println("Syntax: " + displayedName +  " command [-options]");
-            System.err.println();
-
-            System.err.println("  Commands:");
-            CommandHelper.getValuesAsMap(LIST)
-                    .forEach((label, description) -> System.err.println(label + " : " + description));
-            System.err.println();
-
-            System.err.println("  Options:");
-            e.getParser().printUsage(System.err);
-            System.err.println();
-
-            System.err.println("  Example:");
-            System.err.println(displayedName + " " + INFO.label + " --bnkDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\"");
-            return false;
+                return false;
         }
         return true;
     }
 
-    private void checkCommand(CmdLineParser parser) throws CmdLineException {
-
-        if( arguments.isEmpty() ) {
-            throw new CmdLineException(parser, "Error: No command is given.", null);
-        }
-
-        String commandArgument = arguments.get(0);
-
+    @Override
+    protected boolean checkAndAssignCommand(String commandArgument) throws CmdLineException {
         if ( !CommandHelper.getLabels(LIST).contains(commandArgument)) {
-            throw new CmdLineException(parser, "Error: An unsupported command is given.", null);
+            return false;
         }
 
         this.command = (Command) CommandHelper.fromLabel(LIST, commandArgument);
+        return true;
+    }
+
+    @Override
+    protected void checkAndAssignDefaultParameters(CmdLineParser parser) throws CmdLineException {
+        // Bnk directory: defaulted to current
+        if (bankDirectory == null) {
+            bankDirectory = ".";
+        }
+
+        // Map file: defaulted to current directory\Bnk1.map
+        if (mapFile == null) {
+            mapFile = bankDirectory + File.separator + "Bnk1.map";
+        }
+    }
+
+    @Override
+    protected CommandHelper.CommandEnum getCommand() {
+        return LIST;
+    }
+
+    @Override
+    protected List<String> getExamples() {
+        return asList(
+                INFO.label + " --bnkDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\"",
+                LIST.label + " --bnkDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\" --mapFile \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\"Bnk1.map",
+                LIST_MISSING.label + " -b \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\"",
+                FIX_MISSING.label + " -b \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\" -m \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\"Bnk1.map\""
+        );
     }
 
     private void info() throws IOException {
@@ -233,17 +207,5 @@ public class MappingTool {
 
         ByteArrayOutputStream outputStream = MapWriter.load(map).write();
         Files.write(mapFilePath, outputStream.toByteArray());
-    }
-
-    String getBankDirectory() {
-        return bankDirectory;
-    }
-
-    String getMapFile() {
-        return mapFile;
-    }
-
-    Command getCommand() {
-        return command;
     }
 }
