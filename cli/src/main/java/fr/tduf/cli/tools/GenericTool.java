@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * Parent class of all CLI tools
  */
+//TODO unit tests
 public abstract class GenericTool {
 
     @Argument
