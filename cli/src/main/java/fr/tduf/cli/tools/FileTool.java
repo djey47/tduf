@@ -14,9 +14,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static fr.tduf.cli.tools.FileTool.Command.APPLYJSON;
 import static fr.tduf.cli.tools.FileTool.Command.JSONIFY;
+import static java.util.Arrays.asList;
 
 /**
  * Command line interface for handling TDU files.
@@ -112,18 +114,16 @@ public class FileTool extends GenericTool {
         }
     }
 
-    // TODO no stderr usage - return String list
     @Override
-    protected void printCommands(String displayedClassName) {
-        CommandHelper.getValuesAsMap(JSONIFY)
-                .forEach((label, description) -> System.err.println(" " + label + " : " + description));
+    protected CommandHelper.CommandEnum getCommand() {
+        return JSONIFY;
     }
 
-    // TODO no stderr usage - return String list
     @Override
-    protected void printExamples(String displayedClassName) {
-        System.err.println(" " + displayedClassName + " " + JSONIFY.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"");
-        System.err.println(" " + displayedClassName + " " + APPLYJSON.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.json\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"");
+    protected List<String> getExamples() {
+        return asList(
+                JSONIFY.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"",
+                APPLYJSON.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.json\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"");
     }
 
     @Override

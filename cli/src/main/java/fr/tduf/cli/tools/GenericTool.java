@@ -1,5 +1,6 @@
 package fr.tduf.cli.tools;
 
+import fr.tduf.cli.common.CommandHelper;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -54,16 +55,14 @@ public abstract class GenericTool {
     protected abstract void checkAndAssignDefaultParameters(CmdLineParser parser) throws CmdLineException;
 
     /**
-     * Should display all available commands to STDERR.
-     * @param displayedClassName    : class name to use
+     * Should return one command enum instance.
      */
-    protected abstract void printCommands(String displayedClassName);
+    protected abstract CommandHelper.CommandEnum getCommand();
 
     /**
-     * Should display usage examples to STDERR.
-     * @param displayedClassName    : class name to use
+     * Should return some usage examples.
      */
-    protected abstract void printExamples(String displayedClassName);
+    protected abstract List<String> getExamples();
 
     private boolean checkArgumentsAndOptions(String[] args) {
 
@@ -102,7 +101,9 @@ public abstract class GenericTool {
         System.err.println();
 
         System.err.println("  .Commands:");
-        printCommands(displayedClassName);
+        CommandHelper.getValuesAsMap(getCommand())
+                .entrySet().stream()
+                .forEach((entry) -> System.err.println(" " + entry.getKey() + " : " + entry.getValue() ));
         System.err.println();
 
         System.err.println("  .Options:");
@@ -110,6 +111,7 @@ public abstract class GenericTool {
         System.err.println();
 
         System.err.println("  .Examples:");
-        printExamples(displayedClassName);
+        getExamples()
+                .forEach((example) -> System.err.println(" " + displayedClassName + " " + example));
     }
 }
