@@ -44,14 +44,13 @@ public class FormulaHelperTest {
     }
 
     @Test
-    public void resolveToInteger_whenSimpleFormulaWithPointers_shouldReturnValue() {
+    public void resolveToInteger_whenSimpleFormulaWithPointer_shouldReturnValue() {
         // GIVEN
         DataStore dataStore = new DataStore();
         dataStore.addInteger("sizeIndicator", 500);
-        dataStore.addInteger("sizeMultiplier", 4);
 
         // WHEN-THEN
-        assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?*?sizeMultiplier?", dataStore)).isEqualTo(2000);
+        assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?*4", dataStore)).isEqualTo(2000);
     }
 
     @Test(expected = NoSuchElementException.class)

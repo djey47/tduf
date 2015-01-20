@@ -13,7 +13,8 @@ import java.util.regex.Pattern;
 public class FormulaHelper {
 
     private static final String FORMULA_PREFIX = "=" ;
-    private static final Pattern POINTER_PATTERN = Pattern.compile("\\?(.+)\\?");     // e.g '?myValue?'
+    private static final String POINTER_FORMAT = "?%s?";
+    private static final Pattern POINTER_PATTERN = Pattern.compile(".*\\?(.+)\\?.*");     // e.g '?myValue?'
 
     /**
      * Evaluates given formula and returns result as integer.
@@ -36,6 +37,7 @@ public class FormulaHelper {
         return ((Double) expression.evaluate()).intValue();
     }
 
+    // TODO handle more than 1 pattern in formula
     private static String handlePatternWithStore(String formula, DataStore dataStore) {
         Matcher matcher = POINTER_PATTERN.matcher(formula);
 
@@ -48,6 +50,10 @@ public class FormulaHelper {
         }
 
         String pointerReference = matcher.group(1);
-        return dataStore.getInteger(pointerReference).get().toString();
+        String dataStoreValue = dataStore.getInteger(pointerReference).get().toString();
+
+        formula = formula.replace(String.format(POINTER_FORMAT, pointerReference), dataStoreValue);
+
+        return formula;
     }
 }
