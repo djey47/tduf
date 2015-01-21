@@ -4,7 +4,6 @@ import fr.tduf.cli.common.CommandHelper;
 import fr.tduf.libunlimited.low.files.db.DatabaseReadWriteHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
@@ -84,17 +83,12 @@ public class DatabaseTool extends GenericTool {
     }
 
     @Override
-    protected boolean checkAndAssignCommand(String commandArgument) throws CmdLineException {
-        if (!CommandHelper.getLabels(getCommand()).contains(commandArgument)) {
-            return false;
-        }
-
+    protected void assignCommand(String commandArgument) {
         this.command = (Command) CommandHelper.fromLabel(getCommand(), commandArgument);
-        return true;
     }
 
     @Override
-    protected void checkAndAssignDefaultParameters(CmdLineParser parser) throws CmdLineException {
+    protected void checkAndAssignDefaultParameters(CmdLineParser parser) {
         // Database directory: defaulted to current
         if (databaseDirectory == null) {
             databaseDirectory = ".";
@@ -164,6 +158,5 @@ public class DatabaseTool extends GenericTool {
         }
 
         System.out.println("All done!");
-
     }
 }

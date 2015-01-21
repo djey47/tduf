@@ -100,13 +100,8 @@ public class MappingTool extends GenericTool {
     }
 
     @Override
-    protected boolean checkAndAssignCommand(String commandArgument) throws CmdLineException {
-        if ( !CommandHelper.getLabels(LIST).contains(commandArgument)) {
-            return false;
-        }
-
-        this.command = (Command) CommandHelper.fromLabel(LIST, commandArgument);
-        return true;
+    protected void assignCommand(String commandArgument) {
+        this.command = (Command) CommandHelper.fromLabel(getCommand(), commandArgument);
     }
 
     @Override

@@ -75,15 +75,8 @@ public class FileTool extends GenericTool {
     }
 
     @Override
-    protected boolean checkAndAssignCommand(String commandArgument) {
-
-        if (!CommandHelper.getLabels(JSONIFY).contains(commandArgument)) {
-            return false;
-        }
-
-        this.command = (Command) CommandHelper.fromLabel(JSONIFY, commandArgument);
-
-        return true;
+    protected void assignCommand(String commandArgument) {
+        this.command = (Command) CommandHelper.fromLabel(getCommand(), commandArgument);
     }
 
     @Override

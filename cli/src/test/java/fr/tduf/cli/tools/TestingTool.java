@@ -12,6 +12,8 @@ import static fr.tduf.cli.tools.TestingTool.Command.TEST;
 
 public class TestingTool extends GenericTool {
 
+    private Command command;
+
     enum Command implements CommandHelper.CommandEnum {
         TEST("test", "for testing purpose only"),
         TEST_U("test_u", "for testing purpose only");
@@ -47,13 +49,15 @@ public class TestingTool extends GenericTool {
     }
 
     @Override
-    protected boolean checkAndAssignCommand(String commandArgument) throws CmdLineException {
-        return Command.TEST.label.equals(commandArgument);
+    protected void assignCommand(String commandArgument) {
+        this.command = (Command) CommandHelper.fromLabel(getCommand(), commandArgument);
     }
 
     @Override
     protected void checkAndAssignDefaultParameters(CmdLineParser parser) throws CmdLineException {
-
+        if(command == Command.TEST_U) {
+            throw new CmdLineException(parser, "Error", null);
+        }
     }
 
     @Override

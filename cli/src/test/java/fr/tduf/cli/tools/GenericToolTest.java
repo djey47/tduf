@@ -15,20 +15,20 @@ public class GenericToolTest {
     }
 
     @Test
-    public void checkArgumentsAndOptions_whenUnknownCommand_shouldReturnFalse() {
-        // GIVEN-WHEN-THEN
-        assertThat(testingTool.checkArgumentsAndOptions(new String[]{"info"})).isFalse();
-    }
-
-    @Test
     public void checkArgumentsAndOptions_whenKnownCommand_shouldReturnTrue() {
         // GIVEN-WHEN-THEN
         assertThat(testingTool.checkArgumentsAndOptions(new String[]{"test"})).isTrue();
     }
+
     @Test
-    public void checkArgumentsAndOptions_whenKnownCommandButUnimplemented_shouldReturnFalse() {
+    public void checkArgumentsAndOptions_whenInvalidCommandParameter_shouldReturnFalse() {
         // GIVEN-WHEN-THEN
         assertThat(testingTool.checkArgumentsAndOptions(new String[]{"test_u"})).isFalse();
+    }
+    @Test
+    public void checkArgumentsAndOptions_whenUnknownCommand_shouldReturnFalse() {
+        // GIVEN-WHEN-THEN
+        assertThat(testingTool.checkArgumentsAndOptions(new String[]{"info"})).isFalse();
     }
 
     @Test
@@ -40,5 +40,4 @@ public class GenericToolTest {
         // -WHEN-THEN
         assertThat(testingTool.checkArgumentsAndOptions(args)).isFalse();
     }
-
 }

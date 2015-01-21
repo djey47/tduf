@@ -41,12 +41,10 @@ public abstract class GenericTool {
     protected abstract boolean commandDispatch() throws IOException;
 
     /**
-     * Should check command validity and assign current command if it is ok.
+     * Should assign current command.
      * @param commandArgument   : value of provided command argument
-     * @return true if command has been recognized and assigned, false otherwise.
-     * @throws CmdLineException
      */
-    protected abstract boolean checkAndAssignCommand(String commandArgument) throws CmdLineException;
+    protected abstract void assignCommand(String commandArgument);
 
     /**
      * Should check parameter validity and assign default ones, eventually.
@@ -76,9 +74,13 @@ public abstract class GenericTool {
                 throw new CmdLineException(parser, "Error: No command is given.", null);
             }
 
-            if (!checkAndAssignCommand(arguments.get(0))) {
+            String commandArgument = arguments.get(0);
+
+            if (!CommandHelper.getLabels(getCommand()).contains(commandArgument)) {
                 throw new CmdLineException(parser, "Error: An unsupported command is given.", null);
             }
+
+            assignCommand(commandArgument);
 
             checkAndAssignDefaultParameters(parser);
         } catch (CmdLineException e) {
