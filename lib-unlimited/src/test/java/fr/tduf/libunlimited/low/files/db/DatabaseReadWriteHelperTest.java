@@ -21,6 +21,21 @@ public class DatabaseReadWriteHelperTest {
     private static Class<DatabaseReadWriteHelperTest> thisClass = DatabaseReadWriteHelperTest.class;
 
     @Test
+    public void readDatabase_whenRealFile_shouldReturnDatabaseContents() throws URISyntaxException, FileNotFoundException {
+        // GIVEN
+        File dbFile = new File(thisClass.getResource("/db/TDU_Achievements.db").toURI());
+        String databaseDirectory = dbFile.getParent();
+        ArrayList<IntegrityError> integrityErrors = new ArrayList<>();
+
+        // WHEN
+        DbDto actualdbDto = DatabaseReadWriteHelper.readDatabase(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
+
+        // THEN
+        assertThat(actualdbDto).isNotNull();
+        assertThat(actualdbDto.getData()).isNotNull();
+    }
+
+    @Test
     public void readDatabase_whenRealFileWithErrors_shouldUpdateIntegrityErrors() throws URISyntaxException, FileNotFoundException {
         // GIVEN
         List<IntegrityError> integrityErrors = new ArrayList<>();
