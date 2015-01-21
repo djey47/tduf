@@ -49,7 +49,6 @@ public abstract class GenericWriter<T> {
         return outputStream;
     }
 
-    // TODO handle endianness
     private boolean writeFields(List<FileStructureDto.Field> fields, ByteArrayOutputStream outputStream, String repeaterKey) throws IOException {
         for(FileStructureDto.Field field : fields) {
             String name = field.getName();
