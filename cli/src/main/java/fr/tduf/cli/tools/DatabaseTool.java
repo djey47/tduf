@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fr.tduf.cli.tools.DatabaseTool.Command.CHECK;
 import static fr.tduf.cli.tools.DatabaseTool.Command.DUMP;
 import static java.util.Arrays.asList;
 
@@ -108,7 +109,8 @@ public class DatabaseTool extends GenericTool {
     @Override
     protected List<String> getExamples() {
         return asList(
-                DUMP.label + " --databaseDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\""
+                DUMP.label + " --databaseDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
+                CHECK.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\""
         );
     }
 
