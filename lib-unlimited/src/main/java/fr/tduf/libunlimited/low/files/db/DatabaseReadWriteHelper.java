@@ -22,7 +22,7 @@ public class DatabaseReadWriteHelper {
      * Reads all database contents (+resources) from specified topic into databaseDirectory.
      * @param topic             : topic to parse TDU contents from
      * @param databaseDirectory : location of database contents as db + fr,it,ge... files
-     * @param integrityErrors
+     * @param integrityErrors   : list of database errors, encountered when parsing.
      * @return a global object for topic.
      * @throws FileNotFoundException
      */

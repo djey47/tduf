@@ -154,12 +154,13 @@ public class DatabaseTool extends GenericTool {
             DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, integrityErrors);
 
             if(!integrityErrors.isEmpty()) {
-                System.out.println("-> Integrity errors: " + currentTopic + "...");
+                System.out.println("-> Integrity errors:");
                 //TODO Provide data for human beings
-                System.out.println(integrityErrors);
+                integrityErrors.forEach(
+                        (integrityError) -> System.out.println(" ." + integrityErrors));
             }
 
-            System.out.println("-> Checking done for topic: " + currentTopic + ", " + integrityErrors + " error(s).");
+            System.out.println("-> Checking done for topic: " + currentTopic + ", " + integrityErrors.size() + " error(s).");
         }
 
         System.out.println("All done!");
