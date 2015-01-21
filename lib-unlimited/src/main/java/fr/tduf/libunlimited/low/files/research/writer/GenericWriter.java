@@ -75,7 +75,12 @@ public abstract class GenericWriter<T> {
                 case DELIMITER:
                 case TEXT:
                     assert valueBytes != null;
-                    outputStream.write(valueBytes, 0, length);
+                    if(length == null) {
+                        // Autosize
+                        outputStream.write(valueBytes);
+                    } else {
+                        outputStream.write(valueBytes, 0, length);
+                    }
                     break;
 
                 case INTEGER:
