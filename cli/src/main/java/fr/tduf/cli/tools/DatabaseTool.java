@@ -147,7 +147,12 @@ public class DatabaseTool extends GenericTool {
             System.out.println("-> Now processing topic: " + currentTopic + "...");
 
             List<IntegrityError> integrityErrors = new ArrayList<>();
-            DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, integrityErrors);
+            DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, integrityErrors);
+
+            if (dbDto == null) {
+                System.err.println("Database contents not found for topic: " + currentTopic);
+                continue;
+            }
 
             if(!integrityErrors.isEmpty()) {
                 System.out.println("-> Integrity errors:");
@@ -157,6 +162,11 @@ public class DatabaseTool extends GenericTool {
             }
 
             System.out.println("-> Checking done for topic: " + currentTopic + ", " + integrityErrors.size() + " error(s).");
+            System.out.println("-> Content line count: " + dbDto.getData().getEntries().size());
+
+            System.out.println("-> Resource count: ");
+            dbDto.getResources().forEach(
+                    (dbResourceDto) -> System.out.println("  ." + dbResourceDto.getLocale() + "=" + dbResourceDto.getEntries().size()));
         }
 
         System.out.println("All done!");

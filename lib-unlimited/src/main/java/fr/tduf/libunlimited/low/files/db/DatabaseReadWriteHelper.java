@@ -8,10 +8,7 @@ import fr.tduf.libunlimited.low.files.db.writer.DbWriter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Class providing methods to manage Database read/write ops.
@@ -27,12 +24,10 @@ public class DatabaseReadWriteHelper {
      * @throws FileNotFoundException
      */
     public static DbDto readDatabase(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {
-        // TODO move system.outs to CLI
         Objects.requireNonNull(integrityErrors);
 
         List<String> contentLines = parseTopicContentsFromDirectory(topic, databaseDirectory);
         if(contentLines.isEmpty()) {
-            System.err.println("Database contents not found for topic: " + topic);
             return null;
         }
 
@@ -41,16 +36,21 @@ public class DatabaseReadWriteHelper {
 
                 .filter(List::isEmpty)
 
-                .forEach(resourceContents -> System.out.println("Some of database resources not found for topic: " + topic));
+                .forEach(resourceContents -> {
+                    Map<String, Object> info = new HashMap<>();
+                    info.put("Topic", topic);
+
+                    IntegrityError integrityError = IntegrityError.builder()
+                            .ofType(IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND)
+                            .addInformations(info)
+                            .build();
+
+                    integrityErrors.add(integrityError);
+                });
 
         DbParser dbParser = DbParser.load(contentLines, resources);
 
         DbDto dbDto = dbParser.parseAll();
-
-        System.out.println("Parsing done for topic: " + topic);
-
-        System.out.println("Content line count: " + dbParser.getContentLineCount());
-        System.out.println("Resource count: " + dbParser.getResourceCount());
 
         integrityErrors.addAll(dbParser.getIntegrityErrors());
 

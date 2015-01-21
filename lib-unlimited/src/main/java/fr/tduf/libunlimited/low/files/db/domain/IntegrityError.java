@@ -75,6 +75,11 @@ public class IntegrityError {
         CONTENTS_FIELDS_COUNT_MISMATCH,
 
         /**
+         * For a topic, could not access a corresponding resource.
+         */
+        RESOURCE_NOT_FOUND,
+
+        /**
          * Read resource items count not same over all language files
          */
         RESOURCE_ITEMS_COUNT_MISMATCH
