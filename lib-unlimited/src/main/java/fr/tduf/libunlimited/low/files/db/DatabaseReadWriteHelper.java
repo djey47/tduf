@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db;
 
+import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.parser.DbParser;
@@ -9,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -20,11 +22,14 @@ public class DatabaseReadWriteHelper {
      * Reads all database contents (+resources) from specified topic into databaseDirectory.
      * @param topic             : topic to parse TDU contents from
      * @param databaseDirectory : location of database contents as db + fr,it,ge... files
+     * @param integrityErrors
      * @return a global object for topic.
      * @throws FileNotFoundException
      */
-    public static DbDto readDatabase(DbDto.Topic topic, String databaseDirectory) throws FileNotFoundException {
+    public static DbDto readDatabase(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {
         // TODO move system.outs to CLI
+        Objects.requireNonNull(integrityErrors);
+
         List<String> contentLines = parseTopicContentsFromDirectory(topic, databaseDirectory);
         if(contentLines.isEmpty()) {
             System.err.println("Database contents not found for topic: " + topic);
@@ -46,7 +51,8 @@ public class DatabaseReadWriteHelper {
 
         System.out.println("Content line count: " + dbParser.getContentLineCount());
         System.out.println("Resource count: " + dbParser.getResourceCount());
-        System.out.println("Integrity errors: " + dbParser.getIntegrityErrors());
+
+        integrityErrors.addAll(dbParser.getIntegrityErrors());
 
         return dbDto;
     }

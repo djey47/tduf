@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.db;
 
 
+import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
@@ -9,13 +10,34 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.STRUCTURE_FIELDS_COUNT_MISMATCH;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DatabaseReadWriteHelperTest {
 
     private static Class<DatabaseReadWriteHelperTest> thisClass = DatabaseReadWriteHelperTest.class;
+
+    @Test
+    public void readDatabase_whenRealFileWithErrors_shouldUpdateIntegrityErrors() throws URISyntaxException, FileNotFoundException {
+        // GIVEN
+        List<IntegrityError> integrityErrors = new ArrayList<>();
+
+        // Errors : field count mismatch in structure
+        File dbFile = new File(thisClass.getResource("/db/errors/TDU_Achievements.db").toURI());
+        String databaseDirectory = dbFile.getParent();
+
+
+        // WHEN
+        DatabaseReadWriteHelper.readDatabase(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
+
+
+        // THEN
+        assertThat(integrityErrors).isNotEmpty();
+        assertThat(integrityErrors).extracting("errorTypeEnum").contains(STRUCTURE_FIELDS_COUNT_MISMATCH);
+    }
 
     @Test
     public void parseTopicContentsFromDirectory_whenRealFile_shouldReturnContentsAsLines() throws URISyntaxException, FileNotFoundException {

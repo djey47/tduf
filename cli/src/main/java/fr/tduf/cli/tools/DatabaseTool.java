@@ -2,6 +2,7 @@ package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.CommandHelper;
 import fr.tduf.libunlimited.low.files.db.DatabaseReadWriteHelper;
+import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -10,6 +11,7 @@ import org.kohsuke.args4j.Option;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.DUMP;
@@ -32,6 +34,7 @@ public class DatabaseTool extends GenericTool {
      * All available commands
      */
     enum Command implements CommandHelper.CommandEnum {
+        CHECK("check", "Tries to load database and display integrity errors, if any."),
         DUMP("dump", "Writes full database contents to JSON files.");
 
         final String label;
@@ -71,6 +74,9 @@ public class DatabaseTool extends GenericTool {
             case DUMP:
                 dump();
                 break;
+            case CHECK:
+                databaseCheck();
+                break;
             default:
                 return false;
         }
@@ -79,11 +85,11 @@ public class DatabaseTool extends GenericTool {
 
     @Override
     protected boolean checkAndAssignCommand(String commandArgument) throws CmdLineException {
-        if (!CommandHelper.getLabels(DUMP).contains(commandArgument)) {
+        if (!CommandHelper.getLabels(getCommand()).contains(commandArgument)) {
             return false;
         }
 
-        this.command = (Command) CommandHelper.fromLabel(DUMP, commandArgument);
+        this.command = (Command) CommandHelper.fromLabel(getCommand(), commandArgument);
         return true;
     }
 
@@ -118,12 +124,13 @@ public class DatabaseTool extends GenericTool {
             assert outputDirectory.mkdirs();
         }
 
+        System.out.println("-> Source: " + databaseDirectory);
         System.out.println("Dumping TDU database to JSON, please wait...");
 
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
             System.out.println("-> Now processing topic: " + currentTopic + "...");
 
-            DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory);
+            DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, new ArrayList<>());
 
             DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, outputDirectory.toString());
 
@@ -133,5 +140,29 @@ public class DatabaseTool extends GenericTool {
         }
 
         System.out.println("All done!");
+    }
+
+    private void databaseCheck() throws FileNotFoundException {
+
+        System.out.println("-> Source: " + databaseDirectory);
+        System.out.println("Checking TDU database, please wait...");
+
+        for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
+            System.out.println("-> Now processing topic: " + currentTopic + "...");
+
+            List<IntegrityError> integrityErrors = new ArrayList<>();
+            DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, integrityErrors);
+
+            if(!integrityErrors.isEmpty()) {
+                System.out.println("-> Integrity errors: " + currentTopic + "...");
+                //TODO Provide data for human beings
+                System.out.println(integrityErrors);
+            }
+
+            System.out.println("-> Checking done for topic: " + currentTopic + ", " + integrityErrors + " error(s).");
+        }
+
+        System.out.println("All done!");
+
     }
 }
