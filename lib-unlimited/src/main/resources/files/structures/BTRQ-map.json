@@ -15,7 +15,7 @@
     {
       "name" : "graph",
       "type" : "REPEATER",
-      "size" : "18",
+      "size" : "?entryCount?-1",
       "subFields" : [
         {
           "name": "torqueNm",
