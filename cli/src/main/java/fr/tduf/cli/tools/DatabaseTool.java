@@ -140,8 +140,8 @@ public class DatabaseTool extends GenericTool {
 
     private void databaseCheck() throws FileNotFoundException {
 
-        System.out.println("-> Source: " + databaseDirectory);
         System.out.println("Checking TDU database, please wait...");
+        System.out.println("-> Source directory: " + databaseDirectory);
 
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
             System.out.println("-> Now processing topic: " + currentTopic + "...");
@@ -150,23 +150,23 @@ public class DatabaseTool extends GenericTool {
             DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, integrityErrors);
 
             if (dbDto == null) {
-                System.err.println("Database contents not found for topic: " + currentTopic);
+                System.out.println("  !Database contents not found for topic: " + currentTopic);
                 continue;
             }
 
+            System.out.println("  .Content line count: " + dbDto.getData().getEntries().size());
+            System.out.println("  .Found topic: " + currentTopic + ", " + integrityErrors.size() + " error(s).");
             if(!integrityErrors.isEmpty()) {
-                System.out.println("-> Integrity errors:");
                 //TODO Provide data for human beings
                 integrityErrors.forEach(
-                        (integrityError) -> System.out.println(" ." + integrityErrors));
+                        (integrityError) -> System.out.println("    !" + integrityError));
             }
 
-            System.out.println("-> Checking done for topic: " + currentTopic + ", " + integrityErrors.size() + " error(s).");
-            System.out.println("-> Content line count: " + dbDto.getData().getEntries().size());
-
-            System.out.println("-> Resource count: ");
-            dbDto.getResources().forEach(
-                    (dbResourceDto) -> System.out.println("  ." + dbResourceDto.getLocale() + "=" + dbResourceDto.getEntries().size()));
+            if (!dbDto.getResources().isEmpty()) {
+                System.out.println("  .Resource count per locale: ");
+                dbDto.getResources().forEach(
+                        (dbResourceDto) -> System.out.println("    ." + dbResourceDto.getLocale() + "=" + dbResourceDto.getEntries().size()));
+            }
         }
 
         System.out.println("All done!");
