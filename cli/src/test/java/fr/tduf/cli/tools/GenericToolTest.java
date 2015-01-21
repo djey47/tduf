@@ -1,6 +1,10 @@
 package fr.tduf.cli.tools;
 
 import org.junit.Test;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,7 +25,7 @@ public class GenericToolTest {
     }
 
     @Test
-    public void checkArgumentsAndOptions_whenInvalidCommandParameter_shouldReturnFalse() {
+    public void checkArgumentsAndOptions_whenInvalidDefaultParameter_shouldReturnFalse() {
         // GIVEN-WHEN-THEN
         assertThat(testingTool.checkArgumentsAndOptions(new String[]{"test_u"})).isFalse();
     }
@@ -39,5 +43,20 @@ public class GenericToolTest {
 
         // -WHEN-THEN
         assertThat(testingTool.checkArgumentsAndOptions(args)).isFalse();
+    }
+
+    @Test
+    public void printUsage_shouldNotThrowException() {
+        // GIVEN
+        CmdLineException e = new CmdLineException(new CmdLineParser(testingTool), "", null);
+
+        // WHEN-THEN
+        testingTool.printUsage(e);
+    }
+
+    @Test
+    public void doMain_whenKnownCommand_shouldEndNormally() throws IOException {
+        // GIVEN-WHEN-THEN
+        testingTool.doMain(new String[]{"test"});
     }
 }

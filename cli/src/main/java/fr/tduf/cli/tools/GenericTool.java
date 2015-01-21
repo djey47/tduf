@@ -12,7 +12,6 @@ import java.util.List;
 /**
  * Parent class of all CLI tools
  */
-//TODO unit tests
 public abstract class GenericTool {
 
     @Argument
@@ -97,7 +96,7 @@ public abstract class GenericTool {
         return true;
     }
 
-    private void printUsage(CmdLineException e) {
+    void printUsage(CmdLineException e) {
         String displayedClassName = this.getClass().getSimpleName();
 
         System.err.println("Usage: " + displayedClassName + " command [-options]");

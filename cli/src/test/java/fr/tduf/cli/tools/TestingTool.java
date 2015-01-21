@@ -45,7 +45,7 @@ public class TestingTool extends GenericTool {
 
     @Override
     protected boolean commandDispatch() throws IOException {
-        return false;
+        return (command == Command.TEST);
     }
 
     @Override
