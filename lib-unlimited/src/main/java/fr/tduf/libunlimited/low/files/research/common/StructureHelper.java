@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-// TODO unit tests
 /**
  * Utility class to provide common operations on Structures.
  */
