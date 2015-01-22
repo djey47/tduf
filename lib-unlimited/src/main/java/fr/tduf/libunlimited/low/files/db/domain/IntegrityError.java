@@ -62,27 +62,37 @@ public class IntegrityError {
         /**
          * Read Item count not same as displayed one
          */
-        CONTENT_ITEMS_COUNT_MISMATCH,
+        CONTENT_ITEMS_COUNT_MISMATCH("Item count information (%d) is not same as actual item count (%d)."),
 
         /**
          * Read Field count in structure not same as displayed one
          */
-        STRUCTURE_FIELDS_COUNT_MISMATCH,
+        STRUCTURE_FIELDS_COUNT_MISMATCH("Field count information in structure (%d) is not same as actual field count (%d)."),
 
         /**
          * Read Field count in contents not same as displayed one
          */
-        CONTENTS_FIELDS_COUNT_MISMATCH,
+        CONTENTS_FIELDS_COUNT_MISMATCH("Field count information in structure (%d) is not same as actual field count (%d)."),
 
         /**
          * For a topic, could not access a corresponding resource.
          */
-        RESOURCE_NOT_FOUND,
+        RESOURCE_NOT_FOUND("A resource was not found for topic %s."),
 
         /**
          * Read resource items count not same over all language files
          */
-        RESOURCE_ITEMS_COUNT_MISMATCH
+        RESOURCE_ITEMS_COUNT_MISMATCH("Resource items count is not same over %d languages:\n%s");
+
+        private final String errorMessageFormat;
+
+        ErrorTypeEnum(String errorMessageFormat) {
+            this.errorMessageFormat = errorMessageFormat;
+        }
+
+        public String getErrorMessageFormat() {
+            return errorMessageFormat;
+        }
     }
 
     public interface IntegrityErrorBuilder {
