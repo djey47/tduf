@@ -17,8 +17,6 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class DbDto implements Serializable {
-    //TODO implement proper toString
-
     @JsonProperty("structure")
     private DbStructureDto structure;
 

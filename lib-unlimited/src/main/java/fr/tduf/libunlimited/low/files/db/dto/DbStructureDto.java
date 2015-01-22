@@ -19,8 +19,6 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 @JsonTypeName("dbStructure")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class DbStructureDto implements Serializable {
-    //TODO implement proper toString
-
     @JsonProperty("ref")
     private String ref;
 

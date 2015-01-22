@@ -18,8 +18,6 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 @JsonTypeName("dbResource")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class DbResourceDto implements Serializable {
-    //TODO implement proper toString
-
     @JsonProperty("entries")
     private List<Entry> entries;
 
