@@ -59,6 +59,7 @@ public class DbParserTest {
         //THEN
         assertThat(actualDb).isNotNull();
         assertThat(dbParser.getIntegrityErrors()).hasSize(2);
+        /** {@link fr.tduf.libunlimited.low.files.db.domain.IntegrityError#getError()} */
         assertThat(dbParser.getIntegrityErrors()).extracting("error").containsExactly("STRUCTURE_FIELDS_COUNT_MISMATCH","CONTENT_ITEMS_COUNT_MISMATCH");
     }
 
@@ -84,6 +85,7 @@ public class DbParserTest {
         //THEN
         assertThat(actualDb).isNotNull();
         assertThat(dbParser.getIntegrityErrors()).hasSize(1);
+        /** {@link fr.tduf.libunlimited.low.files.db.domain.IntegrityError#getError()} */
         assertThat(dbParser.getIntegrityErrors()).extracting("error").containsExactly("RESOURCE_ITEMS_COUNT_MISMATCH");
     }
 
@@ -103,6 +105,7 @@ public class DbParserTest {
         //THEN
         assertThat(actualDb).isNotNull();
         assertThat(dbParser.getIntegrityErrors()).hasSize(1);
+        /** {@link fr.tduf.libunlimited.low.files.db.domain.IntegrityError#getError()} */
         assertThat(dbParser.getIntegrityErrors()).extracting("error").containsExactly("CONTENTS_FIELDS_COUNT_MISMATCH");
     }
 
