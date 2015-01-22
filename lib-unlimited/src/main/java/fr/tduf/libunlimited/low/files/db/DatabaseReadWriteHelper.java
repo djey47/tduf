@@ -8,6 +8,7 @@ import fr.tduf.libunlimited.low.files.db.writer.DbWriter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -63,7 +64,7 @@ public class DatabaseReadWriteHelper {
      * @param outputDirectory   : location of generated files
      * @throws FileNotFoundException
      */
-    public static void writeDatabaseToJson(DbDto dbDto, String outputDirectory) throws FileNotFoundException {
+    public static void writeDatabaseToJson(DbDto dbDto, String outputDirectory) throws IOException {
         DbWriter dbWriter = DbWriter.load(dbDto);
 
         dbWriter.writeAllAsJson(outputDirectory);

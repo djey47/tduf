@@ -114,7 +114,7 @@ public class DatabaseTool extends GenericTool {
         );
     }
 
-    private void dump() throws FileNotFoundException {
+    private void dump() throws IOException {
         File outputDirectory = new File(this.outputDirectory);
         if (!outputDirectory.exists()) {
             assert outputDirectory.mkdirs();

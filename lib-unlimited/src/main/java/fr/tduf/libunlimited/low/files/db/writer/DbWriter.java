@@ -9,7 +9,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -50,7 +49,7 @@ public class DbWriter {
      * Writes all TDU database files to given path (must exist).
      * @param path location to write db files
      */
-    public void writeAll(String path) throws FileNotFoundException {
+    public void writeAll(String path) throws IOException {
         checkPrerequisites(this.databaseDto);
 
         writeStructureAndContents(path);
@@ -61,7 +60,7 @@ public class DbWriter {
      * Writes all contents to given path (must exist) as JSON file .
      * @param path location to write db files
      */
-    public void writeAllAsJson(String path) throws FileNotFoundException {
+    public void writeAllAsJson(String path) throws IOException {
         checkPrerequisites(this.databaseDto);
 
         String outputFileName = String.format("%s.%s", this.databaseDto.getStructure().getTopic().getLabel(), "json");
@@ -69,9 +68,6 @@ public class DbWriter {
 
         try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8)) {
             new ObjectMapper().writer().writeValue(bufferedWriter, this.databaseDto);
-        } catch (IOException e) {
-            // TODO handle error
-            e.printStackTrace();
         }
     }
 
@@ -81,7 +77,7 @@ public class DbWriter {
         requireNonNull(dbDto.getData(), "Database contents are required");
     }
 
-    private void writeStructureAndContents(String directoryPath) throws FileNotFoundException {
+    private void writeStructureAndContents(String directoryPath) throws IOException {
 
         DbStructureDto dbStructureDto = this.databaseDto.getStructure();
         DbDataDto dbDataDto = this.databaseDto.getData();
@@ -127,14 +123,10 @@ public class DbWriter {
 
             // Nul
             bufferedWriter.write("\0");
-
-        } catch (IOException e) {
-            // TODO handle error
-            e.printStackTrace();
         }
     }
 
-    private void writeResources(String directoryPath) {
+    private void writeResources(String directoryPath) throws IOException {
 
         List<DbResourceDto> dbResourceDtos = this.databaseDto.getResources();
         String topicLabel = this.databaseDto.getStructure().getTopic().getLabel();
@@ -163,9 +155,6 @@ public class DbWriter {
                     writeAndEndWithCRLF(
                             format(ENTRY_PATTERN, entry.getValue(), entry.getReference()), bufferedWriter);
                 }
-            } catch (IOException e) {
-                // TODO handle error
-                e.printStackTrace();
             }
         }
     }

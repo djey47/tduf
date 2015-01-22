@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +97,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void writeDatabaseToJson_whenProvidedContents_shouldCreateFiles() throws FileNotFoundException {
+    public void writeDatabaseToJson_whenProvidedContents_shouldCreateFiles() throws IOException {
         // GIVEN
         DbStructureDto dbStructureDto = DbStructureDto.builder()
                 .forTopic(DbDto.Topic.ACHIEVEMENTS)
