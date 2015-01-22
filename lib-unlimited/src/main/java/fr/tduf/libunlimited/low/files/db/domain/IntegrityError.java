@@ -28,12 +28,6 @@ public class IntegrityError {
             }
 
             @Override
-            public IntegrityErrorBuilder addInformation(String label, String value) {
-                this.info.put(label, value);
-                return this;
-            }
-
-            @Override
             public IntegrityErrorBuilder addInformations(Map<String, Object> info) {
                 this.info.putAll(info);
                 return this;
@@ -46,8 +40,8 @@ public class IntegrityError {
         };
     }
 
-    public String getError() {
-        return errorTypeEnum.name();
+    public Map<String, Object> getInformation() {
+        return info;
     }
 
     public String getErrorMessageFormat() {
@@ -66,27 +60,27 @@ public class IntegrityError {
         /**
          * Read Item count not same as displayed one
          */
-        CONTENT_ITEMS_COUNT_MISMATCH("Item count information (%d) is not same as actual item count (%d)."),
+        CONTENT_ITEMS_COUNT_MISMATCH("Item count information is not same as actual item count.\n%s"),
 
         /**
          * Read Field count in structure not same as displayed one
          */
-        STRUCTURE_FIELDS_COUNT_MISMATCH("Field count information in structure (%d) is not same as actual field count (%d)."),
+        STRUCTURE_FIELDS_COUNT_MISMATCH("Field count information in structure is not same as actual field count.\n%s"),
 
         /**
          * Read Field count in contents not same as displayed one
          */
-        CONTENTS_FIELDS_COUNT_MISMATCH("Field count information in structure (%d) is not same as actual field count (%d)."),
+        CONTENTS_FIELDS_COUNT_MISMATCH("Field count information in structure is not same as actual field count.\n%s"),
 
         /**
          * For a topic, could not access a corresponding resource.
          */
-        RESOURCE_NOT_FOUND("A resource was not found for topic %s."),
+        RESOURCE_NOT_FOUND("A resource was not found for current topic.\n%s"),
 
         /**
          * Read resource items count not same over all language files
          */
-        RESOURCE_ITEMS_COUNT_MISMATCH("Resource items count is not same over %d languages:\n%s");
+        RESOURCE_ITEMS_COUNT_MISMATCH("Resource items count is not same over language files.\n%s");
 
         private final String errorMessageFormat;
 
@@ -98,8 +92,6 @@ public class IntegrityError {
     public interface IntegrityErrorBuilder {
 
         IntegrityErrorBuilder ofType(ErrorTypeEnum errorTypeEnum);
-
-        IntegrityErrorBuilder addInformation(String label, String value);
 
         IntegrityErrorBuilder addInformations(Map<String, Object> info);
 
