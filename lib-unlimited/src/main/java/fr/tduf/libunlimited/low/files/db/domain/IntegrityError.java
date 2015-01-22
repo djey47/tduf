@@ -50,6 +50,10 @@ public class IntegrityError {
         return errorTypeEnum.name();
     }
 
+    public String getErrorMessageFormat() {
+        return errorTypeEnum.errorMessageFormat;
+    }
+
     @Override
     public String toString() {
         return "DatabaseIntegrityError: " + errorTypeEnum + ", " + info;
@@ -88,10 +92,6 @@ public class IntegrityError {
 
         ErrorTypeEnum(String errorMessageFormat) {
             this.errorMessageFormat = errorMessageFormat;
-        }
-
-        public String getErrorMessageFormat() {
-            return errorMessageFormat;
         }
     }
 
