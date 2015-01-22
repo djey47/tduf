@@ -60,27 +60,27 @@ public class IntegrityError {
         /**
          * Read Item count not same as displayed one
          */
-        CONTENT_ITEMS_COUNT_MISMATCH("Item count information is not same as actual item count.\n%s"),
+        CONTENT_ITEMS_COUNT_MISMATCH("Item count information is not same as actual item count: %s"),
 
         /**
          * Read Field count in structure not same as displayed one
          */
-        STRUCTURE_FIELDS_COUNT_MISMATCH("Field count information in structure is not same as actual field count.\n%s"),
+        STRUCTURE_FIELDS_COUNT_MISMATCH("Field count information in structure is not same as actual field count: %s"),
 
         /**
          * Read Field count in contents not same as displayed one
          */
-        CONTENTS_FIELDS_COUNT_MISMATCH("Field count information in structure is not same as actual field count.\n%s"),
+        CONTENTS_FIELDS_COUNT_MISMATCH("Field count information in structure is not same as actual field count: %s"),
 
         /**
-         * For a topic, could not access a corresponding resource.
+         * For a topic, could not access to corresponding resource.
          */
-        RESOURCE_NOT_FOUND("A resource was not found for current topic.\n%s"),
+        RESOURCE_NOT_FOUND("A language resource file was not found for current topic: %s"),
 
         /**
          * Read resource items count not same over all language files
          */
-        RESOURCE_ITEMS_COUNT_MISMATCH("Resource items count is not same over language files.\n%s");
+        RESOURCE_ITEMS_COUNT_MISMATCH("Resource items count is not same over all language files: %s");
 
         private final String errorMessageFormat;
 
