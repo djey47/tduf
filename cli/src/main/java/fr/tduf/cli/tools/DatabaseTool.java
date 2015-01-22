@@ -150,16 +150,18 @@ public class DatabaseTool extends GenericTool {
             DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, integrityErrors);
 
             if (dbDto == null) {
-                System.out.println("  !Database contents not found for topic: " + currentTopic);
+                System.out.println("  !Database contents not found for topic " + currentTopic + ", skipping...");
                 continue;
             }
 
             System.out.println("  .Content line count: " + dbDto.getData().getEntries().size());
             System.out.println("  .Found topic: " + currentTopic + ", " + integrityErrors.size() + " error(s).");
             if(!integrityErrors.isEmpty()) {
-                //TODO Provide data for human beings
                 integrityErrors.forEach(
-                        (integrityError) -> System.out.println("    !" + integrityError));
+                        (integrityError) -> {
+                            String errorMessage = String.format(integrityError.getErrorMessageFormat(), integrityError.getInformation());
+                            System.out.println("    !" + errorMessage);
+                        });
             }
 
             if (!dbDto.getResources().isEmpty()) {
