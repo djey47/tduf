@@ -8,10 +8,7 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 ### What's new in this version ? (0.3.0)
 
-* General: provides updated file structures
-* General: add limited support to PMI files (TDU World Map)
-* Library/structure: supports FPOINT fields, 16-bit (2 bytes)
-* Library/structure: supports field sizes read in repeater fields
+*
 
 ### What you will need to run TDUF
 
