@@ -4,8 +4,6 @@ SET /P TDUF_VERSION=<.\lib\version.info
 ECHO Welcome to TDUF: Command Line Interface v%TDUF_VERSION%.
 ECHO.
 ECHO Available modules :
-ECHO - DatabaseTool
-ECHO - FileTool
-ECHO - MappingTool
+DIR *Tool.cmd /B
 ECHO.
-ECHO Enjoy!
+ECHO Just type and run any of these scripts to get usage details. Enjoy!
