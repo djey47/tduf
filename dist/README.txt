@@ -6,6 +6,17 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Capitalizing about reverse-engineering
 * ...
 
+### What's new in this version ? (0.2.0)
+
+* General: provides file structures in the release package, to be used with FileTool
+* Command Line: requests admin access automatically
+* DatabaseTool: new limited, check operation, performing integrity check of TDU database (need to be extracted and decrypted with additional tools, first)
+* FileTool (new!): exports TDU files to/from JSON format when provided a structure file
+* Library/structure: supports new field type : UNKNOWN (values to be discovered, still)
+* Library/structure: supports new field type : FPOINT (floating-point, 32 bit)
+* Library/structure: supports formulas and references in field size attribute
+* Library/parsing: supports endianness
+
 ### What you will need to run TDUF
 
 * Please uninstall any Java Runtime < 8
@@ -54,4 +65,4 @@ If you wish to donate, please head to [this](http://bit.ly/13YI3bP)
 * [Project homepage @ TurboDuck community](http://forum.turboduck.net/forums/57-Mod-Tools-Support)
 
 
--[Djey](https://github.com/djey47)-
+-[Djey, tools developer](https://github.com/djey47)-
