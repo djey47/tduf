@@ -1,0 +1,184 @@
+{
+  "name": "TDU PMI",
+  "littleEndian": false,
+  "fields": [
+    {
+      "name": "gap1",
+      "type": "GAP",
+      "size": 8
+    },
+    {
+      "name": "size_file",
+      "type": "INTEGER",
+      "size": 4
+    },
+    {
+      "name": "magic",
+      "type": "TEXT",
+      "size": 4
+    },
+    {
+      "name": "moba_tag",
+      "type": "TEXT",
+      "size": 4
+    },
+    {
+      "name": "unknown",
+      "type": "UNKNOWN",
+      "size": 4
+    },
+    {
+      "name": "size2_file",
+      "type": "INTEGER",
+      "size": 4
+    },
+    {
+      "name": "size_moba",
+      "type": "INTEGER",
+      "size": 4
+    },
+    {
+      "name": "asset_count",
+      "type": "INTEGER",
+      "size": 4
+    },
+    {
+      "name": "height (?)",
+      "type": "INTEGER",
+      "size": 4
+    },
+    {
+      "name": "unknown",
+      "type": "UNKNOWN",
+      "size": 4
+    },
+    {
+      "name": "gap2",
+      "type": "GAP",
+      "size": 4
+    },
+    {
+      "name": "unknown",
+      "type": "UNKNOWN",
+      "size": "?size_moba?-38"
+    },
+    {
+      "name": "gap3",
+      "type": "GAP",
+      "size": 8
+    },
+    {
+      "name": "entry_list",
+      "type": "REPEATER",
+      "subFields": [
+        {
+          "name": "mob_magic",
+          "type": "TEXT",
+          "size": 8
+        },
+        {
+          "name": "size_bytes_1",
+          "type": "INTEGER",
+          "size": 4
+        },
+        {
+          "name": "size_bytes_2",
+          "type": "INTEGER",
+          "size": 4
+        },
+        {
+          "name": "entity_name",
+          "type": "TEXT",
+          "size": 8
+        },
+        {
+          "name": "entity_count",
+          "type": "INTEGER",
+          "size": 4
+        },
+        {
+          "name": "unknown",
+          "type": "UNKNOWN",
+          "size": 4
+        },
+        {
+          "name": "entry_entity_list",
+          "type": "REPEATER",
+          "size": "?entity_count?",
+          "subFields": [
+            {
+              "name": "pos_X",
+              "type": "FPOINT",
+              "size": 2
+            },
+            {
+              "name": "pos_Y",
+              "type": "FPOINT",
+              "size": 2
+            },
+            {
+              "name": "pos_Z",
+              "type": "FPOINT",
+              "size": 2
+            },
+            {
+              "name": "scale_X",
+              "type": "FPOINT",
+              "size": 2
+            },
+            {
+              "name": "scale_Y",
+              "type": "FPOINT",
+              "size": 2
+            },
+            {
+              "name": "scale_Z",
+              "type": "FPOINT",
+              "size": 2
+            },
+            {
+              "name": "rot_X",
+              "type": "FPOINT",
+              "size": 2
+            },
+            {
+              "name": "rot_Y",
+              "type": "FPOINT",
+              "size": 2
+            },
+            {
+              "name": "rot_Z",
+              "type": "FPOINT",
+              "size": 2
+            },
+            {
+              "name": "unknown",
+              "type": "UNKNOWN",
+              "size": 2
+            },
+            {
+              "name": "unknown",
+              "type": "UNKNOWN",
+              "size": 2
+            },
+            {
+              "name": "unknown",
+              "type": "UNKNOWN",
+              "size": 2
+            },
+            {
+              "name": "display_group",
+              "type": "TEXT",
+              "size": 4
+            },
+            {
+              "name": "gap3",
+              "type": "GAP",
+              "size": 4
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
