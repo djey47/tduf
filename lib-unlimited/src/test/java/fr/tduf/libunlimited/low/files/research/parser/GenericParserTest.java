@@ -93,7 +93,7 @@ public class GenericParserTest {
         List<FileStructureDto.Field> fields = createFields();
 
         // WHEN
-        int actualStructureSize = GenericParser.computeStructureSize(fields, null);
+        int actualStructureSize = GenericParser.computeStructureSize(fields, null, null);
 
         // THEN
         assertThat(actualStructureSize).isEqualTo(34);
@@ -137,7 +137,7 @@ public class GenericParserTest {
 
 
         // WHEN
-        int actualStructureSize = GenericParser.computeStructureSize(fields, null);
+        int actualStructureSize = GenericParser.computeStructureSize(fields, null, null);
 
 
         // THEN
@@ -168,7 +168,7 @@ public class GenericParserTest {
 
 
         // WHEN
-        int actualStructureSize = GenericParser.computeStructureSize(fields, dataStore);
+        int actualStructureSize = GenericParser.computeStructureSize(fields, null, dataStore);
 
 
         // THEN

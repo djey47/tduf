@@ -58,7 +58,7 @@ public abstract class GenericParser<T> {
         return this.dumpBuilder.toString();
     }
 
-    static int computeStructureSize(List<FileStructureDto.Field> fields, DataStore dataStore) {
+    static int computeStructureSize(List<FileStructureDto.Field> fields, String repeaterKey, DataStore dataStore) {
         return fields.stream()
                 .mapToInt(field -> {
                     int actualSize = 0;
@@ -70,14 +70,12 @@ public abstract class GenericParser<T> {
                         case DELIMITER:
                         case GAP:
                         case UNKNOWN:
-                            // TODO set repeater key
-                            actualSize = FormulaHelper.resolveToInteger(field.getSizeFormula(), null, dataStore);
+                            actualSize = FormulaHelper.resolveToInteger(field.getSizeFormula(), repeaterKey, dataStore);
                             break;
 
                         case REPEATER:
-                            // TODO set repeater key
-                            int fieldSize = FormulaHelper.resolveToInteger(field.getSizeFormula(), null, dataStore);
-                            actualSize = computeStructureSize(field.getSubFields(), dataStore) * fieldSize;
+                            int fieldSize = FormulaHelper.resolveToInteger(field.getSizeFormula(), repeaterKey, dataStore);
+                            actualSize = computeStructureSize(field.getSubFields(), repeaterKey, dataStore) * fieldSize;
                             break;
 
                         default:
@@ -160,7 +158,7 @@ public abstract class GenericParser<T> {
                     parsedCount = 0 ;
 
                     List<FileStructureDto.Field> subFields = field.getSubFields();
-                    int subStructureSize = computeStructureSize(subFields, this.dataStore);
+                    int subStructureSize = computeStructureSize(subFields, repeaterKey, this.dataStore);
 
                     dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), subStructureSize, "(per item size) >>", ""));
 
