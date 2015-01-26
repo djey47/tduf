@@ -12,25 +12,25 @@ public class FormulaHelperTest {
     @Test
     public void resolveToInteger_whenNullFormula_shouldReturnNull() {
         // GIVEN-WHEN-THEN
-        assertThat(FormulaHelper.resolveToInteger(null, null)).isNull();
+        assertThat(FormulaHelper.resolveToInteger(null, null, null)).isNull();
     }
 
     @Test
     public void resolveToInteger_whenSingleInteger_shouldReturnIt() {
         // GIVEN-WHEN-THEN
-        assertThat(FormulaHelper.resolveToInteger("100", null)).isEqualTo(100);
+        assertThat(FormulaHelper.resolveToInteger("100", null, null)).isEqualTo(100);
     }
 
     @Test
     public void resolveToInteger_whenVerySimpleFormula_shouldReturnValue() {
         // GIVEN-WHEN-THEN
-        assertThat(FormulaHelper.resolveToInteger("=100", null)).isEqualTo(100);
+        assertThat(FormulaHelper.resolveToInteger("=100", null, null)).isEqualTo(100);
     }
 
     @Test
     public void resolveToInteger_whenSimpleFormula_shouldReturnValue() {
         // GIVEN-WHEN-THEN
-        assertThat(FormulaHelper.resolveToInteger("=1+1", null)).isEqualTo(2);
+        assertThat(FormulaHelper.resolveToInteger("=1+1", null, null)).isEqualTo(2);
     }
 
     @Test
@@ -40,7 +40,17 @@ public class FormulaHelperTest {
         dataStore.addInteger("sizeIndicator", 500L);
 
         // WHEN-THEN
-        assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?", dataStore)).isEqualTo(500);
+        assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?", null, dataStore)).isEqualTo(500);
+    }
+
+    @Test
+    public void resolveToInteger_whenVerySimpleFormulaWithPointerFromRepeatedField_shouldReturnValue() {
+        // GIVEN
+        DataStore dataStore = new DataStore();
+        dataStore.addInteger("fileList[5].sizeIndicator", 500);
+
+        // WHEN-THEN
+        assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?", "fileList[5]", dataStore)).isEqualTo(500);
     }
 
     @Test
@@ -50,7 +60,7 @@ public class FormulaHelperTest {
         dataStore.addInteger("sizeIndicator", 500);
 
         // WHEN-THEN
-        assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?*4", dataStore)).isEqualTo(2000);
+        assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?*4", null, dataStore)).isEqualTo(2000);
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -59,30 +69,30 @@ public class FormulaHelperTest {
         DataStore dataStore = new DataStore();
 
         // WHEN-THEN
-        FormulaHelper.resolveToInteger("=?sizeIndicator?", dataStore);
+        FormulaHelper.resolveToInteger("=?sizeIndicator?", null, dataStore);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void resolveToInteger_whenFormulaWithPointerAndNoStore_shouldThrowIllegalArgumentException() {
         // GIVEN-WHEN-THEN
-        FormulaHelper.resolveToInteger("=?sizeIndicator?", null);
+        FormulaHelper.resolveToInteger("=?sizeIndicator?", null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void resolveToInteger_whenEmptyString_shouldThrowIllegalArgumentException() {
         // GIVEN-WHEN-THEN
-        FormulaHelper.resolveToInteger("", null);
+        FormulaHelper.resolveToInteger("", null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void resolveToInteger_whenNotAFormula_shouldThrowIllegalArgumentException() {
         // GIVEN-WHEN-THEN
-        FormulaHelper.resolveToInteger("AZERTY", null);
+        FormulaHelper.resolveToInteger("AZERTY", null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void resolveToInteger_whenIllegalFormula_shouldThrowIllegalArgumentException() {
         // GIVEN-WHEN-THEN
-        FormulaHelper.resolveToInteger("=AZERTY", null);
+        FormulaHelper.resolveToInteger("=AZERTY", null, null);
     }
 }

@@ -70,11 +70,13 @@ public abstract class GenericParser<T> {
                         case DELIMITER:
                         case GAP:
                         case UNKNOWN:
-                            actualSize = FormulaHelper.resolveToInteger(field.getSizeFormula(), dataStore);
+                            // TODO set repeater key
+                            actualSize = FormulaHelper.resolveToInteger(field.getSizeFormula(), null, dataStore);
                             break;
 
                         case REPEATER:
-                            int fieldSize = FormulaHelper.resolveToInteger(field.getSizeFormula(), dataStore);
+                            // TODO set repeater key
+                            int fieldSize = FormulaHelper.resolveToInteger(field.getSizeFormula(), null, dataStore);
                             actualSize = computeStructureSize(field.getSubFields(), dataStore) * fieldSize;
                             break;
 
@@ -107,7 +109,7 @@ public abstract class GenericParser<T> {
 
             String name = field.getName();
             String key = repeaterKey + name;
-            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), this.dataStore);
+            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), repeaterKey, this.dataStore);
 
             FileStructureDto.Type type = field.getType();
             byte[] readValueAsBytes = null;

@@ -4,6 +4,7 @@ import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,11 +19,11 @@ public class FormulaHelper {
 
     /**
      * Evaluates given formula and returns result as integer.
-     * @param formula   : formula to be evaluated
-     * @param dataStore : current datastore, used to provide values (optional)
-     * @return a computed result.
+     * @param formula       : formula to be evaluated
+     * @param repeaterKey   : parent key to search value for, if necessary. May be null.
+     * @param dataStore     : current datastore, used to provide values (optional)  @return a computed result.
      */
-    public static Integer resolveToInteger(String formula, DataStore dataStore) {
+    public static Integer resolveToInteger(String formula, String repeaterKey, DataStore dataStore) {
         if (formula == null) {
             return null;
         }
@@ -31,14 +32,14 @@ public class FormulaHelper {
             formula = formula.substring(1);
         }
 
-        formula = handlePatternWithStore(formula, dataStore);
+        formula = handlePatternWithStore(formula, repeaterKey, dataStore);
 
         Expression expression = new ExpressionBuilder(formula).build();
         return ((Double) expression.evaluate()).intValue();
     }
 
     // TODO handle more than 1 pattern in formula
-    private static String handlePatternWithStore(String formula, DataStore dataStore) {
+    private static String handlePatternWithStore(String formula, String repeaterKey, DataStore dataStore) {
         Matcher matcher = POINTER_PATTERN.matcher(formula);
 
         if(!matcher.matches()) {
@@ -50,7 +51,19 @@ public class FormulaHelper {
         }
 
         String pointerReference = matcher.group(1);
-        String dataStoreValue = dataStore.getInteger(pointerReference).get().toString();
+
+        //TODO extract to method
+        Optional<Long> storedValue = Optional.empty();
+        //1. Try to fetch in repeater if specified
+        if (repeaterKey != null) {
+            storedValue = dataStore.getInteger(repeaterKey + DataStore.REPEATER_FIELD_SEPARATOR + pointerReference);
+        }
+        //2. Try to fetch as such
+        if (!storedValue.isPresent()) {
+            storedValue = dataStore.getInteger(pointerReference);
+        }
+
+        String dataStoreValue = storedValue.get().toString();
 
         formula = formula.replace(String.format(POINTER_FORMAT, pointerReference), dataStoreValue);
 
