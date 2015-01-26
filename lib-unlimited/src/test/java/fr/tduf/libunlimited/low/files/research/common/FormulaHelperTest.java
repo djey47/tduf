@@ -50,7 +50,7 @@ public class FormulaHelperTest {
         dataStore.addInteger("fileList[5].sizeIndicator", 500);
 
         // WHEN-THEN
-        assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?", "fileList[5]", dataStore)).isEqualTo(500);
+        assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?", "fileList[5].", dataStore)).isEqualTo(500);
     }
 
     @Test
