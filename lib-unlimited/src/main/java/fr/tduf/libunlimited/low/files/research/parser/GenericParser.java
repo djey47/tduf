@@ -69,6 +69,7 @@ public abstract class GenericParser<T> {
                         case FPOINT:
                         case DELIMITER:
                         case GAP:
+                        case UNKNOWN:
                             actualSize = FormulaHelper.resolveToInteger(field.getSizeFormula(), dataStore);
                             break;
 
