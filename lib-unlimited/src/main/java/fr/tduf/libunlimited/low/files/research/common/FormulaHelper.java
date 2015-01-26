@@ -39,7 +39,8 @@ public class FormulaHelper {
     }
 
     // TODO handle more than 1 pattern in formula
-    private static String handlePatternWithStore(String formula, String repeaterKey, DataStore dataStore) {
+    // TODO return more info in error message (store entry ...)
+    private static String handlePatternWithStore(String formula, String repeaterKeyPrefix, DataStore dataStore) {
         Matcher matcher = POINTER_PATTERN.matcher(formula);
 
         if(!matcher.matches()) {
@@ -55,8 +56,8 @@ public class FormulaHelper {
         //TODO extract to method
         Optional<Long> storedValue = Optional.empty();
         //1. Try to fetch in repeater if specified
-        if (repeaterKey != null) {
-            storedValue = dataStore.getInteger(repeaterKey + DataStore.REPEATER_FIELD_SEPARATOR + pointerReference);
+        if (repeaterKeyPrefix != null) {
+            storedValue = dataStore.getInteger(repeaterKeyPrefix + pointerReference);
         }
         //2. Try to fetch as such
         if (!storedValue.isPresent()) {

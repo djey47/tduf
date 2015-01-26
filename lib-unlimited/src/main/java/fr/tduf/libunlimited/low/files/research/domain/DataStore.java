@@ -26,7 +26,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  * and {@link fr.tduf.libunlimited.low.files.research.writer.GenericWriter}
  */
 public class DataStore {
-    public static final String REPEATER_FIELD_SEPARATOR = ".";
+    private static final String REPEATER_FIELD_SEPARATOR = ".";
 
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");              // e.g 'entry_list[1].my_field', 'my_field'
 
