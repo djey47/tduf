@@ -20,7 +20,9 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class GenericParser<T> {
 
-    private static final String DUMP_ENTRY_FORMAT = "%s\t<%s: %d bytes>\t%s\t%s\n";
+    private static final String DUMP_START_ENTRY_FORMAT = "%s\t<%s: %d bytes>\t%s\t%s\n";
+    private static final String DUMP_REPEATER_START_ENTRY_FORMAT = "%s\t<%s>\t>>\n";
+    private static final String DUMP_REPEATER_FINISH_ENTRY_FORMAT = "<< %s\t<%s: %d items>\n";
 
     private final ByteArrayInputStream inputStream;
 
@@ -58,38 +60,6 @@ public abstract class GenericParser<T> {
         return this.dumpBuilder.toString();
     }
 
-    static int computeStructureSize(List<FileStructureDto.Field> fields, String repeaterKey, DataStore dataStore) {
-        return fields.stream()
-                .mapToInt(field -> {
-                    int actualSize = 0;
-
-                    switch (field.getType()) {
-                        case TEXT:
-                        case INTEGER:
-                        case FPOINT:
-                        case DELIMITER:
-                        case GAP:
-                        case UNKNOWN:
-                            actualSize = FormulaHelper.resolveToInteger(field.getSizeFormula(), repeaterKey, dataStore);
-                            break;
-
-                        case REPEATER:
-                            int fieldSize = FormulaHelper.resolveToInteger(field.getSizeFormula(), repeaterKey, dataStore);
-                            actualSize = computeStructureSize(field.getSubFields(), repeaterKey, dataStore) * fieldSize;
-                            break;
-
-                        default:
-                            throw new IllegalArgumentException("Unknown field type: " + field.getType());
-                    }
-
-                    return actualSize;
-                })
-
-                .reduce((left, right) -> left + right)
-
-                .getAsInt();
-    }
-
     /**
      * @return a parsed object instance from provided data.
      */
@@ -118,7 +88,7 @@ public abstract class GenericParser<T> {
                 case GAP:
                     parsedCount = inputStream.skip(length);
 
-                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(new byte[length]), ""));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(new byte[length]), ""));
                     break;
 
                 case INTEGER:
@@ -132,7 +102,7 @@ public abstract class GenericParser<T> {
                     }
 
                     byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 4, length + 4);
-                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(displayedBytes), TypeHelper.rawToInteger(readValueAsBytes)));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(displayedBytes), TypeHelper.rawToInteger(readValueAsBytes)));
                     break;
 
                 case FPOINT:
@@ -143,7 +113,7 @@ public abstract class GenericParser<T> {
                         readValueAsBytes = TypeHelper.changeEndianType(readValueAsBytes);
                     }
 
-                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), TypeHelper.rawToFloatingPoint(readValueAsBytes)));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), TypeHelper.rawToFloatingPoint(readValueAsBytes)));
                     break;
 
                 case DELIMITER:
@@ -151,18 +121,17 @@ public abstract class GenericParser<T> {
                     readValueAsBytes = new byte[length];
                     parsedCount = inputStream.read(readValueAsBytes, 0, length);
 
-                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), "\"" +  TypeHelper.rawToText(readValueAsBytes) + "\""));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), "\"" +  TypeHelper.rawToText(readValueAsBytes) + "\""));
                     break;
 
                 case REPEATER:
                     parsedCount = 0 ;
 
                     List<FileStructureDto.Field> subFields = field.getSubFields();
-                    int subStructureSize = computeStructureSize(subFields, repeaterKey, this.dataStore);
 
-                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), subStructureSize, "(per item size) >>", ""));
+                    dumpBuilder.append(String.format(DUMP_REPEATER_START_ENTRY_FORMAT, key, type.name()));
 
-                    while (inputStream.available() >= subStructureSize      // auto
+                    while (inputStream.available() > 0                        // auto
                             && (length == null || parsedCount < length)) {    // specified
 
                         String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(name, parsedCount);
@@ -171,7 +140,7 @@ public abstract class GenericParser<T> {
                         parsedCount++;
                     }
 
-                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), subStructureSize * parsedCount, "(total size) <<", ""));
+                    dumpBuilder.append(String.format(DUMP_REPEATER_FINISH_ENTRY_FORMAT, key, type.name(), parsedCount));
                     break;
 
                 case UNKNOWN:
@@ -183,7 +152,7 @@ public abstract class GenericParser<T> {
                     readValueAsBytes = new byte[length];
                     parsedCount = inputStream.read(readValueAsBytes, 0, length);
 
-                    dumpBuilder.append(String.format(DUMP_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), ""));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), ""));
                     break;
 
                 default:
