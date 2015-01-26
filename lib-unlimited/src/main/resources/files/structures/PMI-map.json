@@ -1,10 +1,10 @@
 {
   "name": "TDU PMI",
-  "littleEndian": false,
+  "littleEndian": true,
   "fields": [
     {
-      "name": "gap1",
-      "type": "GAP",
+      "name": "unknown0",
+      "type": "UNKNOWN",
       "size": 8
     },
     {
