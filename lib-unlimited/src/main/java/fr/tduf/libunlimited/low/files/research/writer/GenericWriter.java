@@ -52,7 +52,7 @@ public abstract class GenericWriter<T> {
     private boolean writeFields(List<FileStructureDto.Field> fields, ByteArrayOutputStream outputStream, String repeaterKey) throws IOException {
         for(FileStructureDto.Field field : fields) {
             String name = field.getName();
-            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), this.dataStore);
+            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), repeaterKey, this.dataStore);
             FileStructureDto.Type type = field.getType();
 
             byte[] valueBytes = null;
