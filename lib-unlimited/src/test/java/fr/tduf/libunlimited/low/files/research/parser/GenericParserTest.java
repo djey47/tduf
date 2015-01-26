@@ -96,9 +96,26 @@ public class GenericParserTest {
         int actualStructureSize = GenericParser.computeStructureSize(fields, null);
 
         // THEN
-        assertThat(actualStructureSize).isEqualTo(24);
+        assertThat(actualStructureSize).isEqualTo(34);
     }
 
+//    @Test
+//    public void computeStructureSize_withUnknownFieldType_withoutSubFields_shouldReturnRealSizeInBytes() {
+//        // GIVEN
+//        List<FileStructureDto.Field> fields = createFields();
+//        fields.add(FileStructureDto.Field.builder()
+//                .forName("unknown_1")
+//                .withType(FileStructureDto.Type.UNKNOWN)
+//                .ofSize("10")
+//                .build());
+//
+//        // WHEN
+//        int actualStructureSize = GenericParser.computeStructureSize(fields, null);
+//
+//        // THEN
+//        assertThat(actualStructureSize).isEqualTo(34);
+//    }
+//
     @Test
     public void computeStructureSize_withSubFields_andFixedSize_shouldReturnRealSizeInBytes() {
         // GIVEN
@@ -124,7 +141,7 @@ public class GenericParserTest {
 
 
         // THEN
-        assertThat(actualStructureSize).isEqualTo(101); // = 5 + 4*24
+        assertThat(actualStructureSize).isEqualTo(141); // = 5 + 4*34
     }
 
     @Test
@@ -155,7 +172,7 @@ public class GenericParserTest {
 
 
         // THEN
-        assertThat(actualStructureSize).isEqualTo(100); // = 4 + 4*24
+        assertThat(actualStructureSize).isEqualTo(140); // = 4 + 4*34
     }
 
     @Test
@@ -388,6 +405,11 @@ public class GenericParserTest {
                 .withType(FileStructureDto.Type.DELIMITER)
                 .ofSize("4")
                 .build();
-        return asList(field1, field2, field3, field4, field5, field6);
+        FileStructureDto.Field field7 = FileStructureDto.Field.builder()
+                .forName("unknown_1")
+                .withType(FileStructureDto.Type.UNKNOWN)
+                .ofSize("10")
+                .build();
+        return asList(field1, field2, field3, field4, field5, field6, field7);
     }
 }
