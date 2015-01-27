@@ -1,0 +1,19 @@
+{
+  "name" : "TEST file format (half float values only)",
+  "littleEndian" : false,
+  "fields" : [
+    {
+      "name": "hf1",
+      "type": "FPOINT",
+      "size": 2
+    },{
+      "name": "hf2",
+      "type": "FPOINT",
+      "size": 2
+    },{
+      "name": "hf3",
+      "type": "FPOINT",
+      "size": 2
+    }
+  ]
+}

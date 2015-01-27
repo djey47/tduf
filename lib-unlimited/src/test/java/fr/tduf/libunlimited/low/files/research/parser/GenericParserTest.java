@@ -121,6 +121,21 @@ public class GenericParserTest {
     }
 
     @Test
+    public void dump_whenProvidedContents_andHalfFloatValues_shouldReturnAllParsedData() throws IOException, URISyntaxException {
+        // GIVEN
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileHalfFloat();
+        GenericParser<String> actualParser = createGenericParserHalfFloat(inputStream);
+        actualParser.parse();
+
+        // WHEN
+        String actualDump = actualParser.dump();
+        System.out.println("Dumped contents:\n" + actualDump);
+
+        // THEN
+        assertThat(actualDump).isEqualTo(getExpectedDumpHalfFloat());
+    }
+
+    @Test
     public void dump_whenProvidedContentsInLittleEndian_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
         ByteArrayInputStream inputStream = createInputStreamFromReferenceFileLittleEndian();
@@ -150,6 +165,12 @@ public class GenericParserTest {
                     "repeater[1].text\t<TEXT: 4 bytes>\t[69, 70, 71, 72]\t\"EFGH\"\n" +
                     "repeater[1].delimiter\t<DELIMITER: 1 bytes>\t[11]\t\"\u000B\"\n" +
                     "<< repeater\t<REPEATER: 2 items>\n";
+    }
+
+    private String getExpectedDumpHalfFloat() {
+        return "hf1\t<FPOINT: 2 bytes>\t[67, -112]\t3.78125\n" +
+                    "hf2\t<FPOINT: 2 bytes>\t[68, -111]\t4.5664062\n" +
+                    "hf3\t<FPOINT: 2 bytes>\t[69, -110]\t5.5703125\n";
     }
 
     private GenericParser<String> createGenericParser(final ByteArrayInputStream inputStream) throws IOException {
@@ -182,6 +203,32 @@ public class GenericParserTest {
             @Override
             protected String getStructureResource() {
                 return "/files/structures/TEST-map.json";
+            }
+        };
+    }
+
+    private GenericParser<String> createGenericParserHalfFloat(final ByteArrayInputStream inputStream) throws IOException {
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+
+                assertThat(getDataStore().size()).isEqualTo(3);
+
+                // Field 1
+                assertThat(getDataStore().getFloatingPoint("hf1").get()).isEqualTo(3.78125f);
+
+                // Field 2
+                assertThat(getDataStore().getFloatingPoint("hf2").get()).isEqualTo(4.5664062f);
+
+                // Field 3
+                assertThat(getDataStore().getFloatingPoint("hf3").get()).isEqualTo(5.5703125f);
+
+                return DATA;
+            }
+
+            @Override
+            protected String getStructureResource() {
+                return "/files/structures/TEST-halfFloat-map.json";
             }
         };
     }
@@ -266,6 +313,12 @@ public class GenericParserTest {
 
     private ByteArrayInputStream createInputStreamFromReferenceFile() throws IOException, URISyntaxException {
         URI fileURI = thisClass.getResource("/files/samples/TEST.bin").toURI();
+        byte[] bytes = Files.readAllBytes(Paths.get(fileURI));
+        return new ByteArrayInputStream(bytes);
+    }
+
+    private ByteArrayInputStream createInputStreamFromReferenceFileHalfFloat() throws IOException, URISyntaxException {
+        URI fileURI = thisClass.getResource("/files/samples/TEST-halfFloat.bin").toURI();
         byte[] bytes = Files.readAllBytes(Paths.get(fileURI));
         return new ByteArrayInputStream(bytes);
     }
