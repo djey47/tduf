@@ -134,6 +134,16 @@ public class DataStoreTest {
     }
 
     @Test
+    public void addHalfFloatingPoint_shouldCreateNewEntryInStore() throws Exception {
+        // GIVEN - WHEN
+        dataStore.addHalfFloatingPoint("f1", 83.67f);
+
+        // THEN
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint16ToRaw(83.67f));
+        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
+    }
+
+    @Test
     public void addRepeatedRawValue_shouldCreateNewEntryInStore() {
         // GIVEN
         byte[] expectedRawValue = { 0x0, 0x1, 0x2, 0x3 };
@@ -293,12 +303,21 @@ public class DataStoreTest {
     }
 
     @Test
-    public void getFloatingPoint_whenOneItem_andSuccess_shouldReturnValue() {
+    public void getFloatingPoint_whenOne32BitItem_andSuccess_shouldReturnValue() {
         // GIVEN
         putFloatInStore("f1", 691.44006f);
 
         // WHEN-THEN
         assertThat(dataStore.getFloatingPoint("f1").get()).isEqualTo(691.44006f);
+    }
+
+    @Test
+    public void getFloatingPoint_whenOne16BitItem_andSuccess_shouldReturnValue() {
+        // GIVEN
+        putHalfFloatInStore("f1", 691.5f);
+
+        // WHEN-THEN
+        assertThat(dataStore.getFloatingPoint("f1").get()).isEqualTo(691.5f);
     }
 
     @Test
@@ -442,6 +461,11 @@ public class DataStoreTest {
                 .allocate(4)
                 .putFloat(value)
                 .array();
+        dataStore.addValue(key, FPOINT, bytes);
+    }
+
+    private void putHalfFloatInStore(String key, float value) {
+        byte[] bytes = TypeHelper.floatingPoint16ToRaw(value);
         dataStore.addValue(key, FPOINT, bytes);
     }
 

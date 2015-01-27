@@ -75,12 +75,21 @@ public class DataStore {
     }
 
     /**
-     * Adds a Floating Point value to the store.
+     * Adds a Floating Point value (32 bit) to the store.
      * @param fieldName : identifier of field hosting the value, should not exist already
      * @param value     : value to store
      */
     public void addFloatingPoint(String fieldName, float value) {
         addValue(fieldName, FPOINT, TypeHelper.floatingPoint32ToRaw(value));
+    }
+
+    /**
+     * Adds a Floating Point value (16 bit) to the store.
+     * @param fieldName : identifier of field hosting the value, should not exist already
+     * @param value     : value to store
+     */
+    public void addHalfFloatingPoint(String fieldName, float value) {
+        addValue(fieldName, FPOINT, TypeHelper.floatingPoint16ToRaw(value));
     }
 
     /**
@@ -141,7 +150,7 @@ public class DataStore {
     /**
      * Returns all bytes from the store.
      * @param fieldName : identifier of field hosting the value
-     * @return the stored raw value whose key match provided identifier, or null if it does not exist
+     * @return the stored raw value whose key match provided identifier, or empty if it does not exist
      */
     public Optional<byte[]> getRawValue(String fieldName) {
         Entry entry = this.store.get(fieldName);
@@ -156,7 +165,7 @@ public class DataStore {
     /**
      * Returns a String value from the store.
      * @param fieldName :   name of field to search
-     * @return the stored value whose key match provided identifier, or null if it does not exist
+     * @return the stored value whose key match provided identifier, or empty if it does not exist
      */
     public Optional<String> getText(String fieldName) {
         if (!this.store.containsKey(fieldName)) {
@@ -173,7 +182,7 @@ public class DataStore {
     /**
      * Returns a long value from the store.
      * @param fieldName :   name of field to search
-     * @return the stored value whose key match provided identifier, or null if it does not exist
+     * @return the stored value whose key match provided identifier, or empty if it does not exist
      */
     public Optional<Long> getInteger(String fieldName) {
         if (!this.store.containsKey(fieldName)) {
@@ -188,9 +197,9 @@ public class DataStore {
     }
 
     /**
-     * Returns a flaoting point value from the store.
+     * Returns a 16-bit/32-bit floating point value from the store.
      * @param fieldName :   name of field to search
-     * @return the stored value whose key match provided identifier, or null if it does not exist
+     * @return the stored value whose key match provided identifier, or empty if it does not exist
      */
     public Optional<Float> getFloatingPoint(String fieldName) {
         if (!this.store.containsKey(fieldName)) {
