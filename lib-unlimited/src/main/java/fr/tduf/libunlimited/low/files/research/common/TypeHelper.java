@@ -81,15 +81,13 @@ public class TypeHelper {
                 .array();
     }
 
-    //TODO Rename to floatingPoint32ToRaw
-
     /**
      * Converts a FPOINT value to raw byte array.
      *
      * @param numericValue : numeric value to convert
      * @return corresponding value with float spec (32-bit, 4 bytes) as byte array.
      */
-    public static byte[] floatingPointToRaw(float numericValue) {
+    public static byte[] floatingPoint32ToRaw(float numericValue) {
         return ByteBuffer
                 .allocate(4)
                 .putFloat(numericValue)

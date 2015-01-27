@@ -87,10 +87,10 @@ public class DataStoreTest {
     @Test
     public void addValue_whenFloatingPointType_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN - WHEN
-        dataStore.addValue("f1", FPOINT, TypeHelper.floatingPointToRaw(83.666667f));
+        dataStore.addValue("f1", FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPointToRaw(83.666667f));
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -129,7 +129,7 @@ public class DataStoreTest {
         dataStore.addFloatingPoint("f1", 83.666667f);
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPointToRaw(83.666667f));
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -346,7 +346,7 @@ public class DataStoreTest {
 
         Map<String, DataStore.Entry> subStore = actualValues.get(0).getStore();
         assertThat(subStore.get("my_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(10L), 0));
-        assertThat(subStore.get("my_fp_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPointToRaw(235.666667f), 1));
+        assertThat(subStore.get("my_fp_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(235.666667f), 1));
         assertThat(subStore.get("a_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw("az"), 2));
         assertThat(subStore.get("another_field")).isEqualTo(new DataStore.Entry(UNKNOWN, new byte[] {0x1, 0x2, 0x3, 0x4}, 3));
     }

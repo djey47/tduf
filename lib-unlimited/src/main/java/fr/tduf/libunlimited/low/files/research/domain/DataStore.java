@@ -80,7 +80,7 @@ public class DataStore {
      * @param value     : value to store
      */
     public void addFloatingPoint(String fieldName, float value) {
-        addValue(fieldName, FPOINT, TypeHelper.floatingPointToRaw(value));
+        addValue(fieldName, FPOINT, TypeHelper.floatingPoint32ToRaw(value));
     }
 
     /**
@@ -128,7 +128,7 @@ public class DataStore {
      */
     public void addRepeatedFloatingPointValue(String repeaterFieldName, String fieldName, int index, float value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        addValue(key, FPOINT, TypeHelper.floatingPointToRaw(value));
+        addValue(key, FPOINT, TypeHelper.floatingPoint32ToRaw(value));
     }
 
     /**
@@ -326,7 +326,7 @@ public class DataStore {
             if (value.getClass() == Double.class) {
                 type = FileStructureDto.Type.FPOINT;
                 Double doubleValue = (Double) value;
-                rawValue = TypeHelper.floatingPointToRaw(doubleValue.floatValue());
+                rawValue = TypeHelper.floatingPoint32ToRaw(doubleValue.floatValue());
             } else if (value.getClass() == Integer.class) {
                 type = FileStructureDto.Type.INTEGER;
                 rawValue = TypeHelper.integerToRaw((Integer) value);
