@@ -60,6 +60,25 @@ public class GenericWriterTest {
     }
 
     @Test
+    public void write_whenProvidedFiles_andHalFloatContents_shouldReturnBytes() throws IOException, URISyntaxException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterHalfFloat();
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = actualWriter.write();
+
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(6);
+
+        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-halfFloat.bin").toURI();
+        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        assertThat(actualBytes).isEqualTo(expectedBytes);
+    }
+
+    @Test
     public void write_whenProvidedFiles_andLastFieldAutoSize_shouldReturnBytes() throws IOException, URISyntaxException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterLastFieldAutoSize();
@@ -159,6 +178,27 @@ public class GenericWriterTest {
             @Override
             protected String getStructureResource() {
                 return "/files/structures/TEST-map.json";
+            }
+        };
+    }
+
+    private GenericWriter<String> createGenericWriterHalfFloat() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {
+                // Field 1
+                getDataStore().addHalfFloatingPoint("hf1", 3.78125f);
+
+                // Field 2
+                getDataStore().addHalfFloatingPoint("hf2", 4.5664062f);
+
+                // Field 3
+                getDataStore().addHalfFloatingPoint("hf3", 5.5703125f);
+            }
+
+            @Override
+            protected String getStructureResource() {
+                return "/files/structures/TEST-halfFloat-map.json";
             }
         };
     }
