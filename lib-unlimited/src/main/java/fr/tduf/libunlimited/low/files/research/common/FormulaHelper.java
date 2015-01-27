@@ -53,7 +53,13 @@ public class FormulaHelper {
 
         String pointerReference = matcher.group(1);
 
-        //TODO extract to method
+        String dataStoreValue = seekForLongValueInStore(pointerReference, repeaterKeyPrefix, dataStore);
+        formula = formula.replace(String.format(POINTER_FORMAT, pointerReference), dataStoreValue);
+
+        return formula;
+    }
+
+    private static String seekForLongValueInStore(String pointerReference, String repeaterKeyPrefix, DataStore dataStore) {
         Optional<Long> storedValue = Optional.empty();
         //1. Try to fetch in repeater if specified
         if (repeaterKeyPrefix != null) {
@@ -64,10 +70,6 @@ public class FormulaHelper {
             storedValue = dataStore.getInteger(pointerReference);
         }
 
-        String dataStoreValue = storedValue.get().toString();
-
-        formula = formula.replace(String.format(POINTER_FORMAT, pointerReference), dataStoreValue);
-
-        return formula;
+        return storedValue.get().toString();
     }
 }
