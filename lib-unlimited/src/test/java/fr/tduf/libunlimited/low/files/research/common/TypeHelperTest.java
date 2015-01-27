@@ -84,7 +84,7 @@ public class TypeHelperTest {
         byte[] expectedBytes = { 0x43, (byte)0x90, (byte)0xb8, 0x04 };
 
         // WHEN-THEN
-        assertThat(TypeHelper.floatingPointToRaw(289.43762f)).isEqualTo(expectedBytes);
+        assertThat(TypeHelper.floatingPoint32ToRaw(289.43762f)).isEqualTo(expectedBytes);
     }
 
     @Test
