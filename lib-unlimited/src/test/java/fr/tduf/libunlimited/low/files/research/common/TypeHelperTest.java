@@ -34,12 +34,21 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void rawToFloatingPoint_whenArrayHasCorrectSize_shouldReturnNumeric() {
+    public void rawToFloatingPoint_when32BitValue_shouldReturnNumeric() {
         //GIVEN
         byte[] bytes = { 0x43, (byte)0x90, (byte)0xb8, 0x04 };
 
         // WHEN-THEN
         assertThat(TypeHelper.rawToFloatingPoint(bytes)).isEqualTo(289.43762f);
+    }
+
+    @Test
+    public void rawToFloatingPoint_when16BitValue_shouldReturnNumeric() {
+        //GIVEN
+        byte[] bytes = { 0x43, (byte)0x90 };
+
+        // WHEN-THEN
+        assertThat(TypeHelper.rawToFloatingPoint(bytes)).isEqualTo(3.78125f);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -70,12 +79,21 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void floatingPointToRaw_shouldReturnByteArray() {
+    public void floatingPoint32ToRaw_shouldReturnByteArray() {
         //GIVEN
         byte[] expectedBytes = { 0x43, (byte)0x90, (byte)0xb8, 0x04 };
 
         // WHEN-THEN
         assertThat(TypeHelper.floatingPointToRaw(289.43762f)).isEqualTo(expectedBytes);
+    }
+
+    @Test
+    public void floatingPoint16ToRaw_shouldReturnByteArray() {
+        //GIVEN
+        byte[] expectedBytes = { 0x43, (byte)0x90 };
+
+        // WHEN-THEN
+        assertThat(TypeHelper.floatingPoint16ToRaw(3.78125f)).isEqualTo(expectedBytes);
     }
 
     @Test
