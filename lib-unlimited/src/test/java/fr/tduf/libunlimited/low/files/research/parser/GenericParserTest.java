@@ -56,6 +56,20 @@ public class GenericParserTest {
     }
 
     @Test
+    public void parse_whenProvidedFiles_andHalfFloatValues_shouldReturnDomainObject() throws IOException, URISyntaxException {
+        // GIVEN
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileHalfFloat();
+        GenericParser<String> actualParser = createGenericParserHalfFloat(inputStream);
+
+        // WHEN
+        String actualObject = actualParser.parse();
+
+        // THEN
+        assertThat(actualObject).isNotNull();
+        assertThat(actualObject).isEqualTo(DATA);
+    }
+
+    @Test
     public void parse_whenProvidedFilesInLittleEndian_shouldReturnDomainObject() throws IOException, URISyntaxException {
         // GIVEN
         ByteArrayInputStream inputStream = createInputStreamFromReferenceFileLittleEndian();
