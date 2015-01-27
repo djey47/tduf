@@ -23,7 +23,7 @@
           "size": 4
         },
         {
-          "name": "engineSpeed",
+          "name": "engineVelocityRadPerSec",
           "type": "FPOINT",
           "size": 4
         }
