@@ -1,6 +1,8 @@
 package fr.tduf.cli.tools;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
@@ -9,6 +11,9 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericToolTest {
+
+    @Rule
+    public final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
 
     private TestingTool testingTool = new TestingTool();
 
@@ -19,9 +24,15 @@ public class GenericToolTest {
     }
 
     @Test
-    public void checkArgumentsAndOptions_whenKnownCommand_shouldReturnTrue() {
+    public void checkArgumentsAndOptions_whenKnownCommand_andSuppliedParameter_shouldReturnTrue() {
         // GIVEN-WHEN-THEN
-        assertThat(testingTool.checkArgumentsAndOptions(new String[]{"test"})).isTrue();
+        assertThat(testingTool.checkArgumentsAndOptions(new String[]{"test", "-p", "value"})).isTrue();
+    }
+
+    @Test
+    public void checkArgumentsAndOptions_whenKnownCommand_andNoParameter_shouldReturnFalse() {
+        // GIVEN-WHEN-THEN
+        assertThat(testingTool.checkArgumentsAndOptions(new String[]{"test"})).isFalse();
     }
 
     @Test
@@ -29,6 +40,7 @@ public class GenericToolTest {
         // GIVEN-WHEN-THEN
         assertThat(testingTool.checkArgumentsAndOptions(new String[]{"test_u"})).isFalse();
     }
+
     @Test
     public void checkArgumentsAndOptions_whenUnknownCommand_shouldReturnFalse() {
         // GIVEN-WHEN-THEN
@@ -55,8 +67,15 @@ public class GenericToolTest {
     }
 
     @Test
-    public void doMain_whenKnownCommand_shouldEndNormally() throws IOException {
+    public void doMain_whenKnownCommand_andSuppliedParameter_shouldEndNormally() throws IOException {
         // GIVEN-WHEN-THEN
+        testingTool.doMain(new String[]{"test", "-p", "value"});
+    }
+
+    @Test(expected = SecurityException.class)
+    public void doMain_whenKnownCommand_andNoParameter_shouldEndAbnormally() throws IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
         testingTool.doMain(new String[]{"test"});
     }
 }
