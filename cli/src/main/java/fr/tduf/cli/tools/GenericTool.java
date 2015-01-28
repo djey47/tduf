@@ -31,6 +31,8 @@ public abstract class GenericTool {
             System.err.println("Error: command is not implemented, yet.");
             System.exit(1);
         }
+
+        System.exit(0);
     }
 
     /**

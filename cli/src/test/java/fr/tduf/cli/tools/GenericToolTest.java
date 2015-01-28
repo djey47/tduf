@@ -69,6 +69,8 @@ public class GenericToolTest {
     @Test
     public void doMain_whenKnownCommand_andSuppliedParameter_shouldEndNormally() throws IOException {
         // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(0);
+
         testingTool.doMain(new String[]{"test", "-p", "value"});
     }
 
@@ -76,6 +78,7 @@ public class GenericToolTest {
     public void doMain_whenKnownCommand_andNoParameter_shouldEndAbnormally() throws IOException {
         // GIVEN-WHEN-THEN
         exitRule.expectSystemExitWithStatus(1);
+
         testingTool.doMain(new String[]{"test"});
     }
 }
