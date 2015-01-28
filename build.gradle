@@ -45,6 +45,8 @@ project(':cli') {
         compile project(':lib-unlimited')
 
         compile group: 'args4j', name: 'args4j', version: '2.0.29'
+
+        testCompile group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.8.0'
     }
 
     jar {

@@ -3,6 +3,7 @@ package fr.tduf.cli.tools;
 import fr.tduf.cli.common.CommandHelper;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +14,9 @@ import static fr.tduf.cli.tools.TestingTool.Command.TEST;
 public class TestingTool extends GenericTool {
 
     private Command command;
+
+    @Option(name="-p", aliases = "--param", usage = "", required = true)
+    private String requiredParam;
 
     enum Command implements CommandHelper.CommandEnum {
         TEST("test", "for testing purpose only"),
