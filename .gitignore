@@ -6,3 +6,4 @@ pack/
 releases/
 tdu-database-dump/
 *.iml
+.gradletasknamecache
