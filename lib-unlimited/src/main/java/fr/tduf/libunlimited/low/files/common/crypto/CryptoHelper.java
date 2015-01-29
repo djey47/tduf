@@ -65,15 +65,18 @@ public class CryptoHelper {
 
         byte[] inputBytes = readBytesAndCheckSize(inputStream, contentsSize);
 
-        if(encryptionModeEnum == EncryptionModeEnum.OTHER_AND_SPECIAL) {
-            inputBytes = introduceTimeStamp(inputBytes);
-        }
 
         XTEA.engineInit(encryptionModeEnum.key, false);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        if(encryptionModeEnum == EncryptionModeEnum.OTHER_AND_SPECIAL) {
+            outputStream.write(introduceTimeStamp(new byte[0]));
+        }
+
+
         int position = 0;
-        while(position < contentsSize) {
+        while(position < inputBytes.length) {
 
             byte[] outputBytes = XTEA.engineCrypt(inputBytes, position);
             outputStream.write(outputBytes);

@@ -91,24 +91,34 @@ public class CryptoHelperTest {
         assertThat(actualOutputStream).isNotNull();
         assertThat(actualOutputStream.toByteArray()).isEqualTo(expectedBytes);
     }
-//
-//    @Test
-//    public void encryptXTEA_withRealFile_andOtherMode_shouldGiveEncryptedContentsBack() throws URISyntaxException, IOException, InvalidKeyException {
-//        // GIVEN
-//        byte[] contentBytes = getBytesFromResource("/common/crypto/clear.txt");
-//        ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes);
-//
-//        byte[] expectedBytes = getBytesFromResource("/common/crypto/other/encrypted.bin");
-//
-//
-//        // WHEN
-//        ByteArrayOutputStream actualOutputStream = CryptoHelper.encryptXTEA(inputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
-//
-//
-//        // THEN
-//        assertThat(actualOutputStream).isNotNull();
-//        assertThat(actualOutputStream.toByteArray()).isEqualTo(expectedBytes);
-//    }
+
+    @Test
+    public void encryptXTEA_withRealFile_andOtherMode_shouldGiveEncryptedContentsBack() throws URISyntaxException, IOException, InvalidKeyException {
+        // GIVEN
+        byte[] contentBytes = getBytesFromResource("/common/crypto/clear.txt");
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes);
+
+        byte[] expectedBytes = getBytesFromResource("/common/crypto/other/encrypted.bin");
+
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = CryptoHelper.encryptXTEA(inputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
+
+
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(expectedBytes.length);
+//        assertThat(actualBytes).isEqualTo(expectedBytes);
+
+        ByteArrayInputStream actualInputStream = new ByteArrayInputStream(actualBytes);
+        ByteArrayOutputStream decryptedOutputStream = CryptoHelper.decryptXTEA(actualInputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
+        byte[] decryptedBytes = decryptedOutputStream.toByteArray();
+        assertThat(decryptedBytes).isEqualTo(contentBytes);
+
+
+
+    }
 
     @Test
     public void introduceTimestamp_shouldPrependContentsWith8Bytes() {
@@ -122,7 +132,7 @@ public class CryptoHelperTest {
         assertThat(actualBytes).hasSize(24);
 
         byte[] contentsPart = new byte[16];
-        System.arraycopy(actualBytes, 8, contentsPart, 0, 16);
+        System.arraycopy(actualBytes, 8, contentsPart, 0, contentsPart.length);
         assertThat(contentsPart).isEqualTo(inputBytes);
     }
 
