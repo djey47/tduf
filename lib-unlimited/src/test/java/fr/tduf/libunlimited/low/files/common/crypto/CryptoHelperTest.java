@@ -1,5 +1,7 @@
 package fr.tduf.libunlimited.low.files.common.crypto;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -15,6 +17,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CryptoHelperTest {
     private final static Class thisClass = CryptoHelperTest.class;
+
+    @Before
+    public void setUp() {
+        CryptoHelper.overrideTimestamp(1419670800);
+    }
+
+    @After
+    public void after() {
+        CryptoHelper.restoreTimestamp();
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void decryptXTEA_withProvidedContents_andLengthNotMultipleOf8_shouldThrowException() throws IOException, InvalidKeyException {
@@ -109,8 +121,7 @@ public class CryptoHelperTest {
         assertThat(actualOutputStream).isNotNull();
         byte[] actualBytes = actualOutputStream.toByteArray();
         assertThat(actualBytes).hasSize(expectedBytes.length);
-//        assertThat(actualBytes).isEqualTo(expectedBytes);
-
+        // Decryption to check
         ByteArrayInputStream actualInputStream = new ByteArrayInputStream(actualBytes);
         ByteArrayOutputStream decryptedOutputStream = CryptoHelper.decryptXTEA(actualInputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
         byte[] decryptedBytes = decryptedOutputStream.toByteArray();
@@ -124,16 +135,13 @@ public class CryptoHelperTest {
     public void introduceTimestamp_shouldPrependContentsWith8Bytes() {
         // GIVEN
         byte[] inputBytes = new byte[] { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 };
+        byte[] expectedBytes = new byte[] { 84, -98, 117, 16, -85, 97, -118, -17, 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 };
 
         // WHEN
         byte[] actualBytes = CryptoHelper.introduceTimeStamp(inputBytes);
 
         // THEN
-        assertThat(actualBytes).hasSize(24);
-
-        byte[] contentsPart = new byte[16];
-        System.arraycopy(actualBytes, 8, contentsPart, 0, contentsPart.length);
-        assertThat(contentsPart).isEqualTo(inputBytes);
+        assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
     private static byte[] getBytesFromResource(String resourceName) throws URISyntaxException, IOException {
