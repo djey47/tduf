@@ -126,9 +126,6 @@ public class CryptoHelperTest {
         ByteArrayOutputStream decryptedOutputStream = CryptoHelper.decryptXTEA(actualInputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
         byte[] decryptedBytes = decryptedOutputStream.toByteArray();
         assertThat(decryptedBytes).isEqualTo(contentBytes);
-
-
-
     }
 
     @Test

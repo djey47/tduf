@@ -11,43 +11,40 @@ import java.security.InvalidKeyException;
  */
 public class CryptoHelper {
 
+    private static final int BLOCK_SIZE = 8;
+
     private static Integer timestampOverride;
 
     /**
      * Converts encrypted contents in provided input stream to clear ones.
-     * @param inputStream           : contents to be decrypted - size must be multiple of 8
-     * @param encryptionModeEnum    : encryption mode to be used
+     *
+     * @param inputStream        : contents to be decrypted - size must be multiple of 8
+     * @param encryptionModeEnum : encryption mode to be used
      * @return an output stream with clear contents.
      */
     public static ByteArrayOutputStream decryptXTEA(ByteArrayInputStream inputStream, EncryptionModeEnum encryptionModeEnum) throws InvalidKeyException, IOException {
-        int contentsSize = inputStream.available();
-        if (contentsSize % 8 != 0) {
-            throw new IllegalArgumentException("Buffer to be decoded must have length multiple of 8. Current=" + contentsSize);
-        }
-
-        byte[] inputBytes = readBytesAndCheckSize(inputStream, contentsSize);
+        int contentsSize = checkContentsSize(inputStream);
+        byte[] inputBytes = readBytes(inputStream, contentsSize);
 
         XTEA.engineInit(encryptionModeEnum.key, true);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        int position = 0;
-        while(position < contentsSize) {
+        int position = encryptionModeEnum.contentsOffset;
+        while (position < contentsSize) {
 
-            if (position >= encryptionModeEnum.contentsOffset) {
-                byte[] outputBytes = XTEA.engineCrypt(inputBytes, position);
+            byte[] outputBytes = XTEA.engineCrypt(inputBytes, position);
 
-                if (encryptionModeEnum == EncryptionModeEnum.OTHER_AND_SPECIAL) {
-                    // XOR XTEA decipher result with input file data
-                    for (int i = 0 ; i < outputBytes.length ; i++) {
-                        int offset = position - encryptionModeEnum.contentsOffset;
-                        outputBytes[i] ^= inputBytes[offset + i];
-                    }
+            if (encryptionModeEnum == EncryptionModeEnum.OTHER_AND_SPECIAL) {
+                // XOR XTEA decipher result with input file data
+                for (int i = 0; i < outputBytes.length; i++) {
+                    int offset = position - encryptionModeEnum.contentsOffset;
+                    outputBytes[i] ^= inputBytes[offset + i];
                 }
-
-                outputStream.write(outputBytes);
             }
 
-            position += 8;
+            outputStream.write(outputBytes);
+
+            position += BLOCK_SIZE;
         }
 
         return outputStream;
@@ -60,48 +57,39 @@ public class CryptoHelper {
      * @param encryptionModeEnum : encryption mode to be used
      * @return an output stream with encrypted contents.
      */
-    //TODO heavy refactoring for mode 2
     public static ByteArrayOutputStream encryptXTEA(ByteArrayInputStream inputStream, EncryptionModeEnum encryptionModeEnum) throws IOException, InvalidKeyException {
-        int contentsSize = inputStream.available();
-        if (contentsSize % 8 != 0) {
-            throw new IllegalArgumentException("Buffer to be encoded must have length multiple of 8. Current=" + contentsSize);
-        }
-
-        byte[] inputBytes = readBytesAndCheckSize(inputStream, contentsSize);
-        int position = 0;
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        if (encryptionModeEnum == EncryptionModeEnum.OTHER_AND_SPECIAL) {
-            inputBytes = introduceTimeStamp(inputBytes);
-            outputStream.write(inputBytes, 0, 8);
-            position = 8;
-        }
+        int contentsSize = checkContentsSize(inputStream);
+        byte[] inputBytes = readBytes(inputStream, contentsSize);
 
         XTEA.engineInit(encryptionModeEnum.key, false);
 
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        if (encryptionModeEnum == EncryptionModeEnum.OTHER_AND_SPECIAL) {
+            inputBytes = introduceTimeStamp(inputBytes);
+            outputStream.write(inputBytes, 0, 8);
+            contentsSize = inputBytes.length;
+        }
 
-        while (position < inputBytes.length) {
+        int position = encryptionModeEnum.contentsOffset;
+        while (position < contentsSize) {
 
             if (encryptionModeEnum == EncryptionModeEnum.OTHER_AND_SPECIAL) {
-                // XOR XTEA encipher current item with previous result
-                for (int i = 0; i < 8; i++) {
-                    inputBytes[position + i] ^= inputBytes[position - 8 + i];
+                // XOR XTEA encipher current block with previously decoded block
+                for (int i = 0; i < BLOCK_SIZE; i++) {
+                    inputBytes[position + i] ^= inputBytes[position - BLOCK_SIZE + i];
                 }
             }
 
             byte[] outputBytes = XTEA.engineCrypt(inputBytes, position);
-
-
             outputStream.write(outputBytes);
 
-
             if (encryptionModeEnum == EncryptionModeEnum.OTHER_AND_SPECIAL) {
-                System.arraycopy(outputBytes, 0, inputBytes, position, 8);
+                // Store result in input buffer to be used with next iteration
+                System.arraycopy(outputBytes, 0, inputBytes, position, BLOCK_SIZE);
             }
 
-            position += 8;
+            position += BLOCK_SIZE;
         }
-
 
         return outputStream;
     }
@@ -125,6 +113,13 @@ public class CryptoHelper {
         return resultBytes;
     }
 
+    /**
+     * @param timestamp : in seconds
+     */
+    static void overrideTimestamp(int timestamp) {
+        CryptoHelper.timestampOverride = timestamp;
+    }
+
     static int getTimestamp() {
         if (timestampOverride == null) {
             return (int) (System.currentTimeMillis() / 1000L);
@@ -136,21 +131,21 @@ public class CryptoHelper {
         CryptoHelper.timestampOverride = null;
     }
 
-    /**
-     * @param timestamp : in seconds
-     */
-    static void overrideTimestamp(int timestamp) {
-        CryptoHelper.timestampOverride = timestamp;
-    }
-
-
-    private static byte[] readBytesAndCheckSize(ByteArrayInputStream inputStream, int contentsSize) throws IOException {
+    private static byte[] readBytes(ByteArrayInputStream inputStream, int contentsSize) throws IOException {
         byte[] inputBytes = new byte[contentsSize];
 
         int readBytes = inputStream.read(inputBytes);
         assert readBytes == contentsSize : "Unable to read till the end of the buffer.";
 
         return inputBytes;
+    }
+
+    private static int checkContentsSize(ByteArrayInputStream inputStream) {
+        int contentsSize = inputStream.available();
+        if (contentsSize % BLOCK_SIZE != 0) {
+            throw new IllegalArgumentException("Provided buffer must have length multiple of " + BLOCK_SIZE + ". Current=" + contentsSize);
+        }
+        return contentsSize;
     }
 
     /**
@@ -176,7 +171,7 @@ public class CryptoHelper {
                 0x80BAC211,
                 0x6917BD3A,
                 0xF0528EBD},
-                8);
+                BLOCK_SIZE);
 
         /**
          * Encryption key
