@@ -155,23 +155,30 @@ public class CryptoHelper {
         /**
          * Game saves
          */
-        SAVEGAME(new int[]{
-                0x64EA432C,
-                0xF8A35B24,
-                0x018ECD81,
-                0x8326BEAC},
+        SAVEGAME(0,
+                new int[]{
+                    0x64EA432C,
+                    0xF8A35B24,
+                    0x018ECD81,
+                    0x8326BEAC},
                 0),
 
         /**
          * Other files (as database).
          * First 8 bytes of encrypted contents are timestamps so must be ignored.
          */
-        OTHER_AND_SPECIAL(new int[]{
-                0x4FE23C4A,
-                0x80BAC211,
-                0x6917BD3A,
-                0xF0528EBD},
+        OTHER_AND_SPECIAL(1,
+                new int[]{
+                    0x4FE23C4A,
+                    0x80BAC211,
+                    0x6917BD3A,
+                    0xF0528EBD},
                 BLOCK_SIZE);
+
+        /**
+         * Unique identifier
+         */
+        private final int id;
 
         /**
          * Encryption key
@@ -183,7 +190,8 @@ public class CryptoHelper {
          */
         private int contentsOffset;
 
-        EncryptionModeEnum(int[] key, int contentsOffset) {
+        EncryptionModeEnum(int id, int[] key, int contentsOffset) {
+            this.id = id;
             this.key = key;
             this.contentsOffset = contentsOffset;
         }
