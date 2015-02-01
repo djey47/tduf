@@ -20,6 +20,9 @@ public class FileStructureDto implements Serializable {
     @JsonProperty("littleEndian")
     private Boolean littleEndian;
 
+    @JsonProperty("cryptoMode")
+    private Integer cryptoMode;
+
     @JsonProperty("fields")
     private List<Field> fields;
 
