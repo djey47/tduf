@@ -3,6 +3,9 @@ package fr.tduf.libunlimited.low.files.research.common;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class StructureHelperTest {
@@ -29,5 +32,32 @@ public class StructureHelperTest {
 
         // THEN
         assertThat(actualStructure).isNotNull();
+    }
+
+    @Test
+    public void encryptIfNeeded_whenNoCryptoMode_shouldReturnInitialContents() throws IOException {
+        // GIVEN
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        outputStream.write(100);
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = StructureHelper.encryptIfNeeded(outputStream, null);
+
+        // THEN
+        assertThat(actualOutputStream).isEqualTo(outputStream);
+    }
+
+    @Test
+    public void encryptIfNeeded_whenCryptoMode_shouldReturnEncryptedContents() throws IOException {
+        // GIVEN
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        outputStream.write(new byte[8]);
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = StructureHelper.encryptIfNeeded(outputStream, 0);
+
+        // THEN
+        assertThat(actualOutputStream.size()).isEqualTo(outputStream.size());
+        assertThat(actualOutputStream).isNotEqualTo(outputStream);
     }
 }

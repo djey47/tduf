@@ -1,11 +1,11 @@
 package fr.tduf.libunlimited.low.files.research.common;
 
+import fr.tduf.libunlimited.low.files.common.crypto.CryptoHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.security.InvalidKeyException;
 
 /**
  * Utility class to provide common operations on Structures.
@@ -26,4 +26,28 @@ public class StructureHelper {
         // Classpath resource
         return new ObjectMapper().readValue(fileStructureStream, FileStructureDto.class);
     }
+
+    /**
+     * Encrypts specified output stream according to cryptoMode parameter.
+     *
+     * @param outputStream  : output stream to process, if needed
+     * @param cryptoMode    : integer value indicating which encryption mode to use. May be null.
+     * @return original output stream if no encryption has been performed, else an encrypted output stream.
+     */
+    public static ByteArrayOutputStream encryptIfNeeded (ByteArrayOutputStream outputStream, Integer cryptoMode) throws IOException {
+        if (cryptoMode == null) {
+            return outputStream;
+        }
+
+        CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(cryptoMode);
+
+        try {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            outputStream = CryptoHelper.encryptXTEA(inputStream, encryptionModeEnum);
+        } catch (InvalidKeyException e) {
+            throw new IOException("Should never occur...", e);
+        }
+
+        return outputStream;
+   }
 }
