@@ -1,6 +1,7 @@
 {
   "name": "TDU BTRQ (BinaryTorque?)",
   "littleEndian": true,
+  "cryptoMode": 1,
   "fields": [
     {
       "name": "entryCount",
