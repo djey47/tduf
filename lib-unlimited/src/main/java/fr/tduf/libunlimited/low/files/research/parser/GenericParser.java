@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.parser;
 
+import fr.tduf.libunlimited.low.files.common.crypto.CryptoHelper;
 import fr.tduf.libunlimited.low.files.research.common.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
@@ -7,7 +8,9 @@ import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -36,8 +39,22 @@ public abstract class GenericParser<T> {
         requireNonNull(inputStream, "Data stream is required");
         requireNonNull(getStructureResource(), "Data structure resource is required");
 
-        this.inputStream = inputStream;
         this.fileStructure = StructureHelper.retrieveStructureFromLocation(getStructureResource());
+
+        // TODO externalize to static method
+        ByteArrayInputStream finalInputStream = inputStream;
+        if (fileStructure.getCryptoMode() != null) {
+            CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(fileStructure.getCryptoMode());
+            try {
+                ByteArrayOutputStream outputStream = CryptoHelper.decryptXTEA(inputStream, encryptionModeEnum);
+                finalInputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            } catch (InvalidKeyException e) {
+                // TODO handle exception
+                finalInputStream = null;
+                e.printStackTrace();
+            }
+        }
+        this.inputStream = finalInputStream;
     }
 
     /**

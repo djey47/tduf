@@ -56,6 +56,20 @@ public class GenericParserTest {
     }
 
     @Test
+    public void parse_whenProvidedFiles_andEncryptedContents_shouldReturnDomainObject() throws IOException, URISyntaxException {
+        // GIVEN
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileEncrypted();
+        GenericParser<String> actualParser = createGenericParserEncrypted(inputStream);
+
+        // WHEN
+        String actualObject = actualParser.parse();
+
+        // THEN
+        assertThat(actualObject).isNotNull();
+        assertThat(actualObject).isEqualTo(DATA);
+    }
+
+    @Test
     public void parse_whenProvidedFiles_andHalfFloatValues_shouldReturnDomainObject() throws IOException, URISyntaxException {
         // GIVEN
         ByteArrayInputStream inputStream = createInputStreamFromReferenceFileHalfFloat();
@@ -221,6 +235,40 @@ public class GenericParserTest {
         };
     }
 
+    private GenericParser<String> createGenericParserEncrypted(final ByteArrayInputStream inputStream) throws IOException {
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+
+                assertThat(getDataStore().size()).isEqualTo(10);
+
+                // Field 1
+                assertThat(getDataStore().getText("tag").get()).isEqualTo("ABCDEFGHIJ");
+
+                // Field 2
+                assertThat(getDataStore().getRawValue("unknown").get()).isEqualTo(new byte[]{0x1,0x2,0x3,0x4,0x5});
+
+                // Field 3 - item 0
+                assertThat(getDataStore().getInteger("repeater[0].number").get()).isEqualTo(500L);
+                assertThat(getDataStore().getFloatingPoint("repeater[0].numberF").get()).isEqualTo(257.45166f);
+                assertThat(getDataStore().getText("repeater[0].text").get()).isEqualTo("ABCD");
+                assertThat(getDataStore().getRawValue("repeater[0].delimiter").get()).isEqualTo(new byte[]{0xA});
+                // Field 3 - item 1
+                assertThat(getDataStore().getInteger("repeater[1].number").get()).isEqualTo(1000L);
+                assertThat(getDataStore().getFloatingPoint("repeater[1].numberF").get()).isEqualTo(86.714584f);
+                assertThat(getDataStore().getText("repeater[1].text").get()).isEqualTo("EFGH");
+                assertThat(getDataStore().getRawValue("repeater[1].delimiter").get()).isEqualTo(new byte[] {0xB});
+
+                return DATA;
+            }
+
+            @Override
+            protected String getStructureResource() {
+                return "/files/structures/TEST-encrypted-map.json";
+            }
+        };
+    }
+
     private GenericParser<String> createGenericParserHalfFloat(final ByteArrayInputStream inputStream) throws IOException {
         return new GenericParser<String>(inputStream) {
             @Override
@@ -327,6 +375,12 @@ public class GenericParserTest {
 
     private ByteArrayInputStream createInputStreamFromReferenceFile() throws IOException, URISyntaxException {
         URI fileURI = thisClass.getResource("/files/samples/TEST.bin").toURI();
+        byte[] bytes = Files.readAllBytes(Paths.get(fileURI));
+        return new ByteArrayInputStream(bytes);
+    }
+
+    private ByteArrayInputStream createInputStreamFromReferenceFileEncrypted() throws IOException, URISyntaxException {
+        URI fileURI = thisClass.getResource("/files/samples/TEST-encrypted.bin").toURI();
         byte[] bytes = Files.readAllBytes(Paths.get(fileURI));
         return new ByteArrayInputStream(bytes);
     }

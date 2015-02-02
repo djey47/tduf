@@ -43,6 +43,10 @@ public class FileStructureDto implements Serializable {
         return littleEndian;
     }
 
+    public Integer getCryptoMode() {
+        return cryptoMode;
+    }
+
     /**
      * Represents a field in structure.
      */

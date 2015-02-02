@@ -1,0 +1,46 @@
+{
+  "name" : "TEST file format",
+  "littleEndian" : false,
+  "cryptoMode" : 0,
+  "fields" : [
+    {
+      "name": "gap0",
+      "type": "GAP",
+      "size": 3
+    },{
+      "name": "tag",
+      "type": "TEXT",
+      "size": 10
+    },{
+      "name" : "unknown",
+      "type" : "UNKNOWN",
+      "size" : 5
+    },{
+      "name" : "repeater",
+      "type" : "REPEATER",
+      "subFields" : [
+        {
+          "name" : "number",
+          "type" : "INTEGER",
+          "size" : 4
+        }, {
+          "name" : "numberF",
+          "type" : "FPOINT",
+          "size" : 4
+        }, {
+          "name" : "gap",
+          "type" : "GAP",
+          "size" : 2
+        }, {
+          "name" : "text",
+          "type" : "TEXT",
+          "size" : 4
+        }, {
+          "name" : "delimiter",
+          "type" : "DELIMITER",
+          "size" : 1
+        }
+      ]
+    }
+  ]
+}
