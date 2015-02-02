@@ -28,6 +28,9 @@ public class DatabaseTool extends GenericTool {
     @Option(name = "-o", aliases = "--outputDir", usage = "Target directory for generated JSON files, defaults to current directory\\tdu-database-dump.")
     private String outputDirectory;
 
+    @Option(name = "-c", aliases = "--clear", usage = "Not mandatory. Indicates unpacked TDU files do not need to be unencrypted and encrypted back.")
+    private boolean clear;
+
     private Command command;
 
     /**
