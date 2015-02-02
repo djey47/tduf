@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.low.files.research.common;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -59,5 +60,31 @@ public class StructureHelperTest {
         // THEN
         assertThat(actualOutputStream.size()).isEqualTo(outputStream.size());
         assertThat(actualOutputStream).isNotEqualTo(outputStream);
+    }
+
+    @Test
+    public void decryptIfNeeded_whenNoCryptoMode_shouldReturnInitialContents() throws IOException {
+        // GIVEN
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[]{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8 });
+
+        // WHEN
+        ByteArrayInputStream actualInputStream = StructureHelper.decryptIfNeeded(inputStream, null);
+
+        // THEN
+        assertThat(actualInputStream).isEqualTo(inputStream);
+    }
+
+    @Test
+    public void decryptIfNeeded_whenCryptoMode_shouldReturnEncryptedContents() throws IOException {
+        // GIVEN
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[]{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8 });
+
+        // WHEN
+        ByteArrayInputStream actualInputStream = StructureHelper.decryptIfNeeded(inputStream, 0);
+
+        // THEN
+        inputStream.reset();
+        assertThat(actualInputStream.available()).isEqualTo(actualInputStream.available());
+        assertThat(actualInputStream).isNotEqualTo(inputStream);
     }
 }

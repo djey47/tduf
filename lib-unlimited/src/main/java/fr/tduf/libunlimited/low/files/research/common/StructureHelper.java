@@ -49,5 +49,29 @@ public class StructureHelper {
         }
 
         return outputStream;
-   }
+    }
+
+    /**
+     * Decrypts specified input stream according to cryptoMode parameter.
+     *
+     * @param inputStream  : input stream to process, if needed
+     * @param cryptoMode    : integer value indicating which decryption mode to use. May be null.
+     * @return original input stream if no encryption has been performed, else an encrypted input stream.
+     */
+    public static ByteArrayInputStream decryptIfNeeded (ByteArrayInputStream inputStream, Integer cryptoMode) throws IOException {
+        if (cryptoMode == null) {
+            return inputStream;
+        }
+
+        CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(cryptoMode);
+
+        try {
+            ByteArrayOutputStream outputStream = CryptoHelper.decryptXTEA(inputStream, encryptionModeEnum);
+            inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+        } catch (InvalidKeyException e) {
+            throw new IOException("Should never occur...", e);
+        }
+
+        return inputStream;
+    }
 }
