@@ -1,22 +1,23 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.CommandHelper;
+import fr.tduf.libunlimited.low.files.common.crypto.CryptoHelper;
 import fr.tduf.libunlimited.low.files.research.parser.GenericParser;
 import fr.tduf.libunlimited.low.files.research.writer.GenericWriter;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
 import java.util.List;
 
 import static fr.tduf.cli.tools.FileTool.Command.APPLYJSON;
+import static fr.tduf.cli.tools.FileTool.Command.DECRYPT;
 import static fr.tduf.cli.tools.FileTool.Command.JSONIFY;
 import static java.util.Arrays.asList;
 
@@ -34,12 +35,16 @@ public class FileTool extends GenericTool {
     @Option(name="-s", aliases = "--structureFile", usage = "File describing input file structure, as JSON (required for jsonify and applyjson operations)." )
     private String structureFile;
 
+    @Option(name="-c", aliases = "--cryptoMode", usage = "Value indicating encrypting method used (required for decrypt and encrypt operations). VAL:  0=savegames, 1=database/btrq..." )
+    private String cryptoMode;
+
     private Command command;
 
     /**
      * All available commands
      */
     enum Command implements CommandHelper.CommandEnum {
+        DECRYPT("decrypt", "Makes protected TDU files readable."),
         JSONIFY("jsonify", "Converts TDU file with structure to JSON file."),
         APPLYJSON("applyjson", "Rewrites TDU file from JSON file with structure.");
 
@@ -92,6 +97,9 @@ public class FileTool extends GenericTool {
                 case APPLYJSON:
                     extension = ".tdu";
                     break;
+                case DECRYPT:
+                    extension = ".ok";
+                    break;
                 default:
                     extension = ".";
                     break;
@@ -105,6 +113,13 @@ public class FileTool extends GenericTool {
                 &&  (command == JSONIFY || command == APPLYJSON)) {
             throw new CmdLineException(parser, "Error: structureFile is required.", null);
         }
+
+        // Encryption mode: mandatory with decrypt/encrypt
+        if (cryptoMode == null
+                &&  (command == DECRYPT)) {
+            throw new CmdLineException(parser, "Error: cryptoMode is required.", null);
+        }
+
     }
 
     @Override
@@ -115,6 +130,7 @@ public class FileTool extends GenericTool {
     @Override
     protected List<String> getExamples() {
         return asList(
+                DECRYPT.label + " -c 1 -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.ok\"",
                 JSONIFY.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"",
                 APPLYJSON.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.json\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"");
     }
@@ -128,6 +144,9 @@ public class FileTool extends GenericTool {
                 break;
             case APPLYJSON:
                 applyjson();
+                break;
+            case DECRYPT:
+                decrypt();
                 break;
             default:
                 return false;
@@ -189,5 +208,25 @@ public class FileTool extends GenericTool {
         Files.write(Paths.get(outputFile), outputStream.toByteArray());
 
         System.out.println("JSON to TDU conversion done: " + this.inputFile + " to " + this.outputFile);
+    }
+
+    private void decrypt() throws IOException {
+        System.out.println("Now decrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
+
+        CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(this.cryptoMode));
+        Path inputFilePath = new File(this.inputFile).toPath();
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(inputFilePath));
+
+        ByteArrayOutputStream outputStream;
+        try {
+            outputStream = CryptoHelper.decryptXTEA(inputStream, encryptionModeEnum);
+        } catch (InvalidKeyException e) {
+            throw new IOException("Should never happen.", e);
+        }
+
+        FileOutputStream fileOutputStream = new FileOutputStream(this.outputFile);
+        fileOutputStream.write(outputStream.toByteArray());
+
+        System.out.println("Done: " + this.inputFile + " to " + this.outputFile);
     }
 }
