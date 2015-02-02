@@ -16,9 +16,7 @@ import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.util.List;
 
-import static fr.tduf.cli.tools.FileTool.Command.APPLYJSON;
-import static fr.tduf.cli.tools.FileTool.Command.DECRYPT;
-import static fr.tduf.cli.tools.FileTool.Command.JSONIFY;
+import static fr.tduf.cli.tools.FileTool.Command.*;
 import static java.util.Arrays.asList;
 
 /**
@@ -44,7 +42,8 @@ public class FileTool extends GenericTool {
      * All available commands
      */
     enum Command implements CommandHelper.CommandEnum {
-        DECRYPT("decrypt", "Makes protected TDU files readable."),
+        DECRYPT("decrypt", "Makes protected TDU file readable by humans or other software."),
+        ENCRYPT("encrypt", "Allows protected TDU file to be read by game engine."),
         JSONIFY("jsonify", "Converts TDU file with structure to JSON file."),
         APPLYJSON("applyjson", "Rewrites TDU file from JSON file with structure.");
 
@@ -98,7 +97,10 @@ public class FileTool extends GenericTool {
                     extension = ".tdu";
                     break;
                 case DECRYPT:
-                    extension = ".ok";
+                    extension = ".dec";
+                    break;
+                case ENCRYPT:
+                    extension = ".enc";
                     break;
                 default:
                     extension = ".";
@@ -116,7 +118,7 @@ public class FileTool extends GenericTool {
 
         // Encryption mode: mandatory with decrypt/encrypt
         if (cryptoMode == null
-                &&  (command == DECRYPT)) {
+                &&  (command == DECRYPT || command == ENCRYPT)) {
             throw new CmdLineException(parser, "Error: cryptoMode is required.", null);
         }
 
@@ -131,6 +133,7 @@ public class FileTool extends GenericTool {
     protected List<String> getExamples() {
         return asList(
                 DECRYPT.label + " -c 1 -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.ok\"",
+                ENCRYPT.label + " -c 1 -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.ok\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\"",
                 JSONIFY.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"",
                 APPLYJSON.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.json\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"");
     }
@@ -147,6 +150,9 @@ public class FileTool extends GenericTool {
                 break;
             case DECRYPT:
                 decrypt();
+                break;
+            case ENCRYPT:
+                encrypt();
                 break;
             default:
                 return false;
@@ -210,6 +216,7 @@ public class FileTool extends GenericTool {
         System.out.println("JSON to TDU conversion done: " + this.inputFile + " to " + this.outputFile);
     }
 
+    // TODO factorize
     private void decrypt() throws IOException {
         System.out.println("Now decrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
 
@@ -224,8 +231,27 @@ public class FileTool extends GenericTool {
             throw new IOException("Should never happen.", e);
         }
 
-        FileOutputStream fileOutputStream = new FileOutputStream(this.outputFile);
-        fileOutputStream.write(outputStream.toByteArray());
+        Files.write(Paths.get(this.outputFile), outputStream.toByteArray());
+
+        System.out.println("Done: " + this.inputFile + " to " + this.outputFile);
+    }
+
+    // TODO factorize
+    private void encrypt() throws IOException {
+        System.out.println("Now encrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
+
+        CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(this.cryptoMode));
+        Path inputFilePath = new File(this.inputFile).toPath();
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(inputFilePath));
+
+        ByteArrayOutputStream outputStream;
+        try {
+            outputStream = CryptoHelper.encryptXTEA(inputStream, encryptionModeEnum);
+        } catch (InvalidKeyException e) {
+            throw new IOException("Should never happen.", e);
+        }
+
+        Files.write(Paths.get(this.outputFile), outputStream.toByteArray());
 
         System.out.println("Done: " + this.inputFile + " to " + this.outputFile);
     }

@@ -9,9 +9,7 @@ import java.nio.file.NoSuchFileException;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.CHECK;
 import static fr.tduf.cli.tools.DatabaseTool.Command.DUMP;
-import static fr.tduf.cli.tools.FileTool.Command.APPLYJSON;
-import static fr.tduf.cli.tools.FileTool.Command.DECRYPT;
-import static fr.tduf.cli.tools.FileTool.Command.JSONIFY;
+import static fr.tduf.cli.tools.FileTool.Command.*;
 import static fr.tduf.cli.tools.MappingTool.Command.*;
 
 /**
@@ -58,6 +56,14 @@ public class AllToolsTest {
         exitRule.expectSystemExitWithStatus(1);
 
         testToolCommand(new FileTool(), DECRYPT.getLabel());
+    }
+
+    @Test
+    public void fileTool_encrypt() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new FileTool(), ENCRYPT.getLabel());
     }
 
     @Test(expected= NoSuchFileException.class)
