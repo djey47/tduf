@@ -1,14 +1,17 @@
 package fr.tduf.libunlimited.low.files.research.writer;
 
+import fr.tduf.libunlimited.low.files.common.crypto.CryptoHelper;
 import fr.tduf.libunlimited.low.files.research.common.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.security.InvalidKeyException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -45,6 +48,24 @@ public abstract class GenericWriter<T> {
         fillStore();
 
         writeFields(this.fileStructure.getFields(), outputStream, "");
+
+        // TODO externalize to static method
+        if (fileStructure.getCryptoMode() != null) {
+            ByteArrayOutputStream encryptedOutputStream;
+
+            CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(fileStructure.getCryptoMode());
+
+            try {
+                ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+                encryptedOutputStream = CryptoHelper.encryptXTEA(inputStream, encryptionModeEnum);
+            } catch (InvalidKeyException e) {
+                // TODO handle exception
+                encryptedOutputStream = null;
+                e.printStackTrace();
+            }
+
+            outputStream = encryptedOutputStream;
+        }
 
         return outputStream;
     }
