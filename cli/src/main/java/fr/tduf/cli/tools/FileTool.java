@@ -216,43 +216,43 @@ public class FileTool extends GenericTool {
         System.out.println("JSON to TDU conversion done: " + this.inputFile + " to " + this.outputFile);
     }
 
-    // TODO factorize
     private void decrypt() throws IOException {
         System.out.println("Now decrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
 
-        CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(this.cryptoMode));
-        Path inputFilePath = new File(this.inputFile).toPath();
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(inputFilePath));
-
-        ByteArrayOutputStream outputStream;
-        try {
-            outputStream = CryptoHelper.decryptXTEA(inputStream, encryptionModeEnum);
-        } catch (InvalidKeyException e) {
-            throw new IOException("Should never happen.", e);
-        }
+        ByteArrayOutputStream outputStream = processInputStream(false);
 
         Files.write(Paths.get(this.outputFile), outputStream.toByteArray());
 
         System.out.println("Done: " + this.inputFile + " to " + this.outputFile);
     }
 
-    // TODO factorize
     private void encrypt() throws IOException {
         System.out.println("Now encrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
 
-        CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(this.cryptoMode));
-        Path inputFilePath = new File(this.inputFile).toPath();
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(inputFilePath));
-
-        ByteArrayOutputStream outputStream;
-        try {
-            outputStream = CryptoHelper.encryptXTEA(inputStream, encryptionModeEnum);
-        } catch (InvalidKeyException e) {
-            throw new IOException("Should never happen.", e);
-        }
+        ByteArrayOutputStream outputStream = processInputStream(true);
 
         Files.write(Paths.get(this.outputFile), outputStream.toByteArray());
 
         System.out.println("Done: " + this.inputFile + " to " + this.outputFile);
+    }
+
+    private ByteArrayOutputStream processInputStream(boolean withEncryption) throws IOException {
+        ByteArrayOutputStream outputStream;
+        try {
+            CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(this.cryptoMode));
+            if (withEncryption) {
+                outputStream = CryptoHelper.encryptXTEA(getInputStream(), encryptionModeEnum);
+            } else {
+                outputStream = CryptoHelper.decryptXTEA(getInputStream(), encryptionModeEnum);
+            }
+        } catch (InvalidKeyException e) {
+            throw new IOException("Should never happen.", e);
+        }
+        return outputStream;
+    }
+
+    private ByteArrayInputStream getInputStream() throws IOException {
+        Path inputFilePath = new File(this.inputFile).toPath();
+        return new ByteArrayInputStream(Files.readAllBytes(inputFilePath));
     }
 }
