@@ -331,7 +331,7 @@ public class DbParserTest {
                 "{Reward_Param_} i",
                 "// items: 1",
                 "55736935;5;20;54400734;54359455;54410835;561129540;5337472;211;",
-                "\0");
+                "\0\0\0\0");
     }
 
     private List<String> createInvalidContentsWithOneItemAndUnconsistentFieldCount() {
