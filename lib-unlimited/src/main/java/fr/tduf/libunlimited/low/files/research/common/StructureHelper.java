@@ -43,12 +43,10 @@ public class StructureHelper {
 
         try {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-            outputStream = CryptoHelper.encryptXTEA(inputStream, encryptionModeEnum);
+            return CryptoHelper.encryptXTEA(inputStream, encryptionModeEnum);
         } catch (InvalidKeyException e) {
             throw new IOException("Should never occur...", e);
         }
-
-        return outputStream;
     }
 
     /**
@@ -67,11 +65,9 @@ public class StructureHelper {
 
         try {
             ByteArrayOutputStream outputStream = CryptoHelper.decryptXTEA(inputStream, encryptionModeEnum);
-            inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            return new ByteArrayInputStream(outputStream.toByteArray());
         } catch (InvalidKeyException e) {
             throw new IOException("Should never occur...", e);
         }
-
-        return inputStream;
     }
 }
