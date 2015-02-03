@@ -22,6 +22,25 @@ public class DatabaseReadWriteHelperTest {
     private static Class<DatabaseReadWriteHelperTest> thisClass = DatabaseReadWriteHelperTest.class;
 
     @Test
+    public void readDatabase_whenFileNotFound_shouldReturnMissingContentsNotice() throws URISyntaxException, IOException {
+        // GIVEN
+        File dbFile = new File("TDU_Achievements.db.nope");
+        String databaseDirectory = dbFile.getParent();
+        ArrayList<IntegrityError> integrityErrors = new ArrayList<>();
+
+
+        // WHEN
+        DbDto actualdbDto = DatabaseReadWriteHelper.readDatabase(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, true, integrityErrors);
+
+
+        // THEN
+        assertThat(actualdbDto).isNull();
+
+        assertThat(integrityErrors).hasSize(1);
+        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.CONTENTS_NOT_FOUND);
+    }
+
+    @Test
     public void readDatabase_whenRealFile_andClearContents_shouldReturnDatabaseContents_andMissingResourceNotices() throws URISyntaxException, IOException {
         // GIVEN
         File dbFile = new File(thisClass.getResource("/db/TDU_Achievements.db").toURI());
@@ -81,13 +100,25 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
+    public void parseTopicContentsFromDirectory_whenFileNotFound_shouldReturnEmptyList() throws URISyntaxException, FileNotFoundException {
+        // GIVEN
+        File dbFile = new File("TDU_Achievements.db.nope");
+
+        // WHEN
+        List<String> actualContentLines = DatabaseReadWriteHelper.parseTopicContentsFromFile(dbFile.getPath());
+
+        // THEN
+        assertThat(actualContentLines).isNotNull();
+        assertThat(actualContentLines).isEmpty();
+    }
+
+    @Test
     public void parseTopicContentsFromDirectory_whenRealFile_andClear_Contents_shouldReturnContentsAsLines() throws URISyntaxException, FileNotFoundException {
         // GIVEN
         File dbFile = new File(thisClass.getResource("/db/TDU_Achievements.db").toURI());
-        String databaseDirectory = dbFile.getParent();
 
         // WHEN
-        List<String> actualContentLines = DatabaseReadWriteHelper.parseTopicContentsFromDirectory(DbDto.Topic.ACHIEVEMENTS, databaseDirectory);
+        List<String> actualContentLines = DatabaseReadWriteHelper.parseTopicContentsFromFile(dbFile.getPath());
 
         // THEN
         assertThat(actualContentLines).isNotNull();

@@ -19,6 +19,9 @@ public class DatabaseReadWriteHelper {
 
     private static final String EXTENSION_DB_CONTENTS = "db";
 
+    private static final String ENCODING_UTF_8 = "UTF-8";
+    private static final String ENCODING_UTF_16 = "UTF-16";
+
     /**
      * Reads all database contents (+resources) from specified topic into databaseDirectory.
      * @param topic             : topic to parse TDU contents from
@@ -27,16 +30,24 @@ public class DatabaseReadWriteHelper {
      *@param integrityErrors    : list of database errors, encountered when parsing.  @return a global object for topic.
      * @throws FileNotFoundException
      */
+    // TODO reduce method size
     public static DbDto readDatabase(DbDto.Topic topic, String databaseDirectory, boolean withClearContents, List<IntegrityError> integrityErrors) throws IOException {
         Objects.requireNonNull(integrityErrors);
 
-        //TODO Retrieve file name, Handle topic contents file not found and return null
-        String databaseContentsDirectory = databaseDirectory;
-        if (!withClearContents) {
-            databaseContentsDirectory = prepareClearContents(topic.getLabel(), databaseContentsDirectory);
+        String contentsFileName = checkDatabaseContents(topic, databaseDirectory, integrityErrors);
+        if (contentsFileName == null) {
+            return null;
         }
 
-        List<String> contentLines = parseTopicContentsFromDirectory(topic, databaseContentsDirectory);
+        if (!withClearContents) {
+            // TODO handle encryption error: add integrity error
+            contentsFileName = prepareClearContents(contentsFileName);
+            if (contentsFileName == null) {
+                return null;
+            }
+        }
+
+        List<String> contentLines = parseTopicContentsFromFile(contentsFileName);
         if(contentLines.isEmpty()) {
             return null;
         }
@@ -79,24 +90,43 @@ public class DatabaseReadWriteHelper {
         dbWriter.writeAllAsJson(outputDirectory);
     }
 
-    static List<String> parseTopicContentsFromDirectory(DbDto.Topic topic, String databaseDirectory) throws FileNotFoundException {
-        return parseLinesInFile(topic.getLabel(), databaseDirectory, EXTENSION_DB_CONTENTS, "UTF-8");
+    static List<String> parseTopicContentsFromFile(String contentsFileName) throws FileNotFoundException {
+        return parseLinesInFile(contentsFileName, ENCODING_UTF_8);
     }
 
     static List<List<String>> parseTopicResourcesFromDirectory(DbDto.Topic topic, String databaseDirectory) throws FileNotFoundException {
         List<List<String>> resources = new ArrayList<>();
 
         for (DbResourceDto.Locale currentLocale : DbResourceDto.Locale.values()) {
-            resources.add(parseLinesInFile(topic.getLabel(), databaseDirectory, currentLocale.getCode(), "UTF-16"));
+            String resourceFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, currentLocale.getCode());
+            resources.add(parseLinesInFile(resourceFileName, ENCODING_UTF_16));
         }
 
         return resources;
     }
 
-    private static List<String> parseLinesInFile(String topicLabel, String databaseDirectory, String extension, String encoding) throws FileNotFoundException {
+    private static String checkDatabaseContents(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {
+        String contentsFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, EXTENSION_DB_CONTENTS);
+
+        if (new File(contentsFileName).exists()) {
+            return contentsFileName;
+        }
+
+        Map<String, Object> info = new HashMap<>();
+        info.put("Topic", topic);
+        IntegrityError integrityError = IntegrityError.builder()
+                .ofType(IntegrityError.ErrorTypeEnum.CONTENTS_NOT_FOUND)
+                .addInformations(info)
+                .build();
+        integrityErrors.add(integrityError);
+
+        return null;
+    }
+
+    private static List<String> parseLinesInFile(String fileName, String encoding) throws FileNotFoundException {
         List<String> resourceLines = new ArrayList<>() ;
 
-        File inputFile = new File(getDatabaseContentsFileName(topicLabel, databaseDirectory, extension));
+        File inputFile = new File(fileName);
 
         if (!inputFile.exists()) {
             // Returns empty contents so far
@@ -112,14 +142,14 @@ public class DatabaseReadWriteHelper {
         return resourceLines;
     }
 
-    private static String getDatabaseContentsFileName(String topicLabel, String databaseDirectory, String extension) {
+    private static String getDatabaseFileName(String topicLabel, String databaseDirectory, String extension) {
         return String.format("%s%s%s.%s", databaseDirectory, File.separator, topicLabel, extension);
     }
 
-    private static String prepareClearContents(String topicLabel, String databaseDirectory) throws IOException {
+    private static String prepareClearContents(String encryptedFileName) throws IOException {
         Path tempDirectoryPath = Files.createTempDirectory("libUnlimited-databaseRW");
 
-        File inputFile = new File(getDatabaseContentsFileName(topicLabel, databaseDirectory, EXTENSION_DB_CONTENTS));
+        File inputFile = new File(encryptedFileName);
         File outputFile = new File(tempDirectoryPath.toString(), inputFile.getName());
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(inputFile.toPath()));
@@ -132,6 +162,6 @@ public class DatabaseReadWriteHelper {
 
         Files.write(outputFile.toPath(), outputStream.toByteArray(), StandardOpenOption.CREATE);
 
-        return tempDirectoryPath.toString();
+        return outputFile.getPath();
     }
 }

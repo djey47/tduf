@@ -20,15 +20,19 @@ public class AllToolsTest {
     @Rule
     public final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
 
-    @Test(expected = NoSuchFileException.class)
+    @Test
     public void databaseTool_check() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(0);
+
         testToolCommand(new DatabaseTool(), CHECK.getLabel());
     }
 
-    @Test(expected = NoSuchFileException.class)
+    @Test
     public void databaseTool_dump() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(0);
+
         testToolCommand(new DatabaseTool(), DUMP.getLabel());
     }
 
