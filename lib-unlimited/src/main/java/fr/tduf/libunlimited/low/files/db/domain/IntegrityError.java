@@ -80,6 +80,11 @@ public class IntegrityError {
         RESOURCE_NOT_FOUND("A language resource file was not found for current topic: %s"),
 
         /**
+         * For a topic, could not access to corresponding contents.
+         */
+        CONTENTS_NOT_FOUND("Contents file was not found for current topic: %s.db"),
+
+        /**
          * Read resource items count not same over all language files
          */
         RESOURCE_ITEMS_COUNT_MISMATCH("Resource items count is not same over all language files: %s");
