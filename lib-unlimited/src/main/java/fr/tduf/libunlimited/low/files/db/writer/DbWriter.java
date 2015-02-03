@@ -90,39 +90,44 @@ public class DbWriter {
         Path path = Paths.get(directoryPath + File.separator + contentsFileName);
 
         try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+            long writtenSize = 0;
+
             // Meta
-            writeAndEndWithCRLF(
+            writtenSize += writeAndEndWithCRLF(
                     format(COMMENT_PATTERN, contentsFileName), bufferedWriter );
-            writeAndEndWithCRLF(
+            writtenSize += writeAndEndWithCRLF(
                     format(COMMENT_INFO_PATTERN, "Version", dbStructureDto.getVersion()), bufferedWriter);
-            writeAndEndWithCRLF(
+            writtenSize += writeAndEndWithCRLF(
                     format(COMMENT_INFO_PATTERN, "Categories", dbStructureDto.getCategoryCount()), bufferedWriter);
 
             // Structure
-            writeAndEndWithCRLF(
+            writtenSize += writeAndEndWithCRLF(
                     format(COMMENT_INFO_PATTERN, "Fields", dbStructureDto.getFields().size()), bufferedWriter);
-            writeAndEndWithCRLF(
+            writtenSize += writeAndEndWithCRLF(
                     format(ENTRY_PATTERN, topicLabel, dbStructureDto.getRef()), bufferedWriter);
             for (DbStructureDto.Field field : dbStructureDto.getFields()) {
-                writeAndEndWithCRLF(
+                writtenSize += writeAndEndWithCRLF(
                         format(ENTRY_PATTERN, field.getName(), field.getFieldType().getCode()), bufferedWriter);
             }
 
             // Contents
-            writeAndEndWithCRLF(
+            writtenSize += writeAndEndWithCRLF(
                     format(COMMENT_INFO_PATTERN, "items", dbDataDto.getEntries().size()), bufferedWriter);
             for (DbDataDto.Entry entry : dbDataDto.getEntries()) {
 
                 for (DbDataDto.Item item : entry.getItems()) {
                     bufferedWriter.write(item.getRawValue());
                     bufferedWriter.write(DbParser.VALUE_DELIMITER);
+
+                    writtenSize += (item.getRawValue().length() + 1);
                 }
 
-                writeAndEndWithCRLF("", bufferedWriter);
+                writtenSize += writeAndEndWithCRLF("", bufferedWriter);
+
             }
 
-            // Nul
-            bufferedWriter.write("\0");
+            // Padding to have total size multiple of 8 (required for later encryption)
+            writePaddingForSizeMultipleOfEight(bufferedWriter, writtenSize);
         }
     }
 
@@ -159,8 +164,24 @@ public class DbWriter {
         }
     }
 
-    private static void writeAndEndWithCRLF(String text, BufferedWriter bufferedWriter) throws IOException {
+    private static long writeAndEndWithCRLF(String text, BufferedWriter bufferedWriter) throws IOException {
         bufferedWriter.write(text);
         bufferedWriter.write("\r\n");
+
+        return text.length() + 2;
+    }
+
+    private static long writePaddingForSizeMultipleOfEight(BufferedWriter bufferedWriter, long actualSize) throws IOException {
+
+        if (actualSize % 8 == 0) {
+            return 0;
+        }
+
+        long paddingSize = 8  - (actualSize % 8);
+        for (int i = 0 ; i < paddingSize ; i++) {
+            bufferedWriter.write("\0");
+        }
+
+        return paddingSize;
     }
 }

@@ -70,6 +70,20 @@ public class DbWriterTest {
     }
 
     @Test
+    public void writeAll_whenRealContents_shouldCreateContentsFile_withSizeMultipleOf8() throws IOException, URISyntaxException {
+        //GIVEN
+        InputStream resourceAsStream = getClass().getResourceAsStream("/db/TDU_Achievements.json");
+        DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
+
+        //WHEN
+        DbWriter.load(initialDbDto).writeAll(tempDirectory.toString());
+
+        //THEN
+        File actualContentsFile = assertFileExistAndGet("TDU_Achievements.db");
+        assertThat(actualContentsFile.length() % 8).isEqualTo(0);
+    }
+
+    @Test
     public void writeAllAsJson_whenRealContents_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException {
         //GIVEN
         InputStream resourceAsStream = getClass().getResourceAsStream("/db/TDU_Achievements.json");
