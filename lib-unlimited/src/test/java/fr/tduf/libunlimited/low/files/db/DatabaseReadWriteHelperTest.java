@@ -22,7 +22,7 @@ public class DatabaseReadWriteHelperTest {
     private static Class<DatabaseReadWriteHelperTest> thisClass = DatabaseReadWriteHelperTest.class;
 
     @Test
-    public void readDatabase_whenRealFile_shouldReturnDatabaseContents_andMissingResourceNotices() throws URISyntaxException, FileNotFoundException {
+    public void readDatabase_whenRealFile_andClearContents_shouldReturnDatabaseContents_andMissingResourceNotices() throws URISyntaxException, IOException {
         // GIVEN
         File dbFile = new File(thisClass.getResource("/db/TDU_Achievements.db").toURI());
         String databaseDirectory = dbFile.getParent();
@@ -30,7 +30,7 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        DbDto actualdbDto = DatabaseReadWriteHelper.readDatabase(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
+        DbDto actualdbDto = DatabaseReadWriteHelper.readDatabase(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, true, integrityErrors);
 
 
         // THEN
@@ -42,7 +42,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void readDatabase_whenRealFileWithErrors_shouldUpdateIntegrityErrors() throws URISyntaxException, FileNotFoundException {
+    public void readDatabase_whenRealFileWithErrors_andClearContents_shouldUpdateIntegrityErrors() throws URISyntaxException, IOException {
         // GIVEN
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
@@ -52,7 +52,7 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        DatabaseReadWriteHelper.readDatabase(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
+        DatabaseReadWriteHelper.readDatabase(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, true, integrityErrors);
 
 
         // THEN
@@ -61,7 +61,27 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void parseTopicContentsFromDirectory_whenRealFile_shouldReturnContentsAsLines() throws URISyntaxException, FileNotFoundException {
+    public void readDatabase_whenRealFile_andEncryptedContents_shouldReturnDatabaseContents_andMissingResourceNotices() throws URISyntaxException, IOException {
+        // GIVEN
+        File dbFile = new File(thisClass.getResource("/db/encrypted/TDU_Achievements.db").toURI());
+        String databaseDirectory = dbFile.getParent();
+        ArrayList<IntegrityError> integrityErrors = new ArrayList<>();
+
+
+        // WHEN
+        DbDto actualdbDto = DatabaseReadWriteHelper.readDatabase(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, false, integrityErrors);
+
+
+        // THEN
+        assertThat(actualdbDto).isNotNull();
+        assertThat(actualdbDto.getData()).isNotNull();
+
+        assertThat(integrityErrors).hasSize(8);
+        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND);
+    }
+
+    @Test
+    public void parseTopicContentsFromDirectory_whenRealFile_andClear_Contents_shouldReturnContentsAsLines() throws URISyntaxException, FileNotFoundException {
         // GIVEN
         File dbFile = new File(thisClass.getResource("/db/TDU_Achievements.db").toURI());
         String databaseDirectory = dbFile.getParent();
@@ -75,7 +95,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void parseTopicResourcesFromDirectory_whenRealFiles_shouldReturnContentsAsCollections() throws URISyntaxException, FileNotFoundException {
+    public void parseTopicResourcesFromDirectory_whenRealFiles_andClearContents_shouldReturnContentsAsCollections() throws URISyntaxException, FileNotFoundException {
         // GIVEN
         File dbFile = new File(thisClass.getResource("/db/res/TDU_Achievements.fr").toURI());
         String databaseDirectory = dbFile.getParent();
@@ -97,7 +117,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void writeDatabaseToJson_whenProvidedContents_shouldCreateFiles() throws IOException {
+    public void writeDatabaseToJson_whenProvidedContents_andClearContents_shouldCreateFiles() throws IOException {
         // GIVEN
         DbStructureDto dbStructureDto = DbStructureDto.builder()
                 .forTopic(DbDto.Topic.ACHIEVEMENTS)

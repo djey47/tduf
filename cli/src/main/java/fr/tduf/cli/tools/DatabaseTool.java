@@ -29,7 +29,7 @@ public class DatabaseTool extends GenericTool {
     private String outputDirectory;
 
     @Option(name = "-c", aliases = "--clear", usage = "Not mandatory. Indicates unpacked TDU files do not need to be unencrypted and encrypted back.")
-    private boolean clear;
+    private boolean withClearContents;
 
     private Command command;
 
@@ -129,7 +129,7 @@ public class DatabaseTool extends GenericTool {
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
             System.out.println("-> Now processing topic: " + currentTopic + "...");
 
-            DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, new ArrayList<>());
+            DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, this.withClearContents, new ArrayList<>());
 
             DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, outputDirectory.toString());
 
@@ -141,7 +141,7 @@ public class DatabaseTool extends GenericTool {
         System.out.println("All done!");
     }
 
-    private void databaseCheck() throws FileNotFoundException {
+    private void databaseCheck() throws IOException {
 
         System.out.println("Checking TDU database, please wait...");
         System.out.println("-> Source directory: " + databaseDirectory);
@@ -150,7 +150,7 @@ public class DatabaseTool extends GenericTool {
             System.out.println("-> Now processing topic: " + currentTopic + "...");
 
             List<IntegrityError> integrityErrors = new ArrayList<>();
-            DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, integrityErrors);
+            DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, this.withClearContents, integrityErrors);
 
             if (dbDto == null) {
                 System.out.println("  !Database contents not found for topic " + currentTopic + ", skipping...");
