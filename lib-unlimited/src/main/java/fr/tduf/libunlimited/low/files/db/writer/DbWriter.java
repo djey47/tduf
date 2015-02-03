@@ -90,45 +90,55 @@ public class DbWriter {
         Path path = Paths.get(directoryPath + File.separator + contentsFileName);
 
         try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-            long writtenSize = 0;
+            long writtenSize = writeMetaContents(dbStructureDto, contentsFileName, bufferedWriter);
 
-            // Meta
-            writtenSize += writeAndEndWithCRLF(
-                    format(COMMENT_PATTERN, contentsFileName), bufferedWriter );
-            writtenSize += writeAndEndWithCRLF(
-                    format(COMMENT_INFO_PATTERN, "Version", dbStructureDto.getVersion()), bufferedWriter);
-            writtenSize += writeAndEndWithCRLF(
-                    format(COMMENT_INFO_PATTERN, "Categories", dbStructureDto.getCategoryCount()), bufferedWriter);
+            writtenSize += writeStructureContents(dbStructureDto, topicLabel, bufferedWriter);
 
-            // Structure
-            writtenSize += writeAndEndWithCRLF(
-                    format(COMMENT_INFO_PATTERN, "Fields", dbStructureDto.getFields().size()), bufferedWriter);
-            writtenSize += writeAndEndWithCRLF(
-                    format(ENTRY_PATTERN, topicLabel, dbStructureDto.getRef()), bufferedWriter);
-            for (DbStructureDto.Field field : dbStructureDto.getFields()) {
-                writtenSize += writeAndEndWithCRLF(
-                        format(ENTRY_PATTERN, field.getName(), field.getFieldType().getCode()), bufferedWriter);
-            }
+            writtenSize += writeItemContents(dbDataDto, bufferedWriter);
 
-            // Contents
-            writtenSize += writeAndEndWithCRLF(
-                    format(COMMENT_INFO_PATTERN, "items", dbDataDto.getEntries().size()), bufferedWriter);
-            for (DbDataDto.Entry entry : dbDataDto.getEntries()) {
-
-                for (DbDataDto.Item item : entry.getItems()) {
-                    bufferedWriter.write(item.getRawValue());
-                    bufferedWriter.write(DbParser.VALUE_DELIMITER);
-
-                    writtenSize += (item.getRawValue().length() + 1);
-                }
-
-                writtenSize += writeAndEndWithCRLF("", bufferedWriter);
-
-            }
-
-            // Padding to have total size multiple of 8 (required for later encryption)
+            // Required for later encryption
             writePaddingForSizeMultipleOfEight(bufferedWriter, writtenSize);
         }
+    }
+
+    private long writeItemContents(DbDataDto dbDataDto, BufferedWriter bufferedWriter) throws IOException {
+        long writtenSize = writeAndEndWithCRLF(
+                format(COMMENT_INFO_PATTERN, "items", dbDataDto.getEntries().size()), bufferedWriter);
+        for (DbDataDto.Entry entry : dbDataDto.getEntries()) {
+
+            for (DbDataDto.Item item : entry.getItems()) {
+                bufferedWriter.write(item.getRawValue());
+                bufferedWriter.write(DbParser.VALUE_DELIMITER);
+
+                writtenSize += (item.getRawValue().length() + 1);
+            }
+
+            writtenSize += writeAndEndWithCRLF("", bufferedWriter);
+
+        }
+        return writtenSize;
+    }
+
+    private long writeStructureContents(DbStructureDto dbStructureDto, String topicLabel, BufferedWriter bufferedWriter) throws IOException {
+        long writtenSize = writeAndEndWithCRLF(
+                format(COMMENT_INFO_PATTERN, "Fields", dbStructureDto.getFields().size()), bufferedWriter);
+        writtenSize += writeAndEndWithCRLF(
+                format(ENTRY_PATTERN, topicLabel, dbStructureDto.getRef()), bufferedWriter);
+        for (DbStructureDto.Field field : dbStructureDto.getFields()) {
+            writtenSize += writeAndEndWithCRLF(
+                    format(ENTRY_PATTERN, field.getName(), field.getFieldType().getCode()), bufferedWriter);
+        }
+        return writtenSize;
+    }
+
+    private long writeMetaContents(DbStructureDto dbStructureDto, String contentsFileName, BufferedWriter bufferedWriter) throws IOException {
+        long writtenSize = writeAndEndWithCRLF(
+                format(COMMENT_PATTERN, contentsFileName), bufferedWriter );
+        writtenSize += writeAndEndWithCRLF(
+                format(COMMENT_INFO_PATTERN, "Version", dbStructureDto.getVersion()), bufferedWriter);
+        writtenSize += writeAndEndWithCRLF(
+                format(COMMENT_INFO_PATTERN, "Categories", dbStructureDto.getCategoryCount()), bufferedWriter);
+        return writtenSize;
     }
 
     private void writeResources(String directoryPath) throws IOException {
