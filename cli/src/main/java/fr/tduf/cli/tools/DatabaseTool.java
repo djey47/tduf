@@ -131,6 +131,11 @@ public class DatabaseTool extends GenericTool {
 
             DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, this.withClearContents, new ArrayList<>());
 
+            if (dbDto == null) {
+                System.out.println("  !Database contents not found for topic " + currentTopic + ", skipping...");
+                continue;
+            }
+
             DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, outputDirectory.toString());
 
             System.out.println("Writing done for topic: " + currentTopic);
