@@ -24,6 +24,7 @@ public class CryptoHelper {
      * @param encryptionModeEnum : encryption mode to be used
      * @return an output stream with clear contents.
      */
+    //TODO Do not throw InvalidKeyException, embed it into IOException instead
     public static ByteArrayOutputStream decryptXTEA(ByteArrayInputStream inputStream, EncryptionModeEnum encryptionModeEnum) throws InvalidKeyException, IOException {
         int contentsSize = checkContentsSize(inputStream);
         byte[] inputBytes = readBytes(inputStream, contentsSize);
@@ -59,6 +60,7 @@ public class CryptoHelper {
      * @param encryptionModeEnum : encryption mode to be used
      * @return an output stream with encrypted contents.
      */
+    //TODO Do not throw InvalidKeyException, embed it into IOException instead
     public static ByteArrayOutputStream encryptXTEA(ByteArrayInputStream inputStream, EncryptionModeEnum encryptionModeEnum) throws IOException, InvalidKeyException {
         int contentsSize = checkContentsSize(inputStream);
         byte[] inputBytes = readBytes(inputStream, contentsSize);
