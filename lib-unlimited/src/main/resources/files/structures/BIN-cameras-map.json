@@ -1,0 +1,10 @@
+{
+  "name": "Cameras settings",
+  "littleEndian": true,
+  "fields": [
+    {
+      "name": "unknown",
+      "type": "UNKNOWN"
+    }
+  ]
+}

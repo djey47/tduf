@@ -1,0 +1,10 @@
+{
+  "name": "Havok physics for TDU levels",
+  "littleEndian": true,
+  "fields": [
+    {
+      "name": "unknown",
+      "type": "UNKNOWN"
+    }
+  ]
+}
