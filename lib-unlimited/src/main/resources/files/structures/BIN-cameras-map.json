@@ -1,10 +1,104 @@
 {
-  "name": "Cameras settings",
+  "name": "Cameras and views settings",
   "littleEndian": true,
   "fields": [
     {
-      "name": "unknown",
-      "type": "UNKNOWN"
+      "name": "header",
+      "type": "UNKNOWN",
+      "size": 32
+    },
+    {
+      "name": "indexSize",
+      "type": "INTEGER",
+      "size": 4
+    },
+    {
+      "name": "index",
+      "type": "REPEATER",
+      "size": "?indexSize?",
+      "subFields": [
+        {
+          "name": "cameraId",
+          "type": "INTEGER",
+          "size": 4
+        },
+        {
+          "name": "viewCount",
+          "type": "INTEGER",
+          "size": 4
+        },
+        {
+          "name": "gap1",
+          "type": "GAP",
+          "size": 4
+        }
+      ]
+    },
+    {
+      "name": "zeroZone",
+      "type": "GAP",
+      "size": "=150*12"
+    },
+    {
+      "name": "views",
+      "type": "REPEATER",
+      "subFields": [
+        {
+          "name": "gap2",
+          "type": "GAP",
+          "size": 4
+        },
+        {
+          "name": "properties",
+          "type": "UNKNOWN",
+          "size": 180
+        },
+        {
+          "name": "tag",
+          "type": "INTEGER",
+          "size": 4
+        },
+        {
+          "name": "cameraId",
+          "type": "INTEGER",
+          "size": 4
+        },
+        {
+          "name": "type",
+          "type": "INTEGER",
+          "size": 4
+        },
+        {
+          "name": "name",
+          "type": "TEXT",
+          "size": 16
+        },
+        {
+          "name": "settingsPart1",
+          "type": "UNKNOWN",
+          "size": 195
+        },
+        {
+          "name": "sourcePosition",
+          "type": "TEXT",
+          "size": 1
+        },
+        {
+          "name": "settingsPart2",
+          "type": "UNKNOWN",
+          "size": 15
+        },
+        {
+          "name": "targetPosition",
+          "type": "TEXT",
+          "size": 1
+        },
+        {
+          "name": "settingsPart3",
+          "type": "UNKNOWN",
+          "size": 208
+        }
+      ]
     }
   ]
 }
