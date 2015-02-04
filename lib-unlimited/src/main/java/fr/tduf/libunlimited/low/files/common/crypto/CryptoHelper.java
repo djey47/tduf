@@ -24,12 +24,15 @@ public class CryptoHelper {
      * @param encryptionModeEnum : encryption mode to be used
      * @return an output stream with clear contents.
      */
-    //TODO Do not throw InvalidKeyException, embed it into IOException instead
-    public static ByteArrayOutputStream decryptXTEA(ByteArrayInputStream inputStream, EncryptionModeEnum encryptionModeEnum) throws InvalidKeyException, IOException {
+    public static ByteArrayOutputStream decryptXTEA(ByteArrayInputStream inputStream, EncryptionModeEnum encryptionModeEnum) throws IOException {
         int contentsSize = checkContentsSize(inputStream);
         byte[] inputBytes = readBytes(inputStream, contentsSize);
 
-        XTEA.engineInit(encryptionModeEnum.key, true);
+        try {
+            XTEA.engineInit(encryptionModeEnum.key, true);
+        } catch (InvalidKeyException e) {
+            throw new IOException("Provided key is invalid to decrypt contents.", e);
+        }
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         int position = encryptionModeEnum.contentsOffset;
@@ -60,12 +63,15 @@ public class CryptoHelper {
      * @param encryptionModeEnum : encryption mode to be used
      * @return an output stream with encrypted contents.
      */
-    //TODO Do not throw InvalidKeyException, embed it into IOException instead
-    public static ByteArrayOutputStream encryptXTEA(ByteArrayInputStream inputStream, EncryptionModeEnum encryptionModeEnum) throws IOException, InvalidKeyException {
+    public static ByteArrayOutputStream encryptXTEA(ByteArrayInputStream inputStream, EncryptionModeEnum encryptionModeEnum) throws IOException {
         int contentsSize = checkContentsSize(inputStream);
         byte[] inputBytes = readBytes(inputStream, contentsSize);
 
-        XTEA.engineInit(encryptionModeEnum.key, false);
+        try {
+            XTEA.engineInit(encryptionModeEnum.key, false);
+        } catch (InvalidKeyException e) {
+            throw new IOException("Provided key is invalid to encrypt contents.", e);
+        }
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         if (encryptionModeEnum == EncryptionModeEnum.OTHER_AND_SPECIAL) {

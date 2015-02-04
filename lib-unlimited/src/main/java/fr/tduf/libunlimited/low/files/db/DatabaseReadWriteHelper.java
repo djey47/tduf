@@ -8,8 +8,9 @@ import fr.tduf.libunlimited.low.files.db.parser.DbParser;
 import fr.tduf.libunlimited.low.files.db.writer.DbWriter;
 
 import java.io.*;
-import java.nio.file.*;
-import java.security.InvalidKeyException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 /**
@@ -153,12 +154,7 @@ public class DatabaseReadWriteHelper {
         File outputFile = new File(tempDirectoryPath.toString(), inputFile.getName());
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(inputFile.toPath()));
-        ByteArrayOutputStream outputStream;
-        try {
-            outputStream = CryptoHelper.decryptXTEA(inputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
-        } catch (InvalidKeyException e) {
-            throw new IOException("Should never occur.", e);
-        }
+        ByteArrayOutputStream outputStream = CryptoHelper.decryptXTEA(inputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
 
         Files.write(outputFile.toPath(), outputStream.toByteArray(), StandardOpenOption.CREATE);
 

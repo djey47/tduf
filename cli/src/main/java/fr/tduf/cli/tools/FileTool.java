@@ -13,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.InvalidKeyException;
 import java.util.List;
 
 import static fr.tduf.cli.tools.FileTool.Command.*;
@@ -238,16 +237,14 @@ public class FileTool extends GenericTool {
 
     private ByteArrayOutputStream processInputStream(boolean withEncryption) throws IOException {
         ByteArrayOutputStream outputStream;
-        try {
-            CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(this.cryptoMode));
-            if (withEncryption) {
-                outputStream = CryptoHelper.encryptXTEA(getInputStream(), encryptionModeEnum);
-            } else {
-                outputStream = CryptoHelper.decryptXTEA(getInputStream(), encryptionModeEnum);
-            }
-        } catch (InvalidKeyException e) {
-            throw new IOException("Should never happen.", e);
+        CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(this.cryptoMode));
+
+        if (withEncryption) {
+            outputStream = CryptoHelper.encryptXTEA(getInputStream(), encryptionModeEnum);
+        } else {
+            outputStream = CryptoHelper.decryptXTEA(getInputStream(), encryptionModeEnum);
         }
+
         return outputStream;
     }
 

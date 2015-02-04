@@ -5,7 +5,6 @@ import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.*;
-import java.security.InvalidKeyException;
 
 /**
  * Utility class to provide common operations on Structures.
@@ -41,12 +40,9 @@ public class StructureHelper {
 
         CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(cryptoMode);
 
-        try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-            return CryptoHelper.encryptXTEA(inputStream, encryptionModeEnum);
-        } catch (InvalidKeyException e) {
-            throw new IOException("Should never occur...", e);
-        }
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+
+        return CryptoHelper.encryptXTEA(inputStream, encryptionModeEnum);
     }
 
     /**
@@ -63,11 +59,8 @@ public class StructureHelper {
 
         CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(cryptoMode);
 
-        try {
-            ByteArrayOutputStream outputStream = CryptoHelper.decryptXTEA(inputStream, encryptionModeEnum);
-            return new ByteArrayInputStream(outputStream.toByteArray());
-        } catch (InvalidKeyException e) {
-            throw new IOException("Should never occur...", e);
-        }
+        ByteArrayOutputStream outputStream = CryptoHelper.decryptXTEA(inputStream, encryptionModeEnum);
+
+        return new ByteArrayInputStream(outputStream.toByteArray());
     }
 }
