@@ -84,6 +84,20 @@ public class GenericParserTest {
     }
 
     @Test
+    public void parse_whenProvidedFiles_andVeryShortIntegerValues_shouldReturnDomainObject() throws IOException, URISyntaxException {
+        // GIVEN
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileVeryShortInt();
+        GenericParser<String> actualParser = createGenericParserVeryShortInt(inputStream);
+
+        // WHEN
+        String actualObject = actualParser.parse();
+
+        // THEN
+        assertThat(actualObject).isNotNull();
+        assertThat(actualObject).isEqualTo(DATA);
+    }
+
+    @Test
     public void parse_whenProvidedFilesInLittleEndian_shouldReturnDomainObject() throws IOException, URISyntaxException {
         // GIVEN
         ByteArrayInputStream inputStream = createInputStreamFromReferenceFileLittleEndian();
@@ -164,6 +178,21 @@ public class GenericParserTest {
     }
 
     @Test
+    public void dump_whenProvidedContents_andVeryShortValues_shouldReturnAllParsedData() throws IOException, URISyntaxException {
+        // GIVEN
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileVeryShortInt();
+        GenericParser<String> actualParser = createGenericParserVeryShortInt(inputStream);
+        actualParser.parse();
+
+        // WHEN
+        String actualDump = actualParser.dump();
+        System.out.println("Dumped contents:\n" + actualDump);
+
+        // THEN
+        assertThat(actualDump).isEqualTo(getExpectedDumpVeryShortInt());
+    }
+
+    @Test
     public void dump_whenProvidedContentsInLittleEndian_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
         ByteArrayInputStream inputStream = createInputStreamFromReferenceFileLittleEndian();
@@ -199,6 +228,12 @@ public class GenericParserTest {
         return "hf1\t<FPOINT: 2 bytes>\t[67, -112]\t3.78125\n" +
                     "hf2\t<FPOINT: 2 bytes>\t[68, -111]\t4.5664062\n" +
                     "hf3\t<FPOINT: 2 bytes>\t[69, -110]\t5.5703125\n";
+    }
+
+    private String getExpectedDumpVeryShortInt() {
+        return "vsi1\t<INTEGER: 1 bytes>\t[67]\t67\n" +
+                    "vsi2\t<INTEGER: 1 bytes>\t[68]\t68\n" +
+                    "vsi3\t<INTEGER: 1 bytes>\t[69]\t69\n";
     }
 
     private GenericParser<String> createGenericParser(final ByteArrayInputStream inputStream) throws IOException {
@@ -295,6 +330,32 @@ public class GenericParserTest {
         };
     }
 
+    private GenericParser<String> createGenericParserVeryShortInt(final ByteArrayInputStream inputStream) throws IOException {
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+
+                assertThat(getDataStore().size()).isEqualTo(3);
+
+                // Field 1
+                assertThat(getDataStore().getInteger("vsi1").get()).isEqualTo(67);
+
+                // Field 2
+                assertThat(getDataStore().getInteger("vsi2").get()).isEqualTo(68);
+
+                // Field 3
+                assertThat(getDataStore().getInteger("vsi3").get()).isEqualTo(69);
+
+                return DATA;
+            }
+
+            @Override
+            protected String getStructureResource() {
+                return "/files/structures/TEST-veryShortInt-map.json";
+            }
+        };
+    }
+
     private GenericParser<String> createGenericParserLittleEndian(final ByteArrayInputStream inputStream) throws IOException {
         return new GenericParser<String>(inputStream) {
             @Override
@@ -387,6 +448,12 @@ public class GenericParserTest {
 
     private ByteArrayInputStream createInputStreamFromReferenceFileHalfFloat() throws IOException, URISyntaxException {
         URI fileURI = thisClass.getResource("/files/samples/TEST-halfFloat.bin").toURI();
+        byte[] bytes = Files.readAllBytes(Paths.get(fileURI));
+        return new ByteArrayInputStream(bytes);
+    }
+
+    private ByteArrayInputStream createInputStreamFromReferenceFileVeryShortInt() throws IOException, URISyntaxException {
+        URI fileURI = thisClass.getResource("/files/samples/TEST-veryShortInt.bin").toURI();
         byte[] bytes = Files.readAllBytes(Paths.get(fileURI));
         return new ByteArrayInputStream(bytes);
     }

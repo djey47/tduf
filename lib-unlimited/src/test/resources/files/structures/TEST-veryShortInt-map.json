@@ -1,0 +1,19 @@
+{
+  "name" : "TEST file format (very short integer values only)",
+  "littleEndian" : false,
+  "fields" : [
+    {
+      "name": "vsi1",
+      "type": "INTEGER",
+      "size": 1
+    },{
+      "name": "vsi2",
+      "type": "INTEGER",
+      "size": 1
+    },{
+      "name": "vsi3",
+      "type": "INTEGER",
+      "size": 1
+    }
+  ]
+}

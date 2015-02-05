@@ -92,16 +92,16 @@ public abstract class GenericParser<T> {
                     break;
 
                 case INTEGER:
-                    readValueAsBytes = new byte[length + 4]; // Prepare long values
+                    readValueAsBytes = new byte[8]; // Prepare long values
 
                     if (fileStructure.isLittleEndian()) {
                         parsedCount = inputStream.read(readValueAsBytes, 0, length);
                         readValueAsBytes = TypeHelper.changeEndianType(readValueAsBytes);
                     } else {
-                        parsedCount = inputStream.read(readValueAsBytes, 4, length);
+                        parsedCount = inputStream.read(readValueAsBytes, 8-length, length);
                     }
 
-                    byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 4, length + 4);
+                    byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 8 - length, 8);
                     dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(displayedBytes), TypeHelper.rawToInteger(readValueAsBytes)));
                     break;
 
