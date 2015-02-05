@@ -88,7 +88,7 @@ public abstract class GenericWriter<T> {
                         valueBytes = TypeHelper.changeEndianType(valueBytes);
                         outputStream.write(valueBytes, 0, length);
                     } else {
-                        outputStream.write(valueBytes, 4, length);
+                        outputStream.write(valueBytes, 8-length, length);
                     }
                     break;
 

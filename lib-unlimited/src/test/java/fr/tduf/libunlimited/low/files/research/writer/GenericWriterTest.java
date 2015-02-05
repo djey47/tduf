@@ -100,6 +100,25 @@ public class GenericWriterTest {
     }
 
     @Test
+    public void write_whenProvidedFiles_andVeryShortIntContents_shouldReturnBytes() throws IOException, URISyntaxException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterVeryShortInt();
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = actualWriter.write();
+
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(3);
+
+        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-veryShortInt.bin").toURI();
+        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        assertThat(actualBytes).isEqualTo(expectedBytes);
+    }
+
+    @Test
     public void write_whenProvidedFiles_andLastFieldAutoSize_shouldReturnBytes() throws IOException, URISyntaxException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterLastFieldAutoSize();
@@ -250,6 +269,27 @@ public class GenericWriterTest {
             @Override
             protected String getStructureResource() {
                 return "/files/structures/TEST-halfFloat-map.json";
+            }
+        };
+    }
+
+    private GenericWriter<String> createGenericWriterVeryShortInt() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {
+                // Field 1
+                getDataStore().addInteger("vsi1", 67);
+
+                // Field 2
+                getDataStore().addInteger("vsi2", 68);
+
+                // Field 3
+                getDataStore().addInteger("vsi3", 69);
+            }
+
+            @Override
+            protected String getStructureResource() {
+                return "/files/structures/TEST-veryShortInt-map.json";
             }
         };
     }
