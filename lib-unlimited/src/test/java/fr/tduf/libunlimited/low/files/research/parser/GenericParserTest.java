@@ -70,62 +70,6 @@ public class GenericParserTest {
     }
 
     @Test
-    public void parse_whenProvidedFiles_andHalfFloatValues_shouldReturnDomainObject() throws IOException, URISyntaxException {
-        // GIVEN
-        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileHalfFloat();
-        GenericParser<String> actualParser = createGenericParserHalfFloat(inputStream);
-
-        // WHEN
-        String actualObject = actualParser.parse();
-
-        // THEN
-        assertThat(actualObject).isNotNull();
-        assertThat(actualObject).isEqualTo(DATA);
-    }
-
-    @Test
-    public void parse_whenProvidedFiles_andVeryShortIntegerValues_shouldReturnDomainObject() throws IOException, URISyntaxException {
-        // GIVEN
-        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileVeryShortInt();
-        GenericParser<String> actualParser = createGenericParserVeryShortInt(inputStream);
-
-        // WHEN
-        String actualObject = actualParser.parse();
-
-        // THEN
-        assertThat(actualObject).isNotNull();
-        assertThat(actualObject).isEqualTo(DATA);
-    }
-
-    @Test
-    public void parse_whenProvidedFilesInLittleEndian_shouldReturnDomainObject() throws IOException, URISyntaxException {
-        // GIVEN
-        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileLittleEndian();
-        GenericParser<String> actualParser = createGenericParserLittleEndian(inputStream);
-
-        // WHEN
-        String actualObject = actualParser.parse();
-
-        // THEN
-        assertThat(actualObject).isNotNull();
-        assertThat(actualObject).isEqualTo(DATA);
-    }
-
-    @Test
-    public void parse_whenProvidedFiles_andSizeGivenByAnotherField_shouldReturnDomainObject() throws IOException, URISyntaxException {
-        // GIVEN
-        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileForFormulas();
-        GenericParser<String> actualParser = createGenericParserForFormulas(inputStream);
-
-        // WHEN
-        String actualObject = actualParser.parse();
-
-        // THEN
-        assertThat(actualObject).isNotNull();
-        assertThat(actualObject).isEqualTo(DATA);
-    }
-
-    @Test
     public void dump_whenProvidedContents_andSizeGivenByAnotherField_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
         String expectedDump = "sizeIndicator\t<INTEGER: 4 bytes>\t[0, 0, 0, 3]\t3\n" +
