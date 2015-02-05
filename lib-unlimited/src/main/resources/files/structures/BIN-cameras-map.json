@@ -85,7 +85,7 @@
         },
         {
           "name": "sourcePosition",
-          "type": "TEXT",
+          "type": "INTEGER",
           "size": 1
         },
         {
@@ -95,7 +95,7 @@
         },
         {
           "name": "targetPosition",
-          "type": "TEXT",
+          "type": "INTEGER",
           "size": 1
         },
         {
