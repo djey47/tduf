@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -48,13 +49,17 @@ public class DbWriter {
     /**
      * Writes all TDU database files to given path (must exist).
      * @param path location to write db files
+     * @return a list of written file names
      */
-    //TODO return written file names
-    public void writeAll(String path) throws IOException {
+    public List<String> writeAll(String path) throws IOException {
         checkPrerequisites(this.databaseDto);
 
-        writeStructureAndContents(path);
-        writeResources(path);
+        List<String> writtenFilenames = new ArrayList<>();
+
+        writtenFilenames.add(writeStructureAndContents(path));
+        writtenFilenames.addAll(writeResources(path));
+
+        return writtenFilenames;
     }
 
     /**
@@ -79,7 +84,7 @@ public class DbWriter {
         requireNonNull(dbDto.getData(), "Database contents are required");
     }
 
-    private void writeStructureAndContents(String directoryPath) throws IOException {
+    private String writeStructureAndContents(String directoryPath) throws IOException {
 
         DbStructureDto dbStructureDto = this.databaseDto.getStructure();
         DbDataDto dbDataDto = this.databaseDto.getData();
@@ -101,6 +106,8 @@ public class DbWriter {
             // Required for later encryption
             writePaddingForSizeMultipleOfEight(bufferedWriter, writtenSize);
         }
+
+        return path.toString();
     }
 
     private long writeItemContents(DbDataDto dbDataDto, BufferedWriter bufferedWriter) throws IOException {
@@ -143,8 +150,9 @@ public class DbWriter {
         return writtenSize;
     }
 
-    private void writeResources(String directoryPath) throws IOException {
+    private List<String> writeResources(String directoryPath) throws IOException {
 
+        List<String> writtenPaths = new ArrayList<>();
         List<DbResourceDto> dbResourceDtos = this.databaseDto.getResources();
         String topicLabel = this.databaseDto.getStructure().getTopic().getLabel();
 
@@ -152,7 +160,7 @@ public class DbWriter {
 
             String localeCode = dbResourceDto.getLocale().getCode();
             String resourceFileName = format("%s.%s", topicLabel, localeCode);
-            Path path = Paths.get(directoryPath + "/" + resourceFileName);
+            Path path = Paths.get(directoryPath +  File.separator + resourceFileName);
 
             try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardCharsets.UTF_16LE)) {
 
@@ -173,7 +181,11 @@ public class DbWriter {
                             format(ENTRY_PATTERN, entry.getValue(), entry.getReference()), bufferedWriter);
                 }
             }
+
+            writtenPaths.add(path.toString());
         }
+
+        return writtenPaths;
     }
 
     private static long writeAndEndWithCRLF(String text, BufferedWriter bufferedWriter) throws IOException {

@@ -54,12 +54,18 @@ public class DbWriterTest {
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
-        DbWriter.load(initialDbDto).writeAll(tempDirectory.toString());
+        List<String> actualFilenames = DbWriter.load(initialDbDto).writeAll(tempDirectory.toString());
 
         //THEN
+        assertThat(actualFilenames).containsExactly(
+                tempDirectory + File.separator + "TDU_Achievements.db",
+                tempDirectory + File.separator + "TDU_Achievements.fr",
+                tempDirectory + File.separator + "TDU_Achievements.it");
+
         assertOutputFileMatchesReference("TDU_Achievements.db", "/db/");
         assertOutputFileMatchesReference("TDU_Achievements.fr", "/db/res/clean/");
         assertOutputFileMatchesReference("TDU_Achievements.it", "/db/res/clean/");
+
 
         List<String> dbContents = DbHelper.readContentsFromRealFile(tempDirectory + "/TDU_Achievements.db", "UTF-8", "\r\n");
         List<List<String>> dbResources = DbHelper.readResourcesFromRealFiles(
@@ -76,9 +82,11 @@ public class DbWriterTest {
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
-        DbWriter.load(initialDbDto).writeAll(tempDirectory.toString());
+        List<String> actualFilenames = DbWriter.load(initialDbDto).writeAll(tempDirectory.toString());
 
         //THEN
+        assertThat(actualFilenames).hasSize(3);
+
         File actualContentsFile = assertFileExistAndGet("TDU_Achievements.db");
         assertThat(actualContentsFile.length() % 8).isEqualTo(0);
     }
