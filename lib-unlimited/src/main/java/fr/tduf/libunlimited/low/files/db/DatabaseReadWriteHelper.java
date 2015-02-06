@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.parser.DbParser;
 import fr.tduf.libunlimited.low.files.db.writer.DbWriter;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -19,6 +20,7 @@ import java.util.*;
 public class DatabaseReadWriteHelper {
 
     private static final String EXTENSION_DB_CONTENTS = "db";
+    private static final String EXTENSION_JSON = "json";
 
     private static final String ENCODING_UTF_8 = "UTF-8";
     private static final String ENCODING_UTF_16 = "UTF-16";
@@ -28,7 +30,7 @@ public class DatabaseReadWriteHelper {
      * @param topic             : topic to parse TDU contents from
      * @param databaseDirectory : location of database contents as db + fr,it,ge... files
      * @param withClearContents : true indicates contents do not need to be decrypted before processing, false otherwise.
-     *@param integrityErrors    : list of database errors, encountered when parsing.  @return a global object for topic.
+     * @param integrityErrors    : list of database errors, encountered when parsing.  @return a global object for topic.
      * @throws FileNotFoundException
      */
     // TODO reduce method size
@@ -80,11 +82,39 @@ public class DatabaseReadWriteHelper {
     }
 
     /**
-     * Writes all database contents (+resources) from specified topic into outputDirectory.
+     * Reads all database contents (+resources) in JSON format from specified topic into jsonDirectory.
+     * @param topic             : topic to parse TDU contents from
+     * @param jsonDirectory : location of json files
+     */
+    public static DbDto readDatabaseFromJson(DbDto.Topic topic, String jsonDirectory) throws IOException {
+
+        String jsonFileName = getDatabaseFileName(topic.getLabel(), jsonDirectory, EXTENSION_JSON);
+        File jsonFile = new File(jsonFileName);
+
+        if (!jsonFile.exists()) {
+            return null;
+        }
+
+        return new ObjectMapper().readValue(jsonFile, DbDto.class);
+    }
+
+    /**
+     * Writes all database contents (+resources) as TDU format from specified topic into outputDirectory.
      * @param dbDto             : topic contents to be written
      * @param outputDirectory   : location of generated files
      * @throws FileNotFoundException
      */
+    public static List<String> writeDatabase(DbDto dbDto, String outputDirectory, boolean withClearContents) throws IOException {
+        return new ArrayList<>();
+    }
+
+    /**
+     * Writes all database contents (+resources) as JSON format from specified topic into outputDirectory.
+     * @param dbDto             : topic contents to be written
+     * @param outputDirectory   : location of generated files
+     * @throws FileNotFoundException
+     */
+    //TODO return written file names
     public static void writeDatabaseToJson(DbDto dbDto, String outputDirectory) throws IOException {
         DbWriter dbWriter = DbWriter.load(dbDto);
 

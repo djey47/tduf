@@ -100,6 +100,27 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
+    public void readDatabaseFromJson_whenFileNotFound_shouldReturnNull() throws URISyntaxException, IOException {
+        // GIVEN-WHEN-THEN
+        assertThat(DatabaseReadWriteHelper.readDatabaseFromJson(DbDto.Topic.ACHIEVEMENTS, "")).isNull();
+    }
+
+    @Test
+    public void readDatabaseFromJson_whenRealFile_shouldReturnCorrespondingDto() throws URISyntaxException, IOException {
+        // GIVEN
+        File jsonFile = new File(thisClass.getResource("/db/TDU_Achievements.json").toURI());
+        String jsonDirectory = jsonFile.getParent();
+
+        // WHEN
+        DbDto actualdbDto = DatabaseReadWriteHelper.readDatabaseFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory);
+
+        // THEN
+        assertThat(actualdbDto).isNotNull();
+        assertThat(actualdbDto.getData()).isNotNull();
+        assertThat(actualdbDto.getResources()).isNotEmpty();
+    }
+
+    @Test
     public void parseTopicContentsFromDirectory_whenFileNotFound_shouldReturnEmptyList() throws URISyntaxException, FileNotFoundException {
         // GIVEN
         File dbFile = new File("TDU_Achievements.db.nope");
