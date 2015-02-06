@@ -60,6 +60,7 @@ public class DbWriter {
      * Writes all contents to given path (must exist) as JSON file .
      * @param path location to write db files
      */
+    //TODO return written file names
     public void writeAllAsJson(String path) throws IOException {
         checkPrerequisites(this.databaseDto);
 
