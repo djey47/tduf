@@ -121,6 +121,32 @@ public class TypeHelper {
         return targetArray;
     }
 
+
+    /**
+     * Provides a byte array to fit particular size (truncate or fill with zeros).
+     *
+     * @param valueBytes    : byte array to transform
+     * @param length        : wanted size, may be null. In that case, array will be returned as is.
+     * @return a new byte array
+     */
+    public static byte[] fitToSize(byte[] valueBytes, Integer length) {
+
+        if (valueBytes == null) {
+            return null;
+        }
+
+        if (length == null) {
+            length = valueBytes.length;
+        }
+
+        byte[] newArray = new byte[length];
+        System.arraycopy(
+                valueBytes, 0,
+                newArray, 0, (length < valueBytes.length ? length : valueBytes.length));
+
+        return newArray;
+    }
+
     private static void check64BitRawValue(byte[] rawValueBytes) {
         if (rawValueBytes.length != 8) {
             throw new IllegalArgumentException("Provided raw value is not compatible to 64-bit.");

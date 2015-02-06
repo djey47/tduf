@@ -115,4 +115,62 @@ public class TypeHelperTest {
         // WHEN-THEN
         assertThat(TypeHelper.changeEndianType(valueBytes)).isEqualTo(expectedBytes);
     }
+
+    @Test
+    public void fitToSize_whenNullArray_shouldReturnNull() {
+        // GIVEN-WHEN-THEN
+        assertThat(TypeHelper.fitToSize(null, null)).isNull();
+    }
+
+    @Test
+    public void fitToSize_whenNullLength_shouldReturnNewIdenticalArray() {
+        // GIVEN
+        byte[] byteArray = {0x1, 0x2, 0x3, 0x4};
+
+        // WHEN
+        byte[] actualArray = TypeHelper.fitToSize(byteArray, null);
+
+        // THEN
+        assertThat(actualArray).isNotSameAs(byteArray);
+        assertThat(actualArray).isEqualTo(byteArray);
+    }
+
+    @Test
+    public void fitToSize_whenWantedItBigger_shouldReturnNewFilledArray() {
+        // GIVEN
+        byte[] byteArray = {0x1, 0x2, 0x3, 0x4};
+        byte[] expectedByteArray = {0x1, 0x2, 0x3, 0x4, 0x0, 0x0};
+
+        // WHEN
+        byte[] actualArray = TypeHelper.fitToSize(byteArray, expectedByteArray.length);
+
+        // THEN
+        assertThat(actualArray).isEqualTo(expectedByteArray);
+    }
+
+    @Test
+    public void fitToSize_whenWantedItSmaller_shouldReturnNewTruncatedArray() {
+        // GIVEN
+        byte[] byteArray = {0x1, 0x2, 0x3, 0x4};
+        byte[] expectedByteArray = {0x1, 0x2};
+
+        // WHEN
+        byte[] actualArray = TypeHelper.fitToSize(byteArray, expectedByteArray.length);
+
+        // THEN
+        assertThat(actualArray).isEqualTo(expectedByteArray);
+    }
+
+    @Test
+    public void fitToSize_whenWantedSameSize_shouldReturnClonedArray() {
+        // GIVEN
+        byte[] byteArray = {0x1, 0x2, 0x3, 0x4};
+
+        // WHEN
+        byte[] actualArray = TypeHelper.fitToSize(byteArray, byteArray.length);
+
+        // THEN
+        assertThat(actualArray).isNotSameAs(byteArray);
+        assertThat(actualArray).isEqualTo(byteArray);
+    }
 }
