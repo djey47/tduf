@@ -119,7 +119,7 @@ public class DatabaseTool extends GenericTool {
     }
 
     private void dump() throws IOException {
-        File outputDirectory = createDirectoryIfNotExists(this.jsonDirectory);
+        createDirectoryIfNotExists(this.jsonDirectory);
 
         System.out.println("-> Source: " + databaseDirectory);
         System.out.println("Dumping TDU database to JSON, please wait...");
@@ -135,10 +135,11 @@ public class DatabaseTool extends GenericTool {
                 continue;
             }
 
-            DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, outputDirectory.toString());
+            //TODO get file names
+            DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, this.jsonDirectory);
 
             System.out.println("Writing done for topic: " + currentTopic);
-            System.out.println("-> Location: " + outputDirectory + File.separator + currentTopic.getLabel() + ".json");
+            System.out.println("-> Location: " + this.jsonDirectory + File.separator + currentTopic.getLabel() + ".json");
             System.out.println();
         }
 
@@ -146,7 +147,7 @@ public class DatabaseTool extends GenericTool {
     }
 
     private void gen() throws IOException {
-        File outputDirectory = createDirectoryIfNotExists(this.databaseDirectory);
+        createDirectoryIfNotExists(this.databaseDirectory);
 
         System.out.println("-> Source: " + this.jsonDirectory);
         System.out.println("Generating TDU database from JSON, please wait...");
@@ -163,7 +164,7 @@ public class DatabaseTool extends GenericTool {
                 continue;
             }
 
-            List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabase(dbDto, outputDirectory.toString(), this.withClearContents);
+            List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabase(dbDto, this.databaseDirectory, this.withClearContents);
 
             System.out.println("Writing done for topic: " + currentTopic);
             writtenFiles.stream()
@@ -210,13 +211,11 @@ public class DatabaseTool extends GenericTool {
         System.out.println("All done!");
     }
 
-    // TODO do not return File instance
-    private static File createDirectoryIfNotExists(String directoryToCreate) {
+    private static void createDirectoryIfNotExists(String directoryToCreate) {
         File outputDirectory = new File(directoryToCreate);
         if (!outputDirectory.exists()) {
             boolean isCreated = outputDirectory.mkdirs();
             assert isCreated;
         }
-        return outputDirectory;
     }
 }
