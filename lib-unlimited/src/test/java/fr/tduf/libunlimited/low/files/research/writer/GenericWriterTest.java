@@ -60,6 +60,27 @@ public class GenericWriterTest {
     }
 
     @Test
+    public void write_whenProvidedFiles_andModifiedTextLength_shouldReturnBytes() throws IOException, URISyntaxException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterModifiedTextLength();
+
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = actualWriter.write();
+
+
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(45);
+
+        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-modifiedTextLength.bin").toURI();
+        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        assertThat(actualBytes).isEqualTo(expectedBytes);
+    }
+
+    @Test
     public void write_whenProvidedFiles_andEncryptedContents_shouldReturnBytes() throws IOException, URISyntaxException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterEncrypted();
@@ -140,7 +161,7 @@ public class GenericWriterTest {
     }
 
     @Test
-    public void write_whenProvidedFilesInLittleEndian_shouldReturnBytes() throws IOException, URISyntaxException {
+    public void write_whenProvidedFiles_andFormatAsLittleEndian_shouldReturnBytes() throws IOException, URISyntaxException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterLittleEndian();
 
@@ -206,6 +227,37 @@ public class GenericWriterTest {
                 getDataStore().addRepeatedIntegerValue("repeater", "number", 0, 500L);
                 getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 0, 257.45166f);
                 getDataStore().addRepeatedTextValue("repeater", "text", 0, "ABCD");
+                getDataStore().addRepeatedRawValue("repeater", "delimiter", 0, new byte[] {0xA});
+
+                // Field 3 - sub items, rank 1
+                getDataStore().addRepeatedIntegerValue("repeater", "number", 1, 1000L);
+                getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 1, 86.714584f);
+                getDataStore().addRepeatedTextValue("repeater", "text", 1, "EFGH");
+                getDataStore().addRepeatedRawValue("repeater", "delimiter", 1, new byte[] {0xB});
+            }
+
+            @Override
+            protected String getStructureResource() {
+                return "/files/structures/TEST-map.json";
+            }
+        };
+    }
+
+    private GenericWriter<String> createGenericWriterModifiedTextLength() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {
+                // Field 1: text length 10 to 16 (will be truncated to fit)
+                getDataStore().addText("tag", "ABCDEFGHIJKLMNOP");
+
+                // Field 2
+                getDataStore().addValue("unknown", UNKNOWN, new byte[]{0x1, 0x2, 0x3, 0x4, 0x5});
+
+                // Field 3 - sub items, rank 0
+                getDataStore().addRepeatedIntegerValue("repeater", "number", 0, 500L);
+                getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 0, 257.45166f);
+                // text length 4 to 2 (will be filled to fit)
+                getDataStore().addRepeatedTextValue("repeater", "text", 0, "AB");
                 getDataStore().addRepeatedRawValue("repeater", "delimiter", 0, new byte[] {0xA});
 
                 // Field 3 - sub items, rank 1

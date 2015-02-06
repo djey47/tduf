@@ -8,7 +8,6 @@ import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -66,19 +65,16 @@ public abstract class GenericWriter<T> {
             switch (type) {
 
                 case GAP:
-                    outputStream.write(ByteBuffer.allocate(length).array());
+                    outputStream.write(new byte[length]);
                     break;
 
                 case UNKNOWN:
                 case DELIMITER:
                 case TEXT:
                     assert valueBytes != null;
-                    if(length == null) {
-                        // Autosize
-                        outputStream.write(valueBytes);
-                    } else {
-                        outputStream.write(valueBytes, 0, length);
-                    }
+
+                    //TODO handle endianness ?
+                    outputStream.write(TypeHelper.fitToSize(valueBytes, length));
                     break;
 
                 case INTEGER:
