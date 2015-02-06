@@ -102,9 +102,18 @@ public class DatabaseReadWriteHelper {
      * Writes all database contents (+resources) as TDU format from specified topic into outputDirectory.
      * @param dbDto             : topic contents to be written
      * @param outputDirectory   : location of generated files
+     * @return a list of written TDU files
      * @throws FileNotFoundException
      */
     public static List<String> writeDatabase(DbDto dbDto, String outputDirectory, boolean withClearContents) throws IOException {
+
+        DbWriter writer = DbWriter.load(dbDto);
+
+        writer.writeAll(outputDirectory);
+
+        //TODO encryption
+
+        //TODO file list
         return new ArrayList<>();
     }
 

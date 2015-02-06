@@ -49,6 +49,7 @@ public class DbWriter {
      * Writes all TDU database files to given path (must exist).
      * @param path location to write db files
      */
+    //TODO return written file names
     public void writeAll(String path) throws IOException {
         checkPrerequisites(this.databaseDto);
 

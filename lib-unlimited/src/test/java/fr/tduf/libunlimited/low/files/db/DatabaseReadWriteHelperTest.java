@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -181,8 +182,7 @@ public class DatabaseReadWriteHelperTest {
                 .withData(dbDataDto)
                 .build();
 
-        String outputDirectory = "./tests/";
-        new File(outputDirectory).mkdirs();
+        String outputDirectory = createTestOutputDirectory();
 
 
         // WHEN
@@ -191,5 +191,37 @@ public class DatabaseReadWriteHelperTest {
 
         // THEN
         assertThat(new File(outputDirectory + "TDU_Achievements.json")).exists();
+    }
+
+    @Test
+    @Ignore
+    public void writeDatabase_whenProvidedContents_WithoutEncryption_shouldCreateClearFiles() throws URISyntaxException, IOException {
+        // GIVEN
+        String jsonDirectory = new File(thisClass.getResource("/db/TDU_Achievements.json").toURI()).getParent();
+        DbDto dbDto = DatabaseReadWriteHelper.readDatabaseFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory);
+
+        String outputDirectory = createTestOutputDirectory();
+
+
+        // WHEN
+        List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabase(dbDto, outputDirectory, true);
+
+
+        // THEN
+        assertThat(writtenFiles).hasSize(3);
+
+        writtenFiles.stream()
+                .forEach((fileName) -> assertThat(new File(fileName)).exists());
+    }
+
+    @Test
+    public void writeDatabase_whenProvidedContents_WithEncryption_shouldCreateEncryptedFiles() {
+
+    }
+
+    private static String createTestOutputDirectory() {
+        String outputDirectory = "./tests/";
+        new File(outputDirectory).mkdirs();
+        return outputDirectory;
     }
 }
