@@ -105,16 +105,12 @@ public class DatabaseReadWriteHelper {
      * @return a list of written TDU files
      * @throws FileNotFoundException
      */
+    //TODO encryption
     public static List<String> writeDatabase(DbDto dbDto, String outputDirectory, boolean withClearContents) throws IOException {
 
         DbWriter writer = DbWriter.load(dbDto);
 
-        writer.writeAll(outputDirectory);
-
-        //TODO encryption
-
-        //TODO file list
-        return new ArrayList<>();
+        return writer.writeAll(outputDirectory);
     }
 
     /**

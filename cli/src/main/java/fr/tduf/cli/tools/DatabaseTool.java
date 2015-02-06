@@ -131,10 +131,10 @@ public class DatabaseTool extends GenericTool {
 
             if (dbDto == null) {
                 System.out.println("  !Database contents not found for topic " + currentTopic + ", skipping...");
+                System.out.println();
                 continue;
             }
 
-            // TODO get and display written files
             DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, outputDirectory.toString());
 
             System.out.println("Writing done for topic: " + currentTopic);
@@ -159,6 +159,7 @@ public class DatabaseTool extends GenericTool {
 
             if (dbDto == null) {
                 System.out.println("  !Database contents not found for topic " + currentTopic + ", skipping...");
+                System.out.println();
                 continue;
             }
 
@@ -213,7 +214,8 @@ public class DatabaseTool extends GenericTool {
     private static File createDirectoryIfNotExists(String directoryToCreate) {
         File outputDirectory = new File(directoryToCreate);
         if (!outputDirectory.exists()) {
-            assert outputDirectory.mkdirs();
+            boolean isCreated = outputDirectory.mkdirs();
+            assert isCreated;
         }
         return outputDirectory;
     }
