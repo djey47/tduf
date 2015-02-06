@@ -119,10 +119,7 @@ public class DatabaseTool extends GenericTool {
     }
 
     private void dump() throws IOException {
-        File outputDirectory = new File(this.jsonDirectory);
-        if (!outputDirectory.exists()) {
-            assert outputDirectory.mkdirs();
-        }
+        File outputDirectory = createDirectoryIfNotExists(this.jsonDirectory);
 
         System.out.println("-> Source: " + databaseDirectory);
         System.out.println("Dumping TDU database to JSON, please wait...");
@@ -137,18 +134,43 @@ public class DatabaseTool extends GenericTool {
                 continue;
             }
 
+            // TODO get and display written files
             DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, outputDirectory.toString());
 
             System.out.println("Writing done for topic: " + currentTopic);
-            System.out.println("Location: " + outputDirectory + File.separator + currentTopic.getLabel() + ".json");
+            System.out.println("-> Location: " + outputDirectory + File.separator + currentTopic.getLabel() + ".json");
             System.out.println();
         }
 
         System.out.println("All done!");
     }
 
-    private void gen() {
+    private void gen() throws IOException {
+        File outputDirectory = createDirectoryIfNotExists(this.databaseDirectory);
 
+        System.out.println("-> Source: " + this.jsonDirectory);
+        System.out.println("Generating TDU database from JSON, please wait...");
+
+        //TODO lib
+        for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
+            System.out.println("-> Now processing topic: " + currentTopic + "...");
+
+            DbDto dbDto = DatabaseReadWriteHelper.readDatabaseFromJson(currentTopic, this.jsonDirectory);
+
+            if (dbDto == null) {
+                System.out.println("  !Database contents not found for topic " + currentTopic + ", skipping...");
+                continue;
+            }
+
+            List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabase(dbDto, outputDirectory.toString(), this.withClearContents);
+
+            System.out.println("Writing done for topic: " + currentTopic);
+            writtenFiles.stream()
+                    .forEach((fileName) -> System.out.println("-> " + fileName));
+            System.out.println();
+        }
+
+        System.out.println("All done!");
     }
 
     private void databaseCheck() throws IOException {
@@ -185,5 +207,14 @@ public class DatabaseTool extends GenericTool {
         }
 
         System.out.println("All done!");
+    }
+
+    // TODO do not return File instance
+    private static File createDirectoryIfNotExists(String directoryToCreate) {
+        File outputDirectory = new File(directoryToCreate);
+        if (!outputDirectory.exists()) {
+            assert outputDirectory.mkdirs();
+        }
+        return outputDirectory;
     }
 }
