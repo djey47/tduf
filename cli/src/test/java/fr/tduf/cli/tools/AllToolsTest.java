@@ -9,6 +9,7 @@ import java.nio.file.NoSuchFileException;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.CHECK;
 import static fr.tduf.cli.tools.DatabaseTool.Command.DUMP;
+import static fr.tduf.cli.tools.DatabaseTool.Command.GEN;
 import static fr.tduf.cli.tools.FileTool.Command.*;
 import static fr.tduf.cli.tools.MappingTool.Command.*;
 
@@ -34,6 +35,14 @@ public class AllToolsTest {
         exitRule.expectSystemExitWithStatus(0);
 
         testToolCommand(new DatabaseTool(), DUMP.getLabel());
+    }
+
+    @Test
+    public void databaseTool_gen() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(0);
+
+        testToolCommand(new DatabaseTool(), GEN.getLabel());
     }
 
     @Test

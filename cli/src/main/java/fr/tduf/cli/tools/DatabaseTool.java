@@ -8,13 +8,11 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.tduf.cli.tools.DatabaseTool.Command.CHECK;
-import static fr.tduf.cli.tools.DatabaseTool.Command.DUMP;
+import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static java.util.Arrays.asList;
 
 /**
@@ -25,8 +23,8 @@ public class DatabaseTool extends GenericTool {
     @Option(name = "-d", aliases = "--databaseDir", usage = "UNPACKED TDU database directory, defaults to current directory.")
     private String databaseDirectory;
 
-    @Option(name = "-o", aliases = "--outputDir", usage = "Target directory for generated JSON files, defaults to current directory\\tdu-database-dump.")
-    private String outputDirectory;
+    @Option(name = "-j", aliases = "--jsonDir", usage = "Source (gen) of target (dump) directory for JSON files, defaults to current directory\\tdu-database-dump.")
+    private String jsonDirectory;
 
     @Option(name = "-c", aliases = "--clear", usage = "Not mandatory. Indicates unpacked TDU files do not need to be unencrypted and encrypted back.")
     private boolean withClearContents;
@@ -38,7 +36,8 @@ public class DatabaseTool extends GenericTool {
      */
     enum Command implements CommandHelper.CommandEnum {
         CHECK("check", "Tries to load database and display integrity errors, if any."),
-        DUMP("dump", "Writes full database contents to JSON files.");
+        DUMP("dump", "Writes full database contents to JSON files."),
+        GEN("gen", "Writes TDU database files from JSON files.");
 
         final String label;
         final String description;
@@ -80,6 +79,9 @@ public class DatabaseTool extends GenericTool {
             case CHECK:
                 databaseCheck();
                 break;
+            case GEN:
+                gen();
+                break;
             default:
                 return false;
         }
@@ -93,14 +95,12 @@ public class DatabaseTool extends GenericTool {
 
     @Override
     protected void checkAndAssignDefaultParameters(CmdLineParser parser) {
-        // Database directory: defaulted to current
         if (databaseDirectory == null) {
             databaseDirectory = ".";
         }
 
-        // Map file: defaulted to current directory\tdu-database-dump
-        if (outputDirectory == null) {
-            outputDirectory = "." + File.separator + "tdu-database-dump";
+        if (jsonDirectory == null) {
+            jsonDirectory = "." + File.separator + "tdu-database-dump";
         }
     }
 
@@ -113,12 +113,13 @@ public class DatabaseTool extends GenericTool {
     protected List<String> getExamples() {
         return asList(
                 DUMP.label + " --databaseDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
+                GEN.label + " --jsonDir \"C:\\Users\\Bill\\Desktop\\json-database\" --databaseDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
                 CHECK.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\""
         );
     }
 
     private void dump() throws IOException {
-        File outputDirectory = new File(this.outputDirectory);
+        File outputDirectory = new File(this.jsonDirectory);
         if (!outputDirectory.exists()) {
             assert outputDirectory.mkdirs();
         }
@@ -144,6 +145,10 @@ public class DatabaseTool extends GenericTool {
         }
 
         System.out.println("All done!");
+    }
+
+    private void gen() {
+
     }
 
     private void databaseCheck() throws IOException {
