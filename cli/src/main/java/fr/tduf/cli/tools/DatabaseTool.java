@@ -135,11 +135,10 @@ public class DatabaseTool extends GenericTool {
                 continue;
             }
 
-            //TODO get file names
-            DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, this.jsonDirectory);
+            String writtenFileName = DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, this.jsonDirectory);
 
             System.out.println("Writing done for topic: " + currentTopic);
-            System.out.println("-> Location: " + this.jsonDirectory + File.separator + currentTopic.getLabel() + ".json");
+            System.out.println("-> Location: " + writtenFileName);
             System.out.println();
         }
 
