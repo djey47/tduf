@@ -85,6 +85,11 @@ public class IntegrityError {
         CONTENTS_NOT_FOUND("Contents file was not found for current topic: %s.db"),
 
         /**
+         * For a topic, contents file exist but could not be unencrypted
+         */
+        CONTENTS_ENCRYPTION_NOT_SUPPORTED("Contents file could not be unencrypted for current topic: %s.db"),
+
+        /**
          * Read resource items count not same over all language files
          */
         RESOURCE_ITEMS_COUNT_MISMATCH("Resource items count is not same over all language files: %s");

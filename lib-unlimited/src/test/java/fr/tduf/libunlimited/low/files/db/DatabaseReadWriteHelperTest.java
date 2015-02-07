@@ -100,6 +100,25 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
+    public void readDatabase_whenRealFile_andNonDecryptableContents_shouldReturnInvalidContentsNotice() throws URISyntaxException, IOException {
+        // GIVEN (corrupted file)
+        File dbFile = new File(thisClass.getResource("/db/encrypted/errors/sizeNotMultipleOf8/TDU_Achievements.db").toURI());
+        String databaseDirectory = dbFile.getParent();
+        ArrayList<IntegrityError> integrityErrors = new ArrayList<>();
+
+
+        // WHEN
+        DbDto actualdbDto = DatabaseReadWriteHelper.readDatabase(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, false, integrityErrors);
+
+
+        // THEN
+        assertThat(actualdbDto).isNull();
+
+        assertThat(integrityErrors).hasSize(1);
+        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.CONTENTS_ENCRYPTION_NOT_SUPPORTED);
+    }
+
+    @Test
     public void readDatabaseFromJson_whenFileNotFound_shouldReturnNull() throws URISyntaxException, IOException {
         // GIVEN-WHEN-THEN
         assertThat(DatabaseReadWriteHelper.readDatabaseFromJson(DbDto.Topic.ACHIEVEMENTS, "")).isNull();
@@ -149,13 +168,16 @@ public class DatabaseReadWriteHelperTest {
     @Test
     public void parseTopicResourcesFromDirectory_whenRealFiles_andClearContents_shouldReturnContentsAsCollections() throws URISyntaxException, FileNotFoundException {
         // GIVEN
+        List<IntegrityError> integrityErrors = new ArrayList<>();
         File dbFile = new File(thisClass.getResource("/db/res/TDU_Achievements.fr").toURI());
         String databaseDirectory = dbFile.getParent();
 
         // WHEN
-        List<List<String>> allResources = DatabaseReadWriteHelper.parseTopicResourcesFromDirectory(DbDto.Topic.ACHIEVEMENTS, databaseDirectory);
+        List<List<String>> allResources = DatabaseReadWriteHelper.parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
 
         // THEN
+        assertThat(integrityErrors).hasSize(6);  // missing localized resources
+
         assertThat(allResources).isNotNull();
         assertThat(allResources).hasSize(8);
         assertThat(allResources.get(0)).hasSize(253); //fr

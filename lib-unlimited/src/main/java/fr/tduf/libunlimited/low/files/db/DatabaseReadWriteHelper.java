@@ -33,49 +33,26 @@ public class DatabaseReadWriteHelper {
      * @param integrityErrors    : list of database errors, encountered when parsing.  @return a global object for topic.
      * @throws FileNotFoundException
      */
-    // TODO reduce method size
     public static DbDto readDatabase(DbDto.Topic topic, String databaseDirectory, boolean withClearContents, List<IntegrityError> integrityErrors) throws IOException {
-        Objects.requireNonNull(integrityErrors);
+        Objects.requireNonNull(integrityErrors, "A list (even empty) must be provided.");
 
         String contentsFileName = checkDatabaseContents(topic, databaseDirectory, integrityErrors);
         if (contentsFileName == null) {
             return null;
         }
-
-        if (!withClearContents) {
-            // TODO handle encryption error: add integrity error
-            contentsFileName = prepareClearContents(contentsFileName);
-            if (contentsFileName == null) {
-                return null;
-            }
+        contentsFileName = prepareClearContentsIfNecessary(contentsFileName, withClearContents, integrityErrors);
+        if (contentsFileName == null) {
+            return null;
         }
 
         List<String> contentLines = parseTopicContentsFromFile(contentsFileName);
         if(contentLines.isEmpty()) {
             return null;
         }
+        List<List<String>> resourcesLines = parseTopicResourcesFromDirectoryAndCheck(topic, databaseDirectory, integrityErrors);
 
-        List<List<String>> resources = parseTopicResourcesFromDirectory(topic, databaseDirectory);
-        resources.stream()
-
-                .filter(List::isEmpty)
-
-                .forEach(resourceContents -> {
-                    Map<String, Object> info = new HashMap<>();
-                    info.put("Topic", topic);
-
-                    IntegrityError integrityError = IntegrityError.builder()
-                            .ofType(IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND)
-                            .addInformations(info)
-                            .build();
-
-                    integrityErrors.add(integrityError);
-                });
-
-        DbParser dbParser = DbParser.load(contentLines, resources);
-
+        DbParser dbParser = DbParser.load(contentLines, resourcesLines);
         DbDto dbDto = dbParser.parseAll();
-
         integrityErrors.addAll(dbParser.getIntegrityErrors());
 
         return dbDto;
@@ -130,15 +107,32 @@ public class DatabaseReadWriteHelper {
         return parseLinesInFile(contentsFileName, ENCODING_UTF_8);
     }
 
-    static List<List<String>> parseTopicResourcesFromDirectory(DbDto.Topic topic, String databaseDirectory) throws FileNotFoundException {
-        List<List<String>> resources = new ArrayList<>();
+    static List<List<String>> parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {
+        List<List<String>> resourcesLines = new ArrayList<>();
 
         for (DbResourceDto.Locale currentLocale : DbResourceDto.Locale.values()) {
             String resourceFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, currentLocale.getCode());
-            resources.add(parseLinesInFile(resourceFileName, ENCODING_UTF_16));
+            resourcesLines.add(parseLinesInFile(resourceFileName, ENCODING_UTF_16));
         }
 
-        return resources;
+        resourcesLines.stream()
+
+                .filter(List::isEmpty)
+
+                .forEach(resourceContents -> {
+                    Map<String, Object> info = new HashMap<>();
+                    info.put("Topic", topic);
+
+                    IntegrityError integrityError = IntegrityError.builder()
+                            .ofType(IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND)
+                            .addInformations(info)
+                            .build();
+
+                    integrityErrors.add(integrityError);
+                });
+
+
+        return resourcesLines;
     }
 
     private static String checkDatabaseContents(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {
@@ -182,16 +176,33 @@ public class DatabaseReadWriteHelper {
         return String.format("%s%s%s.%s", databaseDirectory, File.separator, topicLabel, extension);
     }
 
-    private static String prepareClearContents(String encryptedFileName) throws IOException {
+    private static String prepareClearContentsIfNecessary(String contentsFileName, boolean withClearContents, List<IntegrityError> integrityErrors) throws IOException {
+        if (withClearContents) {
+            return contentsFileName;
+        }
+
         Path tempDirectoryPath = Files.createTempDirectory("libUnlimited-databaseRW");
 
-        File inputFile = new File(encryptedFileName);
+        File inputFile = new File(contentsFileName);
         File outputFile = new File(tempDirectoryPath.toString(), inputFile.getName());
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(inputFile.toPath()));
-        ByteArrayOutputStream outputStream = CryptoHelper.decryptXTEA(inputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
 
-        Files.write(outputFile.toPath(), outputStream.toByteArray(), StandardOpenOption.CREATE);
+        try {
+            ByteArrayOutputStream outputStream = CryptoHelper.decryptXTEA(inputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
+            Files.write(outputFile.toPath(), outputStream.toByteArray(), StandardOpenOption.CREATE);
+        } catch (Exception e) {
+
+            Map<String, Object> info = new HashMap<>();
+            info.put("File", contentsFileName);
+            IntegrityError integrityError = IntegrityError.builder()
+                    .ofType(IntegrityError.ErrorTypeEnum.CONTENTS_ENCRYPTION_NOT_SUPPORTED)
+                    .addInformations(info)
+                    .build();
+            integrityErrors.add(integrityError);
+
+            return null;
+        }
 
         return outputFile.getPath();
     }
