@@ -64,10 +64,10 @@ public class DbWriter {
 
     /**
      * Writes all contents to given path (must exist) as JSON file .
-     * @param path location to write db files
+     * @param path  : location to write db files
+     * @return name of JSON file that has been written.
      */
-    //TODO return written file names
-    public void writeAllAsJson(String path) throws IOException {
+    public String writeAllAsJson(String path) throws IOException {
         checkPrerequisites(this.databaseDto);
 
         String outputFileName = String.format("%s.%s", this.databaseDto.getStructure().getTopic().getLabel(), "json");
@@ -76,6 +76,8 @@ public class DbWriter {
         try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8)) {
             new ObjectMapper().writer().writeValue(bufferedWriter, this.databaseDto);
         }
+
+        return outputPath.toString();
     }
 
     private static void checkPrerequisites(DbDto dbDto) {

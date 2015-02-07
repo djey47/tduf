@@ -207,11 +207,15 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, outputDirectory);
+        String actualFileName = DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, outputDirectory);
 
 
         // THEN
-        assertThat(new File(outputDirectory + "TDU_Achievements.json")).exists();
+        String expectedFileName = outputDirectory + File.separator + "TDU_Achievements.json";
+
+        assertThat(actualFileName).isEqualTo(expectedFileName);
+
+        assertThat(new File(expectedFileName)).exists();
     }
 
     @Test
@@ -255,8 +259,11 @@ public class DatabaseReadWriteHelperTest {
     }
 
     private static String createTestOutputDirectory() {
-        String outputDirectory = "./tests/";
-        new File(outputDirectory).mkdirs();
-        return outputDirectory;
+        String outputDirectory = "tests/";
+
+        File outputAsFile = new File(outputDirectory);
+        outputAsFile.mkdirs();
+
+        return outputAsFile.getAbsolutePath();
     }
 }

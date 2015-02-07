@@ -98,9 +98,11 @@ public class DbWriterTest {
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
-        DbWriter.load(initialDbDto).writeAllAsJson(tempDirectory.toString());
+        String actualFileName = DbWriter.load(initialDbDto).writeAllAsJson(tempDirectory.toString());
 
         //THEN
+        assertThat(actualFileName).isEqualTo(tempDirectory + File.separator + "TDU_Achievements.json");
+
         assertJsonOutputFileMatchesReference("TDU_Achievements.json", "/db/");
     }
 

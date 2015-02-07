@@ -94,13 +94,13 @@ public class DatabaseReadWriteHelper {
      * Writes all database contents (+resources) as JSON format from specified topic into outputDirectory.
      * @param dbDto             : topic contents to be written
      * @param outputDirectory   : location of generated files
+     * @return name of written JSON file
      * @throws FileNotFoundException
      */
-    //TODO return written file names
-    public static void writeDatabaseToJson(DbDto dbDto, String outputDirectory) throws IOException {
+    public static String writeDatabaseToJson(DbDto dbDto, String outputDirectory) throws IOException {
         DbWriter dbWriter = DbWriter.load(dbDto);
 
-        dbWriter.writeAllAsJson(outputDirectory);
+        return dbWriter.writeAllAsJson(outputDirectory);
     }
 
     static List<String> parseTopicContentsFromFile(String contentsFileName) throws FileNotFoundException {
