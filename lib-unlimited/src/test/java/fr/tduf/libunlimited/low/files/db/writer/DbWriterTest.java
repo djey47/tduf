@@ -106,6 +106,7 @@ public class DbWriterTest {
         assertJsonOutputFileMatchesReference("TDU_Achievements.json", "/db/");
     }
 
+    // TODO extract to common test helper
     private void assertOutputFileMatchesReference(String outputFileName, String resourceDirectory) throws URISyntaxException {
         File actualContentsFile = assertFileExistAndGet(outputFileName);
         File expectedContentsFile = new File(getClass().getResource(resourceDirectory + outputFileName).toURI());
@@ -113,6 +114,7 @@ public class DbWriterTest {
         assertThat(actualContentsFile).describedAs("File must match reference one: " + expectedContentsFile.getPath()).hasContentEqualTo(expectedContentsFile);
     }
 
+    // TODO extract to common test helper
     private void assertJsonOutputFileMatchesReference(String outputFileName, String resourceDirectory) throws URISyntaxException, IOException {
         File actualContentsFile = assertFileExistAndGet(outputFileName);
         byte[] actualEncoded = Files.readAllBytes(actualContentsFile.toPath());
@@ -125,6 +127,7 @@ public class DbWriterTest {
         assertJsonEquals("File must match reference one: " + expectedContentsFile.getPath(), expectedJson, actualJson);
     }
 
+    // TODO extract to common test helper
     private File assertFileExistAndGet(String fileName) {
         File actualContentsFile = new File(tempDirectory + "/" + fileName);
         assertThat(actualContentsFile.exists()).describedAs("File must exist: " + actualContentsFile.getPath()).isTrue();
