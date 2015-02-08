@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 import static net.sf.json.test.JSONAssert.assertJsonEquals;
@@ -23,11 +22,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbWriterTest {
 
-    private Path tempDirectory;
+    private String tempDirectory;
 
     @Before
     public void setUp() throws IOException {
-        tempDirectory = Files.createTempDirectory("libUnlimited-tests");
+        tempDirectory = Files.createTempDirectory("libUnlimited-tests").toString();
     }
 
     @Test
@@ -54,7 +53,7 @@ public class DbWriterTest {
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
-        List<String> actualFilenames = DbWriter.load(initialDbDto).writeAll(tempDirectory.toString());
+        List<String> actualFilenames = DbWriter.load(initialDbDto).writeAll(tempDirectory);
 
         //THEN
         assertThat(actualFilenames).containsExactly(
@@ -67,10 +66,10 @@ public class DbWriterTest {
         assertOutputFileMatchesReference("TDU_Achievements.it", "/db/res/clean/");
 
 
-        List<String> dbContents = DbHelper.readContentsFromRealFile(tempDirectory + "/TDU_Achievements.db", "UTF-8", "\r\n");
+        List<String> dbContents = DbHelper.readContentsFromRealFile(tempDirectory + File.separator +  "TDU_Achievements.db", "UTF-8", "\r\n");
         List<List<String>> dbResources = DbHelper.readResourcesFromRealFiles(
-                tempDirectory + "/TDU_Achievements.fr",
-                tempDirectory + "/TDU_Achievements.it");
+                tempDirectory + File.separator + "TDU_Achievements.fr",
+                tempDirectory + File.separator + "TDU_Achievements.it");
         DbDto finalDbDto = DbParser.load(dbContents, dbResources).parseAll();
         assertThat(finalDbDto).isEqualTo(initialDbDto);
     }
@@ -82,7 +81,7 @@ public class DbWriterTest {
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
-        List<String> actualFilenames = DbWriter.load(initialDbDto).writeAll(tempDirectory.toString());
+        List<String> actualFilenames = DbWriter.load(initialDbDto).writeAll(tempDirectory);
 
         //THEN
         assertThat(actualFilenames).hasSize(3);
@@ -98,7 +97,7 @@ public class DbWriterTest {
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
-        String actualFileName = DbWriter.load(initialDbDto).writeAllAsJson(tempDirectory.toString());
+        String actualFileName = DbWriter.load(initialDbDto).writeAllAsJson(tempDirectory);
 
         //THEN
         assertThat(actualFileName).isEqualTo(tempDirectory + File.separator + "TDU_Achievements.json");
@@ -129,7 +128,7 @@ public class DbWriterTest {
 
     // TODO extract to common test helper
     private File assertFileExistAndGet(String fileName) {
-        File actualContentsFile = new File(tempDirectory + "/" + fileName);
+        File actualContentsFile = new File(tempDirectory, fileName);
         assertThat(actualContentsFile.exists()).describedAs("File must exist: " + actualContentsFile.getPath()).isTrue();
         return actualContentsFile;
     }
