@@ -85,24 +85,7 @@ public class DatabaseReadWriteHelper {
         DbWriter writer = DbWriter.load(dbDto);
         List<String> writtenFileNames = writer.writeAll(outputDirectory);
 
-        if (withClearContents) {
-            return writtenFileNames;
-        }
-
-        // TODO Ensure file to be encrypted is contents and not resource !!
-        String contentsFileName = writtenFileNames.get(0);
-        String tempDirectory = Files.createTempDirectory("libUnlimited-databaseRW").toString();
-
-        File inputFile = new File(contentsFileName);
-        File outputFile = new File(tempDirectory, inputFile.getName());
-
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(inputFile.toPath()));
-        ByteArrayOutputStream outputStream = CryptoHelper.encryptXTEA(inputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
-        Files.write(outputFile.toPath(), outputStream.toByteArray(), StandardOpenOption.CREATE);
-
-        Path source = outputFile.toPath();
-        Path target = Paths.get(outputDirectory, source.getFileName().toString());
-        Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+        encryptContentsIfNecessary(outputDirectory, withClearContents, writtenFileNames);
 
         return writtenFileNames;
     }
@@ -198,10 +181,8 @@ public class DatabaseReadWriteHelper {
             return contentsFileName;
         }
 
-        Path tempDirectoryPath = Files.createTempDirectory("libUnlimited-databaseRW");
-
         File inputFile = new File(contentsFileName);
-        File outputFile = new File(tempDirectoryPath.toString(), inputFile.getName());
+        File outputFile = new File(createTempDirectory(), inputFile.getName());
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(inputFile.toPath()));
 
@@ -222,5 +203,38 @@ public class DatabaseReadWriteHelper {
         }
 
         return outputFile.getPath();
+    }
+
+    private static void encryptContentsIfNecessary(String outputDirectory, boolean withClearContents, List<String> writtenFileNames) throws IOException {
+        if (withClearContents) {
+            return;
+        }
+
+        writtenFileNames.stream()
+
+                .filter( (fileName) -> fileName.toUpperCase().endsWith(EXTENSION_DB_CONTENTS.toUpperCase()))
+
+                .findFirst()
+
+                .ifPresent( (contentsFileName) -> {
+                    try {
+                        File inputFile = new File(contentsFileName);
+                        File outputFile = new File(createTempDirectory(), inputFile.getName());
+
+                        ByteArrayInputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(inputFile.toPath()));
+                        ByteArrayOutputStream outputStream = CryptoHelper.encryptXTEA(inputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
+                        Files.write(outputFile.toPath(), outputStream.toByteArray(), StandardOpenOption.CREATE);
+
+                        Path source = outputFile.toPath();
+                        Path target = Paths.get(outputDirectory, source.getFileName().toString());
+                        Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    private static String createTempDirectory() throws IOException {
+        return Files.createTempDirectory("libUnlimited-databaseRW").toString();
     }
 }
