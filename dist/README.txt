@@ -3,6 +3,7 @@
 TDUForever aims at making Test Drive Unlmited modding easier:
 
 * Providing base modding features to save time
+* Making database editing less harmful
 * Capitalizing about reverse-engineering
 * ...
 
@@ -26,10 +27,16 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 To see all features, type and run: DatabaseTool
 
-e.g, to convert the whole TDU database to JSON format:
+e.g (1) to convert the whole TDU database to JSON format:
 
-* Extract (with TDUMT) and uncrypt (with tdudec) all database files in a directory
-* Type and run: DatabaseTool dump --databaseDir "C:\tdudb" --outputDir "C:\tdudb\dump"
+* Extract (with TDUMT) all DB.bnk and DB_xx.bnk database files in a directory
+* Type and run: DatabaseTool dump --databaseDir "C:\tdudb" --jsonDir "C:\tdudb\dump".
+
+e.g (2) to convert the database in JSON format to TDU files back:
+
+* Type and run: DatabaseTool gen --databaseDir "C:\tdudb" --jsonDir "C:\tdudb\gen"
+* Replace (with TDUMT) in DB.bnk and DB_xx.bnk all files by generated ones in the new gen directory.
+
 
 #### Mapping Tool
 
@@ -38,6 +45,7 @@ To see all features, type and run: MappingTool
 e.g, to add missing entries to Bnk1.map:
 
 * Type and run: MappingTool fix-missing --bnkDir "C:\Program Files(x86)\Test Drive Unlmited\Euro\Bnk"
+
 
 #### File Tool
 
