@@ -9,9 +9,7 @@ import fr.tduf.libunlimited.low.files.db.writer.DbWriter;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.util.*;
 
 /**
@@ -82,12 +80,31 @@ public class DatabaseReadWriteHelper {
      * @return a list of written TDU files
      * @throws FileNotFoundException
      */
-    //TODO encryption
     public static List<String> writeDatabase(DbDto dbDto, String outputDirectory, boolean withClearContents) throws IOException {
 
         DbWriter writer = DbWriter.load(dbDto);
+        List<String> writtenFileNames = writer.writeAll(outputDirectory);
 
-        return writer.writeAll(outputDirectory);
+        if (withClearContents) {
+            return writtenFileNames;
+        }
+
+        // TODO Ensure file to be encrypted is contents and not resource !!
+        String contentsFileName = writtenFileNames.get(0);
+        String tempDirectory = Files.createTempDirectory("libUnlimited-databaseRW").toString();
+
+        File inputFile = new File(contentsFileName);
+        File outputFile = new File(tempDirectory, inputFile.getName());
+
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(inputFile.toPath()));
+        ByteArrayOutputStream outputStream = CryptoHelper.encryptXTEA(inputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
+        Files.write(outputFile.toPath(), outputStream.toByteArray(), StandardOpenOption.CREATE);
+
+        Path source = outputFile.toPath();
+        Path target = Paths.get(outputDirectory, source.getFileName().toString());
+        Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+
+        return writtenFileNames;
     }
 
     /**

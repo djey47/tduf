@@ -151,7 +151,6 @@ public class DatabaseTool extends GenericTool {
         System.out.println("-> Source: " + this.jsonDirectory);
         System.out.println("Generating TDU database from JSON, please wait...");
 
-        //TODO lib
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
             System.out.println("-> Now processing topic: " + currentTopic + "...");
 

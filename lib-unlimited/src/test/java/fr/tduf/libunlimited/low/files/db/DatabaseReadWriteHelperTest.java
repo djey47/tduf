@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -236,6 +237,8 @@ public class DatabaseReadWriteHelperTest {
 
         writtenFiles.stream()
                 .forEach((fileName) -> assertThat(new File(fileName)).exists());
+
+        assertFileMatchesReference(writtenFiles.get(0), "/db/");
     }
 
     @Test
@@ -256,6 +259,8 @@ public class DatabaseReadWriteHelperTest {
 
         writtenFiles.stream()
                 .forEach((fileName) -> assertThat(new File(fileName)).exists());
+
+        assertFileDoesNotMatchReference(writtenFiles.get(0), "/db/encrypted/");
     }
 
     private static String createTestOutputDirectory() {
@@ -265,5 +270,31 @@ public class DatabaseReadWriteHelperTest {
         outputAsFile.mkdirs();
 
         return outputAsFile.getAbsolutePath();
+    }
+
+    // TODO extract to common test helper
+    private static void assertFileMatchesReference(String fileName, String resourceDirectory) throws URISyntaxException {
+        File actualContentsFile = assertFileExistAndGet(fileName);
+        File expectedContentsFile = new File(thisClass.getResource(resourceDirectory + actualContentsFile.getName()).toURI());
+
+        assertThat(actualContentsFile).describedAs("File must match reference one: " + expectedContentsFile.getPath()).hasContentEqualTo(expectedContentsFile);
+    }
+
+    // TODO extract to common test helper
+    private static void assertFileDoesNotMatchReference(String fileName, String resourceDirectory) throws URISyntaxException, IOException {
+        File actualContentsFile = assertFileExistAndGet(fileName);
+        File unexpectedContentsFile = new File(thisClass.getResource(resourceDirectory + actualContentsFile.getName()).toURI());
+
+        byte[] actualBytes = Files.readAllBytes(actualContentsFile.toPath());
+        byte[] unexpectedBytes = Files.readAllBytes(unexpectedContentsFile.toPath());
+
+        assertThat(actualBytes).isNotEqualTo(unexpectedBytes);
+    }
+
+    // TODO extract to common test helper
+    private static File assertFileExistAndGet(String fileName) {
+        File actualContentsFile = new File(fileName);
+        assertThat(actualContentsFile.exists()).describedAs("File must exist: " + actualContentsFile.getPath()).isTrue();
+        return actualContentsFile;
     }
 }
