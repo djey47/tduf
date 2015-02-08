@@ -13,11 +13,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
 
-import static net.sf.json.test.JSONAssert.assertJsonEquals;
+import static fr.tduf.libunlimited.common.helper.AssertionsHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbWriterTest {
@@ -52,24 +51,29 @@ public class DbWriterTest {
         InputStream resourceAsStream = getClass().getResourceAsStream("/db/TDU_Achievements.json");
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
+
         //WHEN
         List<String> actualFilenames = DbWriter.load(initialDbDto).writeAll(tempDirectory);
 
+
         //THEN
+        String actualContentsFileName = new File(tempDirectory, "TDU_Achievements.db").getAbsolutePath();
+        String actualResourceFileName1 = new File(tempDirectory, "TDU_Achievements.fr").getAbsolutePath();
+        String actualResourceFileName2 = new File(tempDirectory, "TDU_Achievements.it").getAbsolutePath();
+
         assertThat(actualFilenames).containsExactly(
-                tempDirectory + File.separator + "TDU_Achievements.db",
-                tempDirectory + File.separator + "TDU_Achievements.fr",
-                tempDirectory + File.separator + "TDU_Achievements.it");
+                actualContentsFileName,
+                actualResourceFileName1,
+                actualResourceFileName2);
 
-        assertOutputFileMatchesReference("TDU_Achievements.db", "/db/");
-        assertOutputFileMatchesReference("TDU_Achievements.fr", "/db/res/clean/");
-        assertOutputFileMatchesReference("TDU_Achievements.it", "/db/res/clean/");
+        assertFileMatchesReference(actualContentsFileName, "/db/");
+        assertFileMatchesReference(actualResourceFileName1, "/db/res/clean/");
+        assertFileMatchesReference(actualResourceFileName2, "/db/res/clean/");
 
-
-        List<String> dbContents = DbHelper.readContentsFromRealFile(tempDirectory + File.separator +  "TDU_Achievements.db", "UTF-8", "\r\n");
+        List<String> dbContents = DbHelper.readContentsFromRealFile(actualContentsFileName, "UTF-8", "\r\n");
         List<List<String>> dbResources = DbHelper.readResourcesFromRealFiles(
-                tempDirectory + File.separator + "TDU_Achievements.fr",
-                tempDirectory + File.separator + "TDU_Achievements.it");
+                actualResourceFileName1,
+                actualResourceFileName2);
         DbDto finalDbDto = DbParser.load(dbContents, dbResources).parseAll();
         assertThat(finalDbDto).isEqualTo(initialDbDto);
     }
@@ -86,7 +90,7 @@ public class DbWriterTest {
         //THEN
         assertThat(actualFilenames).hasSize(3);
 
-        File actualContentsFile = assertFileExistAndGet("TDU_Achievements.db");
+        File actualContentsFile = assertFileExistAndGet(new File(tempDirectory,"TDU_Achievements.db").getAbsolutePath());
         assertThat(actualContentsFile.length() % 8).isEqualTo(0);
     }
 
@@ -100,36 +104,10 @@ public class DbWriterTest {
         String actualFileName = DbWriter.load(initialDbDto).writeAllAsJson(tempDirectory);
 
         //THEN
-        assertThat(actualFileName).isEqualTo(tempDirectory + File.separator + "TDU_Achievements.json");
+        String expectedFileName = new File(tempDirectory, "TDU_Achievements.json").getAbsolutePath();
 
-        assertJsonOutputFileMatchesReference("TDU_Achievements.json", "/db/");
-    }
+        assertThat(actualFileName).isEqualTo(expectedFileName);
 
-    // TODO extract to common test helper
-    private void assertOutputFileMatchesReference(String outputFileName, String resourceDirectory) throws URISyntaxException {
-        File actualContentsFile = assertFileExistAndGet(outputFileName);
-        File expectedContentsFile = new File(getClass().getResource(resourceDirectory + outputFileName).toURI());
-
-        assertThat(actualContentsFile).describedAs("File must match reference one: " + expectedContentsFile.getPath()).hasContentEqualTo(expectedContentsFile);
-    }
-
-    // TODO extract to common test helper
-    private void assertJsonOutputFileMatchesReference(String outputFileName, String resourceDirectory) throws URISyntaxException, IOException {
-        File actualContentsFile = assertFileExistAndGet(outputFileName);
-        byte[] actualEncoded = Files.readAllBytes(actualContentsFile.toPath());
-        String actualJson = new String(actualEncoded, Charset.forName("UTF-8"));
-
-        File expectedContentsFile = new File(getClass().getResource(resourceDirectory + outputFileName).toURI());
-        byte[] expectedEncoded = Files.readAllBytes(expectedContentsFile.toPath());
-        String expectedJson = new String(expectedEncoded, Charset.forName("UTF-8"));
-
-        assertJsonEquals("File must match reference one: " + expectedContentsFile.getPath(), expectedJson, actualJson);
-    }
-
-    // TODO extract to common test helper
-    private File assertFileExistAndGet(String fileName) {
-        File actualContentsFile = new File(tempDirectory, fileName);
-        assertThat(actualContentsFile.exists()).describedAs("File must exist: " + actualContentsFile.getPath()).isTrue();
-        return actualContentsFile;
+        assertJsonFileMatchesReference(expectedFileName, "/db/");
     }
 }
