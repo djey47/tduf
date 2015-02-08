@@ -16,6 +16,7 @@ import java.util.Scanner;
 /**
  * Helper class to process TDU database.
  */
+// TODO Javadoc
 public class DbHelper {
 
     private static Class<DbHelper> thisClass = DbHelper.class;
