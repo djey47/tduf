@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.low.files.db.parser;
+package fr.tduf.libunlimited.low.files.db.rw;
 
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -23,8 +23,7 @@ import static java.util.stream.Collectors.groupingBy;
 /**
  * Helper class to extract database structure and contents from clear db file.
  */
-// TODO move to rw package
-public class DbParser {
+public class DatabaseParser {
 
     public static final String VALUE_DELIMITER = ";";
 
@@ -45,7 +44,7 @@ public class DbParser {
 
     private final List<IntegrityError> integrityErrors = new ArrayList<>();
 
-    private DbParser(List<String> contentlines, List<List<String>> resources) {
+    private DatabaseParser(List<String> contentlines, List<List<String>> resources) {
         this.contentLines = contentlines;
         this.resources = resources;
     }
@@ -54,12 +53,12 @@ public class DbParser {
      * Single entry point for this parser.
      * @param contentLines contentLines from unencrypted database file
      * @param resources list of contentLines from per-language resource files
-     * @return a {@link DbParser} instance.
+     * @return a {@link DatabaseParser} instance.
      */
-    public static DbParser load(List<String> contentLines, List<List<String>> resources) {
+    public static DatabaseParser load(List<String> contentLines, List<List<String>> resources) {
         checkPrerequisites(contentLines, resources);
 
-        return new DbParser(contentLines, resources);
+        return new DatabaseParser(contentLines, resources);
     }
 
     /**

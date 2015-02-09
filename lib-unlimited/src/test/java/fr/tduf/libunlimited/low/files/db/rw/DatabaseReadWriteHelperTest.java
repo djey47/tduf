@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.low.files.db;
+package fr.tduf.libunlimited.low.files.db.rw;
 
 
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;

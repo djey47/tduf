@@ -1,10 +1,9 @@
-package fr.tduf.libunlimited.low.files.db.writer;
+package fr.tduf.libunlimited.low.files.db.rw;
 
 import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import fr.tduf.libunlimited.low.files.db.parser.DbParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +18,7 @@ import java.util.List;
 import static fr.tduf.libunlimited.common.helper.AssertionsHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DbWriterTest {
+public class DatabaseWriterTest {
 
     private String tempDirectory;
 
@@ -39,10 +38,10 @@ public class DbWriterTest {
                 .build();
 
         //WHEN
-        DbWriter dbWriter = DbWriter.load(dbDto);
+        DatabaseWriter databaseWriter = DatabaseWriter.load(dbDto);
 
         //THEN
-        assertThat(dbWriter).isNotNull();
+        assertThat(databaseWriter).isNotNull();
     }
 
     @Test
@@ -53,7 +52,7 @@ public class DbWriterTest {
 
 
         //WHEN
-        List<String> actualFilenames = DbWriter.load(initialDbDto).writeAll(tempDirectory);
+        List<String> actualFilenames = DatabaseWriter.load(initialDbDto).writeAll(tempDirectory);
 
 
         //THEN
@@ -74,7 +73,7 @@ public class DbWriterTest {
         List<List<String>> dbResources = DbHelper.readResourcesFromRealFiles(
                 actualResourceFileName1,
                 actualResourceFileName2);
-        DbDto finalDbDto = DbParser.load(dbContents, dbResources).parseAll();
+        DbDto finalDbDto = DatabaseParser.load(dbContents, dbResources).parseAll();
         assertThat(finalDbDto).isEqualTo(initialDbDto);
     }
 
@@ -85,7 +84,7 @@ public class DbWriterTest {
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
-        List<String> actualFilenames = DbWriter.load(initialDbDto).writeAll(tempDirectory);
+        List<String> actualFilenames = DatabaseWriter.load(initialDbDto).writeAll(tempDirectory);
 
         //THEN
         assertThat(actualFilenames).hasSize(3);
@@ -101,7 +100,7 @@ public class DbWriterTest {
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
-        String actualFileName = DbWriter.load(initialDbDto).writeAllAsJson(tempDirectory);
+        String actualFileName = DatabaseWriter.load(initialDbDto).writeAllAsJson(tempDirectory);
 
         //THEN
         String expectedFileName = new File(tempDirectory, "TDU_Achievements.json").getAbsolutePath();

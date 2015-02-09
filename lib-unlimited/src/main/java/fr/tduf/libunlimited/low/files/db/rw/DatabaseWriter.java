@@ -1,10 +1,9 @@
-package fr.tduf.libunlimited.low.files.db.writer;
+package fr.tduf.libunlimited.low.files.db.rw;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import fr.tduf.libunlimited.low.files.db.parser.DbParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.BufferedWriter;
@@ -23,8 +22,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Helper class to generate db files (contents+structure) from database instances.
  */
-// TODO move to rw package
-public class DbWriter {
+public class DatabaseWriter {
 
     private static final String COMMENT_PATTERN = "// %s";
     private static final String COMMENT_INFO_PATTERN = "// %s: %s";
@@ -32,7 +30,7 @@ public class DbWriter {
 
     private final DbDto databaseDto;
 
-    private DbWriter(DbDto dbDto) {
+    private DatabaseWriter(DbDto dbDto) {
         this.databaseDto = dbDto;
     }
 
@@ -41,10 +39,10 @@ public class DbWriter {
      * @param dbDto full database information
      * @return writer instance.
      */
-    public static DbWriter load(DbDto dbDto) {
+    public static DatabaseWriter load(DbDto dbDto) {
         checkPrerequisites(dbDto);
 
-        return new DbWriter(dbDto);
+        return new DatabaseWriter(dbDto);
     }
 
     /**
@@ -120,7 +118,7 @@ public class DbWriter {
 
             for (DbDataDto.Item item : entry.getItems()) {
                 bufferedWriter.write(item.getRawValue());
-                bufferedWriter.write(DbParser.VALUE_DELIMITER);
+                bufferedWriter.write(DatabaseParser.VALUE_DELIMITER);
 
                 writtenSize += (item.getRawValue().length() + 1);
             }

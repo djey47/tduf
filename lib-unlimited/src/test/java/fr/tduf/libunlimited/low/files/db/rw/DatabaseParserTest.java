@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.low.files.db.parser;
+package fr.tduf.libunlimited.low.files.db.rw;
 
 import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -16,7 +16,7 @@ import static java.util.Arrays.asList;
 import static net.sf.json.test.JSONAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DbParserTest {
+public class DatabaseParserTest {
 
     @Test
     public void load_whenProvidedContents_shouldReturnParserInstanceWithoutErrors() throws Exception {
@@ -27,13 +27,13 @@ public class DbParserTest {
         );
 
         //WHEN
-        DbParser dbParser = DbParser.load(dbLines, resourceLines);
+        DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
 
         //THEN
-        assertThat(dbParser).isNotNull();
-        assertThat(dbParser.getContentLineCount()).isEqualTo(15);
-        assertThat(dbParser.getResourceCount()).isEqualTo(1);
-        assertThat(dbParser.getIntegrityErrors()).isEmpty();
+        assertThat(databaseParser).isNotNull();
+        assertThat(databaseParser.getContentLineCount()).isEqualTo(15);
+        assertThat(databaseParser.getResourceCount()).isEqualTo(1);
+        assertThat(databaseParser.getIntegrityErrors()).isEmpty();
     }
 
     @Test
@@ -53,14 +53,14 @@ public class DbParserTest {
         );
 
         //WHEN
-        DbParser dbParser = DbParser.load(dbLines, resourceLines);
-        DbDto actualDb = dbParser.parseAll();
+        DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
+        DbDto actualDb = databaseParser.parseAll();
 
         //THEN
         assertThat(actualDb).isNotNull();
-        assertThat(dbParser.getIntegrityErrors()).hasSize(2);
+        assertThat(databaseParser.getIntegrityErrors()).hasSize(2);
         /** {@link fr.tduf.libunlimited.low.files.db.domain.IntegrityError#getError()} */
-        assertThat(dbParser.getIntegrityErrors()).extracting("error").containsExactly("STRUCTURE_FIELDS_COUNT_MISMATCH","CONTENT_ITEMS_COUNT_MISMATCH");
+        assertThat(databaseParser.getIntegrityErrors()).extracting("error").containsExactly("STRUCTURE_FIELDS_COUNT_MISMATCH","CONTENT_ITEMS_COUNT_MISMATCH");
     }
 
     @Test
@@ -79,14 +79,14 @@ public class DbParserTest {
         );
 
         //WHEN
-        DbParser dbParser = DbParser.load(dbLines, resourceLines);
-        DbDto actualDb = dbParser.parseAll();
+        DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
+        DbDto actualDb = databaseParser.parseAll();
 
         //THEN
         assertThat(actualDb).isNotNull();
-        assertThat(dbParser.getIntegrityErrors()).hasSize(1);
+        assertThat(databaseParser.getIntegrityErrors()).hasSize(1);
         /** {@link fr.tduf.libunlimited.low.files.db.domain.IntegrityError#getError()} */
-        assertThat(dbParser.getIntegrityErrors()).extracting("error").containsExactly("RESOURCE_ITEMS_COUNT_MISMATCH");
+        assertThat(databaseParser.getIntegrityErrors()).extracting("error").containsExactly("RESOURCE_ITEMS_COUNT_MISMATCH");
     }
 
     @Test
@@ -99,14 +99,14 @@ public class DbParserTest {
         );
 
         //WHEN
-        DbParser dbParser = DbParser.load(dbLines, resourceLines);
-        DbDto actualDb = dbParser.parseAll();
+        DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
+        DbDto actualDb = databaseParser.parseAll();
 
         //THEN
         assertThat(actualDb).isNotNull();
-        assertThat(dbParser.getIntegrityErrors()).hasSize(1);
+        assertThat(databaseParser.getIntegrityErrors()).hasSize(1);
         /** {@link fr.tduf.libunlimited.low.files.db.domain.IntegrityError#getError()} */
-        assertThat(dbParser.getIntegrityErrors()).extracting("error").containsExactly("CONTENTS_FIELDS_COUNT_MISMATCH");
+        assertThat(databaseParser.getIntegrityErrors()).extracting("error").containsExactly("CONTENTS_FIELDS_COUNT_MISMATCH");
     }
 
     @Test
@@ -140,12 +140,12 @@ public class DbParserTest {
                 .build();
 
         //WHEN
-        DbParser dbParser = DbParser.load(dbLines, resourceLines);
-        DbDto actualDb = dbParser.parseAll();
+        DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
+        DbDto actualDb = databaseParser.parseAll();
 
         //THEN
         assertThat(actualDb).isNotNull();
-        assertThat(dbParser.getIntegrityErrors()).isEmpty();
+        assertThat(databaseParser.getIntegrityErrors()).isEmpty();
 
         assertThat(actualDb.getStructure().getFields()).hasSize(3);
         DbStructureDto.Field secondField = actualDb.getStructure().getFields().get(1);
@@ -177,13 +177,13 @@ public class DbParserTest {
 
 
         //WHEN
-        DbParser dbParser = DbParser.load(dbLines, resourceLines);
-        DbDto actualDb = dbParser.parseAll();
+        DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
+        DbDto actualDb = databaseParser.parseAll();
 
 
         //THEN
         assertThat(actualDb).isNotNull();
-        assertThat(dbParser.getIntegrityErrors()).isEmpty();
+        assertThat(databaseParser.getIntegrityErrors()).isEmpty();
 
         assertThat(actualDb.getData().getEntries()).hasSize(1);
         assertThat(actualDb.getData().getEntries().get(0).getItems()).hasSize(1);
@@ -219,13 +219,13 @@ public class DbParserTest {
 
 
         //WHEN
-        DbParser dbParser = DbParser.load(dbLines, resourceLines);
-        DbDto actualDb = dbParser.parseAll();
+        DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
+        DbDto actualDb = databaseParser.parseAll();
 
 
         //THEN
         assertThat(actualDb).isNotNull();
-        assertThat(dbParser.getIntegrityErrors()).isEmpty();
+        assertThat(databaseParser.getIntegrityErrors()).isEmpty();
 
         assertThat(actualDb.getData().getEntries()).hasSize(1);
         assertThat(actualDb.getData().getEntries().get(0).getItems()).hasSize(3);
@@ -244,11 +244,11 @@ public class DbParserTest {
         );
 
         //WHEN
-        DbParser dbParser = DbParser.load(dbLines, resourceLines);
-        DbDto actualDb = dbParser.parseAll();
+        DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
+        DbDto actualDb = databaseParser.parseAll();
 
         //THEN
-        assertThat(dbParser.getIntegrityErrors()).isEmpty();
+        assertThat(databaseParser.getIntegrityErrors()).isEmpty();
 
         assertThat(actualDb).isNotNull();
 
@@ -270,12 +270,12 @@ public class DbParserTest {
 
 
         //WHEN
-        DbParser dbParser = DbParser.load(dbLines, resourceLines);
-        DbDto actualDb = dbParser.parseAll();
+        DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
+        DbDto actualDb = databaseParser.parseAll();
 
 
         //THEN
-        assertThat(dbParser.getIntegrityErrors()).isEmpty();
+        assertThat(databaseParser.getIntegrityErrors()).isEmpty();
 
         List<DbResourceDto> actualDbResources = actualDb.getResources();
         assertThat(actualDbResources).hasSize(2);
@@ -291,8 +291,8 @@ public class DbParserTest {
 
 
         //WHEN
-        DbParser dbParser = DbParser.load(dbLines, resourceLines);
-        DbDto db = dbParser.parseAll();
+        DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
+        DbDto db = databaseParser.parseAll();
 
         // JSON DISPLAY
         ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
@@ -307,9 +307,9 @@ public class DbParserTest {
 
 
         //THEN
-        assertThat(dbParser.getContentLineCount()).isEqualTo(90);
-        assertThat(dbParser.getResourceCount()).isEqualTo(2);
-        assertThat(dbParser.getIntegrityErrors()).isEmpty();
+        assertThat(databaseParser.getContentLineCount()).isEqualTo(90);
+        assertThat(databaseParser.getResourceCount()).isEqualTo(2);
+        assertThat(databaseParser.getIntegrityErrors()).isEmpty();
 
         String expectedJson = DbHelper.readTextFromSample("/db/TDU_Achievements.json", "UTF-8");
         assertJsonEquals(expectedJson, jsonResult);

@@ -1,11 +1,9 @@
-package fr.tduf.libunlimited.low.files.db;
+package fr.tduf.libunlimited.low.files.db.rw;
 
 import fr.tduf.libunlimited.low.files.common.crypto.CryptoHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.parser.DbParser;
-import fr.tduf.libunlimited.low.files.db.writer.DbWriter;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.*;
@@ -50,9 +48,9 @@ public class DatabaseReadWriteHelper {
         }
         List<List<String>> resourcesLines = parseTopicResourcesFromDirectoryAndCheck(topic, databaseDirectory, integrityErrors);
 
-        DbParser dbParser = DbParser.load(contentLines, resourcesLines);
-        DbDto dbDto = dbParser.parseAll();
-        integrityErrors.addAll(dbParser.getIntegrityErrors());
+        DatabaseParser databaseParser = DatabaseParser.load(contentLines, resourcesLines);
+        DbDto dbDto = databaseParser.parseAll();
+        integrityErrors.addAll(databaseParser.getIntegrityErrors());
 
         return dbDto;
     }
@@ -83,7 +81,7 @@ public class DatabaseReadWriteHelper {
      */
     public static List<String> writeDatabase(DbDto dbDto, String outputDirectory, boolean withClearContents) throws IOException {
 
-        DbWriter writer = DbWriter.load(dbDto);
+        DatabaseWriter writer = DatabaseWriter.load(dbDto);
         List<String> writtenFileNames = writer.writeAll(outputDirectory);
 
         encryptContentsIfNecessary(outputDirectory, withClearContents, writtenFileNames);
@@ -99,9 +97,9 @@ public class DatabaseReadWriteHelper {
      * @throws FileNotFoundException
      */
     public static String writeDatabaseToJson(DbDto dbDto, String outputDirectory) throws IOException {
-        DbWriter dbWriter = DbWriter.load(dbDto);
+        DatabaseWriter databaseWriter = DatabaseWriter.load(dbDto);
 
-        return dbWriter.writeAllAsJson(outputDirectory);
+        return databaseWriter.writeAllAsJson(outputDirectory);
     }
 
     static List<String> parseTopicContentsFromFile(String contentsFileName) throws FileNotFoundException {
