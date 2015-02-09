@@ -1,6 +1,7 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.CommandHelper;
+import fr.tduf.libunlimited.high.files.db.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.low.files.db.DatabaseReadWriteHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -173,10 +174,23 @@ public class DatabaseTool extends GenericTool {
         System.out.println("All done!");
     }
 
+    // TODO simplify and reuse integrity error list + Change output info (step 1, step 2 ...)
     private void databaseCheck() throws IOException {
 
         System.out.println("Checking TDU database, please wait...");
         System.out.println("-> Source directory: " + databaseDirectory);
+
+        List<DbDto> dbDtos = perTopicCheck();
+
+        if (!dbDtos.isEmpty()) {
+            betweenTopicsCheck(dbDtos);
+        }
+
+        System.out.println("All done!");
+    }
+
+    private List<DbDto> perTopicCheck() throws IOException {
+        List<DbDto> allDtos = new ArrayList<>();
 
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
             System.out.println("-> Now processing topic: " + currentTopic + "...");
@@ -191,22 +205,38 @@ public class DatabaseTool extends GenericTool {
 
             System.out.println("  .Content line count: " + dbDto.getData().getEntries().size());
             System.out.println("  .Found topic: " + currentTopic + ", " + integrityErrors.size() + " error(s).");
-            if(!integrityErrors.isEmpty()) {
-                integrityErrors.forEach(
-                        (integrityError) -> {
-                            String errorMessage = String.format(integrityError.getErrorMessageFormat(), integrityError.getInformation());
-                            System.out.println("    !" + errorMessage);
-                        });
-            }
+            printIntegrityErrors(integrityErrors);
 
             if (!dbDto.getResources().isEmpty()) {
                 System.out.println("  .Resource count per locale: ");
                 dbDto.getResources().forEach(
                         (dbResourceDto) -> System.out.println("    ." + dbResourceDto.getLocale() + "=" + dbResourceDto.getEntries().size()));
             }
+
+            if (integrityErrors.isEmpty()) {
+                allDtos.add(dbDto);
+            }
         }
 
-        System.out.println("All done!");
+        return allDtos;
+    }
+
+    private static void betweenTopicsCheck(List<DbDto> allDtos) {
+        System.out.println("-> Now checking integrity between topics...");
+
+        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(allDtos).checkAll();
+
+        printIntegrityErrors(integrityErrors);
+    }
+
+    private static void printIntegrityErrors(List<IntegrityError> integrityErrors) {
+        if(!integrityErrors.isEmpty()) {
+            integrityErrors.forEach(
+                    (integrityError) -> {
+                        String errorMessage = String.format(integrityError.getErrorMessageFormat(), integrityError.getInformation());
+                        System.out.println("    !" + errorMessage);
+                    });
+        }
     }
 
     private static void createDirectoryIfNotExists(String directoryToCreate) {
