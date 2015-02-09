@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.writer;
 
-import fr.tduf.libunlimited.low.files.db.common.DbHelper;
+import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;

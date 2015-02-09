@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.low.files.db.common;
+package fr.tduf.libunlimited.low.files.db.common.helper;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
