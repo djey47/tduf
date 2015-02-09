@@ -70,7 +70,7 @@ public class DbWriterTest {
         assertFileMatchesReference(actualResourceFileName1, "/db/res/clean/");
         assertFileMatchesReference(actualResourceFileName2, "/db/res/clean/");
 
-        List<String> dbContents = DbHelper.readContentsFromRealFile(actualContentsFileName, "UTF-8", "\r\n");
+        List<String> dbContents = DbHelper.readContentsFromRealFile(actualContentsFileName, "UTF-8");
         List<List<String>> dbResources = DbHelper.readResourcesFromRealFiles(
                 actualResourceFileName1,
                 actualResourceFileName2);

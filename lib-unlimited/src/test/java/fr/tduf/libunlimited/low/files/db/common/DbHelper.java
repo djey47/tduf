@@ -14,9 +14,8 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Helper class to process TDU database.
+ * Helper class to process TDU database during tests.
  */
-// TODO Javadoc
 public class DbHelper {
 
     private static Class<DbHelper> thisClass = DbHelper.class;
@@ -24,7 +23,7 @@ public class DbHelper {
     /**
      * Reads provided resource text files and return contents as lines.
      * Eligible files are TDU_*.fr ... etc, having UTF-16LE as encoding.
-     * @param sampleFiles resource names of files to read
+     * @param sampleFiles   : resource names of files to read
      * @return a list of list of lines
      * @throws IOException
      */
@@ -32,7 +31,7 @@ public class DbHelper {
         List<List<String>> resourceLines = new ArrayList<>();
 
         for (String sampleFile : sampleFiles) {
-            resourceLines.add(readContentsFromSample(sampleFile, "UTF-16", "\r\n"));
+            resourceLines.add(readContentsFromSample(sampleFile, "UTF-16"));
         }
 
         return resourceLines;
@@ -41,21 +40,22 @@ public class DbHelper {
     /**
      * Reads provided text file and return contents as lines.
      * Eligible files have CRLF as line delimiter
-     * @param sampleFile resource name of file to read
+     * @param sampleFile    : resource name of file to read
+     * @param encoding      : etither UTF-8 or UTF-16
      * @return a list of lines
      * @throws IOException
      */
-    public static List<String> readContentsFromSample(String sampleFile, String encoding, String lineDelimiter) throws IOException {
+    public static List<String> readContentsFromSample(String sampleFile, String encoding) throws IOException {
 
         InputStream resourceAsStream = thisClass.getResourceAsStream(sampleFile);
 
-        return readContentsFromStream(resourceAsStream, encoding, lineDelimiter);
+        return readContentsFromStream(resourceAsStream, encoding);
     }
 
     /**
      * Reads provided text file and return contents.
-     * @param sampleFile resource name of file to read
-     * @param charsetName name of character set used in provided file
+     * @param sampleFile    : resource name of file to read
+     * @param charsetName   : name of character set used in provided file
      * @return a String containing all text in file
      * @throws IOException
      * @throws URISyntaxException
@@ -68,38 +68,36 @@ public class DbHelper {
     }
 
     /**
-     *
-     * @param fileName
-     * @param encoding
-     * @return
-     */
-    public static List<String> readContentsFromRealFile(String fileName, String encoding, String lineDelimiter) throws FileNotFoundException {
-
-        InputStream inputStream = new FileInputStream(fileName);
-
-        return readContentsFromStream(inputStream, encoding, lineDelimiter);
-    }
-
-    /**
-     *
-     * @param fileNames
-     * @return
+     * Reads provided text files and return contents as lists of lines.
+     * @param fileNames : names of ile to be processed
      */
     public static List<List<String>> readResourcesFromRealFiles(String... fileNames) throws FileNotFoundException {
         List<List<String>> resourceLines = new ArrayList<>();
 
         for (String fileName : fileNames) {
-            resourceLines.add(readContentsFromRealFile(fileName, "UTF-16", "\r\n"));
+            resourceLines.add(readContentsFromRealFile(fileName, "UTF-16"));
         }
 
         return resourceLines;
     }
 
-    private static List<String> readContentsFromStream(InputStream inputStream, String encoding, String lineDelimiter) {
+    /**
+     * Extracts all lines from database files.
+     * @param fileName      : unencrypted, database contents file (e.g TDU_Achievements.fr)
+     * @param encoding      : either UTF-8 or UTF-16
+     */
+    public static List<String> readContentsFromRealFile(String fileName, String encoding) throws FileNotFoundException {
+
+        InputStream inputStream = new FileInputStream(fileName);
+
+        return readContentsFromStream(inputStream, encoding);
+    }
+
+    private static List<String> readContentsFromStream(InputStream inputStream, String encoding) {
         List<String> lines = new ArrayList<>();
 
         Scanner scanner = new Scanner(inputStream, encoding) ;
-        scanner.useDelimiter(lineDelimiter);
+        scanner.useDelimiter("\r\n");
 
         while(scanner.hasNext()) {
             lines.add(scanner.next());
