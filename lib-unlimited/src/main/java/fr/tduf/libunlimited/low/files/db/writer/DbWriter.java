@@ -23,6 +23,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Helper class to generate db files (contents+structure) from database instances.
  */
+// TODO move to rw package
 public class DbWriter {
 
     private static final String COMMENT_PATTERN = "// %s";

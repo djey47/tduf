@@ -15,6 +15,7 @@ import java.util.*;
 /**
  * Class providing methods to manage Database read/write ops.
  */
+// TODO move to helper package
 public class DatabaseReadWriteHelper {
 
     private static final String EXTENSION_DB_CONTENTS = "db";

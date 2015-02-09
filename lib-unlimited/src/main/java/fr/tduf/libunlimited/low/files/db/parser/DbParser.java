@@ -23,6 +23,7 @@ import static java.util.stream.Collectors.groupingBy;
 /**
  * Helper class to extract database structure and contents from clear db file.
  */
+// TODO move to rw package
 public class DbParser {
 
     public static final String VALUE_DELIMITER = ";";
