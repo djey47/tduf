@@ -5,12 +5,14 @@ import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DatabaseReadWriteHelperTest {
 
     private static Class<DatabaseReadWriteHelperTest> thisClass = DatabaseReadWriteHelperTest.class;
+
+    private String tempDirectory;
+
+    @Before
+    public void setUp() throws IOException {
+        tempDirectory = Files.createTempDirectory("libUnlimited-tests").toString();
+    }
 
     @Test
     public void readDatabase_whenFileNotFound_shouldReturnMissingContentsNotice() throws URISyntaxException, IOException {
@@ -205,15 +214,13 @@ public class DatabaseReadWriteHelperTest {
                 .withData(dbDataDto)
                 .build();
 
-        String outputDirectory = createTestOutputDirectory();
-
 
         // WHEN
-        String actualFileName = DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, outputDirectory);
+        String actualFileName = DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, tempDirectory);
 
 
         // THEN
-        String expectedFileName = outputDirectory + File.separator + "TDU_Achievements.json";
+        String expectedFileName = new File(tempDirectory, "TDU_Achievements.json").getAbsolutePath();
 
         assertThat(actualFileName).isEqualTo(expectedFileName);
 
@@ -226,11 +233,9 @@ public class DatabaseReadWriteHelperTest {
         String jsonDirectory = new File(thisClass.getResource("/db/TDU_Achievements.json").toURI()).getParent();
         DbDto dbDto = DatabaseReadWriteHelper.readDatabaseFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory);
 
-        String outputDirectory = createTestOutputDirectory();
-
 
         // WHEN
-        List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabase(dbDto, outputDirectory, true);
+        List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabase(dbDto, tempDirectory, true);
 
 
         // THEN
@@ -248,11 +253,9 @@ public class DatabaseReadWriteHelperTest {
         String jsonDirectory = new File(thisClass.getResource("/db/TDU_Achievements.json").toURI()).getParent();
         DbDto dbDto = DatabaseReadWriteHelper.readDatabaseFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory);
 
-        String outputDirectory = createTestOutputDirectory();
-
 
         // WHEN
-        List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabase(dbDto, outputDirectory, false);
+        List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabase(dbDto, tempDirectory, false);
 
 
         // THEN
@@ -263,15 +266,4 @@ public class DatabaseReadWriteHelperTest {
 
         assertFileDoesNotMatchReference(writtenFiles.get(0), "/db/encrypted/");
     }
-
-    // TODO externalize to new helper class : + use fs temp directory instead
-    private static String createTestOutputDirectory() {
-        String outputDirectory = "tests/";
-
-        File outputAsFile = new File(outputDirectory);
-        outputAsFile.mkdirs();
-
-        return outputAsFile.getAbsolutePath();
-    }
-
 }
