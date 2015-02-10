@@ -29,7 +29,7 @@ public class DatabaseTool extends GenericTool {
     private String jsonDirectory;
 
     @Option(name = "-c", aliases = "--clear", usage = "Not mandatory. Indicates unpacked TDU files do not need to be unencrypted and encrypted back.")
-    private boolean withClearContents;
+    private boolean withClearContents = false;
 
     private Command command;
 
