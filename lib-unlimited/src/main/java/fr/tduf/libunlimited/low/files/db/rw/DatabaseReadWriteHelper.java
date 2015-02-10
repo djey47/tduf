@@ -136,13 +136,15 @@ public class DatabaseReadWriteHelper {
 
     private static String checkDatabaseContents(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {
         String contentsFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, EXTENSION_DB_CONTENTS);
+        File contentsFile = new File(contentsFileName);
 
-        if (new File(contentsFileName).exists()) {
-            return contentsFileName;
+        if (contentsFile.exists()) {
+            return contentsFile.getAbsolutePath();
         }
 
         Map<String, Object> info = new HashMap<>();
         info.put("Topic", topic);
+        info.put("File", contentsFile.getAbsolutePath());
         IntegrityError integrityError = IntegrityError.builder()
                 .ofType(IntegrityError.ErrorTypeEnum.CONTENTS_NOT_FOUND)
                 .addInformations(info)
@@ -172,7 +174,8 @@ public class DatabaseReadWriteHelper {
     }
 
     private static String getDatabaseFileName(String topicLabel, String databaseDirectory, String extension) {
-        return String.format("%s%s%s.%s", databaseDirectory, File.separator, topicLabel, extension);
+        String fileName = String.format("%s.%s", topicLabel, extension);
+        return new File(databaseDirectory, fileName).getAbsolutePath();
     }
 
     private static String prepareClearContentsIfNecessary(String contentsFileName, boolean withClearContents, List<IntegrityError> integrityErrors) throws IOException {
