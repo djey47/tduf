@@ -82,12 +82,17 @@ public class IntegrityError {
         /**
          * For a reference value, could not access to corresponding value in resource.
          */
-        RESOURCE_REFERENCE_NOT_FOUND("A reference to resource in same topic was not found: %s for locale: %s"),
+        RESOURCE_REFERENCE_NOT_FOUND("A reference to resource in topic was not found: %s"),
 
         /**
          * For a topic, could not access to corresponding contents.
          */
         CONTENTS_NOT_FOUND("Contents file was not found for current topic: %s"),
+
+        /**
+         * For a reference value, could not access to corresponding entry in other topic contents.
+         */
+        CONTENTS_REFERENCE_NOT_FOUND("A reference to contents in topic was not found: %s"),
 
         /**
          * For a topic, contents file exist but could not be unencrypted
