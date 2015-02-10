@@ -113,8 +113,7 @@ public class MappingTool extends GenericTool {
 
         // Map file: defaulted to current directory\Bnk1.map
         if (mapFile == null) {
-            // TODO use File with absolutepath instead
-            mapFile = bankDirectory + File.separator + "Bnk1.map";
+            mapFile = new File(bankDirectory,"Bnk1.map").getAbsolutePath();
         }
     }
 
