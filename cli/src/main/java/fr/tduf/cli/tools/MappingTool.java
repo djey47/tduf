@@ -1,8 +1,8 @@
 package fr.tduf.cli.tools;
 
-import fr.tduf.cli.common.CommandHelper;
-import fr.tduf.libunlimited.low.files.banks.mapping.MapHelper;
+import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
+import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.parser.MapParser;
 import fr.tduf.libunlimited.low.files.banks.mapping.writer.MapWriter;
 import org.kohsuke.args4j.CmdLineException;

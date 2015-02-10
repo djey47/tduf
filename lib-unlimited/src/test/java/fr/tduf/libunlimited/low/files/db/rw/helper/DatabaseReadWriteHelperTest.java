@@ -1,14 +1,11 @@
-package fr.tduf.libunlimited.low.files.db.rw;
+package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
-import org.assertj.core.condition.AllOf;
-import org.assertj.core.data.Index;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +21,6 @@ import static fr.tduf.libunlimited.common.helper.AssertionsHelper.assertFileDoes
 import static fr.tduf.libunlimited.common.helper.AssertionsHelper.assertFileMatchesReference;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.STRUCTURE_FIELDS_COUNT_MISMATCH;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Condition.*;
 import static org.assertj.core.data.Index.atIndex;
 
 public class DatabaseReadWriteHelperTest {

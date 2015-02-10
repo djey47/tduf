@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.low.files.banks.mapping;
+package fr.tduf.libunlimited.low.files.banks.mapping.helper;
 
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 
@@ -16,7 +16,6 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Class providing methods to manage BNK mapping.
  */
-// TODO move to helper package
 public class MapHelper {
 
     /**

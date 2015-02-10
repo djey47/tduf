@@ -1,9 +1,11 @@
-package fr.tduf.libunlimited.low.files.db.rw;
+package fr.tduf.libunlimited.low.files.db.rw.helper;
 
-import fr.tduf.libunlimited.low.files.common.crypto.CryptoHelper;
+import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
+import fr.tduf.libunlimited.low.files.db.rw.DatabaseWriter;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.*;
@@ -15,7 +17,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Class providing methods to manage Database read/write ops.
  */
-// TODO move to helper package
 public class DatabaseReadWriteHelper {
 
     private static final String EXTENSION_DB_CONTENTS = "db";
@@ -138,7 +139,7 @@ public class DatabaseReadWriteHelper {
 
         return resourcesLinesByFileNames.values().stream()
 
-                .sorted( (list1, list2) -> Integer.compare(list1.size(), list2.size()) * -1)
+                .sorted((list1, list2) -> Integer.compare(list1.size(), list2.size()) * -1)
 
                 .collect(toList());
     }

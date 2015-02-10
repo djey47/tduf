@@ -1,4 +1,4 @@
-package fr.tduf.cli.common;
+package fr.tduf.cli.common.helper;
 
 import java.util.Map;
 import java.util.Set;

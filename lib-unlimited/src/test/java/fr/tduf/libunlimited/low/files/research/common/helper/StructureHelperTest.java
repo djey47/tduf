@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.low.files.research.common;
+package fr.tduf.libunlimited.low.files.research.common.helper;
 
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.Test;

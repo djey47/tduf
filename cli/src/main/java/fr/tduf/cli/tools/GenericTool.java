@@ -1,6 +1,6 @@
 package fr.tduf.cli.tools;
 
-import fr.tduf.cli.common.CommandHelper;
+import fr.tduf.cli.common.helper.CommandHelper;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;

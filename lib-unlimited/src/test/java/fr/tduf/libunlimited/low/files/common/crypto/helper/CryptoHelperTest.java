@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.low.files.common.crypto;
+package fr.tduf.libunlimited.low.files.common.crypto.helper;
 
 import org.junit.After;
 import org.junit.Before;

@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
-import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
+import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectReader;
@@ -13,9 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToFloatingPoint;
-import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToInteger;
-import static fr.tduf.libunlimited.low.files.research.common.TypeHelper.rawToText;
+import static fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper.*;
 import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.*;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;

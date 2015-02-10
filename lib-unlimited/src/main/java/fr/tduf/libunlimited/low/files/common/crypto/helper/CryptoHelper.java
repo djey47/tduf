@@ -1,4 +1,6 @@
-package fr.tduf.libunlimited.low.files.common.crypto;
+package fr.tduf.libunlimited.low.files.common.crypto.helper;
+
+import fr.tduf.libunlimited.low.files.common.crypto.XTEA;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

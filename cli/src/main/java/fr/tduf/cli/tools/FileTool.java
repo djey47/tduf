@@ -1,7 +1,7 @@
 package fr.tduf.cli.tools;
 
-import fr.tduf.cli.common.CommandHelper;
-import fr.tduf.libunlimited.low.files.common.crypto.CryptoHelper;
+import fr.tduf.cli.common.helper.CommandHelper;
+import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.research.parser.GenericParser;
 import fr.tduf.libunlimited.low.files.research.writer.GenericWriter;
 import org.kohsuke.args4j.CmdLineException;

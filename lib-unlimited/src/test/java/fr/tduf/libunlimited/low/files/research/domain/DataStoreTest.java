@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
-import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
+import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.assertj.core.data.MapEntry;
 import org.junit.Test;

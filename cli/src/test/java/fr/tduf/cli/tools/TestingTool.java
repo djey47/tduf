@@ -1,6 +1,6 @@
 package fr.tduf.cli.tools;
 
-import fr.tduf.cli.common.CommandHelper;
+import fr.tduf.cli.common.helper.CommandHelper;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -44,7 +44,6 @@ public class TestingTool extends GenericTool {
         public CommandHelper.CommandEnum[] getValues() {
             return values();
         }
-
     }
 
     @Override

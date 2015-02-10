@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.low.files.banks.mapping;
+package fr.tduf.libunlimited.low.files.banks.mapping.helper;
 
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import org.junit.Test;

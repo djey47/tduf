@@ -1,10 +1,10 @@
 package fr.tduf.cli.tools;
 
-import fr.tduf.cli.common.CommandHelper;
+import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.libunlimited.high.files.db.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.rw.DatabaseReadWriteHelper;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 

@@ -1,8 +1,8 @@
 package fr.tduf.libunlimited.low.files.research.writer;
 
-import fr.tduf.libunlimited.low.files.research.common.FormulaHelper;
-import fr.tduf.libunlimited.low.files.research.common.StructureHelper;
-import fr.tduf.libunlimited.low.files.research.common.TypeHelper;
+import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
+import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
+import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 

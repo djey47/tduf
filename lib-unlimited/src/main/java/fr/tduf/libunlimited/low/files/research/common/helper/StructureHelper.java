@@ -1,6 +1,6 @@
-package fr.tduf.libunlimited.low.files.research.common;
+package fr.tduf.libunlimited.low.files.research.common.helper;
 
-import fr.tduf.libunlimited.low.files.common.crypto.CryptoHelper;
+import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 
