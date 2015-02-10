@@ -16,6 +16,7 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Class providing methods to manage BNK mapping.
  */
+// TODO move to helper package
 public class MapHelper {
 
     /**
