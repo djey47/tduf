@@ -87,12 +87,12 @@ public class IntegrityError {
         /**
          * For a topic, could not access to corresponding contents.
          */
-        CONTENTS_NOT_FOUND("Contents file was not found for current topic: %s.db"),
+        CONTENTS_NOT_FOUND("Contents file was not found for current topic: %s"),
 
         /**
          * For a topic, contents file exist but could not be unencrypted
          */
-        CONTENTS_ENCRYPTION_NOT_SUPPORTED("Contents file could not be unencrypted for current topic: %s.db"),
+        CONTENTS_ENCRYPTION_NOT_SUPPORTED("Contents file could not be unencrypted for current topic: %s"),
 
         /**
          * Read resource items count not same over all language files
