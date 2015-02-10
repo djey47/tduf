@@ -2,9 +2,9 @@ package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.CommandHelper;
 import fr.tduf.libunlimited.high.files.db.DatabaseIntegrityChecker;
-import fr.tduf.libunlimited.low.files.db.rw.DatabaseReadWriteHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.rw.DatabaseReadWriteHelper;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
@@ -102,8 +102,7 @@ public class DatabaseTool extends GenericTool {
         }
 
         if (jsonDirectory == null) {
-            //TODO Remove first path part (should be optional)
-            jsonDirectory = "." + File.separator + "tdu-database-dump";
+            jsonDirectory = "tdu-database-dump";
         }
     }
 
@@ -124,8 +123,9 @@ public class DatabaseTool extends GenericTool {
     private void dump() throws IOException {
         createDirectoryIfNotExists(this.jsonDirectory);
 
-        System.out.println("-> Source: " + databaseDirectory);
+        System.out.println("-> Source directory: " + databaseDirectory);
         System.out.println("Dumping TDU database to JSON, please wait...");
+        System.out.println();
 
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
             System.out.println("-> Now processing topic: " + currentTopic + "...");
@@ -141,7 +141,7 @@ public class DatabaseTool extends GenericTool {
             String writtenFileName = DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, this.jsonDirectory);
 
             System.out.println("Writing done for topic: " + currentTopic);
-            System.out.println("-> Location: " + writtenFileName);
+            System.out.println("-> " + writtenFileName);
             System.out.println();
         }
 
@@ -151,8 +151,9 @@ public class DatabaseTool extends GenericTool {
     private void gen() throws IOException {
         createDirectoryIfNotExists(this.databaseDirectory);
 
-        System.out.println("-> Source: " + this.jsonDirectory);
+        System.out.println("-> Source directory: " + this.jsonDirectory);
         System.out.println("Generating TDU database from JSON, please wait...");
+        System.out.println();
 
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
             System.out.println("-> Now processing topic: " + currentTopic + "...");
@@ -180,8 +181,8 @@ public class DatabaseTool extends GenericTool {
     private void databaseCheck() throws IOException {
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
-        System.out.println("Checking TDU database, please wait...");
         System.out.println("-> Source directory: " + databaseDirectory);
+        System.out.println("Checking TDU database, please wait...");
         System.out.println();
 
         System.out.println("-> Now loading database, step 1...");
