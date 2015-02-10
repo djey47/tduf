@@ -11,8 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,13 +68,13 @@ public class DatabaseWriter {
         checkPrerequisites(this.databaseDto);
 
         String outputFileName = String.format("%s.%s", this.databaseDto.getStructure().getTopic().getLabel(), "json");
-        Path outputPath = Paths.get(String.format("%s%s%s" ,path, File.separator , outputFileName));
 
-        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8)) {
+        File outputFile = new File(path, outputFileName);
+        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(outputFile.toPath(), StandardCharsets.UTF_8)) {
             new ObjectMapper().writer().writeValue(bufferedWriter, this.databaseDto);
         }
 
-        return outputPath.toString();
+        return outputFile.getAbsolutePath();
     }
 
     private static void checkPrerequisites(DbDto dbDto) {
@@ -95,9 +93,8 @@ public class DatabaseWriter {
         String topicLabel = currentTopic.getLabel();
         String contentsFileName = format("%s.db", topicLabel);
 
-        Path path = Paths.get(directoryPath + File.separator + contentsFileName);
-
-        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+        File contentsFile = new File(directoryPath, contentsFileName);
+        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(contentsFile.toPath(), StandardCharsets.UTF_8)) {
             long writtenSize = writeMetaContents(dbStructureDto, contentsFileName, bufferedWriter);
 
             writtenSize += writeStructureContents(dbStructureDto, topicLabel, bufferedWriter);
@@ -108,7 +105,7 @@ public class DatabaseWriter {
             writePaddingForSizeMultipleOfEight(bufferedWriter, writtenSize);
         }
 
-        return path.toString();
+        return contentsFile.getAbsolutePath();
     }
 
     private long writeItemContents(DbDataDto dbDataDto, BufferedWriter bufferedWriter) throws IOException {
@@ -161,9 +158,9 @@ public class DatabaseWriter {
 
             String localeCode = dbResourceDto.getLocale().getCode();
             String resourceFileName = format("%s.%s", topicLabel, localeCode);
-            Path path = Paths.get(directoryPath +  File.separator + resourceFileName);
 
-            try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardCharsets.UTF_16LE)) {
+            File resourceFile = new File(directoryPath, resourceFileName);
+            try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(resourceFile.toPath(), StandardCharsets.UTF_16LE)) {
 
                 // Encoding
                 bufferedWriter.write("\uFEFF");
@@ -183,7 +180,7 @@ public class DatabaseWriter {
                 }
             }
 
-            writtenPaths.add(path.toString());
+            writtenPaths.add(resourceFile.getAbsolutePath());
         }
 
         return writtenPaths;
