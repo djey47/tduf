@@ -79,8 +79,7 @@ public class DatabaseTool extends GenericTool {
                 dump();
                 break;
             case CHECK:
-                databaseCheck();
-                break;
+                return databaseCheck();
             case GEN:
                 gen();
                 break;
@@ -177,8 +176,7 @@ public class DatabaseTool extends GenericTool {
         System.out.println("All done!");
     }
 
-    // TODO return boolean result
-    private void databaseCheck() throws IOException {
+    private boolean databaseCheck() throws IOException {
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
         System.out.println("-> Source directory: " + databaseDirectory);
@@ -205,6 +203,8 @@ public class DatabaseTool extends GenericTool {
         System.out.println();
 
         System.out.println("All done.");
+
+        return integrityErrors.isEmpty();
     }
 
     private List<DbDto> loadAndCheckDatabase(List<IntegrityError> integrityErrors) throws IOException {
