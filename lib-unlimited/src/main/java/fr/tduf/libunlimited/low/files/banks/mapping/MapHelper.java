@@ -25,6 +25,7 @@ public class MapHelper {
      */
     public static List<String> parseBanks(String bnkFolderName) throws IOException {
 
+        // TODO check if separator necessary
         if (!bnkFolderName.endsWith(File.separator)) {
             bnkFolderName += File.separator;
         }
