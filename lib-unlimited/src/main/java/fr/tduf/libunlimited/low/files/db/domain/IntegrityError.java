@@ -77,7 +77,7 @@ public class IntegrityError {
         /**
          * For a topic, could not access to corresponding resource.
          */
-        RESOURCE_NOT_FOUND("A language resource file was not found for current topic: %s"),
+        RESOURCE_NOT_FOUND("Resource file was not found for current topic: %s"),
 
         /**
          * For a reference value, could not access to corresponding value in resource.
