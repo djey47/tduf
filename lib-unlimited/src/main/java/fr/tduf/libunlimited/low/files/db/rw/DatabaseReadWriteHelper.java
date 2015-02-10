@@ -10,6 +10,8 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * Class providing methods to manage Database read/write ops.
  */
@@ -106,21 +108,25 @@ public class DatabaseReadWriteHelper {
         return parseLinesInFile(contentsFileName, ENCODING_UTF_8);
     }
 
+    // TODO reduce method size
     static List<List<String>> parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {
-        List<List<String>> resourcesLines = new ArrayList<>();
 
+        Map<String, List<String>> resourcesLinesByFileNames = new HashMap<>();
         for (DbResourceDto.Locale currentLocale : DbResourceDto.Locale.values()) {
             String resourceFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, currentLocale.getCode());
-            resourcesLines.add(parseLinesInFile(resourceFileName, ENCODING_UTF_16));
+
+            List<String> readLines = parseLinesInFile(resourceFileName, ENCODING_UTF_16);
+            resourcesLinesByFileNames.put(resourceFileName, readLines);
         }
 
-        resourcesLines.stream()
+        resourcesLinesByFileNames.entrySet().stream()
 
-                .filter(List::isEmpty)
+                .filter((entry) -> entry.getValue().isEmpty())
 
-                .forEach(resourceContents -> {
+                .forEach((entry) -> {
                     Map<String, Object> info = new HashMap<>();
                     info.put("Topic", topic);
+                    info.put("File", entry.getKey());
 
                     IntegrityError integrityError = IntegrityError.builder()
                             .ofType(IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND)
@@ -130,8 +136,11 @@ public class DatabaseReadWriteHelper {
                     integrityErrors.add(integrityError);
                 });
 
+        return resourcesLinesByFileNames.values().stream()
 
-        return resourcesLines;
+                .sorted( (list1, list2) -> Integer.compare(list1.size(), list2.size()) * -1)
+
+                .collect(toList());
     }
 
     private static String checkDatabaseContents(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {

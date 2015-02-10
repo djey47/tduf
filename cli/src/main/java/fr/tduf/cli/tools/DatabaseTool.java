@@ -15,6 +15,7 @@ import java.util.List;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Command line interface for handling TDU database.
@@ -101,6 +102,7 @@ public class DatabaseTool extends GenericTool {
         }
 
         if (jsonDirectory == null) {
+            //TODO Remove first path part (should be optional)
             jsonDirectory = "." + File.separator + "tdu-database-dump";
         }
     }
@@ -174,44 +176,62 @@ public class DatabaseTool extends GenericTool {
         System.out.println("All done!");
     }
 
-    // TODO simplify and reuse integrity error list + Change output info (step 1, step 2 ...)
+    // TODO return boolean result
     private void databaseCheck() throws IOException {
+        List<IntegrityError> integrityErrors = new ArrayList<>();
 
         System.out.println("Checking TDU database, please wait...");
         System.out.println("-> Source directory: " + databaseDirectory);
+        System.out.println();
 
-        List<DbDto> dbDtos = perTopicCheck();
+        System.out.println("-> Now loading database, step 1...");
+
+        List<DbDto> dbDtos = loadAndCheckDatabase(integrityErrors);
+
+        System.out.println("-> step 1 finished.");
+        System.out.println();
 
         if (!dbDtos.isEmpty()) {
-            betweenTopicsCheck(dbDtos);
+            System.out.println("-> Now checking integrity between topics, step 2...");
+
+            betweenTopicsCheck(dbDtos, integrityErrors);
+
+            System.out.println("-> step 2 finished.");
+            System.out.println();
         }
 
-        System.out.println("All done!");
+        printIntegrityErrors(integrityErrors);
+        System.out.println();
+
+        System.out.println("All done.");
     }
 
-    private List<DbDto> perTopicCheck() throws IOException {
+    private List<DbDto> loadAndCheckDatabase(List<IntegrityError> integrityErrors) throws IOException {
+        requireNonNull(integrityErrors, "A list is required");
+
         List<DbDto> allDtos = new ArrayList<>();
 
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
-            System.out.println("-> Now processing topic: " + currentTopic + "...");
+            System.out.println("  -> Now processing topic: " + currentTopic + "...");
 
-            List<IntegrityError> integrityErrors = new ArrayList<>();
             DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, this.withClearContents, integrityErrors);
 
             if (dbDto == null) {
-                System.out.println("  !Database contents not found for topic " + currentTopic + ", skipping...");
+                System.out.println("  (!)Database contents not found for topic " + currentTopic + ", skipping.");
+                System.out.println();
                 continue;
             }
 
-            System.out.println("  .Content line count: " + dbDto.getData().getEntries().size());
             System.out.println("  .Found topic: " + currentTopic + ", " + integrityErrors.size() + " error(s).");
-            printIntegrityErrors(integrityErrors);
+            System.out.println("  .Content line count: " + dbDto.getData().getEntries().size());
 
             if (!dbDto.getResources().isEmpty()) {
                 System.out.println("  .Resource count per locale: ");
                 dbDto.getResources().forEach(
-                        (dbResourceDto) -> System.out.println("    ." + dbResourceDto.getLocale() + "=" + dbResourceDto.getEntries().size()));
+                        (dbResourceDto) -> System.out.println("    >" + dbResourceDto.getLocale() + "=" + dbResourceDto.getEntries().size()));
             }
+
+            System.out.println();
 
             if (integrityErrors.isEmpty()) {
                 allDtos.add(dbDto);
@@ -221,20 +241,20 @@ public class DatabaseTool extends GenericTool {
         return allDtos;
     }
 
-    private static void betweenTopicsCheck(List<DbDto> allDtos) {
-        System.out.println("-> Now checking integrity between topics...");
+    private static void betweenTopicsCheck(List<DbDto> allDtos, List<IntegrityError> integrityErrors) {
+        requireNonNull(integrityErrors, "A list is required");
 
-        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(allDtos).checkAll();
-
-        printIntegrityErrors(integrityErrors);
+        integrityErrors.addAll(DatabaseIntegrityChecker.load(allDtos).checkAll());
     }
 
     private static void printIntegrityErrors(List<IntegrityError> integrityErrors) {
         if(!integrityErrors.isEmpty()) {
+            System.out.println("-> Integrity errors (" + integrityErrors.size() + "):");
+
             integrityErrors.forEach(
                     (integrityError) -> {
                         String errorMessage = String.format(integrityError.getErrorMessageFormat(), integrityError.getInformation());
-                        System.out.println("    !" + errorMessage);
+                        System.out.println("  (!)" + errorMessage);
                     });
         }
     }
