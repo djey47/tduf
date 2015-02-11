@@ -15,16 +15,16 @@
                    "type" : "INTEGER"
                  }, {
                    "name" : "Ach_Title_",
-                   "type" : "RESOURCE_H"
+                   "type" : "RESOURCE_CURRENT_AGAIN"
                  }, {
                    "name" : "Ach_Desc_",
-                   "type" : "RESOURCE_H"
+                   "type" : "RESOURCE_CURRENT_AGAIN"
                  }, {
                    "name" : "Explanation_",
-                   "type" : "RESOURCE_H"
+                   "type" : "RESOURCE_CURRENT_AGAIN"
                  }, {
                    "name" : "FailedExplain_",
-                   "type" : "RESOURCE_H"
+                   "type" : "RESOURCE_CURRENT_AGAIN"
                  }, {
                    "name" : "Reward_",
                    "type" : "RESOURCE_CURRENT"

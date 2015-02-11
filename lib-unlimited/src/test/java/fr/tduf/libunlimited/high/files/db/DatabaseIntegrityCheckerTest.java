@@ -311,7 +311,7 @@ public class DatabaseIntegrityCheckerTest {
                         .build())
                 .addItem(DbStructureDto.Field.builder()
                         .forName("resourceRef4")
-                        .fromType(DbStructureDto.FieldType.RESOURCE_H)
+                        .fromType(DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN)
                         .build())
                 .addItem(DbStructureDto.Field.builder()
                         .forName("contentsRef")

@@ -109,7 +109,7 @@ public class DatabaseIntegrityChecker {
                 integrityErrors.addAll(checkContentsReference(item.getRawValue(), remoteTopicObject, currentTopic));
                 break;
             case RESOURCE_CURRENT:
-            case RESOURCE_H:
+            case RESOURCE_CURRENT_AGAIN:
                 integrityErrors.addAll(checkResourceReference(item.getRawValue(), localTopicObject, currentTopic));
                 break;
             case RESOURCE_REMOTE:

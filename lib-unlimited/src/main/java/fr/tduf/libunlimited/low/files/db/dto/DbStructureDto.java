@@ -164,9 +164,9 @@ public class DbStructureDto implements Serializable {
          */
         RESOURCE_CURRENT("u"),
         /**
-         * To be defined
+         * Identifier of resource in current Topic (same as above ?!)
          */
-        RESOURCE_H("h");        // TODO huh...?! what's this?
+        RESOURCE_CURRENT_AGAIN("h");
 
         private final String code;
 
