@@ -286,6 +286,7 @@ public class DataStore {
     /**
      * @return a String representation of store contents, on JSON format. Entries are ordered by rank.
      */
+    //TODO write unknown bytes as formatted Array [0x0 0x1] etc
     public String toJsonString() {
         ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
 
@@ -319,6 +320,7 @@ public class DataStore {
      * Replaces current store contents with those in provided JSON String.
      * @param jsonInput : json String containing all values
      */
+    //TODO read unknown bytes as formatted Array [0x0 0x1] etc
     public void fromJsonString(String jsonInput) throws IOException {
         ObjectReader reader = new ObjectMapper().reader(Map.class);
 
