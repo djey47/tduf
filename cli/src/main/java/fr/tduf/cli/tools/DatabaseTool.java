@@ -218,6 +218,8 @@ public class DatabaseTool extends GenericTool {
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
             System.out.println("  -> Now processing topic: " + currentTopic + "...");
 
+            int initialErrorCount = integrityErrors.size();
+
             DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, this.withClearContents, integrityErrors);
 
             if (dbDto == null) {
@@ -226,7 +228,7 @@ public class DatabaseTool extends GenericTool {
                 continue;
             }
 
-            System.out.println("  .Found topic: " + currentTopic + ", " + integrityErrors.size() + " error(s).");
+            System.out.println("  .Found topic: " + currentTopic + ", " + (integrityErrors.size() - initialErrorCount) + " error(s).");
             System.out.println("  .Content line count: " + dbDto.getData().getEntries().size());
 
             if (!dbDto.getResources().isEmpty()) {
