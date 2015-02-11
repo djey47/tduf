@@ -245,7 +245,7 @@ public class DatabaseTool extends GenericTool {
     private static void betweenTopicsCheck(List<DbDto> allDtos, List<IntegrityError> integrityErrors) {
         requireNonNull(integrityErrors, "A list is required");
 
-        integrityErrors.addAll(DatabaseIntegrityChecker.load(allDtos).checkAll());
+        integrityErrors.addAll(DatabaseIntegrityChecker.load(allDtos).checkAllContentsObjects());
     }
 
     private static void printIntegrityErrors(List<IntegrityError> integrityErrors) {

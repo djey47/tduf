@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.db;
 
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
@@ -10,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.CONTENTS_REFERENCE_NOT_FOUND;
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -18,11 +21,12 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Class providing methods to check Database integrity.
  */
+// TODO Provide field index for all dtos
 public class DatabaseIntegrityChecker {
 
     private final List<DbDto> dbDtos;
 
-    private Map<String, DbDto> topicObjectssByReferences;
+    private Map<String, DbDto> topicObjectsByReferences;
 
     private DatabaseIntegrityChecker(List<DbDto> dbDtos) {
         this.dbDtos = dbDtos;
@@ -42,47 +46,16 @@ public class DatabaseIntegrityChecker {
     }
 
     /**
-     * Process checkng over all loaded database objects.
+     * Process checking over all loaded database objects.
      * @return list of integrity errors.
      */
-    // TODO simplify!
-    public List<IntegrityError> checkAll() {
+    public List<IntegrityError> checkAllContentsObjects() {
 
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
         dbDtos.stream()
                 
-                .forEach( (dto) -> {
-
-                    Map<String, DbStructureDto.Field> fieldsByNames = buildFieldIndex(dto);
-
-                    dto.getData().getEntries().stream()
-
-                            .forEach((entry) -> entry.getItems().stream()
-
-                                    .forEach((item) -> {
-
-                                        DbDto.Topic currentTopic = dto.getStructure().getTopic();
-                                        DbDto remoteTopicObject;
-                                        DbStructureDto.Field field = fieldsByNames.get(item.getName());
-
-                                        switch (field.getFieldType()) {
-                                            case REFERENCE:
-                                                remoteTopicObject = topicObjectssByReferences.get(field.getTargetRef());
-                                                integrityErrors.addAll(checkContentsReference(item.getRawValue(), remoteTopicObject, currentTopic));
-                                                break;
-                                            case RESOURCE_CURRENT:
-                                                integrityErrors.addAll(checkResourceReference(item.getRawValue(), dto, currentTopic));
-                                                break;
-                                            case RESOURCE_REMOTE:
-                                                remoteTopicObject = topicObjectssByReferences.get(field.getTargetRef());
-                                                integrityErrors.addAll(checkResourceReference(item.getRawValue(), remoteTopicObject, currentTopic));
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                    }));
-                });
+                .forEach( (localTopicObject) -> checkContentsObject(localTopicObject, integrityErrors));
 
        return integrityErrors;
     }
@@ -90,6 +63,10 @@ public class DatabaseIntegrityChecker {
     private static void checkRequirements(List<DbDto> dbDtos) {
         requireNonNull(dbDtos, "A list of database objects is required.");
 
+        checkIfAllTopicObjectsPresent(dbDtos);
+    }
+
+    private static void checkIfAllTopicObjectsPresent(List<DbDto> dbDtos) {
         List<DbDto.Topic> absentTopics = asList(DbDto.Topic.values()).stream()
 
                 .filter((topicEnum) -> dbDtos.stream()
@@ -107,21 +84,59 @@ public class DatabaseIntegrityChecker {
         }
     }
 
+    private void checkContentsObject(DbDto contentsObject, List<IntegrityError> integrityErrors) {
+        Map<String, DbStructureDto.Field> fieldsByNames = buildFieldIndex(contentsObject);
+
+        contentsObject.getData().getEntries().stream()
+
+                .forEach((entry) -> entry.getItems().stream()
+
+                        .forEach((item) -> checkContentsItem(item, contentsObject, fieldsByNames, integrityErrors)));
+    }
+
+    private void checkContentsItem(DbDataDto.Item item, DbDto localTopicObject, Map<String, DbStructureDto.Field> fieldIndex, List<IntegrityError> integrityErrors) {
+        DbStructureDto.Field field = fieldIndex.get(item.getName());
+        String targetRef = field.getTargetRef();
+
+        DbDto remoteTopicObject = null;
+        if (targetRef != null) {
+            remoteTopicObject = topicObjectsByReferences.get(targetRef);
+        }
+
+        DbDto.Topic currentTopic = localTopicObject.getStructure().getTopic();
+
+        switch (field.getFieldType()) {
+            case REFERENCE:
+                integrityErrors.addAll(checkContentsReference(item.getRawValue(), remoteTopicObject, currentTopic));
+                break;
+            case RESOURCE_CURRENT:
+                integrityErrors.addAll(checkResourceReference(item.getRawValue(), localTopicObject, currentTopic));
+                break;
+            case RESOURCE_REMOTE:
+                integrityErrors.addAll(checkResourceReference(item.getRawValue(), remoteTopicObject, currentTopic));
+                break;
+            default:
+                break;
+        }
+    }
+
     private List<IntegrityError> checkResourceReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic) {
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
         // Through all language resources
-        List<DbResourceDto> dbResourceDtos = topicObject.getResources();
+        for(DbResourceDto resourceDto : topicObject.getResources()) {
 
-        for(DbResourceDto resourceDto : dbResourceDtos) {
-
-            List<String> availableReferences = resourceDto.getEntries().stream()
+            boolean isResourceReferenceFound = resourceDto.getEntries().stream()
 
                     .map(DbResourceDto.Entry::getReference)
 
-                    .collect(toList());
+                    .filter((aReference) -> aReference.equals(reference))
 
-            if (!availableReferences.contains(reference)) {
+                    .findFirst()
+
+                    .isPresent();
+
+            if (!isResourceReferenceFound) {
                 Map<String, Object> informations = new HashMap<>();
                 informations.put("Source Topic", sourceTopic);
                 informations.put("Remote Topic", topicObject.getStructure().getTopic());
@@ -129,7 +144,7 @@ public class DatabaseIntegrityChecker {
                 informations.put("Reference", reference);
 
                 integrityErrors.add(IntegrityError.builder()
-                                .ofType(IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND)
+                                .ofType(RESOURCE_REFERENCE_NOT_FOUND)
                                 .addInformations(informations)
                                 .build()
                 );
@@ -161,14 +176,13 @@ public class DatabaseIntegrityChecker {
                 .isPresent();
 
         if (!isReferenceFound) {
-
             Map<String, Object> informations = new HashMap<>();
             informations.put("Source Topic", sourceTopic);
             informations.put("Remote Topic", topicObject.getStructure().getTopic());
             informations.put("Reference", reference);
 
             integrityErrors.add(IntegrityError.builder()
-                            .ofType(IntegrityError.ErrorTypeEnum.CONTENTS_REFERENCE_NOT_FOUND)
+                            .ofType(CONTENTS_REFERENCE_NOT_FOUND)
                             .addInformations(informations)
                             .build()
             );
@@ -180,7 +194,7 @@ public class DatabaseIntegrityChecker {
     private void buildIndexes() {
 
         // Topic by reference
-        topicObjectssByReferences = dbDtos.stream()
+        topicObjectsByReferences = dbDtos.stream()
 
                 .collect( toMap((dto) -> dto.getStructure().getRef(), (dto) -> dto) );
     }
@@ -191,7 +205,7 @@ public class DatabaseIntegrityChecker {
                 .collect(toMap(DbStructureDto.Field::getName, (field) -> field));
     }
 
-    Map<String, DbDto> getTopicObjectssByReferences() {
-        return topicObjectssByReferences;
+    Map<String, DbDto> getTopicObjectsByReferences() {
+        return topicObjectsByReferences;
     }
 }

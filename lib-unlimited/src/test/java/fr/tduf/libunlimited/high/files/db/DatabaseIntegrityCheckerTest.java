@@ -37,7 +37,7 @@ public class DatabaseIntegrityCheckerTest {
         DatabaseIntegrityChecker databaseIntegrityChecker = DatabaseIntegrityChecker.load(dbDtos);
 
         //THEN
-        assertThat(databaseIntegrityChecker.getTopicObjectssByReferences()).hasSize(18);
+        assertThat(databaseIntegrityChecker.getTopicObjectsByReferences()).hasSize(18);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class DatabaseIntegrityCheckerTest {
         List<DbDto> dbDtos = createAllDtosWithoutErrors();
 
         //WHEN-THEN
-        assertThat(DatabaseIntegrityChecker.load(dbDtos).checkAll()).isEmpty();
+        assertThat(DatabaseIntegrityChecker.load(dbDtos).checkAllContentsObjects()).isEmpty();
     }
 
     @Test
@@ -55,12 +55,12 @@ public class DatabaseIntegrityCheckerTest {
         List<DbDto> dbDtos = createAllDtosWithMissingLocalResource();
 
         //WHEN
-        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(dbDtos).checkAll();
+        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(dbDtos).checkAllContentsObjects();
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND);
-        assertAllIntegrityErrorsContainInformation(integrityErrors, "Reference", "200" );
+        assertAllIntegrityErrorsContainInformation(integrityErrors, "Reference", "200");
     }
 
     @Test
@@ -69,7 +69,7 @@ public class DatabaseIntegrityCheckerTest {
         List<DbDto> dbDtos = createAllDtosWithMissingForeignResource();
 
         //WHEN
-        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(dbDtos).checkAll();
+        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(dbDtos).checkAllContentsObjects();
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
@@ -84,7 +84,7 @@ public class DatabaseIntegrityCheckerTest {
         List<DbDto> dbDtos = createAllDtosWithMissingLocalAndForeignResource();
 
         //WHEN
-        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(dbDtos).checkAll();
+        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(dbDtos).checkAllContentsObjects();
 
         //THEN
         assertThat(integrityErrors).hasSize(36);
@@ -97,7 +97,7 @@ public class DatabaseIntegrityCheckerTest {
         List<DbDto> dbDtos = createAllDtosWithMissingForeignEntry();
 
         //WHEN
-        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(dbDtos).checkAll();
+        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(dbDtos).checkAllContentsObjects();
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
