@@ -19,6 +19,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.fromCod
 import static java.lang.Integer.valueOf;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Helper class to extract database structure and contents from clear db file.
@@ -69,8 +70,8 @@ public class DatabaseParser {
 
         integrityErrors.clear();
 
-        List<DbResourceDto> resources = parseResources();
         DbStructureDto structure = parseStructure();
+        List<DbResourceDto> resources = parseResources(structure.getTopic());
         DbDataDto data = parseContents(structure);
 
         return DbDto.builder()
@@ -85,7 +86,7 @@ public class DatabaseParser {
         requireNonNull(resources, "Resources are required");
     }
 
-    private List<DbResourceDto> parseResources() {
+    private List<DbResourceDto> parseResources(DbDto.Topic topic) {
 
         final Pattern resourceNamePattern = Pattern.compile(META_NAME_PATTERN);
         final Pattern resourceVersionPattern = Pattern.compile(META_VERSION_PATTERN);
@@ -144,7 +145,7 @@ public class DatabaseParser {
 
                 .collect(Collectors.toList());
 
-        checkItemCountBetweenResources(dbResourceDtos);
+        checkItemCountBetweenResources(dbResourceDtos, topic);
 
         return dbResourceDtos;
     }
@@ -316,14 +317,17 @@ public class DatabaseParser {
         }
     }
 
-    private void checkItemCountBetweenResources(List<DbResourceDto> dbResourceDtos) {
+    private void checkItemCountBetweenResources(List<DbResourceDto> dbResourceDtos, DbDto.Topic topic) {
         Map<Integer, List<DbResourceDto>> dbResourceDtosByItemCount = dbResourceDtos.stream()
+
                 .collect(groupingBy(dbResourceDto -> dbResourceDto.getEntries().size()));
 
         if (dbResourceDtosByItemCount.size() > 1) {
             Map<String, Object> info = new HashMap<>();
-            info.put("Counts", dbResourceDtosByItemCount.keySet());
-            info.put("Differences between resources", dbResourceDtosByItemCount);
+            info.put("Topic", topic);
+            info.put("Per-locale count", dbResourceDtos.stream()
+                    .collect(toMap(DbResourceDto::getLocale, (dto) -> dto.getEntries().size() )));
+
             addIntegrityError(RESOURCE_ITEMS_COUNT_MISMATCH, info);
         }
     }
