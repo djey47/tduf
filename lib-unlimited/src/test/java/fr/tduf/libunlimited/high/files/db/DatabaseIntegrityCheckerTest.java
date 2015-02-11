@@ -60,6 +60,7 @@ public class DatabaseIntegrityCheckerTest {
         //THEN
         assertThat(integrityErrors).hasSize(18);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND);
+        assertAllIntegrityErrorsContainInformation(integrityErrors, "Reference", "200" );
     }
 
     @Test
@@ -73,6 +74,8 @@ public class DatabaseIntegrityCheckerTest {
         //THEN
         assertThat(integrityErrors).hasSize(18);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND);
+        assertAllIntegrityErrorsContainInformation(integrityErrors, "Remote Topic", DbDto.Topic.ACHIEVEMENTS);
+        assertAllIntegrityErrorsContainInformation(integrityErrors, "Reference", "300" );
     }
 
     @Test
@@ -265,5 +268,11 @@ public class DatabaseIntegrityCheckerTest {
                         .toTargetReference("ACHIEVEMENTS-topic")
                         .build())
                 .build();
+    }
+
+    private static void assertAllIntegrityErrorsContainInformation(List<IntegrityError> integrityErrors, String infoKey, Object infoValue) {
+        for (IntegrityError integrityError : integrityErrors) {
+            assertThat(integrityError.getInformation()).containsEntry(infoKey, infoValue);
+        }
     }
 }

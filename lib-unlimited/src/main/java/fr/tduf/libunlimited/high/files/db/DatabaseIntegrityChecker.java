@@ -62,21 +62,21 @@ public class DatabaseIntegrityChecker {
 
                                     .forEach((item) -> {
 
+                                        DbDto.Topic currentTopic = dto.getStructure().getTopic();
                                         DbDto remoteTopicObject;
                                         DbStructureDto.Field field = fieldsByNames.get(item.getName());
 
                                         switch (field.getFieldType()) {
                                             case REFERENCE:
-                                                DbDto.Topic currentTopic = dto.getStructure().getTopic();
                                                 remoteTopicObject = topicObjectssByReferences.get(field.getTargetRef());
                                                 integrityErrors.addAll(checkContentsReference(item.getRawValue(), remoteTopicObject, currentTopic));
                                                 break;
                                             case RESOURCE_CURRENT:
-                                                integrityErrors.addAll(checkResourceReference(item.getRawValue(), dto));
+                                                integrityErrors.addAll(checkResourceReference(item.getRawValue(), dto, currentTopic));
                                                 break;
                                             case RESOURCE_REMOTE:
                                                 remoteTopicObject = topicObjectssByReferences.get(field.getTargetRef());
-                                                integrityErrors.addAll(checkResourceReference(item.getRawValue(), remoteTopicObject));
+                                                integrityErrors.addAll(checkResourceReference(item.getRawValue(), remoteTopicObject, currentTopic));
                                                 break;
                                             default:
                                                 break;
@@ -87,6 +87,7 @@ public class DatabaseIntegrityChecker {
        return integrityErrors;
     }
 
+    // TODO simplify
     private static void checkRequirements(List<DbDto> dbDtos) {
         requireNonNull(dbDtos, "A list of database objects is required.");
 
@@ -107,8 +108,7 @@ public class DatabaseIntegrityChecker {
         }
     }
 
-    // TODO add source and remote topic to error info
-    private List<IntegrityError> checkResourceReference(String reference, DbDto topicObject) {
+    private List<IntegrityError> checkResourceReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic) {
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
         // Through all language resources
@@ -124,7 +124,8 @@ public class DatabaseIntegrityChecker {
 
             if (!availableReferences.contains(reference)) {
                 Map<String, Object> informations = new HashMap<>();
-                informations.put("Topic", topicObject.getStructure().getTopic());
+                informations.put("Source Topic", sourceTopic);
+                informations.put("Remote Topic", topicObject.getStructure().getTopic());
                 informations.put("Locale", resourceDto.getLocale());
                 informations.put("Reference", reference);
 
