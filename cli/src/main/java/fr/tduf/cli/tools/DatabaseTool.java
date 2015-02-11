@@ -206,7 +206,7 @@ public class DatabaseTool extends GenericTool {
         System.out.println("All done.");
 
         if(!integrityErrors.isEmpty()) {
-            throw new IllegalArgumentException("At least one integrity error has been found, your database is not ready to use.");
+            throw new IllegalArgumentException("At least one integrity error has been found, your database is not ready-to-use.");
         }
     }
 
