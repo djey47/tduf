@@ -21,12 +21,12 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Class providing methods to check Database integrity.
  */
-// TODO Provide field index for all dtos
 public class DatabaseIntegrityChecker {
 
     private final List<DbDto> dbDtos;
 
     private Map<String, DbDto> topicObjectsByReferences;
+    private Map<DbDto, Map<String, DbStructureDto.Field>> fieldsByNamesByTopicObjects;
 
     private DatabaseIntegrityChecker(List<DbDto> dbDtos) {
         this.dbDtos = dbDtos;
@@ -85,17 +85,16 @@ public class DatabaseIntegrityChecker {
     }
 
     private void checkContentsObject(DbDto contentsObject, List<IntegrityError> integrityErrors) {
-        Map<String, DbStructureDto.Field> fieldsByNames = buildFieldIndex(contentsObject);
 
         contentsObject.getData().getEntries().stream()
 
                 .forEach((entry) -> entry.getItems().stream()
 
-                        .forEach((item) -> checkContentsItem(item, contentsObject, fieldsByNames, integrityErrors)));
+                        .forEach((item) -> checkContentsItem(item, contentsObject, integrityErrors)));
     }
 
-    private void checkContentsItem(DbDataDto.Item item, DbDto localTopicObject, Map<String, DbStructureDto.Field> fieldIndex, List<IntegrityError> integrityErrors) {
-        DbStructureDto.Field field = fieldIndex.get(item.getName());
+    private void checkContentsItem(DbDataDto.Item item, DbDto localTopicObject, List<IntegrityError> integrityErrors) {
+        DbStructureDto.Field field = fieldsByNamesByTopicObjects.get(localTopicObject).get(item.getName());
         String targetRef = field.getTargetRef();
 
         DbDto remoteTopicObject = null;
@@ -157,14 +156,15 @@ public class DatabaseIntegrityChecker {
     private List<IntegrityError> checkContentsReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic) {
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
-        Map<String, DbStructureDto.Field> fieldIndex = buildFieldIndex(topicObject);
         boolean isReferenceFound = topicObject.getData().getEntries().stream()
 
                 .filter((entry) -> entry.getItems().stream()
 
-                                .filter((item) ->
-                                        fieldIndex.get(item.getName()).getFieldType() == DbStructureDto.FieldType.UID
-                                                && item.getRawValue().equals(reference))
+                                .filter((item) -> fieldsByNamesByTopicObjects
+                                                    .get(topicObject)
+                                                    .get(item.getName())
+                                                    .getFieldType() == DbStructureDto.FieldType.UID
+                                                 && item.getRawValue().equals(reference))
 
                                 .findFirst()
 
@@ -197,6 +197,11 @@ public class DatabaseIntegrityChecker {
         topicObjectsByReferences = dbDtos.stream()
 
                 .collect( toMap((dto) -> dto.getStructure().getRef(), (dto) -> dto) );
+
+        // Structure
+        fieldsByNamesByTopicObjects = dbDtos.stream()
+
+                .collect( toMap((dto) -> dto, this::buildFieldIndex));
     }
 
     private Map<String, DbStructureDto.Field> buildFieldIndex(DbDto dto) {
@@ -207,5 +212,9 @@ public class DatabaseIntegrityChecker {
 
     Map<String, DbDto> getTopicObjectsByReferences() {
         return topicObjectsByReferences;
+    }
+
+    Map<DbDto, Map<String, DbStructureDto.Field>> getFieldsByNamesByTopicObjects() {
+        return fieldsByNamesByTopicObjects;
     }
 }
