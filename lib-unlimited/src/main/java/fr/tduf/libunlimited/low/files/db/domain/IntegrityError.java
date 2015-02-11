@@ -102,7 +102,7 @@ public class IntegrityError {
         /**
          * Read resource items count not same over all language files
          */
-        RESOURCE_ITEMS_COUNT_MISMATCH("Resource items count is not same over all language files: %s");
+        RESOURCE_ITEMS_COUNT_MISMATCH("Resource items count is not the same over all language files: %s");
 
         private final String errorMessageFormat;
 
