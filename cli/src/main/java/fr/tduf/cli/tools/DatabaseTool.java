@@ -191,7 +191,7 @@ public class DatabaseTool extends GenericTool {
         System.out.println("-> step 1 finished.");
         System.out.println();
 
-        if (!dbDtos.isEmpty()) {
+        if (dbDtos.size() == DbDto.Topic.values().length) {
             System.out.println("-> Now checking integrity between topics, step 2...");
 
             betweenTopicsCheck(dbDtos, integrityErrors);
