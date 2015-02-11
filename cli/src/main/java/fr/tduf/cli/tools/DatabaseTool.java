@@ -73,13 +73,14 @@ public class DatabaseTool extends GenericTool {
     }
 
     @Override
-    protected boolean commandDispatch() throws IOException {
+    protected boolean commandDispatch() throws Exception {
         switch (command) {
             case DUMP:
                 dump();
                 break;
             case CHECK:
-                return databaseCheck();
+                databaseCheck();
+                break;
             case GEN:
                 gen();
                 break;
@@ -176,7 +177,7 @@ public class DatabaseTool extends GenericTool {
         System.out.println("All done!");
     }
 
-    private boolean databaseCheck() throws IOException {
+    private void databaseCheck() throws Exception {
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
         System.out.println("-> Source directory: " + databaseDirectory);
@@ -204,7 +205,9 @@ public class DatabaseTool extends GenericTool {
 
         System.out.println("All done.");
 
-        return integrityErrors.isEmpty();
+        if(!integrityErrors.isEmpty()) {
+            throw new IllegalArgumentException("At least one integrity error has been found, your database is not ready to use.");
+        }
     }
 
     private List<DbDto> loadAndCheckDatabase(List<IntegrityError> integrityErrors) throws IOException {

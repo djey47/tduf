@@ -27,8 +27,13 @@ public abstract class GenericTool {
             System.exit(1);
         }
 
-        if (!commandDispatch()) {
-            System.err.println("Error: command is not implemented, yet.");
+        try {
+            if (!commandDispatch()) {
+                System.err.println("Error: command is not implemented, yet.");
+                System.exit(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             System.exit(1);
         }
 
@@ -39,7 +44,7 @@ public abstract class GenericTool {
      * Should process according to provided command.
      * @return true if command has been correctly dispatched, false otherwise.
      */
-    protected abstract boolean commandDispatch() throws IOException;
+    protected abstract boolean commandDispatch() throws Exception;
 
     /**
      * Should assign current command.

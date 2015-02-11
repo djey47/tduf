@@ -20,7 +20,8 @@ public class TestingTool extends GenericTool {
 
     enum Command implements CommandHelper.CommandEnum {
         TEST("test", "for testing purpose only"),
-        TEST_U("test_u", "for testing purpose only");
+        TEST_U("test_u", "for testing purpose only"),
+        TEST_FAIL("test_fail", "for testing purpose only");
 
         final String label;
         final String description;
@@ -48,7 +49,15 @@ public class TestingTool extends GenericTool {
 
     @Override
     protected boolean commandDispatch() throws IOException {
-        return (command == Command.TEST);
+        if (command == Command.TEST) {
+            return true;
+        }
+
+        if(command == Command.TEST_FAIL) {
+            throw new IllegalArgumentException("Exception");
+        }
+
+        return false;
     }
 
     @Override

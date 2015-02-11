@@ -5,11 +5,8 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
 import java.io.IOException;
-import java.nio.file.NoSuchFileException;
 
-import static fr.tduf.cli.tools.DatabaseTool.Command.CHECK;
-import static fr.tduf.cli.tools.DatabaseTool.Command.DUMP;
-import static fr.tduf.cli.tools.DatabaseTool.Command.GEN;
+import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static fr.tduf.cli.tools.FileTool.Command.*;
 import static fr.tduf.cli.tools.MappingTool.Command.*;
 
@@ -77,27 +74,35 @@ public class AllToolsTest {
         testToolCommand(new FileTool(), ENCRYPT.getLabel());
     }
 
-    @Test(expected= NoSuchFileException.class)
+    @Test
     public void mappingTool_info() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
         testToolCommand(new MappingTool(), INFO.getLabel());
     }
 
-    @Test(expected= NoSuchFileException.class)
+    @Test
     public void mappingTool_list() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
         testToolCommand(new MappingTool(), LIST.getLabel());
     }
 
-    @Test(expected= NoSuchFileException.class)
+    @Test
     public void mappingTool_listMissing() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
         testToolCommand(new MappingTool(), LIST_MISSING.getLabel());
     }
 
-    @Test(expected= NoSuchFileException.class)
+    @Test
     public void mappingTool_fixMissing() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
         testToolCommand(new MappingTool(), FIX_MISSING.getLabel());
     }
 

@@ -74,6 +74,13 @@ public class GenericToolTest {
         testingTool.doMain(new String[]{"test", "-p", "value"});
     }
 
+    @Test
+    public void doMain_whenKnownCommand_andExceptionInOperation_shouldEndAbnormally() throws IOException {
+        exitRule.expectSystemExitWithStatus(1);
+
+        testingTool.doMain(new String[]{"test_fail", "-p", "value"});
+    }
+
     @Test(expected = SecurityException.class)
     public void doMain_whenKnownCommand_andNoParameter_shouldEndAbnormally() throws IOException {
         // GIVEN-WHEN-THEN
