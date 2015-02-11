@@ -37,9 +37,7 @@ public class DatabaseIntegrityCheckerTest {
         DatabaseIntegrityChecker databaseIntegrityChecker = DatabaseIntegrityChecker.load(dbDtos);
 
         //THEN
-        assertThat(databaseIntegrityChecker.getResourcesByTopic()).hasSize(18);
-
-        assertThat(databaseIntegrityChecker.getTopicsByReferences()).hasSize(18);
+        assertThat(databaseIntegrityChecker.getTopicObjectssByReferences()).hasSize(18);
     }
 
     @Test
@@ -52,7 +50,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenMissingResourceInTopis_shouldReturnIntegrityErrors() {
+    public void checkAll_whenMissingResourceInTopics_shouldReturnIntegrityErrors() {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingLocalResource();
 
@@ -90,8 +88,21 @@ public class DatabaseIntegrityCheckerTest {
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND);
     }
 
+    @Test
+    public void checkAll_whenMissingContentsEntryInRemoteTopic_shouldReturnIntegrityErrors() {
+        //GIVEN
+        List<DbDto> dbDtos = createAllDtosWithMissingForeignEntry();
+
+        //WHEN
+        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(dbDtos).checkAll();
+
+        //THEN
+        assertThat(integrityErrors).hasSize(18);
+        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.CONTENTS_REFERENCE_NOT_FOUND);
+    }
+
     private List<DbDto> createAllDtosWithoutErrors() {
-        DbDataDto dataDto = createContentsOneEntryFiveItems();
+        DbDataDto dataDto = createContentsOneEntryFiveItems("001");
 
         DbResourceDto resourceDto = createResourceNoEntryMissing();
 
@@ -99,7 +110,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     private List<DbDto> createAllDtosWithMissingLocalResource() {
-        DbDataDto dataDto = createContentsOneEntryFiveItems();
+        DbDataDto dataDto = createContentsOneEntryFiveItems("001");
 
         DbResourceDto resourceDto = createResourceOneLocalEntryMissing();
 
@@ -107,7 +118,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     private List<DbDto> createAllDtosWithMissingForeignResource() {
-        DbDataDto dataDto = createContentsOneEntryFiveItems();
+        DbDataDto dataDto = createContentsOneEntryFiveItems("001");
 
         DbResourceDto resourceDto = createResourceOneForeignEntryMissing();
 
@@ -115,9 +126,17 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     private List<DbDto> createAllDtosWithMissingLocalAndForeignResource() {
-        DbDataDto dataDto = createContentsOneEntryFiveItems();
+        DbDataDto dataDto = createContentsOneEntryFiveItems("001");
 
         DbResourceDto resourceDto = createResourceOneLocalAndOneForeignEntryMissing();
+
+        return createAllDtos(dataDto, resourceDto);
+    }
+
+    private List<DbDto> createAllDtosWithMissingForeignEntry() {
+        DbDataDto dataDto = createContentsOneEntryFiveItems("000");
+
+        DbResourceDto resourceDto = createResourceNoEntryMissing();
 
         return createAllDtos(dataDto, resourceDto);
     }
@@ -170,12 +189,12 @@ public class DatabaseIntegrityCheckerTest {
                 .build();
     }
 
-    private DbDataDto createContentsOneEntryFiveItems() {
+    private DbDataDto createContentsOneEntryFiveItems(String entryUniqueIdentifier) {
         return DbDataDto.builder()
                                 .addEntry(DbDataDto.Entry.builder()
                                         .addItem(DbDataDto.Item.builder()
                                                 .forName("identifier")
-                                                .withRawValue("001")
+                                                .withRawValue(entryUniqueIdentifier)
                                                 .build())
                                         .addItem(DbDataDto.Item.builder()
                                                 .forName("resourceRef1")
