@@ -66,6 +66,20 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
+    public void checkAll_whenMissingResourceInTopics_andTypeH_shouldReturnIntegrityErrors() {
+        //GIVEN
+        List<DbDto> dbDtos = createAllDtosWithMissingLocalResourceTypeH();
+
+        //WHEN
+        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(dbDtos).checkAllContentsObjects();
+
+        //THEN
+        assertThat(integrityErrors).hasSize(18);
+        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND);
+        assertAllIntegrityErrorsContainInformation(integrityErrors, "Reference", "400");
+    }
+
+    @Test
     public void checkAll_whenMissingResourceInRemoteTopic_shouldReturnIntegrityErrors() {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingForeignResource();
@@ -107,7 +121,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     private List<DbDto> createAllDtosWithoutErrors() {
-        DbDataDto dataDto = createContentsOneEntryFiveItems("001");
+        DbDataDto dataDto = createContentsOneEntrySixItems("001");
 
         DbResourceDto resourceDto = createResourceNoEntryMissing();
 
@@ -115,15 +129,22 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     private List<DbDto> createAllDtosWithMissingLocalResource() {
-        DbDataDto dataDto = createContentsOneEntryFiveItems("001");
+        DbDataDto dataDto = createContentsOneEntrySixItems("001");
 
         DbResourceDto resourceDto = createResourceOneLocalEntryMissing();
 
         return createAllDtos(dataDto, resourceDto);
     }
 
+    private List<DbDto> createAllDtosWithMissingLocalResourceTypeH() {
+        DbDataDto dataDto = createContentsOneEntrySixItems("001");
+
+        DbResourceDto resourceDto = createResourceAnotherLocalEntryMissing();
+        return createAllDtos(dataDto, resourceDto);
+    }
+
     private List<DbDto> createAllDtosWithMissingForeignResource() {
-        DbDataDto dataDto = createContentsOneEntryFiveItems("001");
+        DbDataDto dataDto = createContentsOneEntrySixItems("001");
 
         DbResourceDto resourceDto = createResourceOneForeignEntryMissing();
 
@@ -131,7 +152,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     private List<DbDto> createAllDtosWithMissingLocalAndForeignResource() {
-        DbDataDto dataDto = createContentsOneEntryFiveItems("001");
+        DbDataDto dataDto = createContentsOneEntrySixItems("001");
 
         DbResourceDto resourceDto = createResourceOneLocalAndOneForeignEntryMissing();
 
@@ -139,7 +160,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     private List<DbDto> createAllDtosWithMissingForeignEntry() {
-        DbDataDto dataDto = createContentsOneEntryFiveItems("000");
+        DbDataDto dataDto = createContentsOneEntrySixItems("000");
 
         DbResourceDto resourceDto = createResourceNoEntryMissing();
 
@@ -167,6 +188,7 @@ public class DatabaseIntegrityCheckerTest {
                                 .withLocale(DbResourceDto.Locale.FRANCE)
                                 .addEntry(createLocalResourceEntry1())
                                 .addEntry(createLocalResourceEntry2())
+                                .addEntry(createLocalResourceEntry3())
                                 .addEntry(createRemoteResourceEntry())
                                 .build();
     }
@@ -176,6 +198,7 @@ public class DatabaseIntegrityCheckerTest {
                                 .withLocale(DbResourceDto.Locale.FRANCE)
                                 .addEntry(createLocalResourceEntry1())
                                 .addEntry(createLocalResourceEntry2())
+                                .addEntry(createLocalResourceEntry3())
                                 .build();
     }
 
@@ -183,6 +206,16 @@ public class DatabaseIntegrityCheckerTest {
         return DbResourceDto.builder()
                                 .withLocale(DbResourceDto.Locale.FRANCE)
                                 .addEntry(createLocalResourceEntry1())
+                                .addEntry(createLocalResourceEntry3())
+                                .addEntry(createRemoteResourceEntry())
+                                .build();
+    }
+
+    private DbResourceDto createResourceAnotherLocalEntryMissing() {
+        return DbResourceDto.builder()
+                                .withLocale(DbResourceDto.Locale.FRANCE)
+                                .addEntry(createLocalResourceEntry1())
+                                .addEntry(createLocalResourceEntry2())
                                 .addEntry(createRemoteResourceEntry())
                                 .build();
     }
@@ -191,10 +224,11 @@ public class DatabaseIntegrityCheckerTest {
         return DbResourceDto.builder()
                 .withLocale(DbResourceDto.Locale.FRANCE)
                 .addEntry(createLocalResourceEntry1())
+                .addEntry(createLocalResourceEntry3())
                 .build();
     }
 
-    private DbDataDto createContentsOneEntryFiveItems(String entryUniqueIdentifier) {
+    private DbDataDto createContentsOneEntrySixItems(String entryUniqueIdentifier) {
         return DbDataDto.builder()
                                 .addEntry(DbDataDto.Entry.builder()
                                         .addItem(DbDataDto.Item.builder()
@@ -214,11 +248,22 @@ public class DatabaseIntegrityCheckerTest {
                                                 .withRawValue("300")
                                                 .build())
                                         .addItem(DbDataDto.Item.builder()
+                                                .forName("resourceRef4")
+                                                .withRawValue("400")
+                                                .build())
+                                        .addItem(DbDataDto.Item.builder()
                                                 .forName("contentsRef")
                                                 .withRawValue("001")
                                                 .build())
                                         .build())
                                 .build();
+    }
+
+    private DbResourceDto.Entry createLocalResourceEntry3() {
+        return DbResourceDto.Entry.builder()
+                .forReference("400")
+                .withValue("QUATRE CENTS")
+                .build();
     }
 
     private DbResourceDto.Entry createLocalResourceEntry2() {
@@ -263,6 +308,10 @@ public class DatabaseIntegrityCheckerTest {
                         .forName("resourceRef3")
                         .fromType(DbStructureDto.FieldType.RESOURCE_REMOTE)
                         .toTargetReference("ACHIEVEMENTS-topic")
+                        .build())
+                .addItem(DbStructureDto.Field.builder()
+                        .forName("resourceRef4")
+                        .fromType(DbStructureDto.FieldType.RESOURCE_H)
                         .build())
                 .addItem(DbStructureDto.Field.builder()
                         .forName("contentsRef")
