@@ -109,9 +109,16 @@ public class DatabaseReadWriteHelper {
         return parseLinesInFile(contentsFileName, ENCODING_UTF_8);
     }
 
-    // TODO reduce method size
     static List<List<String>> parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {
 
+        Map<String, List<String>> resourcesLinesByFileNames = readLinesFromResourceFiles(databaseDirectory, topic);
+
+        checkResourcesLines(resourcesLinesByFileNames, topic, integrityErrors);
+
+        return sortResourcesLinesByCountDescending(resourcesLinesByFileNames);
+    }
+
+    private static Map<String, List<String>> readLinesFromResourceFiles(String databaseDirectory, DbDto.Topic topic) throws FileNotFoundException {
         Map<String, List<String>> resourcesLinesByFileNames = new HashMap<>();
         for (DbResourceDto.Locale currentLocale : DbResourceDto.Locale.values()) {
             String resourceFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, currentLocale.getCode());
@@ -119,7 +126,10 @@ public class DatabaseReadWriteHelper {
             List<String> readLines = parseLinesInFile(resourceFileName, ENCODING_UTF_16);
             resourcesLinesByFileNames.put(resourceFileName, readLines);
         }
+        return resourcesLinesByFileNames;
+    }
 
+    private static void checkResourcesLines(Map<String, List<String>> resourcesLinesByFileNames, DbDto.Topic topic, List<IntegrityError> integrityErrors) {
         resourcesLinesByFileNames.entrySet().stream()
 
                 .filter((entry) -> entry.getValue().isEmpty())
@@ -136,7 +146,9 @@ public class DatabaseReadWriteHelper {
 
                     integrityErrors.add(integrityError);
                 });
+    }
 
+    private static List<List<String>> sortResourcesLinesByCountDescending(Map<String, List<String>> resourcesLinesByFileNames) {
         return resourcesLinesByFileNames.values().stream()
 
                 .sorted((list1, list2) -> Integer.compare(list1.size(), list2.size()) * -1)
