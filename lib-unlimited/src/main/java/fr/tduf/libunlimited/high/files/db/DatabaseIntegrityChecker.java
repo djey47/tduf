@@ -87,19 +87,18 @@ public class DatabaseIntegrityChecker {
        return integrityErrors;
     }
 
-    // TODO simplify
     private static void checkRequirements(List<DbDto> dbDtos) {
         requireNonNull(dbDtos, "A list of database objects is required.");
 
-        List<DbDto.Topic> presentTopics = dbDtos.stream()
-
-                .map((dto) -> dto.getStructure().getTopic())
-
-                .collect(toList());
-
         List<DbDto.Topic> absentTopics = asList(DbDto.Topic.values()).stream()
 
-                .filter((topicEnum) -> !presentTopics.contains(topicEnum))
+                .filter((topicEnum) -> dbDtos.stream()
+
+                        .map((dto) -> dto.getStructure().getTopic())
+
+                        .filter((topic) -> topic == topicEnum)
+
+                        .count() == 0)
 
                 .collect(toList());
 
