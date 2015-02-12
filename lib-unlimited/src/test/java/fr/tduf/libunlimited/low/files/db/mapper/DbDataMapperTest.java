@@ -19,6 +19,7 @@ public class DbDataMapperTest {
     }
 
     @Test
+    //TODO add field ranks
     public void serialize_shouldWriteProperJson() throws IOException {
         //GIVEN
         DbDataDto.Item item11 = DbDataDto.Item.builder()
@@ -66,25 +67,31 @@ public class DbDataMapperTest {
                 "    \"id\" : 1,\n" +
                 "    \"items\" : [ {\n" +
                 "      \"name\" : \"ID\",\n" +
-                "      \"rawValue\" : \"111111\"\n" +
+                "      \"rawValue\" : \"111111\",\n" +
+                "      \"fieldRank\" : 0\n" +
                 "    }, {\n" +
                 "      \"name\" : \"Name\",\n" +
-                "      \"rawValue\" : \"111\"\n" +
+                "      \"rawValue\" : \"111\",\n" +
+                "      \"fieldRank\" : 0\n" +
                 "    }, {\n" +
                 "      \"name\" : \"Switchs\",\n" +
-                "      \"rawValue\" : \"1\"\n" +
+                "      \"rawValue\" : \"1\",\n" +
+                "      \"fieldRank\" : 0\n" +
                 "    } ]\n" +
                 "  }, {\n" +
                 "    \"id\" : 2,\n" +
                 "    \"items\" : [ {\n" +
                 "      \"name\" : \"ID\",\n" +
-                "      \"rawValue\" : \"222222\"\n" +
+                "      \"rawValue\" : \"222222\",\n" +
+                "      \"fieldRank\" : 0\n" +
                 "    }, {\n" +
                 "      \"name\" : \"Name\",\n" +
-                "      \"rawValue\" : \"222\"\n" +
+                "      \"rawValue\" : \"222\",\n" +
+                "      \"fieldRank\" : 0\n" +
                 "    }, {\n" +
                 "      \"name\" : \"Switchs\",\n" +
-                "      \"rawValue\" : \"0\"\n" +
+                "      \"rawValue\" : \"0\",\n" +
+                "      \"fieldRank\" : 0\n" +
                 "    } ]\n" +
                 "  } ]\n" +
                 "}";

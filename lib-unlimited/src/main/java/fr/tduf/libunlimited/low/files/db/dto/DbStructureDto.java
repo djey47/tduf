@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -18,7 +19,6 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  */
 @JsonTypeName("dbStructure")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-// TODO add rank to allow retrieving particular field (in some cases, field name is not unique!)
 public class DbStructureDto implements Serializable {
     @JsonProperty("ref")
     private String ref;
@@ -48,11 +48,15 @@ public class DbStructureDto implements Serializable {
         @JsonProperty("targetRef")
         private String targetRef;
 
+        @JsonProperty("rank")
+        private int rank;
+
         /**
          * @return builder, used to generate custom values.
          */
         public static FieldBuilder builder() {
             return new FieldBuilder() {
+                private Integer rank;
                 private String name;
                 private FieldType fieldType;
                 private String targetRef;
@@ -76,12 +80,22 @@ public class DbStructureDto implements Serializable {
                 }
 
                 @Override
+                public FieldBuilder ofRank(int rank) {
+                    this.rank = rank;
+                    return this;
+                }
+
+                @Override
                 public Field build() {
+                    // TODO enable
+//                    requireNonNull(rank, "Field rank must be specified.");
+
                     Field field = new Field();
 
                     field.name = this.name;
                     field.fieldType = this.fieldType;
                     field.targetRef = this.targetRef;
+//                    field.rank = this.rank;
 
                     return field;
                 }
@@ -98,6 +112,10 @@ public class DbStructureDto implements Serializable {
 
         public String getTargetRef() {
             return targetRef;
+        }
+
+        public int getRank() {
+            return rank;
         }
 
         @Override
@@ -122,6 +140,8 @@ public class DbStructureDto implements Serializable {
             FieldBuilder fromType(FieldType fieldType);
 
             FieldBuilder toTargetReference(String targetRef);
+
+            FieldBuilder ofRank(int rank);
 
             Field build();
         }

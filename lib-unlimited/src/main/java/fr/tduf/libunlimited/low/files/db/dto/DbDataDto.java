@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -112,8 +113,12 @@ public class DbDataDto implements Serializable {
         @JsonProperty("rawValue")
         private String rawValue;
 
+        @JsonProperty("fieldRank")
+        private int fieldRank;
+
         public static ItemBuilder builder() {
             return new ItemBuilder() {
+                private Integer fieldRank;
                 private String name;
                 private String raw;
 
@@ -130,11 +135,21 @@ public class DbDataDto implements Serializable {
                 }
 
                 @Override
+                public ItemBuilder ofFieldRank(int fieldRank) {
+                    this.fieldRank = fieldRank;
+                    return this;
+                }
+
+                @Override
                 public Item build() {
+                    // TODO enable
+//                    requireNonNull(fieldRank, "Rank of associated field must be specified.");
+
                     Item item = new Item();
 
                     item.rawValue = this.raw;
                     item.name = this.name;
+//                    item.fieldRank = this.fieldRank;
 
                     return item;
                 }
@@ -147,6 +162,10 @@ public class DbDataDto implements Serializable {
 
         public String getRawValue() {
             return rawValue;
+        }
+
+        public int getFieldRank() {
+            return fieldRank;
         }
 
         @Override
@@ -168,6 +187,8 @@ public class DbDataDto implements Serializable {
             ItemBuilder forName(String name);
 
             ItemBuilder withRawValue(String singleValue);
+
+            ItemBuilder ofFieldRank(int fieldRank);
 
             Item build();
         }

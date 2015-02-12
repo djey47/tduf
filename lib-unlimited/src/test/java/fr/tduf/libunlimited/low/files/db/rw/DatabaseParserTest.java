@@ -284,6 +284,7 @@ public class DatabaseParserTest {
     }
 
     @Test
+    //TODO add field ranks
     public void parseAll_whenRealFiles_shouldReturnProperDto_andParserWithoutError() throws Exception {
         //GIVEN
         List<String> dbLines = DbHelper.readContentsFromSample("/db/TDU_Achievements.db", "UTF-8");
