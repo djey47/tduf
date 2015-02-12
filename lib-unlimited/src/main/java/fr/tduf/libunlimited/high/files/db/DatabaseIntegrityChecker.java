@@ -93,6 +93,7 @@ public class DatabaseIntegrityChecker {
                         .forEach((item) -> checkContentsItem(item, contentsObject, integrityErrors)));
     }
 
+    // TODO use item rank instead of name to retrieve field info ....
     private void checkContentsItem(DbDataDto.Item item, DbDto localTopicObject, List<IntegrityError> integrityErrors) {
         DbStructureDto.Field field = fieldsByNamesByTopicObjects.get(localTopicObject).get(item.getName());
         String targetRef = field.getTargetRef();
@@ -161,6 +162,7 @@ public class DatabaseIntegrityChecker {
 
                 .filter((entry) -> entry.getItems().stream()
 
+                                // TODO use rank to retrieve field
                                 .filter((item) -> fieldsByNamesByTopicObjects
                                                     .get(topicObject)
                                                     .get(item.getName())
@@ -205,6 +207,7 @@ public class DatabaseIntegrityChecker {
                 .collect( toMap((dto) -> dto, this::buildFieldIndex));
     }
 
+    // TODO use field rank instead of name to build index
     private Map<String, DbStructureDto.Field> buildFieldIndex(DbDto dto) {
         return dto.getStructure().getFields().stream()
 

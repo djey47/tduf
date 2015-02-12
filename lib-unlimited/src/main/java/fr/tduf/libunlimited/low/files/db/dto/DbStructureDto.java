@@ -18,6 +18,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  */
 @JsonTypeName("dbStructure")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+// TODO add rank to allow retrieving particular field (in some cases, field name is not unique!)
 public class DbStructureDto implements Serializable {
     @JsonProperty("ref")
     private String ref;
