@@ -26,7 +26,7 @@ public class DatabaseIntegrityChecker {
     private final List<DbDto> dbDtos;
 
     private Map<String, DbDto> topicObjectsByReferences;
-    private Map<DbDto, Map<Integer, DbStructureDto.Field>> fieldsByNamesByTopicObjects;
+    private Map<DbDto, Map<Integer, DbStructureDto.Field>> fieldsByRanksByTopicObjects;
 
     private DatabaseIntegrityChecker(List<DbDto> dbDtos) {
         this.dbDtos = dbDtos;
@@ -49,13 +49,14 @@ public class DatabaseIntegrityChecker {
      * Process checking over all loaded database objects.
      * @return list of integrity errors.
      */
+    //TODO long method - optimize it
     public List<IntegrityError> checkAllContentsObjects() {
 
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
         dbDtos.stream()
-                
-                .forEach( (localTopicObject) -> checkContentsObject(localTopicObject, integrityErrors));
+
+                .forEach((localTopicObject) -> checkContentsObject(localTopicObject, integrityErrors));
 
        return integrityErrors;
     }
@@ -86,16 +87,17 @@ public class DatabaseIntegrityChecker {
 
     private void checkContentsObject(DbDto contentsObject, List<IntegrityError> integrityErrors) {
 
+        Map<Integer, DbStructureDto.Field> fieldsByRankIndex = fieldsByRanksByTopicObjects.get(contentsObject);
+
         contentsObject.getData().getEntries().stream()
 
                 .forEach((entry) -> entry.getItems().stream()
 
-                        .forEach((item) -> checkContentsItem(item, contentsObject, integrityErrors)));
+                        .forEach((item) -> checkContentsItem(item, contentsObject, fieldsByRankIndex, integrityErrors)));
     }
 
-    // TODO use item rank instead of name to retrieve field info ....
-    private void checkContentsItem(DbDataDto.Item item, DbDto localTopicObject, List<IntegrityError> integrityErrors) {
-        DbStructureDto.Field field = fieldsByNamesByTopicObjects.get(localTopicObject).get(item.getFieldRank());
+    private void checkContentsItem(DbDataDto.Item item, DbDto localTopicObject, Map<Integer, DbStructureDto.Field> fieldsByRanksIndex, List<IntegrityError> integrityErrors) {
+        DbStructureDto.Field field = fieldsByRanksIndex.get(item.getFieldRank());
         String targetRef = field.getTargetRef();
 
         DbDto remoteTopicObject = null;
@@ -125,45 +127,56 @@ public class DatabaseIntegrityChecker {
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
         // Through all language resources
-        for(DbResourceDto resourceDto : topicObject.getResources()) {
 
-            boolean isResourceReferenceFound = resourceDto.getEntries().stream()
+        topicObject.getResources().stream()
 
-                    .map(DbResourceDto.Entry::getReference)
+                .parallel()
 
-                    .filter((aReference) -> aReference.equals(reference))
+                .forEach((resourceDto) -> {
 
-                    .findFirst()
+                    boolean isResourceReferenceFound = resourceDto.getEntries().stream()
 
-                    .isPresent();
+                            .map(DbResourceDto.Entry::getReference)
 
-            if (!isResourceReferenceFound) {
-                Map<String, Object> informations = new HashMap<>();
-                informations.put("Source Topic", sourceTopic);
-                informations.put("Remote Topic", topicObject.getStructure().getTopic());
-                informations.put("Locale", resourceDto.getLocale());
-                informations.put("Reference", reference);
+                            .filter((aReference) -> aReference.equals(reference))
 
-                integrityErrors.add(IntegrityError.builder()
-                                .ofType(RESOURCE_REFERENCE_NOT_FOUND)
-                                .addInformations(informations)
-                                .build()
-                );
-            }
-        }
+                            .findFirst()
+
+                            .isPresent();
+
+                    if (!isResourceReferenceFound) {
+                        Map<String, Object> informations = new HashMap<>();
+                        informations.put("Source Topic", sourceTopic);
+                        informations.put("Remote Topic", topicObject.getStructure().getTopic());
+                        informations.put("Locale", resourceDto.getLocale());
+                        informations.put("Reference", reference);
+
+                        integrityErrors.add(IntegrityError.builder()
+                                        .ofType(RESOURCE_REFERENCE_NOT_FOUND)
+                                        .addInformations(informations)
+                                        .build()
+                        );
+                    }
+
+                });
 
         return integrityErrors;
     }
 
     private List<IntegrityError> checkContentsReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic) {
+        Map<Integer, DbStructureDto.Field> fieldsbyRanks = fieldsByRanksByTopicObjects.get(topicObject);
+
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
         boolean isReferenceFound = topicObject.getData().getEntries().stream()
 
+                .parallel()
+
                 .filter((entry) -> entry.getItems().stream()
 
-                                .filter((item) -> fieldsByNamesByTopicObjects
-                                        .get(topicObject)
+                                .parallel()
+
+                                .filter((item) -> fieldsbyRanks
                                         .get(item.getFieldRank())
                                         .getFieldType() == DbStructureDto.FieldType.UID
                                         && item.getRawValue().equals(reference))
@@ -201,7 +214,7 @@ public class DatabaseIntegrityChecker {
                 .collect( toMap((dto) -> dto.getStructure().getRef(), (dto) -> dto) );
 
         // Structure
-        fieldsByNamesByTopicObjects = dbDtos.stream()
+        fieldsByRanksByTopicObjects = dbDtos.stream()
 
                 .collect(toMap((dto) -> dto, this::buildFieldIndex));
     }
@@ -216,7 +229,7 @@ public class DatabaseIntegrityChecker {
         return topicObjectsByReferences;
     }
 
-    Map<DbDto, Map<Integer, DbStructureDto.Field>> getFieldsByNamesByTopicObjects() {
-        return fieldsByNamesByTopicObjects;
+    Map<DbDto, Map<Integer, DbStructureDto.Field>> getFieldsByRanksByTopicObjects() {
+        return fieldsByRanksByTopicObjects;
     }
 }

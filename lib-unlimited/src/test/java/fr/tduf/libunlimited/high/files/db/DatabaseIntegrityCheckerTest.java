@@ -47,7 +47,7 @@ public class DatabaseIntegrityCheckerTest {
         //THEN
         assertThat(databaseIntegrityChecker.getTopicObjectsByReferences()).hasSize(18);
 
-        assertThat(databaseIntegrityChecker.getFieldsByNamesByTopicObjects()).hasSize(18);
+        assertThat(databaseIntegrityChecker.getFieldsByRanksByTopicObjects()).hasSize(18);
     }
 
     @Test
