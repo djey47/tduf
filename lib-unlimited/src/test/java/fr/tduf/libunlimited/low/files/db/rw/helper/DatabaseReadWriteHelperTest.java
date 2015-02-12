@@ -140,7 +140,7 @@ public class DatabaseReadWriteHelperTest {
     @Test
     public void readDatabaseFromJson_whenRealFile_shouldReturnCorrespondingDto() throws URISyntaxException, IOException {
         // GIVEN
-        File jsonFile = new File(thisClass.getResource("/db/TDU_Achievements.json").toURI());
+        File jsonFile = new File(thisClass.getResource("/db/dumped/TDU_Achievements.json").toURI());
         String jsonDirectory = jsonFile.getParent();
 
         // WHEN
@@ -238,7 +238,7 @@ public class DatabaseReadWriteHelperTest {
     @Test
     public void writeDatabase_whenProvidedContents_WithoutEncryption_shouldCreateClearFiles() throws URISyntaxException, IOException {
         // GIVEN
-        String jsonDirectory = new File(thisClass.getResource("/db/TDU_Achievements.json").toURI()).getParent();
+        String jsonDirectory = new File(thisClass.getResource("/db/dumped/TDU_Achievements.json").toURI()).getParent();
         DbDto dbDto = DatabaseReadWriteHelper.readDatabaseFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory);
 
 
@@ -258,7 +258,7 @@ public class DatabaseReadWriteHelperTest {
     @Test
     public void writeDatabase_whenProvidedContents_WithEncryption_shouldCreateEncryptedFiles() throws URISyntaxException, IOException {
         // GIVEN
-        String jsonDirectory = new File(thisClass.getResource("/db/TDU_Achievements.json").toURI()).getParent();
+        String jsonDirectory = new File(thisClass.getResource("/db/dumped/TDU_Achievements.json").toURI()).getParent();
         DbDto dbDto = DatabaseReadWriteHelper.readDatabaseFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory);
 
 

@@ -312,7 +312,7 @@ public class DatabaseParserTest {
         assertThat(databaseParser.getResourceCount()).isEqualTo(2);
         assertThat(databaseParser.getIntegrityErrors()).isEmpty();
 
-        String expectedJson = DbHelper.readTextFromSample("/db/TDU_Achievements.json", "UTF-8");
+        String expectedJson = DbHelper.readTextFromSample("/db/dumped/TDU_Achievements.json", "UTF-8");
         assertJsonEquals(expectedJson, jsonResult);
     }
 

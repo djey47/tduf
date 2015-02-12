@@ -19,7 +19,6 @@ import java.util.List;
 import static fr.tduf.libunlimited.common.helper.AssertionsHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-// TODO move resource json files to 'dumped' dir
 public class DatabaseWriterTest {
 
     private String tempDirectory;
@@ -49,7 +48,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAll_whenRealContents_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException {
         //GIVEN
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/TDU_Achievements.json");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/db/dumped/TDU_Achievements.json");
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
 
@@ -77,7 +76,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAll_whenRealContents_withReferenceField_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException {
         //GIVEN
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/TDU_Bots.json");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/db/dumped/TDU_Bots.json");
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
 
@@ -102,7 +101,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAll_whenRealContents_shouldCreateContentsFile_withSizeMultipleOf8() throws IOException, URISyntaxException {
         //GIVEN
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/TDU_Achievements.json");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/db/dumped/TDU_Achievements.json");
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
@@ -118,7 +117,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAllAsJson_whenRealContents_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException {
         //GIVEN
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/TDU_Achievements.json");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/db/dumped/TDU_Achievements.json");
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
@@ -129,7 +128,7 @@ public class DatabaseWriterTest {
 
         assertThat(actualFileName).isEqualTo(expectedFileName);
 
-        assertJsonFileMatchesReference(expectedFileName, "/db/");
+        assertJsonFileMatchesReference(expectedFileName, "/db/dumped/");
     }
 
     private static void assertFilesMatchReferenceObject(DbDto referenceDto, String contentsFileName, String... resourceFileNames) throws FileNotFoundException {
