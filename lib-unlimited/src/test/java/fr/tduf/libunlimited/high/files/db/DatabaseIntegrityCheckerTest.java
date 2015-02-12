@@ -10,11 +10,19 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.CONTENTS_REFERENCE_NOT_FOUND;
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DatabaseIntegrityCheckerTest {
+
+    private static final String UID_NON_EXISTING = "000";
+    private static final String UID_EXISTING = "001";
 
     @Test(expected = NullPointerException.class)
     public void load_whenNullDtos_shouldThrowNPE() throws Exception {
@@ -61,7 +69,7 @@ public class DatabaseIntegrityCheckerTest {
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
-        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND);
+        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(RESOURCE_REFERENCE_NOT_FOUND);
         assertAllIntegrityErrorsContainInformation(integrityErrors, "Reference", "200");
     }
 
@@ -75,7 +83,7 @@ public class DatabaseIntegrityCheckerTest {
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
-        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND);
+        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(RESOURCE_REFERENCE_NOT_FOUND);
         assertAllIntegrityErrorsContainInformation(integrityErrors, "Reference", "400");
     }
 
@@ -89,8 +97,8 @@ public class DatabaseIntegrityCheckerTest {
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
-        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND);
-        assertAllIntegrityErrorsContainInformation(integrityErrors, "Remote Topic", DbDto.Topic.ACHIEVEMENTS);
+        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(RESOURCE_REFERENCE_NOT_FOUND);
+        assertAllIntegrityErrorsContainInformation(integrityErrors, "Remote Topic", ACHIEVEMENTS);
         assertAllIntegrityErrorsContainInformation(integrityErrors, "Reference", "300" );
     }
 
@@ -104,7 +112,7 @@ public class DatabaseIntegrityCheckerTest {
 
         //THEN
         assertThat(integrityErrors).hasSize(36);
-        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND);
+        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(RESOURCE_REFERENCE_NOT_FOUND);
     }
 
     @Test
@@ -117,11 +125,11 @@ public class DatabaseIntegrityCheckerTest {
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
-        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.CONTENTS_REFERENCE_NOT_FOUND);
+        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(CONTENTS_REFERENCE_NOT_FOUND);
     }
 
     private List<DbDto> createAllDtosWithoutErrors() {
-        DbDataDto dataDto = createContentsOneEntrySixItems("001");
+        DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
         DbResourceDto resourceDto = createResourceNoEntryMissing();
 
@@ -129,7 +137,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     private List<DbDto> createAllDtosWithMissingLocalResource() {
-        DbDataDto dataDto = createContentsOneEntrySixItems("001");
+        DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
         DbResourceDto resourceDto = createResourceOneLocalEntryMissing();
 
@@ -137,14 +145,14 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     private List<DbDto> createAllDtosWithMissingLocalResourceTypeH() {
-        DbDataDto dataDto = createContentsOneEntrySixItems("001");
+        DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
         DbResourceDto resourceDto = createResourceAnotherLocalEntryMissing();
         return createAllDtos(dataDto, resourceDto);
     }
 
     private List<DbDto> createAllDtosWithMissingForeignResource() {
-        DbDataDto dataDto = createContentsOneEntrySixItems("001");
+        DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
         DbResourceDto resourceDto = createResourceOneForeignEntryMissing();
 
@@ -152,7 +160,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     private List<DbDto> createAllDtosWithMissingLocalAndForeignResource() {
-        DbDataDto dataDto = createContentsOneEntrySixItems("001");
+        DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
         DbResourceDto resourceDto = createResourceOneLocalAndOneForeignEntryMissing();
 
@@ -160,7 +168,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     private List<DbDto> createAllDtosWithMissingForeignEntry() {
-        DbDataDto dataDto = createContentsOneEntrySixItems("000");
+        DbDataDto dataDto = createContentsOneEntryEightItems(UID_NON_EXISTING);
 
         DbResourceDto resourceDto = createResourceNoEntryMissing();
 
@@ -185,7 +193,7 @@ public class DatabaseIntegrityCheckerTest {
 
     private DbResourceDto createResourceNoEntryMissing() {
         return DbResourceDto.builder()
-                                .withLocale(DbResourceDto.Locale.FRANCE)
+                                .withLocale(FRANCE)
                                 .addEntry(createLocalResourceEntry1())
                                 .addEntry(createLocalResourceEntry2())
                                 .addEntry(createLocalResourceEntry3())
@@ -195,7 +203,7 @@ public class DatabaseIntegrityCheckerTest {
 
     private DbResourceDto createResourceOneForeignEntryMissing() {
         return DbResourceDto.builder()
-                                .withLocale(DbResourceDto.Locale.FRANCE)
+                                .withLocale(FRANCE)
                                 .addEntry(createLocalResourceEntry1())
                                 .addEntry(createLocalResourceEntry2())
                                 .addEntry(createLocalResourceEntry3())
@@ -204,7 +212,7 @@ public class DatabaseIntegrityCheckerTest {
 
     private DbResourceDto createResourceOneLocalEntryMissing() {
         return DbResourceDto.builder()
-                                .withLocale(DbResourceDto.Locale.FRANCE)
+                                .withLocale(FRANCE)
                                 .addEntry(createLocalResourceEntry1())
                                 .addEntry(createLocalResourceEntry3())
                                 .addEntry(createRemoteResourceEntry())
@@ -213,7 +221,7 @@ public class DatabaseIntegrityCheckerTest {
 
     private DbResourceDto createResourceAnotherLocalEntryMissing() {
         return DbResourceDto.builder()
-                                .withLocale(DbResourceDto.Locale.FRANCE)
+                                .withLocale(FRANCE)
                                 .addEntry(createLocalResourceEntry1())
                                 .addEntry(createLocalResourceEntry2())
                                 .addEntry(createRemoteResourceEntry())
@@ -222,38 +230,54 @@ public class DatabaseIntegrityCheckerTest {
 
     private DbResourceDto createResourceOneLocalAndOneForeignEntryMissing() {
         return DbResourceDto.builder()
-                .withLocale(DbResourceDto.Locale.FRANCE)
+                .withLocale(FRANCE)
                 .addEntry(createLocalResourceEntry1())
                 .addEntry(createLocalResourceEntry3())
                 .build();
     }
 
-    private DbDataDto createContentsOneEntrySixItems(String entryUniqueIdentifier) {
+    private DbDataDto createContentsOneEntryEightItems(String entryUniqueIdentifier) {
         return DbDataDto.builder()
                                 .addEntry(DbDataDto.Entry.builder()
                                         .addItem(DbDataDto.Item.builder()
                                                 .forName("identifier")
                                                 .withRawValue(entryUniqueIdentifier)
+                                                .ofFieldRank(1)
                                                 .build())
                                         .addItem(DbDataDto.Item.builder()
                                                 .forName("resourceRef1")
                                                 .withRawValue("100")
+                                                .ofFieldRank(2)
                                                 .build())
                                         .addItem(DbDataDto.Item.builder()
                                                 .forName("resourceRef2")
                                                 .withRawValue("200")
+                                                .ofFieldRank(3)
                                                 .build())
                                         .addItem(DbDataDto.Item.builder()
                                                 .forName("resourceRef3")
                                                 .withRawValue("300")
+                                                .ofFieldRank(4)
                                                 .build())
                                         .addItem(DbDataDto.Item.builder()
                                                 .forName("resourceRef4")
                                                 .withRawValue("400")
+                                                .ofFieldRank(5)
                                                 .build())
                                         .addItem(DbDataDto.Item.builder()
                                                 .forName("contentsRef")
                                                 .withRawValue("001")
+                                                .ofFieldRank(6)
+                                                .build())
+                                        .addItem(DbDataDto.Item.builder()
+                                                .forName("field")
+                                                .withRawValue("value1")
+                                                .ofFieldRank(7)
+                                                .build())
+                                        .addItem(DbDataDto.Item.builder()
+                                                .forName("field")
+                                                .withRawValue("value2")
+                                                .ofFieldRank(8)
                                                 .build())
                                         .build())
                                 .build();
@@ -294,29 +318,45 @@ public class DatabaseIntegrityCheckerTest {
                 .forReference(topicEnum.name() + "-topic")
                 .addItem(DbStructureDto.Field.builder()
                         .forName("identifier")
-                        .fromType(DbStructureDto.FieldType.UID)
+                        .fromType(UID)
+                        .ofRank(1)
                         .build())
                 .addItem(DbStructureDto.Field.builder()
                         .forName("resourceRef1")
-                        .fromType(DbStructureDto.FieldType.RESOURCE_CURRENT)
+                        .fromType(RESOURCE_CURRENT)
+                        .ofRank(2)
                         .build())
                 .addItem(DbStructureDto.Field.builder()
                         .forName("resourceRef2")
-                        .fromType(DbStructureDto.FieldType.RESOURCE_CURRENT)
+                        .fromType(RESOURCE_CURRENT)
+                        .ofRank(3)
                         .build())
                 .addItem(DbStructureDto.Field.builder()
                         .forName("resourceRef3")
-                        .fromType(DbStructureDto.FieldType.RESOURCE_REMOTE)
+                        .fromType(RESOURCE_REMOTE)
                         .toTargetReference("ACHIEVEMENTS-topic")
+                        .ofRank(4)
                         .build())
                 .addItem(DbStructureDto.Field.builder()
                         .forName("resourceRef4")
-                        .fromType(DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN)
+                        .fromType(RESOURCE_CURRENT_AGAIN)
+                        .ofRank(5)
                         .build())
                 .addItem(DbStructureDto.Field.builder()
                         .forName("contentsRef")
-                        .fromType(DbStructureDto.FieldType.REFERENCE)
+                        .fromType(REFERENCE)
                         .toTargetReference("ACHIEVEMENTS-topic")
+                        .ofRank(6)
+                        .build())
+                .addItem(DbStructureDto.Field.builder()
+                        .forName("field")
+                        .fromType(INTEGER)
+                        .ofRank(7)
+                        .build())
+                .addItem(DbStructureDto.Field.builder()
+                        .forName("field")
+                        .fromType(INTEGER)
+                        .ofRank(8)
                         .build())
                 .build();
     }

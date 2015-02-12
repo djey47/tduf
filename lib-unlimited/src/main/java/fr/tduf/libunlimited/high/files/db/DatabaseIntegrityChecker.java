@@ -26,7 +26,7 @@ public class DatabaseIntegrityChecker {
     private final List<DbDto> dbDtos;
 
     private Map<String, DbDto> topicObjectsByReferences;
-    private Map<DbDto, Map<String, DbStructureDto.Field>> fieldsByNamesByTopicObjects;
+    private Map<DbDto, Map<Integer, DbStructureDto.Field>> fieldsByNamesByTopicObjects;
 
     private DatabaseIntegrityChecker(List<DbDto> dbDtos) {
         this.dbDtos = dbDtos;
@@ -95,7 +95,7 @@ public class DatabaseIntegrityChecker {
 
     // TODO use item rank instead of name to retrieve field info ....
     private void checkContentsItem(DbDataDto.Item item, DbDto localTopicObject, List<IntegrityError> integrityErrors) {
-        DbStructureDto.Field field = fieldsByNamesByTopicObjects.get(localTopicObject).get(item.getName());
+        DbStructureDto.Field field = fieldsByNamesByTopicObjects.get(localTopicObject).get(item.getFieldRank());
         String targetRef = field.getTargetRef();
 
         DbDto remoteTopicObject = null;
@@ -162,12 +162,11 @@ public class DatabaseIntegrityChecker {
 
                 .filter((entry) -> entry.getItems().stream()
 
-                                // TODO use rank to retrieve field
                                 .filter((item) -> fieldsByNamesByTopicObjects
-                                                    .get(topicObject)
-                                                    .get(item.getName())
-                                                    .getFieldType() == DbStructureDto.FieldType.UID
-                                                 && item.getRawValue().equals(reference))
+                                        .get(topicObject)
+                                        .get(item.getFieldRank())
+                                        .getFieldType() == DbStructureDto.FieldType.UID
+                                        && item.getRawValue().equals(reference))
 
                                 .findFirst()
 
@@ -204,21 +203,20 @@ public class DatabaseIntegrityChecker {
         // Structure
         fieldsByNamesByTopicObjects = dbDtos.stream()
 
-                .collect( toMap((dto) -> dto, this::buildFieldIndex));
+                .collect(toMap((dto) -> dto, this::buildFieldIndex));
     }
 
-    // TODO use field rank instead of name to build index
-    private Map<String, DbStructureDto.Field> buildFieldIndex(DbDto dto) {
+    private Map<Integer, DbStructureDto.Field> buildFieldIndex(DbDto dto) {
         return dto.getStructure().getFields().stream()
 
-                .collect(toMap(DbStructureDto.Field::getName, (field) -> field));
+                .collect(toMap(DbStructureDto.Field::getRank, (field) -> field));
     }
 
     Map<String, DbDto> getTopicObjectsByReferences() {
         return topicObjectsByReferences;
     }
 
-    Map<DbDto, Map<String, DbStructureDto.Field>> getFieldsByNamesByTopicObjects() {
+    Map<DbDto, Map<Integer, DbStructureDto.Field>> getFieldsByNamesByTopicObjects() {
         return fieldsByNamesByTopicObjects;
     }
 }
