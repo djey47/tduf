@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -18,6 +19,7 @@ import java.util.List;
 import static fr.tduf.libunlimited.common.helper.AssertionsHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+// TODO move resource json files to 'dumped' dir
 public class DatabaseWriterTest {
 
     private String tempDirectory;
@@ -69,12 +71,32 @@ public class DatabaseWriterTest {
         assertFileMatchesReference(actualResourceFileName1, "/db/res/clean/");
         assertFileMatchesReference(actualResourceFileName2, "/db/res/clean/");
 
-        List<String> dbContents = DbHelper.readContentsFromRealFile(actualContentsFileName, "UTF-8");
-        List<List<String>> dbResources = DbHelper.readResourcesFromRealFiles(
-                actualResourceFileName1,
-                actualResourceFileName2);
-        DbDto finalDbDto = DatabaseParser.load(dbContents, dbResources).parseAll();
-        assertThat(finalDbDto).isEqualTo(initialDbDto);
+        assertFilesMatchReferenceObject(initialDbDto, actualContentsFileName, actualResourceFileName1, actualResourceFileName2);
+    }
+
+    @Test
+    public void writeAll_whenRealContents_withReferenceField_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException {
+        //GIVEN
+        InputStream resourceAsStream = getClass().getResourceAsStream("/db/TDU_Bots.json");
+        DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
+
+
+        //WHEN
+        List<String> actualFilenames = DatabaseWriter.load(initialDbDto).writeAll(tempDirectory);
+
+
+        //THEN
+        String actualContentsFileName = new File(tempDirectory, "TDU_Bots.db").getAbsolutePath();
+        String actualResourceFileName = new File(tempDirectory, "TDU_Bots.fr").getAbsolutePath();
+
+        assertThat(actualFilenames).containsExactly(
+                actualContentsFileName,
+                actualResourceFileName);
+
+        assertFileMatchesReference(actualContentsFileName, "/db/");
+        assertFileMatchesReference(actualResourceFileName, "/db/res/clean/");
+
+        assertFilesMatchReferenceObject(initialDbDto, actualContentsFileName, actualResourceFileName);
     }
 
     @Test
@@ -108,5 +130,12 @@ public class DatabaseWriterTest {
         assertThat(actualFileName).isEqualTo(expectedFileName);
 
         assertJsonFileMatchesReference(expectedFileName, "/db/");
+    }
+
+    private static void assertFilesMatchReferenceObject(DbDto referenceDto, String contentsFileName, String... resourceFileNames) throws FileNotFoundException {
+        List<String> dbContents = DbHelper.readContentsFromRealFile(contentsFileName, "UTF-8");
+        List<List<String>> dbResources = DbHelper.readResourcesFromRealFiles(resourceFileNames);
+        DbDto finalDbDto = DatabaseParser.load(dbContents, dbResources).parseAll();
+        assertThat(finalDbDto).isEqualTo(referenceDto);
     }
 }

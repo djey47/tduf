@@ -25,6 +25,8 @@ public class DatabaseWriter {
     private static final String COMMENT_PATTERN = "// %s";
     private static final String COMMENT_INFO_PATTERN = "// %s: %s";
     private static final String ENTRY_PATTERN = "{%s} %s";
+    private static final String ENTRY_REF_PATTERN = "{%s} %s %s";
+    private static final String RESOURCE_ENTRY_PATTERN = "{%s} %s";
 
     private final DbDto databaseDto;
 
@@ -132,8 +134,13 @@ public class DatabaseWriter {
         writtenSize += writeAndEndWithCRLF(
                 format(ENTRY_PATTERN, topicLabel, dbStructureDto.getRef()), bufferedWriter);
         for (DbStructureDto.Field field : dbStructureDto.getFields()) {
-            writtenSize += writeAndEndWithCRLF(
-                    format(ENTRY_PATTERN, field.getName(), field.getFieldType().getCode()), bufferedWriter);
+            String fieldDescription;
+            if(field.getTargetRef() == null) {
+                fieldDescription = format(ENTRY_PATTERN, field.getName(), field.getFieldType().getCode());
+            } else {
+                fieldDescription = format(ENTRY_REF_PATTERN, field.getName(), field.getFieldType().getCode(), field.getTargetRef());
+            }
+            writtenSize += writeAndEndWithCRLF(fieldDescription, bufferedWriter);
         }
         return writtenSize;
     }
@@ -176,7 +183,7 @@ public class DatabaseWriter {
                 // Resources
                 for(DbResourceDto.Entry entry : dbResourceDto.getEntries()) {
                     writeAndEndWithCRLF(
-                            format(ENTRY_PATTERN, entry.getValue(), entry.getReference()), bufferedWriter);
+                            format(RESOURCE_ENTRY_PATTERN, entry.getValue(), entry.getReference()), bufferedWriter);
                 }
             }
 
