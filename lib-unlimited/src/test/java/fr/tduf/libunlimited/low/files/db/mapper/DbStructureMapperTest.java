@@ -15,17 +15,18 @@ public class DbStructureMapperTest {
     private final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
     @Test
-    //TODO add field ranks
     public void serialize_shouldWriteProperJson() throws IOException {
         //GIVEN
         DbStructureDto.Field field1 = DbStructureDto.Field.builder()
                 .fromType(DbStructureDto.FieldType.UID)
                 .forName("ID")
+                .ofRank(1)
                 .build();
         DbStructureDto.Field field2 = DbStructureDto.Field.builder()
                 .fromType(DbStructureDto.FieldType.REFERENCE)
                 .forName("REF")
                 .toTargetReference("2442784646")
+                .ofRank(2)
                 .build();
         DbStructureDto dbStructureDto = DbStructureDto.builder()
                 .forReference("2442784645")
@@ -43,12 +44,12 @@ public class DbStructureMapperTest {
                 "  \"fields\" : [ {\n" +
                 "    \"name\" : \"ID\",\n" +
                 "    \"type\" : \"UID\",\n" +
-                "    \"rank\" : 0" +
+                "    \"rank\" : 1" +
                 "  }, {\n" +
                 "    \"name\" : \"REF\",\n" +
                 "    \"type\" : \"REFERENCE\",\n" +
                 "    \"targetRef\" : \"2442784646\",\n" +
-                "    \"rank\" : 0" +
+                "    \"rank\" : 2" +
                 "  } ]\n" +
                 "}";
 

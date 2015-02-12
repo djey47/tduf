@@ -87,15 +87,14 @@ public class DbStructureDto implements Serializable {
 
                 @Override
                 public Field build() {
-                    // TODO enable
-//                    requireNonNull(rank, "Field rank must be specified.");
+                    requireNonNull(rank, "Field rank must be specified.");
 
                     Field field = new Field();
 
                     field.name = this.name;
                     field.fieldType = this.fieldType;
                     field.targetRef = this.targetRef;
-//                    field.rank = this.rank;
+                    field.rank = this.rank;
 
                     return field;
                 }

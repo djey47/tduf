@@ -19,30 +19,35 @@ public class DbDataMapperTest {
     }
 
     @Test
-    //TODO add field ranks
     public void serialize_shouldWriteProperJson() throws IOException {
         //GIVEN
         DbDataDto.Item item11 = DbDataDto.Item.builder()
+                .ofFieldRank(1)
                 .forName("ID")
                 .withRawValue("111111")
                 .build();
         DbDataDto.Item item12 = DbDataDto.Item.builder()
+                .ofFieldRank(2)
                 .forName("Name")
                 .withRawValue("111")
                 .build();
         DbDataDto.Item item13 = DbDataDto.Item.builder()
+                .ofFieldRank(3)
                 .forName("Switchs")
                 .withRawValue("1")
                 .build();
         DbDataDto.Item item21 = DbDataDto.Item.builder()
+                .ofFieldRank(1)
                 .forName("ID")
                 .withRawValue("222222")
                 .build();
         DbDataDto.Item item22 = DbDataDto.Item.builder()
+                .ofFieldRank(2)
                 .forName("Name")
                 .withRawValue("222")
                 .build();
         DbDataDto.Item item23 = DbDataDto.Item.builder()
+                .ofFieldRank(3)
                 .forName("Switchs")
                 .withRawValue("0")
                 .build();
@@ -68,30 +73,30 @@ public class DbDataMapperTest {
                 "    \"items\" : [ {\n" +
                 "      \"name\" : \"ID\",\n" +
                 "      \"rawValue\" : \"111111\",\n" +
-                "      \"fieldRank\" : 0\n" +
+                "      \"fieldRank\" : 1\n" +
                 "    }, {\n" +
                 "      \"name\" : \"Name\",\n" +
                 "      \"rawValue\" : \"111\",\n" +
-                "      \"fieldRank\" : 0\n" +
+                "      \"fieldRank\" : 2\n" +
                 "    }, {\n" +
                 "      \"name\" : \"Switchs\",\n" +
                 "      \"rawValue\" : \"1\",\n" +
-                "      \"fieldRank\" : 0\n" +
+                "      \"fieldRank\" : 3\n" +
                 "    } ]\n" +
                 "  }, {\n" +
                 "    \"id\" : 2,\n" +
                 "    \"items\" : [ {\n" +
                 "      \"name\" : \"ID\",\n" +
                 "      \"rawValue\" : \"222222\",\n" +
-                "      \"fieldRank\" : 0\n" +
+                "      \"fieldRank\" : 1\n" +
                 "    }, {\n" +
                 "      \"name\" : \"Name\",\n" +
                 "      \"rawValue\" : \"222\",\n" +
-                "      \"fieldRank\" : 0\n" +
+                "      \"fieldRank\" : 2\n" +
                 "    }, {\n" +
                 "      \"name\" : \"Switchs\",\n" +
                 "      \"rawValue\" : \"0\",\n" +
-                "      \"fieldRank\" : 0\n" +
+                "      \"fieldRank\" : 3\n" +
                 "    } ]\n" +
                 "  } ]\n" +
                 "}";

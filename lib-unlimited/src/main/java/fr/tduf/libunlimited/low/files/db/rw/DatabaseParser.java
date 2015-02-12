@@ -193,10 +193,11 @@ public class DatabaseParser {
         List<DbDataDto.Item> items = new ArrayList<>();
         int fieldIndex = 0;
         for(String itemValue : line.split(VALUE_DELIMITER)) {
-            String fieldName = structure.getFields().get(fieldIndex++).getName();
+            DbStructureDto.Field fieldInformation = structure.getFields().get(fieldIndex++);
 
             items.add(DbDataDto.Item.builder()
-                    .forName(fieldName)
+                    .ofFieldRank(fieldInformation.getRank())
+                    .forName(fieldInformation.getName())
                     .withRawValue(itemValue)
                     .build());
         }
@@ -221,6 +222,7 @@ public class DatabaseParser {
         String topicVersion = null;
         int categoryCount = 0;
         int fieldCount = 0;
+        int fieldIndex = 0;
 
         for (String line : this.contentLines) {
 
@@ -262,6 +264,8 @@ public class DatabaseParser {
             // Regular item
             matcher = itemPattern.matcher(line);
             if(matcher.matches()) {
+                fieldIndex++;
+
                 String name = matcher.group(1);
                 String typeCode = matcher.group(2);
                 String remoteReference = matcher.group(4);
@@ -269,6 +273,7 @@ public class DatabaseParser {
                 DbStructureDto.FieldType fieldType = DbStructureDto.FieldType.fromCode(typeCode);
 
                 fields.add(DbStructureDto.Field.builder()
+                        .ofRank(fieldIndex)
                         .forName(name)
                         .fromType(fieldType)
                         .toTargetReference(remoteReference)

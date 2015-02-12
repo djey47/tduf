@@ -142,14 +142,13 @@ public class DbDataDto implements Serializable {
 
                 @Override
                 public Item build() {
-                    // TODO enable
-//                    requireNonNull(fieldRank, "Rank of associated field must be specified.");
+                    requireNonNull(fieldRank, "Rank of associated field must be specified.");
 
                     Item item = new Item();
 
                     item.rawValue = this.raw;
                     item.name = this.name;
-//                    item.fieldRank = this.fieldRank;
+                    item.fieldRank = this.fieldRank;
 
                     return item;
                 }

@@ -137,6 +137,7 @@ public class DatabaseParserTest {
                 .forName("Car_Brand")
                 .fromType(DbStructureDto.FieldType.REFERENCE)
                 .toTargetReference("1209165514")
+                .ofRank(2)
                 .build();
 
         //WHEN
@@ -284,7 +285,6 @@ public class DatabaseParserTest {
     }
 
     @Test
-    //TODO add field ranks
     public void parseAll_whenRealFiles_shouldReturnProperDto_andParserWithoutError() throws Exception {
         //GIVEN
         List<String> dbLines = DbHelper.readContentsFromSample("/db/TDU_Achievements.db", "UTF-8");
