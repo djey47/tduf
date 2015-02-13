@@ -10,19 +10,21 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 ### What's new in this version ? (0.3.0)
 
 * Bug fixes: all from 0.2.1 hotfix
-* General: btrq file structure now uses cryptoMode setting
-* General: added new file structures - SHK remains default, stille though
-* Core: upgrade misc. utility libraries
+
+* Research: BTRQ file structure now uses cryptoMode setting
+* Research: added new file structures to be enhanced (Cameras.BIN, SHK, PMI) - SHK remains default, still
 
 * FileTool: ability to process encrypted files
 * DatabaseTool: ability to process encrypted files
-* DatabaseTool: enhanced check operation, performing wider integrity check of TDU database
-* DatabaseTool: new Gen operation to write TDU database from JSON files
+* DatabaseTool: enhanced 'check' operation, performing wider integrity check of TDU database
+* DatabaseTool: new 'gen' operation to produce TDU database from JSON files
 
-* Library/support: handle both encryption modes for TDU files
+* Library/support: handles both encryption modes for TDU files (savegames and database)
 * Library/database: ensures contents have size multiple of 8 when written for more compatibility
 * Library/structure: supports very short NUMERIC type (8 bit)
 * Library/structure: respects data length when writing.
+
+* Core: upgrade misc. utility libraries
 
 ### What you will need to run TDUF
 
