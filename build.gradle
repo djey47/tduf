@@ -24,6 +24,15 @@ subprojects {
         mavenCentral()
     }
 
+    configurations {
+        integTestCompile {
+            extendsFrom testCompile
+        }
+        integTestRuntime {
+            extendsFrom integTestCompile, testRuntime
+        }
+    }
+
     dependencies {
         compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
         compile group: 'com.google.guava', name: 'guava', version: '18.0'
@@ -32,6 +41,11 @@ subprojects {
         testCompile group: 'junit', name: 'junit', version: '4.11'
         testCompile group: 'org.assertj', name: 'assertj-core-java8', version: '1.0.0m1'
         testCompile group: 'net.sf.json-lib', name: 'json-lib', classifier: 'jdk15', version: '2.4'
+
+        integTestCompile sourceSets.main.output
+        integTestCompile configurations.testCompile
+        integTestCompile sourceSets.test.output
+        integTestRuntime configurations.testRuntime
     }
 
     compileJava {
@@ -51,6 +65,22 @@ project(':cli') {
 
     jar {
         manifest.attributes provider: 'gradle'
+    }
+
+    sourceSets {
+        integTest {
+            java.srcDir file('src/integTest/java')
+            resources.srcDir file('src/integTest/resources')
+        }
+    }
+
+    task integTest(type: Test) {
+        mustRunAfter test
+
+        description = "Runs integration tests."
+
+        testClassesDir = sourceSets.integTest.output.classesDir
+        classpath = sourceSets.integTest.runtimeClasspath
     }
 
     task fatJar(type: Jar) {
