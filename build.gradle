@@ -1,3 +1,5 @@
+import java.awt.Desktop
+
 buildscript {}
 
 plugins {
@@ -91,6 +93,13 @@ project(':cli') {
             logger.lifecycle(' -> Running test: ' + descriptor.toString())
         }
     }
+
+    task integTestReport << {
+        def reportFileAbsolutePath = file('./build/reports/tests/index.html')
+        Desktop.desktop.browse (('file://' + reportFileAbsolutePath).toURI())
+    }
+
+    integTest.finalizedBy integTestReport
 
     task fatJar(type: Jar) {
         mustRunAfter 'jar'
