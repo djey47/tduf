@@ -10,20 +10,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FileToolIntegTest {
 
-    private final String sourceFileName = "TDU_CarColors.json";
-    private final String encryptedFileName = "TDU_CarColors.json.enc";
+    private final String sourceFileNameToBeEncrypted = "TDU_CarColors.json";
+    private final String sourceFileNameToBeJsonified = "Brutal.btrq";
+    private final String jsonifiedFileName = "Brutal.json";
+    private final String appliedUnencryptedFileName = "Brutal.btrq.dec";
+    private final String sourceUnencryptedFileName = "Brutal.btrq.ref.dec";
 
-    private final String sourceDirectory = "integ-tests/crypto";
+    private final String encryptedFileName = "TDU_CarColors.json.enc";
+    private final String sourceDirectoryForEncryption = "integ-tests/crypto";
     private final String decryptDirectory = "integ-tests/unencrypted";
     private final String encryptDirectory = "integ-tests/encrypted";
+    private final String jsonifyDirectory = "integ-tests/jsonified";
+    private final String applyjsonDirectory = "integ-tests/applied";
 
     @Before
     public void setUp() {
         new File(encryptDirectory).mkdirs();
         new File(decryptDirectory).mkdirs();
 
+        new File(jsonifyDirectory).mkdirs();
+        new File(applyjsonDirectory).mkdirs();
+
         new File(encryptDirectory, encryptedFileName).delete();
-        new File(decryptDirectory, sourceFileName).delete();
+        new File(decryptDirectory, sourceFileNameToBeEncrypted).delete();
+
+        new File(jsonifyDirectory, jsonifiedFileName).delete();
+        new File(applyjsonDirectory, sourceFileNameToBeJsonified).delete();
+        new File(applyjsonDirectory, appliedUnencryptedFileName).delete();
+        new File(applyjsonDirectory, sourceUnencryptedFileName).delete();
     }
 
     @Test
@@ -41,9 +55,9 @@ public class FileToolIntegTest {
         FileTool.main(new String[] { "decrypt", "-i", "integ-tests/encrypted/TDU_CarColors.json.enc", "-o", "integ-tests/unencrypted/TDU_CarColors.json", "-c", "0"});
 
         // THEN: file should exist and have same contents as original one
-        File actualFile = new File(decryptDirectory, sourceFileName);
+        File actualFile = new File(decryptDirectory, sourceFileNameToBeEncrypted);
         assertThat(actualFile).exists();
-        assertThat(actualFile).hasContentEqualTo(new File (sourceDirectory, sourceFileName));
+        assertThat(actualFile).hasContentEqualTo(new File (sourceDirectoryForEncryption, sourceFileNameToBeEncrypted));
     }
 
     @Test
@@ -61,8 +75,40 @@ public class FileToolIntegTest {
         FileTool.main(new String[] { "decrypt", "-i", "integ-tests/encrypted/TDU_CarColors.json.enc", "-o", "integ-tests/unencrypted/TDU_CarColors.json", "-c", "1"});
 
         // THEN: file should exist and have same contents as original one
-        File actualFile = new File(decryptDirectory, sourceFileName);
+        File actualFile = new File(decryptDirectory, sourceFileNameToBeEncrypted);
         assertThat(actualFile).exists();
-        assertThat(actualFile).hasContentEqualTo(new File (sourceDirectory, sourceFileName));
+        assertThat(actualFile).hasContentEqualTo(new File (sourceDirectoryForEncryption, sourceFileNameToBeEncrypted));
+    }
+
+    @Test
+    public void jsonifyApplyJson_whenEncryptedContents_shouldGiveOriginalContentsBack() throws IOException {
+        // WHEN: jsonify
+        System.out.println("-> Jsonify!");
+        FileTool.main(new String[] { "jsonify", "-i", "integ-tests/research/Brutal.btrq", "-o", "integ-tests/jsonified/Brutal.json", "-s", "integ-tests/research/BTRQ-map.json" });
+
+        // THEN: file should exist
+        assertThat(new File(jsonifyDirectory, jsonifiedFileName)).exists();
+
+
+        // WHEN: applyJson
+        System.out.println("-> Applyjson!");
+        FileTool.main(new String[] { "applyjson", "-i", "integ-tests/jsonified/Brutal.json", "-o", "integ-tests/applied/Brutal.btrq", "-s", "integ-tests/research/BTRQ-map.json" });
+
+        // THEN: file should exist
+        assertThat(new File(applyjsonDirectory, sourceFileNameToBeJsonified)).exists();
+
+
+        // WHEN: decrypt both files
+        System.out.println("-> Decrypt!");
+        FileTool.main(new String[]{"decrypt", "-i", "integ-tests/applied/Brutal.btrq", "-o", "integ-tests/applied/Brutal.btrq.dec", "-c", "1"});
+        FileTool.main(new String[] { "decrypt", "-i", "integ-tests/research/Brutal.btrq", "-o", "integ-tests/applied/Brutal.btrq.ref.dec", "-c", "1"});
+
+        // THEN: file should exist and match reference one, once unencrypted
+        File actualFile = new File(applyjsonDirectory, appliedUnencryptedFileName);
+        File expectedFile = new File(applyjsonDirectory, sourceUnencryptedFileName);
+
+        assertThat(actualFile).exists();
+        assertThat(expectedFile).exists();
+        assertThat(actualFile).hasContentEqualTo(expectedFile);
     }
 }

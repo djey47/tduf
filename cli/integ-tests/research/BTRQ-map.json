@@ -1,0 +1,43 @@
+{
+  "name": "TDU BTRQ (BinaryTorque?)",
+  "littleEndian": true,
+  "cryptoMode": 1,
+  "fields": [
+    {
+      "name": "entryCount",
+      "type": "INTEGER",
+      "size": 4
+    },
+    {
+      "name": "gap1",
+      "type": "GAP",
+      "size": 4
+    },
+    {
+      "name" : "graph",
+      "type" : "REPEATER",
+      "size" : "?entryCount?-1",
+      "subFields" : [
+        {
+          "name": "torqueNm",
+          "type": "FPOINT",
+          "size": 4
+        },
+        {
+          "name": "engineVelocityRadPerSec",
+          "type": "FPOINT",
+          "size": 4
+        }
+      ]
+    },
+    {
+      "name": "gap2",
+      "type": "GAP",
+      "size": 4
+    },
+    {
+      "name": "unknown",
+      "type": "UNKNOWN"
+    }
+  ]
+}
