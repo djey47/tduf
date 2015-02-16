@@ -37,7 +37,7 @@ public class FileToolIntegTest {
 
 
         // WHEN: decrypt
-        System.out.println("-> Encrypt!");
+        System.out.println("-> Decrypt!");
         FileTool.main(new String[] { "decrypt", "-i", "integ-tests/encrypted/TDU_CarColors.json.enc", "-o", "integ-tests/unencrypted/TDU_CarColors.json", "-c", "0"});
 
         // THEN: file should exist and have same contents as original one
@@ -57,7 +57,7 @@ public class FileToolIntegTest {
 
 
         // WHEN: decrypt
-        System.out.println("-> Encrypt!");
+        System.out.println("-> Decrypt!");
         FileTool.main(new String[] { "decrypt", "-i", "integ-tests/encrypted/TDU_CarColors.json.enc", "-o", "integ-tests/unencrypted/TDU_CarColors.json", "-c", "1"});
 
         // THEN: file should exist and have same contents as original one
