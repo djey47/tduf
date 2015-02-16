@@ -95,7 +95,7 @@ project(':cli') {
     }
 
     task integTestReport << {
-        def reportFileAbsolutePath = file('./build/reports/tests/index.html')
+        def reportFileAbsolutePath = file('./build/reports/tests/index.html').toString().replaceAll('\\\\', '/')
         Desktop.desktop.browse (('file://' + reportFileAbsolutePath).toURI())
     }
 
