@@ -15,29 +15,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DatabaseToolIntegTest {
 
     @Test
-    public void dump_gen_check() throws IOException {
+    public void dumpGenCheck_shouldNotThrowError() throws IOException {
 
+        String sourceDirectory = "integ-tests/db-encrypted";
         String jsonDirectory = "integ-tests/db-json";
         String generatedDirectory = "integ-tests/db-generated";
 
         // WHEN: dump
         System.out.println("-> Dump!");
-        DatabaseTool.main(new String[]{"dump", "-d", "integ-tests/db-encrypted", "-j", jsonDirectory});
+        DatabaseTool.main(new String[]{"dump", "-d", sourceDirectory, "-j", jsonDirectory});
 
         // THEN: written json files
-        Map<String, Boolean> jsonFileResult = asList(DbDto.Topic.values()).stream()
-
-                .map((topic) -> topic.getLabel() + ".json")
-
-                .collect(toMap((fileName) -> fileName, (fileName) -> new File(jsonDirectory, fileName).exists()));
-
-        long existingFilesCount = jsonFileResult.values().stream()
-
-                .filter((existingFile) -> true)
-
-                .count();
-
-        assertThat(existingFilesCount).isEqualTo(18);
+        long jsonFilesCount = getTopicFileCount(jsonDirectory, "json");
+        assertThat(jsonFilesCount).isEqualTo(18);
 
 
         // WHEN: gen
@@ -45,42 +35,35 @@ public class DatabaseToolIntegTest {
         DatabaseTool.main(new String[]{"gen", "-d", generatedDirectory, "-j", jsonDirectory});
 
         // THEN: written TDU files
-        Map<String, Boolean> dbFileResult = asList(DbDto.Topic.values()).stream()
-
-                .map((topic) -> topic.getLabel() + ".db")
-
-                .collect(toMap((fileName) -> fileName, (fileName) -> new File(generatedDirectory, fileName).exists()));
-
-        existingFilesCount = dbFileResult.values().stream()
-
-                .filter((existingFile) -> true)
-
-                .count();
-
-        assertThat(existingFilesCount).isEqualTo(18);
+        long dbFilesCount = getTopicFileCount(generatedDirectory, "db");
+        assertThat(dbFilesCount).isEqualTo(18);
 
         asList(DbResourceDto.Locale.values()).stream()
 
                 .forEach( (locale) -> {
-
-                    Map<String, Boolean> resFileResult = asList(DbDto.Topic.values()).stream()
-
-                            .map((topic) -> topic.getLabel() + "." + locale.getCode())
-
-                            .collect(toMap((fileName) -> fileName, (fileName) -> new File(generatedDirectory, fileName).exists()));
-
-                    long existingResourceFilesCount = resFileResult.values().stream()
-
-                            .filter((existingFile) -> true)
-
-                            .count();
-
-                    assertThat(existingResourceFilesCount).isEqualTo(18);
+                    long resFilesCount = getTopicFileCount(generatedDirectory, locale.getCode());
+                    assertThat(resFilesCount).isEqualTo(18);
                 });
 
 
         // WHEN: check
         System.out.println("-> Check!");
         DatabaseTool.main(new String[]{"check", "-d", generatedDirectory});
+
+        // THEN: should not exit with status code 1
+    }
+
+    private static long getTopicFileCount(String jsonDirectory, String extension) {
+        Map<String, Boolean> jsonFileResult = asList(DbDto.Topic.values()).stream()
+
+                .map((topic) -> topic.getLabel() + "." + extension)
+
+                .collect(toMap((fileName) -> fileName, (fileName) -> new File(jsonDirectory, fileName).exists()));
+
+        return jsonFileResult.values().stream()
+
+                .filter((existingFile) -> true)
+
+                .count();
     }
 }
