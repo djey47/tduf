@@ -29,16 +29,12 @@ public class AllToolsTest {
     @Test
     public void databaseTool_dump() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(0);
-
         testToolCommand(new DatabaseTool(), DUMP.getLabel());
     }
 
     @Test
     public void databaseTool_gen() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(0);
-
         testToolCommand(new DatabaseTool(), GEN.getLabel());
     }
 
