@@ -4,6 +4,7 @@ build/
 cli/integ-tests/db-generated/
 cli/integ-tests/db-json/
 cli/integ-tests/encrypted/
+cli/integ-tests/mapping/
 cli/integ-tests/unencrypted/
 pack/
 releases/
