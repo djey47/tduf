@@ -180,10 +180,10 @@ public class TypeHelperTest {
         assertThat(TypeHelper.byteArrayToHexRepresentation(null)).isNull();
     }
 
-    @Test
-    public void byteArrayToHexRepresentation_whenEmptyArray_shouldReturnString(){
+    @Test(expected = IllegalArgumentException.class)
+    public void byteArrayToHexRepresentation_whenEmptyArray_shouldThrowIllegalArgumentException(){
         // GIVEN-WHEN-THEN
-        assertThat(TypeHelper.byteArrayToHexRepresentation(new byte[0])).isEqualTo("0x[]");
+        TypeHelper.byteArrayToHexRepresentation(new byte[0]);
     }
 
     @Test
@@ -193,5 +193,23 @@ public class TypeHelperTest {
 
         // WHEN-THEN
         assertThat(TypeHelper.byteArrayToHexRepresentation(byteArray)).isEqualTo("0x[00 AA FF]");
+    }
+
+    @Test
+    public void hexRepresentationToByteArray_whenNull_shouldReturnNull(){
+        // GIVEN-WHEN-THEN
+        assertThat(TypeHelper.hexRepresentationToByteArray(null)).isNull();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void hexRepresentationToByteArray_whenInvalid_shouldThrowIllegalArgumentException(){
+        // GIVEN-WHEN-THEN
+        TypeHelper.hexRepresentationToByteArray("xxx");
+    }
+
+    @Test
+    public void hexRepresentationToByteArray_shouldReturnArray(){
+        // GIVEN-WHEN-THEN
+        assertThat(TypeHelper.hexRepresentationToByteArray("0x[00 AA ff]")).containsExactly((byte)0x0, (byte)0xAA, (byte)0xFF);
     }
 }

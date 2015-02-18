@@ -2,7 +2,9 @@ package fr.tduf.libunlimited.low.files.research.common.helper;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import javax.xml.bind.DatatypeConverter;
 import java.nio.ByteBuffer;
+import java.util.regex.Pattern;
 
 /**
  * Helper to class to handle differences between value representations.
@@ -156,21 +158,37 @@ public class TypeHelper {
             return null;
         }
 
-        StringBuilder builder = new StringBuilder();
-
-        builder.append("0x[");
-
-        for (int i = 0 ; i < valueBytes.length ; i++) {
-            builder.append(String.format("%02X", valueBytes[i]));
-
-            if (i < valueBytes.length - 1) {
-                builder.append(' ');
-            }
+        if (valueBytes.length == 0) {
+            throw new IllegalArgumentException("Provided byte array should not be empty.");
         }
 
-        builder.append(']');
+        String hexBytesWithSpaceSeparator = DatatypeConverter.printHexBinary(valueBytes)
+                .replaceAll(".{2}", "$0 ")
+                .trim();
 
-        return builder.toString();
+        return String.format("0x[%s]", hexBytesWithSpaceSeparator);
+    }
+
+    /**
+     * Creates a byte array from provided hexadecimal string representation.
+     * @param hexRepresentation : representation to be converted
+     */
+    public static byte[] hexRepresentationToByteArray(String hexRepresentation) {
+
+        if(hexRepresentation == null) {
+            return null;
+        }
+
+        Pattern hexRepresentationPattern = Pattern.compile("0x\\[([0-9a-fA-F]{2}\\s?)*([0-9a-fA-F]{2})\\]");
+        if(!hexRepresentationPattern.matcher(hexRepresentation).matches()) {
+            throw new IllegalArgumentException("Provided hexadecimal representation is invalid.");
+        }
+
+        String extractedBytes = hexRepresentation
+                .substring(3, hexRepresentation.length() - 1)
+                .replace(" ", "");
+
+        return DatatypeConverter.parseHexBinary(extractedBytes);
     }
 
     private static void check64BitRawValue(byte[] rawValueBytes) {
