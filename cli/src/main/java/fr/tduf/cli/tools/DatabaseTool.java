@@ -233,8 +233,13 @@ public class DatabaseTool extends GenericTool {
 
             if (!dbDto.getResources().isEmpty()) {
                 System.out.println("  .Resource count per locale: ");
-                dbDto.getResources().forEach(
-                        (dbResourceDto) -> System.out.println("    >" + dbResourceDto.getLocale() + "=" + dbResourceDto.getEntries().size()));
+                dbDto.getResources().stream()
+
+                        .sorted(
+                                (dbResourceDto1, dbResourceDto2) -> dbResourceDto1.getLocale().name().compareTo(dbResourceDto2.getLocale().name()))
+
+                        .forEach(
+                                (dbResourceDto) -> System.out.println("    >" + dbResourceDto.getLocale() + "=" + dbResourceDto.getEntries().size()));
             }
 
             System.out.println();
