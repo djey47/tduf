@@ -319,7 +319,6 @@ public class DataStore {
      * Replaces current store contents with those in provided JSON String.
      * @param jsonInput : json String containing all values
      */
-    //TODO read unknown bytes as formatted Array [0x0 0x1] etc
     public void fromJsonString(String jsonInput) throws IOException {
         ObjectReader reader = new ObjectMapper().reader(Map.class);
 
@@ -340,9 +339,9 @@ public class DataStore {
                 rawValue = TypeHelper.integerToRaw((Integer) value);
             } else if (value.getClass() == String.class) {
                 String stringValue = (String) value;
-                if (isBase64Encoded(stringValue)) {
-                    rawValue = Base64.getDecoder().decode(stringValue);
-                } else {
+                try {
+                   rawValue = TypeHelper.hexRepresentationToByteArray(stringValue);
+                } catch (IllegalArgumentException e) {
                     type = FileStructureDto.Type.TEXT;
                     rawValue = TypeHelper.textToRaw(stringValue);
                 }

@@ -3,7 +3,6 @@ package fr.tduf.libunlimited.low.files.research.domain;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.assertj.core.data.MapEntry;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -396,7 +395,6 @@ public class DataStoreTest {
     }
 
     @Test
-    @Ignore
     public void fromJsonString_whenProvidedJson_shouldSetStore() throws IOException {
         // GIVEN
         String jsonInput = getStoreContentsAsJson();
