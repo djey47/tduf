@@ -147,6 +147,32 @@ public class TypeHelper {
         return newArray;
     }
 
+    /**
+     * Gives a representation of provided byte array with hexadecimal values.
+     * @param valueBytes    : byte array to be converted
+     */
+    public static String byteArrayToHexRepresentation(byte[] valueBytes) {
+        if (valueBytes == null) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("0x[");
+
+        for (int i = 0 ; i < valueBytes.length ; i++) {
+            builder.append(String.format("%02X", valueBytes[i]));
+
+            if (i < valueBytes.length - 1) {
+                builder.append(' ');
+            }
+        }
+
+        builder.append(']');
+
+        return builder.toString();
+    }
+
     private static void check64BitRawValue(byte[] rawValueBytes) {
         if (rawValueBytes.length != 8) {
             throw new IllegalArgumentException("Provided raw value is not compatible to 64-bit.");

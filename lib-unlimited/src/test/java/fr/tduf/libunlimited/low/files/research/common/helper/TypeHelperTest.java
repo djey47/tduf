@@ -173,4 +173,25 @@ public class TypeHelperTest {
         assertThat(actualArray).isNotSameAs(byteArray);
         assertThat(actualArray).isEqualTo(byteArray);
     }
+
+    @Test
+    public void byteArrayToHexRepresentation_whenNullArray_shouldReturnNull(){
+        // GIVEN-WHEN-THEN
+        assertThat(TypeHelper.byteArrayToHexRepresentation(null)).isNull();
+    }
+
+    @Test
+    public void byteArrayToHexRepresentation_whenEmptyArray_shouldReturnString(){
+        // GIVEN-WHEN-THEN
+        assertThat(TypeHelper.byteArrayToHexRepresentation(new byte[0])).isEqualTo("0x[]");
+    }
+
+    @Test
+    public void byteArrayToHexRepresentation_shouldReturnString(){
+        // GIVEN
+        byte[] byteArray = new byte[] { 0x0, (byte)0xAA, (byte)0xFF};
+
+        // WHEN-THEN
+        assertThat(TypeHelper.byteArrayToHexRepresentation(byteArray)).isEqualTo("0x[00 AA FF]");
+    }
 }
