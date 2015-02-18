@@ -286,7 +286,6 @@ public class DataStore {
     /**
      * @return a String representation of store contents, on JSON format. Entries are ordered by rank.
      */
-    //TODO write unknown bytes as formatted Array [0x0 0x1] etc
     public String toJsonString() {
         ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
 
@@ -308,7 +307,7 @@ public class DataStore {
                             objectNode.put(key, rawToInteger(storeEntry.rawValue));
                             break;
                         default:
-                            objectNode.put(key, storeEntry.rawValue);
+                            objectNode.put(key, byteArrayToHexRepresentation(storeEntry.rawValue));
                             break;
                     }
                 });
