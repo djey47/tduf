@@ -104,7 +104,6 @@ public class DbDataDto implements Serializable {
 
     @JsonTypeName("dbEntryItem")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-    // TODO handle rank to match with structure field
     public static class Item {
 
         @JsonProperty("name")
