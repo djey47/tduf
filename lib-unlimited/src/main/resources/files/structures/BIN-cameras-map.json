@@ -81,27 +81,97 @@
         {
           "name": "settingsPart1",
           "type": "UNKNOWN",
-          "size": 195
+          "size": 106
         },
         {
-          "name": "sourcePosition",
+          "name": "steeringWheelTurn",
           "type": "INTEGER",
           "size": 1
         },
         {
           "name": "settingsPart2",
           "type": "UNKNOWN",
-          "size": 15
+          "size": 3
         },
         {
-          "name": "targetPosition",
+          "name": "steeringWheelTilt",
           "type": "INTEGER",
           "size": 1
         },
         {
           "name": "settingsPart3",
           "type": "UNKNOWN",
-          "size": 208
+          "size": 83
+        },
+        {
+          "name": "cameraPositionX",
+          "type": "INTEGER",
+          "size": 1
+        },
+        {
+          "name": "settingsPart4",
+          "type": "UNKNOWN",
+          "size": 3
+        },
+        {
+          "name": "cameraPositionY",
+          "type": "INTEGER",
+          "size": 1
+        },
+        {
+          "name": "settingsPart5",
+          "type": "UNKNOWN",
+          "size": 3
+        },
+        {
+          "name": "cameraPositionZ",
+          "type": "INTEGER",
+          "size": 1
+        },
+        {
+          "name": "settingsPart6",
+          "type": "UNKNOWN",
+          "size": 7
+        },
+        {
+          "name": "viewPositionX",
+          "type": "INTEGER",
+          "size": 1
+        },
+        {
+          "name": "settingsPart7",
+          "type": "UNKNOWN",
+          "size": 3
+        },
+        {
+          "name": "viewPositionY",
+          "type": "INTEGER",
+          "size": 1
+        },
+        {
+          "name": "settingsPart8",
+          "type": "UNKNOWN",
+          "size": 3
+        },
+        {
+          "name": "viewPositionZ",
+          "type": "INTEGER",
+          "size": 1
+        },
+        {
+          "name": "settingsPart9",
+          "type": "UNKNOWN",
+          "size": 59
+        },
+        {
+          "name": "binoculars",
+          "type": "INTEGER",
+          "size": 1
+        },
+        {
+          "name": "settingsPart10",
+          "type": "UNKNOWN",
+          "size": 141
         }
       ]
     }
