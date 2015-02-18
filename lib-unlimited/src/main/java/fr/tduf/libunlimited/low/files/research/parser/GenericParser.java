@@ -88,7 +88,7 @@ public abstract class GenericParser<T> {
                 case GAP:
                     parsedCount = inputStream.skip(length);
 
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(new byte[length]), ""));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(new byte[length]), ""));
                     break;
 
                 case INTEGER:
@@ -102,7 +102,7 @@ public abstract class GenericParser<T> {
                     }
 
                     byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 8 - length, 8);
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(displayedBytes), TypeHelper.rawToInteger(readValueAsBytes)));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(displayedBytes), TypeHelper.rawToInteger(readValueAsBytes)));
                     break;
 
                 case FPOINT:
@@ -113,7 +113,7 @@ public abstract class GenericParser<T> {
                         readValueAsBytes = TypeHelper.changeEndianType(readValueAsBytes);
                     }
 
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), TypeHelper.rawToFloatingPoint(readValueAsBytes)));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), TypeHelper.rawToFloatingPoint(readValueAsBytes)));
                     break;
 
                 case DELIMITER:
@@ -121,7 +121,7 @@ public abstract class GenericParser<T> {
                     readValueAsBytes = new byte[length];
                     parsedCount = inputStream.read(readValueAsBytes, 0, length);
 
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), "\"" +  TypeHelper.rawToText(readValueAsBytes) + "\""));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), "\"" +  TypeHelper.rawToText(readValueAsBytes) + "\""));
                     break;
 
                 case REPEATER:
@@ -152,7 +152,7 @@ public abstract class GenericParser<T> {
                     readValueAsBytes = new byte[length];
                     parsedCount = inputStream.read(readValueAsBytes, 0, length);
 
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, Arrays.toString(readValueAsBytes), ""));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), ""));
                     break;
 
                 default:

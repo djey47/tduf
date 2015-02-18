@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// TODO extract expected dumps to resource files
 public class GenericParserTest {
     private static final Class<GenericParserTest> thisClass = GenericParserTest.class;
 
@@ -72,13 +73,13 @@ public class GenericParserTest {
     @Test
     public void dump_whenProvidedContents_andSizeGivenByAnotherField_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
-        String expectedDump = "sizeIndicator\t<INTEGER: 4 bytes>\t[0, 0, 0, 3]\t3\n" +
+        String expectedDump = "sizeIndicator\t<INTEGER: 4 bytes>\t0x[00 00 00 03]\t3\n" +
                 "repeater\t<REPEATER>\t>>\n" +
-                "repeater[0].number\t<INTEGER: 4 bytes>\t[0, 0, 0, 1]\t1\n" +
-                "repeater[1].number\t<INTEGER: 4 bytes>\t[0, 0, 0, 2]\t2\n" +
-                "repeater[2].number\t<INTEGER: 4 bytes>\t[0, 0, 0, 3]\t3\n" +
+                "repeater[0].number\t<INTEGER: 4 bytes>\t0x[00 00 00 01]\t1\n" +
+                "repeater[1].number\t<INTEGER: 4 bytes>\t0x[00 00 00 02]\t2\n" +
+                "repeater[2].number\t<INTEGER: 4 bytes>\t0x[00 00 00 03]\t3\n" +
                 "<< repeater\t<REPEATER: 3 items>\n" +
-                "aValue\t<TEXT: 10 bytes>\t[65, 66, 67, 68, 69, 70, 71, 72, 73, 74]\t\"ABCDEFGHIJ\"\n";
+                "aValue\t<TEXT: 10 bytes>\t0x[41 42 43 44 45 46 47 48 49 4A]\t\"ABCDEFGHIJ\"\n";
         ByteArrayInputStream inputStream = createInputStreamFromReferenceFileForFormulas();
         GenericParser<String> actualParser = createGenericParserForFormulas(inputStream);
         actualParser.parse();
@@ -152,32 +153,32 @@ public class GenericParserTest {
     }
 
     private String getExpectedDump() {
-        return "tag\t<TEXT: 10 bytes>\t[65, 66, 67, 68, 69, 70, 71, 72, 73, 74]\t\"ABCDEFGHIJ\"\n" +
-                    "unknown\t<UNKNOWN: 5 bytes>\t[1, 2, 3, 4, 5]\t\n" +
+        return "tag\t<TEXT: 10 bytes>\t0x[41 42 43 44 45 46 47 48 49 4A]\t\"ABCDEFGHIJ\"\n" +
+                    "unknown\t<UNKNOWN: 5 bytes>\t0x[01 02 03 04 05]\t\n" +
                     "repeater\t<REPEATER>\t>>\n" +
-                    "repeater[0].number\t<INTEGER: 4 bytes>\t[0, 0, 1, -12]\t500\n" +
-                    "repeater[0].numberF\t<FPOINT: 4 bytes>\t[67, -128, -71, -48]\t257.45166\n" +
-                    "repeater[0].gap\t<GAP: 2 bytes>\t[0, 0]\t\n" +
-                    "repeater[0].text\t<TEXT: 4 bytes>\t[65, 66, 67, 68]\t\"ABCD\"\n" +
-                    "repeater[0].delimiter\t<DELIMITER: 1 bytes>\t[10]\t\"\n\"\n" +
-                    "repeater[1].number\t<INTEGER: 4 bytes>\t[0, 0, 3, -24]\t1000\n" +
-                    "repeater[1].numberF\t<FPOINT: 4 bytes>\t[66, -83, 109, -34]\t86.714584\n" +
-                    "repeater[1].gap\t<GAP: 2 bytes>\t[0, 0]\t\n" +
-                    "repeater[1].text\t<TEXT: 4 bytes>\t[69, 70, 71, 72]\t\"EFGH\"\n" +
-                    "repeater[1].delimiter\t<DELIMITER: 1 bytes>\t[11]\t\"\u000B\"\n" +
+                    "repeater[0].number\t<INTEGER: 4 bytes>\t0x[00 00 01 F4]\t500\n" +
+                    "repeater[0].numberF\t<FPOINT: 4 bytes>\t0x[43 80 B9 D0]\t257.45166\n" +
+                    "repeater[0].gap\t<GAP: 2 bytes>\t0x[00 00]\t\n" +
+                    "repeater[0].text\t<TEXT: 4 bytes>\t0x[41 42 43 44]\t\"ABCD\"\n" +
+                    "repeater[0].delimiter\t<DELIMITER: 1 bytes>\t0x[0A]\t\"\n\"\n" +
+                    "repeater[1].number\t<INTEGER: 4 bytes>\t0x[00 00 03 E8]\t1000\n" +
+                    "repeater[1].numberF\t<FPOINT: 4 bytes>\t0x[42 AD 6D DE]\t86.714584\n" +
+                    "repeater[1].gap\t<GAP: 2 bytes>\t0x[00 00]\t\n" +
+                    "repeater[1].text\t<TEXT: 4 bytes>\t0x[45 46 47 48]\t\"EFGH\"\n" +
+                    "repeater[1].delimiter\t<DELIMITER: 1 bytes>\t0x[0B]\t\"\u000B\"\n" +
                     "<< repeater\t<REPEATER: 2 items>\n";
     }
 
     private String getExpectedDumpHalfFloat() {
-        return "hf1\t<FPOINT: 2 bytes>\t[67, -112]\t3.78125\n" +
-                    "hf2\t<FPOINT: 2 bytes>\t[68, -111]\t4.5664062\n" +
-                    "hf3\t<FPOINT: 2 bytes>\t[69, -110]\t5.5703125\n";
+        return "hf1\t<FPOINT: 2 bytes>\t0x[43 90]\t3.78125\n" +
+                    "hf2\t<FPOINT: 2 bytes>\t0x[44 91]\t4.5664062\n" +
+                    "hf3\t<FPOINT: 2 bytes>\t0x[45 92]\t5.5703125\n";
     }
 
     private String getExpectedDumpVeryShortInt() {
-        return "vsi1\t<INTEGER: 1 bytes>\t[67]\t67\n" +
-                    "vsi2\t<INTEGER: 1 bytes>\t[68]\t68\n" +
-                    "vsi3\t<INTEGER: 1 bytes>\t[69]\t69\n";
+        return "vsi1\t<INTEGER: 1 bytes>\t0x[43]\t67\n" +
+                    "vsi2\t<INTEGER: 1 bytes>\t0x[44]\t68\n" +
+                    "vsi3\t<INTEGER: 1 bytes>\t0x[45]\t69\n";
     }
 
     private GenericParser<String> createGenericParser(final ByteArrayInputStream inputStream) throws IOException {
