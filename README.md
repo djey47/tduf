@@ -18,11 +18,13 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Clone this repository
 * To set-up Gradle: run *gradlew* script from command line
 * Import *build.gradle* file into your favourite IDE
-* To run tests: execute *cleanTest test* tasks from Gradle.
+* To run tests: execute *cleanTest test* tasks from Gradle
+* To run integration tests: execute *cleanTest integTest* tasks from Gradle
+.
 
 ### Releasing ###
 
-* Check unit tests: see above
+* Check tests: see above
 * Update and commit *dist/version.info* file according to desired version
 * Make working directory clean (commit/push or stash changes)
 * Check version: execute *currentVersion* task from Gradle
