@@ -36,4 +36,34 @@ public class DatabaseIntegrityFixerTest {
         assertThat(integrityFixer.getDbDtos()).isEqualTo(dbDtos);
         assertThat(integrityFixer.getIntegrityErrors()).isEqualTo(integrityErrors);
     }
+
+    @Test
+    public void fixAllContentsObjects_whenNoError_shouldReturnEmptyList() {
+        // GIVEN
+        List<DbDto> dbDtos = new ArrayList<>();
+        List<IntegrityError> integrityErrors = new ArrayList<>();
+
+        // WHEN
+        DatabaseIntegrityFixer integrityFixer = DatabaseIntegrityFixer.load(dbDtos, integrityErrors);
+        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects();
+
+        // THEN
+        assertThat(actualRemainingErrors).isEmpty();
+        assertThat(integrityFixer.getFixedDbDtos()).isSameAs(dbDtos);
+    }
+
+    @Test
+    public void fixAllContentsObjects_whenError_shouldReturnEmptyList() {
+        // GIVEN
+        List<DbDto> dbDtos = new ArrayList<>();
+        List<IntegrityError> integrityErrors = new ArrayList<>();
+
+        // WHEN
+        DatabaseIntegrityFixer integrityFixer = DatabaseIntegrityFixer.load(dbDtos, integrityErrors);
+        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects();
+
+        // THEN
+        assertThat(actualRemainingErrors).isEmpty();
+        assertThat(integrityFixer.getFixedDbDtos()).isSameAs(dbDtos);
+    }
 }
