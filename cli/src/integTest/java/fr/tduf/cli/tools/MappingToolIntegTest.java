@@ -1,7 +1,7 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
-import fr.tduf.libunlimited.low.files.banks.mapping.writer.MapWriter;
+import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapWriter;
 import org.junit.Before;
 import org.junit.Test;
 

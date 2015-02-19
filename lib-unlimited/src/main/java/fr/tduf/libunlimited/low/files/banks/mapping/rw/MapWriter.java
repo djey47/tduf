@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.low.files.banks.mapping.writer;
+package fr.tduf.libunlimited.low.files.banks.mapping.rw;
 
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.research.rw.GenericWriter;
