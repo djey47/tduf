@@ -8,6 +8,5 @@ cli/integ-tests/mapping/
 cli/integ-tests/unencrypted/
 pack/
 releases/
-tdu-database-dump/
 *.iml
 .gradletasknamecache
