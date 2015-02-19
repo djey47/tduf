@@ -28,6 +28,9 @@ public class DatabaseTool extends GenericTool {
     @Option(name = "-j", aliases = "--jsonDir", usage = "Source (gen) of target (dump) directory for JSON files, defaults to current directory\\tdu-database-dump.")
     private String jsonDirectory;
 
+    @Option(name = "-o", aliases = "--outputDatabaseDir", usage = "Fixed TDU database directory, defaults to current directory\\tdu-database-fixed.")
+    private String outputDatabaseDirectory;
+
     @Option(name = "-c", aliases = "--clear", usage = "Not mandatory. Indicates unpacked TDU files do not need to be unencrypted and encrypted back.")
     private boolean withClearContents = false;
 
@@ -39,7 +42,8 @@ public class DatabaseTool extends GenericTool {
     enum Command implements CommandHelper.CommandEnum {
         CHECK("check", "Tries to load database and display integrity errors, if any."),
         DUMP("dump", "Writes full database contents to JSON files."),
-        GEN("gen", "Writes TDU database files from JSON files.");
+        GEN("gen", "Writes TDU database files from JSON files."),
+        FIX("fix", "Loads database, checks for integrity errors and create database copy with fixed ones.");
 
         final String label;
         final String description;
@@ -79,10 +83,13 @@ public class DatabaseTool extends GenericTool {
                 dump();
                 break;
             case CHECK:
-                databaseCheck();
+                check();
                 break;
             case GEN:
                 gen();
+                break;
+            case FIX:
+                fix();
                 break;
             default:
                 return false;
@@ -104,6 +111,10 @@ public class DatabaseTool extends GenericTool {
         if (jsonDirectory == null) {
             jsonDirectory = "tdu-database-dump";
         }
+
+        if (outputDatabaseDirectory == null) {
+            jsonDirectory = "tdu-database-fixed";
+        }
     }
 
     @Override
@@ -116,7 +127,8 @@ public class DatabaseTool extends GenericTool {
         return asList(
                 DUMP.label + " --databaseDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
                 GEN.label + " --jsonDir \"C:\\Users\\Bill\\Desktop\\json-database\" --databaseDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
-                CHECK.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\""
+                CHECK.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
+                FIX.label + " -c -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -o \"C:\\Users\\Bill\\Desktop\\tdu-database-fixed\""
         );
     }
 
@@ -177,7 +189,7 @@ public class DatabaseTool extends GenericTool {
         System.out.println("All done!");
     }
 
-    private void databaseCheck() throws Exception {
+    private void check() throws Exception {
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
         System.out.println("-> Source directory: " + databaseDirectory);
@@ -208,6 +220,10 @@ public class DatabaseTool extends GenericTool {
         if(!integrityErrors.isEmpty()) {
             throw new IllegalArgumentException("At least one integrity error has been found, your database is not ready-to-use.");
         }
+    }
+
+    private void fix() {
+
     }
 
     private List<DbDto> loadAndCheckDatabase(List<IntegrityError> integrityErrors) throws IOException {

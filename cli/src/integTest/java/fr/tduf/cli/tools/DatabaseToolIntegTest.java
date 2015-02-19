@@ -15,11 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DatabaseToolIntegTest {
 
     @Test
-    public void dumpGenCheck_shouldNotThrowError() throws IOException {
+    public void dumpGenCheckFix_shouldNotThrowError() throws IOException {
 
         String sourceDirectory = "integ-tests/db-encrypted";
         String jsonDirectory = "integ-tests/db-json";
         String generatedDirectory = "integ-tests/db-generated";
+        String fixedDirectory = "integ-tests/db-fixed";
 
         // WHEN: dump
         System.out.println("-> Dump!");
@@ -35,22 +36,23 @@ public class DatabaseToolIntegTest {
         DatabaseTool.main(new String[]{"gen", "-d", generatedDirectory, "-j", jsonDirectory});
 
         // THEN: written TDU files
-        long dbFilesCount = getTopicFileCount(generatedDirectory, "db");
-        assertThat(dbFilesCount).isEqualTo(18);
-
-        asList(DbResourceDto.Locale.values()).stream()
-
-                .forEach( (locale) -> {
-                    long resFilesCount = getTopicFileCount(generatedDirectory, locale.getCode());
-                    assertThat(resFilesCount).isEqualTo(18);
-                });
+        assertDatabaseFilesArePresent(generatedDirectory);
 
 
+        // TODO when fix op ready, do not call check (as fix performs checking)
         // WHEN: check
         System.out.println("-> Check!");
         DatabaseTool.main(new String[]{"check", "-d", generatedDirectory});
 
         // THEN: should not exit with status code 1
+
+
+        // WHEN: fix
+        System.out.println("-> Fix!");
+        DatabaseTool.main(new String[]{"fix", "-d", generatedDirectory, "-o", fixedDirectory});
+
+        // THEN: written fixed TDU files
+        assertDatabaseFilesArePresent(fixedDirectory);
     }
 
     private static long getTopicFileCount(String jsonDirectory, String extension) {
@@ -65,5 +67,17 @@ public class DatabaseToolIntegTest {
                 .filter((existingFile) -> true)
 
                 .count();
+    }
+
+    private static void assertDatabaseFilesArePresent(String directory) {
+        long dbFilesCount = getTopicFileCount(directory, "db");
+        assertThat(dbFilesCount).isEqualTo(18);
+
+        asList(DbResourceDto.Locale.values()).stream()
+
+                .forEach( (locale) -> {
+                    long resFilesCount = getTopicFileCount(directory, locale.getCode());
+                    assertThat(resFilesCount).isEqualTo(18);
+                });
     }
 }
