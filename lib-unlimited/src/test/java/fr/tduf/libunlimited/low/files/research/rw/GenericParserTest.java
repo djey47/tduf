@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.low.files.research.parser;
+package fr.tduf.libunlimited.low.files.research.rw;
 
 import org.junit.Test;
 

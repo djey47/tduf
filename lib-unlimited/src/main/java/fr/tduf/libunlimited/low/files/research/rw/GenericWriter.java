@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.low.files.research.writer;
+package fr.tduf.libunlimited.low.files.research.rw;
 
 import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;

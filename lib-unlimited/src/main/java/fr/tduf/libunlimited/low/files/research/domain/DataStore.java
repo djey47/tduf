@@ -20,8 +20,8 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
- * Place to store and extract data with {@link fr.tduf.libunlimited.low.files.research.parser.GenericParser}
- * and {@link fr.tduf.libunlimited.low.files.research.writer.GenericWriter}
+ * Place to store and extract data with {@link fr.tduf.libunlimited.low.files.research.rw.GenericParser}
+ * and {@link fr.tduf.libunlimited.low.files.research.rw.GenericWriter}
  */
 public class DataStore {
     private static final String REPEATER_FIELD_SEPARATOR = ".";

@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.low.files.research.parser;
+package fr.tduf.libunlimited.low.files.research.rw;
 
 import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
@@ -121,7 +121,7 @@ public abstract class GenericParser<T> {
                     readValueAsBytes = new byte[length];
                     parsedCount = inputStream.read(readValueAsBytes, 0, length);
 
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), "\"" +  TypeHelper.rawToText(readValueAsBytes) + "\""));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), "\"" + TypeHelper.rawToText(readValueAsBytes) + "\""));
                     break;
 
                 case REPEATER:

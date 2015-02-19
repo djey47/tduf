@@ -2,7 +2,7 @@ package fr.tduf.libunlimited.low.files.banks.mapping.parser;
 
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
-import fr.tduf.libunlimited.low.files.research.parser.GenericParser;
+import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
