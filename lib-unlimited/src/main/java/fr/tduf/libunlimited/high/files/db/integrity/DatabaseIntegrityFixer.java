@@ -3,10 +3,13 @@ package fr.tduf.libunlimited.high.files.db.integrity;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Class providing method to repair Database.
@@ -14,8 +17,15 @@ import static java.util.Objects.requireNonNull;
 public class DatabaseIntegrityFixer {
 
     private final List<DbDto> dbDtos;
-    private final List<IntegrityError> integrityErrors;
     private List<DbDto> fixedDbDtos = null;
+
+    private final List<IntegrityError> integrityErrors;
+
+    // Following errors are auto-handled: CONTENT_ITEMS_COUNT_MISMATCH, STRUCTURE_FIELDS_COUNT_MISMATCH
+    // Following errors are not handled yet: CONTENTS_FIELDS_COUNT_MISMATCH, RESOURCE_NOT_FOUND, RESOURCE_REFERENCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH
+    private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(CONTENTS_REFERENCE_NOT_FOUND));
+    private static final Set<IntegrityError.ErrorTypeEnum> UNFIXABLE_ERRORS = new HashSet<>(asList(CONTENTS_NOT_FOUND, CONTENTS_ENCRYPTION_NOT_SUPPORTED));
+
 
     private DatabaseIntegrityFixer(List<DbDto> dbDtos, List<IntegrityError> integrityErrors) {
         this.dbDtos = dbDtos;
@@ -40,12 +50,52 @@ public class DatabaseIntegrityFixer {
      * @return list of remaining integrity errors.
      */
     public List<IntegrityError> fixAllContentsObjects() {
+        List<IntegrityError> remainingIntegrityErrors = new ArrayList<>();
+
         if(this.integrityErrors.isEmpty()) {
-            return new ArrayList<>();
+            return remainingIntegrityErrors;
         }
 
+        handleUnfixableErrors(remainingIntegrityErrors);
 
-        return null;
+        handleFixableErrors(remainingIntegrityErrors);
+
+        return remainingIntegrityErrors;
+    }
+
+    private void handleUnfixableErrors(List<IntegrityError> remainingIntegrityErrors) {
+        requireNonNull(remainingIntegrityErrors, "A list of integrity errors is required.");
+
+        remainingIntegrityErrors.addAll(
+                this.integrityErrors.stream()
+
+                        .filter((integrityError) -> UNFIXABLE_ERRORS.contains(integrityError.getErrorTypeEnum()))
+
+                        .collect(toList()));
+    }
+
+    private void handleFixableErrors(List<IntegrityError> remainingIntegrityErrors) {
+        requireNonNull(remainingIntegrityErrors, "A list of integrity errors is required.");
+
+        remainingIntegrityErrors.addAll(
+                this.integrityErrors.stream()
+
+                        .filter((integrityError) -> FIXABLE_ERRORS.contains(integrityError.getErrorTypeEnum()))
+
+                        .collect(toMap((integrityError) -> integrityError, this::fixIntegrityError))
+
+                        .entrySet().stream()
+
+                        .filter((resultEntry) -> !resultEntry.getValue())
+
+                        .map(Map.Entry::getKey)
+
+                        .collect(toList())
+        );
+    }
+
+    private boolean fixIntegrityError(IntegrityError integrityError) {
+        return false;
     }
 
     private static void checkRequirements(List<DbDto> dbDtos, List<IntegrityError> integrityErrors) {
