@@ -2,6 +2,7 @@ package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
+import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
@@ -191,7 +192,36 @@ public class DatabaseTool extends GenericTool {
 
     private void check() throws Exception {
         List<IntegrityError> integrityErrors = new ArrayList<>();
+        checkAndReturnIntegrityErrorsAndObjects(integrityErrors);
 
+        if(!integrityErrors.isEmpty()) {
+            throw new IllegalArgumentException("At least one integrity error has been found, your database is not ready-to-use.");
+        }
+
+        System.out.println("All done.");
+    }
+
+    private void fix() throws IOException {
+        List<IntegrityError> integrityErrors = new ArrayList<>();
+        List<DbDto> databaseObjects = checkAndReturnIntegrityErrorsAndObjects(integrityErrors);
+
+        if(integrityErrors.isEmpty()) {
+            System.out.println("No error detected - a fix is not necessary.");
+            return;
+        }
+
+        System.out.println("-> Now fixing database...");
+        DatabaseIntegrityFixer databaseIntegrityFixer = DatabaseIntegrityFixer.load(databaseObjects, integrityErrors);
+        List<IntegrityError> remainingIntegrityErrors = databaseIntegrityFixer.fixAllContentsObjects();
+        List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getFixedDbDtos();
+
+        printIntegrityErrors(remainingIntegrityErrors);
+
+        System.out.println("-> Now writing database to " + outputDatabaseDirectory + "...");
+        System.out.println("All done.");
+    }
+
+    private List<DbDto> checkAndReturnIntegrityErrorsAndObjects(List<IntegrityError> integrityErrors) throws IOException {
         System.out.println("-> Source directory: " + databaseDirectory);
         System.out.println("Checking TDU database, please wait...");
         System.out.println();
@@ -213,17 +243,8 @@ public class DatabaseTool extends GenericTool {
         }
 
         printIntegrityErrors(integrityErrors);
-        System.out.println();
 
-        System.out.println("All done.");
-
-        if(!integrityErrors.isEmpty()) {
-            throw new IllegalArgumentException("At least one integrity error has been found, your database is not ready-to-use.");
-        }
-    }
-
-    private void fix() {
-
+        return dbDtos;
     }
 
     private List<DbDto> loadAndCheckDatabase(List<IntegrityError> integrityErrors) throws IOException {
