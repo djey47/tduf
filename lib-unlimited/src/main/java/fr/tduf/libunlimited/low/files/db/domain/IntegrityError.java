@@ -42,6 +42,8 @@ public class IntegrityError {
 
     public String getError() { return errorTypeEnum.name(); }
 
+    public ErrorTypeEnum getErrorTypeEnum() { return errorTypeEnum; }
+
     public Map<String, Object> getInformation() {
         return info;
     }
