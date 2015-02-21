@@ -12,6 +12,8 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.FILE;
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -135,9 +137,9 @@ public class DatabaseReadWriteHelper {
                 .filter((entry) -> entry.getValue().isEmpty())
 
                 .forEach((entry) -> {
-                    Map<String, Object> info = new HashMap<>();
-                    info.put("Topic", topic);
-                    info.put("File", entry.getKey());
+                    Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+                    info.put(SOURCE_TOPIC, topic);
+                    info.put(FILE, entry.getKey());
 
                     IntegrityError integrityError = IntegrityError.builder()
                             .ofType(IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND)
@@ -164,9 +166,9 @@ public class DatabaseReadWriteHelper {
             return contentsFile.getAbsolutePath();
         }
 
-        Map<String, Object> info = new HashMap<>();
-        info.put("Topic", topic);
-        info.put("File", contentsFile.getAbsolutePath());
+        Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+        info.put(SOURCE_TOPIC, topic);
+        info.put(FILE, contentsFile.getAbsolutePath());
         IntegrityError integrityError = IntegrityError.builder()
                 .ofType(IntegrityError.ErrorTypeEnum.CONTENTS_NOT_FOUND)
                 .addInformations(info)
@@ -215,8 +217,8 @@ public class DatabaseReadWriteHelper {
             Files.write(outputFile.toPath(), outputStream.toByteArray(), StandardOpenOption.CREATE);
         } catch (Exception e) {
 
-            Map<String, Object> info = new HashMap<>();
-            info.put("File", contentsFileName);
+            Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+            info.put(FILE, contentsFileName);
             IntegrityError integrityError = IntegrityError.builder()
                     .ofType(IntegrityError.ErrorTypeEnum.CONTENTS_ENCRYPTION_NOT_SUPPORTED)
                     .addInformations(info)

@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.fromCode;
 import static java.lang.Integer.valueOf;
@@ -294,9 +295,9 @@ public class DatabaseParser {
 
     private void checkContentItemsCount(long expectedItemCount, List<DbDataDto.Entry> actualEntries) {
         if (expectedItemCount != actualEntries.size()) {
-            Map<String, Object> info = new HashMap<>();
-            info.put("Expected count", expectedItemCount);
-            info.put("Actual count", actualEntries.size());
+            Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+            info.put(EXPECTED_COUNT, expectedItemCount);
+            info.put(ACTUAL_COUNT, actualEntries.size());
 
             addIntegrityError(CONTENT_ITEMS_COUNT_MISMATCH, info);
         }
@@ -304,9 +305,9 @@ public class DatabaseParser {
 
     private void checkFieldCountInStructure(int expectedFieldCount, List<DbStructureDto.Field> fields) {
         if (expectedFieldCount != fields.size()) {
-            Map<String, Object> info = new HashMap<>();
-            info.put("Expected count", expectedFieldCount);
-            info.put("Actual count", fields.size());
+            Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+            info.put(EXPECTED_COUNT, expectedFieldCount);
+            info.put(ACTUAL_COUNT, fields.size());
 
             addIntegrityError(STRUCTURE_FIELDS_COUNT_MISMATCH, info);
         }
@@ -314,9 +315,9 @@ public class DatabaseParser {
 
     private void checkFieldCountInContents(long expectedFieldCount, List<DbDataDto.Item> items) {
         if (expectedFieldCount != items.size()) {
-            Map<String, Object> info = new HashMap<>();
-            info.put("Expected count", expectedFieldCount);
-            info.put("Actual count", items.size());
+            Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+            info.put(EXPECTED_COUNT, expectedFieldCount);
+            info.put(ACTUAL_COUNT, items.size());
 
             addIntegrityError(CONTENTS_FIELDS_COUNT_MISMATCH, info);
         }
@@ -328,16 +329,16 @@ public class DatabaseParser {
                 .collect(groupingBy(dbResourceDto -> dbResourceDto.getEntries().size()));
 
         if (dbResourceDtosByItemCount.size() > 1) {
-            Map<String, Object> info = new HashMap<>();
-            info.put("Topic", topic);
-            info.put("Per-locale count", dbResourceDtos.stream()
-                    .collect(toMap(DbResourceDto::getLocale, (dto) -> dto.getEntries().size() )));
+            Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+            info.put(SOURCE_TOPIC, topic);
+            info.put(PER_LOCALE_COUNT, dbResourceDtos.stream()
+                    .collect(toMap(DbResourceDto::getLocale, (dto) -> dto.getEntries().size())));
 
             addIntegrityError(RESOURCE_ITEMS_COUNT_MISMATCH, info);
         }
     }
 
-    private void addIntegrityError(IntegrityError.ErrorTypeEnum errorTypeEnum, Map<String, Object> info) {
+    private void addIntegrityError(IntegrityError.ErrorTypeEnum errorTypeEnum, Map<IntegrityError.ErrorInfoEnum, Object> info) {
         IntegrityError integrityError = IntegrityError.builder()
                 .ofType(errorTypeEnum)
                 .addInformations(info)

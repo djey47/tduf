@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.CONTENTS_REFERENCE_NOT_FOUND;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND;
 import static java.util.Arrays.asList;
@@ -145,11 +146,11 @@ public class DatabaseIntegrityChecker {
                             .isPresent();
 
                     if (!isResourceReferenceFound) {
-                        Map<String, Object> informations = new HashMap<>();
-                        informations.put("Source Topic", sourceTopic);
-                        informations.put("Remote Topic", topicObject.getStructure().getTopic());
-                        informations.put("Locale", resourceDto.getLocale());
-                        informations.put("Reference", reference);
+                        Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
+                        informations.put(SOURCE_TOPIC, sourceTopic);
+                        informations.put(REMOTE_TOPIC, topicObject.getStructure().getTopic());
+                        informations.put(LOCALE, resourceDto.getLocale());
+                        informations.put(REFERENCE, reference);
 
                         integrityErrors.add(IntegrityError.builder()
                                         .ofType(RESOURCE_REFERENCE_NOT_FOUND)
@@ -191,10 +192,10 @@ public class DatabaseIntegrityChecker {
                 .isPresent();
 
         if (!isReferenceFound) {
-            Map<String, Object> informations = new HashMap<>();
-            informations.put("Source Topic", sourceTopic);
-            informations.put("Remote Topic", topicObject.getStructure().getTopic());
-            informations.put("Reference", reference);
+            Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
+            informations.put(SOURCE_TOPIC, sourceTopic);
+            informations.put(REMOTE_TOPIC, topicObject.getStructure().getTopic());
+            informations.put(REFERENCE, reference);
 
             integrityErrors.add(IntegrityError.builder()
                             .ofType(CONTENTS_REFERENCE_NOT_FOUND)

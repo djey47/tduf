@@ -9,16 +9,16 @@ import java.util.Map;
 public class IntegrityError {
     private final ErrorTypeEnum errorTypeEnum;
 
-    private final Map<String, Object> info;
+    private final Map<ErrorInfoEnum, Object> info;
 
-    private IntegrityError(ErrorTypeEnum errorTypeEnum, Map<String, Object> info) {
+    private IntegrityError(ErrorTypeEnum errorTypeEnum, Map<ErrorInfoEnum, Object> info) {
         this.errorTypeEnum = errorTypeEnum;
         this.info = info;
     }
 
     public static IntegrityErrorBuilder builder() {
         return new IntegrityErrorBuilder() {
-            private final Map<String, Object> info = new HashMap<>();
+            private final Map<ErrorInfoEnum, Object> info = new HashMap<>();
             private ErrorTypeEnum errorTypeEnum;
 
             @Override
@@ -28,7 +28,7 @@ public class IntegrityError {
             }
 
             @Override
-            public IntegrityErrorBuilder addInformations(Map<String, Object> info) {
+            public IntegrityErrorBuilder addInformations(Map<ErrorInfoEnum, Object> info) {
                 this.info.putAll(info);
                 return this;
             }
@@ -44,7 +44,7 @@ public class IntegrityError {
 
     public ErrorTypeEnum getErrorTypeEnum() { return errorTypeEnum; }
 
-    public Map<String, Object> getInformation() {
+    public Map<ErrorInfoEnum, Object> getInformation() {
         return info;
     }
 
@@ -113,11 +113,38 @@ public class IntegrityError {
         }
     }
 
+
+    /**
+     * All error informations.
+     */
+    public enum ErrorInfoEnum {
+
+        SOURCE_TOPIC("Source Topic"),
+        REMOTE_TOPIC("Remote Topic"),
+        LOCALE("Locale"),
+        REFERENCE("Reference"),
+        PER_LOCALE_COUNT("Per-Locale Count"),
+        EXPECTED_COUNT("Expected Count"),
+        ACTUAL_COUNT("Actual Count"),
+        FILE("File name");
+
+        private final String infoLabel;
+
+        ErrorInfoEnum(String infoLabel) {
+            this.infoLabel = infoLabel;
+        }
+
+        @Override
+        public String toString() {
+            return this.infoLabel;
+        }
+    }
+
     public interface IntegrityErrorBuilder {
 
         IntegrityErrorBuilder ofType(ErrorTypeEnum errorTypeEnum);
 
-        IntegrityErrorBuilder addInformations(Map<String, Object> info);
+        IntegrityErrorBuilder addInformations(Map<ErrorInfoEnum, Object> info);
 
         IntegrityError build();
     }

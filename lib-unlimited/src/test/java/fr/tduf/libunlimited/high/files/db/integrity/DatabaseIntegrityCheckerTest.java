@@ -70,7 +70,7 @@ public class DatabaseIntegrityCheckerTest {
         //THEN
         assertThat(integrityErrors).hasSize(18);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(RESOURCE_REFERENCE_NOT_FOUND);
-        assertAllIntegrityErrorsContainInformation(integrityErrors, "Reference", "200");
+        assertAllIntegrityErrorsContainInformation(integrityErrors, IntegrityError.ErrorInfoEnum.REFERENCE, "200");
     }
 
     @Test
@@ -84,7 +84,7 @@ public class DatabaseIntegrityCheckerTest {
         //THEN
         assertThat(integrityErrors).hasSize(18);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(RESOURCE_REFERENCE_NOT_FOUND);
-        assertAllIntegrityErrorsContainInformation(integrityErrors, "Reference", "400");
+        assertAllIntegrityErrorsContainInformation(integrityErrors, IntegrityError.ErrorInfoEnum.REFERENCE, "400");
     }
 
     @Test
@@ -98,8 +98,8 @@ public class DatabaseIntegrityCheckerTest {
         //THEN
         assertThat(integrityErrors).hasSize(18);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(RESOURCE_REFERENCE_NOT_FOUND);
-        assertAllIntegrityErrorsContainInformation(integrityErrors, "Remote Topic", ACHIEVEMENTS);
-        assertAllIntegrityErrorsContainInformation(integrityErrors, "Reference", "300" );
+        assertAllIntegrityErrorsContainInformation(integrityErrors, IntegrityError.ErrorInfoEnum.REMOTE_TOPIC, ACHIEVEMENTS);
+        assertAllIntegrityErrorsContainInformation(integrityErrors, IntegrityError.ErrorInfoEnum.REFERENCE, "300" );
     }
 
     @Test
@@ -361,7 +361,7 @@ public class DatabaseIntegrityCheckerTest {
                 .build();
     }
 
-    private static void assertAllIntegrityErrorsContainInformation(List<IntegrityError> integrityErrors, String infoKey, Object infoValue) {
+    private static void assertAllIntegrityErrorsContainInformation(List<IntegrityError> integrityErrors, IntegrityError.ErrorInfoEnum infoKey, Object infoValue) {
         for (IntegrityError integrityError : integrityErrors) {
             assertThat(integrityError.getInformation()).containsEntry(infoKey, infoValue);
         }
