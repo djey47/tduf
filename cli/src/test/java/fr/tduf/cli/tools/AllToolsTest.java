@@ -21,9 +21,6 @@ public class AllToolsTest {
     @Test
     public void databaseTool_fix() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
-        // TODO update expected behaviour
-//        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new DatabaseTool(), FIX.getLabel());
     }
 

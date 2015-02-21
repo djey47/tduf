@@ -114,7 +114,7 @@ public class DatabaseTool extends GenericTool {
         }
 
         if (outputDatabaseDirectory == null) {
-            jsonDirectory = "tdu-database-fixed";
+            outputDatabaseDirectory = "tdu-database-fixed";
         }
     }
 
@@ -179,12 +179,7 @@ public class DatabaseTool extends GenericTool {
                 continue;
             }
 
-            List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabase(dbDto, this.databaseDirectory, this.withClearContents);
-
-            System.out.println("Writing done for topic: " + currentTopic);
-            writtenFiles.stream()
-                    .forEach((fileName) -> System.out.println("-> " + fileName));
-            System.out.println();
+            writeDatabaseTopic(dbDto, this.databaseDirectory);
         }
 
         System.out.println("All done!");
@@ -213,11 +208,25 @@ public class DatabaseTool extends GenericTool {
         System.out.println("-> Now fixing database...");
         DatabaseIntegrityFixer databaseIntegrityFixer = DatabaseIntegrityFixer.load(databaseObjects, integrityErrors);
         List<IntegrityError> remainingIntegrityErrors = databaseIntegrityFixer.fixAllContentsObjects();
-        List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getFixedDbDtos();
 
         printIntegrityErrors(remainingIntegrityErrors);
 
-        System.out.println("-> Now writing database to " + outputDatabaseDirectory + "...");
+        System.out.println("-> Now writing database to " + this.outputDatabaseDirectory + "...");
+        System.out.println();
+
+        List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getFixedDbDtos();
+        createDirectoryIfNotExists(this.outputDatabaseDirectory);
+
+        for (DbDto databaseObject : fixedDatabaseObjects) {
+            System.out.println("-> Now processing topic: " + databaseObject.getStructure().getTopic() + "...");
+
+            writeDatabaseTopic(databaseObject, this.outputDatabaseDirectory);
+        }
+
+        if (!remainingIntegrityErrors.isEmpty()) {
+            System.out.println("WARNING! TDU database has been rewritten, but some integrity errors do remain. Your game may not work as expected.");
+        }
+
         System.out.println("All done.");
     }
 
@@ -287,6 +296,15 @@ public class DatabaseTool extends GenericTool {
         }
 
         return allDtos;
+    }
+
+    private void writeDatabaseTopic(DbDto dbDto, String outputDatabaseDirectory) throws IOException {
+        List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabase(dbDto, outputDatabaseDirectory, this.withClearContents);
+
+        System.out.println("Writing done for topic: " + dbDto.getStructure().getTopic());
+        writtenFiles.stream()
+                .forEach((fileName) -> System.out.println("-> " + fileName));
+        System.out.println();
     }
 
     private static void betweenTopicsCheck(List<DbDto> allDtos, List<IntegrityError> integrityErrors) {
