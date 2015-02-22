@@ -129,25 +129,41 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        DbResourceDto.Entry createdEntry = fixedDatabaseObjects.stream()
-
-                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == Topic.ACHIEVEMENTS)
-
-                .findFirst().get().getResources().stream()
-
-                    .filter((resourceObject) -> resourceObject.getLocale() == Locale.FRANCE)
-
-                    .findFirst().get().getEntries().stream()
-
-                            .filter((entry) -> entry.getReference().equals("123456"))
-
-                            .findFirst().orElse(null);
-
+        DbResourceDto.Entry createdEntry = searchResourceEntry("123456", Topic.ACHIEVEMENTS, Locale.FRANCE, fixedDatabaseObjects);
         assertThat(createdEntry).isNotNull();
         assertThat(createdEntry.getValue()).isEqualTo("-FIXED BY TDUF-");
     }
 
-    private List<DbDto> createDefaultDatabaseObjects() {
+    @Test
+    public void fixAllContentsObjects_whenOneError_asRemoteResourceReferenceNotFound_shouldInsertMissingResource() {
+        // GIVEN
+        List<DbDto> dbDtos = createDefaultDatabaseObjects();
+
+        HashMap<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+        info.put(SOURCE_TOPIC, Topic.ACHIEVEMENTS);
+        info.put(REMOTE_TOPIC, Topic.AFTER_MARKET_PACKS);
+        info.put(LOCALE, Locale.FRANCE);
+        info.put(REFERENCE, "1234567");
+        List<IntegrityError> integrityErrors = asList(IntegrityError.builder().ofType(RESOURCE_REFERENCE_NOT_FOUND).addInformations(info).build());
+
+
+        // WHEN
+        DatabaseIntegrityFixer integrityFixer = DatabaseIntegrityFixer.load(dbDtos, integrityErrors);
+        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects();
+        List<DbDto> fixedDatabaseObjects = integrityFixer.getFixedDbDtos();
+
+
+        // THEN
+        assertThat(actualRemainingErrors).isEmpty();
+
+        assertThat(fixedDatabaseObjects).isNotEmpty();
+
+        DbResourceDto.Entry createdEntry = searchResourceEntry("1234567", Topic.AFTER_MARKET_PACKS, Locale.FRANCE, fixedDatabaseObjects);
+        assertThat(createdEntry).isNotNull();
+        assertThat(createdEntry.getValue()).isEqualTo("-FIXED BY TDUF-");
+    }
+
+    private static List<DbDto> createDefaultDatabaseObjects() {
         List<DbDto> dbDtos = new ArrayList<>();
         dbDtos.add(DbDto.builder()
                 .withStructure(DbStructureDto.builder()
@@ -159,6 +175,32 @@ public class DatabaseIntegrityFixerTest {
                         .withLocale(Locale.FRANCE)
                         .build())
                 .build());
+        dbDtos.add(DbDto.builder()
+                .withStructure(DbStructureDto.builder()
+                        .forTopic(Topic.AFTER_MARKET_PACKS)
+                        .build())
+                .withData(DbDataDto.builder()
+                        .build())
+                .addResource(DbResourceDto.builder()
+                        .withLocale(Locale.FRANCE)
+                        .build())
+                .build());
         return dbDtos;
+    }
+
+    private static DbResourceDto.Entry searchResourceEntry(String reference, Topic topic, Locale locale, List<DbDto> databaseObjects) {
+        return databaseObjects.stream()
+
+                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
+
+                .findFirst().get().getResources().stream()
+
+                .filter((resourceObject) -> resourceObject.getLocale() == locale)
+
+                .findFirst().get().getEntries().stream()
+
+                .filter((entry) -> entry.getReference().equals(reference))
+
+                .findFirst().orElse(null);
     }
 }
