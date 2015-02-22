@@ -163,11 +163,57 @@ public class DatabaseIntegrityFixerTest {
         assertThat(createdEntry.getValue()).isEqualTo("-FIXED BY TDUF-");
     }
 
+    @Test
+    public void fixAllContentsObjects_whenOneError_asRemoteContentsReferenceNotFound_shouldInsertMissingContents() {
+        // GIVEN
+        List<DbDto> dbDtos = createDefaultDatabaseObjects();
+
+        HashMap<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+        info.put(SOURCE_TOPIC, Topic.ACHIEVEMENTS);
+        info.put(REMOTE_TOPIC, Topic.AFTER_MARKET_PACKS);
+        info.put(REFERENCE, "001");
+        List<IntegrityError> integrityErrors = asList(IntegrityError.builder().ofType(CONTENTS_REFERENCE_NOT_FOUND).addInformations(info).build());
+
+
+        // WHEN
+        DatabaseIntegrityFixer integrityFixer = DatabaseIntegrityFixer.load(dbDtos, integrityErrors);
+        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects();
+        List<DbDto> fixedDatabaseObjects = integrityFixer.getFixedDbDtos();
+
+
+        // THEN
+        assertThat(actualRemainingErrors).isEmpty();
+
+        assertThat(fixedDatabaseObjects).isNotEmpty();
+
+        DbDataDto.Entry createdEntry = searchContentsEntry("001", Topic.AFTER_MARKET_PACKS, fixedDatabaseObjects);
+        assertThat(createdEntry).isNotNull();
+        assertThat(createdEntry.getId()).isEqualTo(0);
+
+        assertThat(createdEntry.getItems()).hasSize(2);
+
+        DbDataDto.Item item1 = createdEntry.getItems().get(0);
+        assertThat(item1.getName()).isEqualTo("ID");
+        assertThat(item1.getFieldRank()).isEqualTo(1);
+        assertThat(item1.getRawValue()).isEqualTo("001");
+
+        DbDataDto.Item item2 = createdEntry.getItems().get(1);
+        assertThat(item2.getName()).isEqualTo("Val1");
+        assertThat(item2.getFieldRank()).isEqualTo(2);
+        assertThat(item2.getRawValue()).isEqualTo("0");
+    }
+
     private static List<DbDto> createDefaultDatabaseObjects() {
         List<DbDto> dbDtos = new ArrayList<>();
         dbDtos.add(DbDto.builder()
                 .withStructure(DbStructureDto.builder()
+                        .forReference("1")
                         .forTopic(Topic.ACHIEVEMENTS)
+                        .addItem(DbStructureDto.Field.builder()
+                                .forName("ID")
+                                .fromType(DbStructureDto.FieldType.UID)
+                                .ofRank(1)
+                                .build())
                         .build())
                 .withData(DbDataDto.builder()
                         .build())
@@ -177,7 +223,18 @@ public class DatabaseIntegrityFixerTest {
                 .build());
         dbDtos.add(DbDto.builder()
                 .withStructure(DbStructureDto.builder()
+                        .forReference("2")
                         .forTopic(Topic.AFTER_MARKET_PACKS)
+                        .addItem(DbStructureDto.Field.builder()
+                                .forName("ID")
+                                .fromType(DbStructureDto.FieldType.UID)
+                                .ofRank(1)
+                                .build())
+                        .addItem(DbStructureDto.Field.builder()
+                                .forName("Val1")
+                                .fromType(DbStructureDto.FieldType.INTEGER)
+                                .ofRank(2)
+                                .build())
                         .build())
                 .withData(DbDataDto.builder()
                         .build())
@@ -203,4 +260,20 @@ public class DatabaseIntegrityFixerTest {
 
                 .findFirst().orElse(null);
     }
+
+    private static DbDataDto.Entry searchContentsEntry(String reference, Topic topic, List<DbDto> databaseObjects) {
+        return databaseObjects.stream()
+
+                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
+
+                .findFirst().get().getData().getEntries().stream()
+
+                .filter((entry) -> entry.getItems().stream()
+
+                        .filter((item) -> item.getFieldRank() == 1 && item.getRawValue().equals(reference))
+
+                        .count() == 1)
+
+                .findFirst().orElse(null);
+   }
 }

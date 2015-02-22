@@ -1,12 +1,14 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
+import fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.*;
 
-import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -24,8 +26,8 @@ public class DatabaseIntegrityFixer {
     private final List<IntegrityError> integrityErrors;
 
     // Following errors are auto-handled: CONTENT_ITEMS_COUNT_MISMATCH, STRUCTURE_FIELDS_COUNT_MISMATCH
-    // Following errors are not handled yet: CONTENTS_FIELDS_COUNT_MISMATCH, RESOURCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH
-    private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_REFERENCE_NOT_FOUND));
+    // Following errors are not handled yet: CONTENTS_FIELDS_COUNT_MISMATCH, RESOURCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH
+    private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND));
     private static final Set<IntegrityError.ErrorTypeEnum> UNFIXABLE_ERRORS = new HashSet<>(asList(CONTENTS_NOT_FOUND, CONTENTS_ENCRYPTION_NOT_SUPPORTED));
 
 
@@ -98,15 +100,16 @@ public class DatabaseIntegrityFixer {
     private boolean fixIntegrityError(IntegrityError integrityError) {
 
         try {
-            Map<IntegrityError.ErrorInfoEnum, Object> information = integrityError.getInformation();
+            Map<ErrorInfoEnum, Object> information = integrityError.getInformation();
+            DbDto.Topic remoteTopic = (DbDto.Topic) information.get(ErrorInfoEnum.REMOTE_TOPIC);
+            String reference = (String) information.get(ErrorInfoEnum.REFERENCE);
 
             switch(integrityError.getErrorTypeEnum()) {
                 case RESOURCE_REFERENCE_NOT_FOUND:
-                    DbDto.Topic remoteTopic = (DbDto.Topic) information.get(REMOTE_TOPIC);
-                    DbResourceDto.Locale locale = (DbResourceDto.Locale) information.get(LOCALE);
-                    String reference = (String) information.get(REFERENCE);
-
-                    fixResourceReference(reference, remoteTopic, locale);
+                    fixResourceReference(reference, remoteTopic, (DbResourceDto.Locale) information.get(ErrorInfoEnum.LOCALE));
+                    break;
+                case CONTENTS_REFERENCE_NOT_FOUND:
+                    fixContentsReference(reference, remoteTopic);
                     break;
                 default:
                     throw new IllegalArgumentException("Integrity error type not handled yet: " + integrityError.getErrorTypeEnum());
@@ -136,8 +139,79 @@ public class DatabaseIntegrityFixer {
                 .withValue(RESOURCE_REF_DEFAULT)
                 .build();
 
-        //TODO check if adding at the end is enough
         resourceDto.getEntries().add(newEntry);
+    }
+
+    private void fixContentsReference(String reference, DbDto.Topic topic) {
+
+        DbDataDto dataDto = this.dbDtos.stream()
+
+                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
+
+                .findFirst().get().getData();
+
+        List<DbDataDto.Item> newItems = buildDefaultItems(reference, topic);
+
+        DbDataDto.Entry newEntry = DbDataDto.Entry.builder()
+                .forId(dataDto.getEntries().size())
+                .addItems(newItems)
+                .build();
+
+        dataDto.getEntries().add(newEntry);
+    }
+
+    private List<DbDataDto.Item> buildDefaultItems(String reference, DbDto.Topic topic) {
+        return this.dbDtos.stream()
+
+                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
+
+                .findFirst().get().getStructure().getFields().stream()
+
+                    .map((field) -> buildDefaultItem(field, reference))
+
+                    .collect(toList());
+    }
+
+    private DbDataDto.Item buildDefaultItem(DbStructureDto.Field field, String reference) {
+
+        String rawValue;
+
+        switch (field.getFieldType()) {
+            case UID:
+                rawValue = reference;
+                break;
+            case BITFIELD:
+                rawValue = "00000000";
+                break;
+            case FLOAT:
+                rawValue = "0.0";
+                break;
+            case INTEGER:
+                rawValue = "0";
+                break;
+            case PERCENT:
+                rawValue = "1";
+                break;
+            case REFERENCE:
+                // TODO fix missing reference afterwards - should not exist
+                rawValue = "999999";
+                break;
+            case RESOURCE_CURRENT:
+            case RESOURCE_CURRENT_AGAIN:
+            case RESOURCE_REMOTE:
+                // TODO fix missing reference afterwards - should not exist
+                rawValue = "999999";
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unhandled field type: " + field.getFieldType());
+        }
+
+        return DbDataDto.Item.builder()
+                .forName(field.getName())
+                .ofFieldRank(field.getRank())
+                .withRawValue(rawValue)
+                .build();
     }
 
     private static void checkRequirements(List<DbDto> dbDtos, List<IntegrityError> integrityErrors) {

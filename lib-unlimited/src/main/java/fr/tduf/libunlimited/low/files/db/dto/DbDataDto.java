@@ -74,6 +74,10 @@ public class DbDataDto implements Serializable {
             return items;
         }
 
+        public long getId() {
+            return id;
+        }
+
         @Override
         public boolean equals(Object o) {
             return reflectionEquals(this, o, false);
