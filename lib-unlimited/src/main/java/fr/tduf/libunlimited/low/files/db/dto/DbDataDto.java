@@ -158,6 +158,13 @@ public class DbDataDto implements Serializable {
             };
         }
 
+        /**
+         * Increases field rank by one unit.
+         */
+        public void shiftFieldRankRight() {
+            this.fieldRank++;
+        }
+
         public String getName() {
             return name;
         }
