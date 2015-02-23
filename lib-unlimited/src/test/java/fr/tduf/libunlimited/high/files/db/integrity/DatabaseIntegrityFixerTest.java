@@ -7,6 +7,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -244,6 +245,35 @@ public class DatabaseIntegrityFixerTest {
         assertThat(item2.getRawValue()).isEqualTo("100");
     }
 
+    @Test
+    @Ignore
+    public void fixAllContentsObjects_whenOneError_asResourceNotFound_shouldBuildMissingLocale() {
+        // GIVEN
+        List<DbDto> dbDtos = createDefaultDatabaseObjects();
+
+        HashMap<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+        info.put(SOURCE_TOPIC, Topic.ACHIEVEMENTS);
+        info.put(FILE, "./TDU_Achievements.fr");
+        info.put(LOCALE, Locale.ITALY);
+
+        List<IntegrityError> integrityErrors = asList(IntegrityError.builder().ofType(RESOURCE_NOT_FOUND).addInformations(info).build());
+
+
+        // WHEN
+        DatabaseIntegrityFixer integrityFixer = DatabaseIntegrityFixer.load(dbDtos, integrityErrors);
+        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects();
+        List<DbDto> fixedDatabaseObjects = integrityFixer.getFixedDbDtos();
+
+
+        // THEN
+        assertThat(actualRemainingErrors).isEmpty();
+
+        assertThat(fixedDatabaseObjects).isNotEmpty();
+
+        DbResourceDto.Entry actualResourceEntry = searchResourceEntry("000", Topic.ACHIEVEMENTS, Locale.ITALY, fixedDatabaseObjects);
+        assertThat(actualResourceEntry.getValue()).isEqualTo("TDUF TEST");
+    }
+
     private static List<DbDto> createDefaultDatabaseObjects() {
         List<DbDto> dbDtos = new ArrayList<>();
         dbDtos.add(createDefaultDatabaseObject());
@@ -331,6 +361,10 @@ public class DatabaseIntegrityFixerTest {
     private static DbResourceDto createDefaultResourceObject() {
         return DbResourceDto.builder()
                 .withLocale(Locale.FRANCE)
+                .addEntry(DbResourceDto.Entry.builder()
+                        .forReference("000")
+                        .withValue("TDUF TEST")
+                        .build())
                 .build();
     }
 

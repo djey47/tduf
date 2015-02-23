@@ -198,6 +198,10 @@ public class DbResourceDto implements Serializable {
         };
     }
 
+    public DbResourceDto copyAsNewLocale(Locale missingLocale) {
+        return null;
+    }
+
     public Locale getLocale() {
         return locale;
     }

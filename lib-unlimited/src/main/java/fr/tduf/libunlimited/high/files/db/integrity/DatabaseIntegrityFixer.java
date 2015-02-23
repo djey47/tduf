@@ -105,6 +105,7 @@ public class DatabaseIntegrityFixer {
             DbDto.Topic remoteTopic = (DbDto.Topic) information.get(ErrorInfoEnum.REMOTE_TOPIC);
             String reference = (String) information.get(ErrorInfoEnum.REFERENCE);
             Long entryIdentifier = (Long) information.get(ErrorInfoEnum.ENTRY_ID);
+            DbResourceDto.Locale locale = (DbResourceDto.Locale) information.get(ErrorInfoEnum.LOCALE);
 
             switch(integrityError.getErrorTypeEnum()) {
                 case RESOURCE_REFERENCE_NOT_FOUND:
@@ -116,6 +117,9 @@ public class DatabaseIntegrityFixer {
                 case CONTENTS_FIELDS_COUNT_MISMATCH:
                     fixContentsFields(entryIdentifier, sourceTopic);
                     break;
+                case RESOURCE_NOT_FOUND:
+                    fixResourceLocale(locale, sourceTopic);
+                    break;
                 default:
                     throw new IllegalArgumentException("Kind of integrity error not handled yet: " + integrityError.getErrorTypeEnum());
             }
@@ -125,6 +129,26 @@ public class DatabaseIntegrityFixer {
         }
 
         return true;
+    }
+
+    private void fixResourceLocale(DbResourceDto.Locale missingLocale, DbDto.Topic topic) {
+        // Duplicate US locale by default
+        // TODO what if RESOURCE_ITEMS_COUNT_MISMATCH on US locale ?
+        // TODO what if US locale not found ?
+        DbDto topicObject = this.dbDtos.stream()
+
+                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
+
+                .findFirst().get();
+
+        DbResourceDto referenceResourceObject = topicObject.getResources().stream()
+
+                    .filter((resourceObject) -> resourceObject.getLocale() == DbResourceDto.Locale.UNITED_STATES)
+
+                    .findFirst().get();
+
+        // TODO use Builder instead
+        topicObject.getResources().add(referenceResourceObject.copyAsNewLocale(missingLocale));
     }
 
     private void fixContentsFields(long entryIdentifier, DbDto.Topic topic) {
