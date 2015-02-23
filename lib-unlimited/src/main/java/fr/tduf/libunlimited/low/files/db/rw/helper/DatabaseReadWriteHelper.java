@@ -12,8 +12,8 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
-import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.FILE;
-import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
+import static com.google.common.io.Files.getFileExtension;
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -138,9 +138,11 @@ public class DatabaseReadWriteHelper {
                 .filter((entry) -> entry.getValue().isEmpty())
 
                 .map((entry) -> {
+                    String resourceFileExtension = getFileExtension(entry.getKey());
                     Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
                     info.put(SOURCE_TOPIC, topic);
                     info.put(FILE, entry.getKey());
+                    info.put(LOCALE, DbResourceDto.Locale.fromCode(resourceFileExtension));
 
                     return IntegrityError.builder()
                             .ofType(IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND)
