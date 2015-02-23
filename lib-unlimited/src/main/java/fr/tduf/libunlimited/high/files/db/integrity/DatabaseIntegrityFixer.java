@@ -26,8 +26,8 @@ public class DatabaseIntegrityFixer {
     private final List<IntegrityError> integrityErrors;
 
     // Following errors are auto-handled: CONTENT_ITEMS_COUNT_MISMATCH, STRUCTURE_FIELDS_COUNT_MISMATCH
-    // Following errors are not handled yet: CONTENTS_FIELDS_COUNT_MISMATCH, RESOURCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH
-    private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND));
+    // Following errors are not handled yet:  RESOURCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH
+    private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND, CONTENTS_FIELDS_COUNT_MISMATCH));
     private static final Set<IntegrityError.ErrorTypeEnum> UNFIXABLE_ERRORS = new HashSet<>(asList(CONTENTS_NOT_FOUND, CONTENTS_ENCRYPTION_NOT_SUPPORTED));
 
 
@@ -101,8 +101,10 @@ public class DatabaseIntegrityFixer {
 
         try {
             Map<ErrorInfoEnum, Object> information = integrityError.getInformation();
+            DbDto.Topic sourceTopic = (DbDto.Topic) information.get(ErrorInfoEnum.SOURCE_TOPIC);
             DbDto.Topic remoteTopic = (DbDto.Topic) information.get(ErrorInfoEnum.REMOTE_TOPIC);
             String reference = (String) information.get(ErrorInfoEnum.REFERENCE);
+            Long entryIdentifier = (Long) information.get(ErrorInfoEnum.ENTRY_ID);
 
             switch(integrityError.getErrorTypeEnum()) {
                 case RESOURCE_REFERENCE_NOT_FOUND:
@@ -111,8 +113,11 @@ public class DatabaseIntegrityFixer {
                 case CONTENTS_REFERENCE_NOT_FOUND:
                     fixContentsReference(reference, remoteTopic);
                     break;
+                case CONTENTS_FIELDS_COUNT_MISMATCH:
+                    fixContentsFields(entryIdentifier, sourceTopic);
+                    break;
                 default:
-                    throw new IllegalArgumentException("Integrity error type not handled yet: " + integrityError.getErrorTypeEnum());
+                    throw new IllegalArgumentException("Kind of integrity error not handled yet: " + integrityError.getErrorTypeEnum());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -120,6 +125,50 @@ public class DatabaseIntegrityFixer {
         }
 
         return true;
+    }
+
+    private void fixContentsFields(long entryIdentifier, DbDto.Topic topic) {
+
+        DbDataDto.Entry invalidEntry = this.dbDtos.stream()
+
+                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
+
+                .findFirst().get().getData().getEntries().stream()
+
+                    .filter((entry) -> entry.getId() == entryIdentifier)
+
+                    .findFirst().get();
+
+        // Structure is the reference
+        DbStructureDto structureObject = this.dbDtos.stream()
+
+                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
+
+                .findFirst().get().getStructure();
+
+        structureObject.getFields().stream()
+
+                .filter((field) -> !invalidEntry.getItems().stream()
+
+                        .map(DbDataDto.Item::getName)
+
+                        .collect(toList()).contains(field.getName()))
+
+                .forEach((missingField) -> addContentItem(missingField, invalidEntry));
+    }
+
+    private void addContentItem(DbStructureDto.Field missingField, DbDataDto.Entry invalidEntry) {
+        int newFieldRank = missingField.getRank();
+        List<DbDataDto.Item> items = invalidEntry.getItems();
+
+        // TODO Arbitrary UID ??
+        DbDataDto.Item newItem = buildDefaultItem(missingField, "TDUF-NEWREF");
+        items.add(newFieldRank - 1, newItem);
+
+        // Rank update
+        for (int i = newFieldRank ; i < items.size() ; i++) {
+            items.get(i).shiftFieldRankRight();
+        }
     }
 
     private void fixResourceReference(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
