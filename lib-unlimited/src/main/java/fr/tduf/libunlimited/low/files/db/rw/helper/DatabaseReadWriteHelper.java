@@ -132,22 +132,23 @@ public class DatabaseReadWriteHelper {
     }
 
     private static void checkResourcesLines(Map<String, List<String>> resourcesLinesByFileNames, DbDto.Topic topic, List<IntegrityError> integrityErrors) {
-        resourcesLinesByFileNames.entrySet().stream()
+
+        integrityErrors.addAll(resourcesLinesByFileNames.entrySet().stream()
 
                 .filter((entry) -> entry.getValue().isEmpty())
 
-                .forEach((entry) -> {
+                .map((entry) -> {
                     Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
                     info.put(SOURCE_TOPIC, topic);
                     info.put(FILE, entry.getKey());
 
-                    IntegrityError integrityError = IntegrityError.builder()
+                    return IntegrityError.builder()
                             .ofType(IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND)
                             .addInformations(info)
                             .build();
+                })
 
-                    integrityErrors.add(integrityError);
-                });
+                .collect(toList()));
     }
 
     private static List<List<String>> sortResourcesLinesByCountDescending(Map<String, List<String>> resourcesLinesByFileNames) {
