@@ -203,7 +203,7 @@ public class DatabaseParser {
                     .build());
         }
 
-        checkFieldCountInContents(structure.getFields().size(), items);
+        checkFieldCountInContents(structure, items);
 
         return items;
     }
@@ -313,11 +313,14 @@ public class DatabaseParser {
         }
     }
 
-    private void checkFieldCountInContents(long expectedFieldCount, List<DbDataDto.Item> items) {
+    private void checkFieldCountInContents(DbStructureDto structureObject, List<DbDataDto.Item> items) {
+        int expectedFieldCount = structureObject.getFields().size();
+
         if (expectedFieldCount != items.size()) {
             Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
             info.put(EXPECTED_COUNT, expectedFieldCount);
             info.put(ACTUAL_COUNT, items.size());
+            info.put(SOURCE_TOPIC, structureObject.getTopic());
 
             addIntegrityError(CONTENTS_FIELDS_COUNT_MISMATCH, info);
         }
