@@ -126,7 +126,8 @@ public class IntegrityError {
         PER_LOCALE_COUNT("Per-Locale Count"),
         EXPECTED_COUNT("Expected Count"),
         ACTUAL_COUNT("Actual Count"),
-        FILE("File name");
+        FILE("File name"),
+        ENTRY_ID("Data Entry Identifier");
 
         private final String infoLabel;
 

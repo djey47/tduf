@@ -178,9 +178,11 @@ public class DatabaseParser {
             }
 
             entries.add(DbDataDto.Entry.builder()
-                    .forId(id++)
-                    .addItems(parseContentItems(structure, line))
+                    .forId(id)
+                    .addItems(parseContentItems(structure, line, id))
                     .build());
+
+            id++;
         }
 
         checkContentItemsCount(itemCount, entries);
@@ -190,7 +192,7 @@ public class DatabaseParser {
                 .build();
     }
 
-    private List<DbDataDto.Item> parseContentItems(DbStructureDto structure, String line) {
+    private List<DbDataDto.Item> parseContentItems(DbStructureDto structure, String line, long entryIdentifier) {
         List<DbDataDto.Item> items = new ArrayList<>();
         int fieldIndex = 0;
         for(String itemValue : line.split(VALUE_DELIMITER)) {
@@ -203,7 +205,7 @@ public class DatabaseParser {
                     .build());
         }
 
-        checkFieldCountInContents(structure, items);
+        checkFieldCountInContents(structure, entryIdentifier, items);
 
         return items;
     }
@@ -313,7 +315,7 @@ public class DatabaseParser {
         }
     }
 
-    private void checkFieldCountInContents(DbStructureDto structureObject, List<DbDataDto.Item> items) {
+    private void checkFieldCountInContents(DbStructureDto structureObject, long entryIdentifier, List<DbDataDto.Item> items) {
         int expectedFieldCount = structureObject.getFields().size();
 
         if (expectedFieldCount != items.size()) {
@@ -321,6 +323,7 @@ public class DatabaseParser {
             info.put(EXPECTED_COUNT, expectedFieldCount);
             info.put(ACTUAL_COUNT, items.size());
             info.put(SOURCE_TOPIC, structureObject.getTopic());
+            info.put(ENTRY_ID, entryIdentifier);
 
             addIntegrityError(CONTENTS_FIELDS_COUNT_MISMATCH, info);
         }
