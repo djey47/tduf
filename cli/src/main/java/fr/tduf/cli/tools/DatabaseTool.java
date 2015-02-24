@@ -208,23 +208,27 @@ public class DatabaseTool extends GenericTool {
         System.out.println("-> Now fixing database...");
         DatabaseIntegrityFixer databaseIntegrityFixer = DatabaseIntegrityFixer.load(databaseObjects, integrityErrors);
         List<IntegrityError> remainingIntegrityErrors = databaseIntegrityFixer.fixAllContentsObjects();
+        List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getFixedDbDtos();
 
         printIntegrityErrors(remainingIntegrityErrors);
 
-        System.out.println("-> Now writing database to " + this.outputDatabaseDirectory + "...");
-        System.out.println();
+        if(fixedDatabaseObjects.isEmpty()) {
+            System.out.println("ERROR! Unrecoverable integrity errors spotted. Consider restoring TDU database from backup.");
+        } else {
+            System.out.println("-> Now writing database to " + this.outputDatabaseDirectory + "...");
+            System.out.println();
 
-        List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getFixedDbDtos();
-        createDirectoryIfNotExists(this.outputDatabaseDirectory);
+            createDirectoryIfNotExists(this.outputDatabaseDirectory);
 
-        for (DbDto databaseObject : fixedDatabaseObjects) {
-            System.out.println("-> Now processing topic: " + databaseObject.getStructure().getTopic() + "...");
+            for (DbDto databaseObject : fixedDatabaseObjects) {
+                System.out.println("-> Now processing topic: " + databaseObject.getStructure().getTopic() + "...");
 
-            writeDatabaseTopic(databaseObject, this.outputDatabaseDirectory);
-        }
+                writeDatabaseTopic(databaseObject, this.outputDatabaseDirectory);
+            }
 
-        if (!remainingIntegrityErrors.isEmpty()) {
-            System.out.println("WARNING! TDU database has been rewritten, but some integrity errors do remain. Your game may not work as expected.");
+            if (!remainingIntegrityErrors.isEmpty()) {
+                System.out.println("WARNING! TDU database has been rewritten, but some integrity errors do remain. Your game may not work as expected.");
+            }
         }
 
         System.out.println("All done.");
