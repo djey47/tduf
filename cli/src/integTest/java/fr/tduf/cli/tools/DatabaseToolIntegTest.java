@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DatabaseToolIntegTest {
 
     @Test
-    public void dumpGenCheckFix_shouldNotThrowError() throws IOException {
+    public void dumpGenCheck_shouldNotThrowError() throws IOException {
 
         String sourceDirectory = "integ-tests/db-encrypted";
         String jsonDirectory = "integ-tests/db-json";
@@ -39,12 +39,37 @@ public class DatabaseToolIntegTest {
         assertDatabaseFilesArePresent(generatedDirectory);
 
 
-        // TODO when fix op ready, do not call check (as fix performs checking)
         // WHEN: check
         System.out.println("-> Check!");
         DatabaseTool.main(new String[]{"check", "-d", generatedDirectory});
 
         // THEN: should not exit with status code 1
+    }
+
+    // TODO provide corrupted files
+    @Test
+    public void dumpGenFix_shouldNotThrowError() throws IOException {
+
+        String sourceDirectory = "integ-tests/db-encrypted";
+        String jsonDirectory = "integ-tests/db-json";
+        String generatedDirectory = "integ-tests/db-generated";
+        String fixedDirectory = "integ-tests/db-fixed";
+
+        // WHEN: dump
+        System.out.println("-> Dump!");
+        DatabaseTool.main(new String[]{"dump", "-d", sourceDirectory, "-j", jsonDirectory});
+
+        // THEN: written json files
+        long jsonFilesCount = getTopicFileCount(jsonDirectory, "json");
+        assertThat(jsonFilesCount).isEqualTo(18);
+
+
+        // WHEN: gen
+        System.out.println("-> Gen!");
+        DatabaseTool.main(new String[]{"gen", "-d", generatedDirectory, "-j", jsonDirectory});
+
+        // THEN: written TDU files
+        assertDatabaseFilesArePresent(generatedDirectory);
 
 
         // WHEN: fix
