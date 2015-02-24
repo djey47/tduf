@@ -26,8 +26,8 @@ public class DatabaseIntegrityFixer {
     private final List<IntegrityError> integrityErrors;
 
     // Following errors are auto-handled: CONTENT_ITEMS_COUNT_MISMATCH, STRUCTURE_FIELDS_COUNT_MISMATCH
-    // Following errors are not handled yet:  RESOURCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH
-    private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND, CONTENTS_FIELDS_COUNT_MISMATCH));
+    // Following errors are not handled yet:  RESOURCE_ITEMS_COUNT_MISMATCH
+    private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_NOT_FOUND, RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND, CONTENTS_FIELDS_COUNT_MISMATCH));
     private static final Set<IntegrityError.ErrorTypeEnum> UNFIXABLE_ERRORS = new HashSet<>(asList(CONTENTS_NOT_FOUND, CONTENTS_ENCRYPTION_NOT_SUPPORTED));
 
 
@@ -143,12 +143,14 @@ public class DatabaseIntegrityFixer {
 
         DbResourceDto referenceResourceObject = topicObject.getResources().stream()
 
-                    .filter((resourceObject) -> resourceObject.getLocale() == DbResourceDto.Locale.UNITED_STATES)
+                .filter((resourceObject) -> resourceObject.getLocale() == DbResourceDto.Locale.UNITED_STATES)
 
-                    .findFirst().get();
+                .findFirst().get();
 
-        // TODO use Builder instead
-        topicObject.getResources().add(referenceResourceObject.copyAsNewLocale(missingLocale));
+        topicObject.getResources().add(DbResourceDto.builder()
+                                        .fromExistingResource(referenceResourceObject)
+                                        .withLocale(missingLocale)
+                                        .build());
     }
 
     private void fixContentsFields(long entryIdentifier, DbDto.Topic topic) {

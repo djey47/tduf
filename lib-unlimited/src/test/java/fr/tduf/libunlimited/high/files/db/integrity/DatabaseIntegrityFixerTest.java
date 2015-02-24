@@ -7,7 +7,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -246,7 +245,6 @@ public class DatabaseIntegrityFixerTest {
     }
 
     @Test
-    @Ignore
     public void fixAllContentsObjects_whenOneError_asResourceNotFound_shouldBuildMissingLocale() {
         // GIVEN
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
@@ -292,7 +290,8 @@ public class DatabaseIntegrityFixerTest {
         return DbDto.builder()
                 .withStructure(createDefaultStructureObject())
                 .withData(createDefaultContentsObject())
-                .addResource(createDefaultResourceObject())
+                .addResource(createDefaultResourceObject(Locale.FRANCE))
+                .addResource(createDefaultResourceObject(Locale.UNITED_STATES))
                 .build();
     }
 
@@ -300,7 +299,7 @@ public class DatabaseIntegrityFixerTest {
         return DbDto.builder()
                 .withStructure(createDefaultStructureObject2())
                 .withData(createDefaultContentsObject())
-                .addResource(createDefaultResourceObject())
+                .addResource(createDefaultResourceObject(Locale.FRANCE))
                 .build();
     }
 
@@ -337,7 +336,7 @@ public class DatabaseIntegrityFixerTest {
         return DbDto.builder()
                 .withStructure(createDefaultStructureObject2())
                 .withData(createContentsObjectWithOneFieldMissing())
-                .addResource(createDefaultResourceObject())
+                .addResource(createDefaultResourceObject(Locale.FRANCE))
                 .build();
     }
 
@@ -358,15 +357,16 @@ public class DatabaseIntegrityFixerTest {
                 .build();
     }
 
-    private static DbResourceDto createDefaultResourceObject() {
+    private static DbResourceDto createDefaultResourceObject(Locale locale) {
         return DbResourceDto.builder()
-                .withLocale(Locale.FRANCE)
+                .withLocale(locale)
                 .addEntry(DbResourceDto.Entry.builder()
                         .forReference("000")
                         .withValue("TDUF TEST")
                         .build())
                 .build();
     }
+
 
     private static DbResourceDto.Entry searchResourceEntry(String reference, Topic topic, Locale locale, List<DbDto> databaseObjects) {
         return databaseObjects.stream()
