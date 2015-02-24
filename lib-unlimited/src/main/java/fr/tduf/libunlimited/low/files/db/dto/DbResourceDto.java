@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -46,6 +47,13 @@ public class DbResourceDto implements Serializable {
             return new EntryBuilder() {
                 private String value;
                 private String reference;
+
+                @Override
+                public EntryBuilder fromExistingEntry(Entry entry) {
+                    this.reference = entry.reference;
+                    this.value = entry.value;
+                    return this;
+                }
 
                 @Override
                 public EntryBuilder forReference(String reference) {
@@ -95,6 +103,8 @@ public class DbResourceDto implements Serializable {
         }
 
         public interface EntryBuilder {
+            EntryBuilder fromExistingEntry(Entry entry);
+
             EntryBuilder forReference(String reference);
 
             EntryBuilder withValue(String value);
@@ -155,6 +165,22 @@ public class DbResourceDto implements Serializable {
             private final List<Entry> entries = new ArrayList<>();
 
             @Override
+            public DbResourceDtoBuilder fromExistingResource(DbResourceDto dbResourceDto) {
+                this.locale = dbResourceDto.locale;
+                this.categoryCount = dbResourceDto.categoryCount;
+                this.version = dbResourceDto.version;
+
+                this.entries.clear();
+                this.entries.addAll(dbResourceDto.entries.stream()
+
+                        .map( (entry) -> Entry.builder().fromExistingEntry(entry).build())
+
+                        .collect(toList()));
+
+                return this;
+            }
+
+            @Override
             public DbResourceDtoBuilder withLocale(Locale locale) {
                 this.locale = locale;
                 return this;
@@ -198,10 +224,6 @@ public class DbResourceDto implements Serializable {
         };
     }
 
-    public DbResourceDto copyAsNewLocale(Locale missingLocale) {
-        return null;
-    }
-
     public Locale getLocale() {
         return locale;
     }
@@ -234,6 +256,8 @@ public class DbResourceDto implements Serializable {
     }
 
     public interface DbResourceDtoBuilder {
+        DbResourceDtoBuilder fromExistingResource(DbResourceDto dbResourceDto);
+
         DbResourceDtoBuilder withLocale(Locale locale);
 
         DbResourceDtoBuilder addEntry(Entry entry);
