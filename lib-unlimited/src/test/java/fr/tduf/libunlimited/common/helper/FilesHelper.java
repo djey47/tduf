@@ -12,13 +12,25 @@ import java.nio.file.Paths;
  */
 public class FilesHelper {
 
+    private static Class<FilesHelper> thisClass = FilesHelper.class;
+
     /**
      * Reads text file at provided resource location.
      * @param resourcePath  : path of resource
      * @return a String with resource file contents.
      */
     public static String readTextFromResourceFile(String resourcePath) throws URISyntaxException, IOException {
-        URI uri = FilesHelper.class.getResource(resourcePath).toURI();
-        return new String(Files.readAllBytes(Paths.get(uri)), Charset.defaultCharset());
+        URI fileUri = thisClass.getResource(resourcePath).toURI();
+        return new String(Files.readAllBytes(Paths.get(fileUri)), Charset.defaultCharset());
+    }
+
+    /**
+     * Reads binary file at provided resource location.
+     * @param resourcePath  : path of resource
+     * @return an array of bytes with resource file contents.
+     */
+    public static byte[] readBytesFromResourceFile(String resourcePath) throws URISyntaxException, IOException {
+        URI fileURI = thisClass.getResource(resourcePath).toURI();
+        return Files.readAllBytes(Paths.get(fileURI));
     }
 }
