@@ -339,10 +339,8 @@ public class DatabaseIntegrityFixer {
                 throw new IllegalArgumentException("Unhandled field type: " + field.getFieldType());
         }
 
-        // TODO add fromStructureField method in builder
         return DbDataDto.Item.builder()
-                .forName(field.getName())
-                .ofFieldRank(field.getRank())
+                .fromStructureField(field)
                 .withRawValue(rawValue)
                 .build();
     }

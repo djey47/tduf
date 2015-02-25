@@ -126,6 +126,13 @@ public class DbDataDto implements Serializable {
                 private String raw;
 
                 @Override
+                public ItemBuilder fromStructureField(DbStructureDto.Field field) {
+                    this.fieldRank = field.getRank();
+                    this.name = field.getName();
+                    return this;
+                }
+
+                @Override
                 public ItemBuilder forName(String name) {
                     this.name = name;
                     return this;
@@ -193,6 +200,8 @@ public class DbDataDto implements Serializable {
         }
 
         public interface ItemBuilder {
+            ItemBuilder fromStructureField(DbStructureDto.Field field);
+
             ItemBuilder forName(String name);
 
             ItemBuilder withRawValue(String singleValue);
