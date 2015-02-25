@@ -323,8 +323,8 @@ public class DatabaseIntegrityFixer {
                 break;
             case REFERENCE:
                 // TODO fix missing reference afterwards - should not exist
-                // TODO generate unique entry identifier
-                rawValue = "999999";
+                // FIXME should have remote structure and contents ....
+                rawValue = generateUniqueEntryIdentifier(1, contentsObject);
                 break;
             case RESOURCE_CURRENT:
             case RESOURCE_CURRENT_AGAIN:
@@ -347,6 +347,7 @@ public class DatabaseIntegrityFixer {
     private static String generateUniqueEntryIdentifier(int identifierFieldRank, DbDataDto contentsObject) {
 
         // TODO Extract to support module ?
+        // FIXME issue when field rank broken (missing fields) - do not rely on field rank for identifier (use a boolean on entry item)
         Set<String> existingEntryRefs = contentsObject.getEntries().stream()
 
                 .map((entry) -> entry.getItems().stream()
@@ -357,6 +358,7 @@ public class DatabaseIntegrityFixer {
 
                 .collect(toSet());
 
+        // TODO refactor
         String generatedRef = null;
         while(generatedRef == null || existingEntryRefs.contains(generatedRef)) {
             double min  = 0;

@@ -192,7 +192,7 @@ public class DatabaseIntegrityFixerTest {
         DbDataDto.Entry createdEntry = allEntries.get(0);
         assertThat(createdEntry.getId()).isEqualTo(0);
 
-        assertThat(createdEntry.getItems()).hasSize(2);
+        assertThat(createdEntry.getItems()).hasSize(3);
 
         DbDataDto.Item item1 = createdEntry.getItems().get(0);
         assertThat(item1.getName()).isEqualTo("ID");
@@ -208,10 +208,10 @@ public class DatabaseIntegrityFixerTest {
     @Test
     public void fixAllContentsObjects_whenOneError_asContentsFieldsCountMismatch_shouldInsertMissingField() {
         // GIVEN
-        List<DbDto> dbDtos = createDatabaseObjectsWithDataEntryOneFieldMissing();
+        List<DbDto> dbDtos = createDatabaseObjectsWithDataEntryTwoFieldsMissing();
 
         HashMap<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
-        info.put(EXPECTED_COUNT, 2);
+        info.put(EXPECTED_COUNT, 3);
         info.put(ACTUAL_COUNT, 1);
         info.put(SOURCE_TOPIC, Topic.AFTER_MARKET_PACKS);
         info.put(ENTRY_ID, 0L);
@@ -235,7 +235,7 @@ public class DatabaseIntegrityFixerTest {
         assertThat(createdEntry).isNotNull();
         assertThat(createdEntry.getId()).isEqualTo(0);
 
-        assertThat(createdEntry.getItems()).hasSize(2);
+        assertThat(createdEntry.getItems()).hasSize(3);
 
         DbDataDto.Item item1 = createdEntry.getItems().get(0);
         assertThat(item1.getName()).isEqualTo("ID");
@@ -315,10 +315,10 @@ public class DatabaseIntegrityFixerTest {
         return dbDtos;
     }
 
-    private static List<DbDto> createDatabaseObjectsWithDataEntryOneFieldMissing() {
+    private static List<DbDto> createDatabaseObjectsWithDataEntryTwoFieldsMissing() {
         List<DbDto> dbDtos = new ArrayList<>();
         dbDtos.add(createDefaultDatabaseObject());
-        dbDtos.add(createDatabaseObjectWithOneContentsFieldMissing());
+        dbDtos.add(createDatabaseObjectWithTwoContentsFieldsMissing());
         return dbDtos;
     }
 
@@ -346,10 +346,10 @@ public class DatabaseIntegrityFixerTest {
                 .build();
     }
 
-    private static DbDto createDatabaseObjectWithOneContentsFieldMissing() {
+    private static DbDto createDatabaseObjectWithTwoContentsFieldsMissing() {
         return DbDto.builder()
                 .withStructure(createDefaultStructureObject2())
-                .withData(createContentsObjectWithOneFieldMissing())
+                .withData(createContentsObjectWithTwoFieldsMissing())
                 .addResource(createResourceObjectWithOneResourceEntry(Locale.FRANCE))
                 .build();
     }
@@ -390,6 +390,11 @@ public class DatabaseIntegrityFixerTest {
                         .fromType(DbStructureDto.FieldType.INTEGER)
                         .ofRank(2)
                         .build())
+                .addItem(DbStructureDto.Field.builder()
+                        .forName("RemoteRef")
+                        .fromType(DbStructureDto.FieldType.REFERENCE)
+                        .ofRank(3)
+                        .build())
                 .build();
     }
 
@@ -398,7 +403,8 @@ public class DatabaseIntegrityFixerTest {
                 .build();
     }
 
-    private static DbDataDto createContentsObjectWithOneFieldMissing() {
+    private static DbDataDto createContentsObjectWithTwoFieldsMissing() {
+        // Missing: Field 1 = ID, Field 3 = RemoteRef
         return DbDataDto.builder()
                 .addEntry(DbDataDto.Entry.builder()
                         .addItem(DbDataDto.Item.builder()
