@@ -16,6 +16,7 @@ import static net.sf.json.test.JSONAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
+//FIXME https://github.com/joel-costigliola/assertj-core/issues/293
 public class DataStoreTest {
 
     private final DataStore dataStore = new DataStore();
@@ -59,7 +60,6 @@ public class DataStoreTest {
 
         // THEN
         DataStore.Entry actualEntry = dataStore.getStore().get("f1");
-        //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
         assertThat(actualEntry.getRawValue()).isEqualTo(expectedRawValue);
         assertThat(actualEntry.getType()).isEqualTo(UNKNOWN);
     }
@@ -152,7 +152,6 @@ public class DataStoreTest {
         dataStore.addRepeatedRawValue("repeater", "f1", 0, expectedRawValue);
 
         // THEN
-        //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
         DataStore.Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
         assertThat(actualEntry.getRawValue()).isEqualTo(expectedRawValue);
         assertThat(actualEntry.getType()).isEqualTo(UNKNOWN);
@@ -165,7 +164,6 @@ public class DataStoreTest {
 
         // THEN
         DataStore.Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
-        //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
         assertThat(actualEntry.getRawValue()).isEqualTo("v1".getBytes());
         assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.TEXT);
     }
@@ -180,7 +178,6 @@ public class DataStoreTest {
 
         // THEN
         DataStore.Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
-        //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
         assertThat(actualEntry.getRawValue()).isEqualTo(expectedBytes);
         assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.INTEGER);
     }
@@ -195,7 +192,6 @@ public class DataStoreTest {
 
         // THEN
         DataStore.Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
-        //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
         assertThat(actualEntry.getRawValue()).isEqualTo(expectedBytes);
         assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.FPOINT);
     }
