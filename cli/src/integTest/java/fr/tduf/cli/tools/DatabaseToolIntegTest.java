@@ -14,13 +14,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DatabaseToolIntegTest {
 
+    private String sourceDirectory = "integ-tests/db-encrypted";
+    private String jsonDirectory = "integ-tests/db-json";
+    private String generatedDirectory = "integ-tests/db-generated";
+
     @Test
     public void dumpGenCheck_shouldNotThrowError() throws IOException {
-
-        String sourceDirectory = "integ-tests/db-encrypted";
-        String jsonDirectory = "integ-tests/db-json";
-        String generatedDirectory = "integ-tests/db-generated";
-        String fixedDirectory = "integ-tests/db-fixed";
 
         // WHEN: dump
         System.out.println("-> Dump!");
@@ -50,9 +49,6 @@ public class DatabaseToolIntegTest {
     @Test
     public void dumpGenFix_shouldNotThrowError() throws IOException {
 
-        String sourceDirectory = "integ-tests/db-encrypted";
-        String jsonDirectory = "integ-tests/db-json";
-        String generatedDirectory = "integ-tests/db-generated";
         String fixedDirectory = "integ-tests/db-fixed";
 
         // WHEN: dump
