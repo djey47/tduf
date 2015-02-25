@@ -1,0 +1,7 @@
+sizeIndicator	<INTEGER: 4 bytes>	0x[00 00 00 03]	3
+repeater	<REPEATER>	>>
+repeater[0].number	<INTEGER: 4 bytes>	0x[00 00 00 01]	1
+repeater[1].number	<INTEGER: 4 bytes>	0x[00 00 00 02]	2
+repeater[2].number	<INTEGER: 4 bytes>	0x[00 00 00 03]	3
+<< repeater	<REPEATER: 3 items>
+aValue	<TEXT: 10 bytes>	0x[41 42 43 44 45 46 47 48 49 4A]	"ABCDEFGHIJ"
