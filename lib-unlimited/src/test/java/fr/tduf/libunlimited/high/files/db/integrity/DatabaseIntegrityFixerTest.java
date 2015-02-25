@@ -187,8 +187,9 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        DbDataDto.Entry createdEntry = searchContentsEntry("001", Topic.AFTER_MARKET_PACKS, fixedDatabaseObjects);
-        assertThat(createdEntry).isNotNull();
+        List<DbDataDto.Entry> allEntries = searchContentsEntries(Topic.AFTER_MARKET_PACKS, fixedDatabaseObjects);
+        assertThat(allEntries).hasSize(1);
+        DbDataDto.Entry createdEntry = allEntries.get(0);
         assertThat(createdEntry.getId()).isEqualTo(0);
 
         assertThat(createdEntry.getItems()).hasSize(2);
@@ -196,7 +197,7 @@ public class DatabaseIntegrityFixerTest {
         DbDataDto.Item item1 = createdEntry.getItems().get(0);
         assertThat(item1.getName()).isEqualTo("ID");
         assertThat(item1.getFieldRank()).isEqualTo(1);
-        assertThat(item1.getRawValue()).isEqualTo("001");
+        assertThat(item1.getRawValue()).hasSize(8);
 
         DbDataDto.Item item2 = createdEntry.getItems().get(1);
         assertThat(item2.getName()).isEqualTo("Val1");
@@ -228,7 +229,9 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        DbDataDto.Entry createdEntry = searchContentsEntry("TDUF-NEWREF", Topic.AFTER_MARKET_PACKS, fixedDatabaseObjects);
+        List<DbDataDto.Entry> allEntries = searchContentsEntries(Topic.AFTER_MARKET_PACKS, fixedDatabaseObjects);
+        assertThat(allEntries).hasSize(1);
+        DbDataDto.Entry createdEntry = allEntries.get(0);
         assertThat(createdEntry).isNotNull();
         assertThat(createdEntry.getId()).isEqualTo(0);
 
@@ -237,7 +240,7 @@ public class DatabaseIntegrityFixerTest {
         DbDataDto.Item item1 = createdEntry.getItems().get(0);
         assertThat(item1.getName()).isEqualTo("ID");
         assertThat(item1.getFieldRank()).isEqualTo(1);
-        assertThat(item1.getRawValue()).isEqualTo("TDUF-NEWREF");
+        assertThat(item1.getRawValue()).hasSize(8);
 
         DbDataDto.Item item2 = createdEntry.getItems().get(1);
         assertThat(item2.getName()).isEqualTo("Val1");
@@ -423,7 +426,6 @@ public class DatabaseIntegrityFixerTest {
                 .build();
     }
 
-
     private static DbResourceDto.Entry searchResourceEntry(String reference, Topic topic, Locale locale, List<DbDto> databaseObjects) {
         return databaseObjects.stream()
 
@@ -440,19 +442,11 @@ public class DatabaseIntegrityFixerTest {
                 .findFirst().orElse(null);
     }
 
-    private static DbDataDto.Entry searchContentsEntry(String reference, Topic topic, List<DbDto> databaseObjects) {
+    private static List<DbDataDto.Entry> searchContentsEntries(Topic topic, List<DbDto> databaseObjects) {
         return databaseObjects.stream()
 
                 .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
 
-                .findFirst().get().getData().getEntries().stream()
-
-                .filter((entry) -> entry.getItems().stream()
-
-                        .filter((item) -> item.getFieldRank() == 1 && item.getRawValue().equals(reference))
-
-                        .count() == 1)
-
-                .findFirst().orElse(null);
+                .findFirst().get().getData().getEntries();
    }
 }

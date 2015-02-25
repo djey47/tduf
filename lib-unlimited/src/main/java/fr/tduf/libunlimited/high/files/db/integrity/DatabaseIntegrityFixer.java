@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -113,7 +114,7 @@ public class DatabaseIntegrityFixer {
                     fixMissingResourceReference(reference, remoteTopic, (DbResourceDto.Locale) information.get(ErrorInfoEnum.LOCALE));
                     break;
                 case CONTENTS_REFERENCE_NOT_FOUND:
-                    fixMissingContentsReference(reference, remoteTopic);
+                    fixMissingContentsReference(remoteTopic);
                     break;
                 case CONTENTS_FIELDS_COUNT_MISMATCH:
                     fixContentsFields(entryIdentifier, sourceTopic);
@@ -190,32 +191,32 @@ public class DatabaseIntegrityFixer {
 
     private void fixContentsFields(long entryIdentifier, DbDto.Topic topic) {
 
-        DbDataDto.Entry invalidEntry = this.dbDtos.stream()
+        DbDto topicObject = this.dbDtos.stream()
 
                 .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
 
-                .findFirst().get().getData().getEntries().stream()
+                .findFirst().get();
+
+        DbDataDto contentsObject = topicObject.getData();
+
+        DbDataDto.Entry invalidEntry = contentsObject.getEntries().stream()
 
                     .filter((entry) -> entry.getId() == entryIdentifier)
 
                     .findFirst().get();
 
         // Structure is the reference
-        DbStructureDto structureObject = this.dbDtos.stream()
+        topicObject.getStructure().getFields().stream()
 
-                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
-
-                .findFirst().get().getStructure();
-
-        structureObject.getFields().stream()
-
-                .filter((field) -> !invalidEntry.getItems().stream()
+                .filter((field) -> invalidEntry.getItems().stream()
 
                         .map(DbDataDto.Item::getName)
 
-                        .collect(toList()).contains(field.getName()))
+                        .filter((name) -> name.equals(field.getName()))
 
-                .forEach((missingField) -> addContentItem(missingField, invalidEntry));
+                        .count() == 0)
+
+                .forEach((missingField) -> addContentItem(missingField, invalidEntry, contentsObject));
     }
 
     private static void addMissingResourceEntries(DbResourceDto corruptedResourceObject, DbResourceDto referenceResourceObject) {
@@ -239,12 +240,12 @@ public class DatabaseIntegrityFixer {
         corruptedResourceObject.getEntries().addAll(newResourceEntries);
     }
 
-    private static void addContentItem(DbStructureDto.Field missingField, DbDataDto.Entry invalidEntry) {
+    private static void addContentItem(DbStructureDto.Field missingField, DbDataDto.Entry invalidEntry, DbDataDto contentsObject) {
         int newFieldRank = missingField.getRank();
         List<DbDataDto.Item> items = invalidEntry.getItems();
 
         // TODO Arbitrary UID ??
-        DbDataDto.Item newItem = buildDefaultItem(missingField, "TDUF-NEWREF");
+        DbDataDto.Item newItem = buildDefaultContentItem(missingField, contentsObject);
         items.add(newFieldRank - 1, newItem);
 
         // Rank update
@@ -273,15 +274,17 @@ public class DatabaseIntegrityFixer {
         resourceDto.getEntries().add(newEntry);
     }
 
-    private void fixMissingContentsReference(String reference, DbDto.Topic topic) {
+    private void fixMissingContentsReference(DbDto.Topic topic) {
 
-        DbDataDto dataDto = this.dbDtos.stream()
+        DbDto topicObject = this.dbDtos.stream()
 
                 .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
 
-                .findFirst().get().getData();
+                .findFirst().get();
 
-        List<DbDataDto.Item> newItems = buildDefaultItems(reference, topic);
+        DbDataDto dataDto = topicObject.getData();
+
+        List<DbDataDto.Item> newItems = buildDefaultContentItems(topicObject);
 
         DbDataDto.Entry newEntry = DbDataDto.Entry.builder()
                 .forId(dataDto.getEntries().size())
@@ -291,25 +294,21 @@ public class DatabaseIntegrityFixer {
         dataDto.getEntries().add(newEntry);
     }
 
-    private List<DbDataDto.Item> buildDefaultItems(String reference, DbDto.Topic topic) {
-        return this.dbDtos.stream()
+    private List<DbDataDto.Item> buildDefaultContentItems(DbDto topicObject) {
+        return topicObject.getStructure().getFields().stream()
 
-                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
-
-                .findFirst().get().getStructure().getFields().stream()
-
-                    .map((field) -> buildDefaultItem(field, reference))
+                    .map((structureField) -> buildDefaultContentItem(structureField, topicObject.getData()))
 
                     .collect(toList());
     }
 
-    private static DbDataDto.Item buildDefaultItem(DbStructureDto.Field field, String reference) {
+    private static DbDataDto.Item buildDefaultContentItem(DbStructureDto.Field field, DbDataDto contentsObject) {
 
         String rawValue;
 
         switch (field.getFieldType()) {
             case UID:
-                rawValue = reference;
+                rawValue = generateUniqueEntryIdentifier(field.getRank(), contentsObject);
                 break;
             case BITFIELD:
                 rawValue = "00000000";
@@ -325,12 +324,14 @@ public class DatabaseIntegrityFixer {
                 break;
             case REFERENCE:
                 // TODO fix missing reference afterwards - should not exist
+                // TODO generate unique entry identifier
                 rawValue = "999999";
                 break;
             case RESOURCE_CURRENT:
             case RESOURCE_CURRENT_AGAIN:
             case RESOURCE_REMOTE:
                 // TODO fix missing reference afterwards - should not exist
+                // TODO generate unique entry identifier
                 rawValue = "999999";
                 break;
 
@@ -338,6 +339,7 @@ public class DatabaseIntegrityFixer {
                 throw new IllegalArgumentException("Unhandled field type: " + field.getFieldType());
         }
 
+        // TODO add fromStructureField method in builder
         return DbDataDto.Item.builder()
                 .forName(field.getName())
                 .ofFieldRank(field.getRank())
@@ -345,9 +347,47 @@ public class DatabaseIntegrityFixer {
                 .build();
     }
 
+    private static String generateUniqueEntryIdentifier(int identifierFieldRank, DbDataDto contentsObject) {
+
+        // TODO Extract to support module ?
+        Set<String> existingEntryRefs = contentsObject.getEntries().stream()
+
+                .map((entry) -> entry.getItems().stream()
+
+                        .filter((item) -> item.getFieldRank() == identifierFieldRank)
+
+                        .findAny().get().getRawValue())
+
+                .collect(toSet());
+
+        String generatedRef = null;
+        while(generatedRef == null || existingEntryRefs.contains(generatedRef)) {
+            double min  = 0;
+
+            double max = Math.pow(10, 7);
+
+            double id = Math.random() * max + min;
+
+            generatedRef = StringUtils.leftPad(Integer.valueOf((int) id).toString(), 8, '0');
+        }
+
+        return generatedRef;
+    }
+
     private static void checkRequirements(List<DbDto> dbDtos, List<IntegrityError> integrityErrors) {
         requireNonNull(dbDtos, "Database objects to be fixed are required.");
         requireNonNull(integrityErrors, "List of integrity errors is required.");
+    }
+
+    // TODO Extract to support module
+    private static int getIdentifierFieldRank(DbDto topicObject) {
+        return topicObject.getStructure().getFields().stream()
+
+                .filter((field) -> field.getFieldType() == DbStructureDto.FieldType.UID)
+
+                .map(DbStructureDto.Field::getRank)
+
+                .findAny().get();
     }
 
     public List<DbDto> getFixedDbDtos() {
