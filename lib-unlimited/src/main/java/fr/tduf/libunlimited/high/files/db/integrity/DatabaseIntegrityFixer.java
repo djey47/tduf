@@ -244,7 +244,6 @@ public class DatabaseIntegrityFixer {
         int newFieldRank = missingField.getRank();
         List<DbDataDto.Item> items = invalidEntry.getItems();
 
-        // TODO Arbitrary UID ??
         DbDataDto.Item newItem = buildDefaultContentItem(missingField, contentsObject);
         items.add(newFieldRank - 1, newItem);
 
