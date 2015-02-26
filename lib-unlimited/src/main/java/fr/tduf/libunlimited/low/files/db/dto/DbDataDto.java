@@ -108,6 +108,7 @@ public class DbDataDto implements Serializable {
 
     @JsonTypeName("dbEntryItem")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    // TODO add boolean property to indicate if field acts as entry identifier
     public static class Item {
 
         @JsonProperty("name")
