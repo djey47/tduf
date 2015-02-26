@@ -136,7 +136,6 @@ public class DatabaseIntegrityFixer {
         return true;
     }
 
-    // TODO findFirst -> findAny
     private void fixResourceCount(Map<DbResourceDto.Locale, Integer> perLocaleCount, DbDto.Topic topic) {
         // Find locales with the maximum item count
         DbResourceDto.Locale referenceLocale = perLocaleCount.entrySet().stream()
@@ -149,17 +148,18 @@ public class DatabaseIntegrityFixer {
 
         int referenceResourceCount = perLocaleCount.get(referenceLocale);
 
+        // TODO factorize to helper (DatabaseQueryHelper)
         List<DbResourceDto> topicResourceObjects = this.dbDtos.stream()
 
                 .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
 
-                .findFirst().get().getResources();
+                .findAny().get().getResources();
 
         DbResourceDto referenceResourceObject = topicResourceObjects.stream()
 
                     .filter((resourceObject) -> resourceObject.getLocale() == referenceLocale)
 
-                    .findFirst().get();
+                    .findAny().get();
 
         topicResourceObjects.stream()
 
@@ -168,7 +168,6 @@ public class DatabaseIntegrityFixer {
                     .forEach((corruptedResourceObject) -> addMissingResourceEntries(corruptedResourceObject, referenceResourceObject));
     }
 
-    // TODO findFirst->findAny
     private void fixMissingResourceLocale(DbResourceDto.Locale missingLocale, DbDto.Topic topic) {
         // Duplicate US locale by default
         // TODO what if RESOURCE_ITEMS_COUNT_MISMATCH on US locale ?
@@ -177,13 +176,13 @@ public class DatabaseIntegrityFixer {
 
                 .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
 
-                .findFirst().get();
+                .findAny().get();
 
         DbResourceDto referenceResourceObject = topicObject.getResources().stream()
 
                 .filter((resourceObject) -> resourceObject.getLocale() == DbResourceDto.Locale.UNITED_STATES)
 
-                .findFirst().get();
+                .findAny().get();
 
         topicObject.getResources().add(DbResourceDto.builder()
                 .fromExistingResource(referenceResourceObject)
@@ -197,13 +196,13 @@ public class DatabaseIntegrityFixer {
 
                 .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
 
-                .findFirst().get();
+                .findAny().get();
 
         DbDataDto.Entry invalidEntry = topicObject.getData().getEntries().stream()
 
                     .filter((entry) -> entry.getId() == entryIdentifier)
 
-                    .findFirst().get();
+                    .findAny().get();
 
         // Structure is the reference
         topicObject.getStructure().getFields().stream()
@@ -253,18 +252,17 @@ public class DatabaseIntegrityFixer {
         }
     }
 
-    // TODO findFirst -> findAny
     private void addDefaultResourceReference(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
 
         DbResourceDto resourceDto = this.dbDtos.stream()
 
                 .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
 
-                .findFirst().get().getResources().stream()
+                .findAny().get().getResources().stream()
 
                     .filter((resourceObject) -> resourceObject.getLocale() == locale)
 
-                    .findFirst().get();
+                    .findAny().get();
 
         DbResourceDto.Entry newEntry = DbResourceDto.Entry.builder()
                 .forReference(reference)
@@ -280,7 +278,7 @@ public class DatabaseIntegrityFixer {
 
                 .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
 
-                .findFirst().get();
+                .findAny().get();
 
         DbDataDto dataDto = topicObject.getData();
 
@@ -335,7 +333,7 @@ public class DatabaseIntegrityFixer {
                 break;
             case RESOURCE_REMOTE:
                 // TODO fix missing reference afterwards - should not exist
-                // TODO generate unique entry identifier
+                // TODO generate unique entry identifier, should have remote structure and contents ....
                 rawValue = "999999";
                 break;
 
