@@ -173,7 +173,7 @@ public class DatabaseIntegrityFixerTest {
         HashMap<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
         info.put(SOURCE_TOPIC, Topic.ACHIEVEMENTS);
         info.put(REMOTE_TOPIC, Topic.AFTER_MARKET_PACKS);
-        info.put(REFERENCE, "001");
+        info.put(REFERENCE, "11111111");
         List<IntegrityError> integrityErrors = asList(IntegrityError.builder().ofType(CONTENTS_REFERENCE_NOT_FOUND).addInformations(info).build());
 
 
@@ -198,7 +198,7 @@ public class DatabaseIntegrityFixerTest {
         DbDataDto.Item item1 = createdEntry.getItems().get(0);
         assertThat(item1.getName()).isEqualTo("ID");
         assertThat(item1.getFieldRank()).isEqualTo(1);
-        assertThat(item1.getRawValue()).hasSize(8);
+        assertThat(item1.getRawValue()).isEqualTo("11111111");
 
         DbDataDto.Item item2 = createdEntry.getItems().get(1);
         assertThat(item2.getName()).isEqualTo("Val1");
