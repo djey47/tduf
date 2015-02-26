@@ -19,6 +19,7 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeE
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
+// TODO add test with multiple errors (fixable, autofixed, unfixable, fix failure)
 public class DatabaseIntegrityFixerTest {
 
     @Test(expected = NullPointerException.class)

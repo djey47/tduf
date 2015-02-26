@@ -1,12 +1,12 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
+import fr.tduf.libunlimited.high.files.db.helper.DatabaseHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.toSet;
  */
 public class DatabaseIntegrityFixer {
 
-    private static final String RESOURCE_REF_DEFAULT = "-FIXED BY TDUF-";
+    private static final String RESOURCE_VALUE_DEFAULT = "-FIXED BY TDUF-";
     private final List<DbDto> dbDtos;
 
     private final List<IntegrityError> integrityErrors;
@@ -111,7 +111,7 @@ public class DatabaseIntegrityFixer {
 
             switch(integrityError.getErrorTypeEnum()) {
                 case RESOURCE_REFERENCE_NOT_FOUND:
-                    fixMissingResourceReference(reference, remoteTopic, (DbResourceDto.Locale) information.get(ErrorInfoEnum.LOCALE));
+                    addDefaultResourceReference(reference, remoteTopic, (DbResourceDto.Locale) information.get(ErrorInfoEnum.LOCALE));
                     break;
                 case CONTENTS_REFERENCE_NOT_FOUND:
                     fixMissingContentsReference(remoteTopic);
@@ -136,6 +136,7 @@ public class DatabaseIntegrityFixer {
         return true;
     }
 
+    // TODO findFirst -> findAny
     private void fixResourceCount(Map<DbResourceDto.Locale, Integer> perLocaleCount, DbDto.Topic topic) {
         // Find locales with the maximum item count
         DbResourceDto.Locale referenceLocale = perLocaleCount.entrySet().stream()
@@ -167,6 +168,7 @@ public class DatabaseIntegrityFixer {
                     .forEach((corruptedResourceObject) -> addMissingResourceEntries(corruptedResourceObject, referenceResourceObject));
     }
 
+    // TODO findFirst->findAny
     private void fixMissingResourceLocale(DbResourceDto.Locale missingLocale, DbDto.Topic topic) {
         // Duplicate US locale by default
         // TODO what if RESOURCE_ITEMS_COUNT_MISMATCH on US locale ?
@@ -197,9 +199,7 @@ public class DatabaseIntegrityFixer {
 
                 .findFirst().get();
 
-        DbDataDto contentsObject = topicObject.getData();
-
-        DbDataDto.Entry invalidEntry = contentsObject.getEntries().stream()
+        DbDataDto.Entry invalidEntry = topicObject.getData().getEntries().stream()
 
                     .filter((entry) -> entry.getId() == entryIdentifier)
 
@@ -216,7 +216,7 @@ public class DatabaseIntegrityFixer {
 
                         .count() == 0)
 
-                .forEach((missingField) -> addContentItem(missingField, invalidEntry, contentsObject));
+                .forEach((missingField) -> addContentItem(missingField, invalidEntry, topicObject));
     }
 
     private static void addMissingResourceEntries(DbResourceDto corruptedResourceObject, DbResourceDto referenceResourceObject) {
@@ -240,11 +240,11 @@ public class DatabaseIntegrityFixer {
         corruptedResourceObject.getEntries().addAll(newResourceEntries);
     }
 
-    private static void addContentItem(DbStructureDto.Field missingField, DbDataDto.Entry invalidEntry, DbDataDto contentsObject) {
+    private void addContentItem(DbStructureDto.Field missingField, DbDataDto.Entry invalidEntry, DbDto topicObject) {
         int newFieldRank = missingField.getRank();
         List<DbDataDto.Item> items = invalidEntry.getItems();
 
-        DbDataDto.Item newItem = buildDefaultContentItem(missingField, contentsObject);
+        DbDataDto.Item newItem = buildDefaultContentItem(missingField, topicObject);
         items.add(newFieldRank - 1, newItem);
 
         // Rank update
@@ -253,7 +253,8 @@ public class DatabaseIntegrityFixer {
         }
     }
 
-    private void fixMissingResourceReference(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
+    // TODO findFirst -> findAny
+    private void addDefaultResourceReference(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
 
         DbResourceDto resourceDto = this.dbDtos.stream()
 
@@ -267,7 +268,7 @@ public class DatabaseIntegrityFixer {
 
         DbResourceDto.Entry newEntry = DbResourceDto.Entry.builder()
                 .forReference(reference)
-                .withValue(RESOURCE_REF_DEFAULT)
+                .withValue(RESOURCE_VALUE_DEFAULT)
                 .build();
 
         resourceDto.getEntries().add(newEntry);
@@ -296,18 +297,19 @@ public class DatabaseIntegrityFixer {
     private List<DbDataDto.Item> buildDefaultContentItems(DbDto topicObject) {
         return topicObject.getStructure().getFields().stream()
 
-                    .map((structureField) -> buildDefaultContentItem(structureField, topicObject.getData()))
+                    .map((structureField) -> buildDefaultContentItem(structureField, topicObject))
 
                     .collect(toList());
     }
 
-    private static DbDataDto.Item buildDefaultContentItem(DbStructureDto.Field field, DbDataDto contentsObject) {
+    private DbDataDto.Item buildDefaultContentItem(DbStructureDto.Field field, DbDto topicObject) {
 
         String rawValue;
 
-        switch (field.getFieldType()) {
+        DbStructureDto.FieldType fieldType = field.getFieldType();
+        switch (fieldType) {
             case UID:
-                rawValue = generateUniqueEntryIdentifier(field.getRank(), contentsObject);
+                rawValue = DatabaseHelper.generateUniqueContentsEntryIdentifier(topicObject);
                 break;
             case BITFIELD:
                 rawValue = "00000000";
@@ -324,10 +326,13 @@ public class DatabaseIntegrityFixer {
             case REFERENCE:
                 // TODO fix missing reference afterwards - should not exist
                 // FIXME should have remote structure and contents ....
-                rawValue = generateUniqueEntryIdentifier(1, contentsObject);
+                rawValue = DatabaseHelper.generateUniqueContentsEntryIdentifier(topicObject);
                 break;
             case RESOURCE_CURRENT:
             case RESOURCE_CURRENT_AGAIN:
+                rawValue = DatabaseHelper.generateUniqueResourceEntryIdentifier(topicObject);
+                addDefaultResourceReferenceForAllLocales(rawValue, topicObject);
+                break;
             case RESOURCE_REMOTE:
                 // TODO fix missing reference afterwards - should not exist
                 // TODO generate unique entry identifier
@@ -335,7 +340,7 @@ public class DatabaseIntegrityFixer {
                 break;
 
             default:
-                throw new IllegalArgumentException("Unhandled field type: " + field.getFieldType());
+                throw new IllegalArgumentException("Unhandled field type: " + fieldType);
         }
 
         return DbDataDto.Item.builder()
@@ -344,49 +349,15 @@ public class DatabaseIntegrityFixer {
                 .build();
     }
 
-    private static String generateUniqueEntryIdentifier(int identifierFieldRank, DbDataDto contentsObject) {
+    private void addDefaultResourceReferenceForAllLocales(String resourceReference, DbDto topicObject) {
+        asList(DbResourceDto.Locale.values()).stream()
 
-        // TODO Extract to support module ?
-        // FIXME issue when field rank broken (missing fields) - do not rely on field rank for identifier (use a boolean on entry item)
-        Set<String> existingEntryRefs = contentsObject.getEntries().stream()
-
-                .map((entry) -> entry.getItems().stream()
-
-                        .filter((item) -> item.getFieldRank() == identifierFieldRank)
-
-                        .findAny().get().getRawValue())
-
-                .collect(toSet());
-
-        // TODO refactor
-        String generatedRef = null;
-        while(generatedRef == null || existingEntryRefs.contains(generatedRef)) {
-            double min  = 0;
-
-            double max = Math.pow(10, 7);
-
-            double id = Math.random() * max + min;
-
-            generatedRef = StringUtils.leftPad(Integer.valueOf((int) id).toString(), 8, '0');
-        }
-
-        return generatedRef;
+                .forEach((locale) -> addDefaultResourceReference(resourceReference, topicObject.getStructure().getTopic(), locale ));
     }
 
     private static void checkRequirements(List<DbDto> dbDtos, List<IntegrityError> integrityErrors) {
         requireNonNull(dbDtos, "Database objects to be fixed are required.");
         requireNonNull(integrityErrors, "List of integrity errors is required.");
-    }
-
-    // TODO Extract to support module
-    private static int getIdentifierFieldRank(DbDto topicObject) {
-        return topicObject.getStructure().getFields().stream()
-
-                .filter((field) -> field.getFieldType() == DbStructureDto.FieldType.UID)
-
-                .map(DbStructureDto.Field::getRank)
-
-                .findAny().get();
     }
 
     public List<DbDto> getFixedDbDtos() {
