@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.miner;
 
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
@@ -40,5 +41,46 @@ public class BulkDatabaseMiner {
                 .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
 
                 .findAny().get().getResources();
+    }
+
+    /**
+     *
+     * @param locale
+     * @param topic
+     * @return
+     */
+    public DbResourceDto getResourceFromTopicAndLocale(DbDto.Topic topic, DbResourceDto.Locale locale) {
+        return getAllResourcesFromTopic(topic).stream()
+
+                .filter((resourceObject) -> resourceObject.getLocale() == locale)
+
+                .findAny().get();
+    }
+
+    /**
+     *
+     * @param topic
+     * @return
+     */
+    public DbDto getDatabaseTopic(DbDto.Topic topic) {
+        return topicObjects.stream()
+
+                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
+
+                .findAny().get();
+    }
+
+    /**
+     *
+     * @param entryInternalIdentifier
+     * @param topic
+     * @return
+     */
+    public DbDataDto.Entry getContentEntryFromTopicWithInternalIdentifier(long entryInternalIdentifier, DbDto.Topic topic) {
+        return getDatabaseTopic(topic).getData().getEntries().stream()
+
+                .filter((entry) -> entry.getId() == entryInternalIdentifier)
+
+                .findAny().get();
     }
 }

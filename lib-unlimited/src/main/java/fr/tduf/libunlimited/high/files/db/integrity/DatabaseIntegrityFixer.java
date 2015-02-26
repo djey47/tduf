@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
 import fr.tduf.libunlimited.high.files.db.helper.DatabaseHelper;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -23,9 +24,10 @@ import static java.util.stream.Collectors.toSet;
 public class DatabaseIntegrityFixer {
 
     private static final String RESOURCE_VALUE_DEFAULT = "-FIXED BY TDUF-";
-    private final List<DbDto> dbDtos;
 
+    private final List<DbDto> dbDtos;
     private final List<IntegrityError> integrityErrors;
+    private final BulkDatabaseMiner bulkDatabaseMiner;
 
     // Following errors are auto-handled: CONTENT_ITEMS_COUNT_MISMATCH, STRUCTURE_FIELDS_COUNT_MISMATCH
     private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH, RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND, CONTENTS_FIELDS_COUNT_MISMATCH));
@@ -34,6 +36,7 @@ public class DatabaseIntegrityFixer {
     private DatabaseIntegrityFixer(List<DbDto> dbDtos, List<IntegrityError> integrityErrors) {
         this.dbDtos = dbDtos;
         this.integrityErrors = integrityErrors;
+        this.bulkDatabaseMiner = BulkDatabaseMiner.load(dbDtos);
     }
 
     /**
@@ -143,18 +146,9 @@ public class DatabaseIntegrityFixer {
 
         int referenceResourceCount = perLocaleCount.get(referenceLocale);
 
-        // TODO factorize to helper (DatabaseQueryHelper)
-        List<DbResourceDto> topicResourceObjects = this.dbDtos.stream()
+        List<DbResourceDto> topicResourceObjects = bulkDatabaseMiner.getAllResourcesFromTopic(topic);
 
-                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
-
-                .findAny().get().getResources();
-
-        DbResourceDto referenceResourceObject = topicResourceObjects.stream()
-
-                    .filter((resourceObject) -> resourceObject.getLocale() == referenceLocale)
-
-                    .findAny().get();
+        DbResourceDto referenceResourceObject = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale);
 
         topicResourceObjects.stream()
 
@@ -164,22 +158,10 @@ public class DatabaseIntegrityFixer {
     }
 
     private void addResourceLocaleFromValidResource(DbResourceDto.Locale missingLocale, DbDto.Topic topic) {
-        // Duplicate US locale by default
         // TODO what if RESOURCE_ITEMS_COUNT_MISMATCH on US locale ?
         // TODO what if US locale not found ?
-        // TODO factorize to helper (DatabaseQueryHelper)
-        DbDto topicObject = this.dbDtos.stream()
-
-                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
-
-                .findAny().get();
-
-        // TODO factorize to helper (DatabaseQueryHelper)
-        DbResourceDto referenceResourceObject = topicObject.getResources().stream()
-
-                .filter((resourceObject) -> resourceObject.getLocale() == DbResourceDto.Locale.UNITED_STATES)
-
-                .findAny().get();
+        DbDto topicObject = bulkDatabaseMiner.getDatabaseTopic(topic);
+        DbResourceDto referenceResourceObject = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, DbResourceDto.Locale.UNITED_STATES);
 
         topicObject.getResources().add(DbResourceDto.builder()
                 .fromExistingResource(referenceResourceObject)
@@ -188,19 +170,9 @@ public class DatabaseIntegrityFixer {
     }
 
     private void addMissingContentsFields(long entryInternalIdentifier, DbDto.Topic topic) {
+        DbDto topicObject = bulkDatabaseMiner.getDatabaseTopic(topic);
 
-        // TODO factorize to helper
-        DbDto topicObject = this.dbDtos.stream()
-
-                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
-
-                .findAny().get();
-
-        DbDataDto.Entry invalidEntry = topicObject.getData().getEntries().stream()
-
-                    .filter((entry) -> entry.getId() == entryInternalIdentifier)
-
-                    .findAny().get();
+        DbDataDto.Entry invalidEntry = bulkDatabaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryInternalIdentifier, topic);
 
         // Structure is the reference
         topicObject.getStructure().getFields().stream()
@@ -238,6 +210,7 @@ public class DatabaseIntegrityFixer {
     }
 
     private void addContentItem(DbStructureDto.Field missingField, DbDataDto.Entry invalidEntry, DbDto topicObject) {
+
         int newFieldRank = missingField.getRank();
         List<DbDataDto.Item> items = invalidEntry.getItems();
 
@@ -252,16 +225,7 @@ public class DatabaseIntegrityFixer {
 
     private void addResourceEntryWithDefaultValue(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
 
-        // TODO factorize to helper (DatabaseQueryHelper)
-        DbResourceDto resourceDto = this.dbDtos.stream()
-
-                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
-
-                .findAny().get().getResources().stream()
-
-                    .filter((resourceObject) -> resourceObject.getLocale() == locale)
-
-                    .findAny().get();
+        DbResourceDto resourceDto = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, locale);
 
         DbResourceDto.Entry newEntry = DbResourceDto.Entry.builder()
                 .forReference(reference)
@@ -273,26 +237,20 @@ public class DatabaseIntegrityFixer {
 
     private void addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {
 
-        // TODO factorize to helper (DatabaseQueryHelper)
-        DbDto topicObject = this.dbDtos.stream()
-
-                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
-
-                .findAny().get();
+        DbDto topicObject = bulkDatabaseMiner.getDatabaseTopic(topic);
 
         DbDataDto dataDto = topicObject.getData();
 
-        List<DbDataDto.Item> newItems = buildDefaultContentItems(reference, topicObject);
-
         DbDataDto.Entry newEntry = DbDataDto.Entry.builder()
                 .forId(dataDto.getEntries().size())
-                .addItems(newItems)
+                .addItems(buildDefaultContentItems(reference, topicObject))
                 .build();
 
         dataDto.getEntries().add(newEntry);
     }
 
     private List<DbDataDto.Item> buildDefaultContentItems(Optional<String> reference, DbDto topicObject) {
+
         return topicObject.getStructure().getFields().stream()
 
                     .map((structureField) -> buildDefaultContentItem(reference, structureField, topicObject))
