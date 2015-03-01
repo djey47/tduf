@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -19,7 +20,6 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeE
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-// TODO add test with multiple errors (fixable, autofixed, unfixable, fix failure)
 public class DatabaseIntegrityFixerTest {
 
     @Test(expected = NullPointerException.class)
@@ -440,26 +440,13 @@ public class DatabaseIntegrityFixerTest {
     }
 
     private static DbResourceDto.Entry searchResourceEntry(String reference, Topic topic, Locale locale, List<DbDto> databaseObjects) {
-        return databaseObjects.stream()
-
-                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
-
-                .findFirst().get().getResources().stream()
-
-                .filter((resourceObject) -> resourceObject.getLocale() == locale)
-
-                .findFirst().get().getEntries().stream()
-
-                .filter((entry) -> entry.getReference().equals(reference))
-
-                .findFirst().orElse(null);
+        return BulkDatabaseMiner.load(databaseObjects)
+                .getResourceEntryFromTopicAndLocaleWithReference(reference, topic, locale);
     }
 
     private static List<DbDataDto.Entry> searchContentsEntries(Topic topic, List<DbDto> databaseObjects) {
-        return databaseObjects.stream()
-
-                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
-
-                .findFirst().get().getData().getEntries();
-   }
+        return BulkDatabaseMiner.load(databaseObjects)
+                .getDatabaseTopic(topic)
+                .getData().getEntries();
+    }
 }
