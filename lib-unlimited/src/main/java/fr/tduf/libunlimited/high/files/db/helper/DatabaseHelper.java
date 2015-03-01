@@ -50,7 +50,6 @@ public class DatabaseHelper {
     }
 
     private static Set<String> extractContentEntryReferences(DbStructureDto.Field identifierField, DbDto topicObject) {
-        // FIXME issue when field rank broken (missing fields) - do not rely on field rank for identifier (use a boolean attribute on entry item)
         return topicObject.getData().getEntries().stream()
 
                     .map((entry) -> entry.getItems().stream()
