@@ -100,4 +100,19 @@ public class BulkDatabaseMiner {
 
                 .findAny().get();
     }
+
+    /**
+     *
+     * @param reference
+     * @param topic
+     * @param locale
+     * @return
+     */
+    public DbResourceDto.Entry getResourceEntryFromTopicAndLocaleWithReference(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
+        return getResourceFromTopicAndLocale(topic, locale).getEntries().stream()
+
+                .filter((entry) -> entry.getReference().equals(reference))
+
+                .findAny().get();
+    }
 }
