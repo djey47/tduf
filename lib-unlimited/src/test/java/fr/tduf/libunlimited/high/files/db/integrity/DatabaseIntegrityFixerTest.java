@@ -204,6 +204,11 @@ public class DatabaseIntegrityFixerTest {
         assertThat(item2.getName()).isEqualTo("Val1");
         assertThat(item2.getFieldRank()).isEqualTo(2);
         assertThat(item2.getRawValue()).isEqualTo("0");
+
+        DbDataDto.Item item3 = createdEntry.getItems().get(2);
+        assertThat(item3.getName()).isEqualTo("RemoteRef");
+        assertThat(item3.getFieldRank()).isEqualTo(3);
+        assertThat(item3.getRawValue()).isNotNull().hasSize(8);
     }
 
     @Test
@@ -395,6 +400,7 @@ public class DatabaseIntegrityFixerTest {
                         .forName("RemoteRef")
                         .fromType(DbStructureDto.FieldType.REFERENCE)
                         .ofRank(3)
+                        .toTargetReference("1")
                         .build())
                 .build();
     }

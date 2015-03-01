@@ -72,6 +72,23 @@ public class BulkDatabaseMiner {
 
     /**
      *
+     * @param topicReference
+     * @return
+     */
+    public DbDto getDatabaseTopicFromReference(String topicReference) {
+        if (topicReference == null) {
+            return null;
+        }
+
+        return topicObjects.stream()
+
+                .filter((databaseObject) -> databaseObject.getStructure().getRef().equals(topicReference))
+
+                .findAny().get();
+    }
+
+    /**
+     *
      * @param entryInternalIdentifier
      * @param topic
      * @return

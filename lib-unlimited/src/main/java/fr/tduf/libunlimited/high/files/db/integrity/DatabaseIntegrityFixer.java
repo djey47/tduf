@@ -259,8 +259,8 @@ public class DatabaseIntegrityFixer {
     }
 
     private DbDataDto.Item buildDefaultContentItem(Optional<String> entryReference, DbStructureDto.Field field, DbDto topicObject) {
-
         String rawValue;
+        DbDto remoteTopicObject = bulkDatabaseMiner.getDatabaseTopicFromReference(field.getTargetRef());
 
         DbStructureDto.FieldType fieldType = field.getFieldType();
         switch (fieldType) {
@@ -284,9 +284,8 @@ public class DatabaseIntegrityFixer {
                 rawValue = "1";
                 break;
             case REFERENCE:
-                // TODO fix missing reference afterwards - should not exist
-                // FIXME should have remote structure and contents ....
-                rawValue = DatabaseHelper.generateUniqueContentsEntryIdentifier(topicObject);
+                rawValue = DatabaseHelper.generateUniqueContentsEntryIdentifier(remoteTopicObject);
+                addContentsEntryWithDefaultItems(Optional.of(rawValue), remoteTopicObject.getStructure().getTopic());
                 break;
             case RESOURCE_CURRENT:
             case RESOURCE_CURRENT_AGAIN:
@@ -294,11 +293,9 @@ public class DatabaseIntegrityFixer {
                 addDefaultResourceReferenceForAllLocales(rawValue, topicObject);
                 break;
             case RESOURCE_REMOTE:
-                // TODO fix missing reference afterwards - should not exist
-                // TODO generate unique entry identifier, should have remote structure and contents ....
-                rawValue = "999999";
+                rawValue = DatabaseHelper.generateUniqueResourceEntryIdentifier(remoteTopicObject);
+                addDefaultResourceReferenceForAllLocales(rawValue, remoteTopicObject);
                 break;
-
             default:
                 throw new IllegalArgumentException("Unhandled field type: " + fieldType);
         }
