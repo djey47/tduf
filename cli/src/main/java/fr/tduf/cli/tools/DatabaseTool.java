@@ -208,7 +208,7 @@ public class DatabaseTool extends GenericTool {
         System.out.println("-> Now fixing database...");
         DatabaseIntegrityFixer databaseIntegrityFixer = DatabaseIntegrityFixer.load(databaseObjects, integrityErrors);
         List<IntegrityError> remainingIntegrityErrors = databaseIntegrityFixer.fixAllContentsObjects();
-        List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getFixedDbDtos();
+        List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getDbDtos();
 
         printIntegrityErrors(remainingIntegrityErrors);
 

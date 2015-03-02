@@ -24,6 +24,7 @@ import static java.util.stream.Collectors.toSet;
 public class DatabaseIntegrityFixer {
 
     private static final String RESOURCE_VALUE_DEFAULT = "-FIXED BY TDUF-";
+    private static final String BITFIELD_VALUE_DEFAULT = "00000000";
 
     private final List<DbDto> dbDtos;
     private final List<IntegrityError> integrityErrors;
@@ -295,7 +296,7 @@ public class DatabaseIntegrityFixer {
                 }
                 break;
             case BITFIELD:
-                rawValue = "00000000";
+                rawValue = BITFIELD_VALUE_DEFAULT;
                 break;
             case FLOAT:
                 rawValue = "0.0";
@@ -340,11 +341,7 @@ public class DatabaseIntegrityFixer {
         requireNonNull(integrityErrors, "List of integrity errors is required.");
     }
 
-    public List<DbDto> getFixedDbDtos() {
-        return dbDtos;
-    }
-
-    List<DbDto> getDbDtos() {
+    public List<DbDto> getDbDtos() {
         return dbDtos;
     }
 

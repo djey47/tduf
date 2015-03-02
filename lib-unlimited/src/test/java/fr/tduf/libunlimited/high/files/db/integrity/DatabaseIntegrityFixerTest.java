@@ -60,7 +60,7 @@ public class DatabaseIntegrityFixerTest {
 
         // THEN
         assertThat(actualRemainingErrors).isEmpty();
-        assertThat(integrityFixer.getFixedDbDtos()).isSameAs(dbDtos);
+        assertThat(integrityFixer.getDbDtos()).isSameAs(dbDtos);
     }
 
     @Test
@@ -123,7 +123,7 @@ public class DatabaseIntegrityFixerTest {
         // WHEN
         DatabaseIntegrityFixer integrityFixer = DatabaseIntegrityFixer.load(dbDtos, integrityErrors);
         List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects();
-        List<DbDto> fixedDatabaseObjects = integrityFixer.getFixedDbDtos();
+        List<DbDto> fixedDatabaseObjects = integrityFixer.getDbDtos();
 
 
         // THEN
@@ -152,7 +152,7 @@ public class DatabaseIntegrityFixerTest {
         // WHEN
         DatabaseIntegrityFixer integrityFixer = DatabaseIntegrityFixer.load(dbDtos, integrityErrors);
         List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects();
-        List<DbDto> fixedDatabaseObjects = integrityFixer.getFixedDbDtos();
+        List<DbDto> fixedDatabaseObjects = integrityFixer.getDbDtos();
 
 
         // THEN
@@ -180,7 +180,7 @@ public class DatabaseIntegrityFixerTest {
         // WHEN
         DatabaseIntegrityFixer integrityFixer = DatabaseIntegrityFixer.load(dbDtos, integrityErrors);
         List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects();
-        List<DbDto> fixedDatabaseObjects = integrityFixer.getFixedDbDtos();
+        List<DbDto> fixedDatabaseObjects = integrityFixer.getDbDtos();
 
 
         // THEN
@@ -227,7 +227,7 @@ public class DatabaseIntegrityFixerTest {
         // WHEN
         DatabaseIntegrityFixer integrityFixer = DatabaseIntegrityFixer.load(dbDtos, integrityErrors);
         List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects();
-        List<DbDto> fixedDatabaseObjects = integrityFixer.getFixedDbDtos();
+        List<DbDto> fixedDatabaseObjects = integrityFixer.getDbDtos();
 
 
         // THEN
@@ -270,7 +270,7 @@ public class DatabaseIntegrityFixerTest {
         // WHEN
         DatabaseIntegrityFixer integrityFixer = DatabaseIntegrityFixer.load(dbDtos, integrityErrors);
         List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects();
-        List<DbDto> fixedDatabaseObjects = integrityFixer.getFixedDbDtos();
+        List<DbDto> fixedDatabaseObjects = integrityFixer.getDbDtos();
 
 
         // THEN
@@ -302,7 +302,7 @@ public class DatabaseIntegrityFixerTest {
         // WHEN
         DatabaseIntegrityFixer integrityFixer = DatabaseIntegrityFixer.load(dbDtos, integrityErrors);
         List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects();
-        List<DbDto> fixedDatabaseObjects = integrityFixer.getFixedDbDtos();
+        List<DbDto> fixedDatabaseObjects = integrityFixer.getDbDtos();
 
 
         // THEN
