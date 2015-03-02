@@ -10,19 +10,18 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Class providing utility methods to request data from JSON database.
+ * Class providing utility methods to request data from database objects.
  */
 public class BulkDatabaseMiner {
 
     private final List<DbDto> topicObjects;
 
     /**
-     * Provides miner instance.
-     * @param topicObjects
-     * @return
+     * @param topicObjects  : list of per-topic database objects
+     * @return a miner instance.
      */
     public static BulkDatabaseMiner load(List<DbDto> topicObjects) {
-        requireNonNull(topicObjects, "A list of database topic objects is required.");
+        requireNonNull(topicObjects, "A list of per-topic database objects is required.");
 
         return new BulkDatabaseMiner(topicObjects);
     }
@@ -32,9 +31,8 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     *
-     * @param topic
-     * @return
+     * @param topic : topic in TDU Database to search resources from
+     * @return a list of per-locale database resource objects.
      */
     public List<DbResourceDto> getAllResourcesFromTopic(DbDto.Topic topic) {
         return topicObjects.stream()
@@ -45,10 +43,9 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     *
-     * @param locale
-     * @param topic
-     * @return
+     * @param locale    : game language to fetch related resources
+     * @param topic     : topic in TDU Database to search resources from
+     * @return an optional value: either such a resource object if it exists, else empty.
      */
     public Optional<DbResourceDto> getResourceFromTopicAndLocale(DbDto.Topic topic, DbResourceDto.Locale locale) {
         return getAllResourcesFromTopic(topic).stream()
@@ -59,9 +56,8 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     *
-     * @param topic
-     * @return
+     * @param topic : topic in TDU Database to search
+     * @return database object related to this topic.
      */
     public DbDto getDatabaseTopic(DbDto.Topic topic) {
         return topicObjects.stream()
@@ -72,9 +68,8 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     *
-     * @param topicReference
-     * @return
+     * @param topicReference    : identifier in database structure
+     * @return database object having specified reference.
      */
     public DbDto getDatabaseTopicFromReference(String topicReference) {
         if (topicReference == null) {
@@ -89,25 +84,23 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     *
-     * @param entryInternalIdentifier
-     * @param topic
-     * @return
+     * @param entryIdentifier   : unique identifier of entry (TDUF specific)
+     * @param topic             : topic in TDU Database to search
+     * @return database entry having specified identifier.
      */
-    public DbDataDto.Entry getContentEntryFromTopicWithInternalIdentifier(long entryInternalIdentifier, DbDto.Topic topic) {
+    public DbDataDto.Entry getContentEntryFromTopicWithInternalIdentifier(long entryIdentifier, DbDto.Topic topic) {
         return getDatabaseTopic(topic).getData().getEntries().stream()
 
-                .filter((entry) -> entry.getId() == entryInternalIdentifier)
+                .filter((entry) -> entry.getId() == entryIdentifier)
 
                 .findAny().get();
     }
 
     /**
-     *
-     * @param reference
-     * @param topic
-     * @param locale
-     * @return
+     * @param reference : unique identifier of resource
+     * @param topic     : topic in TDU Database to search
+     * @param locale    : game language to fetch related resources
+     * @return an optional value: either such a resource entry if it exists, else absent.
      */
     public Optional<DbResourceDto.Entry> getResourceEntryFromTopicAndLocaleWithReference(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
         Optional<DbResourceDto> resourceFromTopicAndLocale = getResourceFromTopicAndLocale(topic, locale);
