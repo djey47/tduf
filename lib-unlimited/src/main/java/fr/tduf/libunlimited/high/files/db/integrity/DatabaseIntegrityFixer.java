@@ -157,13 +157,36 @@ public class DatabaseIntegrityFixer {
                     .forEach((corruptedResourceObject) -> addMissingResourceEntries(corruptedResourceObject, referenceResourceObject));
     }
 
-    private void addResourceLocaleFromValidResource(DbResourceDto.Locale missingLocale, DbDto.Topic topic) {
-        // TODO what if RESOURCE_ITEMS_COUNT_MISMATCH on US locale ?
-        // TODO what if US locale not found ?
-        DbDto topicObject = bulkDatabaseMiner.getDatabaseTopic(topic);
-        DbResourceDto referenceResourceObject = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, DbResourceDto.Locale.UNITED_STATES);
+    private void addResourceLocaleFromValidResource(DbResourceDto.Locale missingLocale, DbDto.Topic topic) throws Exception {
+        Set<DbResourceDto.Locale> validResourceLocales = asList(DbResourceDto.Locale.values()).stream()
 
-        topicObject.getResources().add(DbResourceDto.builder()
+                .filter((locale) -> !this.integrityErrors.stream()
+
+                                .filter((integrityError) -> integrityError.getErrorTypeEnum() == IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND
+                                        || integrityError.getErrorTypeEnum() == IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND)
+
+                                .map((resourceIntegrityError) -> (DbResourceDto.Locale) resourceIntegrityError.getInformation().get(ErrorInfoEnum.LOCALE))
+
+                                .collect(toSet())
+
+                                .contains(locale))
+
+                .collect(toSet());
+
+        if (validResourceLocales.isEmpty()) {
+            throw new Exception("Unable to build missing locale " + missingLocale + ": no valid resource locale exists.");
+        }
+
+        DbResourceDto.Locale referenceLocale;
+        if (validResourceLocales.contains(DbResourceDto.Locale.UNITED_STATES)) {
+            referenceLocale = DbResourceDto.Locale.UNITED_STATES;
+        } else {
+            referenceLocale = validResourceLocales.stream().findFirst().get();
+        }
+
+        DbResourceDto referenceResourceObject = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale);
+
+        bulkDatabaseMiner.getDatabaseTopic(topic).getResources().add(DbResourceDto.builder()
                 .fromExistingResource(referenceResourceObject)
                 .withLocale(missingLocale)
                 .build());
