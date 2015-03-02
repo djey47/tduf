@@ -67,7 +67,7 @@ public class DatabaseIntegrityFixerTest {
     public void fixAllContentsObjects_whenOneErrorAutoFixed_shouldReturnEmptyList() {
         // GIVEN
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
-        List<IntegrityError> integrityErrors = asList(IntegrityError.builder().ofType(CONTENT_ITEMS_COUNT_MISMATCH).addInformations(new HashMap<>()).build());
+        List<IntegrityError> integrityErrors = asList(createIntegrityError_AutoFixed());
 
         // WHEN
         DatabaseIntegrityFixer integrityFixer = DatabaseIntegrityFixer.load(dbDtos, integrityErrors);
@@ -81,22 +81,7 @@ public class DatabaseIntegrityFixerTest {
     public void fixAllContentsObjects_whenOneErrorNotHandled_shouldReturnErrorInList() {
         // GIVEN
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
-        List<IntegrityError> integrityErrors = asList(IntegrityError.builder().ofType(CONTENTS_NOT_FOUND).addInformations(new HashMap<>()).build());
-
-        // WHEN
-        DatabaseIntegrityFixer integrityFixer = DatabaseIntegrityFixer.load(dbDtos, integrityErrors);
-        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects();
-
-        // THEN
-        assertThat(actualRemainingErrors).hasSize(1);
-        assertThat(actualRemainingErrors).isEqualTo(integrityErrors);
-    }
-
-    @Test
-    public void fixAllContentsObjects_whenOneErrorHandledButNotFixed_shouldReturnErrorInList() {
-        // GIVEN
-        List<DbDto> dbDtos = createDefaultDatabaseObjects();
-        List<IntegrityError> integrityErrors = asList(IntegrityError.builder().ofType(CONTENTS_NOT_FOUND).addInformations(new HashMap<>()).build());
+        List<IntegrityError> integrityErrors = asList(createIntegrityError_NotHandled());
 
         // WHEN
         DatabaseIntegrityFixer integrityFixer = DatabaseIntegrityFixer.load(dbDtos, integrityErrors);
@@ -286,17 +271,7 @@ public class DatabaseIntegrityFixerTest {
     public void fixAllContentsObjects_whenOneError_asResourceItemCountMismatch_shouldCompleteMissingLocale() {
         // GIVEN
         List<DbDto> dbDtos = createDatabaseObjectsWithUnconsistentResourceEntryCount();
-
-        Map<Locale, Integer> perLocaleCountInfo = new HashMap<>();
-        perLocaleCountInfo.put(Locale.CHINA, 0);
-        perLocaleCountInfo.put(Locale.FRANCE, 1);
-        perLocaleCountInfo.put(Locale.UNITED_STATES, 1);
-
-        Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
-        info.put(SOURCE_TOPIC, Topic.AFTER_MARKET_PACKS);
-        info.put(PER_LOCALE_COUNT, perLocaleCountInfo);
-
-        List<IntegrityError> integrityErrors = asList(IntegrityError.builder().ofType(RESOURCE_ITEMS_COUNT_MISMATCH).addInformations(info).build());
+        List<IntegrityError> integrityErrors = asList(createIntegrityError_ResourceItemsCountMismatch());
 
 
         // WHEN
@@ -312,6 +287,29 @@ public class DatabaseIntegrityFixerTest {
 
         DbResourceDto.Entry actualResourceEntry = searchResourceEntry("000", Topic.AFTER_MARKET_PACKS, Locale.CHINA, fixedDatabaseObjects);
         assertThat(actualResourceEntry.getValue()).isEqualTo("TDUF TEST");
+    }
+
+    @Test
+    public void fixAllContentsObjects_whenManyErrors() {
+        // GIVEN
+        List<DbDto> dbDtos = createDatabaseObjectsWithUnconsistentResourceEntryCount();
+        List<IntegrityError> integrityErrors = asList(
+                createIntegrityError_AutoFixed(),
+                createIntegrityError_NotHandled(),
+                createIntegrityError_ResourceItemsCountMismatch());
+
+
+        // WHEN
+        DatabaseIntegrityFixer integrityFixer = DatabaseIntegrityFixer.load(dbDtos, integrityErrors);
+        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects();
+        List<DbDto> fixedDatabaseObjects = integrityFixer.getDbDtos();
+
+
+        // THEN
+        assertThat(actualRemainingErrors).hasSize(1);
+        assertThat(actualRemainingErrors.get(0).getErrorTypeEnum()).isEqualTo(CONTENTS_NOT_FOUND);
+
+        assertThat(fixedDatabaseObjects).isNotEmpty();
     }
 
     private static List<DbDto> createDefaultDatabaseObjects() {
@@ -437,6 +435,28 @@ public class DatabaseIntegrityFixerTest {
                         .withValue("TDUF TEST")
                         .build())
                 .build();
+    }
+
+    private static IntegrityError createIntegrityError_AutoFixed() {
+        return IntegrityError.builder().ofType(CONTENT_ITEMS_COUNT_MISMATCH).addInformations(new HashMap<>()).build();
+    }
+
+    private IntegrityError createIntegrityError_NotHandled() {
+        return IntegrityError.builder().ofType(CONTENTS_NOT_FOUND).addInformations(new HashMap<>()).build();
+    }
+
+    private IntegrityError createIntegrityError_ResourceItemsCountMismatch() {
+
+        Map<Locale, Integer> perLocaleCountInfo = new HashMap<>();
+        perLocaleCountInfo.put(Locale.CHINA, 0);
+        perLocaleCountInfo.put(Locale.FRANCE, 1);
+        perLocaleCountInfo.put(Locale.UNITED_STATES, 1);
+
+        Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+        info.put(SOURCE_TOPIC, Topic.AFTER_MARKET_PACKS);
+        info.put(PER_LOCALE_COUNT, perLocaleCountInfo);
+
+        return IntegrityError.builder().ofType(RESOURCE_ITEMS_COUNT_MISMATCH).addInformations(info).build();
     }
 
     private static DbResourceDto.Entry searchResourceEntry(String reference, Topic topic, Locale locale, List<DbDto> databaseObjects) {
