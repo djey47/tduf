@@ -110,7 +110,7 @@ public class DatabaseIntegrityFixer {
 
             switch(integrityError.getErrorTypeEnum()) {
                 case RESOURCE_REFERENCE_NOT_FOUND:
-                    addResourceEntryWithDefaultValue(reference, remoteTopic, locale);
+                    addResourceEntryFromValidLocale(reference, remoteTopic, locale);
                     break;
                 case CONTENTS_REFERENCE_NOT_FOUND:
                     addContentsEntryWithDefaultItems(Optional.of(reference), remoteTopic);
@@ -149,7 +149,7 @@ public class DatabaseIntegrityFixer {
 
         List<DbResourceDto> topicResourceObjects = bulkDatabaseMiner.getAllResourcesFromTopic(topic);
 
-        DbResourceDto referenceResourceObject = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale);
+        DbResourceDto referenceResourceObject = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale).get();
 
         topicResourceObjects.stream()
 
@@ -159,33 +159,14 @@ public class DatabaseIntegrityFixer {
     }
 
     private void addResourceLocaleFromValidResource(DbResourceDto.Locale missingLocale, DbDto.Topic topic) throws Exception {
-        Set<DbResourceDto.Locale> validResourceLocales = asList(DbResourceDto.Locale.values()).stream()
-
-                .filter((locale) -> !this.integrityErrors.stream()
-
-                                .filter((integrityError) -> integrityError.getErrorTypeEnum() == IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND
-                                        || integrityError.getErrorTypeEnum() == IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND)
-
-                                .map((resourceIntegrityError) -> (DbResourceDto.Locale) resourceIntegrityError.getInformation().get(ErrorInfoEnum.LOCALE))
-
-                                .collect(toSet())
-
-                                .contains(locale))
-
-                .collect(toSet());
+        Set<DbResourceDto.Locale> validResourceLocales = findValidResourceLocales();
 
         if (validResourceLocales.isEmpty()) {
             throw new Exception("Unable to build missing locale " + missingLocale + ": no valid resource locale exists.");
         }
 
-        DbResourceDto.Locale referenceLocale;
-        if (validResourceLocales.contains(DbResourceDto.Locale.UNITED_STATES)) {
-            referenceLocale = DbResourceDto.Locale.UNITED_STATES;
-        } else {
-            referenceLocale = validResourceLocales.stream().findFirst().get();
-        }
-
-        DbResourceDto referenceResourceObject = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale);
+        DbResourceDto.Locale referenceLocale = pickAvailableLocaleOrElseWhatever(DbResourceDto.Locale.UNITED_STATES, validResourceLocales);
+        DbResourceDto referenceResourceObject = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale).get();
 
         bulkDatabaseMiner.getDatabaseTopic(topic).getResources().add(DbResourceDto.builder()
                 .fromExistingResource(referenceResourceObject)
@@ -247,15 +228,26 @@ public class DatabaseIntegrityFixer {
         }
     }
 
-    private void addResourceEntryWithDefaultValue(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
+    private void addResourceEntryFromValidLocale(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
+        Set<DbResourceDto.Locale> validResourceLocales = findValidResourceLocales();
 
-        DbResourceDto resourceDto = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, locale);
+        String resourceValue = RESOURCE_VALUE_DEFAULT;
+        if ( !validResourceLocales.isEmpty()) {
+
+            DbResourceDto.Locale referenceLocale = pickAvailableLocaleOrElseWhatever(DbResourceDto.Locale.UNITED_STATES, validResourceLocales);
+            Optional<DbResourceDto.Entry> referenceEntry = bulkDatabaseMiner.getResourceEntryFromTopicAndLocaleWithReference(reference, topic, referenceLocale);
+
+            if (referenceEntry.isPresent()){
+                resourceValue = referenceEntry.get().getValue();
+            }
+        }
 
         DbResourceDto.Entry newEntry = DbResourceDto.Entry.builder()
                 .forReference(reference)
-                .withValue(RESOURCE_VALUE_DEFAULT)
+                .withValue(resourceValue)
                 .build();
 
+        DbResourceDto resourceDto = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, locale).get();
         resourceDto.getEntries().add(newEntry);
     }
 
@@ -333,7 +325,32 @@ public class DatabaseIntegrityFixer {
     private void addDefaultResourceReferenceForAllLocales(String resourceReference, DbDto topicObject) {
         asList(DbResourceDto.Locale.values()).stream()
 
-                .forEach((locale) -> addResourceEntryWithDefaultValue(resourceReference, topicObject.getStructure().getTopic(), locale));
+                .forEach((locale) -> addResourceEntryFromValidLocale(resourceReference, topicObject.getStructure().getTopic(), locale));
+    }
+
+    private Set<DbResourceDto.Locale> findValidResourceLocales() {
+        return asList(DbResourceDto.Locale.values()).stream()
+
+                .filter((locale) -> !this.integrityErrors.stream()
+
+                        .filter((integrityError) -> integrityError.getErrorTypeEnum() == IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND
+                                || integrityError.getErrorTypeEnum() == IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND)
+
+                        .map((resourceIntegrityError) -> (DbResourceDto.Locale) resourceIntegrityError.getInformation().get(ErrorInfoEnum.LOCALE))
+
+                        .collect(toSet())
+
+                        .contains(locale))
+
+                .collect(toSet());
+    }
+
+    private static DbResourceDto.Locale pickAvailableLocaleOrElseWhatever(DbResourceDto.Locale locale, Set<DbResourceDto.Locale> validResourceLocales) {
+        if (validResourceLocales.contains(locale)) {
+            return locale;
+        }
+
+        return  validResourceLocales.stream().findFirst().get();
     }
 
     private static void checkRequirements(List<DbDto> dbDtos, List<IntegrityError> integrityErrors) {

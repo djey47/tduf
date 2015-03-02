@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -49,12 +50,12 @@ public class BulkDatabaseMiner {
      * @param topic
      * @return
      */
-    public DbResourceDto getResourceFromTopicAndLocale(DbDto.Topic topic, DbResourceDto.Locale locale) {
+    public Optional<DbResourceDto> getResourceFromTopicAndLocale(DbDto.Topic topic, DbResourceDto.Locale locale) {
         return getAllResourcesFromTopic(topic).stream()
 
                 .filter((resourceObject) -> resourceObject.getLocale() == locale)
 
-                .findAny().get();
+                .findAny();
     }
 
     /**
@@ -108,11 +109,17 @@ public class BulkDatabaseMiner {
      * @param locale
      * @return
      */
-    public DbResourceDto.Entry getResourceEntryFromTopicAndLocaleWithReference(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
-        return getResourceFromTopicAndLocale(topic, locale).getEntries().stream()
+    public Optional<DbResourceDto.Entry> getResourceEntryFromTopicAndLocaleWithReference(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
+        Optional<DbResourceDto> resourceFromTopicAndLocale = getResourceFromTopicAndLocale(topic, locale);
+
+        if (!resourceFromTopicAndLocale.isPresent()) {
+            return Optional.empty();
+        }
+
+        return resourceFromTopicAndLocale.get().getEntries().stream()
 
                 .filter((entry) -> entry.getReference().equals(reference))
 
-                .findAny().get();
+                .findAny();
     }
 }

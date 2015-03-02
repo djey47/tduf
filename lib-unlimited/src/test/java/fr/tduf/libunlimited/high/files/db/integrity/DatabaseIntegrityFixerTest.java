@@ -461,7 +461,7 @@ public class DatabaseIntegrityFixerTest {
 
     private static DbResourceDto.Entry searchResourceEntry(String reference, Topic topic, Locale locale, List<DbDto> databaseObjects) {
         return BulkDatabaseMiner.load(databaseObjects)
-                .getResourceEntryFromTopicAndLocaleWithReference(reference, topic, locale);
+                .getResourceEntryFromTopicAndLocaleWithReference(reference, topic, locale).get();
     }
 
     private static List<DbDataDto.Entry> searchContentsEntries(Topic topic, List<DbDto> databaseObjects) {
