@@ -115,4 +115,8 @@ public class BulkDatabaseMiner {
 
                 .findAny();
     }
+
+    List<DbDto> getTopicObjects() {
+        return topicObjects;
+    }
 }
