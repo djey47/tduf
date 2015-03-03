@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.high.files.banks;
 
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 
+// TODO javadoc
 /**
  * Contract for handling of BNK files. Allows to provide many ways of BNK management
  * (Genuine/Interop, native, mocked ...)

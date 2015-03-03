@@ -1,6 +1,7 @@
 -Reserved for integration tests-
 
 Provided files:
- - in db-encrypted directory will be used as reference for database tests
+ - in banks directory will be used as reference for bnk tests
  - in crypto directory will be used as reference for encryption tests
+ - in db-encrypted directory will be used as reference for database tests
  - in mapping directory will be used as reference for bnk mapping tests.

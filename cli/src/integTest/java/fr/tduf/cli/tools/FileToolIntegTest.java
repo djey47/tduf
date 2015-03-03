@@ -111,4 +111,13 @@ public class FileToolIntegTest {
         assertThat(expectedFile).exists();
         assertThat(actualFile).hasContentEqualTo(expectedFile);
     }
+
+    @Test
+    public void bankInfo_shouldReturnInformation() throws IOException {
+        // WHEN
+        System.out.println("-> Bankinfo!");
+        FileTool.main(new String[] { "bankinfo", "-i", "integ-tests/banks/Empty.bnk" });
+
+        // THEN: no exception
+    }
 }

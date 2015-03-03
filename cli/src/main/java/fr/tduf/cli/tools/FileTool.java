@@ -167,6 +167,7 @@ public class FileTool extends GenericTool {
                 break;
             case BANKINFO:
                 bankInfo();
+                break;
             default:
                 return false;
         }
@@ -187,8 +188,8 @@ public class FileTool extends GenericTool {
 
         bankInfoObject.getPackedFiles().stream()
 
-                .forEach((packedFileInfoObject) -> System.out.println(packedFileInfoObject.getReference() + " - "
-                        + packedFileInfoObject.getFullName() + " - "
+                .forEach((packedFileInfoObject) -> System.out.println("\t\t." + packedFileInfoObject.getReference()
+                        + "(" + packedFileInfoObject.getFullName() + ") :  "
                         + packedFileInfoObject.getSize() + " bytes"));
     }
 
