@@ -34,12 +34,18 @@ public class BulkDatabaseMiner {
      * @param topic : topic in TDU Database to search resources from
      * @return a list of per-locale database resource objects.
      */
-    public List<DbResourceDto> getAllResourcesFromTopic(DbDto.Topic topic) {
-        return topicObjects.stream()
+    public Optional<List<DbResourceDto>> getAllResourcesFromTopic(DbDto.Topic topic) {
+        Optional<DbDto> dbDto = topicObjects.stream()
 
                 .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
 
-                .findAny().get().getResources();
+                .findAny();
+
+        if (!dbDto.isPresent()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(dbDto.get().getResources());
     }
 
     /**
@@ -48,7 +54,14 @@ public class BulkDatabaseMiner {
      * @return an optional value: either such a resource object if it exists, else empty.
      */
     public Optional<DbResourceDto> getResourceFromTopicAndLocale(DbDto.Topic topic, DbResourceDto.Locale locale) {
-        return getAllResourcesFromTopic(topic).stream()
+
+        Optional<List<DbResourceDto>> allResourcesFromTopic = getAllResourcesFromTopic(topic);
+
+        if (!allResourcesFromTopic.isPresent()) {
+            return Optional.empty();
+        }
+
+        return allResourcesFromTopic.get().stream()
 
                 .filter((resourceObject) -> resourceObject.getLocale() == locale)
 

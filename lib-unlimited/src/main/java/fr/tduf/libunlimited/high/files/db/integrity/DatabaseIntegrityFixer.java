@@ -147,7 +147,7 @@ public class DatabaseIntegrityFixer {
 
         int referenceResourceCount = perLocaleCount.get(referenceLocale);
 
-        List<DbResourceDto> topicResourceObjects = bulkDatabaseMiner.getAllResourcesFromTopic(topic);
+        List<DbResourceDto> topicResourceObjects = bulkDatabaseMiner.getAllResourcesFromTopic(topic).get();
 
         DbResourceDto referenceResourceObject = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale).get();
 
