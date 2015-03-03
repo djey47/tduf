@@ -2,7 +2,6 @@ package fr.tduf.libunlimited.high.files.banks;
 
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 
-// TODO javadoc
 /**
  * Contract for handling of BNK files. Allows to provide many ways of BNK management
  * (Genuine/Interop, native, mocked ...)
@@ -10,28 +9,20 @@ import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 public interface BankSupport {
 
     /**
-     *
-     * @param bankFileName
-     * @return
+     * @param bankFileName  : location of bank file to fetch information from
+     * @return misc. information about provided file name.
      */
     BankInfoDto getBankInfo(String bankFileName);
 
     /**
-     *
-     * @param bankFileName
-     * @param outputDirectory
+     * @param bankFileName      : location of bank file to extract contents (all packed files) from
+     * @param outputDirectory   : location to place extracted files.
      */
     void extractAll(String bankFileName, String outputDirectory);
 
     /**
-     *
-     * @param inputDirectory
-     * @param outputBankFileName
+     * @param inputDirectory        : location to extracted files to pack into bank
+     * @param outputBankFileName    : location of bank file to create.
      */
     void packAll(String inputDirectory, String outputBankFileName);
-
-    // Later ?
-//    void extractPackedFileWithReference(String bankFileName, String packedFileRef, String outputDirectory);
-//
-//    void extractPackedFileWithFullName(String bankFileName, String packedFileName, String outputDirectory);
 }
