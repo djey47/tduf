@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.banks.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,7 +10,50 @@ public class BankInfoDto {
 
     private int year;
     private int fileSize;
-    private List<PackedFileInfoDto> packedFiles;
+    private final List<PackedFileInfoDto> packedFiles = new ArrayList<>();
+
+    private BankInfoDto(){}
+
+    /**
+     * @return custom instance.
+     */
+    public static BankInfoDtoBuilder builder() {
+        return new BankInfoDtoBuilder(){
+
+            private final List<PackedFileInfoDto> packedFiles = new ArrayList<>();
+            private int year;
+            private int fileSize;
+
+            @Override
+            public BankInfoDtoBuilder fromYear(int year) {
+                this.year = year;
+                return this;
+            }
+
+            @Override
+            public BankInfoDtoBuilder withFileSize(int fileSize) {
+                this.fileSize = fileSize;
+                return this;
+            }
+
+            @Override
+            public BankInfoDtoBuilder addPackedFile(PackedFileInfoDto packedFileInfoDto) {
+                this.packedFiles.add(packedFileInfoDto);
+                return this;
+            }
+
+            @Override
+            public BankInfoDto build() {
+                BankInfoDto bankInfoDto = new BankInfoDto();
+
+                bankInfoDto.fileSize = this.fileSize;
+                bankInfoDto.year = this.year;
+                bankInfoDto.packedFiles.addAll(this.packedFiles);
+
+                return bankInfoDto;
+            }
+        };
+    }
 
     public int getYear() {
         return year;
@@ -21,5 +65,15 @@ public class BankInfoDto {
 
     public List<PackedFileInfoDto> getPackedFiles() {
         return packedFiles;
+    }
+
+    public interface BankInfoDtoBuilder {
+        BankInfoDtoBuilder fromYear(int year);
+
+        BankInfoDtoBuilder withFileSize(int fileSize);
+
+        BankInfoDtoBuilder addPackedFile(PackedFileInfoDto packedFileInfoDto);
+
+        BankInfoDto build();
     }
 }
