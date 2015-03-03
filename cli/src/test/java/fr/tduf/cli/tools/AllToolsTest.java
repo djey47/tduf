@@ -77,6 +77,14 @@ public class AllToolsTest {
     }
 
     @Test
+    public void fileTool_bankinfo() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new FileTool(), BANKINFO.getLabel());
+    }
+
+    @Test
     public void mappingTool_info() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
         exitRule.expectSystemExitWithStatus(1);

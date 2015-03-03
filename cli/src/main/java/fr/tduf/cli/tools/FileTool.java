@@ -1,6 +1,9 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
+import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
+import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 import fr.tduf.libunlimited.low.files.research.rw.GenericWriter;
@@ -37,6 +40,8 @@ public class FileTool extends GenericTool {
 
     private Command command;
 
+    private BankSupport bankSupport;
+
     /**
      * All available commands
      */
@@ -44,7 +49,8 @@ public class FileTool extends GenericTool {
         DECRYPT("decrypt", "Makes protected TDU file readable by humans or other software."),
         ENCRYPT("encrypt", "Allows protected TDU file to be read by game engine."),
         JSONIFY("jsonify", "Converts TDU file with structure to JSON file."),
-        APPLYJSON("applyjson", "Rewrites TDU file from JSON file with structure.");
+        APPLYJSON("applyjson", "Rewrites TDU file from JSON file with structure."),
+        BANKINFO("bankinfo", "Gives details about a TDU Bank file.");
 
         final String label;
         final String description;
@@ -75,6 +81,11 @@ public class FileTool extends GenericTool {
      */
     public static void main(String[] args) throws IOException {
         new FileTool().doMain(args);
+    }
+
+    public FileTool() {
+        // BNK-step1: using TDU Modding Library
+        this.bankSupport = new GenuineBnkGateway();
     }
 
     @Override
@@ -134,7 +145,8 @@ public class FileTool extends GenericTool {
                 DECRYPT.label + " -c 1 -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.ok\"",
                 ENCRYPT.label + " -c 1 -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.ok\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\"",
                 JSONIFY.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"",
-                APPLYJSON.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.json\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"");
+                APPLYJSON.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.json\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"",
+                BANKINFO.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk\"");
     }
 
     @Override
@@ -153,11 +165,31 @@ public class FileTool extends GenericTool {
             case ENCRYPT:
                 encrypt();
                 break;
+            case BANKINFO:
+                bankInfo();
             default:
                 return false;
         }
 
         return true;
+    }
+
+    private void bankInfo() {
+        System.out.println("Will use Bank file: " + this.inputFile);
+
+        BankInfoDto bankInfoObject = bankSupport.getBankInfo(this.inputFile);
+
+        // TODO add other information
+        System.out.println("Done reading Bank:");
+        System.out.println("\t-> Year: " + bankInfoObject.getYear());
+        System.out.println("\t-> Size: " + bankInfoObject.getFileSize() + " bytes");
+        System.out.println("\t-> Packed files (" + bankInfoObject.getPackedFiles().size() + "):");
+
+        bankInfoObject.getPackedFiles().stream()
+
+                .forEach((packedFileInfoObject) -> System.out.println(packedFileInfoObject.getReference() + " - "
+                        + packedFileInfoObject.getFullName() + " - "
+                        + packedFileInfoObject.getSize() + " bytes"));
     }
 
     private void jsonify() throws IOException {
