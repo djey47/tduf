@@ -1,11 +1,13 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.assertj.core.data.MapEntry;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +16,6 @@ import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.
 import static java.util.Arrays.asList;
 import static net.sf.json.test.JSONAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
 public class DataStoreTest {
@@ -70,7 +71,7 @@ public class DataStoreTest {
         dataStore.addValue("f1", TEXT, "v1".getBytes());
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.TEXT, "v1".getBytes());
+        DataStore.Entry expectedEntry = new DataStore.Entry("f1", FileStructureDto.Type.TEXT, "v1".getBytes());
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -80,7 +81,7 @@ public class DataStoreTest {
         dataStore.addValue("f1", INTEGER, TypeHelper.integerToRaw(500L));
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(500L));
+        DataStore.Entry expectedEntry = new DataStore.Entry("f1", FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(500L));
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -90,7 +91,7 @@ public class DataStoreTest {
         dataStore.addValue("f1", FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
+        DataStore.Entry expectedEntry = new DataStore.Entry("f1", FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -109,7 +110,7 @@ public class DataStoreTest {
         dataStore.addText("f1", "v1");
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.TEXT, "v1".getBytes());
+        DataStore.Entry expectedEntry = new DataStore.Entry("f1", FileStructureDto.Type.TEXT, "v1".getBytes());
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -119,7 +120,7 @@ public class DataStoreTest {
         dataStore.addInteger("f1", 500L);
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(500L));
+        DataStore.Entry expectedEntry = new DataStore.Entry("f1", FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(500L));
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -129,7 +130,7 @@ public class DataStoreTest {
         dataStore.addFloatingPoint("f1", 83.666667f);
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
+        DataStore.Entry expectedEntry = new DataStore.Entry("f1", FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -139,7 +140,7 @@ public class DataStoreTest {
         dataStore.addHalfFloatingPoint("f1", 83.67f);
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint16ToRaw(83.67f));
+        DataStore.Entry expectedEntry = new DataStore.Entry("f1", FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint16ToRaw(83.67f));
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -360,10 +361,10 @@ public class DataStoreTest {
         assertThat(actualValues.get(2).getStore()).hasSize(4);
 
         Map<String, DataStore.Entry> subStore = actualValues.get(0).getStore();
-        assertThat(subStore.get("my_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(10L), 0));
-        assertThat(subStore.get("my_fp_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(235.666667f), 1));
-        assertThat(subStore.get("a_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw("az"), 2));
-        assertThat(subStore.get("another_field")).isEqualTo(new DataStore.Entry(UNKNOWN, new byte[] {0x1, 0x2, 0x3, 0x4}, 3));
+        assertThat(subStore.get("my_field")).isEqualTo(new DataStore.Entry("entry_list[0].my_field", FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(10L), 0));
+        assertThat(subStore.get("my_fp_field")).isEqualTo(new DataStore.Entry("entry_list[0].my_fp_field", FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(235.666667f), 1));
+        assertThat(subStore.get("a_field")).isEqualTo(new DataStore.Entry("entry_list[0].a_field", FileStructureDto.Type.TEXT, TypeHelper.textToRaw("az"), 2));
+        assertThat(subStore.get("another_field")).isEqualTo(new DataStore.Entry("entry_list[0].another_field", UNKNOWN, new byte[] {0x1, 0x2, 0x3, 0x4}, 3));
     }
 
     @Test
@@ -376,7 +377,7 @@ public class DataStoreTest {
     }
 
     @Test
-    public void toJsonString_whenProvidedStore_shouldReturnJsonRepresentation() {
+    public void toJsonString_whenProvidedStore_shouldReturnJsonRepresentation() throws IOException, URISyntaxException {
         // GIVEN
         String expectedJson = getStoreContentsAsJson();
         createStoreEntries();
@@ -391,7 +392,7 @@ public class DataStoreTest {
     }
 
     @Test
-    public void fromJsonString_whenProvidedJson_shouldSetStore() throws IOException {
+    public void fromJsonString_whenProvidedJson_shouldSetStore() throws IOException, URISyntaxException {
         // GIVEN
         String jsonInput = getStoreContentsAsJson();
 
@@ -486,20 +487,7 @@ public class DataStoreTest {
         putRawValueInStore("entry_list[2].another_field", new byte [] {0x9, 0xA, 0xB, 0xC});
     }
 
-    private static String getStoreContentsAsJson() {
-        return "{\n" +
-                "  \"entry_list[0].my_field\": 10,\n" +
-                "  \"entry_list[0].my_fp_field\": 235.666667,\n" +
-                "  \"entry_list[0].a_field\": \"az\",\n" +
-                "  \"entry_list[0].another_field\": \"0x[01 02 03 04]\",\n" +
-                "  \"entry_list[1].my_field\": 20,\n" +
-                "  \"entry_list[1].my_fp_field\": 335.666667,\n" +
-                "  \"entry_list[1].a_field\": \"bz\",\n" +
-                "  \"entry_list[1].another_field\": \"0x[05 06 07 08]\",\n" +
-                "  \"entry_list[2].my_field\": 30,\n" +
-                "  \"entry_list[2].my_fp_field\": 435.666667,\n" +
-                "  \"entry_list[2].a_field\": \"cz\",\n" +
-                "  \"entry_list[2].another_field\": \"0x[09 0A 0B 0C]\"\n" +
-                "}";
+    private static String getStoreContentsAsJson() throws URISyntaxException, IOException {
+        return FilesHelper.readTextFromResourceFile("/files/json/store.json");
     }
 }

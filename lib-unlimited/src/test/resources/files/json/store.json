@@ -1,0 +1,14 @@
+{
+  "entry_list[0].my_field": 10,
+  "entry_list[0].my_fp_field": 235.666667,
+  "entry_list[0].a_field": "az",
+  "entry_list[0].another_field": "0x[01 02 03 04]",
+  "entry_list[1].my_field": 20,
+  "entry_list[1].my_fp_field": 335.666667,
+  "entry_list[1].a_field": "bz",
+  "entry_list[1].another_field": "0x[05 06 07 08]",
+  "entry_list[2].my_field": 30,
+  "entry_list[2].my_fp_field": 435.666667,
+  "entry_list[2].a_field": "cz",
+  "entry_list[2].another_field": "0x[09 0A 0B 0C]"
+}

@@ -391,7 +391,7 @@ public class DataStore {
     }
 
     private void putEntry(String key, FileStructureDto.Type type, byte[] rawValue) {
-        Entry entry = new Entry(type, rawValue, this.store.size());
+        Entry entry = new Entry(key, type, rawValue, this.store.size());
         this.getStore().put(key, entry);
     }
 
@@ -403,18 +403,20 @@ public class DataStore {
      * Represents a store entry to bring more information.
      */
     static class Entry {
+        private final String key;
         private final FileStructureDto.Type type;
         private final byte[] rawValue;
         private final int rank;
 
-        Entry(FileStructureDto.Type type, byte[] rawValue, int rank) {
+        Entry(String key, FileStructureDto.Type type, byte[] rawValue, int rank) {
+            this.key = key;
             this.type = type;
             this.rawValue = rawValue;
             this.rank = rank;
         }
 
-        Entry(FileStructureDto.Type type, byte[] rawValue) {
-            this(type, rawValue, 0);
+        Entry(String key, FileStructureDto.Type type, byte[] rawValue) {
+            this(key, type, rawValue, 0);
         }
 
         byte[] getRawValue() {
@@ -427,6 +429,10 @@ public class DataStore {
 
         int getRank() {
             return rank;
+        }
+
+        public String getKey() {
+            return key;
         }
 
         @Override
