@@ -23,7 +23,7 @@ public class GenuineBnkGateway implements BankSupport {
 
     @Override
     public void extractAll(String bankFileName, String outputDirectory) {
-
+        // TODO make copy of BNK to outputDirectory (will make future repacking easier)
     }
 
     @Override
