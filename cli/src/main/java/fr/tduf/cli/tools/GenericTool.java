@@ -110,6 +110,9 @@ public abstract class GenericTool {
         System.err.println("  .Commands:");
         CommandHelper.getValuesAsMap(getCommand())
                 .entrySet().stream()
+
+                .sorted((entry1, entry2) -> entry1.getKey().compareTo(entry2.getKey()))
+
                 .forEach((entry) -> System.err.println(" " + entry.getKey() + " : " + entry.getValue() ));
         System.err.println();
 
@@ -118,7 +121,10 @@ public abstract class GenericTool {
         System.err.println();
 
         System.err.println("  .Examples:");
-        getExamples()
+        getExamples().stream()
+
+                .sorted(String::compareTo)
+
                 .forEach((example) -> System.err.println(" " + displayedClassName + " " + example));
     }
 }
