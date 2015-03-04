@@ -1,7 +1,7 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
-import fr.tduf.cli.common.helper.FilesHelper;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;

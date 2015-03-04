@@ -1,7 +1,7 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
-import fr.tduf.cli.common.helper.FilesHelper;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;

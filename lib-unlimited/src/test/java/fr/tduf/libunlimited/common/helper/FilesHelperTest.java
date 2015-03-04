@@ -9,6 +9,7 @@ import java.nio.file.Files;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// TODO complete tests
 public class FilesHelperTest {
 
     private String tempDirectory;
