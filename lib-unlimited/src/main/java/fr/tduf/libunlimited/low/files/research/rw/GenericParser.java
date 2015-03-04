@@ -26,9 +26,7 @@ public abstract class GenericParser<T> {
 
     private final ByteArrayInputStream inputStream;
 
-    private final FileStructureDto fileStructure;
-
-    private final DataStore dataStore = new DataStore();
+    private final DataStore dataStore;
 
     private final StringBuilder dumpBuilder = new StringBuilder();
 
@@ -36,8 +34,10 @@ public abstract class GenericParser<T> {
         requireNonNull(inputStream, "Data stream is required");
         requireNonNull(getStructureResource(), "Data structure resource is required");
 
-        this.fileStructure = StructureHelper.retrieveStructureFromLocation(getStructureResource());
-        this.inputStream = StructureHelper.decryptIfNeeded(inputStream, this.fileStructure.getCryptoMode());
+        FileStructureDto fileStructure = StructureHelper.retrieveStructureFromLocation(getStructureResource());
+        this.dataStore = new DataStore(fileStructure);
+        this.inputStream = StructureHelper.decryptIfNeeded(inputStream, fileStructure.getCryptoMode());
+
     }
 
     /**
@@ -47,7 +47,7 @@ public abstract class GenericParser<T> {
         this.dataStore.clearAll();
         this.dumpBuilder.setLength(0);
 
-        readFields(fileStructure.getFields(), "");
+        readFields(getFileStructure().getFields(), "");
 
         return generate();
     }
@@ -94,7 +94,7 @@ public abstract class GenericParser<T> {
                 case INTEGER:
                     readValueAsBytes = new byte[8]; // Prepare long values
 
-                    if (fileStructure.isLittleEndian()) {
+                    if (this.getFileStructure().isLittleEndian()) {
                         parsedCount = inputStream.read(readValueAsBytes, 0, length);
                         readValueAsBytes = TypeHelper.changeEndianType(readValueAsBytes);
                     } else {
@@ -109,7 +109,7 @@ public abstract class GenericParser<T> {
                     readValueAsBytes = new byte[length];
                     parsedCount = inputStream.read(readValueAsBytes, 0, length);
 
-                    if (fileStructure.isLittleEndian()) {
+                    if (this.getFileStructure().isLittleEndian()) {
                         readValueAsBytes = TypeHelper.changeEndianType(readValueAsBytes);
                     }
 
@@ -171,7 +171,7 @@ public abstract class GenericParser<T> {
     }
 
     FileStructureDto getFileStructure() {
-        return fileStructure;
+        return this.dataStore.getFileStructure();
     }
 
     ByteArrayInputStream getInputStream() {

@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
 public class DataStoreTest {
 
-    private final DataStore dataStore = new DataStore();
+    private final DataStore dataStore = new DataStore(FileStructureDto.builder().build());
 
     @Test
     public void clearAll_shouldRemoveAllEntries() throws Exception {
@@ -98,7 +98,7 @@ public class DataStoreTest {
     @Test
     public void addValue_whenNonStoredType_shouldNotCreateEntryInStore() throws Exception {
         // GIVEN - WHEN
-        dataStore.addValue("f1", GAP, new byte[] {0xA});
+        dataStore.addValue("f1", GAP, new byte[]{0xA});
 
         // THEN
         assertThat(dataStore.getStore()).isEmpty();

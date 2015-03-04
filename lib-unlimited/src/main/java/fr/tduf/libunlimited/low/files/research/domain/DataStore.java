@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import static fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper.*;
 import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.*;
+import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -32,6 +33,18 @@ public class DataStore {
     private static final String SUB_FIELD_PREFIX_FORMAT = "%s[%d]" + REPEATER_FIELD_SEPARATOR;
 
     private final Map<String, Entry> store = new HashMap<>();
+
+    private final FileStructureDto fileStructure;
+
+    /**
+     * Creates a datastore.
+     * @param fileStructure : structure of stored file contents.
+     */
+    public DataStore(FileStructureDto fileStructure) {
+        requireNonNull(fileStructure, "File structure must be provided.");
+
+        this.fileStructure = fileStructure;
+    }
 
     /**
      * Remove all entries from current store.
@@ -266,7 +279,7 @@ public class DataStore {
                     return matcher.matches() ? Integer.valueOf(matcher.group(2)) : 0; // extracts index part
                 }));
 
-        List<DataStore> repeatedValues = createEmptyList(groupedKeysByIndex.size());
+        List<DataStore> repeatedValues = createEmptyList(groupedKeysByIndex.size(), this.getFileStructure());
 
         for(Integer index : groupedKeysByIndex.keySet()) {
 
@@ -366,11 +379,11 @@ public class DataStore {
         return keyPrefix + repeatedFieldName;
     }
 
-    private static List<DataStore> createEmptyList(int size) {
+    private static List<DataStore> createEmptyList(int size, FileStructureDto fileStructure) {
         List<DataStore> list = new ArrayList<>(size);
 
         for (int i = 0 ; i < size ; i++) {
-            list.add(new DataStore());
+            list.add(new DataStore(fileStructure));
         }
 
         return list;
@@ -383,6 +396,10 @@ public class DataStore {
 
     Map<String, Entry> getStore() {
         return store;
+    }
+
+    public FileStructureDto getFileStructure() {
+        return fileStructure;
     }
 
     /**

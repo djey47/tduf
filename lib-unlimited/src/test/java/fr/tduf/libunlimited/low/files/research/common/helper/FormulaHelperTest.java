@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.research.common.helper;
 
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.Test;
 
 import java.util.NoSuchElementException;
@@ -36,7 +37,7 @@ public class FormulaHelperTest {
     @Test
     public void resolveToInteger_whenVerySimpleFormulaWithPointer_shouldReturnValue() {
         // GIVEN
-        DataStore dataStore = new DataStore();
+        DataStore dataStore = createDefaultDataStore();
         dataStore.addInteger("sizeIndicator", 500L);
 
         // WHEN-THEN
@@ -46,7 +47,7 @@ public class FormulaHelperTest {
     @Test
     public void resolveToInteger_whenVerySimpleFormulaWithPointerFromRepeatedField_shouldReturnValue() {
         // GIVEN
-        DataStore dataStore = new DataStore();
+        DataStore dataStore = createDefaultDataStore();
         dataStore.addInteger("fileList[5].sizeIndicator", 500);
 
         // WHEN-THEN
@@ -56,7 +57,7 @@ public class FormulaHelperTest {
     @Test
     public void resolveToInteger_whenSimpleFormulaWithPointer_shouldReturnValue() {
         // GIVEN
-        DataStore dataStore = new DataStore();
+        DataStore dataStore = createDefaultDataStore();
         dataStore.addInteger("sizeIndicator", 500);
 
         // WHEN-THEN
@@ -66,7 +67,7 @@ public class FormulaHelperTest {
     @Test(expected = NoSuchElementException.class)
     public void resolveToInteger_whenFormulaWithPointerAndValueNotInStore_shouldThrowException() {
         // GIVEN
-        DataStore dataStore = new DataStore();
+        DataStore dataStore = createDefaultDataStore();
 
         // WHEN-THEN
         FormulaHelper.resolveToInteger("=?sizeIndicator?", null, dataStore);
@@ -94,5 +95,9 @@ public class FormulaHelperTest {
     public void resolveToInteger_whenIllegalFormula_shouldThrowIllegalArgumentException() {
         // GIVEN-WHEN-THEN
         FormulaHelper.resolveToInteger("=AZERTY", null, null);
+    }
+
+    private DataStore createDefaultDataStore() {
+        return new DataStore(FileStructureDto.builder().build());
     }
 }

@@ -18,9 +18,7 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class GenericWriter<T> {
 
-    private final FileStructureDto fileStructure;
-
-    private final DataStore dataStore = new DataStore();
+    private final DataStore dataStore;
 
     private final T data;
 
@@ -29,7 +27,7 @@ public abstract class GenericWriter<T> {
         requireNonNull(getStructureResource(), "Data structure resource is required");
 
         this.data = data;
-        this.fileStructure = StructureHelper.retrieveStructureFromLocation(getStructureResource());
+        this.dataStore = new DataStore(StructureHelper.retrieveStructureFromLocation(getStructureResource()));
     }
 
     /**
@@ -42,9 +40,9 @@ public abstract class GenericWriter<T> {
         fillStore();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        writeFields(this.fileStructure.getFields(), outputStream, "");
+        writeFields(this.getFileStructure().getFields(), outputStream, "");
 
-        return StructureHelper.encryptIfNeeded(outputStream, this.fileStructure.getCryptoMode());
+        return StructureHelper.encryptIfNeeded(outputStream, this.getFileStructure().getCryptoMode());
     }
 
     private boolean writeFields(List<FileStructureDto.Field> fields, ByteArrayOutputStream outputStream, String repeaterKey) throws IOException {
@@ -80,7 +78,7 @@ public abstract class GenericWriter<T> {
                 case INTEGER:
                     assert valueBytes != null;
 
-                    if (this.fileStructure.isLittleEndian()) {
+                    if (this.getFileStructure().isLittleEndian()) {
                         valueBytes = TypeHelper.changeEndianType(valueBytes);
                         outputStream.write(valueBytes, 0, length);
                     } else {
@@ -91,7 +89,7 @@ public abstract class GenericWriter<T> {
                 case FPOINT:
                     assert valueBytes != null;
 
-                    if (this.fileStructure.isLittleEndian()) {
+                    if (this.getFileStructure().isLittleEndian()) {
                         valueBytes = TypeHelper.changeEndianType(valueBytes);
                     }
 
@@ -135,7 +133,7 @@ public abstract class GenericWriter<T> {
     protected abstract String getStructureResource();
 
     FileStructureDto getFileStructure() {
-        return fileStructure;
+        return this.dataStore.getFileStructure();
     }
 
     public DataStore getDataStore() {
