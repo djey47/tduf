@@ -411,36 +411,6 @@ public class DataStoreTest {
         assertThat(dataStore.getRawValue("entry_list[2].another_field").get()).isEqualTo(new byte[]{0x9, 0xA, 0xB, 0xC});
     }
 
-    @Test
-    public void isBase64Encoded_whenNullString_shouldReturnFalse() {
-        // GIVEN-WHEN-THEN
-        assertThat(DataStore.isBase64Encoded(null)).isFalse();
-    }
-
-    @Test
-    public void isBase64Encoded_whenBase64EncodedString_shouldReturnTrue() {
-        // GIVEN
-        String value = java.util.Base64.getEncoder().encodeToString(new byte[]{0xA, 0xB, 0xC});
-
-        // WHEN
-        boolean base64Encoded = DataStore.isBase64Encoded(value);
-
-        // THEN
-        assertThat(base64Encoded).isTrue();
-    }
-
-    @Test
-    public void isBase64Encoded_whenRegularString_shouldReturnFalse() {
-        // GIVEN
-        String value = "ABC";
-
-        // WHEN
-        boolean base64Encoded = DataStore.isBase64Encoded(value);
-
-        // THEN
-        assertThat(base64Encoded).isFalse();
-    }
-
     private void putRawValueInStore(String key, byte[] bytes) {
         dataStore.addValue(key, UNKNOWN, bytes);
     }

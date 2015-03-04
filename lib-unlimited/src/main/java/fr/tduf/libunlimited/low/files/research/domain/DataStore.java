@@ -361,20 +361,6 @@ public class DataStore {
         return String.format(SUB_FIELD_PREFIX_FORMAT, repeaterFieldName, index);
     }
 
-    /**
-     * Indicates whether provided String is Base64 encoded or not.
-     * @param value : string to test nature of
-     * @return true if base64 encoded, false else
-     */
-    static boolean isBase64Encoded(String value) {
-        if (value == null) {
-            return false;
-        }
-
-        Pattern base64Pattern = Pattern.compile("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$");
-        return base64Pattern.matcher(value).matches();
-    }
-
     private static String generateKeyForRepeatedField(String repeaterFieldName, String repeatedFieldName, long index) {
         String keyPrefix = generateKeyPrefixForRepeatedField(repeaterFieldName, index);
         return keyPrefix + repeatedFieldName;
