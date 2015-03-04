@@ -1,6 +1,7 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
+import fr.tduf.cli.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
@@ -9,7 +10,6 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,7 +134,7 @@ public class DatabaseTool extends GenericTool {
     }
 
     private void dump() throws IOException {
-        createDirectoryIfNotExists(this.jsonDirectory);
+        FilesHelper.createDirectoryIfNotExists(this.jsonDirectory);
 
         System.out.println("-> Source directory: " + databaseDirectory);
         System.out.println("Dumping TDU database to JSON, please wait...");
@@ -162,7 +162,7 @@ public class DatabaseTool extends GenericTool {
     }
 
     private void gen() throws IOException {
-        createDirectoryIfNotExists(this.databaseDirectory);
+        FilesHelper.createDirectoryIfNotExists(this.databaseDirectory);
 
         System.out.println("-> Source directory: " + this.jsonDirectory);
         System.out.println("Generating TDU database from JSON, please wait...");
@@ -218,7 +218,7 @@ public class DatabaseTool extends GenericTool {
             System.out.println("-> Now writing database to " + this.outputDatabaseDirectory + "...");
             System.out.println();
 
-            createDirectoryIfNotExists(this.outputDatabaseDirectory);
+            FilesHelper.createDirectoryIfNotExists(this.outputDatabaseDirectory);
 
             for (DbDto databaseObject : fixedDatabaseObjects) {
                 System.out.println("-> Now processing topic: " + databaseObject.getStructure().getTopic() + "...");
@@ -326,15 +326,6 @@ public class DatabaseTool extends GenericTool {
                         String errorMessage = String.format(integrityError.getErrorMessageFormat(), integrityError.getInformation());
                         System.out.println("  (!)" + errorMessage);
                     });
-        }
-    }
-
-    // TODO replace with helper
-    private static void createDirectoryIfNotExists(String directoryToCreate) {
-        File outputDirectory = new File(directoryToCreate);
-        if (!outputDirectory.exists()) {
-            boolean isCreated = outputDirectory.mkdirs();
-            assert isCreated;
         }
     }
 }
