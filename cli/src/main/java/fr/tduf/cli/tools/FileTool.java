@@ -52,7 +52,8 @@ public class FileTool extends GenericTool {
         JSONIFY("jsonify", "Converts TDU file with structure to JSON file."),
         APPLYJSON("applyjson", "Rewrites TDU file from JSON file with structure."),
         BANKINFO("bankinfo", "Gives details about a TDU Bank file."),
-        UNPACK("unpack", "Extracts all contents from TDU Bank.");
+        UNPACK("unpack", "Extracts all contents from TDU Bank."),
+        REPACK("repack", "Creates a BNK file, packing all contents in directory.");
 
         final String label;
         final String description;
@@ -115,7 +116,10 @@ public class FileTool extends GenericTool {
                     extension = ".enc";
                     break;
                 case UNPACK:
-                    extension = ".unpacked";
+                    extension = "_unpacked";
+                    break;
+                case REPACK:
+                    extension = "_repacked.bnk";
                     break;
                 default:
                     extension = ".";
@@ -152,7 +156,8 @@ public class FileTool extends GenericTool {
                 JSONIFY.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"",
                 APPLYJSON.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.json\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"",
                 BANKINFO.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk\"",
-                UNPACK.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk\" -o \"C:\\Users\\Bill\\Desktop\\DB_extracted\"");
+                UNPACK.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk\" -o \"C:\\Users\\Bill\\Desktop\\DB_extracted\"",
+                REPACK.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk.unpacked\"");
     }
 
     @Override
@@ -177,11 +182,22 @@ public class FileTool extends GenericTool {
             case UNPACK:
                 unpack();
                 break;
+            case REPACK:
+                repack();
+                break;
             default:
                 return false;
         }
 
         return true;
+    }
+
+    private void repack() {
+        System.out.println("Will pack contents from directory: " + this.inputFile);
+
+        bankSupport.packAll(this.inputFile, this.outputFile);
+
+        System.out.println("Done creating Bank: " + this.outputFile + ".");
     }
 
     private void unpack() {
