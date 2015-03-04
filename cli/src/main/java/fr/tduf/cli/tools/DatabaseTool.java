@@ -329,6 +329,7 @@ public class DatabaseTool extends GenericTool {
         }
     }
 
+    // TODO replace with helper
     private static void createDirectoryIfNotExists(String directoryToCreate) {
         File outputDirectory = new File(directoryToCreate);
         if (!outputDirectory.exists()) {
