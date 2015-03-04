@@ -23,6 +23,7 @@ public class FileToolIntegTest {
     private final String jsonifyDirectory = "integ-tests/jsonified";
     private final String applyjsonDirectory = "integ-tests/applied";
 
+
     @Before
     public void setUp() {
         new File(encryptDirectory).mkdirs();
@@ -117,6 +118,26 @@ public class FileToolIntegTest {
         // WHEN
         System.out.println("-> Bankinfo!");
         FileTool.main(new String[] { "bankinfo", "-i", "integ-tests/banks/Empty.bnk" });
+
+        // THEN: no exception
+    }
+
+    //TODO add assertions when feature complete
+    @Test
+    public void unpackRepackBankInfo_shouldReturnInformation() throws IOException {
+        String unpackedDirectory = "integ-tests/unpacked";
+
+        // WHEN
+        System.out.println("-> Unpack!");
+        FileTool.main(new String[] { "unpack", "-i", "integ-tests/banks/Bank.bnk", "-o", unpackedDirectory });
+
+        // WHEN
+        System.out.println("-> Repack!");
+        FileTool.main(new String[] { "repack", "-i", unpackedDirectory, "-o", "integ-tests/repacked/Bank.bnk" });
+
+        // WHEN
+        System.out.println("-> Bankinfo!");
+        FileTool.main(new String[] { "bankinfo", "-i", "integ-tests/repacked/Bank.bnk" });
 
         // THEN: no exception
     }
