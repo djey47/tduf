@@ -86,6 +86,22 @@ public class AllToolsTest {
     }
 
     @Test
+    public void fileTool_unpack() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new FileTool(), UNPACK);
+    }
+
+    @Test
+    public void fileTool_repack() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new FileTool(), REPACK);
+    }
+
+    @Test
     public void mappingTool_info() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
         exitRule.expectSystemExitWithStatus(1);
