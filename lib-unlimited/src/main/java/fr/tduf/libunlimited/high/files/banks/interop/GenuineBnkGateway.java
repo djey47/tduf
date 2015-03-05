@@ -4,8 +4,12 @@ import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
 import net.sf.jni4net.Bridge;
+import tdumoddinglibrary.fileformats.TduFile;
+import tdumoddinglibrary.fileformats.banks.BNK;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Bnk support, implementation relying on TDUMT .net assemblies.
@@ -15,7 +19,7 @@ public class GenuineBnkGateway implements BankSupport {
     static {
         try {
             Bridge.init();
-            // TODO Generate Assembly with CSC on Windows platform
+            // TODO Generate Assemblies with CSC on Windows platform
             Bridge.LoadAndRegisterAssemblyFrom(new File("libs/TduModdingLibrary.j4n.dll"));
         } catch (Exception e) {
             e.printStackTrace();
@@ -24,14 +28,25 @@ public class GenuineBnkGateway implements BankSupport {
 
     @Override
     public BankInfoDto getBankInfo(String bankFileName) {
-        return BankInfoDto.builder()
-                .fromYear(2015)
-                .withFileSize(1500)
-                .addPackedFile(PackedFileInfoDto.builder()
+
+        BNK bankFile = (BNK) TduFile.GetFile(bankFileName);
+
+        List<PackedFileInfoDto> packedFilesInfos = new ArrayList<>();
+
+        for (int i = 0 ; i < bankFile.getPackedFilesCount() ; i++) {
+            PackedFileInfoDto packedFileInfo = PackedFileInfoDto.builder()
                         .forReference("REF")
                         .withSize(500)
                         .withFullName("/euro/bnk/empty.bnk")
-                        .build())
+                        .build();
+
+            packedFilesInfos.add(packedFileInfo);
+        }
+
+        return BankInfoDto.builder()
+                .fromYear(bankFile.getYear())
+                .withFileSize(bankFile.getSize())
+                .addPackedFiles(packedFilesInfos)
                 .build();
     }
 
