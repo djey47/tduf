@@ -43,6 +43,12 @@ public class BankInfoDto {
             }
 
             @Override
+            public BankInfoDtoBuilder addPackedFiles(List<PackedFileInfoDto> packedFilesInfos) {
+                this.packedFiles.addAll(packedFilesInfos);
+                return this;
+            }
+
+            @Override
             public BankInfoDto build() {
                 BankInfoDto bankInfoDto = new BankInfoDto();
 
@@ -73,6 +79,8 @@ public class BankInfoDto {
         BankInfoDtoBuilder withFileSize(int fileSize);
 
         BankInfoDtoBuilder addPackedFile(PackedFileInfoDto packedFileInfoDto);
+
+        BankInfoDtoBuilder addPackedFiles(List<PackedFileInfoDto> packedFilesInfos);
 
         BankInfoDto build();
     }
