@@ -2,10 +2,9 @@ package fr.tduf.libunlimited.low.files.research.domain;
 
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectReader;
-import org.codehaus.jackson.node.JsonNodeFactory;
-import org.codehaus.jackson.node.ObjectNode;
+import org.codehaus.jackson.node.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -299,33 +298,13 @@ public class DataStore {
     /**
      * @return a String representation of store contents, on JSON format. Entries are ordered by rank.
      */
+    // TODO rank still necessary ?
     public String toJsonString() {
-        ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
+        ObjectNode rootNode = JsonNodeFactory.instance.objectNode();
 
-        this.getStore().entrySet().stream()
+        readFields(getFileStructure().getFields(), rootNode, "");
 
-                .sorted((mapEntry1, mapEntry2) -> mapEntry1.getValue().rank - mapEntry2.getValue().rank)
-
-                .forEach((mapEntry) -> {
-                    String key = mapEntry.getKey();
-                    Entry storeEntry = mapEntry.getValue();
-                    switch (storeEntry.type) {
-                        case TEXT:
-                            objectNode.put(key, rawToText(storeEntry.rawValue));
-                            break;
-                        case FPOINT:
-                            objectNode.put(key, rawToFloatingPoint(storeEntry.getRawValue()));
-                            break;
-                        case INTEGER:
-                            objectNode.put(key, rawToInteger(storeEntry.rawValue));
-                            break;
-                        default:
-                            objectNode.put(key, byteArrayToHexRepresentation(storeEntry.rawValue));
-                            break;
-                    }
-                });
-
-        return objectNode.toString();
+        return rootNode.toString();
     }
 
     /**
@@ -333,35 +312,10 @@ public class DataStore {
      * @param jsonInput : json String containing all values
      */
     public void fromJsonString(String jsonInput) throws IOException {
-        ObjectReader reader = new ObjectMapper().reader(Map.class);
-
-        Map<String, Object> intermediateMap = reader.readValue(jsonInput);
-
         this.getStore().clear();
-        intermediateMap.forEach((key, value) -> {
 
-            FileStructureDto.Type type = UNKNOWN;
-            byte[] rawValue = new byte[0];
-
-            if (value.getClass() == Double.class) {
-                type = FileStructureDto.Type.FPOINT;
-                Double doubleValue = (Double) value;
-                rawValue = TypeHelper.floatingPoint32ToRaw(doubleValue.floatValue());
-            } else if (value.getClass() == Integer.class) {
-                type = FileStructureDto.Type.INTEGER;
-                rawValue = TypeHelper.integerToRaw((Integer) value);
-            } else if (value.getClass() == String.class) {
-                String stringValue = (String) value;
-                try {
-                   rawValue = TypeHelper.hexRepresentationToByteArray(stringValue);
-                } catch (IllegalArgumentException e) {
-                    type = FileStructureDto.Type.TEXT;
-                    rawValue = TypeHelper.textToRaw(stringValue);
-                }
-            }
-
-            putEntry(key, type, rawValue);
-        });
+        JsonNode rootNode = new ObjectMapper().readTree(jsonInput);
+        readJsonNode(rootNode, "");
     }
 
     /**
@@ -372,6 +326,116 @@ public class DataStore {
      */
     public static String generateKeyPrefixForRepeatedField(String repeaterFieldName, long index) {
         return String.format(SUB_FIELD_PREFIX_FORMAT, repeaterFieldName, index);
+    }
+
+    // TODO refactor: shorten method
+    private void readJsonNode(JsonNode jsonNode, String parentKey) {
+
+        FileStructureDto.Type type = FileStructureDto.Type.GAP;
+        byte[] rawValue = new byte[0];
+
+        if (jsonNode instanceof ObjectNode) {
+
+            Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.getFields();
+            while(fields.hasNext()) {
+
+                Map.Entry<String, JsonNode> nextField = fields.next();
+                readJsonNode(nextField.getValue(), parentKey + nextField.getKey());
+            }
+
+        } else if (jsonNode instanceof ArrayNode) {
+
+            int elementIndex = 0;
+            Iterator<JsonNode> elements = jsonNode.getElements();
+            while(elements.hasNext()) {
+
+                JsonNode nextItem = elements.next();
+                readJsonNode(nextItem, generateKeyPrefixForRepeatedField(parentKey, elementIndex));
+
+                elementIndex++;
+            }
+
+        } else if (jsonNode instanceof DoubleNode) {
+
+            type = FileStructureDto.Type.FPOINT;
+            Double doubleValue = jsonNode.getDoubleValue();
+            rawValue = TypeHelper.floatingPoint32ToRaw(doubleValue.floatValue());
+
+        } else if (jsonNode instanceof IntNode) {
+
+            type = FileStructureDto.Type.INTEGER;
+            rawValue = TypeHelper.integerToRaw(jsonNode.getIntValue());
+
+        } else if (jsonNode instanceof TextNode) {
+
+            String stringValue = jsonNode.getTextValue();
+            try {
+                type = FileStructureDto.Type.UNKNOWN;
+                rawValue = TypeHelper.hexRepresentationToByteArray(stringValue);
+            } catch (IllegalArgumentException e) {
+                type = FileStructureDto.Type.TEXT;
+                rawValue = TypeHelper.textToRaw(stringValue);
+            }
+
+        }
+
+        if(type.isValueToBeStored()) {
+            putEntry(parentKey, type, rawValue);
+        }
+    }
+
+    // TODO refactor: shorten method
+    private boolean readFields(List<FileStructureDto.Field> fields, ObjectNode objectNode, String repeaterKey) {
+
+        for(FileStructureDto.Field field : fields) {
+
+            String fieldname = field.getName();
+            Entry storeEntry = this.getStore().get(repeaterKey + fieldname);
+
+            if (field.getType() == REPEATER) {
+
+                ArrayNode repeaterNode = objectNode.arrayNode();
+                objectNode.put(fieldname, repeaterNode);
+
+                int parsedCount = 0;
+                boolean hasMoreItems = true;
+                while(hasMoreItems) {
+                    ObjectNode itemNode = objectNode.objectNode();
+
+                    hasMoreItems = readFields(field.getSubFields(), itemNode, DataStore.generateKeyPrefixForRepeatedField(fieldname, parsedCount));
+
+                    if (hasMoreItems) {
+                        repeaterNode.add(itemNode);
+                        parsedCount++;
+                    }
+                }
+
+            } else if (storeEntry == null) {
+
+                return false;
+
+            } else {
+
+                switch (field.getType()) {
+                    case REPEATER:
+                        break;
+                    case TEXT:
+                        objectNode.put(fieldname, rawToText(storeEntry.rawValue));
+                        break;
+                    case FPOINT:
+                        objectNode.put(fieldname, rawToFloatingPoint(storeEntry.getRawValue()));
+                        break;
+                    case INTEGER:
+                        objectNode.put(fieldname, rawToInteger(storeEntry.rawValue));
+                        break;
+                    default:
+                        objectNode.put(fieldname, byteArrayToHexRepresentation(storeEntry.rawValue));
+                        break;
+                }
+
+            }
+        }
+        return true;
     }
 
     private static String generateKeyForRepeatedField(String repeaterFieldName, String repeatedFieldName, long index) {

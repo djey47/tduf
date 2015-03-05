@@ -1,9 +1,11 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.assertj.core.data.MapEntry;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -20,7 +22,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 //FIXME https://github.com/joel-costigliola/assertj-core/issues/293
 public class DataStoreTest {
 
-    private final DataStore dataStore = new DataStore(FileStructureDto.builder().build());
+    private DataStore dataStore;
+
+    @Before
+    public void setUp() throws IOException {
+        dataStore = new DataStore(getFileStructure());
+    }
 
     @Test
     public void clearAll_shouldRemoveAllEntries() throws Exception {
@@ -459,5 +466,9 @@ public class DataStoreTest {
 
     private static String getStoreContentsAsJson() throws URISyntaxException, IOException {
         return FilesHelper.readTextFromResourceFile("/files/json/store.json");
+    }
+
+    private static FileStructureDto getFileStructure() throws IOException {
+        return StructureHelper.retrieveStructureFromLocation("/files/structures/TEST-datastore-map.json");
     }
 }
