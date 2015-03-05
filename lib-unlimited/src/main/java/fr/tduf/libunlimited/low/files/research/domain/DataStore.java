@@ -399,7 +399,7 @@ public class DataStore {
 
                 int parsedCount = 0;
                 boolean hasMoreItems = true;
-                while(hasMoreItems) {
+                while (hasMoreItems) {
                     ObjectNode itemNode = objectNode.objectNode();
 
                     hasMoreItems = readFields(field.getSubFields(), itemNode, DataStore.generateKeyPrefixForRepeatedField(fieldname, parsedCount));
@@ -409,28 +409,29 @@ public class DataStore {
                         parsedCount++;
                     }
                 }
+            } else if (field.getType().isValueToBeStored()) {
+                if (storeEntry == null) {
 
-            } else if (storeEntry == null) {
+                    return false;
 
-                return false;
+                } else {
 
-            } else {
-
-                switch (field.getType()) {
-                    case REPEATER:
-                        break;
-                    case TEXT:
-                        objectNode.put(fieldname, rawToText(storeEntry.rawValue));
-                        break;
-                    case FPOINT:
-                        objectNode.put(fieldname, rawToFloatingPoint(storeEntry.getRawValue()));
-                        break;
-                    case INTEGER:
-                        objectNode.put(fieldname, rawToInteger(storeEntry.rawValue));
-                        break;
-                    default:
-                        objectNode.put(fieldname, byteArrayToHexRepresentation(storeEntry.rawValue));
-                        break;
+                    switch (field.getType()) {
+                        case REPEATER:
+                            break;
+                        case TEXT:
+                            objectNode.put(fieldname, rawToText(storeEntry.rawValue));
+                            break;
+                        case FPOINT:
+                            objectNode.put(fieldname, rawToFloatingPoint(storeEntry.getRawValue()));
+                            break;
+                        case INTEGER:
+                            objectNode.put(fieldname, rawToInteger(storeEntry.rawValue));
+                            break;
+                        default:
+                            objectNode.put(fieldname, byteArrayToHexRepresentation(storeEntry.rawValue));
+                            break;
+                    }
                 }
 
             }

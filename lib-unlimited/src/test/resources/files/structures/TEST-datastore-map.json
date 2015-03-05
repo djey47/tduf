@@ -3,10 +3,20 @@
   "littleEndian" : false,
   "fields" : [
     {
+      "name": "gap",
+      "type": "GAP",
+      "size": 2
+    },
+    {
       "name": "entry_list",
       "type": "REPEATER",
       "size": 3,
       "subFields": [
+        {
+          "name": "my_gap",
+          "type": "GAP",
+          "size": 3
+        },
         {
           "name": "my_field",
           "type": "INTEGER",
