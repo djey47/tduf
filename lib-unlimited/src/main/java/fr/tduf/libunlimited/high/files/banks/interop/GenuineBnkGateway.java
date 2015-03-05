@@ -3,11 +3,25 @@ package fr.tduf.libunlimited.high.files.banks.interop;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
+import net.sf.jni4net.Bridge;
+
+import java.io.File;
 
 /**
  * Bnk support, implementation relying on TDUMT .net assemblies.
  */
 public class GenuineBnkGateway implements BankSupport {
+
+    static {
+        try {
+            Bridge.init();
+            // TODO Generate Assembly with CSC on Windows platform
+            Bridge.LoadAndRegisterAssemblyFrom(new File("libs/TduModdingLibrary.j4n.dll"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public BankInfoDto getBankInfo(String bankFileName) {
         return BankInfoDto.builder()

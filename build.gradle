@@ -25,17 +25,17 @@ subprojects {
     repositories {
         mavenCentral()
 
-        flatDir {
-            dirs 'libs'
+        maven {
+            url 'https://jni4net.googlecode.com/svn/mvnrepo/'
         }
+
+        flatDir name: 'interopRepository', dirs: 'libs'
     }
 
     dependencies {
         compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
         compile group: 'com.google.guava', name: 'guava', version: '18.0'
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3.2'
-        compile group: 'ndet.sf.jni4net', name: 'jni4net.j', version: '0.8.8.0'
-        compile name: 'TDUModdingLibrary.j4n.jar'
 
         testCompile group: 'junit', name: 'junit', version: '4.11'
         testCompile group: 'org.assertj', name: 'assertj-core-java8', version: '1.0.0m1'
@@ -135,6 +135,8 @@ project(':cli') {
 project('lib-unlimited') {
     dependencies {
         compile group: 'net.objecthunter', name: 'exp4j', version: '0.4.4'
+        compile group: 'net.sf.jni4net', name: 'jni4net.j', version: '0.8.7.0'
+        compile name: 'TDUModdingLibrary.j4n.jar'
     }
 
     task copyStructures(type: Copy) {
