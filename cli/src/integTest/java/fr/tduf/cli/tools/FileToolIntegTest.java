@@ -10,6 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FileToolIntegTest {
 
+    private final String testRootDirectory = "integ-tests/";
+
     private final String sourceFileNameToBeEncrypted = "TDU_CarColors.json";
     private final String sourceFileNameToBeJsonified = "Brutal.btrq";
     private final String jsonifiedFileName = "Brutal.json";
@@ -17,12 +19,16 @@ public class FileToolIntegTest {
     private final String sourceUnencryptedFileName = "Brutal.btrq.ref.dec";
 
     private final String encryptedFileName = "TDU_CarColors.json.enc";
-    private final String sourceDirectoryForEncryption = "integ-tests/crypto";
-    private final String decryptDirectory = "integ-tests/unencrypted";
-    private final String encryptDirectory = "integ-tests/encrypted";
-    private final String jsonifyDirectory = "integ-tests/jsonified";
-    private final String applyjsonDirectory = "integ-tests/applied";
+    private final String sourceDirectoryForEncryption = testRootDirectory + "crypto";
+    private final String decryptDirectory = testRootDirectory + "unencrypted";
+    private final String encryptDirectory = testRootDirectory + "encrypted";
+    private final String jsonifyDirectory = testRootDirectory + "jsonified";
+    private final String applyjsonDirectory = testRootDirectory + "applied";
 
+    private final String bankDirectory = testRootDirectory + "banks";
+    private final String unpackedDirectory = testRootDirectory + "unpacked";
+    private final String repackedDirectory = testRootDirectory + "repacked";
+    private final String bankFileName =  "Bank.bnk";
 
     @Before
     public void setUp() {
@@ -32,6 +38,9 @@ public class FileToolIntegTest {
         new File(jsonifyDirectory).mkdirs();
         new File(applyjsonDirectory).mkdirs();
 
+        new File(unpackedDirectory).mkdirs();
+        new File(repackedDirectory).mkdirs();
+
         new File(encryptDirectory, encryptedFileName).delete();
         new File(decryptDirectory, sourceFileNameToBeEncrypted).delete();
 
@@ -39,13 +48,15 @@ public class FileToolIntegTest {
         new File(applyjsonDirectory, sourceFileNameToBeJsonified).delete();
         new File(applyjsonDirectory, appliedUnencryptedFileName).delete();
         new File(applyjsonDirectory, sourceUnencryptedFileName).delete();
+
+        new File(repackedDirectory, bankFileName).delete();
     }
 
     @Test
     public void encryptDecrypt_whenSavegameMode_shouldGiveOriginalFileBack() throws IOException {
         // WHEN: encrypt
         System.out.println("-> Encrypt!");
-        FileTool.main(new String[] { "encrypt", "-i", "integ-tests/crypto/TDU_CarColors.json", "-o", "integ-tests/encrypted/TDU_CarColors.json.enc", "-c", "0"});
+        FileTool.main(new String[]{"encrypt", "-i", sourceDirectoryForEncryption + "/" + sourceFileNameToBeEncrypted, "-o", encryptDirectory + "/" + encryptedFileName, "-c", "0"});
 
         // THEN: file should exist
         assertThat(new File(encryptDirectory, encryptedFileName)).exists();
@@ -53,19 +64,19 @@ public class FileToolIntegTest {
 
         // WHEN: decrypt
         System.out.println("-> Decrypt!");
-        FileTool.main(new String[] { "decrypt", "-i", "integ-tests/encrypted/TDU_CarColors.json.enc", "-o", "integ-tests/unencrypted/TDU_CarColors.json", "-c", "0"});
+        FileTool.main(new String[]{"decrypt", "-i", encryptDirectory + "/" + encryptedFileName, "-o", decryptDirectory + "/" + sourceFileNameToBeEncrypted, "-c", "0"});
 
         // THEN: file should exist and have same contents as original one
         File actualFile = new File(decryptDirectory, sourceFileNameToBeEncrypted);
         assertThat(actualFile).exists();
-        assertThat(actualFile).hasContentEqualTo(new File (sourceDirectoryForEncryption, sourceFileNameToBeEncrypted));
+        assertThat(actualFile).hasContentEqualTo(new File(sourceDirectoryForEncryption, sourceFileNameToBeEncrypted));
     }
 
     @Test
     public void encryptDecrypt_whenDatabaseMode_shouldGiveOriginalFileBack() throws IOException {
         // WHEN: encrypt
         System.out.println("-> Encrypt!");
-        FileTool.main(new String[] { "encrypt", "-i", "integ-tests/crypto/TDU_CarColors.json", "-o", "integ-tests/encrypted/TDU_CarColors.json.enc", "-c", "1"});
+        FileTool.main(new String[] { "encrypt", "-i", sourceDirectoryForEncryption + "/" + sourceFileNameToBeEncrypted, "-o", encryptDirectory + "/" + encryptedFileName, "-c", "1"});
 
         // THEN: file should exist
         assertThat(new File(encryptDirectory, encryptedFileName)).exists();
@@ -73,7 +84,7 @@ public class FileToolIntegTest {
 
         // WHEN: decrypt
         System.out.println("-> Decrypt!");
-        FileTool.main(new String[] { "decrypt", "-i", "integ-tests/encrypted/TDU_CarColors.json.enc", "-o", "integ-tests/unencrypted/TDU_CarColors.json", "-c", "1"});
+        FileTool.main(new String[] { "decrypt", "-i", encryptDirectory + "/" + encryptedFileName, "-o", decryptDirectory + "/" + sourceFileNameToBeEncrypted, "-c", "1"});
 
         // THEN: file should exist and have same contents as original one
         File actualFile = new File(decryptDirectory, sourceFileNameToBeEncrypted);
@@ -83,9 +94,12 @@ public class FileToolIntegTest {
 
     @Test
     public void jsonifyApplyJson_whenEncryptedContents_shouldGiveOriginalContentsBack() throws IOException {
+        String researchDirectory = testRootDirectory + "research";
+        String structureFileName = researchDirectory + "/" + "BTRQ-map.json";
+
         // WHEN: jsonify
         System.out.println("-> Jsonify!");
-        FileTool.main(new String[] { "jsonify", "-i", "integ-tests/research/Brutal.btrq", "-o", "integ-tests/jsonified/Brutal.json", "-s", "integ-tests/research/BTRQ-map.json" });
+        FileTool.main(new String[] { "jsonify", "-i", researchDirectory + "/" + sourceFileNameToBeJsonified, "-o", jsonifyDirectory + "/" + jsonifiedFileName, "-s", structureFileName});
 
         // THEN: file should exist
         assertThat(new File(jsonifyDirectory, jsonifiedFileName)).exists();
@@ -93,7 +107,7 @@ public class FileToolIntegTest {
 
         // WHEN: applyJson
         System.out.println("-> Applyjson!");
-        FileTool.main(new String[] { "applyjson", "-i", "integ-tests/jsonified/Brutal.json", "-o", "integ-tests/applied/Brutal.btrq", "-s", "integ-tests/research/BTRQ-map.json" });
+        FileTool.main(new String[] { "applyjson", "-i", jsonifyDirectory + "/" + jsonifiedFileName, "-o", applyjsonDirectory + "/" + sourceFileNameToBeJsonified, "-s", structureFileName});
 
         // THEN: file should exist
         assertThat(new File(applyjsonDirectory, sourceFileNameToBeJsonified)).exists();
@@ -101,8 +115,8 @@ public class FileToolIntegTest {
 
         // WHEN: decrypt both files
         System.out.println("-> Decrypt!");
-        FileTool.main(new String[]{"decrypt", "-i", "integ-tests/applied/Brutal.btrq", "-o", "integ-tests/applied/Brutal.btrq.dec", "-c", "1"});
-        FileTool.main(new String[] { "decrypt", "-i", "integ-tests/research/Brutal.btrq", "-o", "integ-tests/applied/Brutal.btrq.ref.dec", "-c", "1"});
+        FileTool.main(new String[]{"decrypt", "-i", applyjsonDirectory + "/" + sourceFileNameToBeJsonified, "-o", applyjsonDirectory + "/" + appliedUnencryptedFileName, "-c", "1"});
+        FileTool.main(new String[] { "decrypt", "-i", researchDirectory + "/" + sourceFileNameToBeJsonified, "-o", applyjsonDirectory + "/" + sourceUnencryptedFileName, "-c", "1"});
 
         // THEN: file should exist and match reference one, once unencrypted
         File actualFile = new File(applyjsonDirectory, appliedUnencryptedFileName);
@@ -115,9 +129,11 @@ public class FileToolIntegTest {
 
     @Test
     public void bankInfo_shouldReturnInformation() throws IOException {
+        String emptyBankFileName = "Empty.bnk";
+
         // WHEN
         System.out.println("-> Bankinfo!");
-        FileTool.main(new String[] { "bankinfo", "-i", "integ-tests/banks/Empty.bnk" });
+        FileTool.main(new String[] { "bankinfo", "-i", bankDirectory + "/" + emptyBankFileName});
 
         // THEN: no exception
     }
@@ -125,19 +141,17 @@ public class FileToolIntegTest {
     //TODO add assertions when feature complete
     @Test
     public void unpackRepackBankInfo_shouldReturnInformation() throws IOException {
-        String unpackedDirectory = "integ-tests/unpacked";
-
         // WHEN
         System.out.println("-> Unpack!");
-        FileTool.main(new String[] { "unpack", "-i", "integ-tests/banks/Bank.bnk", "-o", unpackedDirectory });
+        FileTool.main(new String[] { "unpack", "-i", bankDirectory + "/" + bankFileName, "-o", unpackedDirectory });
 
         // WHEN
         System.out.println("-> Repack!");
-        FileTool.main(new String[] { "repack", "-i", unpackedDirectory, "-o", "integ-tests/repacked/Bank.bnk" });
+        FileTool.main(new String[]{"repack", "-i", unpackedDirectory, "-o", repackedDirectory + "/" + bankFileName});
 
         // WHEN
         System.out.println("-> Bankinfo!");
-        FileTool.main(new String[] { "bankinfo", "-i", "integ-tests/repacked/Bank.bnk" });
+        FileTool.main(new String[] { "bankinfo", "-i", repackedDirectory + "/" + bankFileName });
 
         // THEN: no exception
     }
