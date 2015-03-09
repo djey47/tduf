@@ -8,7 +8,9 @@ import tdumoddinglibrary.fileformats.TduFile;
 import tdumoddinglibrary.fileformats.banks.BNK;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.List;
 
@@ -54,13 +56,45 @@ public class GenuineBnkGateway implements BankSupport {
     }
 
     @Override
-    public void extractAll(String bankFileName, String outputDirectory) {
-        // TODO make copy of BNK to outputDirectory (will make future repacking easier)
+    public void extractAll(String bankFileName, String outputDirectory) throws IOException {
+
+        File originalBankFileName = new File(bankFileName);
+        File copyBankFileName = new File(outputDirectory, "originalBank.bnk");
+        Files.copy(originalBankFileName.toPath(), copyBankFileName.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        BNK bankFile = (BNK) TduFile.GetFile(bankFileName);
+
+        Collection<String> packedFilesNames = (Collection<String>) bankFile.GetPackedFilesPaths(null);
+
+        packedFilesNames.stream()
+
+                .forEach((filePath) -> extractPackedFileWithFullPath(bankFile, filePath, outputDirectory));
+
     }
 
     @Override
     public void packAll(String inputDirectory, String outputBankFileName) {
 
+    }
+
+    private static void extractPackedFileWithFullPath(BNK bankFile, String filePath, String outputDirectory) {
+        bankFile.ExtractPackedFile(filePath, outputDirectory, true);
+
+        String fileName = extractFileNameFromPath(filePath);
+
+        // TODO check file paths
+        File extractedFile = new File(outputDirectory, fileName);
+        File targetFile = new File(outputDirectory, filePath);
+        try {
+            Files.move(extractedFile.toPath(), targetFile.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static String extractFileNameFromPath(String filePath) {
+        // TODO
+        return null;
     }
 
     private static String generatePackedFileReference(String fileName) {

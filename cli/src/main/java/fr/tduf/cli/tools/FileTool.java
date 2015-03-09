@@ -203,7 +203,7 @@ public class FileTool extends GenericTool {
         System.out.println("Done creating Bank: " + this.outputFile + ".");
     }
 
-    private void unpack() {
+    private void unpack() throws IOException {
         System.out.println("Will use Bank file: " + this.inputFile);
 
         FilesHelper.createDirectoryIfNotExists(this.outputFile);
