@@ -37,6 +37,7 @@ public class DataStore {
 
     /**
      * Creates a datastore.
+     *
      * @param fileStructure : structure of stored file contents.
      */
     public DataStore(FileStructureDto fileStructure) {
@@ -54,6 +55,7 @@ public class DataStore {
 
     /**
      * Adds provided bytes to the store, if type is stor-able.
+     *
      * @param fieldName : identifier of field hosting the value, should not exist already
      * @param type      : value type
      * @param rawValue  : value to store
@@ -68,6 +70,7 @@ public class DataStore {
 
     /**
      * Adds a String value to the store.
+     *
      * @param fieldName : identifier of field hosting the value, should not exist already
      * @param value     : value to store
      */
@@ -77,6 +80,7 @@ public class DataStore {
 
     /**
      * Adds an Integer value to the store.
+     *
      * @param fieldName : identifier of field hosting the value, should not exist already
      * @param value     : value to store
      */
@@ -86,6 +90,7 @@ public class DataStore {
 
     /**
      * Adds a Floating Point value (32 bit) to the store.
+     *
      * @param fieldName : identifier of field hosting the value, should not exist already
      * @param value     : value to store
      */
@@ -95,6 +100,7 @@ public class DataStore {
 
     /**
      * Adds a Floating Point value (16 bit) to the store.
+     *
      * @param fieldName : identifier of field hosting the value, should not exist already
      * @param value     : value to store
      */
@@ -104,6 +110,7 @@ public class DataStore {
 
     /**
      * Adds a repeated field to the store.
+     *
      * @param repeaterFieldName : identifier of repeater field
      * @param fieldName         : identifier of field hosting the value
      * @param index             : rank in repeater
@@ -116,6 +123,7 @@ public class DataStore {
 
     /**
      * Adds a repeated field to the store.
+     *
      * @param repeaterFieldName : identifier of repeater field
      * @param fieldName         : identifier of field hosting the value
      * @param index             : rank in repeater
@@ -128,6 +136,7 @@ public class DataStore {
 
     /**
      * Adds a repeated field to the store.
+     *
      * @param repeaterFieldName : identifier of repeater field
      * @param fieldName         : identifier of field hosting the value
      * @param index             : rank in repeater
@@ -140,6 +149,7 @@ public class DataStore {
 
     /**
      * Adds a repeated field to the store.
+     *
      * @param repeaterFieldName : identifier of repeater field
      * @param fieldName         : identifier of field hosting the value
      * @param index             : rank in repeater
@@ -159,13 +169,14 @@ public class DataStore {
 
     /**
      * Returns all bytes from the store.
+     *
      * @param fieldName : identifier of field hosting the value
      * @return the stored raw value whose key match provided identifier, or empty if it does not exist
      */
     public Optional<byte[]> getRawValue(String fieldName) {
         Entry entry = this.store.get(fieldName);
 
-        if(entry == null) {
+        if (entry == null) {
             return Optional.empty();
         }
 
@@ -174,6 +185,7 @@ public class DataStore {
 
     /**
      * Returns a String value from the store.
+     *
      * @param fieldName :   name of field to search
      * @return the stored value whose key match provided identifier, or empty if it does not exist
      */
@@ -191,6 +203,7 @@ public class DataStore {
 
     /**
      * Returns a long value from the store.
+     *
      * @param fieldName :   name of field to search
      * @return the stored value whose key match provided identifier, or empty if it does not exist
      */
@@ -208,6 +221,7 @@ public class DataStore {
 
     /**
      * Returns a 16-bit/32-bit floating point value from the store.
+     *
      * @param fieldName :   name of field to search
      * @return the stored value whose key match provided identifier, or empty if it does not exist
      */
@@ -225,6 +239,7 @@ public class DataStore {
 
     /**
      * Returns a list of numeric integer values from the store.
+     *
      * @param fieldName : name of field to search
      * @return all stored values whose key match provided identifier
      */
@@ -246,6 +261,7 @@ public class DataStore {
 
     /**
      * Returns a list of numeric floating point values from the store.
+     *
      * @param fieldName : name of field to search
      * @return all stored values whose key match provided identifier
      */
@@ -266,7 +282,8 @@ public class DataStore {
 
     /**
      * Returns sub-DataStores of items contained by a repeater field.
-     * @param repeaterFieldName   : name of repeater field
+     *
+     * @param repeaterFieldName : name of repeater field
      */
     public List<DataStore> getRepeatedValues(String repeaterFieldName) {
         Map<Integer, List<String>> groupedKeysByIndex = store.keySet().stream()
@@ -280,7 +297,7 @@ public class DataStore {
 
         List<DataStore> repeatedValues = createEmptyList(groupedKeysByIndex.size(), this.getFileStructure());
 
-        for(Integer index : groupedKeysByIndex.keySet()) {
+        for (Integer index : groupedKeysByIndex.keySet()) {
 
             DataStore subDataStore = repeatedValues.get(index);
 
@@ -301,24 +318,27 @@ public class DataStore {
     public String toJsonString() {
         ObjectNode rootNode = JsonNodeFactory.instance.objectNode();
 
-        readFields(getFileStructure().getFields(), rootNode, "");
+        readStructureFields(getFileStructure().getFields(), rootNode, "");
 
         return rootNode.toString();
     }
 
     /**
      * Replaces current store contents with those in provided JSON String.
+     *
      * @param jsonInput : json String containing all values
      */
     public void fromJsonString(String jsonInput) throws IOException {
         this.getStore().clear();
 
         JsonNode rootNode = new ObjectMapper().readTree(jsonInput);
+
         readJsonNode(rootNode, "");
     }
 
     /**
      * Returns key prefix for repeated (under repeater) field.
+     *
      * @param repeaterFieldName : name of parent, repeater field
      * @param index             : item rank in repeater
      * @return a prefix allowing to parse sub-fields.
@@ -336,7 +356,7 @@ public class DataStore {
         if (jsonNode instanceof ObjectNode) {
 
             Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.getFields();
-            while(fields.hasNext()) {
+            while (fields.hasNext()) {
 
                 Map.Entry<String, JsonNode> nextField = fields.next();
                 readJsonNode(nextField.getValue(), parentKey + nextField.getKey());
@@ -346,7 +366,7 @@ public class DataStore {
 
             int elementIndex = 0;
             Iterator<JsonNode> elements = jsonNode.getElements();
-            while(elements.hasNext()) {
+            while (elements.hasNext()) {
 
                 JsonNode nextItem = elements.next();
                 readJsonNode(nextItem, generateKeyPrefixForRepeatedField(parentKey, elementIndex));
@@ -378,64 +398,71 @@ public class DataStore {
 
         }
 
-        if(type.isValueToBeStored()) {
+        if (type.isValueToBeStored()) {
             putEntry(parentKey, type, rawValue);
         }
     }
 
-    // TODO refactor: shorten method
-    private boolean readFields(List<FileStructureDto.Field> fields, ObjectNode objectNode, String repeaterKey) {
+    private boolean readStructureFields(List<FileStructureDto.Field> fields, ObjectNode currentObjectNode, String repeaterKey) {
 
-        for(FileStructureDto.Field field : fields) {
+        for (FileStructureDto.Field field : fields) {
 
-            String fieldname = field.getName();
-            Entry storeEntry = this.getStore().get(repeaterKey + fieldname);
+            String fieldName = field.getName();
+            FileStructureDto.Type fieldType = field.getType();
 
-            if (field.getType() == REPEATER) {
+            if (REPEATER == fieldType) {
 
-                ArrayNode repeaterNode = objectNode.arrayNode();
-                objectNode.put(fieldname, repeaterNode);
+                readRepeatedFields(field.getSubFields(), currentObjectNode, fieldName);
 
-                int parsedCount = 0;
-                boolean hasMoreItems = true;
-                while (hasMoreItems) {
-                    ObjectNode itemNode = objectNode.objectNode();
+            } else if (fieldType.isValueToBeStored()) {
 
-                    hasMoreItems = readFields(field.getSubFields(), itemNode, DataStore.generateKeyPrefixForRepeatedField(fieldname, parsedCount));
-
-                    if (hasMoreItems) {
-                        repeaterNode.add(itemNode);
-                        parsedCount++;
-                    }
-                }
-            } else if (field.getType().isValueToBeStored()) {
+                Entry storeEntry = this.getStore().get(repeaterKey + fieldName);
                 if (storeEntry == null) {
-
                     return false;
-
-                } else {
-
-                    switch (field.getType()) {
-                        case REPEATER:
-                            break;
-                        case TEXT:
-                            objectNode.put(fieldname, rawToText(storeEntry.rawValue));
-                            break;
-                        case FPOINT:
-                            objectNode.put(fieldname, rawToFloatingPoint(storeEntry.getRawValue()));
-                            break;
-                        case INTEGER:
-                            objectNode.put(fieldname, rawToInteger(storeEntry.rawValue));
-                            break;
-                        default:
-                            objectNode.put(fieldname, byteArrayToHexRepresentation(storeEntry.rawValue));
-                            break;
-                    }
                 }
 
+                readRegularField(field, currentObjectNode, storeEntry);
             }
         }
+
         return true;
+    }
+
+    private void readRepeatedFields(List<FileStructureDto.Field> repeatedFields, ObjectNode objectNode, String repeaterFieldName) {
+        ArrayNode repeaterNode = objectNode.arrayNode();
+        objectNode.put(repeaterFieldName, repeaterNode);
+
+        int parsedCount = -1;
+        boolean hasMoreItems = true;
+        while (hasMoreItems) {
+            ObjectNode itemNode = objectNode.objectNode();
+
+            hasMoreItems = readStructureFields(repeatedFields, itemNode, DataStore.generateKeyPrefixForRepeatedField(repeaterFieldName, ++parsedCount));
+
+            if (hasMoreItems) {
+                repeaterNode.add(itemNode);
+            }
+        }
+    }
+
+    private static void readRegularField(FileStructureDto.Field currentField, ObjectNode currentObjectNode, Entry storeEntry) {
+        FileStructureDto.Type fieldType = currentField.getType();
+        String fieldName = currentField.getName();
+
+        switch (fieldType) {
+            case TEXT:
+                currentObjectNode.put(fieldName, rawToText(storeEntry.rawValue));
+                break;
+            case FPOINT:
+                currentObjectNode.put(fieldName, rawToFloatingPoint(storeEntry.getRawValue()));
+                break;
+            case INTEGER:
+                currentObjectNode.put(fieldName, rawToInteger(storeEntry.rawValue));
+                break;
+            default:
+                currentObjectNode.put(fieldName, byteArrayToHexRepresentation(storeEntry.rawValue));
+                break;
+        }
     }
 
     private static String generateKeyForRepeatedField(String repeaterFieldName, String repeatedFieldName, long index) {
@@ -446,7 +473,7 @@ public class DataStore {
     private static List<DataStore> createEmptyList(int size, FileStructureDto fileStructure) {
         List<DataStore> list = new ArrayList<>(size);
 
-        for (int i = 0 ; i < size ; i++) {
+        for (int i = 0; i < size; i++) {
             list.add(new DataStore(fileStructure));
         }
 
