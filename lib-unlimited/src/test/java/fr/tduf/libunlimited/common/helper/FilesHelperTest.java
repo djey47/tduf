@@ -5,11 +5,11 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-// TODO complete tests
 public class FilesHelperTest {
 
     private String tempDirectory;
@@ -42,5 +42,39 @@ public class FilesHelperTest {
         File actualDirectory = new File(directoryToCreate);
         assertThat(actualDirectory).exists();
         assertThat(actualDirectory).isDirectory();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void readTextFromResourceFile_whenResourceNotFound_shouldThrowNullPointerException() throws IOException, URISyntaxException {
+        // GIVEN-WHEN
+        FilesHelper.readTextFromResourceFile("/not a resource/");
+
+        // THEN: exception
+    }
+
+    @Test
+    public void readTextFromResourceFile_whenResourceFound_shouldReturnContents() throws IOException, URISyntaxException {
+        // GIVEN-WHEN
+        String actualContents = FilesHelper.readTextFromResourceFile("/files/file.txt");
+
+        // THEN
+        assertThat(actualContents).hasSize(128);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void readBytesFromResourceFile_whenResourceNotFound_shouldThrowNullPointerException() throws IOException, URISyntaxException {
+        // GIVEN-WHEN
+        FilesHelper.readBytesFromResourceFile("/not a resource/");
+
+        // THEN: exception
+    }
+
+    @Test
+    public void readBytesFromResourceFile_whenResourceFound_shouldReturnContents() throws IOException, URISyntaxException {
+        // GIVEN-WHEN
+        byte[] actualContents = FilesHelper.readBytesFromResourceFile("/files/file.txt");
+
+        // THEN
+        assertThat(actualContents).hasSize(128);
     }
 }
