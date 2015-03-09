@@ -432,13 +432,12 @@ public class DataStore {
         ArrayNode repeaterNode = objectNode.arrayNode();
         objectNode.put(repeaterFieldName, repeaterNode);
 
-        // TODO Prefer post increment
-        int parsedCount = -1;
+        int parsedCount = 0;
         boolean hasMoreItems = true;
         while (hasMoreItems) {
             ObjectNode itemNode = objectNode.objectNode();
 
-            hasMoreItems = readStructureFields(repeatedFields, itemNode, DataStore.generateKeyPrefixForRepeatedField(repeaterFieldName, ++parsedCount));
+            hasMoreItems = readStructureFields(repeatedFields, itemNode, DataStore.generateKeyPrefixForRepeatedField(repeaterFieldName, parsedCount++));
 
             if (hasMoreItems) {
                 repeaterNode.add(itemNode);
