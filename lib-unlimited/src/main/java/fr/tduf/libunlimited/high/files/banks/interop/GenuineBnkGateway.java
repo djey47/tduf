@@ -9,7 +9,10 @@ import tdumoddinglibrary.fileformats.banks.BNK;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Bnk support, implementation relying on TDUMT .net assemblies.
@@ -31,17 +34,17 @@ public class GenuineBnkGateway implements BankSupport {
 
         BNK bankFile = (BNK) TduFile.GetFile(bankFileName);
 
-        List<PackedFileInfoDto> packedFilesInfos = new ArrayList<>();
+        Collection<String> packedFilesNames = (Collection<String>) bankFile.GetPackedFilesPaths(null);
 
-        for (int i = 0 ; i < bankFile.getPackedFilesCount() ; i++) {
-            PackedFileInfoDto packedFileInfo = PackedFileInfoDto.builder()
-                        .forReference("REF")
-                        .withSize(500)
-                        .withFullName("/euro/bnk/empty.bnk")
-                        .build();
+        List<PackedFileInfoDto> packedFilesInfos = packedFilesNames.stream()
 
-            packedFilesInfos.add(packedFileInfo);
-        }
+                .map((fileName) -> PackedFileInfoDto.builder()
+                        .forReference(generatePackedFileReference(fileName))
+                        .withSize((int) bankFile.GetPackedFileSize(fileName))
+                        .withFullName(fileName)
+                        .build())
+
+                .collect(toList());
 
         return BankInfoDto.builder()
                 .fromYear(bankFile.getYear())
@@ -58,5 +61,9 @@ public class GenuineBnkGateway implements BankSupport {
     @Override
     public void packAll(String inputDirectory, String outputBankFileName) {
 
+    }
+
+    private static String generatePackedFileReference(String fileName) {
+        return Integer.valueOf(fileName.hashCode()).toString();
     }
 }
