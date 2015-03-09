@@ -347,7 +347,6 @@ public class DataStore {
         return String.format(SUB_FIELD_PREFIX_FORMAT, repeaterFieldName, index);
     }
 
-    // TODO refactor: shorten method
     private void readJsonNode(JsonNode jsonNode, String parentKey) {
 
         FileStructureDto.Type type = FileStructureDto.Type.GAP;
@@ -355,30 +354,16 @@ public class DataStore {
 
         if (jsonNode instanceof ObjectNode) {
 
-            Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.getFields();
-            while (fields.hasNext()) {
-
-                Map.Entry<String, JsonNode> nextField = fields.next();
-                readJsonNode(nextField.getValue(), parentKey + nextField.getKey());
-            }
+            readJsonObjectNode(jsonNode, parentKey);
 
         } else if (jsonNode instanceof ArrayNode) {
 
-            int elementIndex = 0;
-            Iterator<JsonNode> elements = jsonNode.getElements();
-            while (elements.hasNext()) {
-
-                JsonNode nextItem = elements.next();
-                readJsonNode(nextItem, generateKeyPrefixForRepeatedField(parentKey, elementIndex));
-
-                elementIndex++;
-            }
+            readJsonArrayNode(jsonNode, parentKey);
 
         } else if (jsonNode instanceof DoubleNode) {
 
             type = FileStructureDto.Type.FPOINT;
-            Double doubleValue = jsonNode.getDoubleValue();
-            rawValue = TypeHelper.floatingPoint32ToRaw(doubleValue.floatValue());
+            rawValue = TypeHelper.floatingPoint32ToRaw(((Double) jsonNode.getDoubleValue()).floatValue());
 
         } else if (jsonNode instanceof IntNode) {
 
@@ -395,11 +380,26 @@ public class DataStore {
                 type = FileStructureDto.Type.TEXT;
                 rawValue = TypeHelper.textToRaw(stringValue);
             }
-
         }
 
         if (type.isValueToBeStored()) {
             putEntry(parentKey, type, rawValue);
+        }
+    }
+
+    private void readJsonArrayNode(JsonNode jsonNode, String parentKey) {
+        int elementIndex = 0;
+        Iterator<JsonNode> elements = jsonNode.getElements();
+        while (elements.hasNext()) {
+            readJsonNode(elements.next(), generateKeyPrefixForRepeatedField(parentKey, elementIndex++));
+        }
+    }
+
+    private void readJsonObjectNode(JsonNode jsonNode, String parentKey) {
+        Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.getFields();
+        while (fields.hasNext()) {
+            Map.Entry<String, JsonNode> nextField = fields.next();
+            readJsonNode(nextField.getValue(), parentKey + nextField.getKey());
         }
     }
 
@@ -432,6 +432,7 @@ public class DataStore {
         ArrayNode repeaterNode = objectNode.arrayNode();
         objectNode.put(repeaterFieldName, repeaterNode);
 
+        // TODO Prefer post increment
         int parsedCount = -1;
         boolean hasMoreItems = true;
         while (hasMoreItems) {
