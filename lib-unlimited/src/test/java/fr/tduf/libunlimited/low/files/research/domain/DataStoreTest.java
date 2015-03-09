@@ -43,22 +43,6 @@ public class DataStoreTest {
     }
 
     @Test
-    public void addValue_shouldSetEntryRankSequentially() throws Exception {
-        // GIVEN
-        byte[] rawValue = { 0x0, 0x1, 0x2, 0x3 };
-
-        // WHEN
-        dataStore.addValue("f1", UNKNOWN, rawValue);
-        dataStore.addValue("f2", UNKNOWN, rawValue);
-        dataStore.addValue("f3", UNKNOWN, rawValue);
-
-        // THEN
-        assertThat(dataStore.getStore().get("f1").getRank()).isEqualTo(0);
-        assertThat(dataStore.getStore().get("f2").getRank()).isEqualTo(1);
-        assertThat(dataStore.getStore().get("f3").getRank()).isEqualTo(2);
-    }
-
-    @Test
     public void addValue_whenUnknowType_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN
         byte[] expectedRawValue = { 0x0, 0x1, 0x2, 0x3 };
@@ -368,10 +352,10 @@ public class DataStoreTest {
         assertThat(actualValues.get(2).getStore()).hasSize(4);
 
         Map<String, DataStore.Entry> subStore = actualValues.get(0).getStore();
-        assertThat(subStore.get("my_field")).isEqualTo(new DataStore.Entry("entry_list[0].my_field", FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(10L), 0));
-        assertThat(subStore.get("my_fp_field")).isEqualTo(new DataStore.Entry("entry_list[0].my_fp_field", FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(235.666667f), 1));
-        assertThat(subStore.get("a_field")).isEqualTo(new DataStore.Entry("entry_list[0].a_field", FileStructureDto.Type.TEXT, TypeHelper.textToRaw("az"), 2));
-        assertThat(subStore.get("another_field")).isEqualTo(new DataStore.Entry("entry_list[0].another_field", UNKNOWN, new byte[] {0x1, 0x2, 0x3, 0x4}, 3));
+        assertThat(subStore.get("my_field")).isEqualTo(new DataStore.Entry("entry_list[0].my_field", FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(10L)));
+        assertThat(subStore.get("my_fp_field")).isEqualTo(new DataStore.Entry("entry_list[0].my_fp_field", FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(235.666667f)));
+        assertThat(subStore.get("a_field")).isEqualTo(new DataStore.Entry("entry_list[0].a_field", FileStructureDto.Type.TEXT, TypeHelper.textToRaw("az")));
+        assertThat(subStore.get("another_field")).isEqualTo(new DataStore.Entry("entry_list[0].another_field", UNKNOWN, new byte[] {0x1, 0x2, 0x3, 0x4}));
     }
 
     @Test
