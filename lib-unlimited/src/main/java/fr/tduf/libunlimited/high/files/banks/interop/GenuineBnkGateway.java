@@ -10,6 +10,8 @@ import tdumoddinglibrary.fileformats.banks.BNK;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.List;
@@ -30,6 +32,8 @@ public class GenuineBnkGateway implements BankSupport {
             e.printStackTrace();
         }
     }
+
+    private static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
 
     @Override
     public BankInfoDto getBankInfo(String bankFileName) {
@@ -58,9 +62,7 @@ public class GenuineBnkGateway implements BankSupport {
     @Override
     public void extractAll(String bankFileName, String outputDirectory) throws IOException {
 
-        File originalBankFileName = new File(bankFileName);
-        File copyBankFileName = new File(outputDirectory, "originalBank.bnk");
-        Files.copy(originalBankFileName.toPath(), copyBankFileName.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(Paths.get(bankFileName), Paths.get(outputDirectory, ORIGINAL_BANK_NAME), StandardCopyOption.REPLACE_EXISTING);
 
         BNK bankFile = (BNK) TduFile.GetFile(bankFileName);
 
@@ -73,17 +75,27 @@ public class GenuineBnkGateway implements BankSupport {
     }
 
     @Override
-    public void packAll(String inputDirectory, String outputBankFileName) {
+    public void packAll(String inputDirectory, String outputBankFileName) throws IOException {
 
+        Path originalBankFilePath = Paths.get(inputDirectory, ORIGINAL_BANK_NAME);
+
+        Files.copy(originalBankFilePath, Paths.get(outputBankFileName), StandardCopyOption.REPLACE_EXISTING);
+
+        BNK outputBankFile = (BNK) TduFile.GetFile(outputBankFileName);
+
+
+
+        // TODO for each packed file in directory / or only modified files since extract date (date info should be kept in a json file)
+        String packedFilePath = "";
+        String repackedFileName = "";
+        outputBankFile.ReplacePackedFile(packedFilePath, repackedFileName);
     }
 
     private static void extractPackedFileWithFullPath(BNK bankFile, String filePath, String outputDirectory) {
         bankFile.ExtractPackedFile(filePath, outputDirectory, true);
 
-        String fileName = extractFileNameFromPath(filePath);
-
         // TODO check file paths
-        File extractedFile = new File(outputDirectory, fileName);
+        File extractedFile = new File(outputDirectory, getFileNameFromPath(filePath));
         File targetFile = new File(outputDirectory, filePath);
         try {
             Files.move(extractedFile.toPath(), targetFile.toPath());
@@ -92,7 +104,7 @@ public class GenuineBnkGateway implements BankSupport {
         }
     }
 
-    private static String extractFileNameFromPath(String filePath) {
+    private static String getFileNameFromPath(String filePath) {
         // TODO
         return null;
     }

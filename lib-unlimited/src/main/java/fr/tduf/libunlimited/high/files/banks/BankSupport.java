@@ -26,5 +26,5 @@ public interface BankSupport {
      * @param inputDirectory        : location to extracted files to pack into bank
      * @param outputBankFileName    : location of bank file to create.
      */
-    void packAll(String inputDirectory, String outputBankFileName);
+    void packAll(String inputDirectory, String outputBankFileName) throws IOException;
 }

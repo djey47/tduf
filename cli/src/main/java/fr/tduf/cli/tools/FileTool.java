@@ -195,7 +195,7 @@ public class FileTool extends GenericTool {
         return true;
     }
 
-    private void repack() {
+    private void repack() throws IOException {
         System.out.println("Will pack contents from directory: " + this.inputFile);
 
         bankSupport.packAll(this.inputFile, this.outputFile);
