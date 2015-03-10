@@ -120,7 +120,17 @@ public class GenuineBnkGateway implements BankSupport {
 
     static String getFileNameFromPathCompounds(String[] filePathCompounds) {
         // Format: '\\D:\Eden-Prog\Games\....'
-        return filePathCompounds[filePathCompounds.length-2] + filePathCompounds[filePathCompounds.length-1];
+        return filePathCompounds[filePathCompounds.length-1] + filePathCompounds[filePathCompounds.length-2];
+    }
+
+    static String generatePackedFileReference(String fileName) {
+        long hash = fileName.hashCode();
+
+        if (hash >= 0) {
+            return Long.valueOf(hash).toString();
+        } else {
+            return Long.valueOf(Integer.MAX_VALUE + Math.abs(hash)).toString();
+        }
     }
 
     private static void extractPackedFileWithFullPath(BNK bankFile, String filePath, String outputDirectory) {
@@ -136,9 +146,5 @@ public class GenuineBnkGateway implements BankSupport {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private static String generatePackedFileReference(String fileName) {
-        return Integer.valueOf(fileName.hashCode()).toString();
     }
 }
