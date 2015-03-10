@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
+import com.google.common.base.Joiner;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
@@ -9,10 +10,7 @@ import tdumoddinglibrary.fileformats.banks.BNK;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,6 +32,7 @@ public class GenuineBnkGateway implements BankSupport {
     }
 
     private static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
+    private static final String PATH_SEPARATOR_REGEX = "\\\\";
 
     @Override
     public BankInfoDto getBankInfo(String bankFileName) {
@@ -71,7 +70,6 @@ public class GenuineBnkGateway implements BankSupport {
         packedFilesNames.stream()
 
                 .forEach((filePath) -> extractPackedFileWithFullPath(bankFile, filePath, outputDirectory));
-
     }
 
     @Override
@@ -81,32 +79,63 @@ public class GenuineBnkGateway implements BankSupport {
 
         Files.copy(originalBankFilePath, Paths.get(outputBankFileName), StandardCopyOption.REPLACE_EXISTING);
 
+
         BNK outputBankFile = (BNK) TduFile.GetFile(outputBankFileName);
 
+        Path inputPath = Paths.get(inputDirectory);
+        DirectoryStream<Path> paths = Files.newDirectoryStream(inputPath);
+        for (Path packedFile : paths) {
+            if (!Files.isDirectory(packedFile)) {
+                String packedFilePath = getInternalPackedFilePath(packedFile, inputPath);
+                outputBankFile.ReplacePackedFile(packedFilePath, packedFile.toString());
+            }
+        }
+    }
 
+    static String getInternalPackedFilePath(Path packedFilePath, Path basePath) {
+        Path pathRelative = basePath.relativize(packedFilePath);
 
-        // TODO for each packed file in directory / or only modified files since extract date (date info should be kept in a json file)
-        String packedFilePath = "";
-        String repackedFileName = "";
-        outputBankFile.ReplacePackedFile(packedFilePath, repackedFileName);
+        String[] pathCompounds = pathRelative.toString().replace('/', '\\').split("\\\\");
+        String[] pathElements = new String[pathCompounds.length + 1];
+
+        System.arraycopy(pathCompounds, 0, pathElements, 0, pathCompounds.length);
+
+        String name = pathElements[pathElements.length - 2].split("\\.")[0];
+        String extension = "." + pathElements[pathElements.length - 2].split("\\.")[1];
+        pathElements[pathElements.length - 2] = extension;
+        pathElements[pathElements.length - 1] = name;
+
+        return "\\D:\\Eden-Prog\\Games\\TestDrive\\Resources\\" + Joiner.on('\\').join(pathElements);
+    }
+
+    static String getTargetFileNameFromPathCompounds(String bankFileName, String[] filePathCompounds) {
+        // Format: '\D:\Eden-Prog\Games\....'
+        String[] pathElements = new String[filePathCompounds.length-7];
+
+        System.arraycopy(filePathCompounds, 6, pathElements, 0, pathElements.length);
+        pathElements[pathElements.length - 1] = getFileNameFromPathCompounds(filePathCompounds);
+
+        return Paths.get(bankFileName, pathElements).toString();
+    }
+
+    static String getFileNameFromPathCompounds(String[] filePathCompounds) {
+        // Format: '\\D:\Eden-Prog\Games\....'
+        return filePathCompounds[filePathCompounds.length-2] + filePathCompounds[filePathCompounds.length-1];
     }
 
     private static void extractPackedFileWithFullPath(BNK bankFile, String filePath, String outputDirectory) {
         bankFile.ExtractPackedFile(filePath, outputDirectory, true);
 
-        // TODO check file paths
-        File extractedFile = new File(outputDirectory, getFileNameFromPath(filePath));
-        File targetFile = new File(outputDirectory, filePath);
+        String[] filePathCompounds = filePath.split(PATH_SEPARATOR_REGEX);
+
+        File bank = new File(bankFile.getFileName());
+        File extractedFile = new File(outputDirectory, getFileNameFromPathCompounds(filePathCompounds));
+        File targetFile = new File(outputDirectory, getTargetFileNameFromPathCompounds(bank.getName(), filePathCompounds));
         try {
             Files.move(extractedFile.toPath(), targetFile.toPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private static String getFileNameFromPath(String filePath) {
-        // TODO
-        return null;
     }
 
     private static String generatePackedFileReference(String fileName) {
