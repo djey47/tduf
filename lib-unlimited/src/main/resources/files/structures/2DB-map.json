@@ -1,0 +1,10 @@
+{
+  "name": "Texture for TDU engine",
+  "littleEndian": true,
+  "fields": [
+    {
+      "name": "unknown",
+      "type": "UNKNOWN"
+    }
+  ]
+}

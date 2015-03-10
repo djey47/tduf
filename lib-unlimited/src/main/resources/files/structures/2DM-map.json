@@ -1,0 +1,10 @@
+{
+  "name": "Materials definition for 3D modeling",
+  "littleEndian": true,
+  "fields": [
+    {
+      "name": "unknown",
+      "type": "UNKNOWN"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Generic TDU configuration file",
+  "littleEndian": true,
+  "fields": [
+    {
+      "name": "unknown",
+      "type": "UNKNOWN"
+    }
+  ]
+}

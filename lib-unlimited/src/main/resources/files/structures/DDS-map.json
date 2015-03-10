@@ -1,0 +1,10 @@
+{
+  "name": "Direct Draw Surface Texture",
+  "littleEndian": true,
+  "fields": [
+    {
+      "name": "unknown",
+      "type": "UNKNOWN"
+    }
+  ]
+}
