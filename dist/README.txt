@@ -15,7 +15,7 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * DatabaseTool (fix): new operation to fix database errors
 * DatabaseTool (check): displays details of error 'unconsistent resource count over locales', sorted by alphabetical order
 
-* FileTool (info/unpack/repack): new operations to handle TDU Banks files (*.bnk) - experimental feature!
+* FileTool (bankInfo/unpack/repack): new operations to handle TDU Banks files (*.bnk) - experimental feature!
 * FileTool (toJson/applyJson): processes fully compliant JSON files, respecting file structure
 * FileTool (toJson/applyJson): writes and reads byte arrays 'the hex way', e.g 0x[00 A5 BF]
 
