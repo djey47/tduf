@@ -218,7 +218,6 @@ public class FileTool extends GenericTool {
 
         BankInfoDto bankInfoObject = bankSupport.getBankInfo(this.inputFile);
 
-        // TODO add other information
         System.out.println("Done reading Bank:");
         System.out.println("\t-> Year: " + bankInfoObject.getYear());
         System.out.println("\t-> Size: " + bankInfoObject.getFileSize() + " bytes");
