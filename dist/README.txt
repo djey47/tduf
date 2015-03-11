@@ -7,23 +7,7 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Capitalizing about reverse-engineering
 * ...
 
-### What's new in this version ? (0.4.0)
-
-* General (cli): new command available in CLI: Version.cmd, displaying current toolset version
-* General (cli): commands and examples now sorted by alphabetical order
-
-* DatabaseTool (fix): new operation to fix database errors
-* DatabaseTool (check): displays details of error 'unconsistent resource count over locales', sorted by alphabetical order
-
-* FileTool (bankInfo/unpack/repack): new operations to handle TDU Banks files (*.bnk) - experimental feature!
-* FileTool (toJson/applyJson): processes fully compliant JSON files, respecting file structure
-* FileTool (toJson/applyJson): writes and reads byte arrays 'the hex way', e.g 0x[00 A5 BF]
-
-* Research: updates cameras.bin structure with known fields
-* Research: adds default support for 2DB/2DM/DDS/XMB
-
-* Library: misc improvements and bug fixes
-* Library: adds support for TDUMT libs as temporary solution for BNK management, embedded in current package
+### What's new in this version ? (0.5.0)
 
 ### What you will need to run TDUF
 
