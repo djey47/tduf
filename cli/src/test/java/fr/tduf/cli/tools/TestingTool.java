@@ -10,12 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.tduf.cli.tools.TestingTool.Command.TEST;
+import static java.util.Arrays.asList;
 
 public class TestingTool extends GenericTool {
 
     private Command command;
 
-    @Option(name="-p", aliases = "--param", usage = "", required = true)
+    @Option(name="-p", aliases = "--param", usage = "Allows to test mandatory parameter", required = true)
     private String requiredParam;
 
     enum Command implements CommandHelper.CommandEnum {
@@ -79,6 +80,6 @@ public class TestingTool extends GenericTool {
 
     @Override
     protected List<String> getExamples() {
-        return new ArrayList<>();
+        return asList("Example1", "Example2");
     }
 }

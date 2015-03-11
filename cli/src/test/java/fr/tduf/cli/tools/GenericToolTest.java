@@ -87,4 +87,10 @@ public class GenericToolTest {
 
         testingTool.doMain(new String[]{"test"});
     }
+
+    @Test
+    public void doMain_whenKnownCommand_andSuppliedNormalizedParameter_shouldEndNormally() throws IOException {
+        // GIVEN-WHEN-THEN
+        testingTool.doMain(new String[]{"test", "-n", "-p", "value"});
+    }
 }
