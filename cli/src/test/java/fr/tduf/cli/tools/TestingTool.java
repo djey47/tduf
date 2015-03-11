@@ -22,7 +22,8 @@ public class TestingTool extends GenericTool {
     enum Command implements CommandHelper.CommandEnum {
         TEST("test", "for testing purpose only"),
         TEST_U("test_u", "for testing purpose only"),
-        TEST_FAIL("test_fail", "for testing purpose only");
+        TEST_FAIL("test_fail", "for testing purpose only"),
+        TEST_OUTLINE("test_outline", "for testing purpose only");
 
         final String label;
         final String description;
@@ -50,15 +51,20 @@ public class TestingTool extends GenericTool {
 
     @Override
     protected boolean commandDispatch() throws IOException {
-        if (command == Command.TEST) {
-            return true;
+
+        switch (command) {
+            case TEST:
+                break;
+            case TEST_FAIL:
+                throw new IllegalArgumentException("Exception");
+            case TEST_OUTLINE:
+                outline();
+                break;
+            default:
+                return false;
         }
 
-        if(command == Command.TEST_FAIL) {
-            throw new IllegalArgumentException("Exception");
-        }
-
-        return false;
+        return true;
     }
 
     @Override
@@ -81,5 +87,9 @@ public class TestingTool extends GenericTool {
     @Override
     protected List<String> getExamples() {
         return asList("Example1", "Example2");
+    }
+
+    private void outline() {
+        outLine(requiredParam);
     }
 }

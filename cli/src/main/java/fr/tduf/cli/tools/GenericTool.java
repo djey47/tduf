@@ -19,7 +19,7 @@ public abstract class GenericTool {
     protected List<String> arguments = new ArrayList<>();
 
     @Option(name = "-n", aliases = "--normalized", usage = "Not mandatory. Produces output as JSON instead of natural language.")
-    private boolean withClearContents = false;
+    private boolean withNormalizedOutput = false;
 
     /**
      * All-instance entry point.
@@ -39,6 +39,16 @@ public abstract class GenericTool {
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
+        }
+    }
+
+    /**
+     * Displays text on standard output, with a new line.
+     * @param message : message to display
+     */
+    protected void outLine(String message) {
+        if (!withNormalizedOutput) {
+            System.out.println(message);
         }
     }
 
@@ -131,4 +141,5 @@ public abstract class GenericTool {
 
                 .forEach((example) -> System.err.println(" " + displayedClassName + " " + example));
     }
+
 }
