@@ -146,6 +146,14 @@ project('lib-unlimited') {
         include '*.json'
         into '../pack/structures'
     }
+
+    task copyInteropLibraries(type: Copy) {
+        description 'Copies all inerop libs release directory.'
+
+        from '../lib'
+        include '*.dll'
+        into '../pack/lib'
+    }
 }
 
 task copyDoc(type: Copy) {
@@ -166,7 +174,7 @@ task copyVersionInfo(type: Copy) {
     into 'pack/lib/'
 }
 
-task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', ':cli:copyScripts', ':cli:copyJar', ':lib-unlimited:copyStructures'], type: Zip) {
+task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', ':cli:copyScripts', ':cli:copyJar', ':lib-unlimited:copyStructures', ':lib-unlimited:copyInteropLibraries'], type: Zip) {
     description 'Zips all distribution files from pack folder.'
 
     archiveName project.name + "-" + project.version + ".zip"
