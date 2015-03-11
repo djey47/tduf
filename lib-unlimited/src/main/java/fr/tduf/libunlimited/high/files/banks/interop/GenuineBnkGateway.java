@@ -25,7 +25,7 @@ public class GenuineBnkGateway implements BankSupport {
         try {
             Bridge.init();
             // TODO Generate Assemblies with CSC on Windows platform
-            Bridge.LoadAndRegisterAssemblyFrom(new File("libs/TduModdingLibrary.j4n.dll"));
+            Bridge.LoadAndRegisterAssemblyFrom(new File("lib/TduModdingLibrary.j4n.dll"));
         } catch (Exception e) {
             e.printStackTrace();
         }

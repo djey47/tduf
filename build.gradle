@@ -29,7 +29,7 @@ subprojects {
             url 'https://jni4net.googlecode.com/svn/mvnrepo/'
         }
 
-        flatDir name: 'interopRepository', dirs: '../libs'
+        flatDir name: 'interopRepository', dirs: '../lib'
     }
 
     dependencies {
