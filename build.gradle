@@ -135,7 +135,8 @@ project(':cli') {
 project('lib-unlimited') {
     dependencies {
         compile group: 'net.objecthunter', name: 'exp4j', version: '0.4.4'
-        compile group: 'net.sf.jni4net', name: 'jni4net.j', version: '0.8.7.0'
+        compile name: 'jni4net.j', version: '0.8.8.0'
+
         compile name: 'TDUModdingLibrary.j4n'
     }
 

@@ -23,9 +23,10 @@ public class GenuineBnkGateway implements BankSupport {
 
     static {
         try {
-            Bridge.init();
+            File rootDirectory = new File("lib/");
+            Bridge.init(new File(rootDirectory.getAbsolutePath(), "jni4net.n-0.8.8.0.dll"));
             // TODO Generate Assemblies with CSC on Windows platform
-            Bridge.LoadAndRegisterAssemblyFrom(new File("lib/TduModdingLibrary.j4n.dll"));
+            Bridge.LoadAndRegisterAssemblyFrom(new File(rootDirectory.getAbsolutePath(), "TduModdingLibrary.j4n.dll"));
         } catch (Exception e) {
             e.printStackTrace();
         }

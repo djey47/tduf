@@ -3,7 +3,7 @@ package fr.tduf.cli.tools;
 import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
-import fr.tduf.libunlimited.high.files.banks.FakeBnkGateway;
+import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
@@ -87,11 +87,8 @@ public class FileTool extends GenericTool {
     }
 
     public FileTool() {
-        // TODO implement Gateway
         // BNK-step1: using TDU Modding Library
-//        this.bankSupport = new GenuineBnkGateway();
-
-        this.bankSupport = new FakeBnkGateway();
+        this.bankSupport = new GenuineBnkGateway();
     }
 
     @Override
