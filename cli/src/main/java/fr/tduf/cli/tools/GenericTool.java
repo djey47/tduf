@@ -11,6 +11,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,8 @@ public abstract class GenericTool {
 
     @Option(name = "-n", aliases = "--normalized", usage = "Not mandatory. Produces output as JSON instead of natural language.")
     private boolean withNormalizedOutput = false;
+
+    protected Serializable commandResult = null;
 
     /**
      * All-instance entry point.
@@ -46,10 +49,12 @@ public abstract class GenericTool {
 
             System.exit(1);
         }
+
+        processNormalizedOutput();
     }
 
     /**
-     * Displays text on standard output, with a new line.
+     * Displays text on standard output, with a new line. Takes normalization setting into account.
      * @param message : message to display
      */
     protected void outLine(String message) {
@@ -162,5 +167,15 @@ public abstract class GenericTool {
 
         ErrorOutputDto errorOutputObject = ErrorOutputDto.fromException(exception);
         System.out.println(objectWriter.writeValueAsString(errorOutputObject));
+    }
+
+    private void processNormalizedOutput() {
+        if (!withNormalizedOutput) {
+            return;
+        }
+
+        if (commandResult == null) {
+            System.out.println("{}");
+        }
     }
 }

@@ -112,18 +112,6 @@ public class GenericToolTest {
     }
 
     @Test
-    public void doMain_whenOutlineCommand_andNormalizedOutputMode_shouldNotWriteToConsole() throws IOException {
-        // GIVEN
-        OutputStream outContents = hijackStandardOutput();
-
-        // WHEN-THEN
-        testingTool.doMain(new String[]{"test_outline", "-n", "-p", "This is a message"});
-
-        // THEN
-        assertOutputStreamContainsExactly(outContents, "");
-    }
-
-    @Test
     public void doMain_whenFailCommand_andNormalizedOutputMode_shouldWriteProperErrorJsonToConsole() throws IOException {
         // GIVEN
 //        OutputStream outContents = hijackStandardOutput();
@@ -135,6 +123,18 @@ public class GenericToolTest {
         // THEN
         // TODO find a way to assert console output
 //        assertOutputStreamContainsSequence(outContents, "{", "errorMessage", "stackTrace", "}");
+    }
+
+    @Test
+    public void doMain_whenKnownCommand_andNormalizedOutputMode_andVoidResult_shouldWriteProperEmptyJsonToConsole() throws IOException {
+        // GIVEN
+        OutputStream outContents = hijackStandardOutput();
+
+        // WHEN-THEN
+        testingTool.doMain(new String[]{"test", "-n", "-p", ""});
+
+        // THEN
+        assertOutputStreamContainsExactly(outContents, "{}" + LINE_SEPARATOR);
     }
 
     private static OutputStream hijackStandardOutput() {
