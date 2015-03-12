@@ -13,6 +13,7 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * General (cli): commands and examples now sorted by alphabetical order
 
 * DatabaseTool (fix): new operation to fix database errors
+* DatabaseTool (fix): supports both encrypted and unencrypted DB files (use of -c/--clear parameters)
 * DatabaseTool (check): displays details of error 'unconsistent resource count over locales', sorted by alphabetical order
 
 * FileTool (bankInfo/unpack/repack): new operations to handle TDU Banks files (*.bnk) - experimental feature!
