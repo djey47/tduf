@@ -1,6 +1,7 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -26,18 +27,17 @@ public abstract class GenericTool {
      * @param args  : command line arguments
      */
     protected void doMain(String[] args) throws IOException {
-
         if (!checkArgumentsAndOptions(args)) {
             System.exit(1);
         }
 
         try {
             if (!commandDispatch()) {
-                System.err.println("Error: command is not implemented, yet.");
+                errLine("Command is not implemented, yet.");
                 System.exit(1);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            errLine(ExceptionUtils.getStackTrace(e));
             System.exit(1);
         }
     }
@@ -105,8 +105,6 @@ public abstract class GenericTool {
 
             printUsage(e);
             System.err.println();
-
-            System.err.println("Error: invalid arguments are given.");
             System.err.println(e.getMessage());
 
             return false;
@@ -142,4 +140,9 @@ public abstract class GenericTool {
                 .forEach((example) -> System.err.println(" " + displayedClassName + " " + example));
     }
 
+    private void errLine(String message) {
+        if (!withNormalizedOutput) {
+            System.err.println(message);
+        }
+    }
 }
