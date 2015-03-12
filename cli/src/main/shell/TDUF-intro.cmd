@@ -5,5 +5,6 @@ ECHO Welcome to TDUF: Command Line Interface v%TDUF_VERSION%.
 ECHO.
 ECHO Available modules :
 DIR *Tool.cmd /B
+ECHO Version.cmd
 ECHO.
 ECHO Just type and run any of these scripts to get usage details. Enjoy!
