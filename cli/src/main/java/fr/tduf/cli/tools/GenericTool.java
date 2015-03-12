@@ -1,7 +1,10 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
+import fr.tduf.cli.tools.dto.ErrorOutputDto;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -38,6 +41,9 @@ public abstract class GenericTool {
             }
         } catch (Exception e) {
             errLine(ExceptionUtils.getStackTrace(e));
+
+            processNormalizedErrorOutput(e);
+
             System.exit(1);
         }
     }
@@ -141,8 +147,20 @@ public abstract class GenericTool {
     }
 
     private void errLine(String message) {
-        if (!withNormalizedOutput) {
-            System.err.println(message);
+        if (withNormalizedOutput) {
+            return;
         }
+        System.err.println(message);
+    }
+
+    private void processNormalizedErrorOutput(Exception exception) throws IOException {
+        if (!withNormalizedOutput) {
+            return;
+        }
+
+        ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+
+        ErrorOutputDto errorOutputObject = ErrorOutputDto.fromException(exception);
+        System.out.println(objectWriter.writeValueAsString(errorOutputObject));
     }
 }

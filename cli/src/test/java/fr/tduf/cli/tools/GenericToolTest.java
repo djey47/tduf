@@ -8,25 +8,24 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import sun.security.action.GetPropertyAction;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.security.AccessController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericToolTest {
 
+    private static final String LINE_SEPARATOR = AccessController.doPrivileged(new GetPropertyAction("line.separator"));
+
     @Rule
     public final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
 
     private TestingTool testingTool = new TestingTool();
-    public static final String LINE_SEPARATOR = AccessController.doPrivileged(new GetPropertyAction("line.separator"));
 
     @After
     public void tearDown() {
-        System.setOut(null);
+        PrintStream standardSystemOutput = new PrintStream(new FileOutputStream(FileDescriptor.out));
+        System.setOut(standardSystemOutput);
     }
 
     @Test
@@ -109,7 +108,7 @@ public class GenericToolTest {
         testingTool.doMain(new String[]{"test_outline", "-p", "This is a message"});
 
         // THEN
-        assertOutputStreamContains(outContents, "This is a message" + LINE_SEPARATOR);
+        assertOutputStreamContainsExactly(outContents, "This is a message" + LINE_SEPARATOR);
     }
 
     @Test
@@ -121,18 +120,43 @@ public class GenericToolTest {
         testingTool.doMain(new String[]{"test_outline", "-n", "-p", "This is a message"});
 
         // THEN
-        assertOutputStreamContains(outContents, "");
+        assertOutputStreamContainsExactly(outContents, "");
+    }
+
+    @Test
+    public void doMain_whenFailCommand_andNormalizedOutputMode_shouldWriteProperErrorJsonToConsole() throws IOException {
+        // GIVEN
+//        OutputStream outContents = hijackStandardOutput();
+        exitRule.expectSystemExitWithStatus(1);
+
+        // WHEN-THEN
+        testingTool.doMain(new String[]{"test_fail", "-n", "-p", ""});
+
+        // THEN
+        // TODO find a way to assert console output
+//        assertOutputStreamContainsSequence(outContents, "{", "errorMessage", "stackTrace", "}");
     }
 
     private static OutputStream hijackStandardOutput() {
+        System.out.println("WARNING! System standard output is redirected to print stream for testing's sake :)");
+
         OutputStream outContents = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContents));
         return outContents;
     }
 
-    private static void assertOutputStreamContains(OutputStream outContents, String expected) throws IOException {
-        outContents.flush();
-        outContents.close();
-        assertThat(outContents.toString()).isEqualTo(expected);
+    private static void assertOutputStreamContainsExactly(OutputStream outputStream, String expected) throws IOException {
+        finalizeOutputStream(outputStream);
+        assertThat(outputStream.toString()).isEqualTo(expected);
+    }
+
+//    private static void assertOutputStreamContainsSequence(OutputStream outputStream, String... expectedItems) throws IOException {
+//        finalizeOutputStream(outputStream);
+//        assertThat(outputStream.toString()).containsSequence(expectedItems);
+//    }
+
+    private static void finalizeOutputStream(OutputStream outputStream) throws IOException {
+        outputStream.flush();
+        outputStream.close();
     }
 }
