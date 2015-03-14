@@ -134,13 +134,13 @@ public class MappingTool extends GenericTool {
 
     private void info() throws IOException {
 
-        System.out.println("- BNK root folder: " + this.bankDirectory);
+        outLine("- BNK root folder: " + this.bankDirectory);
 
         BankMap map = loadBankMap();
         Collection<BankMap.Entry> mapEntries = map.getEntries();
 
-        System.out.println("- Bnk1.map parsing done: " + this.mapFile);
-        System.out.println("  -> Entry count: " + mapEntries.size());
+        outLine("- Bnk1.map parsing done: " + this.mapFile);
+        outLine("  -> Entry count: " + mapEntries.size());
     }
 
     private void list() throws IOException {
@@ -152,8 +152,8 @@ public class MappingTool extends GenericTool {
 
                 .collect(toList());
 
-        System.out.println("Bnk1.map parsing done: " + this.mapFile);
-        System.out.println("  -> All entries :" + sortedMapEntries);
+        outLine("Bnk1.map parsing done: " + this.mapFile);
+        outLine("  -> All entries :" + sortedMapEntries);
     }
 
     private void listMissing() throws IOException {
@@ -161,15 +161,15 @@ public class MappingTool extends GenericTool {
         List<String> banks = MapHelper.parseBanks(this.bankDirectory);
         Map<Long, String> checksums = MapHelper.computeChecksums(banks);
 
-        System.out.println("- Bank parsing done: " + this.bankDirectory);
-        System.out.println("  -> File count: " + banks.size());
-        System.out.println("  -> Files: " + banks);
-        System.out.println("  -> Checksums: " + checksums);
+        outLine("- Bank parsing done: " + this.bankDirectory);
+        outLine("  -> File count: " + banks.size());
+        outLine("  -> Files: " + banks);
+        outLine("  -> Checksums: " + checksums);
 
         BankMap map = loadBankMap();
         Map<Long, String> newChecksums = MapHelper.findNewChecksums(map, checksums);
 
-        System.out.println("  -> Absent from Bnk1.map: " + newChecksums);
+        outLine("  -> Absent from Bnk1.map: " + newChecksums);
     }
 
     private void fixMissing() throws IOException {
@@ -186,7 +186,7 @@ public class MappingTool extends GenericTool {
 
         saveBankMap(map);
 
-        System.out.println("Bnk1.map fixing done: " + this.mapFile);
+        outLine("Bnk1.map fixing done: " + this.mapFile);
     }
 
     private BankMap loadBankMap() throws IOException {
