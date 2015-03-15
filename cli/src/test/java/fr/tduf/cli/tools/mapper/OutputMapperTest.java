@@ -1,6 +1,9 @@
 package fr.tduf.cli.tools.mapper;
 
+import fr.tduf.cli.tools.dto.DatabaseIntegrityErrorDto;
 import fr.tduf.cli.tools.dto.ErrorOutputDto;
+import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectReader;
@@ -11,7 +14,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 
-import static net.sf.json.test.JSONAssert.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OutputMapperTest {
@@ -55,6 +57,31 @@ public class OutputMapperTest {
         JsonNode actualRootNode = objectReader.readTree(actualJson);
         assertThat(actualRootNode.get("errorMessage").getTextValue()).isEqualTo("An exception occurred");
         assertThat(actualRootNode.get("stackTrace").getTextValue()).containsSequence("Exception", "IllegalArgumentException");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void databaseIntegrityErrorFromDomain_whenNullError_shouldThrowNullPointerException() {
+        // GIEVN-WHEN
+        DatabaseIntegrityErrorDto.fromIntegrityError(null);
+
+        // THEN: exception
+    }
+
+    @Test
+    public void databaseIntegrityErrorFromDomain_shouldReturnProperObject() {
+        // GIVEN
+        IntegrityError integrityError = IntegrityError.builder()
+                .ofType(IntegrityError.ErrorTypeEnum.CONTENT_ITEMS_COUNT_MISMATCH)
+                .addInformation(IntegrityError.ErrorInfoEnum.LOCALE, DbResourceDto.Locale.FRANCE)
+                .build();
+
+        // WHEN
+        DatabaseIntegrityErrorDto actualIntegrityErrorObject = DatabaseIntegrityErrorDto.fromIntegrityError(integrityError);
+
+        // THEN
+        assertThat(actualIntegrityErrorObject.getErrorType()).isEqualTo("CONTENT_ITEMS_COUNT_MISMATCH");
+        assertThat(actualIntegrityErrorObject.getInformation()).containsKey("locale");
+        assertThat(actualIntegrityErrorObject.getInformation().get("locale")).isEqualTo(DbResourceDto.Locale.FRANCE);
     }
 
     private static Exception createNestedExceptions() {

@@ -1,6 +1,7 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
+import fr.tduf.cli.tools.dto.DatabaseIntegrityErrorDto;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
@@ -18,6 +19,7 @@ import java.util.List;
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Command line interface for handling TDU database.
@@ -219,7 +221,8 @@ public class DatabaseTool extends GenericTool {
         outLine("All done!");
 
         HashMap<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("integrityErrors", integrityErrors);
+        resultInfo.put("integrityErrors", toDatabaseIntegrityErrors(integrityErrors));
+
         commandResult = resultInfo;
     }
 
@@ -259,6 +262,12 @@ public class DatabaseTool extends GenericTool {
         }
 
         outLine("All done!");
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("integrityErrorsRemaining", toDatabaseIntegrityErrors(remainingIntegrityErrors));
+
+        resultInfo.put("fixedDatabaseLocation", this.outputDatabaseDirectory);
+        commandResult = resultInfo;
     }
 
     private List<DbDto> checkAndReturnIntegrityErrorsAndObjects(List<IntegrityError> integrityErrors) throws IOException {
@@ -340,12 +349,6 @@ public class DatabaseTool extends GenericTool {
         return writtenFiles;
     }
 
-    private static void betweenTopicsCheck(List<DbDto> allDtos, List<IntegrityError> integrityErrors) {
-        requireNonNull(integrityErrors, "A list is required");
-
-        integrityErrors.addAll(DatabaseIntegrityChecker.load(allDtos).checkAllContentsObjects());
-    }
-
     private void printIntegrityErrors(List<IntegrityError> integrityErrors) {
         if(!integrityErrors.isEmpty()) {
             outLine("-> Integrity errors (" + integrityErrors.size() + "):");
@@ -356,5 +359,17 @@ public class DatabaseTool extends GenericTool {
                         outLine("  (!)" + errorMessage);
                     });
         }
+    }
+
+    private static void betweenTopicsCheck(List<DbDto> allDtos, List<IntegrityError> integrityErrors) {
+        requireNonNull(integrityErrors, "A list is required").addAll(DatabaseIntegrityChecker.load(allDtos).checkAllContentsObjects());
+    }
+
+    private static List<DatabaseIntegrityErrorDto> toDatabaseIntegrityErrors(List<IntegrityError> integrityErrors) {
+        return integrityErrors.stream()
+
+                .map(DatabaseIntegrityErrorDto::fromIntegrityError)
+
+                .collect(toList());
     }
 }
