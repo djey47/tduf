@@ -213,10 +213,14 @@ public class DatabaseTool extends GenericTool {
         checkAndReturnIntegrityErrorsAndObjects(integrityErrors);
 
         if(!integrityErrors.isEmpty()) {
-            throw new IllegalArgumentException("At least one integrity error has been found, your database is not ready-to-use.");
+            outLine("At least one integrity error has been found, your database is not ready-to-use.");
         }
 
         outLine("All done!");
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("integrityErrors", integrityErrors);
+        commandResult = resultInfo;
     }
 
     private void fix() throws IOException {
