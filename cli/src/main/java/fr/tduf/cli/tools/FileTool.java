@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 
 import static fr.tduf.cli.tools.FileTool.Command.*;
@@ -201,6 +202,11 @@ public class FileTool extends GenericTool {
         bankSupport.packAll(this.inputFile, this.outputFile);
 
         System.out.println("Done creating Bank: " + this.outputFile + ".");
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("contentsDirectory", this.inputFile);
+        resultInfo.put("bankFileCreated", this.outputFile);
+        commandResult = resultInfo;
     }
 
     private void unpack() throws IOException {
