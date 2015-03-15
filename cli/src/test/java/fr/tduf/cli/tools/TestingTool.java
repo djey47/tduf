@@ -6,7 +6,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static fr.tduf.cli.tools.TestingTool.Command.TEST;
@@ -23,7 +23,8 @@ public class TestingTool extends GenericTool {
         TEST("test", "for testing purpose only"),
         TEST_U("test_u", "for testing purpose only"),
         TEST_FAIL("test_fail", "for testing purpose only"),
-        TEST_OUTLINE("test_outline", "for testing purpose only");
+        TEST_OUTLINE("test_outline", "for testing purpose only"),
+        TEST_RESULT("test_result", "for testing purpose only");
 
         final String label;
         final String description;
@@ -60,6 +61,9 @@ public class TestingTool extends GenericTool {
             case TEST_OUTLINE:
                 outline();
                 break;
+            case TEST_RESULT:
+                result();
+                break;
             default:
                 return false;
         }
@@ -91,5 +95,11 @@ public class TestingTool extends GenericTool {
 
     private void outline() {
         outLine(requiredParam);
+    }
+
+    private void result() {
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("result", "ok");
+        this.commandResult = resultInfo;
     }
 }

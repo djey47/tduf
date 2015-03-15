@@ -11,6 +11,7 @@ import sun.security.action.GetPropertyAction;
 import java.io.*;
 import java.security.AccessController;
 
+import static net.sf.json.test.JSONAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericToolTest {
@@ -134,7 +135,19 @@ public class GenericToolTest {
         testingTool.doMain(new String[]{"test", "-n", "-p", ""});
 
         // THEN
-        assertOutputStreamContainsExactly(outContents, "{}" + LINE_SEPARATOR);
+        assertOutputStreamContainsJsonExactly(outContents, "{}");
+    }
+
+    @Test
+    public void doMain_whenKnownCommand_andNormalizedOutputMode_andResult_shouldWriteProperJsonToConsole() throws IOException {
+        // GIVEN
+        OutputStream outContents = hijackStandardOutput();
+
+        // WHEN-THEN
+        testingTool.doMain(new String[]{"test_result", "-n", "-p", ""});
+
+        // THEN
+        assertOutputStreamContainsJsonExactly(outContents, "{\"result\":\"ok\"}");
     }
 
     private static OutputStream hijackStandardOutput() {
@@ -143,6 +156,11 @@ public class GenericToolTest {
         OutputStream outContents = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContents));
         return outContents;
+    }
+
+    private static void assertOutputStreamContainsJsonExactly(OutputStream outputStream, String expected) throws IOException {
+        finalizeOutputStream(outputStream);
+        assertJsonEquals(expected, outputStream.toString());
     }
 
     private static void assertOutputStreamContainsExactly(OutputStream outputStream, String expected) throws IOException {

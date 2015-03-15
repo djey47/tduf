@@ -28,6 +28,8 @@ public abstract class GenericTool {
 
     protected Serializable commandResult = null;
 
+    private ObjectWriter jsonWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+
     /**
      * All-instance entry point.
      * @param args  : command line arguments
@@ -163,19 +165,19 @@ public abstract class GenericTool {
             return;
         }
 
-        ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
-
         ErrorOutputDto errorOutputObject = ErrorOutputDto.fromException(exception);
-        System.out.println(objectWriter.writeValueAsString(errorOutputObject));
+        System.out.println(jsonWriter.writeValueAsString(errorOutputObject));
     }
 
-    private void processNormalizedOutput() {
+    private void processNormalizedOutput() throws IOException {
         if (!withNormalizedOutput) {
             return;
         }
 
         if (commandResult == null) {
             System.out.println("{}");
+        } else {
+            System.out.println(jsonWriter.writeValueAsString(commandResult));
         }
     }
 }
