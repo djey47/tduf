@@ -319,6 +319,11 @@ public class FileTool extends GenericTool {
         Files.write(Paths.get(this.outputFile), outputStream.toByteArray());
 
         System.out.println("Done: " + this.inputFile + " to " + this.outputFile);
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("encryptedFile", this.inputFile);
+        resultInfo.put("clearFile", this.outputFile);
+        commandResult = resultInfo;
     }
 
     private void encrypt() throws IOException {
@@ -329,6 +334,11 @@ public class FileTool extends GenericTool {
         Files.write(Paths.get(this.outputFile), outputStream.toByteArray());
 
         System.out.println("Done: " + this.inputFile + " to " + this.outputFile);
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("clearFile", this.inputFile);
+        resultInfo.put("encryptedFile", this.outputFile);
+        commandResult = resultInfo;
     }
 
     private ByteArrayOutputStream processInputStream(boolean withEncryption) throws IOException {
