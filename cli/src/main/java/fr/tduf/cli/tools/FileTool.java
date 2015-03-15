@@ -304,6 +304,11 @@ public class FileTool extends GenericTool {
         Files.write(Paths.get(outputFile), outputStream.toByteArray());
 
         System.out.println("JSON to TDU conversion done: " + this.inputFile + " to " + this.outputFile);
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("tduFile", this.outputFile);
+        resultInfo.put("jsonFile", this.inputFile);
+        commandResult = resultInfo;
     }
 
     private void decrypt() throws IOException {
