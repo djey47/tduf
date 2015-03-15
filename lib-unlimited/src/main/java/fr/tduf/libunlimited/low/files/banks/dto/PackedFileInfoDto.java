@@ -1,9 +1,11 @@
 package fr.tduf.libunlimited.low.files.banks.dto;
 
+import java.io.Serializable;
+
 /**
  * Data object to return information about packed file (Bank contents).
  */
-public class PackedFileInfoDto {
+public class PackedFileInfoDto implements Serializable {
 
     private String reference;
     private String fullName;

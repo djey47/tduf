@@ -217,6 +217,11 @@ public class FileTool extends GenericTool {
         bankSupport.extractAll(this.inputFile, this.outputFile);
 
         System.out.println("Done extracting Bank to " + this.outputFile + ".");
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("extractedContentsDirectory", this.outputFile);
+        resultInfo.put("bankFile", this.inputFile);
+        commandResult = resultInfo;
     }
 
     private void bankInfo() {
@@ -234,6 +239,11 @@ public class FileTool extends GenericTool {
                 .forEach((packedFileInfoObject) -> System.out.println("\t\t." + packedFileInfoObject.getReference()
                         + "(" + packedFileInfoObject.getFullName() + ") :  "
                         + packedFileInfoObject.getSize() + " bytes"));
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("bankFile", this.inputFile);
+        resultInfo.put("bankInfo", bankInfoObject);
+        commandResult = resultInfo;
     }
 
     private void jsonify() throws IOException {
