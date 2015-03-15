@@ -9,14 +9,12 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -141,6 +139,10 @@ public class MappingTool extends GenericTool {
 
         outLine("- Bnk1.map parsing done: " + this.mapFile);
         outLine("  -> Entry count: " + mapEntries.size());
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("entryCount", mapEntries.size());
+        commandResult = resultInfo;
     }
 
     private void list() throws IOException {
