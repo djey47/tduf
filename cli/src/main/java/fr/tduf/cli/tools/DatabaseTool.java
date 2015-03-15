@@ -136,53 +136,53 @@ public class DatabaseTool extends GenericTool {
     private void dump() throws IOException {
         FilesHelper.createDirectoryIfNotExists(this.jsonDirectory);
 
-        System.out.println("-> Source directory: " + databaseDirectory);
-        System.out.println("Dumping TDU database to JSON, please wait...");
-        System.out.println();
+        outLine("-> Source directory: " + databaseDirectory);
+        outLine("Dumping TDU database to JSON, please wait...");
+        outLine();
 
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
-            System.out.println("-> Now processing topic: " + currentTopic + "...");
+            outLine("-> Now processing topic: " + currentTopic + "...");
 
             DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, this.withClearContents, new ArrayList<>());
 
             if (dbDto == null) {
-                System.out.println("  !Database contents not found for topic " + currentTopic + ", skipping...");
-                System.out.println();
+                outLine("  !Database contents not found for topic " + currentTopic + ", skipping...");
+                outLine();
                 continue;
             }
 
             String writtenFileName = DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, this.jsonDirectory);
 
-            System.out.println("Writing done for topic: " + currentTopic);
-            System.out.println("-> " + writtenFileName);
-            System.out.println();
+            outLine("Writing done for topic: " + currentTopic);
+            outLine("-> " + writtenFileName);
+            outLine();
         }
 
-        System.out.println("All done!");
+        outLine("All done!");
     }
 
     private void gen() throws IOException {
         FilesHelper.createDirectoryIfNotExists(this.databaseDirectory);
 
-        System.out.println("-> Source directory: " + this.jsonDirectory);
-        System.out.println("Generating TDU database from JSON, please wait...");
-        System.out.println();
+        outLine("-> Source directory: " + this.jsonDirectory);
+        outLine("Generating TDU database from JSON, please wait...");
+        outLine();
 
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
-            System.out.println("-> Now processing topic: " + currentTopic + "...");
+            outLine("-> Now processing topic: " + currentTopic + "...");
 
             DbDto dbDto = DatabaseReadWriteHelper.readDatabaseFromJson(currentTopic, this.jsonDirectory);
 
             if (dbDto == null) {
-                System.out.println("  !Database contents not found for topic " + currentTopic + ", skipping...");
-                System.out.println();
+                outLine("  !Database contents not found for topic " + currentTopic + ", skipping...");
+                outLine();
                 continue;
             }
 
             writeDatabaseTopic(dbDto, this.databaseDirectory);
         }
 
-        System.out.println("All done!");
+        outLine("All done!");
     }
 
     private void check() throws Exception {
@@ -193,7 +193,7 @@ public class DatabaseTool extends GenericTool {
             throw new IllegalArgumentException("At least one integrity error has been found, your database is not ready-to-use.");
         }
 
-        System.out.println("All done.");
+        outLine("All done.");
     }
 
     private void fix() throws IOException {
@@ -201,11 +201,11 @@ public class DatabaseTool extends GenericTool {
         List<DbDto> databaseObjects = checkAndReturnIntegrityErrorsAndObjects(integrityErrors);
 
         if(integrityErrors.isEmpty()) {
-            System.out.println("No error detected - a fix is not necessary.");
+            outLine("No error detected - a fix is not necessary.");
             return;
         }
 
-        System.out.println("-> Now fixing database...");
+        outLine("-> Now fixing database...");
         DatabaseIntegrityFixer databaseIntegrityFixer = DatabaseIntegrityFixer.load(databaseObjects, integrityErrors);
         List<IntegrityError> remainingIntegrityErrors = databaseIntegrityFixer.fixAllContentsObjects();
         List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getDbDtos();
@@ -213,46 +213,46 @@ public class DatabaseTool extends GenericTool {
         printIntegrityErrors(remainingIntegrityErrors);
 
         if(fixedDatabaseObjects.isEmpty()) {
-            System.out.println("ERROR! Unrecoverable integrity errors spotted. Consider restoring TDU database from backup.");
+            outLine("ERROR! Unrecoverable integrity errors spotted. Consider restoring TDU database from backup.");
         } else {
-            System.out.println("-> Now writing database to " + this.outputDatabaseDirectory + "...");
-            System.out.println();
+            outLine("-> Now writing database to " + this.outputDatabaseDirectory + "...");
+            outLine();
 
             FilesHelper.createDirectoryIfNotExists(this.outputDatabaseDirectory);
 
             for (DbDto databaseObject : fixedDatabaseObjects) {
-                System.out.println("-> Now processing topic: " + databaseObject.getStructure().getTopic() + "...");
+                outLine("-> Now processing topic: " + databaseObject.getStructure().getTopic() + "...");
 
                 writeDatabaseTopic(databaseObject, this.outputDatabaseDirectory);
             }
 
             if (!remainingIntegrityErrors.isEmpty()) {
-                System.out.println("WARNING! TDU database has been rewritten, but some integrity errors do remain. Your game may not work as expected.");
+                outLine("WARNING! TDU database has been rewritten, but some integrity errors do remain. Your game may not work as expected.");
             }
         }
 
-        System.out.println("All done.");
+        outLine("All done.");
     }
 
     private List<DbDto> checkAndReturnIntegrityErrorsAndObjects(List<IntegrityError> integrityErrors) throws IOException {
-        System.out.println("-> Source directory: " + databaseDirectory);
-        System.out.println("Checking TDU database, please wait...");
-        System.out.println();
+        outLine("-> Source directory: " + databaseDirectory);
+        outLine("Checking TDU database, please wait...");
+        outLine();
 
-        System.out.println("-> Now loading database, step 1...");
+        outLine("-> Now loading database, step 1...");
 
         List<DbDto> dbDtos = loadAndCheckDatabase(integrityErrors);
 
-        System.out.println("-> step 1 finished.");
-        System.out.println();
+        outLine("-> step 1 finished.");
+        outLine();
 
         if (dbDtos.size() == DbDto.Topic.values().length) {
-            System.out.println("-> Now checking integrity between topics, step 2...");
+            outLine("-> Now checking integrity between topics, step 2...");
 
             betweenTopicsCheck(dbDtos, integrityErrors);
 
-            System.out.println("-> step 2 finished.");
-            System.out.println();
+            outLine("-> step 2 finished.");
+            outLine();
         }
 
         printIntegrityErrors(integrityErrors);
@@ -266,33 +266,33 @@ public class DatabaseTool extends GenericTool {
         List<DbDto> allDtos = new ArrayList<>();
 
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
-            System.out.println("  -> Now processing topic: " + currentTopic + "...");
+            outLine("  -> Now processing topic: " + currentTopic + "...");
 
             int initialErrorCount = integrityErrors.size();
 
             DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, this.withClearContents, integrityErrors);
 
             if (dbDto == null) {
-                System.out.println("  (!)Database contents not found for topic " + currentTopic + ", skipping.");
-                System.out.println();
+                outLine("  (!)Database contents not found for topic " + currentTopic + ", skipping.");
+                outLine();
                 continue;
             }
 
-            System.out.println("  .Found topic: " + currentTopic + ", " + (integrityErrors.size() - initialErrorCount) + " error(s).");
-            System.out.println("  .Content line count: " + dbDto.getData().getEntries().size());
+            outLine("  .Found topic: " + currentTopic + ", " + (integrityErrors.size() - initialErrorCount) + " error(s).");
+            outLine("  .Content line count: " + dbDto.getData().getEntries().size());
 
             if (!dbDto.getResources().isEmpty()) {
-                System.out.println("  .Resource count per locale: ");
+                outLine("  .Resource count per locale: ");
                 dbDto.getResources().stream()
 
                         .sorted(
                                 (dbResourceDto1, dbResourceDto2) -> dbResourceDto1.getLocale().name().compareTo(dbResourceDto2.getLocale().name()))
 
                         .forEach(
-                                (dbResourceDto) -> System.out.println("    >" + dbResourceDto.getLocale() + "=" + dbResourceDto.getEntries().size()));
+                                (dbResourceDto) -> outLine("    >" + dbResourceDto.getLocale() + "=" + dbResourceDto.getEntries().size()));
             }
 
-            System.out.println();
+            outLine();
 
             if (integrityErrors.isEmpty()) {
                 allDtos.add(dbDto);
@@ -305,10 +305,10 @@ public class DatabaseTool extends GenericTool {
     private void writeDatabaseTopic(DbDto dbDto, String outputDatabaseDirectory) throws IOException {
         List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabase(dbDto, outputDatabaseDirectory, this.withClearContents);
 
-        System.out.println("Writing done for topic: " + dbDto.getStructure().getTopic());
+        outLine("Writing done for topic: " + dbDto.getStructure().getTopic());
         writtenFiles.stream()
-                .forEach((fileName) -> System.out.println("-> " + fileName));
-        System.out.println();
+                .forEach((fileName) -> outLine("-> " + fileName));
+        outLine();
     }
 
     private static void betweenTopicsCheck(List<DbDto> allDtos, List<IntegrityError> integrityErrors) {
@@ -317,14 +317,14 @@ public class DatabaseTool extends GenericTool {
         integrityErrors.addAll(DatabaseIntegrityChecker.load(allDtos).checkAllContentsObjects());
     }
 
-    private static void printIntegrityErrors(List<IntegrityError> integrityErrors) {
+    private void printIntegrityErrors(List<IntegrityError> integrityErrors) {
         if(!integrityErrors.isEmpty()) {
-            System.out.println("-> Integrity errors (" + integrityErrors.size() + "):");
+            outLine("-> Integrity errors (" + integrityErrors.size() + "):");
 
             integrityErrors.forEach(
                     (integrityError) -> {
                         String errorMessage = String.format(integrityError.getErrorMessageFormat(), integrityError.getInformation());
-                        System.out.println("  (!)" + errorMessage);
+                        outLine("  (!)" + errorMessage);
                     });
         }
     }
