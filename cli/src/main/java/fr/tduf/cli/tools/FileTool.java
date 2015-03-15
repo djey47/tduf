@@ -197,11 +197,11 @@ public class FileTool extends GenericTool {
     }
 
     private void repack() throws IOException {
-        System.out.println("Will pack contents from directory: " + this.inputFile);
+        outLine("Will pack contents from directory: " + this.inputFile);
 
         bankSupport.packAll(this.inputFile, this.outputFile);
 
-        System.out.println("Done creating Bank: " + this.outputFile + ".");
+        outLine("Done creating Bank: " + this.outputFile + ".");
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("contentsDirectory", this.inputFile);
@@ -210,13 +210,13 @@ public class FileTool extends GenericTool {
     }
 
     private void unpack() throws IOException {
-        System.out.println("Will use Bank file: " + this.inputFile);
+        outLine("Will use Bank file: " + this.inputFile);
 
         FilesHelper.createDirectoryIfNotExists(this.outputFile);
 
         bankSupport.extractAll(this.inputFile, this.outputFile);
 
-        System.out.println("Done extracting Bank to " + this.outputFile + ".");
+        outLine("Done extracting Bank to " + this.outputFile + ".");
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("extractedContentsDirectory", this.outputFile);
@@ -225,18 +225,18 @@ public class FileTool extends GenericTool {
     }
 
     private void bankInfo() {
-        System.out.println("Will use Bank file: " + this.inputFile);
+        outLine("Will use Bank file: " + this.inputFile);
 
         BankInfoDto bankInfoObject = bankSupport.getBankInfo(this.inputFile);
 
-        System.out.println("Done reading Bank:");
-        System.out.println("\t-> Year: " + bankInfoObject.getYear());
-        System.out.println("\t-> Size: " + bankInfoObject.getFileSize() + " bytes");
-        System.out.println("\t-> Packed files (" + bankInfoObject.getPackedFiles().size() + "):");
+        outLine("Done reading Bank:");
+        outLine("\t-> Year: " + bankInfoObject.getYear());
+        outLine("\t-> Size: " + bankInfoObject.getFileSize() + " bytes");
+        outLine("\t-> Packed files (" + bankInfoObject.getPackedFiles().size() + "):");
 
         bankInfoObject.getPackedFiles().stream()
 
-                .forEach((packedFileInfoObject) -> System.out.println("\t\t." + packedFileInfoObject.getReference()
+                .forEach((packedFileInfoObject) -> outLine("\t\t." + packedFileInfoObject.getReference()
                         + "(" + packedFileInfoObject.getFullName() + ") :  "
                         + packedFileInfoObject.getSize() + " bytes"));
 
@@ -247,7 +247,7 @@ public class FileTool extends GenericTool {
     }
 
     private void jsonify() throws IOException {
-        System.out.println("Will use structure in file: " + this.structureFile);
+        outLine("Will use structure in file: " + this.structureFile);
 
         byte[] fileContents = Files.readAllBytes(Paths.get(inputFile));
         ByteArrayInputStream fileInputStream = new ByteArrayInputStream(fileContents);
@@ -266,7 +266,7 @@ public class FileTool extends GenericTool {
 
         genericParser.parse();
 
-        System.out.println("\t-> Provided file dump:\n" + genericParser.dump());
+        outLine("\t-> Provided file dump:\n" + genericParser.dump());
 
         String jsonOutput = genericParser.getDataStore().toJsonString();
 
@@ -274,7 +274,7 @@ public class FileTool extends GenericTool {
             bufferedWriter.write(jsonOutput);
         }
 
-        System.out.println("TDU to JSON conversion done: " + this.inputFile + " to " + this.outputFile);
+        outLine("TDU to JSON conversion done: " + this.inputFile + " to " + this.outputFile);
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("tduFile", this.inputFile);
@@ -283,7 +283,7 @@ public class FileTool extends GenericTool {
     }
 
     private void applyjson() throws IOException {
-        System.out.println("Will use structure in file: " + this.structureFile);
+        outLine("Will use structure in file: " + this.structureFile);
 
         GenericWriter<String> genericWriter = new GenericWriter<String>("BTRQ") {
             @Override
@@ -303,7 +303,7 @@ public class FileTool extends GenericTool {
         ByteArrayOutputStream outputStream = genericWriter.write();
         Files.write(Paths.get(outputFile), outputStream.toByteArray());
 
-        System.out.println("JSON to TDU conversion done: " + this.inputFile + " to " + this.outputFile);
+        outLine("JSON to TDU conversion done: " + this.inputFile + " to " + this.outputFile);
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("tduFile", this.outputFile);
@@ -312,13 +312,13 @@ public class FileTool extends GenericTool {
     }
 
     private void decrypt() throws IOException {
-        System.out.println("Now decrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
+        outLine("Now decrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
 
         ByteArrayOutputStream outputStream = processInputStream(false);
 
         Files.write(Paths.get(this.outputFile), outputStream.toByteArray());
 
-        System.out.println("Done: " + this.inputFile + " to " + this.outputFile);
+        outLine("Done: " + this.inputFile + " to " + this.outputFile);
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("encryptedFile", this.inputFile);
@@ -327,13 +327,13 @@ public class FileTool extends GenericTool {
     }
 
     private void encrypt() throws IOException {
-        System.out.println("Now encrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
+        outLine("Now encrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
 
         ByteArrayOutputStream outputStream = processInputStream(true);
 
         Files.write(Paths.get(this.outputFile), outputStream.toByteArray());
 
-        System.out.println("Done: " + this.inputFile + " to " + this.outputFile);
+        outLine("Done: " + this.inputFile + " to " + this.outputFile);
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("clearFile", this.inputFile);
