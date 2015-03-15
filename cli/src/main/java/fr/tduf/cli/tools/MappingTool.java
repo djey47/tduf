@@ -176,6 +176,12 @@ public class MappingTool extends GenericTool {
         Map<Long, String> newChecksums = MapHelper.findNewChecksums(map, checksums);
 
         outLine("  -> Absent from Bnk1.map: " + newChecksums);
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("bankFilesFound", banks);
+        resultInfo.put("checksums", checksums);
+        resultInfo.put("missingChecksums", newChecksums);
+        commandResult = resultInfo;
     }
 
     private void fixMissing() throws IOException {
