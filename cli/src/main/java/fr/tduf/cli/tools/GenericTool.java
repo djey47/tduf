@@ -66,6 +66,15 @@ public abstract class GenericTool {
     }
 
     /**
+     * Adds a new line on standard output. Takes normalization setting into account.
+     */
+    protected void outLine() {
+        if (!withNormalizedOutput) {
+            System.out.println();
+        }
+    }
+
+    /**
      * Should process according to provided command.
      * @return true if command has been correctly dispatched, false otherwise.
      */
