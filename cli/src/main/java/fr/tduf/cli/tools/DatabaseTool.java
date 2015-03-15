@@ -12,6 +12,7 @@ import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
@@ -140,6 +141,8 @@ public class DatabaseTool extends GenericTool {
         outLine("Dumping TDU database to JSON, please wait...");
         outLine();
 
+        List<String> writtenFileNames = new ArrayList<>();
+        List<DbDto.Topic> missingTopicContents = new ArrayList<>();
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
             outLine("-> Now processing topic: " + currentTopic + "...");
 
@@ -148,6 +151,9 @@ public class DatabaseTool extends GenericTool {
             if (dbDto == null) {
                 outLine("  !Database contents not found for topic " + currentTopic + ", skipping...");
                 outLine();
+
+                missingTopicContents.add(currentTopic);
+
                 continue;
             }
 
@@ -156,9 +162,16 @@ public class DatabaseTool extends GenericTool {
             outLine("Writing done for topic: " + currentTopic);
             outLine("-> " + writtenFileName);
             outLine();
+
+            writtenFileNames.add(writtenFileName);
         }
 
         outLine("All done!");
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("missingTopicContents", missingTopicContents);
+        resultInfo.put("writtenFiles", writtenFileNames);
+        commandResult = resultInfo;
     }
 
     private void gen() throws IOException {
