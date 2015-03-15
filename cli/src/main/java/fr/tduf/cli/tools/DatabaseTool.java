@@ -181,6 +181,8 @@ public class DatabaseTool extends GenericTool {
         outLine("Generating TDU database from JSON, please wait...");
         outLine();
 
+        List<DbDto.Topic> missingTopicContents = new ArrayList<>();
+        List<String> writtenFileNames = new ArrayList<>();
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
             outLine("-> Now processing topic: " + currentTopic + "...");
 
@@ -189,13 +191,21 @@ public class DatabaseTool extends GenericTool {
             if (dbDto == null) {
                 outLine("  !Database contents not found for topic " + currentTopic + ", skipping...");
                 outLine();
+
+                missingTopicContents.add(currentTopic);
+
                 continue;
             }
 
-            writeDatabaseTopic(dbDto, this.databaseDirectory);
+            writtenFileNames.addAll(writeDatabaseTopic(dbDto, this.databaseDirectory));
         }
 
         outLine("All done!");
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("missingJsonTopicContents", missingTopicContents);
+        resultInfo.put("writtenFiles", writtenFileNames);
+        commandResult = resultInfo;
     }
 
     private void check() throws Exception {
@@ -315,13 +325,15 @@ public class DatabaseTool extends GenericTool {
         return allDtos;
     }
 
-    private void writeDatabaseTopic(DbDto dbDto, String outputDatabaseDirectory) throws IOException {
+    private List<String> writeDatabaseTopic(DbDto dbDto, String outputDatabaseDirectory) throws IOException {
         List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabase(dbDto, outputDatabaseDirectory, this.withClearContents);
 
         outLine("Writing done for topic: " + dbDto.getStructure().getTopic());
         writtenFiles.stream()
                 .forEach((fileName) -> outLine("-> " + fileName));
         outLine();
+
+        return writtenFiles;
     }
 
     private static void betweenTopicsCheck(List<DbDto> allDtos, List<IntegrityError> integrityErrors) {
