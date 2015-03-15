@@ -53,7 +53,7 @@ public class OutputMapperTest {
 
         // THEN
         JsonNode actualRootNode = objectReader.readTree(actualJson);
-        assertEquals("An exception occurred", actualRootNode.get("errorMessage").getTextValue());
+        assertThat(actualRootNode.get("errorMessage").getTextValue()).isEqualTo("An exception occurred");
         assertThat(actualRootNode.get("stackTrace").getTextValue()).containsSequence("Exception", "IllegalArgumentException");
     }
 
