@@ -34,6 +34,12 @@ public class IntegrityError {
             }
 
             @Override
+            public IntegrityErrorBuilder addInformation(ErrorInfoEnum errorInfoEnum, Object value) {
+                this.info.put(errorInfoEnum,value);
+                return this;
+            }
+
+            @Override
             public IntegrityError build() {
                 return new IntegrityError(this.errorTypeEnum, this.info);
             }
@@ -139,6 +145,10 @@ public class IntegrityError {
         public String toString() {
             return this.infoLabel;
         }
+
+        public String getInfoLabel() {
+            return infoLabel;
+        }
     }
 
     public interface IntegrityErrorBuilder {
@@ -146,6 +156,8 @@ public class IntegrityError {
         IntegrityErrorBuilder ofType(ErrorTypeEnum errorTypeEnum);
 
         IntegrityErrorBuilder addInformations(Map<ErrorInfoEnum, Object> info);
+
+        IntegrityErrorBuilder addInformation(ErrorInfoEnum errorInfoEnum, Object value);
 
         IntegrityError build();
     }
