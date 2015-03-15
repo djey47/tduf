@@ -275,6 +275,11 @@ public class FileTool extends GenericTool {
         }
 
         System.out.println("TDU to JSON conversion done: " + this.inputFile + " to " + this.outputFile);
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("tduFile", this.inputFile);
+        resultInfo.put("jsonFile", this.outputFile);
+        commandResult = resultInfo;
     }
 
     private void applyjson() throws IOException {
