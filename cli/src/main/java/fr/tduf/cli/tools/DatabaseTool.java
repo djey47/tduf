@@ -216,7 +216,7 @@ public class DatabaseTool extends GenericTool {
             throw new IllegalArgumentException("At least one integrity error has been found, your database is not ready-to-use.");
         }
 
-        outLine("All done.");
+        outLine("All done!");
     }
 
     private void fix() throws IOException {
@@ -254,7 +254,7 @@ public class DatabaseTool extends GenericTool {
             }
         }
 
-        outLine("All done.");
+        outLine("All done!");
     }
 
     private List<DbDto> checkAndReturnIntegrityErrorsAndObjects(List<IntegrityError> integrityErrors) throws IOException {
