@@ -156,6 +156,10 @@ public class MappingTool extends GenericTool {
 
         outLine("Bnk1.map parsing done: " + this.mapFile);
         outLine("  -> All entries :" + sortedMapEntries);
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("allEntries", sortedMapEntries);
+        commandResult = resultInfo;
     }
 
     private void listMissing() throws IOException {
