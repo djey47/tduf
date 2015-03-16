@@ -3,7 +3,6 @@ package fr.tduf.cli.tools;
 import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
-import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
@@ -50,10 +49,10 @@ public class FileTool extends GenericTool {
         DECRYPT("decrypt", "Makes protected TDU file readable by humans or other software."),
         ENCRYPT("encrypt", "Allows protected TDU file to be read by game engine."),
         JSONIFY("jsonify", "Converts TDU file with structure to JSON file."),
-        APPLYJSON("applyjson", "Rewrites TDU file from JSON file with structure."),
-        BANKINFO("bankinfo", "Gives details about a TDU Bank file."),
-        UNPACK("unpack", "Extracts all contents from TDU Bank."),
-        REPACK("repack", "Creates a BNK file, packing all contents in directory.");
+        APPLYJSON("applyjson", "Rewrites TDU file from JSON file with structure.");
+//        BANKINFO("bankinfo", "Gives details about a TDU Bank file."),
+//        UNPACK("unpack", "Extracts all contents from TDU Bank."),
+//        REPACK("repack", "Creates a BNK file, packing all contents in directory.");
 
         final String label;
         final String description;
@@ -88,7 +87,7 @@ public class FileTool extends GenericTool {
 
     public FileTool() {
         // BNK-step1: using TDU Modding Library
-        this.bankSupport = new GenuineBnkGateway();
+//        this.bankSupport = new GenuineBnkGateway();
     }
 
     @Override
@@ -115,12 +114,12 @@ public class FileTool extends GenericTool {
                 case ENCRYPT:
                     extension = ".enc";
                     break;
-                case UNPACK:
-                    extension = "_unpacked";
-                    break;
-                case REPACK:
-                    extension = "_repacked.bnk";
-                    break;
+//                case UNPACK:
+//                    extension = "_unpacked";
+//                    break;
+//                case REPACK:
+//                    extension = "_repacked.bnk";
+//                    break;
                 default:
                     extension = ".";
                     break;
@@ -140,7 +139,6 @@ public class FileTool extends GenericTool {
                 &&  (command == DECRYPT || command == ENCRYPT)) {
             throw new CmdLineException(parser, "Error: cryptoMode is required.", null);
         }
-
     }
 
     @Override
@@ -154,10 +152,10 @@ public class FileTool extends GenericTool {
                 DECRYPT.label + " -c 1 -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.ok\"",
                 ENCRYPT.label + " -c 1 -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.ok\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\"",
                 JSONIFY.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"",
-                APPLYJSON.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.json\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"",
-                BANKINFO.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk\"",
-                UNPACK.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk\" -o \"C:\\Users\\Bill\\Desktop\\DB_extracted\"",
-                REPACK.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk.unpacked\"");
+                APPLYJSON.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.json\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"");
+//                BANKINFO.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk\"",
+//                UNPACK.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk\" -o \"C:\\Users\\Bill\\Desktop\\DB_extracted\"",
+//                REPACK.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk.unpacked\"");
     }
 
     @Override
@@ -176,15 +174,15 @@ public class FileTool extends GenericTool {
             case ENCRYPT:
                 encrypt();
                 break;
-            case BANKINFO:
-                bankInfo();
-                break;
-            case UNPACK:
-                unpack();
-                break;
-            case REPACK:
-                repack();
-                break;
+//            case BANKINFO:
+//                bankInfo();
+//                break;
+//            case UNPACK:
+//                unpack();
+//                break;
+//            case REPACK:
+//                repack();
+//                break;
             default:
                 return false;
         }
