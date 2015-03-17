@@ -42,7 +42,7 @@
     {
       "name": "zeroZone",
       "type": "GAP",
-      "size": "=197*12"
+      "size": "=(347-?indexSize?)*12"
     },
     {
       "name": "views",
