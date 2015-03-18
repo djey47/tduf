@@ -1,6 +1,5 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraIndex;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  *
@@ -24,7 +22,7 @@ public class CamerasParser extends GenericParser<String> {
     }
 
     /**
-     *
+     * Loads data from a byte array stream.
      */
     public static CamerasParser load(ByteArrayInputStream inputStream) throws IOException {
         return new CamerasParser(
@@ -42,23 +40,25 @@ public class CamerasParser extends GenericParser<String> {
     }
 
     /**
-     *
+     * Returns index: view count per camera id.
      */
-    public List<CameraIndex> getCameraIndex() {
+    public Map<Long, Short> getCameraIndex() {
 
-        return this.getDataStore().getRepeatedValues("index").stream()
+        Map<Long, Short> viewCountByCameraId = new LinkedHashMap<>();
 
-                .map((store) -> {
+        this.getDataStore().getRepeatedValues("index").stream()
+
+                .forEach((store) -> {
                     long cameraId = store.getInteger("cameraId").get();
                     short viewCount = store.getInteger("viewCount").get().shortValue();
-                    return new CameraIndex(cameraId, viewCount);
-                })
+                    viewCountByCameraId.put(cameraId, viewCount);
+                });
 
-                .collect(toList());
+        return viewCountByCameraId;
     }
 
     /**
-     *
+     * Returns camera views per camera id.
      */
     public Map<Long, List<DataStore>> getCameraViews() {
 
@@ -67,7 +67,6 @@ public class CamerasParser extends GenericParser<String> {
         this.getDataStore().getRepeatedValues("views").stream()
 
                 .forEach((store) -> {
-
                     long cameraId = store.getInteger("cameraId").get();
 
                     List<DataStore> currentViews;
