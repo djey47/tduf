@@ -104,7 +104,9 @@ public abstract class GenericWriter<T> {
 
                         String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(name, itemIndex);
                         try {
-                            writeFields(field.getSubFields(), outputStream, newRepeaterKeyPrefix);
+                            ByteArrayOutputStream temporayOutputStream = new ByteArrayOutputStream();
+                            writeFields(field.getSubFields(), temporayOutputStream, newRepeaterKeyPrefix);
+                            outputStream.write(temporayOutputStream.toByteArray());
                         } catch (NoSuchElementException nsee) {
                             hasMoreFields = false;
                         }
