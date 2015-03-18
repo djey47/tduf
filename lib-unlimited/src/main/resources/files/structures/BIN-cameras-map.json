@@ -33,7 +33,7 @@
           "size": 4
         },
         {
-          "name": "gap1",
+          "name": "indexEntryGap",
           "type": "GAP",
           "size": 4
         }
@@ -42,14 +42,14 @@
     {
       "name": "zeroZone",
       "type": "GAP",
-      "size": "=(347-?indexSize?)*12"
+      "size": "=2268+((?indexSize?-144)*16)"
     },
     {
       "name": "views",
       "type": "REPEATER",
       "subFields": [
         {
-          "name": "gap2",
+          "name": "viewEntryGap",
           "type": "GAP",
           "size": 4
         },
