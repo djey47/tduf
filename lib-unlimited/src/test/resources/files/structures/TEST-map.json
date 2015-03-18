@@ -15,6 +15,11 @@
       "type" : "REPEATER",
       "subFields" : [
         {
+          "name" : "gap1",
+          "type" : "GAP",
+          "size" : 1
+        },
+        {
           "name" : "number",
           "type" : "INTEGER",
           "size" : 4
@@ -23,7 +28,7 @@
           "type" : "FPOINT",
           "size" : 4
         }, {
-          "name" : "gap",
+          "name" : "gap2",
           "type" : "GAP",
           "size" : 2
         }, {
