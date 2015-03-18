@@ -174,7 +174,7 @@ public class GenericWriterTest {
         assertThat(actualOutputStream).isNotNull();
 
         byte[] actualBytes = actualOutputStream.toByteArray();
-        assertThat(actualBytes).hasSize(45);
+        assertThat(actualBytes).hasSize(47);
 
         URI referenceFileURI = thisClass.getResource("/files/samples/TEST-littleEndian.bin").toURI();
         byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
