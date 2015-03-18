@@ -19,8 +19,8 @@ public class CamerasParserTest {
     public void parse_whenRealFiles_shouldLoadCamerasContents() throws URISyntaxException, IOException {
         // GIVEN
         URI uri = thisClass.getResource("/bin/Cameras.bin").toURI();
-        byte[] mapContents = Files.readAllBytes(Paths.get(uri));
-        ByteArrayInputStream camInputStream = new ByteArrayInputStream(mapContents);
+        byte[] camContents = Files.readAllBytes(Paths.get(uri));
+        ByteArrayInputStream camInputStream = new ByteArrayInputStream(camContents);
 
         // WHEN
         CamerasParser camerasParser = CamerasParser.load(camInputStream);
