@@ -1,15 +1,17 @@
 tag	<TEXT: 10 bytes>	0x[41 42 43 44 45 46 47 48 49 4A]	"ABCDEFGHIJ"
 unknown	<UNKNOWN: 5 bytes>	0x[01 02 03 04 05]	
 repeater	<REPEATER>	>>
+repeater[0].gap1	<GAP: 1 bytes>	0x[00]	
 repeater[0].number	<INTEGER: 4 bytes>	0x[00 00 01 F4]	500
 repeater[0].numberF	<FPOINT: 4 bytes>	0x[43 80 B9 D0]	257.45166
-repeater[0].gap	<GAP: 2 bytes>	0x[00 00]	
+repeater[0].gap2	<GAP: 2 bytes>	0x[00 00]	
 repeater[0].text	<TEXT: 4 bytes>	0x[41 42 43 44]	"ABCD"
 repeater[0].delimiter	<DELIMITER: 1 bytes>	0x[0A]	"
 "
+repeater[1].gap1	<GAP: 1 bytes>	0x[00]	
 repeater[1].number	<INTEGER: 4 bytes>	0x[00 00 03 E8]	1000
 repeater[1].numberF	<FPOINT: 4 bytes>	0x[42 AD 6D DE]	86.714584
-repeater[1].gap	<GAP: 2 bytes>	0x[00 00]	
+repeater[1].gap2	<GAP: 2 bytes>	0x[00 00]	
 repeater[1].text	<TEXT: 4 bytes>	0x[45 46 47 48]	"EFGH"
 repeater[1].delimiter	<DELIMITER: 1 bytes>	0x[0B]	""
 << repeater	<REPEATER: 2 items>
