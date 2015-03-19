@@ -13,9 +13,13 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 /**
- *
+ * Allow to read data from cameras.bin file.
  */
 public class CamerasParser extends GenericParser<String> {
+
+    private Map<Long, Short> cachedCameraIndex;
+
+    private Map<Long, List<DataStore>> cachedCameraViews;
 
     private CamerasParser(ByteArrayInputStream inputStream) throws IOException {
         super(inputStream);
@@ -31,7 +35,7 @@ public class CamerasParser extends GenericParser<String> {
 
     @Override
     protected String generate() {
-        return "";
+        return null;
     }
 
     @Override
@@ -43,43 +47,47 @@ public class CamerasParser extends GenericParser<String> {
      * Returns index: view count per camera id.
      */
     public Map<Long, Short> getCameraIndex() {
+        if (cachedCameraIndex != null) {
+            return cachedCameraIndex;
+        }
 
-        Map<Long, Short> viewCountByCameraId = new LinkedHashMap<>();
-
+        cachedCameraIndex = new LinkedHashMap<>();
         this.getDataStore().getRepeatedValues("index").stream()
 
                 .forEach((store) -> {
                     long cameraId = store.getInteger("cameraId").get();
                     short viewCount = store.getInteger("viewCount").get().shortValue();
-                    viewCountByCameraId.put(cameraId, viewCount);
+                    cachedCameraIndex.put(cameraId, viewCount);
                 });
 
-        return viewCountByCameraId;
+        return cachedCameraIndex;
     }
 
     /**
      * Returns camera views per camera id.
      */
     public Map<Long, List<DataStore>> getCameraViews() {
+        if (cachedCameraViews != null) {
+            return cachedCameraViews;
+        }
 
-        Map<Long, List<DataStore>> viewsByCamera = new LinkedHashMap<>();
-
+        cachedCameraViews = new LinkedHashMap<>();
         this.getDataStore().getRepeatedValues("views").stream()
 
                 .forEach((store) -> {
                     long cameraId = store.getInteger("cameraId").get();
 
                     List<DataStore> currentViews;
-                    if (viewsByCamera.containsKey(cameraId)) {
-                        currentViews = viewsByCamera.get(cameraId);
+                    if (cachedCameraViews.containsKey(cameraId)) {
+                        currentViews = cachedCameraViews.get(cameraId);
                     } else {
                         currentViews = new ArrayList<>();
-                        viewsByCamera.put(cameraId, currentViews);
+                        cachedCameraViews.put(cameraId, currentViews);
                     }
 
                     currentViews.add(store);
                 });
 
-        return viewsByCamera;
+        return cachedCameraViews;
     }
 }
