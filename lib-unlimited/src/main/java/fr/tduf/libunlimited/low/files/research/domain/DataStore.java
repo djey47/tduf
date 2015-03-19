@@ -54,6 +54,21 @@ public class DataStore {
     }
 
     /**
+     * Adds all entries from provided data store to current one.
+     * If entries with the same key already exist, values will be replaced.
+     * @param sourceStore   : pre-filled data store.
+     */
+    public void mergeAll(DataStore sourceStore) {
+        if (sourceStore == null) {
+            return;
+        }
+
+        // TODO check for structures and throw exception if they do not match
+
+        this.getStore().putAll(sourceStore.store);
+    }
+
+    /**
      * Adds provided bytes to the store, if type is stor-able.
      *
      * @param fieldName : identifier of field hosting the value, should not exist already
