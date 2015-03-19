@@ -471,6 +471,17 @@ public class DataStoreTest {
         assertThat(dataStore.size()).isEqualTo(16);
     }
 
+    @Test (expected = IllegalArgumentException.class)
+    public void mergeAll_whenDifferentStructures_shouldThrowIllegalArgumentException() throws IOException {
+        // GIVEN
+        DataStore sourceStore = new DataStore(FileStructureDto.builder().build());
+
+        // WHEN
+        dataStore.mergeAll(sourceStore);
+
+        // THEN: IAE
+    }
+
     private void putRawValueInStore(String key, byte[] bytes) {
         dataStore.addValue(key, UNKNOWN, bytes);
     }

@@ -63,7 +63,9 @@ public class DataStore {
             return;
         }
 
-        // TODO check for structures and throw exception if they do not match
+        if(!this.getFileStructure().equals(sourceStore.getFileStructure())) {
+            throw new IllegalArgumentException("File structure differ between data stores to be merged.");
+        }
 
         this.getStore().putAll(sourceStore.store);
     }
