@@ -20,17 +20,21 @@ public class CamerasParserTest {
         // GIVEN
         ByteArrayInputStream camInputStream = getCamerasInputStreamFromFile();
 
+
         // WHEN
         CamerasParser camerasParser = CamerasParser.load(camInputStream);
         camerasParser.parse();
+
 
         // THEN
         assertThat(camerasParser).isNotNull();
         assertThat(camerasParser.getCameraIndex()).hasSize(151);
         assertThat(camerasParser.getCameraViews()).hasSize(149);
+        assertThat(camerasParser.getTotalViewCount()).isEqualTo(595);
 
         assertThat(camerasParser.getCachedCameraIndex()).isNotEmpty();
         assertThat(camerasParser.getCachedCameraViews()).isNotEmpty();
+        assertThat(camerasParser.getCachedTotalViewCount()).isNotNull();
     }
 
     @Test
@@ -47,6 +51,7 @@ public class CamerasParserTest {
         // THEN
         assertThat(camerasParser.getCachedCameraViews()).isNull();
         assertThat(camerasParser.getCachedCameraIndex()).isNull();
+        assertThat(camerasParser.getCachedTotalViewCount()).isNull();
     }
 
     private static ByteArrayInputStream getCamerasInputStreamFromFile() throws URISyntaxException, IOException {

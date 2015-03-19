@@ -21,6 +21,8 @@ public class CamerasParser extends GenericParser<String> {
 
     private Map<Long, List<DataStore>> cachedCameraViews;
 
+    private Integer cachedTotalViewCount;
+
     private CamerasParser(ByteArrayInputStream inputStream) throws IOException {
         super(inputStream);
     }
@@ -92,12 +94,30 @@ public class CamerasParser extends GenericParser<String> {
     }
 
     /**
-     *
+     * Returns count of all registered views.
      */
-    // TODO call this method after changing datastore
+    public int getTotalViewCount() {
+        if (cachedTotalViewCount != null) {
+            return cachedTotalViewCount;
+        }
+
+        cachedTotalViewCount = this.getCameraViews().values().stream()
+
+                .mapToInt(List::size)
+
+                .reduce(0, (size1, size2) -> size1 + size2);
+
+        return cachedTotalViewCount;
+    }
+
+    /**
+     * Resets all caches to reload data from store.
+     * Should be used after modifying store contents.
+     */
     public void flushCaches() {
         cachedCameraViews = null;
         cachedCameraIndex = null;
+        cachedTotalViewCount = null;
     }
 
     Map<Long, List<DataStore>> getCachedCameraViews() {
@@ -106,5 +126,9 @@ public class CamerasParser extends GenericParser<String> {
 
     Map<Long, Short> getCachedCameraIndex() {
         return cachedCameraIndex;
+    }
+
+    Integer getCachedTotalViewCount() {
+        return cachedTotalViewCount;
     }
 }
