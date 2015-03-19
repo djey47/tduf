@@ -7,6 +7,9 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import java.io.Serializable;
 import java.util.List;
 
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
+import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
+
 /**
  * Represents contents of structure file
  */
@@ -31,6 +34,16 @@ public class FileStructureDto implements Serializable {
      */
     public static FileStructureDtoBuilder builder() {
         return FileStructureDto::new;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return reflectionEquals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return reflectionHashCode(this);
     }
 
     private FileStructureDto() {}
@@ -129,6 +142,16 @@ public class FileStructureDto implements Serializable {
                     ", type=" + type +
                     ", sizeFormula=" + sizeFormula +
                     '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return reflectionEquals(this, o);
+        }
+
+        @Override
+        public int hashCode() {
+            return reflectionHashCode(this);
         }
 
         public String getSizeFormula() {
