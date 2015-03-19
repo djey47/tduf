@@ -10,6 +10,7 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 ### What's new in this version ? (0.4.1 HOTFIX)
 
 * Research+FileTool(applyJson): fixes a bug causing incorrect data written from json file
+* Research: applies latest updates to BIN-cameras file structure.
 
 ### What you will need to run TDUF
 
