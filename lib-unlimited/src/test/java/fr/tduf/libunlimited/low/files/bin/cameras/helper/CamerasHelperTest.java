@@ -2,7 +2,6 @@ package fr.tduf.libunlimited.low.files.bin.cameras.helper;
 
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -13,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 public class CamerasHelperTest {
 
@@ -37,14 +35,12 @@ public class CamerasHelperTest {
         CamerasHelper.duplicateCameraSet(1, 1001, null);
 
         // THEN: NPE
-
     }
 
     @Test
-    @Ignore
     public void duplicateCameraSet_whenSourceExists_shouldAddSet() throws Exception {
         // GIVEN-WHEN
-        CamerasHelper.duplicateCameraSet(1, 1001, parser);
+        CamerasHelper.duplicateCameraSet(1, 10001, parser);
 
         // THEN
         assertThat(parser.getCameraIndex()).hasSize(152);
