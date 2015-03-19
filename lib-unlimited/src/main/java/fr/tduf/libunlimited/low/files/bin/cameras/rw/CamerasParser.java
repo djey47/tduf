@@ -90,4 +90,21 @@ public class CamerasParser extends GenericParser<String> {
 
         return cachedCameraViews;
     }
+
+    /**
+     *
+     */
+    // TODO call this method after changing datastore
+    public void flushCaches() {
+        cachedCameraViews = null;
+        cachedCameraIndex = null;
+    }
+
+    Map<Long, List<DataStore>> getCachedCameraViews() {
+        return cachedCameraViews;
+    }
+
+    Map<Long, Short> getCachedCameraIndex() {
+        return cachedCameraIndex;
+    }
 }

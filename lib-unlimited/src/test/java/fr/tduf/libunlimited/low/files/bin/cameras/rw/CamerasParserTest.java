@@ -16,11 +16,9 @@ public class CamerasParserTest {
     private static final Class<CamerasParserTest> thisClass = CamerasParserTest.class;
 
     @Test
-    public void parse_whenRealFiles_shouldLoadCamerasContents() throws URISyntaxException, IOException {
+    public void parse_whenRealFiles_shouldLoadCamerasContents_andFillCaches() throws URISyntaxException, IOException {
         // GIVEN
-        URI uri = thisClass.getResource("/bin/Cameras.bin").toURI();
-        byte[] camContents = Files.readAllBytes(Paths.get(uri));
-        ByteArrayInputStream camInputStream = new ByteArrayInputStream(camContents);
+        ByteArrayInputStream camInputStream = getCamerasInputStreamFromFile();
 
         // WHEN
         CamerasParser camerasParser = CamerasParser.load(camInputStream);
@@ -30,5 +28,30 @@ public class CamerasParserTest {
         assertThat(camerasParser).isNotNull();
         assertThat(camerasParser.getCameraIndex()).hasSize(151);
         assertThat(camerasParser.getCameraViews()).hasSize(149);
+
+        assertThat(camerasParser.getCachedCameraIndex()).isNotEmpty();
+        assertThat(camerasParser.getCachedCameraViews()).isNotEmpty();
+    }
+
+    @Test
+    public void flushCaches_shouldNullifyAllCaches() throws IOException, URISyntaxException {
+        // GIVEN
+        CamerasParser camerasParser = CamerasParser.load(getCamerasInputStreamFromFile());
+        camerasParser.parse();
+        camerasParser.getCameraViews();
+        camerasParser.getCameraIndex();
+
+        // WHEN
+        camerasParser.flushCaches();
+
+        // THEN
+        assertThat(camerasParser.getCachedCameraViews()).isNull();
+        assertThat(camerasParser.getCachedCameraIndex()).isNull();
+    }
+
+    private static ByteArrayInputStream getCamerasInputStreamFromFile() throws URISyntaxException, IOException {
+        URI uri = thisClass.getResource("/bin/Cameras.bin").toURI();
+        byte[] camContents = Files.readAllBytes(Paths.get(uri));
+        return new ByteArrayInputStream(camContents);
     }
 }
