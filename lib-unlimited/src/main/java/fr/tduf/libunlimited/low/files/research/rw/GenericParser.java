@@ -18,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  * Helper to read files whose file structure is available as separate asset.
  * Make it possible to extract values from them.
  */
-public abstract class GenericParser<T> {
+public abstract class GenericParser<T> implements StructureBasedProcessor {
 
     private static final String DUMP_START_ENTRY_FORMAT = "%s\t<%s: %d bytes>\t%s\t%s\n";
     private static final String DUMP_REPEATER_START_ENTRY_FORMAT = "%s\t<%s>\t>>\n";
@@ -64,12 +64,6 @@ public abstract class GenericParser<T> {
      * @return a parsed object instance from provided data.
      */
     protected abstract T generate();
-
-    /**
-     * Can be used: either resource in classpath, or file path.
-     * @return location of resource used to describe parsed file structure (mandatory).
-     */
-    protected abstract String getStructureResource();
 
     private void readFields(List<FileStructureDto.Field> fields, String repeaterKey) {
 

@@ -41,7 +41,7 @@ public class CamerasParser extends GenericParser<String> {
     }
 
     @Override
-    protected String getStructureResource() {
+    public String getStructureResource() {
         return "/files/structures/BIN-cameras-map.json";
     }
 

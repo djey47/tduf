@@ -237,7 +237,7 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
             }
         };
@@ -268,7 +268,7 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
             }
         };
@@ -298,7 +298,7 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-encrypted-map.json";
             }
         };
@@ -319,7 +319,7 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-halfFloat-map.json";
             }
         };
@@ -340,7 +340,7 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-veryShortInt-map.json";
             }
         };
@@ -373,7 +373,7 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-auto-map.json";
             }
         };
@@ -385,7 +385,7 @@ public class GenericWriterTest {
             protected void fillStore() {}
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "./src/test/resources/files/structures/TEST-map.json";
             }
         };
@@ -415,7 +415,7 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-littleEndian-map.json";
             }
         };
@@ -440,13 +440,11 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-formulas-map.json";
             }
         };
     }
-
-
 
     private GenericWriter<String> createGenericWriterWithMissingValues() throws IOException {
         return new GenericWriter<String>(DATA) {
@@ -454,7 +452,7 @@ public class GenericWriterTest {
             protected void fillStore() {}
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
             }
         };

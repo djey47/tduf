@@ -255,11 +255,11 @@ public class FileTool extends GenericTool {
         GenericParser<String> genericParser = new GenericParser<String>(fileInputStream) {
             @Override
             protected String generate() {
-                return "BTRQ";
+                return null;
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return structureFile;
             }
         };
@@ -285,12 +285,12 @@ public class FileTool extends GenericTool {
     private void applyjson() throws IOException {
         outLine("Will use structure in file: " + this.structureFile);
 
-        GenericWriter<String> genericWriter = new GenericWriter<String>("BTRQ") {
+        GenericWriter<String> genericWriter = new GenericWriter<String>("") {
             @Override
             protected void fillStore() {}
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return structureFile;
             }
         };

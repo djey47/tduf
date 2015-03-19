@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Helper to write files whose file structure is available as separate asset.
  */
-public abstract class GenericWriter<T> {
+public abstract class GenericWriter<T> implements StructureBasedProcessor {
 
     private final DataStore dataStore;
 
@@ -127,12 +127,6 @@ public abstract class GenericWriter<T> {
      * To be implemented to fill datastore with contents of a domain Object.
      */
     protected abstract void fillStore();
-
-    /**
-     * Can be used: either resource in classpath, or file path.
-     * @return location of resource used to describe parsed file structure (mandatory).
-     */
-    protected abstract String getStructureResource();
 
     FileStructureDto getFileStructure() {
         return this.dataStore.getFileStructure();
