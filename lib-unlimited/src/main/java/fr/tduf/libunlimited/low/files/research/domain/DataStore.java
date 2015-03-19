@@ -161,6 +161,23 @@ public class DataStore {
     }
 
     /**
+     * Integrates a sub data store (produced by {@link #getRepeatedValues} method to current store, under a repater field, at a given index.
+     *
+     * @param repeaterFieldName : identifier of repeater field
+     * @param index             : rank in repeater
+     * @param subStore          : sub data store to merge into existing one
+     */
+    public void mergeRepeatedValues(String repeaterFieldName, int index, DataStore subStore) {
+        requireNonNull(subStore, "A sub data store is required.").getStore().entrySet().stream()
+
+                .forEach((entry) -> {
+                    String newKey = generateKeyForRepeatedField(repeaterFieldName, entry.getKey(), index);
+                    Entry currentStoreEntry = entry.getValue();
+                    this.putEntry(newKey, currentStoreEntry.getType(), currentStoreEntry.getRawValue());
+                });
+    }
+
+    /**
      * @return entry count in store.
      */
     public int size() {
@@ -334,6 +351,14 @@ public class DataStore {
         JsonNode rootNode = new ObjectMapper().readTree(jsonInput);
 
         readJsonNode(rootNode, "");
+    }
+
+    // TODO Duplicate store entries instead of shallow copying them
+    // TODO + clear entry key attribute as it may lead to unconsistent state
+    public DataStore copy() {
+        DataStore clone = new DataStore(this.fileStructure);
+        clone.getStore().putAll(new HashMap<>(this.store));
+        return clone;
     }
 
     /**
