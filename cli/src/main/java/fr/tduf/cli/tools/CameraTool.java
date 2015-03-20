@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import static fr.tduf.cli.tools.CameraTool.Command.COPY_ALL_SETS;
@@ -124,7 +125,7 @@ public class CameraTool extends GenericTool {
 
         outLine("> Done reading cameras.");
 
-        parser.getCameraViews().keySet()
+        new HashSet<>(parser.getCameraViews().keySet())
 
                 .forEach((cameraId) -> CamerasHelper.duplicateCameraSet(cameraId, cameraId + baseIdentifier, parser));
 
