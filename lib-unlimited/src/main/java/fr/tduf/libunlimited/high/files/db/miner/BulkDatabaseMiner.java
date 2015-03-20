@@ -35,6 +35,8 @@ public class BulkDatabaseMiner {
      * @return a list of per-locale database resource objects.
      */
     public Optional<List<DbResourceDto>> getAllResourcesFromTopic(DbDto.Topic topic) {
+//        System.out.println(new Date().getTime() + " - getAllResourcesFromTopic(" + topic + ")");
+
         Optional<DbDto> dbDto = topicObjects.stream()
 
                 .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
@@ -54,6 +56,7 @@ public class BulkDatabaseMiner {
      * @return an optional value: either such a resource object if it exists, else empty.
      */
     public Optional<DbResourceDto> getResourceFromTopicAndLocale(DbDto.Topic topic, DbResourceDto.Locale locale) {
+//        System.out.println(new Date().getTime() + " - getResourceFromTopicAndLocale(" + topic + ", " + locale + ")");
 
         Optional<List<DbResourceDto>> allResourcesFromTopic = getAllResourcesFromTopic(topic);
 
@@ -72,12 +75,14 @@ public class BulkDatabaseMiner {
      * @param topic : topic in TDU Database to search
      * @return database object related to this topic.
      */
-    public DbDto getDatabaseTopic(DbDto.Topic topic) {
+    public Optional<DbDto> getDatabaseTopic(DbDto.Topic topic) {
+//        System.out.println(new Date().getTime() + " - getDatabaseTopic(" + topic + ")");
+
         return topicObjects.stream()
 
                 .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
 
-                .findAny().get();
+                .findAny();
     }
 
     /**
@@ -85,6 +90,8 @@ public class BulkDatabaseMiner {
      * @return database object having specified reference.
      */
     public DbDto getDatabaseTopicFromReference(String topicReference) {
+//        System.out.println(new Date().getTime() + " - getDatabaseTopicFromReference(" + topicReference + ")");
+
         if (topicReference == null) {
             return null;
         }
@@ -102,7 +109,9 @@ public class BulkDatabaseMiner {
      * @return database entry having specified identifier.
      */
     public DbDataDto.Entry getContentEntryFromTopicWithInternalIdentifier(long entryIdentifier, DbDto.Topic topic) {
-        return getDatabaseTopic(topic).getData().getEntries().stream()
+//        System.out.println(new Date().getTime() + " - getContentEntryFromTopicWithInternalIdentifier(" + entryIdentifier + ", " + topic + ")");
+
+        return getDatabaseTopic(topic).get().getData().getEntries().stream()
 
                 .filter((entry) -> entry.getId() == entryIdentifier)
 
@@ -116,6 +125,8 @@ public class BulkDatabaseMiner {
      * @return an optional value: either such a resource entry if it exists, else absent.
      */
     public Optional<DbResourceDto.Entry> getResourceEntryFromTopicAndLocaleWithReference(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
+//        System.out.println(new Date().getTime() + " - getResourceEntryFromTopicAndLocaleWithReference(" + reference + ", " + topic + ", " + locale + ")");
+
         Optional<DbResourceDto> resourceFromTopicAndLocale = getResourceFromTopicAndLocale(topic, locale);
 
         if (!resourceFromTopicAndLocale.isPresent()) {

@@ -1,9 +1,9 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.ArrayList;
@@ -25,13 +25,16 @@ import static java.util.stream.Collectors.toMap;
 public class DatabaseIntegrityChecker {
 
     private final List<DbDto> dbDtos;
+    private final BulkDatabaseMiner bulkDatabaseMiner;
 
     private Map<String, DbDto> topicObjectsByReferences;
     private Map<DbDto, Map<Integer, DbStructureDto.Field>> fieldsByRanksByTopicObjects;
 
     private DatabaseIntegrityChecker(List<DbDto> dbDtos) {
-        this.dbDtos = dbDtos;
+        this.dbDtos = requireNonNull(dbDtos, "A list of database objects is required.");
+        this.bulkDatabaseMiner = BulkDatabaseMiner.load(dbDtos);
 
+        checkRequirements();
         buildIndexes();
     }
 
@@ -41,8 +44,6 @@ public class DatabaseIntegrityChecker {
      * @return a {@link DatabaseIntegrityChecker} instance.
      */
     public static DatabaseIntegrityChecker load(List<DbDto> dbDtos) {
-        checkRequirements(dbDtos);
-
         return new DatabaseIntegrityChecker(dbDtos);
     }
 
@@ -62,22 +63,14 @@ public class DatabaseIntegrityChecker {
        return integrityErrors;
     }
 
-    private static void checkRequirements(List<DbDto> dbDtos) {
-        requireNonNull(dbDtos, "A list of database objects is required.");
-
-        checkIfAllTopicObjectsPresent(dbDtos);
+    private void checkRequirements() {
+        checkIfAllTopicObjectsPresent();
     }
 
-    private static void checkIfAllTopicObjectsPresent(List<DbDto> dbDtos) {
+    private void checkIfAllTopicObjectsPresent() {
         List<DbDto.Topic> absentTopics = asList(DbDto.Topic.values()).stream()
 
-                .filter((topicEnum) -> dbDtos.stream()
-
-                        .map((dto) -> dto.getStructure().getTopic())
-
-                        .filter((topic) -> topic == topicEnum)
-
-                        .count() == 0)
+                .filter((topicEnum) -> !bulkDatabaseMiner.getDatabaseTopic(topicEnum).isPresent())
 
                 .collect(toList());
 
@@ -128,23 +121,11 @@ public class DatabaseIntegrityChecker {
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
         // Through all language resources
-
         topicObject.getResources().stream()
-
-                .parallel()
 
                 .forEach((resourceDto) -> {
 
-                    boolean isResourceReferenceFound = resourceDto.getEntries().stream()
-
-                            .map(DbResourceDto.Entry::getReference)
-
-                            .filter((aReference) -> aReference.equals(reference))
-
-                            .findFirst()
-
-                            .isPresent();
-
+                    boolean isResourceReferenceFound = bulkDatabaseMiner.getResourceEntryFromTopicAndLocaleWithReference(reference, topicObject.getStructure().getTopic(), resourceDto.getLocale()).isPresent();
                     if (!isResourceReferenceFound) {
                         Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
                         informations.put(SOURCE_TOPIC, sourceTopic);
@@ -165,19 +146,15 @@ public class DatabaseIntegrityChecker {
     }
 
     private List<IntegrityError> checkContentsReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic) {
-        Map<Integer, DbStructureDto.Field> fieldsbyRanks = fieldsByRanksByTopicObjects.get(topicObject);
+        Map<Integer, DbStructureDto.Field> fieldsByRanks = fieldsByRanksByTopicObjects.get(topicObject);
 
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
         boolean isReferenceFound = topicObject.getData().getEntries().stream()
 
-                .parallel()
-
                 .filter((entry) -> entry.getItems().stream()
 
-                                .parallel()
-
-                                .filter((item) -> fieldsbyRanks
+                                .filter((item) -> fieldsByRanks
                                         .get(item.getFieldRank())
                                         .getFieldType() == DbStructureDto.FieldType.UID
                                         && item.getRawValue().equals(reference))

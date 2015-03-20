@@ -467,6 +467,7 @@ public class DatabaseIntegrityFixerTest {
     private static List<DbDataDto.Entry> searchContentsEntries(Topic topic, List<DbDto> databaseObjects) {
         return BulkDatabaseMiner.load(databaseObjects)
                 .getDatabaseTopic(topic)
+                .get()
                 .getData().getEntries();
     }
 }

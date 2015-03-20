@@ -168,14 +168,14 @@ public class DatabaseIntegrityFixer {
         DbResourceDto.Locale referenceLocale = pickAvailableLocaleOrElseWhatever(DbResourceDto.Locale.UNITED_STATES, validResourceLocales);
         DbResourceDto referenceResourceObject = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale).get();
 
-        bulkDatabaseMiner.getDatabaseTopic(topic).getResources().add(DbResourceDto.builder()
+        bulkDatabaseMiner.getDatabaseTopic(topic).get().getResources().add(DbResourceDto.builder()
                 .fromExistingResource(referenceResourceObject)
                 .withLocale(missingLocale)
                 .build());
     }
 
     private void addMissingContentsFields(long entryInternalIdentifier, DbDto.Topic topic) {
-        DbDto topicObject = bulkDatabaseMiner.getDatabaseTopic(topic);
+        DbDto topicObject = bulkDatabaseMiner.getDatabaseTopic(topic).get();
 
         DbDataDto.Entry invalidEntry = bulkDatabaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryInternalIdentifier, topic);
 
@@ -253,7 +253,7 @@ public class DatabaseIntegrityFixer {
 
     private void addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {
 
-        DbDto topicObject = bulkDatabaseMiner.getDatabaseTopic(topic);
+        DbDto topicObject = bulkDatabaseMiner.getDatabaseTopic(topic).get();
 
         DbDataDto dataDto = topicObject.getData();
 

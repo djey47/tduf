@@ -94,15 +94,16 @@ public class BulkDatabaseMinerTest {
         assertThat(actualResult).isPresent();
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void getDatabaseTopic_whenNotFound_shouldThrowException() {
+    @Test
+    public void getDatabaseTopic_whenNotFound_shouldReturnEmpty() {
         // GIVEN
         ArrayList<DbDto> topicObjects = createTopicObjects();
 
         // WHEN
-        BulkDatabaseMiner.load(topicObjects).getDatabaseTopic(DbDto.Topic.ACHIEVEMENTS);
+        Optional<DbDto> actualResult = BulkDatabaseMiner.load(topicObjects).getDatabaseTopic(DbDto.Topic.ACHIEVEMENTS);
 
-        // THEN: exception
+        // THEN
+        assertThat(actualResult).isEmpty();
     }
 
     @Test
@@ -111,7 +112,7 @@ public class BulkDatabaseMinerTest {
         ArrayList<DbDto> topicObjects = createTopicObjects();
 
         // WHEN
-        DbDto actualTopicObject = BulkDatabaseMiner.load(topicObjects).getDatabaseTopic(DbDto.Topic.BOTS);
+        DbDto actualTopicObject = BulkDatabaseMiner.load(topicObjects).getDatabaseTopic(DbDto.Topic.BOTS).get();
 
         // THEN
         assertThat(actualTopicObject).isNotNull();
