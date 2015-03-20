@@ -56,7 +56,12 @@
         {
           "name": "properties",
           "type": "UNKNOWN",
-          "size": 180
+          "size": 164
+        },
+        {
+          "name": "label",
+          "type": "TEXT",
+          "size": 16
         },
         {
           "name": "tag",
