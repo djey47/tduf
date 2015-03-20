@@ -38,6 +38,8 @@ public class CamerasHelper {
         short viewCount = cameraIndex.get(sourceCameraId);
         dataStore.addRepeatedIntegerValue("index", "cameraId", currentIndexEntryCount, targetCameraId);
         dataStore.addRepeatedIntegerValue("index", "viewCount", currentIndexEntryCount, viewCount);
+
+        dataStore.addInteger("indexSize", currentIndexEntryCount + 1);
     }
 
     private static DataStore cloneViewStoreForNewCamera(DataStore viewStore, long targetCameraId) {

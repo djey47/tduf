@@ -43,6 +43,7 @@ public class CamerasHelperTest {
         CamerasHelper.duplicateCameraSet(1, 10001, parser);
 
         // THEN
+        assertThat(parser.getDataStore().getInteger("indexSize").get()).isEqualTo(152);
         assertThat(parser.getCameraIndex()).hasSize(152);
         assertThat(parser.getCameraViews()).hasSize(150);
     }
