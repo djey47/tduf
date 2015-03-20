@@ -4,6 +4,7 @@ import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.requireNonNull;
 
@@ -26,11 +27,12 @@ public class CamerasHelper {
     }
 
     private static void updateViewsInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, CamerasParser parser) {
+        AtomicInteger viewIndex = new AtomicInteger(parser.getTotalViewCount());
         parser.getCameraViews().get(sourceCameraId).stream()
 
                 .map((originalViewStore) -> cloneViewStoreForNewCamera(originalViewStore, targetCameraId))
 
-                .forEach((clonedViewStore) -> dataStore.mergeRepeatedValues("views", parser.getTotalViewCount(), clonedViewStore));
+                .forEach((clonedViewStore) -> dataStore.mergeRepeatedValues("views", viewIndex.getAndIncrement(), clonedViewStore));
     }
 
     private static void updateIndexInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, Map<Long, Short> cameraIndex) {

@@ -46,5 +46,6 @@ public class CamerasHelperTest {
         assertThat(parser.getDataStore().getInteger("indexSize").get()).isEqualTo(152);
         assertThat(parser.getCameraIndex()).hasSize(152);
         assertThat(parser.getCameraViews()).hasSize(150);
+        assertThat(parser.getTotalViewCount()).isEqualTo(599);
     }
 }
