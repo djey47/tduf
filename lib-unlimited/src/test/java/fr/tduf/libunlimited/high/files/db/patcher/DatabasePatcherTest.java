@@ -4,16 +4,14 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.JavaType;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
@@ -35,20 +33,20 @@ public class DatabasePatcherTest {
     @Test
     public void prepare_shouldSetDatabaseObject() {
         // GIVEN
-        DbDto databaseObject = createDefaultDatabaseObject();
+        List<DbDto> databaseObjects = createDefaultDatabaseObjects();
 
         // WHEN
-        DatabasePatcher patcher = DatabasePatcher.prepare(databaseObject);
+        DatabasePatcher patcher = DatabasePatcher.prepare(databaseObjects);
 
         // THEN
         assertThat(patcher).isNotNull();
-        assertThat(patcher.getDatabaseObject()).isSameAs(databaseObject);
+        assertThat(patcher.getDatabaseObjects()).isSameAs(databaseObjects);
     }
 
     @Test(expected = NullPointerException.class)
     public void apply_whenNullPatchObject_shouldThrowException() {
         // GIVEN-WHEN
-        DatabasePatcher.prepare(createDefaultDatabaseObject()).apply(null);
+        DatabasePatcher.prepare(createDefaultDatabaseObjects()).apply(null);
 
         // THEN: NPE
     }
@@ -58,7 +56,7 @@ public class DatabasePatcherTest {
         // GIVEN
         DbPatchDto updateResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateResources.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/dumped/TDU_Bots.json");
-        DatabasePatcher patcher = DatabasePatcher.prepare(databaseObject);
+        DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
 
 
         // WHEN
@@ -79,8 +77,8 @@ public class DatabasePatcherTest {
         assertThat(actualAddedEntry.get().getValue()).isEqualTo("Cindy");
     }
 
-    private static DbDto createDefaultDatabaseObject() {
-        return DbDto.builder().build();
+    private static List<DbDto> createDefaultDatabaseObjects() {
+        return asList(DbDto.builder().build());
     }
 
     private static <T> T readObjectFromResource(Class<T> objectClass, String resource) throws URISyntaxException, IOException {
