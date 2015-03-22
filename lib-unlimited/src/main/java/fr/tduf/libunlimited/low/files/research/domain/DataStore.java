@@ -15,9 +15,6 @@ import java.util.stream.Collectors;
 import static fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper.*;
 import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.*;
 import static java.util.Objects.requireNonNull;
-import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
-import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
-import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * Place to store and extract data with {@link fr.tduf.libunlimited.low.files.research.rw.GenericParser}
@@ -214,7 +211,7 @@ public class DataStore {
             return Optional.empty();
         }
 
-        return Optional.ofNullable(entry.rawValue);
+        return Optional.ofNullable(entry.getRawValue());
     }
 
     /**
@@ -232,7 +229,7 @@ public class DataStore {
         assert (entry.getType() == FileStructureDto.Type.TEXT);
 
         return Optional.of(
-                rawToText(entry.rawValue));
+                rawToText(entry.getRawValue()));
     }
 
     /**
@@ -250,7 +247,7 @@ public class DataStore {
         assert (entry.getType() == FileStructureDto.Type.INTEGER);
 
         return Optional.of(
-                rawToInteger(entry.rawValue));
+                rawToInteger(entry.getRawValue()));
     }
 
     /**
@@ -268,7 +265,7 @@ public class DataStore {
         assert (entry.getType() == FileStructureDto.Type.FPOINT);
 
         return Optional.of(
-                rawToFloatingPoint(entry.rawValue));
+                rawToFloatingPoint(entry.getRawValue()));
     }
 
     /**
@@ -286,7 +283,7 @@ public class DataStore {
                     return matcher.matches() && matcher.group(1).equals(fieldName);
                 })
 
-                .map(key -> this.store.get(key).rawValue)
+                .map(key -> this.store.get(key).getRawValue())
 
                 .map(TypeHelper::rawToInteger)
 
@@ -307,7 +304,7 @@ public class DataStore {
                     return matcher.matches() && matcher.group(1).equals(fieldName);
                 })
 
-                .map(key -> this.store.get(key).rawValue)
+                .map(key -> this.store.get(key).getRawValue())
 
                 .map(TypeHelper::rawToFloatingPoint)
 
@@ -499,16 +496,16 @@ public class DataStore {
 
         switch (fieldType) {
             case TEXT:
-                currentObjectNode.put(fieldName, rawToText(storeEntry.rawValue));
+                currentObjectNode.put(fieldName, rawToText(storeEntry.getRawValue()));
                 break;
             case FPOINT:
                 currentObjectNode.put(fieldName, rawToFloatingPoint(storeEntry.getRawValue()));
                 break;
             case INTEGER:
-                currentObjectNode.put(fieldName, rawToInteger(storeEntry.rawValue));
+                currentObjectNode.put(fieldName, rawToInteger(storeEntry.getRawValue()));
                 break;
             default:
-                currentObjectNode.put(fieldName, byteArrayToHexRepresentation(storeEntry.rawValue));
+                currentObjectNode.put(fieldName, byteArrayToHexRepresentation(storeEntry.getRawValue()));
                 break;
         }
     }
@@ -543,50 +540,5 @@ public class DataStore {
 
     public FileStructureDto getFileStructure() {
         return fileStructure;
-    }
-
-    /**
-     * Represents a store entry to bring more information.
-     */
-    static class Entry {
-        private final FileStructureDto.Type type;
-        private final byte[] rawValue;
-
-        Entry(FileStructureDto.Type type, byte[] rawValue) {
-            this.type = type;
-            this.rawValue = rawValue;
-        }
-
-        byte[] getRawValue() {
-            return rawValue;
-        }
-
-        FileStructureDto.Type getType() {
-            return type;
-        }
-
-        /**
-         * @return full copy of current entry instance.
-         */
-        public Entry copy() {
-            byte[] rawValueCopy = new byte[rawValue.length];
-            System.arraycopy(rawValue, 0, rawValueCopy, 0, rawValue.length);
-            return new Entry(type, rawValueCopy);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return reflectionEquals(this, o);
-        }
-
-        @Override
-        public int hashCode() {
-            return reflectionHashCode(this);
-        }
-
-        @Override
-        public String toString() {
-            return reflectionToString(this);
-        }
     }
 }

@@ -164,11 +164,11 @@ public class DataStore_focusOnGettingValuesTest {
         assertThat(actualValues.get(1).getStore()).hasSize(4);
         assertThat(actualValues.get(2).getStore()).hasSize(4);
 
-        Map<String, DataStore.Entry> subStore = actualValues.get(0).getStore();
-        assertThat(subStore.get("my_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(10L)));
-        assertThat(subStore.get("my_fp_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(235.666667f)));
-        assertThat(subStore.get("a_field")).isEqualTo(new DataStore.Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw("az")));
-        assertThat(subStore.get("another_field")).isEqualTo(new DataStore.Entry(UNKNOWN, new byte[] {0x1, 0x2, 0x3, 0x4}));
+        Map<String, Entry> subStore = actualValues.get(0).getStore();
+        assertThat(subStore.get("my_field")).isEqualTo(new Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(10L)));
+        assertThat(subStore.get("my_fp_field")).isEqualTo(new Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(235.666667f)));
+        assertThat(subStore.get("a_field")).isEqualTo(new Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw("az")));
+        assertThat(subStore.get("another_field")).isEqualTo(new Entry(UNKNOWN, new byte[] {0x1, 0x2, 0x3, 0x4}));
     }
 
 

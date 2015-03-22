@@ -122,24 +122,10 @@ public class DataStoreTest {
 
         assertThat(actualCopy.getStore()).isNotSameAs(dataStore.getStore());
 
-        DataStore.Entry pickedOneSourceEntry = dataStore.getStore().get("entry_list[0].my_field");
-        DataStore.Entry pickedOneActualEntry = actualCopy.getStore().get("entry_list[0].my_field");
+        Entry pickedOneSourceEntry = dataStore.getStore().get("entry_list[0].my_field");
+        Entry pickedOneActualEntry = actualCopy.getStore().get("entry_list[0].my_field");
         assertThat(pickedOneActualEntry).isEqualTo(pickedOneSourceEntry);
         assertThat(pickedOneActualEntry).isNotSameAs(pickedOneSourceEntry);
-    }
-
-    @Test
-    public void copy_entry_shouldMakeFullEntryCopy() {
-        // GIVEN
-        DataStore.Entry entry = new DataStore.Entry(FileStructureDto.Type.GAP, new byte[] { 0x0 });
-
-        // WHEN
-        DataStore.Entry actualCopy = entry.copy();
-
-        // THEN
-        assertThat(actualCopy).isEqualTo(entry);
-        assertThat(actualCopy).isNotSameAs(entry);
-        assertThat(actualCopy.getRawValue()).isNotSameAs(entry.getRawValue());
     }
 
     @Test
