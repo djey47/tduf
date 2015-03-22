@@ -370,10 +370,12 @@ public class DataStore {
         readJsonNode(rootNode, "");
     }
 
-    // TODO Duplicate store entries instead of shallow copying them
+    /**
+     * @return a full copy of data store instance.
+     */
     public DataStore copy() {
         DataStore clone = new DataStore(this.fileStructure);
-        clone.getStore().putAll(new HashMap<>(this.store));
+        clone.getStore().putAll(copyAllEntries(this.store));
         return clone;
     }
 
@@ -486,6 +488,11 @@ public class DataStore {
         }
     }
 
+    private void putEntry(String key, FileStructureDto.Type type, byte[] rawValue) {
+        Entry entry = new Entry(type, rawValue);
+        this.getStore().put(key, entry);
+    }
+
     private static void readRegularField(FileStructureDto.Field currentField, ObjectNode currentObjectNode, Entry storeEntry) {
         FileStructureDto.Type fieldType = currentField.getType();
         String fieldName = currentField.getName();
@@ -521,9 +528,13 @@ public class DataStore {
         return list;
     }
 
-    private void putEntry(String key, FileStructureDto.Type type, byte[] rawValue) {
-        Entry entry = new Entry(type, rawValue);
-        this.getStore().put(key, entry);
+    private static Map<String, Entry> copyAllEntries(Map<String, Entry> store) {
+
+        Map<String, Entry> storeCopy = new HashMap<>();
+
+        store.forEach( (key, entry) -> storeCopy.put(key, entry.copy()));
+
+        return storeCopy;
     }
 
     Map<String, Entry> getStore() {
@@ -552,6 +563,15 @@ public class DataStore {
 
         FileStructureDto.Type getType() {
             return type;
+        }
+
+        /**
+         * @return full copy of current entry instance.
+         */
+        public Entry copy() {
+            byte[] rawValueCopy = new byte[rawValue.length];
+            System.arraycopy(rawValue, 0, rawValueCopy, 0, rawValue.length);
+            return new Entry(type, rawValueCopy);
         }
 
         @Override
