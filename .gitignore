@@ -1,6 +1,7 @@
 .gradle/
 .idea/
 build/
+cli/integ-tests/cameras/out/
 cli/integ-tests/db-fixed/
 cli/integ-tests/db-generated/
 cli/integ-tests/db-generated-errors/
