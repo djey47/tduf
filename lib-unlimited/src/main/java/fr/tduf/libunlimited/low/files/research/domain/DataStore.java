@@ -371,7 +371,6 @@ public class DataStore {
     }
 
     // TODO Duplicate store entries instead of shallow copying them
-    // TODO + clear entry key attribute as it may lead to unconsistent state
     public DataStore copy() {
         DataStore clone = new DataStore(this.fileStructure);
         clone.getStore().putAll(new HashMap<>(this.store));
@@ -523,7 +522,7 @@ public class DataStore {
     }
 
     private void putEntry(String key, FileStructureDto.Type type, byte[] rawValue) {
-        Entry entry = new Entry(key, type, rawValue);
+        Entry entry = new Entry(type, rawValue);
         this.getStore().put(key, entry);
     }
 
@@ -539,12 +538,10 @@ public class DataStore {
      * Represents a store entry to bring more information.
      */
     static class Entry {
-        private final String key;
         private final FileStructureDto.Type type;
         private final byte[] rawValue;
 
-        Entry(String key, FileStructureDto.Type type, byte[] rawValue) {
-            this.key = key;
+        Entry(FileStructureDto.Type type, byte[] rawValue) {
             this.type = type;
             this.rawValue = rawValue;
         }
@@ -555,10 +552,6 @@ public class DataStore {
 
         FileStructureDto.Type getType() {
             return type;
-        }
-
-        public String getKey() {
-            return key;
         }
 
         @Override

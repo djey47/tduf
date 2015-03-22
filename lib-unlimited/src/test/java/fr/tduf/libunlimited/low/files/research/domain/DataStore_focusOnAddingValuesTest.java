@@ -43,7 +43,7 @@ public class DataStore_focusOnAddingValuesTest {
         dataStore.addValue("f1", TEXT, "v1".getBytes());
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry("f1", FileStructureDto.Type.TEXT, "v1".getBytes());
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.TEXT, "v1".getBytes());
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -53,7 +53,7 @@ public class DataStore_focusOnAddingValuesTest {
         dataStore.addValue("f1", INTEGER, TypeHelper.integerToRaw(500L));
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry("f1", FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(500L));
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(500L));
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -63,7 +63,7 @@ public class DataStore_focusOnAddingValuesTest {
         dataStore.addValue("f1", FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry("f1", FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -82,7 +82,7 @@ public class DataStore_focusOnAddingValuesTest {
         dataStore.addText("f1", "v1");
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry("f1", FileStructureDto.Type.TEXT, "v1".getBytes());
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.TEXT, "v1".getBytes());
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -92,7 +92,7 @@ public class DataStore_focusOnAddingValuesTest {
         dataStore.addInteger("f1", 500L);
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry("f1", FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(500L));
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(500L));
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -102,7 +102,7 @@ public class DataStore_focusOnAddingValuesTest {
         dataStore.addFloatingPoint("f1", 83.666667f);
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry("f1", FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -112,7 +112,7 @@ public class DataStore_focusOnAddingValuesTest {
         dataStore.addHalfFloatingPoint("f1", 83.67f);
 
         // THEN
-        DataStore.Entry expectedEntry = new DataStore.Entry("f1", FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint16ToRaw(83.67f));
+        DataStore.Entry expectedEntry = new DataStore.Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint16ToRaw(83.67f));
         assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
     }
 
