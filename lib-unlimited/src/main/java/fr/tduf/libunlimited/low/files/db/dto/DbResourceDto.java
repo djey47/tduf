@@ -87,6 +87,10 @@ public class DbResourceDto implements Serializable {
             return value;
         }
 
+        public void setValue(String value) {
+            this.value = value;
+        }
+
         @Override
         public boolean equals(Object o) {
             return reflectionEquals(this, o, false);
