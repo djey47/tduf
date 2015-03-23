@@ -74,7 +74,7 @@ public class DbPatchDto {
          * All supported database changes.
          */
         public enum ChangeTypeEnum {
-            UPDATE, UPDATE_ALL, DELETE, UPDATE_RES, DELETE_RES
+            UPDATE, DELETE, UPDATE_RES, DELETE_RES
         }
     }
 }
