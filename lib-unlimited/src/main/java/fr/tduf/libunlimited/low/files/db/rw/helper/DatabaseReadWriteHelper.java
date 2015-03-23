@@ -14,6 +14,7 @@ import java.util.*;
 
 import static com.google.common.io.Files.getFileExtension;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -62,19 +63,44 @@ public class DatabaseReadWriteHelper {
 
     /**
      * Reads all database contents (+resources) in JSON format from specified topic into jsonDirectory.
-     * @param topic             : topic to parse TDU contents from
+     * @param topic         : topic to parse TDU contents from
      * @param jsonDirectory : location of json files
      */
+    // TODO rename to readDatabaseTopicFromJson
+    // TODO make return Optional.empty instead of null
     public static DbDto readDatabaseFromJson(DbDto.Topic topic, String jsonDirectory) throws IOException {
 
-        String jsonFileName = getDatabaseFileName(topic.getLabel(), jsonDirectory, EXTENSION_JSON);
-        File jsonFile = new File(jsonFileName);
-
+        File jsonFile = getJsonFileFromDirectory(topic, jsonDirectory);
         if (!jsonFile.exists()) {
             return null;
         }
 
         return new ObjectMapper().readValue(jsonFile, DbDto.class);
+    }
+
+    /**
+     * Reads complete TDU database (contents + resources for all available topics) into jsonDirectory.
+     * @param jsonDirectory : location of json files
+     * @return a list of available database topic objects.
+     */
+    public static List<DbDto> readFullDatabaseFromJson(String jsonDirectory) {
+
+        return asList(DbDto.Topic.values()).stream()
+
+                .map((topic) -> {
+                    try {
+                        return Optional.ofNullable(readDatabaseFromJson(topic, jsonDirectory));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return Optional.<DbDto>empty();
+                    }
+                })
+
+                .filter(Optional::isPresent)
+
+                .map(Optional::get)
+
+                .collect(toList());
     }
 
     /**
@@ -118,6 +144,11 @@ public class DatabaseReadWriteHelper {
         checkResourcesLines(resourcesLinesByFileNames, topic, integrityErrors);
 
         return sortResourcesLinesByCountDescending(resourcesLinesByFileNames);
+    }
+
+    private static File getJsonFileFromDirectory(DbDto.Topic topic, String jsonDirectory) {
+        String jsonFileName = getDatabaseFileName(topic.getLabel(), jsonDirectory, EXTENSION_JSON);
+        return new File(jsonFileName);
     }
 
     private static Map<String, List<String>> readLinesFromResourceFiles(String databaseDirectory, DbDto.Topic topic) throws FileNotFoundException {

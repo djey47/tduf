@@ -147,9 +147,38 @@ public class DatabaseReadWriteHelperTest {
         DbDto actualdbDto = DatabaseReadWriteHelper.readDatabaseFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory);
 
         // THEN
-        assertThat(actualdbDto).isNotNull();
-        assertThat(actualdbDto.getData()).isNotNull();
-        assertThat(actualdbDto.getResources()).isNotEmpty();
+        assertTopicObject(actualdbDto);
+    }
+
+    @Test
+    public void readFullDatabaseFromJson_whenMissingFiles_shouldReturnEmptyList() {
+        // GIVEN
+        String jsonDirectory = "." ;
+
+        // WHEN
+        List<DbDto> actualDbDtos = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
+
+        // THEN
+        assertThat(actualDbDtos).isEmpty();
+    }
+
+    @Test
+    public void readFullDatabaseFromJson_whenRealFiles_shouldReturnCorrespondingDtos() throws URISyntaxException {
+        // GIVEN
+        File jsonFile = new File(thisClass.getResource("/db/dumped/TDU_Achievements.json").toURI());
+        String jsonDirectory = jsonFile.getParent();
+
+
+        // WHEN
+        List<DbDto> actualTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
+
+
+        // THEN
+        assertThat(actualTopicObjects).isNotNull();
+        assertThat(actualTopicObjects).hasSize(2);
+
+        assertTopicObject(actualTopicObjects.get(0));
+        assertTopicObject(actualTopicObjects.get(1));
     }
 
     @Test
@@ -273,5 +302,12 @@ public class DatabaseReadWriteHelperTest {
                 .forEach((fileName) -> assertThat(new File(fileName)).exists());
 
         assertFileDoesNotMatchReference(writtenFiles.get(0), "/db/encrypted/");
+    }
+
+    private static void assertTopicObject(DbDto actualdbDto) {
+        assertThat(actualdbDto).isNotNull();
+        assertThat(actualdbDto.getData()).isNotNull();
+        assertThat(actualdbDto.getResources()).isNotEmpty();
+        assertThat(actualdbDto.getStructure()).isNotNull();
     }
 }
