@@ -6,7 +6,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -179,7 +178,6 @@ public class DatabasePatcherTest {
     }
 
     @Test
-    @Ignore
     public void apply_whenUpdateContentsPatch_forAllFields_withRefSupport_shouldAddNewEntryAndUpdateExisting() throws IOException, URISyntaxException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-ref.mini.json");
@@ -205,7 +203,7 @@ public class DatabasePatcherTest {
         assertThat(actualCreatedEntry.getId()).isEqualTo(actualEntryIndex);
 
         assertThat(actualCreatedEntry.getItems()).hasSize(103);
-        assertThat(actualCreatedEntry.getItems().get(0).getRawValue()).isEqualTo("1221657041");
+        assertThat(actualCreatedEntry.getItems().get(0).getRawValue()).isEqualTo("1221657049");
 
         DbDataDto.Entry actualUpdatedEntry = databaseMiner.getContentEntryFromTopicWithRef("606298799", DbDto.Topic.CAR_PHYSICS_DATA).get();
         assertThat(actualUpdatedEntry.getId()).isEqualTo(0);

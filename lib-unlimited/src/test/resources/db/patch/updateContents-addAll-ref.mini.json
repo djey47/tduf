@@ -4,8 +4,9 @@
       "comment": "Adds a new entry with identifier (topic does support UID).",
       "type" : "UPDATE",
       "topic" : "CAR_PHYSICS_DATA",
+      "ref" : "1221657049",
       "values": [
-        "1221657041",
+        "1221657049",
         "864426",
         "56338407",
         "55438427",
@@ -114,6 +115,7 @@
       "comment": "Updates an existing entry with identifier 606298799.",
       "type" : "UPDATE",
       "topic" : "CAR_PHYSICS_DATA",
+      "ref" : "606298799",
       "values": [
         "606298799",
         "864426",

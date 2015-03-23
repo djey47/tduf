@@ -74,6 +74,10 @@ public class DbDataDto implements Serializable {
             return items;
         }
 
+        public void setItems(List<Item> items) {
+            this.items = items;
+        }
+
         public long getId() {
             return id;
         }
