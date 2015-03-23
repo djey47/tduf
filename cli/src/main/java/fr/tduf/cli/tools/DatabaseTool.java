@@ -8,6 +8,7 @@ import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
@@ -29,11 +30,14 @@ public class DatabaseTool extends GenericTool {
     @Option(name = "-d", aliases = "--databaseDir", usage = "UNPACKED TDU database directory, defaults to current directory.")
     private String databaseDirectory;
 
-    @Option(name = "-j", aliases = "--jsonDir", usage = "Source (gen) of target (dump) directory for JSON files, defaults to current directory\\tdu-database-dump.")
+    @Option(name = "-j", aliases = "--jsonDir", usage = "Source (gen/apply-patch) or target (dump) directory for JSON files, defaults to current directory\\tdu-database-dump.")
     private String jsonDirectory;
 
-    @Option(name = "-o", aliases = "--outputDatabaseDir", usage = "Fixed TDU database directory, defaults to current directory\\tdu-database-fixed.")
+    @Option(name = "-o", aliases = "--outputDatabaseDir", usage = "Fixed/Patched TDU database directory, defaults to current directory\\tdu-database-fixed or \\tdu-database-patched.")
     private String outputDatabaseDirectory;
+
+    @Option(name = "-p", aliases = "--patchFile", usage = "File describing mini patch to apply (required for apply-patch operation).")
+    private String patchFile;
 
     @Option(name = "-c", aliases = "--clear", usage = "Not mandatory. Indicates unpacked TDU files do not need to be unencrypted and encrypted back.")
     private boolean withClearContents = false;
@@ -47,7 +51,8 @@ public class DatabaseTool extends GenericTool {
         CHECK("check", "Tries to load database and display integrity errors, if any."),
         DUMP("dump", "Writes full database contents to JSON files."),
         GEN("gen", "Writes TDU database files from JSON files."),
-        FIX("fix", "Loads database, checks for integrity errors and create database copy with fixed ones.");
+        FIX("fix", "Loads database, checks for integrity errors and create database copy with fixed ones."),
+        APPLY_PATCH("apply-patch", "Modifies database contents and resources as described in a JSON mini patch file.");
 
         final String label;
         final String description;
@@ -85,20 +90,22 @@ public class DatabaseTool extends GenericTool {
         switch (command) {
             case DUMP:
                 dump();
-                break;
+                return true;
             case CHECK:
                 check();
-                break;
+                return true;
             case GEN:
                 gen();
-                break;
+                return true;
             case FIX:
                 fix();
-                break;
+                return true;
+            case APPLY_PATCH:
+                applyPatch();
+                return true;
             default:
                 return false;
         }
-        return true;
     }
 
     @Override
@@ -107,17 +114,29 @@ public class DatabaseTool extends GenericTool {
     }
 
     @Override
-    protected void checkAndAssignDefaultParameters(CmdLineParser parser) {
+    protected void checkAndAssignDefaultParameters(CmdLineParser parser) throws CmdLineException {
         if (databaseDirectory == null) {
             databaseDirectory = ".";
         }
 
         if (jsonDirectory == null) {
-            jsonDirectory = "tdu-database-dump";
+            if (DUMP == command) {
+                jsonDirectory = "tdu-database-dump";
+            } else if (APPLY_PATCH == command) {
+                throw new CmdLineException(parser, "Error: jsonDirectory is required as source database.", null);
+            }
         }
 
         if (outputDatabaseDirectory == null) {
-            outputDatabaseDirectory = "tdu-database-fixed";
+            if (DUMP == command) {
+                outputDatabaseDirectory = "tdu-database-fixed";
+            } else if (APPLY_PATCH == command) {
+                outputDatabaseDirectory = "tdu-database-patched";
+            }
+        }
+
+        if (patchFile == null && APPLY_PATCH == command) {
+            throw new CmdLineException(parser, "Error: patchFile is required.", null);
         }
     }
 
@@ -132,8 +151,13 @@ public class DatabaseTool extends GenericTool {
                 DUMP.label + " --databaseDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
                 GEN.label + " --jsonDir \"C:\\Users\\Bill\\Desktop\\json-database\" --databaseDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
                 CHECK.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
-                FIX.label + " -c -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -o \"C:\\Users\\Bill\\Desktop\\tdu-database-fixed\""
+                FIX.label + " -c -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -o \"C:\\Users\\Bill\\Desktop\\tdu-database-fixed\"",
+                APPLY_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\""
         );
+    }
+
+    private void applyPatch() {
+//        FilesHelper.createDirectoryIfNotExists(this.outputDatabaseDirectory);
     }
 
     private void dump() throws IOException {
