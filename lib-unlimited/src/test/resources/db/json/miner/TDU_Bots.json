@@ -1,0 +1,50 @@
+{
+  "structure": {
+    "ref": "111",
+    "topic": "BOTS",
+    "fields": [
+      {
+        "name": "REF",
+        "rank": 1,
+        "type": "UID"
+      }
+    ],
+    "categoryCount": 0
+  },
+  "data": {
+    "entries": [
+      {
+        "id": 0,
+        "items": [
+          {
+            "name": "REF",
+            "rawValue": "606298799",
+            "fieldRank": 1
+          }
+        ]
+      }
+    ]
+  },
+  "resources": [
+    {
+      "entries": [
+        {
+          "value": "FR",
+          "ref": "00000001"
+        }
+      ],
+      "categoryCount": 0,
+      "locale": "FRANCE"
+    },
+    {
+      "entries": [
+        {
+          "value": "GE",
+          "ref": "00000001"
+        }
+      ],
+      "categoryCount": 0,
+      "locale": "GERMANY"
+    }
+  ]
+}

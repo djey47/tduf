@@ -3,9 +3,11 @@ package fr.tduf.libunlimited.high.files.db.miner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import static java.util.Objects.requireNonNull;
 
@@ -119,6 +121,33 @@ public class BulkDatabaseMiner {
     }
 
     /**
+     * @param ref       : external identifier of entry
+     * @param topic     : topic in TDU Database to search
+     * @return database entry having specified reference as identifier.
+     */
+    public Optional<DbDataDto.Entry> getContentEntryFromTopicWithRef(String ref, DbDto.Topic topic) {
+//        System.out.println(new Date().getTime() + " - getContentEntryFromTopicWithRef(" + ref + ", " + topic + ")");
+
+        Optional<DbDto> potentialTopicObject = getDatabaseTopic(topic);
+        if (!potentialTopicObject.isPresent()) {
+            return Optional.empty();
+        }
+        DbDto topicObject = potentialTopicObject.get();
+
+        OptionalInt potentialUidFieldRank = getUidFieldRank(topicObject);
+        if (!potentialUidFieldRank.isPresent()) {
+            return Optional.empty();
+        }
+        int uidFieldRank = potentialUidFieldRank.getAsInt();
+
+        return topicObject.getData().getEntries().stream()
+
+                .filter((entry) -> entryHasForIdentifier(entry, uidFieldRank, ref))
+
+                .findAny();
+    }
+
+    /**
      * @param reference : unique identifier of resource
      * @param topic     : topic in TDU Database to search
      * @param locale    : game language to fetch related resources
@@ -138,6 +167,27 @@ public class BulkDatabaseMiner {
                 .filter((entry) -> entry.getReference().equals(reference))
 
                 .findAny();
+    }
+
+    private static OptionalInt getUidFieldRank(DbDto topicObject) {
+        return topicObject.getStructure().getFields().stream()
+
+                .filter((structureField) -> DbStructureDto.FieldType.UID == structureField.getFieldType())
+
+                .mapToInt(DbStructureDto.Field::getRank)
+
+                .findAny();
+    }
+
+    private static boolean entryHasForIdentifier(DbDataDto.Entry entry, int uidFieldRank, String ref) {
+        return entry.getItems().stream()
+
+                .filter((item) -> item.getFieldRank() == uidFieldRank
+                        && item.getRawValue().equals(ref))
+
+                .findAny()
+
+                .isPresent();
     }
 
     List<DbDto> getTopicObjects() {
