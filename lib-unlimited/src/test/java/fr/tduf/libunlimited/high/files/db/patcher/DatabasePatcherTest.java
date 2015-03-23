@@ -55,7 +55,8 @@ public class DatabasePatcherTest {
     public void apply_whenUpdateResourcesPatch_shouldAddAndUpdateEntries() throws IOException, URISyntaxException {
         // GIVEN
         DbPatchDto updateResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateResources.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/dumped/TDU_Bots.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+
         DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
 
 
@@ -65,16 +66,29 @@ public class DatabasePatcherTest {
 
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(asList(databaseObject));
+        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "54367256", "Brian Molko");
+        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "33333333", "Cindy");
+    }
 
-        Optional<DbResourceDto.Entry> actualUpdatedEntry =
-                databaseMiner.getResourceEntryFromTopicAndLocaleWithReference("54367256", DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE);
-        assertThat(actualUpdatedEntry).isPresent();
-        assertThat(actualUpdatedEntry.get().getValue()).isEqualTo("Brian Molko");
+    @Test
+    public void apply_whenUpdateResourcesPatch_forAllLocales_shouldAddAndUpdateEntries() throws IOException, URISyntaxException {
+        // GIVEN
+        DbPatchDto updateResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateResources-all.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
-        Optional<DbResourceDto.Entry> actualAddedEntry =
-                databaseMiner.getResourceEntryFromTopicAndLocaleWithReference("33333333", DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE);
-        assertThat(actualAddedEntry).isPresent();
-        assertThat(actualAddedEntry.get().getValue()).isEqualTo("Cindy");
+        DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
+
+
+        // WHEN
+        patcher.apply(updateResourcesPatch);
+
+
+        // THEN
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(asList(databaseObject));
+        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "54367256", "Brian Molko");
+        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "33333333", "Cindy");
+        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.ITALY, "54367256", "Brian Molko");
+        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.ITALY, "33333333", "Cindy");
     }
 
     private static List<DbDto> createDefaultDatabaseObjects() {
@@ -84,5 +98,12 @@ public class DatabasePatcherTest {
     private static <T> T readObjectFromResource(Class<T> objectClass, String resource) throws URISyntaxException, IOException {
         URI resourceURI = thisClass.getResource(resource).toURI();
         return new ObjectMapper().readValue(new File(resourceURI), objectClass);
+    }
+
+    private static void assertResourceEntryPresentAndMatch(BulkDatabaseMiner databaseMiner, DbDto.Topic topic, DbResourceDto.Locale locale, String ref, String value) {
+        Optional<DbResourceDto.Entry> actualUpdatedEntry =
+                databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(ref, topic, locale);
+        assertThat(actualUpdatedEntry).isPresent();
+        assertThat(actualUpdatedEntry.get().getValue()).isEqualTo(value);
     }
 }

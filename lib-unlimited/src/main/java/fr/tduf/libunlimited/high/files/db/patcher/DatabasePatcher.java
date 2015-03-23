@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -57,21 +58,38 @@ public class DatabasePatcher {
 
     private void addOrUpdateResources(DbPatchDto.DbChangeDto changeObject) {
         DbDto.Topic topic = changeObject.getTopic();
-        DbResourceDto.Locale locale = changeObject.getLocale();
+        Optional<DbResourceDto.Locale> locale = Optional.ofNullable(changeObject.getLocale());
         String ref = changeObject.getRef();
         String value = changeObject.getValue();
 
+        if (locale.isPresent()) {
+
+            addOrUpdateResourcesForLocale(topic, locale.get(), ref, value);
+
+        } else {
+
+            asList(DbResourceDto.Locale.values())
+                    .forEach((currentLocale) -> addOrUpdateResourcesForLocale(topic, currentLocale, ref, value));
+
+        }
+    }
+
+    // TODO reduce method size by passing patch objet as parameter
+    private void addOrUpdateResourcesForLocale(DbDto.Topic topic, DbResourceDto.Locale locale, String ref, String value) {
         Optional<DbResourceDto.Entry> potentialResourceEntry =
                 databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(ref, topic, locale);
 
         if (potentialResourceEntry.isPresent()) {
+
             potentialResourceEntry.get().setValue(value);
+
         } else {
-            DbResourceDto localeResources = databaseMiner.getResourceFromTopicAndLocale(topic, locale).get();
-            localeResources.getEntries().add(DbResourceDto.Entry.builder()
-                    .forReference(ref)
-                    .withValue(value)
-                    .build());
+
+            databaseMiner.getResourceFromTopicAndLocale(topic, locale)
+                    .ifPresent((localeResources) -> localeResources.getEntries().add(DbResourceDto.Entry.builder()
+                                                                                        .forReference(ref)
+                                                                                        .withValue(value)
+                                                                                        .build()));
         }
     }
 
