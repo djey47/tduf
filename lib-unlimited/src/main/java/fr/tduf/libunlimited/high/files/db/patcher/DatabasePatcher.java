@@ -60,8 +60,22 @@ public class DatabasePatcher {
     }
 
     private void deleteResources(DbPatchDto.DbChangeDto changeObject) {
+        Optional<DbResourceDto.Locale> potentialLocale = Optional.ofNullable(changeObject.getLocale());
+
+        if (potentialLocale.isPresent()) {
+
+            deleteResourcesForLocale(changeObject, potentialLocale.get());
+
+        } else {
+
+            asList(DbResourceDto.Locale.values())
+                    .forEach((currentLocale) -> deleteResourcesForLocale(changeObject, currentLocale));
+
+        }
+    }
+
+    private void deleteResourcesForLocale(DbPatchDto.DbChangeDto changeObject, DbResourceDto.Locale locale) {
         DbDto.Topic topic = changeObject.getTopic();
-        DbResourceDto.Locale locale = changeObject.getLocale();
 
         databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(changeObject.getRef(), topic, locale)
                 .ifPresent((resourceEntry) -> {
