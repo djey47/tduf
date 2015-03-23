@@ -5,17 +5,22 @@ import fr.tduf.cli.tools.dto.DatabaseIntegrityErrorDto;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
+import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
+import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static java.util.Arrays.asList;
@@ -156,8 +161,28 @@ public class DatabaseTool extends GenericTool {
         );
     }
 
-    private void applyPatch() {
-//        FilesHelper.createDirectoryIfNotExists(this.outputDatabaseDirectory);
+    private void applyPatch() throws IOException {
+        FilesHelper.createDirectoryIfNotExists(this.outputDatabaseDirectory);
+
+        outLine("-> Source database directory: " + this.jsonDirectory);
+        outLine("-> Mini patch file: " + this.patchFile);
+        outLine("Patching TDU database, please wait...");
+
+        List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(this.jsonDirectory);
+
+        DbPatchDto patchObject = new ObjectMapper().readValue(new File(patchFile), DbPatchDto.class);
+
+        DatabasePatcher.prepare(allTopicObjects).apply(patchObject);
+
+        outLine("Writing patched database to " + this.outputDatabaseDirectory + ", please wait...");
+
+        List<String> writtenFileNames = writeAllTopicObjectsAsJson(allTopicObjects);
+
+        outLine("All done!");
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("writtenFiles", writtenFileNames);
+        commandResult = resultInfo;
     }
 
     private void dump() throws IOException {
@@ -292,6 +317,27 @@ public class DatabaseTool extends GenericTool {
 
         resultInfo.put("fixedDatabaseLocation", this.outputDatabaseDirectory);
         commandResult = resultInfo;
+    }
+
+    private List<String> writeAllTopicObjectsAsJson(List<DbDto> allTopicObjects) {
+        return allTopicObjects.stream()
+
+                .map(this::writeTopicObjectAsJson)
+
+                .filter(Optional::isPresent)
+
+                .map(Optional::get)
+
+                .collect(toList());
+    }
+
+    private Optional<String> writeTopicObjectAsJson(DbDto topicObject) {
+        try {
+            return Optional.ofNullable(DatabaseReadWriteHelper.writeDatabaseToJson(topicObject, this.outputDatabaseDirectory));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Optional.<String>empty();
+        }
     }
 
     private List<DbDto> checkAndReturnIntegrityErrorsAndObjects(List<IntegrityError> integrityErrors) throws IOException {
