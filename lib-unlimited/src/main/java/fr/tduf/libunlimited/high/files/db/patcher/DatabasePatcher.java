@@ -2,21 +2,25 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.DELETE_RES;
-import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Used to apply patchs to an existing database.
  */
 // TODO WARNING! if using cache on Miner, reset caches after updates !
+    // TODO add without identifier -> must generate if topic supports it
+    // TODO add with identifier -> topic must support
 public class DatabasePatcher {
 
     private final List<DbDto> databaseObjects;
@@ -52,11 +56,41 @@ public class DatabasePatcher {
 
         DbPatchDto.DbChangeDto.ChangeTypeEnum changeType = changeObject.getType();
 
-        if (changeType == UPDATE_RES) {
-            addOrUpdateResources(changeObject);
-        } else if (changeType == DELETE_RES) {
-            deleteResources(changeObject);
+        switch (changeType) {
+            case UPDATE_RES:
+                addOrUpdateResources(changeObject);
+                break;
+            case DELETE_RES:
+                deleteResources(changeObject);
+                break;
+            case UPDATE:
+                addOrUpdateContents(changeObject);
+                break;
+            default:
         }
+    }
+
+    private void addOrUpdateContents(DbPatchDto.DbChangeDto changeObject) {
+
+        databaseMiner.getDatabaseTopic(changeObject.getTopic())
+                .ifPresent((topicObject) -> {
+                    List<DbDataDto.Entry> topicEntries = topicObject.getData().getEntries();
+
+                    List<String> allValues = changeObject.getValues();
+                    List<DbStructureDto.Field> structureFields = topicObject.getStructure().getFields();
+                    int structureFieldsSize = structureFields.size();
+                    if (allValues.size() != structureFieldsSize) {
+                        // TODO add more details ?
+                        throw new IllegalArgumentException("Values count in current patch does not match topic structure: " + allValues.size() + " VS " + structureFieldsSize);
+                    }
+
+                    List<DbDataDto.Item> newItems = createEntryItemsWithValues(structureFields, allValues);
+
+                    topicEntries.add(DbDataDto.Entry.builder()
+                                                .forId(topicEntries.size())
+                                                .addItems(newItems)
+                                                .build());
+                });
     }
 
     private void deleteResources(DbPatchDto.DbChangeDto changeObject) {
@@ -119,6 +153,21 @@ public class DatabasePatcher {
                                                                                         .withValue(value)
                                                                                         .build()));
         }
+    }
+
+    private static List<DbDataDto.Item> createEntryItemsWithValues(List<DbStructureDto.Field> structureFields, List<String> allValues) {
+        AtomicInteger fieldIndex = new AtomicInteger();
+        return allValues.stream()
+
+                .map((value) -> {
+                    DbStructureDto.Field structureField = structureFields.get(fieldIndex.getAndIncrement());
+                    return DbDataDto.Item.builder()
+                            .fromStructureField(structureField)
+                            .withRawValue(value)
+                            .build();
+                })
+
+                .collect(toList());
     }
 
     List<DbDto> getDatabaseObjects() {

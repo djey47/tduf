@@ -70,6 +70,10 @@ public class DbPatchDto {
             return value;
         }
 
+        public List<String> getValues() {
+            return values;
+        }
+
         /**
          * All supported database changes.
          */

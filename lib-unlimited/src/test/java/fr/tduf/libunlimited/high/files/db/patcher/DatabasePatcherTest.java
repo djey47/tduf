@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -94,14 +95,14 @@ public class DatabasePatcherTest {
     @Test
     public void apply_whenDeleteResourcesPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException {
         // GIVEN
-        DbPatchDto updateResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteResources.mini.json");
+        DbPatchDto deleteResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteResources.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
         DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
 
 
         // WHEN
-        patcher.apply(updateResourcesPatch);
+        patcher.apply(deleteResourcesPatch);
 
 
         // THEN
@@ -113,14 +114,14 @@ public class DatabasePatcherTest {
     @Test
     public void apply_whenDeleteResourcesPatch_forAllLocales_shouldRemoveExistingEntries() throws IOException, URISyntaxException {
         // GIVEN
-        DbPatchDto updateResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteResources-all.mini.json");
+        DbPatchDto deleteResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteResources-all.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
         DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
 
 
         // WHEN
-        patcher.apply(updateResourcesPatch);
+        patcher.apply(deleteResourcesPatch);
 
 
         // THEN
@@ -129,6 +130,51 @@ public class DatabasePatcherTest {
         assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "33333333");
         assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.ITALY, "60367256");
         assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.ITALY, "33333333");
+    }
+
+    @Test
+    public void apply_whenUpdateContentsPatch_forAllFields_shouldAddNewEntry() throws IOException, URISyntaxException {
+        // GIVEN
+        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+
+        DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
+
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(asList(databaseObject));
+        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(DbDto.Topic.BOTS).get().getData().getEntries();
+        int previousEntryCount = topicEntries.size();
+
+
+        // WHEN
+        patcher.apply(updateContentsPatch);
+
+
+        // THEN
+        int actualEntryCount = topicEntries.size();
+        int actualEntryIndex = actualEntryCount - 1;
+        assertThat(actualEntryCount).isEqualTo(previousEntryCount + 1);
+
+        DbDataDto.Entry actualCreatedEntry = topicEntries.get(actualEntryIndex);
+        assertThat(actualCreatedEntry.getId()).isEqualTo(actualEntryIndex);
+
+        assertThat(actualCreatedEntry.getItems()).hasSize(8);
+        assertThat(actualCreatedEntry.getItems().get(0).getRawValue()).isEqualTo("57167257");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void apply_whenUpdateContentsPatch_forAllFields_andIncorrectValueCount_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN
+        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-badCount.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+
+        DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
+
+
+        // WHEN
+        patcher.apply(updateContentsPatch);
+
+
+        // THEN: IAE
     }
 
     private static List<DbDto> createDefaultDatabaseObjects() {
