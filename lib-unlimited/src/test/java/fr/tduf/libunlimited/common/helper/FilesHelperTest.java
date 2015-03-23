@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.common.helper;
 
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -76,5 +77,23 @@ public class FilesHelperTest {
 
         // THEN
         assertThat(actualContents).hasSize(128);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void readObjectFromJsonResourceFile_whenResourceNotFound_shouldThrowNullPointerException() throws IOException, URISyntaxException {
+        // GIVEN-WHEN
+        FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/not a resource/");
+
+        // THEN: exception
+    }
+
+    @Test
+    public void readObjectFromJsonResourceFile_whenResourceFound_shouldReturnObjectContents() throws IOException, URISyntaxException {
+        // GIVEN-WHEN
+        DbDto actualObject = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/dumped/TDU_Achievements.json");
+
+        // THEN
+        assertThat(actualObject).isNotNull();
+        assertThat(actualObject.getStructure().getTopic()).isEqualTo(DbDto.Topic.ACHIEVEMENTS);
     }
 }

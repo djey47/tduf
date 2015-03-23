@@ -1,5 +1,7 @@
 package fr.tduf.libunlimited.common.helper;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -21,7 +23,7 @@ public class FilesHelper {
      * @return a String with resource file contents.
      */
     public static String readTextFromResourceFile(String resourcePath) throws URISyntaxException, IOException {
-        URI fileUri = thisClass.getResource(resourcePath).toURI();
+        URI fileUri = getUriFromResourcePath(resourcePath);
         return new String(Files.readAllBytes(Paths.get(fileUri)), Charset.defaultCharset());
     }
 
@@ -31,8 +33,20 @@ public class FilesHelper {
      * @return an array of bytes with resource file contents.
      */
     public static byte[] readBytesFromResourceFile(String resourcePath) throws URISyntaxException, IOException {
-        URI fileURI = thisClass.getResource(resourcePath).toURI();
+        URI fileURI = getUriFromResourcePath(resourcePath);
         return Files.readAllBytes(Paths.get(fileURI));
+    }
+
+    /**
+     * Reads json file at provided resource location and generate corresponding Java object.
+     * @param resourcePath  : path of resource
+     * @param objectClass   : type of object to generate
+     * @param <T>           : type of object to generate
+     * @return contents of read file as generated object instance.
+     */
+    public static <T> T readObjectFromJsonResourceFile(Class<T> objectClass, String resourcePath) throws URISyntaxException, IOException {
+        URI fileURI = getUriFromResourcePath(resourcePath);
+        return new ObjectMapper().readValue(new File(fileURI), objectClass);
     }
 
     /**
@@ -46,5 +60,9 @@ public class FilesHelper {
             boolean isCreated = outputDirectory.mkdirs();
             assert isCreated;
         }
+    }
+
+    private static URI getUriFromResourcePath(String resourcePath) throws URISyntaxException {
+        return thisClass.getResource(resourcePath).toURI();
     }
 }
