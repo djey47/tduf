@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -132,10 +133,26 @@ public class DatabasePatcherTest {
         assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.ITALY, "33333333");
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void apply_whenUpdateContentsPatch_forAllFields_andIncorrectValueCount_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN
+        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-badCount.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+
+        DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
+
+
+        // WHEN
+        patcher.apply(updateContentsPatch);
+
+
+        // THEN: IAE
+    }
+
     @Test
     public void apply_whenUpdateContentsPatch_forAllFields_shouldAddNewEntry() throws IOException, URISyntaxException {
         // GIVEN
-        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll.mini.json");
+        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
         DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
@@ -161,20 +178,40 @@ public class DatabasePatcherTest {
         assertThat(actualCreatedEntry.getItems().get(0).getRawValue()).isEqualTo("57167257");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void apply_whenUpdateContentsPatch_forAllFields_andIncorrectValueCount_shouldThrowException() throws IOException, URISyntaxException {
+    @Test
+    @Ignore
+    public void apply_whenUpdateContentsPatch_forAllFields_withRefSupport_shouldAddNewEntryAndUpdateExisting() throws IOException, URISyntaxException {
         // GIVEN
-        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-badCount.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-ref.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
 
         DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
+
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(asList(databaseObject));
+        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(DbDto.Topic.CAR_PHYSICS_DATA).get().getData().getEntries();
+        int previousEntryCount = topicEntries.size();
 
 
         // WHEN
         patcher.apply(updateContentsPatch);
 
 
-        // THEN: IAE
+        // THEN
+        int actualEntryCount = topicEntries.size();
+        int actualEntryIndex = actualEntryCount - 1;
+        assertThat(actualEntryCount).isEqualTo(previousEntryCount + 1);
+
+        DbDataDto.Entry actualCreatedEntry = topicEntries.get(actualEntryIndex);
+        assertThat(actualCreatedEntry.getId()).isEqualTo(actualEntryIndex);
+
+        assertThat(actualCreatedEntry.getItems()).hasSize(103);
+        assertThat(actualCreatedEntry.getItems().get(0).getRawValue()).isEqualTo("1221657041");
+
+        DbDataDto.Entry actualUpdatedEntry = databaseMiner.getContentEntryFromTopicWithRef("606298799", DbDto.Topic.CAR_PHYSICS_DATA).get();
+        assertThat(actualUpdatedEntry.getId()).isEqualTo(0);
+
+        assertThat(actualUpdatedEntry.getItems()).hasSize(103);
+        assertThat(actualUpdatedEntry.getItems().get(1).getRawValue()).isEqualTo("864426");
     }
 
     private static List<DbDto> createDefaultDatabaseObjects() {

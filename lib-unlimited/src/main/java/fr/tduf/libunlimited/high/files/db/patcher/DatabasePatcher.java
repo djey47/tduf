@@ -74,22 +74,40 @@ public class DatabasePatcher {
 
         databaseMiner.getDatabaseTopic(changeObject.getTopic())
                 .ifPresent((topicObject) -> {
-                    List<DbDataDto.Entry> topicEntries = topicObject.getData().getEntries();
 
-                    List<String> allValues = changeObject.getValues();
-                    List<DbStructureDto.Field> structureFields = topicObject.getStructure().getFields();
-                    int structureFieldsSize = structureFields.size();
-                    if (allValues.size() != structureFieldsSize) {
-                        // TODO add more details ?
-                        throw new IllegalArgumentException("Values count in current patch does not match topic structure: " + allValues.size() + " VS " + structureFieldsSize);
+                    Optional<String> potentialRef = Optional.ofNullable(changeObject.getRef());
+
+                    if (potentialRef.isPresent()) {
+
+                        Optional<DbDataDto.Entry> potentialEntry = databaseMiner.getContentEntryFromTopicWithRef(potentialRef.get(), changeObject.getTopic());
+
+                        if (potentialEntry.isPresent()) {
+
+                            // TODO Update
+                        } else {
+
+                            // TODO Add
+                        }
+
+                    } else {
+
+                        List<DbDataDto.Entry> topicEntries = topicObject.getData().getEntries();
+
+                        List<String> allValues = changeObject.getValues();
+                        List<DbStructureDto.Field> structureFields = topicObject.getStructure().getFields();
+                        int structureFieldsSize = structureFields.size();
+                        if (allValues.size() != structureFieldsSize) {
+                            throw new IllegalArgumentException("Values count in current patch does not match topic structure: " + allValues.size() + " VS " + structureFieldsSize);
+                        }
+
+                        List<DbDataDto.Item> newItems = createEntryItemsWithValues(structureFields, allValues);
+
+                        topicEntries.add(DbDataDto.Entry.builder()
+                                .forId(topicEntries.size())
+                                .addItems(newItems)
+                                .build());
+
                     }
-
-                    List<DbDataDto.Item> newItems = createEntryItemsWithValues(structureFields, allValues);
-
-                    topicEntries.add(DbDataDto.Entry.builder()
-                                                .forId(topicEntries.size())
-                                                .addItems(newItems)
-                                                .build());
                 });
     }
 
