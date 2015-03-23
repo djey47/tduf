@@ -8,6 +8,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.DELETE_RES;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -15,7 +16,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Used to apply patchs to an existing database.
  */
-// TODO implement all locales updates and deletions
+// TODO WARNING! if using cache on Miner, reset caches after updates !
 public class DatabasePatcher {
 
     private final List<DbDto> databaseObjects;
@@ -53,7 +54,20 @@ public class DatabasePatcher {
 
         if (changeType == UPDATE_RES) {
             addOrUpdateResources(changeObject);
+        } else if (changeType == DELETE_RES) {
+            deleteResources(changeObject);
         }
+    }
+
+    private void deleteResources(DbPatchDto.DbChangeDto changeObject) {
+        DbDto.Topic topic = changeObject.getTopic();
+        DbResourceDto.Locale locale = changeObject.getLocale();
+
+        databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(changeObject.getRef(), topic, locale)
+                .ifPresent((resourceEntry) -> {
+                    DbResourceDto dbResourceDto = databaseMiner.getResourceFromTopicAndLocale(topic, locale).get();
+                    dbResourceDto.getEntries().remove(resourceEntry);
+                });
     }
 
     private void addOrUpdateResources(DbPatchDto.DbChangeDto changeObject) {

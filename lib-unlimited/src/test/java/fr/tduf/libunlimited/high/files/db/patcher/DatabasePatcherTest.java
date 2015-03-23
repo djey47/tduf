@@ -91,6 +91,25 @@ public class DatabasePatcherTest {
         assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.ITALY, "33333333", "Cindy");
     }
 
+    @Test
+    public void apply_whenDeleteResourcesPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException {
+        // GIVEN
+        DbPatchDto updateResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteResources.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+
+        DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
+
+
+        // WHEN
+        patcher.apply(updateResourcesPatch);
+
+
+        // THEN
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(asList(databaseObject));
+        assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "60367256");
+        assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "33333333");
+    }
+
     private static List<DbDto> createDefaultDatabaseObjects() {
         return asList(DbDto.builder().build());
     }
@@ -105,5 +124,11 @@ public class DatabasePatcherTest {
                 databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(ref, topic, locale);
         assertThat(actualUpdatedEntry).isPresent();
         assertThat(actualUpdatedEntry.get().getValue()).isEqualTo(value);
+    }
+
+    private static void assertResourceEntryMissing(BulkDatabaseMiner databaseMiner, DbDto.Topic topic, DbResourceDto.Locale locale, String ref) {
+        Optional<DbResourceDto.Entry> actualUpdatedEntry =
+                databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(ref, topic, locale);
+        assertThat(actualUpdatedEntry).isEmpty();
     }
 }
