@@ -1,0 +1,16 @@
+{
+  "changes": [
+    {
+      "comment": "Existing entry to be removed: ref 606298799",
+      "type" : "DELETE",
+      "topic" : "CAR_PHYSICS_DATA",
+      "ref": "606298799"
+    },
+    {
+      "comment": "Missing entry: ref 000000000",
+      "type" : "DELETE",
+      "topic" : "CAR_PHYSICS_DATA",
+      "ref": "000000000"
+    }
+  ]
+}

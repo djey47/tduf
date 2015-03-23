@@ -19,8 +19,7 @@ import static java.util.stream.Collectors.toList;
  * Used to apply patchs to an existing database.
  */
 // TODO WARNING! if using cache on Miner, reset caches after updates !
-    // TODO add without identifier -> must generate if topic supports it
-    // TODO add with identifier -> topic must support
+// TODO add without identifier -> must generate if topic supports it
 public class DatabasePatcher {
 
     private final List<DbDto> databaseObjects;
@@ -66,8 +65,22 @@ public class DatabasePatcher {
             case UPDATE:
                 addOrUpdateContents(changeObject);
                 break;
-            default:
+            case DELETE:
+                deleteContents(changeObject);
+                break;
         }
+    }
+
+    private void deleteContents(DbPatchDto.DbChangeDto changeObject) {
+
+        DbDto.Topic changedTopic = changeObject.getTopic();
+        databaseMiner.getContentEntryFromTopicWithRef(changeObject.getRef(), changedTopic)
+                .ifPresent((contentEntry) -> {
+
+                    List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(changedTopic).get().getData().getEntries();
+                    topicEntries.remove(contentEntry);
+
+                });
     }
 
     private void addOrUpdateContents(DbPatchDto.DbChangeDto changeObject) {

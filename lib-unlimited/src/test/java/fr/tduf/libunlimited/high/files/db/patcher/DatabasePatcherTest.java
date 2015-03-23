@@ -212,6 +212,24 @@ public class DatabasePatcherTest {
         assertThat(actualUpdatedEntry.getItems().get(1).getRawValue()).isEqualTo("864426");
     }
 
+    @Test
+    public void apply_whenDeleteContentsPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException {
+        // GIVEN
+        DbPatchDto deleteContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteContents-ref.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+
+        DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
+
+
+        // WHEN
+        patcher.apply(deleteContentsPatch);
+
+
+        // THEN
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(asList(databaseObject));
+        assertThat(databaseMiner.getContentEntryFromTopicWithRef("606298799", DbDto.Topic.CAR_PHYSICS_DATA)).isEmpty();
+    }
+
     private static List<DbDto> createDefaultDatabaseObjects() {
         return asList(DbDto.builder().build());
     }
