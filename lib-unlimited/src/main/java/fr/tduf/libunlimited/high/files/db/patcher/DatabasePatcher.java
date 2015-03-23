@@ -85,25 +85,25 @@ public class DatabasePatcher {
     }
 
     private void addOrUpdateResources(DbPatchDto.DbChangeDto changeObject) {
-        DbDto.Topic topic = changeObject.getTopic();
         Optional<DbResourceDto.Locale> locale = Optional.ofNullable(changeObject.getLocale());
-        String ref = changeObject.getRef();
-        String value = changeObject.getValue();
 
         if (locale.isPresent()) {
 
-            addOrUpdateResourcesForLocale(topic, locale.get(), ref, value);
+            addOrUpdateResourcesForLocale(changeObject, locale.get());
 
         } else {
 
             asList(DbResourceDto.Locale.values())
-                    .forEach((currentLocale) -> addOrUpdateResourcesForLocale(topic, currentLocale, ref, value));
+                    .forEach((currentLocale) -> addOrUpdateResourcesForLocale(changeObject, currentLocale));
 
         }
     }
 
-    // TODO reduce method size by passing patch objet as parameter
-    private void addOrUpdateResourcesForLocale(DbDto.Topic topic, DbResourceDto.Locale locale, String ref, String value) {
+    private void addOrUpdateResourcesForLocale(DbPatchDto.DbChangeDto changeObject, DbResourceDto.Locale locale) {
+        String ref = changeObject.getRef();
+        DbDto.Topic topic = changeObject.getTopic();
+        String value = changeObject.getValue();
+
         Optional<DbResourceDto.Entry> potentialResourceEntry =
                 databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(ref, topic, locale);
 
