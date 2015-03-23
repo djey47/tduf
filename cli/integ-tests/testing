@@ -4,5 +4,6 @@ Provided files:
  - in banks directory, will be used as reference for bnk tests
  - in crypto directory, will be used as reference for encryption tests
  - in db-encrypted directory, will be used as reference for database tests
- - in db-jsone-errors directory, will be used as source for integrity errors
+ - in db-json-errors directory, will be used as source for integrity errors
+ - in patcher, will be used as source for json mini patches
  - in research directory, will be used as reference for json conversion.

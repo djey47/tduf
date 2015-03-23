@@ -68,6 +68,26 @@ public class DatabaseToolIntegTest {
         assertDatabaseFilesArePresent(fixedDirectory);
     }
 
+    @Test
+    public void dumpApplyPatch() throws IOException {
+
+        String sourceDirectory = "integ-tests/db-encrypted";
+        String jsonDirectory = "integ-tests/db-json";
+        String patchedDirectory = "integ-tests/db-patched";
+        String patchFile = "integ-tests/patcher/mini.json";
+
+        // WHEN: dump
+        System.out.println("-> Dump!");
+        DatabaseTool.main(new String[]{"dump", "-d", sourceDirectory, "-j", jsonDirectory});
+
+        // WHEN: applyPatch
+        System.out.println("-> ApplyPatch!");
+        DatabaseTool.main(new String[]{"apply-patch", "-j", jsonDirectory, "-o", patchedDirectory, "-p", patchFile});
+
+        // THEN
+        // TODO
+    }
+
     private static long getTopicFileCount(String jsonDirectory, String extension) {
         Map<String, Boolean> jsonFileResult = asList(DbDto.Topic.values()).stream()
 
