@@ -70,29 +70,19 @@ public class DatabasePatcher {
         }
     }
 
-    // TODO reduce method size
     private void addOrUpdateContents(DbPatchDto.DbChangeDto changeObject) {
 
-        databaseMiner.getDatabaseTopic(changeObject.getTopic())
+        DbDto.Topic changedTopic = changeObject.getTopic();
+        databaseMiner.getDatabaseTopic(changedTopic)
                 .ifPresent((topicObject) -> {
 
+                    List<DbDataDto.Entry> topicEntries = topicObject.getData().getEntries();
                     List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject.getStructure().getFields(), changeObject.getValues());
 
                     Optional<String> potentialRef = Optional.ofNullable(changeObject.getRef());
-                    List<DbDataDto.Entry> topicEntries = topicObject.getData().getEntries();
                     if (potentialRef.isPresent()) {
 
-                        Optional<DbDataDto.Entry> potentialEntry = databaseMiner.getContentEntryFromTopicWithRef(potentialRef.get(), changeObject.getTopic());
-
-                        if (potentialEntry.isPresent()) {
-
-                            potentialEntry.get().setItems(modifiedItems);
-
-                        } else {
-
-                            addEntryToTopic(modifiedItems, topicEntries);
-
-                        }
+                        addOrUpdateEntryWithReference(potentialRef.get(), changedTopic, topicEntries, modifiedItems);
 
                     } else {
 
@@ -102,18 +92,18 @@ public class DatabasePatcher {
                 });
     }
 
-    private static void checkValueCount(List<String> allValues, List<DbStructureDto.Field> structureFields) {
-        int structureFieldsSize = structureFields.size();
-        if (allValues.size() != structureFieldsSize) {
-            throw new IllegalArgumentException("Values count in current patch does not match topic structure: " + allValues.size() + " VS " + structureFieldsSize);
-        }
-    }
+    private void addOrUpdateEntryWithReference(String ref, DbDto.Topic changedTopic, List<DbDataDto.Entry> topicEntries, List<DbDataDto.Item> modifiedItems) {
+        Optional<DbDataDto.Entry> potentialEntry = databaseMiner.getContentEntryFromTopicWithRef(ref, changedTopic);
 
-    private static void addEntryToTopic(List<DbDataDto.Item> modifiedItems, List<DbDataDto.Entry> topicEntries) {
-        topicEntries.add(DbDataDto.Entry.builder()
-                .forId(topicEntries.size())
-                .addItems(modifiedItems)
-                .build());
+        if (potentialEntry.isPresent()) {
+
+            potentialEntry.get().setItems(modifiedItems);
+
+        } else {
+
+            addEntryToTopic(modifiedItems, topicEntries);
+
+        }
     }
 
     private void deleteResources(DbPatchDto.DbChangeDto changeObject) {
@@ -176,6 +166,20 @@ public class DatabasePatcher {
                                                                                         .withValue(value)
                                                                                         .build()));
         }
+    }
+
+    private static void checkValueCount(List<String> allValues, List<DbStructureDto.Field> structureFields) {
+        int structureFieldsSize = structureFields.size();
+        if (allValues.size() != structureFieldsSize) {
+            throw new IllegalArgumentException("Values count in current patch does not match topic structure: " + allValues.size() + " VS " + structureFieldsSize);
+        }
+    }
+
+    private static void addEntryToTopic(List<DbDataDto.Item> modifiedItems, List<DbDataDto.Entry> topicEntries) {
+        topicEntries.add(DbDataDto.Entry.builder()
+                .forId(topicEntries.size())
+                .addItems(modifiedItems)
+                .build());
     }
 
     private static List<DbDataDto.Item> createEntryItemsWithValues(List<DbStructureDto.Field> structureFields, List<String> allValues) {
