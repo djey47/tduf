@@ -131,6 +131,7 @@ project(':cli') {
 project('lib-unlimited') {
     dependencies {
         compile group: 'net.objecthunter', name: 'exp4j', version: '0.4.4'
+        compile group: 'commons-io', name: 'commons-io', version: '2.4'
     }
 
     task copyStructures(type: Copy) {
