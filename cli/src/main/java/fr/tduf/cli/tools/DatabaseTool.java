@@ -197,7 +197,7 @@ public class DatabaseTool extends GenericTool {
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
             outLine("-> Now processing topic: " + currentTopic + "...");
 
-            DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, this.withClearContents, new ArrayList<>());
+            DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, this.databaseDirectory, this.withClearContents, new ArrayList<>());
 
             if (dbDto == null) {
                 outLine("  !Database contents not found for topic " + currentTopic + ", skipping...");
@@ -208,7 +208,7 @@ public class DatabaseTool extends GenericTool {
                 continue;
             }
 
-            String writtenFileName = DatabaseReadWriteHelper.writeDatabaseToJson(dbDto, this.jsonDirectory);
+            String writtenFileName = DatabaseReadWriteHelper.writeDatabaseTopicToJson(dbDto, this.jsonDirectory);
 
             outLine("Writing done for topic: " + currentTopic);
             outLine("-> " + writtenFileName);
@@ -237,7 +237,7 @@ public class DatabaseTool extends GenericTool {
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
             outLine("-> Now processing topic: " + currentTopic + "...");
 
-            DbDto dbDto = DatabaseReadWriteHelper.readDatabaseFromJson(currentTopic, this.jsonDirectory);
+            DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(currentTopic, this.jsonDirectory);
 
             if (dbDto == null) {
                 outLine("  !Database contents not found for topic " + currentTopic + ", skipping...");
@@ -333,7 +333,7 @@ public class DatabaseTool extends GenericTool {
 
     private Optional<String> writeTopicObjectAsJson(DbDto topicObject) {
         try {
-            return Optional.ofNullable(DatabaseReadWriteHelper.writeDatabaseToJson(topicObject, this.outputDatabaseDirectory));
+            return Optional.ofNullable(DatabaseReadWriteHelper.writeDatabaseTopicToJson(topicObject, this.outputDatabaseDirectory));
         } catch (IOException e) {
             e.printStackTrace();
             return Optional.<String>empty();
@@ -376,7 +376,7 @@ public class DatabaseTool extends GenericTool {
 
             int initialErrorCount = integrityErrors.size();
 
-            DbDto dbDto = DatabaseReadWriteHelper.readDatabase(currentTopic, this.databaseDirectory, this.withClearContents, integrityErrors);
+            DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, this.databaseDirectory, this.withClearContents, integrityErrors);
 
             if (dbDto == null) {
                 outLine("  (!)Database contents not found for topic " + currentTopic + ", skipping.");
@@ -409,7 +409,7 @@ public class DatabaseTool extends GenericTool {
     }
 
     private List<String> writeDatabaseTopic(DbDto dbDto, String outputDatabaseDirectory) throws IOException {
-        List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabase(dbDto, outputDatabaseDirectory, this.withClearContents);
+        List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabaseTopic(dbDto, outputDatabaseDirectory, this.withClearContents);
 
         outLine("Writing done for topic: " + dbDto.getStructure().getTopic());
         writtenFiles.stream()

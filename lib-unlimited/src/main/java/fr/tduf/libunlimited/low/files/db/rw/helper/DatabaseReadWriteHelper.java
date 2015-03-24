@@ -36,7 +36,7 @@ public class DatabaseReadWriteHelper {
      * @param integrityErrors    : list of database errors, encountered when parsing.  @return a global object for topic.
      * @throws FileNotFoundException
      */
-    public static DbDto readDatabase(DbDto.Topic topic, String databaseDirectory, boolean withClearContents, List<IntegrityError> integrityErrors) throws IOException {
+    public static DbDto readDatabaseTopic(DbDto.Topic topic, String databaseDirectory, boolean withClearContents, List<IntegrityError> integrityErrors) throws IOException {
         Objects.requireNonNull(integrityErrors, "A list (even empty) must be provided.");
 
         String contentsFileName = checkDatabaseContents(topic, databaseDirectory, integrityErrors);
@@ -66,9 +66,8 @@ public class DatabaseReadWriteHelper {
      * @param topic         : topic to parse TDU contents from
      * @param jsonDirectory : location of json files
      */
-    // TODO rename to readDatabaseTopicFromJson
     // TODO make return Optional.empty instead of null
-    public static DbDto readDatabaseFromJson(DbDto.Topic topic, String jsonDirectory) throws IOException {
+    public static DbDto readDatabaseTopicFromJson(DbDto.Topic topic, String jsonDirectory) throws IOException {
 
         File jsonFile = getJsonFileFromDirectory(topic, jsonDirectory);
         if (!jsonFile.exists()) {
@@ -89,7 +88,7 @@ public class DatabaseReadWriteHelper {
 
                 .map((topic) -> {
                     try {
-                        return Optional.ofNullable(readDatabaseFromJson(topic, jsonDirectory));
+                        return Optional.ofNullable(readDatabaseTopicFromJson(topic, jsonDirectory));
                     } catch (IOException e) {
                         e.printStackTrace();
                         return Optional.<DbDto>empty();
@@ -110,7 +109,7 @@ public class DatabaseReadWriteHelper {
      * @return a list of written TDU files
      * @throws FileNotFoundException
      */
-    public static List<String> writeDatabase(DbDto dbDto, String outputDirectory, boolean withClearContents) throws IOException {
+    public static List<String> writeDatabaseTopic(DbDto dbDto, String outputDirectory, boolean withClearContents) throws IOException {
 
         DatabaseWriter writer = DatabaseWriter.load(dbDto);
         List<String> writtenFileNames = writer.writeAll(outputDirectory);
@@ -127,7 +126,7 @@ public class DatabaseReadWriteHelper {
      * @return name of written JSON file
      * @throws FileNotFoundException
      */
-    public static String writeDatabaseToJson(DbDto dbDto, String outputDirectory) throws IOException {
+    public static String writeDatabaseTopicToJson(DbDto dbDto, String outputDirectory) throws IOException {
         DatabaseWriter databaseWriter = DatabaseWriter.load(dbDto);
 
         return databaseWriter.writeAllAsJson(outputDirectory);
