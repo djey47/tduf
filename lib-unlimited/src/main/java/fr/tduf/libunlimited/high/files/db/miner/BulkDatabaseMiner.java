@@ -125,9 +125,8 @@ public class BulkDatabaseMiner {
      * @param topic     : topic in TDU Database to search
      * @return database entry having specified reference as identifier.
      */
-    // TODO rename Ref -> Reference
-    public Optional<DbDataDto.Entry> getContentEntryFromTopicWithRef(String ref, DbDto.Topic topic) {
-//        System.out.println(new Date().getTime() + " - getContentEntryFromTopicWithRef(" + ref + ", " + topic + ")");
+    public Optional<DbDataDto.Entry> getContentEntryFromTopicWithReference(String ref, DbDto.Topic topic) {
+//        System.out.println(new Date().getTime() + " - getContentEntryFromTopicWithReference(" + ref + ", " + topic + ")");
 
         Optional<DbDto> potentialTopicObject = getDatabaseTopic(topic);
         if (!potentialTopicObject.isPresent()) {
@@ -135,6 +134,7 @@ public class BulkDatabaseMiner {
         }
         DbDto topicObject = potentialTopicObject.get();
 
+        // TODO merge uid field index retrieval + hasIdentifier
         OptionalInt potentialUidFieldRank = getUidFieldRank(topicObject);
         if (!potentialUidFieldRank.isPresent()) {
             return Optional.empty();

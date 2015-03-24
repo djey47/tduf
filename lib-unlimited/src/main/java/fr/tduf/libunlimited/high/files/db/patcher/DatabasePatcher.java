@@ -19,7 +19,6 @@ import static java.util.stream.Collectors.toList;
  * Used to apply patchs to an existing database.
  */
 // TODO WARNING! if using cache on Miner, reset caches after updates !
-// TODO add without identifier -> must generate if topic supports it
 public class DatabasePatcher {
 
     private final List<DbDto> databaseObjects;
@@ -74,7 +73,7 @@ public class DatabasePatcher {
     private void deleteContents(DbPatchDto.DbChangeDto changeObject) {
 
         DbDto.Topic changedTopic = changeObject.getTopic();
-        databaseMiner.getContentEntryFromTopicWithRef(changeObject.getRef(), changedTopic)
+        databaseMiner.getContentEntryFromTopicWithReference(changeObject.getRef(), changedTopic)
                 .ifPresent((contentEntry) -> {
 
                     List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(changedTopic).get().getData().getEntries();
@@ -106,7 +105,7 @@ public class DatabasePatcher {
     }
 
     private void addOrUpdateEntryWithReference(String ref, DbDto.Topic changedTopic, List<DbDataDto.Entry> topicEntries, List<DbDataDto.Item> modifiedItems) {
-        Optional<DbDataDto.Entry> potentialEntry = databaseMiner.getContentEntryFromTopicWithRef(ref, changedTopic);
+        Optional<DbDataDto.Entry> potentialEntry = databaseMiner.getContentEntryFromTopicWithReference(ref, changedTopic);
 
         if (potentialEntry.isPresent()) {
 

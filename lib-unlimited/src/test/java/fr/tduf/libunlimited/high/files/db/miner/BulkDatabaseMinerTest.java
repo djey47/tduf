@@ -232,7 +232,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN-THEN
-        assertThat(BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithRef("", DbDto.Topic.RIMS)).isEmpty();
+        assertThat(BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithReference("", DbDto.Topic.RIMS)).isEmpty();
     }
 
     @Test
@@ -241,7 +241,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN-THEN
-        assertThat(BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithRef("1500", DbDto.Topic.BOTS)).isEmpty();
+        assertThat(BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithReference("1500", DbDto.Topic.BOTS)).isEmpty();
     }
 
     @Test
@@ -250,7 +250,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithRef("606298799", DbDto.Topic.BOTS);
+        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithReference("606298799", DbDto.Topic.BOTS);
 
         // THEN
         assertThat(actualEntry).isPresent();
