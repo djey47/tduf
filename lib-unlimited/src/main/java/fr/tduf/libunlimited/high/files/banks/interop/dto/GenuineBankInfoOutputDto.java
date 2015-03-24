@@ -19,4 +19,16 @@ public class GenuineBankInfoOutputDto {
 
     @JsonProperty("packedFiles")
     private List<GenuinePackedFileInfoOutputDto> packedFiles;
+
+    public List<GenuinePackedFileInfoOutputDto> getPackedFiles() {
+        return packedFiles;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public int getFileSize() {
+        return fileSize;
+    }
 }

@@ -13,4 +13,12 @@ public class GenuinePackedFileInfoOutputDto {
 
     @JsonProperty("fileSize")
     private int fileSize;
+
+    public String getName() {
+        return name;
+    }
+
+    public int getFileSize() {
+        return fileSize;
+    }
 }
