@@ -65,16 +65,16 @@ public class DatabaseReadWriteHelper {
      * Reads all database contents (+resources) in JSON format from specified topic into jsonDirectory.
      * @param topic         : topic to parse TDU contents from
      * @param jsonDirectory : location of json files
+     * @return empty object if topic could not be read.
      */
-    // TODO make return Optional.empty instead of null
-    public static DbDto readDatabaseTopicFromJson(DbDto.Topic topic, String jsonDirectory) throws IOException {
+    public static Optional<DbDto> readDatabaseTopicFromJson(DbDto.Topic topic, String jsonDirectory) throws IOException {
 
         File jsonFile = getJsonFileFromDirectory(topic, jsonDirectory);
         if (!jsonFile.exists()) {
-            return null;
+            return Optional.<DbDto>empty();
         }
 
-        return new ObjectMapper().readValue(jsonFile, DbDto.class);
+        return Optional.of(new ObjectMapper().readValue(jsonFile, DbDto.class));
     }
 
     /**
@@ -88,7 +88,7 @@ public class DatabaseReadWriteHelper {
 
                 .map((topic) -> {
                     try {
-                        return Optional.ofNullable(readDatabaseTopicFromJson(topic, jsonDirectory));
+                        return readDatabaseTopicFromJson(topic, jsonDirectory);
                     } catch (IOException e) {
                         e.printStackTrace();
                         return Optional.<DbDto>empty();

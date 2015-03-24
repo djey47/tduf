@@ -132,9 +132,9 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void readDatabaseFromJson_whenFileNotFound_shouldReturnNull() throws URISyntaxException, IOException {
+    public void readDatabaseFromJson_whenFileNotFound_shouldReturnEmpty() throws URISyntaxException, IOException {
         // GIVEN-WHEN-THEN
-        assertThat(DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, "")).isNull();
+        assertThat(DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, "")).isEmpty();
     }
 
     @Test
@@ -144,7 +144,7 @@ public class DatabaseReadWriteHelperTest {
         String jsonDirectory = jsonFile.getParent();
 
         // WHEN
-        DbDto actualdbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory);
+        DbDto actualdbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory).get();
 
         // THEN
         assertTopicObject(actualdbDto);
@@ -268,7 +268,7 @@ public class DatabaseReadWriteHelperTest {
     public void writeDatabase_whenProvidedContents_WithoutEncryption_shouldCreateClearFiles() throws URISyntaxException, IOException {
         // GIVEN
         String jsonDirectory = new File(thisClass.getResource("/db/dumped/TDU_Achievements.json").toURI()).getParent();
-        DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory);
+        DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory).get();
 
 
         // WHEN
@@ -288,7 +288,7 @@ public class DatabaseReadWriteHelperTest {
     public void writeDatabase_whenProvidedContents_WithEncryption_shouldCreateEncryptedFiles() throws URISyntaxException, IOException {
         // GIVEN
         String jsonDirectory = new File(thisClass.getResource("/db/dumped/TDU_Achievements.json").toURI()).getParent();
-        DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory);
+        DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory).get();
 
 
         // WHEN

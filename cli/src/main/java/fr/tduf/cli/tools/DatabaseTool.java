@@ -237,18 +237,16 @@ public class DatabaseTool extends GenericTool {
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
             outLine("-> Now processing topic: " + currentTopic + "...");
 
-            DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(currentTopic, this.jsonDirectory);
+            Optional<DbDto> dbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(currentTopic, this.jsonDirectory);
 
-            if (dbDto == null) {
+            if (dbDto.isPresent()) {
+                writtenFileNames.addAll(writeDatabaseTopic(dbDto.get(), this.databaseDirectory));
+            } else {
                 outLine("  !Database contents not found for topic " + currentTopic + ", skipping...");
                 outLine();
 
                 missingTopicContents.add(currentTopic);
-
-                continue;
             }
-
-            writtenFileNames.addAll(writeDatabaseTopic(dbDto, this.databaseDirectory));
         }
 
         outLine("All done!");
