@@ -134,16 +134,9 @@ public class BulkDatabaseMiner {
         }
         DbDto topicObject = potentialTopicObject.get();
 
-        // TODO merge uid field index retrieval + hasIdentifier
-        OptionalInt potentialUidFieldRank = getUidFieldRank(topicObject);
-        if (!potentialUidFieldRank.isPresent()) {
-            return Optional.empty();
-        }
-        int uidFieldRank = potentialUidFieldRank.getAsInt();
-
         return topicObject.getData().getEntries().stream()
 
-                .filter((entry) -> entryHasForIdentifier(entry, uidFieldRank, ref))
+                .filter((entry) -> entryHasForIdentifier(entry, ref, topicObject.getStructure().getFields()))
 
                 .findAny();
     }
@@ -170,25 +163,26 @@ public class BulkDatabaseMiner {
                 .findAny();
     }
 
-    private static OptionalInt getUidFieldRank(DbDto topicObject) {
-        return topicObject.getStructure().getFields().stream()
+    private static boolean entryHasForIdentifier(DbDataDto.Entry entry, String ref, List<DbStructureDto.Field> structureFields) {
+        OptionalInt potentialUidFieldRank = getUidFieldRank(structureFields);
+        return potentialUidFieldRank.isPresent()
+
+                && entry.getItems().stream()
+
+                .filter((item) -> item.getFieldRank() == potentialUidFieldRank.getAsInt()
+                        && item.getRawValue().equals(ref))
+
+                .findAny().isPresent();
+    }
+
+    private static OptionalInt getUidFieldRank(List<DbStructureDto.Field> structureFields) {
+        return structureFields.stream()
 
                 .filter((structureField) -> DbStructureDto.FieldType.UID == structureField.getFieldType())
 
                 .mapToInt(DbStructureDto.Field::getRank)
 
                 .findAny();
-    }
-
-    private static boolean entryHasForIdentifier(DbDataDto.Entry entry, int uidFieldRank, String ref) {
-        return entry.getItems().stream()
-
-                .filter((item) -> item.getFieldRank() == uidFieldRank
-                        && item.getRawValue().equals(ref))
-
-                .findAny()
-
-                .isPresent();
     }
 
     List<DbDto> getTopicObjects() {
