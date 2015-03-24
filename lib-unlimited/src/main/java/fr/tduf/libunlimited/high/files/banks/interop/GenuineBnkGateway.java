@@ -2,54 +2,54 @@ package fr.tduf.libunlimited.high.files.banks.interop;
 
 import com.google.common.base.Joiner;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBankInfoOutputDto;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
+import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
+import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.*;
+
+import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
- * Bnk support, implementation relying on TDUMT .net assemblies.
+ * Bnk support, implementation relying on TDUMT-cli application.
  */
 public class GenuineBnkGateway implements BankSupport {
-
-    static {
-//        try {
-//            File rootDirectory = new File("lib/");
-//            Bridge.init(new File(rootDirectory.getAbsolutePath(), "jni4net.n-0.8.8.0.dll"));
-//            // TODO Generate Assemblies with CSC on Windows platform
-//            Bridge.LoadAndRegisterAssemblyFrom(new File(rootDirectory.getAbsolutePath(), "TduModdingLibrary.j4n.dll"));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-    }
 
 //    private static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
 //    private static final String PATH_SEPARATOR_REGEX = "\\\\";
 
     @Override
-    public BankInfoDto getBankInfo(String bankFileName) {
-        return null;
-//
-//        BNK bankFile = (BNK) TduFile.GetFile(bankFileName);
-//
-//        Collection<String> packedFilesNames = (Collection<String>) bankFile.GetPackedFilesPaths(null);
-//
-//        List<PackedFileInfoDto> packedFilesInfos = packedFilesNames.stream()
-//
-//                .map((fileName) -> PackedFileInfoDto.builder()
-//                        .forReference(generatePackedFileReference(fileName))
-//                        .withSize((int) bankFile.GetPackedFileSize(fileName))
-//                        .withFullName(fileName)
-//                        .build())
-//
-//                .collect(toList());
-//
-//        return BankInfoDto.builder()
-//                .fromYear(bankFile.getYear())
-//                .withFileSize(bankFile.getSize())
-//                .addPackedFiles(packedFilesInfos)
-//                .build();
+    public BankInfoDto getBankInfo(String bankFileName) throws IOException {
+
+        // TODO capture return code
+        Process bankInfoProcess = runCliCommand("BANK-I", bankFileName);
+        String jsonOutput = IOUtils.toString(bankInfoProcess.getInputStream());
+//        String errorOutput = IOUtils.toString(bankInfoProcess.getErrorStream());
+
+        GenuineBankInfoOutputDto outputObject = new ObjectMapper().readValue(jsonOutput, GenuineBankInfoOutputDto.class);
+
+        List<PackedFileInfoDto> packedFilesInfos = outputObject.getPackedFiles().stream()
+
+                .map((packedFileInfo) -> PackedFileInfoDto.builder()
+                        .forReference(generatePackedFileReference(packedFileInfo.getName()))
+                        .withSize(packedFileInfo.getFileSize())
+                        .withFullName(packedFileInfo.getName())
+                        .build())
+
+                .collect(toList());
+
+        return BankInfoDto.builder()
+                .fromYear(outputObject.getYear())
+                .withFileSize(outputObject.getFileSize())
+                .addPackedFiles(packedFilesInfos)
+                .build();
     }
 
     @Override
@@ -84,6 +84,26 @@ public class GenuineBnkGateway implements BankSupport {
 //                outputBankFile.ReplacePackedFile(packedFilePath, packedFile.toString());
 //            }
 //        }
+    }
+
+    static Process runCliCommand(String command, String... args) throws IOException {
+        requireNonNull(command, "A CLI command is required.");
+
+        List<String> processCommands = new ArrayList<>();
+        processCommands.add(command);
+        processCommands.addAll(asList(args));
+
+        ProcessBuilder builder = new ProcessBuilder(processCommands);
+
+        Process process = builder.start();
+
+        try {
+            process.waitFor();
+        } catch (InterruptedException ie) {
+            throw new IOException("Process was interrupted: " + command, ie);
+        }
+
+        return process;
     }
 
     static String getInternalPackedFilePath(Path packedFilePath, Path basePath) {

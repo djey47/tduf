@@ -1,7 +1,9 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -57,5 +59,42 @@ public class GenuineBnkGatewayTest {
 
         // THEN
         assertThat(actualReference).isEqualTo("2732794586");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void runCliCommand_whenNullCommand_shouldThrowException() throws IOException {
+        // GIVEN-WHEN
+        GenuineBnkGateway.runCliCommand(null);
+
+        // THEN: NPE
+    }
+
+    @Test(expected = IOException.class)
+    public void runCliCommand_whenInvalidCommand_shouldThrowException() throws IOException {
+        // GIVEN-WHEN
+        GenuineBnkGateway.runCliCommand("aaa");
+
+        // THEN: IOE
+    }
+
+    @Test
+    public void runCliCommand_whenValidCommand_shouldReturnProcessInstance() throws IOException {
+        // GIVEN-WHEN
+        Process actualProcess = GenuineBnkGateway.runCliCommand("date");
+
+        // THEN
+        assertThat(actualProcess).isNotNull();
+        System.out.println(IOUtils.toString(actualProcess.getInputStream()));
+    }
+
+    @Test
+    public void runCliCommand_whenValidCommand_andOneArgument_shouldReturnProcessInstance() throws IOException {
+        // GIVEN-WHEN
+        Process actualProcess = GenuineBnkGateway.runCliCommand("date", "/?");
+
+        // THEN
+        assertThat(actualProcess).isNotNull();
+        System.out.println(IOUtils.toString(actualProcess.getInputStream()));
+        System.err.println(IOUtils.toString(actualProcess.getErrorStream()));
     }
 }

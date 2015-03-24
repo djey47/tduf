@@ -14,7 +14,7 @@ public interface BankSupport {
      * @param bankFileName  : location of bank file to fetch information from
      * @return misc. information about provided file name.
      */
-    BankInfoDto getBankInfo(String bankFileName);
+    BankInfoDto getBankInfo(String bankFileName) throws IOException;
 
     /**
      * @param bankFileName      : location of bank file to extract contents (all packed files) from
