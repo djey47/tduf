@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
-import org.apache.commons.io.IOUtils;
+import fr.tduf.libunlimited.high.files.banks.interop.domain.ProcessResult;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -78,23 +78,31 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test
-    public void runCliCommand_whenValidCommand_shouldReturnProcessInstance() throws IOException {
+    public void runCliCommand_whenValidCommand_shouldReturnProcessResult() throws IOException {
         // GIVEN-WHEN
-        Process actualProcess = GenuineBnkGateway.runCliCommand("date");
+        ProcessResult actualProcessResult = GenuineBnkGateway.runCliCommand("date");
+        String out = actualProcessResult.getOut();
+        String err = actualProcessResult.getErr();
+        System.out.println(out);
+        System.out.println(err);
+
 
         // THEN
-        assertThat(actualProcess).isNotNull();
-        System.out.println(IOUtils.toString(actualProcess.getInputStream()));
+        assertThat(actualProcessResult).isNotNull();
+        assertThat(actualProcessResult.getReturnCode()).isNotEqualTo(-1);
+
+        assertThat(out).isNotNull();
+        assertThat(err).isNotNull();
     }
 
     @Test
     public void runCliCommand_whenValidCommand_andOneArgument_shouldReturnProcessInstance() throws IOException {
         // GIVEN-WHEN
-        Process actualProcess = GenuineBnkGateway.runCliCommand("date", "/?");
+        ProcessResult actualProcessResult = GenuineBnkGateway.runCliCommand("date", "/?");
+        System.out.println(actualProcessResult.getOut());
+        System.err.println(actualProcessResult.getErr());
 
         // THEN
-        assertThat(actualProcess).isNotNull();
-        System.out.println(IOUtils.toString(actualProcess.getInputStream()));
-        System.err.println(IOUtils.toString(actualProcess.getErrorStream()));
+        assertThat(actualProcessResult).isNotNull();
     }
 }

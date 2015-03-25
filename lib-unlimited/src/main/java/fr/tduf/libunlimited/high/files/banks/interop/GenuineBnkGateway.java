@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.high.files.banks.interop;
 
 import com.google.common.base.Joiner;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.banks.interop.domain.ProcessResult;
 import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBankInfoOutputDto;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
@@ -28,9 +29,7 @@ public class GenuineBnkGateway implements BankSupport {
     @Override
     public BankInfoDto getBankInfo(String bankFileName) throws IOException {
 
-        // TODO capture return code
-        Process bankInfoProcess = runCliCommand("BANK-I", bankFileName);
-        String jsonOutput = IOUtils.toString(bankInfoProcess.getInputStream());
+        String jsonOutput = runCliCommand("BANK-I", bankFileName).getOut();
 //        String errorOutput = IOUtils.toString(bankInfoProcess.getErrorStream());
 
         GenuineBankInfoOutputDto outputObject = new ObjectMapper().readValue(jsonOutput, GenuineBankInfoOutputDto.class);
@@ -86,7 +85,7 @@ public class GenuineBnkGateway implements BankSupport {
 //        }
     }
 
-    static Process runCliCommand(String command, String... args) throws IOException {
+    static ProcessResult runCliCommand(String command, String... args) throws IOException {
         requireNonNull(command, "A CLI command is required.");
 
         List<String> processCommands = new ArrayList<>();
@@ -95,15 +94,14 @@ public class GenuineBnkGateway implements BankSupport {
 
         ProcessBuilder builder = new ProcessBuilder(processCommands);
 
-        Process process = builder.start();
-
         try {
-            process.waitFor();
+            return new ProcessResult(
+                    builder.start().waitFor(),
+                    IOUtils.toString(builder.start().getInputStream()),
+                    IOUtils.toString(builder.start().getErrorStream()));
         } catch (InterruptedException ie) {
             throw new IOException("Process was interrupted: " + command, ie);
         }
-
-        return process;
     }
 
     static String getInternalPackedFilePath(Path packedFilePath, Path basePath) {
