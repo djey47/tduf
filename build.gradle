@@ -149,6 +149,14 @@ project('lib-unlimited') {
         include '*'
         into '../pack/lib'
     }
+
+    task copyExternalTools(type: Copy) {
+        description 'Copies all external tools to release directory.'
+
+        from '../tools'
+        include '*'
+        into '../pack/tools'
+    }
 }
 
 task copyDoc(type: Copy) {
@@ -169,7 +177,7 @@ task copyVersionInfo(type: Copy) {
     into 'pack/lib/'
 }
 
-task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', ':cli:copyScripts', ':cli:copyJar', ':lib-unlimited:copyStructures', ':lib-unlimited:copyLibraries'], type: Zip) {
+task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', ':cli:copyScripts', ':cli:copyJar', ':lib-unlimited:copyStructures', ':lib-unlimited:copyLibraries', ':lib-unlimited:copyExternalTools'], type: Zip) {
     description 'Zips all distribution files from pack folder.'
 
     archiveName project.name + "-" + project.version + ".zip"
