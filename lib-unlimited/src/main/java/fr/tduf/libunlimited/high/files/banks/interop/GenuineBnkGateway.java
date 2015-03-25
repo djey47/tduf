@@ -9,9 +9,9 @@ import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
 
 import static java.util.Arrays.asList;
@@ -21,15 +21,21 @@ import static java.util.stream.Collectors.toList;
 /**
  * Bnk support, implementation relying on TDUMT-cli application.
  */
+// TODO handle tdumt-cli command failures
 public class GenuineBnkGateway implements BankSupport {
 
-//    private static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
-//    private static final String PATH_SEPARATOR_REGEX = "\\\\";
+    private static final String PATH_SEPARATOR_REGEX = "\\\\";
+
+    private static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
+
+    private static final String CLI_COMMAND_BANK_INFO = "BANK-I";
+    private static final String CLI_COMMAND_BANK_UNPACK = "BANK-U";
+    private static final String CLI_COMMAND_BANK_REPLACE = "BANK-R";
 
     @Override
     public BankInfoDto getBankInfo(String bankFileName) throws IOException {
 
-        String jsonOutput = runCliCommand("BANK-I", bankFileName).getOut();
+        String jsonOutput = runCliCommand(CLI_COMMAND_BANK_INFO, bankFileName).getOut();
 //        String errorOutput = IOUtils.toString(bankInfoProcess.getErrorStream());
 
         GenuineBankInfoOutputDto outputObject = new ObjectMapper().readValue(jsonOutput, GenuineBankInfoOutputDto.class);
@@ -53,36 +59,44 @@ public class GenuineBnkGateway implements BankSupport {
 
     @Override
     public void extractAll(String bankFileName, String outputDirectory) throws IOException {
-//
-//        Files.copy(Paths.get(bankFileName), Paths.get(outputDirectory, ORIGINAL_BANK_NAME), StandardCopyOption.REPLACE_EXISTING);
-//
-//        BNK bankFile = (BNK) TduFile.GetFile(bankFileName);
-//
-//        Collection<String> packedFilesNames = (Collection<String>) bankFile.GetPackedFilesPaths(null);
-//
-//        packedFilesNames.stream()
-//
-//                .forEach((filePath) -> extractPackedFileWithFullPath(bankFile, filePath, outputDirectory));
+
+        Files.copy(Paths.get(bankFileName), Paths.get(outputDirectory, ORIGINAL_BANK_NAME), StandardCopyOption.REPLACE_EXISTING);
+
+        BankInfoDto bankInfoObject = getBankInfo(bankFileName);
+
+        bankInfoObject.getPackedFiles().stream()
+
+                .map(PackedFileInfoDto::getFullName)
+
+                .forEach((fileName) -> {
+                    try {
+                        extractPackedFileWithFullPath(bankFileName, fileName, outputDirectory);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
     @Override
     public void packAll(String inputDirectory, String outputBankFileName) throws IOException {
-//
-//        Path originalBankFilePath = Paths.get(inputDirectory, ORIGINAL_BANK_NAME);
-//
-//        Files.copy(originalBankFilePath, Paths.get(outputBankFileName), StandardCopyOption.REPLACE_EXISTING);
-//
-//
-//        BNK outputBankFile = (BNK) TduFile.GetFile(outputBankFileName);
-//
-//        Path inputPath = Paths.get(inputDirectory);
-//        DirectoryStream<Path> paths = Files.newDirectoryStream(inputPath);
-//        for (Path packedFile : paths) {
-//            if (!Files.isDirectory(packedFile)) {
-//                String packedFilePath = getInternalPackedFilePath(packedFile, inputPath);
-//                outputBankFile.ReplacePackedFile(packedFilePath, packedFile.toString());
-//            }
-//        }
+
+        Path originalBankFilePath = Paths.get(inputDirectory, ORIGINAL_BANK_NAME);
+
+        Files.copy(originalBankFilePath, Paths.get(outputBankFileName), StandardCopyOption.REPLACE_EXISTING);
+
+        Path inputPath = Paths.get(inputDirectory);
+
+        try (DirectoryStream<Path> paths = Files.newDirectoryStream(inputPath)) {
+            for (Path packedFile : paths) {
+                if (Files.isDirectory(packedFile)) {
+                    continue;
+                }
+
+                String packedFilePath = getInternalPackedFilePath(packedFile, inputPath);
+
+                runCliCommand(CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, packedFile.toString());
+            }
+        }
     }
 
     static ProcessResult runCliCommand(String command, String... args) throws IOException {
@@ -145,18 +159,15 @@ public class GenuineBnkGateway implements BankSupport {
         }
     }
 
-//    private static void extractPackedFileWithFullPath(BNK bankFile, String filePath, String outputDirectory) {
-//        bankFile.ExtractPackedFile(filePath, outputDirectory, true);
-//
-//        String[] filePathCompounds = filePath.split(PATH_SEPARATOR_REGEX);
-//
-//        File bank = new File(bankFile.getFileName());
-//        File extractedFile = new File(outputDirectory, getFileNameFromPathCompounds(filePathCompounds));
-//        File targetFile = new File(outputDirectory, getTargetFileNameFromPathCompounds(bank.getName(), filePathCompounds));
-//        try {
-//            Files.move(extractedFile.toPath(), targetFile.toPath());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    private static void extractPackedFileWithFullPath(String bankFileName, String filePath, String outputDirectory) throws IOException {
+        runCliCommand(CLI_COMMAND_BANK_UNPACK, bankFileName, filePath, outputDirectory);
+
+        String[] filePathCompounds = filePath.split(PATH_SEPARATOR_REGEX);
+
+        File bank = new File(bankFileName);
+        File extractedFile = new File(outputDirectory, getFileNameFromPathCompounds(filePathCompounds));
+        File targetFile = new File(outputDirectory, getTargetFileNameFromPathCompounds(bank.getName(), filePathCompounds));
+
+        Files.move(extractedFile.toPath(), targetFile.toPath());
+    }
 }
