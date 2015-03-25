@@ -81,26 +81,24 @@ public class GenuineBnkGatewayTest {
     public void runCliCommand_whenValidCommand_shouldReturnProcessResult() throws IOException {
         // GIVEN-WHEN
         ProcessResult actualProcessResult = GenuineBnkGateway.runCliCommand("date");
-        String out = actualProcessResult.getOut();
-        String err = actualProcessResult.getErr();
-        System.out.println(out);
-        System.out.println(err);
+        actualProcessResult.printOut();
+        actualProcessResult.printErr();
 
 
         // THEN
         assertThat(actualProcessResult).isNotNull();
         assertThat(actualProcessResult.getReturnCode()).isNotEqualTo(-1);
 
-        assertThat(out).isNotNull();
-        assertThat(err).isNotNull();
+        assertThat(actualProcessResult.getOut()).isNotNull();
+        assertThat(actualProcessResult.getErr()).isNotNull();
     }
 
     @Test
     public void runCliCommand_whenValidCommand_andOneArgument_shouldReturnProcessInstance() throws IOException {
         // GIVEN-WHEN
         ProcessResult actualProcessResult = GenuineBnkGateway.runCliCommand("date", "/?");
-        System.out.println(actualProcessResult.getOut());
-        System.err.println(actualProcessResult.getErr());
+        actualProcessResult.printOut();
+        actualProcessResult.printErr();
 
         // THEN
         assertThat(actualProcessResult).isNotNull();
