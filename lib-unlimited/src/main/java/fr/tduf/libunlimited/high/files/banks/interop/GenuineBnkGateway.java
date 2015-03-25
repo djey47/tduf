@@ -103,6 +103,7 @@ public class GenuineBnkGateway implements BankSupport {
         requireNonNull(command, "A CLI command is required.");
 
         List<String> processCommands = new ArrayList<>();
+        processCommands.add("tools/tdumt-cli/tdumt-cli.exe");
         processCommands.add(command);
         processCommands.addAll(asList(args));
 
