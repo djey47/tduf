@@ -21,6 +21,28 @@ public class ProcessResult {
         this.err = err;
     }
 
+    /**
+     * Displays process return code and standard output to {@link System}.out.
+     * Terminates with a new line.
+     */
+    public void printOut() {
+        printReturnCode();
+        System.out.println(this.out);
+    }
+
+    /**
+     * Displays process return code and error output to {@link System}.err.
+     * Terminates with a new line.
+     */
+    public void printErr() {
+        printReturnCode();
+        System.err.println(this.err);
+    }
+
+    private void printReturnCode() {
+        System.out.println("Process finished with return code: " + returnCode);
+    }
+
     public int getReturnCode() {
         return returnCode;
     }
