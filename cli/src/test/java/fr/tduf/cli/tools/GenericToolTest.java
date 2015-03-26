@@ -115,15 +115,14 @@ public class GenericToolTest {
     @Test
     public void doMain_whenFailCommand_andNormalizedOutputMode_shouldWriteProperErrorJsonToConsole() throws IOException {
         // GIVEN
-//        OutputStream outContents = hijackStandardOutput();
+        final OutputStream outContents = hijackStandardOutput();
         exitRule.expectSystemExitWithStatus(1);
+        exitRule.checkAssertionAfterwards(() -> assertOutputStreamContainsSequence(outContents, "{", "errorMessage", "Exception", "stackTrace", "}"));
 
         // WHEN-THEN
         testingTool.doMain(new String[]{"test_fail", "-n", "-p", ""});
 
-        // THEN
-        // TODO find a way to assert console output
-//        assertOutputStreamContainsSequence(outContents, "{", "errorMessage", "stackTrace", "}");
+        // THEN: asserted by exitRule
     }
 
     @Test
@@ -168,10 +167,10 @@ public class GenericToolTest {
         assertThat(outputStream.toString()).isEqualTo(expected);
     }
 
-//    private static void assertOutputStreamContainsSequence(OutputStream outputStream, String... expectedItems) throws IOException {
-//        finalizeOutputStream(outputStream);
-//        assertThat(outputStream.toString()).containsSequence(expectedItems);
-//    }
+    private static void assertOutputStreamContainsSequence(OutputStream outputStream, String... expectedItems) throws IOException {
+        finalizeOutputStream(outputStream);
+        assertThat(outputStream.toString()).containsSequence(expectedItems);
+    }
 
     private static void finalizeOutputStream(OutputStream outputStream) throws IOException {
         outputStream.flush();
