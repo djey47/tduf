@@ -38,7 +38,6 @@ public class FormulaHelper {
         return ((Double) expression.evaluate()).intValue();
     }
 
-    // TODO handle more than 1 pattern in formula
     // TODO return more info in error message (store entry ...)
     private static String handlePatternWithStore(String formula, String repeaterKeyPrefix, DataStore dataStore) {
         Matcher matcher = POINTER_PATTERN.matcher(formula);

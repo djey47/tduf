@@ -85,7 +85,7 @@ public class DatabaseToolIntegTest {
         DatabaseTool.main(new String[]{"apply-patch", "-j", jsonDirectory, "-o", patchedDirectory, "-p", patchFile});
 
         // THEN
-        // TODO
+        // TODO add assertions when feature complete
     }
 
     private static long getTopicFileCount(String jsonDirectory, String extension) {
