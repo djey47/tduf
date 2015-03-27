@@ -36,7 +36,7 @@ public class DataStore_focusOnGettingValuesTest {
         DataStoreFixture.putRawValueInStore("f1", expectedBytes, dataStore);
 
         // WHEN-THEN
-        assertThat(dataStore.getRawValue("f1").get()).isEqualTo(expectedBytes);
+        assertThat(dataStore.getRawValue("f1").get()).containsExactly(expectedBytes);
     }
 
     @Test
@@ -46,13 +46,13 @@ public class DataStore_focusOnGettingValuesTest {
         DataStoreFixture.putRawValueInStore("f1", bytes, dataStore);
 
         // WHEN-THEN
-        assertThat(dataStore.getRawValue("f2").isPresent()).isEqualTo(false);
+        assertThat(dataStore.getRawValue("f2")).isEmpty();
     }
 
     @Test
     public void getText_whenNoItem_shouldReturnAbsent() {
         // GIVEN-WHEN-THEN
-        assertThat(dataStore.getText("f1").isPresent()).isFalse();
+        assertThat(dataStore.getText("f1")).isEmpty();
     }
 
     @Test
@@ -70,13 +70,13 @@ public class DataStore_focusOnGettingValuesTest {
         DataStoreFixture.putStringInStore("f1", "v1", dataStore);
 
         // WHEN-THEN
-        assertThat(dataStore.getText("f2").isPresent()).isFalse();
+        assertThat(dataStore.getText("f2")).isEmpty();
     }
 
     @Test
     public void getInteger_whenNoItem_shouldReturnAbsent() {
         // GIVEN-WHEN-THEN
-        assertThat(dataStore.getInteger("f1").isPresent()).isFalse();
+        assertThat(dataStore.getInteger("f1")).isEmpty();
     }
 
     @Test
@@ -94,13 +94,13 @@ public class DataStore_focusOnGettingValuesTest {
         DataStoreFixture.putLongInStore("f1", 100L, dataStore);
 
         // WHEN-THEN
-        assertThat(dataStore.getInteger("f2").isPresent()).isFalse();
+        assertThat(dataStore.getInteger("f2")).isEmpty();
     }
 
     @Test
     public void getFloatingPoint_whenNoItem_shouldReturnAbsent() {
         // GIVEN-WHEN-THEN
-        assertThat(dataStore.getFloatingPoint("f1").isPresent()).isFalse();
+        assertThat(dataStore.getFloatingPoint("f1")).isEmpty();
     }
 
     @Test
@@ -130,9 +130,10 @@ public class DataStore_focusOnGettingValuesTest {
         List<Long> values = dataStore.getIntegerListOf("my_field");
 
         // THEN
-        assertThat(values).isNotNull();
-        assertThat(values).hasSize(3);
-        assertThat(values).containsAll(asList(10L, 20L, 30L));
+        assertThat(values)
+                .isNotNull()
+                .hasSize(3)
+                .containsAll(asList(10L, 20L, 30L));
     }
 
     @Test
@@ -144,9 +145,10 @@ public class DataStore_focusOnGettingValuesTest {
         List<Float> values = dataStore.getFloatingPointListOf("my_fp_field");
 
         // THEN
-        assertThat(values).isNotNull();
-        assertThat(values).hasSize(3);
-        assertThat(values).containsAll(asList(235.666667f, 335.666667f, 435.666667f));
+        assertThat(values)
+                .isNotNull()
+                .hasSize(3)
+                .containsAll(asList(235.666667f, 335.666667f, 435.666667f));
     }
 
     @Test
@@ -158,8 +160,9 @@ public class DataStore_focusOnGettingValuesTest {
         List<DataStore> actualValues = dataStore.getRepeatedValues("entry_list");
 
         // THEN
-        assertThat(actualValues).isNotNull();
-        assertThat(actualValues).hasSize(3);
+        assertThat(actualValues)
+                .isNotNull()
+                .hasSize(3);
         assertThat(actualValues.get(0).getStore()).hasSize(4);
         assertThat(actualValues.get(1).getStore()).hasSize(4);
         assertThat(actualValues.get(2).getStore()).hasSize(4);
@@ -170,6 +173,4 @@ public class DataStore_focusOnGettingValuesTest {
         assertThat(subStore.get("a_field")).isEqualTo(new Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw("az")));
         assertThat(subStore.get("another_field")).isEqualTo(new Entry(UNKNOWN, new byte[] {0x1, 0x2, 0x3, 0x4}));
     }
-
-
 }

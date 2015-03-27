@@ -33,7 +33,7 @@ public class DataStore_focusOnAddingValuesTest {
 
         // THEN
         Entry actualEntry = dataStore.getStore().get("f1");
-        assertThat(actualEntry.getRawValue()).isEqualTo(expectedRawValue);
+        assertThat(actualEntry.getRawValue()).containsExactly(expectedRawValue);
         assertThat(actualEntry.getType()).isEqualTo(UNKNOWN);
     }
 
@@ -44,7 +44,7 @@ public class DataStore_focusOnAddingValuesTest {
 
         // THEN
         Entry expectedEntry = new Entry(FileStructureDto.Type.TEXT, "v1".getBytes());
-        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
+        assertThat(dataStore.getStore()).containsOnly(MapEntry.entry("f1", expectedEntry));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class DataStore_focusOnAddingValuesTest {
 
         // THEN
         Entry expectedEntry = new Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(500L));
-        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
+        assertThat(dataStore.getStore()).containsOnly(MapEntry.entry("f1", expectedEntry));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class DataStore_focusOnAddingValuesTest {
 
         // THEN
         Entry expectedEntry = new Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
-        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
+        assertThat(dataStore.getStore()).containsOnly(MapEntry.entry("f1", expectedEntry));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class DataStore_focusOnAddingValuesTest {
 
         // THEN
         Entry expectedEntry = new Entry(FileStructureDto.Type.TEXT, "v1".getBytes());
-        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
+        assertThat(dataStore.getStore()).containsOnly(MapEntry.entry("f1", expectedEntry));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class DataStore_focusOnAddingValuesTest {
 
         // THEN
         Entry expectedEntry = new Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(500L));
-        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
+        assertThat(dataStore.getStore()).containsOnly(MapEntry.entry("f1", expectedEntry));
     }
 
     @Test
@@ -103,7 +103,7 @@ public class DataStore_focusOnAddingValuesTest {
 
         // THEN
         Entry expectedEntry = new Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
-        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
+        assertThat(dataStore.getStore()).containsOnly(MapEntry.entry("f1", expectedEntry));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class DataStore_focusOnAddingValuesTest {
 
         // THEN
         Entry expectedEntry = new Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint16ToRaw(83.67f));
-        assertThat(dataStore.getStore()).contains(MapEntry.entry("f1", expectedEntry));
+        assertThat(dataStore.getStore()).containsOnly(MapEntry.entry("f1", expectedEntry));
     }
 
     @Test
@@ -126,7 +126,7 @@ public class DataStore_focusOnAddingValuesTest {
 
         // THEN
         Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
-        assertThat(actualEntry.getRawValue()).isEqualTo(expectedRawValue);
+        assertThat(actualEntry.getRawValue()).containsExactly(expectedRawValue);
         assertThat(actualEntry.getType()).isEqualTo(UNKNOWN);
     }
 
@@ -137,7 +137,7 @@ public class DataStore_focusOnAddingValuesTest {
 
         // THEN
         Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
-        assertThat(actualEntry.getRawValue()).isEqualTo("v1".getBytes());
+        assertThat(actualEntry.getRawValue()).containsExactly("v1".getBytes());
         assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.TEXT);
     }
 
@@ -151,7 +151,7 @@ public class DataStore_focusOnAddingValuesTest {
 
         // THEN
         Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
-        assertThat(actualEntry.getRawValue()).isEqualTo(expectedBytes);
+        assertThat(actualEntry.getRawValue()).containsExactly(expectedBytes);
         assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.INTEGER);
     }
 
@@ -165,7 +165,7 @@ public class DataStore_focusOnAddingValuesTest {
 
         // THEN
         Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
-        assertThat(actualEntry.getRawValue()).isEqualTo(expectedBytes);
+        assertThat(actualEntry.getRawValue()).containsExactly(expectedBytes);
         assertThat(actualEntry.getType()).isEqualTo(FileStructureDto.Type.FPOINT);
     }
 

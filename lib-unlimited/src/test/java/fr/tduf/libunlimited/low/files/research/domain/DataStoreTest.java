@@ -14,7 +14,6 @@ import static java.util.Arrays.asList;
 import static net.sf.json.test.JSONAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 
-//FIXME https://github.com/joel-costigliola/assertj-core/issues/293
 public class DataStoreTest {
 
     private DataStore dataStore;
@@ -124,8 +123,9 @@ public class DataStoreTest {
 
         Entry pickedOneSourceEntry = dataStore.getStore().get("entry_list[0].my_field");
         Entry pickedOneActualEntry = actualCopy.getStore().get("entry_list[0].my_field");
-        assertThat(pickedOneActualEntry).isEqualTo(pickedOneSourceEntry);
-        assertThat(pickedOneActualEntry).isNotSameAs(pickedOneSourceEntry);
+        assertThat(pickedOneActualEntry)
+                .isEqualTo(pickedOneSourceEntry)
+                .isNotSameAs(pickedOneSourceEntry);
     }
 
     @Test
