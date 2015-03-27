@@ -49,9 +49,10 @@ public class DatabaseIntegrityChecker {
 
     /**
      * Process checking over all loaded database objects.
+     * Beware! This piece of code is very CPU-intensive on a complete database
+     * and takes a couple of minutes on a modern processor!
      * @return list of integrity errors.
      */
-    //TODO long method - optimize it
     public List<IntegrityError> checkAllContentsObjects() {
 
         List<IntegrityError> integrityErrors = new ArrayList<>();
