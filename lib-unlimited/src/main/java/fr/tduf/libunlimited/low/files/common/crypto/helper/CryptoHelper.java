@@ -55,6 +55,7 @@ public class CryptoHelper {
             position += BLOCK_SIZE;
         }
 
+        outputStream.close();
         return outputStream;
     }
 
@@ -103,6 +104,7 @@ public class CryptoHelper {
             position += BLOCK_SIZE;
         }
 
+        outputStream.close();
         return outputStream;
     }
 
