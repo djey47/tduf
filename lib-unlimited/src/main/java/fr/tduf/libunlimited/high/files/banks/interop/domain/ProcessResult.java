@@ -10,12 +10,16 @@ public class ProcessResult {
 
     private String err = "";
 
+    private String commandName;
+
     /**
+     * @param commandName   : command to execute, without its arguments
      * @param returnCode    : value of exit status code from process
      * @param out           : contents of standard output
      * @param err           : contents of error output
      */
-    public ProcessResult(int returnCode, String out, String err) {
+    public ProcessResult(String commandName, int returnCode, String out, String err) {
+        this.commandName = commandName;
         this.returnCode = returnCode;
         this.out = out;
         this.err = err;
@@ -53,5 +57,9 @@ public class ProcessResult {
 
     public String getErr() {
         return err;
+    }
+
+    public String getCommandName() {
+        return commandName;
     }
 }
