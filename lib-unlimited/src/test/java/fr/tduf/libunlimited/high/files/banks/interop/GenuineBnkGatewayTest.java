@@ -94,9 +94,9 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test
-    public void runCliCommand_whenValidCommand_andOneArgument_shouldReturnProcessInstance() throws IOException {
+    public void runCliCommand_whenValidCommand_andOneInvalidArgument_shouldReturnProcessInstance() throws IOException {
         // GIVEN-WHEN
-        ProcessResult actualProcessResult = GenuineBnkGateway.runCliCommand("date", "/?");
+        ProcessResult actualProcessResult = GenuineBnkGateway.runCliCommand("sort", "/JUKE");
         actualProcessResult.printOut();
         actualProcessResult.printErr();
 

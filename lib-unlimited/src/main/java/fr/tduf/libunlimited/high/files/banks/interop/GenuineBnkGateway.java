@@ -21,7 +21,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Bnk support, implementation relying on TDUMT-cli application.
  */
-// TODO handle tdumt-cli command failures
 public class GenuineBnkGateway implements BankSupport {
 
     private static final String PATH_SEPARATOR_REGEX = "\\\\";
@@ -36,8 +35,10 @@ public class GenuineBnkGateway implements BankSupport {
     @Override
     public BankInfoDto getBankInfo(String bankFileName) throws IOException {
 
-        String jsonOutput = runCliCommand(CLI_COMMAND_BANK_INFO, bankFileName).getOut();
-//        String errorOutput = IOUtils.toString(bankInfoProcess.getErrorStream());
+        ProcessResult processResult = runCliCommand(CLI_COMMAND_BANK_INFO, bankFileName);
+        handleErrors(processResult);
+
+        String jsonOutput = processResult.getOut();
 
         GenuineBankInfoOutputDto outputObject = new ObjectMapper().readValue(jsonOutput, GenuineBankInfoOutputDto.class);
 
@@ -95,7 +96,8 @@ public class GenuineBnkGateway implements BankSupport {
 
                 String packedFilePath = getInternalPackedFilePath(packedFile, inputPath);
 
-                runCliCommand(CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, packedFile.toString());
+                ProcessResult processResult = runCliCommand(CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, packedFile.toString());
+                handleErrors(processResult);
             }
         }
     }
@@ -110,10 +112,12 @@ public class GenuineBnkGateway implements BankSupport {
         ProcessBuilder builder = new ProcessBuilder(processCommands);
 
         try {
-            return new ProcessResult(
+            ProcessResult processResult = new ProcessResult(
+                    command,
                     builder.start().waitFor(),
-                    IOUtils.toString(builder.start().getInputStream()),
-                    IOUtils.toString(builder.start().getErrorStream()));
+                    IOUtils.toString(builder.start().getInputStream()), IOUtils.toString(builder.start().getErrorStream()));
+            handleErrors(processResult);
+            return processResult;
         } catch (InterruptedException ie) {
             throw new IOException("Process was interrupted: " + command, ie);
         }
@@ -170,5 +174,12 @@ public class GenuineBnkGateway implements BankSupport {
         File targetFile = new File(outputDirectory, getTargetFileNameFromPathCompounds(bank.getName(), filePathCompounds));
 
         Files.move(extractedFile.toPath(), targetFile.toPath());
+    }
+
+    private static void handleErrors(ProcessResult processResult) throws IOException {
+        if (processResult.getReturnCode() == 1) {
+            Exception parentException = new Exception(processResult.getErr());
+            throw new IOException("Unable to execute genuine CLI command: " + processResult.getCommandName(), parentException);
+        }
     }
 }
