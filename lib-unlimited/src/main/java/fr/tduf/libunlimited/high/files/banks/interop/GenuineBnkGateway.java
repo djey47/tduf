@@ -27,15 +27,15 @@ public class GenuineBnkGateway implements BankSupport {
 
     private static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
 
-    private static final String EXE_TDUMT_CLI = "tools/tdumt-cli/tdumt-cli.exe";
-    private static final String CLI_COMMAND_BANK_INFO = String.format("%s %s", EXE_TDUMT_CLI, "BANK-I");
-    private static final String CLI_COMMAND_BANK_UNPACK = String.format("%s %s", EXE_TDUMT_CLI, "BANK-U");
-    private static final String CLI_COMMAND_BANK_REPLACE = String.format("%s %s", EXE_TDUMT_CLI, "BANK-R");
+    private static final String EXE_TDUMT_CLI = ".\\tools\\tdumt-cli\\tdumt-cli.exe";
+    private static final String CLI_COMMAND_BANK_INFO = "BANK-I";
+    private static final String CLI_COMMAND_BANK_UNPACK = "BANK-U";
+    private static final String CLI_COMMAND_BANK_REPLACE = "BANK-R";
 
     @Override
     public BankInfoDto getBankInfo(String bankFileName) throws IOException {
 
-        ProcessResult processResult = runCliCommand(CLI_COMMAND_BANK_INFO, bankFileName);
+        ProcessResult processResult = runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_INFO, bankFileName);
         handleErrors(processResult);
 
         String jsonOutput = processResult.getOut();
@@ -96,7 +96,7 @@ public class GenuineBnkGateway implements BankSupport {
 
                 String packedFilePath = getInternalPackedFilePath(packedFile, inputPath);
 
-                ProcessResult processResult = runCliCommand(CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, packedFile.toString());
+                ProcessResult processResult = runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, packedFile.toString());
                 handleErrors(processResult);
             }
         }
@@ -165,7 +165,7 @@ public class GenuineBnkGateway implements BankSupport {
     }
 
     private static void extractPackedFileWithFullPath(String bankFileName, String filePath, String outputDirectory) throws IOException {
-        runCliCommand(CLI_COMMAND_BANK_UNPACK, bankFileName, filePath, outputDirectory);
+        runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_UNPACK, bankFileName, filePath, outputDirectory);
 
         String[] filePathCompounds = filePath.split(PATH_SEPARATOR_REGEX);
 
