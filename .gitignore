@@ -6,6 +6,7 @@ cli/integ-tests/db-fixed/
 cli/integ-tests/db-generated/
 cli/integ-tests/db-generated-errors/
 cli/integ-tests/db-json/
+cli/integ-tests/db-patched/
 cli/integ-tests/encrypted/
 cli/integ-tests/mapping/
 cli/integ-tests/unencrypted/
