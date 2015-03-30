@@ -42,7 +42,6 @@ public class FileTool extends GenericTool {
 
     private Command command;
 
-    // TODO Use fake support during integ tests
     private BankSupport bankSupport;
 
     /**

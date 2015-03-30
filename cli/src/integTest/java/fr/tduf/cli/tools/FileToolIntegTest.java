@@ -1,10 +1,14 @@
 package fr.tduf.cli.tools;
 
+import fr.tduf.cli.common.helper.AssertionsHelper;
+import fr.tduf.cli.common.helper.ConsoleHelper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -127,32 +131,45 @@ public class FileToolIntegTest {
         assertThat(actualFile).hasContentEqualTo(expectedFile);
     }
 
+    //TODO reactivate when feature complete
+    @Ignore
     @Test
     public void bankInfo_shouldReturnInformation() throws IOException {
         String emptyBankFileName = "Empty.bnk";
 
         // WHEN
         System.out.println("-> Bankinfo!");
+        OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
         FileTool.main(new String[] { "bankinfo", "-i", bankDirectory + "/" + emptyBankFileName});
 
-        // THEN: no exception
+        // THEN
+        AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, "");
     }
 
-    //TODO add assertions when feature complete
+    //TODO reactivate when feature complete
+    @Ignore
     @Test
     public void unpackRepackBankInfo_shouldReturnInformation() throws IOException {
         // WHEN
         System.out.println("-> Unpack!");
         FileTool.main(new String[] { "unpack", "-i", bankDirectory + "/" + bankFileName, "-o", unpackedDirectory });
 
+        // THEN: files must exist
+        // TODO
+
         // WHEN
         System.out.println("-> Repack!");
         FileTool.main(new String[]{"repack", "-i", unpackedDirectory, "-o", repackedDirectory + "/" + bankFileName});
 
+        // THEN: bank file must exist
+        // TODO
+
         // WHEN
         System.out.println("-> Bankinfo!");
+        OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
         FileTool.main(new String[] { "bankinfo", "-i", repackedDirectory + "/" + bankFileName });
 
-        // THEN: no exception
+        // THEN
+        AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, "");
     }
 }
