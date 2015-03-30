@@ -4,6 +4,7 @@ import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,7 +39,6 @@ public class FormulaHelper {
         return ((Double) expression.evaluate()).intValue();
     }
 
-    // TODO return more info in error message (store entry ...)
     private static String handlePatternWithStore(String formula, String repeaterKeyPrefix, DataStore dataStore) {
         Matcher matcher = POINTER_PATTERN.matcher(formula);
 
@@ -69,6 +69,10 @@ public class FormulaHelper {
             storedValue = dataStore.getInteger(pointerReference);
         }
 
-        return storedValue.get().toString();
+        try {
+            return storedValue.get().toString();
+        } catch (NoSuchElementException nse) {
+            throw new IllegalArgumentException("Such an item does not exist in store: " + pointerReference, nse);
+        }
     }
 }

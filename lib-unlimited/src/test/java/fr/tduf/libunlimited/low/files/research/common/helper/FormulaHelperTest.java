@@ -64,7 +64,7 @@ public class FormulaHelperTest {
         assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?*4", null, dataStore)).isEqualTo(2000);
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void resolveToInteger_whenFormulaWithPointerAndValueNotInStore_shouldThrowException() {
         // GIVEN
         DataStore dataStore = createDefaultDataStore();
