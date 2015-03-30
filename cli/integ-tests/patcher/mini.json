@@ -1,0 +1,72 @@
+{
+  "changes": [
+    {
+      "comment": "Existing entry to be removed: ref 606298799",
+      "type" : "DELETE",
+      "topic" : "CAR_PHYSICS_DATA",
+      "ref": "606298799"
+    },
+    {
+      "comment": "Missing entry: ref 000000000",
+      "type" : "DELETE",
+      "topic" : "CAR_PHYSICS_DATA",
+      "ref": "000000000"
+    },
+    {
+      "comment": "Existing resource to be removed: Spyke, 60367256",
+      "type" : "DELETE_RES",
+      "topic" : "BOTS",
+      "locale" : "FRANCE",
+      "ref": "60367256"
+    },
+    {
+      "comment": "Missing resource: 33333333",
+      "type" : "DELETE_RES",
+      "topic" : "BOTS",
+      "locale" : "FRANCE",
+      "ref": "33333333"
+    },
+    {
+      "comment": "Existing resource to be removed: Spyke, 60367256",
+      "type" : "DELETE_RES",
+      "topic" : "BOTS",
+      "ref": "60367256"
+    },
+    {
+      "comment": "Missing resource: 33333333",
+      "type" : "DELETE_RES",
+      "topic" : "BOTS",
+      "ref": "33333333"
+    },
+    {
+      "comment": "Replaces Brian -> Brian Molko",
+      "type" : "UPDATE_RES",
+      "topic" : "BOTS",
+      "locale" : "FRANCE",
+      "ref": "54367256",
+      "value": "Brian Molko"
+    },
+    {
+      "comment": "Adds Cindy for ref 33333333",
+      "type" : "UPDATE_RES",
+      "topic" : "BOTS",
+      "locale" : "FRANCE",
+      "ref": "33333333",
+      "value": "Cindy"
+    },
+    {
+      "comment": "Replaces Brian -> Brian Molko",
+      "type" : "UPDATE_RES",
+      "topic" : "BOTS",
+      "ref": "54367256",
+      "value": "Brian Molko"
+    },
+    {
+      "comment": "Adds Cindy for ref 33333333",
+      "type" : "UPDATE_RES",
+      "topic" : "BOTS",
+      "ref": "33333333",
+      "value": "Cindy"
+    }
+  ]
+}

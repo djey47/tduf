@@ -2,7 +2,6 @@ package fr.tduf.cli.tools;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -69,8 +68,6 @@ public class DatabaseToolIntegTest {
         assertDatabaseFilesArePresent(fixedDirectory);
     }
 
-    // TODO reactivate when feature complete
-    @Ignore
     @Test
     public void dumpApplyPatch() throws IOException {
 
@@ -88,6 +85,8 @@ public class DatabaseToolIntegTest {
         DatabaseTool.main(new String[]{"apply-patch", "-j", jsonDirectory, "-o", patchedDirectory, "-p", patchFile});
 
         // THEN: files must exist
+        long jsonFilesCount = getTopicFileCount(patchedDirectory, "json");
+        assertThat(jsonFilesCount).isEqualTo(18);
     }
 
     private static long getTopicFileCount(String jsonDirectory, String extension) {
