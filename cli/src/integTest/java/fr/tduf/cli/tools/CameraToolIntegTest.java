@@ -19,7 +19,7 @@ public class CameraToolIntegTest {
     public void setUp() throws IOException {
         Files.createDirectories(Paths.get(outputDirectory));
 
-        Files.delete(Paths.get(outputCameraFile));
+        Files.deleteIfExists(Paths.get(outputCameraFile));
     }
 
     @Test
