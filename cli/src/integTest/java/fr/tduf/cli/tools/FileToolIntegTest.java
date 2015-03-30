@@ -2,16 +2,27 @@ package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.AssertionsHelper;
 import fr.tduf.cli.common.helper.ConsoleHelper;
+import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
+// TODO Use fileTool instance for all tests (beware side effects with args4j!!)
 public class FileToolIntegTest {
 
     private final String testRootDirectory = "integ-tests/";
@@ -34,8 +45,14 @@ public class FileToolIntegTest {
     private final String repackedDirectory = testRootDirectory + "repacked";
     private final String bankFileName =  "Bank.bnk";
 
+    @Mock
+    private BankSupport bankSupportMock;
+
+    @InjectMocks
+    private FileTool fileTool;
+
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         new File(encryptDirectory).mkdirs();
         new File(decryptDirectory).mkdirs();
 
@@ -45,15 +62,15 @@ public class FileToolIntegTest {
         new File(unpackedDirectory).mkdirs();
         new File(repackedDirectory).mkdirs();
 
-        new File(encryptDirectory, encryptedFileName).delete();
-        new File(decryptDirectory, sourceFileNameToBeEncrypted).delete();
+        Files.deleteIfExists(Paths.get(encryptDirectory, encryptedFileName));
+        Files.deleteIfExists(Paths.get(decryptDirectory, sourceFileNameToBeEncrypted));
 
-        new File(jsonifyDirectory, jsonifiedFileName).delete();
-        new File(applyjsonDirectory, sourceFileNameToBeJsonified).delete();
-        new File(applyjsonDirectory, appliedUnencryptedFileName).delete();
-        new File(applyjsonDirectory, sourceUnencryptedFileName).delete();
+        Files.deleteIfExists(Paths.get(jsonifyDirectory, jsonifiedFileName));
+        Files.deleteIfExists(Paths.get(applyjsonDirectory, sourceFileNameToBeJsonified));
+        Files.deleteIfExists(Paths.get(applyjsonDirectory, appliedUnencryptedFileName));
+        Files.deleteIfExists(Paths.get(applyjsonDirectory, sourceUnencryptedFileName));
 
-        new File(repackedDirectory, bankFileName).delete();
+        Files.deleteIfExists(Paths.get(repackedDirectory, bankFileName));
     }
 
     @Test
@@ -80,7 +97,7 @@ public class FileToolIntegTest {
     public void encryptDecrypt_whenDatabaseMode_shouldGiveOriginalFileBack() throws IOException {
         // WHEN: encrypt
         System.out.println("-> Encrypt!");
-        FileTool.main(new String[] { "encrypt", "-i", sourceDirectoryForEncryption + "/" + sourceFileNameToBeEncrypted, "-o", encryptDirectory + "/" + encryptedFileName, "-c", "1"});
+        FileTool.main(new String[]{"encrypt", "-i", sourceDirectoryForEncryption + "/" + sourceFileNameToBeEncrypted, "-o", encryptDirectory + "/" + encryptedFileName, "-c", "1"});
 
         // THEN: file should exist
         assertThat(new File(encryptDirectory, encryptedFileName)).exists();
@@ -88,7 +105,7 @@ public class FileToolIntegTest {
 
         // WHEN: decrypt
         System.out.println("-> Decrypt!");
-        FileTool.main(new String[] { "decrypt", "-i", encryptDirectory + "/" + encryptedFileName, "-o", decryptDirectory + "/" + sourceFileNameToBeEncrypted, "-c", "1"});
+        FileTool.main(new String[]{"decrypt", "-i", encryptDirectory + "/" + encryptedFileName, "-o", decryptDirectory + "/" + sourceFileNameToBeEncrypted, "-c", "1"});
 
         // THEN: file should exist and have same contents as original one
         File actualFile = new File(decryptDirectory, sourceFileNameToBeEncrypted);
@@ -103,7 +120,7 @@ public class FileToolIntegTest {
 
         // WHEN: jsonify
         System.out.println("-> Jsonify!");
-        FileTool.main(new String[] { "jsonify", "-i", researchDirectory + "/" + sourceFileNameToBeJsonified, "-o", jsonifyDirectory + "/" + jsonifiedFileName, "-s", structureFileName});
+        FileTool.main(new String[]{"jsonify", "-i", researchDirectory + "/" + sourceFileNameToBeJsonified, "-o", jsonifyDirectory + "/" + jsonifiedFileName, "-s", structureFileName});
 
         // THEN: file should exist
         assertThat(new File(jsonifyDirectory, jsonifiedFileName)).exists();
@@ -111,7 +128,7 @@ public class FileToolIntegTest {
 
         // WHEN: applyJson
         System.out.println("-> Applyjson!");
-        FileTool.main(new String[] { "applyjson", "-i", jsonifyDirectory + "/" + jsonifiedFileName, "-o", applyjsonDirectory + "/" + sourceFileNameToBeJsonified, "-s", structureFileName});
+        FileTool.main(new String[]{"applyjson", "-i", jsonifyDirectory + "/" + jsonifiedFileName, "-o", applyjsonDirectory + "/" + sourceFileNameToBeJsonified, "-s", structureFileName});
 
         // THEN: file should exist
         assertThat(new File(applyjsonDirectory, sourceFileNameToBeJsonified)).exists();
@@ -120,7 +137,7 @@ public class FileToolIntegTest {
         // WHEN: decrypt both files
         System.out.println("-> Decrypt!");
         FileTool.main(new String[]{"decrypt", "-i", applyjsonDirectory + "/" + sourceFileNameToBeJsonified, "-o", applyjsonDirectory + "/" + appliedUnencryptedFileName, "-c", "1"});
-        FileTool.main(new String[] { "decrypt", "-i", researchDirectory + "/" + sourceFileNameToBeJsonified, "-o", applyjsonDirectory + "/" + sourceUnencryptedFileName, "-c", "1"});
+        FileTool.main(new String[]{"decrypt", "-i", researchDirectory + "/" + sourceFileNameToBeJsonified, "-o", applyjsonDirectory + "/" + sourceUnencryptedFileName, "-c", "1"});
 
         // THEN: file should exist and match reference one, once unencrypted
         File actualFile = new File(applyjsonDirectory, appliedUnencryptedFileName);
@@ -131,45 +148,55 @@ public class FileToolIntegTest {
         assertThat(actualFile).hasContentEqualTo(expectedFile);
     }
 
-    //TODO reactivate when feature complete
-    @Ignore
     @Test
     public void bankInfo_shouldReturnInformation() throws IOException {
-        String emptyBankFileName = "Empty.bnk";
+        String bankFile = bankDirectory + "/Empty.bnk";
+
+        // GIVEN
+        BankInfoDto bankInfoObject = BankInfoDto.builder()
+                .fromYear(2014)
+                .build();
+        when(bankSupportMock.getBankInfo(bankFile)).thenReturn(bankInfoObject);
 
         // WHEN
         System.out.println("-> Bankinfo!");
         OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
-        FileTool.main(new String[] { "bankinfo", "-i", bankDirectory + "/" + emptyBankFileName});
+        fileTool.doMain(new String[]{"bankinfo", "-n", "-i", bankFile});
 
         // THEN
-        AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, "");
+        String expectedJson =
+                "{\n" +
+                "  \"bankFile\" : \"integ-tests/banks/Empty.bnk\",\n" +
+                "  \"bankInfo\" : {\n" +
+                "    \"year\" : 2014,\n" +
+                "    \"fileSize\" : 0,\n" +
+                "    \"packedFiles\" : [ ]\n" +
+                "  }\n" +
+                "}";
+        AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
     }
 
-    //TODO reactivate when feature complete
-    @Ignore
     @Test
-    public void unpackRepackBankInfo_shouldReturnInformation() throws IOException {
+    public void unpack_shouldCallGateway() throws IOException {
+        String bankFile = bankDirectory + "/" + bankFileName;
+
         // WHEN
         System.out.println("-> Unpack!");
-        FileTool.main(new String[] { "unpack", "-i", bankDirectory + "/" + bankFileName, "-o", unpackedDirectory });
+        fileTool.doMain(new String[]{"unpack", "-i", bankFile, "-o", unpackedDirectory});
 
-        // THEN: files must exist
-        // TODO
+        // THEN
+        verify(bankSupportMock).extractAll(bankFile, unpackedDirectory);
+    }
+
+    @Test
+    public void repack_shouldCallGateway() throws IOException {
+        String outputBankFile = repackedDirectory + "/" + bankFileName;
 
         // WHEN
         System.out.println("-> Repack!");
-        FileTool.main(new String[]{"repack", "-i", unpackedDirectory, "-o", repackedDirectory + "/" + bankFileName});
-
-        // THEN: bank file must exist
-        // TODO
-
-        // WHEN
-        System.out.println("-> Bankinfo!");
-        OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
-        FileTool.main(new String[] { "bankinfo", "-i", repackedDirectory + "/" + bankFileName });
+        fileTool.doMain(new String[]{"repack", "-i", unpackedDirectory, "-o", outputBankFile});
 
         // THEN
-        AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, "");
+        verify(bankSupportMock).packAll(unpackedDirectory, outputBankFile);
     }
 }

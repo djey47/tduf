@@ -310,9 +310,7 @@ public class FileTool extends GenericTool {
     private void decrypt() throws IOException {
         outLine("Now decrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
 
-        ByteArrayOutputStream outputStream = processInputStream(false);
-
-        Files.write(Paths.get(this.outputFile), outputStream.toByteArray());
+        Files.write(Paths.get(this.outputFile), processInputStream(false));
 
         outLine("Done: " + this.inputFile + " to " + this.outputFile);
 
@@ -325,9 +323,7 @@ public class FileTool extends GenericTool {
     private void encrypt() throws IOException {
         outLine("Now encrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
 
-        ByteArrayOutputStream outputStream = processInputStream(true);
-
-        Files.write(Paths.get(this.outputFile), outputStream.toByteArray());
+        Files.write(Paths.get(this.outputFile), processInputStream(true));
 
         outLine("Done: " + this.inputFile + " to " + this.outputFile);
 
@@ -337,21 +333,24 @@ public class FileTool extends GenericTool {
         commandResult = resultInfo;
     }
 
-    private ByteArrayOutputStream processInputStream(boolean withEncryption) throws IOException {
-        ByteArrayOutputStream outputStream;
+    private byte[] processInputStream(boolean withEncryption) throws IOException {
+
         CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(this.cryptoMode));
 
+        ByteArrayInputStream inputStream = getInputStream();
+        ByteArrayOutputStream outputStream;
         if (withEncryption) {
-            outputStream = CryptoHelper.encryptXTEA(getInputStream(), encryptionModeEnum);
+            outputStream = CryptoHelper.encryptXTEA(inputStream, encryptionModeEnum);
         } else {
-            outputStream = CryptoHelper.decryptXTEA(getInputStream(), encryptionModeEnum);
+            outputStream = CryptoHelper.decryptXTEA(inputStream, encryptionModeEnum);
         }
-
-        return outputStream;
+        return outputStream.toByteArray();
     }
 
     private ByteArrayInputStream getInputStream() throws IOException {
         Path inputFilePath = new File(this.inputFile).toPath();
-        return new ByteArrayInputStream(Files.readAllBytes(inputFilePath));
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(inputFilePath));
+        inputStream.close();
+        return inputStream;
     }
 }
