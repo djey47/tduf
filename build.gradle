@@ -155,7 +155,6 @@ project('lib-unlimited') {
         description 'Copies all external tools to release directory.'
 
         from '../tools'
-        include '*'
         into '../pack/tools'
     }
 }
