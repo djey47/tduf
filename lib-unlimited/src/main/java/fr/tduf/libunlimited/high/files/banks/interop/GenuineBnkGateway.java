@@ -112,10 +112,15 @@ public class GenuineBnkGateway implements BankSupport {
         ProcessBuilder builder = new ProcessBuilder(processCommands);
 
         try {
+            Process process = builder.start();
+            String stdout = IOUtils.toString(process.getInputStream());
+            String stderr = IOUtils.toString(process.getErrorStream());
+            int returnCode = process.waitFor();
             ProcessResult processResult = new ProcessResult(
                     command,
-                    builder.start().waitFor(),
-                    IOUtils.toString(builder.start().getInputStream()), IOUtils.toString(builder.start().getErrorStream()));
+                    returnCode,
+                    stdout,
+                    stderr);
             handleErrors(processResult);
             return processResult;
         } catch (InterruptedException ie) {
