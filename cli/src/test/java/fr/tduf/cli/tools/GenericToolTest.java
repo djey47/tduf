@@ -1,5 +1,7 @@
 package fr.tduf.cli.tools;
 
+import fr.tduf.cli.common.helper.AssertionsHelper;
+import fr.tduf.cli.common.helper.ConsoleHelper;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -11,7 +13,6 @@ import sun.security.action.GetPropertyAction;
 import java.io.*;
 import java.security.AccessController;
 
-import static net.sf.json.test.JSONAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericToolTest {
@@ -103,21 +104,21 @@ public class GenericToolTest {
     @Test
     public void doMain_whenOutlineCommand_andStandardOutputMode_shouldWriteToConsole() throws IOException {
         // GIVEN
-        OutputStream outContents = hijackStandardOutput();
+        OutputStream outContents = ConsoleHelper.hijackStandardOutput();
 
         // WHEN-THEN
         testingTool.doMain(new String[]{"test_outline", "-p", "This is a message"});
 
         // THEN
-        assertOutputStreamContainsExactly(outContents, "This is a message" + LINE_SEPARATOR);
+        AssertionsHelper.assertOutputStreamContainsExactly(outContents, "This is a message" + LINE_SEPARATOR);
     }
 
     @Test
     public void doMain_whenFailCommand_andNormalizedOutputMode_shouldWriteProperErrorJsonToConsole() throws IOException {
         // GIVEN
-        final OutputStream outContents = hijackStandardOutput();
+        final OutputStream outContents = ConsoleHelper.hijackStandardOutput();
         exitRule.expectSystemExitWithStatus(1);
-        exitRule.checkAssertionAfterwards(() -> assertOutputStreamContainsSequence(outContents, "{", "errorMessage", "Exception", "stackTrace", "}"));
+        exitRule.checkAssertionAfterwards(() -> AssertionsHelper.assertOutputStreamContainsSequence(outContents, "{", "errorMessage", "Exception", "stackTrace", "}"));
 
         // WHEN-THEN
         testingTool.doMain(new String[]{"test_fail", "-n", "-p", ""});
@@ -128,52 +129,24 @@ public class GenericToolTest {
     @Test
     public void doMain_whenKnownCommand_andNormalizedOutputMode_andVoidResult_shouldWriteProperEmptyJsonToConsole() throws IOException {
         // GIVEN
-        OutputStream outContents = hijackStandardOutput();
+        OutputStream outContents = ConsoleHelper.hijackStandardOutput();
 
         // WHEN-THEN
         testingTool.doMain(new String[]{"test", "-n", "-p", ""});
 
         // THEN
-        assertOutputStreamContainsJsonExactly(outContents, "{}");
+        AssertionsHelper.assertOutputStreamContainsJsonExactly(outContents, "{}");
     }
 
     @Test
     public void doMain_whenKnownCommand_andNormalizedOutputMode_andResult_shouldWriteProperJsonToConsole() throws IOException {
         // GIVEN
-        OutputStream outContents = hijackStandardOutput();
+        OutputStream outContents = ConsoleHelper.hijackStandardOutput();
 
         // WHEN-THEN
         testingTool.doMain(new String[]{"test_result", "-n", "-p", ""});
 
         // THEN
-        assertOutputStreamContainsJsonExactly(outContents, "{\"result\":\"ok\"}");
-    }
-
-    private static OutputStream hijackStandardOutput() {
-        System.out.println("WARNING! System standard output is redirected to print stream for testing's sake :)");
-
-        OutputStream outContents = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContents));
-        return outContents;
-    }
-
-    private static void assertOutputStreamContainsJsonExactly(OutputStream outputStream, String expected) throws IOException {
-        finalizeOutputStream(outputStream);
-        assertJsonEquals(expected, outputStream.toString());
-    }
-
-    private static void assertOutputStreamContainsExactly(OutputStream outputStream, String expected) throws IOException {
-        finalizeOutputStream(outputStream);
-        assertThat(outputStream.toString()).isEqualTo(expected);
-    }
-
-    private static void assertOutputStreamContainsSequence(OutputStream outputStream, String... expectedItems) throws IOException {
-        finalizeOutputStream(outputStream);
-        assertThat(outputStream.toString()).containsSequence(expectedItems);
-    }
-
-    private static void finalizeOutputStream(OutputStream outputStream) throws IOException {
-        outputStream.flush();
-        outputStream.close();
+        AssertionsHelper.assertOutputStreamContainsJsonExactly(outContents, "{\"result\":\"ok\"}");
     }
 }
