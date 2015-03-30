@@ -28,9 +28,9 @@ public class GenuineBnkGateway implements BankSupport {
     private static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
 
     private static final String EXE_TDUMT_CLI = "tools/tdumt-cli/tdumt-cli.exe";
-    private static final String CLI_COMMAND_BANK_INFO = EXE_TDUMT_CLI + " BANK-I";
-    private static final String CLI_COMMAND_BANK_UNPACK = EXE_TDUMT_CLI + " BANK-U";
-    private static final String CLI_COMMAND_BANK_REPLACE = EXE_TDUMT_CLI + "BANK-R";
+    private static final String CLI_COMMAND_BANK_INFO = String.format("%s %s", EXE_TDUMT_CLI, "BANK-I");
+    private static final String CLI_COMMAND_BANK_UNPACK = String.format("%s %s", EXE_TDUMT_CLI, "BANK-U");
+    private static final String CLI_COMMAND_BANK_REPLACE = String.format("%s %s", EXE_TDUMT_CLI, "BANK-R");
 
     @Override
     public BankInfoDto getBankInfo(String bankFileName) throws IOException {
