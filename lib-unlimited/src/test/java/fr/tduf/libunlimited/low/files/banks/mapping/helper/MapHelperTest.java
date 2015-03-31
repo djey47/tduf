@@ -31,7 +31,7 @@ public class MapHelperTest {
 
         // THEN
         assertThat(actualFileList).isNotNull();
-        assertThat(actualFileList).hasSize(4);
+        assertThat(actualFileList).hasSize(5);
         assertThat(actualFileList).contains(expectedFileList.toArray(new String[expectedFileList.size()]));
     }
 
@@ -97,6 +97,7 @@ public class MapHelperTest {
         return asList(
                 "Bnk1.map",
                 String.format("Avatar%1$sBARB.BNK", File.separator),
-                String.format("FrontEnd%1$sHires%1$sGauges%1$shud01.bnk", File.separator));
+                String.format("FrontEnd%1$sHires%1$sGauges%1$shud01.bnk", File.separator),
+                String.format("Vehicules%1$sA3_V6.bnk", File.separator));
     }
 }
