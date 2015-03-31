@@ -16,10 +16,10 @@ import static java.util.Objects.requireNonNull;
 public class CommandLineHelper {
 
     /**
-     *
-     * @param command
-     * @param args
-     * @return
+     * Executes Command Line Interpreter operations. Blocks current thread until operation ends.
+     * @param command   : operation to execute, generally the first parameter to call
+     * @param args      : other parameters.
+     * @return a process result, giving access to exit code and stdout/stderr contents.
      * @throws IOException
      */
     public ProcessResult runCliCommand(String command, String... args) throws IOException {
@@ -33,15 +33,19 @@ public class CommandLineHelper {
 
         try {
             Process process = builder.start();
+
             String stdout = IOUtils.toString(process.getInputStream());
             String stderr = IOUtils.toString(process.getErrorStream());
             int returnCode = process.waitFor();
+
             ProcessResult processResult = new ProcessResult(
                     command,
                     returnCode,
                     stdout,
                     stderr);
+
             handleErrors(processResult);
+
             return processResult;
         } catch (InterruptedException ie) {
             throw new IOException("Process was interrupted: " + command, ie);
