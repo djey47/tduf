@@ -1,21 +1,19 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
 import com.google.common.base.Joiner;
+import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.domain.ProcessResult;
 import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBankInfoOutputDto;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
-import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.*;
+import java.util.List;
 
-import static java.util.Arrays.asList;
-import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -32,11 +30,16 @@ public class GenuineBnkGateway implements BankSupport {
     private static final String CLI_COMMAND_BANK_UNPACK = "BANK-U";
     private static final String CLI_COMMAND_BANK_REPLACE = "BANK-R";
 
+    private CommandLineHelper commandLineHelper;
+
+    public GenuineBnkGateway(CommandLineHelper commandLineHelper) {
+        this.commandLineHelper = commandLineHelper;
+    }
+
     @Override
     public BankInfoDto getBankInfo(String bankFileName) throws IOException {
 
-        ProcessResult processResult = runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_INFO, bankFileName);
-        handleErrors(processResult);
+        ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_INFO, bankFileName);
 
         String jsonOutput = processResult.getOut();
 
@@ -96,35 +99,8 @@ public class GenuineBnkGateway implements BankSupport {
 
                 String packedFilePath = getInternalPackedFilePath(packedFile, inputPath);
 
-                ProcessResult processResult = runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, packedFile.toString());
-                handleErrors(processResult);
+                commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, packedFile.toString());
             }
-        }
-    }
-
-    static ProcessResult runCliCommand(String command, String... args) throws IOException {
-        requireNonNull(command, "A CLI command is required.");
-
-        List<String> processCommands = new ArrayList<>();
-        processCommands.add(command);
-        processCommands.addAll(asList(args));
-
-        ProcessBuilder builder = new ProcessBuilder(processCommands);
-
-        try {
-            Process process = builder.start();
-            String stdout = IOUtils.toString(process.getInputStream());
-            String stderr = IOUtils.toString(process.getErrorStream());
-            int returnCode = process.waitFor();
-            ProcessResult processResult = new ProcessResult(
-                    command,
-                    returnCode,
-                    stdout,
-                    stderr);
-            handleErrors(processResult);
-            return processResult;
-        } catch (InterruptedException ie) {
-            throw new IOException("Process was interrupted: " + command, ie);
         }
     }
 
@@ -169,8 +145,8 @@ public class GenuineBnkGateway implements BankSupport {
         }
     }
 
-    private static void extractPackedFileWithFullPath(String bankFileName, String filePath, String outputDirectory) throws IOException {
-        runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_UNPACK, bankFileName, filePath, outputDirectory);
+    private void extractPackedFileWithFullPath(String bankFileName, String filePath, String outputDirectory) throws IOException {
+        commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_UNPACK, bankFileName, filePath, outputDirectory);
 
         String[] filePathCompounds = filePath.split(PATH_SEPARATOR_REGEX);
 
@@ -179,12 +155,5 @@ public class GenuineBnkGateway implements BankSupport {
         File targetFile = new File(outputDirectory, getTargetFileNameFromPathCompounds(bank.getName(), filePathCompounds));
 
         Files.move(extractedFile.toPath(), targetFile.toPath());
-    }
-
-    private static void handleErrors(ProcessResult processResult) throws IOException {
-        if (processResult.getReturnCode() == 1) {
-            Exception parentException = new Exception(processResult.getErr());
-            throw new IOException("Unable to execute genuine CLI command: " + processResult.getCommandName(), parentException);
-        }
     }
 }

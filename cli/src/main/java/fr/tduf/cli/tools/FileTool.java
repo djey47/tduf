@@ -1,6 +1,7 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
+import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
@@ -88,7 +89,7 @@ public class FileTool extends GenericTool {
     }
 
     public FileTool() {
-        this.bankSupport = new GenuineBnkGateway();
+        this.bankSupport = new GenuineBnkGateway(new CommandLineHelper());
     }
 
     @Override

@@ -1,9 +1,7 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
-import fr.tduf.libunlimited.high.files.banks.interop.domain.ProcessResult;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -59,48 +57,5 @@ public class GenuineBnkGatewayTest {
 
         // THEN
         assertThat(actualReference).isEqualTo("2732794586");
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void runCliCommand_whenNullCommand_shouldThrowException() throws IOException {
-        // GIVEN-WHEN
-        GenuineBnkGateway.runCliCommand(null);
-
-        // THEN: NPE
-    }
-
-    @Test(expected = IOException.class)
-    public void runCliCommand_whenInvalidCommand_shouldThrowException() throws IOException {
-        // GIVEN-WHEN
-        GenuineBnkGateway.runCliCommand("aaa");
-
-        // THEN: IOE
-    }
-
-    @Test
-    public void runCliCommand_whenValidCommand_shouldReturnProcessResult() throws IOException {
-        // GIVEN-WHEN
-        ProcessResult actualProcessResult = GenuineBnkGateway.runCliCommand("date");
-        actualProcessResult.printOut();
-        actualProcessResult.printErr();
-
-
-        // THEN
-        assertThat(actualProcessResult).isNotNull();
-        assertThat(actualProcessResult.getReturnCode()).isNotEqualTo(-1);
-
-        assertThat(actualProcessResult.getOut()).isNotNull();
-        assertThat(actualProcessResult.getErr()).isNotNull();
-    }
-
-    @Test
-    public void runCliCommand_whenValidCommand_andOneInvalidArgument_shouldReturnProcessInstance() throws IOException {
-        // GIVEN-WHEN
-        ProcessResult actualProcessResult = GenuineBnkGateway.runCliCommand("sort", "/JUKE");
-        actualProcessResult.printOut();
-        actualProcessResult.printErr();
-
-        // THEN
-        assertThat(actualProcessResult).isNotNull();
     }
 }
