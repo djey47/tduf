@@ -44,8 +44,8 @@ public class GenuineBnkGateway implements BankSupport {
 
         ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_INFO, bankFileName);
 
-        String jsonOutput = processResult.getOut();
-
+        // TODO see why jackson does not unescape backslashes when deserializing ...
+        String jsonOutput = processResult.getOut().replace("\\\\", "\\");
         GenuineBankInfoOutputDto outputObject = new ObjectMapper().readValue(jsonOutput, GenuineBankInfoOutputDto.class);
 
         List<PackedFileInfoDto> packedFilesInfos = outputObject.getPackedFiles().stream()
@@ -124,6 +124,7 @@ public class GenuineBnkGateway implements BankSupport {
         pathElements[pathElements.length - 2] = extension;
         pathElements[pathElements.length - 1] = name;
 
+        // TODO check if first backslash is necessary ...
         return "\\D:\\Eden-Prog\\Games\\TestDrive\\Resources\\" + Joiner.on('\\').join(pathElements);
     }
 
