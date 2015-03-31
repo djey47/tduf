@@ -13,7 +13,27 @@ import static java.util.Objects.requireNonNull;
 /**
  * Utility class to help with CLI operations.
  */
+// TODO do not throw exception on status != 0. Let caller decide and handle properly.
+// TODO do not write return code on error output.
 public class CommandLineHelper {
+
+    /**
+     * Diagnosis entry point.
+     * @param args  : command line arguments. First one is expected to be command name.
+     */
+    public static void main(String[] args) throws IOException {
+        CommandLineHelper helper = new CommandLineHelper();
+
+        String[] realArgs = new String[args.length-1];
+        System.arraycopy(args, 1, realArgs, 0, realArgs.length);
+
+        ProcessResult processResult = helper.runCliCommand(args[0], realArgs);
+
+        System.out.println("-> stdout");
+        processResult.printOut();
+        System.err.println("-> stderr");
+        processResult.printErr();
+    }
 
     /**
      * Executes Command Line Interpreter operations. Blocks current thread until operation ends.
