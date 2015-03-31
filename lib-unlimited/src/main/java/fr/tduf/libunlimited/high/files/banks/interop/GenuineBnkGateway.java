@@ -25,10 +25,10 @@ public class GenuineBnkGateway implements BankSupport {
 
     private static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
 
-    private static final String EXE_TDUMT_CLI = ".\\tools\\tdumt-cli\\tdumt-cli.exe";
-    private static final String CLI_COMMAND_BANK_INFO = "BANK-I";
-    private static final String CLI_COMMAND_BANK_UNPACK = "BANK-U";
-    private static final String CLI_COMMAND_BANK_REPLACE = "BANK-R";
+    static final String EXE_TDUMT_CLI = ".\\tools\\tdumt-cli\\tdumt-cli.exe";
+    static final String CLI_COMMAND_BANK_INFO = "BANK-I";
+    static final String CLI_COMMAND_BANK_UNPACK = "BANK-U";
+    static final String CLI_COMMAND_BANK_REPLACE = "BANK-R";
 
     private CommandLineHelper commandLineHelper;
 
