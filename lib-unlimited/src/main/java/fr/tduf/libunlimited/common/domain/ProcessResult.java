@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.high.files.banks.interop.domain;
+package fr.tduf.libunlimited.common.domain;
 
 /**
  * Object to be returned after a process exits normally. Bring all details about execution result.

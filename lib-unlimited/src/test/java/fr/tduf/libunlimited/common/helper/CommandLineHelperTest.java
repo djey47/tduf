@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.common.helper;
 
-import fr.tduf.libunlimited.high.files.banks.interop.domain.ProcessResult;
+import fr.tduf.libunlimited.common.domain.ProcessResult;
 import org.junit.Test;
 
 import java.io.IOException;

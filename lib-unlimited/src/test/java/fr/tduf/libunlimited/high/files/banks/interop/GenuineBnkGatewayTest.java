@@ -2,7 +2,7 @@ package fr.tduf.libunlimited.high.files.banks.interop;
 
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.high.files.banks.interop.domain.ProcessResult;
+import fr.tduf.libunlimited.common.domain.ProcessResult;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import org.junit.Before;
 import org.junit.Test;

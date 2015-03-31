@@ -3,7 +3,7 @@ package fr.tduf.libunlimited.high.files.banks.interop;
 import com.google.common.base.Joiner;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
-import fr.tduf.libunlimited.high.files.banks.interop.domain.ProcessResult;
+import fr.tduf.libunlimited.common.domain.ProcessResult;
 import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBankInfoOutputDto;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
