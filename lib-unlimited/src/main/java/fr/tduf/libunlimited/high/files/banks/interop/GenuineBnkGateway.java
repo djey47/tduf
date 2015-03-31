@@ -11,7 +11,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -23,7 +26,7 @@ public class GenuineBnkGateway implements BankSupport {
 
     private static final String PATH_SEPARATOR_REGEX = "\\\\";
 
-    private static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
+    static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
 
     static final String EXE_TDUMT_CLI = ".\\tools\\tdumt-cli\\tdumt-cli.exe";
     static final String CLI_COMMAND_BANK_INFO = "BANK-I";
@@ -91,17 +94,21 @@ public class GenuineBnkGateway implements BankSupport {
 
         Path inputPath = Paths.get(inputDirectory);
 
-        try (DirectoryStream<Path> paths = Files.newDirectoryStream(inputPath)) {
-            for (Path packedFile : paths) {
-                if (Files.isDirectory(packedFile)) {
-                    continue;
-                }
+        Files.walk(inputPath)
 
-                String packedFilePath = getInternalPackedFilePath(packedFile, inputPath);
+                .filter((path) -> Files.isRegularFile(path))
 
-                commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, packedFile.toString());
-            }
-        }
+                .filter((path) -> !"bnk".equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+
+                .map((path) -> getInternalPackedFilePath(path, inputPath))
+
+                .forEach((packedFilePath) -> {
+                    try {
+                        commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, inputPath.toString());
+                    } catch (IOException ioe) {
+                        throw new RuntimeException("Error while repacking file: " + packedFilePath, ioe);
+                    }
+                });
     }
 
     static String getInternalPackedFilePath(Path packedFilePath, Path basePath) {
