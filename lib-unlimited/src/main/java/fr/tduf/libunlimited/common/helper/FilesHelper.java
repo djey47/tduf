@@ -62,6 +62,15 @@ public class FilesHelper {
         }
     }
 
+    /**
+     * @param resourcePath  : path of resource
+     * @return the absolute file name.
+     */
+    public static String getFileNameFromResourcePath(String resourcePath) throws URISyntaxException {
+        URI uri = getUriFromResourcePath(resourcePath);
+        return new File(uri).getAbsolutePath();
+    }
+
     private static URI getUriFromResourcePath(String resourcePath) throws URISyntaxException {
         return thisClass.getResource(resourcePath).toURI();
     }

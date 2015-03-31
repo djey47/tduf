@@ -96,4 +96,21 @@ public class FilesHelperTest {
         assertThat(actualObject).isNotNull();
         assertThat(actualObject.getStructure().getTopic()).isEqualTo(DbDto.Topic.ACHIEVEMENTS);
     }
+
+    @Test(expected = NullPointerException.class)
+    public void getFileNameFromResourcePath_whenResourceNotFound_shouldThrowNullPointerException() throws URISyntaxException {
+        // GIVEN-WHEN
+        FilesHelper.getFileNameFromResourcePath("/not a resource/");
+
+        // THEN: exception
+    }
+
+    @Test
+    public void getFileNameFromResourcePath_whenResourceFound_shouldReturnAbsoluteFilePath() throws URISyntaxException {
+        // GIVEN-WHEN
+        String actualFileName = FilesHelper.getFileNameFromResourcePath("/db/dumped/TDU_Achievements.json");
+
+        // THEN
+        assertThat(actualFileName.replace('\\', '/')).endsWith("/resources/test/db/dumped/TDU_Achievements.json");
+    }
 }
