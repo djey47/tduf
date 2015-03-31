@@ -39,7 +39,6 @@ public class ProcessResult {
      * Terminates with a new line.
      */
     public void printErr() {
-        printReturnCode();
         System.err.println(this.err);
     }
 

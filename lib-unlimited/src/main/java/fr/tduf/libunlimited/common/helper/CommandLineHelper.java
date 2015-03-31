@@ -14,7 +14,6 @@ import static java.util.Objects.requireNonNull;
  * Utility class to help with CLI operations.
  */
 // TODO do not throw exception on status != 0. Let caller decide and handle properly.
-// TODO do not write return code on error output.
 public class CommandLineHelper {
 
     /**
