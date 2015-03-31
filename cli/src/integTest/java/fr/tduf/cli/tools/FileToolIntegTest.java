@@ -22,7 +22,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-// TODO Use fileTool instance for all tests (beware side effects with args4j!!)
 public class FileToolIntegTest {
 
     private final String testRootDirectory = "integ-tests/";
@@ -49,18 +48,18 @@ public class FileToolIntegTest {
     private BankSupport bankSupportMock;
 
     @InjectMocks
-    private FileTool fileTool;
+    private FileTool fileTool;  // Used for bank testing only. Do not use twice in a same test method!
 
     @Before
     public void setUp() throws IOException {
-        new File(encryptDirectory).mkdirs();
-        new File(decryptDirectory).mkdirs();
+        Files.createDirectories(Paths.get(encryptDirectory));
+        Files.createDirectories(Paths.get(decryptDirectory));
 
-        new File(jsonifyDirectory).mkdirs();
-        new File(applyjsonDirectory).mkdirs();
+        Files.createDirectories(Paths.get(jsonifyDirectory));
+        Files.createDirectories(Paths.get(applyjsonDirectory));
 
-        new File(unpackedDirectory).mkdirs();
-        new File(repackedDirectory).mkdirs();
+        Files.createDirectories(Paths.get(unpackedDirectory));
+        Files.createDirectories(Paths.get(repackedDirectory));
 
         Files.deleteIfExists(Paths.get(encryptDirectory, encryptedFileName));
         Files.deleteIfExists(Paths.get(decryptDirectory, sourceFileNameToBeEncrypted));
