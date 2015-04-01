@@ -47,7 +47,7 @@ public class GenuineBnkGatewayTest {
     @Test
     public void getBankInfo_whenSuccess_shouldInvokeCommandLineCorrectly_andReturnObject() throws IOException, URISyntaxException {
         // GIVEN
-        mockCommandLineHelperToReturnBankInformation(bankFileName);
+        mockCommandLineHelperToReturnBankInformationSuccess(bankFileName);
 
         // WHEN
         BankInfoDto actualBankInfoObject = genuineBnkGateway.getBankInfo(bankFileName);
@@ -60,9 +60,20 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test(expected = IOException.class)
-    public void getBankInfo_whenFailure_shouldInvokeCommandLineCorrectly_andThrowException() throws IOException, URISyntaxException {
+    public void getBankInfo_whenSystemFailure_shouldInvokeCommandLineCorrectly_andThrowException() throws IOException, URISyntaxException {
         // GIVEN
         when(commandLineHelperMock.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_INFO, bankFileName)).thenThrow(new IOException());
+
+        // WHEN
+        genuineBnkGateway.getBankInfo(bankFileName);
+
+        // THEN: IOException
+    }
+
+    @Test(expected = IOException.class)
+    public void getBankInfo_whenCommandFailure_shouldInvokeCommandLineCorrectly_andThrowException() throws IOException, URISyntaxException {
+        // GIVEN
+        mockCommandLineHelperToReturnBankInformationFailure(bankFileName);
 
         // WHEN
         genuineBnkGateway.getBankInfo(bankFileName);
@@ -73,7 +84,8 @@ public class GenuineBnkGatewayTest {
     @Test
     public void extractAll_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
         // GIVEN
-        mockCommandLineHelperToReturnBankInformation(bankFileName);
+        mockCommandLineHelperToReturnBankInformationSuccess(bankFileName);
+        mockCommandLineHelperToReturnExtractionSuccess(bankFileName);
 
 
         // WHEN
@@ -89,14 +101,12 @@ public class GenuineBnkGatewayTest {
     @Test
     public void packAll_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
         // GIVEN
-        assert new File(tempDirectory, ORIGINAL_BANK_NAME).createNewFile();
-        assert new File(tempDirectory, "A3_V6.3DD").createNewFile();
-        assert new File(tempDirectory, "A3_V6.3DG").createNewFile();
-        assert new File(tempDirectory, "A3_V6.2DM").createNewFile();
+        createSourceFileTree();
 
         String outputBankFileName = Paths.get(tempDirectory, "A3_V6.output.bnk").toAbsolutePath().toString();
 
-        mockCommandLineHelperToReturnBankInformation(outputBankFileName);
+        mockCommandLineHelperToReturnBankInformationSuccess(outputBankFileName);
+        mockCommandLineHelperToReturnReplaceSuccess(outputBankFileName);
 
 
         // WHEN
@@ -159,9 +169,34 @@ public class GenuineBnkGatewayTest {
         assertThat(actualReference).isEqualTo("2732794586");
     }
 
-    private void mockCommandLineHelperToReturnBankInformation(String bankFileName) throws URISyntaxException, IOException {
+//    @Test
+//    public void
+
+    private void createSourceFileTree() throws IOException {
+        assert new File(tempDirectory, ORIGINAL_BANK_NAME).createNewFile();
+        assert new File(tempDirectory, "A3_V6.3DD").createNewFile();
+        assert new File(tempDirectory, "A3_V6.3DG").createNewFile();
+        assert new File(tempDirectory, "A3_V6.2DM").createNewFile();
+    }
+
+    private void mockCommandLineHelperToReturnBankInformationSuccess(String bankFileName) throws URISyntaxException, IOException {
         String jsonOutput = FilesHelper.readTextFromResourceFile("/files/interop/tdumt-cli/BANK-I.output.json");
         ProcessResult processResult = new ProcessResult(CLI_COMMAND_BANK_INFO, 0, jsonOutput, "");
         when(commandLineHelperMock.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_INFO, bankFileName)).thenReturn(processResult);
+    }
+
+    private void mockCommandLineHelperToReturnBankInformationFailure(String bankFileName) throws IOException {
+        ProcessResult processResult = new ProcessResult(CLI_COMMAND_BANK_INFO, 1, "", "Failure!");
+        when(commandLineHelperMock.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_INFO, bankFileName)).thenReturn(processResult);
+    }
+
+    private void mockCommandLineHelperToReturnExtractionSuccess(String bankFileName) throws IOException {
+        ProcessResult processResult = new ProcessResult(CLI_COMMAND_BANK_UNPACK, 0, "{}", "");
+        when(commandLineHelperMock.runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), anyString(), anyString())).thenReturn(processResult);
+    }
+
+    private void mockCommandLineHelperToReturnReplaceSuccess(String bankFileName) throws IOException {
+        ProcessResult processResult = new ProcessResult(CLI_COMMAND_BANK_REPLACE, 0, "{}", "");
+        when(commandLineHelperMock.runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(bankFileName), anyString(), anyString())).thenReturn(processResult);
     }
 }

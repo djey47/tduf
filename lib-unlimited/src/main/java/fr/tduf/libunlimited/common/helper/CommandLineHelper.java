@@ -13,8 +13,9 @@ import static java.util.Objects.requireNonNull;
 /**
  * Utility class to help with CLI operations.
  */
-// TODO do not throw exception on status != 0. Let caller decide and handle properly.
 public class CommandLineHelper {
+
+    public static final int EXIT_CODE_SUCCESS = 0;
 
     /**
      * Diagnosis entry point.
@@ -23,7 +24,7 @@ public class CommandLineHelper {
     public static void main(String[] args) throws IOException {
         CommandLineHelper helper = new CommandLineHelper();
 
-        String[] realArgs = new String[args.length-1];
+        String[] realArgs = new String[args.length - 1];
         System.arraycopy(args, 1, realArgs, 0, realArgs.length);
 
         ProcessResult processResult = helper.runCliCommand(args[0], realArgs);
@@ -57,24 +58,13 @@ public class CommandLineHelper {
             String stderr = IOUtils.toString(process.getErrorStream());
             int returnCode = process.waitFor();
 
-            ProcessResult processResult = new ProcessResult(
+            return new ProcessResult(
                     command,
                     returnCode,
                     stdout,
                     stderr);
-
-            handleErrors(processResult);
-
-            return processResult;
         } catch (InterruptedException ie) {
             throw new IOException("Process was interrupted: " + command, ie);
-        }
-    }
-
-    private static void handleErrors(ProcessResult processResult) throws IOException {
-        if (processResult.getReturnCode() == 1) {
-            Exception parentException = new Exception(processResult.getErr());
-            throw new IOException("Unable to execute genuine CLI command: " + processResult.getCommandName(), parentException);
         }
     }
 }

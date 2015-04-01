@@ -28,7 +28,7 @@ public class CommandLineHelperTest {
     }
 
     @Test
-    public void runCliCommand_whenValidCommand_shouldReturnProcessResult() throws IOException {
+    public void runCliCommand_whenValidCommand_shouldReturnPositiveProcessResult() throws IOException {
         // GIVEN-WHEN
         ProcessResult actualProcessResult = commandLineHelper.runCliCommand("date");
         actualProcessResult.printOut();
@@ -39,12 +39,12 @@ public class CommandLineHelperTest {
         assertThat(actualProcessResult).isNotNull();
         assertThat(actualProcessResult.getReturnCode()).isNotEqualTo(-1);
 
-        assertThat(actualProcessResult.getOut()).isNotNull();
-        assertThat(actualProcessResult.getErr()).isNotNull();
+        assertThat(actualProcessResult.getOut()).isNotEmpty();
+        assertThat(actualProcessResult.getErr()).isEmpty();
     }
 
     @Test
-    public void runCliCommand_whenValidCommand_andOneInvalidArgument_shouldReturnProcessInstance() throws IOException {
+    public void runCliCommand_whenValidCommand_andOneInvalidArgument_shouldReturnNegativeProcessResult() throws IOException {
         // GIVEN-WHEN
         ProcessResult actualProcessResult = commandLineHelper.runCliCommand("sort", "/JUKE");
         actualProcessResult.printOut();
@@ -52,5 +52,9 @@ public class CommandLineHelperTest {
 
         // THEN
         assertThat(actualProcessResult).isNotNull();
+        assertThat(actualProcessResult.getReturnCode()).isNotZero();
+
+        assertThat(actualProcessResult.getOut()).isEmpty();
+        assertThat(actualProcessResult.getErr()).isNotEmpty();
     }
 }

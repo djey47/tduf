@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
+import static fr.tduf.libunlimited.common.helper.CommandLineHelper.EXIT_CODE_SUCCESS;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -46,6 +47,7 @@ public class GenuineBnkGateway implements BankSupport {
     public BankInfoDto getBankInfo(String bankFileName) throws IOException {
 
         ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_INFO, bankFileName);
+        handleCommandLineErrors(processResult);
 
         GenuineBankInfoOutputDto outputObject = new ObjectMapper().readValue(processResult.getOut(), GenuineBankInfoOutputDto.class);
 
@@ -105,7 +107,8 @@ public class GenuineBnkGateway implements BankSupport {
 
                 .forEach((packedFilePath) -> {
                     try {
-                        commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, inputPath.toString());
+                        ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, inputPath.toString());
+                        handleCommandLineErrors(processResult);
                     } catch (IOException ioe) {
                         throw new RuntimeException("Error while repacking file: " + packedFilePath, ioe);
                     }
@@ -158,7 +161,8 @@ public class GenuineBnkGateway implements BankSupport {
     }
 
     private void extractPackedFileWithFullPath(String bankFileName, String filePath, String outputDirectory) throws IOException {
-        commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_UNPACK, bankFileName, filePath, outputDirectory);
+        ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_UNPACK, bankFileName, filePath, outputDirectory);
+        handleCommandLineErrors(processResult);
 
         String[] filePathCompounds = filePath.split(PATH_SEPARATOR_REGEX);
 
@@ -167,5 +171,12 @@ public class GenuineBnkGateway implements BankSupport {
         File targetFile = new File(outputDirectory, getTargetFileNameFromPathCompounds(bank.getName(), filePathCompounds));
 
         Files.move(extractedFile.toPath(), targetFile.toPath());
+    }
+
+    private static void handleCommandLineErrors(ProcessResult processResult) throws IOException {
+        if (processResult.getReturnCode() != EXIT_CODE_SUCCESS) {
+            Exception parentException = new Exception(processResult.getErr());
+            throw new IOException("Unable to execute genuine CLI command: " + processResult.getCommandName(), parentException);
+        }
     }
 }
