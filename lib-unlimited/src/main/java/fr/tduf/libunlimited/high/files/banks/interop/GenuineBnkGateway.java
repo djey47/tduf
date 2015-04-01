@@ -103,11 +103,10 @@ public class GenuineBnkGateway implements BankSupport {
 
                 .filter((path) -> !EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
 
-                .map((path) -> getInternalPackedFilePath(path, inputPath))
-
-                .forEach((packedFilePath) -> {
+                .forEach((path) -> {
+                    String packedFilePath = getInternalPackedFilePath(path, inputPath);
                     try {
-                        ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, inputPath.toString());
+                        ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, path.toString());
                         handleCommandLineErrors(processResult);
                     } catch (IOException ioe) {
                         throw new RuntimeException("Error while repacking file: " + packedFilePath, ioe);
