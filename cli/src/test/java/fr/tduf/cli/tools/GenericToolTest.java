@@ -8,16 +8,12 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
-import sun.security.action.GetPropertyAction;
 
 import java.io.*;
-import java.security.AccessController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericToolTest {
-
-    private static final String LINE_SEPARATOR = AccessController.doPrivileged(new GetPropertyAction("line.separator"));
 
     @Rule
     public final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
@@ -110,7 +106,7 @@ public class GenericToolTest {
         testingTool.doMain(new String[]{"test_outline", "-p", "This is a message"});
 
         // THEN
-        AssertionsHelper.assertOutputStreamContainsExactly(outContents, "This is a message" + LINE_SEPARATOR);
+        AssertionsHelper.assertOutputStreamContainsExactly(outContents, "This is a message" + System.lineSeparator());
     }
 
     @Test
