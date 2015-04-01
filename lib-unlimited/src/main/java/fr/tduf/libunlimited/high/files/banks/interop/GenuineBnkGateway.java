@@ -24,14 +24,17 @@ import static java.util.stream.Collectors.toList;
  */
 public class GenuineBnkGateway implements BankSupport {
 
+    private static final String EXTENSION_BANKS = "bnk";
+
     private static final String PATH_SEPARATOR_REGEX = "\\\\";
 
     static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
-
     static final String EXE_TDUMT_CLI = ".\\tools\\tdumt-cli\\tdumt-cli.exe";
     static final String CLI_COMMAND_BANK_INFO = "BANK-I";
     static final String CLI_COMMAND_BANK_UNPACK = "BANK-U";
     static final String CLI_COMMAND_BANK_REPLACE = "BANK-R";
+    public static final String PREFIX_PACKED_FILE_PATH = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\";
+    public static final int PREFIX_PACKED_FILE_COMPOUNDS_SIZE = 5;
 
     private CommandLineHelper commandLineHelper;
 
@@ -44,9 +47,7 @@ public class GenuineBnkGateway implements BankSupport {
 
         ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_INFO, bankFileName);
 
-        // TODO see why jackson does not unescape backslashes when deserializing ...
-        String jsonOutput = processResult.getOut().replace("\\\\", "\\");
-        GenuineBankInfoOutputDto outputObject = new ObjectMapper().readValue(jsonOutput, GenuineBankInfoOutputDto.class);
+        GenuineBankInfoOutputDto outputObject = new ObjectMapper().readValue(processResult.getOut(), GenuineBankInfoOutputDto.class);
 
         List<PackedFileInfoDto> packedFilesInfos = outputObject.getPackedFiles().stream()
 
@@ -98,7 +99,7 @@ public class GenuineBnkGateway implements BankSupport {
 
                 .filter((path) -> Files.isRegularFile(path))
 
-                .filter((path) -> !"bnk".equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+                .filter((path) -> !EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
 
                 .map((path) -> getInternalPackedFilePath(path, inputPath))
 
@@ -124,22 +125,25 @@ public class GenuineBnkGateway implements BankSupport {
         pathElements[pathElements.length - 2] = extension;
         pathElements[pathElements.length - 1] = name;
 
-        // TODO check if first backslash is necessary ...
-        return "\\D:\\Eden-Prog\\Games\\TestDrive\\Resources\\" + Joiner.on('\\').join(pathElements);
+        return PREFIX_PACKED_FILE_PATH + Joiner.on('\\').join(pathElements);
     }
 
+    /**
+     * Output example:  'mybank.bnk/A3_V6.3DD'
+     */
     static String getTargetFileNameFromPathCompounds(String bankFileName, String[] filePathCompounds) {
-        // Format: '\D:\Eden-Prog\Games\....'
-        String[] pathElements = new String[filePathCompounds.length-7];
+        String[] pathElements = new String[filePathCompounds.length - 1 - PREFIX_PACKED_FILE_COMPOUNDS_SIZE];
 
-        System.arraycopy(filePathCompounds, 6, pathElements, 0, pathElements.length);
+        System.arraycopy(filePathCompounds, PREFIX_PACKED_FILE_COMPOUNDS_SIZE, pathElements, 0, pathElements.length);
         pathElements[pathElements.length - 1] = getFileNameFromPathCompounds(filePathCompounds);
 
         return Paths.get(bankFileName, pathElements).toString();
     }
 
+    /**
+     * Output example:  {'D:', 'Eden-Prog', 'Games', ..., '.3DD', 'A3_V6'} -> 'A3_V6.3DD'
+     */
     static String getFileNameFromPathCompounds(String[] filePathCompounds) {
-        // Format: '\\D:\Eden-Prog\Games\....'
         return filePathCompounds[filePathCompounds.length-1] + filePathCompounds[filePathCompounds.length-2];
     }
 

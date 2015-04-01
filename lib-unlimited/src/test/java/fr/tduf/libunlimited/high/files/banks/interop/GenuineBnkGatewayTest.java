@@ -119,14 +119,14 @@ public class GenuineBnkGatewayTest {
         String actualPackedFilePath = GenuineBnkGateway.getInternalPackedFilePath(packedFilePath, basePath);
 
         // THEN
-        assertThat(actualPackedFilePath).isEqualTo("\\D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.2DM\\CLK_55");
+        assertThat(actualPackedFilePath).isEqualTo("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.2DM\\CLK_55");
     }
 
     @Test
     public void getTargetFileNameFromPathCompounds() throws Exception {
         // GIVEN
         String bankFileName = "/home/bill/work/File.bnk";
-        String[] filePathCompounds = new String[]{"", "D:", "Eden-Prog", "Games", "TestDrive", "Resources", "4Build", "PC", "EURO", "Vehicules", "Cars", "Mercedes", "CLK_55", ".2DM", "CLK_55"};
+        String[] filePathCompounds = new String[]{"D:", "Eden-Prog", "Games", "TestDrive", "Resources", "4Build", "PC", "EURO", "Vehicules", "Cars", "Mercedes", "CLK_55", ".2DM", "CLK_55"};
 
         // WHEN
         String actualFileName = GenuineBnkGateway.getTargetFileNameFromPathCompounds(bankFileName, filePathCompounds);
@@ -138,7 +138,7 @@ public class GenuineBnkGatewayTest {
     @Test
     public void getFileNameFromPathCompounds() throws Exception {
         // GIVEN
-        String[] filePathCompounds = new String[]{"", "D:", "Eden-Prog", "Games", "TestDrive", "Resources", "4Build", "PC", "EURO", "Vehicules", "Cars", "Mercedes", "CLK_55", ".2DM", "CLK_55"};
+        String[] filePathCompounds = new String[]{"D:", "Eden-Prog", "Games", "TestDrive", "Resources", "4Build", "PC", "EURO", "Vehicules", "Cars", "Mercedes", "CLK_55", ".2DM", "CLK_55"};
 
         // WHEN
         String actualFileName = GenuineBnkGateway.getFileNameFromPathCompounds(filePathCompounds);
