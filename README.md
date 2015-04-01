@@ -20,7 +20,7 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Import *build.gradle* file into your favourite IDE
 * To run tests: execute *cleanTest test* tasks from Gradle
 * To run integration tests: execute *cleanTest integTest* tasks from Gradle
-.
+
 
 ### Releasing ###
 
@@ -34,6 +34,12 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 * Set local tag *tduf-[version]*
 * Push it to remote.
+
+### Preparing next development version ###
+
+* Create branch tduf-M.m.x
+* Checkout this branch
+* Set next dev version: execute *markNextVersion -Prelease.nextVersion=M.m.0* task from Gradle
 
 ### Packaging ###
 
