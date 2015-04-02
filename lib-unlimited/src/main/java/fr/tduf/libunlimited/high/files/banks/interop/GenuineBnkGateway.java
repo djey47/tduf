@@ -29,6 +29,7 @@ public class GenuineBnkGateway implements BankSupport {
 
     private static final String PATH_SEPARATOR_REGEX = "\\\\";
 
+    // TODO reuse genuine bnk file name with original- prefix
     static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
     static final String EXE_TDUMT_CLI = ".\\tools\\tdumt-cli\\tdumt-cli.exe";
     static final String CLI_COMMAND_BANK_INFO = "BANK-I";
@@ -104,8 +105,8 @@ public class GenuineBnkGateway implements BankSupport {
 
         Files.copy(originalBankFilePath, Paths.get(outputBankFileName), StandardCopyOption.REPLACE_EXISTING);
 
-        Path inputPath = Paths.get(inputDirectory);
-
+        String originalBankFileName = searchOriginalBankFileName(inputDirectory);
+        Path inputPath = Paths.get(inputDirectory, originalBankFileName);
         Files.walk(inputPath)
 
                 .filter((path) -> Files.isRegularFile(path))
@@ -121,6 +122,16 @@ public class GenuineBnkGateway implements BankSupport {
                         throw new RuntimeException("Error while repacking file: " + packedFilePath, ioe);
                     }
                 });
+    }
+
+    static String searchOriginalBankFileName(String inputDirectory) throws IOException {
+        return Files.walk(Paths.get(inputDirectory))
+
+                    .filter((path) -> Files.isDirectory(path))
+
+                    .filter((path) -> EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+
+                    .findAny().get().getFileName().toString();
     }
 
     static String getInternalPackedFilePath(Path packedFilePath, Path basePath) {

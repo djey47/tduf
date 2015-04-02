@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.NoSuchElementException;
 
 import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -107,7 +108,8 @@ public class GenuineBnkGatewayTest {
         // GIVEN
         createSourceFileTree();
 
-        String outputBankFileName = Paths.get(tempDirectory, "A3_V6.output.bnk").toAbsolutePath().toString();
+        String outputBankFileName = Paths.get(tempDirectory, "A3_V6.output.bnk").toString();
+        String sourceDirectory = Paths.get(tempDirectory, "A3_V6.bnk").toString();
 
         mockCommandLineHelperToReturnBankInformationSuccess(outputBankFileName);
         mockCommandLineHelperToReturnReplaceSuccess(outputBankFileName);
@@ -120,9 +122,9 @@ public class GenuineBnkGatewayTest {
         // THEN
         assertThat(new File(outputBankFileName)).exists();
 
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\.3DD\\A3_V6"), eq(Paths.get(tempDirectory, "A3_V6.3DD").toString()));
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\.3DG\\A3_V6"), eq(Paths.get(tempDirectory, "A3_V6.3DG").toString()));
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\.2DM\\A3_V6"), eq(Paths.get(tempDirectory, "A3_V6.2DM").toString()));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\.3DD\\A3_V6"), eq(Paths.get(sourceDirectory, "A3_V6.3DD").toString()));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\.3DG\\A3_V6"), eq(Paths.get(sourceDirectory, "A3_V6.3DG").toString()));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\.2DM\\A3_V6"), eq(Paths.get(sourceDirectory, "A3_V6.2DM").toString()));
     }
 
     @Test
@@ -175,11 +177,36 @@ public class GenuineBnkGatewayTest {
         assertThat(actualReference).isEqualTo("2732794586");
     }
 
+    @Test(expected = NoSuchElementException.class)
+    public void searchOriginalBankFileName_whenNoDirectoryPresent_shouldThrowException() throws IOException {
+        // GIVEN-WHEN
+        GenuineBnkGateway.searchOriginalBankFileName(tempDirectory);
+
+        // THEN: exception
+    }
+
+    @Test
+    public void searchOriginalBankFileName_whenCorrectDirectoryPresent_shouldReturnDirectoryName() throws IOException {
+        // GIVEN
+        createSourceFileTree();
+
+        // WHEN
+        String actualFileName = GenuineBnkGateway.searchOriginalBankFileName(tempDirectory);
+
+        // THEN
+        assertThat(actualFileName).isEqualTo("A3_V6.bnk");
+    }
+
     private void createSourceFileTree() throws IOException {
         assert new File(tempDirectory, ORIGINAL_BANK_NAME).createNewFile();
-        assert new File(tempDirectory, "A3_V6.3DD").createNewFile();
-        assert new File(tempDirectory, "A3_V6.3DG").createNewFile();
-        assert new File(tempDirectory, "A3_V6.2DM").createNewFile();
+
+        Path extractedPath = Paths.get(tempDirectory, "A3_V6.bnk");
+        Files.createDirectories(extractedPath);
+        String extractedDirectory = extractedPath.toString();
+
+        assert new File(extractedDirectory, "A3_V6.3DD").createNewFile();
+        assert new File(extractedDirectory, "A3_V6.3DG").createNewFile();
+        assert new File(extractedDirectory, "A3_V6.2DM").createNewFile();
     }
 
     private void mockCommandLineHelperToReturnBankInformationSuccess(String bankFileName) throws URISyntaxException, IOException {
