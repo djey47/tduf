@@ -178,7 +178,9 @@ public class GenuineBnkGateway implements BankSupport {
         File extractedFile = new File(outputDirectory, getFileNameFromPathCompounds(filePathCompounds));
         File targetFile = new File(outputDirectory, getTargetFileNameFromPathCompounds(bank.getName(), filePathCompounds));
 
-        Files.move(extractedFile.toPath(), targetFile.toPath());
+        Path targetPath = targetFile.toPath();
+        Files.createDirectories(targetPath.getParent());
+        Files.move(extractedFile.toPath(), targetPath);
     }
 
     private static void handleCommandLineErrors(ProcessResult processResult) throws IOException {

@@ -94,6 +94,7 @@ public class GenuineBnkGatewayTest {
 
         // THEN
         assertThat(new File(tempDirectory, ORIGINAL_BANK_NAME)).exists();
+        assertThat(Files.exists(Paths.get(tempDirectory, bankFileName, "4Build", "PC", "Euro", "Vehicules", "Cars", "Mercedes", "CLK_55")));
 
         verify(commandLineHelperMock, times(28)).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), anyString(), eq(tempDirectory));
         verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.3DD\\CLK_55"), eq(tempDirectory));
