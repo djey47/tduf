@@ -59,13 +59,13 @@ To see all features, type and run: DatabaseTool
 
 e.g (1) to convert the whole TDU database to JSON format:
 
-* Extract (with TDUMT) all DB.bnk and DB_xx.bnk database files in a directory
+* Extract (with TDUMT/TDUF) all DB.bnk and DB_xx.bnk database files in a directory
 * Type and run: DatabaseTool dump --databaseDir "C:\tdudb" --jsonDir "C:\tdudb\dump".
 
 e.g (2) to convert the database in JSON format to TDU files back:
 
 * Type and run: DatabaseTool gen --databaseDir "C:\tdudb" --jsonDir "C:\tdudb\gen"
-* Replace (with TDUMT) in DB.bnk and DB_xx.bnk all files by generated ones in the new gen directory.
+* Replace (with TDUMT/TDUF) in DB.bnk and DB_xx.bnk all files by generated ones in the new gen directory.
 
 #### Mapping Tool
 
@@ -78,6 +78,10 @@ e.g, to add missing entries to Bnk1.map:
 #### File Tool
 
 To see all features, type and run: FileTool
+
+e.g, to get list of all files in a database Bank:
+
+* Type and run: FileTool bankinfo -i "C:\Program Files(x86)\Test Drive Unlmited\Euro\Bnk\Database\DB.BNK"
 
 ### Using JAR library and/or CLI Tools in your projects
 
