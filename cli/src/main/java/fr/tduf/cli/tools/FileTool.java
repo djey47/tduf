@@ -117,10 +117,10 @@ public class FileTool extends GenericTool {
                     extension = ".enc";
                     break;
                 case UNPACK:
-                    extension = "_unpacked";
+                    extension = "-unpacked";
                     break;
                 case REPACK:
-                    extension = "_repacked.bnk";
+                    extension = "-repacked.bnk";
                     break;
                 default:
                     extension = ".";
