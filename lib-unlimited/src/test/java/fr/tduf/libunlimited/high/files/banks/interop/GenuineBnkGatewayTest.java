@@ -96,6 +96,9 @@ public class GenuineBnkGatewayTest {
         assertThat(new File(tempDirectory, ORIGINAL_BANK_NAME)).exists();
 
         verify(commandLineHelperMock, times(28)).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), anyString(), eq(tempDirectory));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.3DD\\CLK_55"), eq(tempDirectory));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.3DG\\CLK_55"), eq(tempDirectory));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.2DM\\CLK_55"), eq(tempDirectory));
     }
 
     @Test
@@ -116,7 +119,9 @@ public class GenuineBnkGatewayTest {
         // THEN
         assertThat(new File(outputBankFileName)).exists();
 
-        verify(commandLineHelperMock, times(3)).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), anyString(), anyString());
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\.3DD\\A3_V6"), eq(Paths.get(tempDirectory, "A3_V6.3DD").toString()));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\.3DG\\A3_V6"), eq(Paths.get(tempDirectory, "A3_V6.3DG").toString()));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\.2DM\\A3_V6"), eq(Paths.get(tempDirectory, "A3_V6.2DM").toString()));
     }
 
     @Test
@@ -168,9 +173,6 @@ public class GenuineBnkGatewayTest {
         // THEN
         assertThat(actualReference).isEqualTo("2732794586");
     }
-
-//    @Test
-//    public void
 
     private void createSourceFileTree() throws IOException {
         assert new File(tempDirectory, ORIGINAL_BANK_NAME).createNewFile();

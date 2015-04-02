@@ -43,6 +43,9 @@ public class GenuineBnkGateway implements BankSupport {
         this.commandLineHelper = commandLineHelper;
     }
 
+    /**
+     * tdumt-cli syntax: BANK-I <bankFileName>
+     */
     @Override
     public BankInfoDto getBankInfo(String bankFileName) throws IOException {
 
@@ -68,6 +71,9 @@ public class GenuineBnkGateway implements BankSupport {
                 .build();
     }
 
+    /**
+     * tdumt-cli syntax: BANK-U <bankFileName> <packedFilePath> <outputDirectory>
+     */
     @Override
     public void extractAll(String bankFileName, String outputDirectory) throws IOException {
 
@@ -88,6 +94,9 @@ public class GenuineBnkGateway implements BankSupport {
                 });
     }
 
+    /**
+     * tdumt-cli syntax: BANK-R <bankFileName> <packedFilePath> <sourceFilePath>
+     */
     @Override
     public void packAll(String inputDirectory, String outputBankFileName) throws IOException {
 
