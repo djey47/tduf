@@ -39,7 +39,8 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 * Create branch tduf-M.m.x
 * Checkout this branch
-* Set next dev version: execute *markNextVersion -Prelease.nextVersion=M.m.0* task from Gradle
+* Make global version changes and commit + push first commit
+* Set next dev version: execute *markNextVersion -Prelease.nextVersion=M.m.r* task from Gradle
 
 ### Packaging ###
 
