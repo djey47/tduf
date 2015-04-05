@@ -262,7 +262,7 @@ public class DatabaseTool extends GenericTool {
         checkAndReturnIntegrityErrorsAndObjects(integrityErrors);
 
         if(!integrityErrors.isEmpty()) {
-            outLine("At least one integrity error has been found, your database is not ready-to-use.");
+            outLine("At least one integrity error has been found, your database may not be ready-to-use.");
         }
 
         outLine("All done!");
@@ -396,11 +396,9 @@ public class DatabaseTool extends GenericTool {
                                 (dbResourceDto) -> outLine("    >" + dbResourceDto.getLocale() + "=" + dbResourceDto.getEntries().size()));
             }
 
-            outLine();
+            allDtos.add(dbDto);
 
-            if (integrityErrors.isEmpty()) {
-                allDtos.add(dbDto);
-            }
+            outLine();
         }
 
         return allDtos;
