@@ -133,7 +133,7 @@ public class DatabaseTool extends GenericTool {
         }
 
         if (outputDatabaseDirectory == null) {
-            if (DUMP == command) {
+            if (FIX == command) {
                 outputDatabaseDirectory = "tdu-database-fixed";
             } else if (APPLY_PATCH == command) {
                 outputDatabaseDirectory = "tdu-database-patched";
