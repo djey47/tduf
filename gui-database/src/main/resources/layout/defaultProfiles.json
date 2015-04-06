@@ -1,0 +1,18 @@
+{
+  "profiles": [
+    {
+      "name": "Vehicle slots",
+      "topic": "CarPhysicsData",
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "priority": 9999,
+          "readOnly": "true",
+          "label": "Slot #",
+          "toolTip": "Unique slot number"
+        }
+      ]
+    }
+  ]
+}

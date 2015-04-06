@@ -159,6 +159,12 @@ project('lib-unlimited') {
     }
 }
 
+project(':gui-database') {
+    dependencies {
+        compile project(':lib-unlimited')
+    }
+}
+
 task copyDoc(type: Copy) {
     description 'Copies README to release directory.'
     mustRunAfter 'cleanPackDir'

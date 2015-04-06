@@ -1,0 +1,7 @@
+.settingsToolbar {
+    -fx-base: dodgerBlue;
+}
+
+#navigationToolbar {
+    -fx-base: black;
+}

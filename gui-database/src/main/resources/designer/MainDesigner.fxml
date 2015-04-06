@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ToolBar id="fileToolbar" prefHeight="40.0" prefWidth="200.0" styleClass="settingsToolbar">
+        <items>
+            <Label text="TDU database:" />
+            <TextField />
+            <Button mnemonicParsing="false" text="..." />
+          <Button mnemonicParsing="false" text="Load" />
+            <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" text="Save" />
+        </items>
+      </ToolBar>
+      <TitledPane text="Settings" id="settingsPane">
+         <content>
+            <AnchorPane prefWidth="1280.0">
+               <children>
+                  <ToolBar id="settingsToolbar" prefHeight="38.0" prefWidth="1280.0" styleClass="settingsToolbar">
+                    <items>
+                        <Label text="Profile:" />
+                        <ChoiceBox prefWidth="150.0" />
+                        <Label text="Locale:" />
+                        <ChoiceBox prefWidth="150.0" />
+                      <Button mnemonicParsing="false" text="Apply" />
+                    </items>
+                  </ToolBar>
+               </children>
+            </AnchorPane>
+         </content>
+      </TitledPane>
+      <ToolBar id="navigationToolbar" prefHeight="40.0" prefWidth="200.0">
+        <items>
+          <Button mnemonicParsing="false" text="First" />
+            <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" text="Previous" />
+            <ChoiceBox prefWidth="150.0" />
+            <Button layoutX="61.0" layoutY="11.0" mnemonicParsing="false" text="Next" />
+            <Button layoutX="139.0" layoutY="11.0" mnemonicParsing="false" text="Last" />
+        </items>
+      </ToolBar>
+      <ScrollPane prefHeight="700.0" prefWidth="1280.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <TabPane prefHeight="200.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Default">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                    </tabs>
+                  </TabPane>
+               </children></AnchorPane>
+        </content>
+      </ScrollPane>
+   </children>
+</VBox>
