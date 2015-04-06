@@ -2,6 +2,6 @@
     -fx-base: dodgerBlue;
 }
 
-#navigationToolbar {
+.navigationToolbar {
     -fx-base: black;
 }
