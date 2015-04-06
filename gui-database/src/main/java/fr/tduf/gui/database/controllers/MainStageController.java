@@ -30,6 +30,9 @@ public class MainStageController {
     private ChoiceBox localesChoiceBox;
 
     @FXML
+    private ChoiceBox profilesChoiceBox;
+
+    @FXML
     private TabPane tabPane;
 
     @FXML
@@ -58,6 +61,10 @@ public class MainStageController {
 
     public ChoiceBox getLocalesChoiceBox() {
         return this.localesChoiceBox;
+    }
+
+    public ChoiceBox getProfilesChoiceBox() {
+        return profilesChoiceBox;
     }
 
     public void setMainStage(Stage stage) {

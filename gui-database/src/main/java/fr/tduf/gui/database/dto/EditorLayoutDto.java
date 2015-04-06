@@ -15,8 +15,12 @@ public class EditorLayoutDto {
     @JsonProperty("profiles")
     List<EditorProfileDto> profiles;
 
+    public List<EditorProfileDto> getProfiles() {
+        return profiles;
+    }
+
     @JsonTypeName("editorProfile")
-    private class EditorProfileDto {
+    public static class EditorProfileDto {
 
         @JsonProperty("name")
         private String name;
@@ -26,5 +30,9 @@ public class EditorLayoutDto {
 
         @JsonProperty("fieldSettings")
         private List<FieldSettingsDto> fieldSettings;
+
+        public String getName() {
+            return name;
+        }
     }
 }

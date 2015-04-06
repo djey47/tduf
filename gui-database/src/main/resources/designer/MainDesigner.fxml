@@ -23,7 +23,7 @@
                         <ToolBar prefHeight="38.0" prefWidth="1280.0" styleClass="settingsToolbar">
                             <items>
                                 <Label text="Profile:"/>
-                                <ChoiceBox prefWidth="150.0"/>
+                                <ChoiceBox fx:id="profilesChoiceBox" prefWidth="150.0"/>
                                 <Label text="Locale:"/>
                                 <ChoiceBox fx:id="localesChoiceBox" prefWidth="150.0"/>
                                 <Button mnemonicParsing="false" text="Apply"/>

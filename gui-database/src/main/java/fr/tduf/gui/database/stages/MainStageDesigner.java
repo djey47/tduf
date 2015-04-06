@@ -1,14 +1,17 @@
 package fr.tduf.gui.database.stages;
 
 import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.stage.Stage;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
+import java.net.URL;
 
 import static java.util.Arrays.asList;
 
@@ -46,10 +49,25 @@ public class MainStageDesigner {
         primaryStage.setResizable(false);
     }
 
-    private static void initSettingsPane(MainStageController controller) {
+    private static void initSettingsPane(MainStageController controller) throws IOException {
+
+        fillProfiles(controller);
+
         fillLocales(controller);
 
         controller.getSettingsPane().setExpanded(false);
+    }
+
+    private static void fillProfiles(MainStageController controller) throws IOException {
+        ChoiceBox profilesChoiceBox = controller.getProfilesChoiceBox();
+
+        URL resourceURL = thisClass.getResource("/layout/defaultProfiles.json");
+        EditorLayoutDto layoutObject = new ObjectMapper().readValue(resourceURL, EditorLayoutDto.class);
+
+        layoutObject.getProfiles()
+                .forEach((profileObject) -> profilesChoiceBox.getItems().add(profileObject.getName()));
+
+        profilesChoiceBox.setValue(profilesChoiceBox.getItems().get(0));
     }
 
     private static void fillLocales(MainStageController controller) {

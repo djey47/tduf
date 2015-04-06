@@ -2,7 +2,7 @@
   "profiles": [
     {
       "name": "Vehicle slots",
-      "topic": "CarPhysicsData",
+      "topic": "CAR_PHYSICS_DATA",
       "fieldSettings": [
         {
           "rank": 1,
