@@ -1,16 +1,15 @@
 package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.database.dto.EditorLayoutDto;
-import fr.tduf.libunlimited.high.files.db.helper.DatabaseHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
@@ -30,10 +29,10 @@ public class MainStageController implements Initializable {
     private TitledPane settingsPane;
 
     @FXML
-    private ChoiceBox localesChoiceBox;
+    private ChoiceBox<DbResourceDto.Locale> localesChoiceBox;
 
     @FXML
-    private ChoiceBox profilesChoiceBox;
+    private ChoiceBox<String> profilesChoiceBox;
 
     @FXML
     private TabPane tabPane;

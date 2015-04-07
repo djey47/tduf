@@ -59,7 +59,7 @@ public class MainStageDesigner {
     }
 
     private static void fillProfiles(MainStageController controller) throws IOException {
-        ChoiceBox profilesChoiceBox = controller.getProfilesChoiceBox();
+        ChoiceBox<String> profilesChoiceBox = controller.getProfilesChoiceBox();
 
         URL resourceURL = thisClass.getResource("/layout/defaultProfiles.json");
         EditorLayoutDto layoutObject = new ObjectMapper().readValue(resourceURL, EditorLayoutDto.class);
@@ -71,7 +71,7 @@ public class MainStageDesigner {
     }
 
     private static void fillLocales(MainStageController controller) {
-        ChoiceBox localesChoiceBox = controller.getLocalesChoiceBox();
+        ChoiceBox<DbResourceDto.Locale> localesChoiceBox = controller.getLocalesChoiceBox();
 
         asList(DbResourceDto.Locale.values())
                 .forEach((locale) -> localesChoiceBox.getItems().add(locale));
