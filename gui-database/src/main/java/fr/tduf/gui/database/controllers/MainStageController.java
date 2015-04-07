@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.database.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -81,7 +82,7 @@ public class MainStageController implements Initializable {
     private void handleProfileChoiceChanged(String newProfileName) {
         System.out.println("handleProfileChoiceChanged: " + newProfileName);
 
-        EditorLayoutDto.EditorProfileDto profileObject = getAvailableProfileByName(newProfileName);
+        EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(newProfileName, this.layoutObject);
         fillTabPaneDynamically(profileObject);
     }
 
@@ -134,13 +135,5 @@ public class MainStageController implements Initializable {
 
         defaultTab.getChildren().add(new TextField());
 
-    }
-
-    private EditorLayoutDto.EditorProfileDto getAvailableProfileByName(String profileName) {
-        return this.layoutObject.getProfiles().stream()
-
-                .filter((profile) -> profile.getName().equals(profileName))
-
-                .findAny().get();
     }
 }

@@ -4,6 +4,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
 public class EditorLayoutDto {
 
     @JsonProperty("profiles")
-    List<EditorProfileDto> profiles;
+    List<EditorProfileDto> profiles = new ArrayList<>();
 
     public List<EditorProfileDto> getProfiles() {
         return profiles;
@@ -29,7 +30,13 @@ public class EditorLayoutDto {
         private DbDto.Topic topic;
 
         @JsonProperty("fieldSettings")
-        private List<FieldSettingsDto> fieldSettings;
+        private List<FieldSettingsDto> fieldSettings = new ArrayList<>();
+
+        public EditorProfileDto() {}
+
+        public EditorProfileDto(String name) {
+            this.name = name;
+        }
 
         public String getName() {
             return name;
