@@ -13,15 +13,21 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import static java.util.Arrays.asList;
 
 /**
  * Makes it a possible to intercept all GUI events.
  */
 public class MainStageController implements Initializable {
+
+    private static final Class<MainStageController> thisClass = MainStageController.class;
 
     private Stage mainStage;
 
@@ -51,8 +57,14 @@ public class MainStageController implements Initializable {
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
 
-        profilesChoiceBox.getSelectionModel().selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> handleProfileChoiceChanged((String) newValue));
+        try {
+            initSettingsPane();
+
+            // DEBUG
+            databaseLocationTextField.setText("/media/DevStore/GIT/tduf/cli/integ-tests/db-json/");
+        } catch (IOException e) {
+            throw new RuntimeException("Window initializing failed.", e);
+        }
 
     }
 
@@ -60,7 +72,7 @@ public class MainStageController implements Initializable {
     public void handleLoadButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleLoadButtonMouseClick");
 
-        String databaseLocation = getDatabaseLocationTextField().getText();
+        String databaseLocation = this.databaseLocationTextField.getText();
         if (StringUtils.isNotEmpty(databaseLocation)) {
             this.databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(databaseLocation);
             this.databaseMiner = BulkDatabaseMiner.load(this.databaseObjects);
@@ -74,6 +86,36 @@ public class MainStageController implements Initializable {
 
         EditorLayoutDto.EditorProfileDto profileObject = getAvailableProfileByName(newProfileName);
         fillTabPaneDynamically(profileObject);
+    }
+
+    private void initSettingsPane() throws IOException {
+
+        this.settingsPane.setExpanded(false);
+
+        fillLocales();
+
+        fillProfiles();
+
+        this.profilesChoiceBox.getSelectionModel().selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> handleProfileChoiceChanged((String) newValue));
+    }
+
+
+    private void fillProfiles() throws IOException {
+        URL resourceURL = thisClass.getResource("/layout/defaultProfiles.json");
+        EditorLayoutDto layoutObject = new ObjectMapper().readValue(resourceURL, EditorLayoutDto.class);
+
+        setLayoutObject(layoutObject);
+
+        layoutObject.getProfiles()
+                .forEach((profileObject) -> profilesChoiceBox.getItems().add(profileObject.getName()));
+    }
+
+    private void fillLocales() {
+        asList(DbResourceDto.Locale.values())
+                .forEach((locale) -> localesChoiceBox.getItems().add(locale));
+
+        localesChoiceBox.setValue(DbResourceDto.Locale.UNITED_STATES);
     }
 
     private void fillTabPaneDynamically(EditorLayoutDto.EditorProfileDto profileObject) {
@@ -105,22 +147,6 @@ public class MainStageController implements Initializable {
                 .filter((profile) -> profile.getName().equals(profileName))
 
                 .findAny().get();
-    }
-
-    public TitledPane getSettingsPane() {
-        return this.settingsPane;
-    }
-
-    public TextField getDatabaseLocationTextField() {
-        return this.databaseLocationTextField;
-    }
-
-    public ChoiceBox getLocalesChoiceBox() {
-        return this.localesChoiceBox;
-    }
-
-    public ChoiceBox getProfilesChoiceBox() {
-        return profilesChoiceBox;
     }
 
     public void setMainStage(Stage stage) {
