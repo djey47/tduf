@@ -34,5 +34,9 @@ public class EditorLayoutDto {
         public String getName() {
             return name;
         }
+
+        public DbDto.Topic getTopic() {
+            return topic;
+        }
     }
 }

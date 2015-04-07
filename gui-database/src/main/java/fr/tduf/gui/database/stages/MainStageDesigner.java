@@ -64,10 +64,10 @@ public class MainStageDesigner {
         URL resourceURL = thisClass.getResource("/layout/defaultProfiles.json");
         EditorLayoutDto layoutObject = new ObjectMapper().readValue(resourceURL, EditorLayoutDto.class);
 
+        controller.setLayoutObject(layoutObject);
+
         layoutObject.getProfiles()
                 .forEach((profileObject) -> profilesChoiceBox.getItems().add(profileObject.getName()));
-
-        profilesChoiceBox.setValue(profilesChoiceBox.getItems().get(0));
     }
 
     private static void fillLocales(MainStageController controller) {
