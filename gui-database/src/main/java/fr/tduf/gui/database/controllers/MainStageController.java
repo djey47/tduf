@@ -79,6 +79,10 @@ public class MainStageController implements Initializable {
 
     private void fillTabPaneDynamically(EditorLayoutDto.EditorProfileDto profileObject) {
 
+        if (databaseMiner == null) {
+            return;
+        }
+
         DbDto.Topic startTopic = profileObject.getTopic();
 
         DbDto topicObject = databaseMiner.getDatabaseTopic(startTopic).get();
