@@ -16,6 +16,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -46,7 +47,7 @@ public class MainStageController implements Initializable {
     @FXML
     private TextField databaseLocationTextField;
 
-    private List<DbDto> databaseObjects;
+    private List<DbDto> databaseObjects = new ArrayList<>();
     private EditorLayoutDto layoutObject;
     private BulkDatabaseMiner databaseMiner;
 
@@ -114,7 +115,7 @@ public class MainStageController implements Initializable {
 
     private void fillTabPaneDynamically(EditorLayoutDto.EditorProfileDto profileObject) {
 
-        if (databaseMiner == null) {
+        if (databaseObjects.isEmpty()) {
             return;
         }
 
