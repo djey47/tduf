@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -28,8 +27,6 @@ import static java.util.Arrays.asList;
 public class MainStageController implements Initializable {
 
     private static final Class<MainStageController> thisClass = MainStageController.class;
-
-    private Stage mainStage;
 
     @FXML
     private TitledPane settingsPane;
@@ -48,7 +45,6 @@ public class MainStageController implements Initializable {
 
     @FXML
     private TextField databaseLocationTextField;
-
 
     private List<DbDto> databaseObjects;
     private EditorLayoutDto layoutObject;
@@ -94,20 +90,18 @@ public class MainStageController implements Initializable {
 
         fillLocales();
 
-        fillProfiles();
+        loadAndFillProfiles();
 
         this.profilesChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> handleProfileChoiceChanged((String) newValue));
     }
 
 
-    private void fillProfiles() throws IOException {
+    private void loadAndFillProfiles() throws IOException {
         URL resourceURL = thisClass.getResource("/layout/defaultProfiles.json");
-        EditorLayoutDto layoutObject = new ObjectMapper().readValue(resourceURL, EditorLayoutDto.class);
 
-        setLayoutObject(layoutObject);
-
-        layoutObject.getProfiles()
+        this.layoutObject = new ObjectMapper().readValue(resourceURL, EditorLayoutDto.class);
+        this.layoutObject.getProfiles()
                 .forEach((profileObject) -> profilesChoiceBox.getItems().add(profileObject.getName()));
     }
 
@@ -148,13 +142,4 @@ public class MainStageController implements Initializable {
 
                 .findAny().get();
     }
-
-    public void setMainStage(Stage stage) {
-        this.mainStage = stage;
-    }
-
-    public void setLayoutObject(EditorLayoutDto layoutObject) {
-        this.layoutObject = layoutObject;
-    }
-
 }

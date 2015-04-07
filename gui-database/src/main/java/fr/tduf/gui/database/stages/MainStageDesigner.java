@@ -1,6 +1,5 @@
 package fr.tduf.gui.database.stages;
 
-import fr.tduf.gui.database.controllers.MainStageController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -22,8 +21,6 @@ public class MainStageDesigner {
     public static void init(Stage primaryStage) throws IOException {
         FXMLLoader mainLoader = new FXMLLoader(thisClass.getResource("/designer/MainDesigner.fxml"));
         Parent mainRoot = mainLoader.load();
-        MainStageController mainController = mainLoader.<MainStageController>getController();
-        mainController.setMainStage(primaryStage);
 
         initMainWindow(primaryStage, mainRoot);
     }
