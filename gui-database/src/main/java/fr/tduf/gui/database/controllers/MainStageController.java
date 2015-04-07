@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static java.util.Arrays.asList;
@@ -131,7 +133,21 @@ public class MainStageController implements Initializable {
 
     private void assignControl(DbStructureDto.Field field) {
 
-        defaultTab.getChildren().add(new Label(field.getName()));
+        EditorLayoutDto.EditorProfileDto currentProfile = EditorLayoutHelper.getAvailableProfileByName(profilesChoiceBox.getValue(), layoutObject);
+
+        Optional<FieldSettingsDto> potentialFieldSettings = currentProfile.getFieldSettings().stream()
+
+                .filter((settings) -> settings.getName().equals(field.getName()))
+
+                .findAny();
+
+        String fieldName = field.getName();
+        if(potentialFieldSettings.isPresent() && potentialFieldSettings.get().getLabel() != null) {
+            fieldName = potentialFieldSettings.get().getLabel();
+        }
+
+
+        defaultTab.getChildren().add(new Label(fieldName));
 
         defaultTab.getChildren().add(new TextField());
 

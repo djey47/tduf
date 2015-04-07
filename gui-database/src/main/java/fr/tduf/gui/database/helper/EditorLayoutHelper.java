@@ -1,6 +1,9 @@
 package fr.tduf.gui.database.helper;
 
 import fr.tduf.gui.database.dto.EditorLayoutDto;
+import fr.tduf.gui.database.dto.FieldSettingsDto;
+
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -20,5 +23,18 @@ public class EditorLayoutHelper {
                 .filter((profile) -> profile.getName().equals(profileName))
 
                 .findAny().get();
+    }
+
+    /**
+     * @return field settings if they exist for provided field name, absent otherwise.
+     */
+    public static Optional<FieldSettingsDto> getFieldSettingsByName(String fieldName, EditorLayoutDto.EditorProfileDto profileObject) {
+        requireNonNull(profileObject, "Editor profile object is required.");
+
+        return profileObject.getFieldSettings().stream()
+
+                .filter((settings) -> settings.getName().equals(fieldName))
+
+                .findAny();
     }
 }

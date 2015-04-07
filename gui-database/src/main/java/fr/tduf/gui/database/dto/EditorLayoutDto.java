@@ -45,5 +45,9 @@ public class EditorLayoutDto {
         public DbDto.Topic getTopic() {
             return topic;
         }
+
+        public List<FieldSettingsDto> getFieldSettings() {
+            return fieldSettings;
+        }
     }
 }

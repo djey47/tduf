@@ -22,4 +22,18 @@ public class FieldSettingsDto {
 
     @JsonProperty("toolTip")
     private String toolTip;
+
+    public FieldSettingsDto() {}
+
+    public FieldSettingsDto(String fieldName) {
+        this.name = fieldName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLabel() {
+        return label;
+    }
 }
