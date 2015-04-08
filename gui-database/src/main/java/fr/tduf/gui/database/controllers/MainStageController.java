@@ -143,8 +143,15 @@ public class MainStageController implements Initializable {
                 .findAny();
 
         String fieldName = field.getName();
-        if(potentialFieldSettings.isPresent() && potentialFieldSettings.get().getLabel() != null) {
-            fieldName = potentialFieldSettings.get().getLabel();
+        boolean fieldReadOnly = false;
+        if(potentialFieldSettings.isPresent()) {
+            FieldSettingsDto fieldSettings = potentialFieldSettings.get();
+
+            if (fieldSettings.getLabel() != null) {
+                fieldName = potentialFieldSettings.get().getLabel();
+            }
+
+            fieldReadOnly = fieldSettings.isReadOnly();
         }
 
         HBox fieldBox = new HBox();
@@ -156,6 +163,7 @@ public class MainStageController implements Initializable {
 
         TextField fieldValue = new TextField();
         fieldValue.setPrefWidth(75.0);
+        fieldValue.setEditable(!fieldReadOnly);
 
         fieldBox.getChildren().add(fieldNameLabel);
         fieldBox.getChildren().add(fieldValue);

@@ -36,4 +36,8 @@ public class FieldSettingsDto {
     public String getLabel() {
         return label;
     }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
 }
