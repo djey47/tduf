@@ -1,8 +1,8 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.helper.EditorLayoutHelper;
-import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -154,21 +154,34 @@ public class MainStageController implements Initializable {
             fieldReadOnly = fieldSettings.isReadOnly();
         }
 
+        HBox fieldBox = createFieldBox();
+
+        addFieldLabel(fieldBox, fieldName);
+
+        addTextField(fieldBox, fieldReadOnly);
+    }
+
+    private HBox createFieldBox() {
         HBox fieldBox = new HBox();
         fieldBox.setPrefHeight(25.0);
         fieldBox.setPadding(new Insets(5.0));
+        defaultTab.getChildren().add(fieldBox);
+        return fieldBox;
+    }
 
+    private void addFieldLabel(HBox fieldBox, String fieldName) {
         Label fieldNameLabel = new Label(fieldName);
-        fieldNameLabel.setPrefWidth(250.0);
+        fieldNameLabel.setPrefWidth(225.0);
+        fieldNameLabel.getStyleClass().add("fieldName");
+        fieldBox.getChildren().add(fieldNameLabel);
+    }
 
+    private void addTextField(HBox fieldBox, boolean readOnly) {
         TextField fieldValue = new TextField();
         fieldValue.setPrefWidth(75.0);
-        fieldValue.setEditable(!fieldReadOnly);
-
-        fieldBox.getChildren().add(fieldNameLabel);
+        fieldValue.setEditable(!readOnly);
+        // TODO value binding
+//        fieldValue.textProperty().
         fieldBox.getChildren().add(fieldValue);
-
-        defaultTab.getChildren().add(fieldBox);
-
     }
 }

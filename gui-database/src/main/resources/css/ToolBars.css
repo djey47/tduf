@@ -5,3 +5,7 @@
 .navigationToolbar {
     -fx-base: black;
 }
+
+.fieldName {
+    -fx-font-weight: bold;
+}
