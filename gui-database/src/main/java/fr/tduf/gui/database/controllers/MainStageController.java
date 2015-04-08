@@ -11,7 +11,9 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -100,7 +102,6 @@ public class MainStageController implements Initializable {
                 .addListener((observable, oldValue, newValue) -> handleProfileChoiceChanged((String) newValue));
     }
 
-
     private void loadAndFillProfiles() throws IOException {
         URL resourceURL = thisClass.getResource("/layout/defaultProfiles.json");
 
@@ -146,10 +147,20 @@ public class MainStageController implements Initializable {
             fieldName = potentialFieldSettings.get().getLabel();
         }
 
+        HBox fieldBox = new HBox();
+        fieldBox.setPrefHeight(25.0);
+        fieldBox.setPadding(new Insets(5.0));
 
-        defaultTab.getChildren().add(new Label(fieldName));
+        Label fieldNameLabel = new Label(fieldName);
+        fieldNameLabel.setPrefWidth(250.0);
 
-        defaultTab.getChildren().add(new TextField());
+        TextField fieldValue = new TextField();
+        fieldValue.setPrefWidth(75.0);
+
+        fieldBox.getChildren().add(fieldNameLabel);
+        fieldBox.getChildren().add(fieldValue);
+
+        defaultTab.getChildren().add(fieldBox);
 
     }
 }

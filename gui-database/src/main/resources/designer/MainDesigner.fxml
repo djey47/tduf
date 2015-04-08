@@ -4,63 +4,61 @@
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 
-<VBox id="mainVbox" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.MainStageController">
-    <children>
-        <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="settingsToolbar">
-            <items>
-                <Label text="TDU database:"/>
-                <TextField fx:id="databaseLocationTextField"/>
-                <Button mnemonicParsing="false" text="..."/>
-                <Button mnemonicParsing="false" text="Load" onAction="#handleLoadButtonMouseClick"/>
-                <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" text="Save"/>
-            </items>
-        </ToolBar>
-
-        <TitledPane fx:id="settingsPane" text="Settings">
-            <content>
-                <AnchorPane prefWidth="1280.0">
-                    <children>
-                        <ToolBar prefHeight="38.0" prefWidth="1280.0" styleClass="settingsToolbar">
-                            <items>
-                                <Label text="Profile:"/>
-                                <ChoiceBox fx:id="profilesChoiceBox" prefWidth="150.0"/>
-                                <Label text="Locale:"/>
-                                <ChoiceBox fx:id="localesChoiceBox" prefWidth="150.0"/>
-                                <Button mnemonicParsing="false" text="Apply"/>
-                            </items>
-                        </ToolBar>
-                    </children>
-                </AnchorPane>
-            </content>
-        </TitledPane>
-
-        <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
-            <items>
-                <Button mnemonicParsing="false" text="First"/>
-                <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" text="Previous"/>
-                <ChoiceBox prefWidth="150.0"/>
-                <Button layoutX="61.0" layoutY="11.0" mnemonicParsing="false" text="Next"/>
-                <Button layoutX="139.0" layoutY="11.0" mnemonicParsing="false" text="Last"/>
-            </items>
-        </ToolBar>
-
-        <ScrollPane prefHeight="700.0" prefWidth="1280.0">
-            <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
-                    <children>
-                        <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE">
-                            <tabs>
-                                <Tab text="Default">
-                                    <content>
-                                        <VBox fx:id="defaultTab" minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                                    prefWidth="200.0"/>
-                                    </content>
-                                </Tab>
-                            </tabs>
-                        </TabPane>
-                    </children>
-                </AnchorPane>
-            </content>
-        </ScrollPane>
-    </children>
-</VBox>
+<AnchorPane prefHeight="768.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.MainStageController">
+   <children>
+      <VBox id="mainVbox" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+          <children>
+              <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="settingsToolbar">
+                  <items>
+                      <Label text="TDU database:" />
+                      <TextField fx:id="databaseLocationTextField" />
+                      <Button mnemonicParsing="false" text="..." />
+                      <Button mnemonicParsing="false" onAction="#handleLoadButtonMouseClick" text="Load" />
+                      <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" text="Save" />
+                  </items>
+              </ToolBar>
+      
+              <TitledPane fx:id="settingsPane" text="Settings">
+                  <content>
+                      <AnchorPane prefWidth="1280.0">
+                          <children>
+                              <ToolBar prefHeight="38.0" prefWidth="1280.0" styleClass="settingsToolbar">
+                                  <items>
+                                      <Label text="Profile:" />
+                                      <ChoiceBox fx:id="profilesChoiceBox" prefWidth="150.0" />
+                                      <Label text="Locale:" />
+                                      <ChoiceBox fx:id="localesChoiceBox" prefWidth="150.0" />
+                                      <Button mnemonicParsing="false" text="Apply" />
+                                  </items>
+                              </ToolBar>
+                          </children>
+                      </AnchorPane>
+                  </content>
+              </TitledPane>
+      
+              <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
+                  <items>
+                      <Button mnemonicParsing="false" text="First" />
+                      <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" text="Previous" />
+                      <ChoiceBox prefWidth="150.0" />
+                      <Button layoutX="61.0" layoutY="11.0" mnemonicParsing="false" text="Next" />
+                      <Button layoutX="139.0" layoutY="11.0" mnemonicParsing="false" text="Last" />
+                  </items>
+              </ToolBar>
+                  <TabPane fx:id="tabPane" prefHeight="600.0" tabClosingPolicy="UNAVAILABLE">
+                      <tabs>
+                          <Tab text="Default">
+                              <content>
+                        <ScrollPane prefViewportHeight="167.0" prefViewportWidth="1303.0">
+                           <content>
+                                        <VBox fx:id="defaultTab" minHeight="0.0" minWidth="0.0" />
+                           </content>
+                        </ScrollPane>
+                              </content>
+                          </Tab>
+                      </tabs>
+                  </TabPane>
+          </children>
+      </VBox>
+   </children>
+</AnchorPane>
