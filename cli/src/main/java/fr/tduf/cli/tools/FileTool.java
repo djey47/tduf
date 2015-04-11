@@ -246,30 +246,12 @@ public class FileTool extends GenericTool {
     private void jsonify() throws IOException {
         outLine("Will use structure in file: " + this.structureFile);
 
-        byte[] fileContents = Files.readAllBytes(Paths.get(inputFile));
-        ByteArrayInputStream fileInputStream = new ByteArrayInputStream(fileContents);
-
-        GenericParser<String> genericParser = new GenericParser<String>(fileInputStream) {
-            @Override
-            protected String generate() {
-                return null;
-            }
-
-            @Override
-            public String getStructureResource() {
-                return structureFile;
-            }
-        };
-
+        GenericParser<String> genericParser = getFileParser();
         genericParser.parse();
 
         outLine("\t-> Provided file dump:\n" + genericParser.dump());
 
-        String jsonOutput = genericParser.getDataStore().toJsonString();
-
-        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(outputFile), StandardCharsets.UTF_8)) {
-            bufferedWriter.write(jsonOutput);
-        }
+        parserToJsonFile(genericParser);
 
         outLine("TDU to JSON conversion done: " + this.inputFile + " to " + this.outputFile);
 
@@ -282,23 +264,7 @@ public class FileTool extends GenericTool {
     private void applyjson() throws IOException {
         outLine("Will use structure in file: " + this.structureFile);
 
-        GenericWriter<String> genericWriter = new GenericWriter<String>("") {
-            @Override
-            protected void fillStore() {}
-
-            @Override
-            public String getStructureResource() {
-                return structureFile;
-            }
-        };
-
-        byte[] fileContents = Files.readAllBytes(Paths.get(inputFile));
-        String jsonContents = new String(fileContents, StandardCharsets.UTF_8);
-
-        genericWriter.getDataStore().fromJsonString(jsonContents);
-
-        ByteArrayOutputStream outputStream = genericWriter.write();
-        Files.write(Paths.get(outputFile), outputStream.toByteArray());
+        writerToBinaryFile(getFileWriter(), readJsonInputFileContents());
 
         outLine("JSON to TDU conversion done: " + this.inputFile + " to " + this.outputFile);
 
@@ -334,11 +300,56 @@ public class FileTool extends GenericTool {
         commandResult = resultInfo;
     }
 
+    private GenericParser<String> getFileParser() throws IOException {
+        return new GenericParser<String>(getInputStreamForInputFile()) {
+            @Override
+            protected String generate() {
+                return null;
+            }
+
+            @Override
+            public String getStructureResource() {
+                return structureFile;
+            }
+        };
+    }
+
+    private GenericWriter<String> getFileWriter() throws IOException {
+        return new GenericWriter<String>("") {
+                @Override
+                protected void fillStore() {}
+
+                @Override
+                public String getStructureResource() {
+                    return structureFile;
+                }
+            };
+    }
+
+    private void writerToBinaryFile(GenericWriter<String> genericWriter, String jsonContents) throws IOException {
+        genericWriter.getDataStore().fromJsonString(jsonContents);
+
+        Files.write(Paths.get(outputFile), genericWriter.write().toByteArray());
+    }
+
+    private void parserToJsonFile(GenericParser<String> genericParser) throws IOException {
+        String jsonOutput = genericParser.getDataStore().toJsonString();
+
+        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(outputFile), StandardCharsets.UTF_8)) {
+            bufferedWriter.write(jsonOutput);
+        }
+    }
+
+    private String readJsonInputFileContents() throws IOException {
+        byte[] fileContents = Files.readAllBytes(Paths.get(inputFile));
+        return new String(fileContents, StandardCharsets.UTF_8);
+    }
+
     private byte[] processInputStream(boolean withEncryption) throws IOException {
 
         CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(this.cryptoMode));
 
-        ByteArrayInputStream inputStream = getInputStream();
+        ByteArrayInputStream inputStream = getInputStreamForInputFile();
         ByteArrayOutputStream outputStream;
         if (withEncryption) {
             outputStream = CryptoHelper.encryptXTEA(inputStream, encryptionModeEnum);
@@ -348,10 +359,8 @@ public class FileTool extends GenericTool {
         return outputStream.toByteArray();
     }
 
-    private ByteArrayInputStream getInputStream() throws IOException {
+    private ByteArrayInputStream getInputStreamForInputFile() throws IOException {
         Path inputFilePath = new File(this.inputFile).toPath();
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(inputFilePath));
-        inputStream.close();
-        return inputStream;
+        return new ByteArrayInputStream(Files.readAllBytes(inputFilePath));
     }
 }
