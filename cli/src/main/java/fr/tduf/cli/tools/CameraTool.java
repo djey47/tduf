@@ -13,7 +13,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
@@ -167,19 +166,18 @@ public class CameraTool extends GenericTool {
     }
 
     private CamerasParser loadAndParseCameras() throws IOException {
-        CamerasParser parser = CamerasParser.load(getInputStream());
+        CamerasParser parser = CamerasParser.load(getCamerasInputStream());
         parser.parse();
         return parser;
     }
 
-    private ByteArrayInputStream getInputStream() throws IOException {
-        Path inputFilePath = new File(this.inputCameraFile).toPath();
-        return new ByteArrayInputStream(Files.readAllBytes(inputFilePath));
+    private ByteArrayInputStream getCamerasInputStream() throws IOException {
+        return new ByteArrayInputStream(Files.readAllBytes(Paths.get(this.inputCameraFile)));
     }
 
     private void writeModifiedCameras(CamerasParser parser) throws IOException {
         ByteArrayOutputStream outputStream = CamerasWriter.load(parser.getDataStore()).write();
-        Files.write(Paths.get(outputCameraFile), outputStream.toByteArray(), StandardOpenOption.CREATE);
+        Files.write(Paths.get(this.outputCameraFile), outputStream.toByteArray(), StandardOpenOption.CREATE);
     }
 
     private void makeCommandResultForCopy(String fileName) {
