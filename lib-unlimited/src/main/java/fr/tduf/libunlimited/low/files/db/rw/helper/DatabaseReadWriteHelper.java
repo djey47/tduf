@@ -15,6 +15,7 @@ import java.util.*;
 import static com.google.common.io.Files.getFileExtension;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -37,7 +38,7 @@ public class DatabaseReadWriteHelper {
      * @throws FileNotFoundException
      */
     public static DbDto readDatabaseTopic(DbDto.Topic topic, String databaseDirectory, boolean withClearContents, List<IntegrityError> integrityErrors) throws IOException {
-        Objects.requireNonNull(integrityErrors, "A list (even empty) must be provided.");
+        requireNonNull(integrityErrors, "A list (even empty) must be provided.");
 
         String contentsFileName = checkDatabaseContents(topic, databaseDirectory, integrityErrors);
         if (contentsFileName == null) {
@@ -122,14 +123,20 @@ public class DatabaseReadWriteHelper {
     /**
      * Writes all database contents (+resources) as JSON format from specified topic into outputDirectory.
      * @param dbDto             : topic contents to be written
-     * @param outputDirectory   : location of generated files
-     * @return name of written JSON file
-     * @throws FileNotFoundException
+     * @param outputDirectory   : location of generated file
+     * @return name of written JSON file if all went correctly, absent otherwise.
      */
-    public static String writeDatabaseTopicToJson(DbDto dbDto, String outputDirectory) throws IOException {
-        DatabaseWriter databaseWriter = DatabaseWriter.load(dbDto);
-
-        return databaseWriter.writeAllAsJson(outputDirectory);
+    public static Optional<String> writeDatabaseTopicToJson(DbDto dbDto, String outputDirectory) {
+        try {
+            return Optional.ofNullable(
+                    DatabaseWriter
+                            .load(dbDto)
+                            .writeAllAsJson(outputDirectory)
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Optional.<String>empty();
+        }
     }
 
     static List<String> parseTopicContentsFromFile(String contentsFileName) throws FileNotFoundException {

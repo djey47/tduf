@@ -208,13 +208,15 @@ public class DatabaseTool extends GenericTool {
                 continue;
             }
 
-            String writtenFileName = DatabaseReadWriteHelper.writeDatabaseTopicToJson(dbDto, this.jsonDirectory);
+            DatabaseReadWriteHelper.writeDatabaseTopicToJson(dbDto, this.jsonDirectory)
 
-            outLine("Writing done for topic: " + currentTopic);
-            outLine("-> " + writtenFileName);
-            outLine();
+                    .ifPresent((writtenFileName) -> {
+                        outLine("Writing done for topic: " + currentTopic);
+                        outLine("-> " + writtenFileName);
+                        outLine();
 
-            writtenFileNames.add(writtenFileName);
+                        writtenFileNames.add(writtenFileName);
+                    });
         }
 
         outLine("All done!");
@@ -320,22 +322,13 @@ public class DatabaseTool extends GenericTool {
     private List<String> writeAllTopicObjectsAsJson(List<DbDto> allTopicObjects) {
         return allTopicObjects.stream()
 
-                .map(this::writeTopicObjectAsJson)
+                .map( (topicObject) -> DatabaseReadWriteHelper.writeDatabaseTopicToJson(topicObject, this.outputDatabaseDirectory))
 
                 .filter(Optional::isPresent)
 
                 .map(Optional::get)
 
                 .collect(toList());
-    }
-
-    private Optional<String> writeTopicObjectAsJson(DbDto topicObject) {
-        try {
-            return Optional.ofNullable(DatabaseReadWriteHelper.writeDatabaseTopicToJson(topicObject, this.outputDatabaseDirectory));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return Optional.<String>empty();
-        }
     }
 
     private List<DbDto> checkAndReturnIntegrityErrorsAndObjects(List<IntegrityError> integrityErrors) throws IOException {
