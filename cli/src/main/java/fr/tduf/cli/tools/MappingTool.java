@@ -172,8 +172,7 @@ public class MappingTool extends GenericTool {
         outLine("  -> Files: " + banks);
         outLine("  -> Checksums: " + checksums);
 
-        BankMap map = loadBankMap();
-        Map<Long, String> newChecksums = MapHelper.findNewChecksums(map, checksums);
+        Map<Long, String> newChecksums = MapHelper.findNewChecksums(loadBankMap(), checksums);
 
         outLine("  -> Absent from Bnk1.map: " + newChecksums);
 
@@ -202,17 +201,12 @@ public class MappingTool extends GenericTool {
     }
 
     private BankMap loadBankMap() throws IOException {
-        Path mapFilePath = Paths.get(this.mapFile);
-
-        byte[] mapContents = Files.readAllBytes(mapFilePath);
-        ByteArrayInputStream mapInputStream = new ByteArrayInputStream(mapContents);
-        return MapParser.load(mapInputStream).parse();
+        return MapParser.load(this.mapFile).parse();
     }
 
     private void saveBankMap(BankMap map) throws IOException {
         Path mapFilePath = Paths.get(this.mapFile);
 
-        ByteArrayOutputStream outputStream = MapWriter.load(map).write();
-        Files.write(mapFilePath, outputStream.toByteArray());
+        Files.write(mapFilePath, MapWriter.load(map).write().toByteArray());
     }
 }
