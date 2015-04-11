@@ -23,12 +23,15 @@ import java.util.Optional;
 import static fr.tduf.libunlimited.common.helper.AssertionsHelper.assertFileDoesNotMatchReference;
 import static fr.tduf.libunlimited.common.helper.AssertionsHelper.assertFileMatchesReference;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.STRUCTURE_FIELDS_COUNT_MISMATCH;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.data.Index.atIndex;
 
 public class DatabaseReadWriteHelperTest {
 
     private static Class<DatabaseReadWriteHelperTest> thisClass = DatabaseReadWriteHelperTest.class;
+
+    private final String nonExistingDirectory = "~nope";
 
     private String tempDirectory;
 
@@ -255,11 +258,7 @@ public class DatabaseReadWriteHelperTest {
 
 
         // THEN
-        String expectedFileName = new File(tempDirectory, "TDU_Achievements.json").getAbsolutePath();
-
-        assertThat(actualFileName).isEqualTo(expectedFileName);
-
-        assertThat(new File(expectedFileName)).exists();
+        assertFileNameMatchesAndFileExists(actualFileName);
     }
 
     @Test
@@ -269,11 +268,36 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        Optional<String> potentialFileName = DatabaseReadWriteHelper.writeDatabaseTopicToJson(dbDto, "~nope");
+        Optional<String> potentialFileName = DatabaseReadWriteHelper.writeDatabaseTopicToJson(dbDto, nonExistingDirectory);
 
 
         // THEN
         assertThat(potentialFileName).isEmpty();
+    }
+
+    @Test
+    public void writeDatabaseTopicsToJson_whenProvidedContents_shouldCreateFile_andReturnFileName() {
+        // GIVEN
+        List<DbDto> topicObjects = singletonList(createDatabaseTopicObject());
+
+        // WHEN
+        List<String> writtenFileNames = DatabaseReadWriteHelper.writeDatabaseTopicsToJson(topicObjects, tempDirectory);
+
+        // THEN
+        assertThat(writtenFileNames).hasSize(1);
+        assertFileNameMatchesAndFileExists(writtenFileNames.get(0));
+    }
+
+    @Test
+    public void writeDatabaseTopicsToJson_whenWriterFailure_shouldReturnEmptyList() {
+        // GIVEN
+        List<DbDto> topicObjects = singletonList(createDatabaseTopicObject());
+
+        // WHEN
+        List<String> writtenFileNames = DatabaseReadWriteHelper.writeDatabaseTopicsToJson(topicObjects, nonExistingDirectory);
+
+        // THEN
+        assertThat(writtenFileNames).isEmpty();
     }
 
     @Test
@@ -326,6 +350,14 @@ public class DatabaseReadWriteHelperTest {
                 .withStructure(dbStructureDto)
                 .withData(dbDataDto)
                 .build();
+    }
+
+    private void assertFileNameMatchesAndFileExists(String fileName) {
+        String expectedFileName = new File(tempDirectory, "TDU_Achievements.json").getAbsolutePath();
+
+        assertThat(fileName).isEqualTo(expectedFileName);
+
+        assertThat(new File(expectedFileName)).exists();
     }
 
     private static void assertTopicObject(DbDto actualdbDto) {

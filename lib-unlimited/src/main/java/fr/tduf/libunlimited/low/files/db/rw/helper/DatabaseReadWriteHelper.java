@@ -122,6 +122,24 @@ public class DatabaseReadWriteHelper {
 
     /**
      * Writes all database contents (+resources) as JSON format from specified topic into outputDirectory.
+     * @param allTopicObjects   : topics contents to be written
+     * @param outputDirectory   : location of generated file
+     * @return names of correctlty written JSON files.
+     */
+    public static List<String> writeDatabaseTopicsToJson(List<DbDto> allTopicObjects, String outputDirectory) {
+        return allTopicObjects.stream()
+
+                .map( (topicObject) -> writeDatabaseTopicToJson(topicObject, outputDirectory))
+
+                .filter(Optional::isPresent)
+
+                .map(Optional::get)
+
+                .collect(toList());
+    }
+
+    /**
+     * Writes database contents (+resources) as JSON format from specified topic into outputDirectory.
      * @param dbDto             : topic contents to be written
      * @param outputDirectory   : location of generated file
      * @return name of written JSON file if all went correctly, absent otherwise.
@@ -138,6 +156,8 @@ public class DatabaseReadWriteHelper {
             return Optional.<String>empty();
         }
     }
+
+
 
     static List<String> parseTopicContentsFromFile(String contentsFileName) throws FileNotFoundException {
         return parseLinesInFile(contentsFileName, ENCODING_UTF_8);

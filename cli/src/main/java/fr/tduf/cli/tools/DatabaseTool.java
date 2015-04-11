@@ -176,7 +176,7 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Writing patched database to " + this.outputDatabaseDirectory + ", please wait...");
 
-        List<String> writtenFileNames = writeAllTopicObjectsAsJson(allTopicObjects);
+        List<String> writtenFileNames = DatabaseReadWriteHelper.writeDatabaseTopicsToJson(allTopicObjects, this.outputDatabaseDirectory);
 
         outLine("All done!");
 
@@ -317,18 +317,6 @@ public class DatabaseTool extends GenericTool {
 
         resultInfo.put("fixedDatabaseLocation", this.outputDatabaseDirectory);
         commandResult = resultInfo;
-    }
-
-    private List<String> writeAllTopicObjectsAsJson(List<DbDto> allTopicObjects) {
-        return allTopicObjects.stream()
-
-                .map( (topicObject) -> DatabaseReadWriteHelper.writeDatabaseTopicToJson(topicObject, this.outputDatabaseDirectory))
-
-                .filter(Optional::isPresent)
-
-                .map(Optional::get)
-
-                .collect(toList());
     }
 
     private List<DbDto> checkAndReturnIntegrityErrorsAndObjects(List<IntegrityError> integrityErrors) throws IOException {
