@@ -53,13 +53,8 @@ public class FilesHelper {
      * Silently creates directory(ies).
      * @param directoryToCreate : path to directory to be created. Intermediate folders will be created when necessary.
      */
-    public static void createDirectoryIfNotExists(String directoryToCreate) {
-        File outputDirectory = new File(directoryToCreate);
-
-        if (!outputDirectory.exists()) {
-            boolean isCreated = outputDirectory.mkdirs();
-            assert isCreated;
-        }
+    public static void createDirectoryIfNotExists(String directoryToCreate) throws IOException {
+        Files.createDirectories(Paths.get(directoryToCreate));
     }
 
     /**
