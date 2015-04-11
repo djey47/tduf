@@ -5,9 +5,11 @@ import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.rw.DatabaseWriter;
 import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,6 +18,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static fr.tduf.libunlimited.common.helper.AssertionsHelper.assertFileDoesNotMatchReference;
 import static fr.tduf.libunlimited.common.helper.AssertionsHelper.assertFileMatchesReference;
@@ -28,6 +31,9 @@ public class DatabaseReadWriteHelperTest {
     private static Class<DatabaseReadWriteHelperTest> thisClass = DatabaseReadWriteHelperTest.class;
 
     private String tempDirectory;
+
+    @Mock
+    private DatabaseWriter databaseWriter;
 
     @Before
     public void setUp() throws IOException {
@@ -239,21 +245,13 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void writeDatabaseToJson_whenProvidedContents_andClearContents_shouldCreateFiles() throws IOException {
+    public void writeDatabaseTopicToJson_whenProvidedContents_andClearContents_shouldCreateFile_andReturnAbsolutePath() throws IOException {
         // GIVEN
-        DbStructureDto dbStructureDto = DbStructureDto.builder()
-                .forTopic(DbDto.Topic.ACHIEVEMENTS)
-                .build();
-        DbDataDto dbDataDto = DbDataDto.builder()
-                .build();
-        DbDto dbDto = DbDto.builder()
-                .withStructure(dbStructureDto)
-                .withData(dbDataDto)
-                .build();
+        DbDto dbDto = createDatabaseTopicObject();
 
 
         // WHEN
-        String actualFileName = DatabaseReadWriteHelper.writeDatabaseTopicToJson(dbDto, tempDirectory);
+        String actualFileName = DatabaseReadWriteHelper.writeDatabaseTopicToJson(dbDto, tempDirectory).get();
 
 
         // THEN
@@ -265,7 +263,21 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void writeDatabase_whenProvidedContents_WithoutEncryption_shouldCreateClearFiles() throws URISyntaxException, IOException {
+    public void writeDatabaseTopicToJson_whenWriterFailure_shouldReturnAbsent() throws IOException {
+        // GIVEN
+        DbDto dbDto = createDatabaseTopicObject();
+
+
+        // WHEN
+        Optional<String> potentialFileName = DatabaseReadWriteHelper.writeDatabaseTopicToJson(dbDto, "~nope");
+
+
+        // THEN
+        assertThat(potentialFileName).isEmpty();
+    }
+
+    @Test
+    public void writeDatabaseTopic_whenProvidedContents_WithoutEncryption_shouldCreateClearFiles() throws URISyntaxException, IOException {
         // GIVEN
         String jsonDirectory = new File(thisClass.getResource("/db/dumped/TDU_Achievements.json").toURI()).getParent();
         DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory).get();
@@ -285,7 +297,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void writeDatabase_whenProvidedContents_WithEncryption_shouldCreateEncryptedFiles() throws URISyntaxException, IOException {
+    public void writeDatabaseTopic_whenProvidedContents_WithEncryption_shouldCreateEncryptedFiles() throws URISyntaxException, IOException {
         // GIVEN
         String jsonDirectory = new File(thisClass.getResource("/db/dumped/TDU_Achievements.json").toURI()).getParent();
         DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory).get();
@@ -302,6 +314,18 @@ public class DatabaseReadWriteHelperTest {
                 .forEach((fileName) -> assertThat(new File(fileName)).exists());
 
         assertFileDoesNotMatchReference(writtenFiles.get(0), "/db/encrypted/");
+    }
+
+    private DbDto createDatabaseTopicObject() {
+        DbStructureDto dbStructureDto = DbStructureDto.builder()
+                .forTopic(DbDto.Topic.ACHIEVEMENTS)
+                .build();
+        DbDataDto dbDataDto = DbDataDto.builder()
+                .build();
+        return DbDto.builder()
+                .withStructure(dbStructureDto)
+                .withData(dbDataDto)
+                .build();
     }
 
     private static void assertTopicObject(DbDto actualdbDto) {
