@@ -2,6 +2,7 @@ package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.AssertionsHelper;
 import fr.tduf.cli.common.helper.ConsoleHelper;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import org.junit.Before;
@@ -52,14 +53,14 @@ public class FileToolIntegTest {
 
     @Before
     public void setUp() throws IOException {
-        Files.createDirectories(Paths.get(encryptDirectory));
-        Files.createDirectories(Paths.get(decryptDirectory));
+        FilesHelper.createDirectoryIfNotExists(encryptDirectory);
+        FilesHelper.createDirectoryIfNotExists(decryptDirectory);
 
-        Files.createDirectories(Paths.get(jsonifyDirectory));
-        Files.createDirectories(Paths.get(applyjsonDirectory));
+        FilesHelper.createDirectoryIfNotExists(jsonifyDirectory);
+        FilesHelper.createDirectoryIfNotExists(applyjsonDirectory);
 
-        Files.createDirectories(Paths.get(unpackedDirectory));
-        Files.createDirectories(Paths.get(repackedDirectory));
+        FilesHelper.createDirectoryIfNotExists(unpackedDirectory);
+        FilesHelper.createDirectoryIfNotExists(repackedDirectory);
 
         Files.deleteIfExists(Paths.get(encryptDirectory, encryptedFileName));
         Files.deleteIfExists(Paths.get(decryptDirectory, sourceFileNameToBeEncrypted));

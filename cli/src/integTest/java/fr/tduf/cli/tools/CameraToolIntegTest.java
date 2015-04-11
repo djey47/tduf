@@ -1,5 +1,6 @@
 package fr.tduf.cli.tools;
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public class CameraToolIntegTest {
 
     @Before
     public void setUp() throws IOException {
-        Files.createDirectories(Paths.get(outputDirectory));
+        FilesHelper.createDirectoryIfNotExists(outputDirectory);
 
         Files.deleteIfExists(Paths.get(outputCameraFile));
     }

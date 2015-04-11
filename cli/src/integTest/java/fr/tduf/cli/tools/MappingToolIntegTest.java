@@ -1,5 +1,6 @@
 package fr.tduf.cli.tools;
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapWriter;
 import org.junit.Before;
@@ -18,9 +19,9 @@ public class MappingToolIntegTest {
     private final String contentsDirectory2 = "integ-tests/mapping/cnt1/cnt2";
 
     @Before
-    public void setUp() {
-        new File(mappingDirectory).mkdirs();
-        new File(contentsDirectory2).mkdirs();
+    public void setUp() throws IOException {
+        FilesHelper.createDirectoryIfNotExists(mappingDirectory);
+        FilesHelper.createDirectoryIfNotExists(contentsDirectory2);
     }
 
     @Test
@@ -34,8 +35,9 @@ public class MappingToolIntegTest {
 
 
         //GIVEN: 2 new files to bank directory
-        new File(contentsDirectory1, "c1").createNewFile();
-        new File(contentsDirectory2, "c2").createNewFile();
+        Files.createFile(Paths.get(contentsDirectory1, "c1"));
+        Files.createFile(Paths.get(contentsDirectory2, "c2"));
+
 
         //WHEN: list-missing
         System.out.println("-> List-missing!");
