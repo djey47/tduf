@@ -21,7 +21,7 @@ public class FilesHelperTest {
     }
 
     @Test
-    public void createDirectoryIfNotExists_whenExisting_shouldDoNothing() {
+    public void createDirectoryIfNotExists_whenExisting_shouldDoNothing() throws IOException {
         // GIVEN-WHEN
         FilesHelper.createDirectoryIfNotExists(tempDirectory);
 
@@ -32,7 +32,7 @@ public class FilesHelperTest {
     }
 
     @Test
-    public void createDirectoryIfNotExists_whenNonExisting_shouldCreateIt() {
+    public void createDirectoryIfNotExists_whenNonExisting_shouldCreateIt() throws IOException {
         // GIVEN
         String directoryToCreate = tempDirectory + "/1/2/3";
 
