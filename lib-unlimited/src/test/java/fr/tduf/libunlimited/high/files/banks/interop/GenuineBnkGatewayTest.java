@@ -145,31 +145,6 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test
-    public void getTargetFileNameFromPathCompounds() throws Exception {
-        // GIVEN
-        String bankFileName = "/home/bill/work/File.bnk";
-        String[] filePathCompounds = PACKED_FILE_FULL_NAME.split("\\\\");
-
-        // WHEN
-        String actualFileName = GenuineBnkGateway.getTargetFileNameFromPathCompounds(bankFileName, filePathCompounds);
-
-        // THEN
-        assertThat(actualFileName.replace('\\', '/')).isEqualTo("/home/bill/work/File.bnk/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55/CLK_55.2DM");
-    }
-
-    @Test
-    public void getFileNameFromPathCompounds() throws Exception {
-        // GIVEN
-        String[] filePathCompounds = PACKED_FILE_FULL_NAME.split("\\\\");
-
-        // WHEN
-        String actualFileName = GenuineBnkGateway.getFileNameFromPathCompounds(filePathCompounds);
-
-        // THEN
-        assertThat(actualFileName).isEqualTo("CLK_55.2DM");
-    }
-
-    @Test
     public void generatePackedFileReference() {
         // GIVEN-WHEN
         String actualReference = GenuineBnkGateway.generatePackedFileReference(PACKED_FILE_FULL_NAME);
