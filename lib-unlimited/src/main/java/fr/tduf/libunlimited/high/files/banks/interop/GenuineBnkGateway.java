@@ -61,6 +61,8 @@ public class GenuineBnkGateway implements BankSupport {
                         .forReference(generatePackedFileReference(packedFileInfo.getName()))
                         .withSize(packedFileInfo.getFileSize())
                         .withFullName(packedFileInfo.getName())
+                        .withShortName(packedFileInfo.getShortName())
+                        .withTypeDescription(packedFileInfo.getType())
                         .build())
 
                 .collect(toList());

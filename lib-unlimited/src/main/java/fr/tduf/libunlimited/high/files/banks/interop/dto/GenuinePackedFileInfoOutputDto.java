@@ -13,8 +13,14 @@ public class GenuinePackedFileInfoOutputDto {
     @JsonProperty("name")
     private String name;
 
+    @JsonProperty("shortName")
+    private String shortName;
+
     @JsonProperty("fileSize")
     private int fileSize;
+
+    @JsonProperty("type")
+    private String type;
 
     public String getName() {
         return name;
@@ -22,5 +28,13 @@ public class GenuinePackedFileInfoOutputDto {
 
     public int getFileSize() {
         return fileSize;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public String getType() {
+        return type;
     }
 }
