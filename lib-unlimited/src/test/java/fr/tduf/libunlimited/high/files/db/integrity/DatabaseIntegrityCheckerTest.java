@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.CONTENTS_REFERENCE_NOT_FOUND;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND;
@@ -176,7 +177,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     private List<DbDto> createAllDtos(DbDataDto dataDto, DbResourceDto resourceDto) {
-        return asList(DbDto.Topic.values()).stream()
+        return Stream.of(DbDto.Topic.values())
 
                 .map((topicEnum) -> {
                     DbStructureDto structureDto = createStructure(topicEnum);

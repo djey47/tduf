@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.CONTENTS_REFERENCE_NOT_FOUND;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND;
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -69,7 +69,7 @@ public class DatabaseIntegrityChecker {
     }
 
     private void checkIfAllTopicObjectsPresent() {
-        List<DbDto.Topic> absentTopics = asList(DbDto.Topic.values()).stream()
+        List<DbDto.Topic> absentTopics = Stream.of(DbDto.Topic.values())
 
                 .filter((topicEnum) -> !bulkDatabaseMiner.getDatabaseTopic(topicEnum).isPresent())
 

@@ -7,8 +7,8 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -90,7 +90,7 @@ public class DatabaseToolIntegTest {
     }
 
     private static long getTopicFileCount(String jsonDirectory, String extension) {
-        Map<String, Boolean> jsonFileResult = asList(DbDto.Topic.values()).stream()
+        Map<String, Boolean> jsonFileResult = Stream.of(DbDto.Topic.values())
 
                 .map((topic) -> topic.getLabel() + "." + extension)
 
@@ -107,9 +107,9 @@ public class DatabaseToolIntegTest {
         long dbFilesCount = getTopicFileCount(directory, "db");
         assertThat(dbFilesCount).isEqualTo(18);
 
-        asList(DbResourceDto.Locale.values()).stream()
+        Stream.of(DbResourceDto.Locale.values())
 
-                .forEach( (locale) -> {
+                .forEach((locale) -> {
                     long resFilesCount = getTopicFileCount(directory, locale.getCode());
                     assertThat(resFilesCount).isEqualTo(18);
                 });

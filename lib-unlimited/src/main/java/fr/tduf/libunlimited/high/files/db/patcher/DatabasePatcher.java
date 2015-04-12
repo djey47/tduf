@@ -10,8 +10,8 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -127,7 +127,8 @@ public class DatabasePatcher {
 
         } else {
 
-            asList(DbResourceDto.Locale.values())
+            Stream.of(DbResourceDto.Locale.values())
+
                     .forEach((currentLocale) -> deleteResourcesForLocale(changeObject, currentLocale));
 
         }
@@ -152,7 +153,8 @@ public class DatabasePatcher {
 
         } else {
 
-            asList(DbResourceDto.Locale.values())
+            Stream.of(DbResourceDto.Locale.values())
+
                     .forEach((currentLocale) -> addOrUpdateResourcesForLocale(changeObject, currentLocale));
 
         }
