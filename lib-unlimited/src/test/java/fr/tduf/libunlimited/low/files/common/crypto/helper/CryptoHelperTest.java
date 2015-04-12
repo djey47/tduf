@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.common.crypto.helper;
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,15 +9,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CryptoHelperTest {
-    private final static Class thisClass = CryptoHelperTest.class;
 
     @Before
     public void setUp() {
@@ -42,10 +39,10 @@ public class CryptoHelperTest {
     @Test
     public void decryptXTEA_withRealFile_andSavegameMode_shouldGiveClearContentsBack() throws URISyntaxException, IOException, InvalidKeyException {
         // GIVEN
-        byte[] contentBytes = getBytesFromResource("/common/crypto/savegame/encrypted.bin");
+        byte[] contentBytes = FilesHelper.readBytesFromResourceFile("/common/crypto/savegame/encrypted.bin");
         ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes);
 
-        byte[] expectedBytes = getBytesFromResource("/common/crypto/clear.txt");
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/common/crypto/clear.txt");
 
 
         // WHEN
@@ -60,10 +57,10 @@ public class CryptoHelperTest {
     @Test
     public void decryptXTEA_withRealFile_andOtherMode_shouldGiveClearContentsBack() throws IOException, URISyntaxException, InvalidKeyException {
         // GIVEN
-        byte[] contentBytes = getBytesFromResource("/common/crypto/other/encrypted.bin");
+        byte[] contentBytes = FilesHelper.readBytesFromResourceFile("/common/crypto/other/encrypted.bin");
         ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes);
 
-        byte[] expectedBytes = getBytesFromResource("/common/crypto/clear.txt");
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/common/crypto/clear.txt");
 
 
         // WHEN
@@ -89,10 +86,10 @@ public class CryptoHelperTest {
     @Test
     public void encryptXTEA_withRealFile_andSavegameMode_shouldGiveEncryptedContentsBack() throws URISyntaxException, IOException, InvalidKeyException {
         // GIVEN
-        byte[] contentBytes = getBytesFromResource("/common/crypto/clear.txt");
+        byte[] contentBytes = FilesHelper.readBytesFromResourceFile("/common/crypto/clear.txt");
         ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes);
 
-        byte[] expectedBytes = getBytesFromResource("/common/crypto/savegame/encrypted.bin");
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/common/crypto/savegame/encrypted.bin");
 
 
         // WHEN
@@ -107,10 +104,10 @@ public class CryptoHelperTest {
     @Test
     public void encryptXTEA_withRealFile_andOtherMode_shouldGiveEncryptedContentsBack() throws URISyntaxException, IOException, InvalidKeyException {
         // GIVEN
-        byte[] contentBytes = getBytesFromResource("/common/crypto/clear.txt");
+        byte[] contentBytes = FilesHelper.readBytesFromResourceFile("/common/crypto/clear.txt");
         ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes);
 
-        byte[] expectedBytes = getBytesFromResource("/common/crypto/other/encrypted.bin");
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/common/crypto/other/encrypted.bin");
 
 
         // WHEN
@@ -139,10 +136,5 @@ public class CryptoHelperTest {
 
         // THEN
         assertThat(actualBytes).isEqualTo(expectedBytes);
-    }
-
-    private static byte[] getBytesFromResource(String resourceName) throws URISyntaxException, IOException {
-        Path encryptedPath = Paths.get(thisClass.getResource(resourceName).toURI()) ;
-        return Files.readAllBytes(encryptedPath);
     }
 }
