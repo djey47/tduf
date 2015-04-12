@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.Test;
@@ -8,16 +9,11 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CamerasWriterTest {
-
-    private static final Class<CamerasWriterTest> thisClass = CamerasWriterTest.class;
 
     @Test
     public void load_shouldReturnWriterInstance() throws IOException {
@@ -35,7 +31,7 @@ public class CamerasWriterTest {
     @Test
     public void write_shouldReturnOriginalContentsBack() throws IOException, URISyntaxException {
         // GIVEN
-        byte[] camerasContentsFromFile = getCamerasContentsFromFile();
+        byte[] camerasContentsFromFile = FilesHelper.readBytesFromResourceFile("/bin/Cameras.bin");
         CamerasParser camerasParser = CamerasParser.load(new ByteArrayInputStream(camerasContentsFromFile));
         camerasParser.parse();
 
@@ -46,10 +42,5 @@ public class CamerasWriterTest {
         // THEN
         assertThat(actualOutputStream).isNotNull();
         assertThat(actualOutputStream.toByteArray()).isEqualTo(camerasContentsFromFile);
-    }
-
-    private static byte[] getCamerasContentsFromFile() throws URISyntaxException, IOException {
-        URI uri = thisClass.getResource("/bin/Cameras.bin").toURI();
-        return Files.readAllBytes(Paths.get(uri));
     }
 }

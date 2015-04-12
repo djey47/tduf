@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static net.sf.json.test.JSONAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,7 +24,7 @@ public class DatabaseParserTest {
     public void load_whenProvidedContents_shouldReturnParserInstanceWithoutErrors() throws Exception {
         //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
-        List<List<String>> resourceLines = asList(
+        List<List<String>> resourceLines = singletonList(
                 createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE)
         );
 
@@ -48,7 +50,7 @@ public class DatabaseParserTest {
                 "// items: 10",
                 "55736935;",
                 "\0");
-        List<List<String>> resourceLines = asList(
+        List<List<String>> resourceLines = singletonList(
                 createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE)
         );
 
@@ -124,7 +126,7 @@ public class DatabaseParserTest {
                 "// items: 1",
                 "606298799;735;59938407;",
                 "\0");
-        List<List<String>> resourceLines = asList(
+        List<List<String>> resourceLines = singletonList(
                 asList(
                         "// TDU_CarPhysicsData.fr",
                         "// version: 1,2",
@@ -166,7 +168,7 @@ public class DatabaseParserTest {
                 "// items: 1",
                 "-33,33;",
                 "\0");
-        List<List<String>> resourceLines = asList(
+        List<List<String>> resourceLines = singletonList(
                 asList(
                         "// TDU_CarPhysicsData.fr",
                         "// version: 1,2",
@@ -208,7 +210,7 @@ public class DatabaseParserTest {
                 "// items: 1",
                 "1;;3;",
                 "\0");
-        List<List<String>> resourceLines = asList(
+        List<List<String>> resourceLines = singletonList(
                 asList(
                         "// TDU_CarPhysicsData.fr",
                         "// version: 1,2",
@@ -312,7 +314,7 @@ public class DatabaseParserTest {
         assertThat(databaseParser.getResourceCount()).isEqualTo(2);
         assertThat(databaseParser.getIntegrityErrors()).isEmpty();
 
-        String expectedJson = DbHelper.readTextFromSample("/db/dumped/TDU_Achievements.json", "UTF-8");
+        String expectedJson = FilesHelper.readTextFromResourceFile("/db/dumped/TDU_Achievements.json", FilesHelper.CHARSET_UNICODE_8);
         assertJsonEquals(expectedJson, jsonResult);
     }
 
