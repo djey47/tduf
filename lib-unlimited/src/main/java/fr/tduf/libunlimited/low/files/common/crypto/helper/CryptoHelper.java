@@ -7,8 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
-
-import static java.util.Arrays.asList;
+import java.util.stream.Stream;
 
 /**
  * Utility class to handle TDU files encryption/decryption.
@@ -55,7 +54,6 @@ public class CryptoHelper {
             position += BLOCK_SIZE;
         }
 
-        outputStream.close();
         return outputStream;
     }
 
@@ -104,7 +102,6 @@ public class CryptoHelper {
             position += BLOCK_SIZE;
         }
 
-        outputStream.close();
         return outputStream;
     }
 
@@ -216,7 +213,7 @@ public class CryptoHelper {
          * @return a EncryptionModeEnum member
          */
         public static EncryptionModeEnum fromIdentifier(int cryptoMode) {
-            return asList(EncryptionModeEnum.values()).stream()
+            return Stream.of(EncryptionModeEnum.values())
 
                     .filter((encryptionModeEnum) -> encryptionModeEnum.id == cryptoMode)
 
