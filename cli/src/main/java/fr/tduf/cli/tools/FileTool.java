@@ -231,11 +231,15 @@ public class FileTool extends GenericTool {
         outLine("\t-> Size: " + bankInfoObject.getFileSize() + " bytes");
         outLine("\t-> Packed files (" + bankInfoObject.getPackedFiles().size() + "):");
 
-        bankInfoObject.getPackedFiles().stream()
-
-                .forEach((packedFileInfoObject) -> outLine("\t\t." + packedFileInfoObject.getReference()
-                        + "(" + packedFileInfoObject.getFullName() + ") :  "
-                        + packedFileInfoObject.getSize() + " bytes"));
+        bankInfoObject.getPackedFiles()
+                .forEach((packedFileInfoObject) -> outLine(
+                        String.format("\t\t. %s (%s => %s) : %d bytes - %s",
+                                packedFileInfoObject.getReference(),
+                                packedFileInfoObject.getFullName(),
+                                packedFileInfoObject.getShortName(),
+                                packedFileInfoObject.getSize(),
+                                packedFileInfoObject.getType())
+                        ));
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("bankFile", this.inputFile);
