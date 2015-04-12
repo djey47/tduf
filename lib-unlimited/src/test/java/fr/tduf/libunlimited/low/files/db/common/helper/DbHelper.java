@@ -4,11 +4,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -50,21 +45,6 @@ public class DbHelper {
         InputStream resourceAsStream = thisClass.getResourceAsStream(sampleFile);
 
         return readContentsFromStream(resourceAsStream, encoding);
-    }
-
-    /**
-     * Reads provided text file and return contents.
-     * @param sampleFile    : resource name of file to read
-     * @param charsetName   : name of character set used in provided file
-     * @return a String containing all text in file
-     * @throws IOException
-     * @throws URISyntaxException
-     */
-    public static String readTextFromSample(String sampleFile, String charsetName) throws IOException, URISyntaxException {
-        Path path = Paths.get(thisClass.getResource(sampleFile).toURI());
-        byte[] encoded = Files.readAllBytes(path);
-
-        return new String(encoded, Charset.forName(charsetName));
     }
 
     /**

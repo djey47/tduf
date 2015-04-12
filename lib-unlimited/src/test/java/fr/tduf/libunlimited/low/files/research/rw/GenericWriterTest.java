@@ -1,20 +1,17 @@
 package fr.tduf.libunlimited.low.files.research.rw;
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 
 import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.UNKNOWN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericWriterTest {
-    private static final Class<GenericWriterTest> thisClass = GenericWriterTest.class;
 
     private static final String DATA = "data";
 
@@ -54,8 +51,7 @@ public class GenericWriterTest {
         byte[] actualBytes = actualOutputStream.toByteArray();
         assertThat(actualBytes).hasSize(47);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
@@ -75,8 +71,7 @@ public class GenericWriterTest {
         byte[] actualBytes = actualOutputStream.toByteArray();
         assertThat(actualBytes).hasSize(47);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-modifiedTextLength.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-modifiedTextLength.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
@@ -96,8 +91,7 @@ public class GenericWriterTest {
         byte[] actualBytes = actualOutputStream.toByteArray();
         assertThat(actualBytes).hasSize(48);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-encrypted.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-encrypted.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
@@ -115,8 +109,7 @@ public class GenericWriterTest {
         byte[] actualBytes = actualOutputStream.toByteArray();
         assertThat(actualBytes).hasSize(6);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-halfFloat.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-halfFloat.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
@@ -134,8 +127,7 @@ public class GenericWriterTest {
         byte[] actualBytes = actualOutputStream.toByteArray();
         assertThat(actualBytes).hasSize(3);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-veryShortInt.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-veryShortInt.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
@@ -155,8 +147,7 @@ public class GenericWriterTest {
         byte[] actualBytes = actualOutputStream.toByteArray();
         assertThat(actualBytes).hasSize(51);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-auto.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-auto.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
@@ -176,8 +167,7 @@ public class GenericWriterTest {
         byte[] actualBytes = actualOutputStream.toByteArray();
         assertThat(actualBytes).hasSize(47);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-littleEndian.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-littleEndian.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
@@ -197,8 +187,7 @@ public class GenericWriterTest {
         byte[] actualBytes = actualOutputStream.toByteArray();
         assertThat(actualBytes).hasSize(26);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-formulas.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-formulas.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
