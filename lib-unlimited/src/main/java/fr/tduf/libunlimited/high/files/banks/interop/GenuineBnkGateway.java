@@ -1,9 +1,9 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
 import com.google.common.base.Joiner;
+import fr.tduf.libunlimited.common.domain.ProcessResult;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
-import fr.tduf.libunlimited.common.domain.ProcessResult;
 import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBankInfoOutputDto;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
@@ -27,8 +27,6 @@ public class GenuineBnkGateway implements BankSupport {
 
     private static final String EXTENSION_BANKS = "bnk";
 
-    private static final String PATH_SEPARATOR_REGEX = "\\\\";
-
     // TODO reuse genuine bnk file name with original- prefix
     static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
     static final String EXE_TDUMT_CLI = ".\\tools\\tdumt-cli\\tdumt-cli.exe";
@@ -36,7 +34,6 @@ public class GenuineBnkGateway implements BankSupport {
     static final String CLI_COMMAND_BANK_UNPACK = "BANK-U";
     static final String CLI_COMMAND_BANK_REPLACE = "BANK-R";
     public static final String PREFIX_PACKED_FILE_PATH = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\";
-    public static final int PREFIX_PACKED_FILE_COMPOUNDS_SIZE = 5;
 
     private CommandLineHelper commandLineHelper;
 
@@ -84,14 +81,13 @@ public class GenuineBnkGateway implements BankSupport {
 
         BankInfoDto bankInfoObject = getBankInfo(bankFileName);
 
-        bankInfoObject.getPackedFiles().stream()
+        bankInfoObject.getPackedFiles()
 
-                .map(PackedFileInfoDto::getFullName)
-
-                .forEach((fileName) -> {
+                .forEach((infoObject) -> {
                     try {
-                        extractPackedFileWithFullPath(bankFileName, fileName, outputDirectory);
+                        extractPackedFileWithFullPath(bankFileName, infoObject, outputDirectory);
                     } catch (IOException e) {
+                        // Do not fail here.
                         e.printStackTrace();
                     }
                 });
@@ -152,25 +148,6 @@ public class GenuineBnkGateway implements BankSupport {
         return PREFIX_PACKED_FILE_PATH + Joiner.on('\\').join(pathElements);
     }
 
-    /**
-     * Output example:  'mybank.bnk/A3_V6.3DD'
-     */
-    static String getTargetFileNameFromPathCompounds(String bankFileName, String[] filePathCompounds) {
-        String[] pathElements = new String[filePathCompounds.length - 1 - PREFIX_PACKED_FILE_COMPOUNDS_SIZE];
-
-        System.arraycopy(filePathCompounds, PREFIX_PACKED_FILE_COMPOUNDS_SIZE, pathElements, 0, pathElements.length);
-        pathElements[pathElements.length - 1] = getFileNameFromPathCompounds(filePathCompounds);
-
-        return Paths.get(bankFileName, pathElements).toString();
-    }
-
-    /**
-     * Output example:  {'D:', 'Eden-Prog', 'Games', ..., '.3DD', 'A3_V6'} -> 'A3_V6.3DD'
-     */
-    static String getFileNameFromPathCompounds(String[] filePathCompounds) {
-        return filePathCompounds[filePathCompounds.length-1] + filePathCompounds[filePathCompounds.length-2];
-    }
-
     static String generatePackedFileReference(String fileName) {
         long hash = fileName.hashCode();
 
@@ -181,19 +158,15 @@ public class GenuineBnkGateway implements BankSupport {
         }
     }
 
-    private void extractPackedFileWithFullPath(String bankFileName, String filePath, String outputDirectory) throws IOException {
-        ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_UNPACK, bankFileName, filePath, outputDirectory);
+    private void extractPackedFileWithFullPath(String bankFileName, PackedFileInfoDto packedFileInfo, String outputDirectory) throws IOException {
+        ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_UNPACK, bankFileName, packedFileInfo.getFullName(), outputDirectory);
         handleCommandLineErrors(processResult);
 
-        String[] filePathCompounds = filePath.split(PATH_SEPARATOR_REGEX);
+        Path extractedPath = Paths.get(outputDirectory, packedFileInfo.getShortName());
+        Path targetPath = Paths.get(outputDirectory, new File(bankFileName).getName(), packedFileInfo.getShortName());
 
-        File bank = new File(bankFileName);
-        File extractedFile = new File(outputDirectory, getFileNameFromPathCompounds(filePathCompounds));
-        File targetFile = new File(outputDirectory, getTargetFileNameFromPathCompounds(bank.getName(), filePathCompounds));
-
-        Path targetPath = targetFile.toPath();
         Files.createDirectories(targetPath.getParent());
-        Files.move(extractedFile.toPath(), targetPath);
+        Files.move(extractedPath, targetPath);
     }
 
     private static void handleCommandLineErrors(ProcessResult processResult) throws IOException {
