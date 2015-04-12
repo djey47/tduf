@@ -10,6 +10,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static java.util.Arrays.asList;
@@ -323,13 +324,13 @@ public class DatabaseIntegrityFixer {
     }
 
     private void addDefaultResourceReferenceForAllLocales(String resourceReference, DbDto topicObject) {
-        asList(DbResourceDto.Locale.values()).stream()
+        Stream.of(DbResourceDto.Locale.values())
 
                 .forEach((locale) -> addResourceEntryFromValidLocale(resourceReference, topicObject.getStructure().getTopic(), locale));
     }
 
     private Set<DbResourceDto.Locale> findValidResourceLocales() {
-        return asList(DbResourceDto.Locale.values()).stream()
+        return Stream.of(DbResourceDto.Locale.values())
 
                 .filter((locale) -> !this.integrityErrors.stream()
 

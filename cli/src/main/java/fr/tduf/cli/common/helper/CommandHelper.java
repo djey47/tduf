@@ -3,8 +3,8 @@ package fr.tduf.cli.common.helper;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -18,7 +18,7 @@ public class CommandHelper {
      * @return a set of all labels.
      */
     public static Set<String> getLabels(CommandEnum commandEnum) {
-        return asList(commandEnum.getValues()).stream()
+        return Stream.of(commandEnum.getValues())
 
                 .map(CommandEnum::getLabel)
 
@@ -31,7 +31,7 @@ public class CommandHelper {
      * @return a map of all values.
      */
     public static Map<String, String> getValuesAsMap(CommandEnum commandEnum) {
-        return asList(commandEnum.getValues()).stream()
+        return Stream.of(commandEnum.getValues())
 
                 .collect(Collectors.toMap(CommandEnum::getLabel, CommandEnum::getDescription));
     }
@@ -43,7 +43,7 @@ public class CommandHelper {
      * @return a value.
      */
     public static CommandEnum fromLabel(CommandEnum commandEnum, String label) {
-        return asList(commandEnum.getValues()).stream()
+        return Stream.of(commandEnum.getValues())
 
                 .filter(cmd -> cmd.getLabel().equals(label))
 
