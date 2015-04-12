@@ -63,6 +63,14 @@ public class FilesHelperTest {
     }
 
     @Test(expected = NullPointerException.class)
+    public void readTextFromResourceFile_withNullEncoding_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN-WHEN
+        FilesHelper.readTextFromResourceFile("/files/file.txt", null);
+
+        // THEN: NPE
+    }
+
+    @Test(expected = NullPointerException.class)
     public void readBytesFromResourceFile_whenResourceNotFound_shouldThrowNullPointerException() throws IOException, URISyntaxException {
         // GIVEN-WHEN
         FilesHelper.readBytesFromResourceFile("/not a resource/");
