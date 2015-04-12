@@ -9,6 +9,8 @@ public class PackedFileInfoDto implements Serializable {
 
     private String reference;
     private String fullName;
+    private String shortName;
+    private String type;
     private int size;
 
     /**
@@ -17,6 +19,8 @@ public class PackedFileInfoDto implements Serializable {
     public static PackedFileInfoDtoBuilder builder() {
         return new PackedFileInfoDtoBuilder(){
 
+            private String shortName;
+            private String type;
             private int size;
             private String reference;
             private String fullName;
@@ -28,6 +32,8 @@ public class PackedFileInfoDto implements Serializable {
                 packedFileInfoDto.fullName = this.fullName;
                 packedFileInfoDto.reference = this.reference;
                 packedFileInfoDto.size = this.size;
+                packedFileInfoDto.shortName = this.shortName;
+                packedFileInfoDto.type = this.type;
 
                 return packedFileInfoDto;
             }
@@ -49,6 +55,18 @@ public class PackedFileInfoDto implements Serializable {
                 this.fullName = fullName;
                 return this;
             }
+
+            @Override
+            public PackedFileInfoDtoBuilder withShortName(String shortName) {
+                this.shortName = shortName;
+                return this;
+            }
+
+            @Override
+            public PackedFileInfoDtoBuilder withTypeDescription(String typeDescription) {
+                this.type = typeDescription;
+                return this;
+            }
         };
     }
 
@@ -64,6 +82,14 @@ public class PackedFileInfoDto implements Serializable {
         return size;
     }
 
+    public String getShortName() {
+        return shortName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
     public interface PackedFileInfoDtoBuilder {
         PackedFileInfoDto build();
 
@@ -72,5 +98,9 @@ public class PackedFileInfoDto implements Serializable {
         PackedFileInfoDtoBuilder withSize(int size);
 
         PackedFileInfoDtoBuilder withFullName(String fullName);
+
+        PackedFileInfoDtoBuilder withShortName(String shortName);
+
+        PackedFileInfoDtoBuilder withTypeDescription(String typeDescription);
     }
 }
