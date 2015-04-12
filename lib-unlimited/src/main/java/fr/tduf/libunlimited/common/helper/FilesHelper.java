@@ -10,21 +10,38 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Helper class to provide common file operations.
  */
 public class FilesHelper {
 
+    public static final Charset CHARSET_DEFAULT = Charset.defaultCharset();
+    public static final Charset CHARSET_UNICODE_8 = Charset.forName("UTF-8");
+
     private static Class<FilesHelper> thisClass = FilesHelper.class;
 
     /**
-     * Reads text file at provided resource location.
+     * Reads text file at provided resource location. Used charset is the default one.
      * @param resourcePath  : path of resource
      * @return a String with resource file contents.
      */
     public static String readTextFromResourceFile(String resourcePath) throws URISyntaxException, IOException {
+        return readTextFromResourceFile(resourcePath, CHARSET_DEFAULT);
+    }
+
+    /**
+     * Reads text file at provided resource location with a given charset.
+     * @param resourcePath  : path of resource
+     * @param charset       : charset to use
+     * @return a String with resource file contents.
+     */
+    public static String readTextFromResourceFile(String resourcePath, Charset charset) throws URISyntaxException, IOException {
+        requireNonNull(charset, "A valid charset is required");
+
         URI fileUri = getUriFromResourcePath(resourcePath);
-        return new String(Files.readAllBytes(Paths.get(fileUri)), Charset.defaultCharset());
+        return new String(Files.readAllBytes(Paths.get(fileUri)), charset);
     }
 
     /**
