@@ -28,8 +28,10 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class GenuineBnkGatewayTest {
 
+    private static final String PACKED_FILE_FULL_NAME = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.2DM\\CLK_55";
+
     @Mock
-    CommandLineHelper commandLineHelperMock;
+    private CommandLineHelper commandLineHelperMock;
 
     @InjectMocks
     private GenuineBnkGateway genuineBnkGateway;
@@ -139,14 +141,14 @@ public class GenuineBnkGatewayTest {
         String actualPackedFilePath = GenuineBnkGateway.getInternalPackedFilePath(packedFilePath, basePath);
 
         // THEN
-        assertThat(actualPackedFilePath).isEqualTo("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.2DM\\CLK_55");
+        assertThat(actualPackedFilePath).isEqualTo(PACKED_FILE_FULL_NAME);
     }
 
     @Test
     public void getTargetFileNameFromPathCompounds() throws Exception {
         // GIVEN
         String bankFileName = "/home/bill/work/File.bnk";
-        String[] filePathCompounds = new String[]{"D:", "Eden-Prog", "Games", "TestDrive", "Resources", "4Build", "PC", "EURO", "Vehicules", "Cars", "Mercedes", "CLK_55", ".2DM", "CLK_55"};
+        String[] filePathCompounds = PACKED_FILE_FULL_NAME.split("\\\\");
 
         // WHEN
         String actualFileName = GenuineBnkGateway.getTargetFileNameFromPathCompounds(bankFileName, filePathCompounds);
@@ -158,7 +160,7 @@ public class GenuineBnkGatewayTest {
     @Test
     public void getFileNameFromPathCompounds() throws Exception {
         // GIVEN
-        String[] filePathCompounds = new String[]{"D:", "Eden-Prog", "Games", "TestDrive", "Resources", "4Build", "PC", "EURO", "Vehicules", "Cars", "Mercedes", "CLK_55", ".2DM", "CLK_55"};
+        String[] filePathCompounds = PACKED_FILE_FULL_NAME.split("\\\\");
 
         // WHEN
         String actualFileName = GenuineBnkGateway.getFileNameFromPathCompounds(filePathCompounds);
@@ -169,14 +171,11 @@ public class GenuineBnkGatewayTest {
 
     @Test
     public void generatePackedFileReference() {
-        // GIVEN
-        String packedFilePath = "\\D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.2DM\\CLK_55";
-
-        // WHEN
-        String actualReference = GenuineBnkGateway.generatePackedFileReference(packedFilePath);
+        // GIVEN-WHEN
+        String actualReference = GenuineBnkGateway.generatePackedFileReference(PACKED_FILE_FULL_NAME);
 
         // THEN
-        assertThat(actualReference).isEqualTo("2732794586");
+        assertThat(actualReference).isEqualTo("3367621430");
     }
 
     @Test(expected = NoSuchElementException.class)
