@@ -52,8 +52,8 @@ public class FileStructureDto implements Serializable {
         return fields;
     }
 
-    public Boolean isLittleEndian() {
-        return littleEndian;
+    public boolean isLittleEndian() {
+        return littleEndian != null && littleEndian;
     }
 
     public Integer getCryptoMode() {
