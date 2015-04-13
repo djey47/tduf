@@ -76,6 +76,9 @@ public class FileStructureDto implements Serializable {
         @JsonProperty("type")
         private Type type;
 
+        @JsonProperty("signed")
+        private Boolean signed;
+
         @JsonProperty("size")
         private String sizeFormula;
 
@@ -86,6 +89,7 @@ public class FileStructureDto implements Serializable {
 
         public static FieldBuilder builder() {
             return new FieldBuilder() {
+                public boolean signed;
                 private List<Field> subFields;
                 private Type type;
                 private String sizeFormula;
@@ -100,6 +104,12 @@ public class FileStructureDto implements Serializable {
                 @Override
                 public FieldBuilder withType(Type type) {
                     this.type = type;
+                    return this;
+                }
+
+                @Override
+                public FieldBuilder signed(boolean isSigned) {
+                    this.signed = isSigned;
                     return this;
                 }
 
@@ -129,6 +139,7 @@ public class FileStructureDto implements Serializable {
                     field.sizeFormula = this.sizeFormula;
                     field.type = this.type;
                     field.subFields = this.subFields;
+                    field.signed = this.signed;
 
                     return field;
                 }
@@ -170,11 +181,17 @@ public class FileStructureDto implements Serializable {
             return subFields;
         }
 
+        public boolean isSigned() {
+            return signed != null && signed;
+        }
+
         public interface FieldBuilder {
 
             FieldBuilder forName(String name_hash);
 
             FieldBuilder withType(Type type);
+
+            FieldBuilder signed(boolean isSigned);
 
             FieldBuilder ofSize(String sizeFormula);
 
