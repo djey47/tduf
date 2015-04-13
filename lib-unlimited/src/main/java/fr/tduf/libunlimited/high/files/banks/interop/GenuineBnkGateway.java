@@ -9,7 +9,6 @@ import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,15 +24,18 @@ import static java.util.stream.Collectors.toList;
  */
 public class GenuineBnkGateway implements BankSupport {
 
-    private static final String EXTENSION_BANKS = "bnk";
-
-    // TODO reuse genuine bnk file name with original- prefix
     static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
+
     static final String EXE_TDUMT_CLI = ".\\tools\\tdumt-cli\\tdumt-cli.exe";
     static final String CLI_COMMAND_BANK_INFO = "BANK-I";
     static final String CLI_COMMAND_BANK_UNPACK = "BANK-U";
     static final String CLI_COMMAND_BANK_REPLACE = "BANK-R";
-    public static final String PREFIX_PACKED_FILE_PATH = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\";
+
+    static final String PREFIX_ORIGINAL_BANK_FILE = "original-";
+
+    private static final String PREFIX_PACKED_FILE_PATH = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\";
+
+    private static final String EXTENSION_BANKS = "bnk";
 
     private CommandLineHelper commandLineHelper;
 
@@ -77,15 +79,15 @@ public class GenuineBnkGateway implements BankSupport {
     @Override
     public void extractAll(String bankFileName, String outputDirectory) throws IOException {
 
-        Files.copy(Paths.get(bankFileName), Paths.get(outputDirectory, ORIGINAL_BANK_NAME), StandardCopyOption.REPLACE_EXISTING);
+        Path bankFilePath = Paths.get(bankFileName);
+        Files.copy(bankFilePath, Paths.get(outputDirectory, PREFIX_ORIGINAL_BANK_FILE + bankFilePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
 
         BankInfoDto bankInfoObject = getBankInfo(bankFileName);
-
         bankInfoObject.getPackedFiles()
 
                 .forEach((infoObject) -> {
                     try {
-                        extractPackedFileWithFullPath(bankFileName, infoObject, outputDirectory);
+                        extractPackedFileWithFullPath(bankFilePath, infoObject, outputDirectory);
                     } catch (IOException e) {
                         // Do not fail here.
                         e.printStackTrace();
@@ -99,11 +101,11 @@ public class GenuineBnkGateway implements BankSupport {
     @Override
     public void packAll(String inputDirectory, String outputBankFileName) throws IOException {
 
-        Path originalBankFilePath = Paths.get(inputDirectory, ORIGINAL_BANK_NAME);
+        String originalBankFileName = searchOriginalBankFileName(inputDirectory);
 
+        Path originalBankFilePath = Paths.get(inputDirectory, originalBankFileName);
         Files.copy(originalBankFilePath, Paths.get(outputBankFileName), StandardCopyOption.REPLACE_EXISTING);
 
-        String originalBankFileName = searchOriginalBankFileName(inputDirectory);
         Path inputPath = Paths.get(inputDirectory, originalBankFileName);
         Files.walk(inputPath)
 
@@ -158,12 +160,12 @@ public class GenuineBnkGateway implements BankSupport {
         }
     }
 
-    private void extractPackedFileWithFullPath(String bankFileName, PackedFileInfoDto packedFileInfo, String outputDirectory) throws IOException {
-        ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_UNPACK, bankFileName, packedFileInfo.getFullName(), outputDirectory);
+    private void extractPackedFileWithFullPath(Path bankFilePath, PackedFileInfoDto packedFileInfo, String outputDirectory) throws IOException {
+        ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_UNPACK, bankFilePath.toString(), packedFileInfo.getFullName(), outputDirectory);
         handleCommandLineErrors(processResult);
 
         Path extractedPath = Paths.get(outputDirectory, packedFileInfo.getShortName());
-        Path targetPath = Paths.get(outputDirectory, new File(bankFileName).getName(), packedFileInfo.getShortName());
+        Path targetPath = Paths.get(outputDirectory, bankFilePath.getFileName().toString(), packedFileInfo.getShortName());
 
         Files.createDirectories(targetPath.getParent());
         Files.move(extractedPath, targetPath);
