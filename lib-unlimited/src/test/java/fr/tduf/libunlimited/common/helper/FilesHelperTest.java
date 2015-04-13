@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,7 +36,7 @@ public class FilesHelperTest {
     @Test
     public void createDirectoryIfNotExists_whenNonExisting_shouldCreateIt() throws IOException {
         // GIVEN
-        String directoryToCreate = tempDirectory + "/1/2/3";
+        String directoryToCreate = Paths.get(tempDirectory, "1", "2", "3").toString();
 
         // WHEN
         FilesHelper.createDirectoryIfNotExists(directoryToCreate);
@@ -43,6 +45,31 @@ public class FilesHelperTest {
         File actualDirectory = new File(directoryToCreate);
         assertThat(actualDirectory).exists();
         assertThat(actualDirectory).isDirectory();
+    }
+
+    @Test
+    public void createFileIfNotExists_whenExisting_shouldDoNothing() throws IOException {
+        // GIVEN
+        Path pathToCreate = Paths.get(tempDirectory, "nope");
+        Files.createFile(pathToCreate);
+
+        // WHEN
+        FilesHelper.createFileIfNotExists(pathToCreate.toString());
+
+        // THEN
+        assertThat(pathToCreate.toFile()).exists();
+    }
+
+    @Test
+    public void createFileIfNotExists_whenNonExisting_shouldCreateIt() throws IOException {
+        // GIVEN
+        Path pathToCreate = Paths.get(tempDirectory, "nope");
+
+        // WHEN
+        FilesHelper.createFileIfNotExists(pathToCreate.toString());
+
+        // THEN
+        assertThat(pathToCreate.toFile()).exists();
     }
 
     @Test(expected = NullPointerException.class)
