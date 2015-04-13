@@ -146,7 +146,7 @@ public class DatabaseParser {
 
                 .collect(Collectors.toList());
 
-        checkItemCountBetweenResources(dbResourceDtos, topic);
+        checkItemCountBetweenResources(topic, dbResourceDtos);
 
         return dbResourceDtos;
     }
@@ -172,8 +172,6 @@ public class DatabaseParser {
                     || Pattern.matches(ITEM_PATTERN, line)
                     || !Pattern.matches(CONTENT_PATTERN, line)) {
 
-                // Uncomment below to debug
-//                System.out.println("Skipped line: " + line);
                 continue;
             }
 
@@ -185,7 +183,7 @@ public class DatabaseParser {
             id++;
         }
 
-        checkContentItemsCount(itemCount, entries);
+        checkContentItemsCount(structure.getTopic(), itemCount, entries);
 
         return DbDataDto.builder()
                 .addEntries(entries)
@@ -221,7 +219,7 @@ public class DatabaseParser {
 
         List<DbStructureDto.Field> fields = new ArrayList<>();
         String reference = null;
-        String topicName = null;
+        DbDto.Topic topic = null;
         String topicVersion = null;
         int categoryCount = 0;
         int fieldCount = 0;
@@ -231,7 +229,7 @@ public class DatabaseParser {
 
             Matcher matcher = topicNamePattern.matcher(line);
             if (matcher.matches()) {
-                topicName = matcher.group(1);
+                topic = DbDto.Topic.fromLabel(matcher.group(1));
                 continue;
             }
 
@@ -284,10 +282,10 @@ public class DatabaseParser {
             }
         }
 
-        checkFieldCountInStructure(fieldCount, fields);
+        checkFieldCountInStructure(topic, fieldCount, fields);
 
         return DbStructureDto.builder()
-                .forTopic(DbDto.Topic.fromLabel(topicName))
+                .forTopic(topic)
                 .forReference(reference)
                 .atVersion(topicVersion)
                 .withCategoryCount(categoryCount)
@@ -295,9 +293,10 @@ public class DatabaseParser {
                 .build();
     }
 
-    private void checkContentItemsCount(long expectedItemCount, List<DbDataDto.Entry> actualEntries) {
+    private void checkContentItemsCount(DbDto.Topic topic, long expectedItemCount, List<DbDataDto.Entry> actualEntries) {
         if (expectedItemCount != actualEntries.size()) {
             Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+            info.put(SOURCE_TOPIC, topic);
             info.put(EXPECTED_COUNT, expectedItemCount);
             info.put(ACTUAL_COUNT, actualEntries.size());
 
@@ -305,9 +304,10 @@ public class DatabaseParser {
         }
     }
 
-    private void checkFieldCountInStructure(int expectedFieldCount, List<DbStructureDto.Field> fields) {
+    private void checkFieldCountInStructure(DbDto.Topic topic, int expectedFieldCount, List<DbStructureDto.Field> fields) {
         if (expectedFieldCount != fields.size()) {
             Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+            info.put(SOURCE_TOPIC, topic);
             info.put(EXPECTED_COUNT, expectedFieldCount);
             info.put(ACTUAL_COUNT, fields.size());
 
@@ -320,16 +320,16 @@ public class DatabaseParser {
 
         if (expectedFieldCount != items.size()) {
             Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+            info.put(SOURCE_TOPIC, structureObject.getTopic());
             info.put(EXPECTED_COUNT, expectedFieldCount);
             info.put(ACTUAL_COUNT, items.size());
-            info.put(SOURCE_TOPIC, structureObject.getTopic());
             info.put(ENTRY_ID, entryIdentifier);
 
             addIntegrityError(CONTENTS_FIELDS_COUNT_MISMATCH, info);
         }
     }
 
-    private void checkItemCountBetweenResources(List<DbResourceDto> dbResourceDtos, DbDto.Topic topic) {
+    private void checkItemCountBetweenResources(DbDto.Topic topic, List<DbResourceDto> dbResourceDtos) {
         Map<Integer, List<DbResourceDto>> dbResourceDtosByItemCount = dbResourceDtos.stream()
 
                 .collect(groupingBy(dbResourceDto -> dbResourceDto.getEntries().size()));

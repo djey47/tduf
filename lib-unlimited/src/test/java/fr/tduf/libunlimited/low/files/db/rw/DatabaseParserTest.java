@@ -13,6 +13,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static net.sf.json.test.JSONAssert.assertJsonEquals;
@@ -63,6 +65,8 @@ public class DatabaseParserTest {
         assertThat(databaseParser.getIntegrityErrors()).hasSize(2);
         /** {@link fr.tduf.libunlimited.low.files.db.domain.IntegrityError#getError()} */
         assertThat(databaseParser.getIntegrityErrors()).extracting("error").containsExactly("STRUCTURE_FIELDS_COUNT_MISMATCH","CONTENT_ITEMS_COUNT_MISMATCH");
+        assertThat(databaseParser.getIntegrityErrors().get(0).getInformation().get(SOURCE_TOPIC)).isEqualTo(ACHIEVEMENTS);
+        assertThat(databaseParser.getIntegrityErrors().get(1).getInformation().get(SOURCE_TOPIC)).isEqualTo(ACHIEVEMENTS);
     }
 
     @Test
@@ -89,6 +93,7 @@ public class DatabaseParserTest {
         assertThat(databaseParser.getIntegrityErrors()).hasSize(1);
         /** {@link fr.tduf.libunlimited.low.files.db.domain.IntegrityError#getError()} */
         assertThat(databaseParser.getIntegrityErrors()).extracting("error").containsExactly("RESOURCE_ITEMS_COUNT_MISMATCH");
+        assertThat(databaseParser.getIntegrityErrors().get(0).getInformation().get(SOURCE_TOPIC)).isEqualTo(ACHIEVEMENTS);
     }
 
     @Test
@@ -109,6 +114,7 @@ public class DatabaseParserTest {
         assertThat(databaseParser.getIntegrityErrors()).hasSize(1);
         /** {@link fr.tduf.libunlimited.low.files.db.domain.IntegrityError#getError()} */
         assertThat(databaseParser.getIntegrityErrors()).extracting("error").containsExactly("CONTENTS_FIELDS_COUNT_MISMATCH");
+        assertThat(databaseParser.getIntegrityErrors().get(0).getInformation().get(SOURCE_TOPIC)).isEqualTo(ACHIEVEMENTS);
     }
 
     @Test
