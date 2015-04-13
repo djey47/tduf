@@ -35,8 +35,8 @@ public class MappingToolIntegTest {
 
 
         //GIVEN: 2 new files to bank directory
-        Files.createFile(Paths.get(contentsDirectory1, "c1"));
-        Files.createFile(Paths.get(contentsDirectory2, "c2"));
+        FilesHelper.createFileIfNotExists(Paths.get(contentsDirectory1, "c1").toString());
+        FilesHelper.createFileIfNotExists(Paths.get(contentsDirectory2, "c2").toString());
 
 
         //WHEN: list-missing
