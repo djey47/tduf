@@ -96,24 +96,28 @@ public class GenuineBnkGatewayTest {
 
 
         // THEN
-        assertThat(new File(tempDirectory, ORIGINAL_BANK_NAME)).exists();
+        assertThat(new File(tempDirectory, PREFIX_ORIGINAL_BANK_FILE + Paths.get(bankFileName).getFileName())).exists();
 
         String shortBankFileName = Paths.get(bankFileName).getFileName().toString();
         assertThat(Files.exists(Paths.get(tempDirectory, shortBankFileName, "4Build", "PC", "Euro", "Vehicules", "Cars", "Mercedes", "CLK_55")));
 
         verify(commandLineHelperMock, times(28)).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), anyString(), eq(tempDirectory));
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.3DD\\CLK_55"), eq(tempDirectory));
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.3DG\\CLK_55"), eq(tempDirectory));
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.2DM\\CLK_55"), eq(tempDirectory));
+
+        String packedFilePathPrefix = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\";
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq(packedFilePathPrefix + ".3DD\\CLK_55"), eq(tempDirectory));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq(packedFilePathPrefix + ".3DG\\CLK_55"), eq(tempDirectory));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq(packedFilePathPrefix + ".2DM\\CLK_55"), eq(tempDirectory));
     }
 
     @Test
     public void packAll_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
         // GIVEN
-        createSourceFileTree();
+        String bankFileName = "A3_V6.bnk";
 
+        createSourceFileTree(bankFileName);
+
+        String sourceDirectory = Paths.get(tempDirectory, bankFileName).toString();
         String outputBankFileName = Paths.get(tempDirectory, "A3_V6.output.bnk").toString();
-        String sourceDirectory = Paths.get(tempDirectory, "A3_V6.bnk").toString();
 
         mockCommandLineHelperToReturnBankInformationSuccess(outputBankFileName);
         mockCommandLineHelperToReturnReplaceSuccess(outputBankFileName);
@@ -126,9 +130,10 @@ public class GenuineBnkGatewayTest {
         // THEN
         assertThat(new File(outputBankFileName)).exists();
 
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\.3DD\\A3_V6"), eq(Paths.get(sourceDirectory, "A3_V6.3DD").toString()));
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\.3DG\\A3_V6"), eq(Paths.get(sourceDirectory, "A3_V6.3DG").toString()));
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq("D:\\Eden-Prog\\Games\\TestDrive\\Resources\\.2DM\\A3_V6"), eq(Paths.get(sourceDirectory, "A3_V6.2DM").toString()));
+        String packedFilePathPrefix = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\";
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".3DD\\A3_V6"), eq(Paths.get(sourceDirectory, "A3_V6.3DD").toString()));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".3DG\\A3_V6"), eq(Paths.get(sourceDirectory, "A3_V6.3DG").toString()));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".2DM\\A3_V6"), eq(Paths.get(sourceDirectory, "A3_V6.2DM").toString()));
     }
 
     @Test
@@ -164,19 +169,21 @@ public class GenuineBnkGatewayTest {
     @Test
     public void searchOriginalBankFileName_whenCorrectDirectoryPresent_shouldReturnDirectoryName() throws IOException {
         // GIVEN
-        createSourceFileTree();
+        String bankFileName = "A3_V6.bnk";
+        createSourceFileTree(bankFileName);
 
         // WHEN
         String actualFileName = GenuineBnkGateway.searchOriginalBankFileName(tempDirectory);
 
         // THEN
-        assertThat(actualFileName).isEqualTo("A3_V6.bnk");
+        assertThat(actualFileName).isEqualTo(bankFileName);
     }
 
-    private void createSourceFileTree() throws IOException {
-        assert new File(tempDirectory, ORIGINAL_BANK_NAME).createNewFile();
+    private void createSourceFileTree(String bankFileName) throws IOException {
 
-        Path extractedPath = Paths.get(tempDirectory, "A3_V6.bnk");
+        assert new File(tempDirectory, PREFIX_ORIGINAL_BANK_FILE + bankFileName ).createNewFile();
+
+        Path extractedPath = Paths.get(tempDirectory, bankFileName);
         Files.createDirectories(extractedPath);
         String extractedDirectory = extractedPath.toString();
 
