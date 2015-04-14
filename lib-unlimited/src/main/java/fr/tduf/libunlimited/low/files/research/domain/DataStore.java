@@ -75,11 +75,23 @@ public class DataStore {
      * @param rawValue  : value to store
      */
     public void addValue(String fieldName, FileStructureDto.Type type, byte[] rawValue) {
+        addValue(fieldName, type, false, rawValue);
+    }
+
+    /**
+     * Adds provided bytes to the store, if type is stor-able.
+     *
+     * @param fieldName : identifier of field hosting the value, should not exist already
+     * @param type      : value type
+     * @param signed    : indicates if value is signed or not (only applicable to integer data type)
+     * @param rawValue  : value to store
+     */
+    public void addValue(String fieldName, FileStructureDto.Type type, boolean signed, byte[] rawValue) {
         if (!type.isValueToBeStored()) {
             return;
         }
 
-        putEntry(fieldName, type, rawValue);
+        putEntry(fieldName, type, signed, rawValue);
     }
 
     /**
@@ -187,7 +199,7 @@ public class DataStore {
                 .forEach((entry) -> {
                     String newKey = generateKeyForRepeatedField(repeaterFieldName, entry.getKey(), index);
                     Entry currentStoreEntry = entry.getValue();
-                    this.putEntry(newKey, currentStoreEntry.getType(), currentStoreEntry.getRawValue());
+                    this.putEntry(newKey, currentStoreEntry.getType(), currentStoreEntry.isSigned(), currentStoreEntry.getRawValue());
                 });
     }
 
@@ -247,7 +259,7 @@ public class DataStore {
         assert (entry.getType() == FileStructureDto.Type.INTEGER);
 
         return Optional.of(
-                rawToInteger(entry.getRawValue()));
+                rawToInteger(entry.getRawValue(), entry.isSigned()));
     }
 
     /**
@@ -285,7 +297,7 @@ public class DataStore {
 
                 .map(key -> this.store.get(key).getRawValue())
 
-                .map(TypeHelper::rawToInteger)
+                .map((rawValue) -> TypeHelper.rawToInteger(rawValue, false)) // TODO
 
                 .collect(Collectors.toList());
     }
@@ -423,7 +435,8 @@ public class DataStore {
         }
 
         if (type.isValueToBeStored()) {
-            putEntry(parentKey, type, rawValue);
+            // TODO
+            putEntry(parentKey, type, false, rawValue);
         }
     }
 
@@ -485,8 +498,8 @@ public class DataStore {
         }
     }
 
-    private void putEntry(String key, FileStructureDto.Type type, byte[] rawValue) {
-        Entry entry = new Entry(type, rawValue);
+    private void putEntry(String key, FileStructureDto.Type type, boolean signed, byte[] rawValue) {
+        Entry entry = new Entry(type, signed, rawValue);
         this.getStore().put(key, entry);
     }
 
@@ -502,7 +515,7 @@ public class DataStore {
                 currentObjectNode.put(fieldName, rawToFloatingPoint(storeEntry.getRawValue()));
                 break;
             case INTEGER:
-                currentObjectNode.put(fieldName, rawToInteger(storeEntry.getRawValue()));
+                currentObjectNode.put(fieldName, rawToInteger(storeEntry.getRawValue(), false));    // TODO
                 break;
             default:
                 currentObjectNode.put(fieldName, byteArrayToHexRepresentation(storeEntry.getRawValue()));

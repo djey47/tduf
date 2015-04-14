@@ -18,15 +18,15 @@ public class DataStoreFixture {
     public static void createStoreEntries(DataStore dataStore) {
         dataStore.clearAll();
 
-        putLongInStore("entry_list[0].my_field", 10L, dataStore);
+        putLongInStore("entry_list[0].my_field", 10L, false, dataStore);
         putFloatInStore("entry_list[0].my_fp_field", 235.666667f, dataStore);
         putStringInStore("entry_list[0].a_field", "az", dataStore);
         putRawValueInStore("entry_list[0].another_field", new byte[]{0x1, 0x2, 0x3, 0x4}, dataStore);
-        putLongInStore("entry_list[1].my_field", 20L, dataStore);
+        putLongInStore("entry_list[1].my_field", 20L, false, dataStore);
         putFloatInStore("entry_list[1].my_fp_field", 335.666667f, dataStore);
         putStringInStore("entry_list[1].a_field", "bz", dataStore);
         putRawValueInStore("entry_list[1].another_field", new byte[]{0x5, 0x6, 0x7, 0x8}, dataStore);
-        putLongInStore("entry_list[2].my_field", 30L, dataStore);
+        putLongInStore("entry_list[2].my_field", 30L, false, dataStore);
         putFloatInStore("entry_list[2].my_fp_field", 435.666667f, dataStore);
         putStringInStore("entry_list[2].a_field", "cz", dataStore);
         putRawValueInStore("entry_list[2].another_field", new byte [] {0x9, 0xA, 0xB, 0xC}, dataStore);
@@ -40,12 +40,12 @@ public class DataStoreFixture {
         dataStore.addValue(key, TEXT, value.getBytes());
     }
 
-    public static void putLongInStore(String key, long value, DataStore dataStore) {
+    public static void putLongInStore(String key, long value, boolean signed, DataStore dataStore) {
         byte[] bytes = ByteBuffer
                 .allocate(8)
                 .putLong(value)
                 .array();
-        dataStore.addValue(key, INTEGER, bytes);
+        dataStore.addValue(key, INTEGER, signed, bytes);
     }
 
     public static void putFloatInStore(String key, float value, DataStore dataStore) {

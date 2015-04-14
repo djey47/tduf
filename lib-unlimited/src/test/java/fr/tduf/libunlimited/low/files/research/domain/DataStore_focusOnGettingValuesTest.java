@@ -82,16 +82,25 @@ public class DataStore_focusOnGettingValuesTest {
     @Test
     public void getInteger_whenOneItem_andSuccess_shouldReturnValue() {
         // GIVEN
-        DataStoreFixture.putLongInStore("f1", 100L, dataStore);
+        DataStoreFixture.putLongInStore("f1", 100L, false, dataStore);
 
         // WHEN-THEN
         assertThat(dataStore.getInteger("f1").get()).isEqualTo(100L);
     }
 
     @Test
+    public void getInteger_whenSignedValue_shouldReturnValue() {
+        // GIVEN
+        DataStoreFixture.putLongInStore("f1", -100L, true, dataStore);
+
+        // WHEN-THEN
+        assertThat(dataStore.getInteger("f1").get()).isEqualTo(-100L);
+    }
+
+    @Test
     public void getInteger_whenOneItem_andNoSuccess_shouldReturnAbsent() {
         // GIVEN
-        DataStoreFixture.putLongInStore("f1", 100L, dataStore);
+        DataStoreFixture.putLongInStore("f1", 100L, false, dataStore);
 
         // WHEN-THEN
         assertThat(dataStore.getInteger("f2")).isEmpty();

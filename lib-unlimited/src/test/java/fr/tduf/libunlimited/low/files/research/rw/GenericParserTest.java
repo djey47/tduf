@@ -1,7 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.rw;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -134,7 +133,6 @@ public class GenericParserTest {
     }
 
     @Test
-    @Ignore
     public void dump_whenProvidedContentsSigned_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
         GenericParser<String> actualParser = createGenericParserSigned();
@@ -382,6 +380,17 @@ public class GenericParserTest {
         return new GenericParser<String>(inputStream) {
             @Override
             protected String generate() {
+                assertThat(getDataStore().size()).isEqualTo(3);
+
+                // Field 1
+                assertThat(getDataStore().getInteger("si1").get()).isEqualTo(-60);
+
+                // Field 2
+                assertThat(getDataStore().getInteger("si2").get()).isEqualTo(0);
+
+                // Field 3
+                assertThat(getDataStore().getInteger("si3").get()).isEqualTo(60);
+
                 return DATA;
             }
 
