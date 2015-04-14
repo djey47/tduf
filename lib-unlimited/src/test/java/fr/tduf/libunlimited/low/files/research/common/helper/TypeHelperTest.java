@@ -51,6 +51,15 @@ public class TypeHelperTest {
         assertThat(TypeHelper.rawToInteger(bytes, true)).isEqualTo(-1L);
     }
 
+    @Test
+    public void rawToInteger_whenArrayHasCorrectSize_andZeroValue_shouldReturnNumeric() {
+        //GIVEN
+        byte[] bytes = new byte[8];
+
+        // WHEN-THEN
+        assertThat(TypeHelper.rawToInteger(bytes, true)).isZero();
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void rawToInteger_whenArrayHasIncorrectSize_shouldThrowException() {
         //GIVEN
