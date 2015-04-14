@@ -11,11 +11,17 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  */
 class Entry {
     private final FileStructureDto.Type type;
+    private final boolean signed;
     private final byte[] rawValue;
 
     Entry(FileStructureDto.Type type, byte[] rawValue) {
+        this(type, false, rawValue);
+    }
+
+    Entry(FileStructureDto.Type type, boolean signed, byte[] rawValue) {
         this.type = type;
         this.rawValue = rawValue;
+        this.signed = signed;
     }
 
     byte[] getRawValue() {
@@ -32,7 +38,7 @@ class Entry {
     public Entry copy() {
         byte[] rawValueCopy = new byte[rawValue.length];
         System.arraycopy(rawValue, 0, rawValueCopy, 0, rawValue.length);
-        return new Entry(type, rawValueCopy);
+        return new Entry(type, signed, rawValueCopy);
     }
 
     @Override
@@ -48,5 +54,9 @@ class Entry {
     @Override
     public String toString() {
         return reflectionToString(this);
+    }
+
+    public boolean isSigned() {
+        return signed;
     }
 }
