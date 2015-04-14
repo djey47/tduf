@@ -5,6 +5,7 @@ import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
@@ -33,7 +34,24 @@ public class FileStructureDto implements Serializable {
      * @return builder, used to generate custom values.
      */
     public static FileStructureDtoBuilder builder() {
-        return FileStructureDto::new;
+        return new FileStructureDtoBuilder() {
+            private List<Field> fields = new ArrayList<>();
+
+            @Override
+            public FileStructureDtoBuilder addFields(List<Field> fields) {
+                this.fields.addAll(fields);
+                return this;
+            }
+
+            @Override
+            public FileStructureDto build() {
+                FileStructureDto fileStructureDto = new FileStructureDto();
+
+                fileStructureDto.fields = this.fields;
+
+                return fileStructureDto;
+            }
+        };
     }
 
     @Override
@@ -64,6 +82,9 @@ public class FileStructureDto implements Serializable {
      * Represents a field in structure.
      */
     public interface FileStructureDtoBuilder {
+
+        FileStructureDtoBuilder addFields(List<Field> fields);
+
         FileStructureDto build();
     }
 
