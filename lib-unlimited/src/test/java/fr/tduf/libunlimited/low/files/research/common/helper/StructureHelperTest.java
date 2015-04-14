@@ -6,7 +6,11 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Optional;
 
+import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.INTEGER;
+import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.REPEATER;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class StructureHelperTest {
@@ -86,5 +90,62 @@ public class StructureHelperTest {
         inputStream.reset();
         assertThat(actualInputStream.available()).isEqualTo(actualInputStream.available());
         assertThat(actualInputStream).isNotEqualTo(inputStream);
+    }
+
+    @Test
+    public void getFieldDefinitionFromFullName_whenFieldExist_shouldReturnDef() {
+        // GIVEN
+        FileStructureDto.Field field = FileStructureDto.Field.builder()
+                .forName("my_field")
+                .withType(INTEGER)
+                .signed(true)
+                .build();
+        FileStructureDto.Field repeaterField = FileStructureDto.Field.builder()
+                .forName("entry_list")
+                .withType(REPEATER)
+                .withSubFields(singletonList(field))
+                .build();
+        FileStructureDto fileStructureObject = FileStructureDto.builder()
+                .addFields(singletonList(repeaterField))
+                .build();
+
+        // WHEN
+        FileStructureDto.Field actualField = StructureHelper.getFieldDefinitionFromFullName("entry_list[0].my_field", fileStructureObject).get();
+
+        // THEN
+        assertThat(actualField.isSigned()).isTrue();
+        assertThat(actualField.getType()).isEqualTo(INTEGER);
+    }
+
+    @Test
+    public void getFieldDefinitionFromFullName_whenFieldDoesNotExist_shouldReturnDef() {
+        // GIVEN
+        FileStructureDto.Field field = FileStructureDto.Field.builder()
+                .forName("my_field")
+                .withType(INTEGER)
+                .signed(true)
+                .build();
+        FileStructureDto.Field repeaterField = FileStructureDto.Field.builder()
+                .forName("entry_list")
+                .withType(REPEATER)
+                .withSubFields(singletonList(field))
+                .build();
+        FileStructureDto fileStructureObject = FileStructureDto.builder()
+                .addFields(singletonList(repeaterField))
+                .build();
+
+        // WHEN
+        Optional<FileStructureDto.Field> potentialField = StructureHelper.getFieldDefinitionFromFullName("entry_list[0].my_field1", fileStructureObject);
+
+        // THEN
+        assertThat(potentialField).isEmpty();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void getFieldDefinitionFromFullName_whenNullStructureObject_shouldThrowException() {
+        // GIVEN-WHEN
+        StructureHelper.getFieldDefinitionFromFullName("entry_list[0].my_field", null);
+
+        // THEN: NPE
     }
 }
