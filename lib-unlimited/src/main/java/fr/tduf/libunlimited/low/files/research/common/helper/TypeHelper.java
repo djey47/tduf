@@ -25,15 +25,35 @@ public class TypeHelper {
      * Converts a raw value to INTEGER.
      *
      * @param rawValueBytes : raw value to convert
+     * @param signed        : indicates if specified value is signed or not
      * @return corresponding value as 64-bit integer
      * @throws IllegalArgumentException when provided Array is not 64-bit (8 bytes)
      */
-    public static long rawToInteger(byte[] rawValueBytes) throws IllegalArgumentException {
+    public static long rawToInteger(byte[] rawValueBytes, boolean signed) throws IllegalArgumentException {
         check64BitRawValue(rawValueBytes);
 
-        return ByteBuffer
+        long integerValue = ByteBuffer
                 .wrap(rawValueBytes)
                 .getLong();
+
+        if (signed) {
+            int zeroCount = getPrependingZeroCount(rawValueBytes);
+            if (zeroCount >= 7) {
+                integerValue = ByteBuffer
+                        .wrap(rawValueBytes, 7, 1)
+                        .get();
+            } else if (zeroCount >= 6) {
+                integerValue = ByteBuffer
+                        .wrap(rawValueBytes, 6, 2)
+                        .getShort();
+            } else if (zeroCount >= 4) {
+                integerValue = ByteBuffer
+                        .wrap(rawValueBytes, 4, 4)
+                        .getInt();
+            }
+        }
+
+        return integerValue;
     }
 
     /**
@@ -123,7 +143,6 @@ public class TypeHelper {
         return targetArray;
     }
 
-
     /**
      * Provides a byte array to fit particular size (truncate or fill with zeros).
      *
@@ -148,6 +167,7 @@ public class TypeHelper {
 
         return newArray;
     }
+
 
     /**
      * Gives a representation of provided byte array with hexadecimal values.
@@ -189,6 +209,16 @@ public class TypeHelper {
                 .replace(" ", "");
 
         return DatatypeConverter.parseHexBinary(extractedBytes);
+    }
+
+    private static int getPrependingZeroCount(byte[] rawValueBytes) {
+        int zeroCount = 0;
+
+        ByteBuffer wrap = ByteBuffer.wrap(rawValueBytes);
+        while (wrap.get() == 0) {
+            zeroCount++;
+        }
+        return zeroCount;
     }
 
     private static void check64BitRawValue(byte[] rawValueBytes) {
