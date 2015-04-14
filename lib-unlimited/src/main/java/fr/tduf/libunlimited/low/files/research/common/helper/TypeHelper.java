@@ -215,7 +215,7 @@ public class TypeHelper {
         int zeroCount = 0;
 
         ByteBuffer wrap = ByteBuffer.wrap(rawValueBytes);
-        while (wrap.get() == 0) {
+        while (wrap.remaining() > 0 && wrap.get() == 0) {
             zeroCount++;
         }
         return zeroCount;
