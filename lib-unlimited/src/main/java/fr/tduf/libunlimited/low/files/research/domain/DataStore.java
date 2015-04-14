@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
+import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.codehaus.jackson.JsonNode;
@@ -295,9 +296,9 @@ public class DataStore {
                     return matcher.matches() && matcher.group(1).equals(fieldName);
                 })
 
-                .map(key -> this.store.get(key).getRawValue())
+                .map(this.store::get)
 
-                .map((rawValue) -> TypeHelper.rawToInteger(rawValue, false)) // TODO
+                .map((storeEntry) -> TypeHelper.rawToInteger(storeEntry.getRawValue(), storeEntry.isSigned()))
 
                 .collect(Collectors.toList());
     }
@@ -403,6 +404,7 @@ public class DataStore {
 
         FileStructureDto.Type type = FileStructureDto.Type.GAP;
         byte[] rawValue = new byte[0];
+        boolean signed = false;
 
         if (jsonNode instanceof ObjectNode) {
 
@@ -421,6 +423,7 @@ public class DataStore {
 
             type = FileStructureDto.Type.INTEGER;
             rawValue = TypeHelper.integerToRaw(jsonNode.getIntValue());
+            signed = StructureHelper.getFieldDefinitionFromFullName(parentKey, this.fileStructure).get().isSigned();
 
         } else if (jsonNode instanceof TextNode) {
 
@@ -435,8 +438,7 @@ public class DataStore {
         }
 
         if (type.isValueToBeStored()) {
-            // TODO
-            putEntry(parentKey, type, false, rawValue);
+            putEntry(parentKey, type, signed, rawValue);
         }
     }
 
@@ -506,19 +508,20 @@ public class DataStore {
     private static void readRegularField(FileStructureDto.Field currentField, ObjectNode currentObjectNode, Entry storeEntry) {
         FileStructureDto.Type fieldType = currentField.getType();
         String fieldName = currentField.getName();
+        byte[] rawValue = storeEntry.getRawValue();
 
         switch (fieldType) {
             case TEXT:
-                currentObjectNode.put(fieldName, rawToText(storeEntry.getRawValue()));
+                currentObjectNode.put(fieldName, rawToText(rawValue));
                 break;
             case FPOINT:
-                currentObjectNode.put(fieldName, rawToFloatingPoint(storeEntry.getRawValue()));
+                currentObjectNode.put(fieldName, rawToFloatingPoint(rawValue));
                 break;
             case INTEGER:
-                currentObjectNode.put(fieldName, rawToInteger(storeEntry.getRawValue(), false));    // TODO
+                currentObjectNode.put(fieldName, rawToInteger(rawValue, storeEntry.isSigned()));
                 break;
             default:
-                currentObjectNode.put(fieldName, byteArrayToHexRepresentation(storeEntry.getRawValue()));
+                currentObjectNode.put(fieldName, byteArrayToHexRepresentation(rawValue));
                 break;
         }
     }
