@@ -20,9 +20,11 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class GenericParser<T> implements StructureBasedProcessor {
 
-    private static final String DUMP_START_ENTRY_FORMAT = "%s\t<%s: %d bytes>\t%s\t%s\n";
+    private static final String DUMP_START_ENTRY_FORMAT = "%s\t<%s%s: %d bytes>\t%s\t%s\n";
     private static final String DUMP_REPEATER_START_ENTRY_FORMAT = "%s\t<%s>\t>>\n";
     private static final String DUMP_REPEATER_FINISH_ENTRY_FORMAT = "<< %s\t<%s: %d items>\n";
+    private static final String DUMP_LABEL_SIGNED = "signed ";
+    private static final String DUMP_LABEL_UNSIGNED = "unsigned ";
 
     private final ByteArrayInputStream inputStream;
 
@@ -74,6 +76,8 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
             Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), repeaterKey, this.dataStore);
 
             FileStructureDto.Type type = field.getType();
+            boolean signedValue = field.isSigned();
+
             byte[] readValueAsBytes = null;
             long parsedCount;
 
@@ -82,7 +86,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                 case GAP:
                     parsedCount = inputStream.skip(length);
 
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(new byte[length]), ""));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, "", type.name(), length, TypeHelper.byteArrayToHexRepresentation(new byte[length]), ""));
                     break;
 
                 case INTEGER:
@@ -95,8 +99,10 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                         parsedCount = inputStream.read(readValueAsBytes, 8-length, length);
                     }
 
+                    // TODO extract method
+                    long integerValue = TypeHelper.rawToInteger(readValueAsBytes, signedValue);
                     byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 8 - length, 8);
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(displayedBytes), TypeHelper.rawToInteger(readValueAsBytes)));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, signedValue ? DUMP_LABEL_SIGNED : DUMP_LABEL_UNSIGNED, type.name(), length, TypeHelper.byteArrayToHexRepresentation(displayedBytes), integerValue));
                     break;
 
                 case FPOINT:
@@ -107,7 +113,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                         readValueAsBytes = TypeHelper.changeEndianType(readValueAsBytes);
                     }
 
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), TypeHelper.rawToFloatingPoint(readValueAsBytes)));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, "", type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), TypeHelper.rawToFloatingPoint(readValueAsBytes)));
                     break;
 
                 case DELIMITER:
@@ -115,7 +121,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                     readValueAsBytes = new byte[length];
                     parsedCount = inputStream.read(readValueAsBytes, 0, length);
 
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), "\"" + TypeHelper.rawToText(readValueAsBytes) + "\""));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, "", type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), "\"" + TypeHelper.rawToText(readValueAsBytes) + "\""));
                     break;
 
                 case REPEATER:
@@ -146,7 +152,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                     readValueAsBytes = new byte[length];
                     parsedCount = inputStream.read(readValueAsBytes, 0, length);
 
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), ""));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, "", type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), ""));
                     break;
 
                 default:
@@ -156,7 +162,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
             // Check
             assert (parsedCount == Optional.ofNullable(length).orElse((int)parsedCount));
 
-            this.dataStore.addValue(key, type, readValueAsBytes);
+            this.dataStore.addValue(key, type, signedValue, readValueAsBytes);
         }
     }
 

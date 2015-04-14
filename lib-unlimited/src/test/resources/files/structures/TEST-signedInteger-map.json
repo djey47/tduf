@@ -5,14 +5,17 @@
     {
       "name": "si1",
       "type": "INTEGER",
+      "signed": true,
       "size": 1
     },{
       "name": "si2",
       "type": "INTEGER",
+      "signed": true,
       "size": 2
     },{
       "name": "si3",
       "type": "INTEGER",
+      "signed": true,
       "size": 4
     }
   ]
