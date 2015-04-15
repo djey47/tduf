@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.fromCode;
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.BITFIELD;
 import static java.lang.Integer.valueOf;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
@@ -196,10 +197,16 @@ public class DatabaseParser {
         for(String itemValue : line.split(VALUE_DELIMITER)) {
             DbStructureDto.Field fieldInformation = structure.getFields().get(fieldIndex++);
 
+            List<DbDataDto.SwitchValue> switchValues = null;
+            if(fieldInformation.getFieldType() == BITFIELD) {
+                switchValues = prepareSwitchValues(itemValue);
+            }
+
             items.add(DbDataDto.Item.builder()
                     .ofFieldRank(fieldInformation.getRank())
                     .forName(fieldInformation.getName())
                     .withRawValue(itemValue)
+                    .withSwitchValues(switchValues)
                     .build());
         }
 
@@ -350,6 +357,31 @@ public class DatabaseParser {
                 .addInformations(info)
                 .build();
         integrityErrors.add(integrityError);
+    }
+
+    static List<DbDataDto.SwitchValue> prepareSwitchValues(String rawValue) {
+        requireNonNull(rawValue, "A raw value is required");
+
+        // TODO see to set list size automatically
+        final int maxSize = 8;
+        List<DbDataDto.SwitchValue> switchValues = new ArrayList<>(maxSize);
+
+        String binaryValue = Integer.toBinaryString(Integer.valueOf(rawValue));
+
+        for (int bitIndex = 0 ; bitIndex < maxSize ; bitIndex++) {
+
+            boolean switchState = false;
+
+            if (bitIndex < binaryValue.length()) {
+                int bitIndexInString = binaryValue.length() - bitIndex - 1;
+                String bitValue = binaryValue.substring(bitIndexInString, bitIndexInString + 1);
+                switchState = "1".equals(bitValue);
+            }
+
+            switchValues.add(new DbDataDto.SwitchValue(bitIndex + 1, "?", switchState));
+        }
+
+        return switchValues;
     }
 
     public long getContentLineCount() {

@@ -64,7 +64,7 @@ public class DatabaseParserTest {
         assertThat(actualDb).isNotNull();
         assertThat(databaseParser.getIntegrityErrors()).hasSize(2);
         /** {@link fr.tduf.libunlimited.low.files.db.domain.IntegrityError#getError()} */
-        assertThat(databaseParser.getIntegrityErrors()).extracting("error").containsExactly("STRUCTURE_FIELDS_COUNT_MISMATCH","CONTENT_ITEMS_COUNT_MISMATCH");
+        assertThat(databaseParser.getIntegrityErrors()).extracting("error").containsExactly("STRUCTURE_FIELDS_COUNT_MISMATCH", "CONTENT_ITEMS_COUNT_MISMATCH");
         assertThat(databaseParser.getIntegrityErrors().get(0).getInformation().get(SOURCE_TOPIC)).isEqualTo(ACHIEVEMENTS);
         assertThat(databaseParser.getIntegrityErrors().get(1).getInformation().get(SOURCE_TOPIC)).isEqualTo(ACHIEVEMENTS);
     }
@@ -268,6 +268,33 @@ public class DatabaseParserTest {
     }
 
     @Test
+    public void parseAll_whenProvidedContents_andBitfield_shouldReturnProperDto() throws Exception {
+        //GIVEN
+        List<String> dbLines = createValidContentsBitfieldOnlyWithOneItem();
+        List<List<String>> resourceLines = singletonList(
+                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE)
+        );
+
+        //WHEN
+        DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
+        DbDto actualDb = databaseParser.parseAll();
+
+        //THEN
+        assertThat(actualDb).isNotNull();
+
+        DbDataDto actualContents = actualDb.getData();
+        List<DbDataDto.Entry> actualEntries = actualContents.getEntries();
+        assertThat(actualEntries).hasSize(1);
+        assertThat(actualEntries.get(0).getItems()).hasSize(1);
+
+        List<DbDataDto.SwitchValue> actualSwitchValues = actualEntries.get(0).getItems().get(0).getSwitchValues();
+        assertThat(actualSwitchValues).isNotNull();
+        assertThat(actualSwitchValues).extracting("index").containsExactly(1, 2, 3, 4, 5, 6, 7, 8);
+        assertThat(actualSwitchValues).extracting("name").containsOnly("?");
+        assertThat(actualSwitchValues).extracting("enabled").containsExactly(true, true, true, true, false, true, true, false);
+    }
+
+    @Test
     public void parseAll_whenProvidedContents_andMissingLocale_shouldReturnProperDto_withValidLocales() throws Exception {
         //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
@@ -324,6 +351,26 @@ public class DatabaseParserTest {
         assertJsonEquals(expectedJson, jsonResult);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void prepareSwitchValues_whenNullValue_shouldThrowException() {
+        // GIVEN-WHEN
+        DatabaseParser.prepareSwitchValues(null);
+
+        // THEN: NPE
+    }
+
+    @Test
+    public void prepareSwitchValues_shouldReturnCorrectValues() {
+        // GIVEN-WHEN
+        List<DbDataDto.SwitchValue> actualValues = DatabaseParser.prepareSwitchValues("111");
+
+        // THEN
+        assertThat(actualValues).hasSize(8);
+        assertThat(actualValues).extracting("index").containsExactly(1, 2, 3, 4, 5, 6, 7, 8);
+        assertThat(actualValues).extracting("name").containsOnly("?");
+        assertThat(actualValues).extracting("enabled").containsExactly(true, true, true, true, false, true, true, false);
+    }
+
     private List<String> createValidContentsWithOneItem() {
         return asList(
                 "// TDU_Achievements.db",
@@ -340,6 +387,17 @@ public class DatabaseParserTest {
                 "{Reward_Param_} i",
                 "// items: 1",
                 "55736935;5;20;54400734;54359455;54410835;561129540;5337472;211;",
+                "\0\0\0\0");
+    }
+
+    private List<String> createValidContentsBitfieldOnlyWithOneItem() {
+        return asList(
+                "// TDU_Achievements.db",
+                "// Fields: 1",
+                "{TDU_Achievements} 2442784645",
+                "{Bitfield_} b",
+                "// items: 1",
+                "111;",
                 "\0\0\0\0");
     }
 
