@@ -120,11 +120,15 @@ public class DbDataDto implements Serializable {
         @JsonProperty("rawValue")
         private String rawValue;
 
+        @JsonProperty("switchValues")
+        private List<SwitchValue> switchValues;
+
         @JsonProperty("fieldRank")
         private int fieldRank;
 
         public static ItemBuilder builder() {
             return new ItemBuilder() {
+                private List<SwitchValue> switchValues;
                 private Integer fieldRank;
                 private String name;
                 private String raw;
@@ -149,6 +153,12 @@ public class DbDataDto implements Serializable {
                 }
 
                 @Override
+                public ItemBuilder withSwitchValues(List<SwitchValue> values) {
+                    this.switchValues = values;
+                    return this;
+                }
+
+                @Override
                 public ItemBuilder ofFieldRank(int fieldRank) {
                     this.fieldRank = fieldRank;
                     return this;
@@ -163,6 +173,7 @@ public class DbDataDto implements Serializable {
                     item.rawValue = this.raw;
                     item.name = this.name;
                     item.fieldRank = this.fieldRank;
+                    item.switchValues = this.switchValues;
 
                     return item;
                 }
@@ -188,6 +199,10 @@ public class DbDataDto implements Serializable {
             return fieldRank;
         }
 
+        public List<SwitchValue> getSwitchValues() {
+            return switchValues;
+        }
+
         @Override
         public boolean equals(Object o) {
             return reflectionEquals(this, o, false);
@@ -210,9 +225,42 @@ public class DbDataDto implements Serializable {
 
             ItemBuilder withRawValue(String singleValue);
 
+            ItemBuilder withSwitchValues(List<SwitchValue> values);
+
             ItemBuilder ofFieldRank(int fieldRank);
 
             Item build();
+        }
+    }
+
+    @JsonTypeName("dbBitFieldSwitchValue")
+    public static class SwitchValue {
+
+        @JsonProperty("index")
+        private final int index;
+
+        @JsonProperty("name")
+        private final String name;
+
+        @JsonProperty("enabled")
+        private final boolean enabled;
+
+        public SwitchValue(int index, String name, boolean enabled) {
+            this.index = index;
+            this.enabled = enabled;
+            this.name = name;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isEnabled() {
+            return enabled;
         }
     }
 
