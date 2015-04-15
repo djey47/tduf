@@ -157,8 +157,6 @@ public class DatabaseReadWriteHelper {
         }
     }
 
-
-
     static List<String> parseTopicContentsFromFile(String contentsFileName) throws FileNotFoundException {
         return parseLinesInFile(contentsFileName, ENCODING_UTF_8);
     }
