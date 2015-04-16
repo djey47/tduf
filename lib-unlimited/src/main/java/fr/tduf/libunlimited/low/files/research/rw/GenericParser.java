@@ -75,7 +75,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
 
             String name = field.getName();
             String key = repeaterKey + name;
-            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), repeaterKey, this.dataStore);
+            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), Optional.of(repeaterKey), this.dataStore);
 
             FileStructureDto.Type type = field.getType();
             boolean signedValue = field.isSigned();
