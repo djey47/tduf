@@ -20,12 +20,11 @@ public class FormulaHelper {
 
     /**
      * Evaluates given formula and returns result as integer.
-     * @param formula       : formula to be evaluated
-     * @param repeaterKey   : parent key to search value for, if necessary. May be null.
-     * @param dataStore     : current datastore, used to provide values (optional)  @return a computed result.
+     * @param formula               : formula to be evaluated
+     * @param potentialRepeaterKey  : parent key to search value for, if necessary. May be null.
+     * @param dataStore             : current datastore, used to provide values (optional)  @return a computed result.
      */
-    // TODO repaterKey to Optional<String>
-    public static Integer resolveToInteger(String formula, String repeaterKey, DataStore dataStore) {
+    public static Integer resolveToInteger(String formula, Optional<String> potentialRepeaterKey, DataStore dataStore) {
         if (formula == null) {
             return null;
         }
@@ -34,13 +33,13 @@ public class FormulaHelper {
             formula = formula.substring(1);
         }
 
-        formula = handlePatternWithStore(formula, repeaterKey, dataStore);
+        formula = handlePatternWithStore(formula, potentialRepeaterKey, dataStore);
 
         Expression expression = new ExpressionBuilder(formula).build();
         return ((Double) expression.evaluate()).intValue();
     }
 
-    private static String handlePatternWithStore(String formula, String repeaterKeyPrefix, DataStore dataStore) {
+    private static String handlePatternWithStore(String formula, Optional<String> potentialRepeaterKeyPrefix, DataStore dataStore) {
         Matcher matcher = POINTER_PATTERN.matcher(formula);
 
         if(!matcher.matches()) {
@@ -53,17 +52,17 @@ public class FormulaHelper {
 
         String pointerReference = matcher.group(1);
 
-        String dataStoreValue = seekForLongValueInStore(pointerReference, repeaterKeyPrefix, dataStore);
+        String dataStoreValue = seekForLongValueInStore(pointerReference, potentialRepeaterKeyPrefix, dataStore);
         formula = formula.replace(String.format(POINTER_FORMAT, pointerReference), dataStoreValue);
 
         return formula;
     }
 
-    private static String seekForLongValueInStore(String pointerReference, String repeaterKeyPrefix, DataStore dataStore) {
+    private static String seekForLongValueInStore(String pointerReference, Optional<String> potentialRepeaterKeyPrefix, DataStore dataStore) {
         Optional<Long> storedValue = Optional.empty();
         //1. Try to fetch in repeater if specified
-        if (repeaterKeyPrefix != null) {
-            storedValue = dataStore.getInteger(repeaterKeyPrefix + pointerReference);
+        if (potentialRepeaterKeyPrefix.isPresent()) {
+            storedValue = dataStore.getInteger(potentialRepeaterKeyPrefix.get() + pointerReference);
         }
         //2. Try to fetch as such
         if (!storedValue.isPresent()) {

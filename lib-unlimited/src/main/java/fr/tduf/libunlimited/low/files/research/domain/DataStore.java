@@ -438,7 +438,7 @@ public class DataStore {
                     rawValue = TypeHelper.hexRepresentationToByteArray(stringValue);
                 } catch (IllegalArgumentException e) {
                     type = FileStructureDto.Type.TEXT;
-                    int length = computeValueLength(fieldDefinition.getSizeFormula(), parentKey);
+                    int length = computeValueLength(fieldDefinition.getSizeFormula(), Optional.ofNullable(parentKey));
                     rawValue = TypeHelper.textToRaw(stringValue, length);
                 }
             }
@@ -449,8 +449,8 @@ public class DataStore {
         }
     }
 
-    private int computeValueLength(String sizeFormula, String parentKey) {
-        return FormulaHelper.resolveToInteger(sizeFormula, parentKey, this);
+    private int computeValueLength(String sizeFormula, Optional<String> potentialParentKey) {
+        return FormulaHelper.resolveToInteger(sizeFormula, potentialParentKey, this);
     }
 
     private void readJsonArrayNode(JsonNode jsonNode, String parentKey) {
@@ -523,7 +523,7 @@ public class DataStore {
 
         switch (fieldType) {
             case TEXT:
-                int length = computeValueLength(currentField.getSizeFormula(), null);
+                int length = computeValueLength(currentField.getSizeFormula(), Optional.<String>empty());
                 currentObjectNode.put(fieldName, rawToText(rawValue, length));
                 break;
             case FPOINT:
