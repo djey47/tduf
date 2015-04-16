@@ -102,7 +102,25 @@ public class TypeHelperTest {
         byte[] expectedBytes = { 0x4d, 0x41, 0x50, 0x34,  0x00};
 
         // WHEN-THEN
-        assertThat(TypeHelper.textToRaw("MAP4\0")).isEqualTo(expectedBytes);
+        assertThat(TypeHelper.textToRaw("MAP4\0", 5)).isEqualTo(expectedBytes);
+    }
+
+    @Test
+    public void textToRaw_whenGreaterLength_shouldReturnByteArrayFilledByZeros() {
+        //GIVEN
+        byte[] expectedBytes = { 0x4d, 0x41, 0x50, 0x34,  0x00, 0x00, 0x00, 0x00};
+
+        // WHEN-THEN
+        assertThat(TypeHelper.textToRaw("MAP4", 8)).isEqualTo(expectedBytes);
+    }
+
+    @Test
+    public void textToRaw_whenLowerLength_shouldReturnTruncatedByteArray() {
+        //GIVEN
+        byte[] expectedBytes = { 0x4d, 0x41, 0x50, 0x34};
+
+        // WHEN-THEN
+        assertThat(TypeHelper.textToRaw("MAP4\0", 4)).isEqualTo(expectedBytes);
     }
 
     @Test
