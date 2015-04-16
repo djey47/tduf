@@ -242,8 +242,9 @@ public class DataStore {
         Entry entry = this.store.get(fieldName);
         assert (entry.getType() == FileStructureDto.Type.TEXT);
 
+        byte[] rawValue = entry.getRawValue();
         return Optional.of(
-                rawToText(entry.getRawValue()));
+                rawToText(rawValue, rawValue.length));
     }
 
     /**
@@ -436,8 +437,8 @@ public class DataStore {
                     type = FileStructureDto.Type.UNKNOWN;
                     rawValue = TypeHelper.hexRepresentationToByteArray(stringValue);
                 } catch (IllegalArgumentException e) {
-                    int length = FormulaHelper.resolveToInteger(fieldDefinition.getSizeFormula(), parentKey, this) ;
                     type = FileStructureDto.Type.TEXT;
+                    int length = computeValueLength(fieldDefinition.getSizeFormula(), parentKey);
                     rawValue = TypeHelper.textToRaw(stringValue, length);
                 }
             }
@@ -446,6 +447,10 @@ public class DataStore {
         if (type.isValueToBeStored()) {
             putEntry(parentKey, type, signed, rawValue);
         }
+    }
+
+    private int computeValueLength(String sizeFormula, String parentKey) {
+        return FormulaHelper.resolveToInteger(sizeFormula, parentKey, this);
     }
 
     private void readJsonArrayNode(JsonNode jsonNode, String parentKey) {
@@ -511,14 +516,15 @@ public class DataStore {
         this.getStore().put(key, entry);
     }
 
-    private static void readRegularField(FileStructureDto.Field currentField, ObjectNode currentObjectNode, Entry storeEntry) {
+    private void readRegularField(FileStructureDto.Field currentField, ObjectNode currentObjectNode, Entry storeEntry) {
         FileStructureDto.Type fieldType = currentField.getType();
         String fieldName = currentField.getName();
         byte[] rawValue = storeEntry.getRawValue();
 
         switch (fieldType) {
             case TEXT:
-                currentObjectNode.put(fieldName, rawToText(rawValue));
+                int length = computeValueLength(currentField.getSizeFormula(), null);
+                currentObjectNode.put(fieldName, rawToText(rawValue, length));
                 break;
             case FPOINT:
                 currentObjectNode.put(fieldName, rawToFloatingPoint(rawValue));

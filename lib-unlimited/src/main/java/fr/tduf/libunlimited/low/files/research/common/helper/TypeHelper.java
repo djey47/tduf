@@ -15,10 +15,18 @@ public class TypeHelper {
      * Converts a raw value to TEXT.
      *
      * @param rawValueBytes : raw value to convert
+     * @param length        : length of String. Actual String will be truncated / followed by 0 when necessary.
      * @return corresponding value as String
      */
-    public static String rawToText(byte[] rawValueBytes) {
-        return new String(rawValueBytes);
+    public static String rawToText(byte[] rawValueBytes, int length) {
+        String valueAsString = new String(rawValueBytes);
+
+        if (valueAsString.length() < length) {
+            byte[] zeroBytes = new byte[length - valueAsString.length()];
+            return valueAsString + new String(zeroBytes);
+        } else {
+            return valueAsString.substring(0, length);
+        }
     }
 
     /**

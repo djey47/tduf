@@ -24,6 +24,7 @@ public class FormulaHelper {
      * @param repeaterKey   : parent key to search value for, if necessary. May be null.
      * @param dataStore     : current datastore, used to provide values (optional)  @return a computed result.
      */
+    // TODO repaterKey to Optional<String>
     public static Integer resolveToInteger(String formula, String repeaterKey, DataStore dataStore) {
         if (formula == null) {
             return null;
