@@ -362,7 +362,7 @@ public class DatabaseParser {
     static List<DbDataDto.SwitchValue> prepareSwitchValues(String rawValue) {
         requireNonNull(rawValue, "A raw value is required");
 
-        // TODO see to set list size automatically
+        // TODO see to set list size automatically -> requires bitfield resolver (0.7.0+)
         final int maxSize = 8;
         List<DbDataDto.SwitchValue> switchValues = new ArrayList<>(maxSize);
 
