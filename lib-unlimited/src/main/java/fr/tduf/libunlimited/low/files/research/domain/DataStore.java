@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
+import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
@@ -102,7 +103,7 @@ public class DataStore {
      * @param value     : value to store
      */
     public void addText(String fieldName, String value) {
-        addValue(fieldName, TEXT, TypeHelper.textToRaw(value));
+        addValue(fieldName, TEXT, TypeHelper.textToRaw(value, value.length()));
     }
 
     /**
@@ -158,7 +159,7 @@ public class DataStore {
      */
     public void addRepeatedTextValue(String repeaterFieldName, String fieldName, long index, String value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        addValue(key, TEXT, TypeHelper.textToRaw(value));
+        addValue(key, TEXT, TypeHelper.textToRaw(value, value.length()));
     }
 
     /**
@@ -419,21 +420,26 @@ public class DataStore {
             type = FileStructureDto.Type.FPOINT;
             rawValue = TypeHelper.floatingPoint32ToRaw(((Double) jsonNode.getDoubleValue()).floatValue());
 
-        } else if (jsonNode instanceof IntNode) {
+        } else {
+            FileStructureDto.Field fieldDefinition = StructureHelper.getFieldDefinitionFromFullName(parentKey, this.fileStructure).get();
 
-            type = FileStructureDto.Type.INTEGER;
-            rawValue = TypeHelper.integerToRaw(jsonNode.getIntValue());
-            signed = StructureHelper.getFieldDefinitionFromFullName(parentKey, this.fileStructure).get().isSigned();
+            if (jsonNode instanceof IntNode) {
 
-        } else if (jsonNode instanceof TextNode) {
+                type = FileStructureDto.Type.INTEGER;
+                rawValue = TypeHelper.integerToRaw(jsonNode.getIntValue());
+                signed = fieldDefinition.isSigned();
 
-            String stringValue = jsonNode.getTextValue();
-            try {
-                type = FileStructureDto.Type.UNKNOWN;
-                rawValue = TypeHelper.hexRepresentationToByteArray(stringValue);
-            } catch (IllegalArgumentException e) {
-                type = FileStructureDto.Type.TEXT;
-                rawValue = TypeHelper.textToRaw(stringValue);
+            } else if (jsonNode instanceof TextNode) {
+
+                String stringValue = jsonNode.getTextValue();
+                try {
+                    type = FileStructureDto.Type.UNKNOWN;
+                    rawValue = TypeHelper.hexRepresentationToByteArray(stringValue);
+                } catch (IllegalArgumentException e) {
+                    int length = FormulaHelper.resolveToInteger(fieldDefinition.getSizeFormula(), parentKey, this) ;
+                    type = FileStructureDto.Type.TEXT;
+                    rawValue = TypeHelper.textToRaw(stringValue, length);
+                }
             }
         }
 

@@ -84,10 +84,17 @@ public class TypeHelper {
      * Converts a TEXT value to raw byte array.
      *
      * @param textValue : text value to convert
+     * @param length    : length of raw byte array. Actual bytes will be truncated / followed by 0 when necessary.
      * @return corresponding value with default encoding as byte array.
      */
-    public static byte[] textToRaw(String textValue) {
-        return textValue.getBytes();
+    public static byte[] textToRaw(String textValue, int length) {
+
+        byte[] valueBytes = textValue.getBytes();
+        byte[] targetByteArray = new byte[length];
+
+        System.arraycopy(valueBytes, 0, targetByteArray, 0, valueBytes.length <= length ? valueBytes.length : length);
+
+        return targetByteArray;
     }
 
     /**
