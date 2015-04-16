@@ -12,7 +12,25 @@ public class TypeHelperTest {
         byte[] bytes = { 0x4d, 0x41, 0x50, 0x34,  0x00};
 
         // WHEN-THEN
-        assertThat(TypeHelper.rawToText(bytes)).isEqualTo("MAP4\0");
+        assertThat(TypeHelper.rawToText(bytes, 5)).isEqualTo("MAP4\0");
+    }
+
+    @Test
+    public void rawToText_whenGreaterLength_shouldReturnTextFilledWithZeros() {
+        //GIVEN
+        byte[] bytes = { 0x4d, 0x41, 0x50, 0x34 };
+
+        // WHEN-THEN
+        assertThat(TypeHelper.rawToText(bytes, 5)).isEqualTo("MAP4\0");
+    }
+
+    @Test
+    public void rawToText_whenLowerLength_shouldReturnTruncatedText() {
+        //GIVEN
+        byte[] bytes = { 0x4d, 0x41, 0x50, 0x34, 0x00 };
+
+        // WHEN-THEN
+        assertThat(TypeHelper.rawToText(bytes, 4)).isEqualTo("MAP4");
     }
 
     @Test

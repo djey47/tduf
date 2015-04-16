@@ -120,7 +120,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                     readValueAsBytes = new byte[length];
                     parsedCount = inputStream.read(readValueAsBytes, 0, length);
 
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, "", type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), "\"" + TypeHelper.rawToText(readValueAsBytes) + "\""));
+                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, "", type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), "\"" + TypeHelper.rawToText(readValueAsBytes, length) + "\""));
                     break;
 
                 case REPEATER:
