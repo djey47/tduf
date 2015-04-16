@@ -245,6 +245,12 @@ public class DbDataDto implements Serializable {
         @JsonProperty("enabled")
         private final boolean enabled;
 
+        public SwitchValue() {
+            index = 0;
+            name = null;
+            enabled = false;
+        }
+
         public SwitchValue(int index, String name, boolean enabled) {
             this.index = index;
             this.enabled = enabled;
