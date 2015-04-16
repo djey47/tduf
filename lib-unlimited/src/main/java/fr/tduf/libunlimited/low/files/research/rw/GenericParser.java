@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.INTEGER;
+import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.REPEATER;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -99,10 +101,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                         parsedCount = inputStream.read(readValueAsBytes, 8-length, length);
                     }
 
-                    // TODO extract method
-                    long integerValue = TypeHelper.rawToInteger(readValueAsBytes, signedValue);
-                    byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 8 - length, 8);
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, signedValue ? DUMP_LABEL_SIGNED : DUMP_LABEL_UNSIGNED, type.name(), length, TypeHelper.byteArrayToHexRepresentation(displayedBytes), integerValue));
+                    dumpIntegerValue(readValueAsBytes, length, signedValue, key);
                     break;
 
                 case FPOINT:
@@ -125,32 +124,14 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                     break;
 
                 case REPEATER:
-                    parsedCount = 0 ;
-
-                    List<FileStructureDto.Field> subFields = field.getSubFields();
-
-                    dumpBuilder.append(String.format(DUMP_REPEATER_START_ENTRY_FORMAT, key, type.name()));
-
-                    while (inputStream.available() > 0                        // auto
-                            && (length == null || parsedCount < length)) {    // specified
-
-                        String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(name, parsedCount);
-                        readFields(subFields, newRepeaterKeyPrefix);
-
-                        parsedCount++;
-                    }
-
-                    dumpBuilder.append(String.format(DUMP_REPEATER_FINISH_ENTRY_FORMAT, key, type.name(), parsedCount));
+                    parsedCount = readRepeatedValues(field, length, key);
                     break;
 
                 case UNKNOWN:
                     // Autosize handle
-                    if (length == null) {
-                        length = inputStream.available();
-                    }
-
-                    readValueAsBytes = new byte[length];
-                    parsedCount = inputStream.read(readValueAsBytes, 0, length);
+                    int actualSize = length == null ? inputStream.available() : length;
+                    readValueAsBytes = new byte[actualSize];
+                    parsedCount = inputStream.read(readValueAsBytes, 0, actualSize);
 
                     dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, "", type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), ""));
                     break;
@@ -164,6 +145,34 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
 
             this.dataStore.addValue(key, type, signedValue, readValueAsBytes);
         }
+    }
+
+    private long readRepeatedValues(FileStructureDto.Field repeaterField, Integer length, String key) {
+
+        dumpBuilder.append(String.format(DUMP_REPEATER_START_ENTRY_FORMAT, key, REPEATER.name()));
+
+        List<FileStructureDto.Field> subFields = repeaterField.getSubFields();
+
+        long parsedCount = 0;
+        while (inputStream.available() > 0                        // auto
+                && (length == null || parsedCount < length)) {    // specified
+
+            String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(repeaterField.getName(), parsedCount);
+            readFields(subFields, newRepeaterKeyPrefix);
+
+            parsedCount++;
+        }
+
+        dumpBuilder.append(String.format(DUMP_REPEATER_FINISH_ENTRY_FORMAT, key, REPEATER.name(), parsedCount));
+
+        return parsedCount;
+    }
+
+    private void dumpIntegerValue(byte[] readValueAsBytes, Integer length, boolean signedValue, String key) {
+        long integerValue = TypeHelper.rawToInteger(readValueAsBytes, signedValue);
+        byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 8 - length, 8);
+
+        dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, signedValue ? DUMP_LABEL_SIGNED : DUMP_LABEL_UNSIGNED, INTEGER.name(), length, TypeHelper.byteArrayToHexRepresentation(displayedBytes), integerValue));
     }
 
     public DataStore getDataStore() {
