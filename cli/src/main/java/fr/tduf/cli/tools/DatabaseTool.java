@@ -32,7 +32,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class DatabaseTool extends GenericTool {
 
-    @Option(name = "-d", aliases = "--databaseDir", usage = "UNPACKED TDU database directory, defaults to current directory.")
+    @Option(name = "-d", aliases = "--databaseDir", usage = "TDU database directory, defaults to current directory.")
     private String databaseDirectory;
 
     @Option(name = "-j", aliases = "--jsonDir", usage = "Source (gen/apply-patch) or target (dump) directory for JSON files, defaults to current directory\\tdu-database-dump.")
@@ -54,10 +54,11 @@ public class DatabaseTool extends GenericTool {
      */
     enum Command implements CommandHelper.CommandEnum {
         CHECK("check", "Tries to load database and display integrity errors, if any."),
-        DUMP("dump", "Writes full database contents to JSON files."),
-        GEN("gen", "Writes TDU database files from JSON files."),
+        DUMP("dump", "Writes UNPACKED full database contents to JSON files."),
+        GEN("gen", "Writes UNPACKED TDU database files from JSON files."),
         FIX("fix", "Loads database, checks for integrity errors and create database copy with fixed ones."),
-        APPLY_PATCH("apply-patch", "Modifies database contents and resources as described in a JSON mini patch file.");
+        APPLY_PATCH("apply-patch", "Modifies database contents and resources as described in a JSON mini patch file."),
+        UNPACK_ALL("unpack-all", "Extracts full database contents from BNK to JSON files.");
 
         final String label;
         final String description;
@@ -91,6 +92,7 @@ public class DatabaseTool extends GenericTool {
     }
 
     @Override
+    // TODO see to remove DUMP and GEN operations when UNPACK_ALL / REPACK_ALL are ok
     protected boolean commandDispatch() throws Exception {
         switch (command) {
             case DUMP:
@@ -107,6 +109,9 @@ public class DatabaseTool extends GenericTool {
                 return true;
             case APPLY_PATCH:
                 applyPatch();
+                return true;
+            case UNPACK_ALL:
+                unpackAll();
                 return true;
             default:
                 return false;
@@ -125,7 +130,7 @@ public class DatabaseTool extends GenericTool {
         }
 
         if (jsonDirectory == null) {
-            if (DUMP == command) {
+            if (DUMP == command || UNPACK_ALL == command) {
                 jsonDirectory = "tdu-database-dump";
             } else if (APPLY_PATCH == command) {
                 throw new CmdLineException(parser, "Error: jsonDirectory is required as source database.", null);
@@ -157,8 +162,13 @@ public class DatabaseTool extends GenericTool {
                 GEN.label + " --jsonDir \"C:\\Users\\Bill\\Desktop\\json-database\" --databaseDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
                 CHECK.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
                 FIX.label + " -c -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -o \"C:\\Users\\Bill\\Desktop\\tdu-database-fixed\"",
-                APPLY_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\""
+                APPLY_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\"",
+                UNPACK_ALL.label + "-d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -j \"C:\\Users\\Bill\\Desktop\\json-database\""
         );
+    }
+
+    private void unpackAll() {
+        // TODO
     }
 
     private void applyPatch() throws IOException {
