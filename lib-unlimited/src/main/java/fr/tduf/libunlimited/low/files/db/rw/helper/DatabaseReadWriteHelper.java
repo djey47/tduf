@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
+import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -23,9 +24,11 @@ import static java.util.stream.Collectors.toList;
  */
 public class DatabaseReadWriteHelper {
 
-    private static final String EXTENSION_DB_CONTENTS = "db";
-    private static final String EXTENSION_JSON = "json";
+    private static final List<String> databaseFileNames = asList("DB.bnk", "DB_CH.bnk", "DB_FR.bnk", "DB_GE.bnk", "DB_IT.bnk", "DB_JA.bnk", "DB_KO.bnk", "DB_SP.bnk", "DB_US.bnk");
 
+    private static final String EXTENSION_DB_CONTENTS = "db";
+
+    private static final String EXTENSION_JSON = "json";
     private static final String ENCODING_UTF_8 = "UTF-8";
     private static final String ENCODING_UTF_16 = "UTF-16";
 
@@ -157,6 +160,27 @@ public class DatabaseReadWriteHelper {
         }
     }
 
+    /**
+     * Extracts all TDU database files from specified directory to a temporary location.
+     * @param databaseDirectory : directory containing ALL TDU database files.
+     * @param bankSupport       : module instance to unpack/repack bnks
+     * @return directory where extracted contents are located for further processing.
+     */
+    public static String unpackDatabaseFromDirectory(String databaseDirectory, BankSupport bankSupport) throws IOException {
+        requireNonNull(databaseDirectory, "A database directory is required.");
+        requireNonNull(bankSupport, "A module instance for bank support is required.");
+
+        String tempDirectory = createTempDirectory();
+
+        databaseFileNames.stream()
+
+                .map((fileName) -> checkDatabaseFileExists(databaseDirectory, fileName))
+
+                .forEach((validFileName) -> unpackDatabaseBankAndGroupFiles(validFileName, tempDirectory, bankSupport));
+
+        return tempDirectory;
+    }
+
     static List<String> parseTopicContentsFromFile(String contentsFileName) throws FileNotFoundException {
         return parseLinesInFile(contentsFileName, ENCODING_UTF_8);
     }
@@ -168,6 +192,41 @@ public class DatabaseReadWriteHelper {
         checkResourcesLines(resourcesLinesByFileNames, topic, integrityErrors);
 
         return sortResourcesLinesByCountDescending(resourcesLinesByFileNames);
+    }
+
+    private static String checkDatabaseFileExists(String databaseDirectory, String databaseFileName) {
+        Path databaseFilePath = Paths.get(databaseDirectory, databaseFileName);
+        String fullFileName = databaseFilePath.toString();
+        if (!Files.exists(databaseFilePath)) {
+            throw new RuntimeException("Source database file does not exist.", new FileNotFoundException(fullFileName));
+        }
+
+        return fullFileName;
+    }
+
+    private static void unpackDatabaseBankAndGroupFiles(String databaseFileName, String targetDirectory, BankSupport bankSupport) {
+
+        String shortFileName = Paths.get(databaseFileName).getFileName().toString();
+        Path parentPath = Paths.get(targetDirectory, shortFileName).getParent();
+
+        try {
+            bankSupport.extractAll(databaseFileName, targetDirectory);
+
+            Files.walk(parentPath)
+
+                    .filter((path) -> Files.isRegularFile(path))
+
+                    .forEach((extractedFilePath) -> {
+                        try {
+                            Files.move(extractedFilePath, Paths.get(targetDirectory, shortFileName));
+                        } catch (IOException ioe) {
+                            throw new RuntimeException("Unable to group extracted file: " + extractedFilePath, ioe);
+                        }
+                    });
+
+        } catch (IOException ioe) {
+            throw new RuntimeException("Unable to unpack database bank: " + databaseFileName, ioe);
+        }
     }
 
     private static File getJsonFileFromDirectory(DbDto.Topic topic, String jsonDirectory) {
