@@ -2,7 +2,10 @@ package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.cli.tools.dto.DatabaseIntegrityErrorDto;
+import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
@@ -10,6 +13,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import org.apache.commons.io.DirectoryWalker;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -17,10 +21,9 @@ import org.kohsuke.args4j.Option;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static java.util.Arrays.asList;
@@ -46,6 +49,8 @@ public class DatabaseTool extends GenericTool {
 
     @Option(name = "-c", aliases = "--clear", usage = "Not mandatory. Indicates unpacked TDU files do not need to be unencrypted and encrypted back.")
     private boolean withClearContents = false;
+
+    private BankSupport bankSupport;
 
     private Command command;
 
@@ -89,6 +94,10 @@ public class DatabaseTool extends GenericTool {
      */
     public static void main(String[] args) throws IOException {
         new DatabaseTool().doMain(args);
+    }
+
+    public DatabaseTool() {
+        this.bankSupport = new GenuineBnkGateway(new CommandLineHelper());
     }
 
     @Override
@@ -167,8 +176,22 @@ public class DatabaseTool extends GenericTool {
         );
     }
 
-    private void unpackAll() {
-        // TODO
+    private void unpackAll() throws IOException {
+        String sourceDirectory = Paths.get(this.databaseDirectory).toAbsolutePath().toString();
+        outLine("-> TDU database directory: " + sourceDirectory);
+        outLine("Extracting TDU database files, please wait...");
+
+        this.databaseDirectory = DatabaseReadWriteHelper.unpackDatabaseFromDirectory(sourceDirectory, this.bankSupport);
+
+        outLine("Unpacking TDU database to " + this.jsonDirectory + ".");
+
+        dump();
+
+        outLine("All done!");
+
+        Map<String, Object> resultInfo = (Map<String, Object>) this.commandResult;
+        resultInfo.put("sourceDirectory", sourceDirectory);
+        resultInfo.put("temporaryDirectory", this.databaseDirectory);
     }
 
     private void applyPatch() throws IOException {
