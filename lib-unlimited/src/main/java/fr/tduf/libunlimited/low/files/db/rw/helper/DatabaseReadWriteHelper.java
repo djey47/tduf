@@ -181,6 +181,25 @@ public class DatabaseReadWriteHelper {
         return tempDirectory;
     }
 
+    /**
+     * Repacks all TDU database files from specified directory to target location.
+     * @param databaseDirectory : directory containing ALL database files as JSON format.
+     * @param targetDirectory   : directory where to place generated BNK files
+     * @param bankSupport       : module instance to unpack/repack bnks
+     */
+    public static void repackDatabaseFromDirectory(String databaseDirectory, String targetDirectory, BankSupport bankSupport) {
+
+    }
+
+    /**
+     * Creates a temporary directory.
+     * @return full directory name
+     * @throws IOException
+     */
+    public static String createTempDirectory() throws IOException {
+        return Files.createTempDirectory("libUnlimited-databaseRW").toString();
+    }
+
     static List<String> parseTopicContentsFromFile(String contentsFileName) throws FileNotFoundException {
         return parseLinesInFile(contentsFileName, ENCODING_UTF_8);
     }
@@ -375,9 +394,5 @@ public class DatabaseReadWriteHelper {
                         e.printStackTrace();
                     }
                 });
-    }
-
-    private static String createTempDirectory() throws IOException {
-        return Files.createTempDirectory("libUnlimited-databaseRW").toString();
     }
 }
