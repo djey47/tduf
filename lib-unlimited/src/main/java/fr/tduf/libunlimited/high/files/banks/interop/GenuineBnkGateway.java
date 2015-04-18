@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
 import static fr.tduf.libunlimited.common.helper.CommandLineHelper.EXIT_CODE_SUCCESS;
@@ -23,8 +24,6 @@ import static java.util.stream.Collectors.toList;
  * Bnk support, implementation relying on TDUMT-cli application.
  */
 public class GenuineBnkGateway implements BankSupport {
-
-    static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
 
     static final String EXE_TDUMT_CLI = ".\\tools\\tdumt-cli\\tdumt-cli.exe";
     static final String CLI_COMMAND_BANK_INFO = "BANK-I";
@@ -112,6 +111,16 @@ public class GenuineBnkGateway implements BankSupport {
                 .filter((path) -> Files.isRegularFile(path))
 
                 .filter((path) -> !EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+
+                .filter((path) -> {
+                    try {
+                        BasicFileAttributes fileAttributes = Files.readAttributes(path, BasicFileAttributes.class);
+                        return fileAttributes.lastModifiedTime().compareTo(fileAttributes.creationTime()) > 0;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return true;
+                    }
+                })
 
                 .forEach((path) -> {
                     String packedFilePath = getInternalPackedFilePath(path, inputPath);

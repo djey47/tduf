@@ -110,11 +110,11 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test
-    public void packAll_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
+    public void packAll_whenSuccess_shouldInvokeCommandLineCorrectlyForModifiedFiles() throws IOException, URISyntaxException {
         // GIVEN
         String bankFileName = "A3_V6.bnk";
 
-        createSourceFileTree(bankFileName);
+        createSourceFileTree(bankFileName, true);
 
         String sourceDirectory = Paths.get(tempDirectory, bankFileName).toString();
         String outputBankFileName = Paths.get(tempDirectory, "A3_V6.output.bnk").toString();
@@ -134,6 +134,28 @@ public class GenuineBnkGatewayTest {
         verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".3DD\\A3_V6"), eq(Paths.get(sourceDirectory, "A3_V6.3DD").toString()));
         verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".3DG\\A3_V6"), eq(Paths.get(sourceDirectory, "A3_V6.3DG").toString()));
         verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".2DM\\A3_V6"), eq(Paths.get(sourceDirectory, "A3_V6.2DM").toString()));
+    }
+
+    @Test
+    public void packAll_whenSuccess_shouldIgnoreUnmodifiedFiles() throws IOException, URISyntaxException {
+        // GIVEN
+        String bankFileName = "A3_V6.bnk";
+
+        createSourceFileTree(bankFileName, false);
+
+        String outputBankFileName = Paths.get(tempDirectory, "A3_V6.output.bnk").toString();
+
+        mockCommandLineHelperToReturnBankInformationSuccess(outputBankFileName);
+
+
+        // WHEN
+        genuineBnkGateway.packAll(tempDirectory, outputBankFileName);
+
+
+        // THEN
+        assertThat(new File(outputBankFileName)).exists();
+
+        verify(commandLineHelperMock, never()).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), anyString(), anyString(), anyString());
     }
 
     @Test
@@ -170,7 +192,7 @@ public class GenuineBnkGatewayTest {
     public void searchOriginalBankFileName_whenCorrectDirectoryPresent_shouldReturnDirectoryName() throws IOException {
         // GIVEN
         String bankFileName = "A3_V6.bnk";
-        createSourceFileTree(bankFileName);
+        createSourceFileTree(bankFileName, false);
 
         // WHEN
         String actualFileName = GenuineBnkGateway.searchOriginalBankFileName(tempDirectory);
@@ -179,7 +201,7 @@ public class GenuineBnkGatewayTest {
         assertThat(actualFileName).isEqualTo(bankFileName);
     }
 
-    private void createSourceFileTree(String bankFileName) throws IOException {
+    private void createSourceFileTree(String bankFileName, boolean markFilesModified) throws IOException {
 
         assert new File(tempDirectory, PREFIX_ORIGINAL_BANK_FILE + bankFileName ).createNewFile();
 
@@ -187,9 +209,19 @@ public class GenuineBnkGatewayTest {
         Files.createDirectories(extractedPath);
         String extractedDirectory = extractedPath.toString();
 
-        assert new File(extractedDirectory, "A3_V6.3DD").createNewFile();
-        assert new File(extractedDirectory, "A3_V6.3DG").createNewFile();
-        assert new File(extractedDirectory, "A3_V6.2DM").createNewFile();
+        File file1 = new File(extractedDirectory, "A3_V6.3DD");
+        File file2 = new File(extractedDirectory, "A3_V6.3DG");
+        File file3 = new File(extractedDirectory, "A3_V6.2DM");
+
+        assert file1.createNewFile();
+        assert file2.createNewFile();
+        assert file3.createNewFile();
+
+        if (markFilesModified) {
+            assert file1.setLastModified(file1.lastModified() + 1000);
+            assert file2.setLastModified(file2.lastModified() + 1000);
+            assert file3.setLastModified(file3.lastModified() + 1000);
+        }
     }
 
     private void mockCommandLineHelperToReturnBankInformationSuccess(String bankFileName) throws URISyntaxException, IOException {
