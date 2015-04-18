@@ -181,8 +181,25 @@ public class DatabaseTool extends GenericTool {
         );
     }
 
-    private void repackAll() {
+    private void repackAll() throws IOException {
+        String sourceDirectory = Paths.get(this.jsonDirectory).toAbsolutePath().toString();
+        String targetDirectory = Paths.get(this.databaseDirectory).toAbsolutePath().toString();
+        outLine("-> JSON database directory: " + sourceDirectory);
+        outLine("Generating TDU database files, please wait...");
 
+        this.databaseDirectory = DatabaseReadWriteHelper.createTempDirectory();
+        gen();
+
+        outLine("Extracting TDU database files, please wait...");
+
+        DatabaseReadWriteHelper.repackDatabaseFromDirectory(this.databaseDirectory, targetDirectory, this.bankSupport);
+
+        outLine("All done!");
+
+        Map<String, Object> resultInfo = (Map<String, Object>) this.commandResult;
+        resultInfo.put("sourceDirectory", sourceDirectory);
+        resultInfo.put("targetDirectory", targetDirectory);
+        resultInfo.put("temporaryDirectory", this.databaseDirectory);
     }
 
     private void unpackAll() throws IOException {
