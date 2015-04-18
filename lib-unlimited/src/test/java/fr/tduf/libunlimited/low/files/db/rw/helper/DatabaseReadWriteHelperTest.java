@@ -1,21 +1,24 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 
+import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import fr.tduf.libunlimited.low.files.db.rw.DatabaseWriter;
 import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +29,11 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeE
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.data.Index.atIndex;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DatabaseReadWriteHelperTest {
 
     private static Class<DatabaseReadWriteHelperTest> thisClass = DatabaseReadWriteHelperTest.class;
@@ -36,7 +43,7 @@ public class DatabaseReadWriteHelperTest {
     private String tempDirectory;
 
     @Mock
-    private DatabaseWriter databaseWriter;
+    private BankSupport bankSupportMock;
 
     @Before
     public void setUp() throws IOException {
@@ -339,6 +346,40 @@ public class DatabaseReadWriteHelperTest {
 
         assertFileDoesNotMatchReference(writtenFiles.get(0), "/db/encrypted/");
     }
+
+    @Test
+    public void unpackDatabaseFromDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
+        // GIVEN
+        String databaseDirectory = new File(thisClass.getResource("/db/full/DB.BNK").toURI()).getParent();
+
+
+        // WHEN
+        String actualDirectory = DatabaseReadWriteHelper.unpackDatabaseFromDirectory(databaseDirectory, bankSupportMock);
+
+
+        // THEN
+        assertThat(actualDirectory).isNotNull();
+        assertThat(new File(actualDirectory)).exists();
+
+        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB.bnk").toString()), anyString());
+        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_CH.bnk").toString()), anyString());
+        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_FR.bnk").toString()), anyString());
+        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_GE.bnk").toString()), anyString());
+        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_IT.bnk").toString()), anyString());
+        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_JA.bnk").toString()), anyString());
+        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_KO.bnk").toString()), anyString());
+        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_SP.bnk").toString()), anyString());
+        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_US.bnk").toString()), anyString());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void unpackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() throws IOException {
+        // GIVEN-WHEN
+        DatabaseReadWriteHelper.unpackDatabaseFromDirectory(null, null);
+
+        // THEN: NPE
+    }
+
 
     private DbDto createDatabaseTopicObject() {
         DbStructureDto dbStructureDto = DbStructureDto.builder()
