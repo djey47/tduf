@@ -13,7 +13,6 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
-import org.apache.commons.io.DirectoryWalker;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -21,7 +20,6 @@ import org.kohsuke.args4j.Option;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -33,6 +31,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Command line interface for handling TDU database.
  */
+// TODO see to remove DUMP and GEN operations when UNPACK_ALL / REPACK_ALL are ok
 public class DatabaseTool extends GenericTool {
 
     @Option(name = "-d", aliases = "--databaseDir", usage = "TDU database directory, defaults to current directory.")
@@ -63,7 +62,8 @@ public class DatabaseTool extends GenericTool {
         GEN("gen", "Writes UNPACKED TDU database files from JSON files."),
         FIX("fix", "Loads database, checks for integrity errors and create database copy with fixed ones."),
         APPLY_PATCH("apply-patch", "Modifies database contents and resources as described in a JSON mini patch file."),
-        UNPACK_ALL("unpack-all", "Extracts full database contents from BNK to JSON files.");
+        UNPACK_ALL("unpack-all", "Extracts full database contents from BNK to JSON files."),
+        REPACK_ALL("repack-all", "Repacks full database from JSON files into BNK ones." );
 
         final String label;
         final String description;
@@ -101,7 +101,6 @@ public class DatabaseTool extends GenericTool {
     }
 
     @Override
-    // TODO see to remove DUMP and GEN operations when UNPACK_ALL / REPACK_ALL are ok
     protected boolean commandDispatch() throws Exception {
         switch (command) {
             case DUMP:
@@ -122,6 +121,9 @@ public class DatabaseTool extends GenericTool {
             case UNPACK_ALL:
                 unpackAll();
                 return true;
+            case REPACK_ALL:
+                repackAll();
+                return true;
             default:
                 return false;
         }
@@ -141,7 +143,7 @@ public class DatabaseTool extends GenericTool {
         if (jsonDirectory == null) {
             if (DUMP == command || UNPACK_ALL == command) {
                 jsonDirectory = "tdu-database-dump";
-            } else if (APPLY_PATCH == command) {
+            } else if (APPLY_PATCH == command || REPACK_ALL == command) {
                 throw new CmdLineException(parser, "Error: jsonDirectory is required as source database.", null);
             }
         }
@@ -151,6 +153,8 @@ public class DatabaseTool extends GenericTool {
                 outputDatabaseDirectory = "tdu-database-fixed";
             } else if (APPLY_PATCH == command) {
                 outputDatabaseDirectory = "tdu-database-patched";
+            } else if (REPACK_ALL == command) {
+                outputDatabaseDirectory = "tdu-database-repacked";
             }
         }
 
@@ -172,8 +176,13 @@ public class DatabaseTool extends GenericTool {
                 CHECK.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
                 FIX.label + " -c -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -o \"C:\\Users\\Bill\\Desktop\\tdu-database-fixed\"",
                 APPLY_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\"",
-                UNPACK_ALL.label + "-d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -j \"C:\\Users\\Bill\\Desktop\\json-database\""
+                UNPACK_ALL.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -j \"C:\\Users\\Bill\\Desktop\\json-database\"",
+                REPACK_ALL.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -o \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\""
         );
+    }
+
+    private void repackAll() {
+
     }
 
     private void unpackAll() throws IOException {
