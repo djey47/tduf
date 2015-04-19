@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
@@ -352,6 +353,20 @@ public class DatabaseReadWriteHelperTest {
         // GIVEN
         String databaseDirectory = new File(thisClass.getResource("/db/full/DB.BNK").toURI()).getParent();
 
+        Mockito
+                .doAnswer((invocation) -> {
+                    String bankFileName = (String) invocation.getArguments()[0];
+                    String outputDirectory = (String) invocation.getArguments()[1];
+
+                    String bankShortFileName = Paths.get(bankFileName).getFileName().toString();
+                    Files.createDirectory(Paths.get(outputDirectory, bankShortFileName));
+                    Files.createFile(Paths.get(outputDirectory, "original-" + bankShortFileName));
+
+                    return invocation;
+                })
+
+                .when(bankSupportMock).extractAll(anyString(), anyString());
+
 
         // WHEN
         String actualDirectory = DatabaseReadWriteHelper.unpackDatabaseFromDirectory(databaseDirectory, bankSupportMock);
@@ -359,23 +374,55 @@ public class DatabaseReadWriteHelperTest {
 
         // THEN
         assertThat(actualDirectory).isNotNull();
-        assertThat(new File(actualDirectory)).exists();
 
-        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB.bnk").toString()), anyString());
-        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_CH.bnk").toString()), anyString());
-        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_FR.bnk").toString()), anyString());
-        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_GE.bnk").toString()), anyString());
-        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_IT.bnk").toString()), anyString());
-        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_JA.bnk").toString()), anyString());
-        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_KO.bnk").toString()), anyString());
-        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_SP.bnk").toString()), anyString());
-        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, "DB_US.bnk").toString()), anyString());
+        DatabaseReadWriteHelper.databaseFileNames
+
+                .forEach((bankFileName) -> {
+                    try {
+                        verify(bankSupportMock).extractAll(eq(Paths.get(databaseDirectory, bankFileName).toString()), anyString());
+                    } catch (IOException ioe) {
+                        throw new RuntimeException(ioe);
+                    }
+
+                    assertThat(new File(actualDirectory, "original-"  + bankFileName)).exists();
+                });
     }
 
     @Test(expected = NullPointerException.class)
     public void unpackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() throws IOException {
         // GIVEN-WHEN
         DatabaseReadWriteHelper.unpackDatabaseFromDirectory(null, null);
+
+        // THEN: NPE
+    }
+
+    @Test
+    public void repackDatabaseFromDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
+        // GIVEN
+        String databaseDirectory = new File(thisClass.getResource("/db/full/unpacked/TDU_CarPhysicsData.db").toURI()).getParent();
+        String targetDirectory = this.tempDirectory;
+
+
+        // WHEN
+        DatabaseReadWriteHelper.repackDatabaseFromDirectory(databaseDirectory, targetDirectory, bankSupportMock);
+
+
+        // THEN
+        DatabaseReadWriteHelper.databaseFileNames
+
+                .forEach((bankFileName) -> {
+                    try {
+                        verify(bankSupportMock).packAll(anyString(), eq(Paths.get(targetDirectory, bankFileName).toString()));
+                    } catch (IOException ioe) {
+                        throw new RuntimeException(ioe);
+                    }
+                });
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void repackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() throws IOException {
+        // GIVEN-WHEN
+        DatabaseReadWriteHelper.repackDatabaseFromDirectory(null, null, null);
 
         // THEN: NPE
     }
