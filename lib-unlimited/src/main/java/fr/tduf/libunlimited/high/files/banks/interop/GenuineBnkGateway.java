@@ -115,7 +115,7 @@ public class GenuineBnkGateway implements BankSupport {
                 .filter((path) -> {
                     try {
                         BasicFileAttributes fileAttributes = Files.readAttributes(path, BasicFileAttributes.class);
-                        return fileAttributes.lastModifiedTime().compareTo(fileAttributes.creationTime()) > 0;
+                        return fileAttributes.lastModifiedTime().compareTo(fileAttributes.lastAccessTime()) > 0;
                     } catch (IOException e) {
                         e.printStackTrace();
                         return true;

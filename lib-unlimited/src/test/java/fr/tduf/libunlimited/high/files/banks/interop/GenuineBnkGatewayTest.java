@@ -1,8 +1,8 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
+import fr.tduf.libunlimited.common.domain.ProcessResult;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.common.domain.ProcessResult;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import org.junit.Before;
 import org.junit.Test;
@@ -218,9 +218,9 @@ public class GenuineBnkGatewayTest {
         assert file3.createNewFile();
 
         if (markFilesModified) {
-            assert file1.setLastModified(file1.lastModified() + 1000);
-            assert file2.setLastModified(file2.lastModified() + 1000);
-            assert file3.setLastModified(file3.lastModified() + 1000);
+            assert file1.setLastModified(file1.lastModified() + 5000);
+            assert file2.setLastModified(file2.lastModified() + 5000);
+            assert file3.setLastModified(file3.lastModified() + 5000);
         }
     }
 
