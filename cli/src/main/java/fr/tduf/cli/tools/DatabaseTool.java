@@ -21,6 +21,7 @@ import org.kohsuke.args4j.Option;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -191,6 +192,8 @@ public class DatabaseTool extends GenericTool {
         this.databaseDirectory = DatabaseReadWriteHelper.createTempDirectory();
         gen();
 
+        // TODO copy original bnk files to target directory
+
         outLine("Repacking TDU database files, please wait...");
 
         DatabaseBankHelper.repackDatabaseFromDirectory(this.databaseDirectory, targetDirectory, this.bankSupport);
@@ -210,6 +213,8 @@ public class DatabaseTool extends GenericTool {
 
         this.databaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(sourceDirectory, this.bankSupport);
 
+        copyOriginalBankFilesToTargetDirectory();
+
         outLine("Done!");
 
         dump();
@@ -218,6 +223,22 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("sourceDirectory", sourceDirectory);
         resultInfo.put("temporaryDirectory", this.databaseDirectory);
         resultInfo.put("targetDirectory", this.jsonDirectory);
+    }
+
+    private void copyOriginalBankFilesToTargetDirectory() throws IOException {
+        Files.walk(Paths.get(this.databaseDirectory))
+
+                .filter((path) -> Files.isRegularFile(path))
+
+                .filter((filePath) -> filePath.toString().endsWith(".bnk"))
+
+                .forEach((filePath) -> {
+                    try {
+                        Files.copy(filePath, Paths.get(this.jsonDirectory, filePath.getFileName().toString()));
+                    } catch (IOException ioe) {
+                        throw new RuntimeException("Unable to copy original bank files to target directory.", ioe);
+                    }
+                });
     }
 
     private void applyPatch() throws IOException {
