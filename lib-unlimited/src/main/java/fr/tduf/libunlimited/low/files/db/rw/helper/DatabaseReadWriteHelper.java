@@ -41,6 +41,7 @@ public class DatabaseReadWriteHelper {
      * @param integrityErrors    : list of database errors, encountered when parsing.  @return a global object for topic.
      * @throws FileNotFoundException
      */
+    // TODO return Optional<DbDto>.empty instead of null
     public static DbDto readDatabaseTopic(DbDto.Topic topic, String databaseDirectory, boolean withClearContents, List<IntegrityError> integrityErrors) throws IOException {
         requireNonNull(integrityErrors, "A list (even empty) must be provided.");
 
