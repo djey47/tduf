@@ -39,24 +39,24 @@ public class DatabaseReadWriteHelper {
      * @param databaseDirectory : location of database contents as db + fr,it,ge... files
      * @param withClearContents : true indicates contents do not need to be decrypted before processing, false otherwise.
      * @param integrityErrors    : list of database errors, encountered when parsing.  @return a global object for topic.
+     * @return empty value if topic could not be read properly.
      * @throws FileNotFoundException
      */
-    // TODO return Optional<DbDto>.empty instead of null
-    public static DbDto readDatabaseTopic(DbDto.Topic topic, String databaseDirectory, boolean withClearContents, List<IntegrityError> integrityErrors) throws IOException {
+    public static Optional<DbDto> readDatabaseTopic(DbDto.Topic topic, String databaseDirectory, boolean withClearContents, List<IntegrityError> integrityErrors) throws IOException {
         requireNonNull(integrityErrors, "A list (even empty) must be provided.");
 
         String contentsFileName = checkDatabaseContents(topic, databaseDirectory, integrityErrors);
         if (contentsFileName == null) {
-            return null;
+            return Optional.empty();
         }
         contentsFileName = prepareClearContentsIfNecessary(contentsFileName, withClearContents, integrityErrors);
         if (contentsFileName == null) {
-            return null;
+            return Optional.empty();
         }
 
         List<String> contentLines = parseTopicContentsFromFile(contentsFileName);
         if(contentLines.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         List<List<String>> resourcesLines = parseTopicResourcesFromDirectoryAndCheck(topic, databaseDirectory, integrityErrors);
 
@@ -64,7 +64,7 @@ public class DatabaseReadWriteHelper {
         DbDto dbDto = databaseParser.parseAll();
         integrityErrors.addAll(databaseParser.getIntegrityErrors());
 
-        return dbDto;
+        return Optional.of(dbDto);
     }
 
     /**

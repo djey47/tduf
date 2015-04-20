@@ -60,11 +60,11 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        DbDto actualdbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, true, integrityErrors);
+        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, true, integrityErrors);
 
 
         // THEN
-        assertThat(actualdbDto).isNull();
+        assertThat(potentialDbDto).isEmpty();
 
         assertThat(integrityErrors).hasSize(1);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.CONTENTS_NOT_FOUND);
@@ -79,12 +79,12 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        DbDto actualdbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, true, integrityErrors);
+        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, true, integrityErrors);
 
 
         // THEN
-        assertThat(actualdbDto).isNotNull();
-        assertThat(actualdbDto.getData()).isNotNull();
+        assertThat(potentialDbDto).isPresent();
+        assertThat(potentialDbDto.get().getData()).isNotNull();
 
         assertThat(integrityErrors).hasSize(8);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND);
@@ -118,12 +118,12 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        DbDto actualdbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, false, integrityErrors);
+        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, false, integrityErrors);
 
 
         // THEN
-        assertThat(actualdbDto).isNotNull();
-        assertThat(actualdbDto.getData()).isNotNull();
+        assertThat(potentialDbDto).isPresent();
+        assertThat(potentialDbDto.get().getData()).isNotNull();
 
         assertThat(integrityErrors).hasSize(8);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND);
@@ -138,11 +138,11 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        DbDto actualdbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, false, integrityErrors);
+        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, false, integrityErrors);
 
 
         // THEN
-        assertThat(actualdbDto).isNull();
+        assertThat(potentialDbDto).isEmpty();
 
         assertThat(integrityErrors).hasSize(1);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.CONTENTS_ENCRYPTION_NOT_SUPPORTED);

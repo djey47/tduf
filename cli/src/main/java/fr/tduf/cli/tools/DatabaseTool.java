@@ -256,9 +256,8 @@ public class DatabaseTool extends GenericTool {
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
             outLine("-> Now processing topic: " + currentTopic + "...");
 
-            DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, this.databaseDirectory, this.withClearContents, new ArrayList<>());
-
-            if (dbDto == null) {
+            Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, this.databaseDirectory, this.withClearContents, new ArrayList<>());
+            if (!potentialDbDto.isPresent()) {
                 outLine("  !Database contents not found for topic " + currentTopic + ", skipping...");
                 outLine();
 
@@ -267,7 +266,7 @@ public class DatabaseTool extends GenericTool {
                 continue;
             }
 
-            DatabaseReadWriteHelper.writeDatabaseTopicToJson(dbDto, this.jsonDirectory)
+            DatabaseReadWriteHelper.writeDatabaseTopicToJson(potentialDbDto.get(), this.jsonDirectory)
 
                     .ifPresent((writtenFileName) -> {
                         outLine("Writing done for topic: " + currentTopic);
@@ -414,14 +413,15 @@ public class DatabaseTool extends GenericTool {
 
             int initialErrorCount = integrityErrors.size();
 
-            DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, this.databaseDirectory, this.withClearContents, integrityErrors);
+            Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, this.databaseDirectory, this.withClearContents, integrityErrors);
 
-            if (dbDto == null) {
+            if (!potentialDbDto.isPresent()) {
                 outLine("  (!)Database contents not found for topic " + currentTopic + ", skipping.");
                 outLine();
                 continue;
             }
 
+            DbDto dbDto = potentialDbDto.get();
             outLine("  .Found topic: " + currentTopic + ", " + (integrityErrors.size() - initialErrorCount) + " error(s).");
             outLine("  .Content line count: " + dbDto.getData().getEntries().size());
 
