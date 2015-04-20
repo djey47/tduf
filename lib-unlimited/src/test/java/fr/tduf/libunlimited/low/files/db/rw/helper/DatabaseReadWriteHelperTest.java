@@ -351,7 +351,7 @@ public class DatabaseReadWriteHelperTest {
     @Test
     public void unpackDatabaseFromDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
         // GIVEN
-        String databaseDirectory = new File(thisClass.getResource("/db/full/DB.BNK").toURI()).getParent();
+        String databaseDirectory = new File(thisClass.getResource("/db/full/DB.bnk").toURI()).getParent();
 
         Mockito
                 .doAnswer((invocation) -> {
