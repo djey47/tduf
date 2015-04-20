@@ -12,6 +12,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kohsuke.args4j.CmdLineException;
@@ -192,7 +193,7 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Extracting TDU database files, please wait...");
 
-        DatabaseReadWriteHelper.repackDatabaseFromDirectory(this.databaseDirectory, targetDirectory, this.bankSupport);
+        DatabaseBankHelper.repackDatabaseFromDirectory(this.databaseDirectory, targetDirectory, this.bankSupport);
 
         outLine("All done!");
 
@@ -207,7 +208,7 @@ public class DatabaseTool extends GenericTool {
         outLine("-> TDU database directory: " + sourceDirectory);
         outLine("Extracting TDU database files, please wait...");
 
-        this.databaseDirectory = DatabaseReadWriteHelper.unpackDatabaseFromDirectory(sourceDirectory, this.bankSupport);
+        this.databaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(sourceDirectory, this.bankSupport);
 
         outLine("Unpacking TDU database to " + this.jsonDirectory + ".");
 
