@@ -191,7 +191,7 @@ public class DatabaseTool extends GenericTool {
         this.databaseDirectory = DatabaseReadWriteHelper.createTempDirectory();
         gen();
 
-        outLine("Extracting TDU database files, please wait...");
+        outLine("Repacking TDU database files, please wait...");
 
         DatabaseBankHelper.repackDatabaseFromDirectory(this.databaseDirectory, targetDirectory, this.bankSupport);
 
@@ -206,19 +206,18 @@ public class DatabaseTool extends GenericTool {
     private void unpackAll() throws IOException {
         String sourceDirectory = Paths.get(this.databaseDirectory).toAbsolutePath().toString();
         outLine("-> TDU database directory: " + sourceDirectory);
-        outLine("Extracting TDU database files, please wait...");
+        outLine("Unpacking TDU database to " + this.jsonDirectory + ", please wait...");
 
         this.databaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(sourceDirectory, this.bankSupport);
 
-        outLine("Unpacking TDU database to " + this.jsonDirectory + ".");
+        outLine("Done!");
 
         dump();
-
-        outLine("All done!");
 
         Map<String, Object> resultInfo = (Map<String, Object>) this.commandResult;
         resultInfo.put("sourceDirectory", sourceDirectory);
         resultInfo.put("temporaryDirectory", this.databaseDirectory);
+        resultInfo.put("targetDirectory", this.jsonDirectory);
     }
 
     private void applyPatch() throws IOException {
