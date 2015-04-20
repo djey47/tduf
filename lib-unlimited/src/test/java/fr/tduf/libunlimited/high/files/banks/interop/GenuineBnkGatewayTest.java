@@ -17,9 +17,11 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.*;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -42,7 +44,7 @@ public class GenuineBnkGatewayTest {
 
     @Before
     public void setUp() throws URISyntaxException, IOException {
-        tempDirectory = Files.createTempDirectory("libUnlimited-tests").toString();
+        tempDirectory = createTempDirectory();
 
         bankFileName = FilesHelper.getFileNameFromResourcePath("/banks/Vehicules/A3_V6.bnk");
     }
@@ -201,17 +203,40 @@ public class GenuineBnkGatewayTest {
         assertThat(actualFileName).isEqualTo(bankFileName);
     }
 
-    private void createSourceFileTree(String bankFileName, boolean markFilesModified) throws IOException {
+    @Test
+    public void prepareFilesToBeRepacked_shouldCreateCorrectFileLayout() throws IOException {
+        // GIVEN
+        String targetDirectory = createTempDirectory();
+        String targetBankFileName = "A3_V6.bnk";
+        List<Path> repackedPaths = createRepackedFileTree(targetBankFileName, tempDirectory, false);
 
-        assert new File(tempDirectory, PREFIX_ORIGINAL_BANK_FILE + bankFileName ).createNewFile();
+        // WHEN
+        genuineBnkGateway.prepareFilesToBeRepacked(tempDirectory, repackedPaths, targetBankFileName, targetDirectory);
+
+        // THEN
+        assertThat(new File(targetDirectory, PREFIX_ORIGINAL_BANK_FILE + targetBankFileName)).exists();
+        assertThat(new File(targetDirectory, targetBankFileName)).exists();
+    }
+
+    private static String createTempDirectory() throws IOException {
+        return Files.createTempDirectory("libUnlimited-tests").toString();
+    }
+
+    private void createSourceFileTree(String bankFileName, boolean markFilesModified) throws IOException {
 
         Path extractedPath = Paths.get(tempDirectory, bankFileName);
         Files.createDirectories(extractedPath);
         String extractedDirectory = extractedPath.toString();
 
-        File file1 = new File(extractedDirectory, "A3_V6.3DD");
-        File file2 = new File(extractedDirectory, "A3_V6.3DG");
-        File file3 = new File(extractedDirectory, "A3_V6.2DM");
+        createRepackedFileTree(bankFileName, extractedDirectory, markFilesModified);
+    }
+
+    private List<Path> createRepackedFileTree(String bankFileName, String contentsDirectory, boolean markFilesModified) throws IOException {
+        assert new File(tempDirectory, PREFIX_ORIGINAL_BANK_FILE + bankFileName ).createNewFile();
+
+        File file1 = new File(contentsDirectory, "A3_V6.3DD");
+        File file2 = new File(contentsDirectory, "A3_V6.3DG");
+        File file3 = new File(contentsDirectory, "A3_V6.2DM");
 
         assert file1.createNewFile();
         assert file2.createNewFile();
@@ -222,6 +247,8 @@ public class GenuineBnkGatewayTest {
             assert file2.setLastModified(file2.lastModified() + 5000);
             assert file3.setLastModified(file3.lastModified() + 5000);
         }
+
+        return asList(file1.toPath(), file2.toPath(), file3.toPath());
     }
 
     private void mockCommandLineHelperToReturnBankInformationSuccess(String bankFileName) throws URISyntaxException, IOException {

@@ -79,41 +79,32 @@ public class DatabaseBankHelper {
 
     private static void rebuildFileStructureAndRepackDatabase(String databaseDirectory, String targetDirectory, String bankFileName, BankSupport bankSupport) {
         try {
-            String repackedDirectory = prepareFilesToBeRepacked(databaseDirectory, bankFileName);
+            String repackedDirectory = prepareFilesToBeRepacked(databaseDirectory, bankFileName, bankSupport);
             bankSupport.packAll(repackedDirectory, Paths.get(targetDirectory, bankFileName).toString());
         } catch (IOException ioe) {
             throw new RuntimeException("Unable to repack database: " + databaseDirectory, ioe);
         }
     }
 
-    // TODO see to extract part of this method to BankSupport (implementation dependent)
-    private static String prepareFilesToBeRepacked(String databaseDirectory, String targetBankFileName) throws IOException {
-        String repackedDirectory = createTempDirectory();
-        String originalBankFileName = "original-" + targetBankFileName;
-        Files.copy(Paths.get(databaseDirectory, originalBankFileName), Paths.get(repackedDirectory, originalBankFileName));
+    private static String prepareFilesToBeRepacked(String databaseDirectory, String targetBankFileName, BankSupport bankSupport) throws IOException {
 
-        Files.createDirectory(Paths.get(repackedDirectory, targetBankFileName));
-
-        Files.walk(Paths.get(databaseDirectory))
+        List<Path> repackedPaths = Files.walk(Paths.get(databaseDirectory))
 
                 .filter((filePath) -> {
 
                     if (targetBankFileName.equalsIgnoreCase(DATABASE_BANK_FILE_NAME)) {
-                        return filePath.toString().endsWith(".db");
+                        return filePath.toString().endsWith(DatabaseReadWriteHelper.EXTENSION_DB_CONTENTS);
                     }
 
-                    String locale = targetBankFileName.substring(2, 4).toLowerCase();
+                    String locale = targetBankFileName.substring(3, 5).toLowerCase();
                     return filePath.toString().endsWith("." + locale);
                 })
 
-                .forEach((filePath) -> {
-                    Path targetPath = Paths.get(repackedDirectory, targetBankFileName, filePath.getFileName().toString());
-                    try {
-                        Files.copy(filePath, targetPath);
-                    } catch (IOException ioe) {
-                        throw new RuntimeException("Unable to recreate file structure: " + targetPath, ioe);
-                    }
-                });
+                .collect(toList());
+
+        String repackedDirectory = createTempDirectory();
+        bankSupport.prepareFilesToBeRepacked(databaseDirectory, repackedPaths, targetBankFileName, repackedDirectory);
+
         return repackedDirectory;
     }
 

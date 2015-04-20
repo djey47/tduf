@@ -3,6 +3,8 @@ package fr.tduf.libunlimited.high.files.banks;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
 
 /**
  * Contract for handling of BNK files. Allows to provide many ways of BNK management
@@ -27,4 +29,14 @@ public interface BankSupport {
      * @param outputBankFileName    : location of bank file to create.
      */
     void packAll(String inputDirectory, String outputBankFileName) throws IOException;
+
+    /**
+     * Implement and use this method when a particular file layout is required by packing operation.
+     * @param sourceDirectory       : directory as source for repacked files
+     * @param repackedPaths         : list of paths of files to be repacked
+     * @param targetBankFileName    : name of bank file to be created
+     * @param targetDirectory       : directory to place new file layout
+     * @throws IOException
+     */
+     void prepareFilesToBeRepacked(String sourceDirectory, List<Path> repackedPaths, String targetBankFileName, String targetDirectory) throws IOException;
 }
