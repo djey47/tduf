@@ -134,6 +134,29 @@ public class GenuineBnkGateway implements BankSupport {
                 });
     }
 
+    /**
+     * To be used only with database repacking ! (file layout does not need packed folders)
+     */
+    @Override
+    public void prepareFilesToBeRepacked(String sourceDirectory, List<Path> repackedPaths, String targetBankFileName, String targetDirectory) throws IOException {
+
+        String originalBankFileName = PREFIX_ORIGINAL_BANK_FILE + targetBankFileName;
+        Files.copy(Paths.get(sourceDirectory, originalBankFileName), Paths.get(targetDirectory, originalBankFileName));
+
+        Files.createDirectory(Paths.get(targetDirectory, targetBankFileName));
+
+        repackedPaths
+
+                .forEach((filePath) -> {
+                    Path targetPath = Paths.get(targetDirectory, targetBankFileName, filePath.getFileName().toString());
+                    try {
+                        Files.copy(filePath, targetPath);
+                    } catch (IOException ioe) {
+                        throw new RuntimeException("Unable to recreate file structure: " + targetPath, ioe);
+                    }
+                });
+    }
+
     static String searchOriginalBankFileName(String inputDirectory) throws IOException {
         return Files.walk(Paths.get(inputDirectory))
 
