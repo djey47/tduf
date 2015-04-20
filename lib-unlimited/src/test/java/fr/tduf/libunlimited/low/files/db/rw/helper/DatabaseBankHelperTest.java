@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
@@ -61,7 +62,7 @@ public class DatabaseBankHelperTest {
         // THEN
         assertThat(actualDirectory).isNotNull();
 
-        DatabaseBankHelper.databaseFileNames
+        DatabaseBankHelper.getDatabaseBankFileNames()
 
                 .forEach((bankFileName) -> {
                     try {
@@ -70,7 +71,7 @@ public class DatabaseBankHelperTest {
                         throw new RuntimeException(ioe);
                     }
 
-                    assertThat(new File(actualDirectory, "original-"  + bankFileName)).exists();
+                    assertThat(new File(actualDirectory, "original-" + bankFileName)).exists();
                 });
     }
 
@@ -94,7 +95,7 @@ public class DatabaseBankHelperTest {
 
 
         // THEN
-        DatabaseBankHelper.databaseFileNames
+        DatabaseBankHelper.getDatabaseBankFileNames()
 
                 .forEach((bankFileName) -> {
                     try {
@@ -111,5 +112,15 @@ public class DatabaseBankHelperTest {
         DatabaseBankHelper.repackDatabaseFromDirectory(null, null, null);
 
         // THEN: NPE
+    }
+
+    @Test
+    public void getDatabaseBankFileNames_shouldReturnCorrectList() {
+        // GIVEN-WHEN
+        List<String> actualFileNames = DatabaseBankHelper.getDatabaseBankFileNames();
+
+        // THEN
+        String[] expectedFileNames = {"DB.bnk", "DB_CH.bnk", "DB_FR.bnk", "DB_GE.bnk", "DB_IT.bnk", "DB_JA.bnk", "DB_KO.bnk", "DB_SP.bnk", "DB_US.bnk"};
+        assertThat(actualFileNames).containsOnly(expectedFileNames);
     }
 }
