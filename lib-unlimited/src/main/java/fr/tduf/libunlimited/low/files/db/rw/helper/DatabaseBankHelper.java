@@ -1,24 +1,26 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Helper class providing methods to handle database bank files.
  */
 public class DatabaseBankHelper {
 
-    // TODO replace with a method using Locale values
-    static final List<String> databaseFileNames = asList("DB.bnk", "DB_CH.bnk", "DB_FR.bnk", "DB_GE.bnk", "DB_IT.bnk", "DB_JA.bnk", "DB_KO.bnk", "DB_SP.bnk", "DB_US.bnk");
+    private static final String DATABASE_BANK_FILE_NAME = "DB.bnk";
 
     /**
      * Extracts all TDU database files from specified directory to a temporary location.
@@ -32,7 +34,7 @@ public class DatabaseBankHelper {
 
         String tempDirectory = createTempDirectory();
 
-        databaseFileNames.stream()
+        getDatabaseBankFileNames().stream()
 
                 .map((fileName) -> checkDatabaseFileExists(databaseDirectory, fileName))
 
@@ -52,9 +54,23 @@ public class DatabaseBankHelper {
         requireNonNull(targetDirectory, "A target directory is required.");
         requireNonNull(bankSupport, "A module instance for bank support is required.");
 
-        databaseFileNames
+        getDatabaseBankFileNames()
 
                 .forEach((targetBankFileName) -> rebuildFileStructureAndRepackDatabase(databaseDirectory, targetDirectory, targetBankFileName, bankSupport));
+    }
+
+    static List<String> getDatabaseBankFileNames() {
+
+        List<String> resourceBankFileNames = asList(DbResourceDto.Locale.values()).stream()
+
+                .map((locale) -> "DB_" + locale.getCode().toUpperCase() + ".bnk")
+
+                .collect(toList());
+
+        List<String> databaseBankFileNames = new ArrayList<>(resourceBankFileNames);
+        databaseBankFileNames.add(DATABASE_BANK_FILE_NAME);
+
+        return databaseBankFileNames;
     }
 
     private static String createTempDirectory() throws IOException {
@@ -70,7 +86,7 @@ public class DatabaseBankHelper {
         }
     }
 
-    // TODO see to move this method to BankSupport (implementation dependent)
+    // TODO see to extract part of this method to BankSupport (implementation dependent)
     private static String prepareFilesToBeRepacked(String databaseDirectory, String targetBankFileName) throws IOException {
         String repackedDirectory = createTempDirectory();
         String originalBankFileName = "original-" + targetBankFileName;
@@ -82,7 +98,7 @@ public class DatabaseBankHelper {
 
                 .filter((filePath) -> {
 
-                    if (targetBankFileName.equalsIgnoreCase("DB.bnk")) {
+                    if (targetBankFileName.equalsIgnoreCase(DATABASE_BANK_FILE_NAME)) {
                         return filePath.toString().endsWith(".db");
                     }
 
