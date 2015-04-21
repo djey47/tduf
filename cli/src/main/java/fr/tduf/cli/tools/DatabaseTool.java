@@ -33,6 +33,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Command line interface for handling TDU database.
  */
+// TODO Move part of bank processing to lib (unpackAll / repackAll)
 // TODO see to remove DUMP and GEN operations when UNPACK_ALL / REPACK_ALL are ok
 public class DatabaseTool extends GenericTool {
 
@@ -192,7 +193,7 @@ public class DatabaseTool extends GenericTool {
         this.databaseDirectory = DatabaseReadWriteHelper.createTempDirectory();
         gen();
 
-        // TODO copy original bnk files to target directory
+        copyOriginalBankFilesToTargetDirectory(this.jsonDirectory, this.databaseDirectory);
 
         outLine("Repacking TDU database files, please wait...");
 
@@ -213,7 +214,7 @@ public class DatabaseTool extends GenericTool {
 
         this.databaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(sourceDirectory, this.bankSupport);
 
-        copyOriginalBankFilesToTargetDirectory();
+        copyOriginalBankFilesToTargetDirectory(this.databaseDirectory, this.jsonDirectory);
 
         outLine("Done!");
 
@@ -223,22 +224,6 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("sourceDirectory", sourceDirectory);
         resultInfo.put("temporaryDirectory", this.databaseDirectory);
         resultInfo.put("targetDirectory", this.jsonDirectory);
-    }
-
-    private void copyOriginalBankFilesToTargetDirectory() throws IOException {
-        Files.walk(Paths.get(this.databaseDirectory))
-
-                .filter((path) -> Files.isRegularFile(path))
-
-                .filter((filePath) -> filePath.toString().endsWith(".bnk"))
-
-                .forEach((filePath) -> {
-                    try {
-                        Files.copy(filePath, Paths.get(this.jsonDirectory, filePath.getFileName().toString()));
-                    } catch (IOException ioe) {
-                        throw new RuntimeException("Unable to copy original bank files to target directory.", ioe);
-                    }
-                });
     }
 
     private void applyPatch() throws IOException {
@@ -486,6 +471,22 @@ public class DatabaseTool extends GenericTool {
                         outLine("  (!)" + errorMessage);
                     });
         }
+    }
+
+    private static void copyOriginalBankFilesToTargetDirectory(String sourceDirectory, String targetDirectory) throws IOException {
+        Files.walk(Paths.get(sourceDirectory))
+
+                .filter((path) -> Files.isRegularFile(path))
+
+                .filter((filePath) -> filePath.toString().endsWith(".bnk"))
+
+                .forEach((filePath) -> {
+                    try {
+                        Files.copy(filePath, Paths.get(targetDirectory, filePath.getFileName().toString()));
+                    } catch (IOException ioe) {
+                        throw new RuntimeException("Unable to copy original bank files to target directory.", ioe);
+                    }
+                });
     }
 
     private static void betweenTopicsCheck(List<DbDto> allDtos, List<IntegrityError> integrityErrors) {
