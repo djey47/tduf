@@ -40,17 +40,23 @@ public class DatabaseTool extends GenericTool {
     @Option(name = "-d", aliases = "--databaseDir", usage = "TDU database directory, defaults to current directory.")
     private String databaseDirectory;
 
-    @Option(name = "-j", aliases = "--jsonDir", usage = "Source (gen/apply-patch) or target (dump) directory for JSON files, defaults to current directory\\tdu-database-dump.")
+    @Option(name = "-j", aliases = "--jsonDir", usage = "Source/Target directory for JSON files. When dump or unpack-all, defaults to current directory\\tdu-database-dump.")
     private String jsonDirectory;
 
-    @Option(name = "-o", aliases = "--outputDatabaseDir", usage = "Fixed/Patched TDU database directory, defaults to current directory\\tdu-database-fixed or \\tdu-database-patched.")
+    @Option(name = "-o", aliases = "--outputDatabaseDir", usage = "Fixed/Patched TDU database directory, defaults to .\\tdu-database-fixed or .\\tdu-database-patched.")
     private String outputDatabaseDirectory;
 
-    @Option(name = "-p", aliases = "--patchFile", usage = "File describing mini patch to apply (required for apply-patch operation).")
+    @Option(name = "-p", aliases = "--patchFile", usage = "File describing mini patch to apply/create. Required for both apply-patch and gen-patch operations.")
     private String patchFile;
 
-    @Option(name = "-c", aliases = "--clear", usage = "Not mandatory. Indicates unpacked TDU files do not need to be unencrypted and encrypted back.")
+    @Option(name = "-c", aliases = "--clear", usage = "Indicates unpacked TDU files do not need to be unencrypted and encrypted back. Not mandatory.")
     private boolean withClearContents = false;
+
+    @Option(name = "-t", aliases = "--topic", usage = "Database topic to generate patch when gen-patch operation. Allowed values: ACHIEVEMENTS,AFTER_MARKET_PACKS,BOTS,BRANDS,CAR_COLORS,CAR_PACKS,CAR_PHYSICS_DATA,CAR_RIMS,CAR_SHOPS,CLOTHES,HAIR,HOUSES,INTERIOR,MENUS,PNJ,RIMS,SUB_TITLES,TUTORIALS.")
+    private String databaseTopic;
+
+    @Option(name = "-r", aliases = "--range", usage = "REF of entries to create patch for. Can be a comma-separated list or a range <minValue>..<maxValue>. Not mandatory, defaults to all entries in topic.")
+    private String itemsRange;
 
     private BankSupport bankSupport;
 
@@ -65,6 +71,7 @@ public class DatabaseTool extends GenericTool {
         GEN("gen", "Writes UNPACKED TDU database files from JSON files."),
         FIX("fix", "Loads database, checks for integrity errors and create database copy with fixed ones."),
         APPLY_PATCH("apply-patch", "Modifies database contents and resources as described in a JSON mini patch file."),
+        GEN_PATCH("gen-patch", "Creates mini-patch file from selected database contents."),
         UNPACK_ALL("unpack-all", "Extracts full database contents from BNK to JSON files."),
         REPACK_ALL("repack-all", "Repacks full database from JSON files into BNK ones." );
 
@@ -121,6 +128,9 @@ public class DatabaseTool extends GenericTool {
             case APPLY_PATCH:
                 applyPatch();
                 return true;
+            case GEN_PATCH:
+                genPatch();
+                return true;
             case UNPACK_ALL:
                 unpackAll();
                 return true;
@@ -146,7 +156,7 @@ public class DatabaseTool extends GenericTool {
         if (jsonDirectory == null) {
             if (DUMP == command || UNPACK_ALL == command) {
                 jsonDirectory = "tdu-database-dump";
-            } else if (APPLY_PATCH == command || REPACK_ALL == command) {
+            } else if (APPLY_PATCH == command || REPACK_ALL == command || GEN_PATCH == command) {
                 throw new CmdLineException(parser, "Error: jsonDirectory is required as source database.", null);
             }
         }
@@ -164,6 +174,8 @@ public class DatabaseTool extends GenericTool {
         if (patchFile == null && APPLY_PATCH == command) {
             throw new CmdLineException(parser, "Error: patchFile is required.", null);
         }
+
+        // TODO validate and convert to range if gen-patch
     }
 
     @Override
@@ -179,6 +191,7 @@ public class DatabaseTool extends GenericTool {
                 CHECK.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
                 FIX.label + " -c -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -o \"C:\\Users\\Bill\\Desktop\\tdu-database-fixed\"",
                 APPLY_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\"",
+                GEN_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\" -t \"CAR_PHYSICS_DATA\" -r \"606298799,637314272\"",
                 UNPACK_ALL.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -j \"C:\\Users\\Bill\\Desktop\\json-database\"",
                 REPACK_ALL.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -o \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\""
         );
@@ -224,6 +237,10 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("sourceDirectory", sourceDirectory);
         resultInfo.put("temporaryDirectory", this.databaseDirectory);
         resultInfo.put("targetDirectory", this.jsonDirectory);
+    }
+
+    private void genPatch() {
+
     }
 
     private void applyPatch() throws IOException {
