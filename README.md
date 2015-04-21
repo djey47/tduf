@@ -1,5 +1,7 @@
 # TDUF(orever) #
 
+[ ![Codeship Status for djey/tduf](https://codeship.com/projects/a2317ec0-ca46-0132-0a66-62c0e6e8856f/status?branch=tduf-0.6.x)](https://codeship.com/projects/75428)
+
 This repository hosts all Java projects linked to TDUForever initiative.
 
 TDUForever aims at making Test Drive Unlmited modding easier:
