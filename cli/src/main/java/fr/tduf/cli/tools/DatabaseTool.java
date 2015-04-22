@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
+import fr.tduf.libunlimited.high.files.db.commonr.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
@@ -243,7 +244,7 @@ public class DatabaseTool extends GenericTool {
 
     }
 
-    private void applyPatch() throws IOException {
+    private void applyPatch() throws IOException, ReflectiveOperationException {
         FilesHelper.createDirectoryIfNotExists(this.outputDatabaseDirectory);
 
         outLine("-> Source database directory: " + this.jsonDirectory);
@@ -254,7 +255,7 @@ public class DatabaseTool extends GenericTool {
 
         DbPatchDto patchObject = new ObjectMapper().readValue(new File(patchFile), DbPatchDto.class);
 
-        DatabasePatcher.prepare(allTopicObjects).apply(patchObject);
+        AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).apply(patchObject);
 
         outLine("Writing patched database to " + this.outputDatabaseDirectory + ", please wait...");
 
@@ -356,7 +357,7 @@ public class DatabaseTool extends GenericTool {
         commandResult = resultInfo;
     }
 
-    private void fix() throws IOException {
+    private void fix() throws IOException, ReflectiveOperationException {
         List<IntegrityError> integrityErrors = new ArrayList<>();
         List<DbDto> databaseObjects = checkAndReturnIntegrityErrorsAndObjects(integrityErrors);
 
@@ -400,7 +401,7 @@ public class DatabaseTool extends GenericTool {
         commandResult = resultInfo;
     }
 
-    private List<DbDto> checkAndReturnIntegrityErrorsAndObjects(List<IntegrityError> integrityErrors) throws IOException {
+    private List<DbDto> checkAndReturnIntegrityErrorsAndObjects(List<IntegrityError> integrityErrors) throws IOException, ReflectiveOperationException {
         outLine("-> Source directory: " + databaseDirectory);
         outLine("Checking TDU database, please wait...");
         outLine();
@@ -506,8 +507,8 @@ public class DatabaseTool extends GenericTool {
                 });
     }
 
-    private static void betweenTopicsCheck(List<DbDto> allDtos, List<IntegrityError> integrityErrors) {
-        requireNonNull(integrityErrors, "A list is required").addAll(DatabaseIntegrityChecker.load(allDtos).checkAllContentsObjects());
+    private static void betweenTopicsCheck(List<DbDto> allDtos, List<IntegrityError> integrityErrors) throws ReflectiveOperationException {
+        requireNonNull(integrityErrors, "A list is required").addAll(AbstractDatabaseHolder.prepare(DatabaseIntegrityChecker.class, allDtos).checkAllContentsObjects());
     }
 
     private static List<DatabaseIntegrityErrorDto> toDatabaseIntegrityErrors(List<IntegrityError> integrityErrors) {
