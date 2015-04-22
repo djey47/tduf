@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
-import fr.tduf.libunlimited.high.files.db.commonr.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;

@@ -6,7 +6,7 @@ import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
-import fr.tduf.libunlimited.high.files.db.commonr.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;

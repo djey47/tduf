@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
-import fr.tduf.libunlimited.high.files.db.commonr.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
