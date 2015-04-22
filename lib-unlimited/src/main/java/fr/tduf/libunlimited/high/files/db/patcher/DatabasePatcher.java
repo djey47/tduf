@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.high.files.db.commonr.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -18,27 +18,8 @@ import static java.util.stream.Collectors.toList;
 /**
  * Used to apply patchs to an existing database.
  */
-// TODO extract common database holding to a dedicated Holder
 // TODO WARNING! if using cache on Miner, reset caches after updates !
-public class DatabasePatcher {
-
-    private final List<DbDto> databaseObjects;
-
-    private final BulkDatabaseMiner databaseMiner;
-
-    private DatabasePatcher(List<DbDto> databaseObjects) {
-        this.databaseObjects = databaseObjects;
-        this.databaseMiner = BulkDatabaseMiner.load(databaseObjects);
-    }
-
-    /**
-     * Unique entry point.
-     * @param databaseObjects    : database topics to be patched.
-     * @return a patcher instance.
-     */
-    public static DatabasePatcher prepare(List<DbDto> databaseObjects) {
-        return new DatabasePatcher(requireNonNull(databaseObjects, "Database objects are required."));
-    }
+public class DatabasePatcher extends AbstractDatabaseHolder {
 
     /**
      * Execute provided patch onto current database.
@@ -212,9 +193,5 @@ public class DatabasePatcher {
                 })
 
                 .collect(toList());
-    }
-
-    List<DbDto> getDatabaseObjects() {
-        return databaseObjects;
     }
 }
