@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseHelper;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.high.files.db.commonr.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -15,50 +15,31 @@ import java.util.stream.Stream;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 
 /**
  * Class providing method to repair Database.
  */
-// TODO extract common database holding to a dedicated Holder
-public class DatabaseIntegrityFixer {
+public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
     private static final String RESOURCE_VALUE_DEFAULT = "-FIXED BY TDUF-";
     private static final String BITFIELD_VALUE_DEFAULT = "00000000";
 
-    private final List<DbDto> dbDtos;
-    private final List<IntegrityError> integrityErrors;
-    private final BulkDatabaseMiner bulkDatabaseMiner;
+    private List<IntegrityError> integrityErrors;
 
     // Following errors are auto-handled: CONTENT_ITEMS_COUNT_MISMATCH, STRUCTURE_FIELDS_COUNT_MISMATCH
     private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH, RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND, CONTENTS_FIELDS_COUNT_MISMATCH));
     private static final Set<IntegrityError.ErrorTypeEnum> UNFIXABLE_ERRORS = new HashSet<>(asList(CONTENTS_NOT_FOUND, CONTENTS_ENCRYPTION_NOT_SUPPORTED));
 
-    private DatabaseIntegrityFixer(List<DbDto> dbDtos, List<IntegrityError> integrityErrors) {
-        this.dbDtos = dbDtos;
-        this.integrityErrors = integrityErrors;
-        this.bulkDatabaseMiner = BulkDatabaseMiner.load(dbDtos);
-    }
-
-    /**
-     * Single entry point for this fixer.
-     * @param dbDtos            : per topic, database objects
-     * @param integrityErrors   : errors returned by checker module
-     * @return a {@link DatabaseIntegrityChecker} instance.
-     */
-    public static DatabaseIntegrityFixer load(List<DbDto> dbDtos, List<IntegrityError> integrityErrors) {
-        checkRequirements(dbDtos, integrityErrors);
-
-        return new DatabaseIntegrityFixer(dbDtos, integrityErrors);
-    }
-
     /**
      * Process fixing over all loaded database objects.
+     * @param integrityErrors : integrity errors to fix.
      * @return list of remaining integrity errors.
      */
-    public List<IntegrityError> fixAllContentsObjects() {
+    public List<IntegrityError> fixAllContentsObjects(List<IntegrityError> integrityErrors) {
+
+        this.integrityErrors = requireNonNull(integrityErrors, "A list of integrity errors is required.");
+
         List<IntegrityError> remainingIntegrityErrors = new ArrayList<>();
 
         if(this.integrityErrors.isEmpty()) {
@@ -149,9 +130,9 @@ public class DatabaseIntegrityFixer {
 
         int referenceResourceCount = perLocaleCount.get(referenceLocale);
 
-        List<DbResourceDto> topicResourceObjects = bulkDatabaseMiner.getAllResourcesFromTopic(topic).get();
+        List<DbResourceDto> topicResourceObjects = databaseMiner.getAllResourcesFromTopic(topic).get();
 
-        DbResourceDto referenceResourceObject = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale).get();
+        DbResourceDto referenceResourceObject = databaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale).get();
 
         topicResourceObjects.stream()
 
@@ -168,18 +149,18 @@ public class DatabaseIntegrityFixer {
         }
 
         DbResourceDto.Locale referenceLocale = pickAvailableLocaleOrElseWhatever(DbResourceDto.Locale.UNITED_STATES, validResourceLocales);
-        DbResourceDto referenceResourceObject = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale).get();
+        DbResourceDto referenceResourceObject = databaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale).get();
 
-        bulkDatabaseMiner.getDatabaseTopic(topic).get().getResources().add(DbResourceDto.builder()
+        databaseMiner.getDatabaseTopic(topic).get().getResources().add(DbResourceDto.builder()
                 .fromExistingResource(referenceResourceObject)
                 .withLocale(missingLocale)
                 .build());
     }
 
     private void addMissingContentsFields(long entryInternalIdentifier, DbDto.Topic topic) {
-        DbDto topicObject = bulkDatabaseMiner.getDatabaseTopic(topic).get();
+        DbDto topicObject = databaseMiner.getDatabaseTopic(topic).get();
 
-        DbDataDto.Entry invalidEntry = bulkDatabaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryInternalIdentifier, topic);
+        DbDataDto.Entry invalidEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryInternalIdentifier, topic);
 
         // Structure is the reference
         topicObject.getStructure().getFields().stream()
@@ -237,7 +218,7 @@ public class DatabaseIntegrityFixer {
         if ( !validResourceLocales.isEmpty()) {
 
             DbResourceDto.Locale referenceLocale = pickAvailableLocaleOrElseWhatever(DbResourceDto.Locale.UNITED_STATES, validResourceLocales);
-            Optional<DbResourceDto.Entry> referenceEntry = bulkDatabaseMiner.getResourceEntryFromTopicAndLocaleWithReference(reference, topic, referenceLocale);
+            Optional<DbResourceDto.Entry> referenceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(reference, topic, referenceLocale);
 
             if (referenceEntry.isPresent()){
                 resourceValue = referenceEntry.get().getValue();
@@ -249,13 +230,13 @@ public class DatabaseIntegrityFixer {
                 .withValue(resourceValue)
                 .build();
 
-        DbResourceDto resourceDto = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, locale).get();
+        DbResourceDto resourceDto = databaseMiner.getResourceFromTopicAndLocale(topic, locale).get();
         resourceDto.getEntries().add(newEntry);
     }
 
     private void addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {
 
-        DbDto topicObject = bulkDatabaseMiner.getDatabaseTopic(topic).get();
+        DbDto topicObject = databaseMiner.getDatabaseTopic(topic).get();
 
         DbDataDto dataDto = topicObject.getData();
 
@@ -278,7 +259,7 @@ public class DatabaseIntegrityFixer {
 
     private DbDataDto.Item buildDefaultContentItem(Optional<String> entryReference, DbStructureDto.Field field, DbDto topicObject) {
         String rawValue;
-        DbDto remoteTopicObject = bulkDatabaseMiner.getDatabaseTopicFromReference(field.getTargetRef());
+        DbDto remoteTopicObject = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef());
 
         DbStructureDto.FieldType fieldType = field.getFieldType();
         switch (fieldType) {
@@ -353,15 +334,6 @@ public class DatabaseIntegrityFixer {
         }
 
         return  validResourceLocales.stream().findFirst().get();
-    }
-
-    private static void checkRequirements(List<DbDto> dbDtos, List<IntegrityError> integrityErrors) {
-        requireNonNull(dbDtos, "Database objects to be fixed are required.");
-        requireNonNull(integrityErrors, "List of integrity errors is required.");
-    }
-
-    public List<DbDto> getDbDtos() {
-        return dbDtos;
     }
 
     List<IntegrityError> getIntegrityErrors() {
