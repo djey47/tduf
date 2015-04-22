@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
+import fr.tduf.libunlimited.high.files.db.commonr.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -15,7 +16,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -24,41 +25,20 @@ public class DatabasePatcherTest {
     private static final Class<DatabasePatcherTest> thisClass = DatabasePatcherTest.class;
 
     @Test(expected = NullPointerException.class)
-    public void prepare_whenNullDatabaseObject_shouldThrowException() {
+    public void apply_whenNullPatchObject_shouldThrowException() throws ReflectiveOperationException {
         // GIVEN-WHEN
-        DatabasePatcher.prepare(null);
+        AbstractDatabaseHolder.prepare(DatabasePatcher.class, createDefaultDatabaseObjects()).apply(null);
 
         // THEN: NPE
     }
 
     @Test
-    public void prepare_shouldSetDatabaseObject() {
-        // GIVEN
-        List<DbDto> databaseObjects = createDefaultDatabaseObjects();
-
-        // WHEN
-        DatabasePatcher patcher = DatabasePatcher.prepare(databaseObjects);
-
-        // THEN
-        assertThat(patcher).isNotNull();
-        assertThat(patcher.getDatabaseObjects()).isSameAs(databaseObjects);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void apply_whenNullPatchObject_shouldThrowException() {
-        // GIVEN-WHEN
-        DatabasePatcher.prepare(createDefaultDatabaseObjects()).apply(null);
-
-        // THEN: NPE
-    }
-
-    @Test
-    public void apply_whenUpdateResourcesPatch_shouldAddAndUpdateEntries() throws IOException, URISyntaxException {
+    public void apply_whenUpdateResourcesPatch_shouldAddAndUpdateEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateResources.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
-        DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
 
 
         // WHEN
@@ -66,18 +46,18 @@ public class DatabasePatcherTest {
 
 
         // THEN
-        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(asList(databaseObject));
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
         assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "54367256", "Brian Molko");
         assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "33333333", "Cindy");
     }
 
     @Test
-    public void apply_whenUpdateResourcesPatch_forAllLocales_shouldAddAndUpdateEntries() throws IOException, URISyntaxException {
+    public void apply_whenUpdateResourcesPatch_forAllLocales_shouldAddAndUpdateEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateResources-all.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
-        DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
 
 
         // WHEN
@@ -85,7 +65,7 @@ public class DatabasePatcherTest {
 
 
         // THEN
-        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(asList(databaseObject));
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
         assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "54367256", "Brian Molko");
         assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "33333333", "Cindy");
         assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.ITALY, "54367256", "Brian Molko");
@@ -93,12 +73,12 @@ public class DatabasePatcherTest {
     }
 
     @Test
-    public void apply_whenDeleteResourcesPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException {
+    public void apply_whenDeleteResourcesPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteResources.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
-        DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
 
 
         // WHEN
@@ -106,18 +86,18 @@ public class DatabasePatcherTest {
 
 
         // THEN
-        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(asList(databaseObject));
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
         assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "60367256");
         assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "33333333");
     }
 
     @Test
-    public void apply_whenDeleteResourcesPatch_forAllLocales_shouldRemoveExistingEntries() throws IOException, URISyntaxException {
+    public void apply_whenDeleteResourcesPatch_forAllLocales_shouldRemoveExistingEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteResources-all.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
-        DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
 
 
         // WHEN
@@ -125,7 +105,7 @@ public class DatabasePatcherTest {
 
 
         // THEN
-        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(asList(databaseObject));
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
         assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "60367256");
         assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "33333333");
         assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.ITALY, "60367256");
@@ -133,12 +113,12 @@ public class DatabasePatcherTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void apply_whenUpdateContentsPatch_forAllFields_andIncorrectValueCount_shouldThrowException() throws IOException, URISyntaxException {
+    public void apply_whenUpdateContentsPatch_forAllFields_andIncorrectValueCount_shouldThrowException() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-badCount.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
-        DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
 
 
         // WHEN
@@ -149,14 +129,14 @@ public class DatabasePatcherTest {
     }
 
     @Test
-    public void apply_whenUpdateContentsPatch_forAllFields_shouldAddNewEntry() throws IOException, URISyntaxException {
+    public void apply_whenUpdateContentsPatch_forAllFields_shouldAddNewEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
-        DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
 
-        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(asList(databaseObject));
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
         List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(DbDto.Topic.BOTS).get().getData().getEntries();
         int previousEntryCount = topicEntries.size();
 
@@ -178,14 +158,14 @@ public class DatabasePatcherTest {
     }
 
     @Test
-    public void apply_whenUpdateContentsPatch_forAllFields_withRefSupport_shouldAddNewEntryAndUpdateExisting() throws IOException, URISyntaxException {
+    public void apply_whenUpdateContentsPatch_forAllFields_withRefSupport_shouldAddNewEntryAndUpdateExisting() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-ref.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
 
-        DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
 
-        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(asList(databaseObject));
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
         List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(DbDto.Topic.CAR_PHYSICS_DATA).get().getData().getEntries();
         int previousEntryCount = topicEntries.size();
 
@@ -213,12 +193,12 @@ public class DatabasePatcherTest {
     }
 
     @Test
-    public void apply_whenDeleteContentsPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException {
+    public void apply_whenDeleteContentsPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteContents-ref.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
 
-        DatabasePatcher patcher = DatabasePatcher.prepare(asList(databaseObject));
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
 
 
         // WHEN
@@ -226,12 +206,12 @@ public class DatabasePatcherTest {
 
 
         // THEN
-        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(asList(databaseObject));
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
         assertThat(databaseMiner.getContentEntryFromTopicWithReference("606298799", DbDto.Topic.CAR_PHYSICS_DATA)).isEmpty();
     }
 
     private static List<DbDto> createDefaultDatabaseObjects() {
-        return asList(DbDto.builder().build());
+        return singletonList(DbDto.builder().build());
     }
 
     private static <T> T readObjectFromResource(Class<T> objectClass, String resource) throws URISyntaxException, IOException {
