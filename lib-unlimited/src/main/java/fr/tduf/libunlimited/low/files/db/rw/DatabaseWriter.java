@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,12 +73,12 @@ public class DatabaseWriter {
 
         String outputFileName = String.format("%s.%s", this.databaseDto.getStructure().getTopic().getLabel(), "json");
 
-        File outputFile = new File(path, outputFileName);
-        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(outputFile.toPath(), StandardCharsets.UTF_8)) {
+        Path outputFilePath = Paths.get(path, outputFileName);
+        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(outputFilePath, StandardCharsets.UTF_8)) {
             new ObjectMapper().writer().writeValue(bufferedWriter, this.databaseDto);
         }
 
-        return outputFile.getAbsolutePath();
+        return outputFilePath.toAbsolutePath().toString();
     }
 
     private static void checkPrerequisites(DbDto dbDto) {
@@ -95,8 +97,8 @@ public class DatabaseWriter {
         String topicLabel = currentTopic.getLabel();
         String contentsFileName = format("%s.db", topicLabel);
 
-        File contentsFile = new File(directoryPath, contentsFileName);
-        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(contentsFile.toPath(), StandardCharsets.UTF_8)) {
+        Path contentsFilePath = Paths.get(directoryPath, contentsFileName);
+        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(contentsFilePath, StandardCharsets.UTF_8)) {
             long writtenSize = writeMetaContents(dbStructureDto, contentsFileName, bufferedWriter);
 
             writtenSize += writeStructureContents(dbStructureDto, topicLabel, bufferedWriter);
@@ -107,7 +109,7 @@ public class DatabaseWriter {
             writePaddingForSizeMultipleOfEight(bufferedWriter, writtenSize);
         }
 
-        return contentsFile.getAbsolutePath();
+        return contentsFilePath.toAbsolutePath().toString();
     }
 
     private long writeItemContents(DbDataDto dbDataDto, BufferedWriter bufferedWriter) throws IOException {
