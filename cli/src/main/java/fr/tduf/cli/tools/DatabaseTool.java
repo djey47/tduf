@@ -10,6 +10,8 @@ import fr.tduf.libunlimited.high.files.db.commonr.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
+import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -20,8 +22,10 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -55,9 +59,11 @@ public class DatabaseTool extends GenericTool {
 
     @Option(name = "-t", aliases = "--topic", usage = "Database topic to generate patch when gen-patch operation. Allowed values: ACHIEVEMENTS,AFTER_MARKET_PACKS,BOTS,BRANDS,CAR_COLORS,CAR_PACKS,CAR_PHYSICS_DATA,CAR_RIMS,CAR_SHOPS,CLOTHES,HAIR,HOUSES,INTERIOR,MENUS,PNJ,RIMS,SUB_TITLES,TUTORIALS.")
     private String databaseTopic;
+    private DbDto.Topic effectiveTopic;
 
     @Option(name = "-r", aliases = "--range", usage = "REF of entries to create patch for. Can be a comma-separated list or a range <minValue>..<maxValue>. Not mandatory, defaults to all entries in topic.")
     private String itemsRange;
+    private ReferenceRange effectiveRange;
 
     private BankSupport bankSupport;
 
@@ -176,7 +182,13 @@ public class DatabaseTool extends GenericTool {
             throw new CmdLineException(parser, "Error: patchFile is required.", null);
         }
 
-        // TODO validate and convert to range if gen-patch
+        if (GEN_PATCH == command) {
+            if (this.databaseTopic == null) {
+                throw new CmdLineException(parser, "Error: database topic is required.", null);
+            }
+            this.effectiveTopic = DbDto.Topic.fromLabel(this.databaseTopic);
+            this.effectiveRange = ReferenceRange.fromCliOption(Optional.ofNullable(this.itemsRange));
+        }
     }
 
     @Override
@@ -240,8 +252,28 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("targetDirectory", this.jsonDirectory);
     }
 
-    private void genPatch() {
+    private void genPatch() throws ReflectiveOperationException, IOException {
+        outLine("-> Source database directory: " + this.jsonDirectory);
 
+        outLine("Reading database patch, please wait...");
+
+        List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(this.jsonDirectory);
+
+        outLine("Generating patch, please wait...");
+
+        DbPatchDto patchObject = AbstractDatabaseHolder.prepare(PatchGenerator.class, allTopicObjects).makePatch(this.effectiveTopic, this.effectiveRange);
+
+        outLine("Writing patch to " + this.patchFile + "...");
+
+        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(this.patchFile), StandardCharsets.UTF_8)) {
+            new ObjectMapper().writer().writeValue(bufferedWriter, patchObject);
+        }
+
+        outLine("All done!");
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("patchFile", this.patchFile);
+        commandResult = resultInfo;
     }
 
     private void applyPatch() throws IOException, ReflectiveOperationException {
