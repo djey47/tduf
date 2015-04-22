@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
+import fr.tduf.libunlimited.high.files.db.commonr.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -7,7 +8,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -16,7 +16,6 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeE
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,48 +24,28 @@ public class DatabaseIntegrityCheckerTest {
     private static final String UID_NON_EXISTING = "000";
     private static final String UID_EXISTING = "001";
 
-    @Test(expected = NullPointerException.class)
-    public void load_whenNullDtos_shouldThrowNPE() throws Exception {
-        //GIVEN-WHEN-THEN
-        DatabaseIntegrityChecker.load(null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void load_whenIncompleteDtoList_shouldThrowIllegalArgumentException() throws Exception {
-        //GIVEN-WHEN-THEN
-        DatabaseIntegrityChecker.load(new ArrayList<>());
-    }
-
     @Test
-    public void load_whenCompleteDtoList_shouldBuildIndexes() throws Exception {
-        //GIVEN
-        List<DbDto> dbDtos = createAllDtosWithMissingLocalResource();
-
-        //WHEN
-        DatabaseIntegrityChecker databaseIntegrityChecker = DatabaseIntegrityChecker.load(dbDtos);
-
-        //THEN
-        assertThat(databaseIntegrityChecker.getTopicObjectsByReferences()).hasSize(18);
-
-        assertThat(databaseIntegrityChecker.getFieldsByRanksByTopicObjects()).hasSize(18);
-    }
-
-    @Test
-    public void checkAll_whenNoError_shouldReturnEmptyList() {
+    public void checkAll_whenNoError_shouldBuildIndexes_andReturnEmptyList() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithoutErrors();
 
-        //WHEN-THEN
-        assertThat(DatabaseIntegrityChecker.load(dbDtos).checkAllContentsObjects()).isEmpty();
+        //WHEN
+        DatabaseIntegrityChecker checker = createChecker(dbDtos);
+
+        //THEN
+        assertThat(checker.checkAllContentsObjects()).isEmpty();
+
+        assertThat(checker.getTopicObjectsByReferences()).hasSize(18);
+        assertThat(checker.getFieldsByRanksByTopicObjects()).hasSize(18);
     }
 
     @Test
-    public void checkAll_whenMissingResourceInTopics_shouldReturnIntegrityErrors() {
+    public void checkAll_whenMissingResourceInTopics_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingLocalResource();
 
         //WHEN
-        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(dbDtos).checkAllContentsObjects();
+        List<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
@@ -75,12 +54,12 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenMissingResourceInTopics_andTypeH_shouldReturnIntegrityErrors() {
+    public void checkAll_whenMissingResourceInTopics_andTypeH_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingLocalResourceTypeH();
 
         //WHEN
-        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(dbDtos).checkAllContentsObjects();
+        List<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
@@ -89,12 +68,12 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenMissingResourceInRemoteTopic_shouldReturnIntegrityErrors() {
+    public void checkAll_whenMissingResourceInRemoteTopic_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingForeignResource();
 
         //WHEN
-        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(dbDtos).checkAllContentsObjects();
+        List<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
@@ -104,12 +83,12 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenMissingResourceInLocalAndRemoteTopic_shouldReturnIntegrityErrors() {
+    public void checkAll_whenMissingResourceInLocalAndRemoteTopic_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingLocalAndForeignResource();
 
         //WHEN
-        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(dbDtos).checkAllContentsObjects();
+        List<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
 
         //THEN
         assertThat(integrityErrors).hasSize(36);
@@ -117,12 +96,12 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenMissingContentsEntryInRemoteTopic_shouldReturnIntegrityErrors() {
+    public void checkAll_whenMissingContentsEntryInRemoteTopic_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingForeignEntry();
 
         //WHEN
-        List<IntegrityError> integrityErrors = DatabaseIntegrityChecker.load(dbDtos).checkAllContentsObjects();
+        List<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
@@ -366,5 +345,9 @@ public class DatabaseIntegrityCheckerTest {
         for (IntegrityError integrityError : integrityErrors) {
             assertThat(integrityError.getInformation()).containsEntry(infoKey, infoValue);
         }
+    }
+
+    private static DatabaseIntegrityChecker createChecker(List<DbDto> databaseObjects) throws ReflectiveOperationException {
+        return AbstractDatabaseHolder.prepare(DatabaseIntegrityChecker.class, databaseObjects);
     }
 }

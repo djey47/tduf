@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.high.files.db.commonr.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -15,38 +15,16 @@ import java.util.stream.Stream;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.CONTENTS_REFERENCE_NOT_FOUND;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND;
-import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 /**
  * Class providing methods to check Database integrity.
  */
-// TODO extract common database holding to a dedicated Holder
-public class DatabaseIntegrityChecker {
-
-    private final List<DbDto> dbDtos;
-    private final BulkDatabaseMiner bulkDatabaseMiner;
+public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
 
     private Map<String, DbDto> topicObjectsByReferences;
     private Map<DbDto, Map<Integer, DbStructureDto.Field>> fieldsByRanksByTopicObjects;
-
-    private DatabaseIntegrityChecker(List<DbDto> dbDtos) {
-        this.dbDtos = requireNonNull(dbDtos, "A list of database objects is required.");
-        this.bulkDatabaseMiner = BulkDatabaseMiner.load(dbDtos);
-
-        checkRequirements();
-        buildIndexes();
-    }
-
-    /**
-     * Single entry point for this checker.
-     * @param dbDtos    : per topic, database objects
-     * @return a {@link DatabaseIntegrityChecker} instance.
-     */
-    public static DatabaseIntegrityChecker load(List<DbDto> dbDtos) {
-        return new DatabaseIntegrityChecker(dbDtos);
-    }
 
     /**
      * Process checking over all loaded database objects.
@@ -56,9 +34,13 @@ public class DatabaseIntegrityChecker {
      */
     public List<IntegrityError> checkAllContentsObjects() {
 
+        checkRequirements();
+
+        buildIndexes();
+
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
-        dbDtos.stream()
+        databaseObjects.stream()
 
                 .forEach((localTopicObject) -> checkContentsObject(localTopicObject, integrityErrors));
 
@@ -72,7 +54,7 @@ public class DatabaseIntegrityChecker {
     private void checkIfAllTopicObjectsPresent() {
         List<DbDto.Topic> absentTopics = Stream.of(DbDto.Topic.values())
 
-                .filter((topicEnum) -> !bulkDatabaseMiner.getDatabaseTopic(topicEnum).isPresent())
+                .filter((topicEnum) -> !databaseMiner.getDatabaseTopic(topicEnum).isPresent())
 
                 .collect(toList());
 
@@ -127,7 +109,7 @@ public class DatabaseIntegrityChecker {
 
                 .forEach((resourceDto) -> {
 
-                    boolean isResourceReferenceFound = bulkDatabaseMiner.getResourceEntryFromTopicAndLocaleWithReference(reference, topicObject.getStructure().getTopic(), resourceDto.getLocale()).isPresent();
+                    boolean isResourceReferenceFound = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(reference, topicObject.getStructure().getTopic(), resourceDto.getLocale()).isPresent();
                     if (!isResourceReferenceFound) {
                         Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
                         informations.put(SOURCE_TOPIC, sourceTopic);
@@ -189,12 +171,12 @@ public class DatabaseIntegrityChecker {
     private void buildIndexes() {
 
         // Topic by reference
-        topicObjectsByReferences = dbDtos.stream()
+        topicObjectsByReferences = databaseObjects.stream()
 
                 .collect( toMap((dto) -> dto.getStructure().getRef(), (dto) -> dto) );
 
         // Structure
-        fieldsByRanksByTopicObjects = dbDtos.stream()
+        fieldsByRanksByTopicObjects = databaseObjects.stream()
 
                 .collect(toMap((dto) -> dto, this::buildFieldIndex));
     }
