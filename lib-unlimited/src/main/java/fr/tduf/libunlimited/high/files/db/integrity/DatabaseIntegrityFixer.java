@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Class providing method to repair Database.
  */
+// TODO extract common database holding to a dedicated Holder
 public class DatabaseIntegrityFixer {
 
     private static final String RESOURCE_VALUE_DEFAULT = "-FIXED BY TDUF-";
