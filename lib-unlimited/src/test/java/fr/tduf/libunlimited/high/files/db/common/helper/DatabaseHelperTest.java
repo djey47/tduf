@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.high.files.db.helper;
+package fr.tduf.libunlimited.high.files.db.common.helper;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
