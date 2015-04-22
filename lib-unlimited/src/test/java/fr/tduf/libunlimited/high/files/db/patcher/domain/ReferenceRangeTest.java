@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReferenceRangeTest {
@@ -45,4 +46,32 @@ public class ReferenceRangeTest {
         assertThat(actualRange).isNotNull();
         assertThat(actualRange.isGlobal()).isTrue();
     }
+
+    @Test
+    public void accepts_whenGlobalRange_shouldReturnTrue(){
+        // GIVEN
+        ReferenceRange actualRange = new ReferenceRange(Optional.<String>empty(), Optional.<String>empty());
+
+        // WHEN-THEN
+        assertThat(actualRange.accepts("12345678")).isTrue();
+    }
+
+    @Test
+    public void accepts_whenRefInList_shouldReturnTrue(){
+        // GIVEN
+        ReferenceRange actualRange = new ReferenceRange(asList("11111111", "12345678"));
+
+        // WHEN-THEN
+        assertThat(actualRange.accepts("12345678")).isTrue();
+    }
+
+    @Test
+    public void accepts_whenRefNotInList_shouldReturnTrue(){
+        // GIVEN
+        ReferenceRange actualRange = new ReferenceRange(new ArrayList<>());
+
+        // WHEN-THEN
+        assertThat(actualRange.accepts("12345678")).isFalse();
+    }
+
 }
