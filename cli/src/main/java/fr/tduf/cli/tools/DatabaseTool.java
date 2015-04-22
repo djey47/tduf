@@ -367,9 +367,9 @@ public class DatabaseTool extends GenericTool {
         }
 
         outLine("-> Now fixing database...");
-        DatabaseIntegrityFixer databaseIntegrityFixer = DatabaseIntegrityFixer.load(databaseObjects, integrityErrors);
-        List<IntegrityError> remainingIntegrityErrors = databaseIntegrityFixer.fixAllContentsObjects();
-        List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getDbDtos();
+        DatabaseIntegrityFixer databaseIntegrityFixer = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
+        List<IntegrityError> remainingIntegrityErrors = databaseIntegrityFixer.fixAllContentsObjects(integrityErrors);
+        List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getDatabaseObjects();
 
         printIntegrityErrors(remainingIntegrityErrors);
 
