@@ -27,7 +27,7 @@ public class DatabasePatcherTest {
     @Test(expected = NullPointerException.class)
     public void apply_whenNullPatchObject_shouldThrowException() throws ReflectiveOperationException {
         // GIVEN-WHEN
-        AbstractDatabaseHolder.prepare(DatabasePatcher.class, createDefaultDatabaseObjects()).apply(null);
+        createPatcher(createDefaultDatabaseObjects()).apply(null);
 
         // THEN: NPE
     }
@@ -38,7 +38,7 @@ public class DatabasePatcherTest {
         DbPatchDto updateResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateResources.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
-        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
 
         // WHEN
@@ -57,7 +57,7 @@ public class DatabasePatcherTest {
         DbPatchDto updateResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateResources-all.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
-        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
 
         // WHEN
@@ -78,7 +78,7 @@ public class DatabasePatcherTest {
         DbPatchDto deleteResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteResources.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
-        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
 
         // WHEN
@@ -97,7 +97,7 @@ public class DatabasePatcherTest {
         DbPatchDto deleteResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteResources-all.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
-        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
 
         // WHEN
@@ -118,7 +118,7 @@ public class DatabasePatcherTest {
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-badCount.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
-        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
 
         // WHEN
@@ -134,7 +134,7 @@ public class DatabasePatcherTest {
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
 
-        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
         List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(DbDto.Topic.BOTS).get().getData().getEntries();
@@ -163,7 +163,7 @@ public class DatabasePatcherTest {
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-ref.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
 
-        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
         List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(DbDto.Topic.CAR_PHYSICS_DATA).get().getData().getEntries();
@@ -198,7 +198,7 @@ public class DatabasePatcherTest {
         DbPatchDto deleteContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteContents-ref.mini.json");
         DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
 
-        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, singletonList(databaseObject));
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
 
         // WHEN
@@ -208,6 +208,10 @@ public class DatabasePatcherTest {
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
         assertThat(databaseMiner.getContentEntryFromTopicWithReference("606298799", DbDto.Topic.CAR_PHYSICS_DATA)).isEmpty();
+    }
+
+    private static DatabasePatcher createPatcher(List<DbDto> databaseObjects) throws ReflectiveOperationException {
+        return AbstractDatabaseHolder.prepare(DatabasePatcher.class, databaseObjects);
     }
 
     private static List<DbDto> createDefaultDatabaseObjects() {
