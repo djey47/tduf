@@ -30,7 +30,15 @@ public class ReferenceRange {
      * @param ref
      * @return
      */
-    public boolean isAccepted(String ref) {
+    public boolean accepts(String ref) {
+        if (isGlobal()) {
+            return true;
+        }
+
+        if (refs.contains(ref)) {
+            return true;
+        }
+
         return false; //TODO
     }
 
