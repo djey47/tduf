@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Class providing methods to check Database integrity.
  */
+// TODO extract common database holding to a dedicated Holder
 public class DatabaseIntegrityChecker {
 
     private final List<DbDto> dbDtos;

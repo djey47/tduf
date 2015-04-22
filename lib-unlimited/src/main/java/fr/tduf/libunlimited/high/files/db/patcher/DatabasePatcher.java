@@ -18,6 +18,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Used to apply patchs to an existing database.
  */
+// TODO extract common database holding to a dedicated Holder
 // TODO WARNING! if using cache on Miner, reset caches after updates !
 public class DatabasePatcher {
 
