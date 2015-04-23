@@ -13,9 +13,8 @@ public class ReferenceRange {
     private final List<String> refs;
 
     /**
-     *
-     * @param rangeOptionValue
-     * @return
+     * Creates a range from a command-line option.
+     * e.g: 1,2,3 or 1..3
      */
     public static ReferenceRange fromCliOption(Optional<String> rangeOptionValue) {
         if (!rangeOptionValue.isPresent()) {
@@ -26,20 +25,10 @@ public class ReferenceRange {
     }
 
     /**
-     *
-     * @param ref
-     * @return
+     * @return true if provided ref enters current range.
      */
     public boolean accepts(String ref) {
-        if (isGlobal()) {
-            return true;
-        }
-
-        if (refs.contains(ref)) {
-            return true;
-        }
-
-        return false; //TODO
+        return isGlobal() || refs.contains(ref);
     }
 
     ReferenceRange(List<String> refs) {
