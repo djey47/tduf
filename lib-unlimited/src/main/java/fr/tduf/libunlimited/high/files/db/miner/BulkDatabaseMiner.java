@@ -4,6 +4,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
 import java.util.Optional;
@@ -163,6 +164,22 @@ public class BulkDatabaseMiner {
                 .findAny();
     }
 
+    /**
+     * @param structureFields   : list of structure fields for a topic
+     * @return rank of uid field in structure if such a field exists, empty otherwise
+     */
+    public static OptionalInt getUidFieldRank(List<DbStructureDto.Field> structureFields) {
+//        System.out.println(new Date().getTime() + " - getUidFieldRank(" + structureFields + ")");
+
+        Optional<DbStructureDto.Field> potentialField = DatabaseStructureQueryHelper.getIdentifierField(structureFields);
+
+        if (potentialField.isPresent()) {
+            return OptionalInt.of(potentialField.get().getRank());
+        }
+
+        return OptionalInt.empty();
+    }
+
     private static boolean entryHasForIdentifier(DbDataDto.Entry entry, String ref, List<DbStructureDto.Field> structureFields) {
         OptionalInt potentialUidFieldRank = getUidFieldRank(structureFields);
         return potentialUidFieldRank.isPresent()
@@ -175,17 +192,8 @@ public class BulkDatabaseMiner {
                 .findAny().isPresent();
     }
 
-    private static OptionalInt getUidFieldRank(List<DbStructureDto.Field> structureFields) {
-        return structureFields.stream()
-
-                .filter((structureField) -> DbStructureDto.FieldType.UID == structureField.getFieldType())
-
-                .mapToInt(DbStructureDto.Field::getRank)
-
-                .findAny();
-    }
-
     List<DbDto> getTopicObjects() {
         return topicObjects;
     }
+
 }
