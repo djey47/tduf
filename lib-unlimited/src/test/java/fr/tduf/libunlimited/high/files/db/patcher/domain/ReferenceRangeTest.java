@@ -66,25 +66,25 @@ public class ReferenceRangeTest {
     @Test
     public void fromCliOption_whenValueWithValidBounds_shouldReturnRange() {
         // GIVEN-WHEN
-        ReferenceRange actualRange = ReferenceRange.fromCliOption(Optional.of("1..10"));
+        ReferenceRange actualRange = ReferenceRange.fromCliOption(Optional.of("10..20"));
 
         // THEN
         assertThat(actualRange).isNotNull();
-        assertThat(actualRange.getMinRef().get()).isEqualTo(1L);
-        assertThat(actualRange.getMaxRef().get()).isEqualTo(10L);
+        assertThat(actualRange.getMinRef().get()).isEqualTo(10L);
+        assertThat(actualRange.getMaxRef().get()).isEqualTo(20L);
         assertThat(actualRange.getRefs()).isNull();
     }
 
     @Test
     public void fromCliOption_whenValueWithEnumeration_shouldReturnRange() {
         // GIVEN-WHEN
-        ReferenceRange actualRange = ReferenceRange.fromCliOption(Optional.of("1,2,3,4"));
+        ReferenceRange actualRange = ReferenceRange.fromCliOption(Optional.of("10,20,30,40"));
 
         // THEN
         assertThat(actualRange).isNotNull();
         assertThat(actualRange.getMinRef()).isEmpty();
         assertThat(actualRange.getMaxRef()).isEmpty();
-        assertThat(actualRange.getRefs()).containsExactly("1", "2", "3", "4");
+        assertThat(actualRange.getRefs()).containsExactly("10", "20", "30", "40");
     }
 
     @Test

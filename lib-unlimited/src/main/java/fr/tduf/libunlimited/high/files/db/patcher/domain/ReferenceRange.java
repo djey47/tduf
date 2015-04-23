@@ -11,7 +11,7 @@ import static java.util.Arrays.asList;
  */
 public class ReferenceRange {
 
-    private static final String REGEX_RANGE = "\\d(,\\d)*|\\d*\\.\\.\\d*";
+    private static final String REGEX_RANGE = "\\d+(,\\d+)*|\\d*\\.\\.\\d*";
 
     private final Optional<Long> minRef;
     private final Optional<Long> maxRef;
