@@ -14,7 +14,7 @@ public class DatabaseStructureQueryHelperTest {
     @Test
     public void getIdentifierField_whenTopicObjectNull_shouldReturnNull() throws Exception {
         // GIVEN-WHEN-THEN
-        assertThat(DatabaseStructureQueryHelper.getIdentifierField(null)).isNull();
+        assertThat(DatabaseStructureQueryHelper.getIdentifierField((DbDto)null)).isNull();
     }
 
     @Test
