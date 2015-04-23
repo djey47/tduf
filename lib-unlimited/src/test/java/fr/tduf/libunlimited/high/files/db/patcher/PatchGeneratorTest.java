@@ -66,7 +66,7 @@ public class PatchGeneratorTest {
 
         // THEN
         assertThat(actualPatchObject).isNotNull();
-        assertThat(actualPatchObject.getChanges()).hasSize(1);
+        assertThat(actualPatchObject.getChanges()).hasSize(129); //1 UPDATE + 128 UPDATE_RES (20 entries * 8 locales)
 
         DbPatchDto.DbChangeDto changeObject1 = actualPatchObject.getChanges().get(0);
         assertThat(changeObject1.getType()).isEqualTo(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE);
@@ -75,6 +75,10 @@ public class PatchGeneratorTest {
         assertThat(changeObject1.getValues()).hasSize(103);
         assertThat(changeObject1.getValues().get(0)).isEqualTo("606298799");
         assertThat(changeObject1.getValues().get(102)).isEqualTo("104");
+
+        DbPatchDto.DbChangeDto changeObject2 = actualPatchObject.getChanges().get(1);
+        assertThat(changeObject2.getType()).isEqualTo(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES);
+        assertThat(changeObject2.getTopic()).isEqualTo(DbDto.Topic.CAR_PHYSICS_DATA);
     }
 
     private static PatchGenerator createPatchGenerator(List<DbDto> databaseObjects) throws ReflectiveOperationException {
