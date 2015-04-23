@@ -108,6 +108,8 @@ public class DbPatchDto {
 
         public static DbChangeDtoBuilder builder() {
             return new DbChangeDtoBuilder() {
+                private DbResourceDto.Locale locale;
+                private String value;
                 private List<String> entryValues;
                 private String reference;
                 private DbDto.Topic topic;
@@ -138,6 +140,18 @@ public class DbPatchDto {
                 }
 
                 @Override
+                public DbChangeDtoBuilder withValue(String value) {
+                    this.value = value;
+                    return this;
+                }
+
+                @Override
+                public DbChangeDtoBuilder forLocale(DbResourceDto.Locale locale) {
+                    this.locale = locale;
+                    return this;
+                }
+
+                @Override
                 public DbChangeDto build() {
                     DbChangeDto changeObject = new DbChangeDto();
 
@@ -145,6 +159,8 @@ public class DbPatchDto {
                     changeObject.topic = topic;
                     changeObject.ref = reference;
                     changeObject.values = entryValues;
+                    changeObject.value = value;
+                    changeObject.locale = locale;
 
                     return changeObject;
                 }
@@ -164,6 +180,10 @@ public class DbPatchDto {
             DbChangeDtoBuilder asReference(String entryReference);
 
             DbChangeDtoBuilder withEntryValues(List<String> entryValues);
+
+            DbChangeDtoBuilder withValue(String resourceValue);
+
+            DbChangeDtoBuilder forLocale(DbResourceDto.Locale locale);
         }
 
         /**
