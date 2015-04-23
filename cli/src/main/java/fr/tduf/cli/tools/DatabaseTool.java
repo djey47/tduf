@@ -282,10 +282,9 @@ public class DatabaseTool extends GenericTool {
         outLine("-> Mini patch file: " + this.patchFile);
         outLine("Patching TDU database, please wait...");
 
-        List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(this.jsonDirectory);
-
         DbPatchDto patchObject = new ObjectMapper().readValue(new File(patchFile), DbPatchDto.class);
 
+        List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(this.jsonDirectory);
         AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).apply(patchObject);
 
         outLine("Writing patched database to " + this.outputDatabaseDirectory + ", please wait...");
