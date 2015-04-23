@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -265,9 +266,7 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Writing patch to " + this.patchFile + "...");
 
-        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(this.patchFile), StandardCharsets.UTF_8)) {
-            new ObjectMapper().writer().writeValue(bufferedWriter, patchObject);
-        }
+        writePatchFileToDisk(patchObject);
 
         outLine("All done!");
 
@@ -431,6 +430,14 @@ public class DatabaseTool extends GenericTool {
 
         resultInfo.put("fixedDatabaseLocation", this.outputDatabaseDirectory);
         commandResult = resultInfo;
+    }
+
+    private void writePatchFileToDisk(DbPatchDto patchObject) throws IOException {
+        Path patchFilePath = Paths.get(this.patchFile);
+        Files.createDirectories(patchFilePath.getParent());
+        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(patchFilePath, StandardCharsets.UTF_8)) {
+            new ObjectMapper().writer().writeValue(bufferedWriter, patchObject);
+        }
     }
 
     private List<DbDto> checkAndReturnIntegrityErrorsAndObjects(List<IntegrityError> integrityErrors) throws IOException, ReflectiveOperationException {
