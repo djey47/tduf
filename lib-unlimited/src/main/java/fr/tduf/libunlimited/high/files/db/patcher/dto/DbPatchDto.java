@@ -18,6 +18,37 @@ public class DbPatchDto {
     @JsonProperty("changes")
     private List<DbChangeDto> changes = new ArrayList<>();
 
+
+    /**
+     * Allows to generate custom instances.
+     */
+    public static DbPatchDtoBuilder builder() {
+        return new DbPatchDtoBuilder() {
+            private List<DbChangeDto> changes = new ArrayList<>();
+
+            @Override
+            public DbPatchDtoBuilder addChanges(List<DbChangeDto> changes) {
+                this.changes.addAll(changes);
+                return this;
+            }
+
+            @Override
+            public DbPatchDto build() {
+                DbPatchDto patchObject = new DbPatchDto();
+
+                patchObject.changes = this.changes;
+
+                return patchObject;
+            }
+        };
+    }
+
+    public interface DbPatchDtoBuilder {
+        DbPatchDtoBuilder addChanges(List<DbChangeDto> changes);
+
+        DbPatchDto build();
+    }
+
     public List<DbChangeDto> getChanges() {
         return changes;
     }
