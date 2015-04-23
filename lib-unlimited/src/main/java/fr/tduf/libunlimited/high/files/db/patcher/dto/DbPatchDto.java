@@ -2,6 +2,8 @@ package fr.tduf.libunlimited.high.files.db.patcher.dto;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
@@ -9,6 +11,9 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
+import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 
 /**
  * Represents a patch to be applied to TDU database (TDUF format)
@@ -81,6 +86,16 @@ public class DbPatchDto {
 
         @JsonProperty("values")
         private List<String> values;
+
+        @Override
+        public boolean equals(Object o) {
+            return reflectionEquals(this, o);
+        }
+
+        @Override
+        public int hashCode() {
+            return reflectionHashCode(this);
+        }
 
         public DbResourceDto.Locale getLocale() {
             return locale;
