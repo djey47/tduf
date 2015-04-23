@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
@@ -40,5 +41,21 @@ public class DatabaseStructureQueryHelper {
                 .filter((field) -> field.getFieldType() == DbStructureDto.FieldType.UID)
 
                 .findAny();
+    }
+
+    /**
+     * @param item              : a contents entry item
+     * @param structureFields   : database topic to search for such a field
+     * @return corresponding structure field.
+     */
+    // TODO unit tests
+    public static DbStructureDto.Field getStructureField(DbDataDto.Item item, List<DbStructureDto.Field> structureFields) {
+        requireNonNull(item, "A content entry item is required.");
+
+        return structureFields.stream()
+
+                .filter((field) -> field.getRank() == item.getFieldRank())
+
+                .findAny().get();
     }
 }
