@@ -47,6 +47,22 @@ public class ReferenceRangeTest {
         assertThat(actualRange.isGlobal()).isTrue();
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void fromCliOption_whenIllegalRangeValue_shouldThrowException() {
+        // GIVEN-WHEN
+        ReferenceRange.fromCliOption(Optional.of("azertyuiop"));
+
+        // THEN: IAE
+    }
+
+//    @Test(expected = IllegalArgumentException.class)
+//    public void fromCliOption_whenValueWithIllegalBounds_shouldThrowException() {
+//        // GIVEN-WHEN
+//        ReferenceRange.fromCliOption(Optional.of("1..0"));
+//
+//        // THEN: IAE
+//    }
+
     @Test
     public void accepts_whenGlobalRange_shouldReturnTrue(){
         // GIVEN

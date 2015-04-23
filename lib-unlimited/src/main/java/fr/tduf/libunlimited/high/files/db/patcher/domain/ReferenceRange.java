@@ -2,11 +2,14 @@ package fr.tduf.libunlimited.high.files.db.patcher.domain;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * Represents a range of entry references for patch generation.
  */
 public class ReferenceRange {
+
+    private static final String REGEX_RANGE = "\\d(\\d,)*|\\d*\\.\\.\\d*";
 
     private final Optional<String> minRef;
     private final Optional<String> maxRef;
@@ -20,6 +23,8 @@ public class ReferenceRange {
         if (!rangeOptionValue.isPresent()) {
             return new ReferenceRange(Optional.<String>empty(), Optional.<String>empty());
         }
+
+        checkValueFormat(rangeOptionValue.get());
 
         return null; //TODO
     }
@@ -47,5 +52,13 @@ public class ReferenceRange {
         return !this.minRef.isPresent()
                 && !this.maxRef.isPresent()
                 && this.refs == null;
+    }
+
+    private static void checkValueFormat(String rangeOptionValue) {
+        Pattern rangePattern = Pattern.compile(REGEX_RANGE);
+
+        if (!rangePattern.matcher(rangeOptionValue).matches()) {
+            throw new IllegalArgumentException("Unrecognized range value: " + rangeOptionValue);
+        }
     }
 }
