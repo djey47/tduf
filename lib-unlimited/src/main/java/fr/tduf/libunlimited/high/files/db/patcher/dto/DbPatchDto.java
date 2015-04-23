@@ -18,6 +18,7 @@ public class DbPatchDto {
     @JsonProperty("changes")
     private List<DbChangeDto> changes = new ArrayList<>();
 
+    private  DbPatchDto() {}
 
     /**
      * Allows to generate custom instances.
@@ -103,6 +104,66 @@ public class DbPatchDto {
 
         public List<String> getValues() {
             return values;
+        }
+
+        public static DbChangeDtoBuilder builder() {
+            return new DbChangeDtoBuilder() {
+                private List<String> entryValues;
+                private String reference;
+                private DbDto.Topic topic;
+                private ChangeTypeEnum type;
+
+                @Override
+                public DbChangeDtoBuilder withType(ChangeTypeEnum type) {
+                    this.type = type;
+                    return this;
+                }
+
+                @Override
+                public DbChangeDtoBuilder forTopic(DbDto.Topic topic) {
+                    this.topic = topic;
+                    return this;
+                }
+
+                @Override
+                public DbChangeDtoBuilder asReference(String entryReference) {
+                    this.reference = entryReference;
+                    return this;
+                }
+
+                @Override
+                public DbChangeDtoBuilder withEntryValues(List<String> entryValues) {
+                    this.entryValues = entryValues;
+                    return this;
+                }
+
+                @Override
+                public DbChangeDto build() {
+                    DbChangeDto changeObject = new DbChangeDto();
+
+                    changeObject.type = type;
+                    changeObject.topic = topic;
+                    changeObject.ref = reference;
+                    changeObject.values = entryValues;
+
+                    return changeObject;
+                }
+            };
+        }
+
+        /**
+         * Allows to build custom instances.
+         */
+        public interface DbChangeDtoBuilder {
+            DbChangeDto build();
+
+            DbChangeDtoBuilder withType(ChangeTypeEnum update);
+
+            DbChangeDtoBuilder forTopic(DbDto.Topic topic);
+
+            DbChangeDtoBuilder asReference(String entryReference);
+
+            DbChangeDtoBuilder withEntryValues(List<String> entryValues);
         }
 
         /**
