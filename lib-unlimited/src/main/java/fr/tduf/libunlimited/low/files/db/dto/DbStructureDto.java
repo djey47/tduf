@@ -176,7 +176,7 @@ public class DbStructureDto implements Serializable {
          */
         REFERENCE("r"),
         /**
-         * Identifier of resource in other Topic
+         * Identifier of resource in other Topic (only applies to CarPacks, Hair and Interior)
          */
         RESOURCE_REMOTE("l"),
         /**
