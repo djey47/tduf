@@ -8,7 +8,6 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 import static java.util.Objects.requireNonNull;
 
@@ -137,7 +136,7 @@ public class BulkDatabaseMiner {
 
         return topicObject.getData().getEntries().stream()
 
-                .filter((entry) -> entryHasForIdentifier(entry, ref, topicObject.getStructure().getFields()))
+                .filter((entry) -> entryHasForReference(entry, ref, topicObject.getStructure().getFields()))
 
                 .findAny();
     }
@@ -168,25 +167,36 @@ public class BulkDatabaseMiner {
      * @param structureFields   : list of structure fields for a topic
      * @return rank of uid field in structure if such a field exists, empty otherwise
      */
-    public static OptionalInt getUidFieldRank(List<DbStructureDto.Field> structureFields) {
+    public static Optional<Integer> getUidFieldRank(List<DbStructureDto.Field> structureFields) {
 //        System.out.println(new Date().getTime() + " - getUidFieldRank(" + structureFields + ")");
 
-        Optional<DbStructureDto.Field> potentialField = DatabaseStructureQueryHelper.getIdentifierField(structureFields);
+        return DatabaseStructureQueryHelper.getIdentifierField(structureFields)
 
-        if (potentialField.isPresent()) {
-            return OptionalInt.of(potentialField.get().getRank());
-        }
-
-        return OptionalInt.empty();
+                .map(DbStructureDto.Field::getRank);
     }
 
-    private static boolean entryHasForIdentifier(DbDataDto.Entry entry, String ref, List<DbStructureDto.Field> structureFields) {
-        OptionalInt potentialUidFieldRank = getUidFieldRank(structureFields);
+    /**
+     * @param entry         : contents entry to be analyzed
+     * @param uidFieldRank  : rank of UID field in structure
+     * @return raw value of entry reference
+     */
+    public static String getEntryReference(DbDataDto.Entry entry, int uidFieldRank) {
+//        System.out.println(new Date().getTime() + " - getEntryReference(" + entry + "," + uidFieldRank + ")");
+
+        return entry.getItems().stream()
+
+                .filter((item) -> item.getFieldRank() == uidFieldRank)
+
+                .findAny().get().getRawValue();
+    }
+
+    private static boolean entryHasForReference(DbDataDto.Entry entry, String ref, List<DbStructureDto.Field> structureFields) {
+        Optional<Integer> potentialUidFieldRank = getUidFieldRank(structureFields);
         return potentialUidFieldRank.isPresent()
 
                 && entry.getItems().stream()
 
-                .filter((item) -> item.getFieldRank() == potentialUidFieldRank.getAsInt()
+                .filter((item) -> item.getFieldRank() == potentialUidFieldRank.get()
                         && item.getRawValue().equals(ref))
 
                 .findAny().isPresent();
@@ -195,5 +205,4 @@ public class BulkDatabaseMiner {
     List<DbDto> getTopicObjects() {
         return topicObjects;
     }
-
 }

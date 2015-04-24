@@ -4,13 +4,15 @@ import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -44,12 +46,12 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         List<DbPatchDto.DbChangeDto> changesObjects = new ArrayList<>();
         List<DbStructureDto.Field> structureFields = this.topicObject.getStructure().getFields();
 
-        OptionalInt potentialRefFieldRank = BulkDatabaseMiner.getUidFieldRank(structureFields);
+        Optional<Integer> potentialRefFieldRank = BulkDatabaseMiner.getUidFieldRank(structureFields);
         if (potentialRefFieldRank.isPresent()) {
             changesObjects = this.topicObject.getData().getEntries().stream()
 
                     .filter((entry) -> {
-                        String entryRef = getEntryRef(entry, potentialRefFieldRank.getAsInt());
+                        String entryRef = BulkDatabaseMiner.getEntryReference(entry, potentialRefFieldRank.get());
                         return range.accepts(entryRef);
                     })
 
@@ -76,7 +78,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
                                     .forTopic(topic)
 
-                                    .asReference(getEntryRef(acceptedEntry, potentialRefFieldRank.getAsInt()))
+                                    .asReference(BulkDatabaseMiner.getEntryReference(acceptedEntry, potentialRefFieldRank.get()))
 
                                     .withEntryValues(entryValues)
 
@@ -128,15 +130,6 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         }
 
         return potentielTopicObject.get();
-    }
-
-    private static String getEntryRef(DbDataDto.Entry entry, int refFieldRank) {
-        // TODO move to miner ?
-        return entry.getItems().stream()
-
-                .filter((item) -> item.getFieldRank() == refFieldRank)
-
-                .findAny().get().getRawValue();
     }
 
     DbDto getTopicObject() {
