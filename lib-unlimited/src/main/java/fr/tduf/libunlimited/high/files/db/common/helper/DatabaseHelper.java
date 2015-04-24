@@ -26,7 +26,7 @@ public class DatabaseHelper {
             return null;
         }
 
-        Optional<DbStructureDto.Field> identifierField = DatabaseStructureQueryHelper.getIdentifierField(topicObject);
+        Optional<DbStructureDto.Field> identifierField = DatabaseStructureQueryHelper.getIdentifierField(topicObject.getStructure().getFields());
         if (!identifierField.isPresent()) {
             throw new IllegalArgumentException("Provided contents object has no identifier field described in its structure.");
         }
