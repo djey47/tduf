@@ -15,7 +15,7 @@ public class DatabaseStructureQueryHelper {
 
     /**
      * Finds structure field used for entry identification.
-     * @param structureFields   : database topic to search for such a field
+     * @param structureFields   : list of topic fields to search for such a field
      * @return searched field, or empty if it does not exist.
      */
     public static Optional<DbStructureDto.Field> getIdentifierField(List<DbStructureDto.Field> structureFields) {
@@ -30,12 +30,12 @@ public class DatabaseStructureQueryHelper {
 
     /**
      * @param item              : a contents entry item
-     * @param structureFields   : database topic to search for such a field
+     * @param structureFields   : list of topic fields to search for such a field
      * @return corresponding structure field.
      */
-    // TODO unit tests
     public static DbStructureDto.Field getStructureField(DbDataDto.Item item, List<DbStructureDto.Field> structureFields) {
         requireNonNull(item, "A content entry item is required.");
+        requireNonNull(structureFields, "A list of fields is required.");
 
         return structureFields.stream()
 
