@@ -1,6 +1,5 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Test;
 
@@ -11,23 +10,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DatabaseStructureQueryHelperTest {
 
-    @Test
-    public void getIdentifierField_whenTopicObjectNull_shouldReturnNull() throws Exception {
-        // GIVEN-WHEN-THEN
-        assertThat(DatabaseStructureQueryHelper.getIdentifierField((DbDto)null)).isNull();
+    @Test(expected = NullPointerException.class)
+    public void getIdentifierField_whenFieldListNull_shouldThrowException() throws Exception {
+        // GIVEN-WHEN
+        assertThat(DatabaseStructureQueryHelper.getIdentifierField(null)).isNull();
+
+        // THEN: NPE
     }
 
     @Test
     public void getIdentifierField_whenNoIdentifierField_shouldReturnAbsent() throws Exception {
         // GIVEN
-        DbDto topicObject = DbDto.builder()
-                .withStructure(DbStructureDto.builder()
-                        .addItem(createClassicField())
-                        .build())
+        DbStructureDto structureObject = DbStructureDto.builder()
+                .addItem(createClassicField())
                 .build();
 
         // WHEN-THEN
-        assertThat(DatabaseStructureQueryHelper.getIdentifierField(topicObject)).isEmpty();
+        assertThat(DatabaseStructureQueryHelper.getIdentifierField(structureObject.getFields())).isEmpty();
     }
 
     @Test
@@ -37,17 +36,13 @@ public class DatabaseStructureQueryHelperTest {
                 .ofRank(1)
                 .fromType(DbStructureDto.FieldType.UID)
                 .build();
-
-        DbDto topicObject = DbDto.builder()
-                .withStructure(DbStructureDto.builder()
-                        .addItem(identifierField)
-                        .addItem(createClassicField())
-                        .build())
+        DbStructureDto structureObject = DbStructureDto.builder()
+                .addItem(identifierField)
+                .addItem(createClassicField())
                 .build();
 
-
         // WHEN
-        Optional<DbStructureDto.Field> actualField = DatabaseStructureQueryHelper.getIdentifierField(topicObject);
+        Optional<DbStructureDto.Field> actualField = DatabaseStructureQueryHelper.getIdentifierField(structureObject.getFields());
 
         // THEN
         assertThat(actualField).isPresent();
