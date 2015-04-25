@@ -48,7 +48,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
                 )));
 
-        changesObjects.addAll(makeChangesObjectsForResources(topic, requiredResourceReferences));
+        changesObjects.addAll(makeChangesObjectsForResources(requiredResourceReferences));
 
         return DbPatchDto.builder()
                 .addChanges(changesObjects)
@@ -67,30 +67,25 @@ public class PatchGenerator extends AbstractDatabaseHolder {
             .collect(toList());
     }
 
-    // TODO extract methods!
     // TODO when all locales have same values for a given ref, generate a single instruction for all locales (reduce instruction count)
-    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForResources(DbDto.Topic topic, Map<DbDto.Topic, List<String>> resourceReferences) {
+    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForResources(Map<DbDto.Topic, List<String>> resourceReferences) {
         return resourceReferences.entrySet().stream()
 
-                .flatMap((resourceEntry) -> Stream.of(DbResourceDto.Locale.values())
-
-                        .flatMap((locale) -> resourceEntry.getValue().stream()
-
-                                    .map( (resourceRef) -> {
-
-                                        String resourceValue = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceRef, resourceEntry.getKey(), locale).get().getValue();
-                                        return DbPatchDto.DbChangeDto.builder()
-                                                .forTopic(topic)
-                                                .forLocale(locale)
-                                                .withType(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES)
-                                                .asReference(resourceRef)
-                                                .withValue(resourceValue)
-                                                .build();
-                                    })
-                        )
-                )
+                .flatMap(this::makeChangesObjectsForResourcesInTopic)
 
                 .collect(toSet());
+    }
+
+    private Stream<? extends DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesInTopic(Map.Entry<DbDto.Topic, List<String>> topicResources) {
+        return Stream.of(DbResourceDto.Locale.values())
+
+                .flatMap((locale) -> makeChangesObjectsForResourcesWithLocale(locale, topicResources));
+    }
+
+    private Stream<? extends DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesWithLocale(DbResourceDto.Locale locale, Map.Entry<DbDto.Topic, List<String>> topicResources) {
+        return topicResources.getValue().stream()
+
+                .map((resourceRef) -> createChangeObjectForResource(topicResources.getKey(), locale, resourceRef));
     }
 
     private DbDto checkTopic(DbDto.Topic topic) {
@@ -103,9 +98,15 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         return potentielTopicObject.get();
     }
 
-    private static boolean isInRange(DbDataDto.Entry entry, int refFieldRank, ReferenceRange range) {
-        String entryRef = BulkDatabaseMiner.getEntryReference(entry, refFieldRank);
-        return range.accepts(entryRef);
+    private DbPatchDto.DbChangeDto createChangeObjectForResource(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceRef) {
+        String resourceValue = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceRef, topic, locale).get().getValue();
+        return DbPatchDto.DbChangeDto.builder()
+                .forTopic(topic)
+                .forLocale(locale)
+                .withType(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES)
+                .asReference(resourceRef)
+                .withValue(resourceValue)
+                .build();
     }
 
     // TODO handle case of RESOURCE_REMOTE
@@ -135,6 +136,11 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .asReference(BulkDatabaseMiner.getEntryReference(entry, refFieldRank))
                 .withEntryValues(entryValues)
                 .build();
+    }
+
+    private static boolean isInRange(DbDataDto.Entry entry, int refFieldRank, ReferenceRange range) {
+        String entryRef = BulkDatabaseMiner.getEntryReference(entry, refFieldRank);
+        return range.accepts(entryRef);
     }
 
     DbDto getTopicObject() {
