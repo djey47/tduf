@@ -114,11 +114,8 @@ public class GenuineBnkGatewayTest {
     @Test
     public void packAll_whenSuccess_shouldInvokeCommandLineCorrectlyForModifiedFiles() throws IOException, URISyntaxException {
         // GIVEN
-        String bankFileName = "A3_V6.bnk";
+        createRepackedFileTree("A3_V6.bnk", true);
 
-        createSourceFileTree(bankFileName, true);
-
-        String sourceDirectory = Paths.get(tempDirectory, bankFileName).toString();
         String outputBankFileName = Paths.get(tempDirectory, "A3_V6.output.bnk").toString();
 
         mockCommandLineHelperToReturnBankInformationSuccess(outputBankFileName);
@@ -133,9 +130,9 @@ public class GenuineBnkGatewayTest {
         assertThat(new File(outputBankFileName)).exists();
 
         String packedFilePathPrefix = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\";
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".3DD\\A3_V6"), eq(Paths.get(sourceDirectory, "A3_V6.3DD").toString()));
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".3DG\\A3_V6"), eq(Paths.get(sourceDirectory, "A3_V6.3DG").toString()));
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".2DM\\A3_V6"), eq(Paths.get(sourceDirectory, "A3_V6.2DM").toString()));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".3DD\\A3_V6"), eq(Paths.get(tempDirectory, "A3_V6.3DD").toString()));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".3DG\\A3_V6"), eq(Paths.get(tempDirectory, "A3_V6.3DG").toString()));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".2DM\\A3_V6"), eq(Paths.get(tempDirectory, "A3_V6.2DM").toString()));
     }
 
     @Test
@@ -143,7 +140,7 @@ public class GenuineBnkGatewayTest {
         // GIVEN
         String bankFileName = "A3_V6.bnk";
 
-        createSourceFileTree(bankFileName, false);
+        createRepackedFileTree(bankFileName, false);
 
         String outputBankFileName = Paths.get(tempDirectory, "A3_V6.output.bnk").toString();
 
@@ -183,7 +180,7 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test(expected = NoSuchElementException.class)
-    public void searchOriginalBankFileName_whenNoDirectoryPresent_shouldThrowException() throws IOException {
+    public void searchOriginalBankFileName_whenNoFilePresent_shouldThrowException() throws IOException {
         // GIVEN-WHEN
         GenuineBnkGateway.searchOriginalBankFileName(tempDirectory);
 
@@ -191,16 +188,16 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test
-    public void searchOriginalBankFileName_whenCorrectDirectoryPresent_shouldReturnDirectoryName() throws IOException {
+    public void searchOriginalBankFileName_whenCorrectFilePresent_shouldReturnFileName() throws IOException {
         // GIVEN
         String bankFileName = "A3_V6.bnk";
-        createSourceFileTree(bankFileName, false);
+        createRepackedFileTree(bankFileName, false);
 
         // WHEN
         String actualFileName = GenuineBnkGateway.searchOriginalBankFileName(tempDirectory);
 
         // THEN
-        assertThat(actualFileName).isEqualTo(bankFileName);
+        assertThat(actualFileName).isEqualTo("original-" + bankFileName);
     }
 
     @Test
@@ -208,7 +205,7 @@ public class GenuineBnkGatewayTest {
         // GIVEN
         String targetDirectory = createTempDirectory();
         String targetBankFileName = "A3_V6.bnk";
-        List<Path> repackedPaths = createRepackedFileTree(targetBankFileName, tempDirectory, false);
+        List<Path> repackedPaths = createRepackedFileTree(targetBankFileName, false);
 
         // WHEN
         genuineBnkGateway.prepareFilesToBeRepacked(tempDirectory, repackedPaths, targetBankFileName, targetDirectory);
@@ -222,21 +219,12 @@ public class GenuineBnkGatewayTest {
         return Files.createTempDirectory("libUnlimited-tests").toString();
     }
 
-    private void createSourceFileTree(String bankFileName, boolean markFilesModified) throws IOException {
-
-        Path extractedPath = Paths.get(tempDirectory, bankFileName);
-        Files.createDirectories(extractedPath);
-        String extractedDirectory = extractedPath.toString();
-
-        createRepackedFileTree(bankFileName, extractedDirectory, markFilesModified);
-    }
-
-    private List<Path> createRepackedFileTree(String bankFileName, String contentsDirectory, boolean markFilesModified) throws IOException {
+    private List<Path> createRepackedFileTree(String bankFileName, boolean markFilesModified) throws IOException {
         assert new File(tempDirectory, PREFIX_ORIGINAL_BANK_FILE + bankFileName ).createNewFile();
 
-        File file1 = new File(contentsDirectory, "A3_V6.3DD");
-        File file2 = new File(contentsDirectory, "A3_V6.3DG");
-        File file3 = new File(contentsDirectory, "A3_V6.2DM");
+        File file1 = new File(tempDirectory, "A3_V6.3DD");
+        File file2 = new File(tempDirectory, "A3_V6.3DG");
+        File file3 = new File(tempDirectory, "A3_V6.2DM");
 
         assert file1.createNewFile();
         assert file2.createNewFile();
