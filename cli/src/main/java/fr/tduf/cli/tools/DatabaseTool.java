@@ -534,13 +534,13 @@ public class DatabaseTool extends GenericTool {
 
                 .filter((path) -> Files.isRegularFile(path))
 
-                .filter((filePath) -> filePath.toString().endsWith(".bnk"))
+                .filter((filePath) -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(filePath.toString())))
 
-                .forEach((filePath) -> {
-                    try {
-                        Files.copy(filePath, Paths.get(targetDirectory, filePath.getFileName().toString()));
-                    } catch (IOException ioe) {
-                        throw new RuntimeException("Unable to copy original bank files to target directory.", ioe);
+                        .forEach((filePath) -> {
+                            try {
+                                Files.copy(filePath, Paths.get(targetDirectory, filePath.getFileName().toString()));
+                            } catch (IOException ioe) {
+                                throw new RuntimeException("Unable to copy original bank files to target directory.", ioe);
                     }
                 });
     }
