@@ -109,20 +109,29 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .build();
     }
 
-    // TODO handle case of RESOURCE_REMOTE
-    private static DbPatchDto.DbChangeDto createChangeObjectForEntry(DbDto.Topic topic, DbDataDto.Entry entry, int refFieldRank, List<DbStructureDto.Field> structureFields, Map<DbDto.Topic, List<String>> requiredResourceReferences) {
+    // TODO simplify method
+    private DbPatchDto.DbChangeDto createChangeObjectForEntry(DbDto.Topic topic, DbDataDto.Entry entry, int refFieldRank, List<DbStructureDto.Field> structureFields, Map<DbDto.Topic, List<String>> requiredResourceReferences) {
         List<String> entryValues = entry.getItems().stream()
 
                 .map((item) -> {
 
                     DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, structureFields);
-                    if (DbStructureDto.FieldType.RESOURCE_CURRENT == structureField.getFieldType()
-                            || DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN == structureField.getFieldType()) {
+                    DbStructureDto.FieldType fieldType = structureField.getFieldType();
+                    if (DbStructureDto.FieldType.RESOURCE_CURRENT == fieldType
+                            || DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN == fieldType) {
 
                         if (!requiredResourceReferences.containsKey(topic)) {
                             requiredResourceReferences.put(topic, new ArrayList<>());
                         }
                         requiredResourceReferences.get(topic).add(item.getRawValue());
+                    } else if (DbStructureDto.FieldType.RESOURCE_REMOTE == fieldType) {
+
+                        DbDto remoteTopicObject = this.databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef());
+                        DbDto.Topic remoteTopic = remoteTopicObject.getStructure().getTopic();
+                        if (!requiredResourceReferences.containsKey(remoteTopic)) {
+                            requiredResourceReferences.put(remoteTopic, new ArrayList<>());
+                        }
+                        requiredResourceReferences.get(remoteTopic).add(item.getRawValue());
                     }
 
                     return item.getRawValue();
