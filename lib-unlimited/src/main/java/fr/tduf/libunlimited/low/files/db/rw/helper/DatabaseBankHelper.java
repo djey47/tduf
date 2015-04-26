@@ -1,13 +1,12 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
+import com.sun.nio.file.ExtendedCopyOption;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -142,7 +141,7 @@ public class DatabaseBankHelper {
                 .forEach((originalBankFilePath) -> {
                     String shortOriginalBankFileName = originalBankFilePath.getFileName().toString();
                     try {
-                        Files.move(originalBankFilePath, Paths.get(targetDirectory, shortOriginalBankFileName));
+                        Files.move(originalBankFilePath, Paths.get(targetDirectory, shortOriginalBankFileName), StandardCopyOption.REPLACE_EXISTING);
                     } catch (IOException ioe) {
                         throw new RuntimeException("Unable to group file: " + shortOriginalBankFileName, ioe);
                     }
