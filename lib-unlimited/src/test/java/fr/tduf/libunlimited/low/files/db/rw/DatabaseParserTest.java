@@ -347,7 +347,7 @@ public class DatabaseParserTest {
         assertThat(databaseParser.getResourceCount()).isEqualTo(2);
         assertThat(databaseParser.getIntegrityErrors()).isEmpty();
 
-        String expectedJson = FilesHelper.readTextFromResourceFile("/db/dumped/TDU_Achievements.json", FilesHelper.CHARSET_UNICODE_8);
+        String expectedJson = FilesHelper.readTextFromResourceFile("/db/json/TDU_Achievements.json", FilesHelper.CHARSET_UNICODE_8);
         assertJsonEquals(expectedJson, jsonResult);
     }
 

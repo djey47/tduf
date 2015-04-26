@@ -125,7 +125,7 @@ public class FilesHelperTest {
     @Test
     public void readObjectFromJsonResourceFile_whenResourceFound_shouldReturnObjectContents() throws IOException, URISyntaxException {
         // GIVEN-WHEN
-        DbDto actualObject = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/dumped/TDU_Achievements.json");
+        DbDto actualObject = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Achievements.json");
 
         // THEN
         assertThat(actualObject).isNotNull();
@@ -143,9 +143,9 @@ public class FilesHelperTest {
     @Test
     public void getFileNameFromResourcePath_whenResourceFound_shouldReturnAbsoluteFilePath() throws URISyntaxException {
         // GIVEN-WHEN
-        String actualFileName = FilesHelper.getFileNameFromResourcePath("/db/dumped/TDU_Achievements.json");
+        String actualFileName = FilesHelper.getFileNameFromResourcePath("/db/json/TDU_Achievements.json");
 
         // THEN
-        assertThat(actualFileName.replace('\\', '/')).endsWith("/resources/test/db/dumped/TDU_Achievements.json");
+        assertThat(actualFileName.replace('\\', '/')).endsWith("/resources/test/db/json/TDU_Achievements.json");
     }
 }
