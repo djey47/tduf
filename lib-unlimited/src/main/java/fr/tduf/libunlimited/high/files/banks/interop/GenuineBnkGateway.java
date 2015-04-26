@@ -141,7 +141,7 @@ public class GenuineBnkGateway implements BankSupport {
     public void prepareFilesToBeRepacked(String sourceDirectory, List<Path> repackedPaths, String targetBankFileName, String targetDirectory) throws IOException {
 
         String originalBankFileName = PREFIX_ORIGINAL_BANK_FILE + targetBankFileName;
-        Files.copy(Paths.get(sourceDirectory, originalBankFileName), Paths.get(targetDirectory, originalBankFileName));
+        Files.copy(Paths.get(sourceDirectory, originalBankFileName), Paths.get(targetDirectory, originalBankFileName), StandardCopyOption.REPLACE_EXISTING);
 
         Files.createDirectory(Paths.get(targetDirectory, targetBankFileName));
 
@@ -150,7 +150,7 @@ public class GenuineBnkGateway implements BankSupport {
                 .forEach((filePath) -> {
                     Path targetPath = Paths.get(targetDirectory, targetBankFileName, filePath.getFileName().toString());
                     try {
-                        Files.copy(filePath, targetPath);
+                        Files.copy(filePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
                     } catch (IOException ioe) {
                         throw new RuntimeException("Unable to recreate file structure: " + targetPath, ioe);
                     }
