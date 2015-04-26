@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -65,7 +66,20 @@ public class PatchGeneratorTest {
         DbPatchDto actualPatchObject = generator.makePatch(DbDto.Topic.CAR_PHYSICS_DATA, ReferenceRange.fromCliOption(Optional.of("606298799,606299799")));
 
         // THEN
-        assertPatchGeneratedWithinRange(actualPatchObject);
+        assertPatchGeneratedWithinRangeForOneTopic(actualPatchObject);
+    }
+
+    @Test
+    public void makePatch_whenUsingRealDatabase_andUniqueRef_andRemoteResources_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        List<DbDto> databaseObjects = createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles();
+        PatchGenerator generator = createPatchGenerator(databaseObjects);
+
+        // WHEN
+        DbPatchDto actualPatchObject = generator.makePatch(DbDto.Topic.HAIR, ReferenceRange.fromCliOption(Optional.of("54522")));
+
+        // THEN
+        assertPatchGeneratedWithinRangeForTwoLinkedTopics(actualPatchObject);
     }
 
     @Test
@@ -78,7 +92,7 @@ public class PatchGeneratorTest {
         DbPatchDto actualPatchObject = generator.makePatch(DbDto.Topic.CAR_PHYSICS_DATA, ReferenceRange.fromCliOption(Optional.of("606297799..606299799")));
 
         // THEN
-        assertPatchGeneratedWithinRange(actualPatchObject);
+        assertPatchGeneratedWithinRangeForOneTopic(actualPatchObject);
     }
 
     private static PatchGenerator createPatchGenerator(List<DbDto> databaseObjects) throws ReflectiveOperationException {
@@ -101,11 +115,20 @@ public class PatchGeneratorTest {
         return singletonList(topicObject);
     }
 
-    private static void assertPatchGeneratedWithinRange(DbPatchDto patchObject) {
-        assertThat(patchObject).isNotNull();
-        assertThat(patchObject.getChanges()).hasSize(129); //1 UPDATE + 128 UPDATE_RES (20 entries * 8 locales)
+    private static  List<DbDto> createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles() throws IOException, URISyntaxException {
+        DbDto topicObject1 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Clothes.json");
+        DbDto topicObject2 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Hair.json");
 
-        DbPatchDto.DbChangeDto changeObject1 = patchObject.getChanges().get(0);
+        return asList(topicObject1, topicObject2);
+    }
+
+    private static void assertPatchGeneratedWithinRangeForOneTopic(DbPatchDto patchObject) {
+        assertThat(patchObject).isNotNull();
+
+        List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
+        assertThat(actualChanges).hasSize(129); //1 UPDATE + 128 UPDATE_RES (16 local resources * 8 locales)
+
+        DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
         assertThat(changeObject1.getType()).isEqualTo(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE);
         assertThat(changeObject1.getTopic()).isEqualTo(DbDto.Topic.CAR_PHYSICS_DATA);
         assertThat(changeObject1.getRef()).isEqualTo("606298799");
@@ -113,8 +136,27 @@ public class PatchGeneratorTest {
         assertThat(changeObject1.getValues().get(0)).isEqualTo("606298799");
         assertThat(changeObject1.getValues().get(102)).isEqualTo("104");
 
-        DbPatchDto.DbChangeDto changeObject2 = patchObject.getChanges().get(1);
+        DbPatchDto.DbChangeDto changeObject2 = actualChanges.get(1);
         assertThat(changeObject2.getType()).isEqualTo(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES);
         assertThat(changeObject2.getTopic()).isEqualTo(DbDto.Topic.CAR_PHYSICS_DATA);
+    }
+
+    private static void assertPatchGeneratedWithinRangeForTwoLinkedTopics(DbPatchDto patchObject) {
+        assertThat(patchObject).isNotNull();
+
+        List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
+        assertThat(actualChanges).hasSize(49); //1 UPDATE + 48 UPDATE_RES ( (5 local resources + 1 remote resource) * 8 locales)
+
+        DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
+        assertThat(changeObject1.getType()).isEqualTo(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE);
+        assertThat(changeObject1.getTopic()).isEqualTo(DbDto.Topic.HAIR);
+        assertThat(changeObject1.getRef()).isEqualTo("54522");
+        assertThat(changeObject1.getValues()).hasSize(7);
+        assertThat(changeObject1.getValues().get(0)).isEqualTo("54522");
+        assertThat(changeObject1.getValues().get(6)).isEqualTo("54713527");
+
+        assertThat(actualChanges).extracting("type").contains(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES);
+        assertThat(actualChanges).extracting("topic").contains(DbDto.Topic.CLOTHES);
+        assertThat(actualChanges).extracting("topic").contains(DbDto.Topic.HAIR);
     }
 }
