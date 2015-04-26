@@ -213,7 +213,7 @@ public class DatabaseTool extends GenericTool {
 
     private void repackAll() throws IOException {
         String sourceDirectory = Paths.get(this.jsonDirectory).toAbsolutePath().toString();
-        String targetDirectory = Paths.get(this.databaseDirectory).toAbsolutePath().toString();
+        String targetDirectory = Paths.get(this.outputDatabaseDirectory).toAbsolutePath().toString();
         outLine("-> JSON database directory: " + sourceDirectory);
         outLine("Generating TDU database files, please wait...");
 
