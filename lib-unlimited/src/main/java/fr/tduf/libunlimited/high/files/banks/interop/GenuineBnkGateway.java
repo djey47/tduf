@@ -25,6 +25,8 @@ import static java.util.stream.Collectors.toList;
  */
 public class GenuineBnkGateway implements BankSupport {
 
+    public static final String EXTENSION_BANKS = "bnk";
+
     static final String EXE_TDUMT_CLI = ".\\tools\\tdumt-cli\\tdumt-cli.exe";
     static final String CLI_COMMAND_BANK_INFO = "BANK-I";
     static final String CLI_COMMAND_BANK_UNPACK = "BANK-U";
@@ -33,8 +35,6 @@ public class GenuineBnkGateway implements BankSupport {
     static final String PREFIX_ORIGINAL_BANK_FILE = "original-";
 
     private static final String PREFIX_PACKED_FILE_PATH = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\";
-
-    private static final String EXTENSION_BANKS = "bnk";
 
     private CommandLineHelper commandLineHelper;
 
