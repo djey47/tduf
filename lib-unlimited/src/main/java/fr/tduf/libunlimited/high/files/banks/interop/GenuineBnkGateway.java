@@ -105,7 +105,7 @@ public class GenuineBnkGateway implements BankSupport {
         Path originalBankFilePath = Paths.get(inputDirectory, originalBankFileName);
         Files.copy(originalBankFilePath, Paths.get(outputBankFileName), StandardCopyOption.REPLACE_EXISTING);
 
-        Path inputPath = Paths.get(inputDirectory, originalBankFileName);
+        Path inputPath = Paths.get(inputDirectory);
         Files.walk(inputPath)
 
                 .filter((path) -> Files.isRegularFile(path))
@@ -160,7 +160,7 @@ public class GenuineBnkGateway implements BankSupport {
     static String searchOriginalBankFileName(String inputDirectory) throws IOException {
         return Files.walk(Paths.get(inputDirectory))
 
-                    .filter((path) -> Files.isDirectory(path))
+                    .filter((path) -> !Files.isDirectory(path))
 
                     .filter((path) -> EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
 
