@@ -48,7 +48,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAll_whenRealContents_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException {
         //GIVEN
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/dumped/TDU_Achievements.json");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/TDU_Achievements.json");
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
 
@@ -76,7 +76,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAll_whenRealContents_withReferenceField_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException {
         //GIVEN
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/dumped/TDU_Bots.json");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/TDU_Bots.json");
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
 
@@ -86,22 +86,24 @@ public class DatabaseWriterTest {
 
         //THEN
         String actualContentsFileName = new File(tempDirectory, "TDU_Bots.db").getAbsolutePath();
-        String actualResourceFileName = new File(tempDirectory, "TDU_Bots.fr").getAbsolutePath();
+        String actualResourceFileNameFrench = new File(tempDirectory, "TDU_Bots.fr").getAbsolutePath();
+        String actualResourceFileNameItalian = new File(tempDirectory, "TDU_Bots.it").getAbsolutePath();
 
         assertThat(actualFilenames).containsExactly(
                 actualContentsFileName,
-                actualResourceFileName);
+                actualResourceFileNameFrench,
+                actualResourceFileNameItalian);
 
         assertFileMatchesReference(actualContentsFileName, "/db/");
-        assertFileMatchesReference(actualResourceFileName, "/db/res/clean/");
+        assertFileMatchesReference(actualResourceFileNameFrench, "/db/res/clean/");
 
-        assertFilesMatchReferenceObject(initialDbDto, actualContentsFileName, actualResourceFileName);
+        assertFilesMatchReferenceObject(initialDbDto, actualContentsFileName, actualResourceFileNameFrench, actualResourceFileNameItalian);
     }
 
     @Test
     public void writeAll_whenRealContents_shouldCreateContentsFile_withSizeMultipleOf8() throws IOException, URISyntaxException {
         //GIVEN
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/dumped/TDU_Achievements.json");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/TDU_Achievements.json");
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
@@ -117,7 +119,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAllAsJson_whenRealContents_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException {
         //GIVEN
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/dumped/TDU_Achievements.json");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/TDU_Achievements.json");
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
@@ -128,7 +130,7 @@ public class DatabaseWriterTest {
 
         assertThat(actualFileName).isEqualTo(expectedFileName);
 
-        assertJsonFileMatchesReference(expectedFileName, "/db/dumped/");
+        assertJsonFileMatchesReference(expectedFileName, "/db/json/");
     }
 
     private static void assertFilesMatchReferenceObject(DbDto referenceDto, String contentsFileName, String... resourceFileNames) throws FileNotFoundException {

@@ -8,8 +8,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -146,8 +144,7 @@ public class DatabaseReadWriteHelperTest {
     @Test
     public void readDatabaseFromJson_whenRealFile_shouldReturnCorrespondingDto() throws URISyntaxException, IOException {
         // GIVEN
-        File jsonFile = new File(thisClass.getResource("/db/dumped/TDU_Achievements.json").toURI());
-        String jsonDirectory = jsonFile.getParent();
+        String jsonDirectory = getJsonDirectoryFromResourceFile();
 
         // WHEN
         DbDto actualdbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory).get();
@@ -171,8 +168,7 @@ public class DatabaseReadWriteHelperTest {
     @Test
     public void readFullDatabaseFromJson_whenRealFiles_shouldReturnCorrespondingDtos() throws URISyntaxException {
         // GIVEN
-        File jsonFile = new File(thisClass.getResource("/db/dumped/TDU_Achievements.json").toURI());
-        String jsonDirectory = jsonFile.getParent();
+        String jsonDirectory = getJsonDirectoryFromResourceFile();
 
 
         // WHEN
@@ -181,10 +177,9 @@ public class DatabaseReadWriteHelperTest {
 
         // THEN
         assertThat(actualTopicObjects).isNotNull();
-        assertThat(actualTopicObjects).hasSize(2);
+        assertThat(actualTopicObjects).hasSize(5);
 
-        assertTopicObject(actualTopicObjects.get(0));
-        assertTopicObject(actualTopicObjects.get(1));
+        actualTopicObjects.forEach(DatabaseReadWriteHelperTest::assertTopicObject);
     }
 
     @Test
@@ -300,7 +295,7 @@ public class DatabaseReadWriteHelperTest {
     @Test
     public void writeDatabaseTopic_whenProvidedContents_WithoutEncryption_shouldCreateClearFiles() throws URISyntaxException, IOException {
         // GIVEN
-        String jsonDirectory = new File(thisClass.getResource("/db/dumped/TDU_Achievements.json").toURI()).getParent();
+        String jsonDirectory = getJsonDirectoryFromResourceFile();
         DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory).get();
 
 
@@ -320,7 +315,7 @@ public class DatabaseReadWriteHelperTest {
     @Test
     public void writeDatabaseTopic_whenProvidedContents_WithEncryption_shouldCreateEncryptedFiles() throws URISyntaxException, IOException {
         // GIVEN
-        String jsonDirectory = new File(thisClass.getResource("/db/dumped/TDU_Achievements.json").toURI()).getParent();
+        String jsonDirectory = getJsonDirectoryFromResourceFile();
         DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory).get();
 
 
@@ -336,6 +331,12 @@ public class DatabaseReadWriteHelperTest {
 
         assertFileDoesNotMatchReference(writtenFiles.get(0), "/db/encrypted/");
     }
+
+    private String getJsonDirectoryFromResourceFile() throws URISyntaxException {
+        File jsonFile = new File(thisClass.getResource("/db/json/TDU_Achievements.json").toURI());
+        return jsonFile.getParent();
+    }
+
     private DbDto createDatabaseTopicObject() {
         DbStructureDto dbStructureDto = DbStructureDto.builder()
                 .forTopic(DbDto.Topic.ACHIEVEMENTS)
