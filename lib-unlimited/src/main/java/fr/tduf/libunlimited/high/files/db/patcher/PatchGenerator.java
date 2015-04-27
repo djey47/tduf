@@ -35,17 +35,17 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         requireNonNull(range, "A reference range is required.");
 
         return DbPatchDto.builder()
-                .addChanges(makeChangesObjects(topic, range))
+                .addChanges(makeChangesObjectsForTopic(topic, range))
                 .build();
     }
 
-    // TODO simplify method
-    private List<DbPatchDto.DbChangeDto> makeChangesObjects(DbDto.Topic topic, ReferenceRange range) {
+    private List<DbPatchDto.DbChangeDto> makeChangesObjectsForTopic(DbDto.Topic topic, ReferenceRange range) {
 
         this.topicObject = checkTopic(topic);
 
         final Map<DbDto.Topic, List<String>> requiredResourceReferences = new HashMap<>();
         final Map<DbDto.Topic, List<String>> requiredContentsReferences = new HashMap<>();
+
         List<DbPatchDto.DbChangeDto> changesObjects = new ArrayList<>();
         List<DbStructureDto.Field> structureFields = this.topicObject.getStructure().getFields();
         BulkDatabaseMiner.getUidFieldRank(structureFields)
@@ -56,11 +56,9 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
                 )));
 
-        changesObjects.addAll(makeChangesObjectsForResources(requiredResourceReferences));
+        changesObjects.addAll(makeChangesObjectsForRequiredResources(requiredResourceReferences));
 
-        requiredContentsReferences.forEach((requiredTopic, references) -> changesObjects.addAll(
-                makeChangesObjects(requiredTopic, ReferenceRange.fromList(references))
-        ));
+        changesObjects.addAll(makeChangesObjectsForRequiredContents(requiredContentsReferences));
 
         return changesObjects;
     }
@@ -77,8 +75,17 @@ public class PatchGenerator extends AbstractDatabaseHolder {
             .collect(toList());
     }
 
+    private List<DbPatchDto.DbChangeDto> makeChangesObjectsForRequiredContents(Map<DbDto.Topic, List<String>> requiredContentsReferences) {
+
+        return requiredContentsReferences.entrySet().stream()
+
+                .flatMap((topicEntry) -> makeChangesObjectsForTopic(topicEntry.getKey(), ReferenceRange.fromList(topicEntry.getValue())).stream())
+
+                .collect(toList());
+    }
+
     // TODO when all locales have same values for a given ref, generate a single instruction for all locales (reduce instruction count)
-    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForResources(Map<DbDto.Topic, List<String>> resourceReferences) {
+    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForRequiredResources(Map<DbDto.Topic, List<String>> resourceReferences) {
         return resourceReferences.entrySet().stream()
 
                 .flatMap(this::makeChangesObjectsForResourcesInTopic)
