@@ -1,5 +1,8 @@
 package fr.tduf.cli.common.helper;
 
+import org.json.JSONException;
+import org.skyscreamer.jsonassert.JSONAssert;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -53,11 +56,13 @@ public class AssertionsHelper {
      * @param fileName1 : path and file name
      * @param fileName2 : path and file name
      */
-    public static void assertJsonFilesMatch(String fileName1, String fileName2) throws IOException {
+    public static void assertJsonFilesMatch(String fileName1, String fileName2) throws IOException, JSONException {
         String json1 = assertAndReadJsonFileContents(fileName1);
         String json2 = assertAndReadJsonFileContents(fileName2);
 
-        assertJsonEquals("Files " + fileName1 + " and " + fileName2 + " must match: ", json1, json2);
+        JSONAssert.assertEquals(json1, json2, false);
+
+//        assertJsonEquals("Files " + fileName1 + " and " + fileName2 + " must match: ", json1, json2);
     }
 
     /**
