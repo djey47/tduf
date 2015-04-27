@@ -1,7 +1,9 @@
 package fr.tduf.cli.tools;
 
+import fr.tduf.cli.common.helper.AssertionsHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import org.json.JSONException;
 import org.junit.Test;
 
 import java.io.File;
@@ -69,12 +71,14 @@ public class DatabaseToolIntegTest {
     }
 
     @Test
-    public void dumpApplyPatch() throws IOException {
+    public void dumpApplyPatchGenPatch() throws IOException, JSONException {
 
         String sourceDirectory = "integ-tests/db-encrypted";
         String jsonDirectory = "integ-tests/db-json";
         String patchedDirectory = "integ-tests/db-patched";
-        String patchFile = "integ-tests/patcher/mini.json";
+        String inputPatchFile = "integ-tests/patcher/mini.json";
+        String outputPatchFile = "integ-tests/patcher/out/mini-gen.json";
+        String referencePatchFile = "integ-tests/patcher/mini-gen.json";
 
         // WHEN: dump
         System.out.println("-> Dump!");
@@ -82,11 +86,19 @@ public class DatabaseToolIntegTest {
 
         // WHEN: applyPatch
         System.out.println("-> ApplyPatch!");
-        DatabaseTool.main(new String[]{"apply-patch", "-j", jsonDirectory, "-o", patchedDirectory, "-p", patchFile});
+        DatabaseTool.main(new String[]{"apply-patch", "-j", jsonDirectory, "-o", patchedDirectory, "-p", inputPatchFile});
 
         // THEN: files must exist
         long jsonFilesCount = getTopicFileCount(patchedDirectory, "json");
         assertThat(jsonFilesCount).isEqualTo(18);
+
+        // WHEN: genPatch
+        System.out.println("-> GenPatch!");
+        DatabaseTool.main(new String[]{"gen-patch", "-j", jsonDirectory, "-p", outputPatchFile, "-t", DbDto.Topic.CAR_PHYSICS_DATA.name(), "-r", "606298799,632098801"});
+
+        // THEN: patch file must exist
+        AssertionsHelper.assertFileExistAndGet(outputPatchFile);
+        AssertionsHelper.assertJsonFilesMatch(outputPatchFile, referencePatchFile);
     }
 
     private static long getTopicFileCount(String jsonDirectory, String extension) {
