@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  *
  */
+// TODO move to lib-unlimited module
 public class AssertionsHelper {
 
     /**
