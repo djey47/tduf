@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a range of entry references for patch generation.
@@ -23,7 +24,7 @@ public class ReferenceRange {
      */
     public static ReferenceRange fromCliOption(Optional<String> potentialRangeOptionValue) {
         if (!potentialRangeOptionValue.isPresent()) {
-            return new ReferenceRange(Optional.<Long>empty(), Optional.<Long>empty());
+            return new ReferenceRange();
         }
 
         String rangeOptionValue = potentialRangeOptionValue.get();
@@ -34,6 +35,19 @@ public class ReferenceRange {
         }
 
         return fromEnumerated(rangeOptionValue);
+    }
+
+    /**
+     * Creates a range from a list of values.
+     */
+    public static ReferenceRange fromList(List<String> references) {
+        requireNonNull(references, "A list of references is required.");
+
+        if (references.isEmpty()) {
+            return new ReferenceRange();
+        }
+
+        return new ReferenceRange(references);
     }
 
     /**
@@ -53,6 +67,10 @@ public class ReferenceRange {
         return (!minRef.isPresent() && reference <= maxRef.get())
                 || (!maxRef.isPresent() && reference >= minRef.get())
                 || (reference >= minRef.get() && reference <= maxRef.get());
+    }
+
+    ReferenceRange() {
+        this(Optional.<Long>empty(), Optional.<Long>empty());
     }
 
     ReferenceRange(List<String> refs) {
@@ -109,4 +127,5 @@ public class ReferenceRange {
     List<String> getRefs() {
         return refs;
     }
+
 }
