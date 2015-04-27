@@ -177,7 +177,7 @@ public class DatabaseReadWriteHelperTest {
 
         // THEN
         assertThat(actualTopicObjects).isNotNull();
-        assertThat(actualTopicObjects).hasSize(5);
+        assertThat(actualTopicObjects).hasSize(7);
 
         actualTopicObjects.forEach(DatabaseReadWriteHelperTest::assertTopicObject);
     }
