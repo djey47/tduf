@@ -87,6 +87,33 @@ public class ReferenceRangeTest {
         assertThat(actualRange.getRefs()).containsExactly("10", "20", "30", "40");
     }
 
+    @Test(expected = NullPointerException.class)
+    public void fromList_whenNullArgument_shouldThrowException() {
+        // GIVEN-WHEN
+        ReferenceRange.fromList(null);
+
+        // THEN: NPE
+    }
+
+    @Test
+    public void fromList_whenEmptyList_shouldReturnGlobalRange() {
+        // GIVEN-WHEN
+        ReferenceRange actualRange = ReferenceRange.fromList(new ArrayList<>());
+
+        // THEN
+        assertThat(actualRange.isGlobal()).isTrue();
+    }
+
+    @Test
+    public void fromList_whenNonEmptyList_shouldReturnRange() {
+        // GIVEN-WHEN
+        ReferenceRange actualRange = ReferenceRange.fromList(asList("1", "2", "3"));
+
+        // THEN
+        assertThat(actualRange.isGlobal()).isFalse();
+        assertThat(actualRange.getRefs()).containsExactly("1", "2", "3");
+    }
+
     @Test
     public void accepts_whenGlobalRange_shouldReturnTrue(){
         // Long
