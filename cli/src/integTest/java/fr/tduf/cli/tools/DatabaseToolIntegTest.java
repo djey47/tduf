@@ -1,11 +1,17 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.AssertionsHelper;
+import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.json.JSONException;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -14,7 +20,14 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DatabaseToolIntegTest {
+
+    @Mock
+    private BankSupport bankSupportMock;
+
+    @InjectMocks
+    private DatabaseTool databaseTool;  // Used for bank testing only. Do not use twice in a same test method!
 
     @Test
     public void dumpGenCheck_shouldNotThrowError() throws IOException {
@@ -99,6 +112,20 @@ public class DatabaseToolIntegTest {
         // THEN: patch file must exist
         AssertionsHelper.assertFileExistAndGet(outputPatchFile);
         AssertionsHelper.assertJsonFilesMatch(outputPatchFile, referencePatchFile);
+    }
+
+    @Test
+    public void unpackAllRepackAll_shouldCallGateway() throws IOException {
+        // GIVEN
+        String databaseDirectory = "integ-tests/banks/db";
+        String jsonDirectory = "integ-tests/banks/db/out";
+
+        // WHEN unpack-all
+        System.out.println("-> UnpackAll!");
+        DatabaseTool.main(new String[]{"unpack-all", "-d", databaseDirectory, "-j", jsonDirectory});
+
+        // THEN
+        // TODO
     }
 
     private static long getTopicFileCount(String jsonDirectory, String extension) {

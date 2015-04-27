@@ -2,6 +2,7 @@
 .idea/
 build/
 cli/integ-tests/applied/
+cli/integ-tests/banks/db/out/
 cli/integ-tests/cameras/out/
 cli/integ-tests/db-fixed/
 cli/integ-tests/db-generated/
