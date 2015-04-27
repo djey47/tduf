@@ -48,14 +48,25 @@ public class AssertionsHelper {
      */
     public static void assertJsonFileMatchesReference(String fileName, String resourceDirectory) throws URISyntaxException, IOException {
         File actualContentsFile = assertFileExistAndGet(fileName);
-        byte[] actualEncoded = Files.readAllBytes(actualContentsFile.toPath());
-        String actualJson = new String(actualEncoded, Charset.forName("UTF-8"));
+        String actualJson = assertAndReadJsonFileContents(fileName);
 
         File expectedContentsFile = new File(thisClass.getResource(resourceDirectory + actualContentsFile.getName()).toURI());
         byte[] expectedEncoded = Files.readAllBytes(expectedContentsFile.toPath());
         String expectedJson = new String(expectedEncoded, Charset.forName("UTF-8"));
 
         assertJsonEquals("File must match reference one: " + expectedContentsFile.getPath(), expectedJson, actualJson);
+    }
+
+    /**
+     * Checks if specified JSON files contents are the same.
+     * @param fileName1 : path and file name
+     * @param fileName2 : path and file name
+     */
+    public static void assertJsonFilesMatch(String fileName1, String fileName2) throws IOException {
+        String json1 = assertAndReadJsonFileContents(fileName1);
+        String json2 = assertAndReadJsonFileContents(fileName2);
+
+        assertJsonEquals("Files " + fileName1 + " and " + fileName2 + " must match: ", json1, json2);
     }
 
     /**
@@ -72,5 +83,11 @@ public class AssertionsHelper {
         byte[] unexpectedBytes = Files.readAllBytes(unexpectedContentsFile.toPath());
 
         assertThat(actualBytes).isNotEqualTo(unexpectedBytes);
+    }
+
+    private static String assertAndReadJsonFileContents(String fileName1) throws IOException {
+        File contentsFile1 = assertFileExistAndGet(fileName1);
+        byte[] encoded1 = Files.readAllBytes(contentsFile1.toPath());
+        return new String(encoded1, Charset.forName("UTF-8"));
     }
 }
