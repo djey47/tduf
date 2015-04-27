@@ -14,6 +14,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Class providing utility methods to request data from database objects.
  */
+// TODO use debug logs to get performance info
 public class BulkDatabaseMiner {
 
     private final List<DbDto> topicObjects;
