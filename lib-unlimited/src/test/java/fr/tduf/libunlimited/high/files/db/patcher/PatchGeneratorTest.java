@@ -59,11 +59,11 @@ public class PatchGeneratorTest {
     @Test
     public void makePatch_whenUsingRealDatabase_andRefsAsEnumeration_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
-        List<DbDto> databaseObjects = createDatabaseObjectsWithOneTopicFromRealFile();
+        List<DbDto> databaseObjects = createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(DbDto.Topic.CAR_PHYSICS_DATA, ReferenceRange.fromCliOption(Optional.of("606298799,606299799")));
+        DbPatchDto actualPatchObject = generator.makePatch(DbDto.Topic.BRANDS, ReferenceRange.fromCliOption(Optional.of("734,735")));
 
         // THEN
         assertPatchGeneratedWithinRangeForOneTopic(actualPatchObject);
@@ -72,24 +72,37 @@ public class PatchGeneratorTest {
     @Test
     public void makePatch_whenUsingRealDatabase_andUniqueRef_andRemoteResources_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
-        List<DbDto> databaseObjects = createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles();
+        List<DbDto> databaseObjects = createDatabaseObjectsWithThreeLinkedTopicsFromRealFiles();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
         DbPatchDto actualPatchObject = generator.makePatch(DbDto.Topic.HAIR, ReferenceRange.fromCliOption(Optional.of("54522")));
 
         // THEN
-        assertPatchGeneratedWithinRangeForTwoLinkedTopics(actualPatchObject);
+        assertPatchGeneratedWithinRangeForLinkedTopics(actualPatchObject);
+    }
+
+    @Test
+    public void makePatch_whenUsingRealDatabase_andUniqueRef_andRemoteContentsReference_shouldReturnCorrectPatchObjectWithExistingRefs_andOtherTopic() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        List<DbDto> databaseObjects = createDatabaseObjectsWithThreeLinkedTopicsFromRealFiles();
+        PatchGenerator generator = createPatchGenerator(databaseObjects);
+
+        // WHEN
+        DbPatchDto actualPatchObject = generator.makePatch(DbDto.Topic.PNJ, ReferenceRange.fromCliOption(Optional.of("540091906")));
+
+        // THEN
+        assertPatchGeneratedWithinRangeForLinkedTopicsWithRemoteContentsReference(actualPatchObject);
     }
 
     @Test
     public void makePatch_whenUsingRealDatabase_andRefsAsBounds_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
-        List<DbDto> databaseObjects = createDatabaseObjectsWithOneTopicFromRealFile();
+        List<DbDto> databaseObjects = createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(DbDto.Topic.CAR_PHYSICS_DATA, ReferenceRange.fromCliOption(Optional.of("606297799..606299799")));
+        DbPatchDto actualPatchObject = generator.makePatch(DbDto.Topic.BRANDS, ReferenceRange.fromCliOption(Optional.of("0..735")));
 
         // THEN
         assertPatchGeneratedWithinRangeForOneTopic(actualPatchObject);
@@ -109,39 +122,44 @@ public class PatchGeneratorTest {
         return singletonList(topicObject);
     }
 
-    private static  List<DbDto> createDatabaseObjectsWithOneTopicFromRealFile() throws IOException, URISyntaxException {
-        DbDto topicObject = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
-
-        return singletonList(topicObject);
-    }
-
     private static  List<DbDto> createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles() throws IOException, URISyntaxException {
-        DbDto topicObject1 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Clothes.json");
-        DbDto topicObject2 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Hair.json");
+        DbDto topicObject1 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+        DbDto topicObject2 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Brands.json");
 
         return asList(topicObject1, topicObject2);
+    }
+
+    private static  List<DbDto> createDatabaseObjectsWithThreeLinkedTopicsFromRealFiles() throws IOException, URISyntaxException {
+        DbDto topicObject1 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Clothes.json");
+        DbDto topicObject2 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Hair.json");
+        DbDto topicObject3 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_PNJ.json");
+        DbDto topicObject4 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Brands.json");
+
+        return asList(topicObject1, topicObject2, topicObject3, topicObject4);
     }
 
     private static void assertPatchGeneratedWithinRangeForOneTopic(DbPatchDto patchObject) {
         assertThat(patchObject).isNotNull();
 
         List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
-        assertThat(actualChanges).hasSize(129); //1 UPDATE + 128 UPDATE_RES (16 local resources * 8 locales)
+        assertThat(actualChanges).hasSize(9); //1 UPDATE + 8 UPDATE_RES (1 local resource * 8 locales)
 
         DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
         assertThat(changeObject1.getType()).isEqualTo(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE);
-        assertThat(changeObject1.getTopic()).isEqualTo(DbDto.Topic.CAR_PHYSICS_DATA);
-        assertThat(changeObject1.getRef()).isEqualTo("606298799");
-        assertThat(changeObject1.getValues()).hasSize(103);
-        assertThat(changeObject1.getValues().get(0)).isEqualTo("606298799");
-        assertThat(changeObject1.getValues().get(102)).isEqualTo("104");
+        assertThat(changeObject1.getTopic()).isEqualTo(DbDto.Topic.BRANDS);
+        assertThat(changeObject1.getRef()).isEqualTo("735");
+        assertThat(changeObject1.getValues()).hasSize(7);
+        assertThat(changeObject1.getValues().get(0)).isEqualTo("735");
+        assertThat(changeObject1.getValues().get(6)).isEqualTo("1");
 
         DbPatchDto.DbChangeDto changeObject2 = actualChanges.get(1);
         assertThat(changeObject2.getType()).isEqualTo(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES);
-        assertThat(changeObject2.getTopic()).isEqualTo(DbDto.Topic.CAR_PHYSICS_DATA);
+        assertThat(changeObject2.getTopic()).isEqualTo(DbDto.Topic.BRANDS);
+
+        assertThat(actualChanges).extracting("ref").containsAll(asList("735", "55338337"));
     }
 
-    private static void assertPatchGeneratedWithinRangeForTwoLinkedTopics(DbPatchDto patchObject) {
+    private static void assertPatchGeneratedWithinRangeForLinkedTopics(DbPatchDto patchObject) {
         assertThat(patchObject).isNotNull();
 
         List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
@@ -158,5 +176,24 @@ public class PatchGeneratorTest {
         assertThat(actualChanges).extracting("type").contains(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES);
         assertThat(actualChanges).extracting("topic").contains(DbDto.Topic.CLOTHES);
         assertThat(actualChanges).extracting("topic").contains(DbDto.Topic.HAIR);
+    }
+
+    private static void assertPatchGeneratedWithinRangeForLinkedTopicsWithRemoteContentsReference(DbPatchDto patchObject) {
+        assertThat(patchObject).isNotNull();
+
+        List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
+        assertThat(actualChanges).hasSize(266); //2 UPDATE +
+
+        DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
+        assertThat(changeObject1.getType()).isEqualTo(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE);
+        assertThat(changeObject1.getTopic()).isEqualTo(DbDto.Topic.PNJ);
+        assertThat(changeObject1.getRef()).isEqualTo("540091906");
+        assertThat(changeObject1.getValues()).hasSize(17);
+        assertThat(changeObject1.getValues().get(0)).isEqualTo("540091906");
+
+        assertThat(actualChanges).extracting("type").contains(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES);
+        assertThat(actualChanges).extracting("topic").contains(DbDto.Topic.PNJ);
+        assertThat(actualChanges).extracting("topic").contains(DbDto.Topic.CLOTHES);
+        assertThat(actualChanges).extracting("topic").contains(DbDto.Topic.BRANDS);
     }
 }
