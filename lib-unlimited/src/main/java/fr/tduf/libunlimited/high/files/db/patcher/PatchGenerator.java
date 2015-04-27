@@ -30,15 +30,12 @@ public class PatchGenerator extends AbstractDatabaseHolder {
      * @param range : range of reference values for concerned entries.
      * @return a patch object with all necessary instructions.
      */
-    // TODO handle remote contents ref
     public DbPatchDto makePatch(DbDto.Topic topic, ReferenceRange range) {
         requireNonNull(topic, "A database topic is required.");
         requireNonNull(range, "A reference range is required.");
 
-        List<DbPatchDto.DbChangeDto> changesObjects = makeChangesObjects(topic, range);
-
         return DbPatchDto.builder()
-                .addChanges(changesObjects)
+                .addChanges(makeChangesObjects(topic, range))
                 .build();
     }
 
@@ -122,42 +119,10 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .build();
     }
 
-    // TODO simplify method
     private DbPatchDto.DbChangeDto createChangeObjectForEntry(DbDto.Topic topic, DbDataDto.Entry entry, int refFieldRank, List<DbStructureDto.Field> structureFields, Map<DbDto.Topic, List<String>> requiredResourceReferences, Map<DbDto.Topic, List<String>> requiredContentsReferences) {
         List<String> entryValues = entry.getItems().stream()
 
-                .map((item) -> {
-
-                    DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, structureFields);
-                    DbStructureDto.FieldType fieldType = structureField.getFieldType();
-                    if (DbStructureDto.FieldType.RESOURCE_CURRENT == fieldType
-                            || DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN == fieldType) {
-
-                        if (!requiredResourceReferences.containsKey(topic)) {
-                            requiredResourceReferences.put(topic, new ArrayList<>());
-                        }
-                        requiredResourceReferences.get(topic).add(item.getRawValue());
-                    } else if (DbStructureDto.FieldType.RESOURCE_REMOTE == fieldType) {
-
-                        DbDto remoteTopicObject = this.databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef());
-                        DbDto.Topic remoteTopic = remoteTopicObject.getStructure().getTopic();
-                        if (!requiredResourceReferences.containsKey(remoteTopic)) {
-                            requiredResourceReferences.put(remoteTopic, new ArrayList<>());
-                        }
-                        requiredResourceReferences.get(remoteTopic).add(item.getRawValue());
-                    } else if (DbStructureDto.FieldType.REFERENCE == fieldType) {
-
-                        DbDto remoteTopicObject = this.databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef());
-                        DbDto.Topic remoteTopic = remoteTopicObject.getStructure().getTopic();
-
-                        if (!requiredContentsReferences.containsKey(remoteTopic)) {
-                            requiredContentsReferences.put(remoteTopic, new ArrayList<>());
-                        }
-                        requiredContentsReferences.get(remoteTopic).add(item.getRawValue());
-                    }
-
-                    return item.getRawValue();
-                })
+                .map((entryItem) -> fetchItemValue(topic, structureFields, entryItem, requiredContentsReferences, requiredResourceReferences))
 
                 .collect(toList());
 
@@ -167,6 +132,40 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .asReference(BulkDatabaseMiner.getEntryReference(entry, refFieldRank))
                 .withEntryValues(entryValues)
                 .build();
+    }
+
+    private String fetchItemValue(DbDto.Topic topic, List<DbStructureDto.Field> structureFields, DbDataDto.Item entryItem, Map<DbDto.Topic, List<String>> requiredContentsReferences, Map<DbDto.Topic, List<String>> requiredResourceReferences) {
+        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(entryItem, structureFields);
+        DbStructureDto.FieldType fieldType = structureField.getFieldType();
+        if (DbStructureDto.FieldType.RESOURCE_CURRENT == fieldType
+                || DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN == fieldType) {
+
+            updateRequiredReferences(topic, requiredResourceReferences, entryItem.getRawValue());
+        } else if (DbStructureDto.FieldType.RESOURCE_REMOTE == fieldType
+                || DbStructureDto.FieldType.REFERENCE == fieldType) {
+
+            updateRequiredRemoteReferences(requiredResourceReferences, requiredContentsReferences, entryItem.getRawValue(), structureField);
+        }
+
+        return entryItem.getRawValue();
+    }
+
+    private void updateRequiredRemoteReferences(Map<DbDto.Topic, List<String>> requiredResourceReferences, Map<DbDto.Topic, List<String>> requiredContentsReferences, String reference, DbStructureDto.Field structureField) {
+        DbDto remoteTopicObject = this.databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef());
+        DbDto.Topic remoteTopic = remoteTopicObject.getStructure().getTopic();
+
+        DbStructureDto.FieldType fieldType = structureField.getFieldType();
+        Map<DbDto.Topic, List<String>> requiredReferences = DbStructureDto.FieldType.RESOURCE_REMOTE == fieldType ?
+                requiredResourceReferences : requiredContentsReferences;
+
+        updateRequiredReferences(remoteTopic, requiredReferences, reference);
+    }
+
+    private static void updateRequiredReferences(DbDto.Topic topic, Map<DbDto.Topic, List<String>> requiredResourceReferences, String reference) {
+        if (!requiredResourceReferences.containsKey(topic)) {
+            requiredResourceReferences.put(topic, new ArrayList<>());
+        }
+        requiredResourceReferences.get(topic).add(reference);
     }
 
     private static boolean isInRange(DbDataDto.Entry entry, int refFieldRank, ReferenceRange range) {
