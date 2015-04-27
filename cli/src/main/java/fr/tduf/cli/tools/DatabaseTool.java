@@ -187,7 +187,7 @@ public class DatabaseTool extends GenericTool {
             if (this.databaseTopic == null) {
                 throw new CmdLineException(parser, "Error: database topic is required.", null);
             }
-            this.effectiveTopic = DbDto.Topic.fromLabel(this.databaseTopic);
+            this.effectiveTopic = DbDto.Topic.valueOf(this.databaseTopic);
             this.effectiveRange = ReferenceRange.fromCliOption(Optional.ofNullable(this.itemsRange));
         }
     }
