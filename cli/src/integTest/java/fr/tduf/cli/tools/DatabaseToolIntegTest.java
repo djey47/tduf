@@ -9,16 +9,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatabaseToolIntegTest {
@@ -85,7 +91,7 @@ public class DatabaseToolIntegTest {
 
     @Test
     public void dumpApplyPatchGenPatch() throws IOException, JSONException {
-
+        // GIVEN
         String sourceDirectory = "integ-tests/db-encrypted";
         String jsonDirectory = "integ-tests/db-json";
         String patchedDirectory = "integ-tests/db-patched";
@@ -118,14 +124,84 @@ public class DatabaseToolIntegTest {
     public void unpackAllRepackAll_shouldCallGateway() throws IOException {
         // GIVEN
         String databaseDirectory = "integ-tests/banks/db";
-        String jsonDirectory = "integ-tests/banks/db/out";
+        String unpackJsonDirectory = "integ-tests/banks/db/out/json";
+        String outputDirectory = "integ-tests/banks/db/out";
+        String repackJsonDirectory = "integ-tests/db-json-errors";
+
+        doAnswer(DatabaseToolIntegTest::fakeAndAssertExtractAll)
+                .when(bankSupportMock).extractAll(anyString(), anyString());
+
 
         // WHEN unpack-all
         System.out.println("-> UnpackAll!");
-        DatabaseTool.main(new String[]{"unpack-all", "-d", databaseDirectory, "-j", jsonDirectory});
+        this.databaseTool.doMain(new String[]{"unpack-all", "-d", databaseDirectory, "-j", unpackJsonDirectory});
 
-        // THEN
-        // TODO
+
+        // THEN: gateway was correctly called
+        verify(bankSupportMock, times(9)).extractAll(anyString(), anyString());
+
+
+        // GIVEN
+        this.databaseTool = new DatabaseTool();
+        this.databaseTool.setBankSupport(bankSupportMock);
+
+        doAnswer(DatabaseToolIntegTest::fakeAndAssertPrepareFilesToBeRepacked)
+                .when(bankSupportMock).prepareFilesToBeRepacked(anyString(), anyListOf(Path.class), anyString(), anyString());
+        doAnswer(DatabaseToolIntegTest::fakeAndAssertPackAll)
+                .when(bankSupportMock).packAll(anyString(), anyString());
+
+
+        // WHEN repack-all
+        System.out.println("-> RepackAll!");
+        this.databaseTool.doMain(new String[]{"repack-all", "-j", repackJsonDirectory, "-o", outputDirectory,});
+
+
+        // THEN: gateway was correctly called
+        verify(bankSupportMock, times(9)).prepareFilesToBeRepacked(anyString(), anyListOf(Path.class), anyString(), anyString());
+        verify(bankSupportMock, times(9)).packAll(anyString(), anyString());
+    }
+
+    private static Object fakeAndAssertExtractAll(InvocationOnMock invocation) throws IOException {
+
+        String bankFileName = (String) invocation.getArguments()[0];
+        String outputDirectory = (String) invocation.getArguments()[1];
+
+        String shortBankFileName = Paths.get(bankFileName).getFileName().toString();
+
+        assertThat(shortBankFileName).startsWith("DB").endsWith(".bnk");
+        assertThat(new File(outputDirectory)).exists();
+
+        Files.createDirectories(Paths.get(outputDirectory, shortBankFileName));
+
+        return null;
+    }
+
+    private static Object fakeAndAssertPrepareFilesToBeRepacked(InvocationOnMock invocation) {
+        String sourceDirectory = (String) invocation.getArguments()[0];
+        List<Path> repackedPaths = (List<Path>) invocation.getArguments()[1];
+        String targetBankFileName = (String) invocation.getArguments()[2];
+        String targetDirectory = (String) invocation.getArguments()[3];
+
+        String shortBankFileName = Paths.get(targetBankFileName).getFileName().toString();
+
+        assertThat(shortBankFileName).startsWith("DB").endsWith(".bnk");
+        assertThat(repackedPaths).hasSize(18);
+        assertThat(new File(sourceDirectory)).exists();
+        assertThat(new File(targetDirectory)).exists();
+
+        return null;
+    }
+
+    private static Object fakeAndAssertPackAll(InvocationOnMock invocation) {
+        String inputDirectory = (String) invocation.getArguments()[0];
+        String outputBankFileName = (String) invocation.getArguments()[1];
+
+        String shortBankFileName = Paths.get(outputBankFileName).getFileName().toString();
+
+        assertThat(shortBankFileName).startsWith("DB").endsWith(".bnk");
+        assertThat(new File(inputDirectory)).exists();
+
+        return null;
     }
 
     private static long getTopicFileCount(String jsonDirectory, String extension) {
