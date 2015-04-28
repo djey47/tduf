@@ -54,7 +54,7 @@ public class DatabaseTool extends GenericTool {
     @Option(name = "-o", aliases = "--outputDatabaseDir", usage = "Fixed/Patched TDU database directory, defaults to .\\tdu-database-fixed or .\\tdu-database-patched.")
     private String outputDatabaseDirectory;
 
-    @Option(name = "-p", aliases = "--patchFile", usage = "File describing mini patch to apply/create. Required for both apply-patch and gen-patch operations.")
+    @Option(name = "-p", aliases = "--patchFile", usage = "File describing patch to apply/create/convert. Required for all -patch operations.")
     private String patchFile;
 
     @Option(name = "-c", aliases = "--clear", usage = "Indicates unpacked TDU files do not need to be unencrypted and encrypted back. Not mandatory.")
@@ -85,6 +85,7 @@ public class DatabaseTool extends GenericTool {
         FIX("fix", "Loads database, checks for integrity errors and create database copy with fixed ones."),
         APPLY_PATCH("apply-patch", "Modifies database contents and resources as described in a JSON mini patch file."),
         GEN_PATCH("gen-patch", "Creates mini-patch file from selected database contents."),
+        CONVERT_PATCH("convert-patch", "Converts a TDUF (JSON) Patch to TDUMT (PCH) one and vice-versa."),
         UNPACK_ALL("unpack-all", "Extracts full database contents from BNK to JSON files."),
         REPACK_ALL("repack-all", "Repacks full database from JSON files into BNK ones." );
 
@@ -144,6 +145,9 @@ public class DatabaseTool extends GenericTool {
             case GEN_PATCH:
                 genPatch();
                 return true;
+            case CONVERT_PATCH:
+                convertPatch();
+                return true;
             case UNPACK_ALL:
                 unpackAll();
                 return true;
@@ -184,7 +188,8 @@ public class DatabaseTool extends GenericTool {
             }
         }
 
-        if (patchFile == null && APPLY_PATCH == command) {
+        if (patchFile == null
+                && (APPLY_PATCH == command || CONVERT_PATCH == command)) {
             throw new CmdLineException(parser, "Error: patchFile is required.", null);
         }
 
@@ -211,6 +216,7 @@ public class DatabaseTool extends GenericTool {
                 FIX.label + " -c -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -o \"C:\\Users\\Bill\\Desktop\\tdu-database-fixed\"",
                 APPLY_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\"",
                 GEN_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\" -t \"CAR_PHYSICS_DATA\" -r \"606298799,637314272\"",
+                CONVERT_PATCH.label + " -p \"C:\\Users\\Bill\\Desktop\\install.PCH\"",
                 UNPACK_ALL.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -j \"C:\\Users\\Bill\\Desktop\\json-database\"",
                 REPACK_ALL.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -o \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\""
         );
@@ -256,6 +262,10 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("sourceDirectory", sourceDirectory);
         resultInfo.put("temporaryDirectory", this.databaseDirectory);
         resultInfo.put("targetDirectory", this.jsonDirectory);
+    }
+
+    private void convertPatch() {
+
     }
 
     private void genPatch() throws ReflectiveOperationException, IOException {

@@ -161,6 +161,11 @@ public class DatabaseToolIntegTest {
         verify(bankSupportMock, times(9)).packAll(anyString(), anyString());
     }
 
+    @Test
+    public void convertPatch() {
+        // WHEN: convert-patch
+    }
+
     private static Object fakeAndAssertExtractAll(InvocationOnMock invocation) throws IOException {
 
         String bankFileName = (String) invocation.getArguments()[0];
