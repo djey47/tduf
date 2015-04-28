@@ -1,5 +1,6 @@
 package fr.tduf.cli.tools;
 
+import com.google.common.annotations.VisibleForTesting;
 import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.cli.tools.dto.DatabaseIntegrityErrorDto;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
@@ -555,5 +556,13 @@ public class DatabaseTool extends GenericTool {
                 .map(DatabaseIntegrityErrorDto::fromIntegrityError)
 
                 .collect(toList());
+    }
+
+    /**
+     * Used by integ tests.
+     */
+    @VisibleForTesting
+    public void setBankSupport(BankSupport bankSupport) {
+        this.bankSupport = bankSupport;
     }
 }
