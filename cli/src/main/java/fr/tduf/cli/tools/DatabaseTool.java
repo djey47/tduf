@@ -224,7 +224,7 @@ public class DatabaseTool extends GenericTool {
 
     private void repackAll() throws IOException {
         String sourceDirectory = Paths.get(this.jsonDirectory).toAbsolutePath().toString();
-        String targetDirectory = Paths.get(this.outputDatabaseDirectory).toAbsolutePath().toString();
+        Path targetPath = Paths.get(this.outputDatabaseDirectory).toAbsolutePath();
         outLine("-> JSON database directory: " + sourceDirectory);
         outLine("Generating TDU database files, please wait...");
 
@@ -235,6 +235,8 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Repacking TDU database files, please wait...");
 
+        Files.createDirectories(targetPath);
+        String targetDirectory = targetPath.toString();
         DatabaseBankHelper.repackDatabaseFromDirectory(this.databaseDirectory, targetDirectory, this.bankSupport);
 
         outLine("All done!");
