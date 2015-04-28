@@ -1,12 +1,14 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
-import com.sun.nio.file.ExtendedCopyOption;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class DatabaseBankHelper {
 
     /**
      * Extracts all TDU database files from specified directory to a temporary location.
+     *
      * @param databaseDirectory : directory containing ALL TDU database files.
      * @param bankSupport       : module instance to unpack/repack bnks
      * @return directory where extracted contents are located for further processing.
@@ -44,6 +47,7 @@ public class DatabaseBankHelper {
 
     /**
      * Repacks all TDU database files from specified directory to target location.
+     *
      * @param databaseDirectory : directory containing ALL database files under extracted form.
      * @param targetDirectory   : directory where to place generated BNK files
      * @param bankSupport       : module instance to unpack/repack bnks
