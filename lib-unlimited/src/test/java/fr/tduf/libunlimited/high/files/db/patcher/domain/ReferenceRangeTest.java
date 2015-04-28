@@ -88,26 +88,26 @@ public class ReferenceRangeTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void fromList_whenNullArgument_shouldThrowException() {
+    public void fromCollection_whenNullArgument_shouldThrowException() {
         // GIVEN-WHEN
-        ReferenceRange.fromList(null);
+        ReferenceRange.fromCollection(null);
 
         // THEN: NPE
     }
 
     @Test
-    public void fromList_whenEmptyList_shouldReturnGlobalRange() {
+    public void fromCollection_whenEmptyList_shouldReturnGlobalRange() {
         // GIVEN-WHEN
-        ReferenceRange actualRange = ReferenceRange.fromList(new ArrayList<>());
+        ReferenceRange actualRange = ReferenceRange.fromCollection(new ArrayList<>());
 
         // THEN
         assertThat(actualRange.isGlobal()).isTrue();
     }
 
     @Test
-    public void fromList_whenNonEmptyList_shouldReturnRange() {
+    public void fromCollection_whenNonEmptyList_shouldReturnRange() {
         // GIVEN-WHEN
-        ReferenceRange actualRange = ReferenceRange.fromList(asList("1", "2", "3"));
+        ReferenceRange actualRange = ReferenceRange.fromCollection(asList("1", "2", "3"));
 
         // THEN
         assertThat(actualRange.isGlobal()).isFalse();
