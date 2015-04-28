@@ -43,8 +43,8 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
         this.topicObject = checkTopic(topic);
 
-        final Map<DbDto.Topic, List<String>> requiredResourceReferences = new HashMap<>();
-        final Map<DbDto.Topic, List<String>> requiredContentsReferences = new HashMap<>();
+        final Map<DbDto.Topic, Set<String>> requiredResourceReferences = new HashMap<>();
+        final Map<DbDto.Topic, Set<String>> requiredContentsReferences = new HashMap<>();
 
         List<DbPatchDto.DbChangeDto> changesObjects = new ArrayList<>();
         List<DbStructureDto.Field> structureFields = this.topicObject.getStructure().getFields();
@@ -63,7 +63,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         return changesObjects;
     }
 
-    private List<DbPatchDto.DbChangeDto> makeChangesObjectsForContents(int refFieldRank, List<DbStructureDto.Field> structureFields, ReferenceRange range, Map<DbDto.Topic, List<String>> requiredLocalResourceReferences, Map<DbDto.Topic, List<String>> requiredContentsReferences) {
+    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForContents(int refFieldRank, List<DbStructureDto.Field> structureFields, ReferenceRange range, Map<DbDto.Topic, Set<String>> requiredLocalResourceReferences, Map<DbDto.Topic, Set<String>> requiredContentsReferences) {
         DbDto.Topic topic = this.topicObject.getStructure().getTopic();
 
         return this.topicObject.getData().getEntries().stream()
@@ -72,20 +72,20 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
             .map((acceptedEntry) -> createChangeObjectForEntry(topic, acceptedEntry, refFieldRank, structureFields, requiredLocalResourceReferences, requiredContentsReferences))
 
-            .collect(toList());
+            .collect(toSet());
     }
 
-    private List<DbPatchDto.DbChangeDto> makeChangesObjectsForRequiredContents(Map<DbDto.Topic, List<String>> requiredContentsReferences) {
+    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForRequiredContents(Map<DbDto.Topic, Set<String>> requiredContentsReferences) {
 
         return requiredContentsReferences.entrySet().stream()
 
-                .flatMap((topicEntry) -> makeChangesObjectsForTopic(topicEntry.getKey(), ReferenceRange.fromList(topicEntry.getValue())).stream())
+                .flatMap((topicEntry) -> makeChangesObjectsForTopic(topicEntry.getKey(), ReferenceRange.fromCollection(topicEntry.getValue())).stream())
 
-                .collect(toList());
+                .collect(toSet());
     }
 
     // TODO when all locales have same values for a given ref, generate a single instruction for all locales (reduce instruction count)
-    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForRequiredResources(Map<DbDto.Topic, List<String>> resourceReferences) {
+    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForRequiredResources(Map<DbDto.Topic, Set<String>> resourceReferences) {
         return resourceReferences.entrySet().stream()
 
                 .flatMap(this::makeChangesObjectsForResourcesInTopic)
@@ -93,13 +93,13 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .collect(toSet());
     }
 
-    private Stream<? extends DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesInTopic(Map.Entry<DbDto.Topic, List<String>> topicResources) {
+    private Stream<? extends DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesInTopic(Map.Entry<DbDto.Topic, Set<String>> topicResources) {
         return Stream.of(DbResourceDto.Locale.values())
 
                 .flatMap((locale) -> makeChangesObjectsForResourcesWithLocale(locale, topicResources));
     }
 
-    private Stream<? extends DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesWithLocale(DbResourceDto.Locale locale, Map.Entry<DbDto.Topic, List<String>> topicResources) {
+    private Stream<? extends DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesWithLocale(DbResourceDto.Locale locale, Map.Entry<DbDto.Topic, Set<String>> topicResources) {
         return topicResources.getValue().stream()
 
                 .map((resourceRef) -> createChangeObjectForResource(topicResources.getKey(), locale, resourceRef));
@@ -126,7 +126,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .build();
     }
 
-    private DbPatchDto.DbChangeDto createChangeObjectForEntry(DbDto.Topic topic, DbDataDto.Entry entry, int refFieldRank, List<DbStructureDto.Field> structureFields, Map<DbDto.Topic, List<String>> requiredResourceReferences, Map<DbDto.Topic, List<String>> requiredContentsReferences) {
+    private DbPatchDto.DbChangeDto createChangeObjectForEntry(DbDto.Topic topic, DbDataDto.Entry entry, int refFieldRank, List<DbStructureDto.Field> structureFields, Map<DbDto.Topic, Set<String>> requiredResourceReferences, Map<DbDto.Topic, Set<String>> requiredContentsReferences) {
         List<String> entryValues = entry.getItems().stream()
 
                 .map((entryItem) -> fetchItemValue(topic, structureFields, entryItem, requiredContentsReferences, requiredResourceReferences))
@@ -141,7 +141,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .build();
     }
 
-    private String fetchItemValue(DbDto.Topic topic, List<DbStructureDto.Field> structureFields, DbDataDto.Item entryItem, Map<DbDto.Topic, List<String>> requiredContentsReferences, Map<DbDto.Topic, List<String>> requiredResourceReferences) {
+    private String fetchItemValue(DbDto.Topic topic, List<DbStructureDto.Field> structureFields, DbDataDto.Item entryItem, Map<DbDto.Topic, Set<String>> requiredContentsReferences, Map<DbDto.Topic, Set<String>> requiredResourceReferences) {
         DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(entryItem, structureFields);
         DbStructureDto.FieldType fieldType = structureField.getFieldType();
         if (DbStructureDto.FieldType.RESOURCE_CURRENT == fieldType
@@ -157,20 +157,20 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         return entryItem.getRawValue();
     }
 
-    private void updateRequiredRemoteReferences(Map<DbDto.Topic, List<String>> requiredResourceReferences, Map<DbDto.Topic, List<String>> requiredContentsReferences, String reference, DbStructureDto.Field structureField) {
+    private void updateRequiredRemoteReferences(Map<DbDto.Topic, Set<String>> requiredResourceReferences, Map<DbDto.Topic, Set<String>> requiredContentsReferences, String reference, DbStructureDto.Field structureField) {
         DbDto remoteTopicObject = this.databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef());
         DbDto.Topic remoteTopic = remoteTopicObject.getStructure().getTopic();
 
         DbStructureDto.FieldType fieldType = structureField.getFieldType();
-        Map<DbDto.Topic, List<String>> requiredReferences = DbStructureDto.FieldType.RESOURCE_REMOTE == fieldType ?
+        Map<DbDto.Topic, Set<String>> requiredReferences = DbStructureDto.FieldType.RESOURCE_REMOTE == fieldType ?
                 requiredResourceReferences : requiredContentsReferences;
 
         updateRequiredReferences(remoteTopic, requiredReferences, reference);
     }
 
-    private static void updateRequiredReferences(DbDto.Topic topic, Map<DbDto.Topic, List<String>> requiredResourceReferences, String reference) {
+    private static void updateRequiredReferences(DbDto.Topic topic, Map<DbDto.Topic, Set<String>> requiredResourceReferences, String reference) {
         if (!requiredResourceReferences.containsKey(topic)) {
-            requiredResourceReferences.put(topic, new ArrayList<>());
+            requiredResourceReferences.put(topic, new HashSet<>());
         }
         requiredResourceReferences.get(topic).add(reference);
     }

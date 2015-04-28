@@ -1,5 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.patcher.domain;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -40,8 +42,8 @@ public class ReferenceRange {
     /**
      * Creates a range from a list of values.
      */
-    public static ReferenceRange fromList(List<String> references) {
-        requireNonNull(references, "A list of references is required.");
+    public static ReferenceRange fromCollection(Collection<String> references) {
+        requireNonNull(references, "A collection of references is required.");
 
         if (references.isEmpty()) {
             return new ReferenceRange();
@@ -73,8 +75,8 @@ public class ReferenceRange {
         this(Optional.<Long>empty(), Optional.<Long>empty());
     }
 
-    ReferenceRange(List<String> refs) {
-        this.refs = refs;
+    ReferenceRange(Collection<String> refs) {
+        this.refs = new ArrayList<>(refs);
         this.minRef = Optional.empty();
         this.maxRef = Optional.empty();
     }
