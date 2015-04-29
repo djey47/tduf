@@ -4,7 +4,9 @@ import fr.tduf.cli.common.helper.AssertionsHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -35,6 +37,12 @@ public class DatabaseToolIntegTest {
     @InjectMocks
     private DatabaseTool databaseTool;  // Used for bank testing only. Do not use twice in a same test method!
 
+    @Before
+    public void setUp() throws IOException {
+        FileUtils.deleteDirectory(new File("integ-tests/db/out"));
+        FileUtils.deleteDirectory(new File("integ-tests/patcher/out"));
+    }
+
     @Test
     public void dumpGenCheck_shouldNotThrowError() throws IOException {
 
@@ -44,7 +52,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN: dump
         System.out.println("-> Dump!");
-        DatabaseTool.main(new String[]{"dump", "-d", sourceDirectory, "-j", jsonDirectory});
+        DatabaseTool.main(new String[]{"dump", "-n", "-d", sourceDirectory, "-j", jsonDirectory});
 
         // THEN: written json files
         long jsonFilesCount = getTopicFileCount(jsonDirectory, "json");
@@ -53,7 +61,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN: gen
         System.out.println("-> Gen!");
-        DatabaseTool.main(new String[]{"gen", "-d", generatedDirectory, "-j", jsonDirectory});
+        DatabaseTool.main(new String[]{"gen", "-n", "-d", generatedDirectory, "-j", jsonDirectory});
 
         // THEN: written TDU files
         assertDatabaseFilesArePresent(generatedDirectory);
@@ -61,7 +69,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN: check
         System.out.println("-> Check!");
-        DatabaseTool.main(new String[]{"check", "-d", generatedDirectory});
+        DatabaseTool.main(new String[]{"check", "-n", "-d", generatedDirectory});
 
         // THEN: should not exit with status code 1
     }
@@ -75,7 +83,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN: gen
         System.out.println("-> Gen!");
-        DatabaseTool.main(new String[]{"gen", "-d", generatedErrorsDirectory, "-j", jsonErrorsDirectory});
+        DatabaseTool.main(new String[]{"gen", "-n", "-d", generatedErrorsDirectory, "-j", jsonErrorsDirectory});
 
         // THEN: written TDU files
         assertDatabaseFilesArePresent(generatedErrorsDirectory);
@@ -83,7 +91,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN: fix
         System.out.println("-> Fix!");
-        DatabaseTool.main(new String[]{"fix", "-d", generatedErrorsDirectory, "-o", fixedDirectory});
+        DatabaseTool.main(new String[]{"fix", "-n", "-d", generatedErrorsDirectory, "-o", fixedDirectory});
 
         // THEN: written fixed TDU files
         assertDatabaseFilesArePresent(fixedDirectory);
@@ -101,11 +109,11 @@ public class DatabaseToolIntegTest {
 
         // WHEN: dump
         System.out.println("-> Dump!");
-        DatabaseTool.main(new String[]{"dump", "-d", sourceDirectory, "-j", jsonDirectory});
+        DatabaseTool.main(new String[]{"dump", "-n", "-d", sourceDirectory, "-j", jsonDirectory});
 
         // WHEN: applyPatch
         System.out.println("-> ApplyPatch!");
-        DatabaseTool.main(new String[]{"apply-patch", "-j", jsonDirectory, "-o", patchedDirectory, "-p", inputPatchFile});
+        DatabaseTool.main(new String[]{"apply-patch", "-n", "-j", jsonDirectory, "-o", patchedDirectory, "-p", inputPatchFile});
 
         // THEN: files must exist
         long jsonFilesCount = getTopicFileCount(patchedDirectory, "json");
@@ -113,7 +121,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN: genPatch
         System.out.println("-> GenPatch!");
-        DatabaseTool.main(new String[]{"gen-patch", "-j", jsonDirectory, "-p", outputPatchFile, "-t", DbDto.Topic.CAR_PHYSICS_DATA.name(), "-r", "606298799,632098801"});
+        DatabaseTool.main(new String[]{"gen-patch", "-n", "-j", jsonDirectory, "-p", outputPatchFile, "-t", DbDto.Topic.CAR_PHYSICS_DATA.name(), "-r", "606298799,632098801"});
 
         // THEN: patch file must exist
         AssertionsHelper.assertFileExistAndGet(outputPatchFile);
@@ -134,7 +142,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN unpack-all
         System.out.println("-> UnpackAll!");
-        this.databaseTool.doMain(new String[]{"unpack-all", "-d", databaseDirectory, "-j", unpackJsonDirectory});
+        this.databaseTool.doMain(new String[]{"unpack-all", "-n", "-d", databaseDirectory, "-j", unpackJsonDirectory});
 
 
         // THEN: gateway was correctly called
@@ -153,7 +161,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN repack-all
         System.out.println("-> RepackAll!");
-        this.databaseTool.doMain(new String[]{"repack-all", "-j", repackJsonDirectory, "-o", outputDirectory,});
+        this.databaseTool.doMain(new String[]{"repack-all", "-n", "-j", repackJsonDirectory, "-o", outputDirectory,});
 
 
         // THEN: gateway was correctly called

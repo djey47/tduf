@@ -1,26 +1,25 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CameraToolIntegTest {
     private final String outputDirectory = "integ-tests/cameras/out";
-    private final String inputCameraFile = "integ-tests/cameras/Cameras.bin";
-    private final String outputCameraFile = outputDirectory + "/Cameras.bin.extended";
+    private final String inputCameraFile = Paths.get("integ-tests/cameras", "Cameras.bin").toString();
+    private final String outputCameraFile = Paths.get(outputDirectory, "Cameras.bin.extended").toString();
 
     @Before
     public void setUp() throws IOException {
+        FileUtils.deleteDirectory(new File(outputDirectory));
         FilesHelper.createDirectoryIfNotExists(outputDirectory);
-
-        Files.deleteIfExists(Paths.get(outputCameraFile));
     }
 
     @Test

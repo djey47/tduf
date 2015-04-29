@@ -3,6 +3,7 @@ package fr.tduf.cli.tools;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapWriter;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +21,7 @@ public class MappingToolIntegTest {
 
     @Before
     public void setUp() throws IOException {
-        FilesHelper.createDirectoryIfNotExists(mappingDirectory);
+        FileUtils.deleteDirectory(new File(mappingDirectory));
         FilesHelper.createDirectoryIfNotExists(contentsDirectory2);
     }
 
@@ -41,12 +42,12 @@ public class MappingToolIntegTest {
 
         //WHEN: list-missing
         System.out.println("-> List-missing!");
-        MappingTool.main(new String[]{"list-missing", "-b", mappingDirectory, "-m", emptyMapFilePath});
+        MappingTool.main(new String[]{"list-missing", "-n", "-b", mappingDirectory, "-m", emptyMapFilePath});
 
 
         //WHEN: fix-missing
         System.out.println("-> Fix-missing!");
-        MappingTool.main(new String[]{"fix-missing", "-b", mappingDirectory});
+        MappingTool.main(new String[]{"fix-missing", "-n", "-b", mappingDirectory});
 
 
         //WHEN: list
