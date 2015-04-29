@@ -53,7 +53,6 @@ public class PatchConverterTest {
         assertThat(instructionNode.getChildNodes().getLength()).isZero();
     }
 
-    @Ignore
     @Test
     public void jsonToPch_whenRealPatchObject_shouldReturnPatch() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
@@ -67,13 +66,28 @@ public class PatchConverterTest {
         // THEN
         assertThat(actualDocument).isNotNull();
 
+        NodeList instructions = assertStructureAndReturnInstructions(actualDocument);
+
+        Element instruction1 = (Element) instructions.item(0);
+        assertUpdateDatabaseInstruction(instruction1, "CarPhysicsData", "1221657049|1221657049\t864426\t56338407\t");
+
+        Element instruction2 = (Element) instructions.item(1);
+        assertUpdateDatabaseInstruction(instruction2, "CarPhysicsData", "606298799|606298799\t864426\t56338407\t");
+    }
+
+    private static NodeList assertStructureAndReturnInstructions(Document actualDocument) {
         NodeList instructionsNodes = actualDocument.getDocumentElement().getElementsByTagName("instructions");
         assertThat(instructionsNodes.getLength()).isEqualTo(1);
 
         Element instructionsNode = (Element) instructionsNodes.item(0);
-        assertThat(instructionsNode.getChildNodes().getLength()).isEqualTo(1);
+        return instructionsNode.getElementsByTagName("instruction");
+    }
 
-        Element instructionNode = (Element) instructionsNode.getElementsByTagName("instruction").item(0);
-        assertThat(instructionNode.getElementsByTagName("parameter").getLength()).isEqualTo(2);
+    private static void assertUpdateDatabaseInstruction(Element instruction, String resourceName, String beginningOfResourceValue) {
+        Element resourceNameParameter = (Element) instruction.getElementsByTagName("parameter").item(0);
+        Element resourceValueParameter = (Element) instruction.getElementsByTagName("parameter").item(1);
+
+        assertThat(resourceNameParameter.getAttribute("value")).isEqualTo(resourceName);
+        assertThat(resourceValueParameter.getAttribute("value")).startsWith(beginningOfResourceValue);
     }
 }
