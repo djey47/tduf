@@ -33,6 +33,7 @@ public class PatchConverter {
      * @return corresponding TDUMT patch as XML document.
      */
     // TODO simplify
+    // TODO generate one instruction per topic
     public static Document jsonToPch(DbPatchDto tdufDatabasePatch) throws ParserConfigurationException, URISyntaxException, IOException, SAXException {
         requireNonNull(tdufDatabasePatch, "A TDUF database patch object is required.");
 
@@ -55,6 +56,17 @@ public class PatchConverter {
                     enabledAttribute.setValue("True");
                     instructionElement.setAttributeNode(enabledAttribute);
 
+                    String resourceValues = null;
+                    switch (changeObject.getType()) {
+                        case UPDATE:
+                            resourceValues = getEntryValues(Optional.ofNullable(changeObject.getRef()), changeObject.getValues());
+                            break;
+                        case UPDATE_RES:
+                            resourceValues = getResourceValues(changeObject.getRef(), changeObject.getValue());
+                            break;
+                        default:
+                    }
+
                     Element resourceParameterElement = patchDocument.createElement("parameter");
                     resourceParameterElement.setAttribute("name", "resourceFileName");
                     resourceParameterElement.setAttribute("value", getTopicLabel(changeObject.getTopic()));
@@ -62,7 +74,7 @@ public class PatchConverter {
 
                     Element resourceValuesElement = patchDocument.createElement("parameter");
                     resourceValuesElement.setAttribute("name", "resourceValues");
-                    resourceValuesElement.setAttribute("value", getEntryValues(Optional.ofNullable(changeObject.getRef()), changeObject.getValues()));
+                    resourceValuesElement.setAttribute("value", resourceValues);
                     instructionElement.appendChild(resourceValuesElement);
 
                     return instructionElement;
@@ -74,6 +86,10 @@ public class PatchConverter {
         instructionElements.forEach(instructionsNode::appendChild);
 
         return patchDocument;
+    }
+
+    private static String getResourceValues(String ref, String value) {
+        return ref + "|" + value;
     }
 
     private static String getEntryValues(Optional<String> potentialRef, List<String> values) {
@@ -99,6 +115,8 @@ public class PatchConverter {
         switch(type) {
             case UPDATE:
                 return "updateDatabase";
+            case UPDATE_RES:
+                return "updateResource";
             default:
                 throw new IllegalArgumentException("Unhandled instruction type: " + type);
         }
