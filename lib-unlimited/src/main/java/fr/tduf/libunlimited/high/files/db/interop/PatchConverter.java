@@ -32,8 +32,7 @@ public class PatchConverter {
      * @param tdufDatabasePatch : TDUF patch object to convert
      * @return corresponding TDUMT patch as XML document.
      */
-    // TODO simplify
-    // TODO generate one instruction per topic
+    // TODO generate one instruction per topic (append values)
     public static Document jsonToPch(DbPatchDto tdufDatabasePatch) throws ParserConfigurationException, URISyntaxException, IOException, SAXException {
         requireNonNull(tdufDatabasePatch, "A TDUF database patch object is required.");
 
@@ -41,44 +40,7 @@ public class PatchConverter {
 
         List<Element> instructionElements = tdufDatabasePatch.getChanges().stream()
 
-                .map((changeObject) -> {
-                    Element instructionElement = patchDocument.createElement("instruction");
-
-                    Attr typeAttribute = patchDocument.createAttribute("type");
-                    typeAttribute.setValue(getInstructionType(changeObject.getType()));
-                    instructionElement.setAttributeNode(typeAttribute);
-
-                    Attr failAttribute = patchDocument.createAttribute("failOnError");
-                    failAttribute.setValue("True");
-                    instructionElement.setAttributeNode(failAttribute);
-
-                    Attr enabledAttribute = patchDocument.createAttribute("enabled");
-                    enabledAttribute.setValue("True");
-                    instructionElement.setAttributeNode(enabledAttribute);
-
-                    String resourceValues = null;
-                    switch (changeObject.getType()) {
-                        case UPDATE:
-                            resourceValues = getEntryValues(Optional.ofNullable(changeObject.getRef()), changeObject.getValues());
-                            break;
-                        case UPDATE_RES:
-                            resourceValues = getResourceValues(changeObject.getRef(), changeObject.getValue());
-                            break;
-                        default:
-                    }
-
-                    Element resourceParameterElement = patchDocument.createElement("parameter");
-                    resourceParameterElement.setAttribute("name", "resourceFileName");
-                    resourceParameterElement.setAttribute("value", getTopicLabel(changeObject.getTopic()));
-                    instructionElement.appendChild(resourceParameterElement);
-
-                    Element resourceValuesElement = patchDocument.createElement("parameter");
-                    resourceValuesElement.setAttribute("name", "resourceValues");
-                    resourceValuesElement.setAttribute("value", resourceValues);
-                    instructionElement.appendChild(resourceValuesElement);
-
-                    return instructionElement;
-                })
+                .map((changeObject) -> changeObjectToInstruction(changeObject, patchDocument))
 
                 .collect(toList());
 
@@ -86,6 +48,48 @@ public class PatchConverter {
         instructionElements.forEach(instructionsNode::appendChild);
 
         return patchDocument;
+    }
+
+    private static Element changeObjectToInstruction(DbPatchDto.DbChangeDto changeObject, Document patchDocument) {
+        DbPatchDto.DbChangeDto.ChangeTypeEnum type = changeObject.getType();
+        String instructionType;
+        String resourceValues;
+        switch (type) {
+            case UPDATE:
+                instructionType = "updateDatabase";
+                resourceValues = getEntryValues(Optional.ofNullable(changeObject.getRef()), changeObject.getValues());
+                break;
+            case UPDATE_RES:
+                instructionType = "updateResource";
+                resourceValues = getResourceValues(changeObject.getRef(), changeObject.getValue());
+                break;
+            default:
+                throw new IllegalArgumentException("Unhandled instruction type: " + type);
+        }
+
+        Element instructionElement = patchDocument.createElement("instruction");
+
+        addAtribute("type", instructionType, instructionElement, patchDocument);
+        addAtribute("failOnError", "True", instructionElement, patchDocument);
+        addAtribute("enabled", "True", instructionElement, patchDocument);
+
+        addParameter("resourceFileName", getTopicLabel(changeObject.getTopic()), patchDocument, instructionElement);
+        addParameter("resourceValues", resourceValues, patchDocument, instructionElement);
+
+        return instructionElement;
+    }
+
+    private static void addAtribute(String name, String value, Element instructionElement, Document patchDocument) {
+        Attr typeAttribute = patchDocument.createAttribute(name);
+        typeAttribute.setValue(value);
+        instructionElement.setAttributeNode(typeAttribute);
+    }
+
+    private static void addParameter(String name, String value, Document patchDocument, Element instructionElement) {
+        Element resourceParameterElement = patchDocument.createElement("parameter");
+        resourceParameterElement.setAttribute("name", name);
+        resourceParameterElement.setAttribute("value", value);
+        instructionElement.appendChild(resourceParameterElement);
     }
 
     private static String getResourceValues(String ref, String value) {
@@ -109,17 +113,6 @@ public class PatchConverter {
     private static String getTopicLabel(DbDto.Topic topic) {
         String topicLabel = topic.getLabel();
         return topicLabel.substring(4, topicLabel.length());
-    }
-
-    private static String getInstructionType(DbPatchDto.DbChangeDto.ChangeTypeEnum type) {
-        switch(type) {
-            case UPDATE:
-                return "updateDatabase";
-            case UPDATE_RES:
-                return "updateResource";
-            default:
-                throw new IllegalArgumentException("Unhandled instruction type: " + type);
-        }
     }
 
     private static Document initXmlDocumentFromTemplate() throws ParserConfigurationException, URISyntaxException, SAXException, IOException {
