@@ -53,7 +53,7 @@ public class PatchConverterTest {
     }
 
     @Test
-    public void jsonToPch_whenRealPatchObject_shouldReturnPatch() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+    public void jsonToPch_whenRealPatchObject_forContents_shouldReturnPatch() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
         DbPatchDto patchObject = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-addAll-ref.mini.json");
 
@@ -72,7 +72,7 @@ public class PatchConverterTest {
     }
 
     @Test
-    public void jsonToPch_whenRealPatchObject_ForResources_shouldReturnPatch() throws IOException, URISyntaxException, ParserConfigurationException, SAXException {
+    public void jsonToPch_whenRealPatchObject_forResources_shouldReturnPatch() throws IOException, URISyntaxException, ParserConfigurationException, SAXException {
         // GIVEN
         DbPatchDto patchObject = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateResources.mini.json");
 
@@ -88,6 +88,28 @@ public class PatchConverterTest {
 
         Element instruction = (Element) instructions.item(0);
         assertUpdateResourceInstruction(instruction, "Bots", "54367256|Brian Molko||33333333|Cindy");
+    }
+
+    @Test
+    public void jsonToPch_whenRealPatchObject_forContentsAndResources_shouldReturnPatch() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+        // GIVEN
+        DbPatchDto patchObject = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContentsAndResources-all.mini.json");
+
+
+        // WHEN
+        Document actualDocument = PatchConverter.jsonToPch(patchObject);
+
+
+        // THEN
+        assertThat(actualDocument).isNotNull();
+
+        NodeList instructions = assertStructureAndReturnInstructions(actualDocument, 2);
+
+        Element instruction1 = (Element) instructions.item(0);
+        assertUpdateDatabaseInstruction(instruction1, "CarPhysicsData", "1221657049|1221657049\t864426\t56338407\t");
+
+        Element instruction2 = (Element) instructions.item(1);
+        assertUpdateResourceInstruction(instruction2, "Bots", "54367256|Brian Molko||33333333|Cindy");
     }
 
     private static NodeList assertStructureAndReturnInstructions(Document actualDocument, int instructionsCount) {
