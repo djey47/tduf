@@ -112,6 +112,29 @@ public class PatchConverterTest {
         assertUpdateResourceInstruction(instruction2, "Bots", "54367256|Brian Molko||33333333|Cindy");
     }
 
+    @Test(expected = NullPointerException.class)
+    public void pchToJson_whenNullObject_shouldThrowException() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+        // GIVEN-WHEN
+        PatchConverter.pchToJson(null);
+
+        // THEN: NPE
+    }
+
+    @Test
+    public void pchToJson_whenNoInstruction_shouldReturnEmptyPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+        // GIVEN
+        Document patchDocument = PatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/empty.pch");
+
+
+        // WHEN
+        DbPatchDto actualPatchObject = PatchConverter.pchToJson(patchDocument);
+
+
+        // THEN
+        assertThat(actualPatchObject).isNotNull();
+        assertThat(actualPatchObject.getChanges()).isEmpty();
+    }
+
     private static NodeList assertStructureAndReturnInstructions(Document actualDocument, int instructionsCount) {
         NodeList instructionsNodes = actualDocument.getDocumentElement().getElementsByTagName("instructions");
         assertThat(instructionsNodes.getLength()).isEqualTo(1);

@@ -36,20 +36,40 @@ public class PatchConverter {
     private static final String SEPARATOR_ITEMS = "\t";
 
     /**
-     * Convertit un patch TDUF en patch TDUMT (XML).
+     * Converts a TDUF patch into TDUMT one (XML).
      * @param tdufDatabasePatch : TDUF patch object to convert
      * @return corresponding TDUMT patch as XML document.
      */
+    // TODO handle update patch without REF
     public static Document jsonToPch(DbPatchDto tdufDatabasePatch) throws ParserConfigurationException, URISyntaxException, IOException, SAXException {
         requireNonNull(tdufDatabasePatch, "A TDUF database patch object is required.");
 
-        Document patchDocument = initXmlDocumentFromTemplate();
+        Document patchDocument = initXmlDocumentFromResource("/files/db/tdumt/patchTemplate.xml");
 
         Node instructionsNode = patchDocument.getElementsByTagName("instructions").item(0);
         getUpdateElements(tdufDatabasePatch, UPDATE, patchDocument).forEach(instructionsNode::appendChild);
         getUpdateElements(tdufDatabasePatch, UPDATE_RES, patchDocument).forEach(instructionsNode::appendChild);
 
         return patchDocument;
+    }
+
+    /**
+     * Converts a TDUMT (XML) patch into TDUF one.
+     * @param tdumtDatabasePatch : TDUMT patch as XML document to convert
+     * @return corresponding TDUF patch as DTO.
+     */
+    public static DbPatchDto pchToJson(Document tdumtDatabasePatch) {
+        requireNonNull(tdumtDatabasePatch, "A TDUMT database patch document is required.");
+
+        return DbPatchDto.builder().build();
+    }
+
+    static Document initXmlDocumentFromResource(String resource) throws ParserConfigurationException, URISyntaxException, SAXException, IOException {
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+        String templateURI = thisClass.getResource(resource).toURI().toString();
+        return docBuilder.parse(templateURI);
     }
 
     private static List<Element> getUpdateElements(DbPatchDto tdufDatabasePatch, DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, Document patchDocument) {
@@ -143,13 +163,5 @@ public class PatchConverter {
     private static String getTopicLabel(DbDto.Topic topic) {
         String topicLabel = topic.getLabel();
         return topicLabel.substring(4, topicLabel.length());
-    }
-
-    private static Document initXmlDocumentFromTemplate() throws ParserConfigurationException, URISyntaxException, SAXException, IOException {
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-        String templateURI = thisClass.getResource("/files/db/tdumt/patchTemplate.xml").toURI().toString();
-        return docBuilder.parse(templateURI);
     }
 }
