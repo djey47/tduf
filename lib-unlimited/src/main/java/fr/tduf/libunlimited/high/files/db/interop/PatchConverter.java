@@ -40,7 +40,6 @@ public class PatchConverter {
      * @param tdufDatabasePatch : TDUF patch object to convert
      * @return corresponding TDUMT patch as XML document.
      */
-    // TODO generate one instruction per topic (append values)
     public static Document jsonToPch(DbPatchDto tdufDatabasePatch) throws ParserConfigurationException, URISyntaxException, IOException, SAXException {
         requireNonNull(tdufDatabasePatch, "A TDUF database patch object is required.");
 
@@ -57,31 +56,30 @@ public class PatchConverter {
 
         return groupUpdateChangeObjectsByTopic(tdufDatabasePatch, changeType).entrySet().stream()
 
-                .map((entry) -> {
+                .map((entry) -> createUpdateInstructionForTopicChanges(entry, changeType, patchDocument))
 
-                    List<String> entries = entry.getValue().stream()
+                .collect(toList());
+    }
 
-                            .map((updateChangeObject) -> {
+    private static Element createUpdateInstructionForTopicChanges(Map.Entry<DbDto.Topic, List<DbPatchDto.DbChangeDto>> entry, DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, Document patchDocument) {
+        DbDto.Topic topic = entry.getKey();
+        List<DbPatchDto.DbChangeDto> changeObjects = entry.getValue();
 
-                                if (UPDATE == changeType) {
-                                    return getEntryValues(Optional.ofNullable(updateChangeObject.getRef()), updateChangeObject.getValues());
-                                } else {
-                                    return getResourceValue(updateChangeObject.getRef(), updateChangeObject.getValue());
-                                }
+        List<String> entries = changeObjects.stream()
 
-                            })
+                .map((updateChangeObject) -> {
 
-                            .collect(toList());
+                    if (UPDATE == changeType) {
+                        return getContentsValue(Optional.ofNullable(updateChangeObject.getRef()), updateChangeObject.getValues());
+                    } else {
+                        return getResourceValue(updateChangeObject.getRef(), updateChangeObject.getValue());
+                    }
 
-                    String instructionType = UPDATE == changeType ?
-                            INSTRUCTION_TDUMT_UPDATE_DATABASE :
-                            INSTRUCTION_TDUMT_UPDATE_RESOURCE;
-                    String resourceValues = String.join(SEPARATOR_ENTRIES, entries);
-
-                    return createInstruction(entry.getKey(), instructionType, resourceValues, patchDocument);
                 })
 
                 .collect(toList());
+
+        return createUpdateInstruction(topic, changeType, entries, patchDocument);
     }
 
     private static Map<DbDto.Topic, List<DbPatchDto.DbChangeDto>> groupUpdateChangeObjectsByTopic(DbPatchDto tdufDatabasePatch, DbPatchDto.DbChangeDto.ChangeTypeEnum changeType) {
@@ -102,7 +100,13 @@ public class PatchConverter {
         return changeObjectsByTopic;
     }
 
-    private static Element createInstruction(DbDto.Topic topic, String instructionType, String resourceValues, Document patchDocument) {
+    private static Element createUpdateInstruction(DbDto.Topic topic, DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, List<String> entries, Document patchDocument) {
+        String instructionType = UPDATE == changeType ?
+                INSTRUCTION_TDUMT_UPDATE_DATABASE :
+                INSTRUCTION_TDUMT_UPDATE_RESOURCE;
+
+        String resourceValues = String.join(SEPARATOR_ENTRIES, entries);
+
         Element instructionElement = patchDocument.createElement("instruction");
 
         addAtribute("type", instructionType, instructionElement, patchDocument);
@@ -132,7 +136,7 @@ public class PatchConverter {
         return ref + SEPARATOR_KEY_VALUE + value;
     }
 
-    private static String getEntryValues(Optional<String> potentialRef, List<String> values) {
+    private static String getContentsValue(Optional<String> potentialRef, List<String> values) {
         return potentialRef.get() + SEPARATOR_KEY_VALUE + String.join(SEPARATOR_ITEMS, values);
     }
 
