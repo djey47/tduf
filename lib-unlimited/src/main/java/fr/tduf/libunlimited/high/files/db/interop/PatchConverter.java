@@ -45,6 +45,10 @@ public class PatchConverter {
     private static final String SEPARATOR_KEY_VALUE = "|";
     private static final String SEPARATOR_ITEMS = "\t";
 
+    private static final String REGEX_SEPARATOR_ENTRIES = "\\|\\|";
+    private static final String REGEX_SEPARATOR_KEY_VALUE = "\\|";
+    private static final String REGEX_SEPARATOR_ITEMS = "\\s";
+
     private static final String PREFIX_TOPIC_LABEL = "TDU_";
 
     /**
@@ -58,9 +62,9 @@ public class PatchConverter {
 
         Document patchDocument = initXmlDocumentFromResource("/files/db/tdumt/patchTemplate.xml");
 
-        Element instructionsElement = findInstructionsElement(patchDocument);
-        getUpdateElements(tdufDatabasePatch, UPDATE, patchDocument).forEach(instructionsElement::appendChild);
-        getUpdateElements(tdufDatabasePatch, UPDATE_RES, patchDocument).forEach(instructionsElement::appendChild);
+        Element instructionsElement = findXMLInstructionsElement(patchDocument);
+        createUpdateElements(tdufDatabasePatch, UPDATE, patchDocument).forEach(instructionsElement::appendChild);
+        createUpdateElements(tdufDatabasePatch, UPDATE_RES, patchDocument).forEach(instructionsElement::appendChild);
 
         return patchDocument;
     }
@@ -73,23 +77,7 @@ public class PatchConverter {
     public static DbPatchDto pchToJson(Document tdumtDatabasePatch) {
         requireNonNull(tdumtDatabasePatch, "A TDUMT database patch document is required.");
 
-        List<DbPatchDto.DbChangeDto> changesObjects = new ArrayList<>();
-
-        NodeList instructions = findInstructionsElement(tdumtDatabasePatch).getElementsByTagName(XML_ELEMENT_INSTRUCTION);
-        for (int i = 0 ; i < instructions.getLength() ; i++) {
-            Element instructionElement = (Element) instructions.item(i);
-
-            switch (instructionElement.getAttribute(XML_ATTRIBUTE_INSTRUCTION_TYPE)) {
-
-                case INSTRUCTION_TDUMT_UPDATE_DATABASE:
-                    changesObjects.addAll(getChangesObjectsForContentsUpdate(instructionElement));
-                    break;
-                case INSTRUCTION_TDUMT_UPDATE_RESOURCE:
-                    changesObjects.addAll(getChangesObjectsForResourceUpdate(instructionElement));
-                    break;
-                default:
-            }
-        }
+        List<DbPatchDto.DbChangeDto> changesObjects = getChangesObjectsForUpdates(tdumtDatabasePatch);
 
         return DbPatchDto.builder()
                 .addChanges(changesObjects)
@@ -104,13 +92,31 @@ public class PatchConverter {
         return docBuilder.parse(templateURI);
     }
 
-    private static List<Element> getUpdateElements(DbPatchDto tdufDatabasePatch, DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, Document patchDocument) {
+    private static List<Element> createUpdateElements(DbPatchDto tdufDatabasePatch, DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, Document patchDocument) {
 
         return groupUpdateChangeObjectsByTopic(tdufDatabasePatch, changeType).entrySet().stream()
 
                 .map((entry) -> createUpdateInstructionForTopicChanges(entry, changeType, patchDocument))
 
                 .collect(toList());
+    }
+
+    private static Map<DbDto.Topic, List<DbPatchDto.DbChangeDto>> groupUpdateChangeObjectsByTopic(DbPatchDto tdufDatabasePatch, DbPatchDto.DbChangeDto.ChangeTypeEnum changeType) {
+        Map<DbDto.Topic, List<DbPatchDto.DbChangeDto>> changeObjectsByTopic = new HashMap<>();
+
+        tdufDatabasePatch.getChanges().stream()
+
+                .filter((changeObject) -> changeObject.getType() == changeType)
+
+                .forEach((changeObject) -> {
+
+                    if (!changeObjectsByTopic.containsKey(changeObject.getTopic())) {
+                        changeObjectsByTopic.put(changeObject.getTopic(), new ArrayList<>());
+                    }
+                    changeObjectsByTopic.get(changeObject.getTopic()).add(changeObject);
+
+                });
+        return changeObjectsByTopic;
     }
 
     private static Element createUpdateInstructionForTopicChanges(Map.Entry<DbDto.Topic, List<DbPatchDto.DbChangeDto>> entry, DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, Document patchDocument) {
@@ -134,22 +140,12 @@ public class PatchConverter {
         return createUpdateInstruction(topic, changeType, entries, patchDocument);
     }
 
-    private static Map<DbDto.Topic, List<DbPatchDto.DbChangeDto>> groupUpdateChangeObjectsByTopic(DbPatchDto tdufDatabasePatch, DbPatchDto.DbChangeDto.ChangeTypeEnum changeType) {
-        Map<DbDto.Topic, List<DbPatchDto.DbChangeDto>> changeObjectsByTopic = new HashMap<>();
+    private static String getResourceValue(String ref, String value) {
+        return ref + SEPARATOR_KEY_VALUE + value;
+    }
 
-        tdufDatabasePatch.getChanges().stream()
-
-                .filter((changeObject) -> changeObject.getType() == changeType)
-
-                .forEach((changeObject) -> {
-
-                    if (!changeObjectsByTopic.containsKey(changeObject.getTopic())) {
-                        changeObjectsByTopic.put(changeObject.getTopic(), new ArrayList<>());
-                    }
-                    changeObjectsByTopic.get(changeObject.getTopic()).add(changeObject);
-
-                });
-        return changeObjectsByTopic;
+    private static String getContentsValue(Optional<String> potentialRef, List<String> values) {
+        return potentialRef.get() + SEPARATOR_KEY_VALUE + String.join(SEPARATOR_ITEMS, values);
     }
 
     private static Element createUpdateInstruction(DbDto.Topic topic, DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, List<String> entries, Document patchDocument) {
@@ -161,35 +157,100 @@ public class PatchConverter {
 
         Element instructionElement = patchDocument.createElement(XML_ELEMENT_INSTRUCTION);
 
-        addAttribute(XML_ATTRIBUTE_INSTRUCTION_TYPE, instructionType, instructionElement, patchDocument);
-        addAttribute("failOnError", "True", instructionElement, patchDocument);
-        addAttribute("enabled", "True", instructionElement, patchDocument);
+        addXMLAttribute(XML_ATTRIBUTE_INSTRUCTION_TYPE, instructionType, instructionElement, patchDocument);
+        addXMLAttribute("failOnError", "True", instructionElement, patchDocument);
+        addXMLAttribute("enabled", "True", instructionElement, patchDocument);
 
-        addParameter(PARAMETER_TDUMT_RESOURCE_FILE_NAME, getTopicLabel(topic), instructionElement, patchDocument);
-        addParameter(PARAMETER_TDUMT_RESOURCE_VALUES, resourceValues, instructionElement, patchDocument);
+        addXMLParameter(PARAMETER_TDUMT_RESOURCE_FILE_NAME, getTopicLabel(topic), instructionElement, patchDocument);
+        addXMLParameter(PARAMETER_TDUMT_RESOURCE_VALUES, resourceValues, instructionElement, patchDocument);
 
         return instructionElement;
     }
 
-    private static void addAttribute(String name, String value, Element instructionElement, Document patchDocument) {
+    private static List<DbPatchDto.DbChangeDto> getChangesObjectsForUpdates(Document patchDocument) {
+        List<DbPatchDto.DbChangeDto> changesObjects = new ArrayList<>();
+
+        NodeList instructions = findXMLInstructionsElement(patchDocument).getElementsByTagName(XML_ELEMENT_INSTRUCTION);
+        for (int i = 0 ; i < instructions.getLength() ; i++) {
+            Element instructionElement = (Element) instructions.item(i);
+            InstructionParametersParser parser = new InstructionParametersParser(instructionElement).invoke();
+
+            switch (instructionElement.getAttribute(XML_ATTRIBUTE_INSTRUCTION_TYPE)) {
+                case INSTRUCTION_TDUMT_UPDATE_DATABASE:
+                    changesObjects.addAll(getChangesObjectsForContentsUpdates(parser));
+                    break;
+                case INSTRUCTION_TDUMT_UPDATE_RESOURCE:
+                    changesObjects.addAll(getChangesObjectsForResourceUpdates(parser));
+                    break;
+                default:
+            }
+        }
+
+        return changesObjects;
+    }
+
+    private static List<DbPatchDto.DbChangeDto> getChangesObjectsForContentsUpdates(InstructionParametersParser parser) {
+        DbDto.Topic topic = getTopicFromLabel(parser.getResourceFileName());
+
+        return Stream.of(parser.getResourceValues().split(REGEX_SEPARATOR_ENTRIES))
+
+                .map((contentsEntry) -> getChangeObjectForContentsUpdate(contentsEntry, topic))
+
+                .collect(toList());
+    }
+
+    private static List<DbPatchDto.DbChangeDto> getChangesObjectsForResourceUpdates(InstructionParametersParser parser) {
+        DbDto.Topic topic = getTopicFromLabel(parser.getResourceFileName());
+
+        return Stream.of(parser.getResourceValues().split(REGEX_SEPARATOR_ENTRIES))
+
+                .map((entry) -> getChangeObjectForResourceUpdate(entry, topic))
+
+                .collect(toList());
+    }
+
+    private static DbPatchDto.DbChangeDto getChangeObjectForContentsUpdate(String contentsEntry, DbDto.Topic topic) {
+        // TODO handle complex references (first 2 columns)
+        String[] entryComponents = contentsEntry.split(REGEX_SEPARATOR_KEY_VALUE);
+        String reference = entryComponents[0];
+        List<String> values = asList(entryComponents[1].split(REGEX_SEPARATOR_ITEMS));
+
+        return DbPatchDto.DbChangeDto.builder()
+                .withType(UPDATE)
+                .forTopic(topic)
+                .asReference(reference)
+                .withEntryValues(values)
+                .build();
+    }
+
+    private static DbPatchDto.DbChangeDto getChangeObjectForResourceUpdate(String resourceEntry, DbDto.Topic topic) {
+        String[] entryComponents = resourceEntry.split(REGEX_SEPARATOR_KEY_VALUE);
+        String reference = entryComponents[0];
+        String value = entryComponents[1];
+
+        return DbPatchDto.DbChangeDto.builder()
+                .withType(UPDATE_RES)
+                .forTopic(topic)
+                .asReference(reference)
+                .withValue(value)
+                .build();
+    }
+
+    private static void addXMLAttribute(String name, String value, Element instructionElement, Document patchDocument) {
         Attr typeAttribute = patchDocument.createAttribute(name);
         typeAttribute.setValue(value);
         instructionElement.setAttributeNode(typeAttribute);
     }
 
-    private static void addParameter(String name, String value, Element instructionElement, Document patchDocument) {
+    private static void addXMLParameter(String name, String value, Element instructionElement, Document patchDocument) {
         Element resourceParameterElement = patchDocument.createElement(XML_ELEMENT_PARAMETER);
         resourceParameterElement.setAttribute(XML_ATTRIBUTE_NAME, name);
         resourceParameterElement.setAttribute(XML_ATTRIBUTE_VALUE, value);
         instructionElement.appendChild(resourceParameterElement);
     }
 
-    private static String getResourceValue(String ref, String value) {
-        return ref + SEPARATOR_KEY_VALUE + value;
-    }
-
-    private static String getContentsValue(Optional<String> potentialRef, List<String> values) {
-        return potentialRef.get() + SEPARATOR_KEY_VALUE + String.join(SEPARATOR_ITEMS, values);
+    private static Element findXMLInstructionsElement(Document patchDocument) {
+        return (Element) patchDocument.getElementsByTagName(XML_ELEMENT_INSTRUCTIONS).item(0);
     }
 
     private static String getTopicLabel(DbDto.Topic topic) {
@@ -201,92 +262,40 @@ public class PatchConverter {
         return DbDto.Topic.fromLabel(PREFIX_TOPIC_LABEL + resourceFileName);
     }
 
-    private static Element findInstructionsElement(Document patchDocument) {
-        return (Element) patchDocument.getElementsByTagName(XML_ELEMENT_INSTRUCTIONS).item(0);
-    }
+    private static class InstructionParametersParser {
+        private Element instructionElement;
+        private String resourceFileName;
+        private String resourceValues;
 
-    // TODO factorize
-    private static List<DbPatchDto.DbChangeDto> getChangesObjectsForContentsUpdate(Element instructionElement) {
-        String resourceFileName = null;
-        String resourceValues = "";
-
-        NodeList parameterElements = instructionElement.getElementsByTagName(XML_ELEMENT_PARAMETER);
-        for (int i = 0 ; i < parameterElements.getLength() ; i++) {
-            Element parameterElement = (Element) parameterElements.item(i);
-            String value = parameterElement.getAttribute(XML_ATTRIBUTE_VALUE);
-
-            switch(parameterElement.getAttribute(XML_ATTRIBUTE_NAME)) {
-                case PARAMETER_TDUMT_RESOURCE_FILE_NAME:
-                    resourceFileName = value;
-                    break;
-                case PARAMETER_TDUMT_RESOURCE_VALUES:
-                    resourceValues = value;
-                    break;
-                default:
-            }
+        public InstructionParametersParser(Element instructionElement) {
+            this.instructionElement = instructionElement;
         }
 
-        DbDto.Topic topic = getTopicFromLabel(resourceFileName);
-
-        return Stream.of(resourceValues.split("\\|\\|"))
-
-                .map( (entry) -> {
-
-                    // TODO handle complex references (first 2 columns)
-                    String[] entryComponents = entry.split("\\|");
-                    String reference = entryComponents[0];
-                    List<String> values = asList(entryComponents[1].split("\\s"));
-
-                    return DbPatchDto.DbChangeDto.builder()
-                            .withType(UPDATE)
-                            .forTopic(topic)
-                            .asReference(reference)
-                            .withEntryValues(values)
-                            .build();
-                })
-
-                .collect(toList());
-    }
-
-    // TODO factorize
-    private static List<DbPatchDto.DbChangeDto> getChangesObjectsForResourceUpdate(Element instructionElement) {
-        String resourceFileName = null;
-        String resourceValues = "";
-
-        NodeList parameterElements = instructionElement.getElementsByTagName(XML_ELEMENT_PARAMETER);
-        for (int i = 0 ; i < parameterElements.getLength() ; i++) {
-            Element parameterElement = (Element) parameterElements.item(i);
-            String value = parameterElement.getAttribute(XML_ATTRIBUTE_VALUE);
-
-            switch(parameterElement.getAttribute(XML_ATTRIBUTE_NAME)) {
-                case PARAMETER_TDUMT_RESOURCE_FILE_NAME:
-                    resourceFileName = value;
-                    break;
-                case PARAMETER_TDUMT_RESOURCE_VALUES:
-                    resourceValues = value;
-                    break;
-                default:
-            }
+        public String getResourceFileName() {
+            return resourceFileName;
         }
 
-        DbDto.Topic topic = getTopicFromLabel(resourceFileName);
+        public String getResourceValues() {
+            return resourceValues;
+        }
 
-        return Stream.of(resourceValues.split("\\|\\|"))
+        public InstructionParametersParser invoke() {
+            NodeList parameterElements = instructionElement.getElementsByTagName(XML_ELEMENT_PARAMETER);
+            for (int i = 0 ; i < parameterElements.getLength() ; i++) {
+                Element parameterElement = (Element) parameterElements.item(i);
+                String value = parameterElement.getAttribute(XML_ATTRIBUTE_VALUE);
 
-                .map( (entry) -> {
-
-                    String[] entryComponents = entry.split("\\|");
-                    String reference = entryComponents[0];
-                    String value = entryComponents[1];
-
-                    return DbPatchDto.DbChangeDto.builder()
-                            .withType(UPDATE_RES)
-                            .forTopic(topic)
-                            .asReference(reference)
-                            .withValue(value)
-                            .build();
-                })
-
-                .collect(toList());
+                switch(parameterElement.getAttribute(XML_ATTRIBUTE_NAME)) {
+                    case PARAMETER_TDUMT_RESOURCE_FILE_NAME:
+                        resourceFileName = value;
+                        break;
+                    case PARAMETER_TDUMT_RESOURCE_VALUES:
+                        resourceValues = value;
+                        break;
+                    default:
+                }
+            }
+            return this;
+        }
     }
 }
