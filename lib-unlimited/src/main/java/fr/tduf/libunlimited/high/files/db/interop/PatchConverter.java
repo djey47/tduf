@@ -205,8 +205,8 @@ public class PatchConverter {
         return (Element) patchDocument.getElementsByTagName(XML_ELEMENT_INSTRUCTIONS).item(0);
     }
 
+    // TODO factorize
     private static List<DbPatchDto.DbChangeDto> getChangesObjectsForContentsUpdate(Element instructionElement) {
-
         String resourceFileName = null;
         String resourceValues = "";
 
@@ -248,7 +248,45 @@ public class PatchConverter {
                 .collect(toList());
     }
 
+    // TODO factorize
     private static List<DbPatchDto.DbChangeDto> getChangesObjectsForResourceUpdate(Element instructionElement) {
-        return new ArrayList<>();
+        String resourceFileName = null;
+        String resourceValues = "";
+
+        NodeList parameterElements = instructionElement.getElementsByTagName(XML_ELEMENT_PARAMETER);
+        for (int i = 0 ; i < parameterElements.getLength() ; i++) {
+            Element parameterElement = (Element) parameterElements.item(i);
+            String value = parameterElement.getAttribute(XML_ATTRIBUTE_VALUE);
+
+            switch(parameterElement.getAttribute(XML_ATTRIBUTE_NAME)) {
+                case PARAMETER_TDUMT_RESOURCE_FILE_NAME:
+                    resourceFileName = value;
+                    break;
+                case PARAMETER_TDUMT_RESOURCE_VALUES:
+                    resourceValues = value;
+                    break;
+                default:
+            }
+        }
+
+        DbDto.Topic topic = getTopicFromLabel(resourceFileName);
+
+        return Stream.of(resourceValues.split("\\|\\|"))
+
+                .map( (entry) -> {
+
+                    String[] entryComponents = entry.split("\\|");
+                    String reference = entryComponents[0];
+                    String value = entryComponents[1];
+
+                    return DbPatchDto.DbChangeDto.builder()
+                            .withType(UPDATE_RES)
+                            .forTopic(topic)
+                            .asReference(reference)
+                            .withValue(value)
+                            .build();
+                })
+
+                .collect(toList());
     }
 }

@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.high.files.db.interop;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,6 +18,8 @@ import java.net.URISyntaxException;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PatchConverterTest {
@@ -151,9 +154,11 @@ public class PatchConverterTest {
 
         // THEN
         assertThat(actualPatchObject).isNotNull();
-        assertThat(actualPatchObject.getChanges()).hasSize(2);
+        assertThat(actualPatchObject.getChanges()).hasSize(12); // (2 contents + 10 resources)
 
-        assertThat(actualPatchObject.getChanges()).extracting("type").containsOnly(UPDATE);
+        assertThat(actualPatchObject.getChanges()).extracting("type").containsOnly(UPDATE, UPDATE_RES);
+        assertThat(actualPatchObject.getChanges()).extracting("topic").containsOnly(BRANDS, CAR_PHYSICS_DATA);
+        assertThat(actualPatchObject.getChanges()).extracting("locale").containsOnly(new Object[] {null});
     }
 
     private static NodeList assertStructureAndReturnInstructions(Document actualDocument, int instructionsCount) {
