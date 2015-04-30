@@ -109,23 +109,23 @@ public class PatchConverter {
 
         Element instructionElement = patchDocument.createElement("instruction");
 
-        addAtribute("type", instructionType, instructionElement, patchDocument);
-        addAtribute("failOnError", "True", instructionElement, patchDocument);
-        addAtribute("enabled", "True", instructionElement, patchDocument);
+        addAttribute("type", instructionType, instructionElement, patchDocument);
+        addAttribute("failOnError", "True", instructionElement, patchDocument);
+        addAttribute("enabled", "True", instructionElement, patchDocument);
 
-        addParameter("resourceFileName", getTopicLabel(topic), patchDocument, instructionElement);
-        addParameter("resourceValues", resourceValues, patchDocument, instructionElement);
+        addParameter("resourceFileName", getTopicLabel(topic), instructionElement, patchDocument);
+        addParameter("resourceValues", resourceValues, instructionElement, patchDocument);
 
         return instructionElement;
     }
 
-    private static void addAtribute(String name, String value, Element instructionElement, Document patchDocument) {
+    private static void addAttribute(String name, String value, Element instructionElement, Document patchDocument) {
         Attr typeAttribute = patchDocument.createAttribute(name);
         typeAttribute.setValue(value);
         instructionElement.setAttributeNode(typeAttribute);
     }
 
-    private static void addParameter(String name, String value, Document patchDocument, Element instructionElement) {
+    private static void addParameter(String name, String value, Element instructionElement, Document patchDocument) {
         Element resourceParameterElement = patchDocument.createElement("parameter");
         resourceParameterElement.setAttribute("name", name);
         resourceParameterElement.setAttribute("value", value);
