@@ -9,13 +9,19 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PatchConverterTest {
+
+    private static final Class<PatchConverterTest> thisClass = PatchConverterTest.class;
 
     @Test(expected = NullPointerException.class)
     public void jsonToPch_whenNullObject_shouldThrowException() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
@@ -125,6 +131,19 @@ public class PatchConverterTest {
         // GIVEN
         Document patchDocument = PatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/empty.pch");
 
+        // WHEN
+        DbPatchDto actualPatchObject = PatchConverter.pchToJson(patchDocument);
+
+        // THEN
+        assertThat(actualPatchObject).isNotNull();
+        assertThat(actualPatchObject.getChanges()).isEmpty();
+    }
+
+    @Test
+    public void pchToJson_whenRealPatchDocument_forContentsAndResources_shouldReturnPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+        // GIVEN
+        Document patchDocument = PatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/updateContentsAndResources.pch");
+
 
         // WHEN
         DbPatchDto actualPatchObject = PatchConverter.pchToJson(patchDocument);
@@ -132,7 +151,9 @@ public class PatchConverterTest {
 
         // THEN
         assertThat(actualPatchObject).isNotNull();
-        assertThat(actualPatchObject.getChanges()).isEmpty();
+        assertThat(actualPatchObject.getChanges()).hasSize(2);
+
+        assertThat(actualPatchObject.getChanges()).extracting("type").containsOnly(UPDATE);
     }
 
     private static NodeList assertStructureAndReturnInstructions(Document actualDocument, int instructionsCount) {
