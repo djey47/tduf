@@ -14,8 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
@@ -32,6 +31,7 @@ public class PatchConverter {
     private static final String INSTRUCTION_TDUMT_UPDATE_DATABASE = "updateDatabase";
     private static final String INSTRUCTION_TDUMT_UPDATE_RESOURCE = "updateResource";
 
+    private static final String SEPARATOR_ENTRIES = "||";
     private static final String SEPARATOR_KEY_VALUE = "|";
     private static final String SEPARATOR_ITEMS = "\t";
 
@@ -54,35 +54,62 @@ public class PatchConverter {
     }
 
     private static List<Element> getUpdateElements(DbPatchDto tdufDatabasePatch, DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, Document patchDocument) {
-        return tdufDatabasePatch.getChanges().stream()
 
-                .filter((changeObject) -> changeObject.getType() == changeType)
+        return groupUpdateChangeObjectsByTopic(tdufDatabasePatch, changeType).entrySet().stream()
 
-                .map((updateChangeObject) -> {
-                    String resourceValues;
-                    String instructionType;
-                    if (UPDATE == changeType) {
-                        instructionType = INSTRUCTION_TDUMT_UPDATE_DATABASE;
-                        resourceValues = getEntryValues(Optional.ofNullable(updateChangeObject.getRef()), updateChangeObject.getValues());
-                    } else {
-                        instructionType = INSTRUCTION_TDUMT_UPDATE_RESOURCE;
-                        resourceValues = getResourceValues(updateChangeObject.getRef(), updateChangeObject.getValue());
-                    }
+                .map((entry) -> {
 
-                    return changeObjectToInstruction(updateChangeObject, instructionType, resourceValues, patchDocument);
+                    List<String> entries = entry.getValue().stream()
+
+                            .map((updateChangeObject) -> {
+
+                                if (UPDATE == changeType) {
+                                    return getEntryValues(Optional.ofNullable(updateChangeObject.getRef()), updateChangeObject.getValues());
+                                } else {
+                                    return getResourceValue(updateChangeObject.getRef(), updateChangeObject.getValue());
+                                }
+
+                            })
+
+                            .collect(toList());
+
+                    String instructionType = UPDATE == changeType ?
+                            INSTRUCTION_TDUMT_UPDATE_DATABASE :
+                            INSTRUCTION_TDUMT_UPDATE_RESOURCE;
+                    String resourceValues = String.join(SEPARATOR_ENTRIES, entries);
+
+                    return createInstruction(entry.getKey(), instructionType, resourceValues, patchDocument);
                 })
 
                 .collect(toList());
     }
 
-    private static Element changeObjectToInstruction(DbPatchDto.DbChangeDto changeObject, String instructionType, String resourceValues, Document patchDocument) {
+    private static Map<DbDto.Topic, List<DbPatchDto.DbChangeDto>> groupUpdateChangeObjectsByTopic(DbPatchDto tdufDatabasePatch, DbPatchDto.DbChangeDto.ChangeTypeEnum changeType) {
+        Map<DbDto.Topic, List<DbPatchDto.DbChangeDto>> changeObjectsByTopic = new HashMap<>();
+
+        tdufDatabasePatch.getChanges().stream()
+
+                .filter((changeObject) -> changeObject.getType() == changeType)
+
+                .forEach((changeObject) -> {
+
+                    if (!changeObjectsByTopic.containsKey(changeObject.getTopic())) {
+                        changeObjectsByTopic.put(changeObject.getTopic(), new ArrayList<>());
+                    }
+                    changeObjectsByTopic.get(changeObject.getTopic()).add(changeObject);
+
+                });
+        return changeObjectsByTopic;
+    }
+
+    private static Element createInstruction(DbDto.Topic topic, String instructionType, String resourceValues, Document patchDocument) {
         Element instructionElement = patchDocument.createElement("instruction");
 
         addAtribute("type", instructionType, instructionElement, patchDocument);
         addAtribute("failOnError", "True", instructionElement, patchDocument);
         addAtribute("enabled", "True", instructionElement, patchDocument);
 
-        addParameter("resourceFileName", getTopicLabel(changeObject.getTopic()), patchDocument, instructionElement);
+        addParameter("resourceFileName", getTopicLabel(topic), patchDocument, instructionElement);
         addParameter("resourceValues", resourceValues, patchDocument, instructionElement);
 
         return instructionElement;
@@ -101,22 +128,12 @@ public class PatchConverter {
         instructionElement.appendChild(resourceParameterElement);
     }
 
-    private static String getResourceValues(String ref, String value) {
+    private static String getResourceValue(String ref, String value) {
         return ref + SEPARATOR_KEY_VALUE + value;
     }
 
     private static String getEntryValues(Optional<String> potentialRef, List<String> values) {
-        StringBuilder builder = new StringBuilder();
-
-        builder
-                .append(potentialRef.get())
-                .append(SEPARATOR_KEY_VALUE);
-
-        values.forEach((itemValue) -> builder
-                .append(itemValue)
-                .append(SEPARATOR_ITEMS));
-
-        return builder.toString().trim();
+        return potentialRef.get() + SEPARATOR_KEY_VALUE + String.join(SEPARATOR_ITEMS, values);
     }
 
     private static String getTopicLabel(DbDto.Topic topic) {

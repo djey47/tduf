@@ -65,13 +65,10 @@ public class PatchConverterTest {
         // THEN
         assertThat(actualDocument).isNotNull();
 
-        NodeList instructions = assertStructureAndReturnInstructions(actualDocument, 2);
+        NodeList instructions = assertStructureAndReturnInstructions(actualDocument, 1);
 
-        Element instruction1 = (Element) instructions.item(0);
-        assertUpdateDatabaseInstruction(instruction1, "CarPhysicsData", "1221657049|1221657049\t864426\t56338407\t");
-
-        Element instruction2 = (Element) instructions.item(1);
-        assertUpdateDatabaseInstruction(instruction2, "CarPhysicsData", "606298799|606298799\t864426\t56338407\t");
+        Element instruction = (Element) instructions.item(0);
+        assertUpdateDatabaseInstruction(instruction, "CarPhysicsData", "1221657049|1221657049\t864426\t56338407\t");
     }
 
     @Test
@@ -87,13 +84,10 @@ public class PatchConverterTest {
         // THEN
         assertThat(actualDocument).isNotNull();
 
-        NodeList instructions = assertStructureAndReturnInstructions(actualDocument, 2);
+        NodeList instructions = assertStructureAndReturnInstructions(actualDocument, 1);
 
-        Element instruction1 = (Element) instructions.item(0);
-        assertUpdateResourceInstruction(instruction1, "Bots", "54367256|Brian Molko");
-
-        Element instruction2 = (Element) instructions.item(1);
-        assertUpdateResourceInstruction(instruction2, "Bots", "33333333|Cindy");
+        Element instruction = (Element) instructions.item(0);
+        assertUpdateResourceInstruction(instruction, "Bots", "54367256|Brian Molko||33333333|Cindy");
     }
 
     private static NodeList assertStructureAndReturnInstructions(Document actualDocument, int instructionsCount) {
