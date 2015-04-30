@@ -170,8 +170,50 @@ public class DatabaseToolIntegTest {
     }
 
     @Test
-    public void convertPatch() {
+    public void convertPatch_fromAndBackPchFile() throws IOException {
+        // GIVEN
+        String patchDirectory = "integ-tests/patcher/tdumt";
+        String inputPatchFile = Paths.get(patchDirectory, "install_community_patch.pch").toString();
+
+        Path outJsonPath = Paths.get(patchDirectory, "out-json");
+        Path inputPath = Paths.get(inputPatchFile);
+
+        String inputPchPatchFile =  Paths.get(outJsonPath.toString(), "install_community_patch.pch").toString();
+        String outputJsonPatchFile =  Paths.get(outJsonPath.toString(), "install_community_patch.json").toString();
+
+        FileUtils.deleteDirectory(outJsonPath.toFile());
+        Files.createDirectories(outJsonPath);
+
+        Files.copy(inputPath, Paths.get(inputPchPatchFile));
+
+
         // WHEN: convert-patch
+        System.out.println("-> ConvertPatch! pch=>json");
+        DatabaseTool.main(new String[]{"convert-patch", "-n", "-p", inputPchPatchFile});
+
+
+        // THEN: output file exists
+        assertThat(new File(outputJsonPatchFile)).exists();
+
+
+        // GIVEN
+        Path outPchPath = Paths.get(patchDirectory, "out-pch");
+        String inputJsonPatchFile =  Paths.get(outPchPath.toString(), "install_community_patch.json").toString();
+        String outputPchPatchFile =  Paths.get(outPchPath.toString(), "install_community_patch.pch").toString();
+
+        FileUtils.deleteDirectory(outPchPath.toFile());
+        Files.createDirectories(outPchPath);
+
+        Files.copy(Paths.get(outputJsonPatchFile), Paths.get(inputJsonPatchFile));
+
+
+        // WHEN: convert-patch
+        System.out.println("-> ConvertPatch! json=>pch");
+        DatabaseTool.main(new String[]{"convert-patch", "-n", "-p", inputJsonPatchFile});
+
+
+        // THEN: output file exists
+        assertThat(new File(outputPchPatchFile)).exists();
     }
 
     private static Object fakeAndAssertExtractAll(InvocationOnMock invocation) throws IOException {
