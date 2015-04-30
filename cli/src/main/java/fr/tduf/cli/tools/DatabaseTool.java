@@ -10,6 +10,7 @@ import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
+import fr.tduf.libunlimited.high.files.db.interop.PatchConverter;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
@@ -19,17 +20,31 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
@@ -266,14 +281,39 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("targetDirectory", this.jsonDirectory);
     }
 
-    private void convertPatch() {
+    private void convertPatch() throws IOException, SAXException, ParserConfigurationException, URISyntaxException, TransformerException {
+        boolean tdufSource = com.google.common.io.Files.getFileExtension(this.patchFile).equalsIgnoreCase("json");
 
+        String outputExtension = tdufSource ? "pch" : "json";
+        String outputPatchFile = com.google.common.io.Files.getNameWithoutExtension(this.patchFile) + "." + outputExtension;
+
+        outLine("-> Source patch file: " + this.patchFile);
+        outLine("Converting patch, please wait...");
+
+        File patch = new File(this.patchFile);
+        String convertOutput;
+        if (tdufSource) {
+            convertOutput = convertPatchFileToXML(patch);
+        } else {
+            convertOutput = convertPatchFileToJSON(patch);
+        }
+
+        outLine("Writing patch to " + outputPatchFile + "...");
+
+        Files.write(Paths.get(outputPatchFile), convertOutput.getBytes(), StandardOpenOption.CREATE);
+
+        outLine("All done!");
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("patchFile", outputPatchFile);
+        resultInfo.put("convertedContents", convertOutput);
+        commandResult = resultInfo;
     }
 
     private void genPatch() throws ReflectiveOperationException, IOException {
         outLine("-> Source database directory: " + this.jsonDirectory);
 
-        outLine("Reading database patch, please wait...");
+        outLine("Reading database, please wait...");
 
         List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(this.jsonDirectory);
 
@@ -446,6 +486,38 @@ public class DatabaseTool extends GenericTool {
 
         resultInfo.put("fixedDatabaseLocation", this.outputDatabaseDirectory);
         commandResult = resultInfo;
+    }
+
+    private String convertPatchFileToJSON(File patch) throws ParserConfigurationException, SAXException, IOException {
+        String convertOutput;DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+        Document patchDocument = docBuilder.parse(patch);
+
+        DbPatchDto patchObject = PatchConverter.pchToJson(patchDocument);
+
+        convertOutput = jsonToString(patchObject);
+        return convertOutput;
+    }
+
+    private String convertPatchFileToXML(File patch) throws IOException, ParserConfigurationException, URISyntaxException, SAXException, TransformerException {
+        String convertOutput;DbPatchDto patchObject = new ObjectMapper().readValue(patch, DbPatchDto.class);
+
+        Document patchDocument = PatchConverter.jsonToPch(patchObject);
+
+        convertOutput = xmlDocumentToString(patchDocument);
+        return convertOutput;
+    }
+
+    private static String xmlDocumentToString(Document patchDocument) throws TransformerException {
+        StringWriter writer = new StringWriter();
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.transform(new DOMSource(patchDocument), new StreamResult(writer));
+        return writer.toString();
+    }
+
+    private String jsonToString(DbPatchDto patchObject) throws IOException {
+        ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+        return objectWriter.writeValueAsString(patchObject);
     }
 
     private void writePatchFileToDisk(DbPatchDto patchObject) throws IOException {
