@@ -284,8 +284,10 @@ public class DatabaseTool extends GenericTool {
     private void convertPatch() throws IOException, SAXException, ParserConfigurationException, URISyntaxException, TransformerException {
         boolean tdufSource = com.google.common.io.Files.getFileExtension(this.patchFile).equalsIgnoreCase("json");
 
+        Path patchPath = Paths.get(this.patchFile);
+
         String outputExtension = tdufSource ? "pch" : "json";
-        String outputPatchFile = com.google.common.io.Files.getNameWithoutExtension(this.patchFile) + "." + outputExtension;
+        String outputPatchFile = Paths.get(patchPath.getParent().toString(), com.google.common.io.Files.getNameWithoutExtension(this.patchFile) + "." + outputExtension).toString();
 
         outLine("-> Source patch file: " + this.patchFile);
         outLine("Converting patch, please wait...");
@@ -293,6 +295,7 @@ public class DatabaseTool extends GenericTool {
         File patch = new File(this.patchFile);
         String convertOutput;
         if (tdufSource) {
+            // TODO replace tab entity &#9; with real tab
             convertOutput = convertPatchFileToXML(patch);
         } else {
             convertOutput = convertPatchFileToJSON(patch);
