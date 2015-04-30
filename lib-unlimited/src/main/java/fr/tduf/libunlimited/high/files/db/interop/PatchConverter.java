@@ -17,6 +17,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -26,6 +28,12 @@ import static java.util.stream.Collectors.toList;
 public class PatchConverter {
 
     private static Class<PatchConverter> thisClass = PatchConverter.class;
+
+    private static final String INSTRUCTION_TDUMT_UPDATE_DATABASE = "updateDatabase";
+    private static final String INSTRUCTION_TDUMT_UPDATE_RESOURCE = "updateResource";
+
+    private static final String SEPARATOR_KEY_VALUE = "|";
+    private static final String SEPARATOR_ITEMS = "\t";
 
     /**
      * Convertit un patch TDUF en patch TDUMT (XML).
@@ -38,35 +46,36 @@ public class PatchConverter {
 
         Document patchDocument = initXmlDocumentFromTemplate();
 
-        List<Element> instructionElements = tdufDatabasePatch.getChanges().stream()
-
-                .map((changeObject) -> changeObjectToInstruction(changeObject, patchDocument))
-
-                .collect(toList());
-
         Node instructionsNode = patchDocument.getElementsByTagName("instructions").item(0);
-        instructionElements.forEach(instructionsNode::appendChild);
+        getUpdateElements(tdufDatabasePatch, UPDATE, patchDocument).forEach(instructionsNode::appendChild);
+        getUpdateElements(tdufDatabasePatch, UPDATE_RES, patchDocument).forEach(instructionsNode::appendChild);
 
         return patchDocument;
     }
 
-    private static Element changeObjectToInstruction(DbPatchDto.DbChangeDto changeObject, Document patchDocument) {
-        DbPatchDto.DbChangeDto.ChangeTypeEnum type = changeObject.getType();
-        String instructionType;
-        String resourceValues;
-        switch (type) {
-            case UPDATE:
-                instructionType = "updateDatabase";
-                resourceValues = getEntryValues(Optional.ofNullable(changeObject.getRef()), changeObject.getValues());
-                break;
-            case UPDATE_RES:
-                instructionType = "updateResource";
-                resourceValues = getResourceValues(changeObject.getRef(), changeObject.getValue());
-                break;
-            default:
-                throw new IllegalArgumentException("Unhandled instruction type: " + type);
-        }
+    private static List<Element> getUpdateElements(DbPatchDto tdufDatabasePatch, DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, Document patchDocument) {
+        return tdufDatabasePatch.getChanges().stream()
 
+                .filter((changeObject) -> changeObject.getType() == changeType)
+
+                .map((updateChangeObject) -> {
+                    String resourceValues;
+                    String instructionType;
+                    if (UPDATE == changeType) {
+                        instructionType = INSTRUCTION_TDUMT_UPDATE_DATABASE;
+                        resourceValues = getEntryValues(Optional.ofNullable(updateChangeObject.getRef()), updateChangeObject.getValues());
+                    } else {
+                        instructionType = INSTRUCTION_TDUMT_UPDATE_RESOURCE;
+                        resourceValues = getResourceValues(updateChangeObject.getRef(), updateChangeObject.getValue());
+                    }
+
+                    return changeObjectToInstruction(updateChangeObject, instructionType, resourceValues, patchDocument);
+                })
+
+                .collect(toList());
+    }
+
+    private static Element changeObjectToInstruction(DbPatchDto.DbChangeDto changeObject, String instructionType, String resourceValues, Document patchDocument) {
         Element instructionElement = patchDocument.createElement("instruction");
 
         addAtribute("type", instructionType, instructionElement, patchDocument);
@@ -93,7 +102,7 @@ public class PatchConverter {
     }
 
     private static String getResourceValues(String ref, String value) {
-        return ref + "|" + value;
+        return ref + SEPARATOR_KEY_VALUE + value;
     }
 
     private static String getEntryValues(Optional<String> potentialRef, List<String> values) {
@@ -101,11 +110,11 @@ public class PatchConverter {
 
         builder
                 .append(potentialRef.get())
-                .append("|");
+                .append(SEPARATOR_KEY_VALUE);
 
         values.forEach((itemValue) -> builder
                 .append(itemValue)
-                .append("\t"));
+                .append(SEPARATOR_ITEMS));
 
         return builder.toString().trim();
     }
