@@ -295,7 +295,6 @@ public class DatabaseTool extends GenericTool {
         File patch = new File(this.patchFile);
         String convertOutput;
         if (tdufSource) {
-            // TODO replace tab entity &#9; with real tab
             convertOutput = convertPatchFileToXML(patch);
         } else {
             convertOutput = convertPatchFileToJSON(patch);
@@ -492,23 +491,23 @@ public class DatabaseTool extends GenericTool {
     }
 
     private String convertPatchFileToJSON(File patch) throws ParserConfigurationException, SAXException, IOException {
-        String convertOutput;DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         Document patchDocument = docBuilder.parse(patch);
 
         DbPatchDto patchObject = PatchConverter.pchToJson(patchDocument);
 
-        convertOutput = jsonToString(patchObject);
-        return convertOutput;
+        return jsonToString(patchObject);
     }
 
     private String convertPatchFileToXML(File patch) throws IOException, ParserConfigurationException, URISyntaxException, SAXException, TransformerException {
-        String convertOutput;DbPatchDto patchObject = new ObjectMapper().readValue(patch, DbPatchDto.class);
+        DbPatchDto patchObject = new ObjectMapper().readValue(patch, DbPatchDto.class);
 
         Document patchDocument = PatchConverter.jsonToPch(patchObject);
 
-        convertOutput = xmlDocumentToString(patchDocument);
-        return convertOutput;
+        String documentString = xmlDocumentToString(patchDocument);
+
+        return documentString.replaceAll("&#9;", "\t");
     }
 
     private static String xmlDocumentToString(Document patchDocument) throws TransformerException {
