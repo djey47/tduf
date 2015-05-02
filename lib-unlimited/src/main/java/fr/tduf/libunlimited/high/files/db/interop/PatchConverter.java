@@ -44,6 +44,7 @@ public class PatchConverter {
     private static final String SEPARATOR_ENTRIES = "||";
     private static final String SEPARATOR_KEY_VALUE = "|";
     private static final String SEPARATOR_ITEMS = "\t";
+    private static final String SEPARATOR_COMPOSITE_REF = "=";
 
     private static final String REGEX_SEPARATOR_ENTRIES = "\\|\\|";
     private static final String REGEX_SEPARATOR_KEY_VALUE = "\\|";
@@ -56,7 +57,6 @@ public class PatchConverter {
      * @param tdufDatabasePatch : TDUF patch object to convert
      * @return corresponding TDUMT patch as XML document.
      */
-    // TODO handle update patch without REF
     public static Document jsonToPch(DbPatchDto tdufDatabasePatch) throws ParserConfigurationException, URISyntaxException, IOException, SAXException {
         requireNonNull(tdufDatabasePatch, "A TDUF database patch object is required.");
 
@@ -145,7 +145,10 @@ public class PatchConverter {
     }
 
     private static String getContentsValue(Optional<String> potentialRef, List<String> values) {
-        return potentialRef.get() + SEPARATOR_KEY_VALUE + String.join(SEPARATOR_ITEMS, values);
+
+        String entryRef = potentialRef.orElse(values.get(0) + SEPARATOR_COMPOSITE_REF + values.get(1));
+
+        return entryRef + SEPARATOR_KEY_VALUE + String.join(SEPARATOR_ITEMS, values);
     }
 
     private static Element createUpdateInstruction(DbDto.Topic topic, DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, List<String> entries, Document patchDocument) {
