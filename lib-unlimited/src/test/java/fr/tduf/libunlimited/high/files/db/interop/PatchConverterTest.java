@@ -76,6 +76,25 @@ public class PatchConverterTest {
     }
 
     @Test
+    public void jsonToPch_whenRealPatchObject_forContents_andNoEntryRef_shouldReturnPatch() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+        // GIVEN
+        DbPatchDto patchObject = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-addAll-noref.mini.json");
+
+
+        // WHEN
+        Document actualDocument = PatchConverter.jsonToPch(patchObject);
+
+
+        // THEN
+        assertThat(actualDocument).isNotNull();
+
+        NodeList instructions = assertStructureAndReturnInstructions(actualDocument, 1);
+
+        Element instruction = (Element) instructions.item(0);
+        assertUpdateDatabaseInstruction(instruction, "Bots", "57167257=56373256|57167257\t56373256\t600091920\t1\t1\t551683160\t0\t0.5");
+    }
+
+    @Test
     public void jsonToPch_whenRealPatchObject_forResources_shouldReturnPatch() throws IOException, URISyntaxException, ParserConfigurationException, SAXException {
         // GIVEN
         DbPatchDto patchObject = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateResources.mini.json");
