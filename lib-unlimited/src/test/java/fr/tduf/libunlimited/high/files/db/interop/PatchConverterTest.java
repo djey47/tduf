@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -78,7 +79,7 @@ public class PatchConverterTest {
     @Test
     public void jsonToPch_whenRealPatchObject_forContents_andNoEntryRef_shouldReturnPatch() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
-        DbPatchDto patchObject = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-addAll-noref.mini.json");
+        DbPatchDto patchObject = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef.mini.json");
 
 
         // WHEN
@@ -172,7 +173,30 @@ public class PatchConverterTest {
 
         assertThat(actualPatchObject.getChanges()).extracting("type").containsOnly(UPDATE, UPDATE_RES);
         assertThat(actualPatchObject.getChanges()).extracting("topic").containsOnly(BRANDS, CAR_PHYSICS_DATA);
-        assertThat(actualPatchObject.getChanges()).extracting("locale").containsOnly(new Object[] {null});
+        assertThat(actualPatchObject.getChanges()).extracting("locale").containsOnly(new Object[]{null});
+    }
+
+    @Test
+    public void pchToJson_whenRealPatchDocument_forContents_andCompositeEntryRef_shouldReturnPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+        // GIVEN
+        Document patchDocument = PatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/updateContents_compositeRef.pch");
+
+
+        // WHEN
+        DbPatchDto actualPatchObject = PatchConverter.pchToJson(patchDocument);
+
+
+        // THEN
+        assertThat(actualPatchObject).isNotNull();
+        assertThat(actualPatchObject.getChanges()).hasSize(1);
+
+        DbPatchDto.DbChangeDto actualChangeObject = actualPatchObject.getChanges().get(0);
+        assertThat(actualChangeObject.getRef()).isNull();
+        assertThat(actualChangeObject.getLocale()).isNull();
+        assertThat(actualChangeObject.getTopic()).isEqualTo(BOTS);
+        assertThat(actualChangeObject.getType()).isEqualTo(UPDATE);
+        assertThat(actualChangeObject.getValue()).isNull();
+        assertThat(actualChangeObject.getValues()).containsExactly("57167257", "56373256", "600091920", "1", "1" , "551683160", "0", "0.5");
     }
 
     private static NodeList assertStructureAndReturnInstructions(Document actualDocument, int instructionsCount) {

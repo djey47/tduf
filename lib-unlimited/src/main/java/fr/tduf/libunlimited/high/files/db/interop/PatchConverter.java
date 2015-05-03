@@ -14,6 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
@@ -49,6 +50,7 @@ public class PatchConverter {
     private static final String REGEX_SEPARATOR_ENTRIES = "\\|\\|";
     private static final String REGEX_SEPARATOR_KEY_VALUE = "\\|";
     private static final String REGEX_SEPARATOR_ITEMS = "\\s";
+    private static final String REGEX_COMPOSITE_REF = "\\d+=\\d+";
 
     private static final String PREFIX_TOPIC_LABEL = "TDU_";
 
@@ -213,9 +215,11 @@ public class PatchConverter {
     }
 
     private static DbPatchDto.DbChangeDto getChangeObjectForContentsUpdate(String contentsEntry, DbDto.Topic topic) {
-        // TODO handle complex references (first 2 columns)
         String[] entryComponents = contentsEntry.split(REGEX_SEPARATOR_KEY_VALUE);
         String reference = entryComponents[0];
+        if (Pattern.matches(REGEX_COMPOSITE_REF, reference)) {
+            reference = null;
+        }
         List<String> values = asList(entryComponents[1].split(REGEX_SEPARATOR_ITEMS));
 
         return DbPatchDto.DbChangeDto.builder()
