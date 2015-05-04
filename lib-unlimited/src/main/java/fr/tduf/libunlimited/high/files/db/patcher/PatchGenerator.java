@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -13,6 +14,8 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -113,9 +116,8 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     }
 
     private DbPatchDto.DbChangeDto createChangeObjectForResource(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceRef) {
-        // TODO set a default resource value
-        String resourceValue = "??";
         Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceRef, topic, locale);
+        String resourceValue = DatabaseHelper.RESOURCE_VALUE_DEFAULT;
         if (potentialResourceEntry.isPresent()) {
             resourceValue = potentialResourceEntry.get().getValue();
         }
@@ -142,7 +144,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         }
 
         return DbPatchDto.DbChangeDto.builder()
-                .withType(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE)
+                .withType(UPDATE)
                 .forTopic(topic)
                 .asReference(entryReference)
                 .withEntryValues(entryValues)
@@ -152,12 +154,12 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     private String fetchItemValue(DbDto.Topic topic, List<DbStructureDto.Field> structureFields, DbDataDto.Item entryItem, Map<DbDto.Topic, Set<String>> requiredContentsReferences, Map<DbDto.Topic, Set<String>> requiredResourceReferences) {
         DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(entryItem, structureFields);
         DbStructureDto.FieldType fieldType = structureField.getFieldType();
-        if (DbStructureDto.FieldType.RESOURCE_CURRENT == fieldType
-                || DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN == fieldType) {
+        if (RESOURCE_CURRENT == fieldType
+                || RESOURCE_CURRENT_AGAIN == fieldType) {
 
             updateRequiredReferences(topic, requiredResourceReferences, entryItem.getRawValue());
-        } else if (DbStructureDto.FieldType.RESOURCE_REMOTE == fieldType
-                || DbStructureDto.FieldType.REFERENCE == fieldType) {
+        } else if (RESOURCE_REMOTE == fieldType
+                || REFERENCE == fieldType) {
 
             updateRequiredRemoteReferences(requiredResourceReferences, requiredContentsReferences, entryItem.getRawValue(), structureField);
         }
@@ -170,7 +172,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         DbDto.Topic remoteTopic = remoteTopicObject.getStructure().getTopic();
 
         DbStructureDto.FieldType fieldType = structureField.getFieldType();
-        Map<DbDto.Topic, Set<String>> requiredReferences = DbStructureDto.FieldType.RESOURCE_REMOTE == fieldType ?
+        Map<DbDto.Topic, Set<String>> requiredReferences = RESOURCE_REMOTE == fieldType ?
                 requiredResourceReferences : requiredContentsReferences;
 
         updateRequiredReferences(remoteTopic, requiredReferences, reference);

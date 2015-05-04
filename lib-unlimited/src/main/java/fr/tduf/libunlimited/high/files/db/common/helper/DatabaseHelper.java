@@ -15,6 +15,8 @@ import static java.util.stream.Collectors.toSet;
  */
 public class DatabaseHelper {
 
+    public static final String RESOURCE_VALUE_DEFAULT = "??";
+
     /**
      * Produces a random, unique identifier of content entry.
      * @param topicObject   : database topic to provide structure and contents
