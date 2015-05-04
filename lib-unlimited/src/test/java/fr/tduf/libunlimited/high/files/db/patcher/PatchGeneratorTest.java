@@ -4,6 +4,7 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Test;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +40,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(new ArrayList<>());
 
         // WHEN
-        generator.makePatch(DbDto.Topic.ACHIEVEMENTS, ReferenceRange.fromCliOption(Optional.empty()));
+        generator.makePatch(ACHIEVEMENTS, ReferenceRange.fromCliOption(Optional.empty()));
 
         // THEN: IAE
     }
@@ -49,7 +52,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(DbDto.Topic.ACHIEVEMENTS, ReferenceRange.fromCliOption(Optional.empty()));
+        DbPatchDto actualPatchObject = generator.makePatch(ACHIEVEMENTS, ReferenceRange.fromCliOption(Optional.empty()));
 
         // THEN
         assertThat(generator.getTopicObject()).isNotNull();
@@ -108,6 +111,19 @@ public class PatchGeneratorTest {
         assertPatchGeneratedWithinRangeForOneTopic(actualPatchObject);
     }
 
+    @Test
+    public void makePatch_whenUsingRealDatabase_andAllRefs_andSameResourceValuesForLocales_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        List<DbDto> databaseObjects = createDatabaseObjectsWithOneTopicFromRealFile();
+        PatchGenerator generator = createPatchGenerator(databaseObjects);
+
+        // WHEN
+        DbPatchDto actualPatchObject = generator.makePatch(ACHIEVEMENTS, ReferenceRange.fromCliOption(Optional.empty()));
+
+        // THEN
+        assertPatchGeneratedWithAllEntriesForOneTopic(actualPatchObject);
+    }
+
     private static PatchGenerator createPatchGenerator(List<DbDto> databaseObjects) throws ReflectiveOperationException {
         return AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseObjects);
     }
@@ -115,9 +131,16 @@ public class PatchGeneratorTest {
     private static List<DbDto> createDatabaseObjectsWithOneTopic() {
         DbDto topicObject = DbDto.builder()
                 .withStructure(DbStructureDto.builder()
-                    .forTopic(DbDto.Topic.ACHIEVEMENTS)
+                    .forTopic(ACHIEVEMENTS)
                     .build())
+                .withData(DbDataDto.builder().build())
                 .build();
+
+        return singletonList(topicObject);
+    }
+
+    private static List<DbDto> createDatabaseObjectsWithOneTopicFromRealFile() throws IOException, URISyntaxException {
+        DbDto topicObject = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Achievements.json");
 
         return singletonList(topicObject);
     }
@@ -136,6 +159,23 @@ public class PatchGeneratorTest {
         DbDto topicObject4 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Brands.json");
 
         return asList(topicObject1, topicObject2, topicObject3, topicObject4);
+    }
+
+    private static void assertPatchGeneratedWithAllEntriesForOneTopic(DbPatchDto patchObject) {
+        assertThat(patchObject).isNotNull();
+
+        List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
+        assertThat(actualChanges).hasSize(1850); //74 UPDATE + 1776 UPDATE_RES (222 local resources * 8 locales)
+
+        DbPatchDto.DbChangeDto changeObject = actualChanges.get(0);
+        assertThat(changeObject.getType()).isEqualTo(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE);
+        assertThat(changeObject.getTopic()).isEqualTo(ACHIEVEMENTS);
+        assertThat(changeObject.getRef()).isNull();
+        assertThat(changeObject.getValues()).hasSize(9);
+
+        assertThat(actualChanges).extracting("ref").contains("58136935");
+        assertThat(actualChanges).extracting("locale").contains(null, FRANCE, ITALY, UNITED_STATES, JAPAN, GERMANY, SPAIN, CHINA, KOREA);
+        assertThat(actualChanges).extracting("topic").containsOnly(ACHIEVEMENTS);
     }
 
     private static void assertPatchGeneratedWithinRangeForOneTopic(DbPatchDto patchObject) {

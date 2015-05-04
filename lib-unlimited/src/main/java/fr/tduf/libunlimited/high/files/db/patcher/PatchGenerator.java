@@ -48,13 +48,10 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
         List<DbPatchDto.DbChangeDto> changesObjects = new ArrayList<>();
         List<DbStructureDto.Field> structureFields = this.topicObject.getStructure().getFields();
-        BulkDatabaseMiner.getUidFieldRank(structureFields)
 
-                .ifPresent((refFieldRank -> changesObjects.addAll(
+        Optional<Integer> potentialRefFieldRank = BulkDatabaseMiner.getUidFieldRank(structureFields);
 
-                        makeChangesObjectsForContents(refFieldRank, structureFields, range, requiredResourceReferences, requiredContentsReferences)
-
-                )));
+        changesObjects.addAll(makeChangesObjectsForContents(potentialRefFieldRank, structureFields, range, requiredResourceReferences, requiredContentsReferences));
 
         changesObjects.addAll(makeChangesObjectsForRequiredResources(requiredResourceReferences));
 
@@ -63,14 +60,14 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         return changesObjects;
     }
 
-    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForContents(int refFieldRank, List<DbStructureDto.Field> structureFields, ReferenceRange range, Map<DbDto.Topic, Set<String>> requiredLocalResourceReferences, Map<DbDto.Topic, Set<String>> requiredContentsReferences) {
+    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForContents(Optional<Integer> potentialRefFieldRank, List<DbStructureDto.Field> structureFields, ReferenceRange range, Map<DbDto.Topic, Set<String>> requiredLocalResourceReferences, Map<DbDto.Topic, Set<String>> requiredContentsReferences) {
         DbDto.Topic topic = this.topicObject.getStructure().getTopic();
 
         return this.topicObject.getData().getEntries().stream()
 
-            .filter((entry) -> isInRange(entry, refFieldRank, range))
+            .filter((entry) -> isInRange(entry, potentialRefFieldRank, range))
 
-            .map((acceptedEntry) -> createChangeObjectForEntry(topic, acceptedEntry, refFieldRank, structureFields, requiredLocalResourceReferences, requiredContentsReferences))
+            .map((acceptedEntry) -> createChangeObjectForEntry(topic, acceptedEntry, potentialRefFieldRank, structureFields, requiredLocalResourceReferences, requiredContentsReferences))
 
             .collect(toSet());
     }
@@ -116,7 +113,13 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     }
 
     private DbPatchDto.DbChangeDto createChangeObjectForResource(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceRef) {
-        String resourceValue = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceRef, topic, locale).get().getValue();
+        // TODO set a default resource value
+        String resourceValue = "??";
+        Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceRef, topic, locale);
+        if (potentialResourceEntry.isPresent()) {
+            resourceValue = potentialResourceEntry.get().getValue();
+        }
+
         return DbPatchDto.DbChangeDto.builder()
                 .forTopic(topic)
                 .forLocale(locale)
@@ -126,17 +129,22 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .build();
     }
 
-    private DbPatchDto.DbChangeDto createChangeObjectForEntry(DbDto.Topic topic, DbDataDto.Entry entry, int refFieldRank, List<DbStructureDto.Field> structureFields, Map<DbDto.Topic, Set<String>> requiredResourceReferences, Map<DbDto.Topic, Set<String>> requiredContentsReferences) {
+    private DbPatchDto.DbChangeDto createChangeObjectForEntry(DbDto.Topic topic, DbDataDto.Entry entry, Optional<Integer> potentialRefFieldRank, List<DbStructureDto.Field> structureFields, Map<DbDto.Topic, Set<String>> requiredResourceReferences, Map<DbDto.Topic, Set<String>> requiredContentsReferences) {
         List<String> entryValues = entry.getItems().stream()
 
                 .map((entryItem) -> fetchItemValue(topic, structureFields, entryItem, requiredContentsReferences, requiredResourceReferences))
 
                 .collect(toList());
 
+        String entryReference = null;
+        if (potentialRefFieldRank.isPresent()) {
+            entryReference = BulkDatabaseMiner.getEntryReference(entry, potentialRefFieldRank.get());
+        }
+
         return DbPatchDto.DbChangeDto.builder()
                 .withType(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE)
                 .forTopic(topic)
-                .asReference(BulkDatabaseMiner.getEntryReference(entry, refFieldRank))
+                .asReference(entryReference)
                 .withEntryValues(entryValues)
                 .build();
     }
@@ -175,8 +183,12 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         requiredResourceReferences.get(topic).add(reference);
     }
 
-    private static boolean isInRange(DbDataDto.Entry entry, int refFieldRank, ReferenceRange range) {
-        String entryRef = BulkDatabaseMiner.getEntryReference(entry, refFieldRank);
+    private static boolean isInRange(DbDataDto.Entry entry, Optional<Integer> potentialRefFieldRank, ReferenceRange range) {
+
+        String entryRef = "whatever";
+        if (potentialRefFieldRank.isPresent()) {
+            entryRef = BulkDatabaseMiner.getEntryReference(entry, potentialRefFieldRank.get());
+        }
         return range.accepts(entryRef);
     }
 
