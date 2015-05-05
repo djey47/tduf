@@ -8,8 +8,10 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Class providing utility methods to request data from database objects.
@@ -162,6 +164,24 @@ public class BulkDatabaseMiner {
                 .filter((entry) -> entry.getReference().equals(reference))
 
                 .findAny();
+    }
+
+    /**
+     * @param reference             : unique identifier of resource
+     * @param topicResourceObjects  : list of topic resource objects to search into
+     * @return a set of corresponding values
+     */
+    public static Set<String> getAllResourceValuesForReference(String reference, List<DbResourceDto> topicResourceObjects) {
+//        System.out.println(new Date().getTime() + " - getAllResourceValuesForReference(" + reference + "," + topicResourceObjects + ")");
+        return topicResourceObjects.stream()
+
+                .map((resource) -> resource.getEntries().stream()
+
+                        .filter((resourceEntry) -> resourceEntry.getReference().equals(reference))
+
+                        .findAny().get().getValue())
+
+                .collect(toSet());
     }
 
     /**
