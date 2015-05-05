@@ -125,7 +125,7 @@ public class DatabaseToolIntegTest {
 
         // THEN: patch file must exist
         AssertionsHelper.assertFileExistAndGet(outputPatchFile);
-        AssertionsHelper.assertJsonFilesMatch(outputPatchFile, referencePatchFile);
+        AssertionsHelper.assertJsonFilesMatch(referencePatchFile, outputPatchFile);
     }
 
     @Test
