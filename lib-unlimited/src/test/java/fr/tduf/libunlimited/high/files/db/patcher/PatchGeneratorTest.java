@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -92,7 +94,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(DbDto.Topic.PNJ, ReferenceRange.fromCliOption(Optional.of("540091906")));
+        DbPatchDto actualPatchObject = generator.makePatch(PNJ, ReferenceRange.fromCliOption(Optional.of("540091906")));
 
         // THEN
         assertPatchGeneratedWithinRangeForLinkedTopicsWithRemoteContentsReference(actualPatchObject);
@@ -165,27 +167,30 @@ public class PatchGeneratorTest {
         assertThat(patchObject).isNotNull();
 
         List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
-        assertThat(actualChanges).hasSize(1850); //74 UPDATE + 1776 UPDATE_RES (222 local resources * 8 locales)
+        assertThat(actualChanges).hasSize(1472); //74 UPDATE + 1398 UPDATE_RES
 
-        DbPatchDto.DbChangeDto changeObject = actualChanges.get(0);
-        assertThat(changeObject.getType()).isEqualTo(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE);
-        assertThat(changeObject.getTopic()).isEqualTo(ACHIEVEMENTS);
-        assertThat(changeObject.getRef()).isNull();
-        assertThat(changeObject.getValues()).hasSize(9);
+        DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
+        assertThat(changeObject1.getType()).isEqualTo(UPDATE);
+        assertThat(changeObject1.getRef()).isNull();
+        assertThat(changeObject1.getValues()).hasSize(9);
 
-        assertThat(actualChanges).extracting("ref").contains("58136935");
+        DbPatchDto.DbChangeDto changeObject2 = actualChanges.get(74);
+        assertThat(changeObject2.getType()).isEqualTo(UPDATE_RES);
+
+        assertThat(actualChanges).extracting("ref").contains("58136935", "56459455");
         assertThat(actualChanges).extracting("locale").contains(null, FRANCE, ITALY, UNITED_STATES, JAPAN, GERMANY, SPAIN, CHINA, KOREA);
         assertThat(actualChanges).extracting("topic").containsOnly(ACHIEVEMENTS);
+        assertThat(actualChanges).extracting("value").contains(null, "COLLEZIONISTA ESTREMO");
     }
 
     private static void assertPatchGeneratedWithinRangeForOneTopic(DbPatchDto patchObject) {
         assertThat(patchObject).isNotNull();
 
         List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
-        assertThat(actualChanges).hasSize(9); //1 UPDATE + 8 UPDATE_RES (1 local resource * 8 locales)
+        assertThat(actualChanges).hasSize(2); //1 UPDATE + 1 UPDATE_RES (1 local resource for any locale)
 
         DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
-        assertThat(changeObject1.getType()).isEqualTo(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE);
+        assertThat(changeObject1.getType()).isEqualTo(UPDATE);
         assertThat(changeObject1.getTopic()).isEqualTo(DbDto.Topic.BRANDS);
         assertThat(changeObject1.getRef()).isEqualTo("735");
         assertThat(changeObject1.getValues()).hasSize(7);
@@ -193,47 +198,48 @@ public class PatchGeneratorTest {
         assertThat(changeObject1.getValues().get(6)).isEqualTo("1");
 
         DbPatchDto.DbChangeDto changeObject2 = actualChanges.get(1);
-        assertThat(changeObject2.getType()).isEqualTo(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES);
+        assertThat(changeObject2.getType()).isEqualTo(UPDATE_RES);
         assertThat(changeObject2.getTopic()).isEqualTo(DbDto.Topic.BRANDS);
 
         assertThat(actualChanges).extracting("ref").containsAll(asList("735", "55338337"));
+        assertThat(actualChanges).extracting("locale").containsOnly(new Object[]{null});
+        assertThat(actualChanges).extracting("value").contains(null, "AC");
     }
 
     private static void assertPatchGeneratedWithinRangeForLinkedTopics(DbPatchDto patchObject) {
         assertThat(patchObject).isNotNull();
 
         List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
-        assertThat(actualChanges).hasSize(49); //1 UPDATE + 48 UPDATE_RES ( (5 local resources + 1 remote resource) * 8 locales)
+        assertThat(actualChanges).hasSize(7); //1 UPDATE + 6 UPDATE_RES ( 5 local resources + 1 remote resource, any locale)
 
         DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
-        assertThat(changeObject1.getType()).isEqualTo(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE);
+        assertThat(changeObject1.getType()).isEqualTo(UPDATE);
         assertThat(changeObject1.getTopic()).isEqualTo(DbDto.Topic.HAIR);
         assertThat(changeObject1.getRef()).isEqualTo("54522");
         assertThat(changeObject1.getValues()).hasSize(7);
         assertThat(changeObject1.getValues().get(0)).isEqualTo("54522");
         assertThat(changeObject1.getValues().get(6)).isEqualTo("54713527");
 
-        assertThat(actualChanges).extracting("type").contains(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES);
+        assertThat(actualChanges).extracting("type").contains(UPDATE_RES);
         assertThat(actualChanges).extracting("topic").contains(DbDto.Topic.CLOTHES);
-        assertThat(actualChanges).extracting("topic").contains(DbDto.Topic.HAIR);
+        assertThat(actualChanges).extracting("locale").containsOnly(new Object[]{null});
+        assertThat(actualChanges).extracting("value").contains(null, "HA01", "DEFAULT_TOPS_SHIRT", "Rasta", "Mixte", "DEFAULT_BOTTOMS", "ChemiseAFleurs01");
     }
 
     private static void assertPatchGeneratedWithinRangeForLinkedTopicsWithRemoteContentsReference(DbPatchDto patchObject) {
         assertThat(patchObject).isNotNull();
 
         List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
-        assertThat(actualChanges).hasSize(266); //2 UPDATE +
+        assertThat(actualChanges).hasSize(91); //2 UPDATE + 89 UPDATE_RES
 
         DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
-        assertThat(changeObject1.getType()).isEqualTo(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE);
-        assertThat(changeObject1.getTopic()).isEqualTo(DbDto.Topic.PNJ);
+        assertThat(changeObject1.getType()).isEqualTo(UPDATE);
+        assertThat(changeObject1.getTopic()).isEqualTo(PNJ);
         assertThat(changeObject1.getRef()).isEqualTo("540091906");
         assertThat(changeObject1.getValues()).hasSize(17);
         assertThat(changeObject1.getValues().get(0)).isEqualTo("540091906");
 
-        assertThat(actualChanges).extracting("type").contains(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES);
-        assertThat(actualChanges).extracting("topic").contains(DbDto.Topic.PNJ);
-        assertThat(actualChanges).extracting("topic").contains(DbDto.Topic.CLOTHES);
-        assertThat(actualChanges).extracting("topic").contains(DbDto.Topic.BRANDS);
+        assertThat(actualChanges).extracting("type").contains(UPDATE_RES);
+        assertThat(actualChanges).extracting("topic").contains(PNJ, CLOTHES, BRANDS);
     }
 }
