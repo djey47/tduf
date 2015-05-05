@@ -208,8 +208,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
                 .forEach((resourceReference) -> {
 
-                    Set<String> resourceValuesForCurrentRef = getAllResourceValuesForReference(resourceReference, topicResourceObjects);
-
+                    Set<String> resourceValuesForCurrentRef = BulkDatabaseMiner.getAllResourceValuesForReference(resourceReference, topicResourceObjects);
                     if (resourceValuesForCurrentRef.size() == 1) {
 
                         globalizedResourceRefs.add(resourceReference);
@@ -220,19 +219,6 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
                     }
                 });
-    }
-
-    // TODO extract to DatabaseMiner
-    private static Set<String> getAllResourceValuesForReference(String resourceReference, List<DbResourceDto> topicResourceObjects) {
-        return topicResourceObjects.stream()
-
-                .map((resource) -> resource.getEntries().stream()
-
-                        .filter((resourceEntry) -> resourceEntry.getReference().equals(resourceReference))
-
-                        .findAny().get().getValue())
-
-                .collect(toSet());
     }
 
     DbDto getTopicObject() {
