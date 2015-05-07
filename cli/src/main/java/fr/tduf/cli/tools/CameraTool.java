@@ -153,7 +153,13 @@ public class CameraTool extends GenericTool {
 
         new HashSet<>(parser.getCameraViews().keySet())
 
-                .forEach((cameraId) -> CamerasHelper.duplicateCameraSet(cameraId, cameraId + targetIdentifier, parser));
+                .forEach((cameraId) -> {
+
+                    if (cameraId >= 1 && cameraId <= 10000) {
+                        CamerasHelper.duplicateCameraSet(cameraId, cameraId + targetIdentifier, parser);
+                    }
+
+                });
 
         outLine("> Done copying camera sets.");
 
