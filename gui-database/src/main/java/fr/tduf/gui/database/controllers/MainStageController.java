@@ -17,6 +17,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -146,6 +147,14 @@ public class MainStageController implements Initializable {
         updateAllPropertiesWithItemValues(this.currentEntryIndexProperty.getValue());
     }
 
+    @FXML
+    public void handleApplyButtonMouseClick(ActionEvent actionEvent) {
+        System.out.println("handleApplyButtonMouseClick");
+
+        EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(this.profilesChoiceBox.getValue(), this.layoutObject);
+        fillTabPaneDynamically(profileObject);
+    }
+
     private void handleProfileChoiceChanged(String newProfileName) {
         System.out.println("handleProfileChoiceChanged: " + newProfileName);
 
@@ -229,6 +238,8 @@ public class MainStageController implements Initializable {
         entryItemsCountProperty.setValue(this.currentTopicObject.getData().getEntries().size());
 
         propertyByFieldRank.clear();
+
+        defaultTab.getChildren().clear();
         this.currentTopicObject.getStructure().getFields()
 
                 .forEach(this::assignControl);
@@ -246,11 +257,14 @@ public class MainStageController implements Initializable {
 
 
             DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, this.currentTopicObject.getStructure().getFields());
-            DbStructureDto.FieldType fieldType = structureField.getFieldType();
+            if (isAResourceField(structureField)) {
 
-            if (DbStructureDto.FieldType.RESOURCE_CURRENT == fieldType
-                    || DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN == fieldType) {
-                Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(rawValue, this.currentTopicObject.getStructure().getTopic(), this.localesChoiceBox.getValue());
+                DbDto.Topic resourceTopic = this.currentTopicObject.getStructure().getTopic();
+                if (structureField.getTargetRef() != null) {
+                    resourceTopic = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getStructure().getTopic();
+                }
+
+                Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(rawValue, resourceTopic, this.localesChoiceBox.getValue());
                 if (potentialResourceEntry.isPresent()) {
                     String resourceValue = potentialResourceEntry.get().getValue();
                     resourcePropertyByFieldRank.get(item.getFieldRank()).set(resourceValue);
@@ -289,9 +303,13 @@ public class MainStageController implements Initializable {
 
         addTextField(fieldBox, fieldReadOnly, field.getRank());
 
-        if (DbStructureDto.FieldType.RESOURCE_CURRENT == field.getFieldType()
-                || DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN == field.getFieldType()) {
-            addResourceValueLabel(fieldBox, field.getRank());
+        if (isAResourceField(field)) {
+            DbDto.Topic topic = currentTopicObject.getStructure().getTopic();
+            if (field.getTargetRef() != null) {
+                topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getStructure().getTopic();
+            }
+
+            addResourceValueLabel(fieldBox, field.getRank(), topic);
         }
     }
 
@@ -332,7 +350,7 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(fieldValue);
     }
 
-    private void addResourceValueLabel(HBox fieldBox, int fieldRank) {
+    private void addResourceValueLabel(HBox fieldBox, int fieldRank, DbDto.Topic topic) {
         Label resourceValueLabel = new Label();
 
         resourceValueLabel.setPrefWidth(300);
@@ -342,8 +360,17 @@ public class MainStageController implements Initializable {
         resourcePropertyByFieldRank.put(fieldRank, property);
         resourceValueLabel.textProperty().bindBidirectional(property);
 
+        Label resourceTopicLabel = new Label(topic.name());
+        resourceTopicLabel.setPadding(new Insets(5, 0, 0, 5));
+
         fieldBox.getChildren().add(resourceValueLabel);
+        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
+        fieldBox.getChildren().add(resourceTopicLabel);
     }
 
-
+    private static boolean isAResourceField(DbStructureDto.Field field) {
+        return DbStructureDto.FieldType.RESOURCE_CURRENT == field.getFieldType()
+                || DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN == field.getFieldType()
+                || DbStructureDto.FieldType.RESOURCE_REMOTE == field.getFieldType();
+    }
 }

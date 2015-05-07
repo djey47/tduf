@@ -13,6 +13,18 @@
           "toolTip": "Unique slot number"
         }
       ]
+    },
+    {
+      "name": "Remote resource test",
+      "topic": "HAIR",
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Haircut #"
+        }
+      ]
     }
   ]
 }

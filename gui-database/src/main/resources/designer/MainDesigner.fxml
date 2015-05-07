@@ -28,7 +28,7 @@
                                       <ChoiceBox fx:id="profilesChoiceBox" prefWidth="150.0" />
                                       <Label text="Locale:" />
                                       <ChoiceBox fx:id="localesChoiceBox" prefWidth="150.0" />
-                                      <Button mnemonicParsing="false" text="Apply" />
+                                      <Button mnemonicParsing="false" onAction="#handleApplyButtonMouseClick" text="Apply" />
                                   </items>
                               </ToolBar>
                           </children>
