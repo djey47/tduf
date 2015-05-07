@@ -37,6 +37,42 @@
           "label": "(REF) Brand #"
         }
       ]
+    },
+    {
+      "name": "Hidden fields test",
+      "topic": "BOTS",
+      "fieldSettings": [
+        {
+          "name": "PNJ",
+          "rank": 3,
+          "hidden": true
+        },
+        {
+          "name": "Difficulty",
+          "rank": 4,
+          "hidden": true
+        },
+        {
+          "name": "ZoneIndex",
+          "rank": 5,
+          "hidden": true
+        },
+        {
+          "name": "BotCar",
+          "rank": 6,
+          "hidden": true
+        },
+        {
+          "name": "ColorIndex",
+          "rank": 7,
+          "hidden": true
+        },
+        {
+          "name": "Rarety",
+          "rank": 8,
+          "hidden": true
+        }
+      ]
     }
   ]
 }

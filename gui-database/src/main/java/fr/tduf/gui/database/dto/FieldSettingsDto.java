@@ -17,6 +17,9 @@ public class FieldSettingsDto {
     @JsonProperty("readOnly")
     private boolean readOnly;
 
+    @JsonProperty("hidden")
+    private boolean hidden;
+
     @JsonProperty("label")
     private String label;
 
@@ -39,5 +42,9 @@ public class FieldSettingsDto {
 
     public boolean isReadOnly() {
         return readOnly;
+    }
+
+    public boolean isHidden() {
+        return hidden;
     }
 }

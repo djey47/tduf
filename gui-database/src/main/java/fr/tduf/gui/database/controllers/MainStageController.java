@@ -242,7 +242,7 @@ public class MainStageController implements Initializable {
         defaultTab.getChildren().clear();
         this.currentTopicObject.getStructure().getFields()
 
-                .forEach(this::assignControl);
+                .forEach(this::assignControls);
 
         updateAllPropertiesWithItemValues(this.currentEntryIndexProperty.getValue());
     }
@@ -270,15 +270,15 @@ public class MainStageController implements Initializable {
                     resourcePropertyByFieldRank.get(item.getFieldRank()).set(resourceValue);
                 }
             }
-
-
         });
     }
 
-    private void assignControl(DbStructureDto.Field field) {
+    private void assignControls(DbStructureDto.Field field) {
+
+        SimpleStringProperty property = new SimpleStringProperty("");
+        propertyByFieldRank.put(field.getRank(), property);
 
         EditorLayoutDto.EditorProfileDto currentProfile = EditorLayoutHelper.getAvailableProfileByName(profilesChoiceBox.getValue(), layoutObject);
-
         Optional<FieldSettingsDto> potentialFieldSettings = currentProfile.getFieldSettings().stream()
 
                 .filter((settings) -> settings.getName().equals(field.getName()))
@@ -289,6 +289,10 @@ public class MainStageController implements Initializable {
         boolean fieldReadOnly = false;
         if(potentialFieldSettings.isPresent()) {
             FieldSettingsDto fieldSettings = potentialFieldSettings.get();
+
+            if (fieldSettings.isHidden()) {
+                return;
+            }
 
             if (fieldSettings.getLabel() != null) {
                 fieldName = potentialFieldSettings.get().getLabel();
@@ -301,7 +305,7 @@ public class MainStageController implements Initializable {
 
         addFieldLabel(fieldBox, fieldReadOnly, fieldName);
 
-        addTextField(fieldBox, fieldReadOnly, field.getRank());
+        addTextField(fieldBox, fieldReadOnly, property);
 
         if (isAResourceField(field)) {
             DbDto.Topic topic = currentTopicObject.getStructure().getTopic();
@@ -316,7 +320,6 @@ public class MainStageController implements Initializable {
             DbDto.Topic topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getStructure().getTopic();
             addReferenceValueControls(fieldBox, topic);
         }
-
     }
 
     private HBox createFieldBox() {
@@ -339,7 +342,7 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(fieldNameLabel);
     }
 
-    private void addTextField(HBox fieldBox, boolean readOnly, int fieldRank) {
+    private void addTextField(HBox fieldBox, boolean readOnly, Property<String> property) {
         TextField fieldValue = new TextField();
 
         if (readOnly) {
@@ -349,8 +352,7 @@ public class MainStageController implements Initializable {
         fieldValue.setPrefWidth(110.0);
         fieldValue.setEditable(!readOnly);
 
-        SimpleStringProperty property = new SimpleStringProperty("");
-        propertyByFieldRank.put(fieldRank, property);
+
         fieldValue.textProperty().bindBidirectional(property);
 
         fieldBox.getChildren().add(fieldValue);
