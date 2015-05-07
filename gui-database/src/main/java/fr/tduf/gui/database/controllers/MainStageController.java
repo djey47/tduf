@@ -9,6 +9,8 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,6 +19,8 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
+import javafx.util.converter.IntegerStringConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -52,15 +56,21 @@ public class MainStageController implements Initializable {
     private TextField databaseLocationTextField;
 
     @FXML
-    private ChoiceBox<String> itemsChoiceBox;
+    private TextField entryNumberTextField;
+
+    @FXML
+    private Label entryItemsCountLabel;
+
 
     private List<DbDto> databaseObjects = new ArrayList<>();
+    private DbDto currentTopicObject;
+
     private EditorLayoutDto layoutObject;
     private BulkDatabaseMiner databaseMiner;
 
     private Map<Integer, SimpleStringProperty> propertyByFieldRank = new HashMap<>();
-    private int currentEntryIndex = 0;
-    private DbDto currentTopicObject;
+    private Property<Integer> currentEntryIndexProperty;
+    private Property<Integer> entryItemsCountProperty;
 
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -95,40 +105,44 @@ public class MainStageController implements Initializable {
     public void handleNextButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleNextButtonMouseClick");
 
-        if (this.currentEntryIndex >= this.currentTopicObject.getData().getEntries().size() - 1) {
+        int currentEntryIndex = currentEntryIndexProperty.getValue();
+        if (currentEntryIndex >= this.currentTopicObject.getData().getEntries().size() - 1) {
             return;
         }
 
-        this.currentEntryIndex++;
-        updateAllPropertiesWithItemValues(this.currentEntryIndex);
+        currentEntryIndex++;
+        this.currentEntryIndexProperty.setValue(currentEntryIndex);
+        updateAllPropertiesWithItemValues(currentEntryIndex);
     }
 
     @FXML
     public void handlePreviousButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handlePreviousButtonMouseClick");
 
-        if (this.currentEntryIndex <= 0 ) {
+        int currentEntryIndex = currentEntryIndexProperty.getValue();
+        if (currentEntryIndex <= 0 ) {
             return;
         }
 
-        this.currentEntryIndex--;
-        updateAllPropertiesWithItemValues(this.currentEntryIndex);
+        currentEntryIndex--;
+        this.currentEntryIndexProperty.setValue(currentEntryIndex);
+        updateAllPropertiesWithItemValues(currentEntryIndex);
     }
 
     @FXML
     public void handleFirstButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleFirstButtonMouseClick");
 
-        this.currentEntryIndex = 0;
-        updateAllPropertiesWithItemValues(this.currentEntryIndex);
+        this.currentEntryIndexProperty.setValue(0);
+        updateAllPropertiesWithItemValues(this.currentEntryIndexProperty.getValue());
     }
 
     @FXML
     public void handleLastButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleLastButtonMouseClick");
 
-        this.currentEntryIndex = this.currentTopicObject.getData().getEntries().size() - 1;
-        updateAllPropertiesWithItemValues(this.currentEntryIndex);
+        this.currentEntryIndexProperty.setValue(this.currentTopicObject.getData().getEntries().size() - 1);
+        updateAllPropertiesWithItemValues(this.currentEntryIndexProperty.getValue());
     }
 
     private void handleProfileChoiceChanged(String newProfileName) {
@@ -152,14 +166,43 @@ public class MainStageController implements Initializable {
 
     private void initNavigationPane() {
 
+        this.entryItemsCountProperty = new SimpleObjectProperty<>(-1);
+        this.entryItemsCountLabel.textProperty().bindBidirectional(entryItemsCountProperty, new StringConverter<Integer>() {
+            @Override
+            public String toString(Integer object) {
+                if (object == -1) {
+                    return "/ <?>";
+                }
+                return "/ " + object;
+            }
 
+            @Override
+            public Integer fromString(String string) {
+                return null;
+            }
+        });
+
+        this.currentEntryIndexProperty = new SimpleObjectProperty<>(-1);
+        this.entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new StringConverter<Integer>() {
+            @Override
+            public String toString(Integer object) {
+                if (object == -1) {
+                    return "<?>";
+                }
+                return "" + (object + 1);
+
+            }
+
+            @Override
+            public Integer fromString(String string) {
+                return null;
+            }
+        });
 
     }
 
     private void loadAndFillProfiles() throws IOException {
-        URL resourceURL = thisClass.getResource("/layout/defaultProfiles.json");
-
-        this.layoutObject = new ObjectMapper().readValue(resourceURL, EditorLayoutDto.class);
+        this.layoutObject = new ObjectMapper().readValue(thisClass.getResource("/layout/defaultProfiles.json"), EditorLayoutDto.class);
         this.layoutObject.getProfiles()
                 .forEach((profileObject) -> profilesChoiceBox.getItems().add(profileObject.getName()));
     }
@@ -181,13 +224,15 @@ public class MainStageController implements Initializable {
 
         this.currentTopicObject = databaseMiner.getDatabaseTopic(startTopic).get();
 
+        currentEntryIndexProperty.setValue(0);
+        entryItemsCountProperty.setValue(this.currentTopicObject.getData().getEntries().size());
+
         propertyByFieldRank.clear();
         this.currentTopicObject.getStructure().getFields()
 
                 .forEach(this::assignControl);
 
-        this.currentEntryIndex = 0;
-        updateAllPropertiesWithItemValues(currentEntryIndex);
+        updateAllPropertiesWithItemValues(this.currentEntryIndexProperty.getValue());
     }
 
     private void updateAllPropertiesWithItemValues(int entryIndex) {

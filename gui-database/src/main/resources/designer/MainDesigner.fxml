@@ -40,7 +40,8 @@
                   <items>
                       <Button mnemonicParsing="false" onAction="#handleFirstButtonMouseClick" text="First" />
                       <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handlePreviousButtonMouseClick" text="Previous" />
-                      <ChoiceBox id="navigationChoiceBox" prefWidth="150.0" />
+                  <TextField fx:id="entryNumberTextField" alignment="CENTER" editable="false" prefWidth="50.0" />
+                  <Label fx:id="entryItemsCountLabel" text="/ &lt;?&gt;" />
                       <Button layoutX="61.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleNextButtonMouseClick" text="Next" />
                       <Button layoutX="139.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleLastButtonMouseClick" text="Last" />
                   </items>
