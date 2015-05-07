@@ -9,6 +9,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -20,7 +21,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
-import javafx.util.converter.IntegerStringConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -71,6 +71,7 @@ public class MainStageController implements Initializable {
     private Map<Integer, SimpleStringProperty> propertyByFieldRank = new HashMap<>();
     private Property<Integer> currentEntryIndexProperty;
     private Property<Integer> entryItemsCountProperty;
+    private Map<Integer, SimpleStringProperty> resourcePropertyByFieldRank = new HashMap<>();
 
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -238,7 +239,26 @@ public class MainStageController implements Initializable {
     private void updateAllPropertiesWithItemValues(int entryIndex) {
         DbDataDto.Entry entry = this.currentTopicObject.getData().getEntries().get(entryIndex);
 
-        entry.getItems().forEach((item) -> propertyByFieldRank.get(item.getFieldRank()).set(item.getRawValue()));
+        entry.getItems().forEach((item) -> {
+            String rawValue = item.getRawValue();
+
+            propertyByFieldRank.get(item.getFieldRank()).set(rawValue);
+
+
+            DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, this.currentTopicObject.getStructure().getFields());
+            DbStructureDto.FieldType fieldType = structureField.getFieldType();
+
+            if (DbStructureDto.FieldType.RESOURCE_CURRENT == fieldType
+                    || DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN == fieldType) {
+                Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(rawValue, this.currentTopicObject.getStructure().getTopic(), this.localesChoiceBox.getValue());
+                if (potentialResourceEntry.isPresent()) {
+                    String resourceValue = potentialResourceEntry.get().getValue();
+                    resourcePropertyByFieldRank.get(item.getFieldRank()).set(resourceValue);
+                }
+            }
+
+
+        });
     }
 
     private void assignControl(DbStructureDto.Field field) {
@@ -268,6 +288,11 @@ public class MainStageController implements Initializable {
         addFieldLabel(fieldBox, fieldReadOnly, fieldName);
 
         addTextField(fieldBox, fieldReadOnly, field.getRank());
+
+        if (DbStructureDto.FieldType.RESOURCE_CURRENT == field.getFieldType()
+                || DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN == field.getFieldType()) {
+            addResourceValueLabel(fieldBox, field.getRank());
+        }
     }
 
     private HBox createFieldBox() {
@@ -306,4 +331,19 @@ public class MainStageController implements Initializable {
 
         fieldBox.getChildren().add(fieldValue);
     }
+
+    private void addResourceValueLabel(HBox fieldBox, int fieldRank) {
+        Label resourceValueLabel = new Label();
+
+        resourceValueLabel.setPrefWidth(300);
+        resourceValueLabel.setPadding(new Insets(5, 0, 0, 5));
+
+        SimpleStringProperty property = new SimpleStringProperty("");
+        resourcePropertyByFieldRank.put(fieldRank, property);
+        resourceValueLabel.textProperty().bindBidirectional(property);
+
+        fieldBox.getChildren().add(resourceValueLabel);
+    }
+
+
 }
