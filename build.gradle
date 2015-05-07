@@ -167,6 +167,11 @@ project(':gui-database') {
     dependencies {
         compile project(':lib-unlimited')
     }
+
+    task execute(type:JavaExec) {
+        main 'fr.tduf.gui.database.Main'
+        classpath sourceSets.main.runtimeClasspath
+    }
 }
 
 task copyDoc(type: Copy) {
