@@ -309,8 +309,14 @@ public class MainStageController implements Initializable {
                 topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getStructure().getTopic();
             }
 
-            addResourceValueLabel(fieldBox, field.getRank(), topic);
+            addResourceValueControls(fieldBox, field.getRank(), topic);
         }
+
+        if (DbStructureDto.FieldType.REFERENCE == field.getFieldType()) {
+            DbDto.Topic topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getStructure().getTopic();
+            addReferenceValueControls(fieldBox, topic);
+        }
+
     }
 
     private HBox createFieldBox() {
@@ -350,20 +356,34 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(fieldValue);
     }
 
-    private void addResourceValueLabel(HBox fieldBox, int fieldRank, DbDto.Topic topic) {
+    private void addResourceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic topic) {
         Label resourceValueLabel = new Label();
 
         resourceValueLabel.setPrefWidth(300);
-        resourceValueLabel.setPadding(new Insets(5, 0, 0, 5));
+        resourceValueLabel.getStyleClass().add("fieldLabel");
 
         SimpleStringProperty property = new SimpleStringProperty("");
         resourcePropertyByFieldRank.put(fieldRank, property);
         resourceValueLabel.textProperty().bindBidirectional(property);
 
         Label resourceTopicLabel = new Label(topic.name());
-        resourceTopicLabel.setPadding(new Insets(5, 0, 0, 5));
+        resourceTopicLabel.getStyleClass().add("fieldLabel");
 
         fieldBox.getChildren().add(resourceValueLabel);
+        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
+        fieldBox.getChildren().add(resourceTopicLabel);
+    }
+
+    private void addReferenceValueControls(HBox fieldBox, DbDto.Topic topic) {
+        Label label = new Label("Entry from another topic");
+
+        label.setPrefWidth(300);
+        label.getStyleClass().add("fieldLabel");
+
+        Label resourceTopicLabel = new Label(topic.name());
+        resourceTopicLabel.getStyleClass().add("fieldLabel");
+
+        fieldBox.getChildren().add(label);
         fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
         fieldBox.getChildren().add(resourceTopicLabel);
     }
