@@ -9,7 +9,7 @@
           "name": "REF",
           "priority": 9999,
           "readOnly": "true",
-          "label": "Slot #",
+          "label": "(REF) Slot #",
           "toolTip": "Unique slot number"
         }
       ]

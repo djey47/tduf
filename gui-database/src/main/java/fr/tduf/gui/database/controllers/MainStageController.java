@@ -51,6 +51,9 @@ public class MainStageController implements Initializable {
     @FXML
     private TextField databaseLocationTextField;
 
+    @FXML
+    private ChoiceBox<String> itemsChoiceBox;
+
     private List<DbDto> databaseObjects = new ArrayList<>();
     private EditorLayoutDto layoutObject;
     private BulkDatabaseMiner databaseMiner;
@@ -64,6 +67,8 @@ public class MainStageController implements Initializable {
 
         try {
             initSettingsPane();
+
+            initNavigationPane();
 
             // DEBUG
             databaseLocationTextField.setText("/media/DevStore/GIT/tduf/cli/integ-tests/db-json/");
@@ -90,8 +95,11 @@ public class MainStageController implements Initializable {
     public void handleNextButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleNextButtonMouseClick");
 
-        this.currentEntryIndex++;
+        if (this.currentEntryIndex >= this.currentTopicObject.getData().getEntries().size() - 1) {
+            return;
+        }
 
+        this.currentEntryIndex++;
         updateAllPropertiesWithItemValues(this.currentEntryIndex);
     }
 
@@ -99,8 +107,27 @@ public class MainStageController implements Initializable {
     public void handlePreviousButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handlePreviousButtonMouseClick");
 
-        this.currentEntryIndex--;
+        if (this.currentEntryIndex <= 0 ) {
+            return;
+        }
 
+        this.currentEntryIndex--;
+        updateAllPropertiesWithItemValues(this.currentEntryIndex);
+    }
+
+    @FXML
+    public void handleFirstButtonMouseClick(ActionEvent actionEvent) {
+        System.out.println("handleFirstButtonMouseClick");
+
+        this.currentEntryIndex = 0;
+        updateAllPropertiesWithItemValues(this.currentEntryIndex);
+    }
+
+    @FXML
+    public void handleLastButtonMouseClick(ActionEvent actionEvent) {
+        System.out.println("handleLastButtonMouseClick");
+
+        this.currentEntryIndex = this.currentTopicObject.getData().getEntries().size() - 1;
         updateAllPropertiesWithItemValues(this.currentEntryIndex);
     }
 
@@ -121,6 +148,12 @@ public class MainStageController implements Initializable {
 
         this.profilesChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> handleProfileChoiceChanged((String) newValue));
+    }
+
+    private void initNavigationPane() {
+
+
+
     }
 
     private void loadAndFillProfiles() throws IOException {
@@ -187,7 +220,7 @@ public class MainStageController implements Initializable {
 
         HBox fieldBox = createFieldBox();
 
-        addFieldLabel(fieldBox, fieldName);
+        addFieldLabel(fieldBox, fieldReadOnly, fieldName);
 
         addTextField(fieldBox, fieldReadOnly, field.getRank());
     }
@@ -200,16 +233,26 @@ public class MainStageController implements Initializable {
         return fieldBox;
     }
 
-    private void addFieldLabel(HBox fieldBox, String fieldName) {
+    private void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName) {
         Label fieldNameLabel = new Label(fieldName);
-        fieldNameLabel.setPrefWidth(225.0);
+
         fieldNameLabel.getStyleClass().add("fieldName");
+        if (readOnly) {
+            fieldNameLabel.getStyleClass().add("readonlyField");
+        }
+
+        fieldNameLabel.setPrefWidth(225.0);
         fieldBox.getChildren().add(fieldNameLabel);
     }
 
     private void addTextField(HBox fieldBox, boolean readOnly, int fieldRank) {
         TextField fieldValue = new TextField();
-        fieldValue.setPrefWidth(95.0);
+
+        if (readOnly) {
+            fieldValue.getStyleClass().add("readonlyField");
+        }
+
+        fieldValue.setPrefWidth(110.0);
         fieldValue.setEditable(!readOnly);
 
         SimpleStringProperty property = new SimpleStringProperty("");

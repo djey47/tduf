@@ -38,11 +38,11 @@
       
               <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
                   <items>
-                      <Button mnemonicParsing="false" text="First" />
+                      <Button mnemonicParsing="false" onAction="#handleFirstButtonMouseClick" text="First" />
                       <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handlePreviousButtonMouseClick" text="Previous" />
-                      <ChoiceBox prefWidth="150.0" />
+                      <ChoiceBox id="navigationChoiceBox" prefWidth="150.0" />
                       <Button layoutX="61.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleNextButtonMouseClick" text="Next" />
-                      <Button layoutX="139.0" layoutY="11.0" mnemonicParsing="false" text="Last" />
+                      <Button layoutX="139.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleLastButtonMouseClick" text="Last" />
                   </items>
               </ToolBar>
                   <TabPane fx:id="tabPane" prefHeight="600.0" tabClosingPolicy="UNAVAILABLE">

@@ -9,3 +9,7 @@
 .fieldName {
     -fx-font-weight: bold;
 }
+
+.readonlyField {
+    -fx-text-fill: gray;
+}
