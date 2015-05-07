@@ -3,6 +3,9 @@
     {
       "name": "Vehicle slots",
       "topic": "CAR_PHYSICS_DATA",
+      "groups": [
+        "General"
+      ],
       "fieldSettings": [
         {
           "rank": 1,
@@ -11,6 +14,26 @@
           "readOnly": "true",
           "label": "(REF) Slot #",
           "toolTip": "Unique slot number"
+        },
+        {
+          "name": "Car_Brand",
+          "rank": 2,
+          "group": "General"
+        },
+        {
+          "name": "Car_Model",
+          "rank": 3,
+          "group": "General"
+        },
+        {
+          "name": "Car_Version",
+          "rank": 4,
+          "group": "General"
+        },
+        {
+          "name": "Group",
+          "rank": 5,
+          "group": "General"
         }
       ]
     },

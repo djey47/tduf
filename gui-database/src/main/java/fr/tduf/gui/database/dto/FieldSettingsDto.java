@@ -26,6 +26,9 @@ public class FieldSettingsDto {
     @JsonProperty("toolTip")
     private String toolTip;
 
+    @JsonProperty("group")
+    private String group;
+
     public FieldSettingsDto() {}
 
     public FieldSettingsDto(String fieldName) {
@@ -46,5 +49,9 @@ public class FieldSettingsDto {
 
     public boolean isHidden() {
         return hidden;
+    }
+
+    public String getGroup() {
+        return group;
     }
 }

@@ -62,6 +62,7 @@ public class MainStageController implements Initializable {
     @FXML
     private Label entryItemsCountLabel;
 
+    private Map<String, VBox> tabContentByName = new HashMap<>();
 
     private List<DbDto> databaseObjects = new ArrayList<>();
     private DbDto currentTopicObject;
@@ -73,6 +74,7 @@ public class MainStageController implements Initializable {
     private Property<Integer> currentEntryIndexProperty;
     private Property<Integer> entryItemsCountProperty;
     private Map<Integer, SimpleStringProperty> resourcePropertyByFieldRank = new HashMap<>();
+
 
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -230,6 +232,8 @@ public class MainStageController implements Initializable {
             return;
         }
 
+        initGroupTabs(profileObject);
+
         DbDto.Topic startTopic = profileObject.getTopic();
 
         this.currentTopicObject = databaseMiner.getDatabaseTopic(startTopic).get();
@@ -245,6 +249,23 @@ public class MainStageController implements Initializable {
                 .forEach(this::assignControls);
 
         updateAllPropertiesWithItemValues(this.currentEntryIndexProperty.getValue());
+    }
+
+    private void initGroupTabs(EditorLayoutDto.EditorProfileDto profileObject) {
+
+        this.tabPane.getTabs().remove(1, this.tabPane.getTabs().size());
+        tabContentByName.clear();
+
+        if (profileObject.getGroups() != null) {
+            profileObject.getGroups().forEach((groupName) -> {
+                VBox vbox = new VBox();
+                Tab groupTab = new Tab(groupName, new ScrollPane(vbox));
+
+                this.tabPane.getTabs().add(groupTab);
+
+                tabContentByName.put(groupName, vbox);
+            });
+        }
     }
 
     private void updateAllPropertiesWithItemValues(int entryIndex) {
@@ -287,6 +308,7 @@ public class MainStageController implements Initializable {
 
         String fieldName = field.getName();
         boolean fieldReadOnly = false;
+        String groupName = null;
         if(potentialFieldSettings.isPresent()) {
             FieldSettingsDto fieldSettings = potentialFieldSettings.get();
 
@@ -295,13 +317,15 @@ public class MainStageController implements Initializable {
             }
 
             if (fieldSettings.getLabel() != null) {
-                fieldName = potentialFieldSettings.get().getLabel();
+                fieldName = fieldSettings.getLabel();
             }
 
             fieldReadOnly = fieldSettings.isReadOnly();
+
+            groupName = fieldSettings.getGroup();
         }
 
-        HBox fieldBox = createFieldBox();
+        HBox fieldBox = createFieldBox(Optional.ofNullable(groupName));
 
         addFieldLabel(fieldBox, fieldReadOnly, fieldName);
 
@@ -322,11 +346,18 @@ public class MainStageController implements Initializable {
         }
     }
 
-    private HBox createFieldBox() {
+    private HBox createFieldBox(Optional<String> groupName) {
         HBox fieldBox = new HBox();
         fieldBox.setPrefHeight(25.0);
         fieldBox.setPadding(new Insets(5.0));
-        defaultTab.getChildren().add(fieldBox);
+
+        if (groupName.isPresent()) {
+            VBox groupTab = tabContentByName.get(groupName.get());
+            groupTab.getChildren().add(fieldBox);
+        } else {
+            defaultTab.getChildren().add(fieldBox);
+        }
+
         return fieldBox;
     }
 
