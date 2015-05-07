@@ -4,10 +4,12 @@ import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.helper.EditorLayoutHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,10 +22,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 
@@ -56,6 +55,10 @@ public class MainStageController implements Initializable {
     private EditorLayoutDto layoutObject;
     private BulkDatabaseMiner databaseMiner;
 
+    private Map<Integer, SimpleStringProperty> propertyByFieldRank = new HashMap<>();
+    private int currentEntryIndex = 0;
+    private DbDto currentTopicObject;
+
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
 
@@ -81,6 +84,24 @@ public class MainStageController implements Initializable {
 
             profilesChoiceBox.setValue(profilesChoiceBox.getItems().get(0));
         }
+    }
+
+    @FXML
+    public void handleNextButtonMouseClick(ActionEvent actionEvent) {
+        System.out.println("handleNextButtonMouseClick");
+
+        this.currentEntryIndex++;
+
+        updateAllPropertiesWithItemValues(this.currentEntryIndex);
+    }
+
+    @FXML
+    public void handlePreviousButtonMouseClick(ActionEvent actionEvent) {
+        System.out.println("handlePreviousButtonMouseClick");
+
+        this.currentEntryIndex--;
+
+        updateAllPropertiesWithItemValues(this.currentEntryIndex);
     }
 
     private void handleProfileChoiceChanged(String newProfileName) {
@@ -125,11 +146,21 @@ public class MainStageController implements Initializable {
 
         DbDto.Topic startTopic = profileObject.getTopic();
 
-        DbDto topicObject = databaseMiner.getDatabaseTopic(startTopic).get();
+        this.currentTopicObject = databaseMiner.getDatabaseTopic(startTopic).get();
 
-        topicObject.getStructure().getFields()
+        propertyByFieldRank.clear();
+        this.currentTopicObject.getStructure().getFields()
 
                 .forEach(this::assignControl);
+
+        this.currentEntryIndex = 0;
+        updateAllPropertiesWithItemValues(currentEntryIndex);
+    }
+
+    private void updateAllPropertiesWithItemValues(int entryIndex) {
+        DbDataDto.Entry entry = this.currentTopicObject.getData().getEntries().get(entryIndex);
+
+        entry.getItems().forEach((item) -> propertyByFieldRank.get(item.getFieldRank()).set(item.getRawValue()));
     }
 
     private void assignControl(DbStructureDto.Field field) {
@@ -158,7 +189,7 @@ public class MainStageController implements Initializable {
 
         addFieldLabel(fieldBox, fieldName);
 
-        addTextField(fieldBox, fieldReadOnly);
+        addTextField(fieldBox, fieldReadOnly, field.getRank());
     }
 
     private HBox createFieldBox() {
@@ -176,12 +207,15 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(fieldNameLabel);
     }
 
-    private void addTextField(HBox fieldBox, boolean readOnly) {
+    private void addTextField(HBox fieldBox, boolean readOnly, int fieldRank) {
         TextField fieldValue = new TextField();
-        fieldValue.setPrefWidth(75.0);
+        fieldValue.setPrefWidth(95.0);
         fieldValue.setEditable(!readOnly);
-        // TODO value binding
-//        fieldValue.textProperty().
+
+        SimpleStringProperty property = new SimpleStringProperty("");
+        propertyByFieldRank.put(fieldRank, property);
+        fieldValue.textProperty().bindBidirectional(property);
+
         fieldBox.getChildren().add(fieldValue);
     }
 }
