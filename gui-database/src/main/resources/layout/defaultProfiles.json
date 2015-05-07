@@ -25,6 +25,18 @@
           "label": "(REF) Haircut #"
         }
       ]
+    },
+    {
+      "name": "All brands",
+      "topic": "BRANDS",
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Brand #"
+        }
+      ]
     }
   ]
 }
