@@ -4,7 +4,8 @@
       "name": "Vehicle slots",
       "topic": "CAR_PHYSICS_DATA",
       "groups": [
-        "General"
+        "General",
+        "Rims"
       ],
       "fieldSettings": [
         {
@@ -18,7 +19,8 @@
         {
           "name": "Car_Brand",
           "rank": 2,
-          "group": "General"
+          "group": "General",
+          "remoteFieldRanks": [2,3]
         },
         {
           "name": "Car_Model",
@@ -34,6 +36,12 @@
           "name": "Group",
           "rank": 5,
           "group": "General"
+        },
+        {
+          "name": "Default_Rims",
+          "rank": 10,
+          "group": "Rims",
+          "remoteFieldRanks": [2,4,5,6,7]
         }
       ]
     },
@@ -68,7 +76,7 @@
         {
           "name": "PNJ",
           "rank": 3,
-          "hidden": true
+          "hidden": false
         },
         {
           "name": "Difficulty",

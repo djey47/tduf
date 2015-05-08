@@ -30,6 +30,8 @@ import java.net.URL;
 import java.util.*;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Makes it a possible to intercept all GUI events.
@@ -70,15 +72,16 @@ public class MainStageController implements Initializable {
     private EditorLayoutDto layoutObject;
     private BulkDatabaseMiner databaseMiner;
 
+    private Property<DbResourceDto.Locale> currentLocaleProperty;
     private Map<Integer, SimpleStringProperty> propertyByFieldRank = new HashMap<>();
     private Property<Integer> currentEntryIndexProperty;
     private Property<Integer> entryItemsCountProperty;
     private Map<Integer, SimpleStringProperty> resourcePropertyByFieldRank = new HashMap<>();
+    private Map<Integer, SimpleStringProperty> remoteContentsPropertyByFieldRank = new HashMap<>();
 
 
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
-
         try {
             initSettingsPane();
 
@@ -89,7 +92,6 @@ public class MainStageController implements Initializable {
         } catch (IOException e) {
             throw new RuntimeException("Window initializing failed.", e);
         }
-
     }
 
     @FXML
@@ -116,7 +118,7 @@ public class MainStageController implements Initializable {
 
         currentEntryIndex++;
         this.currentEntryIndexProperty.setValue(currentEntryIndex);
-        updateAllPropertiesWithItemValues(currentEntryIndex);
+        updateAllPropertiesWithItemValues();
     }
 
     @FXML
@@ -130,7 +132,7 @@ public class MainStageController implements Initializable {
 
         currentEntryIndex--;
         this.currentEntryIndexProperty.setValue(currentEntryIndex);
-        updateAllPropertiesWithItemValues(currentEntryIndex);
+        updateAllPropertiesWithItemValues();
     }
 
     @FXML
@@ -138,7 +140,7 @@ public class MainStageController implements Initializable {
         System.out.println("handleFirstButtonMouseClick");
 
         this.currentEntryIndexProperty.setValue(0);
-        updateAllPropertiesWithItemValues(this.currentEntryIndexProperty.getValue());
+        updateAllPropertiesWithItemValues();
     }
 
     @FXML
@@ -146,22 +148,19 @@ public class MainStageController implements Initializable {
         System.out.println("handleLastButtonMouseClick");
 
         this.currentEntryIndexProperty.setValue(this.currentTopicObject.getData().getEntries().size() - 1);
-        updateAllPropertiesWithItemValues(this.currentEntryIndexProperty.getValue());
-    }
-
-    @FXML
-    public void handleApplyButtonMouseClick(ActionEvent actionEvent) {
-        System.out.println("handleApplyButtonMouseClick");
-
-        EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(this.profilesChoiceBox.getValue(), this.layoutObject);
-        fillTabPaneDynamically(profileObject);
+        updateAllPropertiesWithItemValues();
     }
 
     private void handleProfileChoiceChanged(String newProfileName) {
         System.out.println("handleProfileChoiceChanged: " + newProfileName);
 
-        EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(newProfileName, this.layoutObject);
-        fillTabPaneDynamically(profileObject);
+        fillTabPaneDynamically(newProfileName);
+    }
+
+    private void handleLocaleChoiceChanged(DbResourceDto.Locale newLocale) {
+        System.out.println("handleLocaleChoiceChanged: " + newLocale.name());
+
+        fillTabPaneDynamically(this.profilesChoiceBox.getValue());
     }
 
     private void initSettingsPane() throws IOException {
@@ -169,11 +168,13 @@ public class MainStageController implements Initializable {
         this.settingsPane.setExpanded(false);
 
         fillLocales();
+        this.localesChoiceBox.getSelectionModel().selectedItemProperty()
+                .addListener(((observable, oldValue, newValue) -> handleLocaleChoiceChanged(newValue)));
 
         loadAndFillProfiles();
-
         this.profilesChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> handleProfileChoiceChanged((String) newValue));
+
     }
 
     private void initNavigationPane() {
@@ -221,17 +222,19 @@ public class MainStageController implements Initializable {
 
     private void fillLocales() {
         asList(DbResourceDto.Locale.values())
-                .forEach((locale) -> localesChoiceBox.getItems().add(locale));
+                .forEach((locale) -> this.localesChoiceBox.getItems().add(locale));
 
-        localesChoiceBox.setValue(DbResourceDto.Locale.UNITED_STATES);
+        this.currentLocaleProperty = new SimpleObjectProperty<>(DbResourceDto.Locale.UNITED_STATES);
+        this.localesChoiceBox.valueProperty().bindBidirectional(this.currentLocaleProperty);
     }
 
-    private void fillTabPaneDynamically(EditorLayoutDto.EditorProfileDto profileObject) {
+    private void fillTabPaneDynamically(String profileName) {
 
         if (databaseObjects.isEmpty()) {
             return;
         }
 
+        EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, this.layoutObject);
         initGroupTabs(profileObject);
 
         DbDto.Topic startTopic = profileObject.getTopic();
@@ -242,13 +245,25 @@ public class MainStageController implements Initializable {
         entryItemsCountProperty.setValue(this.currentTopicObject.getData().getEntries().size());
 
         propertyByFieldRank.clear();
+        resourcePropertyByFieldRank.clear();
+        remoteContentsPropertyByFieldRank.clear();  // TODO see to merge 2 maps
 
         defaultTab.getChildren().clear();
         this.currentTopicObject.getStructure().getFields()
 
                 .forEach(this::assignControls);
 
-        updateAllPropertiesWithItemValues(this.currentEntryIndexProperty.getValue());
+        updateAllPropertiesWithItemValues();
+    }
+
+    private Optional<FieldSettingsDto> getFieldSettings(DbStructureDto.Field field, String profileName) {
+        EditorLayoutDto.EditorProfileDto currentProfile = EditorLayoutHelper.getAvailableProfileByName(profileName, this.layoutObject);
+
+        return currentProfile.getFieldSettings().stream()
+
+                .filter((settings) -> settings.getName().equals(field.getName()))
+
+                .findAny();
     }
 
     private void initGroupTabs(EditorLayoutDto.EditorProfileDto profileObject) {
@@ -268,7 +283,8 @@ public class MainStageController implements Initializable {
         }
     }
 
-    private void updateAllPropertiesWithItemValues(int entryIndex) {
+    private void updateAllPropertiesWithItemValues() {
+        int entryIndex = this.currentEntryIndexProperty.getValue();
         DbDataDto.Entry entry = this.currentTopicObject.getData().getEntries().get(entryIndex);
 
         entry.getItems().forEach((item) -> {
@@ -285,13 +301,64 @@ public class MainStageController implements Initializable {
                     resourceTopic = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getStructure().getTopic();
                 }
 
-                Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(rawValue, resourceTopic, this.localesChoiceBox.getValue());
+                Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(rawValue, resourceTopic, this.currentLocaleProperty.getValue());
                 if (potentialResourceEntry.isPresent()) {
                     String resourceValue = potentialResourceEntry.get().getValue();
                     resourcePropertyByFieldRank.get(item.getFieldRank()).set(resourceValue);
                 }
             }
+
+            if (DbStructureDto.FieldType.REFERENCE == structureField.getFieldType()) {
+                if (remoteContentsPropertyByFieldRank.containsKey(item.getFieldRank())) {
+                    DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getStructure().getTopic();
+
+                    List<Integer> remoteFieldRanks = new ArrayList<>();
+                    Optional<FieldSettingsDto> fieldSettings = getFieldSettings(structureField, profilesChoiceBox.getValue());
+                    if (fieldSettings.isPresent()) {
+                        remoteFieldRanks = fieldSettings.get().getRemoteFieldRanks();
+                    }
+
+                    String remoteContents = fetchRemoteContents(remoteTopic, item.getRawValue(), remoteFieldRanks);
+                    remoteContentsPropertyByFieldRank.get(item.getFieldRank()).set(remoteContents);
+                }
+            }
         });
+    }
+
+    private String fetchRemoteContents(DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {
+        requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
+
+        if (remoteFieldRanks.isEmpty()) {
+            return "Reference to another topic.";
+        }
+
+        List<String> contents = remoteFieldRanks.stream()
+
+                .map((remoteFieldRank) -> {
+
+                    Optional<DbDataDto.Entry> potentialContentEntry = databaseMiner.getContentEntryFromTopicWithReference(remoteEntryReference, remoteTopic);
+                    if (!potentialContentEntry.isPresent()) {
+                        return "<?>";
+                    }
+
+                    DbDataDto.Entry contentEntry = potentialContentEntry.get();
+                    String resourceReference = contentEntry.getItems().stream()
+
+                            .filter((contentsItem) -> contentsItem.getFieldRank() == remoteFieldRank)
+
+                            .findAny().get().getRawValue();
+
+                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, remoteTopic, this.currentLocaleProperty.getValue());
+                    if (potentialRemoteResourceEntry.isPresent()) {
+                        return potentialRemoteResourceEntry.get().getValue();
+                    }
+
+                    return resourceReference;
+                })
+
+                .collect(toList());
+
+        return String.join(" - ", contents);
     }
 
     private void assignControls(DbStructureDto.Field field) {
@@ -299,13 +366,7 @@ public class MainStageController implements Initializable {
         SimpleStringProperty property = new SimpleStringProperty("");
         propertyByFieldRank.put(field.getRank(), property);
 
-        EditorLayoutDto.EditorProfileDto currentProfile = EditorLayoutHelper.getAvailableProfileByName(profilesChoiceBox.getValue(), layoutObject);
-        Optional<FieldSettingsDto> potentialFieldSettings = currentProfile.getFieldSettings().stream()
-
-                .filter((settings) -> settings.getName().equals(field.getName()))
-
-                .findAny();
-
+        Optional<FieldSettingsDto> potentialFieldSettings = getFieldSettings(field, profilesChoiceBox.getValue());
         String fieldName = field.getName();
         boolean fieldReadOnly = false;
         String groupName = null;
@@ -342,7 +403,7 @@ public class MainStageController implements Initializable {
 
         if (DbStructureDto.FieldType.REFERENCE == field.getFieldType()) {
             DbDto.Topic topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getStructure().getTopic();
-            addReferenceValueControls(fieldBox, topic);
+            addReferenceValueControls(fieldBox, field.getRank(), topic);
         }
     }
 
@@ -391,8 +452,7 @@ public class MainStageController implements Initializable {
 
     private void addResourceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic topic) {
         Label resourceValueLabel = new Label();
-
-        resourceValueLabel.setPrefWidth(300);
+        resourceValueLabel.setPrefWidth(450);
         resourceValueLabel.getStyleClass().add("fieldLabel");
 
         SimpleStringProperty property = new SimpleStringProperty("");
@@ -407,16 +467,20 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(resourceTopicLabel);
     }
 
-    private void addReferenceValueControls(HBox fieldBox, DbDto.Topic topic) {
-        Label label = new Label("Entry from another topic");
+    private void addReferenceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic topic) {
+        Label remoteValueLabel = new Label();
+        remoteValueLabel.setPrefWidth(450);
+        remoteValueLabel.getStyleClass().add("fieldLabel");
 
-        label.setPrefWidth(300);
-        label.getStyleClass().add("fieldLabel");
+        SimpleStringProperty property = new SimpleStringProperty("Reference to another topic.");
+        remoteContentsPropertyByFieldRank.put(fieldRank, property);
+        remoteValueLabel.textProperty().bindBidirectional(property);
+
 
         Label resourceTopicLabel = new Label(topic.name());
         resourceTopicLabel.getStyleClass().add("fieldLabel");
 
-        fieldBox.getChildren().add(label);
+        fieldBox.getChildren().add(remoteValueLabel);
         fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
         fieldBox.getChildren().add(resourceTopicLabel);
     }

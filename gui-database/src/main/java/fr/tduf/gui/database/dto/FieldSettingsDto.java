@@ -3,6 +3,9 @@ package fr.tduf.gui.database.dto;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @JsonTypeName("fieldSettings")
 public class FieldSettingsDto {
     @JsonProperty("rank")
@@ -29,6 +32,9 @@ public class FieldSettingsDto {
     @JsonProperty("group")
     private String group;
 
+    @JsonProperty("remoteFieldRanks")
+    private List<Integer> remoteFieldRanks = new ArrayList<>();
+
     public FieldSettingsDto() {}
 
     public FieldSettingsDto(String fieldName) {
@@ -53,5 +59,9 @@ public class FieldSettingsDto {
 
     public String getGroup() {
         return group;
+    }
+
+    public List<Integer> getRemoteFieldRanks() {
+        return remoteFieldRanks;
     }
 }
