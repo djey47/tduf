@@ -4,8 +4,15 @@
       "name": "Vehicle slots",
       "topic": "CAR_PHYSICS_DATA",
       "groups": [
-        "General",
-        "Rims"
+        "Datasheet",
+        "Wheels",
+        "Exterior",
+        "Interior",
+        "Points of sell",
+        "Fine tuning",
+        "Sound",
+        "Transmission",
+        "Dampering"
       ],
       "fieldSettings": [
         {
@@ -19,29 +26,504 @@
         {
           "name": "Car_Brand",
           "rank": 2,
-          "group": "General",
+          "group": "Datasheet",
           "remoteFieldRanks": [2,3]
         },
         {
           "name": "Car_Model",
-          "rank": 3,
-          "group": "General"
+          "rank": 3
         },
         {
           "name": "Car_Version",
-          "rank": 4,
-          "group": "General"
+          "rank": 4
         },
         {
           "name": "Group",
-          "rank": 5,
-          "group": "General"
+          "rank": 5
+        },
+        {
+          "name": "Rarety",
+          "rank": 6,
+          "group": "Points of sell"
+        },
+        {
+          "name": "Price_dollar",
+          "rank": 7,
+          "group": "Points of sell"
+        },
+        {
+          "name": "TestDrive_Cat",
+          "rank": 8
+        },
+        {
+          "name": "Car_File_Name",
+          "rank": 9
         },
         {
           "name": "Default_Rims",
           "rank": 10,
-          "group": "Rims",
+          "group": "Wheels",
           "remoteFieldRanks": [2,4,5,6,7]
+        },
+        {
+          "name": "HUD_File_Name",
+          "rank": 11,
+          "group": "Interior"
+        },
+        {
+          "name": "Car_RealName",
+          "rank": 12,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Model_Name",
+          "rank": 13,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Version_Name",
+          "rank": 14,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Engine_Localisation",
+          "rank": 15,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Engine_Type",
+          "rank": 16,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Displacement",
+          "rank": 17,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Power_bhp",
+          "rank": 18,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Power_RPM",
+          "rank": 19,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Torque_Nm",
+          "rank": 20,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Torque_RPM",
+          "rank": 21,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Red_Line",
+          "rank": 22,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Drive",
+          "rank": 23,
+          "group": "Transmission"
+        },
+        {
+          "name": "GearBox",
+          "rank": 24,
+          "group": "Transmission"
+        },
+        {
+          "name": "Nb_Gears",
+          "rank": 25,
+          "group": "Transmission"
+        },
+        {
+          "name": "Final_Drive_Ratio",
+          "rank": 26,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gear_ratio_1",
+          "rank": 27,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gear_ratio_2",
+          "rank": 28,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gear_ratio_3",
+          "rank": 29,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gear_ratio_4",
+          "rank": 30,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gear_ratio_5",
+          "rank": 31,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gear_ratio_6",
+          "rank": 32,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gear_ratio_7",
+          "rank": 33,
+          "group": "Transmission"
+        },
+        {
+          "name": "Nb_Doors",
+          "rank": 34,
+          "group": "Exterior"
+        },
+        {
+          "name": "Brakes_Characteristics_Front",
+          "rank": 35,
+          "group": "Wheels"
+        },
+        {
+          "name": "Brakes_Dim_Front",
+          "rank": 36,
+          "group": "Wheels"
+        },
+        {
+          "name": "Brakes_Dim_Rear",
+          "rank": 37,
+          "group": "Wheels"
+        },
+        {
+          "name": "Brakes_Characteristics_Rear",
+          "rank": 38,
+          "group": "Wheels"
+        },
+        {
+          "name": "Tires_Type",
+          "rank": 39,
+          "group": "Wheels"
+        },
+        {
+          "name": "Nb_Turbos",
+          "rank": 40,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Width",
+          "rank": 41,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Lenght",
+          "rank": 42,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Height",
+          "rank": 43,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Track_Front",
+          "rank": 44,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Track_Back",
+          "rank": 45,
+          "group": "Datasheet"
+
+        },
+        {
+          "name": "WheelBase",
+          "rank": 46,
+          "group": "Datasheet"
+        },
+        {
+          "name": "OverHang_Front",
+          "rank": 47,
+          "group": "Datasheet"
+        },
+        {
+          "name": "OverHang_Rear",
+          "rank": 48,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Weight_Kg",
+          "rank": 49,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Ride_Height_Front",
+          "rank": 50,
+          "group": "Dampering"
+        },
+        {
+          "name": "Ride_Height_Rear",
+          "rank": 51,
+          "group": "Dampering"
+        },
+        {
+          "name": "Ride_Height_Max_Front",
+          "rank": 52,
+          "group": "Dampering"
+        },
+        {
+          "name": "Ride_Height_Max_Rear",
+          "rank": 53,
+          "group": "Dampering"
+        },
+        {
+          "name": "Suspension_Lenght_Front",
+          "rank": 54,
+          "group": "Dampering"
+        },
+        {
+          "name": "Suspension_Lenght_Rear",
+          "rank": 55,
+          "group": "Dampering"
+        },
+        {
+          "name": "Suspension_Rate_Front",
+          "rank": 56,
+          "group": "Dampering"
+        },
+        {
+          "name": "Suspension_Rate_Rear",
+          "rank": 57,
+          "group": "Dampering"
+        },
+        {
+          "name": "Damper_Rate_Front",
+          "rank": 58,
+          "group": "Dampering"
+        },
+        {
+          "name": "Damper_Rate_Rear",
+          "rank": 59,
+          "group": "Dampering"
+        },
+        {
+          "name": "Engine_Inertia",
+          "rank": 60,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gearbox_Inertia",
+          "rank": 61,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gravity_Center_Length",
+          "rank": 62,
+          "group": "Fine tuning"
+        },
+        {
+          "name": "Gravity_Center_Height",
+          "rank": 63,
+          "group": "Fine tuning"
+        },
+        {
+          "name": "Cx_Length",
+          "rank": 64,
+          "group": "Fine tuning"
+        },
+        {
+          "name": "Cx_Height",
+          "rank": 65,
+          "group": "Fine tuning"
+        },
+        {
+          "name": "SteerLock",
+          "rank": 66,
+          "group": "Wheels"
+        },
+        {
+          "name": "Transmission_Primacy",
+          "rank": 67,
+          "group": "Transmission"
+        },
+        {
+          "name": "Brake_Balance",
+          "rank": 68,
+          "group": "Wheels"
+        },
+        {
+          "name": "Ignition_Time_Ignite",
+          "rank": 69,
+          "group": "Sound"
+        },
+        {
+          "name": "Ignition_Time_RevUp",
+          "rank": 70,
+          "group": "Sound"
+        },
+        {
+          "name": "Ignition_Time_RevDown",
+          "rank": 71,
+          "group": "Sound"
+        },
+        {
+          "name": "Ignition_RPM",
+          "rank": 72,
+          "group": "Sound"
+        },
+        {
+          "name": "DoorMaxAngle",
+          "rank": 73,
+          "group": "Exterior"
+        },
+        {
+          "name": "Windows_Type",
+          "rank": 74,
+          "group": "Exterior"
+        },
+        {
+          "name": "Belt_Type",
+          "rank": 75,
+          "group": "Interior"
+        },
+        {
+          "name": "Nb_Seats",
+          "rank": 76,
+          "group": "Interior"
+        },
+        {
+          "name": "Car_Body",
+          "rank": 77,
+          "group": "Exterior"
+        },
+        {
+          "name": "Acceleration_0_100_kmh",
+          "rank": 78,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Acceleration_0_100_mph",
+          "rank": 79,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Top_Speed_kmh",
+          "rank": 80,
+          "group": "Fine tuning"
+        },
+        {
+          "name": "Braking_100_0_kmh",
+          "rank": 81,
+          "group": "Datasheet"
+        },
+        {
+          "name": "t0_to_1000m_sec",
+          "rank": 82,
+          "group": "Datasheet"
+        },
+        {
+          "name": "t0_to_1000m_kmh",
+          "rank": 83,
+          "group": "Datasheet"
+        },
+        {
+          "name": "t0_to_1000m_mph",
+          "rank": 84,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Quarter_Mile_sec",
+          "rank": 85,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Quarter_Mile_kmh",
+          "rank": 86,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Quarter_Mile_mph",
+          "rank": 87,
+          "group": "Datasheet"
+        },
+        {
+          "name": "coef_grip",
+          "rank": 88,
+          "group": "Fine tuning"
+        },
+        {
+          "name": "coef_overturning",
+          "rank": 89,
+          "group": "Fine tuning"
+        },
+        {
+          "name": "coef_accel",
+          "rank": 90,
+          "group": "Fine tuning"
+        },
+        {
+          "name": "coef_brake",
+          "rank": 91,
+          "group": "Fine tuning"
+        },
+        {
+          "name": "BrakingDist_feet",
+          "rank": 92,
+          "group": "Fine tuning"
+        },
+        {
+          "name": "Handling",
+          "rank": 93,
+          "group": "Fine tuning"
+        },
+        {
+          "name": "coef_suspension",
+          "rank": 94,
+          "group": "Fine tuning"
+        },
+        {
+          "name": "coef_sharpness",
+          "rank": 95,
+          "group": "Fine tuning"
+        },
+        {
+          "name": "GraduationChange_Speed",
+          "rank": 96,
+          "group": "Interior"
+        },
+        {
+          "name": "GraduationChange_Ratio",
+          "rank": 97,
+          "group": "Interior"
+        },
+        {
+          "name": "Camera",
+          "rank": 98
+        },
+        {
+          "name": "Same_IK",
+          "rank": 99
+        },
+        {
+          "name": "Secu1",
+          "rank": 100
+        },
+        {
+          "name": "Secu2",
+          "rank": 101
+        },
+        {
+          "name": "ID_Car",
+          "rank": 102
+        },
+        {
+          "name": "BitField",
+          "rank": 103
         }
       ]
     },
