@@ -14,6 +14,13 @@
         "Sound",
         "Points of sell"
       ],
+      "topicLinks": [
+        {
+          "topic": "CAR_RIMS",
+          "group": "Wheels",
+          "label": "Available Rims"
+        }
+      ],
       "fieldSettings": [
         {
           "rank": 1,

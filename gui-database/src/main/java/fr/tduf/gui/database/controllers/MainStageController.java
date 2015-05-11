@@ -2,6 +2,7 @@ package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
+import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.gui.database.helper.EditorLayoutHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -267,11 +268,102 @@ public class MainStageController implements Initializable {
         this.rawValuePropertyByFieldRank.clear();
         this.resolvedValuePropertyByFieldRank.clear();
 
+        assignFieldControls();
+
+        assignAllLinkControls(profileObject);
+
+        updateAllPropertiesWithItemValues();
+    }
+
+    private void assignFieldControls() {
         this.currentTopicObject.getStructure().getFields()
 
                 .forEach(this::assignControls);
+    }
 
-        updateAllPropertiesWithItemValues();
+    private void assignControls(DbStructureDto.Field field) {
+
+        SimpleStringProperty property = new SimpleStringProperty("");
+        rawValuePropertyByFieldRank.put(field.getRank(), property);
+
+        Optional<FieldSettingsDto> potentialFieldSettings = getFieldSettings(field, profilesChoiceBox.getValue());
+        String fieldName = field.getName();
+        boolean fieldReadOnly = false;
+        String groupName = null;
+        if(potentialFieldSettings.isPresent()) {
+            FieldSettingsDto fieldSettings = potentialFieldSettings.get();
+
+            if (fieldSettings.isHidden()) {
+                return;
+            }
+
+            if (fieldSettings.getLabel() != null) {
+                fieldName = fieldSettings.getLabel();
+            }
+
+            fieldReadOnly = fieldSettings.isReadOnly();
+
+            groupName = fieldSettings.getGroup();
+        }
+
+        HBox fieldBox = createFieldBox(Optional.ofNullable(groupName));
+
+        addFieldLabel(fieldBox, fieldReadOnly, fieldName);
+
+        addTextField(fieldBox, fieldReadOnly, property);
+
+        if (isAResourceField(field)) {
+            DbDto.Topic topic = currentTopicObject.getStructure().getTopic();
+            if (field.getTargetRef() != null) {
+                topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getStructure().getTopic();
+            }
+
+            addResourceValueControls(fieldBox, field.getRank(), topic);
+        }
+
+        if (DbStructureDto.FieldType.REFERENCE == field.getFieldType()) {
+            DbDto.Topic topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getStructure().getTopic();
+            addReferenceValueControls(fieldBox, field.getRank(), topic);
+        }
+    }
+
+    private void assignAllLinkControls(EditorLayoutDto.EditorProfileDto profileObject) {
+        if (profileObject.getTopicLinks() == null) {
+            return;
+        }
+
+        profileObject.getTopicLinks()
+
+                .forEach(this::assignLinkControls);
+    }
+
+    private void assignLinkControls(TopicLinkDto topicLinkDto) {
+        HBox fieldBox = createFieldBox(Optional.ofNullable(topicLinkDto.getGroup()));
+
+        String fieldName = topicLinkDto.getTopic().name();
+        if (topicLinkDto.getLabel() != null) {
+            fieldName = topicLinkDto.getLabel();
+        }
+        addFieldLabel(fieldBox, false, fieldName);
+
+
+        Property<String> refProperty = new SimpleStringProperty();
+        Property<String> valueProperty = new SimpleStringProperty();
+
+
+        TableView<DbResourceDto.Entry> tableView = new TableView<>();
+        tableView.setPrefWidth(450);
+
+        TableColumn<DbResourceDto.Entry, String> refColumn = new TableColumn<>("REF");
+        refColumn.setCellValueFactory((cellData) -> refProperty);
+
+        TableColumn<DbResourceDto.Entry, String> valueColumn = new TableColumn<>();
+        refColumn.setCellValueFactory((cellData) -> valueProperty);
+
+        tableView.getColumns().add(refColumn);
+        tableView.getColumns().add(valueColumn);
+
+        fieldBox.getChildren().add(tableView);
     }
 
     private Optional<FieldSettingsDto> getFieldSettings(DbStructureDto.Field field, String profileName) {
@@ -379,52 +471,6 @@ public class MainStageController implements Initializable {
                 .collect(toList());
 
         return String.join(" - ", contents);
-    }
-
-    private void assignControls(DbStructureDto.Field field) {
-
-        SimpleStringProperty property = new SimpleStringProperty("");
-        rawValuePropertyByFieldRank.put(field.getRank(), property);
-
-        Optional<FieldSettingsDto> potentialFieldSettings = getFieldSettings(field, profilesChoiceBox.getValue());
-        String fieldName = field.getName();
-        boolean fieldReadOnly = false;
-        String groupName = null;
-        if(potentialFieldSettings.isPresent()) {
-            FieldSettingsDto fieldSettings = potentialFieldSettings.get();
-
-            if (fieldSettings.isHidden()) {
-                return;
-            }
-
-            if (fieldSettings.getLabel() != null) {
-                fieldName = fieldSettings.getLabel();
-            }
-
-            fieldReadOnly = fieldSettings.isReadOnly();
-
-            groupName = fieldSettings.getGroup();
-        }
-
-        HBox fieldBox = createFieldBox(Optional.ofNullable(groupName));
-
-        addFieldLabel(fieldBox, fieldReadOnly, fieldName);
-
-        addTextField(fieldBox, fieldReadOnly, property);
-
-        if (isAResourceField(field)) {
-            DbDto.Topic topic = currentTopicObject.getStructure().getTopic();
-            if (field.getTargetRef() != null) {
-                topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getStructure().getTopic();
-            }
-
-            addResourceValueControls(fieldBox, field.getRank(), topic);
-        }
-
-        if (DbStructureDto.FieldType.REFERENCE == field.getFieldType()) {
-            DbDto.Topic topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getStructure().getTopic();
-            addReferenceValueControls(fieldBox, field.getRank(), topic);
-        }
     }
 
     private HBox createFieldBox(Optional<String> groupName) {

@@ -35,6 +35,9 @@ public class EditorLayoutDto {
         @JsonProperty("groups")
         private List<String> groups = new ArrayList<>();
 
+        @JsonProperty("topicLinks")
+        private List<TopicLinkDto> topicLinks = new ArrayList<>();
+
         public EditorProfileDto() {}
 
         public EditorProfileDto(String name) {
@@ -55,6 +58,10 @@ public class EditorLayoutDto {
 
         public List<String> getGroups() {
             return groups;
+        }
+
+        public List<TopicLinkDto> getTopicLinks() {
+            return topicLinks;
         }
     }
 }
