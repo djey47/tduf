@@ -36,6 +36,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Makes it a possible to intercept all GUI events.
  */
+// TODO Resolve fields in profile with rank (name is just to make things clear)
 public class MainStageController implements Initializable {
 
     private static final Class<MainStageController> thisClass = MainStageController.class;
@@ -159,7 +160,7 @@ public class MainStageController implements Initializable {
     private void handleLocaleChoiceChanged(DbResourceDto.Locale newLocale) {
         System.out.println("handleLocaleChoiceChanged: " + newLocale.name());
 
-        fillTabPaneDynamically(this.profilesChoiceBox.getValue());
+        updateAllPropertiesWithItemValues();
     }
 
     private void initSettingsPane() throws IOException {
@@ -210,7 +211,6 @@ public class MainStageController implements Initializable {
                 return null;
             }
         });
-
     }
 
     private void loadAndFillProfiles() throws IOException {
@@ -237,16 +237,14 @@ public class MainStageController implements Initializable {
         initGroupTabs(profileObject);
 
         DbDto.Topic startTopic = profileObject.getTopic();
-
         this.currentTopicObject = databaseMiner.getDatabaseTopic(startTopic).get();
 
-        currentEntryIndexProperty.setValue(0);
-        entryItemsCountProperty.setValue(this.currentTopicObject.getData().getEntries().size());
+        this.currentEntryIndexProperty.setValue(0);
+        this.entryItemsCountProperty.setValue(this.currentTopicObject.getData().getEntries().size());
 
-        rawValuePropertyByFieldRank.clear();
-        resolvedValuePropertyByFieldRank.clear();
+        this.rawValuePropertyByFieldRank.clear();
+        this.resolvedValuePropertyByFieldRank.clear();
 
-        defaultTab.getChildren().clear();
         this.currentTopicObject.getStructure().getFields()
 
                 .forEach(this::assignControls);
@@ -257,6 +255,7 @@ public class MainStageController implements Initializable {
     private Optional<FieldSettingsDto> getFieldSettings(DbStructureDto.Field field, String profileName) {
         EditorLayoutDto.EditorProfileDto currentProfile = EditorLayoutHelper.getAvailableProfileByName(profileName, this.layoutObject);
 
+        // TODO extract to method in EditorLayoutHelper
         return currentProfile.getFieldSettings().stream()
 
                 .filter((settings) -> settings.getName().equals(field.getName()))
@@ -265,6 +264,8 @@ public class MainStageController implements Initializable {
     }
 
     private void initGroupTabs(EditorLayoutDto.EditorProfileDto profileObject) {
+
+        this.defaultTab.getChildren().clear();
 
         this.tabPane.getTabs().remove(1, this.tabPane.getTabs().size());
         tabContentByName.clear();
@@ -289,7 +290,6 @@ public class MainStageController implements Initializable {
             String rawValue = item.getRawValue();
 
             rawValuePropertyByFieldRank.get(item.getFieldRank()).set(rawValue);
-
 
             DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, this.currentTopicObject.getStructure().getFields());
             if (isAResourceField(structureField)) {
@@ -427,7 +427,6 @@ public class MainStageController implements Initializable {
         if (readOnly) {
             fieldNameLabel.getStyleClass().add("readonlyField");
         }
-
         fieldNameLabel.setPrefWidth(225.0);
         fieldBox.getChildren().add(fieldNameLabel);
     }
@@ -438,7 +437,6 @@ public class MainStageController implements Initializable {
         if (readOnly) {
             fieldValue.getStyleClass().add("readonlyField");
         }
-
         fieldValue.setPrefWidth(110.0);
         fieldValue.setEditable(!readOnly);
 
@@ -474,7 +472,6 @@ public class MainStageController implements Initializable {
         resolvedValuePropertyByFieldRank.put(fieldRank, property);
         remoteValueLabel.textProperty().bindBidirectional(property);
 
-
         Label resourceTopicLabel = new Label(topic.name());
         resourceTopicLabel.getStyleClass().add("fieldLabel");
 
@@ -483,6 +480,7 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(resourceTopicLabel);
     }
 
+    // TODO extract to FieldType object
     private static boolean isAResourceField(DbStructureDto.Field field) {
         return DbStructureDto.FieldType.RESOURCE_CURRENT == field.getFieldType()
                 || DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN == field.getFieldType()
