@@ -73,11 +73,10 @@ public class MainStageController implements Initializable {
     private BulkDatabaseMiner databaseMiner;
 
     private Property<DbResourceDto.Locale> currentLocaleProperty;
-    private Map<Integer, SimpleStringProperty> propertyByFieldRank = new HashMap<>();
     private Property<Integer> currentEntryIndexProperty;
     private Property<Integer> entryItemsCountProperty;
-    private Map<Integer, SimpleStringProperty> resourcePropertyByFieldRank = new HashMap<>();
-    private Map<Integer, SimpleStringProperty> remoteContentsPropertyByFieldRank = new HashMap<>();
+    private Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
+    private Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
 
 
     @Override
@@ -244,9 +243,8 @@ public class MainStageController implements Initializable {
         currentEntryIndexProperty.setValue(0);
         entryItemsCountProperty.setValue(this.currentTopicObject.getData().getEntries().size());
 
-        propertyByFieldRank.clear();
-        resourcePropertyByFieldRank.clear();
-        remoteContentsPropertyByFieldRank.clear();  // TODO see to merge 2 maps
+        rawValuePropertyByFieldRank.clear();
+        resolvedValuePropertyByFieldRank.clear();
 
         defaultTab.getChildren().clear();
         this.currentTopicObject.getStructure().getFields()
@@ -290,7 +288,7 @@ public class MainStageController implements Initializable {
         entry.getItems().forEach((item) -> {
             String rawValue = item.getRawValue();
 
-            propertyByFieldRank.get(item.getFieldRank()).set(rawValue);
+            rawValuePropertyByFieldRank.get(item.getFieldRank()).set(rawValue);
 
 
             DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, this.currentTopicObject.getStructure().getFields());
@@ -304,12 +302,12 @@ public class MainStageController implements Initializable {
                 Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(rawValue, resourceTopic, this.currentLocaleProperty.getValue());
                 if (potentialResourceEntry.isPresent()) {
                     String resourceValue = potentialResourceEntry.get().getValue();
-                    resourcePropertyByFieldRank.get(item.getFieldRank()).set(resourceValue);
+                    resolvedValuePropertyByFieldRank.get(item.getFieldRank()).set(resourceValue);
                 }
             }
 
             if (DbStructureDto.FieldType.REFERENCE == structureField.getFieldType()) {
-                if (remoteContentsPropertyByFieldRank.containsKey(item.getFieldRank())) {
+                if (resolvedValuePropertyByFieldRank.containsKey(item.getFieldRank())) {
                     DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getStructure().getTopic();
 
                     List<Integer> remoteFieldRanks = new ArrayList<>();
@@ -319,7 +317,7 @@ public class MainStageController implements Initializable {
                     }
 
                     String remoteContents = fetchRemoteContents(remoteTopic, item.getRawValue(), remoteFieldRanks);
-                    remoteContentsPropertyByFieldRank.get(item.getFieldRank()).set(remoteContents);
+                    resolvedValuePropertyByFieldRank.get(item.getFieldRank()).set(remoteContents);
                 }
             }
         });
@@ -364,7 +362,7 @@ public class MainStageController implements Initializable {
     private void assignControls(DbStructureDto.Field field) {
 
         SimpleStringProperty property = new SimpleStringProperty("");
-        propertyByFieldRank.put(field.getRank(), property);
+        rawValuePropertyByFieldRank.put(field.getRank(), property);
 
         Optional<FieldSettingsDto> potentialFieldSettings = getFieldSettings(field, profilesChoiceBox.getValue());
         String fieldName = field.getName();
@@ -456,7 +454,7 @@ public class MainStageController implements Initializable {
         resourceValueLabel.getStyleClass().add("fieldLabel");
 
         SimpleStringProperty property = new SimpleStringProperty("");
-        resourcePropertyByFieldRank.put(fieldRank, property);
+        resolvedValuePropertyByFieldRank.put(fieldRank, property);
         resourceValueLabel.textProperty().bindBidirectional(property);
 
         Label resourceTopicLabel = new Label(topic.name());
@@ -473,7 +471,7 @@ public class MainStageController implements Initializable {
         remoteValueLabel.getStyleClass().add("fieldLabel");
 
         SimpleStringProperty property = new SimpleStringProperty("Reference to another topic.");
-        remoteContentsPropertyByFieldRank.put(fieldRank, property);
+        resolvedValuePropertyByFieldRank.put(fieldRank, property);
         remoteValueLabel.textProperty().bindBidirectional(property);
 
 
