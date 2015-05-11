@@ -5,14 +5,14 @@
       "topic": "CAR_PHYSICS_DATA",
       "groups": [
         "Datasheet",
-        "Wheels",
-        "Exterior",
-        "Interior",
-        "Points of sell",
-        "Fine tuning",
-        "Sound",
         "Transmission",
-        "Dampering"
+        "Fine tuning",
+        "Interior",
+        "Exterior",
+        "Dampering",
+        "Wheels",
+        "Sound",
+        "Points of sell"
       ],
       "fieldSettings": [
         {

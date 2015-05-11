@@ -276,7 +276,7 @@ public class MainStageController implements Initializable {
                 VBox vbox = new VBox();
                 Tab groupTab = new Tab(groupName, new ScrollPane(vbox));
 
-                this.tabPane.getTabs().add(groupTab);
+                this.tabPane.getTabs().add(this.tabPane.getTabs().size(), groupTab);
 
                 tabContentByName.put(groupName, vbox);
             });

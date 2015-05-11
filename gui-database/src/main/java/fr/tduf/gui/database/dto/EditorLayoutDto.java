@@ -5,9 +5,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Represents all availables profiles in Database Editor
@@ -35,7 +33,7 @@ public class EditorLayoutDto {
         private List<FieldSettingsDto> fieldSettings = new ArrayList<>();
 
         @JsonProperty("groups")
-        private Set<String> groups = new HashSet<>();
+        private List<String> groups = new ArrayList<>();
 
         public EditorProfileDto() {}
 
@@ -55,7 +53,7 @@ public class EditorLayoutDto {
             return fieldSettings;
         }
 
-        public Set<String> getGroups() {
+        public List<String> getGroups() {
             return groups;
         }
     }
