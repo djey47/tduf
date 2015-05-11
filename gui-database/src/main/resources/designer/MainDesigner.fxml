@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 
 <AnchorPane prefHeight="768.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.MainStageController">
    <children>
-      <VBox id="mainVbox" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <VBox id="mainVbox" prefWidth="1280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
           <children>
               <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="settingsToolbar">
                   <items>
@@ -18,16 +19,16 @@
                   </items>
               </ToolBar>
       
-              <TitledPane fx:id="settingsPane" text="Settings">
+              <TitledPane fx:id="settingsPane" prefWidth="1280.0" text="Settings">
                   <content>
-                      <AnchorPane prefWidth="1280.0">
+                      <AnchorPane minHeight="10.0" prefHeight="36.0">
                           <children>
-                              <ToolBar prefHeight="38.0" prefWidth="1280.0" styleClass="settingsToolbar">
+                              <ToolBar prefWidth="1280.0" styleClass="settingsToolbar">
                                   <items>
                                       <Label text="Profile:" />
-                                      <ChoiceBox fx:id="profilesChoiceBox" prefWidth="150.0" />
+                                      <ChoiceBox fx:id="profilesChoiceBox" prefWidth="175.0" />
                                       <Label text="Locale:" />
-                                      <ChoiceBox fx:id="localesChoiceBox" prefWidth="150.0" />
+                                      <ChoiceBox fx:id="localesChoiceBox" prefWidth="175.0" />
                                   </items>
                               </ToolBar>
                           </children>
@@ -37,6 +38,12 @@
       
               <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
                   <items>
+                  <Label fx:id="currentTopicLabel" text="&lt;TOPIC&gt;">
+                     <font>
+                        <Font name="System Bold Italic" size="13.0" />
+                     </font>
+                  </Label>
+                  <Separator orientation="VERTICAL" />
                       <Button mnemonicParsing="false" onAction="#handleFirstButtonMouseClick" text="First" />
                       <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handlePreviousButtonMouseClick" text="Previous" />
                   <TextField fx:id="entryNumberTextField" alignment="CENTER" editable="false" prefWidth="50.0" />

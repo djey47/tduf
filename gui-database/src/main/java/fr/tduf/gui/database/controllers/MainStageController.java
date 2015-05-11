@@ -45,6 +45,9 @@ public class MainStageController implements Initializable {
     private TitledPane settingsPane;
 
     @FXML
+    private Label currentTopicLabel;
+
+    @FXML
     private ChoiceBox<DbResourceDto.Locale> localesChoiceBox;
 
     @FXML
@@ -65,6 +68,7 @@ public class MainStageController implements Initializable {
     @FXML
     private Label entryItemsCountLabel;
 
+
     private Map<String, VBox> tabContentByName = new HashMap<>();
 
     private List<DbDto> databaseObjects = new ArrayList<>();
@@ -73,6 +77,7 @@ public class MainStageController implements Initializable {
     private EditorLayoutDto layoutObject;
     private BulkDatabaseMiner databaseMiner;
 
+    private Property<DbDto.Topic> currentTopicProperty;
     private Property<DbResourceDto.Locale> currentLocaleProperty;
     private Property<Integer> currentEntryIndexProperty;
     private Property<Integer> entryItemsCountProperty;
@@ -179,6 +184,22 @@ public class MainStageController implements Initializable {
 
     private void initNavigationPane() {
 
+        this.currentTopicProperty = new SimpleObjectProperty<>();
+        this.currentTopicLabel.textProperty().bindBidirectional(currentTopicProperty, new StringConverter<DbDto.Topic>() {
+            @Override
+            public String toString(DbDto.Topic object) {
+                if (object == null) {
+                    return "<?>";
+                }
+                return object.name();
+            }
+
+            @Override
+            public DbDto.Topic fromString(String string) {
+                return DbDto.Topic.valueOf(string);
+            }
+        });
+
         this.entryItemsCountProperty = new SimpleObjectProperty<>(-1);
         this.entryItemsCountLabel.textProperty().bindBidirectional(entryItemsCountProperty, new StringConverter<Integer>() {
             @Override
@@ -238,6 +259,7 @@ public class MainStageController implements Initializable {
 
         DbDto.Topic startTopic = profileObject.getTopic();
         this.currentTopicObject = databaseMiner.getDatabaseTopic(startTopic).get();
+        this.currentTopicProperty.setValue(this.currentTopicObject.getStructure().getTopic());
 
         this.currentEntryIndexProperty.setValue(0);
         this.entryItemsCountProperty.setValue(this.currentTopicObject.getData().getEntries().size());
