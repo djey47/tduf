@@ -32,7 +32,7 @@
         {
           "rank": 1,
           "name": "REF",
-          "priority": 9999,
+          "priority": 10000,
           "readOnly": "true",
           "label": "(REF) Slot #",
           "toolTip": "Unique slot number"
@@ -534,6 +534,7 @@
         },
         {
           "name": "ID_Car",
+          "priority": 9900,
           "rank": 102
         },
         {

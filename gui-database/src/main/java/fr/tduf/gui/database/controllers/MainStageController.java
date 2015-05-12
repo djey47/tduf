@@ -283,9 +283,20 @@ public class MainStageController implements Initializable {
     }
 
     private void assignFieldControls() {
-        this.currentTopicObject.getStructure().getFields()
+        this.currentTopicObject.getStructure().getFields().stream()
+
+                .sorted((structureField1, structureField2) -> Integer.compare(getFieldPrioritySetting(structureField2), getFieldPrioritySetting(structureField1)))
 
                 .forEach(this::assignControls);
+    }
+
+    private int getFieldPrioritySetting(DbStructureDto.Field structureField) {
+        Optional<FieldSettingsDto> potentialFieldSettingsObject = getFieldSettings(structureField, this.profilesChoiceBox.getValue());
+        int priority = 0;
+        if (potentialFieldSettingsObject.isPresent()) {
+            priority = potentialFieldSettingsObject.get().getPriority();
+        }
+        return priority;
     }
 
     private void assignControls(DbStructureDto.Field field) {
@@ -342,7 +353,9 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        this.profileObject.getTopicLinks()
+        this.profileObject.getTopicLinks().stream()
+
+                .sorted((topicLinkObject1, topicLinkObject2) -> Integer.compare(topicLinkObject2.getPriority(), topicLinkObject1.getPriority()))
 
                 .forEach(this::assignLinkControls);
     }

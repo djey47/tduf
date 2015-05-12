@@ -68,4 +68,8 @@ public class FieldSettingsDto {
     public String getToolTip() {
         return toolTip;
     }
+
+    public int getPriority() {
+        return priority;
+    }
 }

@@ -58,4 +58,8 @@ public class TopicLinkDto {
     public List<Integer> getRemoteFieldRanks() {
         return remoteFieldRanks;
     }
+
+    public int getPriority() {
+        return priority;
+    }
 }
