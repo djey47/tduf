@@ -1,8 +1,13 @@
 package fr.tduf.gui.database.dto;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
+
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
+import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 
 /**
  * Represents a 1-to-many link between 2 topics
@@ -24,6 +29,16 @@ public class TopicLinkDto {
 
     public DbDto.Topic getTopic() {
         return topic;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return reflectionEquals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return reflectionHashCode(this);
     }
 
     public String getGroup() {

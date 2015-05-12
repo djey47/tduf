@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
@@ -14,6 +15,8 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -76,14 +79,17 @@ public class MainStageController implements Initializable {
     private DbDto currentTopicObject;
 
     private EditorLayoutDto layoutObject;
+    private EditorLayoutDto.EditorProfileDto profileObject;
     private BulkDatabaseMiner databaseMiner;
 
     private Property<DbDto.Topic> currentTopicProperty;
     private Property<DbResourceDto.Locale> currentLocaleProperty;
     private Property<Integer> currentEntryIndexProperty;
     private Property<Integer> entryItemsCountProperty;
+
     private Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
     private Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
+    private Map<TopicLinkDto, ObservableList<RemoteResource>> resourceListByTopicLink = new HashMap<>();
 
 
     @Override
@@ -255,8 +261,8 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, this.layoutObject);
-        initGroupTabs(profileObject);
+        this.profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, this.layoutObject);
+        initGroupTabs();
 
         DbDto.Topic startTopic = profileObject.getTopic();
         this.currentTopicObject = databaseMiner.getDatabaseTopic(startTopic).get();
@@ -267,10 +273,11 @@ public class MainStageController implements Initializable {
 
         this.rawValuePropertyByFieldRank.clear();
         this.resolvedValuePropertyByFieldRank.clear();
+        this.resourceListByTopicLink.clear();
 
         assignFieldControls();
 
-        assignAllLinkControls(profileObject);
+        assignAllLinkControls();
 
         updateAllPropertiesWithItemValues();
     }
@@ -327,18 +334,19 @@ public class MainStageController implements Initializable {
         }
     }
 
-    private void assignAllLinkControls(EditorLayoutDto.EditorProfileDto profileObject) {
-        if (profileObject.getTopicLinks() == null) {
+    private void assignAllLinkControls() {
+        if (this.profileObject.getTopicLinks() == null) {
             return;
         }
 
-        profileObject.getTopicLinks()
+        this.profileObject.getTopicLinks()
 
                 .forEach(this::assignLinkControls);
     }
 
     private void assignLinkControls(TopicLinkDto topicLinkDto) {
         HBox fieldBox = createFieldBox(Optional.ofNullable(topicLinkDto.getGroup()));
+        fieldBox.setPrefHeight(250);
 
         String fieldName = topicLinkDto.getTopic().name();
         if (topicLinkDto.getLabel() != null) {
@@ -346,22 +354,24 @@ public class MainStageController implements Initializable {
         }
         addFieldLabel(fieldBox, false, fieldName);
 
+        ObservableList<RemoteResource> resourceData = FXCollections.observableArrayList();
+        resourceListByTopicLink.put(topicLinkDto, resourceData);
 
-        Property<String> refProperty = new SimpleStringProperty();
-        Property<String> valueProperty = new SimpleStringProperty();
-
-
-        TableView<DbResourceDto.Entry> tableView = new TableView<>();
+        TableView<RemoteResource> tableView = new TableView<>();
         tableView.setPrefWidth(450);
 
-        TableColumn<DbResourceDto.Entry, String> refColumn = new TableColumn<>("REF");
-        refColumn.setCellValueFactory((cellData) -> refProperty);
+        TableColumn<RemoteResource, String> refColumn = new TableColumn<>();
+        refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
+        refColumn.setPrefWidth(100);
 
-        TableColumn<DbResourceDto.Entry, String> valueColumn = new TableColumn<>();
-        refColumn.setCellValueFactory((cellData) -> valueProperty);
+        TableColumn<RemoteResource, String> valueColumn = new TableColumn<>();
+        valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
+        valueColumn.setPrefWidth(350);
 
         tableView.getColumns().add(refColumn);
         tableView.getColumns().add(valueColumn);
+
+        tableView.setItems(resourceData);
 
         fieldBox.getChildren().add(tableView);
     }
@@ -377,15 +387,15 @@ public class MainStageController implements Initializable {
                 .findAny();
     }
 
-    private void initGroupTabs(EditorLayoutDto.EditorProfileDto profileObject) {
+    private void initGroupTabs() {
 
         this.defaultTab.getChildren().clear();
 
         this.tabPane.getTabs().remove(1, this.tabPane.getTabs().size());
         tabContentByName.clear();
 
-        if (profileObject.getGroups() != null) {
-            profileObject.getGroups().forEach((groupName) -> {
+        if (this.profileObject.getGroups() != null) {
+            this.profileObject.getGroups().forEach((groupName) -> {
                 VBox vbox = new VBox();
                 Tab groupTab = new Tab(groupName, new ScrollPane(vbox));
 
@@ -434,6 +444,34 @@ public class MainStageController implements Initializable {
                     resolvedValuePropertyByFieldRank.get(item.getFieldRank()).set(remoteContents);
                 }
             }
+        });
+
+        this.resourceListByTopicLink.entrySet().forEach((remoteEntry) -> {
+            TopicLinkDto linkObject = remoteEntry.getKey();
+            ObservableList<RemoteResource> values = remoteEntry.getValue();
+            values.clear();
+
+            DbDto topicObject = this.databaseMiner.getDatabaseTopic(linkObject.getTopic()).get();
+            topicObject.getData().getEntries().stream()
+
+                    .filter((contentEntry) -> {
+                        String currentRef = contentEntry.getItems().get(0).getRawValue();
+                        // TODO find another way of getting current reference
+                        return rawValuePropertyByFieldRank.get(1).getValue().equals(currentRef);
+                    })
+
+                    .map((contentEntry) -> {
+                        String remoteTopicRef = topicObject.getStructure().getFields().get(1).getTargetRef();
+                        DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(remoteTopicRef).getStructure().getTopic();
+
+                        String remoteEntryReference = contentEntry.getItems().get(1).getRawValue();
+                        RemoteResource remoteResource = new RemoteResource();
+                        remoteResource.setReference(remoteEntryReference);
+                        remoteResource.setValue(fetchRemoteContents(remoteTopic, remoteEntryReference, asList(2,4,5,6,7)));
+                        return remoteResource;
+                    })
+
+                    .forEach(values::add);
         });
     }
 
