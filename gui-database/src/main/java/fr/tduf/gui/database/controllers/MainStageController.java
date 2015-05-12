@@ -297,6 +297,7 @@ public class MainStageController implements Initializable {
         String fieldName = field.getName();
         boolean fieldReadOnly = false;
         String groupName = null;
+        Optional<String> potentialToolTip = Optional.empty();
         if(potentialFieldSettings.isPresent()) {
             FieldSettingsDto fieldSettings = potentialFieldSettings.get();
 
@@ -311,13 +312,15 @@ public class MainStageController implements Initializable {
             fieldReadOnly = fieldSettings.isReadOnly();
 
             groupName = fieldSettings.getGroup();
+
+            potentialToolTip = Optional.ofNullable(fieldSettings.getToolTip());
         }
 
         HBox fieldBox = createFieldBox(Optional.ofNullable(groupName));
 
         addFieldLabel(fieldBox, fieldReadOnly, fieldName);
 
-        addTextField(fieldBox, fieldReadOnly, property);
+        addTextField(fieldBox, fieldReadOnly, property, potentialToolTip);
 
         if (isAResourceField(field)) {
             DbDto.Topic topic = currentTopicObject.getStructure().getTopic();
@@ -578,7 +581,7 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(fieldNameLabel);
     }
 
-    private void addTextField(HBox fieldBox, boolean readOnly, Property<String> property) {
+    private void addTextField(HBox fieldBox, boolean readOnly, Property<String> property, Optional<String> toolTip) {
         TextField fieldValue = new TextField();
 
         if (readOnly) {
@@ -586,7 +589,9 @@ public class MainStageController implements Initializable {
         }
         fieldValue.setPrefWidth(110.0);
         fieldValue.setEditable(!readOnly);
-
+        if (toolTip.isPresent()) {
+            fieldValue.setTooltip(new Tooltip(toolTip.get()));
+        }
 
         fieldValue.textProperty().bindBidirectional(property);
 

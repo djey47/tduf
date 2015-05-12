@@ -64,4 +64,8 @@ public class FieldSettingsDto {
     public List<Integer> getRemoteFieldRanks() {
         return remoteFieldRanks;
     }
+
+    public String getToolTip() {
+        return toolTip;
+    }
 }
