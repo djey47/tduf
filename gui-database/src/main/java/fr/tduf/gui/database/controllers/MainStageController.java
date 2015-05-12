@@ -366,7 +366,7 @@ public class MainStageController implements Initializable {
 
         TableColumn<RemoteResource, String> valueColumn = new TableColumn<>();
         valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
-        valueColumn.setPrefWidth(350);
+        valueColumn.setPrefWidth(400);
 
         tableView.getColumns().add(refColumn);
         tableView.getColumns().add(valueColumn);
@@ -455,8 +455,8 @@ public class MainStageController implements Initializable {
             topicObject.getData().getEntries().stream()
 
                     .filter((contentEntry) -> {
-                        String currentRef = contentEntry.getItems().get(0).getRawValue();
                         // TODO find another way of getting current reference
+                        String currentRef = contentEntry.getItems().get(0).getRawValue();
                         return rawValuePropertyByFieldRank.get(1).getValue().equals(currentRef);
                     })
 
@@ -467,7 +467,7 @@ public class MainStageController implements Initializable {
                         String remoteEntryReference = contentEntry.getItems().get(1).getRawValue();
                         RemoteResource remoteResource = new RemoteResource();
                         remoteResource.setReference(remoteEntryReference);
-                        remoteResource.setValue(fetchRemoteContents(remoteTopic, remoteEntryReference, asList(2,4,5,6,7)));
+                        remoteResource.setValue(fetchRemoteContents(remoteTopic, remoteEntryReference, linkObject.getRemoteFieldRanks()));
                         return remoteResource;
                     })
 

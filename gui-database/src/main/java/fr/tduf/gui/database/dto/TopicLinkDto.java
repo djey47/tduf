@@ -6,6 +6,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 
@@ -27,6 +30,9 @@ public class TopicLinkDto {
     @JsonProperty("label")
     private String label;
 
+    @JsonProperty("remoteFieldRanks")
+    private List<Integer> remoteFieldRanks = new ArrayList<>();
+
     public DbDto.Topic getTopic() {
         return topic;
     }
@@ -47,5 +53,9 @@ public class TopicLinkDto {
 
     public String getLabel() {
         return label;
+    }
+
+    public List<Integer> getRemoteFieldRanks() {
+        return remoteFieldRanks;
     }
 }
