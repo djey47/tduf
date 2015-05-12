@@ -440,7 +440,7 @@ public class MainStageController implements Initializable {
                         remoteFieldRanks = fieldSettings.get().getRemoteFieldRanks();
                     }
 
-                    String remoteContents = fetchRemoteContents(remoteTopic, item.getRawValue(), remoteFieldRanks);
+                    String remoteContents = fetchRemoteContentsWithEntryRef(remoteTopic, item.getRawValue(), remoteFieldRanks);
                     resolvedValuePropertyByFieldRank.get(item.getFieldRank()).set(remoteContents);
                 }
             }
@@ -461,21 +461,30 @@ public class MainStageController implements Initializable {
                     })
 
                     .map((contentEntry) -> {
-                        String remoteTopicRef = topicObject.getStructure().getFields().get(1).getTargetRef();
-                        DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(remoteTopicRef).getStructure().getTopic();
+                        if (topicObject.getStructure().getFields().size() == 2) {
+                            String remoteTopicRef = topicObject.getStructure().getFields().get(1).getTargetRef();
+                            DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(remoteTopicRef).getStructure().getTopic();
 
-                        String remoteEntryReference = contentEntry.getItems().get(1).getRawValue();
-                        RemoteResource remoteResource = new RemoteResource();
-                        remoteResource.setReference(remoteEntryReference);
-                        remoteResource.setValue(fetchRemoteContents(remoteTopic, remoteEntryReference, linkObject.getRemoteFieldRanks()));
-                        return remoteResource;
+                            String remoteEntryReference = contentEntry.getItems().get(1).getRawValue();
+                            RemoteResource remoteResource = new RemoteResource();
+                            remoteResource.setReference(remoteEntryReference);
+                            remoteResource.setValue(fetchRemoteContentsWithEntryRef(remoteTopic, remoteEntryReference, linkObject.getRemoteFieldRanks()));
+                            return remoteResource;
+                        } else {
+                            long entryId = contentEntry.getId();
+                            RemoteResource remoteResource = new RemoteResource();
+                            remoteResource.setReference(Long.valueOf(entryId).toString());
+                            remoteResource.setValue(fetchRemoteContentsWithEntryId(linkObject.getTopic(), entryId, linkObject.getRemoteFieldRanks()));
+                            return remoteResource;
+                        }
                     })
 
                     .forEach(values::add);
         });
     }
 
-    private String fetchRemoteContents(DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {
+    // TODO factorize
+    private String fetchRemoteContentsWithEntryRef(DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {
         requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
 
         if (remoteFieldRanks.isEmpty()) {
@@ -492,6 +501,38 @@ public class MainStageController implements Initializable {
                     }
 
                     DbDataDto.Entry contentEntry = potentialContentEntry.get();
+                    String resourceReference = contentEntry.getItems().stream()
+
+                            .filter((contentsItem) -> contentsItem.getFieldRank() == remoteFieldRank)
+
+                            .findAny().get().getRawValue();
+
+                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, remoteTopic, this.currentLocaleProperty.getValue());
+                    if (potentialRemoteResourceEntry.isPresent()) {
+                        return potentialRemoteResourceEntry.get().getValue();
+                    }
+
+                    return resourceReference;
+                })
+
+                .collect(toList());
+
+        return String.join(" - ", contents);
+    }
+
+    // TODO factorize
+    private String fetchRemoteContentsWithEntryId(DbDto.Topic remoteTopic, long remoteEntryId, List<Integer> remoteFieldRanks) {
+        requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
+
+        if (remoteFieldRanks.isEmpty()) {
+            return "Reference to another topic.";
+        }
+
+        List<String> contents = remoteFieldRanks.stream()
+
+                .map((remoteFieldRank) -> {
+
+                    DbDataDto.Entry contentEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(remoteEntryId, remoteTopic);
                     String resourceReference = contentEntry.getItems().stream()
 
                             .filter((contentsItem) -> contentsItem.getFieldRank() == remoteFieldRank)

@@ -20,6 +20,12 @@
           "group": "Wheels",
           "label": "Available Rims",
           "remoteFieldRanks": [2,4,5,6,7]
+        },
+        {
+          "topic": "CAR_COLORS",
+          "group": "Exterior",
+          "label": "Available Paintjobs",
+          "remoteFieldRanks": [3,6]
         }
       ],
       "fieldSettings": [
