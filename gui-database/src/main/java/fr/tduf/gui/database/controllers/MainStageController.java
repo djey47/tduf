@@ -402,7 +402,7 @@ public class MainStageController implements Initializable {
     private Optional<FieldSettingsDto> getFieldSettings(DbStructureDto.Field field, String profileName) {
         EditorLayoutDto.EditorProfileDto currentProfile = EditorLayoutHelper.getAvailableProfileByName(profileName, this.layoutObject);
 
-        // TODO extract to method in EditorLayoutHelper
+        // TODO use method in EditorLayoutHelper instead
         return currentProfile.getFieldSettings().stream()
 
                 .filter((settings) -> settings.getName().equals(field.getName()))
@@ -641,7 +641,7 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(resourceTopicLabel);
     }
 
-    private void addReferenceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic topic) {
+    private void addReferenceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic targetTopic) {
         Label remoteValueLabel = new Label();
         remoteValueLabel.setPrefWidth(450);
         remoteValueLabel.getStyleClass().add("fieldLabel");
@@ -650,10 +650,37 @@ public class MainStageController implements Initializable {
         resolvedValuePropertyByFieldRank.put(fieldRank, property);
         remoteValueLabel.textProperty().bindBidirectional(property);
 
-        Label resourceTopicLabel = new Label(topic.name());
+        Label resourceTopicLabel = new Label(targetTopic.name());
         resourceTopicLabel.getStyleClass().add("fieldLabel");
 
         Button gotoReferenceButton = new Button("->");
+        String fieldName = this.currentTopicObject.getStructure().getFields().stream()
+
+                .filter((structureField) -> structureField.getRank() == fieldRank)
+
+                .findAny().get().getName();
+
+        // TODO add method to retrieve settings by field rank
+        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByName(fieldName, this.profileObject);
+        if (potentialFieldSettings.isPresent()) {
+            gotoReferenceButton.setOnAction((actionEvent) -> {
+                System.out.println("gotoReferenceButton clicked");
+
+                int entryId = this.currentEntryIndexProperty.getValue();
+                // TODO add method in database miner to retrieve a remote entry from local entry id
+                String remoteReference = this.databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, this.currentTopicObject.getStructure().getTopic()).getItems().stream()
+
+                        .filter((item) -> item.getFieldRank() == fieldRank)
+
+                        .findAny().get().getRawValue();
+                DbDataDto.Entry remoteContentEntry = this.databaseMiner.getContentEntryFromTopicWithReference(remoteReference, targetTopic).get();
+
+                String profileName = potentialFieldSettings.get().getRemoteReferenceProfile();
+                switchToProfileAndEntry(profileName, (int) remoteContentEntry.getId());
+            });
+        } else {
+            gotoReferenceButton.setDisable(true);
+        }
 
         fieldBox.getChildren().add(remoteValueLabel);
         fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
@@ -662,7 +689,15 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(gotoReferenceButton);
     }
 
-    // TODO extract to FieldType object
+    // TODO handle navigation history to go back
+    private void switchToProfileAndEntry(String profileName, int entryId) {
+        this.profilesChoiceBox.setValue(profileName);
+
+        this.currentEntryIndexProperty.setValue(entryId);
+        updateAllPropertiesWithItemValues();
+    }
+
+    // TODO extract to FieldType enum
     private static boolean isAResourceField(DbStructureDto.Field field) {
         return DbStructureDto.FieldType.RESOURCE_CURRENT == field.getFieldType()
                 || DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN == field.getFieldType()

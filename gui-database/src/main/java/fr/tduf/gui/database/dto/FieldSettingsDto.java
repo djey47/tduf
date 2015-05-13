@@ -75,4 +75,8 @@ public class FieldSettingsDto {
     public int getPriority() {
         return priority;
     }
+
+    public String getRemoteReferenceProfile() {
+        return remoteReferenceProfile;
+    }
 }
