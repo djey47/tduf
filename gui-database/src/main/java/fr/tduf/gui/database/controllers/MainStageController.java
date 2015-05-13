@@ -52,6 +52,9 @@ public class MainStageController implements Initializable {
     private Label currentTopicLabel;
 
     @FXML
+    private Label currentEntryLabel;
+
+    @FXML
     private ChoiceBox<DbResourceDto.Locale> localesChoiceBox;
 
     @FXML
@@ -86,6 +89,7 @@ public class MainStageController implements Initializable {
     private Property<DbResourceDto.Locale> currentLocaleProperty;
     private Property<Integer> currentEntryIndexProperty;
     private Property<Integer> entryItemsCountProperty;
+    private SimpleStringProperty currentEntryLabelProperty;
 
     private Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
     private Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
@@ -226,11 +230,11 @@ public class MainStageController implements Initializable {
         this.currentEntryIndexProperty = new SimpleObjectProperty<>(-1);
         this.entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new StringConverter<Integer>() {
             @Override
-            public String toString(Integer object) {
-                if (object == -1) {
+            public String toString(Integer entryIndex) {
+                if (entryIndex == -1) {
                     return "<?>";
                 }
-                return "" + (object + 1);
+                return "" + (entryIndex + 1);
 
             }
 
@@ -239,6 +243,9 @@ public class MainStageController implements Initializable {
                 return null;
             }
         });
+
+        this.currentEntryLabelProperty = new SimpleStringProperty("");
+        this.currentEntryLabel.textProperty().bindBidirectional(currentEntryLabelProperty);
     }
 
     private void loadAndFillProfiles() throws IOException {
@@ -426,6 +433,12 @@ public class MainStageController implements Initializable {
         int entryIndex = this.currentEntryIndexProperty.getValue();
         DbDataDto.Entry entry = this.currentTopicObject.getData().getEntries().get(entryIndex);
 
+        String entryLabel = "<?>";
+        if (this.profileObject.getEntryLabelFieldRanks() != null) {
+            entryLabel = fetchContentsWithEntryId(this.currentTopicProperty.getValue(), entryIndex, this.profileObject.getEntryLabelFieldRanks());
+        }
+        this.currentEntryLabelProperty.setValue(entryLabel);
+
         entry.getItems().forEach((item) -> {
             String rawValue = item.getRawValue();
 
@@ -490,7 +503,7 @@ public class MainStageController implements Initializable {
                             long entryId = contentEntry.getId();
                             RemoteResource remoteResource = new RemoteResource();
                             remoteResource.setReference(Long.valueOf(entryId).toString());
-                            remoteResource.setValue(fetchRemoteContentsWithEntryId(linkObject.getTopic(), entryId, linkObject.getRemoteFieldRanks()));
+                            remoteResource.setValue(fetchContentsWithEntryId(linkObject.getTopic(), entryId, linkObject.getRemoteFieldRanks()));
                             return remoteResource;
                         }
                     })
@@ -537,25 +550,25 @@ public class MainStageController implements Initializable {
     }
 
     // TODO factorize
-    private String fetchRemoteContentsWithEntryId(DbDto.Topic remoteTopic, long remoteEntryId, List<Integer> remoteFieldRanks) {
-        requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
+    private String fetchContentsWithEntryId(DbDto.Topic topic, long entryId, List<Integer> fieldRanks) {
+        requireNonNull(fieldRanks, "A list of field ranks (even empty) must be provided.");
 
-        if (remoteFieldRanks.isEmpty()) {
+        if (fieldRanks.isEmpty()) {
             return "Reference to another topic.";
         }
 
-        List<String> contents = remoteFieldRanks.stream()
+        List<String> contents = fieldRanks.stream()
 
-                .map((remoteFieldRank) -> {
+                .map((fieldRank) -> {
 
-                    DbDataDto.Entry contentEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(remoteEntryId, remoteTopic);
+                    DbDataDto.Entry contentEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic);
                     String resourceReference = contentEntry.getItems().stream()
 
-                            .filter((contentsItem) -> contentsItem.getFieldRank() == remoteFieldRank)
+                            .filter((contentsItem) -> contentsItem.getFieldRank() == fieldRank)
 
                             .findAny().get().getRawValue();
 
-                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, remoteTopic, this.currentLocaleProperty.getValue());
+                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, topic, this.currentLocaleProperty.getValue());
                     if (potentialRemoteResourceEntry.isPresent()) {
                         return potentialRemoteResourceEntry.get().getValue();
                     }

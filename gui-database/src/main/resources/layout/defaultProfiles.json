@@ -3,6 +3,7 @@
     {
       "name": "Vehicle slots",
       "topic": "CAR_PHYSICS_DATA",
+      "entryLabelFieldRanks": [12,13,14],
       "groups": [
         "Datasheet",
         "Transmission",

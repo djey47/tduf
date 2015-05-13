@@ -29,6 +29,9 @@ public class EditorLayoutDto {
         @JsonProperty("topic")
         private DbDto.Topic topic;
 
+        @JsonProperty("entryLabelFieldRanks")
+        private List<Integer> entryLabelFieldRanks = new ArrayList<>();
+
         @JsonProperty("fieldSettings")
         private List<FieldSettingsDto> fieldSettings = new ArrayList<>();
 
@@ -62,6 +65,10 @@ public class EditorLayoutDto {
 
         public List<TopicLinkDto> getTopicLinks() {
             return topicLinks;
+        }
+
+        public List<Integer> getEntryLabelFieldRanks() {
+            return entryLabelFieldRanks;
         }
     }
 }
