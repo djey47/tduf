@@ -42,7 +42,8 @@
           "name": "Car_Brand",
           "rank": 2,
           "group": "Datasheet",
-          "remoteFieldRanks": [2,3]
+          "remoteFieldRanks": [2,3],
+          "remoteReferenceProfile": "All brands"
         },
         {
           "name": "Car_Model",
@@ -79,7 +80,8 @@
           "label": "Default Rims",
           "rank": 10,
           "group": "Wheels",
-          "remoteFieldRanks": [2,4,5,6,7]
+          "remoteFieldRanks": [2,4,5,6,7],
+          "remoteReferenceProfile": "All rims"
         },
         {
           "name": "HUD_File_Name",
@@ -685,6 +687,19 @@
           "name": "REF",
           "readOnly": "true",
           "label": "(REF) Brand #"
+        }
+      ]
+    },
+    {
+      "name": "All rims",
+      "topic": "RIMS",
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Rim set #",
+          "toolTip": "Unique rim set number"
         }
       ]
     },

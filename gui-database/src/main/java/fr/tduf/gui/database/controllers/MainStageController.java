@@ -517,7 +517,7 @@ public class MainStageController implements Initializable {
         requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
 
         if (remoteFieldRanks.isEmpty()) {
-            return "Reference to another topic.";
+            return "??";
         }
 
         List<String> contents = remoteFieldRanks.stream()
@@ -554,7 +554,7 @@ public class MainStageController implements Initializable {
         requireNonNull(fieldRanks, "A list of field ranks (even empty) must be provided.");
 
         if (fieldRanks.isEmpty()) {
-            return "Reference to another topic.";
+            return "??";
         }
 
         List<String> contents = fieldRanks.stream()
@@ -653,9 +653,13 @@ public class MainStageController implements Initializable {
         Label resourceTopicLabel = new Label(topic.name());
         resourceTopicLabel.getStyleClass().add("fieldLabel");
 
+        Button gotoReferenceButton = new Button("->");
+
         fieldBox.getChildren().add(remoteValueLabel);
         fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
         fieldBox.getChildren().add(resourceTopicLabel);
+        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
+        fieldBox.getChildren().add(gotoReferenceButton);
     }
 
     // TODO extract to FieldType object

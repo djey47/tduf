@@ -35,6 +35,9 @@ public class FieldSettingsDto {
     @JsonProperty("remoteFieldRanks")
     private List<Integer> remoteFieldRanks = new ArrayList<>();
 
+    @JsonProperty("remoteReferenceProfile")
+    private String remoteReferenceProfile;
+
     public FieldSettingsDto() {}
 
     public FieldSettingsDto(String fieldName) {
