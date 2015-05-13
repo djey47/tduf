@@ -27,4 +27,38 @@ public class DbStructureDtoTest {
         //THEN
         assertThat(actualFieldType).isNull();
     }
+
+    @Test
+    public void isAResourceField_whenUIDField_shouldReturnFalse() {
+        // GIVEN
+        DbStructureDto.Field field = DbStructureDto.Field.builder()
+                .ofRank(1)
+                .fromType(DbStructureDto.FieldType.UID)
+                .build();
+
+        // WHEN-THEN
+        assertThat(field.isAResourceField()).isFalse();
+    }
+
+    @Test
+    public void isAResourceField_whenResourceField_shouldReturnTrue() {
+        // GIVEN
+        DbStructureDto.Field field1 = DbStructureDto.Field.builder()
+                .ofRank(1)
+                .fromType(DbStructureDto.FieldType.RESOURCE_CURRENT)
+                .build();
+        DbStructureDto.Field field2 = DbStructureDto.Field.builder()
+                .ofRank(2)
+                .fromType(DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN)
+                .build();
+        DbStructureDto.Field field3 = DbStructureDto.Field.builder()
+                .ofRank(3)
+                .fromType(DbStructureDto.FieldType.RESOURCE_REMOTE)
+                .build();
+
+        // WHEN-THEN
+        assertThat(field1.isAResourceField()).isTrue();
+        assertThat(field2.isAResourceField()).isTrue();
+        assertThat(field3.isAResourceField()).isTrue();
+    }
 }
