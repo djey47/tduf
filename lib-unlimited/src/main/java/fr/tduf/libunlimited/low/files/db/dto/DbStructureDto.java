@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -54,6 +55,7 @@ public class DbStructureDto implements Serializable {
         /**
          * @return true is current field is used to locate a local or remote resource, false otherwise.
          */
+        @JsonIgnore
         public boolean isAResourceField() {
             return DbStructureDto.FieldType.RESOURCE_CURRENT == fieldType
                     || DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN == fieldType
