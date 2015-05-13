@@ -395,13 +395,7 @@ public class MainStageController implements Initializable {
 
     private Optional<FieldSettingsDto> getFieldSettings(DbStructureDto.Field field, String profileName) {
         EditorLayoutDto.EditorProfileDto currentProfile = EditorLayoutHelper.getAvailableProfileByName(profileName, this.layoutObject);
-
-        // TODO use method in EditorLayoutHelper instead
-        return currentProfile.getFieldSettings().stream()
-
-                .filter((settings) -> settings.getName().equals(field.getName()))
-
-                .findAny();
+        return EditorLayoutHelper.getFieldSettingsByName(field.getName(), currentProfile);
     }
 
     private void initGroupTabs() {
