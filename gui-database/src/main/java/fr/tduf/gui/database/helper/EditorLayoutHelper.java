@@ -2,6 +2,7 @@ package fr.tduf.gui.database.helper;
 
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.Optional;
 
@@ -36,5 +37,29 @@ public class EditorLayoutHelper {
                 .filter((settings) -> settings.getRank() == fieldRank)
 
                 .findAny();
+    }
+
+    /**
+     * @return
+     */
+    public static Optional<FieldSettingsDto> getFieldSettingsByRankAndProfileName(int fieldRank, String profileName, EditorLayoutDto layoutObject) {
+        requireNonNull(layoutObject, "Editor layout object is required.");
+
+        EditorLayoutDto.EditorProfileDto currentProfile = getAvailableProfileByName(profileName, layoutObject);
+        return getFieldSettingsByRank(fieldRank, currentProfile);
+    }
+
+    /**
+     * @return
+     */
+    public static int getFieldPrioritySettingByRank(int fieldRank, String profileName, EditorLayoutDto layoutObject) {
+        requireNonNull(layoutObject, "Editor layout object is required.");
+
+        Optional<FieldSettingsDto> potentialFieldSettingsObject = getFieldSettingsByRankAndProfileName(fieldRank, profileName, layoutObject);
+        int priority = 0;
+        if (potentialFieldSettingsObject.isPresent()) {
+            priority = potentialFieldSettingsObject.get().getPriority();
+        }
+        return priority;
     }
 }

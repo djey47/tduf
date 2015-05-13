@@ -1,5 +1,8 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
+import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
+import fr.tduf.gui.database.converter.EntryItemsCountToStringConverter;
 import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
@@ -25,7 +28,6 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -40,7 +42,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Makes it a possible to intercept all GUI events.
  */
-// TODO Resolve fields in profile with rank (name is just to make things clear)
 public class MainStageController implements Initializable {
 
     private static final Class<MainStageController> thisClass = MainStageController.class;
@@ -99,12 +100,13 @@ public class MainStageController implements Initializable {
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
         try {
+            // DEBUG
+            databaseLocationTextField.setText("/media/DevStore/GIT/tduf/cli/integ-tests/db-json/");
+
             initSettingsPane();
 
             initNavigationPane();
 
-            // DEBUG
-            databaseLocationTextField.setText("/media/DevStore/GIT/tduf/cli/integ-tests/db-json/");
         } catch (IOException e) {
             throw new RuntimeException("Window initializing failed.", e);
         }
@@ -164,7 +166,7 @@ public class MainStageController implements Initializable {
     private void handleProfileChoiceChanged(String newProfileName) {
         System.out.println("handleProfileChoiceChanged: " + newProfileName);
 
-        fillTabPaneDynamically(newProfileName);
+        initTabPane(newProfileName);
     }
 
     private void handleLocaleChoiceChanged(DbResourceDto.Locale newLocale) {
@@ -188,64 +190,62 @@ public class MainStageController implements Initializable {
     }
 
     private void initNavigationPane() {
-
         this.currentTopicProperty = new SimpleObjectProperty<>();
-        this.currentTopicLabel.textProperty().bindBidirectional(currentTopicProperty, new StringConverter<DbDto.Topic>() {
-            @Override
-            public String toString(DbDto.Topic object) {
-                if (object == null) {
-                    return "<?>";
-                }
-                return object.name();
-            }
-
-            @Override
-            public DbDto.Topic fromString(String string) {
-                return DbDto.Topic.valueOf(string);
-            }
-        });
+        this.currentTopicLabel.textProperty().bindBidirectional(currentTopicProperty, new DatabaseTopicToStringConverter());
 
         this.entryItemsCountProperty = new SimpleObjectProperty<>(-1);
-        this.entryItemsCountLabel.textProperty().bindBidirectional(entryItemsCountProperty, new StringConverter<Integer>() {
-            @Override
-            public String toString(Integer object) {
-                if (object == -1) {
-                    return "/ <?>";
-                }
-                return "/ " + object;
-            }
-
-            @Override
-            public Integer fromString(String string) {
-                return null;
-            }
-        });
+        this.entryItemsCountLabel.textProperty().bindBidirectional(entryItemsCountProperty, new EntryItemsCountToStringConverter());
 
         this.currentEntryIndexProperty = new SimpleObjectProperty<>(-1);
-        this.entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new StringConverter<Integer>() {
-            @Override
-            public String toString(Integer entryIndex) {
-                if (entryIndex == -1) {
-                    return "<?>";
-                }
-                return "" + (entryIndex + 1);
-
-            }
-
-            @Override
-            public Integer fromString(String string) {
-                return null;
-            }
-        });
+        this.entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new CurrentEntryIndexToStringConverter());
 
         this.currentEntryLabelProperty = new SimpleStringProperty("");
         this.currentEntryLabel.textProperty().bindBidirectional(currentEntryLabelProperty);
     }
 
-    private void loadAndFillProfiles() throws IOException {
-        this.layoutObject = new ObjectMapper().readValue(thisClass.getResource("/layout/defaultProfiles.json"), EditorLayoutDto.class);
-        this.layoutObject.getProfiles()
-                .forEach((profileObject) -> profilesChoiceBox.getItems().add(profileObject.getName()));
+    private void initTabPane(String profileName) {
+        if (databaseObjects.isEmpty()) {
+            return;
+        }
+
+        this.profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, this.layoutObject);
+
+        this.currentTopicObject = databaseMiner.getDatabaseTopic(profileObject.getTopic()).get();
+        this.currentTopicProperty.setValue(this.currentTopicObject.getStructure().getTopic());
+
+        this.currentEntryIndexProperty.setValue(0);
+        this.entryItemsCountProperty.setValue(this.currentTopicObject.getData().getEntries().size());
+
+        this.rawValuePropertyByFieldRank.clear();
+        this.resolvedValuePropertyByFieldRank.clear();
+        this.resourceListByTopicLink.clear();
+
+        initGroupTabs();
+
+        addAllFieldsControls();
+
+        addAllLinksControls();
+
+        updateAllPropertiesWithItemValues();
+    }
+
+    private void initGroupTabs() {
+
+        this.defaultTab.getChildren().clear();
+
+        this.tabPane.getTabs().remove(1, this.tabPane.getTabs().size());
+        tabContentByName.clear();
+
+        if (this.profileObject.getGroups() != null) {
+            this.profileObject.getGroups().forEach((groupName) -> {
+                VBox vbox = new VBox();
+                Tab groupTab = new Tab(groupName, new ScrollPane(vbox));
+
+                this.tabPane.getTabs().add(this.tabPane.getTabs().size(), groupTab);
+
+                tabContentByName.put(groupName, vbox);
+            });
+        }
     }
 
     private void fillLocales() {
@@ -256,60 +256,48 @@ public class MainStageController implements Initializable {
         this.localesChoiceBox.valueProperty().bindBidirectional(this.currentLocaleProperty);
     }
 
-    private void fillTabPaneDynamically(String profileName) {
+    private void loadAndFillProfiles() throws IOException {
+        this.layoutObject = new ObjectMapper().readValue(thisClass.getResource("/layout/defaultProfiles.json"), EditorLayoutDto.class);
+        this.layoutObject.getProfiles()
+                .forEach((profileObject) -> profilesChoiceBox.getItems().add(profileObject.getName()));
+    }
 
-        if (databaseObjects.isEmpty()) {
+    private void addAllFieldsControls() {
+        if (this.profileObject.getFieldSettings() == null) {
             return;
         }
 
-        this.profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, this.layoutObject);
-        initGroupTabs();
-
-        DbDto.Topic startTopic = profileObject.getTopic();
-        this.currentTopicObject = databaseMiner.getDatabaseTopic(startTopic).get();
-        this.currentTopicProperty.setValue(this.currentTopicObject.getStructure().getTopic());
-
-        this.currentEntryIndexProperty.setValue(0);
-        this.entryItemsCountProperty.setValue(this.currentTopicObject.getData().getEntries().size());
-
-        this.rawValuePropertyByFieldRank.clear();
-        this.resolvedValuePropertyByFieldRank.clear();
-        this.resourceListByTopicLink.clear();
-
-        assignFieldControls();
-
-        assignAllLinkControls();
-
-        updateAllPropertiesWithItemValues();
-    }
-
-    private void assignFieldControls() {
         this.currentTopicObject.getStructure().getFields().stream()
 
-                .sorted((structureField1, structureField2) -> Integer.compare(getFieldPrioritySetting(structureField2), getFieldPrioritySetting(structureField1)))
+                .sorted((structureField1, structureField2) -> Integer.compare(
+                        EditorLayoutHelper.getFieldPrioritySettingByRank(structureField2.getRank(), this.profilesChoiceBox.getValue(), this.layoutObject),
+                        EditorLayoutHelper.getFieldPrioritySettingByRank(structureField1.getRank(), this.profilesChoiceBox.getValue(), this.layoutObject)))
 
-                .forEach(this::assignControls);
+                .forEach(this::addFieldControls);
     }
 
-    private int getFieldPrioritySetting(DbStructureDto.Field structureField) {
-        Optional<FieldSettingsDto> potentialFieldSettingsObject = getFieldSettings(structureField, this.profilesChoiceBox.getValue());
-        int priority = 0;
-        if (potentialFieldSettingsObject.isPresent()) {
-            priority = potentialFieldSettingsObject.get().getPriority();
+    private void addAllLinksControls() {
+        if (this.profileObject.getTopicLinks() == null) {
+            return;
         }
-        return priority;
+
+        this.profileObject.getTopicLinks().stream()
+
+                .sorted((topicLinkObject1, topicLinkObject2) -> Integer.compare(topicLinkObject2.getPriority(), topicLinkObject1.getPriority()))
+
+                .forEach(this::addLinkControls);
     }
 
-    private void assignControls(DbStructureDto.Field field) {
+    private void addFieldControls(DbStructureDto.Field field) {
 
         SimpleStringProperty property = new SimpleStringProperty("");
         rawValuePropertyByFieldRank.put(field.getRank(), property);
 
-        Optional<FieldSettingsDto> potentialFieldSettings = getFieldSettings(field, profilesChoiceBox.getValue());
         String fieldName = field.getName();
         boolean fieldReadOnly = false;
         String groupName = null;
         Optional<String> potentialToolTip = Optional.empty();
+        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(field.getRank(), profilesChoiceBox.getValue(), this.layoutObject);
         if(potentialFieldSettings.isPresent()) {
             FieldSettingsDto fieldSettings = potentialFieldSettings.get();
 
@@ -328,7 +316,7 @@ public class MainStageController implements Initializable {
             potentialToolTip = Optional.ofNullable(fieldSettings.getToolTip());
         }
 
-        HBox fieldBox = createFieldBox(Optional.ofNullable(groupName));
+        HBox fieldBox = addFieldBox(Optional.ofNullable(groupName));
 
         addFieldLabel(fieldBox, fieldReadOnly, fieldName);
 
@@ -349,20 +337,8 @@ public class MainStageController implements Initializable {
         }
     }
 
-    private void assignAllLinkControls() {
-        if (this.profileObject.getTopicLinks() == null) {
-            return;
-        }
-
-        this.profileObject.getTopicLinks().stream()
-
-                .sorted((topicLinkObject1, topicLinkObject2) -> Integer.compare(topicLinkObject2.getPriority(), topicLinkObject1.getPriority()))
-
-                .forEach(this::assignLinkControls);
-    }
-
-    private void assignLinkControls(TopicLinkDto topicLinkDto) {
-        HBox fieldBox = createFieldBox(Optional.ofNullable(topicLinkDto.getGroup()));
+    private void addLinkControls(TopicLinkDto topicLinkDto) {
+        HBox fieldBox = addFieldBox(Optional.ofNullable(topicLinkDto.getGroup()));
         fieldBox.setPrefHeight(250);
 
         String fieldName = topicLinkDto.getTopic().name();
@@ -393,28 +369,105 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(tableView);
     }
 
-    private Optional<FieldSettingsDto> getFieldSettings(DbStructureDto.Field field, String profileName) {
-        EditorLayoutDto.EditorProfileDto currentProfile = EditorLayoutHelper.getAvailableProfileByName(profileName, this.layoutObject);
-        return EditorLayoutHelper.getFieldSettingsByRank(field.getRank(), currentProfile);
+    private HBox addFieldBox(Optional<String> groupName) {
+        HBox fieldBox = new HBox();
+        fieldBox.setPrefHeight(25.0);
+        fieldBox.setPadding(new Insets(5.0));
+
+        if (groupName.isPresent()) {
+            VBox groupTab = tabContentByName.get(groupName.get());
+            groupTab.getChildren().add(fieldBox);
+        } else {
+            defaultTab.getChildren().add(fieldBox);
+        }
+
+        return fieldBox;
     }
 
-    private void initGroupTabs() {
+    private void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName) {
+        Label fieldNameLabel = new Label(fieldName);
 
-        this.defaultTab.getChildren().clear();
-
-        this.tabPane.getTabs().remove(1, this.tabPane.getTabs().size());
-        tabContentByName.clear();
-
-        if (this.profileObject.getGroups() != null) {
-            this.profileObject.getGroups().forEach((groupName) -> {
-                VBox vbox = new VBox();
-                Tab groupTab = new Tab(groupName, new ScrollPane(vbox));
-
-                this.tabPane.getTabs().add(this.tabPane.getTabs().size(), groupTab);
-
-                tabContentByName.put(groupName, vbox);
-            });
+        fieldNameLabel.getStyleClass().add("fieldName");
+        if (readOnly) {
+            fieldNameLabel.getStyleClass().add("readonlyField");
         }
+        fieldNameLabel.setPrefWidth(225.0);
+        fieldBox.getChildren().add(fieldNameLabel);
+    }
+
+    private void addTextField(HBox fieldBox, boolean readOnly, Property<String> property, Optional<String> toolTip) {
+        TextField fieldValue = new TextField();
+
+        if (readOnly) {
+            fieldValue.getStyleClass().add("readonlyField");
+        }
+        fieldValue.setPrefWidth(110.0);
+        fieldValue.setEditable(!readOnly);
+        if (toolTip.isPresent()) {
+            fieldValue.setTooltip(new Tooltip(toolTip.get()));
+        }
+
+        fieldValue.textProperty().bindBidirectional(property);
+
+        fieldBox.getChildren().add(fieldValue);
+    }
+
+    private void addResourceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic topic) {
+        Label resourceValueLabel = new Label();
+        resourceValueLabel.setPrefWidth(450);
+        resourceValueLabel.getStyleClass().add("fieldLabel");
+
+        SimpleStringProperty property = new SimpleStringProperty("");
+        resolvedValuePropertyByFieldRank.put(fieldRank, property);
+        resourceValueLabel.textProperty().bindBidirectional(property);
+
+        Label resourceTopicLabel = new Label(topic.name());
+        resourceTopicLabel.getStyleClass().add("fieldLabel");
+
+        fieldBox.getChildren().add(resourceValueLabel);
+        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
+        fieldBox.getChildren().add(resourceTopicLabel);
+    }
+
+    private void addReferenceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic targetTopic) {
+        Label remoteValueLabel = new Label();
+        remoteValueLabel.setPrefWidth(450);
+        remoteValueLabel.getStyleClass().add("fieldLabel");
+
+        SimpleStringProperty property = new SimpleStringProperty("Reference to another topic.");
+        resolvedValuePropertyByFieldRank.put(fieldRank, property);
+        remoteValueLabel.textProperty().bindBidirectional(property);
+
+        Label resourceTopicLabel = new Label(targetTopic.name());
+        resourceTopicLabel.getStyleClass().add("fieldLabel");
+
+        Button gotoReferenceButton = new Button("->");
+        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, this.profileObject);
+        if (potentialFieldSettings.isPresent()) {
+            gotoReferenceButton.setOnAction((actionEvent) -> {
+                System.out.println("gotoReferenceButton clicked");
+
+                int entryId = this.currentEntryIndexProperty.getValue();
+                // TODO add method in database miner to retrieve a remote entry from local entry id
+                String remoteReference = this.databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, this.currentTopicObject.getStructure().getTopic()).getItems().stream()
+
+                        .filter((item) -> item.getFieldRank() == fieldRank)
+
+                        .findAny().get().getRawValue();
+                DbDataDto.Entry remoteContentEntry = this.databaseMiner.getContentEntryFromTopicWithReference(remoteReference, targetTopic).get();
+
+                String profileName = potentialFieldSettings.get().getRemoteReferenceProfile();
+                switchToProfileAndEntry(profileName, (int) remoteContentEntry.getId());
+            });
+        } else {
+            gotoReferenceButton.setDisable(true);
+        }
+
+        fieldBox.getChildren().add(remoteValueLabel);
+        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
+        fieldBox.getChildren().add(resourceTopicLabel);
+        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
+        fieldBox.getChildren().add(gotoReferenceButton);
     }
 
     private void updateAllPropertiesWithItemValues() {
@@ -452,7 +505,7 @@ public class MainStageController implements Initializable {
                     DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getStructure().getTopic();
 
                     List<Integer> remoteFieldRanks = new ArrayList<>();
-                    Optional<FieldSettingsDto> fieldSettings = getFieldSettings(structureField, profilesChoiceBox.getValue());
+                    Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), profilesChoiceBox.getValue(), this.layoutObject);
                     if (fieldSettings.isPresent()) {
                         remoteFieldRanks = fieldSettings.get().getRemoteFieldRanks();
                     }
@@ -567,107 +620,6 @@ public class MainStageController implements Initializable {
                 .collect(toList());
 
         return String.join(" - ", contents);
-    }
-
-    private HBox createFieldBox(Optional<String> groupName) {
-        HBox fieldBox = new HBox();
-        fieldBox.setPrefHeight(25.0);
-        fieldBox.setPadding(new Insets(5.0));
-
-        if (groupName.isPresent()) {
-            VBox groupTab = tabContentByName.get(groupName.get());
-            groupTab.getChildren().add(fieldBox);
-        } else {
-            defaultTab.getChildren().add(fieldBox);
-        }
-
-        return fieldBox;
-    }
-
-    private void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName) {
-        Label fieldNameLabel = new Label(fieldName);
-
-        fieldNameLabel.getStyleClass().add("fieldName");
-        if (readOnly) {
-            fieldNameLabel.getStyleClass().add("readonlyField");
-        }
-        fieldNameLabel.setPrefWidth(225.0);
-        fieldBox.getChildren().add(fieldNameLabel);
-    }
-
-    private void addTextField(HBox fieldBox, boolean readOnly, Property<String> property, Optional<String> toolTip) {
-        TextField fieldValue = new TextField();
-
-        if (readOnly) {
-            fieldValue.getStyleClass().add("readonlyField");
-        }
-        fieldValue.setPrefWidth(110.0);
-        fieldValue.setEditable(!readOnly);
-        if (toolTip.isPresent()) {
-            fieldValue.setTooltip(new Tooltip(toolTip.get()));
-        }
-
-        fieldValue.textProperty().bindBidirectional(property);
-
-        fieldBox.getChildren().add(fieldValue);
-    }
-
-    private void addResourceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic topic) {
-        Label resourceValueLabel = new Label();
-        resourceValueLabel.setPrefWidth(450);
-        resourceValueLabel.getStyleClass().add("fieldLabel");
-
-        SimpleStringProperty property = new SimpleStringProperty("");
-        resolvedValuePropertyByFieldRank.put(fieldRank, property);
-        resourceValueLabel.textProperty().bindBidirectional(property);
-
-        Label resourceTopicLabel = new Label(topic.name());
-        resourceTopicLabel.getStyleClass().add("fieldLabel");
-
-        fieldBox.getChildren().add(resourceValueLabel);
-        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
-        fieldBox.getChildren().add(resourceTopicLabel);
-    }
-
-    private void addReferenceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic targetTopic) {
-        Label remoteValueLabel = new Label();
-        remoteValueLabel.setPrefWidth(450);
-        remoteValueLabel.getStyleClass().add("fieldLabel");
-
-        SimpleStringProperty property = new SimpleStringProperty("Reference to another topic.");
-        resolvedValuePropertyByFieldRank.put(fieldRank, property);
-        remoteValueLabel.textProperty().bindBidirectional(property);
-
-        Label resourceTopicLabel = new Label(targetTopic.name());
-        resourceTopicLabel.getStyleClass().add("fieldLabel");
-
-        Button gotoReferenceButton = new Button("->");
-        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, this.profileObject);
-        if (potentialFieldSettings.isPresent()) {
-            gotoReferenceButton.setOnAction((actionEvent) -> {
-                System.out.println("gotoReferenceButton clicked");
-
-                int entryId = this.currentEntryIndexProperty.getValue();
-                // TODO add method in database miner to retrieve a remote entry from local entry id
-                String remoteReference = this.databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, this.currentTopicObject.getStructure().getTopic()).getItems().stream()
-
-                        .filter((item) -> item.getFieldRank() == fieldRank)
-
-                        .findAny().get().getRawValue();
-                DbDataDto.Entry remoteContentEntry = this.databaseMiner.getContentEntryFromTopicWithReference(remoteReference, targetTopic).get();
-
-                String profileName = potentialFieldSettings.get().getRemoteReferenceProfile();
-                switchToProfileAndEntry(profileName, (int) remoteContentEntry.getId());
-            });
-        } else {
-            gotoReferenceButton.setDisable(true);
-        }
-
-        fieldBox.getChildren().add(remoteValueLabel);
-        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
-        fieldBox.getChildren().add(resourceTopicLabel);
-        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
-        fieldBox.getChildren().add(gotoReferenceButton);
     }
 
     // TODO feature: handle navigation history to go back
