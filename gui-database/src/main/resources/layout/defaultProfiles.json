@@ -564,105 +564,120 @@
           "name": "SLOT_1",
           "group": "Slots",
           "label": "(1)",
-          "remoteFieldRanks": [2,12,13,14]
+          "remoteFieldRanks": [2,12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "rank": 5,
           "name": "SLOT_2",
           "group": "Slots",
           "label": "(2)",
-          "remoteFieldRanks": [2,12,13,14]
+          "remoteFieldRanks": [2,12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "rank": 6,
           "name": "SLOT_3",
           "group": "Slots",
           "label": "(3)",
-          "remoteFieldRanks": [2,12,13,14]
+          "remoteFieldRanks": [2,12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "rank": 7,
           "name": "SLOT_4",
           "group": "Slots",
           "label": "(4)",
-          "remoteFieldRanks": [2,12,13,14]
+          "remoteFieldRanks": [2,12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "rank": 8,
           "name": "SLOT_5",
           "group": "Slots",
           "label": "(5)",
-          "remoteFieldRanks": [2,12,13,14]
+          "remoteFieldRanks": [2,12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "rank": 9,
           "name": "SLOT_6",
           "group": "Slots",
           "label": "(6)",
-          "remoteFieldRanks": [2,12,13,14]
+          "remoteFieldRanks": [2,12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "rank": 10,
           "name": "SLOT_7",
           "group": "Slots",
           "label": "(7)",
-          "remoteFieldRanks": [2,12,13,14]
+          "remoteFieldRanks": [2,12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "rank": 11,
           "name": "SLOT_8",
           "group": "Slots",
           "label": "(8)",
-          "remoteFieldRanks": [2,12,13,14]
+          "remoteFieldRanks": [2,12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "rank": 12,
           "name": "SLOT_9",
           "group": "Slots",
           "label": "(9)",
-          "remoteFieldRanks": [2,12,13,14]
+          "remoteFieldRanks": [2,12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "rank": 13,
           "name": "SLOT_10",
           "group": "Slots",
           "label": "(10)",
-          "remoteFieldRanks": [2,12,13,14]
+          "remoteFieldRanks": [2,12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "rank": 14,
           "name": "SLOT_11",
           "group": "Slots",
           "label": "(11)",
-          "remoteFieldRanks": [2,12,13,14]
+          "remoteFieldRanks": [2,12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "rank": 15,
           "name": "SLOT_12",
           "group": "Slots",
           "label": "(12)",
-          "remoteFieldRanks": [2,12,13,14]
+          "remoteFieldRanks": [2,12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "rank": 16,
           "name": "SLOT_13",
           "group": "Slots",
           "label": "(13)",
-          "remoteFieldRanks": [2,12,13,14]
+          "remoteFieldRanks": [2,12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "rank": 17,
           "name": "SLOT_14",
           "group": "Slots",
           "label": "(14)",
-          "remoteFieldRanks": [2,12,13,14]
+          "remoteFieldRanks": [2,12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "rank": 18,
           "name": "SLOT_15",
           "group": "Slots",
           "label": "(15)",
-          "remoteFieldRanks": [2,12,13,14]
+          "remoteFieldRanks": [2,12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         }
       ]
     },
