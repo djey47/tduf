@@ -52,6 +52,15 @@ public class DbStructureDto implements Serializable {
         private int rank;
 
         /**
+         * @return true is current field is used to locate a local or remote resource, false otherwise.
+         */
+        public boolean isAResourceField() {
+            return DbStructureDto.FieldType.RESOURCE_CURRENT == fieldType
+                    || DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN == fieldType
+                    || DbStructureDto.FieldType.RESOURCE_REMOTE == fieldType;
+        }
+
+        /**
          * @return builder, used to generate custom values.
          */
         public static FieldBuilder builder() {
