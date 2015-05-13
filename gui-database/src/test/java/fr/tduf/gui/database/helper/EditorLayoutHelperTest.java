@@ -43,28 +43,28 @@ public class EditorLayoutHelperTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void getFieldSettingsByName_whenProfileObjectNull_shouldThrowException() throws Exception {
+    public void getFieldSettingsByRank_whenProfileObjectNull_shouldThrowException() throws Exception {
         // GIVEN-WHEN
-        EditorLayoutHelper.getFieldSettingsByName(null, null);
+        EditorLayoutHelper.getFieldSettingsByRank(0, null);
 
         // THEN: NPE
     }
 
     @Test
-    public void getFieldSettingsByName_whenSettingsNotFound_shouldReturnAbsent() {
+    public void getFieldSettingsByRank_whenSettingsNotFound_shouldReturnAbsent() {
         // GIVEN-WHEN-THEN
-        assertThat(EditorLayoutHelper.getFieldSettingsByName("", new EditorLayoutDto.EditorProfileDto())).isEmpty();
+        assertThat(EditorLayoutHelper.getFieldSettingsByRank(0, new EditorLayoutDto.EditorProfileDto())).isEmpty();
     }
 
     @Test
-    public void getFieldSettingsByName_whenSettingsFound_shouldReturnThem() {
+    public void getFieldSettingsByRank_whenSettingsFound_shouldReturnThem() {
         // GIVEN
         EditorLayoutDto.EditorProfileDto profileObject = new EditorLayoutDto.EditorProfileDto("profile name");
-        FieldSettingsDto fieldSettingsObject = new FieldSettingsDto("field1");
+        FieldSettingsDto fieldSettingsObject = new FieldSettingsDto(1);
         profileObject.getFieldSettings().add(fieldSettingsObject);
 
         // WHEN
-        Optional<FieldSettingsDto> actualSettings = EditorLayoutHelper.getFieldSettingsByName("field1", profileObject);
+        Optional<FieldSettingsDto> actualSettings = EditorLayoutHelper.getFieldSettingsByRank(1, profileObject);
 
         // THEN
         assertThat(actualSettings)

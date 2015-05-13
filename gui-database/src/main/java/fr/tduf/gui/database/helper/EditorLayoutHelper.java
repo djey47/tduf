@@ -26,14 +26,14 @@ public class EditorLayoutHelper {
     }
 
     /**
-     * @return field settings if they exist for provided field name, absent otherwise.
+     * @return field settings if they exist for provided field rank, absent otherwise.
      */
-    public static Optional<FieldSettingsDto> getFieldSettingsByName(String fieldName, EditorLayoutDto.EditorProfileDto profileObject) {
+    public static Optional<FieldSettingsDto> getFieldSettingsByRank(int fieldRank, EditorLayoutDto.EditorProfileDto profileObject) {
         requireNonNull(profileObject, "Editor profile object is required.");
 
         return profileObject.getFieldSettings().stream()
 
-                .filter((settings) -> settings.getName().equals(fieldName))
+                .filter((settings) -> settings.getRank() == fieldRank)
 
                 .findAny();
     }

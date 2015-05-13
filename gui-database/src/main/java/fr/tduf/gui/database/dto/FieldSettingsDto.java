@@ -44,6 +44,10 @@ public class FieldSettingsDto {
         this.name = fieldName;
     }
 
+    public FieldSettingsDto(int fieldRank) {
+        this.rank = fieldRank;
+    }
+
     public String getName() {
         return name;
     }
@@ -78,5 +82,9 @@ public class FieldSettingsDto {
 
     public String getRemoteReferenceProfile() {
         return remoteReferenceProfile;
+    }
+
+    public int getRank() {
+        return rank;
     }
 }

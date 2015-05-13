@@ -395,7 +395,7 @@ public class MainStageController implements Initializable {
 
     private Optional<FieldSettingsDto> getFieldSettings(DbStructureDto.Field field, String profileName) {
         EditorLayoutDto.EditorProfileDto currentProfile = EditorLayoutHelper.getAvailableProfileByName(profileName, this.layoutObject);
-        return EditorLayoutHelper.getFieldSettingsByName(field.getName(), currentProfile);
+        return EditorLayoutHelper.getFieldSettingsByRank(field.getRank(), currentProfile);
     }
 
     private void initGroupTabs() {
@@ -642,14 +642,7 @@ public class MainStageController implements Initializable {
         resourceTopicLabel.getStyleClass().add("fieldLabel");
 
         Button gotoReferenceButton = new Button("->");
-        String fieldName = this.currentTopicObject.getStructure().getFields().stream()
-
-                .filter((structureField) -> structureField.getRank() == fieldRank)
-
-                .findAny().get().getName();
-
-        // TODO add method to retrieve settings by field rank
-        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByName(fieldName, this.profileObject);
+        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, this.profileObject);
         if (potentialFieldSettings.isPresent()) {
             gotoReferenceButton.setOnAction((actionEvent) -> {
                 System.out.println("gotoReferenceButton clicked");
@@ -677,10 +670,9 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(gotoReferenceButton);
     }
 
-    // TODO handle navigation history to go back
+    // TODO feature: handle navigation history to go back
     private void switchToProfileAndEntry(String profileName, int entryId) {
         this.profilesChoiceBox.setValue(profileName);
-
         switchToContentEntry(entryId);
     }
 
