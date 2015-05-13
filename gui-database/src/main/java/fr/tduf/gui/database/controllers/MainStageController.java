@@ -480,117 +480,95 @@ public class MainStageController implements Initializable {
         }
         this.currentEntryLabelProperty.setValue(entryLabel);
 
-        entry.getItems().forEach((item) -> {
-            String rawValue = item.getRawValue();
+        entry.getItems().forEach(this::updateItemProperties);
 
-            rawValuePropertyByFieldRank.get(item.getFieldRank()).set(rawValue);
-
-            DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, this.currentTopicObject.getStructure().getFields());
-            if (structureField.isAResourceField()) {
-
-                DbDto.Topic resourceTopic = this.currentTopicObject.getStructure().getTopic();
-                if (structureField.getTargetRef() != null) {
-                    resourceTopic = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getStructure().getTopic();
-                }
-
-                Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(rawValue, resourceTopic, this.currentLocaleProperty.getValue());
-                if (potentialResourceEntry.isPresent()) {
-                    String resourceValue = potentialResourceEntry.get().getValue();
-                    resolvedValuePropertyByFieldRank.get(item.getFieldRank()).set(resourceValue);
-                }
-            }
-
-            if (DbStructureDto.FieldType.REFERENCE == structureField.getFieldType()) {
-                if (resolvedValuePropertyByFieldRank.containsKey(item.getFieldRank())) {
-                    DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getStructure().getTopic();
-
-                    List<Integer> remoteFieldRanks = new ArrayList<>();
-                    Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), profilesChoiceBox.getValue(), this.layoutObject);
-                    if (fieldSettings.isPresent()) {
-                        remoteFieldRanks = fieldSettings.get().getRemoteFieldRanks();
-                    }
-
-                    String remoteContents = fetchRemoteContentsWithEntryRef(remoteTopic, item.getRawValue(), remoteFieldRanks);
-                    resolvedValuePropertyByFieldRank.get(item.getFieldRank()).set(remoteContents);
-                }
-            }
-        });
-
-        this.resourceListByTopicLink.entrySet().forEach((remoteEntry) -> {
-            TopicLinkDto linkObject = remoteEntry.getKey();
-            ObservableList<RemoteResource> values = remoteEntry.getValue();
-            values.clear();
-
-            DbDto topicObject = this.databaseMiner.getDatabaseTopic(linkObject.getTopic()).get();
-            topicObject.getData().getEntries().stream()
-
-                    .filter((contentEntry) -> {
-                        // TODO find another way of getting current reference
-                        String currentRef = contentEntry.getItems().get(0).getRawValue();
-                        return rawValuePropertyByFieldRank.get(1).getValue().equals(currentRef);
-                    })
-
-                    .map((contentEntry) -> {
-                        if (topicObject.getStructure().getFields().size() == 2) {
-                            String remoteTopicRef = topicObject.getStructure().getFields().get(1).getTargetRef();
-                            DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(remoteTopicRef).getStructure().getTopic();
-
-                            String remoteEntryReference = contentEntry.getItems().get(1).getRawValue();
-                            RemoteResource remoteResource = new RemoteResource();
-                            remoteResource.setReference(remoteEntryReference);
-                            remoteResource.setValue(fetchRemoteContentsWithEntryRef(remoteTopic, remoteEntryReference, linkObject.getRemoteFieldRanks()));
-                            return remoteResource;
-                        } else {
-                            long entryId = contentEntry.getId();
-                            RemoteResource remoteResource = new RemoteResource();
-                            remoteResource.setReference(Long.valueOf(entryId).toString());
-                            remoteResource.setValue(fetchContentsWithEntryId(linkObject.getTopic(), entryId, linkObject.getRemoteFieldRanks()));
-                            return remoteResource;
-                        }
-                    })
-
-                    .forEach(values::add);
-        });
+        this.resourceListByTopicLink.entrySet().forEach(this::updateLinkProperties);
     }
 
-    // TODO factorize
+    private void updateItemProperties(DbDataDto.Item item) {
+        rawValuePropertyByFieldRank.get(item.getFieldRank()).set(item.getRawValue());
+
+        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, this.currentTopicObject.getStructure().getFields());
+        if (structureField.isAResourceField()) {
+            updateResourceProperties(item, structureField);
+        }
+
+        if (DbStructureDto.FieldType.REFERENCE == structureField.getFieldType()
+                && resolvedValuePropertyByFieldRank.containsKey(item.getFieldRank())) {
+            updateReferenceProperties(item, structureField);
+        }
+    }
+
+    private void updateResourceProperties(DbDataDto.Item resourceItem, DbStructureDto.Field structureField) {
+        DbDto.Topic resourceTopic = this.currentTopicObject.getStructure().getTopic();
+        if (structureField.getTargetRef() != null) {
+            resourceTopic = this.databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getStructure().getTopic();
+        }
+
+        Optional<DbResourceDto.Entry> potentialResourceEntry = this.databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceItem.getRawValue(), resourceTopic, this.currentLocaleProperty.getValue());
+        if (potentialResourceEntry.isPresent()) {
+            String resourceValue = potentialResourceEntry.get().getValue();
+            resolvedValuePropertyByFieldRank.get(resourceItem.getFieldRank()).set(resourceValue);
+        }
+    }
+
+    private void updateReferenceProperties(DbDataDto.Item referenceItem, DbStructureDto.Field structureField) {
+        DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getStructure().getTopic();
+
+        List<Integer> remoteFieldRanks = new ArrayList<>();
+        Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), profilesChoiceBox.getValue(), this.layoutObject);
+        if (fieldSettings.isPresent()) {
+            remoteFieldRanks = fieldSettings.get().getRemoteFieldRanks();
+        }
+
+        String remoteContents = fetchRemoteContentsWithEntryRef(remoteTopic, referenceItem.getRawValue(), remoteFieldRanks);
+        resolvedValuePropertyByFieldRank.get(referenceItem.getFieldRank()).set(remoteContents);
+    }
+
+    private void updateLinkProperties(Map.Entry<TopicLinkDto, ObservableList<RemoteResource>> remoteEntry) {
+        TopicLinkDto linkObject = remoteEntry.getKey();
+        ObservableList<RemoteResource> values = remoteEntry.getValue();
+        values.clear();
+
+        DbDto topicObject = this.databaseMiner.getDatabaseTopic(linkObject.getTopic()).get();
+        topicObject.getData().getEntries().stream()
+
+                .filter((contentEntry) -> {
+                    // TODO find another way of getting current reference
+                    String currentRef = contentEntry.getItems().get(0).getRawValue();
+                    return rawValuePropertyByFieldRank.get(1).getValue().equals(currentRef);
+                })
+
+                .map((contentEntry) -> getLinkResourceFromContentEntry(contentEntry, linkObject, topicObject))
+
+                .forEach(values::add);
+    }
+
+    private RemoteResource getLinkResourceFromContentEntry(DbDataDto.Entry contentEntry, TopicLinkDto linkObject, DbDto topicObject) {
+        RemoteResource remoteResource = new RemoteResource();
+        if (topicObject.getStructure().getFields().size() == 2) {
+            // Association topic (e.g. Car_Rims)
+            String remoteTopicRef = topicObject.getStructure().getFields().get(1).getTargetRef();
+            DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(remoteTopicRef).getStructure().getTopic();
+
+            String remoteEntryReference = contentEntry.getItems().get(1).getRawValue();
+            remoteResource.setReference(remoteEntryReference);
+            remoteResource.setValue(fetchRemoteContentsWithEntryRef(remoteTopic, remoteEntryReference, linkObject.getRemoteFieldRanks()));
+        } else {
+            long entryId = contentEntry.getId();
+            remoteResource.setReference(Long.valueOf(entryId).toString());
+            remoteResource.setValue(fetchContentsWithEntryId(linkObject.getTopic(), entryId, linkObject.getRemoteFieldRanks()));
+        }
+        return remoteResource;
+    }
+
     private String fetchRemoteContentsWithEntryRef(DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {
         requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
 
-        if (remoteFieldRanks.isEmpty()) {
-            return "??";
-        }
-
-        List<String> contents = remoteFieldRanks.stream()
-
-                .map((remoteFieldRank) -> {
-
-                    Optional<DbDataDto.Entry> potentialContentEntry = databaseMiner.getContentEntryFromTopicWithReference(remoteEntryReference, remoteTopic);
-                    if (!potentialContentEntry.isPresent()) {
-                        return "<?>";
-                    }
-
-                    DbDataDto.Entry contentEntry = potentialContentEntry.get();
-                    String resourceReference = contentEntry.getItems().stream()
-
-                            .filter((contentsItem) -> contentsItem.getFieldRank() == remoteFieldRank)
-
-                            .findAny().get().getRawValue();
-
-                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, remoteTopic, this.currentLocaleProperty.getValue());
-                    if (potentialRemoteResourceEntry.isPresent()) {
-                        return potentialRemoteResourceEntry.get().getValue();
-                    }
-
-                    return resourceReference;
-                })
-
-                .collect(toList());
-
-        return String.join(" - ", contents);
+        long remoteEntryId = getEntryIdFromRef(remoteEntryReference, remoteTopic).getAsLong();
+        return fetchContentsWithEntryId(remoteTopic, remoteEntryId, remoteFieldRanks);
     }
 
-    // TODO factorize
     private String fetchContentsWithEntryId(DbDto.Topic topic, long entryId, List<Integer> fieldRanks) {
         requireNonNull(fieldRanks, "A list of field ranks (even empty) must be provided.");
 
@@ -620,6 +598,15 @@ public class MainStageController implements Initializable {
                 .collect(toList());
 
         return String.join(" - ", contents);
+    }
+
+    // TODO move to miner
+    private OptionalLong getEntryIdFromRef(String entryReference, DbDto.Topic topic) {
+        Optional<DbDataDto.Entry> potentialEntry = this.databaseMiner.getContentEntryFromTopicWithReference(entryReference, topic);
+        if(potentialEntry.isPresent()) {
+            return OptionalLong.of(potentialEntry.get().getId());
+        }
+        return OptionalLong.empty();
     }
 
     // TODO feature: handle navigation history to go back
