@@ -132,9 +132,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        currentEntryIndex++;
-        this.currentEntryIndexProperty.setValue(currentEntryIndex);
-        updateAllPropertiesWithItemValues();
+        switchToContentEntry(++currentEntryIndex);
     }
 
     @FXML
@@ -146,25 +144,21 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        currentEntryIndex--;
-        this.currentEntryIndexProperty.setValue(currentEntryIndex);
-        updateAllPropertiesWithItemValues();
+        switchToContentEntry(--currentEntryIndex);
     }
 
     @FXML
     public void handleFirstButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleFirstButtonMouseClick");
 
-        this.currentEntryIndexProperty.setValue(0);
-        updateAllPropertiesWithItemValues();
+        switchToContentEntry(0);
     }
 
     @FXML
     public void handleLastButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleLastButtonMouseClick");
 
-        this.currentEntryIndexProperty.setValue(this.currentTopicObject.getData().getEntries().size() - 1);
-        updateAllPropertiesWithItemValues();
+        switchToContentEntry(this.currentTopicObject.getData().getEntries().size() - 1);
     }
 
     private void handleProfileChoiceChanged(String newProfileName) {
@@ -340,7 +334,7 @@ public class MainStageController implements Initializable {
 
         addTextField(fieldBox, fieldReadOnly, property, potentialToolTip);
 
-        if (isAResourceField(field)) {
+        if (field.isAResourceField()) {
             DbDto.Topic topic = currentTopicObject.getStructure().getTopic();
             if (field.getTargetRef() != null) {
                 topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getStructure().getTopic();
@@ -445,7 +439,7 @@ public class MainStageController implements Initializable {
             rawValuePropertyByFieldRank.get(item.getFieldRank()).set(rawValue);
 
             DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, this.currentTopicObject.getStructure().getFields());
-            if (isAResourceField(structureField)) {
+            if (structureField.isAResourceField()) {
 
                 DbDto.Topic resourceTopic = this.currentTopicObject.getStructure().getTopic();
                 if (structureField.getTargetRef() != null) {
@@ -693,14 +687,11 @@ public class MainStageController implements Initializable {
     private void switchToProfileAndEntry(String profileName, int entryId) {
         this.profilesChoiceBox.setValue(profileName);
 
-        this.currentEntryIndexProperty.setValue(entryId);
-        updateAllPropertiesWithItemValues();
+        switchToContentEntry(entryId);
     }
 
-    // TODO extract to FieldType enum
-    private static boolean isAResourceField(DbStructureDto.Field field) {
-        return DbStructureDto.FieldType.RESOURCE_CURRENT == field.getFieldType()
-                || DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN == field.getFieldType()
-                || DbStructureDto.FieldType.RESOURCE_REMOTE == field.getFieldType();
+    private void switchToContentEntry(int entryId) {
+        this.currentEntryIndexProperty.setValue(entryId);
+        updateAllPropertiesWithItemValues();
     }
 }
