@@ -696,6 +696,7 @@
     {
       "name": "All brands",
       "topic": "BRANDS",
+      "entryLabelFieldRanks": [2],
       "fieldSettings": [
         {
           "rank": 1,
@@ -708,6 +709,7 @@
     {
       "name": "All rims",
       "topic": "RIMS",
+      "entryLabelFieldRanks": [2,4],
       "fieldSettings": [
         {
           "rank": 1,
