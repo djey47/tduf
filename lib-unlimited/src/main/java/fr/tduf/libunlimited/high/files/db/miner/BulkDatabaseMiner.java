@@ -46,7 +46,7 @@ public class BulkDatabaseMiner {
 
         Optional<DbDto> dbDto = topicObjects.stream()
 
-                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
+                .filter((databaseObject) -> databaseObject.getTopic() == topic)
 
                 .findAny();
 
@@ -87,7 +87,7 @@ public class BulkDatabaseMiner {
 
         return topicObjects.stream()
 
-                .filter((databaseObject) -> databaseObject.getStructure().getTopic() == topic)
+                .filter((databaseObject) -> databaseObject.getTopic() == topic)
 
                 .findAny();
     }
