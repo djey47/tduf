@@ -471,7 +471,7 @@ public class DatabaseTool extends GenericTool {
             FilesHelper.createDirectoryIfNotExists(this.outputDatabaseDirectory);
 
             for (DbDto databaseObject : fixedDatabaseObjects) {
-                outLine("-> Now processing topic: " + databaseObject.getStructure().getTopic() + "...");
+                outLine("-> Now processing topic: " + databaseObject.getTopic() + "...");
 
                 writeDatabaseTopic(databaseObject, this.outputDatabaseDirectory);
             }
@@ -600,7 +600,7 @@ public class DatabaseTool extends GenericTool {
     private List<String> writeDatabaseTopic(DbDto dbDto, String outputDatabaseDirectory) throws IOException {
         List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabaseTopic(dbDto, outputDatabaseDirectory, this.withClearContents);
 
-        outLine("Writing done for topic: " + dbDto.getStructure().getTopic());
+        outLine("Writing done for topic: " + dbDto.getTopic());
         writtenFiles.stream()
                 .forEach((fileName) -> outLine("-> " + fileName));
         outLine();

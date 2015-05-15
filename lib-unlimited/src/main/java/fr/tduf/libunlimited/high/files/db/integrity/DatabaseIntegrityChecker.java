@@ -83,7 +83,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
             remoteTopicObject = topicObjectsByReferences.get(targetRef);
         }
 
-        DbDto.Topic currentTopic = localTopicObject.getStructure().getTopic();
+        DbDto.Topic currentTopic = localTopicObject.getTopic();
 
         switch (field.getFieldType()) {
             case REFERENCE:
@@ -113,7 +113,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
                     if (!isResourceReferenceFound) {
                         Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
                         informations.put(SOURCE_TOPIC, sourceTopic);
-                        informations.put(REMOTE_TOPIC, topicObject.getStructure().getTopic());
+                        informations.put(REMOTE_TOPIC, topicObject.getTopic());
                         informations.put(LOCALE, resourceDto.getLocale());
                         informations.put(REFERENCE, reference);
 
@@ -155,7 +155,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         if (!isReferenceFound) {
             Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
             informations.put(SOURCE_TOPIC, sourceTopic);
-            informations.put(REMOTE_TOPIC, topicObject.getStructure().getTopic());
+            informations.put(REMOTE_TOPIC, topicObject.getTopic());
             informations.put(REFERENCE, reference);
 
             integrityErrors.add(IntegrityError.builder()

@@ -129,7 +129,7 @@ public class FilesHelperTest {
 
         // THEN
         assertThat(actualObject).isNotNull();
-        assertThat(actualObject.getStructure().getTopic()).isEqualTo(DbDto.Topic.ACHIEVEMENTS);
+        assertThat(actualObject.getTopic()).isEqualTo(DbDto.Topic.ACHIEVEMENTS);
     }
 
     @Test(expected = NullPointerException.class)

@@ -284,7 +284,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                 break;
             case REFERENCE:
                 rawValue = DatabaseHelper.generateUniqueContentsEntryIdentifier(remoteTopicObject);
-                addContentsEntryWithDefaultItems(Optional.of(rawValue), remoteTopicObject.getStructure().getTopic());
+                addContentsEntryWithDefaultItems(Optional.of(rawValue), remoteTopicObject.getTopic());
                 break;
             case RESOURCE_CURRENT_GLOBALIZED:
             case RESOURCE_CURRENT_LOCALIZED:
@@ -308,7 +308,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
     private void addDefaultResourceReferenceForAllLocales(String resourceReference, DbDto topicObject) {
         Stream.of(DbResourceDto.Locale.values())
 
-                .forEach((locale) -> addResourceEntryFromValidLocale(resourceReference, topicObject.getStructure().getTopic(), locale));
+                .forEach((locale) -> addResourceEntryFromValidLocale(resourceReference, topicObject.getTopic(), locale));
     }
 
     private Set<DbResourceDto.Locale> findValidResourceLocales() {

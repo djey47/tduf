@@ -65,7 +65,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     }
 
     private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForContents(Optional<Integer> potentialRefFieldRank, List<DbStructureDto.Field> structureFields, ReferenceRange range, Map<DbDto.Topic, Set<String>> requiredLocalResourceReferences, Map<DbDto.Topic, Set<String>> requiredContentsReferences) {
-        DbDto.Topic topic = this.topicObject.getStructure().getTopic();
+        DbDto.Topic topic = this.topicObject.getTopic();
 
         return this.topicObject.getData().getEntries().stream()
 
@@ -178,7 +178,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
     private void updateRequiredRemoteReferences(Map<DbDto.Topic, Set<String>> requiredResourceReferences, Map<DbDto.Topic, Set<String>> requiredContentsReferences, String reference, DbStructureDto.Field structureField) {
         DbDto remoteTopicObject = this.databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef());
-        DbDto.Topic remoteTopic = remoteTopicObject.getStructure().getTopic();
+        DbDto.Topic remoteTopic = remoteTopicObject.getTopic();
 
         DbStructureDto.FieldType fieldType = structureField.getFieldType();
         Map<DbDto.Topic, Set<String>> requiredReferences = RESOURCE_REMOTE == fieldType ?

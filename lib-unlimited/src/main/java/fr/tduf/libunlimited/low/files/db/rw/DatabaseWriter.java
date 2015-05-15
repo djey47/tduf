@@ -71,7 +71,7 @@ public class DatabaseWriter {
     public String writeAllAsJson(String path) throws IOException {
         checkPrerequisites(this.databaseDto);
 
-        String outputFileName = String.format("%s.%s", this.databaseDto.getStructure().getTopic().getLabel(), "json");
+        String outputFileName = String.format("%s.%s", this.databaseDto.getTopic().getLabel(), "json");
 
         Path outputFilePath = Paths.get(path, outputFileName);
         try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(outputFilePath, StandardCharsets.UTF_8)) {
@@ -161,7 +161,7 @@ public class DatabaseWriter {
 
         List<String> writtenPaths = new ArrayList<>();
         List<DbResourceDto> dbResourceDtos = this.databaseDto.getResources();
-        String topicLabel = this.databaseDto.getStructure().getTopic().getLabel();
+        String topicLabel = this.databaseDto.getTopic().getLabel();
 
         for(DbResourceDto dbResourceDto : dbResourceDtos) {
 
