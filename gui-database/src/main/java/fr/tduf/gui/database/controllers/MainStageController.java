@@ -448,7 +448,7 @@ public class MainStageController implements Initializable {
                 System.out.println("gotoReferenceButton clicked");
 
                 String profileName = potentialFieldSettings.get().getRemoteReferenceProfile();
-                DbDataDto.Entry remoteContentEntry = getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getStructure().getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic, databaseMiner);
+                DbDataDto.Entry remoteContentEntry = getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getStructure().getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic, databaseMiner).get();
                 switchToProfileAndEntry(profileName, remoteContentEntry.getId());
             });
         } else {
@@ -593,7 +593,7 @@ public class MainStageController implements Initializable {
     }
 
     // TODO move to miner
-    private static DbDataDto.Entry getRemoteContentEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbDto.Topic targetTopic, BulkDatabaseMiner databaseMiner) {
+    private static Optional<DbDataDto.Entry> getRemoteContentEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbDto.Topic targetTopic, BulkDatabaseMiner databaseMiner) {
         // TODO Factorize 1
         String remoteReference = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, sourceTopic).getItems().stream()
 
@@ -601,7 +601,7 @@ public class MainStageController implements Initializable {
 
                 .findAny().get().getRawValue();
 
-        return databaseMiner.getContentEntryFromTopicWithReference(remoteReference, targetTopic).get();
+        return databaseMiner.getContentEntryFromTopicWithReference(remoteReference, targetTopic);
     }
 
     // TODO move to miner
