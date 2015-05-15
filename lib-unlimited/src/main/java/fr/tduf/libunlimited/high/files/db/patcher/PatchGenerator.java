@@ -163,8 +163,8 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     private String fetchItemValue(DbDto.Topic topic, List<DbStructureDto.Field> structureFields, DbDataDto.Item entryItem, Map<DbDto.Topic, Set<String>> requiredContentsReferences, Map<DbDto.Topic, Set<String>> requiredResourceReferences) {
         DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(entryItem, structureFields);
         DbStructureDto.FieldType fieldType = structureField.getFieldType();
-        if (RESOURCE_CURRENT == fieldType
-                || RESOURCE_CURRENT_AGAIN == fieldType) {
+        if (RESOURCE_CURRENT_GLOBALIZED == fieldType
+                || RESOURCE_CURRENT_LOCALIZED == fieldType) {
 
             updateRequiredReferences(topic, requiredResourceReferences, entryItem.getRawValue());
         } else if (RESOURCE_REMOTE == fieldType

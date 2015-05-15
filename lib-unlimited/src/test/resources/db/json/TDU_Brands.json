@@ -11,17 +11,17 @@
       {
         "name": "Manufacturer_ID",
         "rank": 2,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Manufacturer_Name",
         "rank": 3,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Logo_HUD_File",
         "rank": 4,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Logo_Global_Index",

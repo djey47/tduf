@@ -11,17 +11,17 @@
       {
         "name": "ConfigID",
         "rank": 2,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Sex",
         "rank": 3,
-        "type": "RESOURCE_CURRENT_AGAIN"
+        "type": "RESOURCE_CURRENT_LOCALIZED"
       },
       {
         "name": "FileConfigID",
         "rank": 4,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Clothe",

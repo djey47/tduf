@@ -286,8 +286,8 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                 rawValue = DatabaseHelper.generateUniqueContentsEntryIdentifier(remoteTopicObject);
                 addContentsEntryWithDefaultItems(Optional.of(rawValue), remoteTopicObject.getStructure().getTopic());
                 break;
-            case RESOURCE_CURRENT:
-            case RESOURCE_CURRENT_AGAIN:
+            case RESOURCE_CURRENT_GLOBALIZED:
+            case RESOURCE_CURRENT_LOCALIZED:
                 rawValue = DatabaseHelper.generateUniqueResourceEntryIdentifier(topicObject);
                 addDefaultResourceReferenceForAllLocales(rawValue, topicObject);
                 break;
