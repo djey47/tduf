@@ -101,7 +101,7 @@ public class MainStageController implements Initializable {
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
         try {
             // DEBUG
-            databaseLocationTextField.setText("/media/DevStore/GIT/tduf/cli/integ-tests/db-json/");
+            databaseLocationTextField.setText("/media/sf_DevStore/GIT/tduf/cli/integ-tests/db-json/");
 
             initSettingsPane();
 
