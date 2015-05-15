@@ -557,7 +557,7 @@ public class MainStageController implements Initializable {
     private String fetchRemoteContentsWithEntryRef(DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {
         requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
 
-        long remoteEntryId = getEntryIdFromRef(remoteEntryReference, remoteTopic).getAsLong();
+        long remoteEntryId = getEntryIdFromRef(remoteEntryReference, remoteTopic, this.databaseMiner).getAsLong();
         return fetchContentsWithEntryId(remoteTopic, remoteEntryId, remoteFieldRanks);
     }
 
@@ -571,20 +571,11 @@ public class MainStageController implements Initializable {
         List<String> contents = fieldRanks.stream()
 
                 .map((fieldRank) -> {
-
-                    DbDataDto.Entry contentEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic);
-                    String resourceReference = contentEntry.getItems().stream()
-
-                            .filter((contentsItem) -> contentsItem.getFieldRank() == fieldRank)
-
-                            .findAny().get().getRawValue();
-
-                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, topic, this.currentLocaleProperty.getValue());
+                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = getRemoteResourceEntryWithInternalIdentifier(topic, fieldRank, entryId, currentLocaleProperty.getValue(), databaseMiner);
                     if (potentialRemoteResourceEntry.isPresent()) {
                         return potentialRemoteResourceEntry.get().getValue();
                     }
-
-                    return resourceReference;
+                    return "??";
                 })
 
                 .collect(toList());
@@ -593,8 +584,8 @@ public class MainStageController implements Initializable {
     }
 
     // TODO move to miner
-    private OptionalLong getEntryIdFromRef(String entryReference, DbDto.Topic topic) {
-        Optional<DbDataDto.Entry> potentialEntry = this.databaseMiner.getContentEntryFromTopicWithReference(entryReference, topic);
+    private static OptionalLong getEntryIdFromRef(String entryReference, DbDto.Topic topic, BulkDatabaseMiner databaseMiner) {
+        Optional<DbDataDto.Entry> potentialEntry = databaseMiner.getContentEntryFromTopicWithReference(entryReference, topic);
         if(potentialEntry.isPresent()) {
             return OptionalLong.of(potentialEntry.get().getId());
         }
@@ -609,6 +600,18 @@ public class MainStageController implements Initializable {
 
                 .findAny().get().getRawValue();
         return databaseMiner.getContentEntryFromTopicWithReference(remoteReference, targetTopic).get();
+    }
+
+    // TODO move to miner
+    private static Optional<DbResourceDto.Entry> getRemoteResourceEntryWithInternalIdentifier(DbDto.Topic topic, int fieldRank, long entryIndex, DbResourceDto.Locale locale, BulkDatabaseMiner databaseMiner) {
+        DbDataDto.Entry contentEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic);
+        String resourceReference = contentEntry.getItems().stream()
+
+                .filter((contentsItem) -> contentsItem.getFieldRank() == fieldRank)
+
+                .findAny().get().getRawValue();
+
+        return databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, topic, locale);
     }
 
     // TODO feature: handle navigation history to go back
