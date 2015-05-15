@@ -6,12 +6,12 @@
       {
         "name": "FirstName_",
         "rank": 1,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Behaviour",
         "rank": 2,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "PNJ",

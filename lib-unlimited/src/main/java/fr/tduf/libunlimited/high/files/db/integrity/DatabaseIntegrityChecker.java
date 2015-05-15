@@ -89,8 +89,8 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
             case REFERENCE:
                 integrityErrors.addAll(checkContentsReference(item.getRawValue(), remoteTopicObject, currentTopic));
                 break;
-            case RESOURCE_CURRENT:
-            case RESOURCE_CURRENT_AGAIN:
+            case RESOURCE_CURRENT_GLOBALIZED:
+            case RESOURCE_CURRENT_LOCALIZED:
                 integrityErrors.addAll(checkResourceReference(item.getRawValue(), localTopicObject, currentTopic));
                 break;
             case RESOURCE_REMOTE:

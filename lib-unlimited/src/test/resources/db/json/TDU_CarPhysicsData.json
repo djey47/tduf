@@ -17,17 +17,17 @@
       {
         "name": "Car_Model",
         "rank": 3,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Car_Version",
         "rank": 4,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Group",
         "rank": 5,
-        "type": "RESOURCE_CURRENT_AGAIN"
+        "type": "RESOURCE_CURRENT_LOCALIZED"
       },
       {
         "name": "Rarety",
@@ -42,12 +42,12 @@
       {
         "name": "TestDrive_Cat",
         "rank": 8,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Car_File_Name",
         "rank": 9,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Default_Rims",
@@ -58,32 +58,32 @@
       {
         "name": "HUD_File_Name",
         "rank": 11,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Car_RealName",
         "rank": 12,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Model_Name",
         "rank": 13,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Version_Name",
         "rank": 14,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Engine_Localisation",
         "rank": 15,
-        "type": "RESOURCE_CURRENT_AGAIN"
+        "type": "RESOURCE_CURRENT_LOCALIZED"
       },
       {
         "name": "Engine_Type",
         "rank": 16,
-        "type": "RESOURCE_CURRENT_AGAIN"
+        "type": "RESOURCE_CURRENT_LOCALIZED"
       },
       {
         "name": "Displacement",
@@ -118,12 +118,12 @@
       {
         "name": "Drive",
         "rank": 23,
-        "type": "RESOURCE_CURRENT_AGAIN"
+        "type": "RESOURCE_CURRENT_LOCALIZED"
       },
       {
         "name": "GearBox",
         "rank": 24,
-        "type": "RESOURCE_CURRENT_AGAIN"
+        "type": "RESOURCE_CURRENT_LOCALIZED"
       },
       {
         "name": "Nb_Gears",
@@ -178,7 +178,7 @@
       {
         "name": "Brakes_Characteristics_Front",
         "rank": 35,
-        "type": "RESOURCE_CURRENT_AGAIN"
+        "type": "RESOURCE_CURRENT_LOCALIZED"
       },
       {
         "name": "Brakes_Dim_Front",
@@ -193,12 +193,12 @@
       {
         "name": "Brakes_Characteristics_Rear",
         "rank": 38,
-        "type": "RESOURCE_CURRENT_AGAIN"
+        "type": "RESOURCE_CURRENT_LOCALIZED"
       },
       {
         "name": "Tires_Type",
         "rank": 39,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Nb_Turbos",
@@ -373,22 +373,22 @@
       {
         "name": "Windows_Type",
         "rank": 74,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Belt_Type",
         "rank": 75,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Nb_Seats",
         "rank": 76,
-        "type": "RESOURCE_CURRENT"
+        "type": "RESOURCE_CURRENT_GLOBALIZED"
       },
       {
         "name": "Car_Body",
         "rank": 77,
-        "type": "RESOURCE_CURRENT_AGAIN"
+        "type": "RESOURCE_CURRENT_LOCALIZED"
       },
       {
         "name": "Acceleration_0_100_kmh",

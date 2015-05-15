@@ -10,7 +10,7 @@ public class DbStructureDtoTest {
     @Test
     public void itemTypeFromCode_whenCodeExists_shouldReturnProperType() throws Exception {
         //GIVEN
-        DbStructureDto.FieldType expectedFieldType = DbStructureDto.FieldType.RESOURCE_CURRENT;
+        DbStructureDto.FieldType expectedFieldType = DbStructureDto.FieldType.RESOURCE_CURRENT_GLOBALIZED;
 
         //WHEN
         DbStructureDto.FieldType actualFieldType = DbStructureDto.FieldType.fromCode("u");
@@ -45,11 +45,11 @@ public class DbStructureDtoTest {
         // GIVEN
         DbStructureDto.Field field1 = DbStructureDto.Field.builder()
                 .ofRank(1)
-                .fromType(DbStructureDto.FieldType.RESOURCE_CURRENT)
+                .fromType(DbStructureDto.FieldType.RESOURCE_CURRENT_GLOBALIZED)
                 .build();
         DbStructureDto.Field field2 = DbStructureDto.Field.builder()
                 .ofRank(2)
-                .fromType(DbStructureDto.FieldType.RESOURCE_CURRENT_AGAIN)
+                .fromType(DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED)
                 .build();
         DbStructureDto.Field field3 = DbStructureDto.Field.builder()
                 .ofRank(3)
