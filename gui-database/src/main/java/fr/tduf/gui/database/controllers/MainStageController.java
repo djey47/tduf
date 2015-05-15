@@ -447,16 +447,8 @@ public class MainStageController implements Initializable {
             gotoReferenceButton.setOnAction((actionEvent) -> {
                 System.out.println("gotoReferenceButton clicked");
 
-                int entryId = this.currentEntryIndexProperty.getValue();
-                // TODO add method in database miner to retrieve a remote entry from local entry id
-                String remoteReference = this.databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, this.currentTopicObject.getStructure().getTopic()).getItems().stream()
-
-                        .filter((item) -> item.getFieldRank() == fieldRank)
-
-                        .findAny().get().getRawValue();
-                DbDataDto.Entry remoteContentEntry = this.databaseMiner.getContentEntryFromTopicWithReference(remoteReference, targetTopic).get();
-
                 String profileName = potentialFieldSettings.get().getRemoteReferenceProfile();
+                DbDataDto.Entry remoteContentEntry = getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getStructure().getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic, databaseMiner);
                 switchToProfileAndEntry(profileName, (int) remoteContentEntry.getId());
             });
         } else {
@@ -607,6 +599,16 @@ public class MainStageController implements Initializable {
             return OptionalLong.of(potentialEntry.get().getId());
         }
         return OptionalLong.empty();
+    }
+
+    // TODO move to miner
+    private static DbDataDto.Entry getRemoteContentEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, int entryIndex, DbDto.Topic targetTopic, BulkDatabaseMiner databaseMiner) {
+        String remoteReference = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, sourceTopic).getItems().stream()
+
+                .filter((item) -> item.getFieldRank() == fieldRank)
+
+                .findAny().get().getRawValue();
+        return databaseMiner.getContentEntryFromTopicWithReference(remoteReference, targetTopic).get();
     }
 
     // TODO feature: handle navigation history to go back
