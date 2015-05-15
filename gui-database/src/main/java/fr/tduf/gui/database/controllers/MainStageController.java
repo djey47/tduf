@@ -211,7 +211,7 @@ public class MainStageController implements Initializable {
         this.profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, this.layoutObject);
 
         this.currentTopicObject = databaseMiner.getDatabaseTopic(profileObject.getTopic()).get();
-        this.currentTopicProperty.setValue(this.currentTopicObject.getStructure().getTopic());
+        this.currentTopicProperty.setValue(this.currentTopicObject.getTopic());
 
         this.currentEntryIndexProperty.setValue(0L);
         this.entryItemsCountProperty.setValue(this.currentTopicObject.getData().getEntries().size());
@@ -323,16 +323,16 @@ public class MainStageController implements Initializable {
         addTextField(fieldBox, fieldReadOnly, property, potentialToolTip);
 
         if (field.isAResourceField()) {
-            DbDto.Topic topic = currentTopicObject.getStructure().getTopic();
+            DbDto.Topic topic = currentTopicObject.getTopic();
             if (field.getTargetRef() != null) {
-                topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getStructure().getTopic();
+                topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getTopic();
             }
 
             addResourceValueControls(fieldBox, field.getRank(), topic);
         }
 
         if (DbStructureDto.FieldType.REFERENCE == field.getFieldType()) {
-            DbDto.Topic topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getStructure().getTopic();
+            DbDto.Topic topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getTopic();
             addReferenceValueControls(fieldBox, field.getRank(), topic);
         }
     }
@@ -448,7 +448,7 @@ public class MainStageController implements Initializable {
                 System.out.println("gotoReferenceButton clicked");
 
                 String profileName = potentialFieldSettings.get().getRemoteReferenceProfile();
-                DbDataDto.Entry remoteContentEntry = this.databaseMiner.getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getStructure().getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic).get();
+                DbDataDto.Entry remoteContentEntry = this.databaseMiner.getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic).get();
                 switchToProfileAndEntry(profileName, remoteContentEntry.getId());
             });
         } else {
@@ -464,7 +464,7 @@ public class MainStageController implements Initializable {
 
     private void updateAllPropertiesWithItemValues() {
         long entryIndex = this.currentEntryIndexProperty.getValue();
-        DbDataDto.Entry entry = this.databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopicObject.getStructure().getTopic());
+        DbDataDto.Entry entry = this.databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopicObject.getTopic());
 
         String entryLabel = "<?>";
         if (this.profileObject.getEntryLabelFieldRanks() != null) {
@@ -492,9 +492,9 @@ public class MainStageController implements Initializable {
     }
 
     private void updateResourceProperties(DbDataDto.Item resourceItem, DbStructureDto.Field structureField) {
-        DbDto.Topic resourceTopic = this.currentTopicObject.getStructure().getTopic();
+        DbDto.Topic resourceTopic = this.currentTopicObject.getTopic();
         if (structureField.getTargetRef() != null) {
-            resourceTopic = this.databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getStructure().getTopic();
+            resourceTopic = this.databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
         }
 
         Optional<DbResourceDto.Entry> potentialResourceEntry = this.databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceItem.getRawValue(), resourceTopic, this.currentLocaleProperty.getValue());
@@ -505,7 +505,7 @@ public class MainStageController implements Initializable {
     }
 
     private void updateReferenceProperties(DbDataDto.Item referenceItem, DbStructureDto.Field structureField) {
-        DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getStructure().getTopic();
+        DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
 
         List<Integer> remoteFieldRanks = new ArrayList<>();
         Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), profilesChoiceBox.getValue(), this.layoutObject);
@@ -541,7 +541,7 @@ public class MainStageController implements Initializable {
         if (topicObject.getStructure().getFields().size() == 2) {
             // Association topic (e.g. Car_Rims)
             String remoteTopicRef = topicObject.getStructure().getFields().get(1).getTargetRef();
-            DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(remoteTopicRef).getStructure().getTopic();
+            DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(remoteTopicRef).getTopic();
 
             String remoteEntryReference = contentEntry.getItems().get(1).getRawValue();
             remoteResource.setReference(remoteEntryReference);
