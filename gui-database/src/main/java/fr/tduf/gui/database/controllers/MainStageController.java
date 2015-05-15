@@ -448,7 +448,7 @@ public class MainStageController implements Initializable {
                 System.out.println("gotoReferenceButton clicked");
 
                 String profileName = potentialFieldSettings.get().getRemoteReferenceProfile();
-                DbDataDto.Entry remoteContentEntry = getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getStructure().getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic, databaseMiner).get();
+                DbDataDto.Entry remoteContentEntry = this.databaseMiner.getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getStructure().getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic).get();
                 switchToProfileAndEntry(profileName, remoteContentEntry.getId());
             });
         } else {
@@ -557,7 +557,7 @@ public class MainStageController implements Initializable {
     private String fetchRemoteContentsWithEntryRef(DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {
         requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
 
-        long remoteEntryId = getEntryIdFromRef(remoteEntryReference, remoteTopic, this.databaseMiner).getAsLong();
+        long remoteEntryId = this.databaseMiner.getContentEntryIdFromReference(remoteEntryReference, remoteTopic).getAsLong();
         return fetchContentsWithEntryId(remoteTopic, remoteEntryId, remoteFieldRanks);
     }
 
@@ -571,7 +571,7 @@ public class MainStageController implements Initializable {
         List<String> contents = fieldRanks.stream()
 
                 .map((fieldRank) -> {
-                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = getRemoteResourceEntryWithInternalIdentifier(topic, fieldRank, entryId, currentLocaleProperty.getValue(), databaseMiner);
+                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = this.databaseMiner.getRemoteResourceEntryWithInternalIdentifier(topic, fieldRank, entryId, currentLocaleProperty.getValue());
                     if (potentialRemoteResourceEntry.isPresent()) {
                         return potentialRemoteResourceEntry.get().getValue();
                     }
@@ -581,39 +581,6 @@ public class MainStageController implements Initializable {
                 .collect(toList());
 
         return String.join(" - ", contents);
-    }
-
-    // TODO move to miner
-    private static OptionalLong getEntryIdFromRef(String entryReference, DbDto.Topic topic, BulkDatabaseMiner databaseMiner) {
-        Optional<DbDataDto.Entry> potentialEntry = databaseMiner.getContentEntryFromTopicWithReference(entryReference, topic);
-        if(potentialEntry.isPresent()) {
-            return OptionalLong.of(potentialEntry.get().getId());
-        }
-        return OptionalLong.empty();
-    }
-
-    // TODO move to miner
-    private static Optional<DbDataDto.Entry> getRemoteContentEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbDto.Topic targetTopic, BulkDatabaseMiner databaseMiner) {
-        // TODO Factorize 1
-        String remoteReference = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, sourceTopic).getItems().stream()
-
-                .filter((contentsItem) -> contentsItem.getFieldRank() == fieldRank)
-
-                .findAny().get().getRawValue();
-
-        return databaseMiner.getContentEntryFromTopicWithReference(remoteReference, targetTopic);
-    }
-
-    // TODO move to miner
-    private static Optional<DbResourceDto.Entry> getRemoteResourceEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbResourceDto.Locale locale, BulkDatabaseMiner databaseMiner) {
-        // TODO Factorize 1
-        String remoteReference = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, sourceTopic).getItems().stream()
-
-                .filter((contentsItem) -> contentsItem.getFieldRank() == fieldRank)
-
-                .findAny().get().getRawValue();
-
-        return databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(remoteReference, sourceTopic, locale);
     }
 
     // TODO feature: handle navigation history to go back
