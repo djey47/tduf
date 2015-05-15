@@ -88,7 +88,7 @@ public class MainStageController implements Initializable {
 
     private Property<DbDto.Topic> currentTopicProperty;
     private Property<DbResourceDto.Locale> currentLocaleProperty;
-    private Property<Integer> currentEntryIndexProperty;
+    private Property<Long> currentEntryIndexProperty;
     private Property<Integer> entryItemsCountProperty;
     private SimpleStringProperty currentEntryLabelProperty;
 
@@ -129,7 +129,7 @@ public class MainStageController implements Initializable {
     public void handleNextButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleNextButtonMouseClick");
 
-        int currentEntryIndex = currentEntryIndexProperty.getValue();
+        long currentEntryIndex = currentEntryIndexProperty.getValue();
         if (currentEntryIndex >= this.currentTopicObject.getData().getEntries().size() - 1) {
             return;
         }
@@ -141,7 +141,7 @@ public class MainStageController implements Initializable {
     public void handlePreviousButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handlePreviousButtonMouseClick");
 
-        int currentEntryIndex = currentEntryIndexProperty.getValue();
+        long currentEntryIndex = currentEntryIndexProperty.getValue();
         if (currentEntryIndex <= 0 ) {
             return;
         }
@@ -196,7 +196,7 @@ public class MainStageController implements Initializable {
         this.entryItemsCountProperty = new SimpleObjectProperty<>(-1);
         this.entryItemsCountLabel.textProperty().bindBidirectional(entryItemsCountProperty, new EntryItemsCountToStringConverter());
 
-        this.currentEntryIndexProperty = new SimpleObjectProperty<>(-1);
+        this.currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
         this.entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new CurrentEntryIndexToStringConverter());
 
         this.currentEntryLabelProperty = new SimpleStringProperty("");
@@ -213,7 +213,7 @@ public class MainStageController implements Initializable {
         this.currentTopicObject = databaseMiner.getDatabaseTopic(profileObject.getTopic()).get();
         this.currentTopicProperty.setValue(this.currentTopicObject.getStructure().getTopic());
 
-        this.currentEntryIndexProperty.setValue(0);
+        this.currentEntryIndexProperty.setValue(0L);
         this.entryItemsCountProperty.setValue(this.currentTopicObject.getData().getEntries().size());
 
         this.rawValuePropertyByFieldRank.clear();
@@ -449,7 +449,7 @@ public class MainStageController implements Initializable {
 
                 String profileName = potentialFieldSettings.get().getRemoteReferenceProfile();
                 DbDataDto.Entry remoteContentEntry = getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getStructure().getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic, databaseMiner);
-                switchToProfileAndEntry(profileName, (int) remoteContentEntry.getId());
+                switchToProfileAndEntry(profileName, remoteContentEntry.getId());
             });
         } else {
             gotoReferenceButton.setDisable(true);
@@ -463,8 +463,8 @@ public class MainStageController implements Initializable {
     }
 
     private void updateAllPropertiesWithItemValues() {
-        int entryIndex = this.currentEntryIndexProperty.getValue();
-        DbDataDto.Entry entry = this.currentTopicObject.getData().getEntries().get(entryIndex);
+        long entryIndex = this.currentEntryIndexProperty.getValue();
+        DbDataDto.Entry entry = this.databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopicObject.getStructure().getTopic());
 
         String entryLabel = "<?>";
         if (this.profileObject.getEntryLabelFieldRanks() != null) {
@@ -593,35 +593,37 @@ public class MainStageController implements Initializable {
     }
 
     // TODO move to miner
-    private static DbDataDto.Entry getRemoteContentEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, int entryIndex, DbDto.Topic targetTopic, BulkDatabaseMiner databaseMiner) {
+    private static DbDataDto.Entry getRemoteContentEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbDto.Topic targetTopic, BulkDatabaseMiner databaseMiner) {
+        // TODO Factorize 1
         String remoteReference = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, sourceTopic).getItems().stream()
-
-                .filter((item) -> item.getFieldRank() == fieldRank)
-
-                .findAny().get().getRawValue();
-        return databaseMiner.getContentEntryFromTopicWithReference(remoteReference, targetTopic).get();
-    }
-
-    // TODO move to miner
-    private static Optional<DbResourceDto.Entry> getRemoteResourceEntryWithInternalIdentifier(DbDto.Topic topic, int fieldRank, long entryIndex, DbResourceDto.Locale locale, BulkDatabaseMiner databaseMiner) {
-        DbDataDto.Entry contentEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic);
-        String resourceReference = contentEntry.getItems().stream()
 
                 .filter((contentsItem) -> contentsItem.getFieldRank() == fieldRank)
 
                 .findAny().get().getRawValue();
 
-        return databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, topic, locale);
+        return databaseMiner.getContentEntryFromTopicWithReference(remoteReference, targetTopic).get();
+    }
+
+    // TODO move to miner
+    private static Optional<DbResourceDto.Entry> getRemoteResourceEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbResourceDto.Locale locale, BulkDatabaseMiner databaseMiner) {
+        // TODO Factorize 1
+        String remoteReference = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, sourceTopic).getItems().stream()
+
+                .filter((contentsItem) -> contentsItem.getFieldRank() == fieldRank)
+
+                .findAny().get().getRawValue();
+
+        return databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(remoteReference, sourceTopic, locale);
     }
 
     // TODO feature: handle navigation history to go back
-    private void switchToProfileAndEntry(String profileName, int entryId) {
+    private void switchToProfileAndEntry(String profileName, long entryIndex) {
         this.profilesChoiceBox.setValue(profileName);
-        switchToContentEntry(entryId);
+        switchToContentEntry(entryIndex);
     }
 
-    private void switchToContentEntry(int entryId) {
-        this.currentEntryIndexProperty.setValue(entryId);
+    private void switchToContentEntry(long entryIndex) {
+        this.currentEntryIndexProperty.setValue(entryIndex);
         updateAllPropertiesWithItemValues();
     }
 }

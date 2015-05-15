@@ -2,9 +2,9 @@ package fr.tduf.gui.database.converter;
 
 import javafx.util.StringConverter;
 
-public class CurrentEntryIndexToStringConverter extends StringConverter<Integer> {
+public class CurrentEntryIndexToStringConverter extends StringConverter<Long> {
     @Override
-    public String toString(Integer entryIndex) {
+    public String toString(Long entryIndex) {
         if (entryIndex == -1) {
             return "<?>";
         }
@@ -13,7 +13,7 @@ public class CurrentEntryIndexToStringConverter extends StringConverter<Integer>
     }
 
     @Override
-    public Integer fromString(String string) {
+    public Long fromString(String string) {
         return null;
     }
 }
