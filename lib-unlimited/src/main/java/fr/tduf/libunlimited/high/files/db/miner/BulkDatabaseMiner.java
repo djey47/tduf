@@ -8,6 +8,7 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
@@ -16,6 +17,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Class providing utility methods to request data from database objects.
  */
+// TODO unit tests
 // TODO use debug logs to get performance info (0.7.0+)
 public class BulkDatabaseMiner {
 
@@ -139,9 +141,38 @@ public class BulkDatabaseMiner {
 
         return topicObject.getData().getEntries().stream()
 
-                .filter((entry) -> entryHasForReference(entry, ref, topicObject.getStructure().getFields()))
+                .filter((entry) -> contentEntryHasForReference(entry, ref, topicObject.getStructure().getFields()))
 
                 .findAny();
+    }
+
+    /**
+     * @param entryReference
+     * @param topic
+     * @return
+     */
+    public OptionalLong getContentEntryIdFromReference(String entryReference, DbDto.Topic topic) {
+//        System.out.println(new Date().getTime() + " - getContentEntryIdFromReference(" + entryReference + "," + topic + ")");
+
+        Optional<DbDataDto.Entry> potentialEntry = getContentEntryFromTopicWithReference(entryReference, topic);
+        if(potentialEntry.isPresent()) {
+            return OptionalLong.of(potentialEntry.get().getId());
+        }
+        return OptionalLong.empty();
+    }
+
+    /**
+     * @param sourceTopic
+     * @param fieldRank
+     * @param entryIndex
+     * @param targetTopic
+     * @return
+     */
+    public Optional<DbDataDto.Entry> getRemoteContentEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbDto.Topic targetTopic) {
+//        System.out.println(new Date().getTime() + " - getRemoteContentEntryWithInternalIdentifier(" + sourceTopic + "," + fieldRank + "," + entryIndex + "," + targetTopic +")");
+
+        String remoteReference = getRawValueAtEntryIndexAndRank(sourceTopic, fieldRank, entryIndex);
+        return getContentEntryFromTopicWithReference(remoteReference, targetTopic);
     }
 
     /**
@@ -164,6 +195,20 @@ public class BulkDatabaseMiner {
                 .filter((entry) -> entry.getReference().equals(reference))
 
                 .findAny();
+    }
+
+    /**
+     * @param sourceTopic
+     * @param fieldRank
+     * @param entryIndex
+     * @param locale
+     * @return
+     */
+    public Optional<DbResourceDto.Entry> getRemoteResourceEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbResourceDto.Locale locale) {
+//        System.out.println(new Date().getTime() + " - getRemoteResourceEntryWithInternalIdentifier(" + sourceTopic + "," + fieldRank + "," + entryIndex + "," + locale +")");
+
+        String remoteReference = getRawValueAtEntryIndexAndRank(sourceTopic, fieldRank, entryIndex);
+        return getResourceEntryFromTopicAndLocaleWithReference(remoteReference, sourceTopic, locale);
     }
 
     /**
@@ -211,7 +256,15 @@ public class BulkDatabaseMiner {
                 .findAny().get().getRawValue();
     }
 
-    private static boolean entryHasForReference(DbDataDto.Entry entry, String ref, List<DbStructureDto.Field> structureFields) {
+    private String getRawValueAtEntryIndexAndRank(DbDto.Topic sourceTopic, int fieldRank, long entryIndex) {
+        return getContentEntryFromTopicWithInternalIdentifier(entryIndex, sourceTopic).getItems().stream()
+
+                .filter((contentsItem) -> contentsItem.getFieldRank() == fieldRank)
+
+                .findAny().get().getRawValue();
+    }
+
+    private static boolean contentEntryHasForReference(DbDataDto.Entry entry, String ref, List<DbStructureDto.Field> structureFields) {
         Optional<Integer> potentialUidFieldRank = getUidFieldRank(structureFields);
         return potentialUidFieldRank.isPresent()
 
