@@ -351,13 +351,13 @@ public class MainStageController implements Initializable {
         resourceListByTopicLink.put(topicLinkDto, resourceData);
 
         TableView<RemoteResource> tableView = new TableView<>();
-        tableView.setPrefWidth(450);
+        tableView.setPrefWidth(500);
 
-        TableColumn<RemoteResource, String> refColumn = new TableColumn<>();
+        TableColumn<RemoteResource, String> refColumn = new TableColumn<>("#");
         refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
         refColumn.setPrefWidth(100);
 
-        TableColumn<RemoteResource, String> valueColumn = new TableColumn<>();
+        TableColumn<RemoteResource, String> valueColumn = new TableColumn<>("Linked data");
         valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
         valueColumn.setPrefWidth(400);
 
