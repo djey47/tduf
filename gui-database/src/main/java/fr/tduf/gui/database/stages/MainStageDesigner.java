@@ -27,7 +27,8 @@ public class MainStageDesigner {
 
     private static void initMainWindow(Stage primaryStage, Parent mainRoot) {
         String styledToolBarCss = thisClass.getResource("/css/ToolBars.css").toExternalForm();
-        mainRoot.getStylesheets().add(styledToolBarCss);
+        String styledTabContentsCss = thisClass.getResource("/css/TabContents.css").toExternalForm();
+        mainRoot.getStylesheets().addAll(styledToolBarCss, styledTabContentsCss);
 
         primaryStage.setScene(new Scene(mainRoot, 1280, 768));
         primaryStage.setTitle("TDUF Database Editor");
