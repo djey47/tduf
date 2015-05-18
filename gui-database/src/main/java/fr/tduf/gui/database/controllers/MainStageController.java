@@ -337,10 +337,13 @@ public class MainStageController implements Initializable {
 
         tableView.setItems(resourceData);
 
-        String targetRef = databaseMiner.getDatabaseTopic(topicLinkObject.getTopic()).get().getStructure().getFields().get(1).getTargetRef();
+        List<DbStructureDto.Field> structureFields = databaseMiner.getDatabaseTopic(topicLinkObject.getTopic()).get().getStructure().getFields();
         DbDto.Topic targetTopic = topicLinkObject.getTopic();
-        if (targetRef != null) {
-            targetTopic = databaseMiner.getDatabaseTopicFromReference(targetRef).getTopic();
+        if (structureFields.size() == 2) {
+            String targetRef = structureFields.get(1).getTargetRef();
+            if (targetRef != null) {
+                targetTopic = databaseMiner.getDatabaseTopicFromReference(targetRef).getTopic();
+            }
         }
 
         Label resourceTopicLabel = new Label(targetTopic.name());
