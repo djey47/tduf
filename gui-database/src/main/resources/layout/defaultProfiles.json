@@ -7,13 +7,14 @@
       "groups": [
         "Datasheet",
         "Transmission",
+        "Tuning",
         "Fine tuning",
         "Interior",
         "Exterior",
         "Dampering",
         "Wheels",
         "Sound",
-        "Points of sell"
+        "Points of sale"
       ],
       "topicLinks": [
         {
@@ -21,14 +22,21 @@
           "group": "Wheels",
           "label": "Available Rims",
           "remoteFieldRanks": [2,4,5,6,7],
-          "remoteReferenceProfile": "All rims"
+          "remoteReferenceProfile": "Rims"
         },
         {
           "topic": "CAR_COLORS",
           "group": "Exterior",
-          "label": "Available Paintjobs",
-          "remoteFieldRanks": [3,6],
-          "remoteReferenceProfile": "All paints"
+          "label": "Selectable Paintjobs",
+          "remoteFieldRanks": [2,3],
+          "remoteReferenceProfile": "Paints"
+        },
+        {
+          "topic": "CAR_PACKS",
+          "group": "Tuning",
+          "label": "Selectable tuning packs",
+          "remoteFieldRanks": [4],
+          "remoteReferenceProfile": "Packs"
         }
       ],
       "fieldSettings": [
@@ -45,7 +53,7 @@
           "rank": 2,
           "group": "Datasheet",
           "remoteFieldRanks": [2,3],
-          "remoteReferenceProfile": "All brands"
+          "remoteReferenceProfile": "Brands"
         },
         {
           "name": "Car_Model",
@@ -62,12 +70,12 @@
         {
           "name": "Rarety",
           "rank": 6,
-          "group": "Points of sell"
+          "group": "Points of sale"
         },
         {
           "name": "Price_dollar",
           "rank": 7,
-          "group": "Points of sell"
+          "group": "Points of sale"
         },
         {
           "name": "TestDrive_Cat",
@@ -83,7 +91,7 @@
           "rank": 10,
           "group": "Wheels",
           "remoteFieldRanks": [2,4,5,6,7],
-          "remoteReferenceProfile": "All rims"
+          "remoteReferenceProfile": "Rims"
         },
         {
           "name": "HUD_File_Name",
@@ -549,7 +557,20 @@
       ]
     },
     {
-      "name": "Points of sell",
+      "name": "Brands",
+      "topic": "BRANDS",
+      "entryLabelFieldRanks": [2],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Brand #"
+        }
+      ]
+    },
+    {
+      "name": "Points of sale",
       "topic": "CAR_SHOPS",
       "groups": [
         "Slots"
@@ -684,32 +705,7 @@
       ]
     },
     {
-      "name": "Remote resource test",
-      "topic": "HAIR",
-      "fieldSettings": [
-        {
-          "rank": 1,
-          "name": "REF",
-          "readOnly": "true",
-          "label": "(REF) Haircut #"
-        }
-      ]
-    },
-    {
-      "name": "All brands",
-      "topic": "BRANDS",
-      "entryLabelFieldRanks": [2],
-      "fieldSettings": [
-        {
-          "rank": 1,
-          "name": "REF",
-          "readOnly": "true",
-          "label": "(REF) Brand #"
-        }
-      ]
-    },
-    {
-      "name": "All rims",
+      "name": "Rims",
       "topic": "RIMS",
       "entryLabelFieldRanks": [2,4],
       "fieldSettings": [
@@ -723,7 +719,7 @@
       ]
     },
     {
-      "name": "All paints",
+      "name": "Paints",
       "topic": "CAR_COLORS",
       "entryLabelFieldRanks": [2,3],
       "groups": ["Interior Sets"],
@@ -740,116 +736,292 @@
           "group": "Interior Sets",
           "label": "(1)",
           "remoteFieldRanks": [3],
-          "remoteReferenceProfile": "All interiors"
+          "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 9,
           "group": "Interior Sets",
           "label": "(2)",
           "remoteFieldRanks": [3],
-          "remoteReferenceProfile": "All interiors"
+          "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 10,
           "group": "Interior Sets",
           "label": "(3)",
           "remoteFieldRanks": [3],
-          "remoteReferenceProfile": "All interiors"
+          "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 11,
           "group": "Interior Sets",
           "label": "(4)",
           "remoteFieldRanks": [3],
-          "remoteReferenceProfile": "All interiors"
+          "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 12,
           "group": "Interior Sets",
           "label": "(5)",
           "remoteFieldRanks": [3],
-          "remoteReferenceProfile": "All interiors"
+          "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 13,
           "group": "Interior Sets",
           "label": "(6)",
           "remoteFieldRanks": [3],
-          "remoteReferenceProfile": "All interiors"
+          "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 14,
           "group": "Interior Sets",
           "label": "(7)",
           "remoteFieldRanks": [3],
-          "remoteReferenceProfile": "All interiors"
+          "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 15,
           "group": "Interior Sets",
           "label": "(8)",
           "remoteFieldRanks": [3],
-          "remoteReferenceProfile": "All interiors"
+          "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 16,
           "group": "Interior Sets",
           "label": "(9)",
           "remoteFieldRanks": [3],
-          "remoteReferenceProfile": "All interiors"
+          "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 17,
           "group": "Interior Sets",
           "label": "(10)",
           "remoteFieldRanks": [3],
-          "remoteReferenceProfile": "All interiors"
+          "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 18,
           "group": "Interior Sets",
           "label": "(11)",
           "remoteFieldRanks": [3],
-          "remoteReferenceProfile": "All interiors"
+          "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 19,
           "group": "Interior Sets",
           "label": "(12)",
           "remoteFieldRanks": [3],
-          "remoteReferenceProfile": "All interiors"
+          "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 20,
           "group": "Interior Sets",
           "label": "(13)",
           "remoteFieldRanks": [3],
-          "remoteReferenceProfile": "All interiors"
+          "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 21,
           "group": "Interior Sets",
           "label": "(14)",
           "remoteFieldRanks": [3],
-          "remoteReferenceProfile": "All interiors"
+          "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 22,
           "group": "Interior Sets",
           "label": "(15)",
           "remoteFieldRanks": [3],
-          "remoteReferenceProfile": "All interiors"
+          "remoteReferenceProfile": "Interiors"
         }
       ]
     },
     {
-      "name":  "All interiors",
+      "name":  "Interiors",
       "topic": "INTERIOR",
       "entryLabelFieldRanks": [3],
       "fieldSettings": []
     },
     {
-      "name": "Hidden fields test",
+      "name": "Bots",
+      "topic": "BOTS",
+      "fieldSettings": []
+    },
+    {
+      "name": "Packs",
+      "topic": "CAR_PACKS",
+      "entryLabelFieldRanks": [4],
+      "groups": ["Pack 1", "Pack 2", "Pack 3"],
+      "fieldSettings": [
+        {
+          "name": "Car",
+          "rank": 1,
+          "remoteFieldRanks": [12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "name": "Brand",
+          "rank": 2,
+          "remoteFieldRanks": [2,3],
+          "remoteReferenceProfile": "Brands"
+        },
+        {
+          "name": "Car_File_Name_Swap",
+          "rank": 3
+        },
+        {
+          "name": "Libelle",
+          "rank": 4
+        },
+        {
+          "name": "Pack_1",
+          "rank": 5,
+          "group": "Pack 1",
+          "remoteFieldRanks": [2,3],
+          "remoteReferenceProfile": "AMPacks"
+        },
+        {
+          "name": "Group_1",
+          "rank": 6,
+          "group": "Pack 1"
+        },
+        {
+          "name": "Car_1",
+          "rank": 7,
+          "group": "Pack 1",
+          "remoteFieldRanks": [12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "name": "Price_1",
+          "rank": 8,
+          "group": "Pack 1"
+        },
+        {
+          "name": "Accel_0_100_1",
+          "rank": 9,
+          "group": "Pack 1"
+        },
+        {
+          "name": "BrakingDist_1",
+          "rank": 10,
+          "group": "Pack 1"
+        },
+        {
+          "name": "Handling_1",
+          "rank": 11,
+          "group": "Pack 1"
+        },
+        {
+          "name": "Pack_2",
+          "rank": 12,
+          "group": "Pack 2",
+          "remoteFieldRanks": [2,3],
+          "remoteReferenceProfile": "AMPacks"
+        },
+        {
+          "name": "Group_2",
+          "rank": 13,
+          "group": "Pack 2"
+        },
+        {
+          "name": "Car_2",
+          "rank": 14,
+          "group": "Pack 2",
+          "remoteFieldRanks": [12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "name": "Price_2",
+          "rank": 15,
+          "group": "Pack 2"
+        },
+        {
+          "name": "Accel_0_100_2",
+          "rank": 16,
+          "group": "Pack 2"
+        },
+        {
+          "name": "BrakingDist_2",
+          "rank": 17,
+          "group": "Pack 2"
+        },
+        {
+          "name": "Handling_2",
+          "rank": 18,
+          "group": "Pack 2"
+        },
+        {
+          "name": "Pack_3",
+          "rank": 19,
+          "group": "Pack 3",
+          "remoteFieldRanks": [2,3],
+          "remoteReferenceProfile": "AMPacks"
+        },
+        {
+          "name": "Group_3",
+          "rank": 20,
+          "group": "Pack 3"
+        },
+        {
+          "name": "Car_3",
+          "rank": 21,
+          "group": "Pack 3",
+          "remoteFieldRanks": [12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "name": "Price_3",
+          "rank": 22,
+          "group": "Pack 3"
+        },
+        {
+          "name": "Accel_0_100_3",
+          "rank": 23,
+          "group": "Pack 3"
+        },
+        {
+          "name": "BrakingDist_3",
+          "rank": 24,
+          "group": "Pack 3"
+        },
+        {
+          "name": "Handling_3",
+          "rank": 25,
+          "group": "Pack 3"
+        }
+      ]
+    },
+    {
+      "name": "AMPacks",
+      "topic": "AFTER_MARKET_PACKS",
+      "entryLabelFieldRanks": [2,3],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) AfterMarket Pack #",
+          "toolTip": "Unique pack number"
+        }
+      ]
+    },
+    {
+      "name": "TEST-Remote resource",
+      "topic": "HAIR",
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Haircut #"
+        }
+      ]
+    },
+    {
+      "name": "TEST-Hidden fields",
       "topic": "BOTS",
       "fieldSettings": [
         {
