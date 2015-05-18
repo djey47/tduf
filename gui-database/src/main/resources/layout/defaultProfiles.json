@@ -20,13 +20,15 @@
           "topic": "CAR_RIMS",
           "group": "Wheels",
           "label": "Available Rims",
-          "remoteFieldRanks": [2,4,5,6,7]
+          "remoteFieldRanks": [2,4,5,6,7],
+          "remoteReferenceProfile": "All rims"
         },
         {
           "topic": "CAR_COLORS",
           "group": "Exterior",
           "label": "Available Paintjobs",
-          "remoteFieldRanks": [3,6]
+          "remoteFieldRanks": [3,6],
+          "remoteReferenceProfile": "All paints"
         }
       ],
       "fieldSettings": [
@@ -717,6 +719,20 @@
           "readOnly": "true",
           "label": "(REF) Rim set #",
           "toolTip": "Unique rim set number"
+        }
+      ]
+    },
+    {
+      "name": "All paints",
+      "topic": "CAR_COLORS",
+      "entryLabelFieldRanks": [3],
+      "fieldSettings": [
+        {
+          "name": "Car",
+          "label": "Car slot #",
+          "rank": 1,
+          "remoteFieldRanks": [12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
         }
       ]
     },

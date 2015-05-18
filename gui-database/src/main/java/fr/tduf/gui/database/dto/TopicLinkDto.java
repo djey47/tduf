@@ -33,6 +33,9 @@ public class TopicLinkDto {
     @JsonProperty("remoteFieldRanks")
     private List<Integer> remoteFieldRanks = new ArrayList<>();
 
+    @JsonProperty("remoteReferenceProfile")
+    private String remoteReferenceProfile;
+
     public DbDto.Topic getTopic() {
         return topic;
     }
@@ -61,5 +64,9 @@ public class TopicLinkDto {
 
     public int getPriority() {
         return priority;
+    }
+
+    public String getRemoteReferenceProfile() {
+        return remoteReferenceProfile;
     }
 }
