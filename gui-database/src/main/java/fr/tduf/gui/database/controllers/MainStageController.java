@@ -436,7 +436,7 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(resourceTopicLabel);
         fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
         Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, this.profileObject);
-        if (potentialFieldSettings.isPresent()) {
+        if (potentialFieldSettings.isPresent() && potentialFieldSettings.get().getRemoteReferenceProfile() != null) {
             addGoToReferenceButton(fieldBox, fieldRank, targetTopic, potentialFieldSettings.get().getRemoteReferenceProfile());
         }
     }
