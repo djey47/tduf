@@ -3,6 +3,7 @@ package fr.tduf.gui.database.controllers;
 import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.converter.EntryItemsCountToStringConverter;
+import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
@@ -80,6 +81,8 @@ public class MainStageController implements Initializable {
 
     private Map<TopicLinkDto, ObservableList<RemoteResource>> resourceListByTopicLink = new HashMap<>();
 
+    private Stack<EditorLocation> navigationHistory = new Stack<>();
+
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
         this.viewDataController = new ViewDataController(this);
@@ -107,6 +110,8 @@ public class MainStageController implements Initializable {
             this.databaseMiner = BulkDatabaseMiner.load(this.databaseObjects);
 
             profilesChoiceBox.setValue(profilesChoiceBox.getItems().get(0));
+
+            navigationHistory.clear();
         }
     }
 
@@ -146,6 +151,13 @@ public class MainStageController implements Initializable {
         System.out.println("handleLastButtonMouseClick");
 
         this.viewDataController.switchToContentEntry(this.currentTopicObject.getData().getEntries().size() - 1);
+    }
+
+    @FXML
+    public void handleBackButtonMouseClick(ActionEvent actionEvent) {
+        System.out.println("handleLastButtonMouseClick");
+
+        this.viewDataController.switchToPreviousLocation();
     }
 
     private void handleProfileChoiceChanged(String newProfileName) {
@@ -488,5 +500,13 @@ public class MainStageController implements Initializable {
 
     void setLayoutObject(EditorLayoutDto layoutObject) {
         this.layoutObject = layoutObject;
+    }
+
+    Stack<EditorLocation> getNavigationHistory() {
+        return navigationHistory;
+    }
+
+    public TabPane getTabPane() {
+        return tabPane;
     }
 }

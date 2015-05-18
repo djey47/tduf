@@ -38,18 +38,20 @@
       
               <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
                   <items>
-                  <Label fx:id="currentTopicLabel" text="&lt;TOPIC&gt;">
+                  <Label fx:id="currentTopicLabel" prefWidth="175.0" text="&lt;TOPIC&gt;">
                      <font>
                         <Font name="System Bold Italic" size="13.0" />
                      </font>
                   </Label>
                   <Separator orientation="VERTICAL" />
-                      <Button mnemonicParsing="false" onAction="#handleFirstButtonMouseClick" text="First" />
-                      <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handlePreviousButtonMouseClick" text="Previous" />
+                  <Button mnemonicParsing="false" onAction="#handleBackButtonMouseClick" text="Back" />
+                  <Separator layoutX="418.0" layoutY="10.0" orientation="VERTICAL" />
+                      <Button mnemonicParsing="false" onAction="#handleFirstButtonMouseClick" text="&lt;&lt;" />
+                      <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handlePreviousButtonMouseClick" text="&lt;" />
                   <TextField fx:id="entryNumberTextField" alignment="CENTER" editable="false" prefWidth="50.0" />
                   <Label fx:id="entryItemsCountLabel" text="/ &lt;?&gt;" />
-                      <Button layoutX="61.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleNextButtonMouseClick" text="Next" />
-                      <Button layoutX="139.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleLastButtonMouseClick" text="Last" />
+                      <Button layoutX="61.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleNextButtonMouseClick" text="&gt;" />
+                      <Button layoutX="139.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleLastButtonMouseClick" text="&gt;&gt;" />
                   <Separator layoutX="80.0" layoutY="10.0" orientation="VERTICAL" />
                   <Label fx:id="currentEntryLabel" text="&lt;current&gt;">
                      <font>

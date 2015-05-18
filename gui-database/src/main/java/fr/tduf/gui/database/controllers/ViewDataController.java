@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
@@ -107,8 +108,13 @@ public class ViewDataController {
         }
     }
 
-    // TODO feature: handle navigation history to go back
     void switchToProfileAndEntry(String profileName, long entryIndex) {
+        EditorLocation currentLocation = new EditorLocation(
+                this.mainStageController.getTabPane().selectionModelProperty().get().getSelectedIndex(),
+                this.mainStageController.getCurrentProfileObject().getName(),
+                this.currentEntryIndexProperty.getValue());
+        this.mainStageController.getNavigationHistory().push(currentLocation);
+
         this.mainStageController.getProfilesChoiceBox().setValue(profileName);
         switchToContentEntry(entryIndex);
     }
@@ -116,6 +122,21 @@ public class ViewDataController {
     void switchToContentEntry(long entryIndex) {
         this.currentEntryIndexProperty.setValue(entryIndex);
         updateAllPropertiesWithItemValues();
+    }
+
+    void switchToPreviousLocation() {
+        Stack<EditorLocation> navigationHistory = this.mainStageController.getNavigationHistory();
+        if (navigationHistory.isEmpty()) {
+            return;
+        }
+
+        EditorLocation previousLocation = navigationHistory.pop();
+        switchToProfileAndEntry(previousLocation.getProfileName(), previousLocation.getEntryId());
+        switchToTabWithId(previousLocation.getTabId());
+    }
+
+    void switchToTabWithId(int tabId) {
+        this.mainStageController.getTabPane().selectionModelProperty().get().select(tabId);
     }
 
     private void updateResourceProperties(DbDataDto.Item resourceItem, DbStructureDto.Field structureField) {
