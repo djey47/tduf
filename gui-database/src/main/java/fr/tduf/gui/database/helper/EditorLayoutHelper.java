@@ -19,6 +19,7 @@ public class EditorLayoutHelper {
     public static EditorLayoutDto.EditorProfileDto getAvailableProfileByName(String profileName, EditorLayoutDto layoutObject) {
         requireNonNull(layoutObject, "Editor layout object is required.");
 
+        // TODO handle profile name not found with proper exception
         return layoutObject.getProfiles().stream()
 
                 .filter((profile) -> profile.getName().equals(profileName))
