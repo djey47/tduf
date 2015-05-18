@@ -725,16 +725,128 @@
     {
       "name": "All paints",
       "topic": "CAR_COLORS",
-      "entryLabelFieldRanks": [3],
+      "entryLabelFieldRanks": [2,3],
+      "groups": ["Interior Sets"],
       "fieldSettings": [
         {
+          "rank": 1,
           "name": "Car",
           "label": "Car slot #",
-          "rank": 1,
           "remoteFieldRanks": [12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 8,
+          "group": "Interior Sets",
+          "label": "(1)",
+          "remoteFieldRanks": [3],
+          "remoteReferenceProfile": "All interiors"
+        },
+        {
+          "rank": 9,
+          "group": "Interior Sets",
+          "label": "(2)",
+          "remoteFieldRanks": [3],
+          "remoteReferenceProfile": "All interiors"
+        },
+        {
+          "rank": 10,
+          "group": "Interior Sets",
+          "label": "(3)",
+          "remoteFieldRanks": [3],
+          "remoteReferenceProfile": "All interiors"
+        },
+        {
+          "rank": 11,
+          "group": "Interior Sets",
+          "label": "(4)",
+          "remoteFieldRanks": [3],
+          "remoteReferenceProfile": "All interiors"
+        },
+        {
+          "rank": 12,
+          "group": "Interior Sets",
+          "label": "(5)",
+          "remoteFieldRanks": [3],
+          "remoteReferenceProfile": "All interiors"
+        },
+        {
+          "rank": 13,
+          "group": "Interior Sets",
+          "label": "(6)",
+          "remoteFieldRanks": [3],
+          "remoteReferenceProfile": "All interiors"
+        },
+        {
+          "rank": 14,
+          "group": "Interior Sets",
+          "label": "(7)",
+          "remoteFieldRanks": [3],
+          "remoteReferenceProfile": "All interiors"
+        },
+        {
+          "rank": 15,
+          "group": "Interior Sets",
+          "label": "(8)",
+          "remoteFieldRanks": [3],
+          "remoteReferenceProfile": "All interiors"
+        },
+        {
+          "rank": 16,
+          "group": "Interior Sets",
+          "label": "(9)",
+          "remoteFieldRanks": [3],
+          "remoteReferenceProfile": "All interiors"
+        },
+        {
+          "rank": 17,
+          "group": "Interior Sets",
+          "label": "(10)",
+          "remoteFieldRanks": [3],
+          "remoteReferenceProfile": "All interiors"
+        },
+        {
+          "rank": 18,
+          "group": "Interior Sets",
+          "label": "(11)",
+          "remoteFieldRanks": [3],
+          "remoteReferenceProfile": "All interiors"
+        },
+        {
+          "rank": 19,
+          "group": "Interior Sets",
+          "label": "(12)",
+          "remoteFieldRanks": [3],
+          "remoteReferenceProfile": "All interiors"
+        },
+        {
+          "rank": 20,
+          "group": "Interior Sets",
+          "label": "(13)",
+          "remoteFieldRanks": [3],
+          "remoteReferenceProfile": "All interiors"
+        },
+        {
+          "rank": 21,
+          "group": "Interior Sets",
+          "label": "(14)",
+          "remoteFieldRanks": [3],
+          "remoteReferenceProfile": "All interiors"
+        },
+        {
+          "rank": 22,
+          "group": "Interior Sets",
+          "label": "(15)",
+          "remoteFieldRanks": [3],
+          "remoteReferenceProfile": "All interiors"
         }
       ]
+    },
+    {
+      "name":  "All interiors",
+      "topic": "INTERIOR",
+      "entryLabelFieldRanks": [3],
+      "fieldSettings": []
     },
     {
       "name": "Hidden fields test",
