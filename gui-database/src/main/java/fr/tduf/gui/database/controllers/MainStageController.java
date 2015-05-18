@@ -455,6 +455,7 @@ public class MainStageController implements Initializable {
     private void addGoToReferenceButtonForLinkedTopic(HBox fieldBox, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, String targetProfileName) {
         Button gotoReferenceButton = new Button("->");
         gotoReferenceButton.setOnAction((actionEvent) -> {
+            // TODO same behaviour when double click on table view entry
             System.out.println("gotoReferenceButtonForLinkedTopic clicked");
 
             RemoteResource selectedItem = tableViewSelectionModel.getSelectedItem();

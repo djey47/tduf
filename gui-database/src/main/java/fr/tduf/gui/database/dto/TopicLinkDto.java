@@ -30,6 +30,7 @@ public class TopicLinkDto {
     @JsonProperty("label")
     private String label;
 
+    // TODO see to use field ranks from remote reference profile instead
     @JsonProperty("remoteFieldRanks")
     private List<Integer> remoteFieldRanks = new ArrayList<>();
 
