@@ -38,7 +38,7 @@
       
               <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
                   <items>
-                  <Label fx:id="currentTopicLabel" prefWidth="175.0" text="&lt;TOPIC&gt;">
+                  <Label fx:id="currentTopicLabel" alignment="TOP_CENTER" prefWidth="175.0" text="&lt;TOPIC&gt;">
                      <font>
                         <Font name="System Bold Italic" size="13.0" />
                      </font>

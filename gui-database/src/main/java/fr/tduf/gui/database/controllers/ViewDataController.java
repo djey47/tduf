@@ -108,12 +108,14 @@ public class ViewDataController {
         }
     }
 
-    void switchToProfileAndEntry(String profileName, long entryIndex) {
-        EditorLocation currentLocation = new EditorLocation(
-                this.mainStageController.getTabPane().selectionModelProperty().get().getSelectedIndex(),
-                this.mainStageController.getCurrentProfileObject().getName(),
-                this.currentEntryIndexProperty.getValue());
-        this.mainStageController.getNavigationHistory().push(currentLocation);
+    void switchToProfileAndEntry(String profileName, long entryIndex, boolean storeLocation) {
+        if (storeLocation) {
+            EditorLocation currentLocation = new EditorLocation(
+                    this.mainStageController.getTabPane().selectionModelProperty().get().getSelectedIndex(),
+                    this.mainStageController.getCurrentProfileObject().getName(),
+                    this.currentEntryIndexProperty.getValue());
+            this.mainStageController.getNavigationHistory().push(currentLocation);
+        }
 
         this.mainStageController.getProfilesChoiceBox().setValue(profileName);
         switchToContentEntry(entryIndex);
@@ -131,7 +133,7 @@ public class ViewDataController {
         }
 
         EditorLocation previousLocation = navigationHistory.pop();
-        switchToProfileAndEntry(previousLocation.getProfileName(), previousLocation.getEntryId());
+        switchToProfileAndEntry(previousLocation.getProfileName(), previousLocation.getEntryId(), false);
         switchToTabWithId(previousLocation.getTabId());
     }
 

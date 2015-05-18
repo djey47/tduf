@@ -443,7 +443,7 @@ public class MainStageController implements Initializable {
             System.out.println("gotoReferenceButton clicked");
 
             DbDataDto.Entry remoteContentEntry = this.databaseMiner.getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getTopic(), fieldRank, this.viewDataController.getCurrentEntryIndexProperty().getValue(), targetTopic).get();
-            this.viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId());
+            this.viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId(), true);
         });
         fieldBox.getChildren().add(gotoReferenceButton);
     }
@@ -463,7 +463,7 @@ public class MainStageController implements Initializable {
                 } else {
                     remoteContentEntryId = Long.valueOf(entryReference);
                 }
-                this.viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntryId);
+                this.viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntryId, true);
             }
 
         });
