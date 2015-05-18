@@ -14,7 +14,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
-import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -36,15 +35,13 @@ import java.net.URL;
 import java.util.*;
 
 import static java.util.Arrays.asList;
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Makes it a possible to intercept all GUI events.
  */
 public class MainStageController implements Initializable {
 
-    private static final Class<MainStageController> thisClass = MainStageController.class;
+    private ViewDataController viewDataController;
 
     @FXML
     private TitledPane settingsPane;
@@ -76,7 +73,6 @@ public class MainStageController implements Initializable {
     @FXML
     private Label entryItemsCountLabel;
 
-
     private Map<String, VBox> tabContentByName = new HashMap<>();
 
     private List<DbDto> databaseObjects = new ArrayList<>();
@@ -86,19 +82,12 @@ public class MainStageController implements Initializable {
     private EditorLayoutDto.EditorProfileDto profileObject;
     private BulkDatabaseMiner databaseMiner;
 
-    private Property<DbDto.Topic> currentTopicProperty;
-    private Property<DbResourceDto.Locale> currentLocaleProperty;
-    private Property<Long> currentEntryIndexProperty;
-    private Property<Integer> entryItemsCountProperty;
-    private SimpleStringProperty currentEntryLabelProperty;
-
-    private Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
-    private Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
     private Map<TopicLinkDto, ObservableList<RemoteResource>> resourceListByTopicLink = new HashMap<>();
-
 
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
+        this.viewDataController = new ViewDataController(this);
+
         try {
             // DEBUG
             databaseLocationTextField.setText("/media/sf_DevStore/GIT/tduf/cli/integ-tests/db-json/");
@@ -129,38 +118,38 @@ public class MainStageController implements Initializable {
     public void handleNextButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleNextButtonMouseClick");
 
-        long currentEntryIndex = currentEntryIndexProperty.getValue();
+        long currentEntryIndex = this.viewDataController.getCurrentEntryIndexProperty().getValue();
         if (currentEntryIndex >= this.currentTopicObject.getData().getEntries().size() - 1) {
             return;
         }
 
-        switchToContentEntry(++currentEntryIndex);
+        this.viewDataController.switchToContentEntry(++currentEntryIndex);
     }
 
     @FXML
     public void handlePreviousButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handlePreviousButtonMouseClick");
 
-        long currentEntryIndex = currentEntryIndexProperty.getValue();
+        long currentEntryIndex = this.viewDataController.getCurrentEntryIndexProperty().getValue();
         if (currentEntryIndex <= 0 ) {
             return;
         }
 
-        switchToContentEntry(--currentEntryIndex);
+        this.viewDataController.switchToContentEntry(--currentEntryIndex);
     }
 
     @FXML
     public void handleFirstButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleFirstButtonMouseClick");
 
-        switchToContentEntry(0);
+        this.viewDataController.switchToContentEntry(0);
     }
 
     @FXML
     public void handleLastButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleLastButtonMouseClick");
 
-        switchToContentEntry(this.currentTopicObject.getData().getEntries().size() - 1);
+        this.viewDataController.switchToContentEntry(this.currentTopicObject.getData().getEntries().size() - 1);
     }
 
     private void handleProfileChoiceChanged(String newProfileName) {
@@ -172,35 +161,30 @@ public class MainStageController implements Initializable {
     private void handleLocaleChoiceChanged(DbResourceDto.Locale newLocale) {
         System.out.println("handleLocaleChoiceChanged: " + newLocale.name());
 
-        updateAllPropertiesWithItemValues();
+        this.viewDataController.updateAllPropertiesWithItemValues();
     }
 
     private void initSettingsPane() throws IOException {
 
         this.settingsPane.setExpanded(false);
 
-        fillLocales();
+        this.viewDataController.fillLocales();
         this.localesChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener(((observable, oldValue, newValue) -> handleLocaleChoiceChanged(newValue)));
 
-        loadAndFillProfiles();
+        this.viewDataController.loadAndFillProfiles();
         this.profilesChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> handleProfileChoiceChanged((String) newValue));
 
     }
 
     private void initNavigationPane() {
-        this.currentTopicProperty = new SimpleObjectProperty<>();
-        this.currentTopicLabel.textProperty().bindBidirectional(currentTopicProperty, new DatabaseTopicToStringConverter());
+        this.viewDataController.initNavViewDataProperties();
 
-        this.entryItemsCountProperty = new SimpleObjectProperty<>(-1);
-        this.entryItemsCountLabel.textProperty().bindBidirectional(entryItemsCountProperty, new EntryItemsCountToStringConverter());
-
-        this.currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
-        this.entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new CurrentEntryIndexToStringConverter());
-
-        this.currentEntryLabelProperty = new SimpleStringProperty("");
-        this.currentEntryLabel.textProperty().bindBidirectional(currentEntryLabelProperty);
+        this.currentTopicLabel.textProperty().bindBidirectional(this.viewDataController.getCurrentTopicProperty(), new DatabaseTopicToStringConverter());
+        this.entryNumberTextField.textProperty().bindBidirectional(this.viewDataController.getCurrentEntryIndexProperty(), new CurrentEntryIndexToStringConverter());
+        this.entryItemsCountLabel.textProperty().bindBidirectional(this.viewDataController.getEntryItemsCountProperty(), new EntryItemsCountToStringConverter());
+        this.currentEntryLabel.textProperty().bindBidirectional(this.viewDataController.getCurrentEntryLabelProperty());
     }
 
     private void initTabPane(String profileName) {
@@ -209,16 +193,10 @@ public class MainStageController implements Initializable {
         }
 
         this.profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, this.layoutObject);
-
         this.currentTopicObject = databaseMiner.getDatabaseTopic(profileObject.getTopic()).get();
-        this.currentTopicProperty.setValue(this.currentTopicObject.getTopic());
-
-        this.currentEntryIndexProperty.setValue(0L);
-        this.entryItemsCountProperty.setValue(this.currentTopicObject.getData().getEntries().size());
-
-        this.rawValuePropertyByFieldRank.clear();
-        this.resolvedValuePropertyByFieldRank.clear();
         this.resourceListByTopicLink.clear();
+
+        this.viewDataController.initTabViewDataProperties();
 
         initGroupTabs();
 
@@ -226,7 +204,7 @@ public class MainStageController implements Initializable {
 
         addAllLinksControls();
 
-        updateAllPropertiesWithItemValues();
+        this.viewDataController.updateAllPropertiesWithItemValues();
     }
 
     private void initGroupTabs() {
@@ -246,20 +224,6 @@ public class MainStageController implements Initializable {
                 tabContentByName.put(groupName, vbox);
             });
         }
-    }
-
-    private void fillLocales() {
-        asList(DbResourceDto.Locale.values())
-                .forEach((locale) -> this.localesChoiceBox.getItems().add(locale));
-
-        this.currentLocaleProperty = new SimpleObjectProperty<>(DbResourceDto.Locale.UNITED_STATES);
-        this.localesChoiceBox.valueProperty().bindBidirectional(this.currentLocaleProperty);
-    }
-
-    private void loadAndFillProfiles() throws IOException {
-        this.layoutObject = new ObjectMapper().readValue(thisClass.getResource("/layout/defaultProfiles.json"), EditorLayoutDto.class);
-        this.layoutObject.getProfiles()
-                .forEach((profileObject) -> profilesChoiceBox.getItems().add(profileObject.getName()));
     }
 
     private void addAllFieldsControls() {
@@ -289,9 +253,8 @@ public class MainStageController implements Initializable {
     }
 
     private void addFieldControls(DbStructureDto.Field field) {
-
         SimpleStringProperty property = new SimpleStringProperty("");
-        rawValuePropertyByFieldRank.put(field.getRank(), property);
+        this.viewDataController.getRawValuePropertyByFieldRank().put(field.getRank(), property);
 
         String fieldName = field.getName();
         boolean fieldReadOnly = false;
@@ -418,7 +381,7 @@ public class MainStageController implements Initializable {
         resourceValueLabel.getStyleClass().add("fieldLabel");
 
         SimpleStringProperty property = new SimpleStringProperty("");
-        resolvedValuePropertyByFieldRank.put(fieldRank, property);
+        this.viewDataController.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
         resourceValueLabel.textProperty().bindBidirectional(property);
 
         Label resourceTopicLabel = new Label(topic.name());
@@ -435,7 +398,7 @@ public class MainStageController implements Initializable {
         remoteValueLabel.getStyleClass().add("fieldLabel");
 
         SimpleStringProperty property = new SimpleStringProperty("Reference to another topic.");
-        resolvedValuePropertyByFieldRank.put(fieldRank, property);
+        this.viewDataController.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
         remoteValueLabel.textProperty().bindBidirectional(property);
 
         Label resourceTopicLabel = new Label(targetTopic.name());
@@ -448,8 +411,8 @@ public class MainStageController implements Initializable {
                 System.out.println("gotoReferenceButton clicked");
 
                 String profileName = potentialFieldSettings.get().getRemoteReferenceProfile();
-                DbDataDto.Entry remoteContentEntry = this.databaseMiner.getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic).get();
-                switchToProfileAndEntry(profileName, remoteContentEntry.getId());
+                DbDataDto.Entry remoteContentEntry = this.databaseMiner.getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getTopic(), fieldRank, this.viewDataController.getCurrentEntryIndexProperty().getValue(), targetTopic).get();
+                this.viewDataController.switchToProfileAndEntry(profileName, remoteContentEntry.getId());
             });
         } else {
             gotoReferenceButton.setDisable(true);
@@ -462,135 +425,35 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(gotoReferenceButton);
     }
 
-    private void updateAllPropertiesWithItemValues() {
-        long entryIndex = this.currentEntryIndexProperty.getValue();
-        DbDataDto.Entry entry = this.databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopicObject.getTopic());
-
-        String entryLabel = "<?>";
-        if (this.profileObject.getEntryLabelFieldRanks() != null) {
-            entryLabel = fetchContentsWithEntryId(this.currentTopicProperty.getValue(), entryIndex, this.profileObject.getEntryLabelFieldRanks());
-        }
-        this.currentEntryLabelProperty.setValue(entryLabel);
-
-        entry.getItems().forEach(this::updateItemProperties);
-
-        this.resourceListByTopicLink.entrySet().forEach(this::updateLinkProperties);
+    BulkDatabaseMiner getMiner() {
+        return this.databaseMiner;
     }
 
-    private void updateItemProperties(DbDataDto.Item item) {
-        rawValuePropertyByFieldRank.get(item.getFieldRank()).set(item.getRawValue());
-
-        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, this.currentTopicObject.getStructure().getFields());
-        if (structureField.isAResourceField()) {
-            updateResourceProperties(item, structureField);
-        }
-
-        if (DbStructureDto.FieldType.REFERENCE == structureField.getFieldType()
-                && resolvedValuePropertyByFieldRank.containsKey(item.getFieldRank())) {
-            updateReferenceProperties(item, structureField);
-        }
+    ChoiceBox<String> getProfilesChoiceBox() {
+        return this.profilesChoiceBox;
     }
 
-    private void updateResourceProperties(DbDataDto.Item resourceItem, DbStructureDto.Field structureField) {
-        DbDto.Topic resourceTopic = this.currentTopicObject.getTopic();
-        if (structureField.getTargetRef() != null) {
-            resourceTopic = this.databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
-        }
-
-        Optional<DbResourceDto.Entry> potentialResourceEntry = this.databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceItem.getRawValue(), resourceTopic, this.currentLocaleProperty.getValue());
-        if (potentialResourceEntry.isPresent()) {
-            String resourceValue = potentialResourceEntry.get().getValue();
-            resolvedValuePropertyByFieldRank.get(resourceItem.getFieldRank()).set(resourceValue);
-        }
+    DbDto getCurrentTopicObject() {
+        return this.currentTopicObject;
     }
 
-    private void updateReferenceProperties(DbDataDto.Item referenceItem, DbStructureDto.Field structureField) {
-        DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
-
-        List<Integer> remoteFieldRanks = new ArrayList<>();
-        Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), profilesChoiceBox.getValue(), this.layoutObject);
-        if (fieldSettings.isPresent()) {
-            remoteFieldRanks = fieldSettings.get().getRemoteFieldRanks();
-        }
-
-        String remoteContents = fetchRemoteContentsWithEntryRef(remoteTopic, referenceItem.getRawValue(), remoteFieldRanks);
-        resolvedValuePropertyByFieldRank.get(referenceItem.getFieldRank()).set(remoteContents);
+    EditorLayoutDto.EditorProfileDto getCurrentProfileObject() {
+        return profileObject;
     }
 
-    private void updateLinkProperties(Map.Entry<TopicLinkDto, ObservableList<RemoteResource>> remoteEntry) {
-        TopicLinkDto linkObject = remoteEntry.getKey();
-        ObservableList<RemoteResource> values = remoteEntry.getValue();
-        values.clear();
-
-        DbDto topicObject = this.databaseMiner.getDatabaseTopic(linkObject.getTopic()).get();
-        topicObject.getData().getEntries().stream()
-
-                .filter((contentEntry) -> {
-                    // TODO find another way of getting current reference
-                    String currentRef = contentEntry.getItems().get(0).getRawValue();
-                    return rawValuePropertyByFieldRank.get(1).getValue().equals(currentRef);
-                })
-
-                .map((contentEntry) -> getLinkResourceFromContentEntry(contentEntry, linkObject, topicObject))
-
-                .forEach(values::add);
+    Map<TopicLinkDto, ObservableList<RemoteResource>> getResourceListByTopicLink() {
+        return resourceListByTopicLink;
     }
 
-    private RemoteResource getLinkResourceFromContentEntry(DbDataDto.Entry contentEntry, TopicLinkDto linkObject, DbDto topicObject) {
-        RemoteResource remoteResource = new RemoteResource();
-        if (topicObject.getStructure().getFields().size() == 2) {
-            // Association topic (e.g. Car_Rims)
-            String remoteTopicRef = topicObject.getStructure().getFields().get(1).getTargetRef();
-            DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(remoteTopicRef).getTopic();
-
-            String remoteEntryReference = contentEntry.getItems().get(1).getRawValue();
-            remoteResource.setReference(remoteEntryReference);
-            remoteResource.setValue(fetchRemoteContentsWithEntryRef(remoteTopic, remoteEntryReference, linkObject.getRemoteFieldRanks()));
-        } else {
-            long entryId = contentEntry.getId();
-            remoteResource.setReference(Long.valueOf(entryId).toString());
-            remoteResource.setValue(fetchContentsWithEntryId(linkObject.getTopic(), entryId, linkObject.getRemoteFieldRanks()));
-        }
-        return remoteResource;
+    EditorLayoutDto getLayoutObject() {
+        return layoutObject;
     }
 
-    private String fetchRemoteContentsWithEntryRef(DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {
-        requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
-
-        long remoteEntryId = this.databaseMiner.getContentEntryIdFromReference(remoteEntryReference, remoteTopic).getAsLong();
-        return fetchContentsWithEntryId(remoteTopic, remoteEntryId, remoteFieldRanks);
+    ChoiceBox<DbResourceDto.Locale> getLocalesChoiceBox() {
+        return localesChoiceBox;
     }
 
-    private String fetchContentsWithEntryId(DbDto.Topic topic, long entryId, List<Integer> fieldRanks) {
-        requireNonNull(fieldRanks, "A list of field ranks (even empty) must be provided.");
-
-        if (fieldRanks.isEmpty()) {
-            return "??";
-        }
-
-        List<String> contents = fieldRanks.stream()
-
-                .map((fieldRank) -> {
-                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = this.databaseMiner.getRemoteResourceEntryWithInternalIdentifier(topic, fieldRank, entryId, currentLocaleProperty.getValue());
-                    if (potentialRemoteResourceEntry.isPresent()) {
-                        return potentialRemoteResourceEntry.get().getValue();
-                    }
-                    return "??";
-                })
-
-                .collect(toList());
-
-        return String.join(" - ", contents);
-    }
-
-    // TODO feature: handle navigation history to go back
-    private void switchToProfileAndEntry(String profileName, long entryIndex) {
-        this.profilesChoiceBox.setValue(profileName);
-        switchToContentEntry(entryIndex);
-    }
-
-    private void switchToContentEntry(long entryIndex) {
-        this.currentEntryIndexProperty.setValue(entryIndex);
-        updateAllPropertiesWithItemValues();
+    void setLayoutObject(EditorLayoutDto layoutObject) {
+        this.layoutObject = layoutObject;
     }
 }
