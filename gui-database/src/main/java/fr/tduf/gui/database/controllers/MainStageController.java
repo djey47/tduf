@@ -361,6 +361,7 @@ public class MainStageController implements Initializable {
         fieldBox.setPadding(new Insets(5.0));
 
         if (groupName.isPresent()) {
+            // TODO check group exists, throw appropriate exception
             VBox groupTab = tabContentByName.get(groupName.get());
             groupTab.getChildren().add(fieldBox);
         } else {
