@@ -515,7 +515,7 @@ public class MainStageController implements Initializable {
         return navigationHistory;
     }
 
-    public TabPane getTabPane() {
+    TabPane getTabPane() {
         return tabPane;
     }
 }
