@@ -221,7 +221,7 @@ public class ViewDataController {
         List<String> contents = fieldRanks.stream()
 
                 .map((fieldRank) -> {
-                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = this.getMiner().getRemoteResourceEntryWithInternalIdentifier(topic, fieldRank, entryId, currentLocaleProperty.getValue());
+                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = this.getMiner().getResourceEntryWithInternalIdentifier(topic, fieldRank, entryId, currentLocaleProperty.getValue());
                     if (potentialRemoteResourceEntry.isPresent()) {
                         return potentialRemoteResourceEntry.get().getValue();
                     }
