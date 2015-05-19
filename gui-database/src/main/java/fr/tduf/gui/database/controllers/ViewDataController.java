@@ -239,7 +239,9 @@ public class ViewDataController {
                     if (potentialRemoteResourceEntry.isPresent()) {
                         return potentialRemoteResourceEntry.get().getValue();
                     }
-                    return VALUE_UNKNOWN;
+
+                    // TODO extract to miner
+                    return this.getMiner().getContentEntryFromTopicWithInternalIdentifier(entryId, topic).getItems().get(fieldRank - 1).getRawValue();
                 })
 
                 .collect(toList());
