@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.converter.EntryItemsCountToStringConverter;
@@ -24,7 +25,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -303,6 +303,8 @@ public class MainStageController implements Initializable {
             addResourceValueControls(fieldBox, field.getRank(), topic);
         }
 
+        // TODO handle bitfield -> requires resolver (0.7.0+)
+
         if (DbStructureDto.FieldType.REFERENCE == field.getFieldType()) {
             DbDto.Topic topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getTopic();
             addReferenceValueControls(fieldBox, field.getRank(), topic);
@@ -353,16 +355,10 @@ public class MainStageController implements Initializable {
             final DbDto.Topic finalTargetTopic = targetTopic;
             tableView.setOnMousePressed(event -> {
                 if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
-                    // TODO extract to TableViewHelper (database.helper.javafx)
-                    Node node = ((Node) event.getTarget()).getParent();
-
-                    RemoteResource selectedResource;
-                    if (node instanceof TableRow) {
-                        selectedResource = (RemoteResource) ((TableRow) node).getItem();
-                    } else {
-                        selectedResource = (RemoteResource) ((TableRow) node.getParent()).getItem();
+                    Optional<RemoteResource> selectedResource = TableViewHelper.getMouseSelectedItem(event);
+                    if (selectedResource.isPresent()) {
+                        this.viewDataController.switchToSelectedResourceForLinkedTopic(selectedResource.get(), finalTargetTopic, targetProfileName);
                     }
-                    this.viewDataController.switchToSelectedResourceForLinkedTopic(selectedResource, finalTargetTopic, targetProfileName);
                 }
             });
         }
@@ -374,7 +370,7 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
         fieldBox.getChildren().add(resourceTopicLabel);
         fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
-        if(targetProfileName != null) {
+        if (targetProfileName != null) {
             addGoToReferenceButtonForLinkedTopic(fieldBox, targetTopic, tableView.getSelectionModel(), targetProfileName);
         }
     }
