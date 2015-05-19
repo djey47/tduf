@@ -50,10 +50,8 @@ public class ViewDataController {
 
     void initTabViewDataProperties() {
         this.currentTopicProperty.setValue(this.mainStageController.getCurrentTopicObject().getTopic());
-
         this.currentEntryIndexProperty.setValue(0L);
         this.entryItemsCountProperty.setValue(this.mainStageController.getCurrentTopicObject().getData().getEntries().size());
-
         this.rawValuePropertyByFieldRank.clear();
         this.resolvedValuePropertyByFieldRank.clear();
     }
@@ -105,6 +103,20 @@ public class ViewDataController {
         if (DbStructureDto.FieldType.REFERENCE == structureField.getFieldType()
                 && resolvedValuePropertyByFieldRank.containsKey(item.getFieldRank())) {
             updateReferenceProperties(item, structureField);
+        }
+    }
+
+    void switchToSelectedResourceForLinkedTopic(RemoteResource selectedResource, DbDto.Topic targetTopic, String targetProfileName) {
+        if (selectedResource != null) {
+            String entryReference = selectedResource.referenceProperty().get();
+            long remoteContentEntryId;
+            OptionalLong potentialEntryId = this.getMiner().getContentEntryIdFromReference(entryReference, targetTopic);
+            if (potentialEntryId.isPresent()) {
+                remoteContentEntryId = potentialEntryId.getAsLong();
+            } else {
+                remoteContentEntryId = Long.valueOf(entryReference);
+            }
+            switchToProfileAndEntry(targetProfileName, remoteContentEntryId, true);
         }
     }
 

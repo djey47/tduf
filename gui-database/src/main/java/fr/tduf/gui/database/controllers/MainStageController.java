@@ -24,6 +24,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -309,6 +310,7 @@ public class MainStageController implements Initializable {
     }
 
     private void addLinkControls(TopicLinkDto topicLinkObject) {
+        // TODO extract methods
         HBox fieldBox = addFieldBox(Optional.ofNullable(topicLinkObject.getGroup()));
         fieldBox.setPrefHeight(250);
 
@@ -317,6 +319,15 @@ public class MainStageController implements Initializable {
             fieldName = topicLinkObject.getLabel();
         }
         addFieldLabel(fieldBox, false, fieldName);
+
+        List<DbStructureDto.Field> structureFields = databaseMiner.getDatabaseTopic(topicLinkObject.getTopic()).get().getStructure().getFields();
+        DbDto.Topic targetTopic = topicLinkObject.getTopic();
+        if (structureFields.size() == 2) {
+            String targetRef = structureFields.get(1).getTargetRef();
+            if (targetRef != null) {
+                targetTopic = databaseMiner.getDatabaseTopicFromReference(targetRef).getTopic();
+            }
+        }
 
         ObservableList<RemoteResource> resourceData = FXCollections.observableArrayList();
         resourceListByTopicLink.put(topicLinkObject, resourceData);
@@ -337,13 +348,23 @@ public class MainStageController implements Initializable {
 
         tableView.setItems(resourceData);
 
-        List<DbStructureDto.Field> structureFields = databaseMiner.getDatabaseTopic(topicLinkObject.getTopic()).get().getStructure().getFields();
-        DbDto.Topic targetTopic = topicLinkObject.getTopic();
-        if (structureFields.size() == 2) {
-            String targetRef = structureFields.get(1).getTargetRef();
-            if (targetRef != null) {
-                targetTopic = databaseMiner.getDatabaseTopicFromReference(targetRef).getTopic();
-            }
+        String targetProfileName = topicLinkObject.getRemoteReferenceProfile();
+        if(targetProfileName != null) {
+            final DbDto.Topic finalTargetTopic = targetTopic;
+            tableView.setOnMousePressed(event -> {
+                if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
+                    // TODO extract to TableViewHelper (database.helper.javafx)
+                    Node node = ((Node) event.getTarget()).getParent();
+
+                    RemoteResource selectedResource;
+                    if (node instanceof TableRow) {
+                        selectedResource = (RemoteResource) ((TableRow) node).getItem();
+                    } else {
+                        selectedResource = (RemoteResource) ((TableRow) node.getParent()).getItem();
+                    }
+                    this.viewDataController.switchToSelectedResourceForLinkedTopic(selectedResource, finalTargetTopic, targetProfileName);
+                }
+            });
         }
 
         Label resourceTopicLabel = new Label(targetTopic.name());
@@ -353,8 +374,8 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
         fieldBox.getChildren().add(resourceTopicLabel);
         fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
-        if(topicLinkObject.getRemoteReferenceProfile() != null) {
-            addGoToReferenceButtonForLinkedTopic(fieldBox, targetTopic, tableView.getSelectionModel(), topicLinkObject.getRemoteReferenceProfile());
+        if(targetProfileName != null) {
+            addGoToReferenceButtonForLinkedTopic(fieldBox, targetTopic, tableView.getSelectionModel(), targetProfileName);
         }
     }
 
@@ -455,22 +476,9 @@ public class MainStageController implements Initializable {
     private void addGoToReferenceButtonForLinkedTopic(HBox fieldBox, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, String targetProfileName) {
         Button gotoReferenceButton = new Button("->");
         gotoReferenceButton.setOnAction((actionEvent) -> {
-            // TODO same behaviour when double click on table view entry
             System.out.println("gotoReferenceButtonForLinkedTopic clicked");
 
-            RemoteResource selectedItem = tableViewSelectionModel.getSelectedItem();
-            if (selectedItem != null) {
-                String entryReference = selectedItem.referenceProperty().get();
-                long remoteContentEntryId;
-                OptionalLong potentialEntryId = this.databaseMiner.getContentEntryIdFromReference(entryReference, targetTopic);
-                if (potentialEntryId.isPresent()) {
-                    remoteContentEntryId = potentialEntryId.getAsLong();
-                } else {
-                    remoteContentEntryId = Long.valueOf(entryReference);
-                }
-                this.viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntryId, true);
-            }
-
+            this.viewDataController.switchToSelectedResourceForLinkedTopic(tableViewSelectionModel.getSelectedItem(), targetTopic, targetProfileName);
         });
         fieldBox.getChildren().add(gotoReferenceButton);
     }
