@@ -552,6 +552,7 @@
     {
       "name": "Points of sale",
       "topic": "CAR_SHOPS",
+      "entryLabelFieldRanks": [3,2],
       "groups": [
         "Slots"
       ],
