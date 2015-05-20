@@ -1,13 +1,8 @@
 package fr.tduf.gui.database.dto;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -29,10 +24,6 @@ public class TopicLinkDto {
 
     @JsonProperty("label")
     private String label;
-
-    // TODO see to use field ranks from remote reference profile instead
-    @JsonProperty("remoteFieldRanks")
-    private List<Integer> remoteFieldRanks = new ArrayList<>();
 
     @JsonProperty("remoteReferenceProfile")
     private String remoteReferenceProfile;
@@ -57,10 +48,6 @@ public class TopicLinkDto {
 
     public String getLabel() {
         return label;
-    }
-
-    public List<Integer> getRemoteFieldRanks() {
-        return remoteFieldRanks;
     }
 
     public int getPriority() {

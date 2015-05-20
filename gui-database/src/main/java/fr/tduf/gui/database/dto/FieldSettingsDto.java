@@ -32,6 +32,7 @@ public class FieldSettingsDto {
     @JsonProperty("group")
     private String group;
 
+    // TODO see to use entry field ranks in remote profile
     @JsonProperty("remoteFieldRanks")
     private List<Integer> remoteFieldRanks = new ArrayList<>();
 

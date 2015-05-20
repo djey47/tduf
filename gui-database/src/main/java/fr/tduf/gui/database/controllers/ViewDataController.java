@@ -193,12 +193,14 @@ public class ViewDataController {
                     return rawValuePropertyByFieldRank.get(1).getValue().equals(currentRef);
                 })
 
-                .map((contentEntry) -> fetchLinkResourceFromContentEntry(contentEntry, linkObject, topicObject))
+                .map((contentEntry) -> fetchLinkResourceFromContentEntry(topicObject, contentEntry, linkObject))
 
                 .forEach(values::add);
     }
 
-    private RemoteResource fetchLinkResourceFromContentEntry(DbDataDto.Entry contentEntry, TopicLinkDto linkObject, DbDto topicObject) {
+    private RemoteResource fetchLinkResourceFromContentEntry(DbDto topicObject, DbDataDto.Entry contentEntry, TopicLinkDto linkObject) {
+        EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(linkObject.getRemoteReferenceProfile(), this.mainStageController.getLayoutObject());
+        List<Integer> remoteFieldRanks = profileObject.getEntryLabelFieldRanks() == null ? new ArrayList<>() : profileObject.getEntryLabelFieldRanks();
         RemoteResource remoteResource = new RemoteResource();
         if (topicObject.getStructure().getFields().size() == 2) {
             // Association topic (e.g. Car_Rims)
@@ -207,11 +209,12 @@ public class ViewDataController {
 
             String remoteEntryReference = contentEntry.getItems().get(1).getRawValue();
             remoteResource.setReference(remoteEntryReference);
-            remoteResource.setValue(fetchRemoteContentsWithEntryRef(remoteTopic, remoteEntryReference, linkObject.getRemoteFieldRanks()));
+            remoteResource.setValue(fetchRemoteContentsWithEntryRef(remoteTopic, remoteEntryReference, remoteFieldRanks));
         } else {
+            // Classic topic (e.g. Car_Colors)
             long entryId = contentEntry.getId();
             remoteResource.setReference(Long.valueOf(entryId).toString());
-            remoteResource.setValue(fetchContentsWithEntryId(linkObject.getTopic(), entryId, linkObject.getRemoteFieldRanks()));
+            remoteResource.setValue(fetchContentsWithEntryId(linkObject.getTopic(), entryId, remoteFieldRanks));
         }
         return remoteResource;
     }
