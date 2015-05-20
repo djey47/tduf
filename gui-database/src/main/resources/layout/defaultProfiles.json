@@ -12,8 +12,7 @@
         "Exterior",
         "Dampering",
         "Wheels",
-        "Sound",
-        "Points of sale"
+        "Sound"
       ],
       "topicLinks": [
         {
@@ -65,12 +64,12 @@
         {
           "name": "Rarety",
           "rank": 6,
-          "group": "Points of sale"
+          "group": "Datasheet"
         },
         {
           "name": "Price_dollar",
           "rank": 7,
-          "group": "Points of sale"
+          "group": "Datasheet"
         },
         {
           "name": "TestDrive_Cat",
