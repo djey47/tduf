@@ -32,12 +32,7 @@ public class FieldSettingsDto {
     @JsonProperty("remoteReferenceProfile")
     private String remoteReferenceProfile;
 
-    // TODO delete constructors ?
     public FieldSettingsDto() {}
-
-    public FieldSettingsDto(String fieldName) {
-        this.name = fieldName;
-    }
 
     public FieldSettingsDto(int fieldRank) {
         this.rank = fieldRank;
