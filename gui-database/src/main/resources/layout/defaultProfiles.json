@@ -3,7 +3,7 @@
     {
       "name": "Vehicle slots",
       "topic": "CAR_PHYSICS_DATA",
-      "entryLabelFieldRanks": [12,13,14],
+      "entryLabelFieldRanks": [3,4,12,9],
       "groups": [
         "Datasheet",
         "Exterior",
@@ -686,7 +686,7 @@
     {
       "name": "Rims",
       "topic": "RIMS",
-      "entryLabelFieldRanks": [2,4,5,6,7],
+      "entryLabelFieldRanks": [13,2,4,5,6,7],
       "groups": ["Front","Rear"],
       "fieldSettings": [
         {
@@ -741,7 +741,7 @@
     {
       "name": "Paints",
       "topic": "CAR_COLORS",
-      "entryLabelFieldRanks": [2,3],
+      "entryLabelFieldRanks": [3,2],
       "groups": ["Interior Sets"],
       "fieldSettings": [
         {
@@ -845,7 +845,7 @@
     {
       "name":  "Interiors",
       "topic": "INTERIOR",
-      "entryLabelFieldRanks": [3],
+      "entryLabelFieldRanks": [2,3,4],
       "fieldSettings": [
         {
           "rank": 1,
@@ -1113,7 +1113,7 @@
     {
       "name": "Houses",
       "topic": "HOUSES",
-      "entryLabelFieldRanks": [2,3,4],
+      "entryLabelFieldRanks": [4,2,3],
       "fieldSettings": [
         {
           "rank": 1,
@@ -1126,13 +1126,13 @@
     {
       "name": "Achievements",
       "topic": "ACHIEVEMENTS",
-      "entryLabelFieldRanks": [1,5],
+      "entryLabelFieldRanks": [5,1],
       "fieldSettings": []
     },
     {
       "name": "Menus",
       "topic": "MENUS",
-      "entryLabelFieldRanks": [1,2],
+      "entryLabelFieldRanks": [2,1],
       "fieldSettings": []
     },
     {
@@ -1144,7 +1144,7 @@
     {
       "name": "Tutorials",
       "topic": "TUTORIALS",
-      "entryLabelFieldRanks": [1,2,3],
+      "entryLabelFieldRanks": [3,1,2],
       "fieldSettings": []
     },
     {
