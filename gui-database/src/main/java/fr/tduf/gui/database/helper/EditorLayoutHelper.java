@@ -3,6 +3,7 @@ package fr.tduf.gui.database.helper;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -66,5 +67,15 @@ public class EditorLayoutHelper {
             priority = potentialFieldSettingsObject.get().getPriority();
         }
         return priority;
+    }
+
+    /**
+     * @return entry label field ranks setting.
+     */
+    public static List<Integer> getEntryLabelFieldRanksSettingByProfile(String profileName, EditorLayoutDto layoutObject) throws IllegalArgumentException {
+        requireNonNull(profileName, "Profile name is required.");
+        requireNonNull(layoutObject, "Editor layout object is required.");
+
+        return getAvailableProfileByName(profileName, layoutObject).getEntryLabelFieldRanks();
     }
 }

@@ -174,12 +174,7 @@ public class ViewDataController {
         if (fieldSettings.isPresent()) {
             String remoteReferenceProfile = fieldSettings.get().getRemoteReferenceProfile();
             if (remoteReferenceProfile != null) {
-                // TODO extract to helper
-                EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(remoteReferenceProfile, this.mainStageController.getLayoutObject());
-                List<Integer> entryLabelFieldRanks = profileObject.getEntryLabelFieldRanks();
-                if (entryLabelFieldRanks != null) {
-                    remoteFieldRanks = entryLabelFieldRanks;
-                }
+                remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(remoteReferenceProfile, this.mainStageController.getLayoutObject());
             }
         }
 
@@ -207,9 +202,7 @@ public class ViewDataController {
     }
 
     private RemoteResource fetchLinkResourceFromContentEntry(DbDto topicObject, DbDataDto.Entry contentEntry, TopicLinkDto linkObject) {
-        // TODO extract to helper
-        EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(linkObject.getRemoteReferenceProfile(), this.mainStageController.getLayoutObject());
-        List<Integer> remoteFieldRanks = profileObject.getEntryLabelFieldRanks() == null ? new ArrayList<>() : profileObject.getEntryLabelFieldRanks();
+        List<Integer> remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(linkObject.getRemoteReferenceProfile(), this.mainStageController.getLayoutObject());
         RemoteResource remoteResource = new RemoteResource();
         if (topicObject.getStructure().getFields().size() == 2) {
             // Association topic (e.g. Car_Rims)
