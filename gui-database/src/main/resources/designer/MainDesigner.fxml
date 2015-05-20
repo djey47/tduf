@@ -60,7 +60,7 @@
                   </Label>
                   </items>
               </ToolBar>
-                  <TabPane fx:id="tabPane" prefHeight="600.0" tabClosingPolicy="UNAVAILABLE">
+                  <TabPane fx:id="tabPane" prefHeight="626.0" prefWidth="1303.0" tabClosingPolicy="UNAVAILABLE">
                       <tabs>
                           <Tab text="Default">
                               <content>
@@ -73,6 +73,15 @@
                           </Tab>
                       </tabs>
                   </TabPane>
+            <ToolBar layoutX="10.0" layoutY="112.0" prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
+               <items>
+                  <Label text="TDUF Database Editor v1.0-RO by Djey.">
+                     <font>
+                        <Font name="System Italic" size="13.0" />
+                     </font>
+                  </Label>
+               </items>
+            </ToolBar>
           </children>
       </VBox>
    </children>
