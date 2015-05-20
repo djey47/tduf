@@ -37,7 +37,6 @@ import java.util.*;
 /**
  * Makes it a possible to intercept all GUI events.
  */
-// TODO add entry-10 entry+10 navigation feature
 public class MainStageController implements Initializable {
 
     private ViewDataController viewDataController;
@@ -134,6 +133,21 @@ public class MainStageController implements Initializable {
     }
 
     @FXML
+    public void handleFastNextButtonMouseClick(ActionEvent actionEvent) {
+        System.out.println("handleFastNextButtonMouseClick");
+
+        long currentEntryIndex = this.viewDataController.getCurrentEntryIndexProperty().getValue();
+        long lastEntryIndex = this.currentTopicObject.getData().getEntries().size() - 1;
+        if (currentEntryIndex + 10 >= lastEntryIndex) {
+            currentEntryIndex = lastEntryIndex;
+        } else {
+            currentEntryIndex += 10;
+        }
+
+        this.viewDataController.switchToContentEntry(currentEntryIndex);
+    }
+
+    @FXML
     public void handlePreviousButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handlePreviousButtonMouseClick");
 
@@ -143,6 +157,20 @@ public class MainStageController implements Initializable {
         }
 
         this.viewDataController.switchToContentEntry(--currentEntryIndex);
+    }
+
+    @FXML
+    public void handleFastPreviousButtonMouseClick(ActionEvent actionEvent) {
+        System.out.println("handleFastPreviousButtonMouseClick");
+
+        long currentEntryIndex = this.viewDataController.getCurrentEntryIndexProperty().getValue();
+        if (currentEntryIndex - 10 < 0 ) {
+            currentEntryIndex = 0;
+        } else {
+            currentEntryIndex -= 10;
+        }
+
+        this.viewDataController.switchToContentEntry(currentEntryIndex);
     }
 
     @FXML

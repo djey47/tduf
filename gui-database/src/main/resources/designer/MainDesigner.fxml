@@ -46,12 +46,14 @@
                   <Separator orientation="VERTICAL" />
                   <Button mnemonicParsing="false" onAction="#handleBackButtonMouseClick" text="Back" />
                   <Separator layoutX="418.0" layoutY="10.0" orientation="VERTICAL" />
-                      <Button mnemonicParsing="false" onAction="#handleFirstButtonMouseClick" text="&lt;&lt;" />
+                      <Button mnemonicParsing="false" onAction="#handleFirstButtonMouseClick" text="|&lt;" />
+                  <Button layoutX="301.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleFastPreviousButtonMouseClick" text="&lt;&lt;" />
                       <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handlePreviousButtonMouseClick" text="&lt;" />
                   <TextField fx:id="entryNumberTextField" alignment="CENTER" editable="false" prefWidth="50.0" />
                   <Label fx:id="entryItemsCountLabel" text="/ &lt;?&gt;" />
                       <Button layoutX="61.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleNextButtonMouseClick" text="&gt;" />
-                      <Button layoutX="139.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleLastButtonMouseClick" text="&gt;&gt;" />
+                  <Button layoutX="301.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleFastNextButtonMouseClick" text="&gt;&gt;" />
+                      <Button layoutX="139.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleLastButtonMouseClick" text="&gt;|" />
                   <Separator layoutX="80.0" layoutY="10.0" orientation="VERTICAL" />
                   <Label fx:id="currentEntryLabel" text="&lt;current&gt;">
                      <font>
