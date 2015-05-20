@@ -43,6 +43,8 @@ public class MainStageController implements Initializable {
 
     private static final String LABEL_BUTTON_GOTO = "->";
 
+    static final String VALUE_UNKNOWN = "<?>";
+
     @FXML
     private TitledPane settingsPane;
 
@@ -176,7 +178,6 @@ public class MainStageController implements Initializable {
     }
 
     private void initSettingsPane() throws IOException {
-
         this.settingsPane.setExpanded(false);
 
         this.viewDataController.fillLocales();
@@ -219,7 +220,6 @@ public class MainStageController implements Initializable {
     }
 
     private void initGroupTabs() {
-
         this.defaultTab.getChildren().clear();
 
         this.tabPane.getTabs().remove(1, this.tabPane.getTabs().size());
@@ -290,7 +290,7 @@ public class MainStageController implements Initializable {
             potentialToolTip = Optional.ofNullable(fieldSettings.getToolTip());
         }
 
-        HBox fieldBox = addFieldBox(Optional.ofNullable(groupName));
+        HBox fieldBox = addFieldBox(Optional.ofNullable(groupName), 25.0);
 
         addFieldLabel(fieldBox, fieldReadOnly, fieldName);
 
@@ -314,83 +314,87 @@ public class MainStageController implements Initializable {
     }
 
     private void addLinkControls(TopicLinkDto topicLinkObject) {
-        // TODO extract methods
-        HBox fieldBox = addFieldBox(Optional.ofNullable(topicLinkObject.getGroup()));
-        fieldBox.setPrefHeight(250);
-
-        String fieldName = topicLinkObject.getTopic().name();
-        if (topicLinkObject.getLabel() != null) {
-            fieldName = topicLinkObject.getLabel();
-        }
-        addFieldLabel(fieldBox, false, fieldName);
-
-        List<DbStructureDto.Field> structureFields = databaseMiner.getDatabaseTopic(topicLinkObject.getTopic()).get().getStructure().getFields();
-        DbDto.Topic targetTopic = topicLinkObject.getTopic();
-        if (structureFields.size() == 2) {
-            String targetRef = structureFields.get(1).getTargetRef();
-            if (targetRef != null) {
-                targetTopic = databaseMiner.getDatabaseTopicFromReference(targetRef).getTopic();
-            }
-        }
-
         ObservableList<RemoteResource> resourceData = FXCollections.observableArrayList();
         resourceListByTopicLink.put(topicLinkObject, resourceData);
 
-        TableView<RemoteResource> tableView = new TableView<>();
-        tableView.setPrefWidth(555);
+        HBox fieldBox = addFieldBox(Optional.ofNullable(topicLinkObject.getGroup()), 250.0);
 
-        TableColumn<RemoteResource, String> refColumn = new TableColumn<>("#");
-        refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
-        refColumn.setPrefWidth(100);
-
-        TableColumn<RemoteResource, String> valueColumn = new TableColumn<>("Linked data");
-        valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
-        valueColumn.setPrefWidth(455);
-
-        tableView.getColumns().add(refColumn);
-        tableView.getColumns().add(valueColumn);
-
-        tableView.setItems(resourceData);
+        addFieldLabelForLinkedTopic(fieldBox, topicLinkObject);
 
         String targetProfileName = topicLinkObject.getRemoteReferenceProfile();
-        if(targetProfileName != null) {
-            final DbDto.Topic finalTargetTopic = targetTopic;
-            tableView.setOnMousePressed(event -> {
-                if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
-                    Optional<RemoteResource> selectedResource = TableViewHelper.getMouseSelectedItem(event);
-                    if (selectedResource.isPresent()) {
-                        this.viewDataController.switchToSelectedResourceForLinkedTopic(selectedResource.get(), finalTargetTopic, targetProfileName);
-                    }
-                }
-            });
-        }
+        DbDto.Topic targetTopic = retrieveTargetTopicForLink(topicLinkObject);
+        TableView<RemoteResource> tableView = addTableViewForLinkedTopic(fieldBox, resourceData, targetProfileName, targetTopic);
 
-        Label resourceTopicLabel = new Label(targetTopic.name());
-        resourceTopicLabel.getStyleClass().add("fieldLabel");
+        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
 
-        fieldBox.getChildren().add(tableView);
+        addCustomLabel(fieldBox, targetTopic.name());
+
         fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
-        fieldBox.getChildren().add(resourceTopicLabel);
-        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
+
         if (targetProfileName != null) {
             addGoToReferenceButtonForLinkedTopic(fieldBox, targetTopic, tableView.getSelectionModel(), targetProfileName);
         }
     }
 
-    private HBox addFieldBox(Optional<String> groupName) {
+    private void addResourceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic topic) {
+        SimpleStringProperty property = new SimpleStringProperty("");
+        this.viewDataController.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
+
+        addResourceValueLabel(fieldBox, property);
+
+        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
+
+        addCustomLabel(fieldBox, topic.name());
+    }
+
+    private void addResourceValueLabel(HBox fieldBox, SimpleStringProperty property) {
+        Label resourceValueLabel = new Label();
+        resourceValueLabel.setPrefWidth(450);
+        resourceValueLabel.getStyleClass().add("fieldLabel");
+        resourceValueLabel.textProperty().bindBidirectional(property);
+        fieldBox.getChildren().add(resourceValueLabel);
+    }
+
+    private void addReferenceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic targetTopic) {
+        SimpleStringProperty property = new SimpleStringProperty("Reference to another topic.");
+        this.viewDataController.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
+
+        Label remoteValueLabel = addCustomLabel(fieldBox, VALUE_UNKNOWN);
+        remoteValueLabel.setPrefWidth(450);
+        remoteValueLabel.textProperty().bindBidirectional(property);
+
+        addCustomLabel(fieldBox, targetTopic.name());
+
+        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
+
+        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, this.profileObject);
+        if (potentialFieldSettings.isPresent() && potentialFieldSettings.get().getRemoteReferenceProfile() != null) {
+            addGoToReferenceButton(fieldBox, fieldRank, targetTopic, potentialFieldSettings.get().getRemoteReferenceProfile());
+        }
+    }
+
+    private HBox addFieldBox(Optional<String> potentialGroupName, double boxHeight) {
         HBox fieldBox = new HBox();
-        fieldBox.setPrefHeight(25.0);
+        fieldBox.setPrefHeight(boxHeight);
         fieldBox.setPadding(new Insets(5.0));
 
-        if (groupName.isPresent()) {
-            // TODO check group exists, throw appropriate exception
-            VBox groupTab = tabContentByName.get(groupName.get());
-            groupTab.getChildren().add(fieldBox);
+        if (potentialGroupName.isPresent()) {
+            String groupName = potentialGroupName.get();
+            if (!tabContentByName.containsKey(groupName)) {
+                throw new IllegalArgumentException("Unknown group name: " + groupName);
+            }
+            tabContentByName.get(groupName).getChildren().add(fieldBox);
         } else {
             defaultTab.getChildren().add(fieldBox);
         }
-
         return fieldBox;
+    }
+
+    private Label addCustomLabel(HBox fieldBox, String text) {
+        Label customLabel = new Label(text);
+        customLabel.getStyleClass().add("fieldLabel");
+        fieldBox.getChildren().add(customLabel);
+        return customLabel;
     }
 
     private void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName) {
@@ -402,6 +406,14 @@ public class MainStageController implements Initializable {
         }
         fieldNameLabel.setPrefWidth(225.0);
         fieldBox.getChildren().add(fieldNameLabel);
+    }
+
+    private void addFieldLabelForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject) {
+        String fieldName = topicLinkObject.getTopic().name();
+        if (topicLinkObject.getLabel() != null) {
+            fieldName = topicLinkObject.getLabel();
+        }
+        addFieldLabel(fieldBox, false, fieldName);
     }
 
     private void addTextField(HBox fieldBox, boolean readOnly, Property<String> property, Optional<String> toolTip) {
@@ -419,45 +431,6 @@ public class MainStageController implements Initializable {
         fieldValue.textProperty().bindBidirectional(property);
 
         fieldBox.getChildren().add(fieldValue);
-    }
-
-    private void addResourceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic topic) {
-        Label resourceValueLabel = new Label();
-        resourceValueLabel.setPrefWidth(450);
-        resourceValueLabel.getStyleClass().add("fieldLabel");
-
-        SimpleStringProperty property = new SimpleStringProperty("");
-        this.viewDataController.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
-        resourceValueLabel.textProperty().bindBidirectional(property);
-
-        Label resourceTopicLabel = new Label(topic.name());
-        resourceTopicLabel.getStyleClass().add("fieldLabel");
-
-        fieldBox.getChildren().add(resourceValueLabel);
-        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
-        fieldBox.getChildren().add(resourceTopicLabel);
-    }
-
-    private void addReferenceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic targetTopic) {
-        Label remoteValueLabel = new Label();
-        remoteValueLabel.setPrefWidth(450);
-        remoteValueLabel.getStyleClass().add("fieldLabel");
-
-        SimpleStringProperty property = new SimpleStringProperty("Reference to another topic.");
-        this.viewDataController.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
-        remoteValueLabel.textProperty().bindBidirectional(property);
-
-        Label resourceTopicLabel = new Label(targetTopic.name());
-        resourceTopicLabel.getStyleClass().add("fieldLabel");
-
-        fieldBox.getChildren().add(remoteValueLabel);
-        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
-        fieldBox.getChildren().add(resourceTopicLabel);
-        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
-        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, this.profileObject);
-        if (potentialFieldSettings.isPresent() && potentialFieldSettings.get().getRemoteReferenceProfile() != null) {
-            addGoToReferenceButton(fieldBox, fieldRank, targetTopic, potentialFieldSettings.get().getRemoteReferenceProfile());
-        }
     }
 
     private void addGoToReferenceButton(HBox fieldBox, int fieldRank, DbDto.Topic targetTopic, String targetProfileName) {
@@ -479,6 +452,52 @@ public class MainStageController implements Initializable {
             this.viewDataController.switchToSelectedResourceForLinkedTopic(tableViewSelectionModel.getSelectedItem(), targetTopic, targetProfileName);
         });
         fieldBox.getChildren().add(gotoReferenceButton);
+    }
+
+    private TableView<RemoteResource> addTableViewForLinkedTopic(HBox fieldBox, ObservableList<RemoteResource> resourceData, String targetProfileName, DbDto.Topic targetTopic) {
+        TableView<RemoteResource> tableView = new TableView<>();
+        tableView.setPrefWidth(555);
+
+        TableColumn<RemoteResource, String> refColumn = new TableColumn<>("#");
+        refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
+        refColumn.setPrefWidth(100);
+
+        TableColumn<RemoteResource, String> valueColumn = new TableColumn<>("Linked data");
+        valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
+        valueColumn.setPrefWidth(455);
+
+        tableView.getColumns().add(refColumn);
+        tableView.getColumns().add(valueColumn);
+
+        tableView.setItems(resourceData);
+
+        if(targetProfileName != null) {
+            final DbDto.Topic finalTargetTopic = targetTopic;
+            tableView.setOnMousePressed(event -> {
+                if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
+                    Optional<RemoteResource> selectedResource = TableViewHelper.getMouseSelectedItem(event);
+                    if (selectedResource.isPresent()) {
+                        this.viewDataController.switchToSelectedResourceForLinkedTopic(selectedResource.get(), finalTargetTopic, targetProfileName);
+                    }
+                }
+            });
+        }
+
+        fieldBox.getChildren().add(tableView);
+
+        return tableView;
+    }
+
+    private DbDto.Topic retrieveTargetTopicForLink(TopicLinkDto topicLinkObject) {
+        List<DbStructureDto.Field> structureFields = databaseMiner.getDatabaseTopic(topicLinkObject.getTopic()).get().getStructure().getFields();
+        DbDto.Topic targetTopic = topicLinkObject.getTopic();
+        if (structureFields.size() == 2) {
+            String targetRef = structureFields.get(1).getTargetRef();
+            if (targetRef != null) {
+                targetTopic = databaseMiner.getDatabaseTopicFromReference(targetRef).getTopic();
+            }
+        }
+        return targetTopic;
     }
 
     BulkDatabaseMiner getMiner() {

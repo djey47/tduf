@@ -32,8 +32,6 @@ public class ViewDataController {
 
     private static final Class<ViewDataController> thisClass = ViewDataController.class;
 
-    private static final String VALUE_UNKNOWN = "<?>";
-
     private MainStageController mainStageController;
 
     private Property<Integer> entryItemsCountProperty;
@@ -83,7 +81,7 @@ public class ViewDataController {
         long entryIndex = this.currentEntryIndexProperty.getValue();
         DbDataDto.Entry entry = getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, this.mainStageController.getCurrentTopicObject().getTopic());
 
-        String entryLabel = VALUE_UNKNOWN;
+        String entryLabel = MainStageController.VALUE_UNKNOWN;
         if (this.mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks() != null) {
             entryLabel = fetchContentsWithEntryId(this.currentTopicProperty.getValue(), entryIndex, this.mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks());
         }
@@ -229,7 +227,7 @@ public class ViewDataController {
         requireNonNull(fieldRanks, "A list of field ranks (even empty) must be provided.");
 
         if (fieldRanks.isEmpty()) {
-            return VALUE_UNKNOWN;
+            return MainStageController.VALUE_UNKNOWN;
         }
 
         List<String> contents = fieldRanks.stream()
