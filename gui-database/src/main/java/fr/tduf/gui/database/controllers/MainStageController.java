@@ -41,6 +41,8 @@ public class MainStageController implements Initializable {
 
     private ViewDataController viewDataController;
 
+    private static final String LABEL_BUTTON_GOTO = "->";
+
     @FXML
     private TitledPane settingsPane;
 
@@ -459,9 +461,9 @@ public class MainStageController implements Initializable {
     }
 
     private void addGoToReferenceButton(HBox fieldBox, int fieldRank, DbDto.Topic targetTopic, String targetProfileName) {
-        Button gotoReferenceButton = new Button("->");
+        Button gotoReferenceButton = new Button(LABEL_BUTTON_GOTO);
         gotoReferenceButton.setOnAction((actionEvent) -> {
-            System.out.println("gotoReferenceButton clicked");
+            System.out.println("gotoReferenceButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
             DbDataDto.Entry remoteContentEntry = this.databaseMiner.getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getTopic(), fieldRank, this.viewDataController.getCurrentEntryIndexProperty().getValue(), targetTopic).get();
             this.viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId(), true);
@@ -470,9 +472,9 @@ public class MainStageController implements Initializable {
     }
 
     private void addGoToReferenceButtonForLinkedTopic(HBox fieldBox, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, String targetProfileName) {
-        Button gotoReferenceButton = new Button("->");
+        Button gotoReferenceButton = new Button(LABEL_BUTTON_GOTO);
         gotoReferenceButton.setOnAction((actionEvent) -> {
-            System.out.println("gotoReferenceButtonForLinkedTopic clicked");
+            System.out.println("gotoReferenceButtonForLinkedTopic clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
             this.viewDataController.switchToSelectedResourceForLinkedTopic(tableViewSelectionModel.getSelectedItem(), targetTopic, targetProfileName);
         });
