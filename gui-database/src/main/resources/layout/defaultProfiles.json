@@ -8,7 +8,6 @@
         "Datasheet",
         "Transmission",
         "Tuning",
-        "Fine tuning",
         "Interior",
         "Exterior",
         "Dampering",
@@ -348,22 +347,22 @@
         {
           "name": "Gravity_Center_Length",
           "rank": 62,
-          "group": "Fine tuning"
+          "group": "Tuning"
         },
         {
           "name": "Gravity_Center_Height",
           "rank": 63,
-          "group": "Fine tuning"
+          "group": "Tuning"
         },
         {
           "name": "Cx_Length",
           "rank": 64,
-          "group": "Fine tuning"
+          "group": "Tuning"
         },
         {
           "name": "Cx_Height",
           "rank": 65,
-          "group": "Fine tuning"
+          "group": "Tuning"
         },
         {
           "name": "SteerLock",
@@ -438,7 +437,7 @@
         {
           "name": "Top_Speed_kmh",
           "rank": 80,
-          "group": "Fine tuning"
+          "group": "Tuning"
         },
         {
           "name": "Braking_100_0_kmh",
@@ -478,42 +477,42 @@
         {
           "name": "coef_grip",
           "rank": 88,
-          "group": "Fine tuning"
+          "group": "Tuning"
         },
         {
           "name": "coef_overturning",
           "rank": 89,
-          "group": "Fine tuning"
+          "group": "Tuning"
         },
         {
           "name": "coef_accel",
           "rank": 90,
-          "group": "Fine tuning"
+          "group": "Tuning"
         },
         {
           "name": "coef_brake",
           "rank": 91,
-          "group": "Fine tuning"
+          "group": "Tuning"
         },
         {
           "name": "BrakingDist_feet",
           "rank": 92,
-          "group": "Fine tuning"
+          "group": "Tuning"
         },
         {
           "name": "Handling",
           "rank": 93,
-          "group": "Fine tuning"
+          "group": "Tuning"
         },
         {
           "name": "coef_suspension",
           "rank": 94,
-          "group": "Fine tuning"
+          "group": "Tuning"
         },
         {
           "name": "coef_sharpness",
           "rank": 95,
-          "group": "Fine tuning"
+          "group": "Tuning"
         },
         {
           "name": "GraduationChange_Speed",
@@ -838,7 +837,14 @@
       "name":  "Interiors",
       "topic": "INTERIOR",
       "entryLabelFieldRanks": [3],
-      "fieldSettings": []
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Interior set #"
+        }
+      ]
     },
     {
       "name": "Bots",
