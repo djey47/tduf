@@ -6,11 +6,11 @@
       "entryLabelFieldRanks": [12,13,14],
       "groups": [
         "Datasheet",
-        "Transmission",
-        "Tuning",
-        "Interior",
         "Exterior",
-        "Dampering",
+        "Interior",
+        "Transmission",
+        "Dampers",
+        "Tuning",
         "Wheels",
         "Sound"
       ],
@@ -285,52 +285,52 @@
         {
           "name": "Ride_Height_Front",
           "rank": 50,
-          "group": "Dampering"
+          "group": "Dampers"
         },
         {
           "name": "Ride_Height_Rear",
           "rank": 51,
-          "group": "Dampering"
+          "group": "Dampers"
         },
         {
           "name": "Ride_Height_Max_Front",
           "rank": 52,
-          "group": "Dampering"
+          "group": "Dampers"
         },
         {
           "name": "Ride_Height_Max_Rear",
           "rank": 53,
-          "group": "Dampering"
+          "group": "Dampers"
         },
         {
           "name": "Suspension_Lenght_Front",
           "rank": 54,
-          "group": "Dampering"
+          "group": "Dampers"
         },
         {
           "name": "Suspension_Lenght_Rear",
           "rank": 55,
-          "group": "Dampering"
+          "group": "Dampers"
         },
         {
           "name": "Suspension_Rate_Front",
           "rank": 56,
-          "group": "Dampering"
+          "group": "Dampers"
         },
         {
           "name": "Suspension_Rate_Rear",
           "rank": 57,
-          "group": "Dampering"
+          "group": "Dampers"
         },
         {
           "name": "Damper_Rate_Front",
           "rank": 58,
-          "group": "Dampering"
+          "group": "Dampers"
         },
         {
           "name": "Damper_Rate_Rear",
           "rank": 59,
-          "group": "Dampering"
+          "group": "Dampers"
         },
         {
           "name": "Engine_Inertia",
