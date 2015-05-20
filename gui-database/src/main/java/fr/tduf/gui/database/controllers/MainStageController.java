@@ -37,6 +37,7 @@ import java.util.*;
 /**
  * Makes it a possible to intercept all GUI events.
  */
+// TODO add entry-10 entry+10 navigation feature
 public class MainStageController implements Initializable {
 
     private ViewDataController viewDataController;
