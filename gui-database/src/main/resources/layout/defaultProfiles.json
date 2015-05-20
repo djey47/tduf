@@ -85,7 +85,6 @@
           "label": "Default Rims",
           "rank": 10,
           "group": "Wheels",
-          "remoteFieldRanks": [2,4,5,6,7],
           "remoteReferenceProfile": "Rims"
         },
         {
@@ -569,7 +568,6 @@
           "name": "SLOT_1",
           "group": "Slots",
           "label": "(1)",
-          "remoteFieldRanks": [2,12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -577,7 +575,6 @@
           "name": "SLOT_2",
           "group": "Slots",
           "label": "(2)",
-          "remoteFieldRanks": [2,12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -585,7 +582,6 @@
           "name": "SLOT_3",
           "group": "Slots",
           "label": "(3)",
-          "remoteFieldRanks": [2,12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -593,7 +589,6 @@
           "name": "SLOT_4",
           "group": "Slots",
           "label": "(4)",
-          "remoteFieldRanks": [2,12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -601,7 +596,6 @@
           "name": "SLOT_5",
           "group": "Slots",
           "label": "(5)",
-          "remoteFieldRanks": [2,12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -609,7 +603,6 @@
           "name": "SLOT_6",
           "group": "Slots",
           "label": "(6)",
-          "remoteFieldRanks": [2,12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -617,7 +610,6 @@
           "name": "SLOT_7",
           "group": "Slots",
           "label": "(7)",
-          "remoteFieldRanks": [2,12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -625,7 +617,6 @@
           "name": "SLOT_8",
           "group": "Slots",
           "label": "(8)",
-          "remoteFieldRanks": [2,12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -633,7 +624,6 @@
           "name": "SLOT_9",
           "group": "Slots",
           "label": "(9)",
-          "remoteFieldRanks": [2,12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -641,7 +631,6 @@
           "name": "SLOT_10",
           "group": "Slots",
           "label": "(10)",
-          "remoteFieldRanks": [2,12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -649,7 +638,6 @@
           "name": "SLOT_11",
           "group": "Slots",
           "label": "(11)",
-          "remoteFieldRanks": [2,12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -657,7 +645,6 @@
           "name": "SLOT_12",
           "group": "Slots",
           "label": "(12)",
-          "remoteFieldRanks": [2,12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -665,7 +652,6 @@
           "name": "SLOT_13",
           "group": "Slots",
           "label": "(13)",
-          "remoteFieldRanks": [2,12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -673,7 +659,6 @@
           "name": "SLOT_14",
           "group": "Slots",
           "label": "(14)",
-          "remoteFieldRanks": [2,12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -681,7 +666,6 @@
           "name": "SLOT_15",
           "group": "Slots",
           "label": "(15)",
-          "remoteFieldRanks": [2,12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         }
       ]
@@ -764,112 +748,96 @@
           "rank": 1,
           "name": "Car",
           "label": "Car slot #",
-          "remoteFieldRanks": [12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "rank": 8,
           "group": "Interior Sets",
           "label": "(1)",
-          "remoteFieldRanks": [3],
           "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 9,
           "group": "Interior Sets",
           "label": "(2)",
-          "remoteFieldRanks": [3],
           "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 10,
           "group": "Interior Sets",
           "label": "(3)",
-          "remoteFieldRanks": [3],
           "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 11,
           "group": "Interior Sets",
           "label": "(4)",
-          "remoteFieldRanks": [3],
           "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 12,
           "group": "Interior Sets",
           "label": "(5)",
-          "remoteFieldRanks": [3],
           "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 13,
           "group": "Interior Sets",
           "label": "(6)",
-          "remoteFieldRanks": [3],
           "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 14,
           "group": "Interior Sets",
           "label": "(7)",
-          "remoteFieldRanks": [3],
           "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 15,
           "group": "Interior Sets",
           "label": "(8)",
-          "remoteFieldRanks": [3],
           "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 16,
           "group": "Interior Sets",
           "label": "(9)",
-          "remoteFieldRanks": [3],
           "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 17,
           "group": "Interior Sets",
           "label": "(10)",
-          "remoteFieldRanks": [3],
           "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 18,
           "group": "Interior Sets",
           "label": "(11)",
-          "remoteFieldRanks": [3],
           "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 19,
           "group": "Interior Sets",
           "label": "(12)",
-          "remoteFieldRanks": [3],
           "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 20,
           "group": "Interior Sets",
           "label": "(13)",
-          "remoteFieldRanks": [3],
           "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 21,
           "group": "Interior Sets",
           "label": "(14)",
-          "remoteFieldRanks": [3],
           "remoteReferenceProfile": "Interiors"
         },
         {
           "rank": 22,
           "group": "Interior Sets",
           "label": "(15)",
-          "remoteFieldRanks": [3],
           "remoteReferenceProfile": "Interiors"
         }
       ]
@@ -896,13 +864,11 @@
         {
           "name": "Car",
           "rank": 1,
-          "remoteFieldRanks": [12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
           "name": "Brand",
           "rank": 2,
-          "remoteFieldRanks": [2,3],
           "remoteReferenceProfile": "Brands"
         },
         {
@@ -917,7 +883,6 @@
           "name": "Pack_1",
           "rank": 5,
           "group": "Pack 1",
-          "remoteFieldRanks": [2,3],
           "remoteReferenceProfile": "AMPacks"
         },
         {
@@ -929,7 +894,6 @@
           "name": "Car_1",
           "rank": 7,
           "group": "Pack 1",
-          "remoteFieldRanks": [12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -956,7 +920,6 @@
           "name": "Pack_2",
           "rank": 12,
           "group": "Pack 2",
-          "remoteFieldRanks": [2,3],
           "remoteReferenceProfile": "AMPacks"
         },
         {
@@ -968,7 +931,6 @@
           "name": "Car_2",
           "rank": 14,
           "group": "Pack 2",
-          "remoteFieldRanks": [12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -995,7 +957,6 @@
           "name": "Pack_3",
           "rank": 19,
           "group": "Pack 3",
-          "remoteFieldRanks": [2,3],
           "remoteReferenceProfile": "AMPacks"
         },
         {
@@ -1007,7 +968,6 @@
           "name": "Car_3",
           "rank": 21,
           "group": "Pack 3",
-          "remoteFieldRanks": [12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
@@ -1054,13 +1014,11 @@
         {
           "name": "PNJ",
           "rank": 3,
-          "remoteFieldRanks": [2,3],
           "remoteReferenceProfile": "NPCs"
         },
         {
           "name": "BotCar",
           "rank": 6,
-          "remoteFieldRanks": [12,13,14],
           "remoteReferenceProfile": "Vehicle slots"
         }
       ]
@@ -1082,7 +1040,6 @@
           "label": "(1)",
           "group": "Items",
           "rank": 5,
-          "remoteFieldRanks": [2,6,7],
           "remoteReferenceProfile": "Clothes"
         },
         {
@@ -1090,7 +1047,6 @@
           "label": "(2)",
           "group": "Items",
           "rank": 6,
-          "remoteFieldRanks": [2,6,7],
           "remoteReferenceProfile": "Clothes"
         },
         {
@@ -1098,7 +1054,6 @@
           "label": "(3)",
           "group": "Items",
           "rank": 7,
-          "remoteFieldRanks": [2,6,7],
           "remoteReferenceProfile": "Clothes"
         },
         {
@@ -1106,7 +1061,6 @@
           "label": "(4)",
           "group": "Items",
           "rank": 8,
-          "remoteFieldRanks": [2,6,7],
           "remoteReferenceProfile": "Clothes"
         },
         {
@@ -1114,7 +1068,6 @@
           "label": "(5)",
           "group": "Items",
           "rank": 9,
-          "remoteFieldRanks": [2,6,7],
           "remoteReferenceProfile": "Clothes"
         },
         {
@@ -1122,7 +1075,6 @@
           "label": "(6)",
           "group": "Items",
           "rank": 10,
-          "remoteFieldRanks": [2,6,7],
           "remoteReferenceProfile": "Clothes"
         }
       ]
@@ -1154,7 +1106,6 @@
         {
           "name": "Brand_",
           "rank": 5,
-          "remoteFieldRanks": [2,3],
           "remoteReferenceProfile": "Brands"
         }
       ]

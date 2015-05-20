@@ -172,7 +172,15 @@ public class ViewDataController {
         List<Integer> remoteFieldRanks = new ArrayList<>();
         Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), this.mainStageController.getProfilesChoiceBox().getValue(), this.mainStageController.getLayoutObject());
         if (fieldSettings.isPresent()) {
-            remoteFieldRanks = fieldSettings.get().getRemoteFieldRanks();
+            String remoteReferenceProfile = fieldSettings.get().getRemoteReferenceProfile();
+            if (remoteReferenceProfile != null) {
+                // TODO extract to helper
+                EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(remoteReferenceProfile, this.mainStageController.getLayoutObject());
+                List<Integer> entryLabelFieldRanks = profileObject.getEntryLabelFieldRanks();
+                if (entryLabelFieldRanks != null) {
+                    remoteFieldRanks = entryLabelFieldRanks;
+                }
+            }
         }
 
         String remoteContents = fetchRemoteContentsWithEntryRef(remoteTopic, referenceItem.getRawValue(), remoteFieldRanks);
@@ -199,6 +207,7 @@ public class ViewDataController {
     }
 
     private RemoteResource fetchLinkResourceFromContentEntry(DbDto topicObject, DbDataDto.Entry contentEntry, TopicLinkDto linkObject) {
+        // TODO extract to helper
         EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(linkObject.getRemoteReferenceProfile(), this.mainStageController.getLayoutObject());
         List<Integer> remoteFieldRanks = profileObject.getEntryLabelFieldRanks() == null ? new ArrayList<>() : profileObject.getEntryLabelFieldRanks();
         RemoteResource remoteResource = new RemoteResource();
