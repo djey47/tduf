@@ -2,7 +2,6 @@ package fr.tduf.gui.database.helper;
 
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.Optional;
 
@@ -16,15 +15,20 @@ public class EditorLayoutHelper {
     /**
      * @return the available layout profile if it exists in provided layout object.
      */
-    public static EditorLayoutDto.EditorProfileDto getAvailableProfileByName(String profileName, EditorLayoutDto layoutObject) {
+    public static EditorLayoutDto.EditorProfileDto getAvailableProfileByName(String profileName, EditorLayoutDto layoutObject) throws IllegalArgumentException {
         requireNonNull(layoutObject, "Editor layout object is required.");
 
-        // TODO handle profile name not found with proper exception
-        return layoutObject.getProfiles().stream()
+        Optional<EditorLayoutDto.EditorProfileDto> potentialProfileObject = layoutObject.getProfiles().stream()
 
                 .filter((profile) -> profile.getName().equals(profileName))
 
-                .findAny().get();
+                .findAny();
+
+        if (!potentialProfileObject.isPresent()) {
+            throw new IllegalArgumentException("Unknown profile name: " + profileName);
+        }
+
+        return potentialProfileObject.get();
     }
 
     /**
@@ -41,9 +45,9 @@ public class EditorLayoutHelper {
     }
 
     /**
-     * @return
+     * @return field settings if they exist for provided field rank and profile name, absent otherwise.
      */
-    public static Optional<FieldSettingsDto> getFieldSettingsByRankAndProfileName(int fieldRank, String profileName, EditorLayoutDto layoutObject) {
+    public static Optional<FieldSettingsDto> getFieldSettingsByRankAndProfileName(int fieldRank, String profileName, EditorLayoutDto layoutObject) throws IllegalArgumentException {
         requireNonNull(layoutObject, "Editor layout object is required.");
 
         EditorLayoutDto.EditorProfileDto currentProfile = getAvailableProfileByName(profileName, layoutObject);
@@ -51,9 +55,9 @@ public class EditorLayoutHelper {
     }
 
     /**
-     * @return
+     * @return field priority setting if it exists, 0 otherwise.
      */
-    public static int getFieldPrioritySettingByRank(int fieldRank, String profileName, EditorLayoutDto layoutObject) {
+    public static int getFieldPrioritySettingByRank(int fieldRank, String profileName, EditorLayoutDto layoutObject) throws IllegalArgumentException {
         requireNonNull(layoutObject, "Editor layout object is required.");
 
         Optional<FieldSettingsDto> potentialFieldSettingsObject = getFieldSettingsByRankAndProfileName(fieldRank, profileName, layoutObject);
