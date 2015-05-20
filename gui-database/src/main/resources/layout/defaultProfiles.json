@@ -552,19 +552,6 @@
       ]
     },
     {
-      "name": "Brands",
-      "topic": "BRANDS",
-      "entryLabelFieldRanks": [2,3],
-      "fieldSettings": [
-        {
-          "rank": 1,
-          "name": "REF",
-          "readOnly": "true",
-          "label": "(REF) Brand #"
-        }
-      ]
-    },
-    {
       "name": "Points of sale",
       "topic": "CAR_SHOPS",
       "groups": [
@@ -700,9 +687,23 @@
       ]
     },
     {
+      "name": "Brands",
+      "topic": "BRANDS",
+      "entryLabelFieldRanks": [2,3],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Brand #"
+        }
+      ]
+    },
+    {
       "name": "Rims",
       "topic": "RIMS",
       "entryLabelFieldRanks": [2,4,5,6,7],
+      "groups": ["Front","Rear"],
       "fieldSettings": [
         {
           "rank": 1,
@@ -710,6 +711,46 @@
           "readOnly": "true",
           "label": "(REF) Rim set #",
           "toolTip": "Unique rim set number"
+        },
+        {
+          "name": "Largeur_Front",
+          "rank": 5,
+          "group": "Front"
+        },
+        {
+          "name": "Hauteur_Front",
+          "rank": 6,
+          "group": "Front"
+        },
+        {
+          "name": "Diameter_Front",
+          "rank": 7,
+          "group": "Front"
+        },
+        {
+          "name": "Largeur_Rear",
+          "rank": 8,
+          "group": "Rear"
+        },
+        {
+          "name": "Hauteur_Rear",
+          "rank": 9,
+          "group": "Rear"
+        },
+        {
+          "name": "Diameter_Rear",
+          "rank": 10,
+          "group": "Rear"
+        },
+        {
+          "name": "Rsc_File_Name_Front",
+          "rank": 14,
+          "group": "Front"
+        },
+        {
+          "name": "Rsc_File_Name_Rear",
+          "rank": 15,
+          "group": "Rear"
         }
       ]
     },
@@ -845,11 +886,6 @@
           "label": "(REF) Interior set #"
         }
       ]
-    },
-    {
-      "name": "Bots",
-      "topic": "BOTS",
-      "fieldSettings": []
     },
     {
       "name": "Packs",
@@ -1009,6 +1045,156 @@
           "toolTip": "Unique pack number"
         }
       ]
+    },
+    {
+      "name": "Bots",
+      "topic": "BOTS",
+      "entryLabelFieldRanks": [1],
+      "fieldSettings": [
+        {
+          "name": "PNJ",
+          "rank": 3,
+          "remoteFieldRanks": [2,3],
+          "remoteReferenceProfile": "NPCs"
+        },
+        {
+          "name": "BotCar",
+          "rank": 6,
+          "remoteFieldRanks": [12,13,14],
+          "remoteReferenceProfile": "Vehicle slots"
+        }
+      ]
+    },
+    {
+      "name": "NPCs",
+      "topic": "PNJ",
+      "entryLabelFieldRanks": [2,3],
+      "groups": ["Items"],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) NPC #"
+        },
+        {
+          "name": "Clothe",
+          "label": "(1)",
+          "group": "Items",
+          "rank": 5,
+          "remoteFieldRanks": [2,6,7],
+          "remoteReferenceProfile": "Clothes"
+        },
+        {
+          "name": "Clothe",
+          "label": "(2)",
+          "group": "Items",
+          "rank": 6,
+          "remoteFieldRanks": [2,6,7],
+          "remoteReferenceProfile": "Clothes"
+        },
+        {
+          "name": "Clothe",
+          "label": "(3)",
+          "group": "Items",
+          "rank": 7,
+          "remoteFieldRanks": [2,6,7],
+          "remoteReferenceProfile": "Clothes"
+        },
+        {
+          "name": "Clothe",
+          "label": "(4)",
+          "group": "Items",
+          "rank": 8,
+          "remoteFieldRanks": [2,6,7],
+          "remoteReferenceProfile": "Clothes"
+        },
+        {
+          "name": "Clothe",
+          "label": "(5)",
+          "group": "Items",
+          "rank": 9,
+          "remoteFieldRanks": [2,6,7],
+          "remoteReferenceProfile": "Clothes"
+        },
+        {
+          "name": "Clothe",
+          "label": "(6)",
+          "group": "Items",
+          "rank": 10,
+          "remoteFieldRanks": [2,6,7],
+          "remoteReferenceProfile": "Clothes"
+        }
+      ]
+    },
+    {
+      "name": "Haircuts",
+      "topic": "HAIR",
+      "entryLabelFieldRanks": [3,4],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Haircut #"
+        }
+      ]
+    },
+    {
+      "name": "Clothes",
+      "topic": "CLOTHES",
+      "entryLabelFieldRanks": [2,6,7],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Piece of cloth #"
+        },
+        {
+          "name": "Brand_",
+          "rank": 5,
+          "remoteFieldRanks": [2,3],
+          "remoteReferenceProfile": "Brands"
+        }
+      ]
+    },
+    {
+      "name": "Houses",
+      "topic": "HOUSES",
+      "entryLabelFieldRanks": [2,3,4],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) House  #"
+        }
+      ]
+    },
+    {
+      "name": "Achievements",
+      "topic": "ACHIEVEMENTS",
+      "entryLabelFieldRanks": [1,5],
+      "fieldSettings": []
+    },
+    {
+      "name": "Menus",
+      "topic": "MENUS",
+      "entryLabelFieldRanks": [1,2],
+      "fieldSettings": []
+    },
+    {
+      "name": "Subtitles",
+      "topic": "SUB_TITLES",
+      "entryLabelFieldRanks": [3],
+      "fieldSettings": []
+    },
+    {
+      "name": "Tutorials",
+      "topic": "TUTORIALS",
+      "entryLabelFieldRanks": [1,2,3],
+      "fieldSettings": []
     },
     {
       "name": "TEST-Remote resource",
