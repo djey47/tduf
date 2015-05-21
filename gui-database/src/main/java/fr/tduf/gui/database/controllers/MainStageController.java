@@ -398,6 +398,10 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
         addCustomLabel(fieldBox, topic.name());
+
+        fieldBox.getChildren().add(new Separator(VERTICAL));
+
+        addBrowseResourcesButton(fieldBox);
     }
 
     private void addResourceValueLabel(HBox fieldBox, SimpleStringProperty property) {
@@ -508,6 +512,17 @@ public class MainStageController implements Initializable {
             this.viewDataController.switchToSelectedResourceForLinkedTopic(tableViewSelectionModel.getSelectedItem(), targetTopic, targetProfileName);
         });
         fieldPane.getChildren().add(gotoReferenceButton);
+    }
+
+    private void addBrowseResourcesButton(HBox fieldBox) {
+        Button browseResourcesButton = new Button(DisplayConstants.LABEL_BUTTON_BROWSE);
+        browseResourcesButton.setOnAction((actionEvent) -> {
+            System.out.println("browseResourcesButton clicked");
+//
+//            DbDataDto.Entry remoteContentEntry = this.databaseMiner.getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getTopic(), fieldRank, this.viewDataController.getCurrentEntryIndexProperty().getValue(), targetTopic).get();
+//            this.viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId(), true);
+        });
+        fieldBox.getChildren().add(browseResourcesButton);
     }
 
     private TableView<RemoteResource> addTableViewForLinkedTopic(HBox fieldBox, ObservableList<RemoteResource> resourceData, String targetProfileName, DbDto.Topic targetTopic) {
