@@ -72,7 +72,7 @@ public class ViewDataController {
     }
 
     void loadAndFillProfiles() throws IOException {
-        this.mainStageController.setLayoutObject(new ObjectMapper().readValue(thisClass.getResource("/layout/defaultProfiles.json"), EditorLayoutDto.class));
+        this.mainStageController.setLayoutObject(new ObjectMapper().readValue(thisClass.getResource(MainStageController.PATH_RESOURCE_PROFILES), EditorLayoutDto.class));
         this.mainStageController.getLayoutObject().getProfiles()
                 .forEach((profileObject) -> mainStageController.getProfilesChoiceBox().getItems().add(profileObject.getName()));
     }
@@ -249,7 +249,7 @@ public class ViewDataController {
 
                 .collect(toList());
 
-        return String.join(" - ", contents);
+        return String.join(MainStageController.SEPARATOR_VALUES_LABEL, contents);
     }
 
     Property<Long> getCurrentEntryIndexProperty() {

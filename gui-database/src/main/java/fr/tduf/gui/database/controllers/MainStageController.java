@@ -39,11 +39,20 @@ import java.util.*;
  */
 public class MainStageController implements Initializable {
 
-    private ViewDataController viewDataController;
-
-    private static final String LABEL_BUTTON_GOTO = "->";
+    static final String PATH_RESOURCE_PROFILES = "/layout/defaultProfiles.json";
 
     static final String VALUE_UNKNOWN = "<?>";
+    static final String SEPARATOR_VALUES_LABEL = " - ";
+
+    private static final String LABEL_BUTTON_GOTO = "->";
+    private static final String COLUMN_HEADER_REF = "#";
+    private static final String COLUMN_HEADER_DATA = "Linked data";
+
+    private static final String CSS_CLASS_FIELD_LABEL = "fieldLabel";
+    private static final String CSS_CLASS_FIELD_NAME = "fieldName";
+    private static final String CSS_CLASS_READONLY_FIELD = "readonlyField";
+
+    private ViewDataController viewDataController;
 
     @FXML
     private TitledPane settingsPane;
@@ -93,7 +102,7 @@ public class MainStageController implements Initializable {
         this.viewDataController = new ViewDataController(this);
 
         try {
-            // DEBUG
+            // TODO DEBUG
             databaseLocationTextField.setText("/media/sf_DevStore/GIT/tduf/cli/integ-tests/db-json/");
 
             initSettingsPane();
@@ -379,7 +388,7 @@ public class MainStageController implements Initializable {
     private void addResourceValueLabel(HBox fieldBox, SimpleStringProperty property) {
         Label resourceValueLabel = new Label();
         resourceValueLabel.setPrefWidth(450);
-        resourceValueLabel.getStyleClass().add("fieldLabel");
+        resourceValueLabel.getStyleClass().add(CSS_CLASS_FIELD_LABEL);
         resourceValueLabel.textProperty().bindBidirectional(property);
         fieldBox.getChildren().add(resourceValueLabel);
     }
@@ -421,7 +430,7 @@ public class MainStageController implements Initializable {
 
     private Label addCustomLabel(HBox fieldBox, String text) {
         Label customLabel = new Label(text);
-        customLabel.getStyleClass().add("fieldLabel");
+        customLabel.getStyleClass().add(CSS_CLASS_FIELD_LABEL);
         fieldBox.getChildren().add(customLabel);
         return customLabel;
     }
@@ -429,9 +438,9 @@ public class MainStageController implements Initializable {
     private void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName) {
         Label fieldNameLabel = new Label(fieldName);
 
-        fieldNameLabel.getStyleClass().add("fieldName");
+        fieldNameLabel.getStyleClass().add(CSS_CLASS_FIELD_NAME);
         if (readOnly) {
-            fieldNameLabel.getStyleClass().add("readonlyField");
+            fieldNameLabel.getStyleClass().add(CSS_CLASS_READONLY_FIELD);
         }
         fieldNameLabel.setPrefWidth(225.0);
         fieldBox.getChildren().add(fieldNameLabel);
@@ -449,7 +458,7 @@ public class MainStageController implements Initializable {
         TextField fieldValue = new TextField();
 
         if (readOnly) {
-            fieldValue.getStyleClass().add("readonlyField");
+            fieldValue.getStyleClass().add(CSS_CLASS_READONLY_FIELD);
         }
         fieldValue.setPrefWidth(110.0);
         fieldValue.setEditable(!readOnly);
@@ -487,11 +496,11 @@ public class MainStageController implements Initializable {
         TableView<RemoteResource> tableView = new TableView<>();
         tableView.setPrefWidth(555);
 
-        TableColumn<RemoteResource, String> refColumn = new TableColumn<>("#");
+        TableColumn<RemoteResource, String> refColumn = new TableColumn<>(COLUMN_HEADER_REF);
         refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
         refColumn.setPrefWidth(100);
 
-        TableColumn<RemoteResource, String> valueColumn = new TableColumn<>("Linked data");
+        TableColumn<RemoteResource, String> valueColumn = new TableColumn<>(COLUMN_HEADER_DATA);
         valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
         valueColumn.setPrefWidth(455);
 
