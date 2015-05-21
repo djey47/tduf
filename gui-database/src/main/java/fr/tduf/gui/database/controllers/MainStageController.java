@@ -45,6 +45,7 @@ public class MainStageController implements Initializable {
     static final String PATH_RESOURCE_PROFILES = "/layout/defaultProfiles.json";
 
     private ViewDataController viewDataController;
+    private ChangeDataController changeDataController;
 
     @FXML
     private TitledPane settingsPane;
@@ -92,6 +93,7 @@ public class MainStageController implements Initializable {
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
         this.viewDataController = new ViewDataController(this);
+        this.changeDataController = new ChangeDataController(this);
 
         try {
             // TODO DEBUG
