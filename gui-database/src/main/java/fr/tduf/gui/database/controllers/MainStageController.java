@@ -82,6 +82,8 @@ public class MainStageController implements Initializable {
     @FXML
     private Label entryItemsCountLabel;
 
+    private Stage resourcesStage = new Stage();
+
     private Map<String, VBox> tabContentByName = new HashMap<>();
 
     private List<DbDto> databaseObjects = new ArrayList<>();
@@ -108,6 +110,7 @@ public class MainStageController implements Initializable {
 
             initNavigationPane();
 
+            ResourcesDesigner.init(this.resourcesStage);
         } catch (IOException e) {
             throw new RuntimeException("Window initializing failed.", e);
         }
@@ -521,15 +524,7 @@ public class MainStageController implements Initializable {
         browseResourcesButton.setOnAction((actionEvent) -> {
             System.out.println("browseResourcesButton clicked");
 
-            try {
-                Dialog dlg = new Dialog();
-
-                Stage resourcesStage = new Stage();
-                ResourcesDesigner.init(dlg);
-                resourcesStage.showAndWait();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            this.resourcesStage.show();
         });
         fieldBox.getChildren().add(browseResourcesButton);
     }

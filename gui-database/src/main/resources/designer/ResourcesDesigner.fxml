@@ -7,6 +7,13 @@
 
 <AnchorPane prefHeight="768.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.resources.ResourcesStageController">
    <children>
-      <VBox id="mainVbox" prefWidth="1280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <VBox id="mainVbox" prefWidth="1280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
+               <items>
+                  <ChoiceBox prefWidth="175.0" />
+               </items>
+            </ToolBar>
+         </children></VBox>
    </children>
 </AnchorPane>

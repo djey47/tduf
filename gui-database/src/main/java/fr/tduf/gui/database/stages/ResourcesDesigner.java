@@ -20,24 +20,23 @@ public class ResourcesDesigner {
 
     /**
      * Loads main scene from FXML resource.
-     * @param resourcesDialog  : reference to primary stage, returned by FX engine.
+     * @param resourcesStage  : reference to resources stage.
      */
-    public static void init(Dialog<String> resourcesDialog) throws IOException {
+    public static void init(Stage resourcesStage) throws IOException {
         FXMLLoader mainLoader = new FXMLLoader(thisClass.getResource(FxConstants.PATH_RESOURCE_RES_STAGE_DESIGNER));
         Parent mainRoot = mainLoader.load();
 
-        initWindow(resourcesDialog, mainRoot);
+        initWindow(resourcesStage, mainRoot);
     }
 
-    private static void initWindow(Dialog<String> resourcesDialog, Parent mainRoot) {
+    private static void initWindow(Stage resourcesStage, Parent mainRoot) {
 //        String styledToolBarCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TOOLBARS).toExternalForm();
 //        String styledTabContentsCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TABCONTENTS).toExternalForm();
 //        mainRoot.getStylesheets().addAll(styledToolBarCss, styledTabContentsCss);
 
-        DialogPane resourcesDialogPane = new DialogPane();
-        resourcesDialog.setWidth(640);
-        resourcesDialog.setHeight(768);
-        resourcesDialog.setTitle(DisplayConstants.TITLE_APPLICATION);
-        resourcesDialog.setResizable(false);
+        resourcesStage.setWidth(640);
+        resourcesStage.setHeight(768);
+        resourcesStage.setTitle(DisplayConstants.TITLE_APPLICATION);
+        resourcesStage.setResizable(false);
     }
 }
