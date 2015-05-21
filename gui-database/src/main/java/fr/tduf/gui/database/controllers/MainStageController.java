@@ -393,6 +393,8 @@ public class MainStageController implements Initializable {
         remoteValueLabel.setPrefWidth(450);
         remoteValueLabel.textProperty().bindBidirectional(property);
 
+        fieldBox.getChildren().add(new Separator(VERTICAL));
+
         addCustomLabel(fieldBox, targetTopic.name());
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
@@ -423,6 +425,7 @@ public class MainStageController implements Initializable {
     private Label addCustomLabel(HBox fieldBox, String text) {
         Label customLabel = new Label(text);
         customLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_LABEL);
+        customLabel.setPrefWidth(175);
         fieldBox.getChildren().add(customLabel);
         return customLabel;
     }
@@ -486,7 +489,7 @@ public class MainStageController implements Initializable {
 
     private TableView<RemoteResource> addTableViewForLinkedTopic(HBox fieldBox, ObservableList<RemoteResource> resourceData, String targetProfileName, DbDto.Topic targetTopic) {
         TableView<RemoteResource> tableView = new TableView<>();
-        tableView.setPrefWidth(555);
+        tableView.setPrefWidth(560);
 
         TableColumn<RemoteResource, String> refColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_REF);
         refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
