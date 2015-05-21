@@ -11,7 +11,7 @@ import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
-import fr.tduf.gui.database.helper.EditorLayoutHelper;
+import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;

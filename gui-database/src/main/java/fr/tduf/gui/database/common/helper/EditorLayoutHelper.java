@@ -1,4 +1,4 @@
-package fr.tduf.gui.database.helper;
+package fr.tduf.gui.database.common.helper;
 
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
