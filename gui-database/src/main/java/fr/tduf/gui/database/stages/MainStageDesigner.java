@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.stages;
 
 import fr.tduf.gui.database.common.DisplayConstants;
+import fr.tduf.gui.database.common.FxConstants;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -20,15 +21,15 @@ public class MainStageDesigner {
      * @param primaryStage  : reference to primary stage, returned by FX engine.
      */
     public static void init(Stage primaryStage) throws IOException {
-        FXMLLoader mainLoader = new FXMLLoader(thisClass.getResource("/designer/MainDesigner.fxml"));
+        FXMLLoader mainLoader = new FXMLLoader(thisClass.getResource(FxConstants.PATH_RESOURCE_MAIN_STAGE_DESIGNER));
         Parent mainRoot = mainLoader.load();
 
         initMainWindow(primaryStage, mainRoot);
     }
 
     private static void initMainWindow(Stage primaryStage, Parent mainRoot) {
-        String styledToolBarCss = thisClass.getResource("/css/ToolBars.css").toExternalForm();
-        String styledTabContentsCss = thisClass.getResource("/css/TabContents.css").toExternalForm();
+        String styledToolBarCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TOOLBARS).toExternalForm();
+        String styledTabContentsCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TABCONTENTS).toExternalForm();
         mainRoot.getStylesheets().addAll(styledToolBarCss, styledTabContentsCss);
 
         primaryStage.setScene(new Scene(mainRoot, 1280, 768));

@@ -3,6 +3,7 @@ package fr.tduf.gui.database.controllers;
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
+import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.converter.EntryItemsCountToStringConverter;
@@ -11,7 +12,6 @@ import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
-import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -29,7 +29,6 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.StageStyle;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -39,7 +38,6 @@ import java.util.*;
 
 import static javafx.geometry.Orientation.VERTICAL;
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
-import static javafx.stage.StageStyle.UTILITY;
 
 /**
  * Makes it a possible to intercept all GUI events.
