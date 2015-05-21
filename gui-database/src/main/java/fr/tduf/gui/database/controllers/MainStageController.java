@@ -12,6 +12,7 @@ import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
+import fr.tduf.gui.database.stages.ResourcesDesigner;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -30,6 +31,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -518,9 +520,16 @@ public class MainStageController implements Initializable {
         Button browseResourcesButton = new Button(DisplayConstants.LABEL_BUTTON_BROWSE);
         browseResourcesButton.setOnAction((actionEvent) -> {
             System.out.println("browseResourcesButton clicked");
-//
-//            DbDataDto.Entry remoteContentEntry = this.databaseMiner.getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getTopic(), fieldRank, this.viewDataController.getCurrentEntryIndexProperty().getValue(), targetTopic).get();
-//            this.viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId(), true);
+
+            try {
+                Dialog dlg = new Dialog();
+
+                Stage resourcesStage = new Stage();
+                ResourcesDesigner.init(dlg);
+                resourcesStage.showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
         fieldBox.getChildren().add(browseResourcesButton);
     }
