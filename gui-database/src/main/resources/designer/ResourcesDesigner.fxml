@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.scene.layout.*?>
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
-
-<AnchorPane prefHeight="768.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.resources.ResourcesStageController">
+<?import javafx.scene.layout.*?>
+<AnchorPane fx:id="parentAnchorPane" prefHeight="768.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.ResourcesStageController">
    <children>
       <VBox id="mainVbox" prefWidth="768.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
             <ToolBar prefHeight="40.0" prefWidth="768.0" styleClass="navigationToolbar">
                <items>
-                  <ChoiceBox prefWidth="175.0" />
+                  <ChoiceBox fx:id="topicsChoiceBox" prefWidth="200.0" />
                </items>
             </ToolBar>
             <Pane prefHeight="744.0" prefWidth="768.0">
                <children>
-                  <TableView prefHeight="744.0" prefWidth="640.0">
+                  <TableView fx:id="resourcesTableView" prefHeight="744.0" prefWidth="640.0">
                     <columns>
                       <TableColumn prefWidth="96.0" text="#" />
                       <TableColumn prefWidth="543.0" text="Resource value" />

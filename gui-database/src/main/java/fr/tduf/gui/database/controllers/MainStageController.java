@@ -110,6 +110,7 @@ public class MainStageController implements Initializable {
 
             initNavigationPane();
 
+            this.resourcesStage.setUserData(this);
             ResourcesDesigner.init(this.resourcesStage);
         } catch (IOException e) {
             throw new RuntimeException("Window initializing failed.", e);
@@ -623,5 +624,9 @@ public class MainStageController implements Initializable {
 
     TabPane getTabPane() {
         return tabPane;
+    }
+
+    ViewDataController getViewDataController() {
+        return viewDataController;
     }
 }

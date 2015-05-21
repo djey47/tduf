@@ -277,6 +277,10 @@ public class ViewDataController {
         return entryItemsCountProperty;
     }
 
+    Property<DbResourceDto.Locale> getCurrentLocaleProperty() {
+        return currentLocaleProperty;
+    }
+
     private BulkDatabaseMiner getMiner() {
         return this.mainStageController.getMiner();
     }
