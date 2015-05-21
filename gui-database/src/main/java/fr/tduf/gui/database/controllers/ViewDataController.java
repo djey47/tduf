@@ -245,8 +245,7 @@ public class ViewDataController {
                         return potentialRemoteResourceEntry.get().getValue();
                     }
 
-                    // TODO extract to miner
-                    return this.getMiner().getContentEntryFromTopicWithInternalIdentifier(entryId, topic).getItems().get(fieldRank - 1).getRawValue();
+                    return this.getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic, fieldRank, entryId).get().getRawValue();
                 })
 
                 .collect(toList());
