@@ -30,13 +30,13 @@ public class ResourcesDesigner {
     }
 
     private static void initWindow(Stage resourcesStage, Parent mainRoot) {
-//        String styledToolBarCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TOOLBARS).toExternalForm();
-//        String styledTabContentsCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TABCONTENTS).toExternalForm();
-//        mainRoot.getStylesheets().addAll(styledToolBarCss, styledTabContentsCss);
+        String styledToolBarCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TOOLBARS).toExternalForm();
+        mainRoot.getStylesheets().add(styledToolBarCss);
 
-        resourcesStage.setWidth(640);
-        resourcesStage.setHeight(768);
-        resourcesStage.setTitle(DisplayConstants.TITLE_APPLICATION);
+        resourcesStage.setScene(new Scene(mainRoot, 640, 768));
+//        resourcesStage.setWidth(640);
+//        resourcesStage.setHeight(768);
+        resourcesStage.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
         resourcesStage.setResizable(false);
     }
 }
