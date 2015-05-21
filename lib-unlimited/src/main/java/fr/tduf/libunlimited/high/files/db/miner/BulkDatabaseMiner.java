@@ -18,7 +18,8 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Class providing utility methods to request data from database objects.
  */
-// TODO unit tests
+// TODO clean usages (0.7.0+)
+// TODO unit tests (0.7.0+)
 // TODO use debug logs to get performance info (0.7.0+)
 public class BulkDatabaseMiner {
 
@@ -163,6 +164,22 @@ public class BulkDatabaseMiner {
     }
 
     /**
+     * @param topic             : topic in TDU Database to search
+     * @param fieldRank         : rank of field to resolve resource
+     * @param entryIdentifier   : index of entry in source topic
+     * @return item if it exists, empty otherwise.
+     */
+    public Optional<DbDataDto.Item> getContentItemFromEntryIdentifierAndFieldRank(DbDto.Topic topic, int fieldRank, long entryIdentifier) {
+//        System.out.println(new Date().getTime() + " - getContentItemFromInternalIdentifierAndFieldRank(" + fieldRank + "," + entryIdentifier + "," + topic + ")");
+
+        return getContentEntryFromTopicWithInternalIdentifier(entryIdentifier, topic).getItems().stream()
+
+                .filter((contentItem) -> contentItem.getFieldRank() == fieldRank)
+
+                .findAny();
+    }
+
+    /**
      * @param sourceTopic   : topic in TDU Database to search
      * @param fieldRank     : rank of field to resolve resource
      * @param entryIndex    : index of entry in source topic
@@ -269,8 +286,8 @@ public class BulkDatabaseMiner {
                 .findAny().get().getRawValue();
     }
 
-    private String getRawValueAtEntryIndexAndRank(DbDto.Topic sourceTopic, int fieldRank, long entryIndex) {
-        return getContentEntryFromTopicWithInternalIdentifier(entryIndex, sourceTopic).getItems().stream()
+    private String getRawValueAtEntryIndexAndRank(DbDto.Topic topic, int fieldRank, long entryIndex) {
+        return getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic).getItems().stream()
 
                 .filter((contentsItem) -> contentsItem.getFieldRank() == fieldRank)
 
