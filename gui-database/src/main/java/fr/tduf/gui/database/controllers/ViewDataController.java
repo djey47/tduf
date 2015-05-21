@@ -34,7 +34,7 @@ public class ViewDataController {
 
     private static final Class<ViewDataController> thisClass = ViewDataController.class;
 
-    private MainStageController mainStageController;
+    private final MainStageController mainStageController;
 
     private Property<Integer> entryItemsCountProperty;
     private Property<Long> currentEntryIndexProperty;
