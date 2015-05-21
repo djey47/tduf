@@ -11,4 +11,8 @@ public class DisplayConstants {
 
     public static final String COLUMN_HEADER_REF = "#";
     public static final String COLUMN_HEADER_DATA = "Linked data";
+
+    public static final String TITLE_APPLICATION = "TDUF Database Editor";
+
+    public static final String MESSAGE_DATABASE_SAVED = "Current database was saved.";
 }

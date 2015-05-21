@@ -29,13 +29,17 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.StageStyle;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static javafx.geometry.Orientation.VERTICAL;
+import static javafx.scene.control.Alert.AlertType.INFORMATION;
+import static javafx.stage.StageStyle.UTILITY;
 
 /**
  * Makes it a possible to intercept all GUI events.
@@ -113,14 +117,34 @@ public class MainStageController implements Initializable {
         System.out.println("handleLoadButtonMouseClick");
 
         String databaseLocation = this.databaseLocationTextField.getText();
-        if (StringUtils.isNotEmpty(databaseLocation)) {
-            this.databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(databaseLocation);
-            this.databaseMiner = BulkDatabaseMiner.load(this.databaseObjects);
-
-            profilesChoiceBox.setValue(profilesChoiceBox.getItems().get(0));
-
-            navigationHistory.clear();
+        if (StringUtils.isEmpty(databaseLocation)) {
+            return;
         }
+
+        this.databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(databaseLocation);
+        this.databaseMiner = BulkDatabaseMiner.load(this.databaseObjects);
+
+        profilesChoiceBox.setValue(profilesChoiceBox.getItems().get(0));
+
+        navigationHistory.clear();
+    }
+
+    @FXML
+    public void handleSaveButtonMouseClick(ActionEvent actionEvent) {
+        System.out.println("handleSaveButtonMouseClick");
+
+        String databaseLocation = this.databaseLocationTextField.getText();
+        if (this.databaseObjects == null || StringUtils.isEmpty(databaseLocation)) {
+            return;
+        }
+
+        String parentDirectory = Paths.get(databaseLocation).getParent().toString();
+        DatabaseReadWriteHelper.writeDatabaseTopicsToJson(this.databaseObjects, parentDirectory);
+
+        Alert alertDialog = new Alert(INFORMATION, parentDirectory, ButtonType.OK);
+        alertDialog.setTitle(DisplayConstants.TITLE_APPLICATION);
+        alertDialog.setHeaderText(DisplayConstants.MESSAGE_DATABASE_SAVED);
+        alertDialog.showAndWait();
     }
 
     @FXML
@@ -155,7 +179,7 @@ public class MainStageController implements Initializable {
         System.out.println("handlePreviousButtonMouseClick");
 
         long currentEntryIndex = this.viewDataController.getCurrentEntryIndexProperty().getValue();
-        if (currentEntryIndex <= 0 ) {
+        if (currentEntryIndex <= 0) {
             return;
         }
 
@@ -167,7 +191,7 @@ public class MainStageController implements Initializable {
         System.out.println("handleFastPreviousButtonMouseClick");
 
         long currentEntryIndex = this.viewDataController.getCurrentEntryIndexProperty().getValue();
-        if (currentEntryIndex - 10 < 0 ) {
+        if (currentEntryIndex - 10 < 0) {
             currentEntryIndex = 0;
         } else {
             currentEntryIndex -= 10;
@@ -304,7 +328,7 @@ public class MainStageController implements Initializable {
         String groupName = null;
         Optional<String> potentialToolTip = Optional.empty();
         Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(field.getRank(), profilesChoiceBox.getValue(), this.layoutObject);
-        if(potentialFieldSettings.isPresent()) {
+        if (potentialFieldSettings.isPresent()) {
             FieldSettingsDto fieldSettings = potentialFieldSettings.get();
 
             if (fieldSettings.isHidden()) {
@@ -506,7 +530,7 @@ public class MainStageController implements Initializable {
 
         tableView.setItems(resourceData);
 
-        if(targetProfileName != null) {
+        if (targetProfileName != null) {
             final DbDto.Topic finalTargetTopic = targetTopic;
             tableView.setOnMousePressed(event -> {
                 if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {

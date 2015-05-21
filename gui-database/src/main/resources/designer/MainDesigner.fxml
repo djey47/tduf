@@ -15,7 +15,7 @@
                       <TextField fx:id="databaseLocationTextField" />
                       <Button mnemonicParsing="false" text="..." />
                       <Button mnemonicParsing="false" onAction="#handleLoadButtonMouseClick" text="Load" />
-                      <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" text="Save" />
+                      <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleSaveButtonMouseClick" text="Save" />
                   </items>
               </ToolBar>
       

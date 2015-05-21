@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.stages;
 
+import fr.tduf.gui.database.common.DisplayConstants;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -31,7 +32,7 @@ public class MainStageDesigner {
         mainRoot.getStylesheets().addAll(styledToolBarCss, styledTabContentsCss);
 
         primaryStage.setScene(new Scene(mainRoot, 1280, 768));
-        primaryStage.setTitle("TDUF Database Editor");
+        primaryStage.setTitle(DisplayConstants.TITLE_APPLICATION);
         primaryStage.setResizable(false);
     }
 }
