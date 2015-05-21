@@ -1,6 +1,8 @@
 package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
+import fr.tduf.gui.database.common.DisplayConstants;
+import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.converter.EntryItemsCountToStringConverter;
@@ -24,7 +26,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -34,23 +35,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
+import static javafx.geometry.Orientation.VERTICAL;
+
 /**
  * Makes it a possible to intercept all GUI events.
  */
 public class MainStageController implements Initializable {
 
     static final String PATH_RESOURCE_PROFILES = "/layout/defaultProfiles.json";
-
-    static final String VALUE_UNKNOWN = "<?>";
-    static final String SEPARATOR_VALUES_LABEL = " - ";
-
-    private static final String LABEL_BUTTON_GOTO = "->";
-    private static final String COLUMN_HEADER_REF = "#";
-    private static final String COLUMN_HEADER_DATA = "Linked data";
-
-    private static final String CSS_CLASS_FIELD_LABEL = "fieldLabel";
-    private static final String CSS_CLASS_FIELD_NAME = "fieldName";
-    private static final String CSS_CLASS_READONLY_FIELD = "readonlyField";
 
     private ViewDataController viewDataController;
 
@@ -363,11 +355,11 @@ public class MainStageController implements Initializable {
         DbDto.Topic targetTopic = retrieveTargetTopicForLink(topicLinkObject);
         TableView<RemoteResource> tableView = addTableViewForLinkedTopic(fieldBox, resourceData, targetProfileName, targetTopic);
 
-        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
+        fieldBox.getChildren().add(new Separator(VERTICAL));
 
         addCustomLabel(fieldBox, targetTopic.name());
 
-        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
+        fieldBox.getChildren().add(new Separator(VERTICAL));
 
         if (targetProfileName != null) {
             addGoToReferenceButtonForLinkedTopic(fieldBox, targetTopic, tableView.getSelectionModel(), targetProfileName);
@@ -380,7 +372,7 @@ public class MainStageController implements Initializable {
 
         addResourceValueLabel(fieldBox, property);
 
-        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
+        fieldBox.getChildren().add(new Separator(VERTICAL));
 
         addCustomLabel(fieldBox, topic.name());
     }
@@ -388,7 +380,7 @@ public class MainStageController implements Initializable {
     private void addResourceValueLabel(HBox fieldBox, SimpleStringProperty property) {
         Label resourceValueLabel = new Label();
         resourceValueLabel.setPrefWidth(450);
-        resourceValueLabel.getStyleClass().add(CSS_CLASS_FIELD_LABEL);
+        resourceValueLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_LABEL);
         resourceValueLabel.textProperty().bindBidirectional(property);
         fieldBox.getChildren().add(resourceValueLabel);
     }
@@ -397,13 +389,13 @@ public class MainStageController implements Initializable {
         SimpleStringProperty property = new SimpleStringProperty("Reference to another topic.");
         this.viewDataController.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
 
-        Label remoteValueLabel = addCustomLabel(fieldBox, VALUE_UNKNOWN);
+        Label remoteValueLabel = addCustomLabel(fieldBox, DisplayConstants.VALUE_UNKNOWN);
         remoteValueLabel.setPrefWidth(450);
         remoteValueLabel.textProperty().bindBidirectional(property);
 
         addCustomLabel(fieldBox, targetTopic.name());
 
-        fieldBox.getChildren().add(new Separator(Orientation.VERTICAL));
+        fieldBox.getChildren().add(new Separator(VERTICAL));
 
         Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, this.profileObject);
         if (potentialFieldSettings.isPresent() && potentialFieldSettings.get().getRemoteReferenceProfile() != null) {
@@ -430,7 +422,7 @@ public class MainStageController implements Initializable {
 
     private Label addCustomLabel(HBox fieldBox, String text) {
         Label customLabel = new Label(text);
-        customLabel.getStyleClass().add(CSS_CLASS_FIELD_LABEL);
+        customLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_LABEL);
         fieldBox.getChildren().add(customLabel);
         return customLabel;
     }
@@ -438,9 +430,9 @@ public class MainStageController implements Initializable {
     private void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName) {
         Label fieldNameLabel = new Label(fieldName);
 
-        fieldNameLabel.getStyleClass().add(CSS_CLASS_FIELD_NAME);
+        fieldNameLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_NAME);
         if (readOnly) {
-            fieldNameLabel.getStyleClass().add(CSS_CLASS_READONLY_FIELD);
+            fieldNameLabel.getStyleClass().add(FxConstants.CSS_CLASS_READONLY_FIELD);
         }
         fieldNameLabel.setPrefWidth(225.0);
         fieldBox.getChildren().add(fieldNameLabel);
@@ -458,7 +450,7 @@ public class MainStageController implements Initializable {
         TextField fieldValue = new TextField();
 
         if (readOnly) {
-            fieldValue.getStyleClass().add(CSS_CLASS_READONLY_FIELD);
+            fieldValue.getStyleClass().add(FxConstants.CSS_CLASS_READONLY_FIELD);
         }
         fieldValue.setPrefWidth(110.0);
         fieldValue.setEditable(!readOnly);
@@ -472,7 +464,7 @@ public class MainStageController implements Initializable {
     }
 
     private void addGoToReferenceButton(HBox fieldBox, int fieldRank, DbDto.Topic targetTopic, String targetProfileName) {
-        Button gotoReferenceButton = new Button(LABEL_BUTTON_GOTO);
+        Button gotoReferenceButton = new Button(DisplayConstants.LABEL_BUTTON_GOTO);
         gotoReferenceButton.setOnAction((actionEvent) -> {
             System.out.println("gotoReferenceButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
@@ -483,7 +475,7 @@ public class MainStageController implements Initializable {
     }
 
     private void addGoToReferenceButtonForLinkedTopic(HBox fieldBox, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, String targetProfileName) {
-        Button gotoReferenceButton = new Button(LABEL_BUTTON_GOTO);
+        Button gotoReferenceButton = new Button(DisplayConstants.LABEL_BUTTON_GOTO);
         gotoReferenceButton.setOnAction((actionEvent) -> {
             System.out.println("gotoReferenceButtonForLinkedTopic clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
@@ -496,11 +488,11 @@ public class MainStageController implements Initializable {
         TableView<RemoteResource> tableView = new TableView<>();
         tableView.setPrefWidth(555);
 
-        TableColumn<RemoteResource, String> refColumn = new TableColumn<>(COLUMN_HEADER_REF);
+        TableColumn<RemoteResource, String> refColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_REF);
         refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
         refColumn.setPrefWidth(100);
 
-        TableColumn<RemoteResource, String> valueColumn = new TableColumn<>(COLUMN_HEADER_DATA);
+        TableColumn<RemoteResource, String> valueColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_DATA);
         valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
         valueColumn.setPrefWidth(455);
 

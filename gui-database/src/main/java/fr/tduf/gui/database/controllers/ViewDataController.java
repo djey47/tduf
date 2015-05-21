@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
@@ -21,6 +22,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.io.IOException;
 import java.util.*;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -67,7 +69,7 @@ public class ViewDataController {
         asList(DbResourceDto.Locale.values())
                 .forEach((locale) -> this.mainStageController.getLocalesChoiceBox().getItems().add(locale));
 
-        this.currentLocaleProperty = new SimpleObjectProperty<>(DbResourceDto.Locale.UNITED_STATES);
+        this.currentLocaleProperty = new SimpleObjectProperty<>(UNITED_STATES);
         this.mainStageController.getLocalesChoiceBox().valueProperty().bindBidirectional(this.currentLocaleProperty);
     }
 
@@ -81,7 +83,7 @@ public class ViewDataController {
         long entryIndex = this.currentEntryIndexProperty.getValue();
         DbDataDto.Entry entry = getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, this.mainStageController.getCurrentTopicObject().getTopic());
 
-        String entryLabel = MainStageController.VALUE_UNKNOWN;
+        String entryLabel = DisplayConstants.VALUE_UNKNOWN;
         if (this.mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks() != null) {
             entryLabel = fetchContentsWithEntryId(this.currentTopicProperty.getValue(), entryIndex, this.mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks());
         }
@@ -232,7 +234,7 @@ public class ViewDataController {
         requireNonNull(fieldRanks, "A list of field ranks (even empty) must be provided.");
 
         if (fieldRanks.isEmpty()) {
-            return MainStageController.VALUE_UNKNOWN;
+            return DisplayConstants.VALUE_UNKNOWN;
         }
 
         List<String> contents = fieldRanks.stream()
@@ -249,7 +251,7 @@ public class ViewDataController {
 
                 .collect(toList());
 
-        return String.join(MainStageController.SEPARATOR_VALUES_LABEL, contents);
+        return String.join(DisplayConstants.SEPARATOR_VALUES, contents);
     }
 
     Property<Long> getCurrentEntryIndexProperty() {
