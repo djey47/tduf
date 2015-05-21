@@ -28,6 +28,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.apache.commons.lang3.StringUtils;
 
@@ -385,9 +386,7 @@ public class MainStageController implements Initializable {
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
-        if (targetProfileName != null) {
-            addGoToReferenceButtonForLinkedTopic(fieldBox, targetTopic, tableView.getSelectionModel(), targetProfileName);
-        }
+        addButtonsForLinkedTopic(fieldBox, targetProfileName, targetTopic, tableView.getSelectionModel());
     }
 
     private void addResourceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic topic) {
@@ -501,14 +500,14 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(gotoReferenceButton);
     }
 
-    private void addGoToReferenceButtonForLinkedTopic(HBox fieldBox, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, String targetProfileName) {
+    private void addGoToReferenceButtonForLinkedTopic(Pane fieldPane, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, String targetProfileName) {
         Button gotoReferenceButton = new Button(DisplayConstants.LABEL_BUTTON_GOTO);
         gotoReferenceButton.setOnAction((actionEvent) -> {
             System.out.println("gotoReferenceButtonForLinkedTopic clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
             this.viewDataController.switchToSelectedResourceForLinkedTopic(tableViewSelectionModel.getSelectedItem(), targetTopic, targetProfileName);
         });
-        fieldBox.getChildren().add(gotoReferenceButton);
+        fieldPane.getChildren().add(gotoReferenceButton);
     }
 
     private TableView<RemoteResource> addTableViewForLinkedTopic(HBox fieldBox, ObservableList<RemoteResource> resourceData, String targetProfileName, DbDto.Topic targetTopic) {
@@ -543,6 +542,16 @@ public class MainStageController implements Initializable {
         fieldBox.getChildren().add(tableView);
 
         return tableView;
+    }
+
+    private void addButtonsForLinkedTopic(HBox fieldBox, String targetProfileName, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<RemoteResource> tableSelectionModel) {
+        VBox buttonsBox = new VBox(5);
+
+        if (targetProfileName != null) {
+            addGoToReferenceButtonForLinkedTopic(buttonsBox, targetTopic, tableSelectionModel, targetProfileName);
+        }
+
+        fieldBox.getChildren().add(buttonsBox);
     }
 
     private DbDto.Topic retrieveTargetTopicForLink(TopicLinkDto topicLinkObject) {
