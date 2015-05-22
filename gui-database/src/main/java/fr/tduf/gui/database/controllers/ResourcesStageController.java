@@ -95,7 +95,18 @@ public class ResourcesStageController implements Initializable {
 
         this.topicsChoiceBox.setValue(newResource.getTopic());
 
-        // TODO select ref in table
+        selectResourceInTableAndScroll(newResource.getReference());
+    }
+
+    private void selectResourceInTableAndScroll(String reference) {
+        RemoteResource browsedResource = this.resourceData.stream()
+
+                .filter((remoteResource) -> remoteResource.referenceProperty().get().equals(reference))
+
+                .findAny().get();
+
+        this.resourcesTableView.scrollTo(browsedResource);
+        this.resourcesTableView.getSelectionModel().select(browsedResource);
     }
 
     Property<BrowsedResource> getBrowsedResourceProperty() {
