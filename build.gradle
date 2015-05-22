@@ -172,6 +172,22 @@ project(':gui-database') {
         main 'fr.tduf.gui.database.Main'
         classpath sourceSets.main.runtimeClasspath
     }
+
+    task fatJar(type: Jar) {
+        mustRunAfter 'jar'
+        description 'Generates jar with all dependencies bundled into it.'
+
+        baseName = 'tduf-' + project.name + '-all'
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
+    }
+
+    task copyJar(type: Copy) {
+        description 'Copies jar file to release directory.'
+
+        from fatJar
+        into '../pack/lib/'
+    }
 }
 
 task copyDoc(type: Copy) {
@@ -192,7 +208,7 @@ task copyVersionInfo(type: Copy) {
     into 'pack/lib/'
 }
 
-task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', ':cli:copyScripts', ':cli:copyJar', ':lib-unlimited:copyStructures', ':lib-unlimited:copyLibraries', ':lib-unlimited:copyExternalTools'], type: Zip) {
+task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', ':cli:copyScripts', ':cli:copyJar', ':lib-unlimited:copyStructures', ':lib-unlimited:copyLibraries', ':lib-unlimited:copyExternalTools', ':gui-database:copyJar'], type: Zip) {
     description 'Zips all distribution files from pack folder.'
 
     archiveName project.name + "-" + project.version + ".zip"
