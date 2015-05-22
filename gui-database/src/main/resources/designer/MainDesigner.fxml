@@ -5,15 +5,15 @@
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 
-<AnchorPane prefHeight="768.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.MainStageController">
+<AnchorPane fx:id="root" prefHeight="768.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.MainStageController">
    <children>
       <VBox id="mainVbox" prefWidth="1280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
           <children>
-              <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="settingsToolbar">
+              <ToolBar prefHeight="40.0" prefWidth="1280.0" styleClass="settingsToolbar">
                   <items>
                       <Label text="TDU database:" />
                       <TextField fx:id="databaseLocationTextField" />
-                      <Button mnemonicParsing="false" text="..." />
+                      <Button mnemonicParsing="false" onAction="#handleBrowseDirectoryButtonMouseClick" text="..." />
                       <Button mnemonicParsing="false" onAction="#handleLoadButtonMouseClick" text="Load" />
                       <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleSaveButtonMouseClick" text="Save" />
                   </items>
@@ -21,7 +21,7 @@
       
               <TitledPane fx:id="settingsPane" prefWidth="1280.0" text="Settings">
                   <content>
-                      <AnchorPane minHeight="10.0" prefHeight="36.0">
+                      <AnchorPane minHeight="10.0" prefHeight="36.0" prefWidth="1280.0">
                           <children>
                               <ToolBar prefWidth="1280.0" styleClass="settingsToolbar">
                                   <items>

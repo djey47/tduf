@@ -28,13 +28,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -53,6 +56,9 @@ public class MainStageController implements Initializable {
     private ViewDataController viewDataController;
     private ChangeDataController changeDataController;
     private ResourcesStageController resourcesStageController;
+
+    @FXML
+    private Parent root;
 
     @FXML
     private TitledPane settingsPane;
@@ -84,8 +90,6 @@ public class MainStageController implements Initializable {
     @FXML
     private Label entryItemsCountLabel;
 
-    private Stage resourcesStage = new Stage();
-
     private Map<String, VBox> tabContentByName = new HashMap<>();
 
     private List<DbDto> databaseObjects = new ArrayList<>();
@@ -112,12 +116,21 @@ public class MainStageController implements Initializable {
 
             initNavigationPane();
 
-//            this.resourcesStage.setUserData(this);
-            this.resourcesStageController = ResourcesDesigner.init(this.resourcesStage);
-            this.resourcesStageController.setMainStageController(this);
+            initResourcesStageController();
         } catch (IOException e) {
             throw new RuntimeException("Window initializing failed.", e);
         }
+    }
+
+    @FXML
+    public void handleBrowseDirectoryButtonMouseClick(ActionEvent actionEvent) {
+        System.out.println("handleBrowseDirectoryButtonMouseClick");
+
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setInitialDirectory(new File(this.databaseLocationTextField.getText()));
+
+        File selectedDirectory = directoryChooser.showDialog(root.getScene().getWindow());
+        this.databaseLocationTextField.setText(selectedDirectory.getPath());
     }
 
     @FXML
@@ -129,12 +142,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        this.databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(databaseLocation);
-        this.databaseMiner = BulkDatabaseMiner.load(this.databaseObjects);
-
-        profilesChoiceBox.setValue(profilesChoiceBox.getItems().get(0));
-
-        navigationHistory.clear();
+        loadDatabaseFromDirectory(databaseLocation);
     }
 
     @FXML
@@ -239,6 +247,11 @@ public class MainStageController implements Initializable {
         System.out.println("handleLocaleChoiceChanged: " + newLocale.name());
 
         this.viewDataController.updateAllPropertiesWithItemValues();
+    }
+
+    private void initResourcesStageController() throws IOException {
+        this.resourcesStageController = ResourcesDesigner.init(new Stage());
+        this.resourcesStageController.setMainStageController(this);
     }
 
     private void initSettingsPane() throws IOException {
@@ -590,12 +603,23 @@ public class MainStageController implements Initializable {
         return targetTopic;
     }
 
-    BulkDatabaseMiner getMiner() {
-        return this.databaseMiner;
+    private void loadDatabaseFromDirectory(String databaseLocation) {
+        this.databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(databaseLocation);
+        if (!this.databaseObjects.isEmpty()) {
+            this.databaseMiner = BulkDatabaseMiner.load(this.databaseObjects);
+
+            this.profilesChoiceBox.getSelectionModel().selectFirst();
+
+            this.navigationHistory.clear();
+        }
     }
 
     ChoiceBox<String> getProfilesChoiceBox() {
         return this.profilesChoiceBox;
+
+    }
+    BulkDatabaseMiner getMiner() {
+        return this.databaseMiner;
     }
 
     DbDto getCurrentTopicObject() {
