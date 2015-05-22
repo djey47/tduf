@@ -7,6 +7,7 @@ import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.converter.EntryItemsCountToStringConverter;
+import fr.tduf.gui.database.domain.BrowsedResource;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
@@ -51,6 +52,7 @@ public class MainStageController implements Initializable {
 
     private ViewDataController viewDataController;
     private ChangeDataController changeDataController;
+    private ResourcesStageController resourcesStageController;
 
     @FXML
     private TitledPane settingsPane;
@@ -110,8 +112,9 @@ public class MainStageController implements Initializable {
 
             initNavigationPane();
 
-            this.resourcesStage.setUserData(this);
-            ResourcesDesigner.init(this.resourcesStage);
+//            this.resourcesStage.setUserData(this);
+            this.resourcesStageController = ResourcesDesigner.init(this.resourcesStage);
+            this.resourcesStageController.setMainStageController(this);
         } catch (IOException e) {
             throw new RuntimeException("Window initializing failed.", e);
         }
@@ -363,7 +366,7 @@ public class MainStageController implements Initializable {
                 topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getTopic();
             }
 
-            addResourceValueControls(fieldBox, field.getRank(), topic);
+            addResourceValueControls(fieldBox, field.getRank(), property, topic);
         }
 
         // TODO handle bitfield -> requires resolver (0.7.0+)
@@ -395,7 +398,7 @@ public class MainStageController implements Initializable {
         addButtonsForLinkedTopic(fieldBox, targetProfileName, targetTopic, tableView.getSelectionModel());
     }
 
-    private void addResourceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic topic) {
+    private void addResourceValueControls(HBox fieldBox, int fieldRank, SimpleStringProperty rawValueProperty, DbDto.Topic topic) {
         SimpleStringProperty property = new SimpleStringProperty("");
         this.viewDataController.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
 
@@ -407,7 +410,7 @@ public class MainStageController implements Initializable {
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
-        addBrowseResourcesButton(fieldBox);
+        addBrowseResourcesButton(fieldBox, topic, rawValueProperty);
     }
 
     private void addResourceValueLabel(HBox fieldBox, SimpleStringProperty property) {
@@ -520,12 +523,13 @@ public class MainStageController implements Initializable {
         fieldPane.getChildren().add(gotoReferenceButton);
     }
 
-    private void addBrowseResourcesButton(HBox fieldBox) {
+    private void addBrowseResourcesButton(HBox fieldBox, DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty) {
         Button browseResourcesButton = new Button(DisplayConstants.LABEL_BUTTON_BROWSE);
         browseResourcesButton.setOnAction((actionEvent) -> {
             System.out.println("browseResourcesButton clicked");
 
-            this.resourcesStage.show();
+            this.resourcesStageController.showDialog();
+            this.resourcesStageController.getBrowsedResourceProperty().setValue(new BrowsedResource(targetTopic, targetReferenceProperty.get()));
         });
         fieldBox.getChildren().add(browseResourcesButton);
     }
