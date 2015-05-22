@@ -24,16 +24,17 @@ import static java.util.Arrays.asList;
 
 public class ResourcesStageController implements Initializable {
     @FXML
-    public Parent root;
+    private Parent root;
 
     @FXML
-    public ChoiceBox<DbDto.Topic> topicsChoiceBox;
+    private ChoiceBox<DbDto.Topic> topicsChoiceBox;
 
     @FXML
-    public TableView<RemoteResource> resourcesTableView;
+    private TableView<RemoteResource> resourcesTableView;
+
+    private MainStageController mainStageController;
 
     private ObservableList<RemoteResource> resourceData = FXCollections.observableArrayList();
-    private MainStageController mainStageController;
 
     private Property<BrowsedResource> browsedResourceProperty;
 
@@ -120,5 +121,4 @@ public class ResourcesStageController implements Initializable {
     private BulkDatabaseMiner getMiner() {
         return this.mainStageController.getMiner();
     }
-
 }
