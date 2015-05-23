@@ -2,6 +2,7 @@ package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
+import fr.tduf.gui.database.common.SettingsConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.controllers.helper.DynamicFieldControlsHelper;
 import fr.tduf.gui.database.controllers.helper.DynamicLinkControlsHelper;
@@ -45,9 +46,6 @@ import static javafx.scene.control.Alert.AlertType.INFORMATION;
  * Makes it a possible to intercept all GUI events.
  */
 public class MainStageController implements Initializable {
-
-    static final String PATH_RESOURCE_PROFILES = "/layout/defaultProfiles.json";
-
     private DynamicFieldControlsHelper dynamicFieldControlsHelper;
     private DynamicLinkControlsHelper dynamicLinkControlsHelper;
 
@@ -110,17 +108,14 @@ public class MainStageController implements Initializable {
         this.dynamicLinkControlsHelper = new DynamicLinkControlsHelper(this);
 
         try {
-            // TODO DEBUG
-            databaseLocationTextField.setText("/media/sf_DevStore/GIT/tduf/cli/integ-tests/db-json/");
-
             initSettingsPane();
-
-            initNavigationPane();
 
             initResourcesStageController();
         } catch (IOException e) {
             throw new RuntimeException("Window initializing failed.", e);
         }
+
+        initNavigationPane();
     }
 
     @FXML
@@ -302,6 +297,8 @@ public class MainStageController implements Initializable {
         this.viewDataController.loadAndFillProfiles();
         this.profilesChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> handleProfileChoiceChanged((String) newValue));
+
+        this.databaseLocationTextField.setText(SettingsConstants.DATABASE_DIRECTORY_DEFAULT);
     }
 
     private void initNavigationPane() {

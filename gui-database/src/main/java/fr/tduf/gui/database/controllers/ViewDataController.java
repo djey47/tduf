@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.database.common.DisplayConstants;
+import fr.tduf.gui.database.common.SettingsConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.RemoteResource;
@@ -74,7 +75,7 @@ public class ViewDataController {
     }
 
     void loadAndFillProfiles() throws IOException {
-        this.mainStageController.setLayoutObject(new ObjectMapper().readValue(thisClass.getResource(MainStageController.PATH_RESOURCE_PROFILES), EditorLayoutDto.class));
+        this.mainStageController.setLayoutObject(new ObjectMapper().readValue(thisClass.getResource(SettingsConstants.PATH_RESOURCE_PROFILES), EditorLayoutDto.class));
         this.mainStageController.getLayoutObject().getProfiles()
                 .forEach((profileObject) -> mainStageController.getProfilesChoiceBox().getItems().add(profileObject.getName()));
     }
