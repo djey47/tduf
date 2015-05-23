@@ -2,8 +2,9 @@ package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
-import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
+import fr.tduf.gui.database.controllers.helper.DynamicFieldControlsHelper;
+import fr.tduf.gui.database.controllers.helper.DynamicLinkControlsHelper;
 import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.converter.EntryItemsCountToStringConverter;
@@ -11,27 +12,22 @@ import fr.tduf.gui.database.domain.BrowsedResource;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
-import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.gui.database.stages.ResourcesDesigner;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -43,7 +39,6 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static javafx.geometry.Orientation.VERTICAL;
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
 /**
@@ -52,6 +47,9 @@ import static javafx.scene.control.Alert.AlertType.INFORMATION;
 public class MainStageController implements Initializable {
 
     static final String PATH_RESOURCE_PROFILES = "/layout/defaultProfiles.json";
+
+    private DynamicFieldControlsHelper dynamicFieldControlsHelper;
+    private DynamicLinkControlsHelper dynamicLinkControlsHelper;
 
     private ViewDataController viewDataController;
     private ChangeDataController changeDataController;
@@ -107,6 +105,9 @@ public class MainStageController implements Initializable {
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
         this.viewDataController = new ViewDataController(this);
         this.changeDataController = new ChangeDataController(this);
+
+        this.dynamicFieldControlsHelper = new DynamicFieldControlsHelper(this);
+        this.dynamicLinkControlsHelper = new DynamicLinkControlsHelper(this);
 
         try {
             // TODO DEBUG
@@ -237,6 +238,43 @@ public class MainStageController implements Initializable {
         this.viewDataController.switchToPreviousLocation();
     }
 
+    public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty) {
+        return (actionEvent) -> {
+            System.out.println("browseResourcesButton clicked");
+
+            this.resourcesStageController.showDialog();
+            this.resourcesStageController.getBrowsedResourceProperty().setValue(new BrowsedResource(targetTopic, targetReferenceProperty.get()));
+        };
+    }
+
+    public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(DbDto.Topic targetTopic, int fieldRank, String targetProfileName) {
+        return (actionEvent) -> {
+            System.out.println("gotoReferenceButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
+
+            DbDataDto.Entry remoteContentEntry = this.databaseMiner.getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getTopic(), fieldRank, this.viewDataController.getCurrentEntryIndexProperty().getValue(), targetTopic).get();
+            this.viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId(), true);
+        };
+    }
+
+    public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(DbDto.Topic targetTopic, TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, String targetProfileName) {
+        return (actionEvent) -> {
+            System.out.println("gotoReferenceButtonForLinkedTopic clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
+
+            this.viewDataController.switchToSelectedResourceForLinkedTopic(tableViewSelectionModel.getSelectedItem(), targetTopic, targetProfileName);
+        };
+    }
+
+    public EventHandler<MouseEvent> handleLinkTableMouseClick(String targetProfileName, DbDto.Topic targetTopic) {
+        return event -> {
+            if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
+                Optional<RemoteResource> selectedResource = TableViewHelper.getMouseSelectedItem(event);
+                if (selectedResource.isPresent()) {
+                    this.viewDataController.switchToSelectedResourceForLinkedTopic(selectedResource.get(), targetTopic, targetProfileName);
+                }
+            }
+        };
+    }
+
     private void handleProfileChoiceChanged(String newProfileName) {
         System.out.println("handleProfileChoiceChanged: " + newProfileName);
 
@@ -264,7 +302,6 @@ public class MainStageController implements Initializable {
         this.viewDataController.loadAndFillProfiles();
         this.profilesChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> handleProfileChoiceChanged((String) newValue));
-
     }
 
     private void initNavigationPane() {
@@ -289,9 +326,7 @@ public class MainStageController implements Initializable {
 
         initGroupTabs();
 
-        addAllFieldsControls();
-
-        addAllLinksControls();
+        addDynamicControls();
 
         this.viewDataController.updateAllPropertiesWithItemValues();
     }
@@ -314,293 +349,18 @@ public class MainStageController implements Initializable {
         }
     }
 
-    private void addAllFieldsControls() {
-        if (this.profileObject.getFieldSettings() == null) {
-            return;
+    private void addDynamicControls() {
+        if (this.profileObject.getFieldSettings() != null) {
+            dynamicFieldControlsHelper.addAllFieldsControls(
+                    this.layoutObject,
+                    this.profilesChoiceBox.getValue(),
+                    this.currentTopicObject.getTopic());
         }
 
-        this.currentTopicObject.getStructure().getFields().stream()
-
-                .sorted((structureField1, structureField2) -> Integer.compare(
-                        EditorLayoutHelper.getFieldPrioritySettingByRank(structureField2.getRank(), this.profilesChoiceBox.getValue(), this.layoutObject),
-                        EditorLayoutHelper.getFieldPrioritySettingByRank(structureField1.getRank(), this.profilesChoiceBox.getValue(), this.layoutObject)))
-
-                .forEach(this::addFieldControls);
-    }
-
-    private void addAllLinksControls() {
-        if (this.profileObject.getTopicLinks() == null) {
-            return;
+        if (this.profileObject.getTopicLinks() != null) {
+            dynamicLinkControlsHelper.addAllLinksControls(
+                    this.profileObject);
         }
-
-        this.profileObject.getTopicLinks().stream()
-
-                .sorted((topicLinkObject1, topicLinkObject2) -> Integer.compare(topicLinkObject2.getPriority(), topicLinkObject1.getPriority()))
-
-                .forEach(this::addLinkControls);
-    }
-
-    private void addFieldControls(DbStructureDto.Field field) {
-        SimpleStringProperty property = new SimpleStringProperty("");
-        this.viewDataController.getRawValuePropertyByFieldRank().put(field.getRank(), property);
-
-        String fieldName = field.getName();
-        boolean fieldReadOnly = false;
-        String groupName = null;
-        Optional<String> potentialToolTip = Optional.empty();
-        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(field.getRank(), profilesChoiceBox.getValue(), this.layoutObject);
-        if (potentialFieldSettings.isPresent()) {
-            FieldSettingsDto fieldSettings = potentialFieldSettings.get();
-
-            if (fieldSettings.isHidden()) {
-                return;
-            }
-
-            if (fieldSettings.getLabel() != null) {
-                fieldName = fieldSettings.getLabel();
-            }
-
-            fieldReadOnly = fieldSettings.isReadOnly();
-
-            groupName = fieldSettings.getGroup();
-
-            potentialToolTip = Optional.ofNullable(fieldSettings.getToolTip());
-        }
-
-        HBox fieldBox = addFieldBox(Optional.ofNullable(groupName), 25.0);
-
-        addFieldLabel(fieldBox, fieldReadOnly, fieldName);
-
-        addTextField(fieldBox, fieldReadOnly, property, potentialToolTip);
-
-        if (field.isAResourceField()) {
-            DbDto.Topic topic = currentTopicObject.getTopic();
-            if (field.getTargetRef() != null) {
-                topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getTopic();
-            }
-
-            addResourceValueControls(fieldBox, field.getRank(), property, topic);
-        }
-
-        // TODO handle bitfield -> requires resolver (0.7.0+)
-
-        if (DbStructureDto.FieldType.REFERENCE == field.getFieldType()) {
-            DbDto.Topic topic = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef()).getTopic();
-            addReferenceValueControls(fieldBox, field.getRank(), topic);
-        }
-    }
-
-    private void addLinkControls(TopicLinkDto topicLinkObject) {
-        ObservableList<RemoteResource> resourceData = FXCollections.observableArrayList();
-        resourceListByTopicLink.put(topicLinkObject, resourceData);
-
-        HBox fieldBox = addFieldBox(Optional.ofNullable(topicLinkObject.getGroup()), 250.0);
-
-        addFieldLabelForLinkedTopic(fieldBox, topicLinkObject);
-
-        String targetProfileName = topicLinkObject.getRemoteReferenceProfile();
-        DbDto.Topic targetTopic = retrieveTargetTopicForLink(topicLinkObject);
-        TableView<RemoteResource> tableView = addTableViewForLinkedTopic(fieldBox, resourceData, targetProfileName, targetTopic);
-
-        fieldBox.getChildren().add(new Separator(VERTICAL));
-
-        addCustomLabel(fieldBox, targetTopic.name());
-
-        fieldBox.getChildren().add(new Separator(VERTICAL));
-
-        addButtonsForLinkedTopic(fieldBox, targetProfileName, targetTopic, tableView.getSelectionModel());
-    }
-
-    private void addResourceValueControls(HBox fieldBox, int fieldRank, SimpleStringProperty rawValueProperty, DbDto.Topic topic) {
-        SimpleStringProperty property = new SimpleStringProperty("");
-        this.viewDataController.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
-
-        addResourceValueLabel(fieldBox, property);
-
-        fieldBox.getChildren().add(new Separator(VERTICAL));
-
-        addCustomLabel(fieldBox, topic.name());
-
-        fieldBox.getChildren().add(new Separator(VERTICAL));
-
-        addBrowseResourcesButton(fieldBox, topic, rawValueProperty);
-    }
-
-    private void addResourceValueLabel(HBox fieldBox, SimpleStringProperty property) {
-        Label resourceValueLabel = new Label();
-        resourceValueLabel.setPrefWidth(450);
-        resourceValueLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_LABEL);
-        resourceValueLabel.textProperty().bindBidirectional(property);
-        fieldBox.getChildren().add(resourceValueLabel);
-    }
-
-    private void addReferenceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic targetTopic) {
-        SimpleStringProperty property = new SimpleStringProperty("Reference to another topic.");
-        this.viewDataController.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
-
-        Label remoteValueLabel = addCustomLabel(fieldBox, DisplayConstants.VALUE_UNKNOWN);
-        remoteValueLabel.setPrefWidth(450);
-        remoteValueLabel.textProperty().bindBidirectional(property);
-
-        fieldBox.getChildren().add(new Separator(VERTICAL));
-
-        addCustomLabel(fieldBox, targetTopic.name());
-
-        fieldBox.getChildren().add(new Separator(VERTICAL));
-
-        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, this.profileObject);
-        if (potentialFieldSettings.isPresent() && potentialFieldSettings.get().getRemoteReferenceProfile() != null) {
-            addGoToReferenceButton(fieldBox, fieldRank, targetTopic, potentialFieldSettings.get().getRemoteReferenceProfile());
-        }
-    }
-
-    private HBox addFieldBox(Optional<String> potentialGroupName, double boxHeight) {
-        HBox fieldBox = new HBox();
-        fieldBox.setPrefHeight(boxHeight);
-        fieldBox.setPadding(new Insets(5.0));
-
-        if (potentialGroupName.isPresent()) {
-            String groupName = potentialGroupName.get();
-            if (!tabContentByName.containsKey(groupName)) {
-                throw new IllegalArgumentException("Unknown group name: " + groupName);
-            }
-            tabContentByName.get(groupName).getChildren().add(fieldBox);
-        } else {
-            defaultTab.getChildren().add(fieldBox);
-        }
-        return fieldBox;
-    }
-
-    private Label addCustomLabel(HBox fieldBox, String text) {
-        Label customLabel = new Label(text);
-        customLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_LABEL);
-        customLabel.setPrefWidth(175);
-        fieldBox.getChildren().add(customLabel);
-        return customLabel;
-    }
-
-    private void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName) {
-        Label fieldNameLabel = new Label(fieldName);
-
-        fieldNameLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_NAME);
-        if (readOnly) {
-            fieldNameLabel.getStyleClass().add(FxConstants.CSS_CLASS_READONLY_FIELD);
-        }
-        fieldNameLabel.setPrefWidth(225.0);
-        fieldBox.getChildren().add(fieldNameLabel);
-    }
-
-    private void addFieldLabelForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject) {
-        String fieldName = topicLinkObject.getTopic().name();
-        if (topicLinkObject.getLabel() != null) {
-            fieldName = topicLinkObject.getLabel();
-        }
-        addFieldLabel(fieldBox, false, fieldName);
-    }
-
-    private void addTextField(HBox fieldBox, boolean readOnly, Property<String> property, Optional<String> toolTip) {
-        TextField fieldValue = new TextField();
-
-        if (readOnly) {
-            fieldValue.getStyleClass().add(FxConstants.CSS_CLASS_READONLY_FIELD);
-        }
-        fieldValue.setPrefWidth(110.0);
-        fieldValue.setEditable(!readOnly);
-        if (toolTip.isPresent()) {
-            fieldValue.setTooltip(new Tooltip(toolTip.get()));
-        }
-
-        fieldValue.textProperty().bindBidirectional(property);
-
-        fieldBox.getChildren().add(fieldValue);
-    }
-
-    private void addGoToReferenceButton(HBox fieldBox, int fieldRank, DbDto.Topic targetTopic, String targetProfileName) {
-        Button gotoReferenceButton = new Button(DisplayConstants.LABEL_BUTTON_GOTO);
-        gotoReferenceButton.setOnAction((actionEvent) -> {
-            System.out.println("gotoReferenceButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
-
-            DbDataDto.Entry remoteContentEntry = this.databaseMiner.getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getTopic(), fieldRank, this.viewDataController.getCurrentEntryIndexProperty().getValue(), targetTopic).get();
-            this.viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId(), true);
-        });
-        fieldBox.getChildren().add(gotoReferenceButton);
-    }
-
-    private void addGoToReferenceButtonForLinkedTopic(Pane fieldPane, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, String targetProfileName) {
-        Button gotoReferenceButton = new Button(DisplayConstants.LABEL_BUTTON_GOTO);
-        gotoReferenceButton.setOnAction((actionEvent) -> {
-            System.out.println("gotoReferenceButtonForLinkedTopic clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
-
-            this.viewDataController.switchToSelectedResourceForLinkedTopic(tableViewSelectionModel.getSelectedItem(), targetTopic, targetProfileName);
-        });
-        fieldPane.getChildren().add(gotoReferenceButton);
-    }
-
-    private void addBrowseResourcesButton(HBox fieldBox, DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty) {
-        Button browseResourcesButton = new Button(DisplayConstants.LABEL_BUTTON_BROWSE);
-        browseResourcesButton.setOnAction((actionEvent) -> {
-            System.out.println("browseResourcesButton clicked");
-
-            this.resourcesStageController.showDialog();
-            this.resourcesStageController.getBrowsedResourceProperty().setValue(new BrowsedResource(targetTopic, targetReferenceProperty.get()));
-        });
-        fieldBox.getChildren().add(browseResourcesButton);
-    }
-
-    private TableView<RemoteResource> addTableViewForLinkedTopic(HBox fieldBox, ObservableList<RemoteResource> resourceData, String targetProfileName, DbDto.Topic targetTopic) {
-        TableView<RemoteResource> tableView = new TableView<>();
-        tableView.setPrefWidth(560);
-
-        TableColumn<RemoteResource, String> refColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_REF);
-        refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
-        refColumn.setPrefWidth(100);
-
-        TableColumn<RemoteResource, String> valueColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_DATA);
-        valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
-        valueColumn.setPrefWidth(455);
-
-        tableView.getColumns().add(refColumn);
-        tableView.getColumns().add(valueColumn);
-
-        tableView.setItems(resourceData);
-
-        if (targetProfileName != null) {
-            final DbDto.Topic finalTargetTopic = targetTopic;
-            tableView.setOnMousePressed(event -> {
-                if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
-                    Optional<RemoteResource> selectedResource = TableViewHelper.getMouseSelectedItem(event);
-                    if (selectedResource.isPresent()) {
-                        this.viewDataController.switchToSelectedResourceForLinkedTopic(selectedResource.get(), finalTargetTopic, targetProfileName);
-                    }
-                }
-            });
-        }
-
-        fieldBox.getChildren().add(tableView);
-
-        return tableView;
-    }
-
-    private void addButtonsForLinkedTopic(HBox fieldBox, String targetProfileName, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<RemoteResource> tableSelectionModel) {
-        VBox buttonsBox = new VBox(5);
-
-        if (targetProfileName != null) {
-            addGoToReferenceButtonForLinkedTopic(buttonsBox, targetTopic, tableSelectionModel, targetProfileName);
-        }
-
-        fieldBox.getChildren().add(buttonsBox);
-    }
-
-    private DbDto.Topic retrieveTargetTopicForLink(TopicLinkDto topicLinkObject) {
-        List<DbStructureDto.Field> structureFields = databaseMiner.getDatabaseTopic(topicLinkObject.getTopic()).get().getStructure().getFields();
-        DbDto.Topic targetTopic = topicLinkObject.getTopic();
-        if (structureFields.size() == 2) {
-            String targetRef = structureFields.get(1).getTargetRef();
-            if (targetRef != null) {
-                targetTopic = databaseMiner.getDatabaseTopicFromReference(targetRef).getTopic();
-            }
-        }
-        return targetTopic;
     }
 
     private void loadDatabaseFromDirectory(String databaseLocation) {
@@ -614,28 +374,49 @@ public class MainStageController implements Initializable {
         }
     }
 
-    ChoiceBox<String> getProfilesChoiceBox() {
+    public ChoiceBox<String> getProfilesChoiceBox() {
         return this.profilesChoiceBox;
 
     }
-    BulkDatabaseMiner getMiner() {
-        return this.databaseMiner;
-    }
 
-    DbDto getCurrentTopicObject() {
+    public DbDto getCurrentTopicObject() {
         return this.currentTopicObject;
     }
 
-    EditorLayoutDto.EditorProfileDto getCurrentProfileObject() {
+    public EditorLayoutDto.EditorProfileDto getCurrentProfileObject() {
         return profileObject;
     }
 
-    Map<TopicLinkDto, ObservableList<RemoteResource>> getResourceListByTopicLink() {
+    public EditorLayoutDto getLayoutObject() {
+        return layoutObject;
+    }
+
+    public Map<String, VBox> getTabContentByName() {
+        return tabContentByName;
+    }
+
+    public VBox getDefaultTab() {
+        return defaultTab;
+    }
+
+    public Map<Integer, SimpleStringProperty> getRawValuePropertyByFieldRank() {
+        return viewDataController.getRawValuePropertyByFieldRank();
+    }
+
+    public Map<Integer, SimpleStringProperty> getResolvedValuePropertyByFieldRank() {
+        return viewDataController.getResolvedValuePropertyByFieldRank();
+    }
+
+    public Map<TopicLinkDto, ObservableList<RemoteResource>> getResourceListByTopicLink() {
         return resourceListByTopicLink;
     }
 
-    EditorLayoutDto getLayoutObject() {
-        return layoutObject;
+    public BulkDatabaseMiner getDatabaseMiner() {
+        return databaseMiner;
+    }
+
+    BulkDatabaseMiner getMiner() {
+        return this.databaseMiner;
     }
 
     ChoiceBox<DbResourceDto.Locale> getLocalesChoiceBox() {
