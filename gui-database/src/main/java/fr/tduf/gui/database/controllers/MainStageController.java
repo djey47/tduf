@@ -37,6 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -123,7 +124,11 @@ public class MainStageController implements Initializable {
         System.out.println("handleBrowseDirectoryButtonMouseClick");
 
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setInitialDirectory(new File(this.databaseLocationTextField.getText()));
+
+        File directory = new File(this.databaseLocationTextField.getText());
+        if (directory.exists()) {
+            directoryChooser.setInitialDirectory(directory);
+        }
 
         File selectedDirectory = directoryChooser.showDialog(root.getScene().getWindow());
         this.databaseLocationTextField.setText(selectedDirectory.getPath());
