@@ -324,6 +324,9 @@ public class MainStageController implements Initializable {
 
         this.profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, this.layoutObject);
         this.currentTopicObject = databaseMiner.getDatabaseTopic(profileObject.getTopic()).get();
+
+        this.getRawValuePropertyByFieldRank().clear();
+        this.getResolvedValuePropertyByFieldRank().clear();
         this.resourceListByTopicLink.clear();
 
         this.viewDataController.initTabViewDataProperties();
