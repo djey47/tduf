@@ -21,6 +21,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -268,11 +269,23 @@ public class MainStageController implements Initializable {
 
     public EventHandler<MouseEvent> handleLinkTableMouseClick(String targetProfileName, DbDto.Topic targetTopic) {
         return event -> {
+            System.out.println("handleLinkTableMouseClick, targetProfileName:" + targetProfileName + ", targetTopic:" + targetTopic);
+
             if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
                 Optional<RemoteResource> selectedResource = TableViewHelper.getMouseSelectedItem(event);
                 if (selectedResource.isPresent()) {
                     this.viewDataController.switchToSelectedResourceForLinkedTopic(selectedResource.get(), targetTopic, targetProfileName);
                 }
+            }
+        };
+    }
+
+    public ChangeListener<Boolean> handleTextFieldFocusChange(int fieldRank, SimpleStringProperty fieldValueProperty) {
+        return (observable, oldFocusState, newFocusState) -> {
+            System.out.println("handleTextFieldFocusChange, focused=" + newFocusState + ", fieldRank=" + fieldRank + ", fieldValue=" + fieldValueProperty.get());
+
+            if (oldFocusState && !newFocusState) {
+                this.changeDataController.updateContentItem(fieldRank, fieldValueProperty.get());
             }
         };
     }
@@ -416,6 +429,10 @@ public class MainStageController implements Initializable {
 
     public Map<TopicLinkDto, ObservableList<RemoteResource>> getResourceListByTopicLink() {
         return resourceListByTopicLink;
+    }
+
+    public long getCurrentEntryIndex() {
+        return this.viewDataController.getCurrentEntryIndexProperty().getValue();
     }
 
     public BulkDatabaseMiner getDatabaseMiner() {

@@ -54,11 +54,12 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         SimpleStringProperty property = new SimpleStringProperty("");
         rawValuePropertyByFieldRankIndex.put(field.getRank(), property);
 
+        int fieldRank = field.getRank();
         String fieldName = field.getName();
         boolean fieldReadOnly = false;
         String groupName = null;
         Optional<String> potentialToolTip = Optional.empty();
-        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(field.getRank(), controller.getProfilesChoiceBox().getValue(), controller.getLayoutObject());
+        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank, controller.getProfilesChoiceBox().getValue(), controller.getLayoutObject());
         if (potentialFieldSettings.isPresent()) {
             FieldSettingsDto fieldSettings = potentialFieldSettings.get();
 
@@ -81,7 +82,9 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         addFieldLabel(fieldBox, fieldReadOnly, fieldName);
 
-        addTextField(fieldBox, fieldReadOnly, property, potentialToolTip);
+        TextField valueTextField = addTextField(fieldBox, fieldRank, fieldReadOnly, property, potentialToolTip);
+        valueTextField.textProperty().bindBidirectional(property);
+        valueTextField.focusedProperty().addListener(controller.handleTextFieldFocusChange(fieldRank, property));
 
         if (field.isAResourceField()) {
             DbDto.Topic topic = currentTopic;
@@ -157,21 +160,20 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(resourceValueLabel);
     }
 
-    private static void addTextField(HBox fieldBox, boolean readOnly, Property<String> property, Optional<String> toolTip) {
-        TextField fieldValue = new TextField();
+    private static TextField addTextField(HBox fieldBox, int fieldRank, boolean readOnly, Property<String> property, Optional<String> toolTip) {
+        TextField textField = new TextField();
 
         if (readOnly) {
-            fieldValue.getStyleClass().add(FxConstants.CSS_CLASS_READONLY_FIELD);
+            textField.getStyleClass().add(FxConstants.CSS_CLASS_READONLY_FIELD);
         }
-        fieldValue.setPrefWidth(110.0);
-        fieldValue.setEditable(!readOnly);
+        textField.setPrefWidth(110.0);
+        textField.setEditable(!readOnly);
         if (toolTip.isPresent()) {
-            fieldValue.setTooltip(new Tooltip(toolTip.get()));
+            textField.setTooltip(new Tooltip(toolTip.get()));
         }
+        fieldBox.getChildren().add(textField);
 
-        fieldValue.textProperty().bindBidirectional(property);
-
-        fieldBox.getChildren().add(fieldValue);
+        return textField;
     }
 
     private BulkDatabaseMiner getMiner() {
