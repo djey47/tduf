@@ -21,6 +21,8 @@ public class ChangeDataController {
 
         if (!contentItem.getRawValue().equals(newRawValue)) {
             contentItem.setRawValue(newRawValue);
+
+            this.mainStageController.getViewDataController().updateItemProperties(contentItem);
         }
     }
 

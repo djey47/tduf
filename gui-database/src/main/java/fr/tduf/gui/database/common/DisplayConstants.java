@@ -6,6 +6,8 @@ package fr.tduf.gui.database.common;
 public class DisplayConstants {
     public static final String SEPARATOR_VALUES = " - ";
     public static final String VALUE_UNKNOWN = "<?>";
+    public static final String VALUE_ERROR_RESOURCE_NOT_FOUND = "<ERROR: resource not found!>";
+    public static final String VALUE_ERROR_ENTRY_NOT_FOUND = "<ERROR: entry not found!>";
 
     public static final String LABEL_BUTTON_GOTO = "->";
     public static final String LABEL_BUTTON_BROWSE = "...";

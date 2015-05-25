@@ -166,6 +166,8 @@ public class ViewDataController {
         if (potentialResourceEntry.isPresent()) {
             String resourceValue = potentialResourceEntry.get().getValue();
             resolvedValuePropertyByFieldRank.get(resourceItem.getFieldRank()).set(resourceValue);
+        } else {
+            resolvedValuePropertyByFieldRank.get(resourceItem.getFieldRank()).set(DisplayConstants.VALUE_ERROR_RESOURCE_NOT_FOUND);
         }
     }
 
@@ -227,8 +229,11 @@ public class ViewDataController {
     private String fetchRemoteContentsWithEntryRef(DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {
         requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
 
-        long remoteEntryId = this.getMiner().getContentEntryIdFromReference(remoteEntryReference, remoteTopic).getAsLong();
-        return fetchContentsWithEntryId(remoteTopic, remoteEntryId, remoteFieldRanks);
+        OptionalLong potentialEntryId = this.getMiner().getContentEntryIdFromReference(remoteEntryReference, remoteTopic);
+        if (potentialEntryId.isPresent()) {
+            return fetchContentsWithEntryId(remoteTopic, potentialEntryId.getAsLong(), remoteFieldRanks);
+        }
+        return DisplayConstants.VALUE_ERROR_ENTRY_NOT_FOUND;
     }
 
     private String fetchContentsWithEntryId(DbDto.Topic topic, long entryId, List<Integer> fieldRanks) {
