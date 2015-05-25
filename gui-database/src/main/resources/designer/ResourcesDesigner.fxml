@@ -17,7 +17,7 @@
             </ToolBar>
             <Pane prefHeight="744.0" prefWidth="768.0">
                <children>
-                  <TableView fx:id="resourcesTableView" prefHeight="744.0" prefWidth="640.0">
+                  <TableView fx:id="resourcesTableView" onMouseClicked="#handleResourceTableMouseClick" prefHeight="744.0" prefWidth="640.0">
                     <columns>
                       <TableColumn prefWidth="96.0" text="#" />
                       <TableColumn prefWidth="543.0" text="Resource value" />

@@ -29,6 +29,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
@@ -273,7 +274,7 @@ public class MainStageController implements Initializable {
         return event -> {
             System.out.println("handleLinkTableMouseClick, targetProfileName:" + targetProfileName + ", targetTopic:" + targetTopic);
 
-            if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
+            if (MouseButton.PRIMARY == event.getButton() && event.getClickCount() == 2) {
                 Optional<RemoteResource> selectedResource = TableViewHelper.getMouseSelectedItem(event);
                 if (selectedResource.isPresent()) {
                     this.viewDataController.switchToSelectedResourceForLinkedTopic(selectedResource.get(), targetTopic, targetProfileName);
