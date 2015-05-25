@@ -135,7 +135,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
-        addBrowseResourcesButton(fieldBox, topic, rawValueProperty);
+        addBrowseResourcesButton(fieldBox, topic, rawValueProperty, fieldRank);
     }
 
     private void addGoToReferenceButton(HBox fieldBox, int fieldRank, DbDto.Topic targetTopic, String targetProfileName) {
@@ -145,10 +145,10 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(gotoReferenceButton);
     }
 
-    private void addBrowseResourcesButton(HBox fieldBox, DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty) {
+    private void addBrowseResourcesButton(HBox fieldBox, DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
         Button browseResourcesButton = new Button(DisplayConstants.LABEL_BUTTON_BROWSE);
         browseResourcesButton.setOnAction(
-                controller.handleBrowseResourcesButtonMouseClick(targetTopic, targetReferenceProperty));
+                controller.handleBrowseResourcesButtonMouseClick(targetTopic, targetReferenceProperty, fieldRank));
         fieldBox.getChildren().add(browseResourcesButton);
     }
 

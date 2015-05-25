@@ -11,6 +11,8 @@
             <ToolBar prefHeight="40.0" prefWidth="768.0" styleClass="navigationToolbar">
                <items>
                   <ChoiceBox fx:id="topicsChoiceBox" prefWidth="200.0" />
+                  <Separator orientation="VERTICAL" prefHeight="30.0" />
+                  <Button fx:id="selectResourceButton" mnemonicParsing="false" text="Select" />
                </items>
             </ToolBar>
             <Pane prefHeight="744.0" prefWidth="768.0">

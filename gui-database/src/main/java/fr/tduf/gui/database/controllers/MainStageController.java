@@ -241,11 +241,13 @@ public class MainStageController implements Initializable {
         this.viewDataController.switchToPreviousLocation();
     }
 
-    public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty) {
+    public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
         return (actionEvent) -> {
             System.out.println("browseResourcesButton clicked");
 
             this.resourcesStageController.showDialog();
+            this.resourcesStageController.setResourceReferenceProperty(targetReferenceProperty);
+            this.resourcesStageController.setFieldRank(fieldRank);
             this.resourcesStageController.getBrowsedResourceProperty().setValue(new BrowsedResource(targetTopic, targetReferenceProperty.get()));
         };
     }
@@ -461,5 +463,9 @@ public class MainStageController implements Initializable {
 
     ViewDataController getViewDataController() {
         return viewDataController;
+    }
+
+    ChangeDataController getChangeDataController() {
+        return changeDataController;
     }
 }

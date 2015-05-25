@@ -7,11 +7,14 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -32,11 +35,18 @@ public class ResourcesStageController implements Initializable {
     @FXML
     private TableView<RemoteResource> resourcesTableView;
 
+    @FXML
+    private Button selectResourceButton;
+
     private MainStageController mainStageController;
 
     private ObservableList<RemoteResource> resourceData = FXCollections.observableArrayList();
 
     private Property<BrowsedResource> browsedResourceProperty;
+
+    private SimpleStringProperty resourceReferenceProperty;
+
+    private int fieldRank;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -58,6 +68,8 @@ public class ResourcesStageController implements Initializable {
         fillTopics();
         this.topicsChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> handleTopicChoiceChanged(newValue));
+
+        this.selectResourceButton.setOnAction(this::handleSelectResourceButtonMouseClick);
     }
 
     private void initTablePane() {
@@ -73,6 +85,19 @@ public class ResourcesStageController implements Initializable {
     private void fillTopics() {
         asList(DbDto.Topic.values())
                 .forEach((topic) -> this.topicsChoiceBox.getItems().add(topic));
+    }
+
+    private void handleSelectResourceButtonMouseClick(ActionEvent actionEvent) {
+        System.out.println("handleSelectResourceButtonMouseClick");
+
+        RemoteResource selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
+        if (selectedResource != null && resourceReferenceProperty != null) {
+            String resourceReference = selectedResource.referenceProperty().getValue();
+            resourceReferenceProperty.set(resourceReference);
+
+            // TODO see to update item properties automatically upon property change
+            mainStageController.getChangeDataController().updateContentItem(fieldRank, resourceReference);
+        }
     }
 
     private void handleTopicChoiceChanged(DbDto.Topic newTopic) {
@@ -118,7 +143,15 @@ public class ResourcesStageController implements Initializable {
         this.mainStageController = mainStageController;
     }
 
+    void setResourceReferenceProperty(SimpleStringProperty resourceReferenceProperty) {
+        this.resourceReferenceProperty = resourceReferenceProperty;
+    }
+
     private BulkDatabaseMiner getMiner() {
         return this.mainStageController.getMiner();
+    }
+
+    public void setFieldRank(int fieldRank) {
+        this.fieldRank = fieldRank;
     }
 }
