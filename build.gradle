@@ -169,7 +169,7 @@ project(':gui-database') {
     }
 
     task execute(type:JavaExec) {
-        main 'fr.tduf.gui.database.Main'
+        main 'fr.tduf.gui.database.DatabaseEditor'
         classpath sourceSets.main.runtimeClasspath
     }
 
