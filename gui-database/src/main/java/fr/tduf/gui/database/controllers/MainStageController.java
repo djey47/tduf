@@ -9,7 +9,6 @@ import fr.tduf.gui.database.controllers.helper.DynamicLinkControlsHelper;
 import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.converter.EntryItemsCountToStringConverter;
-import fr.tduf.gui.database.domain.BrowsedResource;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
@@ -39,7 +38,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
@@ -245,10 +243,7 @@ public class MainStageController implements Initializable {
         return (actionEvent) -> {
             System.out.println("browseResourcesButton clicked");
 
-            this.resourcesStageController.showDialog();
-            this.resourcesStageController.setResourceReferenceProperty(targetReferenceProperty);
-            this.resourcesStageController.setFieldRank(fieldRank);
-            this.resourcesStageController.getBrowsedResourceProperty().setValue(new BrowsedResource(targetTopic, targetReferenceProperty.get()));
+            this.resourcesStageController.updateAndShowDialog(targetReferenceProperty, fieldRank, getLocalesChoiceBox().getValue(), targetTopic);
         };
     }
 
