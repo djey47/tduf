@@ -88,6 +88,9 @@ public class ResourcesStageController implements Initializable {
     private void handleEditResourceButtonMouseClick(ActionEvent actionEvent){
         System.out.println("handleEditResourceButtonMouseClick");
 
+        RemoteResource selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
+        if (selectedResource != null) {
+        }
     }
 
     @FXML
@@ -101,24 +104,26 @@ public class ResourcesStageController implements Initializable {
         System.out.println("handleRemoveResourceButtonMouseClick");
 
         RemoteResource selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
-        if (selectedResource != null) {
-            Alert alert = new Alert(CONFIRMATION);
-            alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
-            alert.setHeaderText(selectedResource.toDisplayableValue());
-            alert.setContentText(DisplayConstants.MESSAGE_DELETED_RESOURCE + "\n" + DisplayConstants.QUESTION_AFFECTED_LOCALES);
+        if (selectedResource == null) {
+            return;
+        }
 
-            DbResourceDto.Locale currentLocale = localesChoiceBox.valueProperty().get();
-            ButtonType currentLocaleButtonType = new ButtonType(String.format(DisplayConstants.LABEL_BUTTON_CURRENT_LOCALE, currentLocale.getCode()));
-            ButtonType allLocalesButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_ALL);
-            ButtonType cancelButtonType = new ButtonType("Cancel", CANCEL_CLOSE);
+        Alert alert = new Alert(CONFIRMATION);
+        alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
+        alert.setHeaderText(selectedResource.toDisplayableValue());
+        alert.setContentText(DisplayConstants.MESSAGE_DELETED_RESOURCE + "\n" + DisplayConstants.QUESTION_AFFECTED_LOCALES);
 
-            alert.getButtonTypes().setAll(currentLocaleButtonType, allLocalesButtonType, cancelButtonType);
+        DbResourceDto.Locale currentLocale = localesChoiceBox.valueProperty().get();
+        ButtonType currentLocaleButtonType = new ButtonType(String.format(DisplayConstants.LABEL_BUTTON_CURRENT_LOCALE, currentLocale.getCode()));
+        ButtonType allLocalesButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_ALL);
+        ButtonType cancelButtonType = new ButtonType("Cancel", CANCEL_CLOSE);
 
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent()
-                    && cancelButtonType != result.get()) {
-                removeResourceAndUpdateMainStage(topicsChoiceBox.getValue(), selectedResource, currentLocale, allLocalesButtonType == result.get());
-            }
+        alert.getButtonTypes().setAll(currentLocaleButtonType, allLocalesButtonType, cancelButtonType);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent()
+                && cancelButtonType != result.get()) {
+            removeResourceAndUpdateMainStage(topicsChoiceBox.getValue(), selectedResource, currentLocale, allLocalesButtonType == result.get());
         }
     }
 
@@ -149,6 +154,7 @@ public class ResourcesStageController implements Initializable {
         browsedResourceProperty.setValue(new BrowsedResource(targetTopic, referenceProperty.get()));
 
         Stage stage = (Stage)this.root.getScene().getWindow();
+        stage.initOwner(mainStageController.getRoot().getScene().getWindow());
         stage.show();
     }
 

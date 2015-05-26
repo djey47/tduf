@@ -440,6 +440,10 @@ public class MainStageController implements Initializable {
         return this.databaseMiner;
     }
 
+    Parent getRoot() {
+        return root;
+    }
+
     ChoiceBox<DbResourceDto.Locale> getLocalesChoiceBox() {
         return localesChoiceBox;
     }
