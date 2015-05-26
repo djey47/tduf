@@ -211,14 +211,15 @@ public class ResourcesStageController implements Initializable {
 
         DbResourceDto.Locale locale = localesChoiceBox.valueProperty().get();
         DbDto.Topic topic = topicsChoiceBox.valueProperty().get();
-        DbResourceDto resourceObject = getMiner().getResourceFromTopicAndLocale(topic, locale).get();
-
-        resourceObject.getEntries().forEach((resourceEntry) -> {
-            RemoteResource remoteResource = new RemoteResource();
-            remoteResource.setReference(resourceEntry.getReference());
-            remoteResource.setValue(resourceEntry.getValue());
-            this.resourceData.add(remoteResource);
-        });
+        Optional<DbResourceDto> potentialResourceObject = getMiner().getResourceFromTopicAndLocale(topic, locale);
+        if (potentialResourceObject.isPresent()) {
+            potentialResourceObject.get().getEntries().forEach((resourceEntry) -> {
+                RemoteResource remoteResource = new RemoteResource();
+                remoteResource.setReference(resourceEntry.getReference());
+                remoteResource.setValue(resourceEntry.getValue());
+                this.resourceData.add(remoteResource);
+            });
+        }
     }
 
     void setMainStageController(MainStageController mainStageController) {
