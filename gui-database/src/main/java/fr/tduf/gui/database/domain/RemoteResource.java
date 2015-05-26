@@ -32,6 +32,10 @@ public class RemoteResource {
         this.value.set(value);
     }
 
+    public String toDisplayableValue() {
+        return reference.get() + " : " + value.get();
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)

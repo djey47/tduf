@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
+import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.domain.BrowsedResource;
 import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -15,9 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -27,6 +26,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static java.util.Arrays.asList;
+import static javafx.scene.control.Alert.AlertType.CONFIRMATION;
+import static javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE;
 
 public class ResourcesStageController implements Initializable {
     @FXML
@@ -94,6 +95,34 @@ public class ResourcesStageController implements Initializable {
     private void handleRemoveResourceButtonMouseClick(ActionEvent actionEvent){
         System.out.println("handleRemoveResourceButtonMouseClick");
 
+        RemoteResource selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
+        if (selectedResource != null) {
+
+            Alert alert = new Alert(CONFIRMATION);
+            alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
+            alert.setHeaderText(selectedResource.toDisplayableValue());
+            alert.setContentText(DisplayConstants.MESSAGE_DELETED_RESOURCE + "\n" + DisplayConstants.QUESTION_AFFECTED_LOCALES);
+
+            String currentLocale = localesChoiceBox.valueProperty().get().getCode();
+            ButtonType currentLocaleButtonType = new ButtonType(String.format(DisplayConstants.LABEL_BUTTON_CURRENT_LOCALE, currentLocale));
+            ButtonType allLocalesButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_ALL);
+            ButtonType cancelButtonType = new ButtonType("Cancel", CANCEL_CLOSE);
+
+            alert.getButtonTypes().setAll(currentLocaleButtonType, allLocalesButtonType, cancelButtonType);
+
+            Optional<ButtonType> result = alert.showAndWait();
+//            if (result.get() == buttonTypeOne){
+//                // ... user chose "One"
+//            } else if (result.get() == buttonTypeTwo) {
+//                // ... user chose "Two"
+//            } else if (result.get() == buttonTypeThree) {
+//                // ... user chose "Three"
+//            } else {
+//                // ... user chose CANCEL or closed the dialog
+//            }
+//
+//            applyResourceSelectionToMainStageAndClose(selectedResource);
+        }
     }
 
     private void handleTopicChoiceChanged(DbDto.Topic newTopic) {

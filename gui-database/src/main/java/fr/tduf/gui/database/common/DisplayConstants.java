@@ -11,6 +11,8 @@ public class DisplayConstants {
 
     public static final String LABEL_BUTTON_GOTO = "->";
     public static final String LABEL_BUTTON_BROWSE = "...";
+    public static final String LABEL_BUTTON_ALL = "All";
+    public static final String LABEL_BUTTON_CURRENT_LOCALE = "Current (%s)";
 
     public static final String COLUMN_HEADER_REF = "#";
     public static final String COLUMN_HEADER_DATA = "Linked data";
@@ -19,4 +21,7 @@ public class DisplayConstants {
     public static final String TITLE_SUB_RESOURCES = " : Resources";
 
     public static final String MESSAGE_DATABASE_SAVED = "Current database was saved.";
+    public static final String MESSAGE_DELETED_RESOURCE = "This resource will be removed.";
+
+    public static final String QUESTION_AFFECTED_LOCALES = "Which locales should be affected?";
 }
