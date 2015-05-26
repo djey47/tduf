@@ -32,15 +32,15 @@ public class ChangeDataController {
         }
     }
 
-    void removeResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale currentLocale, String resourceReference, boolean forAllLocales) {
-        List<DbResourceDto.Locale> affectedLocales = singletonList(currentLocale);
+    void removeResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, boolean forAllLocales) {
+        List<DbResourceDto.Locale> affectedLocales = singletonList(locale);
         if (forAllLocales) {
             affectedLocales = asList(DbResourceDto.Locale.values());
         }
 
         affectedLocales.stream()
 
-                .map((affectedLocale) -> getMiner().getResourceFromTopicAndLocale(topic, currentLocale).get().getEntries())
+                .map((affectedLocale) -> getMiner().getResourceFromTopicAndLocale(topic, locale).get().getEntries())
 
                 .forEach((resources) -> {
                     Iterator<DbResourceDto.Entry> iterator = resources.iterator();
@@ -50,6 +50,13 @@ public class ChangeDataController {
                         }
                     }
                 });
+    }
+
+    void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
+        DbResourceDto.Entry resourceEntry = getMiner().getResourceEntryFromTopicAndLocaleWithReference(oldResourceReference, topic, locale).get();
+
+        resourceEntry.setReference(newResourceReference);
+        resourceEntry.setValue(newResourceValue);
     }
 
     private BulkDatabaseMiner getMiner() {
