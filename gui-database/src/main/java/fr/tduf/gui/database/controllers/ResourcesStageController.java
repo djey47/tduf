@@ -70,7 +70,7 @@ public class ResourcesStageController implements Initializable {
         if (MouseButton.PRIMARY == mouseEvent.getButton() && mouseEvent.getClickCount() == 2) {
             Optional<RemoteResource> selectedResource = TableViewHelper.getMouseSelectedItem(mouseEvent);
             if (selectedResource.isPresent()) {
-                applyResourceSelectionToMainStage(selectedResource.get());
+                applyResourceSelectionToMainStageAndClose(selectedResource.get());
             }
         }
     }
@@ -80,7 +80,7 @@ public class ResourcesStageController implements Initializable {
 
         RemoteResource selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
         if (selectedResource != null && resourceReferenceProperty != null) {
-            applyResourceSelectionToMainStage(selectedResource);
+            applyResourceSelectionToMainStageAndClose(selectedResource);
         }
     }
 
@@ -147,12 +147,15 @@ public class ResourcesStageController implements Initializable {
         this.resourcesTableView.getSelectionModel().select(browsedResource);
     }
 
-    private void applyResourceSelectionToMainStage(RemoteResource selectedResource) {
+    private void applyResourceSelectionToMainStageAndClose(RemoteResource selectedResource) {
         String resourceReference = selectedResource.referenceProperty().getValue();
         resourceReferenceProperty.set(resourceReference);
 
         // TODO see to update item properties automatically upon property change
         mainStageController.getChangeDataController().updateContentItem(fieldRank, resourceReference);
+
+        Stage stage = (Stage) root.getScene().getWindow();
+        stage.close();
     }
 
     Property<BrowsedResource> getBrowsedResourceProperty() {
