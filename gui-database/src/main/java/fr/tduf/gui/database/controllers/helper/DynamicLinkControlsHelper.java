@@ -10,12 +10,10 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
@@ -33,10 +31,6 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         super(controller);
     }
 
-    /**
-     *
-     * @param currentProfileObject
-     */
     public void addAllLinksControls(EditorLayoutDto.EditorProfileDto currentProfileObject) {
         currentProfileObject.getTopicLinks().stream()
 
@@ -97,17 +91,12 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         VBox buttonsBox = new VBox(5);
 
         if (targetProfileName != null) {
-            addGoToReferenceButtonForLinkedTopic(buttonsBox, targetTopic, tableSelectionModel, targetProfileName);
+            addGoToReferenceButton(
+                    fieldBox,
+                    controller.handleGotoReferenceButtonMouseClick(targetTopic, tableSelectionModel, targetProfileName));
         }
 
         fieldBox.getChildren().add(buttonsBox);
-    }
-
-    private void addGoToReferenceButtonForLinkedTopic(Pane fieldPane, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, String targetProfileName) {
-        Button gotoReferenceButton = new Button(DisplayConstants.LABEL_BUTTON_GOTO);
-        gotoReferenceButton.setOnAction(
-                controller.handleGotoReferenceButtonMouseClick(targetTopic, tableViewSelectionModel, targetProfileName));
-        fieldPane.getChildren().add(gotoReferenceButton);
     }
 
     private DbDto.Topic retrieveTargetTopicForLink(TopicLinkDto topicLinkObject) {

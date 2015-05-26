@@ -9,7 +9,6 @@ import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -82,7 +81,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         addFieldLabel(fieldBox, fieldReadOnly, fieldName);
 
-        TextField valueTextField = addTextField(fieldBox, fieldRank, fieldReadOnly, property, potentialToolTip);
+        TextField valueTextField = addTextField(fieldBox, fieldReadOnly, potentialToolTip);
         valueTextField.textProperty().bindBidirectional(property);
         valueTextField.focusedProperty().addListener(controller.handleTextFieldFocusChange(fieldRank, property));
 
@@ -119,7 +118,10 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, controller.getCurrentProfileObject());
         if (potentialFieldSettings.isPresent() && potentialFieldSettings.get().getRemoteReferenceProfile() != null) {
-            addGoToReferenceButton(fieldBox, fieldRank, targetTopic, potentialFieldSettings.get().getRemoteReferenceProfile());
+            String targetProfileName = potentialFieldSettings.get().getRemoteReferenceProfile();
+            addGoToReferenceButton(
+                    fieldBox,
+                    controller.handleGotoReferenceButtonMouseClick(targetTopic, fieldRank, targetProfileName));
         }
     }
 
@@ -138,15 +140,10 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         addBrowseResourcesButton(fieldBox, topic, rawValueProperty, fieldRank);
     }
 
-    private void addGoToReferenceButton(HBox fieldBox, int fieldRank, DbDto.Topic targetTopic, String targetProfileName) {
-        Button gotoReferenceButton = new Button(DisplayConstants.LABEL_BUTTON_GOTO);
-        gotoReferenceButton.setOnAction(
-                controller.handleGotoReferenceButtonMouseClick(targetTopic, fieldRank, targetProfileName));
-        fieldBox.getChildren().add(gotoReferenceButton);
-    }
-
     private void addBrowseResourcesButton(HBox fieldBox, DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
         Button browseResourcesButton = new Button(DisplayConstants.LABEL_BUTTON_BROWSE);
+        browseResourcesButton.setPrefWidth(34);
+
         browseResourcesButton.setOnAction(
                 controller.handleBrowseResourcesButtonMouseClick(targetTopic, targetReferenceProperty, fieldRank));
         fieldBox.getChildren().add(browseResourcesButton);
@@ -160,7 +157,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(resourceValueLabel);
     }
 
-    private static TextField addTextField(HBox fieldBox, int fieldRank, boolean readOnly, Property<String> property, Optional<String> toolTip) {
+    private static TextField addTextField(HBox fieldBox, boolean readOnly, Optional<String> toolTip) {
         TextField textField = new TextField();
 
         if (readOnly) {

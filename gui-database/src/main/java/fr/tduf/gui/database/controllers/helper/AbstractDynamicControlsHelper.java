@@ -1,8 +1,12 @@
 package fr.tduf.gui.database.controllers.helper;
 
+import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -54,5 +58,14 @@ public abstract class AbstractDynamicControlsHelper {
         }
         fieldNameLabel.setPrefWidth(225.0);
         fieldBox.getChildren().add(fieldNameLabel);
+    }
+
+    protected static void addGoToReferenceButton(HBox fieldBox, EventHandler<ActionEvent> gotoReferenceAction) {
+        Button gotoReferenceButton = new Button(DisplayConstants.LABEL_BUTTON_GOTO);
+        gotoReferenceButton.setPrefWidth(34);
+
+        gotoReferenceButton.setOnAction(gotoReferenceAction);
+
+        fieldBox.getChildren().add(gotoReferenceButton);
     }
 }
