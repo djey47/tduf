@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -12,7 +13,14 @@
                <items>
                   <ChoiceBox fx:id="topicsChoiceBox" prefWidth="200.0" />
                   <Separator orientation="VERTICAL" prefHeight="30.0" />
-                  <Button fx:id="selectResourceButton" mnemonicParsing="false" text="Select" />
+                  <Button fx:id="addResourceButton" layoutX="224.0" layoutY="13.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="28.0" text="+" />
+                  <Button fx:id="removeResourceButton" layoutX="297.0" layoutY="13.0" mnemonicParsing="false" prefWidth="28.0" text="-" />
+                  <Separator layoutX="214.0" layoutY="10.0" orientation="VERTICAL" prefHeight="30.0" />
+                  <AnchorPane prefHeight="30.0" prefWidth="334.0">
+                     <children>
+                        <Button fx:id="selectResourceButton" layoutY="3.0" mnemonicParsing="false" text="Select" AnchorPane.rightAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
                </items>
             </ToolBar>
             <Pane prefHeight="744.0" prefWidth="768.0">
