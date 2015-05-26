@@ -243,7 +243,7 @@ public class MainStageController implements Initializable {
         return (actionEvent) -> {
             System.out.println("browseResourcesButton clicked");
 
-            this.resourcesStageController.updateAndShowDialog(targetReferenceProperty, fieldRank, getLocalesChoiceBox().getValue(), targetTopic);
+            this.resourcesStageController.initAndShowDialog(targetReferenceProperty, fieldRank, getLocalesChoiceBox().getValue(), targetTopic);
         };
     }
 
@@ -282,7 +282,7 @@ public class MainStageController implements Initializable {
             System.out.println("handleTextFieldFocusChange, focused=" + newFocusState + ", fieldRank=" + fieldRank + ", fieldValue=" + fieldValueProperty.get());
 
             if (oldFocusState && !newFocusState) {
-                this.changeDataController.updateContentItem(fieldRank, fieldValueProperty.get());
+                this.changeDataController.updateContentItem(currentTopicObject.getTopic(), fieldRank, fieldValueProperty.get());
             }
         };
     }

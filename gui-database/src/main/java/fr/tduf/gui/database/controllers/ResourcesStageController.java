@@ -22,8 +22,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static javafx.scene.control.Alert.AlertType.CONFIRMATION;
@@ -97,31 +96,23 @@ public class ResourcesStageController implements Initializable {
 
         RemoteResource selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
         if (selectedResource != null) {
-
             Alert alert = new Alert(CONFIRMATION);
             alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
             alert.setHeaderText(selectedResource.toDisplayableValue());
             alert.setContentText(DisplayConstants.MESSAGE_DELETED_RESOURCE + "\n" + DisplayConstants.QUESTION_AFFECTED_LOCALES);
 
-            String currentLocale = localesChoiceBox.valueProperty().get().getCode();
-            ButtonType currentLocaleButtonType = new ButtonType(String.format(DisplayConstants.LABEL_BUTTON_CURRENT_LOCALE, currentLocale));
+            DbResourceDto.Locale currentLocale = localesChoiceBox.valueProperty().get();
+            ButtonType currentLocaleButtonType = new ButtonType(String.format(DisplayConstants.LABEL_BUTTON_CURRENT_LOCALE, currentLocale.getCode()));
             ButtonType allLocalesButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_ALL);
             ButtonType cancelButtonType = new ButtonType("Cancel", CANCEL_CLOSE);
 
             alert.getButtonTypes().setAll(currentLocaleButtonType, allLocalesButtonType, cancelButtonType);
 
             Optional<ButtonType> result = alert.showAndWait();
-//            if (result.get() == buttonTypeOne){
-//                // ... user chose "One"
-//            } else if (result.get() == buttonTypeTwo) {
-//                // ... user chose "Two"
-//            } else if (result.get() == buttonTypeThree) {
-//                // ... user chose "Three"
-//            } else {
-//                // ... user chose CANCEL or closed the dialog
-//            }
-//
-//            applyResourceSelectionToMainStageAndClose(selectedResource);
+            if (result.isPresent()
+                    && cancelButtonType != result.get()) {
+                removeResourceAndUpdateMainStage(topicsChoiceBox.getValue(), selectedResource, currentLocale, allLocalesButtonType == result.get());
+            }
         }
     }
 
@@ -145,22 +136,7 @@ public class ResourcesStageController implements Initializable {
         selectResourceInTableAndScroll(newResource.getReference());
     }
 
-    private void updateResourceData() {
-        this.resourceData.clear();
-
-        DbResourceDto.Locale locale = localesChoiceBox.valueProperty().get();
-        DbDto.Topic topic = topicsChoiceBox.valueProperty().get();
-        DbResourceDto resourceObject = getMiner().getResourceFromTopicAndLocale(topic, locale).get();
-
-        resourceObject.getEntries().forEach((resourceEntry) -> {
-            RemoteResource remoteResource = new RemoteResource();
-            remoteResource.setReference(resourceEntry.getReference());
-            remoteResource.setValue(resourceEntry.getValue());
-            this.resourceData.add(remoteResource);
-        });
-    }
-
-    void updateAndShowDialog(SimpleStringProperty referenceProperty, int entryFieldRank, DbResourceDto.Locale locale, DbDto.Topic targetTopic) {
+    void initAndShowDialog(SimpleStringProperty referenceProperty, int entryFieldRank, DbResourceDto.Locale locale, DbDto.Topic targetTopic) {
         resourceReferenceProperty = referenceProperty;
         fieldRank = entryFieldRank;
         localesChoiceBox.setValue(locale);
@@ -216,10 +192,33 @@ public class ResourcesStageController implements Initializable {
         resourceReferenceProperty.set(resourceReference);
 
         // TODO see to update item properties automatically upon property change
-        mainStageController.getChangeDataController().updateContentItem(fieldRank, resourceReference);
+        mainStageController.getChangeDataController().updateContentItem(mainStageController.getCurrentTopicObject().getTopic(), fieldRank, resourceReference);
 
         Stage stage = (Stage) root.getScene().getWindow();
         stage.close();
+    }
+
+    private void removeResourceAndUpdateMainStage(DbDto.Topic currentTopic, RemoteResource selectedResource, DbResourceDto.Locale currentLocale, boolean forAllLocales) {
+        mainStageController.getChangeDataController().removeResourceWithReference(currentTopic, currentLocale, selectedResource.referenceProperty().getValue(), forAllLocales);
+
+        updateResourceData();
+
+        mainStageController.getViewDataController().updateAllPropertiesWithItemValues();
+    }
+
+    private void updateResourceData() {
+        this.resourceData.clear();
+
+        DbResourceDto.Locale locale = localesChoiceBox.valueProperty().get();
+        DbDto.Topic topic = topicsChoiceBox.valueProperty().get();
+        DbResourceDto resourceObject = getMiner().getResourceFromTopicAndLocale(topic, locale).get();
+
+        resourceObject.getEntries().forEach((resourceEntry) -> {
+            RemoteResource remoteResource = new RemoteResource();
+            remoteResource.setReference(resourceEntry.getReference());
+            remoteResource.setValue(resourceEntry.getValue());
+            this.resourceData.add(remoteResource);
+        });
     }
 
     void setMainStageController(MainStageController mainStageController) {
