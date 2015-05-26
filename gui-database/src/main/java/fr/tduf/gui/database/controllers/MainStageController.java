@@ -159,10 +159,9 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        String parentDirectory = Paths.get(databaseLocation).getParent().toString();
-        DatabaseReadWriteHelper.writeDatabaseTopicsToJson(this.databaseObjects, parentDirectory);
+        DatabaseReadWriteHelper.writeDatabaseTopicsToJson(this.databaseObjects, databaseLocation);
 
-        Alert alertDialog = new Alert(INFORMATION, parentDirectory, ButtonType.OK);
+        Alert alertDialog = new Alert(INFORMATION, databaseLocation, ButtonType.OK);
         alertDialog.setTitle(DisplayConstants.TITLE_APPLICATION);
         alertDialog.setHeaderText(DisplayConstants.MESSAGE_DATABASE_SAVED);
         alertDialog.showAndWait();
