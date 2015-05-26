@@ -193,7 +193,6 @@ public class ResourcesStageController implements Initializable {
         browsedResourceProperty.setValue(new BrowsedResource(targetTopic, referenceProperty.get()));
 
         Stage stage = (Stage)this.root.getScene().getWindow();
-        stage.initOwner(mainStageController.getRoot().getScene().getWindow());
         stage.show();
     }
 

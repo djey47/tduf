@@ -19,6 +19,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
@@ -300,7 +301,10 @@ public class MainStageController implements Initializable {
     }
 
     private void initResourcesStageController() throws IOException {
-        this.resourcesStageController = ResourcesDesigner.init(new Stage());
+        Stage resourcesStage = new Stage();
+        Platform.runLater(() -> resourcesStage.initOwner(root.getScene().getWindow())); // runLater() ensures main stage will be initialized first.
+
+        this.resourcesStageController = ResourcesDesigner.init(resourcesStage);
         this.resourcesStageController.setMainStageController(this);
     }
 
@@ -438,10 +442,6 @@ public class MainStageController implements Initializable {
 
     BulkDatabaseMiner getMiner() {
         return this.databaseMiner;
-    }
-
-    Parent getRoot() {
-        return root;
     }
 
     ChoiceBox<DbResourceDto.Locale> getLocalesChoiceBox() {
