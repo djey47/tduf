@@ -14,10 +14,11 @@
                   <ChoiceBox fx:id="topicsChoiceBox" prefHeight="25.0" prefWidth="180.0" />
                   <ChoiceBox fx:id="localesChoiceBox" prefHeight="25.0" prefWidth="137.0" />
                   <Separator orientation="VERTICAL" prefHeight="30.0" />
+                  <Button layoutX="345.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleEditResourceButtonMouseClick" prefHeight="25.0" prefWidth="45.0" text="Edit" />
                   <Button layoutX="224.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleAddResourceButtonMouseClick" prefHeight="25.0" prefWidth="28.0" text="+" />
                   <Button layoutX="297.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleRemoveResourceButtonMouseClick" prefWidth="28.0" text="-" />
                   <Separator layoutX="214.0" layoutY="10.0" orientation="VERTICAL" prefHeight="30.0" />
-                  <AnchorPane prefHeight="30.0" prefWidth="215.0">
+                  <AnchorPane prefHeight="30.0" prefWidth="168.0">
                      <children>
                         <Button layoutY="3.0" mnemonicParsing="false" onAction="#handleSelectResourceButtonMouseClick" text="Select" AnchorPane.rightAnchor="0.0" />
                      </children>

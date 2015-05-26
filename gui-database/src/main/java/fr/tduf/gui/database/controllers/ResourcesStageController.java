@@ -85,6 +85,12 @@ public class ResourcesStageController implements Initializable {
     }
 
     @FXML
+    private void handleEditResourceButtonMouseClick(ActionEvent actionEvent){
+        System.out.println("handleEditResourceButtonMouseClick");
+
+    }
+
+    @FXML
     private void handleAddResourceButtonMouseClick(ActionEvent actionEvent){
         System.out.println("handleAddResourceButtonMouseClick");
 
