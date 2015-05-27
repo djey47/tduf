@@ -216,7 +216,7 @@ public class ResourcesStageController implements Initializable {
     private void removeResourceAndUpdateMainStage(DbDto.Topic topic, RemoteResource selectedResource, DbResourceDto.Locale locale, boolean forAllLocales) {
         mainStageController.getChangeDataController().removeResourceWithReference(topic, locale, selectedResource.referenceProperty().getValue(), forAllLocales);
 
-        updateAllStages(false);
+        updateAllStages(Optional.<String>empty());
     }
 
     private void editResourceAndUpdateMainStage(DbDto.Topic topic, Optional<String> currentResourceReference, Pair<String, String> referenceValuePair, DbResourceDto.Locale locale) {
@@ -224,25 +224,26 @@ public class ResourcesStageController implements Initializable {
             return;
         }
 
+        // TODO check if reference does not exist already
         boolean updateResourceMode = currentResourceReference.isPresent();
+        String newResourceReference = referenceValuePair.getKey();
+        String newResourceValue = referenceValuePair.getValue();
         if (updateResourceMode) {
-            mainStageController.getChangeDataController().updateResourceWithReference(topic, locale, currentResourceReference.get(), referenceValuePair.getKey(), referenceValuePair.getValue());
-
+            mainStageController.getChangeDataController().updateResourceWithReference(topic, locale, currentResourceReference.get(), newResourceReference, newResourceValue);
         } else {
-            mainStageController.getChangeDataController().addResourceWithReference(topic, locale, referenceValuePair.getKey(), referenceValuePair.getValue());
+            mainStageController.getChangeDataController().addResourceWithReference(topic, locale, newResourceReference, newResourceValue);
         }
 
-        updateAllStages(!updateResourceMode);
+        updateAllStages(Optional.of(newResourceReference));
     }
 
-    private void updateAllStages(boolean addResourceMode) {
+    private void updateAllStages(Optional<String> resourceReference) {
         updateResourcesStageData();
+        if (resourceReference.isPresent()) {
+            selectResourceInTableAndScroll(resourceReference.get());
+        }
 
         mainStageController.getViewDataController().updateAllPropertiesWithItemValues();
-
-        if (addResourceMode) {
-            // TODO select added resource in addMode
-        }
     }
 
     private void updateResourcesStageData() {
@@ -251,6 +252,7 @@ public class ResourcesStageController implements Initializable {
         DbResourceDto.Locale locale = localesChoiceBox.valueProperty().get();
         DbDto.Topic topic = topicsChoiceBox.valueProperty().get();
         Optional<DbResourceDto> potentialResourceObject = getMiner().getResourceFromTopicAndLocale(topic, locale);
+        // TODO more java8 style
         if (potentialResourceObject.isPresent()) {
             potentialResourceObject.get().getEntries().forEach((resourceEntry) -> {
                 RemoteResource remoteResource = new RemoteResource();
