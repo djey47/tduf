@@ -58,7 +58,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         boolean fieldReadOnly = false;
         String groupName = null;
         Optional<String> potentialToolTip = Optional.empty();
-        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank, controller.getProfilesChoiceBox().getValue(), controller.getLayoutObject());
+        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank, controller.getCurrentProfileObject().getName(), controller.getLayoutObject());
         if (potentialFieldSettings.isPresent()) {
             FieldSettingsDto fieldSettings = potentialFieldSettings.get();
 
@@ -174,6 +174,6 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     private BulkDatabaseMiner getMiner() {
-        return controller.getDatabaseMiner();
+        return controller.getMiner();
     }
 }

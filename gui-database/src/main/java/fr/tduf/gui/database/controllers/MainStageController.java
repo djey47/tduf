@@ -20,6 +20,8 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import javafx.application.Platform;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
@@ -54,6 +56,14 @@ public class MainStageController implements Initializable {
     private MainStageChangeDataController changeDataController;
     private ResourcesStageController resourcesStageController;
 
+    Property<DbDto.Topic> currentTopicProperty;
+    Property<DbResourceDto.Locale> currentLocaleProperty;
+    Property<Long> currentEntryIndexProperty;
+    SimpleStringProperty currentEntryLabelProperty;
+    Property<Integer> entryItemsCountProperty;
+    Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
+    Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
+
     @FXML
     private Parent root;
 
@@ -67,13 +77,13 @@ public class MainStageController implements Initializable {
     private Label currentEntryLabel;
 
     @FXML
-    private ChoiceBox<DbResourceDto.Locale> localesChoiceBox;
+    ChoiceBox<DbResourceDto.Locale> localesChoiceBox;
 
     @FXML
-    private ChoiceBox<String> profilesChoiceBox;
+    ChoiceBox<String> profilesChoiceBox;
 
     @FXML
-    private TabPane tabPane;
+    TabPane tabPane;
 
     @FXML
     private VBox defaultTab;
@@ -170,46 +180,46 @@ public class MainStageController implements Initializable {
     public void handleNextButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleNextButtonMouseClick");
 
-        long currentEntryIndex = this.viewDataController.getCurrentEntryIndexProperty().getValue();
-        if (currentEntryIndex >= this.currentTopicObject.getData().getEntries().size() - 1) {
+        long currentEntryIndex = currentEntryIndexProperty.getValue();
+        if (currentEntryIndex >= currentTopicObject.getData().getEntries().size() - 1) {
             return;
         }
 
-        this.viewDataController.switchToContentEntry(++currentEntryIndex);
+        viewDataController.switchToContentEntry(++currentEntryIndex);
     }
 
     @FXML
     public void handleFastNextButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleFastNextButtonMouseClick");
 
-        long currentEntryIndex = this.viewDataController.getCurrentEntryIndexProperty().getValue();
-        long lastEntryIndex = this.currentTopicObject.getData().getEntries().size() - 1;
+        long currentEntryIndex = currentEntryIndexProperty.getValue();
+        long lastEntryIndex = currentTopicObject.getData().getEntries().size() - 1;
         if (currentEntryIndex + 10 >= lastEntryIndex) {
             currentEntryIndex = lastEntryIndex;
         } else {
             currentEntryIndex += 10;
         }
 
-        this.viewDataController.switchToContentEntry(currentEntryIndex);
+        viewDataController.switchToContentEntry(currentEntryIndex);
     }
 
     @FXML
     public void handlePreviousButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handlePreviousButtonMouseClick");
 
-        long currentEntryIndex = this.viewDataController.getCurrentEntryIndexProperty().getValue();
+        long currentEntryIndex = currentEntryIndexProperty.getValue();
         if (currentEntryIndex <= 0) {
             return;
         }
 
-        this.viewDataController.switchToContentEntry(--currentEntryIndex);
+        viewDataController.switchToContentEntry(--currentEntryIndex);
     }
 
     @FXML
     public void handleFastPreviousButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleFastPreviousButtonMouseClick");
 
-        long currentEntryIndex = this.viewDataController.getCurrentEntryIndexProperty().getValue();
+        long currentEntryIndex = currentEntryIndexProperty.getValue();
         if (currentEntryIndex - 10 < 0) {
             currentEntryIndex = 0;
         } else {
@@ -237,14 +247,14 @@ public class MainStageController implements Initializable {
     public void handleBackButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleLastButtonMouseClick");
 
-        this.viewDataController.switchToPreviousLocation();
+        viewDataController.switchToPreviousLocation();
     }
 
     public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
         return (actionEvent) -> {
             System.out.println("browseResourcesButton clicked");
 
-            this.resourcesStageController.initAndShowDialog(targetReferenceProperty, fieldRank, getLocalesChoiceBox().getValue(), targetTopic);
+            resourcesStageController.initAndShowDialog(targetReferenceProperty, fieldRank, getLocalesChoiceBox().getValue(), targetTopic);
         };
     }
 
@@ -252,8 +262,8 @@ public class MainStageController implements Initializable {
         return (actionEvent) -> {
             System.out.println("gotoReferenceButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
-            DbDataDto.Entry remoteContentEntry = this.databaseMiner.getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getTopic(), fieldRank, this.viewDataController.getCurrentEntryIndexProperty().getValue(), targetTopic).get();
-            this.viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId(), true);
+            DbDataDto.Entry remoteContentEntry = databaseMiner.getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic).get();
+            viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId(), true);
         };
     }
 
@@ -297,38 +307,41 @@ public class MainStageController implements Initializable {
     private void handleLocaleChoiceChanged(DbResourceDto.Locale newLocale) {
         System.out.println("handleLocaleChoiceChanged: " + newLocale.name());
 
-        this.viewDataController.updateAllPropertiesWithItemValues();
+        viewDataController.updateAllPropertiesWithItemValues();
     }
 
     private void initResourcesStageController() throws IOException {
         Stage resourcesStage = new Stage();
         Platform.runLater(() -> resourcesStage.initOwner(root.getScene().getWindow())); // runLater() ensures main stage will be initialized first.
 
-        this.resourcesStageController = ResourcesDesigner.init(resourcesStage);
-        this.resourcesStageController.setMainStageController(this);
+        resourcesStageController = ResourcesDesigner.init(resourcesStage);
+        resourcesStageController.setMainStageController(this);
     }
 
     private void initSettingsPane() throws IOException {
-        this.settingsPane.setExpanded(false);
+        settingsPane.setExpanded(false);
 
-        this.viewDataController.fillLocales();
-        this.localesChoiceBox.getSelectionModel().selectedItemProperty()
+        viewDataController.fillLocales();
+        localesChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener(((observable, oldValue, newValue) -> handleLocaleChoiceChanged(newValue)));
 
-        this.viewDataController.loadAndFillProfiles();
-        this.profilesChoiceBox.getSelectionModel().selectedItemProperty()
+        viewDataController.loadAndFillProfiles();
+        profilesChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> handleProfileChoiceChanged((String) newValue));
 
-        this.databaseLocationTextField.setText(SettingsConstants.DATABASE_DIRECTORY_DEFAULT);
+        databaseLocationTextField.setText(SettingsConstants.DATABASE_DIRECTORY_DEFAULT);
     }
 
     private void initNavigationPane() {
-        this.viewDataController.initNavViewDataProperties();
+        currentTopicProperty = new SimpleObjectProperty<>();
+        entryItemsCountProperty = new SimpleObjectProperty<>(-1);
+        currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
+        currentEntryLabelProperty = new SimpleStringProperty("");
 
-        this.currentTopicLabel.textProperty().bindBidirectional(this.viewDataController.getCurrentTopicProperty(), new DatabaseTopicToStringConverter());
-        this.entryNumberTextField.textProperty().bindBidirectional(this.viewDataController.getCurrentEntryIndexProperty(), new CurrentEntryIndexToStringConverter());
-        this.entryItemsCountLabel.textProperty().bindBidirectional(this.viewDataController.getEntryItemsCountProperty(), new EntryItemsCountToStringConverter());
-        this.currentEntryLabel.textProperty().bindBidirectional(this.viewDataController.getCurrentEntryLabelProperty());
+        currentTopicLabel.textProperty().bindBidirectional(currentTopicProperty, new DatabaseTopicToStringConverter());
+        entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new CurrentEntryIndexToStringConverter());
+        entryItemsCountLabel.textProperty().bindBidirectional(entryItemsCountProperty, new EntryItemsCountToStringConverter());
+        currentEntryLabel.textProperty().bindBidirectional(currentEntryLabelProperty);
     }
 
     private void initTabPane(String profileName) {
@@ -336,34 +349,38 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        this.profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, this.layoutObject);
-        this.currentTopicObject = databaseMiner.getDatabaseTopic(profileObject.getTopic()).get();
+        profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, layoutObject);
+        currentTopicObject = databaseMiner.getDatabaseTopic(profileObject.getTopic()).get();
 
-        this.getRawValuePropertyByFieldRank().clear();
-        this.getResolvedValuePropertyByFieldRank().clear();
-        this.resourceListByTopicLink.clear();
-
-        this.viewDataController.initTabViewDataProperties();
+        rawValuePropertyByFieldRank.clear();
+        resolvedValuePropertyByFieldRank.clear();
+        resourceListByTopicLink.clear();
 
         initGroupTabs();
 
         addDynamicControls();
 
-        this.viewDataController.updateAllPropertiesWithItemValues();
+        viewDataController.updateAllPropertiesWithItemValues();
     }
 
     private void initGroupTabs() {
-        this.defaultTab.getChildren().clear();
+        currentTopicProperty.setValue(currentTopicObject.getTopic());
+        currentEntryIndexProperty.setValue(0L);
+        entryItemsCountProperty.setValue(currentTopicObject.getData().getEntries().size());
+        rawValuePropertyByFieldRank.clear();
+        resolvedValuePropertyByFieldRank.clear();
 
-        this.tabPane.getTabs().remove(1, this.tabPane.getTabs().size());
+        defaultTab.getChildren().clear();
+
+        tabPane.getTabs().remove(1, tabPane.getTabs().size());
         tabContentByName.clear();
 
-        if (this.profileObject.getGroups() != null) {
-            this.profileObject.getGroups().forEach((groupName) -> {
+        if (profileObject.getGroups() != null) {
+            profileObject.getGroups().forEach((groupName) -> {
                 VBox vbox = new VBox();
                 Tab groupTab = new Tab(groupName, new ScrollPane(vbox));
 
-                this.tabPane.getTabs().add(this.tabPane.getTabs().size(), groupTab);
+                tabPane.getTabs().add(tabPane.getTabs().size(), groupTab);
 
                 tabContentByName.put(groupName, vbox);
             });
@@ -371,33 +388,28 @@ public class MainStageController implements Initializable {
     }
 
     private void addDynamicControls() {
-        if (this.profileObject.getFieldSettings() != null) {
+        if (profileObject.getFieldSettings() != null) {
             dynamicFieldControlsHelper.addAllFieldsControls(
-                    this.layoutObject,
-                    this.profilesChoiceBox.getValue(),
-                    this.currentTopicObject.getTopic());
+                    layoutObject,
+                    profilesChoiceBox.getValue(),
+                    currentTopicObject.getTopic());
         }
 
-        if (this.profileObject.getTopicLinks() != null) {
+        if (profileObject.getTopicLinks() != null) {
             dynamicLinkControlsHelper.addAllLinksControls(
-                    this.profileObject);
+                    profileObject);
         }
     }
 
     private void loadDatabaseFromDirectory(String databaseLocation) {
-        this.databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(databaseLocation);
-        if (!this.databaseObjects.isEmpty()) {
-            this.databaseMiner = BulkDatabaseMiner.load(this.databaseObjects);
+        databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(databaseLocation);
+        if (!databaseObjects.isEmpty()) {
+            databaseMiner = BulkDatabaseMiner.load(this.databaseObjects);
 
-            this.profilesChoiceBox.getSelectionModel().selectFirst();
+            profilesChoiceBox.getSelectionModel().selectFirst();
 
-            this.navigationHistory.clear();
+            navigationHistory.clear();
         }
-    }
-
-    public ChoiceBox<String> getProfilesChoiceBox() {
-        return this.profilesChoiceBox;
-
     }
 
     public DbDto getCurrentTopicObject() {
@@ -420,30 +432,21 @@ public class MainStageController implements Initializable {
         return defaultTab;
     }
 
-    public Map<Integer, SimpleStringProperty> getRawValuePropertyByFieldRank() {
-        return viewDataController.getRawValuePropertyByFieldRank();
-    }
-
-    public Map<Integer, SimpleStringProperty> getResolvedValuePropertyByFieldRank() {
-        return viewDataController.getResolvedValuePropertyByFieldRank();
-    }
-
     public Map<TopicLinkDto, ObservableList<RemoteResource>> getResourceListByTopicLink() {
         return resourceListByTopicLink;
     }
 
-    public long getCurrentEntryIndex() {
-        return this.viewDataController.getCurrentEntryIndexProperty().getValue();
-    }
-
-    public BulkDatabaseMiner getDatabaseMiner() {
+    public BulkDatabaseMiner getMiner() {
         return databaseMiner;
     }
 
-    BulkDatabaseMiner getMiner() {
-        return this.databaseMiner;
+    public Map<Integer, SimpleStringProperty> getRawValuePropertyByFieldRank() {
+        return rawValuePropertyByFieldRank;
     }
 
+    public Map<Integer, SimpleStringProperty> getResolvedValuePropertyByFieldRank() {
+        return resolvedValuePropertyByFieldRank;
+    }
     ChoiceBox<DbResourceDto.Locale> getLocalesChoiceBox() {
         return localesChoiceBox;
     }
@@ -456,10 +459,6 @@ public class MainStageController implements Initializable {
         return navigationHistory;
     }
 
-    TabPane getTabPane() {
-        return tabPane;
-    }
-
     MainStageViewDataController getViewDataController() {
         return viewDataController;
     }
@@ -467,4 +466,5 @@ public class MainStageController implements Initializable {
     MainStageChangeDataController getChangeDataController() {
         return changeDataController;
     }
+
 }

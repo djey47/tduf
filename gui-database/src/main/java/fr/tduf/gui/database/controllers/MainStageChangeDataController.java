@@ -12,7 +12,9 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
-// TODO see to inherit main controller
+/**
+ * Specialized controller to update database contents.
+ */
 public class MainStageChangeDataController {
     private final MainStageController mainStageController;
 
@@ -23,7 +25,7 @@ public class MainStageChangeDataController {
     }
 
     void updateContentItem(DbDto.Topic topic, int fieldRank, String newRawValue) {
-        DbDataDto.Item contentItem = this.getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic, fieldRank, this.mainStageController.getCurrentEntryIndex()).get();
+        DbDataDto.Item contentItem = getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic, fieldRank, mainStageController.currentEntryIndexProperty.getValue()).get();
 
         if (!contentItem.getRawValue().equals(newRawValue)) {
             contentItem.setRawValue(newRawValue);
@@ -81,6 +83,6 @@ public class MainStageChangeDataController {
     }
 
     private BulkDatabaseMiner getMiner() {
-        return this.mainStageController.getDatabaseMiner();
+        return this.mainStageController.getMiner();
     }
 }

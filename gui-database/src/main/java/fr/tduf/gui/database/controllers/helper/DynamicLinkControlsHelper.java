@@ -112,7 +112,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     private BulkDatabaseMiner getMiner() {
-            return controller.getDatabaseMiner();
+            return controller.getMiner();
     }
 
     private static void addFieldLabelForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject) {
