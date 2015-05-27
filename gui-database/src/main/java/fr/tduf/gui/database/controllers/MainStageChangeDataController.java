@@ -60,6 +60,15 @@ public class MainStageChangeDataController {
         resourceEntry.setValue(newResourceValue);
     }
 
+    void addResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, String resourceValue) {
+        List<DbResourceDto.Entry> resourceEntries = getMiner().getResourceFromTopicAndLocale(topic, locale).get().getEntries();
+
+        resourceEntries.add(DbResourceDto.Entry.builder()
+                .forReference(resourceReference)
+                .withValue(resourceValue)
+                .build());
+    }
+
     private BulkDatabaseMiner getMiner() {
         return this.mainStageController.getDatabaseMiner();
     }

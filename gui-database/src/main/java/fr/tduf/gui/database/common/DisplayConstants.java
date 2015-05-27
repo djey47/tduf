@@ -24,9 +24,10 @@ public class DisplayConstants {
     public static final String TITLE_APPLICATION = "TDUF Database Editor";
     public static final String TITLE_SUB_RESOURCES = " : Resources";
 
+    public static final String MESSAGE_ADDED_RESOURCE = "Add resource in topic: ";
     public static final String MESSAGE_DATABASE_SAVED = "Current database was saved.";
     public static final String MESSAGE_DELETED_RESOURCE = "This resource will be removed.";
-    public static final String MESSAGE_EDITED_RESOURCE = "Edit resource: ";
+    public static final String MESSAGE_EDITED_RESOURCE = "Edit resource: %s - %s";
 
     public static final String QUESTION_AFFECTED_LOCALES = "Which locales should be affected?";
 }

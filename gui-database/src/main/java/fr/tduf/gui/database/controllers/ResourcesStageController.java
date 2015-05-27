@@ -99,7 +99,7 @@ public class ResourcesStageController implements Initializable {
         }
 
         String currentResourceReference = selectedResource.referenceProperty().get();
-        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(selectedResource);
+        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(selectedResource, topicsChoiceBox.getValue());
         if (result.isPresent()) {
             updateResourceAndMainStage(topicsChoiceBox.getValue(), currentResourceReference, result.get(), localesChoiceBox.getValue());
         }
@@ -109,6 +109,10 @@ public class ResourcesStageController implements Initializable {
     private void handleAddResourceButtonMouseClick(ActionEvent actionEvent){
         System.out.println("handleAddResourceButtonMouseClick");
 
+        Optional<Pair<String, String>> result = dialogsHelper.showAddResourceDialog(topicsChoiceBox.getValue());
+        if (result.isPresent()) {
+            addResourceAndUpdateMainStage(topicsChoiceBox.getValue(), result.get(), localesChoiceBox.getValue());
+        }
     }
 
     @FXML
@@ -130,13 +134,13 @@ public class ResourcesStageController implements Initializable {
     private void handleTopicChoiceChanged(DbDto.Topic newTopic) {
         System.out.println("handleTopicChoiceChanged: " + newTopic);
 
-        updateResourceData();
+        updateResourcesStageData();
     }
 
     private void handleLocaleChoiceChanged(DbResourceDto.Locale newLocale) {
         System.out.println("handleLocaleChoiceChanged: " + newLocale);
 
-        updateResourceData();
+        updateResourcesStageData();
     }
 
     private void handleBrowseToResource(BrowsedResource newResource) {
@@ -212,9 +216,7 @@ public class ResourcesStageController implements Initializable {
     private void removeResourceAndUpdateMainStage(DbDto.Topic topic, RemoteResource selectedResource, DbResourceDto.Locale locale, boolean forAllLocales) {
         mainStageController.getChangeDataController().removeResourceWithReference(topic, locale, selectedResource.referenceProperty().getValue(), forAllLocales);
 
-        updateResourceData();
-
-        mainStageController.getViewDataController().updateAllPropertiesWithItemValues();
+        updateAllStages();
     }
 
     private void updateResourceAndMainStage(DbDto.Topic topic, String currentResourceReference, Pair<String, String> referenceValuePair, DbResourceDto.Locale locale) {
@@ -224,12 +226,28 @@ public class ResourcesStageController implements Initializable {
 
         mainStageController.getChangeDataController().updateResourceWithReference(topic, locale, currentResourceReference, referenceValuePair.getKey(), referenceValuePair.getValue());
 
-        updateResourceData();
+        updateAllStages();
+    }
+
+    private void addResourceAndUpdateMainStage(DbDto.Topic topic, Pair<String, String> referenceValuePair, DbResourceDto.Locale locale) {
+        if (referenceValuePair == null) {
+            return;
+        }
+
+        mainStageController.getChangeDataController().addResourceWithReference(topic, locale, referenceValuePair.getKey(), referenceValuePair.getValue());
+
+        updateAllStages();
+
+        // TODO select added resource
+    }
+
+    private void updateAllStages() {
+        updateResourcesStageData();
 
         mainStageController.getViewDataController().updateAllPropertiesWithItemValues();
     }
 
-    private void updateResourceData() {
+    private void updateResourcesStageData() {
         this.resourceData.clear();
 
         DbResourceDto.Locale locale = localesChoiceBox.valueProperty().get();
