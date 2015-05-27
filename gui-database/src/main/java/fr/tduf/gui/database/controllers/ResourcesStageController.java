@@ -100,7 +100,8 @@ public class ResourcesStageController implements Initializable {
         }
 
         String currentResourceReference = selectedResource.referenceProperty().get();
-        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(getCurrentTopic(), Optional.of(selectedResource));
+        DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
+        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.of(selectedResource));
         if (result.isPresent()) {
             editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), result.get(), getCurrentLocale());
         }
@@ -110,7 +111,8 @@ public class ResourcesStageController implements Initializable {
     private void handleAddResourceButtonMouseClick(ActionEvent actionEvent){
         System.out.println("handleAddResourceButtonMouseClick");
 
-        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(getCurrentTopic(), Optional.empty());
+        DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
+        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.empty());
         if (result.isPresent()) {
             editResourceAndUpdateMainStage(getCurrentTopic(), Optional.empty(), result.get(), getCurrentLocale());
         }
@@ -278,6 +280,6 @@ public class ResourcesStageController implements Initializable {
     }
 
     private BulkDatabaseMiner getMiner() {
-        return this.mainStageController.getMiner();
+        return mainStageController.getMiner();
     }
 }

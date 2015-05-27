@@ -2,6 +2,7 @@ package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.domain.RemoteResource;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -44,17 +45,18 @@ public class DialogsHelper {
     }
 
     /**
-     * @param topic             : topic to be affected
+     * @param topicObject       : topic contents to be affected
      * @param updatedResource   : resource to apply, or absent to create a new one
      * @return resulting resource, or absent if dialog was dismissed.
      */
-    public Optional<Pair<String, String>> showEditResourceDialog(DbDto.Topic topic, Optional<RemoteResource> updatedResource) {
+    public Optional<Pair<String, String>> showEditResourceDialog(DbDto topicObject, Optional<RemoteResource> updatedResource) {
         Dialog<Pair<String, String>> editResourceDialog = new Dialog<>();
         editResourceDialog.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
 
         boolean updateResourceMode = updatedResource.isPresent();
-        String defaultReference = "";
+        String defaultReference;
         String defaultValue = "";
+        DbDto.Topic topic = topicObject.getTopic();
         if (updateResourceMode) {
             RemoteResource resource = updatedResource.get();
             editResourceDialog.setHeaderText(String.format(DisplayConstants.MESSAGE_EDITED_RESOURCE,
@@ -64,7 +66,7 @@ public class DialogsHelper {
             defaultValue = resource.valueProperty().get();
         } else {
             editResourceDialog.setHeaderText(DisplayConstants.MESSAGE_ADDED_RESOURCE + topic.getLabel());
-            // TODO generate default reference?
+            defaultReference = DatabaseHelper.generateUniqueResourceEntryIdentifier(topicObject);
         }
 
         GridPane grid = new GridPane();
