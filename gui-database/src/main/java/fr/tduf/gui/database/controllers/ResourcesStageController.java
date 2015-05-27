@@ -100,7 +100,7 @@ public class ResourcesStageController implements Initializable {
 
         Dialog<Pair<String, String>> editResourceDialog = new Dialog<>();
         editResourceDialog.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
-        editResourceDialog.setHeaderText(DisplayConstants.MESSAGE_EDITED_RESOURCE);
+        editResourceDialog.setHeaderText(DisplayConstants.MESSAGE_EDITED_RESOURCE + selectedResource.toDisplayableValue());
 
         GridPane grid = new GridPane();
         grid.setHgap(10);

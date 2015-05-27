@@ -26,7 +26,7 @@ public class DisplayConstants {
 
     public static final String MESSAGE_DATABASE_SAVED = "Current database was saved.";
     public static final String MESSAGE_DELETED_RESOURCE = "This resource will be removed.";
-    public static final String MESSAGE_EDITED_RESOURCE = "Edit database resource.";
+    public static final String MESSAGE_EDITED_RESOURCE = "Edit resource: ";
 
     public static final String QUESTION_AFFECTED_LOCALES = "Which locales should be affected?";
 }
