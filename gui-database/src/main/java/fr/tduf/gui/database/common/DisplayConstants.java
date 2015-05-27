@@ -22,6 +22,7 @@ public class DisplayConstants {
     public static final String COLUMN_HEADER_DATA = "Linked data";
 
     public static final String TITLE_APPLICATION = "TDUF Database Editor";
+    public static final String TITLE_SUB_ENTRIES = " : Content entries";
     public static final String TITLE_SUB_RESOURCES = " : Resources";
 
     public static final String MESSAGE_ADDED_RESOURCE = "Add resource in topic: ";

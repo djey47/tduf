@@ -18,7 +18,7 @@ public class ResourcesDesigner {
     private static final Class<ResourcesDesigner> thisClass = ResourcesDesigner.class;
 
     /**
-     * Loads main scene from FXML resource.
+     * Loads scene from FXML resource.
      * @param resourcesStage  : reference to resources stage.
      */
     public static ResourcesStageController init(Stage resourcesStage) throws IOException {

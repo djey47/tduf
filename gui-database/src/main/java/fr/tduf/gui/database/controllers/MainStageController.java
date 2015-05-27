@@ -13,6 +13,7 @@ import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
+import fr.tduf.gui.database.stages.EntriesDesigner;
 import fr.tduf.gui.database.stages.ResourcesDesigner;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -55,6 +56,7 @@ public class MainStageController implements Initializable {
     private MainStageViewDataController viewDataController;
     private MainStageChangeDataController changeDataController;
     private ResourcesStageController resourcesStageController;
+    private EntriesStageController entriesStageController;
 
     Property<DbDto.Topic> currentTopicProperty;
     Property<DbResourceDto.Locale> currentLocaleProperty;
@@ -122,6 +124,8 @@ public class MainStageController implements Initializable {
             initSettingsPane();
 
             initResourcesStageController();
+
+            initEntriesStageController();
         } catch (IOException e) {
             throw new RuntimeException("Window initializing failed.", e);
         }
@@ -258,6 +262,14 @@ public class MainStageController implements Initializable {
         };
     }
 
+    public EventHandler<ActionEvent> handleBrowseEntriesResourcesButtonMouseClick() {
+        return (actionEvent) -> {
+            System.out.println("browseEntriesButton clicked");
+
+            entriesStageController.initAndShowDialog();
+        };
+    }
+
     public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(DbDto.Topic targetTopic, int fieldRank, String targetProfileName) {
         return (actionEvent) -> {
             System.out.println("gotoReferenceButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
@@ -316,6 +328,14 @@ public class MainStageController implements Initializable {
 
         resourcesStageController = ResourcesDesigner.init(resourcesStage);
         resourcesStageController.setMainStageController(this);
+    }
+
+    private void initEntriesStageController() throws IOException {
+        Stage entriesStage = new Stage();
+        Platform.runLater(() -> entriesStage.initOwner(root.getScene().getWindow())); // runLater() ensures main stage will be initialized first.
+
+        entriesStageController = EntriesDesigner.init(entriesStage);
+        entriesStageController.setMainStageController(this);
     }
 
     private void initSettingsPane() throws IOException {
