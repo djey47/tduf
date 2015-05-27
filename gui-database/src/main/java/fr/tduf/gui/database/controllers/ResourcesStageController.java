@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 public class ResourcesStageController implements Initializable {
 
@@ -99,9 +100,9 @@ public class ResourcesStageController implements Initializable {
         }
 
         String currentResourceReference = selectedResource.referenceProperty().get();
-        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(topicsChoiceBox.getValue(), Optional.of(selectedResource));
+        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(getCurrentTopic(), Optional.of(selectedResource));
         if (result.isPresent()) {
-            editResourceAndUpdateMainStage(topicsChoiceBox.getValue(), Optional.of(currentResourceReference), result.get(), localesChoiceBox.getValue());
+            editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), result.get(), getCurrentLocale());
         }
     }
 
@@ -109,9 +110,9 @@ public class ResourcesStageController implements Initializable {
     private void handleAddResourceButtonMouseClick(ActionEvent actionEvent){
         System.out.println("handleAddResourceButtonMouseClick");
 
-        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(topicsChoiceBox.getValue(), Optional.empty());
+        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(getCurrentTopic(), Optional.empty());
         if (result.isPresent()) {
-            editResourceAndUpdateMainStage(topicsChoiceBox.getValue(), Optional.empty(), result.get(), localesChoiceBox.getValue());
+            editResourceAndUpdateMainStage(getCurrentTopic(), Optional.empty(), result.get(), getCurrentLocale());
         }
     }
 
@@ -124,10 +125,11 @@ public class ResourcesStageController implements Initializable {
             return;
         }
 
-        DbResourceDto.Locale currentLocale = localesChoiceBox.valueProperty().get();
-        Optional<Boolean> result = dialogsHelper.showResourceDeletionDialog(topicsChoiceBox.getValue(), selectedResource, currentLocale.getCode());
+        DbResourceDto.Locale currentLocale = getCurrentLocale();
+        DbDto.Topic currentTopic = getCurrentTopic();
+        Optional<Boolean> result = dialogsHelper.showResourceDeletionDialog(currentTopic, selectedResource, currentLocale.getCode());
         if (result.isPresent()) {
-            removeResourceAndUpdateMainStage(topicsChoiceBox.getValue(), selectedResource, currentLocale, result.get());
+            removeResourceAndUpdateMainStage(currentTopic, selectedResource, currentLocale, result.get());
         }
     }
 
@@ -247,24 +249,32 @@ public class ResourcesStageController implements Initializable {
     }
 
     private void updateResourcesStageData() {
-        this.resourceData.clear();
+        resourceData.clear();
 
-        DbResourceDto.Locale locale = localesChoiceBox.valueProperty().get();
-        DbDto.Topic topic = topicsChoiceBox.valueProperty().get();
-        Optional<DbResourceDto> potentialResourceObject = getMiner().getResourceFromTopicAndLocale(topic, locale);
-        // TODO more java8 style
-        if (potentialResourceObject.isPresent()) {
-            potentialResourceObject.get().getEntries().forEach((resourceEntry) -> {
-                RemoteResource remoteResource = new RemoteResource();
-                remoteResource.setReference(resourceEntry.getReference());
-                remoteResource.setValue(resourceEntry.getValue());
-                this.resourceData.add(remoteResource);
-            });
-        }
+        getMiner().getResourceFromTopicAndLocale(getCurrentTopic(), getCurrentLocale())
+                .ifPresent((resourceObject) -> resourceData.addAll(resourceObject.getEntries().stream()
+
+                                .map((resourceEntry) -> {
+                                    RemoteResource remoteResource = new RemoteResource();
+                                    remoteResource.setReference(resourceEntry.getReference());
+                                    remoteResource.setValue(resourceEntry.getValue());
+                                    return remoteResource;
+                                })
+
+                                .collect(toList()))
+                );
     }
 
     void setMainStageController(MainStageController mainStageController) {
         this.mainStageController = mainStageController;
+    }
+
+    private DbDto.Topic getCurrentTopic() {
+        return topicsChoiceBox.getValue();
+    }
+
+    private DbResourceDto.Locale getCurrentLocale() {
+        return localesChoiceBox.getValue();
     }
 
     private BulkDatabaseMiner getMiner() {
