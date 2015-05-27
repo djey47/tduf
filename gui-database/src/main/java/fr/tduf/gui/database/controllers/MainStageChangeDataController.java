@@ -54,19 +54,30 @@ public class MainStageChangeDataController {
     }
 
     void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
-        DbResourceDto.Entry resourceEntry = getMiner().getResourceEntryFromTopicAndLocaleWithReference(oldResourceReference, topic, locale).get();
+        checkResourceDoesNotExistWithReference(topic, locale, newResourceReference);
 
-        resourceEntry.setReference(newResourceReference);
-        resourceEntry.setValue(newResourceValue);
+        DbResourceDto.Entry existingResourceEntry = getMiner().getResourceEntryFromTopicAndLocaleWithReference(oldResourceReference, topic, locale).get();
+
+        existingResourceEntry.setReference(newResourceReference);
+        existingResourceEntry.setValue(newResourceValue);
     }
 
     void addResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, String resourceValue) {
+        checkResourceDoesNotExistWithReference(topic, locale, resourceReference);
+
         List<DbResourceDto.Entry> resourceEntries = getMiner().getResourceFromTopicAndLocale(topic, locale).get().getEntries();
 
         resourceEntries.add(DbResourceDto.Entry.builder()
                 .forReference(resourceReference)
                 .withValue(resourceValue)
                 .build());
+    }
+
+    private void checkResourceDoesNotExistWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference) {
+        getMiner().getResourceEntryFromTopicAndLocaleWithReference(resourceReference, topic, locale)
+                .ifPresent((resourceEntry) -> {
+                    throw new IllegalArgumentException("Resource already exists with reference: " + resourceReference);
+                });
     }
 
     private BulkDatabaseMiner getMiner() {

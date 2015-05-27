@@ -20,6 +20,15 @@ import static javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE;
  */
 public class DialogsHelper {
 
+    public void showErrorDialog(String errorMessage, String errorDescription) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
+        alert.setHeaderText(errorMessage);
+        alert.setContentText(errorDescription);
+
+        alert.showAndWait();
+    }
+
     /**
      * @return true if all locales should be affected, false otherwise - or absent if dialog was dismissed.
      */

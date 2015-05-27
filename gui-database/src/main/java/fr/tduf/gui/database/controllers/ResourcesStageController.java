@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
+import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.BrowsedResource;
 import fr.tduf.gui.database.domain.RemoteResource;
@@ -103,7 +104,11 @@ public class ResourcesStageController implements Initializable {
         DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
         Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.of(selectedResource));
         if (result.isPresent()) {
-            editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), result.get(), getCurrentLocale());
+            try {
+                editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), result.get(), getCurrentLocale());
+            } catch(IllegalArgumentException iae) {
+                dialogsHelper.showErrorDialog(iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
+            }
         }
     }
 
@@ -114,7 +119,11 @@ public class ResourcesStageController implements Initializable {
         DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
         Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.empty());
         if (result.isPresent()) {
-            editResourceAndUpdateMainStage(getCurrentTopic(), Optional.empty(), result.get(), getCurrentLocale());
+            try {
+                editResourceAndUpdateMainStage(getCurrentTopic(), Optional.empty(), result.get(), getCurrentLocale());
+            } catch(IllegalArgumentException iae) {
+                dialogsHelper.showErrorDialog(iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
+            }
         }
     }
 
@@ -228,7 +237,6 @@ public class ResourcesStageController implements Initializable {
             return;
         }
 
-        // TODO check if reference does not exist already
         boolean updateResourceMode = currentResourceReference.isPresent();
         String newResourceReference = referenceValuePair.getKey();
         String newResourceValue = referenceValuePair.getValue();
