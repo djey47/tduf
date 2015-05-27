@@ -1,13 +1,12 @@
 package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
-import fr.tduf.gui.database.common.DisplayConstants;
+import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.BrowsedResource;
 import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -16,12 +15,12 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -30,10 +29,11 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static java.util.Arrays.asList;
-import static javafx.scene.control.Alert.AlertType.CONFIRMATION;
-import static javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE;
 
 public class ResourcesStageController implements Initializable {
+
+    private DialogsHelper dialogsHelper = new DialogsHelper();
+
     @FXML
     private Parent root;
 
@@ -58,8 +58,8 @@ public class ResourcesStageController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.browsedResourceProperty = new SimpleObjectProperty<>();
-        this.browsedResourceProperty
+        browsedResourceProperty = new SimpleObjectProperty<>();
+        browsedResourceProperty
                 .addListener((observable, oldValue, newValue) -> handleBrowseToResource(newValue));
 
         initTopicPane();
@@ -98,36 +98,8 @@ public class ResourcesStageController implements Initializable {
             return;
         }
 
-        Dialog<Pair<String, String>> editResourceDialog = new Dialog<>();
-        editResourceDialog.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
-        editResourceDialog.setHeaderText(DisplayConstants.MESSAGE_EDITED_RESOURCE + selectedResource.toDisplayableValue());
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
         String currentResourceReference = selectedResource.referenceProperty().get();
-        TextField referenceTextField = new TextField(currentResourceReference);
-        Platform.runLater(referenceTextField::requestFocus);
-        TextField valueTextField = new TextField(selectedResource.valueProperty().get());
-        grid.add(new Label(DisplayConstants.LABEL_TEXTFIELD_REFERENCE), 0, 0);
-        grid.add(referenceTextField, 1, 0);
-        grid.add(new Label(DisplayConstants.LABEL_TEXTFIELD_VALUE), 0, 1);
-        grid.add(valueTextField, 1, 1);
-        editResourceDialog.getDialogPane().setContent(grid);
-
-        ButtonType okButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_OK, ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_CANCEL, CANCEL_CLOSE);
-        editResourceDialog.getDialogPane().getButtonTypes().setAll(okButtonType, cancelButtonType);
-
-        editResourceDialog.setResultConverter(dialogButton -> {
-            if (dialogButton == okButtonType) {
-                return new Pair<>(referenceTextField.getText(), valueTextField.getText());
-            }
-            return null;
-        });
-
-        Optional<Pair<String, String>> result = editResourceDialog.showAndWait();
+        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(selectedResource);
         if (result.isPresent()) {
             updateResourceAndMainStage(topicsChoiceBox.getValue(), currentResourceReference, result.get(), localesChoiceBox.getValue());
         }
@@ -148,21 +120,10 @@ public class ResourcesStageController implements Initializable {
             return;
         }
 
-        Alert alert = new Alert(CONFIRMATION);
-        alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
-        alert.setHeaderText(selectedResource.toDisplayableValue());
-        alert.setContentText(DisplayConstants.MESSAGE_DELETED_RESOURCE + "\n" + DisplayConstants.QUESTION_AFFECTED_LOCALES);
-
         DbResourceDto.Locale currentLocale = localesChoiceBox.valueProperty().get();
-        ButtonType currentLocaleButtonType = new ButtonType(String.format(DisplayConstants.LABEL_BUTTON_CURRENT_LOCALE, currentLocale.getCode()));
-        ButtonType allLocalesButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_ALL);
-        ButtonType cancelButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_CANCEL, CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(currentLocaleButtonType, allLocalesButtonType, cancelButtonType);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent()
-                && cancelButtonType != result.get()) {
-            removeResourceAndUpdateMainStage(topicsChoiceBox.getValue(), selectedResource, currentLocale, allLocalesButtonType == result.get());
+        Optional<Boolean> result = dialogsHelper.showResourceDeletionDialog(selectedResource, currentLocale.getCode());
+        if (result.isPresent()) {
+            removeResourceAndUpdateMainStage(topicsChoiceBox.getValue(), selectedResource, currentLocale, result.get());
         }
     }
 
