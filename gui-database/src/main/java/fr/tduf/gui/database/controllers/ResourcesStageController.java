@@ -99,9 +99,9 @@ public class ResourcesStageController implements Initializable {
         }
 
         String currentResourceReference = selectedResource.referenceProperty().get();
-        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(selectedResource, topicsChoiceBox.getValue());
+        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(topicsChoiceBox.getValue(), Optional.of(selectedResource));
         if (result.isPresent()) {
-            updateResourceAndMainStage(topicsChoiceBox.getValue(), currentResourceReference, result.get(), localesChoiceBox.getValue());
+            editResourceAndUpdateMainStage(topicsChoiceBox.getValue(), Optional.of(currentResourceReference), result.get(), localesChoiceBox.getValue());
         }
     }
 
@@ -109,9 +109,9 @@ public class ResourcesStageController implements Initializable {
     private void handleAddResourceButtonMouseClick(ActionEvent actionEvent){
         System.out.println("handleAddResourceButtonMouseClick");
 
-        Optional<Pair<String, String>> result = dialogsHelper.showAddResourceDialog(topicsChoiceBox.getValue());
+        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(topicsChoiceBox.getValue(), Optional.empty());
         if (result.isPresent()) {
-            addResourceAndUpdateMainStage(topicsChoiceBox.getValue(), result.get(), localesChoiceBox.getValue());
+            editResourceAndUpdateMainStage(topicsChoiceBox.getValue(), Optional.empty(), result.get(), localesChoiceBox.getValue());
         }
     }
 
@@ -216,35 +216,33 @@ public class ResourcesStageController implements Initializable {
     private void removeResourceAndUpdateMainStage(DbDto.Topic topic, RemoteResource selectedResource, DbResourceDto.Locale locale, boolean forAllLocales) {
         mainStageController.getChangeDataController().removeResourceWithReference(topic, locale, selectedResource.referenceProperty().getValue(), forAllLocales);
 
-        updateAllStages();
+        updateAllStages(false);
     }
 
-    private void updateResourceAndMainStage(DbDto.Topic topic, String currentResourceReference, Pair<String, String> referenceValuePair, DbResourceDto.Locale locale) {
+    private void editResourceAndUpdateMainStage(DbDto.Topic topic, Optional<String> currentResourceReference, Pair<String, String> referenceValuePair, DbResourceDto.Locale locale) {
         if (referenceValuePair == null) {
             return;
         }
 
-        mainStageController.getChangeDataController().updateResourceWithReference(topic, locale, currentResourceReference, referenceValuePair.getKey(), referenceValuePair.getValue());
+        boolean updateResourceMode = currentResourceReference.isPresent();
+        if (updateResourceMode) {
+            mainStageController.getChangeDataController().updateResourceWithReference(topic, locale, currentResourceReference.get(), referenceValuePair.getKey(), referenceValuePair.getValue());
 
-        updateAllStages();
-    }
-
-    private void addResourceAndUpdateMainStage(DbDto.Topic topic, Pair<String, String> referenceValuePair, DbResourceDto.Locale locale) {
-        if (referenceValuePair == null) {
-            return;
+        } else {
+            mainStageController.getChangeDataController().addResourceWithReference(topic, locale, referenceValuePair.getKey(), referenceValuePair.getValue());
         }
 
-        mainStageController.getChangeDataController().addResourceWithReference(topic, locale, referenceValuePair.getKey(), referenceValuePair.getValue());
-
-        updateAllStages();
-
-        // TODO select added resource
+        updateAllStages(!updateResourceMode);
     }
 
-    private void updateAllStages() {
+    private void updateAllStages(boolean addResourceMode) {
         updateResourcesStageData();
 
         mainStageController.getViewDataController().updateAllPropertiesWithItemValues();
+
+        if (addResourceMode) {
+            // TODO select added resource in addMode
+        }
     }
 
     private void updateResourcesStageData() {

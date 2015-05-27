@@ -41,20 +41,37 @@ public class DialogsHelper {
         return Optional.of(result.get() == allLocalesButtonType);
     }
 
-    public Optional<Pair<String, String>> showEditResourceDialog(RemoteResource selectedResource, DbDto.Topic topic) {
+    /**
+     * @param topic             : topic to be affected
+     * @param updatedResource   : resource to apply, or absent to create a new one
+     * @return resulting resource, or absent if dialog was dismissed.
+     */
+    public Optional<Pair<String, String>> showEditResourceDialog(DbDto.Topic topic, Optional<RemoteResource> updatedResource) {
         Dialog<Pair<String, String>> editResourceDialog = new Dialog<>();
         editResourceDialog.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
-        editResourceDialog.setHeaderText(String.format(DisplayConstants.MESSAGE_EDITED_RESOURCE,
-                topic.getLabel(),
-                selectedResource.toDisplayableValue()));
+
+        boolean updateResourceMode = updatedResource.isPresent();
+        String defaultReference = "";
+        String defaultValue = "";
+        if (updateResourceMode) {
+            RemoteResource resource = updatedResource.get();
+            editResourceDialog.setHeaderText(String.format(DisplayConstants.MESSAGE_EDITED_RESOURCE,
+                    topic.getLabel(),
+                    resource.toDisplayableValue()));
+            defaultReference = resource.referenceProperty().get();
+            defaultValue = resource.valueProperty().get();
+        } else {
+            editResourceDialog.setHeaderText(DisplayConstants.MESSAGE_ADDED_RESOURCE + topic.getLabel());
+            // TODO generate default reference?
+        }
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
-        TextField referenceTextField = new TextField(selectedResource.referenceProperty().get());
+        TextField referenceTextField = new TextField(defaultReference);
         Platform.runLater(referenceTextField::requestFocus);
-        TextField valueTextField = new TextField(selectedResource.valueProperty().get());
+        TextField valueTextField = new TextField(defaultValue);
         grid.add(new Label(DisplayConstants.LABEL_TEXTFIELD_REFERENCE), 0, 0);
         grid.add(referenceTextField, 1, 0);
         grid.add(new Label(DisplayConstants.LABEL_TEXTFIELD_VALUE), 0, 1);
@@ -73,39 +90,5 @@ public class DialogsHelper {
         });
 
         return editResourceDialog.showAndWait();
-    }
-
-    // TODO factorize add and edit dialogs
-    public Optional<Pair<String, String>> showAddResourceDialog(DbDto.Topic topic) {
-        Dialog<Pair<String, String>> addResourceDialog = new Dialog<>();
-        addResourceDialog.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
-        addResourceDialog.setHeaderText(DisplayConstants.MESSAGE_ADDED_RESOURCE + topic.getLabel());
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-        // TODO generate default reference?
-        TextField referenceTextField = new TextField();
-        Platform.runLater(referenceTextField::requestFocus);
-        TextField valueTextField = new TextField();
-        grid.add(new Label(DisplayConstants.LABEL_TEXTFIELD_REFERENCE), 0, 0);
-        grid.add(referenceTextField, 1, 0);
-        grid.add(new Label(DisplayConstants.LABEL_TEXTFIELD_VALUE), 0, 1);
-        grid.add(valueTextField, 1, 1);
-        addResourceDialog.getDialogPane().setContent(grid);
-
-        ButtonType okButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_OK, ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_CANCEL, CANCEL_CLOSE);
-        addResourceDialog.getDialogPane().getButtonTypes().setAll(okButtonType, cancelButtonType);
-
-        addResourceDialog.setResultConverter(dialogButton -> {
-            if (dialogButton == okButtonType) {
-                return new Pair<>(referenceTextField.getText(), valueTextField.getText());
-            }
-            return null;
-        });
-
-        return addResourceDialog.showAndWait();
     }
 }
