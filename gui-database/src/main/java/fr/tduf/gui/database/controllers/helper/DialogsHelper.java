@@ -22,11 +22,13 @@ public class DialogsHelper {
     /**
      * @return true if all locales should be affected, false otherwise - or absent if dialog was dismissed.
      */
-    public Optional<Boolean> showResourceDeletionDialog(RemoteResource resource, String localeCode) {
+    public Optional<Boolean> showResourceDeletionDialog(DbDto.Topic topic, RemoteResource resource, String localeCode) {
         Alert alert = new Alert(CONFIRMATION);
         alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
-        alert.setHeaderText(resource.toDisplayableValue());
-        alert.setContentText(DisplayConstants.MESSAGE_DELETED_RESOURCE + "\n" + DisplayConstants.QUESTION_AFFECTED_LOCALES);
+        alert.setHeaderText(String.format(DisplayConstants.MESSAGE_DELETED_RESOURCE,
+                topic.getLabel(),
+                resource.toDisplayableValue()));
+        alert.setContentText(DisplayConstants.WARNING_DELETED_RESOURCE + "\n" + DisplayConstants.QUESTION_AFFECTED_LOCALES);
 
         ButtonType currentLocaleButtonType = new ButtonType(String.format(DisplayConstants.LABEL_BUTTON_CURRENT_LOCALE, localeCode));
         ButtonType allLocalesButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_ALL);

@@ -125,7 +125,7 @@ public class ResourcesStageController implements Initializable {
         }
 
         DbResourceDto.Locale currentLocale = localesChoiceBox.valueProperty().get();
-        Optional<Boolean> result = dialogsHelper.showResourceDeletionDialog(selectedResource, currentLocale.getCode());
+        Optional<Boolean> result = dialogsHelper.showResourceDeletionDialog(topicsChoiceBox.getValue(), selectedResource, currentLocale.getCode());
         if (result.isPresent()) {
             removeResourceAndUpdateMainStage(topicsChoiceBox.getValue(), selectedResource, currentLocale, result.get());
         }
