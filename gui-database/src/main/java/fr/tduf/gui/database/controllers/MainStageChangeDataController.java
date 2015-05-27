@@ -12,10 +12,11 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
-public class ChangeDataController {
+// TODO see to inherit main controller
+public class MainStageChangeDataController {
     private final MainStageController mainStageController;
 
-    ChangeDataController(MainStageController mainStageController) {
+    MainStageChangeDataController(MainStageController mainStageController) {
         requireNonNull(mainStageController, "Main stage controller is required.");
 
         this.mainStageController = mainStageController;

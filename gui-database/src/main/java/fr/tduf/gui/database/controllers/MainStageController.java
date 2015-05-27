@@ -50,8 +50,8 @@ public class MainStageController implements Initializable {
     private DynamicFieldControlsHelper dynamicFieldControlsHelper;
     private DynamicLinkControlsHelper dynamicLinkControlsHelper;
 
-    private ViewDataController viewDataController;
-    private ChangeDataController changeDataController;
+    private MainStageViewDataController viewDataController;
+    private MainStageChangeDataController changeDataController;
     private ResourcesStageController resourcesStageController;
 
     @FXML
@@ -102,8 +102,8 @@ public class MainStageController implements Initializable {
 
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
-        this.viewDataController = new ViewDataController(this);
-        this.changeDataController = new ChangeDataController(this);
+        this.viewDataController = new MainStageViewDataController(this);
+        this.changeDataController = new MainStageChangeDataController(this);
 
         this.dynamicFieldControlsHelper = new DynamicFieldControlsHelper(this);
         this.dynamicLinkControlsHelper = new DynamicLinkControlsHelper(this);
@@ -460,11 +460,11 @@ public class MainStageController implements Initializable {
         return tabPane;
     }
 
-    ViewDataController getViewDataController() {
+    MainStageViewDataController getViewDataController() {
         return viewDataController;
     }
 
-    ChangeDataController getChangeDataController() {
+    MainStageChangeDataController getChangeDataController() {
         return changeDataController;
     }
 }

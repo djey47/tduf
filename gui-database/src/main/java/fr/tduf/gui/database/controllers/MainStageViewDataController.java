@@ -31,9 +31,10 @@ import static java.util.stream.Collectors.toList;
 /**
  * Specialized controller to display database contents.
  */
-public class ViewDataController {
+// TODO see to inherit main controller
+public class MainStageViewDataController {
 
-    private static final Class<ViewDataController> thisClass = ViewDataController.class;
+    private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
 
     private final MainStageController mainStageController;
 
@@ -45,7 +46,7 @@ public class ViewDataController {
     private Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
     private Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
 
-    ViewDataController(MainStageController mainStageController) {
+    MainStageViewDataController(MainStageController mainStageController) {
         requireNonNull(mainStageController, "Main stage controller is required.");
 
         this.mainStageController = mainStageController;
@@ -118,8 +119,8 @@ public class ViewDataController {
                 remoteContentEntryId = potentialEntryId.getAsLong();
             } else {
                 remoteContentEntryId = Long.valueOf(entryReference);
-            }
-            switchToProfileAndEntry(targetProfileName, remoteContentEntryId, true);
+        }
+        switchToProfileAndEntry(targetProfileName, remoteContentEntryId, true);
         }
     }
 
@@ -148,7 +149,7 @@ public class ViewDataController {
         }
 
         EditorLocation previousLocation = navigationHistory.pop();
-        switchToProfileAndEntry(previousLocation.getProfileName(), previousLocation.getEntryId(), false);
+        switchToProfileAndEntry(previousLocation.getProfileName(), previousLocation.getEntryId(),false);
         switchToTabWithId(previousLocation.getTabId());
     }
 
@@ -183,7 +184,7 @@ public class ViewDataController {
             }
         }
 
-        String remoteContents = fetchRemoteContentsWithEntryRef(remoteTopic, referenceItem.getRawValue(), remoteFieldRanks);
+        String remoteContents=fetchRemoteContentsWithEntryRef(remoteTopic,referenceItem.getRawValue(), remoteFieldRanks);
         resolvedValuePropertyByFieldRank.get(referenceItem.getFieldRank()).set(remoteContents);
     }
 
@@ -199,15 +200,15 @@ public class ViewDataController {
                     // TODO find another way of getting current reference
                     String currentRef = contentEntry.getItems().get(0).getRawValue();
                     return rawValuePropertyByFieldRank.get(1).getValue().equals(currentRef);
-                })
+        })
 
-                .map((contentEntry) -> fetchLinkResourceFromContentEntry(topicObject, contentEntry, linkObject))
+        .map((contentEntry)->fetchLinkResourceFromContentEntry(topicObject, contentEntry,linkObject))
 
-                .forEach(values::add);
+        .forEach(values::add);
     }
 
     private RemoteResource fetchLinkResourceFromContentEntry(DbDto topicObject, DbDataDto.Entry contentEntry, TopicLinkDto linkObject) {
-        List<Integer> remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(linkObject.getRemoteReferenceProfile(), this.mainStageController.getLayoutObject());
+        List<Integer> remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(linkObject.getRemoteReferenceProfile(),this.mainStageController.getLayoutObject());
         RemoteResource remoteResource = new RemoteResource();
         if (topicObject.getStructure().getFields().size() == 2) {
             // Association topic (e.g. Car_Rims)
@@ -245,14 +246,14 @@ public class ViewDataController {
 
         List<String> contents = fieldRanks.stream()
 
-                .map((fieldRank) -> {
-                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = this.getMiner().getResourceEntryWithInternalIdentifier(topic, fieldRank, entryId, currentLocaleProperty.getValue());
-                    if (potentialRemoteResourceEntry.isPresent()) {
-                        return potentialRemoteResourceEntry.get().getValue();
-                    }
+        .map((fieldRank)->{
+        Optional<DbResourceDto.Entry>potentialRemoteResourceEntry=this.getMiner().getResourceEntryWithInternalIdentifier(topic,fieldRank,entryId,currentLocaleProperty.getValue());
+        if(potentialRemoteResourceEntry.isPresent()){
+        return potentialRemoteResourceEntry.get().getValue();
+        }
 
-                    return this.getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic, fieldRank, entryId).get().getRawValue();
-                })
+        return this.getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic,fieldRank,entryId).get().getRawValue();
+        })
 
                 .collect(toList());
 
