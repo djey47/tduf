@@ -1,12 +1,11 @@
 package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
-import fr.tduf.gui.database.common.DisplayConstants;
+import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 public class EntriesStageController implements Initializable {
@@ -120,7 +118,7 @@ public class EntriesStageController implements Initializable {
                                     long entryInternalIdentifier = entry.getId();
                                     Integer refFieldRank = BulkDatabaseMiner.getUidFieldRank(topicObject.getStructure().getFields()).get();
                                     String entryReference =   getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic, refFieldRank, entryInternalIdentifier).get().getRawValue();
-                                    String entryValue = fetchContentsWithEntryId(topic, entryInternalIdentifier, labelFieldRanks);
+                                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
 
                                     remoteResource.setReference(entryReference);
                                     remoteResource.setValue(entryValue);
@@ -138,30 +136,6 @@ public class EntriesStageController implements Initializable {
 
         Stage stage = (Stage) root.getScene().getWindow();
         stage.close();
-    }
-
-    // TODO factorize with viewdata controller
-    private String fetchContentsWithEntryId(DbDto.Topic topic, long entryId, List<Integer> fieldRanks) {
-        requireNonNull(fieldRanks, "A list of field ranks (even empty) must be provided.");
-
-        if (fieldRanks.isEmpty()) {
-            return DisplayConstants.VALUE_UNKNOWN;
-        }
-
-        List<String> contents = fieldRanks.stream()
-
-                .map((fieldRank) -> {
-                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = getMiner().getResourceEntryWithInternalIdentifier(topic, fieldRank, entryId, mainStageController.currentLocaleProperty.getValue());
-                    if (potentialRemoteResourceEntry.isPresent()) {
-                        return potentialRemoteResourceEntry.get().getValue();
-                    }
-
-                    return this.getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic, fieldRank, entryId).get().getRawValue();
-                })
-
-                .collect(toList());
-
-        return String.join(DisplayConstants.SEPARATOR_VALUES, contents);
     }
 
     public void setMainStageController(MainStageController mainStageController) {

@@ -2,6 +2,7 @@ package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.SettingsConstants;
+import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.RemoteResource;
@@ -24,7 +25,6 @@ import java.util.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Specialized controller to display database contents.
@@ -51,23 +51,28 @@ public class MainStageViewDataController {
 
     void loadAndFillProfiles() throws IOException {
         mainStageController.setLayoutObject(new ObjectMapper().readValue(thisClass.getResource(SettingsConstants.PATH_RESOURCE_PROFILES), EditorLayoutDto.class));
-        this.mainStageController.getLayoutObject().getProfiles()
+        mainStageController.getLayoutObject().getProfiles()
                 .forEach((profileObject) -> mainStageController.profilesChoiceBox.getItems().add(profileObject.getName()));
     }
 
     void updateAllPropertiesWithItemValues() {
         long entryIndex = mainStageController.currentEntryIndexProperty.getValue();
-        DbDataDto.Entry entry = getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, mainStageController.getCurrentTopicObject().getTopic());
+        DbDto.Topic currentTopic = mainStageController.currentTopicProperty.getValue();
+        DbDataDto.Entry entry = getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopic);
 
         String entryLabel = DisplayConstants.VALUE_UNKNOWN;
-        if (this.mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks() != null) {
-            entryLabel = fetchContentsWithEntryId(mainStageController.currentTopicProperty.getValue(), entryIndex, mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks());
+        if (mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks() != null) {
+            entryLabel = DatabaseQueryHelper.fetchResourceValuesWithEntryId(
+                    entryIndex, currentTopic,
+                    mainStageController.currentLocaleProperty.getValue(),
+                    mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks(),
+                    getMiner());
         }
         mainStageController.currentEntryLabelProperty.setValue(entryLabel);
 
         entry.getItems().forEach(this::updateItemProperties);
 
-        this.mainStageController.getResourceListByTopicLink().entrySet().forEach(this::updateLinkProperties);
+        mainStageController.getResourceListByTopicLink().entrySet().forEach(this::updateLinkProperties);
     }
 
     void updateItemProperties(DbDataDto.Item item) {
@@ -197,7 +202,11 @@ public class MainStageViewDataController {
             // Classic topic (e.g. Car_Colors)
             long entryId = contentEntry.getId();
             remoteResource.setReference(Long.valueOf(entryId).toString());
-            remoteResource.setValue(fetchContentsWithEntryId(linkObject.getTopic(), entryId, remoteFieldRanks));
+            remoteResource.setValue(DatabaseQueryHelper.fetchResourceValuesWithEntryId(
+                    entryId, linkObject.getTopic(),
+                    mainStageController.currentLocaleProperty.getValue(),
+                    remoteFieldRanks,
+                    getMiner()));
         }
         return remoteResource;
     }
@@ -207,32 +216,13 @@ public class MainStageViewDataController {
 
         OptionalLong potentialEntryId = this.getMiner().getContentEntryIdFromReference(remoteEntryReference, remoteTopic);
         if (potentialEntryId.isPresent()) {
-            return fetchContentsWithEntryId(remoteTopic, potentialEntryId.getAsLong(), remoteFieldRanks);
+            return DatabaseQueryHelper.fetchResourceValuesWithEntryId(
+                    potentialEntryId.getAsLong(), remoteTopic,
+                    mainStageController.currentLocaleProperty.getValue(),
+                    remoteFieldRanks,
+                    getMiner());
         }
         return DisplayConstants.VALUE_ERROR_ENTRY_NOT_FOUND;
-    }
-
-    private String fetchContentsWithEntryId(DbDto.Topic topic, long entryId, List<Integer> fieldRanks) {
-        requireNonNull(fieldRanks, "A list of field ranks (even empty) must be provided.");
-
-        if (fieldRanks.isEmpty()) {
-            return DisplayConstants.VALUE_UNKNOWN;
-        }
-
-        List<String> contents = fieldRanks.stream()
-
-                .map((fieldRank) -> {
-                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = getMiner().getResourceEntryWithInternalIdentifier(topic, fieldRank, entryId, mainStageController.currentLocaleProperty.getValue());
-                    if (potentialRemoteResourceEntry.isPresent()) {
-                        return potentialRemoteResourceEntry.get().getValue();
-                    }
-
-                    return this.getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic, fieldRank, entryId).get().getRawValue();
-                })
-
-                .collect(toList());
-
-        return String.join(DisplayConstants.SEPARATOR_VALUES, contents);
     }
 
     private BulkDatabaseMiner getMiner() {
