@@ -9,6 +9,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.util.Optional;
@@ -60,12 +61,12 @@ public abstract class AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(fieldNameLabel);
     }
 
-    protected static void addGoToReferenceButton(HBox fieldBox, EventHandler<ActionEvent> gotoReferenceAction) {
+    protected static void addGoToReferenceButton(Pane fieldPane, EventHandler<ActionEvent> gotoReferenceAction) {
         Button gotoReferenceButton = new Button(DisplayConstants.LABEL_BUTTON_GOTO);
         gotoReferenceButton.setPrefWidth(34);
 
         gotoReferenceButton.setOnAction(gotoReferenceAction);
 
-        fieldBox.getChildren().add(gotoReferenceButton);
+        fieldPane.getChildren().add(gotoReferenceButton);
     }
 }

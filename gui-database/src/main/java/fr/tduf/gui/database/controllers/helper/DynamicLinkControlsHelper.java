@@ -10,10 +10,12 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
@@ -92,11 +94,31 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
         if (targetProfileName != null) {
             addGoToReferenceButton(
-                    fieldBox,
+                    buttonsBox,
                     controller.handleGotoReferenceButtonMouseClick(targetTopic, tableSelectionModel, targetProfileName));
+            addAddLinkedEntryButton(buttonsBox);
+            addRemoveLinkedEntryButton(buttonsBox);
         }
 
         fieldBox.getChildren().add(buttonsBox);
+    }
+
+    private void addAddLinkedEntryButton(Pane fieldPane) {
+        Button addLinkedEntryButton = new Button(DisplayConstants.LABEL_BUTTON_PLUS);
+        addLinkedEntryButton.setPrefWidth(34);
+
+//        addLinkedEntryButton.setOnAction(gotoReferenceAction);
+
+        fieldPane.getChildren().add(addLinkedEntryButton);
+    }
+
+    private void addRemoveLinkedEntryButton(Pane fieldPane) {
+        Button removeLinkedEntryButton = new Button(DisplayConstants.LABEL_BUTTON_MINUS);
+        removeLinkedEntryButton.setPrefWidth(34);
+
+//        removeLinkedEntryButton.setOnAction(gotoReferenceAction);
+
+        fieldPane.getChildren().add(removeLinkedEntryButton);
     }
 
     private DbDto.Topic retrieveTargetTopicForLink(TopicLinkDto topicLinkObject) {
