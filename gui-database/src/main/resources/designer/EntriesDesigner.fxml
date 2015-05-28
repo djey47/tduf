@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
@@ -13,6 +14,11 @@
                <items>
                   <AnchorPane prefHeight="30.0" prefWidth="626.0">
                      <children>
+                        <Label fx:id="currentTopicLabel" alignment="TOP_CENTER" layoutY="7.0" prefWidth="175.0" text="&lt;TOPIC&gt;" AnchorPane.leftAnchor="0.0">
+                           <font>
+                              <Font name="System Bold Italic" size="13.0" />
+                           </font>
+                        </Label>
                         <Button layoutY="3.0" mnemonicParsing="false" onAction="#handleSelectEntryButtonMouseClick" text="Select" AnchorPane.rightAnchor="0.0" />
                      </children>
                   </AnchorPane>

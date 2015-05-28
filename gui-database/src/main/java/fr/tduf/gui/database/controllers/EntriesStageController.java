@@ -1,16 +1,20 @@
 package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.database.common.DisplayConstants;
+import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
@@ -30,16 +34,22 @@ public class EntriesStageController implements Initializable {
     private Parent root;
 
     @FXML
+    private Label currentTopicLabel;
+
+    @FXML
     private TableView<RemoteResource> entriesTableView;
 
     private MainStageController mainStageController;
 
     private ObservableList<RemoteResource> entriesData = FXCollections.observableArrayList();
 
+    private Property<DbDto.Topic> currentTopicProperty;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initTablePane();
+        initHeaderPane();
 
+        initTablePane();
     }
 
     @FXML
@@ -54,13 +64,21 @@ public class EntriesStageController implements Initializable {
 
     }
 
-    void initAndShowDialog(String entryReference, DbDto.Topic targetTopic, List<Integer> labelFieldRanks) {
-        updateResourcesStageData(targetTopic, labelFieldRanks);
+    void initAndShowDialog(String entryReference, DbDto.Topic topic, List<Integer> labelFieldRanks) {
+        currentTopicProperty.setValue(topic);
+
+        updateResourcesStageData(labelFieldRanks);
 
         Stage stage = (Stage)root.getScene().getWindow();
         stage.show();
 
         selectEntryInTableAndScroll(entryReference);
+    }
+
+    private void initHeaderPane() {
+        currentTopicProperty = new SimpleObjectProperty<>();
+
+        currentTopicLabel.textProperty().bindBidirectional(currentTopicProperty, new DatabaseTopicToStringConverter());
     }
 
     private void initTablePane() {
@@ -84,9 +102,10 @@ public class EntriesStageController implements Initializable {
         entriesTableView.scrollTo(browsedResource);
     }
 
-    private void updateResourcesStageData(DbDto.Topic topic, List<Integer> labelFieldRanks) {
+    private void updateResourcesStageData(List<Integer> labelFieldRanks) {
         entriesData.clear();
 
+        DbDto.Topic topic = currentTopicProperty.getValue();
         getMiner().getDatabaseTopic(topic)
                 .ifPresent((topicObject) -> entriesData.addAll(topicObject.getData().getEntries().stream()
 
