@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -117,9 +118,10 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
         Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, controller.getCurrentProfileObject());
-        if (potentialFieldSettings.isPresent() && potentialFieldSettings.get().getRemoteReferenceProfile() != null) {
+        if (potentialFieldSettings.isPresent() && potentialFieldSettings.get() != null) {
             String targetProfileName = potentialFieldSettings.get().getRemoteReferenceProfile();
-            addBrowseEntriesButton(fieldBox);
+            List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, controller.getLayoutObject()).getEntryLabelFieldRanks();
+            addBrowseEntriesButton(fieldBox, targetTopic, labelFieldRanks);
             addGoToReferenceButton(
                     fieldBox,
                     controller.handleGotoReferenceButtonMouseClick(targetTopic, fieldRank, targetProfileName));
@@ -141,12 +143,12 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         addBrowseResourcesButton(fieldBox, topic, rawValueProperty, fieldRank);
     }
 
-    private void addBrowseEntriesButton(HBox fieldBox) {
+    private void addBrowseEntriesButton(HBox fieldBox, DbDto.Topic targetTopic, List<Integer> labelFieldRanks) {
         Button browseEntriesButton = new Button(DisplayConstants.LABEL_BUTTON_BROWSE);
         browseEntriesButton.setPrefWidth(34);
 
         browseEntriesButton.setOnAction(
-                controller.handleBrowseEntriesButtonMouseClick());
+                controller.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks));
         fieldBox.getChildren().add(browseEntriesButton);
     }
 

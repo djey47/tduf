@@ -262,11 +262,11 @@ public class MainStageController implements Initializable {
         };
     }
 
-    public EventHandler<ActionEvent> handleBrowseEntriesButtonMouseClick() {
+    public EventHandler<ActionEvent> handleBrowseEntriesButtonMouseClick(DbDto.Topic targetTopic, List<Integer> labelFieldRanks) {
         return (actionEvent) -> {
             System.out.println("browseEntriesButton clicked");
 
-            entriesStageController.initAndShowDialog();
+            entriesStageController.initAndShowDialog(targetTopic, labelFieldRanks);
         };
     }
 
