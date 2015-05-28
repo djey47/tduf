@@ -22,7 +22,7 @@
                <children>
                   <TableView fx:id="entriesTableView" onMouseClicked="#handleResourceTableMouseClick" prefHeight="744.0" prefWidth="640.0">
                     <columns>
-                      <TableColumn prefWidth="96.0" text="#" />
+                      <TableColumn prefWidth="96.0" text="REF" />
                       <TableColumn prefWidth="543.0" text="Value" />
                     </columns>
                   </TableView>
