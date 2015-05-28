@@ -80,11 +80,11 @@ public class EntriesStageController implements Initializable {
                                 .map((entry) -> {
                                     RemoteResource remoteResource = new RemoteResource();
 
-                                    long entryIdentifier = entry.getId();
-                                    String entryReference = Long.valueOf(entryIdentifier).toString();
-                                    String entryValue = fetchContentsWithEntryId(topic, entryIdentifier, labelFieldRanks);
+                                    long entryInternalIdentifier = entry.getId();
+                                    Integer refFieldRank = BulkDatabaseMiner.getUidFieldRank(topicObject.getStructure().getFields()).get();
+                                    String entryReference =   getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic, refFieldRank, entryInternalIdentifier).get().getRawValue();
+                                    String entryValue = fetchContentsWithEntryId(topic, entryInternalIdentifier, labelFieldRanks);
 
-                                    // TODO see to use REF instead (should be always available)
                                     remoteResource.setReference(entryReference);
                                     remoteResource.setValue(entryValue);
 
