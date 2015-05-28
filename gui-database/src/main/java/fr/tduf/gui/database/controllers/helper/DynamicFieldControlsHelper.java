@@ -15,7 +15,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static javafx.geometry.Orientation.VERTICAL;
@@ -45,14 +44,13 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                 .forEach((structureField) -> addFieldControls(
                         controller.getDefaultTab(),
                         structureField,
-                        currentTopic,
-                        controller.getRawValuePropertyByFieldRank(),
-                        controller.getResolvedValuePropertyByFieldRank()   ) );
+                        currentTopic
+                ) );
     }
 
-    private void addFieldControls(VBox defaultTab, DbStructureDto.Field field, DbDto.Topic currentTopic, Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRankIndex, Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRankIndex) {
+    private void addFieldControls(VBox defaultTab, DbStructureDto.Field field, DbDto.Topic currentTopic) {
         SimpleStringProperty property = new SimpleStringProperty("");
-        rawValuePropertyByFieldRankIndex.put(field.getRank(), property);
+        controller.getRawValuePropertyByFieldRank().put(field.getRank(), property);
 
         int fieldRank = field.getRank();
         String fieldName = field.getName();
@@ -92,20 +90,20 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                 topic = getMiner().getDatabaseTopicFromReference(field.getTargetRef()).getTopic();
             }
 
-            addResourceValueControls(fieldBox, field.getRank(), property, topic, resolvedValuePropertyByFieldRankIndex);
+            addResourceValueControls(fieldBox, field.getRank(), property, topic);
         }
 
         // TODO handle bitfield -> requires resolver (0.7.0+)
 
         if (DbStructureDto.FieldType.REFERENCE == field.getFieldType()) {
             DbDto.Topic topic = getMiner().getDatabaseTopicFromReference(field.getTargetRef()).getTopic();
-            addReferenceValueControls(fieldBox, field.getRank(), topic, resolvedValuePropertyByFieldRankIndex);
+            addReferenceValueControls(fieldBox, field.getRank(), topic);
         }
     }
 
-    private void addReferenceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic targetTopic, Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRankIndex) {
+    private void addReferenceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic targetTopic) {
         SimpleStringProperty property = new SimpleStringProperty("Reference to another topic.");
-        resolvedValuePropertyByFieldRankIndex.put(fieldRank, property);
+        controller.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
 
         Label remoteValueLabel = addCustomLabel(fieldBox, DisplayConstants.VALUE_UNKNOWN);
         remoteValueLabel.setPrefWidth(450);
@@ -121,16 +119,16 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         if (potentialFieldSettings.isPresent() && potentialFieldSettings.get() != null) {
             String targetProfileName = potentialFieldSettings.get().getRemoteReferenceProfile();
             List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, controller.getLayoutObject()).getEntryLabelFieldRanks();
-            addBrowseEntriesButton(fieldBox, targetTopic, labelFieldRanks);
+            addBrowseEntriesButton(fieldBox, targetTopic, labelFieldRanks, controller.getRawValuePropertyByFieldRank().get(fieldRank));
             addGoToReferenceButton(
                     fieldBox,
                     controller.handleGotoReferenceButtonMouseClick(targetTopic, fieldRank, targetProfileName));
         }
     }
 
-    private void addResourceValueControls(HBox fieldBox, int fieldRank, SimpleStringProperty rawValueProperty, DbDto.Topic topic, Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRankIndex) {
+    private void addResourceValueControls(HBox fieldBox, int fieldRank, SimpleStringProperty rawValueProperty, DbDto.Topic topic) {
         SimpleStringProperty property = new SimpleStringProperty("");
-        resolvedValuePropertyByFieldRankIndex.put(fieldRank, property);
+        controller.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
 
         addResourceValueLabel(fieldBox, property);
 
@@ -143,12 +141,12 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         addBrowseResourcesButton(fieldBox, topic, rawValueProperty, fieldRank);
     }
 
-    private void addBrowseEntriesButton(HBox fieldBox, DbDto.Topic targetTopic, List<Integer> labelFieldRanks) {
+    private void addBrowseEntriesButton(HBox fieldBox, DbDto.Topic targetTopic, List<Integer> labelFieldRanks, SimpleStringProperty entryReferenceProperty) {
         Button browseEntriesButton = new Button(DisplayConstants.LABEL_BUTTON_BROWSE);
         browseEntriesButton.setPrefWidth(34);
 
         browseEntriesButton.setOnAction(
-                controller.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks));
+                controller.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks, entryReferenceProperty));
         fieldBox.getChildren().add(browseEntriesButton);
     }
 

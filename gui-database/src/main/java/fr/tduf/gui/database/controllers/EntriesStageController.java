@@ -54,11 +54,13 @@ public class EntriesStageController implements Initializable {
 
     }
 
-    void initAndShowDialog(DbDto.Topic targetTopic, List<Integer> labelFieldRanks) {
+    void initAndShowDialog(String entryReference, DbDto.Topic targetTopic, List<Integer> labelFieldRanks) {
         updateResourcesStageData(targetTopic, labelFieldRanks);
 
         Stage stage = (Stage)root.getScene().getWindow();
         stage.show();
+
+        selectEntryInTableAndScroll(entryReference);
     }
 
     private void initTablePane() {
@@ -69,6 +71,17 @@ public class EntriesStageController implements Initializable {
         valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
 
         entriesTableView.setItems(entriesData);
+    }
+
+    private void selectEntryInTableAndScroll(String entryReference) {
+        RemoteResource browsedResource = entriesData.stream()
+
+                .filter((resource) -> resource.referenceProperty().get().equals(entryReference))
+
+                .findAny().get();
+
+        entriesTableView.getSelectionModel().select(browsedResource);
+        entriesTableView.scrollTo(browsedResource);
     }
 
     private void updateResourcesStageData(DbDto.Topic topic, List<Integer> labelFieldRanks) {
