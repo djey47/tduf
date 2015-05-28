@@ -10,6 +10,8 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
@@ -96,27 +98,31 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
             addGoToReferenceButton(
                     buttonsBox,
                     controller.handleGotoReferenceButtonMouseClick(targetTopic, tableSelectionModel, targetProfileName));
-            addAddLinkedEntryButton(buttonsBox);
-            addRemoveLinkedEntryButton(buttonsBox);
+            addAddLinkedEntryButton(
+                    buttonsBox,
+                    controller.handleAddLinkedEntryButtonMouseClick());
+            addRemoveLinkedEntryButton(
+                    buttonsBox,
+                    controller.handleRemoveLinkedEntryButtonMouseClick());
         }
 
         fieldBox.getChildren().add(buttonsBox);
     }
 
-    private void addAddLinkedEntryButton(Pane fieldPane) {
+    private void addAddLinkedEntryButton(Pane fieldPane, EventHandler<ActionEvent> addLinkedEntryAction) {
         Button addLinkedEntryButton = new Button(DisplayConstants.LABEL_BUTTON_PLUS);
         addLinkedEntryButton.setPrefWidth(34);
 
-//        addLinkedEntryButton.setOnAction(gotoReferenceAction);
+        addLinkedEntryButton.setOnAction(addLinkedEntryAction);
 
         fieldPane.getChildren().add(addLinkedEntryButton);
     }
 
-    private void addRemoveLinkedEntryButton(Pane fieldPane) {
+    private void addRemoveLinkedEntryButton(Pane fieldPane, EventHandler<ActionEvent> removeLinkedEntryAction) {
         Button removeLinkedEntryButton = new Button(DisplayConstants.LABEL_BUTTON_MINUS);
         removeLinkedEntryButton.setPrefWidth(34);
 
-//        removeLinkedEntryButton.setOnAction(gotoReferenceAction);
+        removeLinkedEntryButton.setOnAction(removeLinkedEntryAction);
 
         fieldPane.getChildren().add(removeLinkedEntryButton);
     }

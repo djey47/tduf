@@ -287,6 +287,20 @@ public class MainStageController implements Initializable {
         };
     }
 
+    public EventHandler<ActionEvent> handleAddLinkedEntryButtonMouseClick() {
+        return (actionEvent) -> {
+            System.out.println("handleAddLinkedEntryButton clicked");
+
+        };
+    }
+
+    public EventHandler<ActionEvent> handleRemoveLinkedEntryButtonMouseClick() {
+        return (actionEvent) -> {
+            System.out.println("handleRemoveLinkedEntryButton clicked");
+
+        };
+    }
+
     public EventHandler<MouseEvent> handleLinkTableMouseClick(String targetProfileName, DbDto.Topic targetTopic) {
         return event -> {
             System.out.println("handleLinkTableMouseClick, targetProfileName:" + targetProfileName + ", targetTopic:" + targetTopic);
@@ -486,5 +500,4 @@ public class MainStageController implements Initializable {
     MainStageChangeDataController getChangeDataController() {
         return changeDataController;
     }
-
 }
