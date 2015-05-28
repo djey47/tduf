@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.RemoteResource;
@@ -10,13 +11,13 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -45,6 +46,8 @@ public class EntriesStageController implements Initializable {
 
     private Property<DbDto.Topic> currentTopicProperty;
 
+    private int fieldRank;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initHeaderPane();
@@ -56,15 +59,17 @@ public class EntriesStageController implements Initializable {
     private void handleResourceTableMouseClick(MouseEvent mouseEvent) {
         System.out.println("handleEntriesTableMouseClick");
 
+        if (MouseButton.PRIMARY == mouseEvent.getButton()) {
+            Optional<RemoteResource> potentialSelectedEntry = TableViewHelper.getMouseSelectedItem(mouseEvent);
+            if (potentialSelectedEntry.isPresent()) {
+                applyEntrySelectionToMainStageAndClose(potentialSelectedEntry.get());
+            }
+        }
     }
 
-    @FXML
-    private void handleSelectEntryButtonMouseClick(ActionEvent actionEvent) {
-        System.out.println("handleSelectEntryButtonMouseClick");
+    void initAndShowDialog(String entryReference, int entryFieldRank, DbDto.Topic topic, List<Integer> labelFieldRanks) {
+        fieldRank = entryFieldRank;
 
-    }
-
-    void initAndShowDialog(String entryReference, DbDto.Topic topic, List<Integer> labelFieldRanks) {
         currentTopicProperty.setValue(topic);
 
         updateResourcesStageData(labelFieldRanks);
@@ -125,6 +130,14 @@ public class EntriesStageController implements Initializable {
 
                                 .collect(toList()))
                 );
+    }
+
+    private void applyEntrySelectionToMainStageAndClose(RemoteResource selectedEntry) {
+        String entryReference = selectedEntry.referenceProperty().getValue();
+        mainStageController.getChangeDataController().updateContentItem(mainStageController.getCurrentTopicObject().getTopic(), fieldRank, entryReference);
+
+        Stage stage = (Stage) root.getScene().getWindow();
+        stage.close();
     }
 
     // TODO factorize with viewdata controller

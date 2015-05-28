@@ -119,7 +119,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         if (potentialFieldSettings.isPresent() && potentialFieldSettings.get() != null) {
             String targetProfileName = potentialFieldSettings.get().getRemoteReferenceProfile();
             List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, controller.getLayoutObject()).getEntryLabelFieldRanks();
-            addBrowseEntriesButton(fieldBox, targetTopic, labelFieldRanks, controller.getRawValuePropertyByFieldRank().get(fieldRank));
+            addBrowseEntriesButton(fieldBox, targetTopic, labelFieldRanks, controller.getRawValuePropertyByFieldRank().get(fieldRank), fieldRank);
             addGoToReferenceButton(
                     fieldBox,
                     controller.handleGotoReferenceButtonMouseClick(targetTopic, fieldRank, targetProfileName));
@@ -141,12 +141,12 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         addBrowseResourcesButton(fieldBox, topic, rawValueProperty, fieldRank);
     }
 
-    private void addBrowseEntriesButton(HBox fieldBox, DbDto.Topic targetTopic, List<Integer> labelFieldRanks, SimpleStringProperty entryReferenceProperty) {
+    private void addBrowseEntriesButton(HBox fieldBox, DbDto.Topic targetTopic, List<Integer> labelFieldRanks, SimpleStringProperty entryReferenceProperty, int fieldRank) {
         Button browseEntriesButton = new Button(DisplayConstants.LABEL_BUTTON_BROWSE);
         browseEntriesButton.setPrefWidth(34);
 
         browseEntriesButton.setOnAction(
-                controller.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks, entryReferenceProperty));
+                controller.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks, entryReferenceProperty, fieldRank));
         fieldBox.getChildren().add(browseEntriesButton);
     }
 
