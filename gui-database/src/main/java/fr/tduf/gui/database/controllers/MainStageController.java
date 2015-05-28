@@ -262,7 +262,7 @@ public class MainStageController implements Initializable {
         };
     }
 
-    public EventHandler<ActionEvent> handleBrowseEntriesResourcesButtonMouseClick() {
+    public EventHandler<ActionEvent> handleBrowseEntriesButtonMouseClick() {
         return (actionEvent) -> {
             System.out.println("browseEntriesButton clicked");
 

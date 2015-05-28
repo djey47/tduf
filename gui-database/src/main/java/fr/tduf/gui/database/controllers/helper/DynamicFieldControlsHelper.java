@@ -119,6 +119,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, controller.getCurrentProfileObject());
         if (potentialFieldSettings.isPresent() && potentialFieldSettings.get().getRemoteReferenceProfile() != null) {
             String targetProfileName = potentialFieldSettings.get().getRemoteReferenceProfile();
+            addBrowseEntriesButton(fieldBox);
             addGoToReferenceButton(
                     fieldBox,
                     controller.handleGotoReferenceButtonMouseClick(targetTopic, fieldRank, targetProfileName));
@@ -138,6 +139,15 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
         addBrowseResourcesButton(fieldBox, topic, rawValueProperty, fieldRank);
+    }
+
+    private void addBrowseEntriesButton(HBox fieldBox) {
+        Button browseEntriesButton = new Button(DisplayConstants.LABEL_BUTTON_BROWSE);
+        browseEntriesButton.setPrefWidth(34);
+
+        browseEntriesButton.setOnAction(
+                controller.handleBrowseEntriesButtonMouseClick());
+        fieldBox.getChildren().add(browseEntriesButton);
     }
 
     private void addBrowseResourcesButton(HBox fieldBox, DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
