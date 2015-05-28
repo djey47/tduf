@@ -211,8 +211,8 @@ public class ResourcesStageController implements Initializable {
 
                 .findAny().get();
 
-        this.resourcesTableView.scrollTo(browsedResource);
-        this.resourcesTableView.getSelectionModel().select(browsedResource);
+        resourcesTableView.getSelectionModel().select(browsedResource);
+        resourcesTableView.scrollTo(browsedResource);
     }
 
     private void applyResourceSelectionToMainStageAndClose(RemoteResource selectedResource) {
@@ -251,9 +251,7 @@ public class ResourcesStageController implements Initializable {
 
     private void updateAllStages(Optional<String> resourceReference) {
         updateResourcesStageData();
-        if (resourceReference.isPresent()) {
-            selectResourceInTableAndScroll(resourceReference.get());
-        }
+        resourceReference.ifPresent(this::selectResourceInTableAndScroll);
 
         mainStageController.getViewDataController().updateAllPropertiesWithItemValues();
     }
