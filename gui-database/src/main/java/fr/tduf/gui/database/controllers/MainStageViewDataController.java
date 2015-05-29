@@ -148,12 +148,6 @@ public class MainStageViewDataController {
         mainStageController.tabPane.selectionModelProperty().get().select(tabId);
     }
 
-    // TODO extract to fx helper
-    void selectLinkedEntryInTableAndScroll(int entryRow, TableView<RemoteResource> linkedEntriesTableView) {
-        linkedEntriesTableView.getSelectionModel().select(entryRow);
-        linkedEntriesTableView.scrollTo(entryRow);
-    }
-
     private void updateResourceProperties(DbDataDto.Item resourceItem, DbStructureDto.Field structureField) {
         DbDto.Topic resourceTopic = mainStageController.getCurrentTopicObject().getTopic();
         if (structureField.getTargetRef() != null) {

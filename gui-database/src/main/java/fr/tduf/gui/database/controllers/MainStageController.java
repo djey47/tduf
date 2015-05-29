@@ -302,7 +302,7 @@ public class MainStageController implements Initializable {
                 return;
             }
 
-            removeLinkedEntryAndUpdateStage(selectedItem, tableViewSelectionModel, topicLinkObject);
+            removeLinkedEntryAndUpdateStage(tableViewSelectionModel, topicLinkObject);
         };
     }
 
@@ -451,14 +451,15 @@ public class MainStageController implements Initializable {
         }
     }
 
-    private void removeLinkedEntryAndUpdateStage(RemoteResource selectedItem, TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
+    private void removeLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
         int initialRowIndex = tableViewSelectionModel.getSelectedIndex();
+        RemoteResource selectedItem = tableViewSelectionModel.getSelectedItem();
 
         changeDataController.removeEntryWithIdentifier(selectedItem.getInternalEntryId(), topicLinkObject.getTopic());
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
-        viewDataController.selectLinkedEntryInTableAndScroll(initialRowIndex, tableViewSelectionModel.getTableView());
+        TableViewHelper.selectRowAndScroll(initialRowIndex, tableViewSelectionModel.getTableView());
     }
 
     public DbDto getCurrentTopicObject() {
