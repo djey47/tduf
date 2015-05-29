@@ -17,6 +17,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
+import javafx.scene.control.TableView;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
@@ -145,6 +146,11 @@ public class MainStageViewDataController {
 
     void switchToTabWithId(int tabId) {
         mainStageController.tabPane.selectionModelProperty().get().select(tabId);
+    }
+
+    void selectLinkedEntryInTableAndScroll(int entryRow, TableView<RemoteResource> linkedEntriesTableView) {
+        linkedEntriesTableView.getSelectionModel().select(entryRow);
+        linkedEntriesTableView.scrollTo(entryRow);
     }
 
     private void updateResourceProperties(DbDataDto.Item resourceItem, DbStructureDto.Field structureField) {

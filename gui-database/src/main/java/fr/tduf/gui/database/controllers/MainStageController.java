@@ -302,10 +302,13 @@ public class MainStageController implements Initializable {
                 return;
             }
 
+            int initialRowIndex = tableViewSelectionModel.getSelectedIndex();
             String linkedEntryIdentifier = selectedItem.referenceProperty().get();
             changeDataController.removeLinkedEntryWithIdentifier(Long.valueOf(linkedEntryIdentifier), topicLinkObject.getTopic());
 
             viewDataController.updateLinkProperties(topicLinkObject);
+
+            viewDataController.selectLinkedEntryInTableAndScroll(initialRowIndex, tableViewSelectionModel.getTableView());
         };
     }
 
