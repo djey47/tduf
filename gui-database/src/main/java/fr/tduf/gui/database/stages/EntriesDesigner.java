@@ -6,6 +6,7 @@ import fr.tduf.gui.database.controllers.EntriesStageController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -37,5 +38,6 @@ public class EntriesDesigner {
         entriesStage.setScene(new Scene(mainRoot, 640, 768));
         entriesStage.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_ENTRIES);
         entriesStage.setResizable(false);
+        entriesStage.initModality(Modality.APPLICATION_MODAL);
     }
 }
