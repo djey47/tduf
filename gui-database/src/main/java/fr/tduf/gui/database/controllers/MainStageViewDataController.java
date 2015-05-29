@@ -148,6 +148,7 @@ public class MainStageViewDataController {
         mainStageController.tabPane.selectionModelProperty().get().select(tabId);
     }
 
+    // TODO extract to fx helper
     void selectLinkedEntryInTableAndScroll(int entryRow, TableView<RemoteResource> linkedEntriesTableView) {
         linkedEntriesTableView.getSelectionModel().select(entryRow);
         linkedEntriesTableView.scrollTo(entryRow);

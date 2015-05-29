@@ -140,7 +140,8 @@ public class ResourcesStageController implements Initializable {
         DbDto.Topic currentTopic = getCurrentTopic();
         Optional<Boolean> result = dialogsHelper.showResourceDeletionDialog(currentTopic, selectedResource, currentLocale.getCode());
         if (result.isPresent()) {
-            removeResourceAndUpdateMainStage(currentTopic, selectedResource, currentLocale, result.get());
+            int selectedRow = resourcesTableView.getSelectionModel().getSelectedIndex();
+            removeResourceAndUpdateMainStage(currentTopic, selectedResource, currentLocale, result.get(), selectedRow);
         }
     }
 
@@ -215,6 +216,13 @@ public class ResourcesStageController implements Initializable {
         resourcesTableView.scrollTo(browsedResource);
     }
 
+    // TODO extract to fx helper
+    private void selectResourceInTableAndScroll(int entryRow) {
+        resourcesTableView.getSelectionModel().select(entryRow);
+        resourcesTableView.scrollTo(entryRow);
+    }
+
+
     private void applyResourceSelectionToMainStageAndClose(RemoteResource selectedResource) {
         String resourceReference = selectedResource.referenceProperty().getValue();
         resourceReferenceProperty.set(resourceReference);
@@ -226,12 +234,12 @@ public class ResourcesStageController implements Initializable {
         stage.close();
     }
 
-    private void removeResourceAndUpdateMainStage(DbDto.Topic topic, RemoteResource selectedResource, DbResourceDto.Locale locale, boolean forAllLocales) {
+    private void removeResourceAndUpdateMainStage(DbDto.Topic topic, RemoteResource selectedResource, DbResourceDto.Locale locale, boolean forAllLocales, int selectedRow) {
         mainStageController.getChangeDataController().removeResourceWithReference(topic, locale, selectedResource.referenceProperty().getValue(), forAllLocales);
 
         updateAllStages(Optional.<String>empty());
 
-        // TODO select next resource in table
+        selectResourceInTableAndScroll(selectedRow);
     }
 
     private void editResourceAndUpdateMainStage(DbDto.Topic topic, Optional<String> currentResourceReference, Pair<String, String> referenceValuePair, DbResourceDto.Locale locale) {
