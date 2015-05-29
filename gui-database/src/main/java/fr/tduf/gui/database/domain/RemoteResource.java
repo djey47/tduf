@@ -9,7 +9,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
- * Represents a key-value pair to be displayed in a TableView
+ * Represents a key-value pair to be displayed in a TableView.
+ * Also includes database entry identifier (optional).
  */
 public class RemoteResource {
     private StringProperty reference = new SimpleStringProperty();
