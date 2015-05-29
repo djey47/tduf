@@ -206,6 +206,8 @@ public class MainStageViewDataController {
     private RemoteResource fetchLinkResourceFromContentEntry(DbDto topicObject, DbDataDto.Entry contentEntry, TopicLinkDto linkObject) {
         List<Integer> remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(linkObject.getRemoteReferenceProfile(), this.mainStageController.getLayoutObject());
         RemoteResource remoteResource = new RemoteResource();
+        long entryId = contentEntry.getId();
+        remoteResource.setInternalEntryId(entryId);
         if (topicObject.getStructure().getFields().size() == 2) {
             // Association topic (e.g. Car_Rims)
             String remoteTopicRef = topicObject.getStructure().getFields().get(1).getTargetRef();
@@ -216,7 +218,6 @@ public class MainStageViewDataController {
             remoteResource.setValue(fetchRemoteContentsWithEntryRef(remoteTopic, remoteEntryReference, remoteFieldRanks));
         } else {
             // Classic topic (e.g. Car_Colors)
-            long entryId = contentEntry.getId();
             remoteResource.setReference(Long.valueOf(entryId).toString());
             remoteResource.setValue(DatabaseQueryHelper.fetchResourceValuesWithEntryId(
                     entryId, linkObject.getTopic(),

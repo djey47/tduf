@@ -35,6 +35,7 @@ public class MainStageChangeDataController {
         }
     }
 
+    // TODO refactor deletion, see removeEntryWithIdentifier
     void removeResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, boolean forAllLocales) {
         List<DbResourceDto.Locale> affectedLocales = singletonList(locale);
         if (forAllLocales) {
@@ -55,11 +56,12 @@ public class MainStageChangeDataController {
                 });
     }
 
-    void removeLinkedEntryWithIdentifier(long linkedEntryIdentifier, DbDto.Topic topic) {
+    // TODO extract to lib -> modifier?
+    void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
         List<DbDataDto.Entry> linkedEntries = getMiner().getDatabaseTopic(topic).get().getData().getEntries();
         linkedEntries.stream()
 
-                .filter((entry) -> entry.getId() == linkedEntryIdentifier)
+                .filter((entry) -> entry.getId() == entryId)
 
                 .findAny()
 

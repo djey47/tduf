@@ -16,6 +16,8 @@ public class RemoteResource {
 
     private StringProperty value = new SimpleStringProperty();
 
+    private long internalEntryId;
+
     public StringProperty referenceProperty() {
         return reference;
     }
@@ -30,6 +32,14 @@ public class RemoteResource {
 
     public void setValue(String value) {
         this.value.set(value);
+    }
+
+    public long getInternalEntryId() {
+        return internalEntryId;
+    }
+
+    public void setInternalEntryId(long internalEntryId) {
+        this.internalEntryId = internalEntryId;
     }
 
     public String toDisplayableValue() {
