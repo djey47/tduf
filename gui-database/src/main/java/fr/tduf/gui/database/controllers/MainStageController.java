@@ -286,10 +286,12 @@ public class MainStageController implements Initializable {
         };
     }
 
-    public EventHandler<ActionEvent> handleAddLinkedEntryButtonMouseClick() {
+    public EventHandler<ActionEvent> handleAddLinkedEntryButtonMouseClick(DbDto.Topic targetTopic, String targetProfileName, TopicLinkDto topicLinkObject) {
         return (actionEvent) -> {
-            System.out.println("handleAddLinkedEntryButton clicked");
+            System.out.println("handleAddLinkedEntryButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
+            Optional<RemoteResource> potentialSelectedEntry = entriesStageController.initAndShowModalDialog(targetTopic, targetProfileName);
+            potentialSelectedEntry.ifPresent((selectedEntry) -> addLinkedEntryAndUpdateStage(selectedEntry, topicLinkObject));
         };
     }
 
@@ -449,6 +451,14 @@ public class MainStageController implements Initializable {
 
             navigationHistory.clear();
         }
+    }
+
+    private void addLinkedEntryAndUpdateStage(RemoteResource linkedEntry, TopicLinkDto topicLinkObject) {
+        changeDataController.addLinkedEntry(linkedEntry.referenceProperty().get(), topicLinkObject.getTopic());
+
+        viewDataController.updateLinkProperties(topicLinkObject);
+
+//        TableViewHelper.selectRowAndScroll(initialRowIndex, tableViewSelectionModel.getTableView());
     }
 
     private void removeLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, TopicLinkDto topicLinkObject) {

@@ -2,6 +2,7 @@ package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
+import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -21,9 +22,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -44,7 +43,9 @@ public class EntriesStageController implements Initializable {
 
     private Property<DbDto.Topic> currentTopicProperty;
 
-    private int fieldRank;
+    private OptionalInt fieldRankForUpdate = OptionalInt.empty();
+
+    private Optional<RemoteResource> selectedEntry = Optional.empty();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -60,22 +61,39 @@ public class EntriesStageController implements Initializable {
         if (MouseButton.PRIMARY == mouseEvent.getButton()) {
             Optional<RemoteResource> potentialSelectedEntry = TableViewHelper.getMouseSelectedItem(mouseEvent);
             if (potentialSelectedEntry.isPresent()) {
+                selectedEntry = potentialSelectedEntry;
+
                 applyEntrySelectionToMainStageAndClose(potentialSelectedEntry.get());
             }
+            selectedEntry = Optional.empty();
         }
     }
 
     void initAndShowDialog(String entryReference, int entryFieldRank, DbDto.Topic topic, List<Integer> labelFieldRanks) {
-        fieldRank = entryFieldRank;
+        fieldRankForUpdate = OptionalInt.of(entryFieldRank);
 
         currentTopicProperty.setValue(topic);
 
-        updateResourcesStageData(labelFieldRanks);
+        updateEntriesStageData(labelFieldRanks);
 
         Stage stage = (Stage)root.getScene().getWindow();
         stage.show();
 
         selectEntryInTableAndScroll(entryReference);
+    }
+
+    Optional<RemoteResource> initAndShowModalDialog(DbDto.Topic topic, String targetProfileName) {
+        fieldRankForUpdate = OptionalInt.empty();
+
+        currentTopicProperty.setValue(topic);
+
+        List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, mainStageController.getLayoutObject()).getEntryLabelFieldRanks();
+        updateEntriesStageData(labelFieldRanks);
+
+        Stage stage = (Stage)root.getScene().getWindow();
+        stage.showAndWait();
+
+        return selectedEntry;
     }
 
     private void initHeaderPane() {
@@ -105,7 +123,7 @@ public class EntriesStageController implements Initializable {
         entriesTableView.scrollTo(browsedResource);
     }
 
-    private void updateResourcesStageData(List<Integer> labelFieldRanks) {
+    private void updateEntriesStageData(List<Integer> labelFieldRanks) {
         entriesData.clear();
 
         DbDto.Topic topic = currentTopicProperty.getValue();
@@ -120,6 +138,7 @@ public class EntriesStageController implements Initializable {
                                     String entryReference =   getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic, refFieldRank, entryInternalIdentifier).get().getRawValue();
                                     String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
 
+                                    remoteResource.setInternalEntryId(entryInternalIdentifier);
                                     remoteResource.setReference(entryReference);
                                     remoteResource.setValue(entryValue);
 
@@ -131,8 +150,11 @@ public class EntriesStageController implements Initializable {
     }
 
     private void applyEntrySelectionToMainStageAndClose(RemoteResource selectedEntry) {
-        String entryReference = selectedEntry.referenceProperty().getValue();
-        mainStageController.getChangeDataController().updateContentItem(mainStageController.getCurrentTopicObject().getTopic(), fieldRank, entryReference);
+        fieldRankForUpdate.ifPresent((fieldRank) -> {
+            // Update mode: will update a particular field in main stage
+            String entryReference = selectedEntry.referenceProperty().getValue();
+            mainStageController.getChangeDataController().updateContentItem(mainStageController.getCurrentTopicObject().getTopic(), fieldRank, entryReference);
+        });
 
         Stage stage = (Stage) root.getScene().getWindow();
         stage.close();

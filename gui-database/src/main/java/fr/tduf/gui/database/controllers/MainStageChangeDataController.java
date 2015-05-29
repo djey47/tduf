@@ -4,6 +4,8 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
 
@@ -64,6 +66,32 @@ public class MainStageChangeDataController {
                 .findAny()
 
                 .ifPresent(linkedEntries::remove);
+    }
+
+    void addLinkedEntry(String targetEntryRef, DbDto.Topic topic) {
+        DbDto topicObject = getMiner().getDatabaseTopic(topic).get();
+
+        List<DbStructureDto.Field> structureFields = topicObject.getStructure().getFields();
+        DbStructureDto.Field sourceStructureField = structureFields.get(0);
+        DbStructureDto.Field targetStructureField = structureFields.get(1);
+
+        int refFieldRank = DatabaseStructureQueryHelper.getIdentifierField(structureFields).get().getRank();
+        String sourceEntryRef = getMiner().getContentItemFromEntryIdentifierAndFieldRank(mainStageController.currentTopicProperty.getValue(), refFieldRank, mainStageController.currentEntryIndexProperty.getValue()).get().getRawValue();
+
+        DbDataDto.Item sourceEntryRefItem = DbDataDto.Item.builder()
+                .fromStructureField(sourceStructureField)
+                .withRawValue(sourceEntryRef)
+                .build();
+        DbDataDto.Item targetEntryRefItem = DbDataDto.Item.builder()
+                .fromStructureField(targetStructureField)
+                .withRawValue(targetEntryRef)
+                .build();
+        DbDataDto.Entry newEntry = DbDataDto.Entry.builder()
+                .addItem(sourceEntryRefItem, targetEntryRefItem)
+                .build();
+
+        List<DbDataDto.Entry> linkedEntries = topicObject.getData().getEntries();
+        linkedEntries.add(newEntry);
     }
 
     void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
