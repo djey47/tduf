@@ -65,6 +65,7 @@ public class MainStageController implements Initializable {
     Property<Integer> entryItemsCountProperty;
     Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
     Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
+    Map<TopicLinkDto, ObservableList<RemoteResource>> resourceListByTopicLink = new HashMap<>();
 
     @FXML
     private Parent root;
@@ -107,8 +108,6 @@ public class MainStageController implements Initializable {
     private EditorLayoutDto layoutObject;
     private EditorLayoutDto.EditorProfileDto profileObject;
     private BulkDatabaseMiner databaseMiner;
-
-    private Map<TopicLinkDto, ObservableList<RemoteResource>> resourceListByTopicLink = new HashMap<>();
 
     private Stack<EditorLocation> navigationHistory = new Stack<>();
 
@@ -294,10 +293,19 @@ public class MainStageController implements Initializable {
         };
     }
 
-    public EventHandler<ActionEvent> handleRemoveLinkedEntryButtonMouseClick() {
+    public EventHandler<ActionEvent> handleRemoveLinkedEntryButtonMouseClick(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
         return (actionEvent) -> {
             System.out.println("handleRemoveLinkedEntryButton clicked");
 
+            RemoteResource selectedItem = tableViewSelectionModel.getSelectedItem();
+            if (selectedItem == null) {
+                return;
+            }
+
+            String linkedEntryIdentifier = selectedItem.referenceProperty().get();
+            changeDataController.removeLinkedEntryWithIdentifier(Long.valueOf(linkedEntryIdentifier), topicLinkObject.getTopic());
+
+            viewDataController.updateLinkProperties(topicLinkObject);
         };
     }
 

@@ -89,6 +89,16 @@ public class MainStageViewDataController {
         }
     }
 
+    void updateLinkProperties(TopicLinkDto topicLinkObject) {
+        mainStageController.resourceListByTopicLink.entrySet().stream()
+
+                .filter((mapEntry) -> mapEntry.getKey().equals(topicLinkObject))
+
+                .findAny()
+
+                .ifPresent(this::updateLinkProperties);
+    }
+
     void switchToSelectedResourceForLinkedTopic(RemoteResource selectedResource, DbDto.Topic targetTopic, String targetProfileName) {
         if (selectedResource != null) {
             String entryReference = selectedResource.referenceProperty().get();
@@ -152,22 +162,6 @@ public class MainStageViewDataController {
         }
     }
 
-    private void updateReferenceProperties(DbDataDto.Item referenceItem, DbStructureDto.Field structureField) {
-        DbDto.Topic remoteTopic = this.getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
-
-        List<Integer> remoteFieldRanks = new ArrayList<>();
-        Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), mainStageController.profilesChoiceBox.getValue(), this.mainStageController.getLayoutObject());
-        if (fieldSettings.isPresent()) {
-            String remoteReferenceProfile = fieldSettings.get().getRemoteReferenceProfile();
-            if (remoteReferenceProfile != null) {
-                remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(remoteReferenceProfile, this.mainStageController.getLayoutObject());
-            }
-        }
-
-        String remoteContents = fetchRemoteContentsWithEntryRef(remoteTopic, referenceItem.getRawValue(), remoteFieldRanks);
-        mainStageController.resolvedValuePropertyByFieldRank.get(referenceItem.getFieldRank()).set(remoteContents);
-    }
-
     private void updateLinkProperties(Map.Entry<TopicLinkDto, ObservableList<RemoteResource>> remoteEntry) {
         TopicLinkDto linkObject = remoteEntry.getKey();
         ObservableList<RemoteResource> values = remoteEntry.getValue();
@@ -185,6 +179,22 @@ public class MainStageViewDataController {
                 .map((contentEntry) -> fetchLinkResourceFromContentEntry(topicObject, contentEntry, linkObject))
 
                 .forEach(values::add);
+    }
+
+    private void updateReferenceProperties(DbDataDto.Item referenceItem, DbStructureDto.Field structureField) {
+        DbDto.Topic remoteTopic = this.getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
+
+        List<Integer> remoteFieldRanks = new ArrayList<>();
+        Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), mainStageController.profilesChoiceBox.getValue(), this.mainStageController.getLayoutObject());
+        if (fieldSettings.isPresent()) {
+            String remoteReferenceProfile = fieldSettings.get().getRemoteReferenceProfile();
+            if (remoteReferenceProfile != null) {
+                remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(remoteReferenceProfile, this.mainStageController.getLayoutObject());
+            }
+        }
+
+        String remoteContents = fetchRemoteContentsWithEntryRef(remoteTopic, referenceItem.getRawValue(), remoteFieldRanks);
+        mainStageController.resolvedValuePropertyByFieldRank.get(referenceItem.getFieldRank()).set(remoteContents);
     }
 
     private RemoteResource fetchLinkResourceFromContentEntry(DbDto topicObject, DbDataDto.Entry contentEntry, TopicLinkDto linkObject) {

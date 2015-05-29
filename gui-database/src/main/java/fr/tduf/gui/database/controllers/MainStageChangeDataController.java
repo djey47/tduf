@@ -55,6 +55,17 @@ public class MainStageChangeDataController {
                 });
     }
 
+    void removeLinkedEntryWithIdentifier(long linkedEntryIdentifier, DbDto.Topic topic) {
+        List<DbDataDto.Entry> linkedEntries = getMiner().getDatabaseTopic(topic).get().getData().getEntries();
+        linkedEntries.stream()
+
+                .filter((entry) -> entry.getId() == linkedEntryIdentifier)
+
+                .findAny()
+
+                .ifPresent(linkedEntries::remove);
+    }
+
     void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
         checkResourceDoesNotExistWithReference(topic, locale, newResourceReference);
 

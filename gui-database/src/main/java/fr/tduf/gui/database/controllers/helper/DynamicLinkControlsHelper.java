@@ -61,7 +61,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
-        addButtonsForLinkedTopic(fieldBox, targetProfileName, targetTopic, tableView.getSelectionModel());
+        addButtonsForLinkedTopic(fieldBox, targetProfileName, targetTopic, tableView.getSelectionModel(), topicLinkObject);
     }
 
     private TableView<RemoteResource> addTableViewForLinkedTopic(HBox fieldBox, ObservableList<RemoteResource> resourceData, String targetProfileName, DbDto.Topic targetTopic) {
@@ -91,7 +91,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         return tableView;
     }
 
-    private void addButtonsForLinkedTopic(HBox fieldBox, String targetProfileName, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<RemoteResource> tableSelectionModel) {
+    private void addButtonsForLinkedTopic(HBox fieldBox, String targetProfileName, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<RemoteResource> tableSelectionModel, TopicLinkDto topicLinkObject) {
         VBox buttonsBox = new VBox(5);
 
         if (targetProfileName != null) {
@@ -103,7 +103,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
                     controller.handleAddLinkedEntryButtonMouseClick());
             addRemoveLinkedEntryButton(
                     buttonsBox,
-                    controller.handleRemoveLinkedEntryButtonMouseClick());
+                    controller.handleRemoveLinkedEntryButtonMouseClick(tableSelectionModel, topicLinkObject));
         }
 
         fieldBox.getChildren().add(buttonsBox);
