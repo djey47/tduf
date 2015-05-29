@@ -230,6 +230,8 @@ public class ResourcesStageController implements Initializable {
         mainStageController.getChangeDataController().removeResourceWithReference(topic, locale, selectedResource.referenceProperty().getValue(), forAllLocales);
 
         updateAllStages(Optional.<String>empty());
+
+        // TODO select next resource in table
     }
 
     private void editResourceAndUpdateMainStage(DbDto.Topic topic, Optional<String> currentResourceReference, Pair<String, String> referenceValuePair, DbResourceDto.Locale locale) {

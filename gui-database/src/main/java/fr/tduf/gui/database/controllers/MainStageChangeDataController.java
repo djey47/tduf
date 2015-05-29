@@ -5,7 +5,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
-import java.util.Iterator;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -35,25 +34,24 @@ public class MainStageChangeDataController {
         }
     }
 
-    // TODO refactor deletion, see removeEntryWithIdentifier
     void removeResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, boolean forAllLocales) {
         List<DbResourceDto.Locale> affectedLocales = singletonList(locale);
         if (forAllLocales) {
             affectedLocales = asList(DbResourceDto.Locale.values());
         }
 
+        // TODO extract to lib -> modifier?
         affectedLocales.stream()
 
                 .map((affectedLocale) -> getMiner().getResourceFromTopicAndLocale(topic, locale).get().getEntries())
 
-                .forEach((resources) -> {
-                    Iterator<DbResourceDto.Entry> iterator = resources.iterator();
-                    while (iterator.hasNext()) {
-                        if (iterator.next().getReference().equals(resourceReference)) {
-                            iterator.remove();
-                        }
-                    }
-                });
+                .forEach((resources) -> resources.stream()
+
+                        .filter((resource) -> resource.getReference().equals(resourceReference))
+
+                        .findAny()
+
+                        .ifPresent(resources::remove));
     }
 
     // TODO extract to lib -> modifier?
