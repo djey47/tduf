@@ -100,6 +100,9 @@ public class MainStageController implements Initializable {
     @FXML
     private Label entryItemsCountLabel;
 
+    @FXML
+    private Label statusLabel;
+
     private Map<String, VBox> tabContentByName = new HashMap<>();
 
     private List<DbDto> databaseObjects = new ArrayList<>();
@@ -121,6 +124,8 @@ public class MainStageController implements Initializable {
 
         try {
             initSettingsPane();
+
+            initStatusBar();
 
             initResourcesStageController();
 
@@ -371,6 +376,10 @@ public class MainStageController implements Initializable {
                 .addListener((observable, oldValue, newValue) -> handleProfileChoiceChanged((String) newValue));
 
         databaseLocationTextField.setText(SettingsConstants.DATABASE_DIRECTORY_DEFAULT);
+    }
+
+    private void initStatusBar() {
+        statusLabel.setText(DisplayConstants.LABEL_STATUS_VERSION);
     }
 
     private void initNavigationPane() {
