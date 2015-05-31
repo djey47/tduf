@@ -68,15 +68,16 @@ public class MainStageChangeDataController {
                 .ifPresent(linkedEntries::remove);
     }
 
-    void addLinkedEntry(String targetEntryRef, DbDto.Topic topic) {
-        DbDto topicObject = getMiner().getDatabaseTopic(topic).get();
+    void addLinkedEntry(String targetEntryRef, DbDto.Topic targetTopic) {
 
-        List<DbStructureDto.Field> structureFields = topicObject.getStructure().getFields();
+        DbDto targetTopicObject = getMiner().getDatabaseTopic(targetTopic).get();
+        List<DbStructureDto.Field> structureFields = targetTopicObject.getStructure().getFields();
         DbStructureDto.Field sourceStructureField = structureFields.get(0);
         DbStructureDto.Field targetStructureField = structureFields.get(1);
 
-        int refFieldRank = DatabaseStructureQueryHelper.getIdentifierField(structureFields).get().getRank();
-        String sourceEntryRef = getMiner().getContentItemFromEntryIdentifierAndFieldRank(mainStageController.currentTopicProperty.getValue(), refFieldRank, mainStageController.currentEntryIndexProperty.getValue()).get().getRawValue();
+        DbDto sourceTopicObject = getMiner().getDatabaseTopicFromReference(sourceStructureField.getTargetRef());
+        int refFieldRank = DatabaseStructureQueryHelper.getIdentifierField(sourceTopicObject.getStructure().getFields()).get().getRank();
+        String sourceEntryRef = getMiner().getContentItemFromEntryIdentifierAndFieldRank(sourceTopicObject.getTopic(), refFieldRank, mainStageController.currentEntryIndexProperty.getValue()).get().getRawValue();
 
         DbDataDto.Item sourceEntryRefItem = DbDataDto.Item.builder()
                 .fromStructureField(sourceStructureField)
@@ -90,7 +91,7 @@ public class MainStageChangeDataController {
                 .addItem(sourceEntryRefItem, targetEntryRefItem)
                 .build();
 
-        List<DbDataDto.Entry> linkedEntries = topicObject.getData().getEntries();
+        List<DbDataDto.Entry> linkedEntries = targetTopicObject.getData().getEntries();
         linkedEntries.add(newEntry);
     }
 

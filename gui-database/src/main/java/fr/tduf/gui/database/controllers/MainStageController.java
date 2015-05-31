@@ -467,7 +467,7 @@ public class MainStageController implements Initializable {
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
-//        TableViewHelper.selectRowAndScroll(initialRowIndex, tableViewSelectionModel.getTableView());
+        TableViewHelper.selectLastRowAndScroll(entriesStageController.entriesTableView);
     }
 
     private void removeLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, TopicLinkDto topicLinkObject) {

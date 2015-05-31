@@ -35,7 +35,7 @@ public class EntriesStageController implements Initializable {
     private Label currentTopicLabel;
 
     @FXML
-    private TableView<RemoteResource> entriesTableView;
+    TableView<RemoteResource> entriesTableView;
 
     private MainStageController mainStageController;
 
@@ -65,7 +65,6 @@ public class EntriesStageController implements Initializable {
 
                 applyEntrySelectionToMainStageAndClose(potentialSelectedEntry.get());
             }
-            selectedEntry = Optional.empty();
         }
     }
 
