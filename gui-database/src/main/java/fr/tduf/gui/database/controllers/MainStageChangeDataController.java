@@ -58,14 +58,14 @@ public class MainStageChangeDataController {
 
     // TODO extract to lib -> modifier?
     void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
-        List<DbDataDto.Entry> linkedEntries = getMiner().getDatabaseTopic(topic).get().getData().getEntries();
-        linkedEntries.stream()
+        List<DbDataDto.Entry> topicEntries = getMiner().getDatabaseTopic(topic).get().getData().getEntries();
+        topicEntries.stream()
 
                 .filter((entry) -> entry.getId() == entryId)
 
                 .findAny()
 
-                .ifPresent(linkedEntries::remove);
+                .ifPresent(topicEntries::remove);
     }
 
     void addLinkedEntry(String targetEntryRef, DbDto.Topic targetTopic) {
