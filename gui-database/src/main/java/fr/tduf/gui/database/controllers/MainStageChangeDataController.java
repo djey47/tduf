@@ -79,6 +79,8 @@ public class MainStageChangeDataController {
         int refFieldRank = DatabaseStructureQueryHelper.getIdentifierField(sourceTopicObject.getStructure().getFields()).get().getRank();
         String sourceEntryRef = getMiner().getContentItemFromEntryIdentifierAndFieldRank(sourceTopicObject.getTopic(), refFieldRank, mainStageController.currentEntryIndexProperty.getValue()).get().getRawValue();
 
+        List<DbDataDto.Entry> linkedEntries = targetTopicObject.getData().getEntries();
+
         DbDataDto.Item sourceEntryRefItem = DbDataDto.Item.builder()
                 .fromStructureField(sourceStructureField)
                 .withRawValue(sourceEntryRef)
@@ -88,10 +90,10 @@ public class MainStageChangeDataController {
                 .withRawValue(targetEntryRef)
                 .build();
         DbDataDto.Entry newEntry = DbDataDto.Entry.builder()
+                .forId(linkedEntries.size())
                 .addItem(sourceEntryRefItem, targetEntryRefItem)
                 .build();
 
-        List<DbDataDto.Entry> linkedEntries = targetTopicObject.getData().getEntries();
         linkedEntries.add(newEntry);
     }
 
