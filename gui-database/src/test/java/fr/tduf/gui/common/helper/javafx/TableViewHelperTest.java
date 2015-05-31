@@ -56,7 +56,7 @@ public class TableViewHelperTest {
     }
 
     @Test
-    public void selectRowAndScroll_whenIndexAvailable_shouldReturnAbsent() {
+    public void selectRowAndScroll_whenIndexAvailable_shouldReturnCorrectItem() {
         // GIVEN
         ObservableList<String> values = FXCollections.observableArrayList();
         values.addAll("1", "2", "3");
@@ -68,6 +68,38 @@ public class TableViewHelperTest {
 
         // THEN
         assertThat(potentialItem).contains("2");
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void selectLastRowAndScroll_whenNullTableView_shouldThrowException() {
+        // GIVEN-WHEN
+        TableViewHelper.selectLastRowAndScroll(null);
+
+        // THEN: NPE
+    }
+
+    @Test
+    public void selectLastRowAndScroll_whenNoItems_shouldReturnAbsent() {
+        // GIVEN
+        TableView<String> tableView = new TableView<>();
+
+        // WHEN-THEN
+        assertThat(TableViewHelper.selectLastRowAndScroll(tableView)).isEmpty();
+    }
+
+    @Test
+    public void selectLastRowAndScroll_whenManyItems_shouldReturnLastOne() {
+        // GIVEN
+        ObservableList<String> values = FXCollections.observableArrayList();
+        values.addAll("1", "2", "3");
+        TableView<String> tableView = new TableView<>();
+        tableView.setItems(values);
+
+        // WHEN
+        Optional<String> potentialItem = TableViewHelper.selectLastRowAndScroll(tableView);
+
+        // THEN
+        assertThat(potentialItem).contains("3");
     }
 
     private static MouseEvent createDefaultMouseEvent(EventTarget rowTarget) {

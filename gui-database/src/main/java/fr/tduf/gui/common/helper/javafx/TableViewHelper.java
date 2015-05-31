@@ -1,6 +1,7 @@
 package fr.tduf.gui.common.helper.javafx;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -50,5 +51,21 @@ public class TableViewHelper {
         tableView.scrollTo(rowIndex);
 
         return Optional.ofNullable(tableView.getSelectionModel().getSelectedItem());
+    }
+
+    /**
+     * @param tableView : table view to be processed
+     * @param <T>       : Type of items in TableView
+     * @return selected item, if any, at last row. Absent otherwise.
+     */
+    public static <T> Optional<T> selectLastRowAndScroll(TableView<T> tableView) {
+        requireNonNull(tableView, "A TableView is required.");
+
+        ObservableList<T> items = tableView.getItems();
+        if (items.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return selectRowAndScroll(items.size() - 1, tableView);
     }
 }
