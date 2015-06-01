@@ -858,7 +858,7 @@
     {
       "name": "Packs",
       "topic": "CAR_PACKS",
-      "entryLabelFieldRanks": [4],
+      "entryLabelFieldRanks": [4,2,1],
       "groups": ["Pack 1", "Pack 2", "Pack 3"],
       "fieldSettings": [
         {
