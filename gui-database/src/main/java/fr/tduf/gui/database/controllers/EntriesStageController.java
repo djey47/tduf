@@ -133,13 +133,21 @@ public class EntriesStageController implements Initializable {
                                     RemoteResource remoteResource = new RemoteResource();
 
                                     long entryInternalIdentifier = entry.getId();
-                                    Integer refFieldRank = BulkDatabaseMiner.getUidFieldRank(topicObject.getStructure().getFields()).get();
-                                    String entryReference =   getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic, refFieldRank, entryInternalIdentifier).get().getRawValue();
-                                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
-
                                     remoteResource.setInternalEntryId(entryInternalIdentifier);
-                                    remoteResource.setReference(entryReference);
+
+                                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
                                     remoteResource.setValue(entryValue);
+
+                                    Optional<Integer> potentialRefFieldRank = BulkDatabaseMiner.getUidFieldRank(topicObject.getStructure().getFields());
+                                    if (potentialRefFieldRank.isPresent()) {
+                                        // Association topic, e.g CarRims
+                                        Integer refFieldRank = potentialRefFieldRank.get();
+                                        String entryReference = getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic, refFieldRank, entryInternalIdentifier).get().getRawValue();
+                                        remoteResource.setReference(entryReference);
+                                    } else {
+                                        // Classic topic, e.g CarPacks
+                                        remoteResource.setReference(Long.valueOf(entryInternalIdentifier).toString());
+                                    }
 
                                     return remoteResource;
                                 })
