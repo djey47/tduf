@@ -19,7 +19,9 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
@@ -295,8 +297,17 @@ public class MainStageController implements Initializable {
         return (actionEvent) -> {
             System.out.println("handleAddLinkedEntryButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
-            Optional<RemoteResource> potentialSelectedEntry = entriesStageController.initAndShowModalDialog(targetTopic, targetProfileName);
-            potentialSelectedEntry.ifPresent((selectedEntry) -> addLinkedEntryAndUpdateStage(selectedEntry, topicLinkObject));
+            DbStructureDto targetTopicStructure = getMiner().getDatabaseTopic(targetTopic).get().getStructure();
+            List<DbStructureDto.Field> targetTopicStructureFields = targetTopicStructure.getFields();
+            Optional<Integer> potentialRefFieldRank = BulkDatabaseMiner.getUidFieldRank(targetTopicStructureFields);
+            if (potentialRefFieldRank.isPresent()) {
+                // Association topic -> browse remote entries
+                Optional<RemoteResource> potentialSelectedEntry = entriesStageController.initAndShowModalDialog(targetTopic, targetProfileName);
+                potentialSelectedEntry.ifPresent((selectedEntry) -> addLinkedEntryAndUpdateStage(selectedEntry, topicLinkObject));
+            } else {
+                // Classic topic -> add new entry in target topic
+                addLinkedEntryAndUpdateStage(targetTopic, topicLinkObject);
+            }
         };
     }
 
@@ -463,7 +474,23 @@ public class MainStageController implements Initializable {
     }
 
     private void addLinkedEntryAndUpdateStage(RemoteResource linkedEntry, TopicLinkDto topicLinkObject) {
-        changeDataController.addLinkedEntry(linkedEntry.referenceProperty().get(), topicLinkObject.getTopic());
+        DbDto.Topic currentTopic = currentTopicProperty.getValue();
+        DbDto sourceTopicObject = databaseMiner.getDatabaseTopic(currentTopic).get();
+        int refFieldRank = DatabaseStructureQueryHelper.getIdentifierField(sourceTopicObject.getStructure().getFields()).get().getRank();
+        String sourceEntryRef = databaseMiner.getContentItemFromEntryIdentifierAndFieldRank(currentTopic, refFieldRank, currentEntryIndexProperty.getValue()).get().getRawValue();
+        changeDataController.addLinkedEntry(sourceEntryRef, linkedEntry.referenceProperty().get(), topicLinkObject.getTopic());
+
+        viewDataController.updateLinkProperties(topicLinkObject);
+
+        TableViewHelper.selectLastRowAndScroll(entriesStageController.entriesTableView);
+    }
+
+    private void addLinkedEntryAndUpdateStage(DbDto.Topic targetTopic, TopicLinkDto topicLinkObject) {
+        DbDto.Topic currentTopic = currentTopicProperty.getValue();
+        DbDto sourceTopicObject = databaseMiner.getDatabaseTopic(currentTopic).get();
+        int refFieldRank =  DatabaseStructureQueryHelper.getIdentifierField(sourceTopicObject.getStructure().getFields()).get().getRank();
+        String sourceEntryRef = databaseMiner.getContentItemFromEntryIdentifierAndFieldRank(currentTopic, refFieldRank, currentEntryIndexProperty.getValue()).get().getRawValue();
+        changeDataController.addLinkedEntryBasedOnLast(sourceEntryRef, targetTopic);
 
         viewDataController.updateLinkProperties(topicLinkObject);
 

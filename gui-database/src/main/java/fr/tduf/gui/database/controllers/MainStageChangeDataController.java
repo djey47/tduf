@@ -7,6 +7,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -68,16 +69,39 @@ public class MainStageChangeDataController {
                 .ifPresent(topicEntries::remove);
     }
 
-    void addLinkedEntry(String targetEntryRef, DbDto.Topic targetTopic) {
+    void addLinkedEntryBasedOnLast(String sourceEntryRef, DbDto.Topic targetTopic) {
+
+        DbDto targetTopicObject = getMiner().getDatabaseTopic(targetTopic).get();
+        List<DbDataDto.Entry> targetTopicEntries = targetTopicObject.getData().getEntries();
+
+        DbDataDto.Entry newEntry;
+        if (!targetTopicEntries.isEmpty()) {
+            DbDataDto.Entry lastEntry = targetTopicEntries.get(targetTopicEntries.size() - 1);
+
+            // TODO clone entry
+            newEntry = DbDataDto.Entry.builder()
+                    .forId(targetTopicEntries.size())
+                    .addItems(new ArrayList<>(lastEntry.getItems()))
+                    .build();
+        } else {
+            // TODO Build default entry
+            newEntry = DbDataDto.Entry.builder()
+                    .forId(targetTopicEntries.size())
+                    .build();
+        }
+
+        // FIXME we assume source reference is first field ...
+        newEntry.getItems().get(0).setRawValue(sourceEntryRef);
+
+        targetTopicEntries.add(newEntry);
+    }
+
+    void addLinkedEntry(String sourceEntryRef, String targetEntryRef, DbDto.Topic targetTopic) {
 
         DbDto targetTopicObject = getMiner().getDatabaseTopic(targetTopic).get();
         List<DbStructureDto.Field> structureFields = targetTopicObject.getStructure().getFields();
         DbStructureDto.Field sourceStructureField = structureFields.get(0);
         DbStructureDto.Field targetStructureField = structureFields.get(1);
-
-        DbDto sourceTopicObject = getMiner().getDatabaseTopicFromReference(sourceStructureField.getTargetRef());
-        int refFieldRank = DatabaseStructureQueryHelper.getIdentifierField(sourceTopicObject.getStructure().getFields()).get().getRank();
-        String sourceEntryRef = getMiner().getContentItemFromEntryIdentifierAndFieldRank(sourceTopicObject.getTopic(), refFieldRank, mainStageController.currentEntryIndexProperty.getValue()).get().getRawValue();
 
         List<DbDataDto.Entry> linkedEntries = targetTopicObject.getData().getEntries();
 

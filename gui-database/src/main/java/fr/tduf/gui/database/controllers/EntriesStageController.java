@@ -75,7 +75,7 @@ public class EntriesStageController implements Initializable {
 
         updateEntriesStageData(labelFieldRanks);
 
-        Stage stage = (Stage)root.getScene().getWindow();
+        Stage stage = (Stage) root.getScene().getWindow();
         stage.show();
 
         selectEntryInTableAndScroll(entryReference);
@@ -89,7 +89,7 @@ public class EntriesStageController implements Initializable {
         List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, mainStageController.getLayoutObject()).getEntryLabelFieldRanks();
         updateEntriesStageData(labelFieldRanks);
 
-        Stage stage = (Stage)root.getScene().getWindow();
+        Stage stage = (Stage) root.getScene().getWindow();
         stage.showAndWait();
 
         return selectedEntry;
@@ -127,32 +127,28 @@ public class EntriesStageController implements Initializable {
 
         DbDto.Topic topic = currentTopicProperty.getValue();
         getMiner().getDatabaseTopic(topic)
-                .ifPresent((topicObject) -> entriesData.addAll(topicObject.getData().getEntries().stream()
+                .ifPresent((topicObject) -> {
 
-                                .map((entry) -> {
-                                    RemoteResource remoteResource = new RemoteResource();
+                            int refFieldRank = BulkDatabaseMiner.getUidFieldRank(topicObject.getStructure().getFields()).get();
+                            entriesData.addAll(topicObject.getData().getEntries().stream()
 
-                                    long entryInternalIdentifier = entry.getId();
-                                    remoteResource.setInternalEntryId(entryInternalIdentifier);
+                                    .map((entry) -> {
+                                        RemoteResource remoteResource = new RemoteResource();
 
-                                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
-                                    remoteResource.setValue(entryValue);
+                                        long entryInternalIdentifier = entry.getId();
+                                        remoteResource.setInternalEntryId(entryInternalIdentifier);
 
-                                    Optional<Integer> potentialRefFieldRank = BulkDatabaseMiner.getUidFieldRank(topicObject.getStructure().getFields());
-                                    if (potentialRefFieldRank.isPresent()) {
-                                        // Association topic, e.g CarRims
-                                        Integer refFieldRank = potentialRefFieldRank.get();
+                                        String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
+                                        remoteResource.setValue(entryValue);
+
                                         String entryReference = getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic, refFieldRank, entryInternalIdentifier).get().getRawValue();
                                         remoteResource.setReference(entryReference);
-                                    } else {
-                                        // Classic topic, e.g CarPacks
-                                        remoteResource.setReference(Long.valueOf(entryInternalIdentifier).toString());
-                                    }
 
-                                    return remoteResource;
-                                })
+                                        return remoteResource;
+                                    })
 
-                                .collect(toList()))
+                                    .collect(toList()));
+                        }
                 );
     }
 
