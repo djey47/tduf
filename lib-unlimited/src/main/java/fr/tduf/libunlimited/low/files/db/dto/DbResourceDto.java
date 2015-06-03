@@ -82,6 +82,10 @@ public class DbResourceDto implements Serializable {
             return reference;
         }
 
+        public void setReference(String reference) {
+            this.reference = reference;
+        }
+
         public String getValue() {
             return value;
         }
