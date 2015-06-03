@@ -70,6 +70,16 @@ public class DbDataDto implements Serializable {
             };
         }
 
+        /**
+         * Decreases current entry identifier from one unit.
+         * To be used on all next entries when an entry gets deleted.
+         */
+        public void shiftIdUp() {
+            if (id > 0) {
+                id--;
+            }
+        }
+
         public List<Item> getItems() {
             return items;
         }
