@@ -283,7 +283,7 @@ public class MainStageController implements Initializable {
         };
     }
 
-    public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(DbDto.Topic targetTopic, TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, String targetProfileName) {
+    public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName) {
         return (actionEvent) -> {
             System.out.println("gotoReferenceButtonForLinkedTopic clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
@@ -291,7 +291,7 @@ public class MainStageController implements Initializable {
         };
     }
 
-    public EventHandler<ActionEvent> handleAddLinkedEntryButtonMouseClick(DbDto.Topic targetTopic, String targetProfileName, TopicLinkDto topicLinkObject) {
+    public EventHandler<ActionEvent> handleAddLinkedEntryButtonMouseClick(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName, TopicLinkDto topicLinkObject) {
         return (actionEvent) -> {
             System.out.println("handleAddLinkedEntryButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
@@ -302,7 +302,7 @@ public class MainStageController implements Initializable {
                 finalTopic = topicLinkObject.getTopic();
                 potentialSelectedEntry = entriesStageController.initAndShowModalDialog(targetTopic, targetProfileName);
             }
-            addLinkedEntryAndUpdateStage(finalTopic, potentialSelectedEntry, topicLinkObject);
+            addLinkedEntryAndUpdateStage(tableViewSelectionModel, finalTopic, potentialSelectedEntry, topicLinkObject);
         };
     }
 
@@ -468,7 +468,7 @@ public class MainStageController implements Initializable {
         }
     }
 
-    private void addLinkedEntryAndUpdateStage(DbDto.Topic targetTopic, Optional<RemoteResource> potentialLinkedEntry, TopicLinkDto topicLinkObject) {
+    private void addLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, DbDto.Topic targetTopic, Optional<RemoteResource> potentialLinkedEntry, TopicLinkDto topicLinkObject) {
         String sourceEntryRef = databaseMiner.getContentEntryRefWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicProperty.getValue()).get();
         Optional<String> targetEntryRef = Optional.empty();
         if (potentialLinkedEntry.isPresent()) {
@@ -478,7 +478,7 @@ public class MainStageController implements Initializable {
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
-        TableViewHelper.selectLastRowAndScroll(entriesStageController.entriesTableView);
+        TableViewHelper.selectLastRowAndScroll(tableViewSelectionModel.getTableView());
     }
 
     private void removeLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, TopicLinkDto topicLinkObject) {

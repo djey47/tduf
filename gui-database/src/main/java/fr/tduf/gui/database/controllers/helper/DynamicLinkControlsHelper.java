@@ -97,10 +97,10 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         if (targetProfileName != null) {
             addGoToReferenceButton(
                     buttonsBox,
-                    controller.handleGotoReferenceButtonMouseClick(targetTopic, tableSelectionModel, targetProfileName));
+                    controller.handleGotoReferenceButtonMouseClick(tableSelectionModel, targetTopic, targetProfileName));
             addAddLinkedEntryButton(
                     buttonsBox,
-                    controller.handleAddLinkedEntryButtonMouseClick(targetTopic, targetProfileName, topicLinkObject));
+                    controller.handleAddLinkedEntryButtonMouseClick(tableSelectionModel, targetTopic, targetProfileName, topicLinkObject));
             addRemoveLinkedEntryButton(
                     buttonsBox,
                     controller.handleRemoveLinkedEntryButtonMouseClick(tableSelectionModel, topicLinkObject));
