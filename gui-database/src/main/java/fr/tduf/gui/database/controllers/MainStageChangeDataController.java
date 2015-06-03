@@ -20,6 +20,8 @@ import static java.util.Objects.requireNonNull;
 public class MainStageChangeDataController {
     private final MainStageController mainStageController;
 
+    private DatabaseHelper databaseGenHelper;
+
     MainStageChangeDataController(MainStageController mainStageController) {
         requireNonNull(mainStageController, "Main stage controller is required.");
 
@@ -37,49 +39,35 @@ public class MainStageChangeDataController {
         }
     }
 
+    void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
+        requireNonNull(getGenHelper());
+        getGenHelper().updateResourceWithReference(topic, locale, oldResourceReference, newResourceReference, newResourceValue);
+    }
+
+    void removeEntryWithIdentifier(long internalEntryId, DbDto.Topic topic) {
+        requireNonNull(getGenHelper());
+        getGenHelper().removeEntryWithIdentifier(internalEntryId, topic);
+    }
+
     void removeResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, boolean forAllLocales) {
         List<DbResourceDto.Locale> affectedLocales = singletonList(locale);
         if (forAllLocales) {
             affectedLocales = asList(DbResourceDto.Locale.values());
         }
 
-        // TODO extract to lib -> modifier?
-        affectedLocales.stream()
-
-                .map((affectedLocale) -> getMiner().getResourceFromTopicAndLocale(topic, locale).get().getEntries())
-
-                .forEach((resources) -> resources.stream()
-
-                        .filter((resource) -> resource.getReference().equals(resourceReference))
-
-                        .findAny()
-
-                        .ifPresent(resources::remove));
-    }
-
-    // TODO extract to lib -> modifier?
-    void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
-        List<DbDataDto.Entry> topicEntries = getMiner().getDatabaseTopic(topic).get().getData().getEntries();
-        topicEntries.stream()
-
-                .filter((entry) -> entry.getId() == entryId)
-
-                .findAny()
-
-                .ifPresent(topicEntries::remove);
+        databaseGenHelper.removeResourcesWithReference(topic, locale, resourceReference, affectedLocales);
     }
 
     void addLinkedEntry(String sourceEntryRef, DbDto.Topic targetTopic) {
-
-        DatabaseHelper databaseGenHelper = new DatabaseHelper(getMiner());
-
-        DbDataDto.Entry newEntry = databaseGenHelper.addContentsEntryWithDefaultItems(Optional.<String>empty(), targetTopic);
+        requireNonNull(getGenHelper());
+        DbDataDto.Entry newEntry = getGenHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), targetTopic);
         // FIXME we assume source reference is first field ...
         newEntry.getItems().get(0).setRawValue(sourceEntryRef);
     }
 
     void addLinkedEntry(String sourceEntryRef, String targetEntryRef, DbDto.Topic targetTopic) {
 
+        // TODO see to use DatabaseGenHelper
         DbDto targetTopicObject = getMiner().getDatabaseTopic(targetTopic).get();
         List<DbStructureDto.Field> structureFields = targetTopicObject.getStructure().getFields();
         DbStructureDto.Field sourceStructureField = structureFields.get(0);
@@ -103,36 +91,24 @@ public class MainStageChangeDataController {
         linkedEntries.add(newEntry);
     }
 
-    // TODO use helper
-    void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
-        checkResourceDoesNotExistWithReference(topic, locale, newResourceReference);
-
-        DbResourceDto.Entry existingResourceEntry = getMiner().getResourceEntryFromTopicAndLocaleWithReference(oldResourceReference, topic, locale).get();
-
-        existingResourceEntry.setReference(newResourceReference);
-        existingResourceEntry.setValue(newResourceValue);
-    }
-
-    // TODO use helper
-    void addResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, String resourceValue) {
-        checkResourceDoesNotExistWithReference(topic, locale, resourceReference);
-
-        List<DbResourceDto.Entry> resourceEntries = getMiner().getResourceFromTopicAndLocale(topic, locale).get().getEntries();
-
-        resourceEntries.add(DbResourceDto.Entry.builder()
-                .forReference(resourceReference)
-                .withValue(resourceValue)
-                .build());
-    }
-
-    private void checkResourceDoesNotExistWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference) {
-        getMiner().getResourceEntryFromTopicAndLocaleWithReference(resourceReference, topic, locale)
-                .ifPresent((resourceEntry) -> {
-                    throw new IllegalArgumentException("Resource already exists with reference: " + resourceReference);
-                });
+    void addResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String newResourceReference, String newResourceValue) {
+        requireNonNull(getGenHelper());
+        getGenHelper().addResourceWithReference(topic, locale, newResourceReference, newResourceValue);
     }
 
     private BulkDatabaseMiner getMiner() {
         return this.mainStageController.getMiner();
+    }
+
+    private DatabaseHelper getGenHelper() {
+
+        if (databaseGenHelper == null) {
+            if (getMiner() == null) {
+                return null;
+            }
+
+            databaseGenHelper = new DatabaseHelper(getMiner());
+        }
+        return databaseGenHelper;
     }
 }

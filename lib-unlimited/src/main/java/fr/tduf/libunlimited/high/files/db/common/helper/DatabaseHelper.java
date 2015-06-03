@@ -163,6 +163,61 @@ public class DatabaseHelper {
     }
 
     /**
+     *
+     * @param topic
+     * @param locale
+     * @param oldResourceReference
+     * @param newResourceReference
+     * @param newResourceValue
+     */
+    public void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
+        checkResourceDoesNotExistWithReference(topic, locale, newResourceReference);
+
+        DbResourceDto.Entry existingResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(oldResourceReference, topic, locale).get();
+
+        existingResourceEntry.setReference(newResourceReference);
+        existingResourceEntry.setValue(newResourceValue);
+    }
+
+    /**
+     *
+     * @param entryId
+     * @param topic
+     */
+    public void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
+        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(topic).get().getData().getEntries();
+        topicEntries.stream()
+
+                .filter((entry) -> entry.getId() == entryId)
+
+                .findAny()
+
+                .ifPresent(topicEntries::remove);
+    }
+
+    /**
+     *
+     * @param topic
+     * @param locale
+     * @param resourceReference
+     * @param affectedLocales
+     */
+    public void removeResourcesWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, List<DbResourceDto.Locale> affectedLocales) {
+        affectedLocales.stream()
+
+                .map((affectedLocale) -> databaseMiner.getResourceFromTopicAndLocale(topic, locale).get().getEntries())
+
+                .forEach((resources) -> resources.stream()
+
+                        .filter((resource) -> resource.getReference().equals(resourceReference))
+
+                        .findAny()
+
+                        .ifPresent(resources::remove));
+    }
+
+
+    /**
      * Produces a random, unique identifier of content entry.
      * @param topicObject   : database topic to provide structure and contents
      * @return null if topicObject is null.
