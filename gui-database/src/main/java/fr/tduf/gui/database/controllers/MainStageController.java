@@ -473,24 +473,26 @@ public class MainStageController implements Initializable {
         }
     }
 
+    // TODO merge 2 methods
     private void addLinkedEntryAndUpdateStage(RemoteResource linkedEntry, TopicLinkDto topicLinkObject) {
         DbDto.Topic currentTopic = currentTopicProperty.getValue();
         DbDto sourceTopicObject = databaseMiner.getDatabaseTopic(currentTopic).get();
         int refFieldRank = DatabaseStructureQueryHelper.getIdentifierField(sourceTopicObject.getStructure().getFields()).get().getRank();
         String sourceEntryRef = databaseMiner.getContentItemFromEntryIdentifierAndFieldRank(currentTopic, refFieldRank, currentEntryIndexProperty.getValue()).get().getRawValue();
-        changeDataController.addLinkedEntry(sourceEntryRef, linkedEntry.referenceProperty().get(), topicLinkObject.getTopic());
+        changeDataController.addLinkedEntry(sourceEntryRef, Optional.of(linkedEntry.referenceProperty().get()), topicLinkObject.getTopic());
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
         TableViewHelper.selectLastRowAndScroll(entriesStageController.entriesTableView);
     }
 
+    // TODO merge 2 methods
     private void addLinkedEntryAndUpdateStage(DbDto.Topic targetTopic, TopicLinkDto topicLinkObject) {
         DbDto.Topic currentTopic = currentTopicProperty.getValue();
         DbDto sourceTopicObject = databaseMiner.getDatabaseTopic(currentTopic).get();
         int refFieldRank =  DatabaseStructureQueryHelper.getIdentifierField(sourceTopicObject.getStructure().getFields()).get().getRank();
         String sourceEntryRef = databaseMiner.getContentItemFromEntryIdentifierAndFieldRank(currentTopic, refFieldRank, currentEntryIndexProperty.getValue()).get().getRawValue();
-        changeDataController.addLinkedEntry(sourceEntryRef, targetTopic);
+        changeDataController.addLinkedEntry(sourceEntryRef, Optional.<String>empty(), targetTopic);
 
         viewDataController.updateLinkProperties(topicLinkObject);
 

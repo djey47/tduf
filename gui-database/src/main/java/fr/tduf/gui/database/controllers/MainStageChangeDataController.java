@@ -58,37 +58,14 @@ public class MainStageChangeDataController {
         databaseGenHelper.removeResourcesWithReference(topic, locale, resourceReference, affectedLocales);
     }
 
-    void addLinkedEntry(String sourceEntryRef, DbDto.Topic targetTopic) {
+    void addLinkedEntry(String sourceEntryRef, Optional<String> targetEntryRef, DbDto.Topic targetTopic) {
         requireNonNull(getGenHelper());
         DbDataDto.Entry newEntry = getGenHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), targetTopic);
+
         // FIXME we assume source reference is first field ...
         newEntry.getItems().get(0).setRawValue(sourceEntryRef);
-    }
-
-    void addLinkedEntry(String sourceEntryRef, String targetEntryRef, DbDto.Topic targetTopic) {
-
-        // TODO see to use DatabaseGenHelper
-        DbDto targetTopicObject = getMiner().getDatabaseTopic(targetTopic).get();
-        List<DbStructureDto.Field> structureFields = targetTopicObject.getStructure().getFields();
-        DbStructureDto.Field sourceStructureField = structureFields.get(0);
-        DbStructureDto.Field targetStructureField = structureFields.get(1);
-
-        List<DbDataDto.Entry> linkedEntries = targetTopicObject.getData().getEntries();
-
-        DbDataDto.Item sourceEntryRefItem = DbDataDto.Item.builder()
-                .fromStructureField(sourceStructureField)
-                .withRawValue(sourceEntryRef)
-                .build();
-        DbDataDto.Item targetEntryRefItem = DbDataDto.Item.builder()
-                .fromStructureField(targetStructureField)
-                .withRawValue(targetEntryRef)
-                .build();
-        DbDataDto.Entry newEntry = DbDataDto.Entry.builder()
-                .forId(linkedEntries.size())
-                .addItem(sourceEntryRefItem, targetEntryRefItem)
-                .build();
-
-        linkedEntries.add(newEntry);
+        // FIXME we assume target reference is second field ...
+        targetEntryRef.ifPresent((ref) -> newEntry.getItems().get(1).setRawValue(ref));
     }
 
     void addResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String newResourceReference, String newResourceValue) {
