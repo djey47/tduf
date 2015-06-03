@@ -19,7 +19,6 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.application.Platform;
@@ -297,17 +296,15 @@ public class MainStageController implements Initializable {
         return (actionEvent) -> {
             System.out.println("handleAddLinkedEntryButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
-            DbStructureDto targetTopicStructure = getMiner().getDatabaseTopic(targetTopic).get().getStructure();
-            List<DbStructureDto.Field> targetTopicStructureFields = targetTopicStructure.getFields();
-            Optional<Integer> potentialRefFieldRank = BulkDatabaseMiner.getUidFieldRank(targetTopicStructureFields);
+            Optional<RemoteResource> potentialSelectedEntry = Optional.empty();
+            OptionalInt potentialRefFieldRank = databaseMiner.getUidFieldRank(targetTopic);
+            DbDto.Topic finalTopic = targetTopic;
             if (potentialRefFieldRank.isPresent()) {
                 // Association topic -> browse remote entries
-                Optional<RemoteResource> potentialSelectedEntry = entriesStageController.initAndShowModalDialog(targetTopic, targetProfileName);
-                addLinkedEntryAndUpdateStage(topicLinkObject.getTopic(), potentialSelectedEntry, topicLinkObject);
-            } else {
-                // Classic topic -> add new entry in target topic
-                addLinkedEntryAndUpdateStage(targetTopic, Optional.<RemoteResource>empty(), topicLinkObject);
+                finalTopic = topicLinkObject.getTopic();
+                potentialSelectedEntry = entriesStageController.initAndShowModalDialog(targetTopic, targetProfileName);
             }
+            addLinkedEntryAndUpdateStage(finalTopic, potentialSelectedEntry, topicLinkObject);
         };
     }
 
