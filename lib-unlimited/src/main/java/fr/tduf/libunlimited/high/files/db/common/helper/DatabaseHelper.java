@@ -10,6 +10,7 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -186,13 +187,26 @@ public class DatabaseHelper {
      */
     public void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
         List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(topic).get().getData().getEntries();
+        AtomicBoolean removalResult = new AtomicBoolean(false);
         topicEntries.stream()
 
                 .filter((entry) -> entry.getId() == entryId)
 
                 .findAny()
 
-                .ifPresent(topicEntries::remove);
+                .ifPresent((entry) -> {
+                    topicEntries.remove(entry);
+                    removalResult.set(true);
+                });
+
+        // Fix identifiers of next entries
+        if (removalResult.get()) {
+            topicEntries.stream()
+
+                    .filter((entry) -> entry.getId() > entryId)
+
+                    .forEach(DbDataDto.Entry::shiftIdUp);
+        }
     }
 
     /**
@@ -261,9 +275,9 @@ public class DatabaseHelper {
     private static Set<String> extractContentEntryReferences(DbStructureDto.Field identifierField, DbDto topicObject) {
         return topicObject.getData().getEntries().stream()
 
-                    .map((entry) -> entry.getItems().stream()
+                .map((entry) -> entry.getItems().stream()
 
-                            .filter((item) -> item.getFieldRank() == identifierField.getRank())
+                        .filter((item) -> item.getFieldRank() == identifierField.getRank())
 
                             .findAny().get().getRawValue())
 
