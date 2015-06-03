@@ -127,28 +127,24 @@ public class EntriesStageController implements Initializable {
 
         DbDto.Topic topic = currentTopicProperty.getValue();
         getMiner().getDatabaseTopic(topic)
-                .ifPresent((topicObject) -> {
+                .ifPresent((topicObject) -> entriesData.addAll(topicObject.getData().getEntries().stream()
 
-                            int refFieldRank = BulkDatabaseMiner.getUidFieldRank(topicObject.getStructure().getFields()).get();
-                            entriesData.addAll(topicObject.getData().getEntries().stream()
+                        .map((entry) -> {
+                            RemoteResource remoteResource = new RemoteResource();
 
-                                    .map((entry) -> {
-                                        RemoteResource remoteResource = new RemoteResource();
+                            long entryInternalIdentifier = entry.getId();
+                            remoteResource.setInternalEntryId(entryInternalIdentifier);
 
-                                        long entryInternalIdentifier = entry.getId();
-                                        remoteResource.setInternalEntryId(entryInternalIdentifier);
+                            String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
+                            remoteResource.setValue(entryValue);
 
-                                        String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
-                                        remoteResource.setValue(entryValue);
+                            String entryReference = getMiner().getContentEntryRefWithInternalIdentifier(entryInternalIdentifier, topic).get();
+                            remoteResource.setReference(entryReference);
 
-                                        String entryReference = getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic, refFieldRank, entryInternalIdentifier).get().getRawValue();
-                                        remoteResource.setReference(entryReference);
+                            return remoteResource;
+                        })
 
-                                        return remoteResource;
-                                    })
-
-                                    .collect(toList()));
-                        }
+                        .collect(toList()))
                 );
     }
 

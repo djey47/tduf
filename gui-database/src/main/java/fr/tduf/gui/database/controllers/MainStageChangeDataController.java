@@ -35,7 +35,7 @@ public class MainStageChangeDataController {
             contentItem.setRawValue(newRawValue);
 
             // TODO see to update item properties automatically upon property change
-            this.mainStageController.getViewDataController().updateItemProperties(contentItem);
+            mainStageController.getViewDataController().updateItemProperties(contentItem);
         }
     }
 

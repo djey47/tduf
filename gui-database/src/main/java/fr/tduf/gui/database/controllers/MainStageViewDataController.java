@@ -153,7 +153,7 @@ public class MainStageViewDataController {
             resourceTopic = getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
         }
 
-        Optional<DbResourceDto.Entry> potentialResourceEntry = this.getMiner().getResourceEntryFromTopicAndLocaleWithReference(resourceItem.getRawValue(), resourceTopic, mainStageController.currentLocaleProperty.getValue());
+        Optional<DbResourceDto.Entry> potentialResourceEntry = getMiner().getResourceEntryFromTopicAndLocaleWithReference(resourceItem.getRawValue(), resourceTopic, mainStageController.currentLocaleProperty.getValue());
         if (potentialResourceEntry.isPresent()) {
             String resourceValue = potentialResourceEntry.get().getValue();
             mainStageController.resolvedValuePropertyByFieldRank.get(resourceItem.getFieldRank()).set(resourceValue);
@@ -167,7 +167,7 @@ public class MainStageViewDataController {
         ObservableList<RemoteResource> values = remoteEntry.getValue();
         values.clear();
 
-        DbDto topicObject = this.getMiner().getDatabaseTopic(linkObject.getTopic()).get();
+        DbDto topicObject = getMiner().getDatabaseTopic(linkObject.getTopic()).get();
         topicObject.getData().getEntries().stream()
 
                 .filter((contentEntry) -> {
@@ -182,7 +182,7 @@ public class MainStageViewDataController {
     }
 
     private void updateReferenceProperties(DbDataDto.Item referenceItem, DbStructureDto.Field structureField) {
-        DbDto.Topic remoteTopic = this.getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
+        DbDto.Topic remoteTopic = getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
 
         List<Integer> remoteFieldRanks = new ArrayList<>();
         Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), mainStageController.profilesChoiceBox.getValue(), this.mainStageController.getLayoutObject());
@@ -205,7 +205,7 @@ public class MainStageViewDataController {
         if (topicObject.getStructure().getFields().size() == 2) {
             // Association topic (e.g. Car_Rims)
             String remoteTopicRef = topicObject.getStructure().getFields().get(1).getTargetRef();
-            DbDto.Topic remoteTopic = this.getMiner().getDatabaseTopicFromReference(remoteTopicRef).getTopic();
+            DbDto.Topic remoteTopic = getMiner().getDatabaseTopicFromReference(remoteTopicRef).getTopic();
 
             String remoteEntryReference = contentEntry.getItems().get(1).getRawValue();
             remoteResource.setReference(remoteEntryReference);
@@ -225,7 +225,7 @@ public class MainStageViewDataController {
     private String fetchRemoteContentsWithEntryRef(DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {
         requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
 
-        OptionalLong potentialEntryId = this.getMiner().getContentEntryIdFromReference(remoteEntryReference, remoteTopic);
+        OptionalLong potentialEntryId = getMiner().getContentEntryIdFromReference(remoteEntryReference, remoteTopic);
         if (potentialEntryId.isPresent()) {
             return DatabaseQueryHelper.fetchResourceValuesWithEntryId(
                     potentialEntryId.getAsLong(), remoteTopic,
@@ -237,6 +237,6 @@ public class MainStageViewDataController {
     }
 
     private BulkDatabaseMiner getMiner() {
-        return this.mainStageController.getMiner();
+        return mainStageController.getMiner();
     }
 }

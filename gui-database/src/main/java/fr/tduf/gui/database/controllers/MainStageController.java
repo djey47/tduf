@@ -20,7 +20,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
-import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
@@ -279,7 +278,7 @@ public class MainStageController implements Initializable {
         return (actionEvent) -> {
             System.out.println("gotoReferenceButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
-            DbDataDto.Entry remoteContentEntry = databaseMiner.getRemoteContentEntryWithInternalIdentifier(this.currentTopicObject.getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic).get();
+            DbDataDto.Entry remoteContentEntry = databaseMiner.getRemoteContentEntryWithInternalIdentifier(currentTopicObject.getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic).get();
             viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId(), true);
         };
     }
@@ -297,9 +296,8 @@ public class MainStageController implements Initializable {
             System.out.println("handleAddLinkedEntryButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
             Optional<RemoteResource> potentialSelectedEntry = Optional.empty();
-            OptionalInt potentialRefFieldRank = databaseMiner.getUidFieldRank(targetTopic);
             DbDto.Topic finalTopic = targetTopic;
-            if (potentialRefFieldRank.isPresent()) {
+            if (databaseMiner.getUidFieldRank(targetTopic).isPresent()) {
                 // Association topic -> browse remote entries
                 finalTopic = topicLinkObject.getTopic();
                 potentialSelectedEntry = entriesStageController.initAndShowModalDialog(targetTopic, targetProfileName);
@@ -471,11 +469,7 @@ public class MainStageController implements Initializable {
     }
 
     private void addLinkedEntryAndUpdateStage(DbDto.Topic targetTopic, Optional<RemoteResource> potentialLinkedEntry, TopicLinkDto topicLinkObject) {
-        DbDto.Topic currentTopic = currentTopicProperty.getValue();
-        DbDto sourceTopicObject = databaseMiner.getDatabaseTopic(currentTopic).get();
-        int refFieldRank = DatabaseStructureQueryHelper.getIdentifierField(sourceTopicObject.getStructure().getFields()).get().getRank();
-        String sourceEntryRef = databaseMiner.getContentItemFromEntryIdentifierAndFieldRank(currentTopic, refFieldRank, currentEntryIndexProperty.getValue()).get().getRawValue();
-
+        String sourceEntryRef = databaseMiner.getContentEntryRefWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicProperty.getValue()).get();
         Optional<String> targetEntryRef = Optional.empty();
         if (potentialLinkedEntry.isPresent()) {
             targetEntryRef = Optional.of(potentialLinkedEntry.get().referenceProperty().get());
