@@ -1,14 +1,14 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -69,31 +69,13 @@ public class MainStageChangeDataController {
                 .ifPresent(topicEntries::remove);
     }
 
-    void addLinkedEntryBasedOnLast(String sourceEntryRef, DbDto.Topic targetTopic) {
+    void addLinkedEntry(String sourceEntryRef, DbDto.Topic targetTopic) {
 
-        DbDto targetTopicObject = getMiner().getDatabaseTopic(targetTopic).get();
-        List<DbDataDto.Entry> targetTopicEntries = targetTopicObject.getData().getEntries();
+        DatabaseHelper databaseGenHelper = new DatabaseHelper(getMiner());
 
-        DbDataDto.Entry newEntry;
-        if (!targetTopicEntries.isEmpty()) {
-            DbDataDto.Entry lastEntry = targetTopicEntries.get(targetTopicEntries.size() - 1);
-
-            // TODO clone entry
-            newEntry = DbDataDto.Entry.builder()
-                    .forId(targetTopicEntries.size())
-                    .addItems(new ArrayList<>(lastEntry.getItems()))
-                    .build();
-        } else {
-            // TODO Build default entry
-            newEntry = DbDataDto.Entry.builder()
-                    .forId(targetTopicEntries.size())
-                    .build();
-        }
-
+        DbDataDto.Entry newEntry = databaseGenHelper.addContentsEntryWithDefaultItems(Optional.<String>empty(), targetTopic);
         // FIXME we assume source reference is first field ...
         newEntry.getItems().get(0).setRawValue(sourceEntryRef);
-
-        targetTopicEntries.add(newEntry);
     }
 
     void addLinkedEntry(String sourceEntryRef, String targetEntryRef, DbDto.Topic targetTopic) {
@@ -121,6 +103,7 @@ public class MainStageChangeDataController {
         linkedEntries.add(newEntry);
     }
 
+    // TODO use helper
     void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
         checkResourceDoesNotExistWithReference(topic, locale, newResourceReference);
 
@@ -130,6 +113,7 @@ public class MainStageChangeDataController {
         existingResourceEntry.setValue(newResourceValue);
     }
 
+    // TODO use helper
     void addResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, String resourceValue) {
         checkResourceDoesNotExistWithReference(topic, locale, resourceReference);
 

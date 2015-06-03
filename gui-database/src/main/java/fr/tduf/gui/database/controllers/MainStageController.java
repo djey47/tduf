@@ -490,7 +490,7 @@ public class MainStageController implements Initializable {
         DbDto sourceTopicObject = databaseMiner.getDatabaseTopic(currentTopic).get();
         int refFieldRank =  DatabaseStructureQueryHelper.getIdentifierField(sourceTopicObject.getStructure().getFields()).get().getRank();
         String sourceEntryRef = databaseMiner.getContentItemFromEntryIdentifierAndFieldRank(currentTopic, refFieldRank, currentEntryIndexProperty.getValue()).get().getRawValue();
-        changeDataController.addLinkedEntryBasedOnLast(sourceEntryRef, targetTopic);
+        changeDataController.addLinkedEntry(sourceEntryRef, targetTopic);
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
