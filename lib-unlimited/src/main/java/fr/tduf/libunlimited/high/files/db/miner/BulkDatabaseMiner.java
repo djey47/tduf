@@ -160,6 +160,24 @@ public class BulkDatabaseMiner {
     }
 
     /**
+     * @param entryIdentifier   : index of entry in source topic
+     * @param topic             : topic in TDU Database to search
+     * @return identifier of database entry having specified reference as identifier, empty otherwise.
+     */
+    public Optional<String> getContentEntryRefWithInternalIdentifier(long entryIdentifier, DbDto.Topic topic) {
+//        System.out.println(new Date().getTime() + " - getContentEntryRefFromEntryIdentifier(" + entryIdentifier + "," + topic ")");
+
+        OptionalInt potentialRefFieldRank = getUidFieldRank(topic);
+        if (potentialRefFieldRank.isPresent()) {
+            Optional<DbDataDto.Item> potentialRefItem = getContentItemFromEntryIdentifierAndFieldRank(topic, potentialRefFieldRank.getAsInt(), entryIdentifier);
+            if (potentialRefItem.isPresent()) {
+                return Optional.of(potentialRefItem.get().getRawValue());
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
      * @param topic             : topic in TDU Database to search
      * @param fieldRank         : rank of field to resolve resource
      * @param entryIdentifier   : index of entry in source topic
