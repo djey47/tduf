@@ -303,10 +303,10 @@ public class MainStageController implements Initializable {
             if (potentialRefFieldRank.isPresent()) {
                 // Association topic -> browse remote entries
                 Optional<RemoteResource> potentialSelectedEntry = entriesStageController.initAndShowModalDialog(targetTopic, targetProfileName);
-                potentialSelectedEntry.ifPresent((selectedEntry) -> addLinkedEntryAndUpdateStage(selectedEntry, topicLinkObject));
+                addLinkedEntryAndUpdateStage(topicLinkObject.getTopic(), potentialSelectedEntry, topicLinkObject);
             } else {
                 // Classic topic -> add new entry in target topic
-                addLinkedEntryAndUpdateStage(targetTopic, topicLinkObject);
+                addLinkedEntryAndUpdateStage(targetTopic, Optional.<RemoteResource>empty(), topicLinkObject);
             }
         };
     }
@@ -473,26 +473,17 @@ public class MainStageController implements Initializable {
         }
     }
 
-    // TODO merge 2 methods
-    private void addLinkedEntryAndUpdateStage(RemoteResource linkedEntry, TopicLinkDto topicLinkObject) {
+    private void addLinkedEntryAndUpdateStage(DbDto.Topic targetTopic, Optional<RemoteResource> potentialLinkedEntry, TopicLinkDto topicLinkObject) {
         DbDto.Topic currentTopic = currentTopicProperty.getValue();
         DbDto sourceTopicObject = databaseMiner.getDatabaseTopic(currentTopic).get();
         int refFieldRank = DatabaseStructureQueryHelper.getIdentifierField(sourceTopicObject.getStructure().getFields()).get().getRank();
         String sourceEntryRef = databaseMiner.getContentItemFromEntryIdentifierAndFieldRank(currentTopic, refFieldRank, currentEntryIndexProperty.getValue()).get().getRawValue();
-        changeDataController.addLinkedEntry(sourceEntryRef, Optional.of(linkedEntry.referenceProperty().get()), topicLinkObject.getTopic());
 
-        viewDataController.updateLinkProperties(topicLinkObject);
-
-        TableViewHelper.selectLastRowAndScroll(entriesStageController.entriesTableView);
-    }
-
-    // TODO merge 2 methods
-    private void addLinkedEntryAndUpdateStage(DbDto.Topic targetTopic, TopicLinkDto topicLinkObject) {
-        DbDto.Topic currentTopic = currentTopicProperty.getValue();
-        DbDto sourceTopicObject = databaseMiner.getDatabaseTopic(currentTopic).get();
-        int refFieldRank =  DatabaseStructureQueryHelper.getIdentifierField(sourceTopicObject.getStructure().getFields()).get().getRank();
-        String sourceEntryRef = databaseMiner.getContentItemFromEntryIdentifierAndFieldRank(currentTopic, refFieldRank, currentEntryIndexProperty.getValue()).get().getRawValue();
-        changeDataController.addLinkedEntry(sourceEntryRef, Optional.<String>empty(), targetTopic);
+        Optional<String> targetEntryRef = Optional.empty();
+        if (potentialLinkedEntry.isPresent()) {
+            targetEntryRef = Optional.of(potentialLinkedEntry.get().referenceProperty().get());
+        }
+        changeDataController.addLinkedEntry(sourceEntryRef, targetEntryRef, targetTopic);
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
@@ -545,6 +536,7 @@ public class MainStageController implements Initializable {
     public Map<Integer, SimpleStringProperty> getResolvedValuePropertyByFieldRank() {
         return resolvedValuePropertyByFieldRank;
     }
+
     ChoiceBox<DbResourceDto.Locale> getLocalesChoiceBox() {
         return localesChoiceBox;
     }
