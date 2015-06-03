@@ -6,10 +6,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalLong;
-import java.util.Set;
+import java.util.*;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_REMOTE;
 import static java.util.Objects.requireNonNull;
@@ -163,6 +160,39 @@ public class BulkDatabaseMiner {
     }
 
     /**
+     * @param topic             : topic in TDU Database to search
+     * @param fieldRank         : rank of field to resolve resource
+     * @param entryIdentifier   : index of entry in source topic
+     * @return item if it exists, empty otherwise.
+     */
+    public Optional<DbDataDto.Item> getContentItemFromEntryIdentifierAndFieldRank(DbDto.Topic topic, int fieldRank, long entryIdentifier) {
+//        System.out.println(new Date().getTime() + " - getContentItemFromInternalIdentifierAndFieldRank(" + fieldRank + "," + entryIdentifier + "," + topic + ")");
+
+        return getContentEntryFromTopicWithInternalIdentifier(entryIdentifier, topic).getItems().stream()
+
+                .filter((contentItem) -> contentItem.getFieldRank() == fieldRank)
+
+                .findAny();
+    }
+
+    /**
+     * @param topic : topic in TDU Database to request field from
+     * @return rank of UID field if it exists for gieven topic, empty otherwise.
+     */
+    public OptionalInt getUidFieldRank(DbDto.Topic topic) {
+//        System.out.println(new Date().getTime() + " - getUidFieldRank(" + topic + "," + topic + ")");
+
+        DbStructureDto topicStructure = getDatabaseTopic(topic).get().getStructure();
+        Optional<Integer> uidFieldRank = getUidFieldRank(topicStructure.getFields());
+
+        if (uidFieldRank.isPresent()) {
+            return OptionalInt.of(uidFieldRank.get());
+        }
+
+        return OptionalInt.empty();
+    }
+
+    /**
      * @param sourceTopic   : topic in TDU Database to search
      * @param fieldRank     : rank of field to resolve resource
      * @param entryIndex    : index of entry in source topic
@@ -246,6 +276,7 @@ public class BulkDatabaseMiner {
      * @param structureFields   : list of structure fields for a topic
      * @return rank of uid field in structure if such a field exists, empty otherwise
      */
+    // TODO change return type to OptionalInt
     public static Optional<Integer> getUidFieldRank(List<DbStructureDto.Field> structureFields) {
 //        System.out.println(new Date().getTime() + " - getUidFieldRank(" + structureFields + ")");
 
