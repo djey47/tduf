@@ -24,6 +24,7 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -67,6 +68,8 @@ public class MainStageController implements Initializable {
     Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
     Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
     Map<TopicLinkDto, ObservableList<RemoteResource>> resourceListByTopicLink = new HashMap<>();
+    ObservableList<RemoteResource> browsableEntryList;
+
 
     @FXML
     private Parent root;
@@ -97,6 +100,9 @@ public class MainStageController implements Initializable {
 
     @FXML
     private TextField entryNumberTextField;
+
+    @FXML
+    private ComboBox<RemoteResource> entryNumberComboBox;
 
     @FXML
     private Label entryItemsCountLabel;
@@ -288,7 +294,7 @@ public class MainStageController implements Initializable {
         return (actionEvent) -> {
             System.out.println("browseResourcesButton clicked");
 
-            resourcesStageController.initAndShowDialog(targetReferenceProperty, fieldRank, getLocalesChoiceBox().getValue(), targetTopic);
+            resourcesStageController.initAndShowDialog(targetReferenceProperty, fieldRank, localesChoiceBox.getValue(), targetTopic);
         };
     }
 
@@ -417,6 +423,9 @@ public class MainStageController implements Initializable {
 
         entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new CurrentEntryIndexToStringConverter());
         entryItemsCountLabel.textProperty().bindBidirectional(entryItemsCountProperty, new EntryItemsCountToStringConverter());
+
+        browsableEntryList = FXCollections.observableArrayList();
+        entryNumberComboBox.setItems(browsableEntryList);
 
         statusLabel.setText(DisplayConstants.LABEL_STATUS_VERSION);
     }
@@ -570,10 +579,6 @@ public class MainStageController implements Initializable {
 
     public Map<Integer, SimpleStringProperty> getResolvedValuePropertyByFieldRank() {
         return resolvedValuePropertyByFieldRank;
-    }
-
-    ChoiceBox<DbResourceDto.Locale> getLocalesChoiceBox() {
-        return localesChoiceBox;
     }
 
     void setLayoutObject(EditorLayoutDto layoutObject) {
