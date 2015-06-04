@@ -517,6 +517,7 @@ public class MainStageController implements Initializable {
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
+        // FIXME handle case of deletion of last item in table
         TableViewHelper.selectRowAndScroll(initialRowIndex, tableViewSelectionModel.getTableView());
     }
 

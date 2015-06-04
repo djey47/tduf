@@ -175,16 +175,13 @@ public class MainStageViewDataController {
         ObservableList<RemoteResource> values = remoteEntry.getValue();
         values.clear();
 
-        DbDto topicObject = getMiner().getDatabaseTopic(linkObject.getTopic()).get();
-        topicObject.getData().getEntries().stream()
+        String currentEntryRef = getMiner().getContentEntryRefWithInternalIdentifier(mainStageController.currentEntryIndexProperty.getValue(), mainStageController.currentTopicProperty.getValue()).get();
+        DbDto linkedTopicObject = getMiner().getDatabaseTopic(linkObject.getTopic()).get();
+        linkedTopicObject.getData().getEntries().stream()
 
-                .filter((contentEntry) -> {
-                    // TODO find another way of getting current reference
-                    String currentRef = contentEntry.getItems().get(0).getRawValue();
-                    return mainStageController.rawValuePropertyByFieldRank.get(1).getValue().equals(currentRef);
-                })
+                .filter((contentEntry) -> currentEntryRef.equals(contentEntry.getItems().get(0).getRawValue()))
 
-                .map((contentEntry) -> fetchLinkResourceFromContentEntry(topicObject, contentEntry, linkObject))
+                .map((contentEntry) -> fetchLinkResourceFromContentEntry(linkedTopicObject, contentEntry, linkObject))
 
                 .forEach(values::add);
     }
