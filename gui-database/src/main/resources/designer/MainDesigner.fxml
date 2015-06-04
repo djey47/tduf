@@ -48,15 +48,6 @@
                   <Button layoutX="199.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleAddEntryButtonAction" prefWidth="34.0" text="+" />
                   <Button layoutX="237.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleRemoveEntryButtonAction" prefWidth="34.0" text="-" />
                   <Separator layoutX="418.0" layoutY="10.0" orientation="VERTICAL" />
-                      <Button mnemonicParsing="false" onAction="#handleFirstButtonMouseClick" prefWidth="40.0" text="|&lt;" />
-                  <Button layoutX="301.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleFastPreviousButtonMouseClick" prefWidth="40.0" text="&lt;&lt;" />
-                      <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handlePreviousButtonMouseClick" prefWidth="40.0" text="&lt;" />
-                  <TextField fx:id="entryNumberTextField" alignment="CENTER" editable="false" prefWidth="50.0" />
-                  <Label fx:id="entryItemsCountLabel" text="/ &lt;?&gt;" />
-                      <Button layoutX="61.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleNextButtonMouseClick" prefWidth="40.0" text="&gt;" />
-                  <Button layoutX="301.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleFastNextButtonMouseClick" prefWidth="40.0" text="&gt;&gt;" />
-                      <Button layoutX="139.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleLastButtonMouseClick" prefWidth="40.0" text="&gt;|" />
-                  <Separator layoutX="80.0" layoutY="10.0" orientation="VERTICAL" />
                   <Label fx:id="currentEntryLabel" text="&lt;current&gt;">
                      <font>
                         <Font name="System Italic" size="13.0" />
@@ -79,6 +70,15 @@
                   </TabPane>
             <ToolBar layoutX="10.0" layoutY="112.0" prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
                <items>
+                      <Button mnemonicParsing="false" onAction="#handleFirstButtonMouseClick" prefWidth="40.0" text="|&lt;" />
+                  <Button mnemonicParsing="false" onAction="#handleFastPreviousButtonMouseClick" prefWidth="40.0" text="&lt;&lt;" />
+                      <Button mnemonicParsing="false" onAction="#handlePreviousButtonMouseClick" prefWidth="40.0" text="&lt;" />
+                  <TextField fx:id="entryNumberTextField" alignment="CENTER" prefWidth="50.0" />
+                  <Label fx:id="entryItemsCountLabel" prefWidth="50.0" text="/" />
+                      <Button mnemonicParsing="false" onAction="#handleNextButtonMouseClick" prefWidth="40.0" text="&gt;" />
+                  <Button mnemonicParsing="false" onAction="#handleFastNextButtonMouseClick" prefWidth="40.0" text="&gt;&gt;" />
+                      <Button mnemonicParsing="false" onAction="#handleLastButtonMouseClick" prefWidth="40.0" text="&gt;|" />
+                  <Separator orientation="VERTICAL" />
                   <Label fx:id="statusLabel">
                      <font>
                         <Font name="System Italic" size="13.0" />
