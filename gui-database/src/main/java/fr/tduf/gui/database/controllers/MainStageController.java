@@ -287,6 +287,7 @@ public class MainStageController implements Initializable {
         };
     }
 
+    // TODO do not throw exception when entry does not exist
     public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(DbDto.Topic targetTopic, int fieldRank, String targetProfileName) {
         return (actionEvent) -> {
             System.out.println("gotoReferenceButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);

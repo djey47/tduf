@@ -111,16 +111,17 @@ public class EntriesStageController implements Initializable {
         entriesTableView.setItems(entriesData);
     }
 
-    // TODO do not throw exception when entry does not exist
     private void selectEntryInTableAndScroll(String entryReference) {
-        RemoteResource browsedResource = entriesData.stream()
+        entriesData.stream()
 
                 .filter((resource) -> resource.referenceProperty().get().equals(entryReference))
 
-                .findAny().get();
+                .findAny()
 
-        entriesTableView.getSelectionModel().select(browsedResource);
-        entriesTableView.scrollTo(browsedResource);
+                .ifPresent((browsedResource) -> {
+                    entriesTableView.getSelectionModel().select(browsedResource);
+                    entriesTableView.scrollTo(browsedResource);
+                });
     }
 
     private void updateEntriesStageData(List<Integer> labelFieldRanks) {
