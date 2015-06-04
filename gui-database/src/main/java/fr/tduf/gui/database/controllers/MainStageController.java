@@ -124,16 +124,16 @@ public class MainStageController implements Initializable {
         try {
             initSettingsPane();
 
-            initStatusBar();
-
             initResourcesStageController();
 
             initEntriesStageController();
+
+            initTopicEntryHeaderPane();
+
+            initStatusBar();
         } catch (IOException e) {
             throw new RuntimeException("Window initializing failed.", e);
         }
-
-        initNavigationPane();
     }
 
     @FXML
@@ -399,18 +399,20 @@ public class MainStageController implements Initializable {
     }
 
     private void initStatusBar() {
+        entryItemsCountProperty = new SimpleObjectProperty<>(-1);
+        currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
+
+        entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new CurrentEntryIndexToStringConverter());
+        entryItemsCountLabel.textProperty().bindBidirectional(entryItemsCountProperty, new EntryItemsCountToStringConverter());
+
         statusLabel.setText(DisplayConstants.LABEL_STATUS_VERSION);
     }
 
-    private void initNavigationPane() {
+    private void initTopicEntryHeaderPane() {
         currentTopicProperty = new SimpleObjectProperty<>();
-        entryItemsCountProperty = new SimpleObjectProperty<>(-1);
-        currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
         currentEntryLabelProperty = new SimpleStringProperty("");
 
         currentTopicLabel.textProperty().bindBidirectional(currentTopicProperty, new DatabaseTopicToStringConverter());
-        entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new CurrentEntryIndexToStringConverter());
-        entryItemsCountLabel.textProperty().bindBidirectional(entryItemsCountProperty, new EntryItemsCountToStringConverter());
         currentEntryLabel.textProperty().bindBidirectional(currentEntryLabelProperty);
     }
 
