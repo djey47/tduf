@@ -16,7 +16,6 @@ import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.gui.database.stages.EntriesDesigner;
 import fr.tduf.gui.database.stages.ResourcesDesigner;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
@@ -287,13 +286,13 @@ public class MainStageController implements Initializable {
         };
     }
 
-    // TODO do not throw exception when entry does not exist
     public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(DbDto.Topic targetTopic, int fieldRank, String targetProfileName) {
         return (actionEvent) -> {
             System.out.println("gotoReferenceButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
-            DbDataDto.Entry remoteContentEntry = databaseMiner.getRemoteContentEntryWithInternalIdentifier(currentTopicObject.getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic).get();
-            viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId(), true);
+            databaseMiner.getRemoteContentEntryWithInternalIdentifier(currentTopicObject.getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic)
+
+                    .ifPresent((remoteContentEntry) -> viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId(), true));
         };
     }
 
