@@ -111,6 +111,7 @@ public class EntriesStageController implements Initializable {
         entriesTableView.setItems(entriesData);
     }
 
+    // TODO do not throw exception when entry does not exist
     private void selectEntryInTableAndScroll(String entryReference) {
         RemoteResource browsedResource = entriesData.stream()
 

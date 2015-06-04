@@ -99,6 +99,13 @@ public class MainStageViewDataController {
                 .ifPresent(this::updateLinkProperties);
     }
 
+    void updateEntryCountAndSwitchToNewEntry(long newEntryIndex) {
+        // TODO See to set entry count automatically
+        mainStageController.entryItemsCountProperty.setValue(mainStageController.getCurrentTopicObject().getData().getEntries().size());
+
+        switchToContentEntry(newEntryIndex);
+    }
+
     void switchToSelectedResourceForLinkedTopic(RemoteResource selectedResource, DbDto.Topic targetTopic, String targetProfileName) {
         if (selectedResource != null) {
             String entryReference = selectedResource.referenceProperty().get();

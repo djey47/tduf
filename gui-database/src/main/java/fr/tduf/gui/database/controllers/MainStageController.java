@@ -248,7 +248,7 @@ public class MainStageController implements Initializable {
     public void handleLastButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleLastButtonMouseClick");
 
-        this.viewDataController.switchToContentEntry(this.currentTopicObject.getData().getEntries().size() - 1);
+        viewDataController.switchToContentEntry(this.currentTopicObject.getData().getEntries().size() - 1);
     }
 
     @FXML
@@ -262,6 +262,7 @@ public class MainStageController implements Initializable {
     public void handleAddEntryButtonAction(ActionEvent actionEvent) {
         System.out.println("handleAddEntryButtonAction");
 
+        addEntryAndUpdateStage();
     }
 
     @FXML
@@ -478,6 +479,12 @@ public class MainStageController implements Initializable {
 
             navigationHistory.clear();
         }
+    }
+
+    private void addEntryAndUpdateStage() {
+        long newEntryIndex = changeDataController.addEntryForCurrentTopic();
+
+        viewDataController.updateEntryCountAndSwitchToNewEntry(newEntryIndex);
     }
 
     private void addLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, DbDto.Topic targetTopic, Optional<RemoteResource> potentialLinkedEntry, TopicLinkDto topicLinkObject) {

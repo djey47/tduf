@@ -5,7 +5,6 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,6 +55,13 @@ public class MainStageChangeDataController {
         }
 
         databaseGenHelper.removeResourcesWithReference(topic, locale, resourceReference, affectedLocales);
+    }
+
+    long addEntryForCurrentTopic() {
+        requireNonNull(getGenHelper());
+        DbDataDto.Entry newEntry = getGenHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), mainStageController.currentTopicProperty.getValue());
+
+        return newEntry.getId();
     }
 
     void addLinkedEntry(String sourceEntryRef, Optional<String> targetEntryRef, DbDto.Topic targetTopic) {
