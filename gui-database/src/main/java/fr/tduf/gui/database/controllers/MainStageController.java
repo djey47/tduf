@@ -268,6 +268,7 @@ public class MainStageController implements Initializable {
     public void handleRemoveEntryButtonAction(ActionEvent actionEvent) {
         System.out.println("handleRemoveEntryButtonAction");
 
+        removeCurrentEntryAndUpdateStage();
     }
 
     public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
@@ -484,7 +485,7 @@ public class MainStageController implements Initializable {
     private void addEntryAndUpdateStage() {
         long newEntryIndex = changeDataController.addEntryForCurrentTopic();
 
-        viewDataController.updateEntryCountAndSwitchToNewEntry(newEntryIndex);
+        viewDataController.updateEntryCountAndSwitchToEntry(newEntryIndex);
     }
 
     private void addLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, DbDto.Topic targetTopic, Optional<RemoteResource> potentialLinkedEntry, TopicLinkDto topicLinkObject) {
@@ -498,6 +499,14 @@ public class MainStageController implements Initializable {
         viewDataController.updateLinkProperties(topicLinkObject);
 
         TableViewHelper.selectLastRowAndScroll(tableViewSelectionModel.getTableView());
+    }
+
+    private void removeCurrentEntryAndUpdateStage() {
+        long currentEntryIndex = currentEntryIndexProperty.getValue();
+        changeDataController.removeEntryWithIdentifier(currentEntryIndex, currentTopicProperty.getValue());
+
+        // TODO handle cases of deleting first item or unique item
+        viewDataController.updateEntryCountAndSwitchToEntry(currentEntryIndex - 1);
     }
 
     private void removeLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, TopicLinkDto topicLinkObject) {

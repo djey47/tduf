@@ -58,6 +58,7 @@ public class MainStageViewDataController {
     void updateAllPropertiesWithItemValues() {
         long entryIndex = mainStageController.currentEntryIndexProperty.getValue();
         DbDto.Topic currentTopic = mainStageController.currentTopicProperty.getValue();
+        // TODO handle case of empty topic
         DbDataDto.Entry entry = getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopic);
 
         String entryLabel = DisplayConstants.VALUE_UNKNOWN;
@@ -99,11 +100,11 @@ public class MainStageViewDataController {
                 .ifPresent(this::updateLinkProperties);
     }
 
-    void updateEntryCountAndSwitchToNewEntry(long newEntryIndex) {
+    void updateEntryCountAndSwitchToEntry(long entryIndex) {
         // TODO See to set entry count automatically
         mainStageController.entryItemsCountProperty.setValue(mainStageController.getCurrentTopicObject().getData().getEntries().size());
 
-        switchToContentEntry(newEntryIndex);
+        switchToContentEntry(entryIndex);
     }
 
     void switchToSelectedResourceForLinkedTopic(RemoteResource selectedResource, DbDto.Topic targetTopic, String targetProfileName) {
