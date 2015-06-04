@@ -13,7 +13,7 @@ public class CurrentEntryIndexToStringConverter extends StringConverter<Long> {
     }
 
     @Override
-    public Long fromString(String string) {
-        return null;
+    public Long fromString(String displayedIndex) {
+        return Long.valueOf(displayedIndex) - 1;
     }
 }

@@ -73,7 +73,7 @@
                       <Button mnemonicParsing="false" onAction="#handleFirstButtonMouseClick" prefWidth="40.0" text="|&lt;" />
                   <Button mnemonicParsing="false" onAction="#handleFastPreviousButtonMouseClick" prefWidth="40.0" text="&lt;&lt;" />
                       <Button mnemonicParsing="false" onAction="#handlePreviousButtonMouseClick" prefWidth="40.0" text="&lt;" />
-                  <TextField fx:id="entryNumberTextField" alignment="CENTER" prefWidth="50.0" />
+                  <TextField fx:id="entryNumberTextField" alignment="CENTER" onKeyPressed="#handleEntryNumberTextFieldKeyPressed" prefWidth="50.0" />
                   <Label fx:id="entryItemsCountLabel" prefWidth="50.0" text="/" />
                       <Button mnemonicParsing="false" onAction="#handleNextButtonMouseClick" prefWidth="40.0" text="&gt;" />
                   <Button mnemonicParsing="false" onAction="#handleFastNextButtonMouseClick" prefWidth="40.0" text="&gt;&gt;" />

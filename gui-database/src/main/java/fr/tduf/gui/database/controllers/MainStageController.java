@@ -31,6 +31,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -248,6 +250,17 @@ public class MainStageController implements Initializable {
         System.out.println("handleLastButtonMouseClick");
 
         viewDataController.switchToContentEntry(this.currentTopicObject.getData().getEntries().size() - 1);
+    }
+
+    @FXML
+    public void handleEntryNumberTextFieldKeyPressed(KeyEvent keyEvent) {
+        System.out.println("handleEntryNumberTextFieldKeyPressed");
+
+        // TODO validate text field input with mask
+        if (KeyCode.ENTER == keyEvent.getCode()
+                || KeyCode.TAB == keyEvent.getCode()) {
+            viewDataController.switchToContentEntry(currentEntryIndexProperty.getValue());
+        }
     }
 
     @FXML
