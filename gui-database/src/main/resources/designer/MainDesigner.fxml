@@ -16,7 +16,6 @@
                       <Button mnemonicParsing="false" onAction="#handleBrowseDirectoryButtonMouseClick" text="..." />
                       <Button mnemonicParsing="false" onAction="#handleLoadButtonMouseClick" text="Load" />
                       <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleSaveButtonMouseClick" text="Save" />
-                  <Button mnemonicParsing="false" text="..." />
                   </items>
               </ToolBar>
       
