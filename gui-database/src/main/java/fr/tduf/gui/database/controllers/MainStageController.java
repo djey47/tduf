@@ -258,6 +258,18 @@ public class MainStageController implements Initializable {
         viewDataController.switchToPreviousLocation();
     }
 
+    @FXML
+    public void handleAddEntryButtonAction(ActionEvent actionEvent) {
+        System.out.println("handleAddEntryButtonAction");
+
+    }
+
+    @FXML
+    public void handleRemoveEntryButtonAction(ActionEvent actionEvent) {
+        System.out.println("handleRemoveEntryButtonAction");
+
+    }
+
     public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
         return (actionEvent) -> {
             System.out.println("browseResourcesButton clicked");
