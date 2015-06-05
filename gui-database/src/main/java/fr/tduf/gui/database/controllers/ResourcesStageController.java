@@ -120,6 +120,7 @@ public class ResourcesStageController implements Initializable {
         Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.empty());
         if (result.isPresent()) {
             try {
+                // TODO add resource for all locales. Update when done.
                 editResourceAndUpdateMainStage(getCurrentTopic(), Optional.empty(), result.get(), getCurrentLocale());
             } catch(IllegalArgumentException iae) {
                 dialogsHelper.showErrorDialog(iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
