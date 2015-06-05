@@ -9,7 +9,6 @@ import fr.tduf.gui.database.controllers.helper.DynamicLinkControlsHelper;
 import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.converter.EntryItemsCountToStringConverter;
-import fr.tduf.gui.database.converter.RemoteResourceToStringConverter;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
@@ -106,6 +105,9 @@ public class MainStageController implements Initializable {
 
     @FXML
     private ComboBox<RemoteResource> entryNumberComboBox;
+
+//    @FXML
+//    private ChoiceBox<RemoteResource> entryNumberChoiceBox;
 
     @FXML
     private Label entryItemsCountLabel;
@@ -449,8 +451,6 @@ public class MainStageController implements Initializable {
 
         entryNumberComboBox.setItems(browsableEntryList);
         entryNumberComboBox.setCellFactory(new EntryCellFactory());
-        entryNumberComboBox.setConverter(new RemoteResourceToStringConverter());
-        entryNumberComboBox.valueProperty().bindBidirectional(currentEntryProperty);
         entryNumberComboBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> handleEntryChoiceChanged((RemoteResource) newValue));
     }

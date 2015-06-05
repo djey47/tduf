@@ -48,12 +48,12 @@
                   <Button layoutX="199.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleAddEntryButtonAction" prefWidth="34.0" text="+" />
                   <Button layoutX="237.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleRemoveEntryButtonAction" prefWidth="34.0" text="-" />
                   <Separator layoutX="418.0" layoutY="10.0" orientation="VERTICAL" />
+                  <ComboBox fx:id="entryNumberComboBox" prefHeight="26.0" prefWidth="60.0" promptText="..." visibleRowCount="25" />
                   <Label fx:id="currentEntryLabel" text="&lt;current&gt;">
                      <font>
                         <Font name="System Italic" size="13.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="entryNumberComboBox" editable="true" prefHeight="26.0" prefWidth="250.0" visibleRowCount="25" />
                   </items>
               </ToolBar>
                   <TabPane fx:id="tabPane" prefHeight="626.0" prefWidth="1303.0" tabClosingPolicy="UNAVAILABLE">
@@ -75,7 +75,7 @@
                   <Button mnemonicParsing="false" onAction="#handleFastPreviousButtonMouseClick" prefWidth="40.0" text="&lt;&lt;" />
                       <Button mnemonicParsing="false" onAction="#handlePreviousButtonMouseClick" prefWidth="40.0" text="&lt;" />
                   <TextField fx:id="entryNumberTextField" alignment="CENTER" onKeyPressed="#handleEntryNumberTextFieldKeyPressed" prefWidth="50.0" />
-                  <Label fx:id="entryItemsCountLabel" prefWidth="50.0" text="/" />
+                  <Label fx:id="entryItemsCountLabel" prefWidth="50.0" />
                       <Button mnemonicParsing="false" onAction="#handleNextButtonMouseClick" prefWidth="40.0" text="&gt;" />
                   <Button mnemonicParsing="false" onAction="#handleFastNextButtonMouseClick" prefWidth="40.0" text="&gt;&gt;" />
                       <Button mnemonicParsing="false" onAction="#handleLastButtonMouseClick" prefWidth="40.0" text="&gt;|" />
