@@ -42,6 +42,36 @@ public class MainStageViewDataController {
         this.mainStageController = mainStageController;
     }
 
+    void fillBrowsableEntries(DbDto.Topic topic) {
+        // TODO Factorize
+        final List<Integer> labelFieldRanks = new ArrayList<>();
+        if (mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks() != null) {
+            labelFieldRanks.addAll(mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks());
+        }
+
+        mainStageController.browsableEntryList.clear();
+        getMiner().getDatabaseTopic(topic)
+                .ifPresent((topicObject) -> mainStageController.browsableEntryList.addAll(topicObject.getData().getEntries().stream()
+
+                                .map((topicEntry) -> {
+                                    RemoteResource remoteResource = new RemoteResource();
+
+                                    long entryInternalIdentifier = topicEntry.getId();
+                                    remoteResource.setInternalEntryId(entryInternalIdentifier);
+
+                                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
+                                    remoteResource.setValue(entryValue);
+
+                                    String entryReference = getMiner().getContentEntryRefWithInternalIdentifier(entryInternalIdentifier, topic).get();
+                                    remoteResource.setReference(entryReference);
+
+                                    return remoteResource;
+                                })
+
+                                .collect(toList()))
+                );
+    }
+
     void fillLocales() {
         asList(DbResourceDto.Locale.values())
                 .forEach((locale) -> mainStageController.localesChoiceBox.getItems().add(locale));
@@ -63,6 +93,7 @@ public class MainStageViewDataController {
         DbDataDto.Entry entry = getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopic);
 
         String entryLabel = DisplayConstants.VALUE_UNKNOWN;
+        // TODO Factorize
         final List<Integer> labelFieldRanks = new ArrayList<>();
         if (mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks() != null) {
             labelFieldRanks.addAll(mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks());
@@ -73,28 +104,6 @@ public class MainStageViewDataController {
                     getMiner());
         }
         mainStageController.currentEntryLabelProperty.setValue(entryLabel);
-
-        mainStageController.browsableEntryList.clear();
-        getMiner().getDatabaseTopic(currentTopic)
-                .ifPresent((topicObject) -> mainStageController.browsableEntryList.addAll(topicObject.getData().getEntries().stream()
-
-                                .map((topicEntry) -> {
-                                    RemoteResource remoteResource = new RemoteResource();
-
-                                    long entryInternalIdentifier = topicEntry.getId();
-                                    remoteResource.setInternalEntryId(entryInternalIdentifier);
-
-                                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, currentTopic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
-                                    remoteResource.setValue(entryValue);
-
-                                    String entryReference = getMiner().getContentEntryRefWithInternalIdentifier(entryInternalIdentifier, currentTopic).get();
-                                    remoteResource.setReference(entryReference);
-
-                                    return remoteResource;
-                                })
-
-                                .collect(toList()))
-                );
 
         entry.getItems().forEach(this::updateItemProperties);
 

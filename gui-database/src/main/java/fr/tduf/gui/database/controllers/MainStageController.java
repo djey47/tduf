@@ -105,9 +105,6 @@ public class MainStageController implements Initializable {
     @FXML
     private ComboBox<RemoteResource> entryNumberComboBox;
 
-//    @FXML
-//    private ChoiceBox<RemoteResource> entryNumberChoiceBox;
-
     @FXML
     private Label entryItemsCountLabel;
 
@@ -381,7 +378,11 @@ public class MainStageController implements Initializable {
     private void handleProfileChoiceChanged(String newProfileName) {
         System.out.println("handleProfileChoiceChanged: " + newProfileName);
 
-        initTabPane(newProfileName);
+        if (databaseObjects.isEmpty()) {
+            return;
+        }
+
+        applyProfile(newProfileName);
     }
 
     private void handleLocaleChoiceChanged(DbResourceDto.Locale newLocale) {
@@ -453,14 +454,7 @@ public class MainStageController implements Initializable {
                 .addListener((observable, oldValue, newValue) -> handleEntryChoiceChanged((RemoteResource) newValue));
     }
 
-    private void initTabPane(String profileName) {
-        if (databaseObjects.isEmpty()) {
-            return;
-        }
-
-        profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, layoutObject);
-        currentTopicObject = databaseMiner.getDatabaseTopic(profileObject.getTopic()).get();
-
+    private void initTabPane() {
         rawValuePropertyByFieldRank.clear();
         resolvedValuePropertyByFieldRank.clear();
         resourceListByTopicLink.clear();
@@ -508,6 +502,15 @@ public class MainStageController implements Initializable {
             dynamicLinkControlsHelper.addAllLinksControls(
                     profileObject);
         }
+    }
+
+    private void applyProfile(String profileName) {
+        profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, layoutObject);
+        currentTopicObject = databaseMiner.getDatabaseTopic(profileObject.getTopic()).get();
+
+        viewDataController.fillBrowsableEntries(currentTopicObject.getTopic());
+
+        initTabPane();
     }
 
     private void loadDatabaseFromDirectory(String databaseLocation) {
