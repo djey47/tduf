@@ -74,7 +74,6 @@ public class MainStageViewDataController {
         }
         mainStageController.currentEntryLabelProperty.setValue(entryLabel);
 
-        // TODO find a way to display a custom string from remote resource
         mainStageController.browsableEntryList.clear();
         getMiner().getDatabaseTopic(currentTopic)
                 .ifPresent((topicObject) -> mainStageController.browsableEntryList.addAll(topicObject.getData().getEntries().stream()

@@ -9,10 +9,12 @@ import fr.tduf.gui.database.controllers.helper.DynamicLinkControlsHelper;
 import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.converter.EntryItemsCountToStringConverter;
+import fr.tduf.gui.database.converter.RemoteResourceToStringConverter;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.RemoteResource;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
+import fr.tduf.gui.database.factory.EntryCellFactory;
 import fr.tduf.gui.database.stages.EntriesDesigner;
 import fr.tduf.gui.database.stages.ResourcesDesigner;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -39,7 +41,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -63,6 +64,7 @@ public class MainStageController implements Initializable {
 
     Property<DbDto.Topic> currentTopicProperty;
     Property<DbResourceDto.Locale> currentLocaleProperty;
+    Property<RemoteResource> currentEntryProperty;
     Property<Long> currentEntryIndexProperty;
     SimpleStringProperty currentEntryLabelProperty;
     Property<Integer> entryItemsCountProperty;
@@ -388,6 +390,14 @@ public class MainStageController implements Initializable {
         viewDataController.updateAllPropertiesWithItemValues();
     }
 
+    private void handleEntryChoiceChanged(RemoteResource newEntry) {
+        System.out.println("handleEntryChoiceChanged: " + newEntry);
+
+        if(newEntry != null) {
+            viewDataController.switchToContentEntry(newEntry.getInternalEntryId());
+        }
+    }
+
     private void initResourcesStageController() throws IOException {
         Stage resourcesStage = new Stage();
         Platform.runLater(() -> resourcesStage.initOwner(root.getScene().getWindow())); // runLater() ensures main stage will be initialized first.
@@ -421,49 +431,28 @@ public class MainStageController implements Initializable {
     private void initStatusBar() {
         entryItemsCountProperty = new SimpleObjectProperty<>(-1);
         currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
-        browsableEntryList = FXCollections.observableArrayList();
 
         entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new CurrentEntryIndexToStringConverter());
         entryItemsCountLabel.textProperty().bindBidirectional(entryItemsCountProperty, new EntryItemsCountToStringConverter());
-
-        entryNumberComboBox.setItems(browsableEntryList);
-        entryNumberComboBox.setCellFactory((entryListView) -> new ListCell<RemoteResource>() {
-            @Override
-            protected void updateItem(RemoteResource item, boolean empty) {
-
-                if (item == null) {
-                    setText(null);
-                } else {
-                    setText(item.valueProperty().get());
-                }
-
-                super.updateItem(item, empty);
-            }
-        });
-        entryNumberComboBox.setConverter(new StringConverter<RemoteResource>() {
-            @Override
-            public String toString(RemoteResource object) {
-                if (object == null) {
-                    return "";
-                }
-                return object.valueProperty().get();
-            }
-
-            @Override
-            public RemoteResource fromString(String string) {
-                return null;
-            }
-        });
 
         statusLabel.setText(DisplayConstants.LABEL_STATUS_VERSION);
     }
 
     private void initTopicEntryHeaderPane() {
+        currentEntryProperty = new SimpleObjectProperty<>();
         currentTopicProperty = new SimpleObjectProperty<>();
         currentEntryLabelProperty = new SimpleStringProperty("");
+        browsableEntryList = FXCollections.observableArrayList();
 
         currentTopicLabel.textProperty().bindBidirectional(currentTopicProperty, new DatabaseTopicToStringConverter());
         currentEntryLabel.textProperty().bindBidirectional(currentEntryLabelProperty);
+
+        entryNumberComboBox.setItems(browsableEntryList);
+        entryNumberComboBox.setCellFactory(new EntryCellFactory());
+        entryNumberComboBox.setConverter(new RemoteResourceToStringConverter());
+        entryNumberComboBox.valueProperty().bindBidirectional(currentEntryProperty);
+        entryNumberComboBox.getSelectionModel().selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> handleEntryChoiceChanged((RemoteResource) newValue));
     }
 
     private void initTabPane(String profileName) {

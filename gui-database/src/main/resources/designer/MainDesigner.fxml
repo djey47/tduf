@@ -53,7 +53,7 @@
                         <Font name="System Italic" size="13.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="entryNumberComboBox" editable="true" prefHeight="26.0" prefWidth="197.0" visibleRowCount="20" />
+                  <ComboBox fx:id="entryNumberComboBox" editable="true" prefHeight="26.0" prefWidth="250.0" visibleRowCount="25" />
                   </items>
               </ToolBar>
                   <TabPane fx:id="tabPane" prefHeight="626.0" prefWidth="1303.0" tabClosingPolicy="UNAVAILABLE">
