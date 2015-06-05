@@ -15,7 +15,7 @@ public class EntryCellFactory implements Callback<ListView<RemoteResource>, List
                 if (item == null) {
                     setText(null);
                 } else {
-                    setText(item.valueProperty().get());
+                    setText(String.format("%s:%s", item.referenceProperty().get(), item.valueProperty().get()));
                 }
 
                 super.updateItem(item, empty);
