@@ -206,14 +206,16 @@ public class ResourcesStageController implements Initializable {
     }
 
     private void selectResourceInTableAndScroll(String reference) {
-        RemoteResource browsedResource = this.resourceData.stream()
+        this.resourceData.stream()
 
                 .filter((remoteResource) -> remoteResource.referenceProperty().get().equals(reference))
 
-                .findAny().get();
+                .findAny()
 
-        resourcesTableView.getSelectionModel().select(browsedResource);
-        resourcesTableView.scrollTo(browsedResource);
+                .ifPresent((browsedResource) -> {
+                    resourcesTableView.getSelectionModel().select(browsedResource);
+                    resourcesTableView.scrollTo(browsedResource);
+                });
     }
 
     private void applyResourceSelectionToMainStageAndClose(RemoteResource selectedResource) {
