@@ -6,7 +6,7 @@ public class EntryItemsCountToStringConverter extends StringConverter<Integer> {
     @Override
     public String toString(Integer entryItemsCount) {
         if (entryItemsCount == -1) {
-            return "/ <?>";
+            return "";
         }
         return "/ " + entryItemsCount;
     }
