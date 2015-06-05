@@ -6,10 +6,9 @@ public class CurrentEntryIndexToStringConverter extends StringConverter<Long> {
     @Override
     public String toString(Long entryIndex) {
         if (entryIndex == -1) {
-            return "<?>";
+            return "";
         }
         return "" + (entryIndex + 1);
-
     }
 
     @Override
