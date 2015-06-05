@@ -39,6 +39,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -420,12 +421,39 @@ public class MainStageController implements Initializable {
     private void initStatusBar() {
         entryItemsCountProperty = new SimpleObjectProperty<>(-1);
         currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
+        browsableEntryList = FXCollections.observableArrayList();
 
         entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new CurrentEntryIndexToStringConverter());
         entryItemsCountLabel.textProperty().bindBidirectional(entryItemsCountProperty, new EntryItemsCountToStringConverter());
 
-        browsableEntryList = FXCollections.observableArrayList();
         entryNumberComboBox.setItems(browsableEntryList);
+        entryNumberComboBox.setCellFactory((entryListView) -> new ListCell<RemoteResource>() {
+            @Override
+            protected void updateItem(RemoteResource item, boolean empty) {
+
+                if (item == null) {
+                    setText(null);
+                } else {
+                    setText(item.valueProperty().get());
+                }
+
+                super.updateItem(item, empty);
+            }
+        });
+        entryNumberComboBox.setConverter(new StringConverter<RemoteResource>() {
+            @Override
+            public String toString(RemoteResource object) {
+                if (object == null) {
+                    return "";
+                }
+                return object.valueProperty().get();
+            }
+
+            @Override
+            public RemoteResource fromString(String string) {
+                return null;
+            }
+        });
 
         statusLabel.setText(DisplayConstants.LABEL_STATUS_VERSION);
     }
