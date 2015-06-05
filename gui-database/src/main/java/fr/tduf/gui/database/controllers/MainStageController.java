@@ -72,7 +72,6 @@ public class MainStageController implements Initializable {
     Map<TopicLinkDto, ObservableList<RemoteResource>> resourceListByTopicLink = new HashMap<>();
     ObservableList<RemoteResource> browsableEntryList;
 
-
     @FXML
     private Parent root;
 
@@ -267,7 +266,6 @@ public class MainStageController implements Initializable {
     public void handleEntryNumberTextFieldKeyPressed(KeyEvent keyEvent) {
         System.out.println("handleEntryNumberTextFieldKeyPressed");
 
-        // TODO validate text field input with mask
         if (KeyCode.ENTER == keyEvent.getCode()
                 || KeyCode.TAB == keyEvent.getCode()) {
             viewDataController.switchToContentEntry(currentEntryIndexProperty.getValue());

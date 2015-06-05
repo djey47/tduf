@@ -13,6 +13,10 @@ public class CurrentEntryIndexToStringConverter extends StringConverter<Long> {
 
     @Override
     public Long fromString(String displayedIndex) {
-        return Long.valueOf(displayedIndex) - 1;
+
+        if (displayedIndex.matches("\\d+")) {
+            return Long.valueOf(displayedIndex) - 1;
+        }
+        return 0L;
     }
 }

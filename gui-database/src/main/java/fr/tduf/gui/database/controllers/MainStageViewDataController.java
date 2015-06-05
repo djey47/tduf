@@ -161,6 +161,10 @@ public class MainStageViewDataController {
     }
 
     void switchToContentEntry(long entryIndex) {
+        if (entryIndex < 0 || entryIndex >= mainStageController.getCurrentTopicObject().getData().getEntries().size()) {
+            return;
+        }
+
         mainStageController.currentEntryIndexProperty.setValue(entryIndex);
         updateAllPropertiesWithItemValues();
     }
