@@ -205,6 +205,10 @@ public class DbDataDto implements Serializable {
             return rawValue;
         }
 
+        public void setRawValue(String rawValue) {
+            this.rawValue = rawValue;
+        }
+
         public int getFieldRank() {
             return fieldRank;
         }
