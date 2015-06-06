@@ -265,6 +265,19 @@ public class DatabaseHelper {
         return generateUniqueEntryReference(existingResourceRefs);
     }
 
+    /**
+     * @param entry                     : database entry to be updated
+     * @param sourceEntryRef            : reference of source entry (REF field for source topic)
+     * @param potentialTargetEntryRef   : reference of target entry (REF field for target topic). Mandatory.
+     */
+    public static void updateAssociationEntryWithSourceAndTargetReferences(DbDataDto.Entry entry, String sourceEntryRef, Optional<String> potentialTargetEntryRef) {
+        List<DbDataDto.Item> entryItems = entry.getItems();
+
+        // We assume source reference is first field ... target reference (if any) is second field  ...
+        entryItems.get(0).setRawValue(sourceEntryRef);
+        potentialTargetEntryRef.ifPresent((ref) -> entryItems.get(1).setRawValue(ref));
+    }
+
     private void checkResourceDoesNotExistWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference) {
         databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, topic, locale)
                 .ifPresent((resourceEntry) -> {
