@@ -547,7 +547,6 @@ public class MainStageController implements Initializable {
         long currentEntryIndex = currentEntryIndexProperty.getValue();
         changeDataController.removeEntryWithIdentifier(currentEntryIndex, currentTopicProperty.getValue());
 
-        // TODO handle cases of deleting first item or unique item
         viewDataController.updateEntryCountAndSwitchToEntry(currentEntryIndex - 1);
     }
 
@@ -559,7 +558,6 @@ public class MainStageController implements Initializable {
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
-        // FIXME handle case of deletion of last item in table
         TableViewHelper.selectRowAndScroll(initialRowIndex, tableViewSelectionModel.getTableView());
     }
 

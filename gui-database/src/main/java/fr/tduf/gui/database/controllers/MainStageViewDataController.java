@@ -135,7 +135,6 @@ public class MainStageViewDataController {
     }
 
     void updateEntryCountAndSwitchToEntry(long entryIndex) {
-        // TODO See to set entry count automatically
         mainStageController.entryItemsCountProperty.setValue(mainStageController.getCurrentTopicObject().getData().getEntries().size());
 
         switchToContentEntry(entryIndex);

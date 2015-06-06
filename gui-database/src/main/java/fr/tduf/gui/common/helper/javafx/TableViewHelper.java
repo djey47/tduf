@@ -47,6 +47,10 @@ public class TableViewHelper {
     public static <T> Optional<T> selectRowAndScroll(int rowIndex, TableView<T> tableView) {
         requireNonNull(tableView, "A TableView is required.");
 
+        if (rowIndex < 0 || rowIndex >= tableView.getItems().size()) {
+            return Optional.empty();
+        }
+
         tableView.getSelectionModel().select(rowIndex);
         tableView.scrollTo(rowIndex);
 
