@@ -274,7 +274,7 @@ public class BulkDatabaseMinerTest {
         List<DbStructureDto.Field> structureFields = createTopicObjectsFromResources().get(0).getStructure().getFields();
 
         // WHEN-THEN
-        assertThat(BulkDatabaseMiner.getUidFieldRank(structureFields)).contains(1);
+        assertThat(BulkDatabaseMiner.getUidFieldRank(structureFields).getAsInt()).isEqualTo(1);
     }
 
     private static ArrayList<DbDto> createTopicObjectsFromResources() throws IOException, URISyntaxException {

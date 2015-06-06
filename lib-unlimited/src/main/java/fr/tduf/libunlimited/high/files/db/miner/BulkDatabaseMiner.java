@@ -195,23 +195,6 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     * @param topic : topic in TDU Database to request field from
-     * @return rank of UID field if it exists for gieven topic, empty otherwise.
-     */
-    public OptionalInt getUidFieldRank(DbDto.Topic topic) {
-//        System.out.println(new Date().getTime() + " - getUidFieldRank(" + topic + "," + topic + ")");
-
-        DbStructureDto topicStructure = getDatabaseTopic(topic).get().getStructure();
-        Optional<Integer> uidFieldRank = getUidFieldRank(topicStructure.getFields());
-
-        if (uidFieldRank.isPresent()) {
-            return OptionalInt.of(uidFieldRank.get());
-        }
-
-        return OptionalInt.empty();
-    }
-
-    /**
      * @param sourceTopic   : topic in TDU Database to search
      * @param fieldRank     : rank of field to resolve resource
      * @param entryIndex    : index of entry in source topic
@@ -223,6 +206,17 @@ public class BulkDatabaseMiner {
 
         String remoteReference = getRawValueAtEntryIndexAndRank(sourceTopic, fieldRank, entryIndex);
         return getContentEntryFromTopicWithReference(remoteReference, targetTopic);
+    }
+
+    /**
+     * @param topic : topic in TDU Database to request field from
+     * @return rank of UID field if it exists for given topic, empty otherwise.
+     */
+    public OptionalInt getUidFieldRank(DbDto.Topic topic) {
+//        System.out.println(new Date().getTime() + " - getUidFieldRank(" + topic + "," + topic + ")");
+
+        DbStructureDto topicStructure = getDatabaseTopic(topic).get().getStructure();
+        return getUidFieldRank(topicStructure.getFields());
     }
 
     /**
@@ -293,15 +287,16 @@ public class BulkDatabaseMiner {
 
     /**
      * @param structureFields   : list of structure fields for a topic
-     * @return rank of uid field in structure if such a field exists, empty otherwise
+     * @return rank of UID field in structure if such a field exists, empty otherwise.
      */
-    // TODO change return type to OptionalInt
-    public static Optional<Integer> getUidFieldRank(List<DbStructureDto.Field> structureFields) {
+    public static OptionalInt getUidFieldRank(List<DbStructureDto.Field> structureFields) {
 //        System.out.println(new Date().getTime() + " - getUidFieldRank(" + structureFields + ")");
 
-        return DatabaseStructureQueryHelper.getIdentifierField(structureFields)
-
-                .map(DbStructureDto.Field::getRank);
+        Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getIdentifierField(structureFields);
+        if (potentialUidField.isPresent()) {
+            return OptionalInt.of(potentialUidField.get().getRank());
+        }
+        return OptionalInt.empty();
     }
 
     /**
@@ -328,12 +323,11 @@ public class BulkDatabaseMiner {
     }
 
     private static boolean contentEntryHasForReference(DbDataDto.Entry entry, String ref, List<DbStructureDto.Field> structureFields) {
-        Optional<Integer> potentialUidFieldRank = getUidFieldRank(structureFields);
-        return potentialUidFieldRank.isPresent()
-
+        OptionalInt potentialUidFieldRank = getUidFieldRank(structureFields);
+        return getUidFieldRank(structureFields).isPresent()
                 && entry.getItems().stream()
 
-                .filter((item) -> item.getFieldRank() == potentialUidFieldRank.get()
+                .filter((item) -> item.getFieldRank() == potentialUidFieldRank.getAsInt()
                         && item.getRawValue().equals(ref))
 
                 .findAny().isPresent();
