@@ -43,15 +43,14 @@ public class MainStageViewDataController {
     }
 
     void fillBrowsableEntries(DbDto.Topic topic) {
-        // TODO Factorize
-        final List<Integer> labelFieldRanks = new ArrayList<>();
-        if (mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks() != null) {
-            labelFieldRanks.addAll(mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks());
-        }
+        final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
+                mainStageController.getCurrentProfileObject().getName(),
+                mainStageController.getLayoutObject());
 
-        mainStageController.browsableEntryList.clear();
+        ObservableList<RemoteResource> browsableEntryList = mainStageController.browsableEntryList;
+        browsableEntryList.clear();
         getMiner().getDatabaseTopic(topic)
-                .ifPresent((topicObject) -> mainStageController.browsableEntryList.addAll(topicObject.getData().getEntries().stream()
+                .ifPresent((topicObject) -> browsableEntryList.addAll(topicObject.getData().getEntries().stream()
 
                                 .map((topicEntry) -> {
                                     RemoteResource remoteResource = new RemoteResource();
@@ -89,22 +88,19 @@ public class MainStageViewDataController {
     void updateAllPropertiesWithItemValues() {
         long entryIndex = mainStageController.currentEntryIndexProperty.getValue();
         DbDto.Topic currentTopic = mainStageController.currentTopicProperty.getValue();
-        // TODO handle case of empty topic
-        DbDataDto.Entry entry = getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopic);
-
-        String entryLabel = DisplayConstants.VALUE_UNKNOWN;
-        // TODO Factorize
-        final List<Integer> labelFieldRanks = new ArrayList<>();
-        if (mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks() != null) {
-            labelFieldRanks.addAll(mainStageController.getCurrentProfileObject().getEntryLabelFieldRanks());
-            entryLabel = DatabaseQueryHelper.fetchResourceValuesWithEntryId(
-                    entryIndex, currentTopic,
-                    mainStageController.currentLocaleProperty.getValue(),
-                    labelFieldRanks,
-                    getMiner());
-        }
+        final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
+                mainStageController.getCurrentProfileObject().getName(),
+                mainStageController.getLayoutObject());
+        String entryLabel = DatabaseQueryHelper.fetchResourceValuesWithEntryId(
+                entryIndex,
+                currentTopic,
+                mainStageController.currentLocaleProperty.getValue(),
+                labelFieldRanks,
+                getMiner());
         mainStageController.currentEntryLabelProperty.setValue(entryLabel);
 
+        // TODO handle case of empty topic
+        DbDataDto.Entry entry = getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopic);
         entry.getItems().forEach(this::updateItemProperties);
 
         mainStageController.getResourceListByTopicLink().entrySet().forEach(this::updateLinkProperties);
@@ -113,6 +109,7 @@ public class MainStageViewDataController {
     void updateItemProperties(DbDataDto.Item item) {
         mainStageController.rawValuePropertyByFieldRank.get(item.getFieldRank()).set(item.getRawValue());
 
+        // FIXME crash when attempting to browse a linked entry
         DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, mainStageController.getCurrentTopicObject().getStructure().getFields());
         if (structureField.isAResourceField()) {
             updateResourceProperties(item, structureField);
