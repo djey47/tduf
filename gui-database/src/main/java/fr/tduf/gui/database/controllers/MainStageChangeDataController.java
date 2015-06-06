@@ -67,11 +67,7 @@ public class MainStageChangeDataController {
     void addLinkedEntry(String sourceEntryRef, Optional<String> targetEntryRef, DbDto.Topic targetTopic) {
         requireNonNull(getGenHelper());
         DbDataDto.Entry newEntry = getGenHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), targetTopic);
-
-        // FIXME we assume source reference is first field ...
-        newEntry.getItems().get(0).setRawValue(sourceEntryRef);
-        // FIXME we assume target reference is second field ...
-        targetEntryRef.ifPresent((ref) -> newEntry.getItems().get(1).setRawValue(ref));
+        DatabaseHelper.updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
     }
 
     void addResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String newResourceReference, String newResourceValue) {
