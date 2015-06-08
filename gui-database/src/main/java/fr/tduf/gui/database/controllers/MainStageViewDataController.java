@@ -53,6 +53,7 @@ public class MainStageViewDataController {
                 .ifPresent((topicObject) -> browsableEntryList.addAll(topicObject.getData().getEntries().stream()
 
                                 .map((topicEntry) -> {
+                                    // TODO extract method
                                     RemoteResource remoteResource = new RemoteResource();
 
                                     long entryInternalIdentifier = topicEntry.getId();
