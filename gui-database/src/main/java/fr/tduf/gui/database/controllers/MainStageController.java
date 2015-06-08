@@ -455,10 +455,6 @@ public class MainStageController implements Initializable {
     }
 
     private void initTabPane() {
-        rawValuePropertyByFieldRank.clear();
-        resolvedValuePropertyByFieldRank.clear();
-        resourceListByTopicLink.clear();
-
         initGroupTabs();
 
         addDynamicControls();
@@ -467,12 +463,6 @@ public class MainStageController implements Initializable {
     }
 
     private void initGroupTabs() {
-        currentTopicProperty.setValue(currentTopicObject.getTopic());
-        currentEntryIndexProperty.setValue(0L);
-        entryItemsCountProperty.setValue(currentTopicObject.getData().getEntries().size());
-        rawValuePropertyByFieldRank.clear();
-        resolvedValuePropertyByFieldRank.clear();
-
         defaultTab.getChildren().clear();
 
         tabPane.getTabs().remove(1, tabPane.getTabs().size());
@@ -507,6 +497,13 @@ public class MainStageController implements Initializable {
     private void applyProfile(String profileName) {
         profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, layoutObject);
         currentTopicObject = databaseMiner.getDatabaseTopic(profileObject.getTopic()).get();
+
+        currentTopicProperty.setValue(currentTopicObject.getTopic());
+        currentEntryIndexProperty.setValue(0L);
+        entryItemsCountProperty.setValue(currentTopicObject.getData().getEntries().size());
+        rawValuePropertyByFieldRank.clear();
+        resolvedValuePropertyByFieldRank.clear();
+        resourceListByTopicLink.clear();
 
         viewDataController.fillBrowsableEntries(currentTopicObject.getTopic());
 

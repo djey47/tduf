@@ -62,7 +62,11 @@ public class MainStageViewDataController {
                                     String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
                                     remoteResource.setValue(entryValue);
 
-                                    String entryReference = getMiner().getContentEntryRefWithInternalIdentifier(entryInternalIdentifier, topic).get();
+                                    String entryReference = Long.valueOf(entryInternalIdentifier).toString();
+                                    Optional<String> potentialEntryReference = getMiner().getContentEntryRefWithInternalIdentifier(entryInternalIdentifier, topic);
+                                    if (potentialEntryReference.isPresent()) {
+                                        entryReference = potentialEntryReference.get();
+                                    }
                                     remoteResource.setReference(entryReference);
 
                                     return remoteResource;
@@ -110,7 +114,6 @@ public class MainStageViewDataController {
     void updateItemProperties(DbDataDto.Item item) {
         mainStageController.rawValuePropertyByFieldRank.get(item.getFieldRank()).set(item.getRawValue());
 
-        // FIXME crash when attempting to browse a linked entry
         DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, mainStageController.getCurrentTopicObject().getStructure().getFields());
         if (structureField.isAResourceField()) {
             updateResourceProperties(item, structureField);
