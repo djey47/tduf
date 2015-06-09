@@ -29,13 +29,12 @@ public class MainStageChangeDataController {
 
     void updateContentItem(DbDto.Topic topic, int fieldRank, String newRawValue) {
         DbDataDto.Item contentItem = getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic, fieldRank, mainStageController.currentEntryIndexProperty.getValue()).get();
-
-        if (!contentItem.getRawValue().equals(newRawValue)) {
-            contentItem.setRawValue(newRawValue);
-
-            // TODO see to update item properties automatically upon property change
-            mainStageController.getViewDataController().updateItemProperties(contentItem);
+        if (contentItem.getRawValue().equals(newRawValue)) {
+            return;
         }
+
+        contentItem.setRawValue(newRawValue);
+        mainStageController.getViewDataController().updateItemProperties(contentItem);
     }
 
     void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
