@@ -86,9 +86,8 @@ public class MainStageViewDataController {
                 getMiner());
         mainStageController.currentEntryLabelProperty.setValue(entryLabel);
 
-        // TODO handle case of empty topic
-        DbDataDto.Entry entry = getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopic);
-        entry.getItems().forEach(this::updateItemProperties);
+        getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopic)
+                .ifPresent((entry) -> entry.getItems().forEach(this::updateItemProperties));
 
         mainStageController.getResourceListByTopicLink().entrySet().forEach(this::updateLinkProperties);
     }
