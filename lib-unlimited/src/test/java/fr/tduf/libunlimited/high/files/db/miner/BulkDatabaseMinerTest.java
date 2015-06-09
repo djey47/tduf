@@ -155,15 +155,16 @@ public class BulkDatabaseMinerTest {
         // THEN: exception
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void getContentEntryFromTopicWithInternalIdentifier_whenEntryNotFound_shouldThrowException() throws IOException, URISyntaxException {
+    @Test
+    public void getContentEntryFromTopicWithInternalIdentifier_whenEntryNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
         // GIVEN
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithInternalIdentifier(10, DbDto.Topic.BOTS);
+        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithInternalIdentifier(10, DbDto.Topic.BOTS);
 
-        // THEN: exception
+        // THEN
+        assertThat(actualEntry).isEmpty();
     }
 
     @Test
@@ -172,10 +173,10 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        DbDataDto.Entry actualEntry = BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithInternalIdentifier(0, DbDto.Topic.BOTS);
+        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithInternalIdentifier(0, DbDto.Topic.BOTS);
 
         // THEN
-        assertThat(actualEntry).isNotNull();
+        assertThat(actualEntry).isPresent();
     }
 
     @Test

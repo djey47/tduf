@@ -160,7 +160,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
     private void addMissingContentsFields(long entryInternalIdentifier, DbDto.Topic topic) {
         DbDto topicObject = databaseMiner.getDatabaseTopic(topic).get();
 
-        DbDataDto.Entry invalidEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryInternalIdentifier, topic);
+        DbDataDto.Entry invalidEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryInternalIdentifier, topic).get();
 
         // Structure is the reference
         topicObject.getStructure().getFields().stream()
