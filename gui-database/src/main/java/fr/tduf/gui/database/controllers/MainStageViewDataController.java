@@ -52,25 +52,7 @@ public class MainStageViewDataController {
         getMiner().getDatabaseTopic(topic)
                 .ifPresent((topicObject) -> browsableEntryList.addAll(topicObject.getData().getEntries().stream()
 
-                                .map((topicEntry) -> {
-                                    // TODO extract method
-                                    RemoteResource remoteResource = new RemoteResource();
-
-                                    long entryInternalIdentifier = topicEntry.getId();
-                                    remoteResource.setInternalEntryId(entryInternalIdentifier);
-
-                                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
-                                    remoteResource.setValue(entryValue);
-
-                                    String entryReference = Long.valueOf(entryInternalIdentifier).toString();
-                                    Optional<String> potentialEntryReference = getMiner().getContentEntryRefWithInternalIdentifier(entryInternalIdentifier, topic);
-                                    if (potentialEntryReference.isPresent()) {
-                                        entryReference = potentialEntryReference.get();
-                                    }
-                                    remoteResource.setReference(entryReference);
-
-                                    return remoteResource;
-                                })
+                                .map((topicEntry) -> getDisplayableEntryForCurrentLocale(topicEntry, labelFieldRanks, topic))
 
                                 .collect(toList()))
                 );
@@ -191,6 +173,25 @@ public class MainStageViewDataController {
 
     void switchToTabWithId(int tabId) {
         mainStageController.tabPane.selectionModelProperty().get().select(tabId);
+    }
+
+    private RemoteResource getDisplayableEntryForCurrentLocale(DbDataDto.Entry topicEntry, List<Integer> labelFieldRanks, DbDto.Topic topic) {
+        RemoteResource remoteResource = new RemoteResource();
+
+        long entryInternalIdentifier = topicEntry.getId();
+        remoteResource.setInternalEntryId(entryInternalIdentifier);
+
+        String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
+        remoteResource.setValue(entryValue);
+
+        String entryReference = Long.valueOf(entryInternalIdentifier).toString();
+        Optional<String> potentialEntryReference = getMiner().getContentEntryRefWithInternalIdentifier(entryInternalIdentifier, topic);
+        if (potentialEntryReference.isPresent()) {
+            entryReference = potentialEntryReference.get();
+        }
+        remoteResource.setReference(entryReference);
+
+        return remoteResource;
     }
 
     private void updateResourceProperties(DbDataDto.Item resourceItem, DbStructureDto.Field structureField) {
