@@ -223,7 +223,6 @@ public class ResourcesStageController implements Initializable {
         String resourceReference = selectedResource.referenceProperty().getValue();
         resourceReferenceProperty.set(resourceReference);
 
-        // TODO see to update item properties automatically upon property change
         mainStageController.getChangeDataController().updateContentItem(mainStageController.getCurrentTopicObject().getTopic(), fieldRank, resourceReference);
 
         Stage stage = (Stage) root.getScene().getWindow();
