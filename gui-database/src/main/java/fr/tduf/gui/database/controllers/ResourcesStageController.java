@@ -28,6 +28,7 @@ import javafx.util.Pair;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -119,6 +120,7 @@ public class ResourcesStageController implements Initializable {
         DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
         Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.empty());
         if (result.isPresent()) {
+            // TODO handle exceptions in method
             try {
                 // TODO add resource for all locales. Update when done.
                 editResourceAndUpdateMainStage(getCurrentTopic(), Optional.empty(), result.get(), getCurrentLocale());
@@ -246,9 +248,12 @@ public class ResourcesStageController implements Initializable {
         String newResourceReference = referenceValuePair.getKey();
         String newResourceValue = referenceValuePair.getValue();
         if (updateResourceMode) {
+            // TODO Update for all locales at once ?
             mainStageController.getChangeDataController().updateResourceWithReference(topic, locale, currentResourceReference.get(), newResourceReference, newResourceValue);
         } else {
-            mainStageController.getChangeDataController().addResourceWithReference(topic, locale, newResourceReference, newResourceValue);
+            Stream.of(DbResourceDto.Locale.values())
+
+                    .forEach((affectedLocale) -> mainStageController.getChangeDataController().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue));
         }
 
         updateAllStages(Optional.of(newResourceReference));
