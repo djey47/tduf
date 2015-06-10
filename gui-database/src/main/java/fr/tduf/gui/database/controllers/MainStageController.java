@@ -357,10 +357,8 @@ public class MainStageController implements Initializable {
             System.out.println("handleLinkTableMouseClick, targetProfileName:" + targetProfileName + ", targetTopic:" + targetTopic);
 
             if (MouseButton.PRIMARY == event.getButton() && event.getClickCount() == 2) {
-                Optional<RemoteResource> selectedResource = TableViewHelper.getMouseSelectedItem(event);
-                if (selectedResource.isPresent()) {
-                    this.viewDataController.switchToSelectedResourceForLinkedTopic(selectedResource.get(), targetTopic, targetProfileName);
-                }
+                TableViewHelper.getMouseSelectedItem(event)
+                        .ifPresent((selectedResource) -> viewDataController.switchToSelectedResourceForLinkedTopic((RemoteResource) selectedResource, targetTopic, targetProfileName));
             }
         };
     }

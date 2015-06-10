@@ -75,10 +75,8 @@ public class ResourcesStageController implements Initializable {
         System.out.println("handleResourceTableMouseClick");
 
         if (MouseButton.PRIMARY == mouseEvent.getButton() && mouseEvent.getClickCount() == 2) {
-            Optional<RemoteResource> selectedResource = TableViewHelper.getMouseSelectedItem(mouseEvent);
-            if (selectedResource.isPresent()) {
-                applyResourceSelectionToMainStageAndClose(selectedResource.get());
-            }
+            TableViewHelper.getMouseSelectedItem(mouseEvent)
+                    .ifPresent((selectedResource) -> applyResourceSelectionToMainStageAndClose((RemoteResource) selectedResource));
         }
     }
 
@@ -127,12 +125,11 @@ public class ResourcesStageController implements Initializable {
 
         DbResourceDto.Locale currentLocale = getCurrentLocale();
         DbDto.Topic currentTopic = getCurrentTopic();
-        Optional<Boolean> result = dialogsHelper.showResourceDeletionDialog(currentTopic, selectedResource, currentLocale.getCode());
-        // TODO simplify
-        if (result.isPresent()) {
-            int selectedRow = resourcesTableView.getSelectionModel().getSelectedIndex();
-            removeResourceAndUpdateMainStage(currentTopic, selectedResource, currentLocale, result.get(), selectedRow);
-        }
+        dialogsHelper.showResourceDeletionDialog(currentTopic, selectedResource, currentLocale.getCode())
+                .ifPresent((forAllLocales) -> {
+                    int selectedRow = resourcesTableView.getSelectionModel().getSelectedIndex();
+                    removeResourceAndUpdateMainStage(currentTopic, selectedResource, currentLocale, forAllLocales, selectedRow);
+                });
     }
 
     private void handleTopicChoiceChanged(DbDto.Topic newTopic) {
