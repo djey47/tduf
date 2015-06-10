@@ -84,24 +84,25 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         valueTextField.textProperty().bindBidirectional(property);
         valueTextField.focusedProperty().addListener(controller.handleTextFieldFocusChange(fieldRank, property));
 
-        if (field.isAResourceField()) {
-            DbDto.Topic topic = currentTopic;
-            if (field.getTargetRef() != null) {
-                topic = getMiner().getDatabaseTopicFromReference(field.getTargetRef()).getTopic();
-            }
-
-            addResourceValueControls(fieldBox, field.getRank(), property, topic);
-        }
-
-        // TODO handle bitfield -> requires resolver (0.7.0+)
-
-        if (DbStructureDto.FieldType.REFERENCE == field.getFieldType()) {
-            DbDto.Topic topic = getMiner().getDatabaseTopicFromReference(field.getTargetRef()).getTopic();
-            addReferenceValueControls(fieldBox, field.getRank(), topic);
+        switch (field.getFieldType()) {
+            case PERCENT:
+                break;
+            case BITFIELD:
+                // TODO handle bitfield -> requires resolver (0.7.0+)
+                break;
+            case REFERENCE:
+                addReferenceValueControls(fieldBox, field);
+                break;
+            default:
+                if (field.isAResourceField()) {
+                    addResourceValueControls(fieldBox, field, property, currentTopic);
+                }
+                break;
         }
     }
 
-    private void addReferenceValueControls(HBox fieldBox, int fieldRank, DbDto.Topic targetTopic) {
+    private void addReferenceValueControls(HBox fieldBox, DbStructureDto.Field field) {
+        int fieldRank = field.getRank();
         SimpleStringProperty property = new SimpleStringProperty("Reference to another topic.");
         controller.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
 
@@ -111,6 +112,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
+        DbDto.Topic targetTopic = getMiner().getDatabaseTopicFromReference(field.getTargetRef()).getTopic();
         addCustomLabel(fieldBox, targetTopic.name());
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
@@ -126,7 +128,13 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
-    private void addResourceValueControls(HBox fieldBox, int fieldRank, SimpleStringProperty rawValueProperty, DbDto.Topic topic) {
+    private void addResourceValueControls(HBox fieldBox, DbStructureDto.Field field, SimpleStringProperty rawValueProperty, DbDto.Topic topic) {
+        String fieldTargetRef = field.getTargetRef();
+        if (fieldTargetRef != null) {
+            topic = getMiner().getDatabaseTopicFromReference(fieldTargetRef).getTopic();
+        }
+
+        int fieldRank = field.getRank();
         SimpleStringProperty property = new SimpleStringProperty("");
         controller.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
 
