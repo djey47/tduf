@@ -4,20 +4,17 @@ import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.converter.PercentNumberToStringConverter;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.StringConverter;
-import javafx.util.converter.NumberStringConverter;
 
 import java.util.List;
 import java.util.Optional;
@@ -91,7 +88,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         switch (field.getFieldType()) {
             case PERCENT:
-                addPercentValueControls(fieldBox, field, property);
+                addPercentValueControls(fieldBox, property);
                 break;
             case BITFIELD:
                 // TODO handle bitfield -> requires resolver (0.7.0+)
@@ -107,7 +104,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
-    private void addPercentValueControls(HBox fieldBox, DbStructureDto.Field field, SimpleStringProperty rawValueProperty) {
+    private void addPercentValueControls(HBox fieldBox, SimpleStringProperty rawValueProperty) {
         Slider slider = new Slider();
         slider.setMin(0.0);
         slider.setMax(1.0);
@@ -118,7 +115,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         slider.setBlockIncrement(0.025);
         slider.setPrefWidth(450);
 
-        Bindings.bindBidirectional(rawValueProperty, slider.valueProperty(), new NumberStringConverter());
+        Bindings.bindBidirectional(rawValueProperty, slider.valueProperty(), new PercentNumberToStringConverter());
 
         fieldBox.getChildren().add(slider);
         fieldBox.getChildren().add(new Separator(VERTICAL));
