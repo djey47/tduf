@@ -175,9 +175,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
         textField.setPrefWidth(110.0);
         textField.setEditable(!readOnly);
-        if (toolTip.isPresent()) {
-            textField.setTooltip(new Tooltip(toolTip.get()));
-        }
+        toolTip.ifPresent((text) -> textField.setTooltip(new Tooltip(text)));
         fieldBox.getChildren().add(textField);
 
         return textField;
