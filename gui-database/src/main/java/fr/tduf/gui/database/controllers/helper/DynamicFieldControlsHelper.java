@@ -86,6 +86,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         switch (field.getFieldType()) {
             case PERCENT:
+                addPercentValueControls(fieldBox, field);
                 break;
             case BITFIELD:
                 // TODO handle bitfield -> requires resolver (0.7.0+)
@@ -99,6 +100,19 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                 }
                 break;
         }
+    }
+
+    private void addPercentValueControls(HBox fieldBox, DbStructureDto.Field field) {
+        Slider slider = new Slider(0.0, 1.0, 0.0);
+        slider.setShowTickLabels(true);
+        slider.setShowTickMarks(true);
+        slider.setMajorTickUnit(0.1);
+        slider.setMinorTickCount(4);
+        slider.setBlockIncrement(10);
+        slider.setPrefWidth(450);
+
+        fieldBox.getChildren().add(slider);
+        fieldBox.getChildren().add(new Separator(VERTICAL));
     }
 
     private void addReferenceValueControls(HBox fieldBox, DbStructureDto.Field field) {
