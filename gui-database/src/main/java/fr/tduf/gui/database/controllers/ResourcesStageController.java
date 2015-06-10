@@ -93,7 +93,7 @@ public class ResourcesStageController implements Initializable {
     }
 
     @FXML
-    private void handleEditResourceButtonMouseClick(ActionEvent actionEvent){
+    private void handleEditResourceButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleEditResourceButtonMouseClick");
 
         RemoteResource selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
@@ -103,35 +103,21 @@ public class ResourcesStageController implements Initializable {
 
         String currentResourceReference = selectedResource.referenceProperty().get();
         DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
-        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.of(selectedResource));
-        if (result.isPresent()) {
-            try {
-                editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), result.get(), getCurrentLocale());
-            } catch(IllegalArgumentException iae) {
-                dialogsHelper.showErrorDialog(iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
-            }
-        }
+        dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.of(selectedResource))
+                .ifPresent((pair) -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), pair, getCurrentLocale()));
     }
 
     @FXML
-    private void handleAddResourceButtonMouseClick(ActionEvent actionEvent){
+    private void handleAddResourceButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleAddResourceButtonMouseClick");
 
         DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
-        Optional<Pair<String, String>> result = dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.empty());
-        if (result.isPresent()) {
-            // TODO handle exceptions in method
-            try {
-                // TODO add resource for all locales. Update when done.
-                editResourceAndUpdateMainStage(getCurrentTopic(), Optional.empty(), result.get(), getCurrentLocale());
-            } catch(IllegalArgumentException iae) {
-                dialogsHelper.showErrorDialog(iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
-            }
-        }
+        dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.empty())
+                .ifPresent((pair) -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.empty(), pair, getCurrentLocale()));
     }
 
     @FXML
-    private void handleRemoveResourceButtonMouseClick(ActionEvent actionEvent){
+    private void handleRemoveResourceButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleRemoveResourceButtonMouseClick");
 
         RemoteResource selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
@@ -142,6 +128,7 @@ public class ResourcesStageController implements Initializable {
         DbResourceDto.Locale currentLocale = getCurrentLocale();
         DbDto.Topic currentTopic = getCurrentTopic();
         Optional<Boolean> result = dialogsHelper.showResourceDeletionDialog(currentTopic, selectedResource, currentLocale.getCode());
+        // TODO simplify
         if (result.isPresent()) {
             int selectedRow = resourcesTableView.getSelectionModel().getSelectedIndex();
             removeResourceAndUpdateMainStage(currentTopic, selectedResource, currentLocale, result.get(), selectedRow);
@@ -174,7 +161,7 @@ public class ResourcesStageController implements Initializable {
         localesChoiceBox.setValue(locale);
         browsedResourceProperty.setValue(new BrowsedResource(targetTopic, referenceProperty.get()));
 
-        Stage stage = (Stage)this.root.getScene().getWindow();
+        Stage stage = (Stage) this.root.getScene().getWindow();
         stage.show();
     }
 
@@ -247,16 +234,21 @@ public class ResourcesStageController implements Initializable {
         boolean updateResourceMode = currentResourceReference.isPresent();
         String newResourceReference = referenceValuePair.getKey();
         String newResourceValue = referenceValuePair.getValue();
-        if (updateResourceMode) {
-            // TODO Update for all locales at once ?
-            mainStageController.getChangeDataController().updateResourceWithReference(topic, locale, currentResourceReference.get(), newResourceReference, newResourceValue);
-        } else {
-            Stream.of(DbResourceDto.Locale.values())
 
-                    .forEach((affectedLocale) -> mainStageController.getChangeDataController().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue));
+        try {
+            if (updateResourceMode) {
+                // TODO Update for all locales at once ?
+                mainStageController.getChangeDataController().updateResourceWithReference(topic, locale, currentResourceReference.get(), newResourceReference, newResourceValue);
+            } else {
+                Stream.of(DbResourceDto.Locale.values())
+
+                        .forEach((affectedLocale) -> mainStageController.getChangeDataController().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue));
+            }
+        } catch(IllegalArgumentException iae) {
+            dialogsHelper.showErrorDialog(iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
+        } finally {
+            updateAllStages(Optional.of(newResourceReference));
         }
-
-        updateAllStages(Optional.of(newResourceReference));
     }
 
     private void updateAllStages(Optional<String> resourceReference) {
