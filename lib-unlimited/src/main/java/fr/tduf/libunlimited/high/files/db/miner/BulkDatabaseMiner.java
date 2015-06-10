@@ -43,17 +43,13 @@ public class BulkDatabaseMiner {
     public Optional<List<DbResourceDto>> getAllResourcesFromTopic(DbDto.Topic topic) {
 //        System.out.println(new Date().getTime() + " - getAllResourcesFromTopic(" + topic + ")");
 
-        Optional<DbDto> dbDto = topicObjects.stream()
+        return topicObjects.stream()
 
                 .filter((databaseObject) -> databaseObject.getTopic() == topic)
 
-                .findAny();
+                .findAny()
 
-        if (!dbDto.isPresent()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(dbDto.get().getResources());
+                .map(DbDto::getResources);
     }
 
     /**
@@ -64,17 +60,14 @@ public class BulkDatabaseMiner {
     public Optional<DbResourceDto> getResourceFromTopicAndLocale(DbDto.Topic topic, DbResourceDto.Locale locale) {
 //        System.out.println(new Date().getTime() + " - getResourceFromTopicAndLocale(" + topic + ", " + locale + ")");
 
-        Optional<List<DbResourceDto>> allResourcesFromTopic = getAllResourcesFromTopic(topic);
+        return getAllResourcesFromTopic(topic)
+                .map((allResourcesFromTopic) -> allResourcesFromTopic.stream()
 
-        if (!allResourcesFromTopic.isPresent()) {
-            return Optional.empty();
-        }
+                        .filter((resourceObject) -> resourceObject.getLocale() == locale)
 
-        return allResourcesFromTopic.get().stream()
+                        .findAny()
 
-                .filter((resourceObject) -> resourceObject.getLocale() == locale)
-
-                .findAny();
+                        .orElse(null));
     }
 
     /**
@@ -132,17 +125,14 @@ public class BulkDatabaseMiner {
     public Optional<DbDataDto.Entry> getContentEntryFromTopicWithReference(String ref, DbDto.Topic topic) {
 //        System.out.println(new Date().getTime() + " - getContentEntryFromTopicWithReference(" + ref + ", " + topic + ")");
 
-        Optional<DbDto> potentialTopicObject = getDatabaseTopic(topic);
-        if (!potentialTopicObject.isPresent()) {
-            return Optional.empty();
-        }
-        DbDto topicObject = potentialTopicObject.get();
+        return getDatabaseTopic(topic)
+                .map((topicObject) -> topicObject.getData().getEntries().stream()
 
-        return topicObject.getData().getEntries().stream()
+                        .filter((entry) -> contentEntryHasForReference(entry, ref, topicObject.getStructure().getFields()))
 
-                .filter((entry) -> contentEntryHasForReference(entry, ref, topicObject.getStructure().getFields()))
+                        .findAny()
 
-                .findAny();
+                        .orElse(null));
     }
 
     /**
@@ -187,16 +177,14 @@ public class BulkDatabaseMiner {
     public Optional<DbDataDto.Item> getContentItemFromEntryIdentifierAndFieldRank(DbDto.Topic topic, int fieldRank, long entryIdentifier) {
 //        System.out.println(new Date().getTime() + " - getContentItemFromInternalIdentifierAndFieldRank(" + fieldRank + "," + entryIdentifier + "," + topic + ")");
 
-        // TODO use map method to simplify code
-        Optional<DbDataDto.Entry> potentialEntry = getContentEntryFromTopicWithInternalIdentifier(entryIdentifier, topic);
-        if (potentialEntry.isPresent()) {
-            return potentialEntry.get().getItems().stream()
+        return getContentEntryFromTopicWithInternalIdentifier(entryIdentifier, topic)
+                .map((entry) -> entry.getItems().stream()
 
-                    .filter((contentItem) -> contentItem.getFieldRank() == fieldRank)
+                        .filter((contentItem) -> contentItem.getFieldRank() == fieldRank)
 
-                    .findAny();
-        }
-        return Optional.empty();
+                        .findAny()
+
+                        .orElse(null));
     }
 
     /**
@@ -233,17 +221,14 @@ public class BulkDatabaseMiner {
     public Optional<DbResourceDto.Entry> getResourceEntryFromTopicAndLocaleWithReference(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
 //        System.out.println(new Date().getTime() + " - getResourceEntryFromTopicAndLocaleWithReference(" + reference + ", " + topic + ", " + locale + ")");
 
-        Optional<DbResourceDto> resourceFromTopicAndLocale = getResourceFromTopicAndLocale(topic, locale);
+        return getResourceFromTopicAndLocale(topic, locale)
+                .map((resourceFromTopicAndLocale) -> resourceFromTopicAndLocale.getEntries().stream()
 
-        if (!resourceFromTopicAndLocale.isPresent()) {
-            return Optional.empty();
-        }
+                        .filter((entry) -> entry.getReference().equals(reference))
 
-        return resourceFromTopicAndLocale.get().getEntries().stream()
+                        .findAny()
 
-                .filter((entry) -> entry.getReference().equals(reference))
-
-                .findAny();
+                        .orElse(null));
     }
 
     /**
@@ -256,23 +241,23 @@ public class BulkDatabaseMiner {
     public Optional<DbResourceDto.Entry> getResourceEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbResourceDto.Locale locale) {
 //        System.out.println(new Date().getTime() + " - getResourceEntryWithInternalIdentifier(" + sourceTopic + "," + fieldRank + "," + entryIndex + "," + locale +")");
 
-        // TODO use map method to simplify code
         List<DbStructureDto.Field> sourceTopicStructureFields = getDatabaseTopic(sourceTopic).get().getStructure().getFields();
-        Optional<DbDataDto.Entry> potentialEntry = getContentEntryFromTopicWithInternalIdentifier(entryIndex, sourceTopic);
-        if (potentialEntry.isPresent()) {
-            List<DbDataDto.Item> entryItems = potentialEntry.get().getItems();
-            DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(entryItems.get(fieldRank - 1), sourceTopicStructureFields);
-            if (structureField.isAResourceField()) {
-                DbDto.Topic finalTopic = sourceTopic;
-                if (RESOURCE_REMOTE == structureField.getFieldType()) {
-                    finalTopic = getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
-                }
-                String resourceReference = getRawValueAtEntryIndexAndRank(sourceTopic, fieldRank, entryIndex);
-                return getResourceEntryFromTopicAndLocaleWithReference(resourceReference, finalTopic, locale);
-            }
-        }
+        return getContentEntryFromTopicWithInternalIdentifier(entryIndex, sourceTopic)
 
-        return Optional.empty();
+                .map((contentEntry) -> {
+                    DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(contentEntry.getItems().get(fieldRank - 1), sourceTopicStructureFields);
+                    if (structureField.isAResourceField()) {
+                        DbDto.Topic finalTopic = sourceTopic;
+                        if (RESOURCE_REMOTE == structureField.getFieldType()) {
+                            finalTopic = getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
+                        }
+
+                        String resourceReference = getRawValueAtEntryIndexAndRank(sourceTopic, fieldRank, entryIndex);
+                        return getResourceEntryFromTopicAndLocaleWithReference(resourceReference, finalTopic, locale)
+                                .orElse(null);
+                    }
+                    return null;
+                });
     }
 
     /**
