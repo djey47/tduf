@@ -29,22 +29,22 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     /**
-     *
-     * @param currentLayoutObject
-     * @param currentProfileName
-     * @param currentTopic
+     * Generates all field controls.
+     * @param layoutObject  : layout to use
+     * @param profileName   : name of profile to apply
+     * @param topic         : topic to be rendered.
      */
-    public void addAllFieldsControls(EditorLayoutDto currentLayoutObject, String currentProfileName, DbDto.Topic currentTopic) {
+    public void addAllFieldsControls(EditorLayoutDto layoutObject, String profileName, DbDto.Topic topic) {
         controller.getCurrentTopicObject().getStructure().getFields().stream()
 
                 .sorted((structureField1, structureField2) -> Integer.compare(
-                        EditorLayoutHelper.getFieldPrioritySettingByRank(structureField2.getRank(), currentProfileName, currentLayoutObject),
-                        EditorLayoutHelper.getFieldPrioritySettingByRank(structureField1.getRank(), currentProfileName, currentLayoutObject)))
+                        EditorLayoutHelper.getFieldPrioritySettingByRank(structureField2.getRank(), profileName, layoutObject),
+                        EditorLayoutHelper.getFieldPrioritySettingByRank(structureField1.getRank(), profileName, layoutObject)))
 
                 .forEach((structureField) -> addFieldControls(
                         controller.getDefaultTab(),
                         structureField,
-                        currentTopic
+                        topic
                 ) );
     }
 
