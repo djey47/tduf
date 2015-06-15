@@ -14,13 +14,13 @@
                   <ChoiceBox fx:id="topicsChoiceBox" prefHeight="25.0" prefWidth="180.0" />
                   <ChoiceBox fx:id="localesChoiceBox" prefHeight="25.0" prefWidth="137.0" />
                   <Separator orientation="VERTICAL" prefHeight="30.0" />
-                  <Button layoutX="345.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleEditResourceButtonMouseClick" prefHeight="25.0" prefWidth="45.0" text="Edit" />
-                  <Button layoutX="224.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleAddResourceButtonMouseClick" prefHeight="25.0" prefWidth="28.0" text="+" />
-                  <Button layoutX="297.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleRemoveResourceButtonMouseClick" prefWidth="28.0" text="-" />
+                  <Button layoutX="345.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleEditResourceButtonMouseClick" prefHeight="25.0" prefWidth="45.0" text="Edit" ><tooltip><Tooltip text="Modifies selected resource."/></tooltip></Button>
+                  <Button layoutX="224.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleAddResourceButtonMouseClick" prefHeight="25.0" prefWidth="28.0" text="+" ><tooltip><Tooltip text="Adds a new resource to current topic and locale."/></tooltip></Button>
+                  <Button layoutX="297.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleRemoveResourceButtonMouseClick" prefWidth="28.0" text="-" ><tooltip><Tooltip text="Removes selected resource from current topic."/></tooltip></Button>
                   <Separator layoutX="214.0" layoutY="10.0" orientation="VERTICAL" prefHeight="30.0" />
                   <AnchorPane prefHeight="30.0" prefWidth="168.0">
                      <children>
-                        <Button layoutY="3.0" mnemonicParsing="false" onAction="#handleSelectResourceButtonMouseClick" text="Select" AnchorPane.rightAnchor="0.0" />
+                        <Button layoutY="3.0" mnemonicParsing="false" onAction="#handleSelectResourceButtonMouseClick" text="Select" AnchorPane.rightAnchor="0.0" ><tooltip><Tooltip text="Uses selected resource in database field." /></tooltip></Button>
                      </children>
                   </AnchorPane>
                </items>
@@ -35,6 +35,7 @@
                   </TableView>
                </children>
             </Pane>
-         </children></VBox>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>
