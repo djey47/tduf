@@ -146,13 +146,13 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
             addContextualButton(
                     fieldBox,
                     DisplayConstants.LABEL_BUTTON_BROWSE,
-                    "Browses available entries in topic.",
+                    DisplayConstants.TOOLTIP_BUTTON_BROWSE_ENTRIES,
                     controller.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks, entryReferenceProperty, fieldRank)
             );
             addContextualButton(
                     fieldBox,
                     DisplayConstants.LABEL_BUTTON_GOTO,
-                    "Goes to target entry in linked topic.",
+                    DisplayConstants.TOOLTIP_BUTTON_GOTO_LINKED_ENTRY,
                     controller.handleGotoReferenceButtonMouseClick(targetTopic, fieldRank, targetProfileName));
         }
     }
@@ -178,7 +178,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         addContextualButton(
                 fieldBox,
                 DisplayConstants.LABEL_BUTTON_BROWSE,
-                "Browses available resources in topic.",
+                DisplayConstants.TOOLTIP_BUTTON_BROWSE_RESOURCES,
                 controller.handleBrowseResourcesButtonMouseClick(topic, rawValueProperty, fieldRank)
         );
     }

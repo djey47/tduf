@@ -4,7 +4,6 @@ package fr.tduf.gui.database.common;
  * Gives all constants to be displayed by controllers.
  */
 public class DisplayConstants {
-    // TODO Add tooltips for buttons
     public static final String SEPARATOR_VALUES = " - ";
     public static final String VALUE_UNKNOWN = "<?>";
     public static final String VALUE_ERROR_RESOURCE_NOT_FOUND = "<ERROR: resource not found!>";
@@ -21,6 +20,13 @@ public class DisplayConstants {
     public static final String LABEL_STATUS_VERSION = "TDUF Database Editor v1.0 by Djey.";
     public static final String LABEL_TEXTFIELD_REFERENCE = "Reference:";
     public static final String LABEL_TEXTFIELD_VALUE = "Value:";
+
+    public static final String TOOLTIP_BUTTON_BROWSE_ENTRIES = "Browses available entries in topic.";
+    public static final String TOOLTIP_BUTTON_BROWSE_RESOURCES = "Browses available resources in topic.";
+    public static final String TOOLTIP_BUTTON_GOTO_LINKED_ENTRY = "Goes to target entry in linked topic.";
+    public static final String TOOLTIP_BUTTON_GOTO_SELECTED_ENTRY = "Goes to selected entry in linked topic.";
+    public static final String TOOLTIP_BUTTON_ADD_LINKED_ENTRY = "Adds a new linked entry.";
+    public static final String TOOLTIP_BUTTON_DELETE_LINKED_ENTRY = "Removes selected entry.";
 
     public static final String COLUMN_HEADER_REF = "#";
     public static final String COLUMN_HEADER_DATA = "Linked data";

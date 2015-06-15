@@ -94,17 +94,17 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
             addContextualButton(
                     buttonsBox,
                     DisplayConstants.LABEL_BUTTON_GOTO,
-                    "Goes to selected entry in linked topic.",
+                    DisplayConstants.TOOLTIP_BUTTON_GOTO_SELECTED_ENTRY,
                     controller.handleGotoReferenceButtonMouseClick(tableSelectionModel, targetTopic, targetProfileName));
             addContextualButton(
                     buttonsBox,
                     DisplayConstants.LABEL_BUTTON_PLUS,
-                    "Adds a new linked entry.",
+                    DisplayConstants.TOOLTIP_BUTTON_ADD_LINKED_ENTRY,
                     controller.handleAddLinkedEntryButtonMouseClick(tableSelectionModel, targetTopic, targetProfileName, topicLinkObject));
             addContextualButton(
                     buttonsBox,
                     DisplayConstants.LABEL_BUTTON_MINUS,
-                    "Removes selected entry.",
+                    DisplayConstants.TOOLTIP_BUTTON_DELETE_LINKED_ENTRY,
                     controller.handleRemoveLinkedEntryButtonMouseClick(tableSelectionModel, topicLinkObject));
         }
 
