@@ -4,6 +4,7 @@ package fr.tduf.gui.database.common;
  * Gives all constants to be displayed by controllers.
  */
 public class DisplayConstants {
+    // TODO Add tooltips for buttons
     public static final String SEPARATOR_VALUES = " - ";
     public static final String VALUE_UNKNOWN = "<?>";
     public static final String VALUE_ERROR_RESOURCE_NOT_FOUND = "<ERROR: resource not found!>";
