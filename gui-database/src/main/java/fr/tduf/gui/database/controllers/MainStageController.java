@@ -180,10 +180,13 @@ public class MainStageController implements Initializable {
         System.out.println("handleSaveButtonMouseClick");
 
         String databaseLocation = this.databaseLocationTextField.getText();
-        if (this.databaseObjects == null || StringUtils.isEmpty(databaseLocation)) {
+        if (databaseObjects == null
+                || databaseObjects.isEmpty()
+                || StringUtils.isEmpty(databaseLocation)) {
             return;
         }
 
+        // TODO extract method
         DatabaseReadWriteHelper.writeDatabaseTopicsToJson(this.databaseObjects, databaseLocation);
 
         Alert alertDialog = new Alert(INFORMATION, databaseLocation, ButtonType.OK);
@@ -197,7 +200,8 @@ public class MainStageController implements Initializable {
         System.out.println("handleNextButtonMouseClick");
 
         long currentEntryIndex = currentEntryIndexProperty.getValue();
-        if (currentEntryIndex >= currentTopicObject.getData().getEntries().size() - 1) {
+        if (currentTopicObject == null
+                || currentEntryIndex >= currentTopicObject.getData().getEntries().size() - 1) {
             return;
         }
 
@@ -207,6 +211,10 @@ public class MainStageController implements Initializable {
     @FXML
     public void handleFastNextButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleFastNextButtonMouseClick");
+
+        if (currentTopicObject == null) {
+            return;
+        }
 
         long currentEntryIndex = currentEntryIndexProperty.getValue();
         long lastEntryIndex = currentTopicObject.getData().getEntries().size() - 1;
@@ -224,7 +232,8 @@ public class MainStageController implements Initializable {
         System.out.println("handlePreviousButtonMouseClick");
 
         long currentEntryIndex = currentEntryIndexProperty.getValue();
-        if (currentEntryIndex <= 0) {
+        if (currentTopicObject == null
+            || currentEntryIndex <= 0) {
             return;
         }
 
@@ -234,6 +243,10 @@ public class MainStageController implements Initializable {
     @FXML
     public void handleFastPreviousButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleFastPreviousButtonMouseClick");
+
+        if (currentTopicObject == null) {
+            return;
+        }
 
         long currentEntryIndex = currentEntryIndexProperty.getValue();
         if (currentEntryIndex - 10 < 0) {
@@ -249,6 +262,10 @@ public class MainStageController implements Initializable {
     public void handleFirstButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleFirstButtonMouseClick");
 
+        if (currentTopicObject == null) {
+            return;
+        }
+
         this.viewDataController.switchToContentEntry(0);
     }
 
@@ -256,12 +273,20 @@ public class MainStageController implements Initializable {
     public void handleLastButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleLastButtonMouseClick");
 
+        if (currentTopicObject == null) {
+            return;
+        }
+
         viewDataController.switchToContentEntry(this.currentTopicObject.getData().getEntries().size() - 1);
     }
 
     @FXML
     public void handleEntryNumberTextFieldKeyPressed(KeyEvent keyEvent) {
         System.out.println("handleEntryNumberTextFieldKeyPressed");
+
+        if (currentTopicObject == null) {
+            return;
+        }
 
         if (KeyCode.ENTER == keyEvent.getCode()
                 || KeyCode.TAB == keyEvent.getCode()) {
@@ -280,12 +305,20 @@ public class MainStageController implements Initializable {
     public void handleAddEntryButtonAction(ActionEvent actionEvent) {
         System.out.println("handleAddEntryButtonAction");
 
+        if (currentTopicObject == null) {
+            return;
+        }
+
         addEntryAndUpdateStage();
     }
 
     @FXML
     public void handleRemoveEntryButtonAction(ActionEvent actionEvent) {
         System.out.println("handleRemoveEntryButtonAction");
+
+        if (currentTopicObject == null) {
+            return;
+        }
 
         removeCurrentEntryAndUpdateStage();
     }
