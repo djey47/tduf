@@ -7,7 +7,7 @@ public class DatabaseTopicToStringConverter extends StringConverter<DbDto.Topic>
     @Override
     public String toString(DbDto.Topic topic) {
         if (topic == null) {
-            return "<?>";
+            return "";
         }
         return topic.name();
     }
