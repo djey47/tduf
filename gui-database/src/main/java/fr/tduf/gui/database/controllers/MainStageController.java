@@ -157,7 +157,6 @@ public class MainStageController implements Initializable {
         }
 
         File selectedDirectory = directoryChooser.showDialog(root.getScene().getWindow());
-
         if (selectedDirectory != null) {
             this.databaseLocationTextField.setText(selectedDirectory.getPath());
         }
@@ -186,13 +185,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        // TODO extract method
-        DatabaseReadWriteHelper.writeDatabaseTopicsToJson(this.databaseObjects, databaseLocation);
-
-        Alert alertDialog = new Alert(INFORMATION, databaseLocation, ButtonType.OK);
-        alertDialog.setTitle(DisplayConstants.TITLE_APPLICATION);
-        alertDialog.setHeaderText(DisplayConstants.MESSAGE_DATABASE_SAVED);
-        alertDialog.showAndWait();
+        saveDatabaseToDirectory(databaseLocation);
     }
 
     @FXML
@@ -550,6 +543,15 @@ public class MainStageController implements Initializable {
 
             navigationHistory.clear();
         }
+    }
+
+    private void saveDatabaseToDirectory(String databaseLocation) {
+        DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects, databaseLocation);
+
+        Alert alertDialog = new Alert(INFORMATION, databaseLocation, ButtonType.OK);
+        alertDialog.setTitle(DisplayConstants.TITLE_APPLICATION);
+        alertDialog.setHeaderText(DisplayConstants.MESSAGE_DATABASE_SAVED);
+        alertDialog.showAndWait();
     }
 
     private void addEntryAndUpdateStage() {
