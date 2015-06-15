@@ -105,14 +105,12 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     private void addPercentValueControls(HBox fieldBox, SimpleStringProperty rawValueProperty) {
-        Slider slider = new Slider();
-        slider.setMin(0.0);
-        slider.setMax(1.0);
+        Slider slider = new Slider(0.0, 100.0, 0.0);
         slider.setShowTickLabels(true);
         slider.setShowTickMarks(true);
-        slider.setMajorTickUnit(0.1);
-        slider.setMinorTickCount(4);
-        slider.setBlockIncrement(0.025);
+        slider.setMajorTickUnit(10);
+        slider.setMinorTickCount(3);
+        slider.setBlockIncrement(1);
         slider.setPrefWidth(450);
 
         Bindings.bindBidirectional(rawValueProperty, slider.valueProperty(), new PercentNumberToStringConverter());
