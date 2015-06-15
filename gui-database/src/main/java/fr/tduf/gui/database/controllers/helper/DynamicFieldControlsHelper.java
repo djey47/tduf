@@ -51,12 +51,15 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     private void addFieldControls(VBox defaultTab, DbStructureDto.Field field, DbDto.Topic currentTopic) {
-        SimpleStringProperty property = new SimpleStringProperty("");
-        controller.getRawValuePropertyByFieldRank().put(field.getRank(), property);
 
-        int fieldRank = field.getRank();
         String fieldName = field.getName();
-        boolean fieldReadOnly = false;
+        DbStructureDto.FieldType fieldType = field.getFieldType();
+        int fieldRank = field.getRank();
+
+        SimpleStringProperty property = new SimpleStringProperty("");
+        controller.getRawValuePropertyByFieldRank().put(fieldRank, property);
+
+        boolean fieldReadOnly = DbStructureDto.FieldType.PERCENT == field.getFieldType();
         String groupName = null;
         Optional<String> potentialToolTip = Optional.empty();
         Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank, controller.getCurrentProfileObject().getName(), controller.getLayoutObject());
@@ -71,7 +74,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                 fieldName = fieldSettings.getLabel();
             }
 
-            fieldReadOnly = fieldSettings.isReadOnly();
+            fieldReadOnly = fieldReadOnly || fieldSettings.isReadOnly();
 
             groupName = fieldSettings.getGroup();
 
@@ -86,7 +89,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         valueTextField.textProperty().bindBidirectional(property);
         valueTextField.focusedProperty().addListener(controller.handleTextFieldFocusChange(fieldRank, property));
 
-        switch (field.getFieldType()) {
+        switch (fieldType) {
             case PERCENT:
                 addPercentValueControls(fieldBox, property);
                 break;
