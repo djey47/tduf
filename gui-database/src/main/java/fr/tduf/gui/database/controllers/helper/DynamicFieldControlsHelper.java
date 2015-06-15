@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers.helper;
 
+import fr.tduf.gui.common.helper.javafx.ControlHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
@@ -170,18 +171,22 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         addBrowseResourcesButton(fieldBox, topic, rawValueProperty, fieldRank);
     }
 
+    // TODO factorize
     private void addBrowseEntriesButton(HBox fieldBox, DbDto.Topic targetTopic, List<Integer> labelFieldRanks, SimpleStringProperty entryReferenceProperty, int fieldRank) {
         Button browseEntriesButton = new Button(DisplayConstants.LABEL_BUTTON_BROWSE);
         browseEntriesButton.setPrefWidth(34);
+        ControlHelper.setTooltipText(browseEntriesButton, "Browses available entries in topic.");
 
         browseEntriesButton.setOnAction(
                 controller.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks, entryReferenceProperty, fieldRank));
         fieldBox.getChildren().add(browseEntriesButton);
     }
 
+    // TODO factorize
     private void addBrowseResourcesButton(HBox fieldBox, DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
         Button browseResourcesButton = new Button(DisplayConstants.LABEL_BUTTON_BROWSE);
         browseResourcesButton.setPrefWidth(34);
+        ControlHelper.setTooltipText(browseResourcesButton, "Browses available resources in topic.");
 
         browseResourcesButton.setOnAction(
                 controller.handleBrowseResourcesButtonMouseClick(targetTopic, targetReferenceProperty, fieldRank));

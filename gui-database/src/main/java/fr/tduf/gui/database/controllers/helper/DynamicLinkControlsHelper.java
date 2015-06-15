@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers.helper;
 
+import fr.tduf.gui.common.helper.javafx.ControlHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.gui.database.domain.RemoteResource;
@@ -109,18 +110,22 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(buttonsBox);
     }
 
+    // TODO factorize
     private void addAddLinkedEntryButton(Pane fieldPane, EventHandler<ActionEvent> addLinkedEntryAction) {
         Button addLinkedEntryButton = new Button(DisplayConstants.LABEL_BUTTON_PLUS);
         addLinkedEntryButton.setPrefWidth(34);
+        ControlHelper.setTooltipText(addLinkedEntryButton, "Adds a new linked entry.");
 
         addLinkedEntryButton.setOnAction(addLinkedEntryAction);
 
         fieldPane.getChildren().add(addLinkedEntryButton);
     }
 
+    // TODO factorize
     private void addRemoveLinkedEntryButton(Pane fieldPane, EventHandler<ActionEvent> removeLinkedEntryAction) {
         Button removeLinkedEntryButton = new Button(DisplayConstants.LABEL_BUTTON_MINUS);
         removeLinkedEntryButton.setPrefWidth(34);
+        ControlHelper.setTooltipText(removeLinkedEntryButton, "Removes selected entry.");
 
         removeLinkedEntryButton.setOnAction(removeLinkedEntryAction);
 

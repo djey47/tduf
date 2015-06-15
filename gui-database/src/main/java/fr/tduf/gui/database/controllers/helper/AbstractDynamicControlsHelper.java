@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers.helper;
 
+import fr.tduf.gui.common.helper.javafx.ControlHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
@@ -64,6 +65,7 @@ public abstract class AbstractDynamicControlsHelper {
     protected static void addGoToReferenceButton(Pane fieldPane, EventHandler<ActionEvent> gotoReferenceAction) {
         Button gotoReferenceButton = new Button(DisplayConstants.LABEL_BUTTON_GOTO);
         gotoReferenceButton.setPrefWidth(34);
+        ControlHelper.setTooltipText(gotoReferenceButton, "Goes to target topic.");
 
         gotoReferenceButton.setOnAction(gotoReferenceAction);
 
