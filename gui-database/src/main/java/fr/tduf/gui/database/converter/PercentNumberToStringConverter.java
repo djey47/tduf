@@ -1,11 +1,8 @@
 package fr.tduf.gui.database.converter;
 
-import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 
-public class PercentNumberToStringConverter extends StringConverter<Number> {
-
-    private NumberStringConverter numberStringConverter = new NumberStringConverter();
+public class PercentNumberToStringConverter extends NumberStringConverter {
 
     @Override
     public String toString(Number percentNumber) {
@@ -14,7 +11,7 @@ public class PercentNumberToStringConverter extends StringConverter<Number> {
         }
 
         // TODO Take current decimal separator into account (UK = . )
-        return numberStringConverter.toString(percentNumber).replace(",", ".");
+        return super.toString(percentNumber).replace(",", ".");
     }
 
     @Override
@@ -24,6 +21,6 @@ public class PercentNumberToStringConverter extends StringConverter<Number> {
         }
 
         // TODO Take current decimal separator into account (UK = . )
-        return numberStringConverter.fromString(percentRawValue.replace("." ,","));
+        return super.fromString(percentRawValue.replace(".", ","));
     }
 }
