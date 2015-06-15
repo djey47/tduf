@@ -1,6 +1,5 @@
 package fr.tduf.gui.common.helper.javafx;
 
-import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.TableRow;
@@ -25,13 +24,14 @@ public class TableViewHelper {
         requireNonNull(mouseEvent, "A mouse event is required.");
 
         Node node = ((Node) mouseEvent.getTarget()).getParent();
+        if (node == null) {
+            return Optional.empty();
+        }
 
-        T selectedItem;
-        if (node == null || node instanceof TableHeaderRow) {
-            selectedItem = null;
-        } else if (node instanceof TableRow) {
+        T selectedItem = null;
+        if (node instanceof TableRow) {
             selectedItem = (T) ((TableRow) node).getItem();
-        } else {
+        } else if (node.getParent() instanceof TableRow) {
             selectedItem = (T) ((TableRow) node.getParent()).getItem();
         }
 
