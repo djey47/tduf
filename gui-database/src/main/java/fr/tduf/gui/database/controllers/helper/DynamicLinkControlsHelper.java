@@ -1,6 +1,5 @@
 package fr.tduf.gui.database.controllers.helper;
 
-import fr.tduf.gui.common.helper.javafx.ControlHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.gui.database.domain.RemoteResource;
@@ -11,14 +10,10 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
@@ -96,40 +91,24 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         VBox buttonsBox = new VBox(5);
 
         if (targetProfileName != null) {
-            addGoToReferenceButton(
+            addContextualButton(
                     buttonsBox,
+                    DisplayConstants.LABEL_BUTTON_GOTO,
+                    "Goes to selected entry in linked topic.",
                     controller.handleGotoReferenceButtonMouseClick(tableSelectionModel, targetTopic, targetProfileName));
-            addAddLinkedEntryButton(
+            addContextualButton(
                     buttonsBox,
+                    DisplayConstants.LABEL_BUTTON_PLUS,
+                    "Adds a new linked entry.",
                     controller.handleAddLinkedEntryButtonMouseClick(tableSelectionModel, targetTopic, targetProfileName, topicLinkObject));
-            addRemoveLinkedEntryButton(
+            addContextualButton(
                     buttonsBox,
+                    DisplayConstants.LABEL_BUTTON_MINUS,
+                    "Removes selected entry.",
                     controller.handleRemoveLinkedEntryButtonMouseClick(tableSelectionModel, topicLinkObject));
         }
 
         fieldBox.getChildren().add(buttonsBox);
-    }
-
-    // TODO factorize
-    private void addAddLinkedEntryButton(Pane fieldPane, EventHandler<ActionEvent> addLinkedEntryAction) {
-        Button addLinkedEntryButton = new Button(DisplayConstants.LABEL_BUTTON_PLUS);
-        addLinkedEntryButton.setPrefWidth(34);
-        ControlHelper.setTooltipText(addLinkedEntryButton, "Adds a new linked entry.");
-
-        addLinkedEntryButton.setOnAction(addLinkedEntryAction);
-
-        fieldPane.getChildren().add(addLinkedEntryButton);
-    }
-
-    // TODO factorize
-    private void addRemoveLinkedEntryButton(Pane fieldPane, EventHandler<ActionEvent> removeLinkedEntryAction) {
-        Button removeLinkedEntryButton = new Button(DisplayConstants.LABEL_BUTTON_MINUS);
-        removeLinkedEntryButton.setPrefWidth(34);
-        ControlHelper.setTooltipText(removeLinkedEntryButton, "Removes selected entry.");
-
-        removeLinkedEntryButton.setOnAction(removeLinkedEntryAction);
-
-        fieldPane.getChildren().add(removeLinkedEntryButton);
     }
 
     private DbDto.Topic retrieveTargetTopicForLink(TopicLinkDto topicLinkObject) {

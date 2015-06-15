@@ -1,7 +1,6 @@
 package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.common.helper.javafx.ControlHelper;
-import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
 import javafx.event.ActionEvent;
@@ -62,13 +61,13 @@ public abstract class AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(fieldNameLabel);
     }
 
-    protected static void addGoToReferenceButton(Pane fieldPane, EventHandler<ActionEvent> gotoReferenceAction) {
-        Button gotoReferenceButton = new Button(DisplayConstants.LABEL_BUTTON_GOTO);
-        gotoReferenceButton.setPrefWidth(34);
-        ControlHelper.setTooltipText(gotoReferenceButton, "Goes to target topic.");
+    protected static void addContextualButton(Pane fieldPane, String buttonLabel, String tooltipText, EventHandler<ActionEvent> action) {
+        Button contextualButton = new Button(buttonLabel);
+        contextualButton.setPrefWidth(34);
+        ControlHelper.setTooltipText(contextualButton, tooltipText);
 
-        gotoReferenceButton.setOnAction(gotoReferenceAction);
+        contextualButton.setOnAction(action);
 
-        fieldPane.getChildren().add(gotoReferenceButton);
+        fieldPane.getChildren().add(contextualButton);
     }
 }

@@ -1,6 +1,5 @@
 package fr.tduf.gui.database.controllers.helper;
 
-import fr.tduf.gui.common.helper.javafx.ControlHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
@@ -143,9 +142,17 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         if (potentialFieldSettings.isPresent() && potentialFieldSettings.get() != null) {
             String targetProfileName = potentialFieldSettings.get().getRemoteReferenceProfile();
             List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, controller.getLayoutObject()).getEntryLabelFieldRanks();
-            addBrowseEntriesButton(fieldBox, targetTopic, labelFieldRanks, controller.getRawValuePropertyByFieldRank().get(fieldRank), fieldRank);
-            addGoToReferenceButton(
+            SimpleStringProperty entryReferenceProperty = controller.getRawValuePropertyByFieldRank().get(fieldRank);
+            addContextualButton(
                     fieldBox,
+                    DisplayConstants.LABEL_BUTTON_BROWSE,
+                    "Browses available entries in topic.",
+                    controller.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks, entryReferenceProperty, fieldRank)
+            );
+            addContextualButton(
+                    fieldBox,
+                    DisplayConstants.LABEL_BUTTON_GOTO,
+                    "Goes to target entry in linked topic.",
                     controller.handleGotoReferenceButtonMouseClick(targetTopic, fieldRank, targetProfileName));
         }
     }
@@ -168,29 +175,12 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
-        addBrowseResourcesButton(fieldBox, topic, rawValueProperty, fieldRank);
-    }
-
-    // TODO factorize
-    private void addBrowseEntriesButton(HBox fieldBox, DbDto.Topic targetTopic, List<Integer> labelFieldRanks, SimpleStringProperty entryReferenceProperty, int fieldRank) {
-        Button browseEntriesButton = new Button(DisplayConstants.LABEL_BUTTON_BROWSE);
-        browseEntriesButton.setPrefWidth(34);
-        ControlHelper.setTooltipText(browseEntriesButton, "Browses available entries in topic.");
-
-        browseEntriesButton.setOnAction(
-                controller.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks, entryReferenceProperty, fieldRank));
-        fieldBox.getChildren().add(browseEntriesButton);
-    }
-
-    // TODO factorize
-    private void addBrowseResourcesButton(HBox fieldBox, DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
-        Button browseResourcesButton = new Button(DisplayConstants.LABEL_BUTTON_BROWSE);
-        browseResourcesButton.setPrefWidth(34);
-        ControlHelper.setTooltipText(browseResourcesButton, "Browses available resources in topic.");
-
-        browseResourcesButton.setOnAction(
-                controller.handleBrowseResourcesButtonMouseClick(targetTopic, targetReferenceProperty, fieldRank));
-        fieldBox.getChildren().add(browseResourcesButton);
+        addContextualButton(
+                fieldBox,
+                DisplayConstants.LABEL_BUTTON_BROWSE,
+                "Browses available resources in topic.",
+                controller.handleBrowseResourcesButtonMouseClick(topic, rawValueProperty, fieldRank)
+        );
     }
 
     private static void addResourceValueLabel(HBox fieldBox, SimpleStringProperty property) {
