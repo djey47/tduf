@@ -12,6 +12,7 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
  */
 @JsonTypeName("topicLink")
 public class TopicLinkDto {
+    // TODO handle readonly indicator if needed
 
     @JsonProperty("topic")
     private DbDto.Topic topic;

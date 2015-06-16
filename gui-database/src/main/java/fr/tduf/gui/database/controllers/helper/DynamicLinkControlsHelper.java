@@ -53,7 +53,6 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
-        // TODO handle readonly
         addCustomLabel(fieldBox, false, targetTopic.name());
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
