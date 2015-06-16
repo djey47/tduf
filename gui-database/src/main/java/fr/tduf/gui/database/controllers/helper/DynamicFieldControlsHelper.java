@@ -203,16 +203,10 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
-    // TODO Use abstract label creation
     private static void addResourceValueLabel(HBox fieldBox, boolean fieldReadOnly, SimpleStringProperty property) {
-        Label resourceValueLabel = new Label();
-        resourceValueLabel.setPrefWidth(450);
-        resourceValueLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_LABEL);
-        if (fieldReadOnly) {
-            resourceValueLabel.getStyleClass().add(FxConstants.CSS_CLASS_READONLY_FIELD);
-        }
+        Label resourceValueLabel = addLabel(fieldBox, fieldReadOnly, 450, null);
+
         resourceValueLabel.textProperty().bindBidirectional(property);
-        fieldBox.getChildren().add(resourceValueLabel);
     }
 
     private BulkDatabaseMiner getMiner() {
