@@ -59,7 +59,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.VALUE_FIELD_DEFAULT);
         controller.getRawValuePropertyByFieldRank().put(fieldRank, property);
 
-        boolean fieldReadOnly = DbStructureDto.FieldType.PERCENT == field.getFieldType();
+        boolean fieldReadOnly = false;
         String groupName = null;
         Optional<String> potentialToolTip = Optional.empty();
         Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank, controller.getCurrentProfileObject().getName(), controller.getLayoutObject());
@@ -74,7 +74,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                 fieldName = fieldSettings.getLabel();
             }
 
-            fieldReadOnly = fieldReadOnly || fieldSettings.isReadOnly();
+            fieldReadOnly = fieldSettings.isReadOnly();
 
             groupName = fieldSettings.getGroup();
 
@@ -85,26 +85,41 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         addFieldLabel(fieldBox, fieldReadOnly, fieldName);
 
-        TextField valueTextField = addTextField(fieldBox, fieldReadOnly, potentialToolTip);
-        valueTextField.textProperty().bindBidirectional(property);
-        valueTextField.focusedProperty().addListener(controller.handleTextFieldFocusChange(fieldRank, property));
+        addValueTextField(fieldBox, field, fieldReadOnly, potentialToolTip, property);
 
         switch (fieldType) {
             case PERCENT:
+                // TODO handle read only
                 addPercentValueControls(fieldBox, property);
                 break;
             case BITFIELD:
                 // TODO handle bitfield -> requires resolver (0.7.0+)
                 break;
             case REFERENCE:
-                addReferenceValueControls(fieldBox, field);
+                addReferenceValueControls(fieldBox, field); // TODO handle read only
                 break;
             default:
                 if (field.isAResourceField()) {
-                    addResourceValueControls(fieldBox, field, property, currentTopic);
+                    addResourceValueControls(fieldBox, field, property, currentTopic); // TODO handle read only
                 }
                 break;
         }
+    }
+
+    private void addValueTextField(HBox fieldBox, DbStructureDto.Field field, boolean fieldReadOnly, Optional<String> potentialToolTip, SimpleStringProperty property) {
+        boolean valueTextFieldReadOnly = DbStructureDto.FieldType.PERCENT == field.getFieldType() || fieldReadOnly;
+        TextField valueTextField = new TextField();
+
+        if (valueTextFieldReadOnly) {
+            valueTextField.getStyleClass().add(FxConstants.CSS_CLASS_READONLY_FIELD);
+        }
+        valueTextField.setPrefWidth(110.0);
+        valueTextField.setEditable(!valueTextFieldReadOnly);
+        potentialToolTip.ifPresent((text) -> valueTextField.setTooltip(new Tooltip(text)));
+        fieldBox.getChildren().add(valueTextField);
+
+        valueTextField.textProperty().bindBidirectional(property);
+        valueTextField.focusedProperty().addListener(controller.handleTextFieldFocusChange(field.getRank(), property));
     }
 
     private void addPercentValueControls(HBox fieldBox, SimpleStringProperty rawValueProperty) {
@@ -189,20 +204,6 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         resourceValueLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_LABEL);
         resourceValueLabel.textProperty().bindBidirectional(property);
         fieldBox.getChildren().add(resourceValueLabel);
-    }
-
-    private static TextField addTextField(HBox fieldBox, boolean readOnly, Optional<String> toolTip) {
-        TextField textField = new TextField();
-
-        if (readOnly) {
-            textField.getStyleClass().add(FxConstants.CSS_CLASS_READONLY_FIELD);
-        }
-        textField.setPrefWidth(110.0);
-        textField.setEditable(!readOnly);
-        toolTip.ifPresent((text) -> textField.setTooltip(new Tooltip(text)));
-        fieldBox.getChildren().add(textField);
-
-        return textField;
     }
 
     private BulkDatabaseMiner getMiner() {
