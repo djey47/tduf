@@ -101,7 +101,8 @@ public class ResourcesStageController implements Initializable {
 
         String currentResourceReference = selectedResource.referenceProperty().get();
         DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
-        dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.of(selectedResource))
+        // TODO edit for current or all locales
+        dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.of(selectedResource), getCurrentLocale())
                 .ifPresent((pair) -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), pair, getCurrentLocale()));
     }
 
@@ -110,7 +111,8 @@ public class ResourcesStageController implements Initializable {
         System.out.println("handleAddResourceButtonMouseClick");
 
         DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
-        dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.empty())
+        // TODO add for current or all locales
+        dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.empty(), getCurrentLocale())
                 .ifPresent((pair) -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.empty(), pair, getCurrentLocale()));
     }
 

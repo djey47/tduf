@@ -4,7 +4,10 @@ import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.domain.DatabaseEntry;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -12,6 +15,7 @@ import javafx.util.Pair;
 
 import java.util.Optional;
 
+import static java.util.Arrays.asList;
 import static javafx.scene.control.Alert.AlertType.CONFIRMATION;
 import static javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE;
 
@@ -58,7 +62,7 @@ public class DialogsHelper {
      * @param updatedResource   : resource to apply, or absent to create a new one
      * @return resulting resource, or absent if dialog was dismissed.
      */
-    public Optional<Pair<String, String>> showEditResourceDialog(DbDto topicObject, Optional<DatabaseEntry> updatedResource) {
+    public Optional<Pair<String, String>> showEditResourceDialog(DbDto topicObject, Optional<DatabaseEntry> updatedResource, DbResourceDto.Locale currentLocale) {
         Dialog<Pair<String, String>> editResourceDialog = new Dialog<>();
         editResourceDialog.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
 
@@ -82,13 +86,18 @@ public class DialogsHelper {
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
+
+        ChoiceBox<String> localeChoiceBox = createLocaleChoiceBox(currentLocale);
         TextField referenceTextField = new TextField(defaultReference);
-        Platform.runLater(referenceTextField::requestFocus);
         TextField valueTextField = new TextField(defaultValue);
-        grid.add(new Label(DisplayConstants.LABEL_TEXTFIELD_REFERENCE), 0, 0);
-        grid.add(referenceTextField, 1, 0);
-        grid.add(new Label(DisplayConstants.LABEL_TEXTFIELD_VALUE), 0, 1);
-        grid.add(valueTextField, 1, 1);
+        Platform.runLater(referenceTextField::requestFocus);
+
+        grid.add(new Label(DisplayConstants.LABEL_CHOICEBOX_LOCALE), 0, 0);
+        grid.add(localeChoiceBox, 1, 0);
+        grid.add(new Label(DisplayConstants.LABEL_TEXTFIELD_REFERENCE), 0, 1);
+        grid.add(referenceTextField, 1, 1);
+        grid.add(new Label(DisplayConstants.LABEL_TEXTFIELD_VALUE), 0, 2);
+        grid.add(valueTextField, 1, 2);
         editResourceDialog.getDialogPane().setContent(grid);
 
         ButtonType okButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_OK, ButtonBar.ButtonData.OK_DONE);
@@ -103,5 +112,26 @@ public class DialogsHelper {
         });
 
         return editResourceDialog.showAndWait();
+    }
+
+    private ChoiceBox<String> createLocaleChoiceBox(DbResourceDto.Locale currentLocale) {
+        ObservableList<String> localeItems = FXCollections.observableArrayList();
+
+        int localeIndex = 0 ;
+        int currentLocaleIndex = 0;
+        localeItems.add(DisplayConstants.LABEL_ITEM_LOCALE_ALL);
+        for (DbResourceDto.Locale locale : asList(DbResourceDto.Locale.values())) {
+            if (locale == currentLocale) {
+                localeItems.add(String.format(DisplayConstants.LABEL_ITEM_LOCALE_CURRENT, locale.getCode()));
+                currentLocaleIndex = localeIndex;
+            } else {
+                localeItems.add(locale.getCode());
+                localeIndex++;
+            }
+        }
+
+        ChoiceBox<String> localeChoiceBox = new ChoiceBox<>(localeItems);
+        localeChoiceBox.getSelectionModel().select(currentLocaleIndex + 1);
+        return localeChoiceBox;
     }
 }

@@ -20,11 +20,14 @@ public class DisplayConstants {
     public static final String LABEL_BUTTON_MINUS = "-";
     public static final String LABEL_BUTTON_OK = "OK";
     public static final String LABEL_BUTTON_PLUS = "+";
+    public static final String LABEL_CHOICEBOX_LOCALE = "Locale:";
     public static final String LABEL_ITEM_DATABASE_ENTRY = "%s : %s";
     public static final String LABEL_ITEM_ENTRY_COUNT = "/ %d";
     public static final String LABEL_ITEM_ENTRY_COUNT_DEFAULT = "";
     public static final String LABEL_ITEM_ENTRY_DEFAULT = "";
     public static final String LABEL_ITEM_ENTRY_INDEX_DEFAULT = "";
+    public static final String LABEL_ITEM_LOCALE_ALL = "All";
+    public static final String LABEL_ITEM_LOCALE_CURRENT = "%s (current)";
     public static final String LABEL_ITEM_PERCENT_DEFAULT = "";
     public static final String LABEL_ITEM_REFERENCE = "Reference to another topic.";
     public static final String LABEL_ITEM_TOPIC_DEFAULT = "";
