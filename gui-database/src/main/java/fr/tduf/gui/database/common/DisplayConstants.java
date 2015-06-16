@@ -17,6 +17,7 @@ public class DisplayConstants {
     public static final String LABEL_BUTTON_MINUS = "-";
     public static final String LABEL_BUTTON_OK = "OK";
     public static final String LABEL_BUTTON_PLUS = "+";
+    public static final String LABEL_ITEM_DATABASE_ENTRY = "%s : %s";
     public static final String LABEL_STATUS_VERSION = "TDUF Database Editor v1.0 by Djey.";
     public static final String LABEL_TEXTFIELD_REFERENCE = "Reference:";
     public static final String LABEL_TEXTFIELD_VALUE = "Value:";

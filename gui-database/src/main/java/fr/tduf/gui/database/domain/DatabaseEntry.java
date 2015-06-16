@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.domain;
 
 import com.google.common.base.MoreObjects;
+import fr.tduf.gui.database.common.DisplayConstants;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -30,8 +31,8 @@ public class DatabaseEntry {
      * @return reference-value pair to be displayed for current entry.
      */
     public String toDisplayableValue() {
-        return reference.get() + " : " + value.get();
-    } // TODO externalize string format
+        return String.format(DisplayConstants.LABEL_ITEM_DATABASE_ENTRY, reference.get(), value.get());
+    }
 
     public void setReference(String reference) {
         this.reference.set(reference);
