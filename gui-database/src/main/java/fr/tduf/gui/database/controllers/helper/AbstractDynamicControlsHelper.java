@@ -42,29 +42,24 @@ public abstract class AbstractDynamicControlsHelper {
         return fieldBox;
     }
 
-    // TODO factorize label creation
-    protected static Label addCustomLabel(HBox fieldBox, boolean readOnly, String text) {
-        Label customLabel = new Label(text);
-
-        customLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_LABEL);
-        if (readOnly) {
-            customLabel.getStyleClass().add(FxConstants.CSS_CLASS_READONLY_FIELD);
-        }
-        customLabel.setPrefWidth(175);
-        fieldBox.getChildren().add(customLabel);
-        return customLabel;
+    protected static void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName) {
+        addLabel(fieldBox, readOnly, 225.0, fieldName);
     }
 
-    // TODO factorize label creation
-    protected static void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName) {
-        Label fieldNameLabel = new Label(fieldName);
+    protected static Label addCustomLabel(HBox fieldBox, boolean readOnly, String text) {
+        return addLabel(fieldBox, readOnly, 175.0, text);
+    }
 
-        fieldNameLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_NAME);
+    protected static Label addLabel(HBox fieldBox, boolean readOnly, double width, String text) {
+        Label label = new Label(text);
+
+        label.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_LABEL);
         if (readOnly) {
-            fieldNameLabel.getStyleClass().add(FxConstants.CSS_CLASS_READONLY_FIELD);
+            label.getStyleClass().add(FxConstants.CSS_CLASS_READONLY_FIELD);
         }
-        fieldNameLabel.setPrefWidth(225.0);
-        fieldBox.getChildren().add(fieldNameLabel);
+        label.setPrefWidth(width);
+        fieldBox.getChildren().add(label);
+        return label;
     }
 
     protected static void addContextualButton(Pane fieldPane, String buttonLabel, String tooltipText, EventHandler<ActionEvent> action) {
