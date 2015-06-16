@@ -4,17 +4,19 @@ import com.google.common.base.MoreObjects;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import java.util.OptionalLong;
+
 /**
  * Represents a key-value pair to be displayed in a TableView.
  * Applies to a resource or content entry.
  * Also includes database entry identifier (optional).
  */
 public class DatabaseEntry {
+    private OptionalLong internalEntryId;
+
     private StringProperty reference = new SimpleStringProperty();
 
     private StringProperty value = new SimpleStringProperty();
-
-    private long internalEntryId;
 
     public StringProperty referenceProperty() {
         return reference;
@@ -23,6 +25,13 @@ public class DatabaseEntry {
     public StringProperty valueProperty() {
         return value;
     }
+
+    /**
+     * @return reference-value pair to be displayed for current entry.
+     */
+    public String toDisplayableValue() {
+        return reference.get() + " : " + value.get();
+    } // TODO externalize string format
 
     public void setReference(String reference) {
         this.reference.set(reference);
@@ -33,15 +42,11 @@ public class DatabaseEntry {
     }
 
     public long getInternalEntryId() {
-        return internalEntryId;
+        return internalEntryId.getAsLong();
     }
 
     public void setInternalEntryId(long internalEntryId) {
-        this.internalEntryId = internalEntryId;
-    }
-
-    public String toDisplayableValue() {
-        return reference.get() + " : " + value.get();
+        this.internalEntryId = OptionalLong.of(internalEntryId);
     }
 
     @Override
