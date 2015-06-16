@@ -1194,6 +1194,18 @@
           "hidden": true
         }
       ]
+    },
+    {
+      "name": "TEST-Readonly link",
+      "topic": "CAR_PHYSICS_DATA",
+      "topicLinks": [
+        {
+          "topic": "CAR_RIMS",
+          "remoteReferenceProfile": "Rims",
+          "readOnly": true
+        }
+      ],
+      "fieldSettings": []
     }
   ]
 }

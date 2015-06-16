@@ -49,18 +49,18 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
         String targetProfileName = topicLinkObject.getRemoteReferenceProfile();
         DbDto.Topic targetTopic = retrieveTargetTopicForLink(topicLinkObject);
-        TableView<DatabaseEntry> tableView = addTableViewForLinkedTopic(fieldBox, resourceData, targetProfileName, targetTopic);
+        TableView<DatabaseEntry> tableView = addTableViewForLinkedTopic(fieldBox, topicLinkObject, resourceData, targetTopic);
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
-        addCustomLabel(fieldBox, false, targetTopic.name());
+        addCustomLabel(fieldBox, topicLinkObject.isReadOnly(), targetTopic.name());
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
         addButtonsForLinkedTopic(fieldBox, targetProfileName, targetTopic, tableView.getSelectionModel(), topicLinkObject);
     }
 
-    private TableView<DatabaseEntry> addTableViewForLinkedTopic(HBox fieldBox, ObservableList<DatabaseEntry> resourceData, String targetProfileName, DbDto.Topic targetTopic) {
+    private TableView<DatabaseEntry> addTableViewForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject, ObservableList<DatabaseEntry> resourceData, DbDto.Topic targetTopic) {
         TableView<DatabaseEntry> tableView = new TableView<>();
         tableView.setPrefWidth(560);
 
@@ -77,6 +77,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
         tableView.setItems(resourceData);
 
+        String targetProfileName = topicLinkObject.getRemoteReferenceProfile();
         if (targetProfileName != null) {
             tableView.setOnMousePressed(
                     controller.handleLinkTableMouseClick(targetProfileName, targetTopic));
@@ -96,16 +97,18 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
                     DisplayConstants.LABEL_BUTTON_GOTO,
                     DisplayConstants.TOOLTIP_BUTTON_GOTO_SELECTED_ENTRY,
                     controller.handleGotoReferenceButtonMouseClick(tableSelectionModel, targetTopic, targetProfileName));
-            addContextualButton(
-                    buttonsBox,
-                    DisplayConstants.LABEL_BUTTON_PLUS,
-                    DisplayConstants.TOOLTIP_BUTTON_ADD_LINKED_ENTRY,
-                    controller.handleAddLinkedEntryButtonMouseClick(tableSelectionModel, targetTopic, targetProfileName, topicLinkObject));
-            addContextualButton(
-                    buttonsBox,
-                    DisplayConstants.LABEL_BUTTON_MINUS,
-                    DisplayConstants.TOOLTIP_BUTTON_DELETE_LINKED_ENTRY,
-                    controller.handleRemoveLinkedEntryButtonMouseClick(tableSelectionModel, topicLinkObject));
+            if (!topicLinkObject.isReadOnly()) {
+                addContextualButton(
+                        buttonsBox,
+                        DisplayConstants.LABEL_BUTTON_PLUS,
+                        DisplayConstants.TOOLTIP_BUTTON_ADD_LINKED_ENTRY,
+                        controller.handleAddLinkedEntryButtonMouseClick(tableSelectionModel, targetTopic, targetProfileName, topicLinkObject));
+                addContextualButton(
+                        buttonsBox,
+                        DisplayConstants.LABEL_BUTTON_MINUS,
+                        DisplayConstants.TOOLTIP_BUTTON_DELETE_LINKED_ENTRY,
+                        controller.handleRemoveLinkedEntryButtonMouseClick(tableSelectionModel, topicLinkObject));
+            }
         }
 
         fieldBox.getChildren().add(buttonsBox);
@@ -132,6 +135,6 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         if (topicLinkObject.getLabel() != null) {
             fieldName = topicLinkObject.getLabel();
         }
-        addFieldLabel(fieldBox, false, fieldName);
+        addFieldLabel(fieldBox, topicLinkObject.isReadOnly(), fieldName);
     }
 }
