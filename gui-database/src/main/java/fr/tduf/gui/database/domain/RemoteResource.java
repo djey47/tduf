@@ -1,12 +1,8 @@
 package fr.tduf.gui.database.domain;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
-import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * Represents a key-value pair to be displayed in a TableView.
@@ -50,6 +46,7 @@ public class RemoteResource {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
+                .add("internalEntryId", internalEntryId)
                 .add("reference", reference)
                 .add("value", value)
                 .toString();
