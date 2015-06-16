@@ -43,7 +43,9 @@ public abstract class AbstractDynamicControlsHelper {
     }
 
     protected static void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName) {
-        addLabel(fieldBox, readOnly, 225.0, fieldName);
+        Label fieldLabel = addLabel(fieldBox, readOnly, 225.0, fieldName);
+
+        fieldLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_NAME);
     }
 
     protected static Label addCustomLabel(HBox fieldBox, boolean readOnly, String text) {
