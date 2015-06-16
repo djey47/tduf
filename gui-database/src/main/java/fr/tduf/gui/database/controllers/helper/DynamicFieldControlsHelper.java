@@ -89,18 +89,17 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         switch (fieldType) {
             case PERCENT:
-                // TODO handle read only
-                addPercentValueControls(fieldBox, property);
+                addPercentValueControls(fieldBox, fieldReadOnly, property);
                 break;
             case BITFIELD:
                 // TODO handle bitfield -> requires resolver (0.7.0+)
                 break;
             case REFERENCE:
-                addReferenceValueControls(fieldBox, field); // TODO handle read only
+                addReferenceValueControls(fieldBox, fieldReadOnly, field); // TODO handle read only
                 break;
             default:
                 if (field.isAResourceField()) {
-                    addResourceValueControls(fieldBox, field, property, currentTopic); // TODO handle read only
+                    addResourceValueControls(fieldBox, fieldReadOnly, field, property, currentTopic); // TODO handle read only
                 }
                 break;
         }
@@ -122,7 +121,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         valueTextField.focusedProperty().addListener(controller.handleTextFieldFocusChange(field.getRank(), property));
     }
 
-    private void addPercentValueControls(HBox fieldBox, SimpleStringProperty rawValueProperty) {
+    private void addPercentValueControls(HBox fieldBox, boolean fieldReadOnly, SimpleStringProperty rawValueProperty) {
         Slider slider = new Slider(0.0, 100.0, 0.0);
         slider.setShowTickLabels(true);
         slider.setShowTickMarks(true);
@@ -130,6 +129,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         slider.setMinorTickCount(3);
         slider.setBlockIncrement(1);
         slider.setPrefWidth(450);
+        slider.setDisable(fieldReadOnly);
 
         Bindings.bindBidirectional(rawValueProperty, slider.valueProperty(), new PercentNumberToStringConverter());
 
@@ -137,19 +137,19 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(new Separator(VERTICAL));
     }
 
-    private void addReferenceValueControls(HBox fieldBox, DbStructureDto.Field field) {
+    private void addReferenceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field) {
         int fieldRank = field.getRank();
-        SimpleStringProperty property = new SimpleStringProperty("Reference to another topic.");
+        SimpleStringProperty property = new SimpleStringProperty("Reference to another topic."); // TODO extract constant
         controller.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
 
-        Label remoteValueLabel = addCustomLabel(fieldBox, DisplayConstants.VALUE_UNKNOWN);
+        Label remoteValueLabel = addCustomLabel(fieldBox, fieldReadOnly, DisplayConstants.VALUE_UNKNOWN);
         remoteValueLabel.setPrefWidth(450);
         remoteValueLabel.textProperty().bindBidirectional(property);
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
         DbDto.Topic targetTopic = getMiner().getDatabaseTopicFromReference(field.getTargetRef()).getTopic();
-        addCustomLabel(fieldBox, targetTopic.name());
+        addCustomLabel(fieldBox, fieldReadOnly, targetTopic.name());
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
@@ -158,12 +158,15 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
             String targetProfileName = potentialFieldSettings.get().getRemoteReferenceProfile();
             List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, controller.getLayoutObject()).getEntryLabelFieldRanks();
             SimpleStringProperty entryReferenceProperty = controller.getRawValuePropertyByFieldRank().get(fieldRank);
-            addContextualButton(
-                    fieldBox,
-                    DisplayConstants.LABEL_BUTTON_BROWSE,
-                    DisplayConstants.TOOLTIP_BUTTON_BROWSE_ENTRIES,
-                    controller.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks, entryReferenceProperty, fieldRank)
-            );
+
+            if (!fieldReadOnly) {
+                addContextualButton(
+                        fieldBox,
+                        DisplayConstants.LABEL_BUTTON_BROWSE,
+                        DisplayConstants.TOOLTIP_BUTTON_BROWSE_ENTRIES,
+                        controller.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks, entryReferenceProperty, fieldRank)
+                );
+            }
             addContextualButton(
                     fieldBox,
                     DisplayConstants.LABEL_BUTTON_GOTO,
@@ -172,7 +175,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
-    private void addResourceValueControls(HBox fieldBox, DbStructureDto.Field field, SimpleStringProperty rawValueProperty, DbDto.Topic topic) {
+    private void addResourceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field, SimpleStringProperty rawValueProperty, DbDto.Topic topic) {
         String fieldTargetRef = field.getTargetRef();
         if (fieldTargetRef != null) {
             topic = getMiner().getDatabaseTopicFromReference(fieldTargetRef).getTopic();
@@ -186,7 +189,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
-        addCustomLabel(fieldBox, topic.name());
+        addCustomLabel(fieldBox, fieldReadOnly, topic.name());
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 

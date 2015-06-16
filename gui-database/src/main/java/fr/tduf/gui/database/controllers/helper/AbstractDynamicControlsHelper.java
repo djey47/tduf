@@ -42,14 +42,20 @@ public abstract class AbstractDynamicControlsHelper {
         return fieldBox;
     }
 
-    protected static Label addCustomLabel(HBox fieldBox, String text) {
+    // TODO factorize label creation
+    protected static Label addCustomLabel(HBox fieldBox, boolean readOnly, String text) {
         Label customLabel = new Label(text);
+
         customLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_LABEL);
+        if (readOnly) {
+            customLabel.getStyleClass().add(FxConstants.CSS_CLASS_READONLY_FIELD);
+        }
         customLabel.setPrefWidth(175);
         fieldBox.getChildren().add(customLabel);
         return customLabel;
     }
 
+    // TODO factorize label creation
     protected static void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName) {
         Label fieldNameLabel = new Label(fieldName);
 
