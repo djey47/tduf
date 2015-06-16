@@ -2,7 +2,7 @@ package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
-import fr.tduf.gui.database.domain.RemoteResource;
+import fr.tduf.gui.database.domain.DatabaseEntry;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -39,8 +39,8 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
                 .forEach((topicLinkObject) -> addLinkControls(controller.getDefaultTab(), topicLinkObject, controller.getResourceListByTopicLink()));
     }
 
-    private void addLinkControls(VBox defaultTab, TopicLinkDto topicLinkObject, Map<TopicLinkDto, ObservableList<RemoteResource>> resourceListByTopicLinkIndex) {
-        ObservableList<RemoteResource> resourceData = FXCollections.observableArrayList();
+    private void addLinkControls(VBox defaultTab, TopicLinkDto topicLinkObject, Map<TopicLinkDto, ObservableList<DatabaseEntry>> resourceListByTopicLinkIndex) {
+        ObservableList<DatabaseEntry> resourceData = FXCollections.observableArrayList();
         resourceListByTopicLinkIndex.put(topicLinkObject, resourceData);
 
         HBox fieldBox = addFieldBox(Optional.ofNullable(topicLinkObject.getGroup()), 250.0, defaultTab);
@@ -49,7 +49,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
         String targetProfileName = topicLinkObject.getRemoteReferenceProfile();
         DbDto.Topic targetTopic = retrieveTargetTopicForLink(topicLinkObject);
-        TableView<RemoteResource> tableView = addTableViewForLinkedTopic(fieldBox, resourceData, targetProfileName, targetTopic);
+        TableView<DatabaseEntry> tableView = addTableViewForLinkedTopic(fieldBox, resourceData, targetProfileName, targetTopic);
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
@@ -60,15 +60,15 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         addButtonsForLinkedTopic(fieldBox, targetProfileName, targetTopic, tableView.getSelectionModel(), topicLinkObject);
     }
 
-    private TableView<RemoteResource> addTableViewForLinkedTopic(HBox fieldBox, ObservableList<RemoteResource> resourceData, String targetProfileName, DbDto.Topic targetTopic) {
-        TableView<RemoteResource> tableView = new TableView<>();
+    private TableView<DatabaseEntry> addTableViewForLinkedTopic(HBox fieldBox, ObservableList<DatabaseEntry> resourceData, String targetProfileName, DbDto.Topic targetTopic) {
+        TableView<DatabaseEntry> tableView = new TableView<>();
         tableView.setPrefWidth(560);
 
-        TableColumn<RemoteResource, String> refColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_REF);
+        TableColumn<DatabaseEntry, String> refColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_REF);
         refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
         refColumn.setPrefWidth(100);
 
-        TableColumn<RemoteResource, String> valueColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_DATA);
+        TableColumn<DatabaseEntry, String> valueColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_DATA);
         valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
         valueColumn.setPrefWidth(455);
 
@@ -87,7 +87,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         return tableView;
     }
 
-    private void addButtonsForLinkedTopic(HBox fieldBox, String targetProfileName, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<RemoteResource> tableSelectionModel, TopicLinkDto topicLinkObject) {
+    private void addButtonsForLinkedTopic(HBox fieldBox, String targetProfileName, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<DatabaseEntry> tableSelectionModel, TopicLinkDto topicLinkObject) {
         VBox buttonsBox = new VBox(5);
 
         if (targetProfileName != null) {

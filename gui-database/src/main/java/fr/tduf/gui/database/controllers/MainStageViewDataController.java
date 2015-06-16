@@ -5,7 +5,7 @@ import fr.tduf.gui.database.common.SettingsConstants;
 import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.domain.EditorLocation;
-import fr.tduf.gui.database.domain.RemoteResource;
+import fr.tduf.gui.database.domain.DatabaseEntry;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
@@ -47,7 +47,7 @@ public class MainStageViewDataController {
                 mainStageController.getCurrentProfileObject().getName(),
                 mainStageController.getLayoutObject());
 
-        ObservableList<RemoteResource> browsableEntryList = mainStageController.browsableEntryList;
+        ObservableList<DatabaseEntry> browsableEntryList = mainStageController.browsableEntryList;
         browsableEntryList.clear();
         getMiner().getDatabaseTopic(topic)
                 .ifPresent((topicObject) -> browsableEntryList.addAll(topicObject.getData().getEntries().stream()
@@ -122,7 +122,7 @@ public class MainStageViewDataController {
         switchToContentEntry(entryIndex);
     }
 
-    void switchToSelectedResourceForLinkedTopic(RemoteResource selectedResource, DbDto.Topic targetTopic, String targetProfileName) {
+    void switchToSelectedResourceForLinkedTopic(DatabaseEntry selectedResource, DbDto.Topic targetTopic, String targetProfileName) {
         if (selectedResource != null) {
             String entryReference = selectedResource.referenceProperty().get();
             long remoteContentEntryId;
@@ -174,23 +174,23 @@ public class MainStageViewDataController {
         mainStageController.tabPane.selectionModelProperty().get().select(tabId);
     }
 
-    private RemoteResource getDisplayableEntryForCurrentLocale(DbDataDto.Entry topicEntry, List<Integer> labelFieldRanks, DbDto.Topic topic) {
-        RemoteResource remoteResource = new RemoteResource();
+    private DatabaseEntry getDisplayableEntryForCurrentLocale(DbDataDto.Entry topicEntry, List<Integer> labelFieldRanks, DbDto.Topic topic) {
+        DatabaseEntry databaseEntry = new DatabaseEntry();
 
         long entryInternalIdentifier = topicEntry.getId();
-        remoteResource.setInternalEntryId(entryInternalIdentifier);
+        databaseEntry.setInternalEntryId(entryInternalIdentifier);
 
         String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
-        remoteResource.setValue(entryValue);
+        databaseEntry.setValue(entryValue);
 
         String entryReference = Long.valueOf(entryInternalIdentifier).toString();
         Optional<String> potentialEntryReference = getMiner().getContentEntryRefWithInternalIdentifier(entryInternalIdentifier, topic);
         if (potentialEntryReference.isPresent()) {
             entryReference = potentialEntryReference.get();
         }
-        remoteResource.setReference(entryReference);
+        databaseEntry.setReference(entryReference);
 
-        return remoteResource;
+        return databaseEntry;
     }
 
     private void updateResourceProperties(DbDataDto.Item resourceItem, DbStructureDto.Field structureField) {
@@ -208,9 +208,9 @@ public class MainStageViewDataController {
         }
     }
 
-    private void updateLinkProperties(Map.Entry<TopicLinkDto, ObservableList<RemoteResource>> remoteEntry) {
+    private void updateLinkProperties(Map.Entry<TopicLinkDto, ObservableList<DatabaseEntry>> remoteEntry) {
         TopicLinkDto linkObject = remoteEntry.getKey();
-        ObservableList<RemoteResource> values = remoteEntry.getValue();
+        ObservableList<DatabaseEntry> values = remoteEntry.getValue();
         values.clear();
 
         String currentEntryRef = getMiner().getContentEntryRefWithInternalIdentifier(mainStageController.currentEntryIndexProperty.getValue(), mainStageController.currentTopicProperty.getValue()).get();
@@ -240,29 +240,29 @@ public class MainStageViewDataController {
         mainStageController.resolvedValuePropertyByFieldRank.get(referenceItem.getFieldRank()).set(remoteContents);
     }
 
-    private RemoteResource fetchLinkResourceFromContentEntry(DbDto topicObject, DbDataDto.Entry contentEntry, TopicLinkDto linkObject) {
+    private DatabaseEntry fetchLinkResourceFromContentEntry(DbDto topicObject, DbDataDto.Entry contentEntry, TopicLinkDto linkObject) {
         List<Integer> remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(linkObject.getRemoteReferenceProfile(), this.mainStageController.getLayoutObject());
-        RemoteResource remoteResource = new RemoteResource();
+        DatabaseEntry databaseEntry = new DatabaseEntry();
         long entryId = contentEntry.getId();
-        remoteResource.setInternalEntryId(entryId);
+        databaseEntry.setInternalEntryId(entryId);
         if (topicObject.getStructure().getFields().size() == 2) {
             // Association topic (e.g. Car_Rims)
             String remoteTopicRef = topicObject.getStructure().getFields().get(1).getTargetRef();
             DbDto.Topic remoteTopic = getMiner().getDatabaseTopicFromReference(remoteTopicRef).getTopic();
 
             String remoteEntryReference = contentEntry.getItems().get(1).getRawValue();
-            remoteResource.setReference(remoteEntryReference);
-            remoteResource.setValue(fetchRemoteContentsWithEntryRef(remoteTopic, remoteEntryReference, remoteFieldRanks));
+            databaseEntry.setReference(remoteEntryReference);
+            databaseEntry.setValue(fetchRemoteContentsWithEntryRef(remoteTopic, remoteEntryReference, remoteFieldRanks));
         } else {
             // Classic topic (e.g. Car_Colors)
-            remoteResource.setReference(Long.valueOf(entryId).toString());
-            remoteResource.setValue(DatabaseQueryHelper.fetchResourceValuesWithEntryId(
+            databaseEntry.setReference(Long.valueOf(entryId).toString());
+            databaseEntry.setValue(DatabaseQueryHelper.fetchResourceValuesWithEntryId(
                     entryId, linkObject.getTopic(),
                     mainStageController.currentLocaleProperty.getValue(),
                     remoteFieldRanks,
                     getMiner()));
         }
-        return remoteResource;
+        return databaseEntry;
     }
 
     private String fetchRemoteContentsWithEntryRef(DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {

@@ -1,16 +1,16 @@
 package fr.tduf.gui.database.factory;
 
-import fr.tduf.gui.database.domain.RemoteResource;
+import fr.tduf.gui.database.domain.DatabaseEntry;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
 
-public class EntryCellFactory implements Callback<ListView<RemoteResource>, ListCell<RemoteResource>> {
+public class EntryCellFactory implements Callback<ListView<DatabaseEntry>, ListCell<DatabaseEntry>> {
     @Override
-    public ListCell<RemoteResource> call(ListView<RemoteResource> param) {
-        return new ListCell<RemoteResource>() {
+    public ListCell<DatabaseEntry> call(ListView<DatabaseEntry> param) {
+        return new ListCell<DatabaseEntry>() {
             @Override
-            protected void updateItem(RemoteResource item, boolean empty) {
+            protected void updateItem(DatabaseEntry item, boolean empty) {
 
                 if (item == null) {
                     setText(null);

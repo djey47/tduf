@@ -6,9 +6,10 @@ import javafx.beans.property.StringProperty;
 
 /**
  * Represents a key-value pair to be displayed in a TableView.
+ * Applies to a resource or content entry.
  * Also includes database entry identifier (optional).
  */
-public class RemoteResource {
+public class DatabaseEntry {
     private StringProperty reference = new SimpleStringProperty();
 
     private StringProperty value = new SimpleStringProperty();

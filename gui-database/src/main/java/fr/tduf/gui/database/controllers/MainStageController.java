@@ -10,7 +10,7 @@ import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.converter.EntryItemsCountToStringConverter;
 import fr.tduf.gui.database.domain.EditorLocation;
-import fr.tduf.gui.database.domain.RemoteResource;
+import fr.tduf.gui.database.domain.DatabaseEntry;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.gui.database.factory.EntryCellFactory;
@@ -63,14 +63,14 @@ public class MainStageController implements Initializable {
 
     Property<DbDto.Topic> currentTopicProperty;
     Property<DbResourceDto.Locale> currentLocaleProperty;
-    Property<RemoteResource> currentEntryProperty;
+    Property<DatabaseEntry> currentEntryProperty;
     Property<Long> currentEntryIndexProperty;
     SimpleStringProperty currentEntryLabelProperty;
     Property<Integer> entryItemsCountProperty;
     Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
     Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
-    Map<TopicLinkDto, ObservableList<RemoteResource>> resourceListByTopicLink = new HashMap<>();
-    ObservableList<RemoteResource> browsableEntryList;
+    Map<TopicLinkDto, ObservableList<DatabaseEntry>> resourceListByTopicLink = new HashMap<>();
+    ObservableList<DatabaseEntry> browsableEntryList;
 
     @FXML
     private Parent root;
@@ -103,7 +103,7 @@ public class MainStageController implements Initializable {
     private TextField entryNumberTextField;
 
     @FXML
-    private ComboBox<RemoteResource> entryNumberComboBox;
+    private ComboBox<DatabaseEntry> entryNumberComboBox;
 
     @FXML
     private Label entryItemsCountLabel;
@@ -342,7 +342,7 @@ public class MainStageController implements Initializable {
         };
     }
 
-    public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName) {
+    public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(TableView.TableViewSelectionModel<DatabaseEntry> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName) {
         return (actionEvent) -> {
             System.out.println("gotoReferenceButtonForLinkedTopic clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
@@ -350,11 +350,11 @@ public class MainStageController implements Initializable {
         };
     }
 
-    public EventHandler<ActionEvent> handleAddLinkedEntryButtonMouseClick(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName, TopicLinkDto topicLinkObject) {
+    public EventHandler<ActionEvent> handleAddLinkedEntryButtonMouseClick(TableView.TableViewSelectionModel<DatabaseEntry> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName, TopicLinkDto topicLinkObject) {
         return (actionEvent) -> {
             System.out.println("handleAddLinkedEntryButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
-            Optional<RemoteResource> potentialSelectedEntry = Optional.empty();
+            Optional<DatabaseEntry> potentialSelectedEntry = Optional.empty();
             DbDto.Topic finalTopic = targetTopic;
             if (databaseMiner.getUidFieldRank(targetTopic).isPresent()) {
                 // Association topic -> browse remote entries
@@ -365,11 +365,11 @@ public class MainStageController implements Initializable {
         };
     }
 
-    public EventHandler<ActionEvent> handleRemoveLinkedEntryButtonMouseClick(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
+    public EventHandler<ActionEvent> handleRemoveLinkedEntryButtonMouseClick(TableView.TableViewSelectionModel<DatabaseEntry> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
         return (actionEvent) -> {
             System.out.println("handleRemoveLinkedEntryButton clicked");
 
-            RemoteResource selectedItem = tableViewSelectionModel.getSelectedItem();
+            DatabaseEntry selectedItem = tableViewSelectionModel.getSelectedItem();
             if (selectedItem == null) {
                 return;
             }
@@ -384,7 +384,7 @@ public class MainStageController implements Initializable {
 
             if (MouseButton.PRIMARY == event.getButton() && event.getClickCount() == 2) {
                 TableViewHelper.getMouseSelectedItem(event)
-                        .ifPresent((selectedResource) -> viewDataController.switchToSelectedResourceForLinkedTopic((RemoteResource) selectedResource, targetTopic, targetProfileName));
+                        .ifPresent((selectedResource) -> viewDataController.switchToSelectedResourceForLinkedTopic((DatabaseEntry) selectedResource, targetTopic, targetProfileName));
             }
         };
     }
@@ -415,7 +415,7 @@ public class MainStageController implements Initializable {
         viewDataController.updateAllPropertiesWithItemValues();
     }
 
-    private void handleEntryChoiceChanged(RemoteResource newEntry) {
+    private void handleEntryChoiceChanged(DatabaseEntry newEntry) {
         System.out.println("handleEntryChoiceChanged: " + newEntry);
 
         if(newEntry != null) {
@@ -475,7 +475,7 @@ public class MainStageController implements Initializable {
         entryNumberComboBox.setItems(browsableEntryList);
         entryNumberComboBox.setCellFactory(new EntryCellFactory());
         entryNumberComboBox.getSelectionModel().selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> handleEntryChoiceChanged((RemoteResource) newValue));
+                .addListener((observable, oldValue, newValue) -> handleEntryChoiceChanged((DatabaseEntry) newValue));
     }
 
     private void initTabPane() {
@@ -560,7 +560,7 @@ public class MainStageController implements Initializable {
         viewDataController.updateEntryCountAndSwitchToEntry(newEntryIndex);
     }
 
-    private void addLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, DbDto.Topic targetTopic, Optional<RemoteResource> potentialLinkedEntry, TopicLinkDto topicLinkObject) {
+    private void addLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<DatabaseEntry> tableViewSelectionModel, DbDto.Topic targetTopic, Optional<DatabaseEntry> potentialLinkedEntry, TopicLinkDto topicLinkObject) {
         String sourceEntryRef = databaseMiner.getContentEntryRefWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicProperty.getValue()).get();
         Optional<String> targetEntryRef = Optional.empty();
         if (potentialLinkedEntry.isPresent()) {
@@ -580,9 +580,9 @@ public class MainStageController implements Initializable {
         viewDataController.updateEntryCountAndSwitchToEntry(currentEntryIndex - 1);
     }
 
-    private void removeLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<RemoteResource> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
+    private void removeLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<DatabaseEntry> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
         int initialRowIndex = tableViewSelectionModel.getSelectedIndex();
-        RemoteResource selectedItem = tableViewSelectionModel.getSelectedItem();
+        DatabaseEntry selectedItem = tableViewSelectionModel.getSelectedItem();
 
         changeDataController.removeEntryWithIdentifier(selectedItem.getInternalEntryId(), topicLinkObject.getTopic());
 
@@ -611,7 +611,7 @@ public class MainStageController implements Initializable {
         return defaultTab;
     }
 
-    public Map<TopicLinkDto, ObservableList<RemoteResource>> getResourceListByTopicLink() {
+    public Map<TopicLinkDto, ObservableList<DatabaseEntry>> getResourceListByTopicLink() {
         return resourceListByTopicLink;
     }
 

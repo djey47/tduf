@@ -1,7 +1,7 @@
 package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.database.common.DisplayConstants;
-import fr.tduf.gui.database.domain.RemoteResource;
+import fr.tduf.gui.database.domain.DatabaseEntry;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.application.Platform;
@@ -32,7 +32,7 @@ public class DialogsHelper {
     /**
      * @return true if all locales should be affected, false otherwise - or absent if dialog was dismissed.
      */
-    public Optional<Boolean> showResourceDeletionDialog(DbDto.Topic topic, RemoteResource resource, String localeCode) {
+    public Optional<Boolean> showResourceDeletionDialog(DbDto.Topic topic, DatabaseEntry resource, String localeCode) {
         Alert alert = new Alert(CONFIRMATION);
         alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
         alert.setHeaderText(String.format(DisplayConstants.MESSAGE_DELETED_RESOURCE,
@@ -58,7 +58,7 @@ public class DialogsHelper {
      * @param updatedResource   : resource to apply, or absent to create a new one
      * @return resulting resource, or absent if dialog was dismissed.
      */
-    public Optional<Pair<String, String>> showEditResourceDialog(DbDto topicObject, Optional<RemoteResource> updatedResource) {
+    public Optional<Pair<String, String>> showEditResourceDialog(DbDto topicObject, Optional<DatabaseEntry> updatedResource) {
         Dialog<Pair<String, String>> editResourceDialog = new Dialog<>();
         editResourceDialog.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
 
@@ -67,7 +67,7 @@ public class DialogsHelper {
         String defaultValue = "";
         DbDto.Topic topic = topicObject.getTopic();
         if (updateResourceMode) {
-            RemoteResource resource = updatedResource.get();
+            DatabaseEntry resource = updatedResource.get();
             editResourceDialog.setHeaderText(String.format(DisplayConstants.MESSAGE_EDITED_RESOURCE,
                     topic.getLabel(),
                     resource.toDisplayableValue()));

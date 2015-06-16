@@ -4,7 +4,7 @@ import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
-import fr.tduf.gui.database.domain.RemoteResource;
+import fr.tduf.gui.database.domain.DatabaseEntry;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.Property;
@@ -35,17 +35,17 @@ public class EntriesStageController implements Initializable {
     private Label currentTopicLabel;
 
     @FXML
-    TableView<RemoteResource> entriesTableView;
+    TableView<DatabaseEntry> entriesTableView;
 
     private MainStageController mainStageController;
 
-    private ObservableList<RemoteResource> entriesData = FXCollections.observableArrayList();
+    private ObservableList<DatabaseEntry> entriesData = FXCollections.observableArrayList();
 
     private Property<DbDto.Topic> currentTopicProperty;
 
     private OptionalInt fieldRankForUpdate = OptionalInt.empty();
 
-    private Optional<RemoteResource> selectedEntry = Optional.empty();
+    private Optional<DatabaseEntry> selectedEntry = Optional.empty();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -59,7 +59,7 @@ public class EntriesStageController implements Initializable {
         System.out.println("handleEntriesTableMouseClick");
 
         if (MouseButton.PRIMARY == mouseEvent.getButton()) {
-            Optional<RemoteResource> potentialSelectedEntry = TableViewHelper.getMouseSelectedItem(mouseEvent);
+            Optional<DatabaseEntry> potentialSelectedEntry = TableViewHelper.getMouseSelectedItem(mouseEvent);
             if (potentialSelectedEntry.isPresent()) {
                 selectedEntry = potentialSelectedEntry;
 
@@ -81,7 +81,7 @@ public class EntriesStageController implements Initializable {
         selectEntryInTableAndScroll(entryReference);
     }
 
-    Optional<RemoteResource> initAndShowModalDialog(DbDto.Topic topic, String targetProfileName) {
+    Optional<DatabaseEntry> initAndShowModalDialog(DbDto.Topic topic, String targetProfileName) {
         fieldRankForUpdate = OptionalInt.empty();
 
         currentTopicProperty.setValue(topic);
@@ -102,10 +102,10 @@ public class EntriesStageController implements Initializable {
     }
 
     private void initTablePane() {
-        TableColumn<RemoteResource, String> refColumn = (TableColumn<RemoteResource, String>) entriesTableView.getColumns().get(0);
+        TableColumn<DatabaseEntry, String> refColumn = (TableColumn<DatabaseEntry, String>) entriesTableView.getColumns().get(0);
         refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
 
-        TableColumn<RemoteResource, String> valueColumn = (TableColumn<RemoteResource, String>) entriesTableView.getColumns().get(1);
+        TableColumn<DatabaseEntry, String> valueColumn = (TableColumn<DatabaseEntry, String>) entriesTableView.getColumns().get(1);
         valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
 
         entriesTableView.setItems(entriesData);
@@ -132,25 +132,25 @@ public class EntriesStageController implements Initializable {
                 .ifPresent((topicObject) -> entriesData.addAll(topicObject.getData().getEntries().stream()
 
                         .map((entry) -> {
-                            RemoteResource remoteResource = new RemoteResource();
+                            DatabaseEntry databaseEntry = new DatabaseEntry();
 
                             long entryInternalIdentifier = entry.getId();
-                            remoteResource.setInternalEntryId(entryInternalIdentifier);
+                            databaseEntry.setInternalEntryId(entryInternalIdentifier);
 
                             String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
-                            remoteResource.setValue(entryValue);
+                            databaseEntry.setValue(entryValue);
 
                             String entryReference = getMiner().getContentEntryRefWithInternalIdentifier(entryInternalIdentifier, topic).get();
-                            remoteResource.setReference(entryReference);
+                            databaseEntry.setReference(entryReference);
 
-                            return remoteResource;
+                            return databaseEntry;
                         })
 
                         .collect(toList()))
                 );
     }
 
-    private void applyEntrySelectionToMainStageAndClose(RemoteResource selectedEntry) {
+    private void applyEntrySelectionToMainStageAndClose(DatabaseEntry selectedEntry) {
         fieldRankForUpdate.ifPresent((fieldRank) -> {
             // Update mode: will update a particular field in main stage
             String entryReference = selectedEntry.referenceProperty().getValue();
