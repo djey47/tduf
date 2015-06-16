@@ -95,11 +95,11 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                 // TODO handle bitfield -> requires resolver (0.7.0+)
                 break;
             case REFERENCE:
-                addReferenceValueControls(fieldBox, fieldReadOnly, field); // TODO handle read only
+                addReferenceValueControls(fieldBox, fieldReadOnly, field);
                 break;
             default:
                 if (field.isAResourceField()) {
-                    addResourceValueControls(fieldBox, fieldReadOnly, field, property, currentTopic); // TODO handle read only
+                    addResourceValueControls(fieldBox, fieldReadOnly, field, property, currentTopic);
                 }
                 break;
         }
@@ -185,7 +185,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.VALUE_RESOURCE_DEFAULT);
         controller.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
 
-        addResourceValueLabel(fieldBox, property);
+        addResourceValueLabel(fieldBox, fieldReadOnly, property);
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
@@ -193,18 +193,24 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
-        addContextualButton(
-                fieldBox,
-                DisplayConstants.LABEL_BUTTON_BROWSE,
-                DisplayConstants.TOOLTIP_BUTTON_BROWSE_RESOURCES,
-                controller.handleBrowseResourcesButtonMouseClick(topic, rawValueProperty, fieldRank)
-        );
+        if (!fieldReadOnly) {
+            addContextualButton(
+                    fieldBox,
+                    DisplayConstants.LABEL_BUTTON_BROWSE,
+                    DisplayConstants.TOOLTIP_BUTTON_BROWSE_RESOURCES,
+                    controller.handleBrowseResourcesButtonMouseClick(topic, rawValueProperty, fieldRank)
+            );
+        }
     }
 
-    private static void addResourceValueLabel(HBox fieldBox, SimpleStringProperty property) {
+    // TODO Use abstract label creation
+    private static void addResourceValueLabel(HBox fieldBox, boolean fieldReadOnly, SimpleStringProperty property) {
         Label resourceValueLabel = new Label();
         resourceValueLabel.setPrefWidth(450);
         resourceValueLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_LABEL);
+        if (fieldReadOnly) {
+            resourceValueLabel.getStyleClass().add(FxConstants.CSS_CLASS_READONLY_FIELD);
+        }
         resourceValueLabel.textProperty().bindBidirectional(property);
         fieldBox.getChildren().add(resourceValueLabel);
     }
