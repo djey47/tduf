@@ -12,8 +12,6 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
  */
 @JsonTypeName("topicLink")
 public class TopicLinkDto {
-    // TODO handle readonly indicator if needed
-
     @JsonProperty("topic")
     private DbDto.Topic topic;
 
@@ -22,6 +20,9 @@ public class TopicLinkDto {
 
     @JsonProperty("priority")
     private int priority;
+
+    @JsonProperty("readOnly")
+    private boolean readOnly;
 
     @JsonProperty("label")
     private String label;
@@ -45,6 +46,10 @@ public class TopicLinkDto {
 
     public String getGroup() {
         return group;
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
     }
 
     public String getLabel() {
