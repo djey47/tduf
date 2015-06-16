@@ -26,6 +26,7 @@ public class DisplayConstants {
     public static final String LABEL_ITEM_ENTRY_DEFAULT = "";
     public static final String LABEL_ITEM_ENTRY_INDEX_DEFAULT = "";
     public static final String LABEL_ITEM_PERCENT_DEFAULT = "";
+    public static final String LABEL_ITEM_REFERENCE = "Reference to another topic.";
     public static final String LABEL_ITEM_TOPIC_DEFAULT = "";
     public static final String LABEL_STATUS_VERSION = "TDUF Database Editor v1.0 by Djey.";
     public static final String LABEL_TEXTFIELD_REFERENCE = "Reference:";

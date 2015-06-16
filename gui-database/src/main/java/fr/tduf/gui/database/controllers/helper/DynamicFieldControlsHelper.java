@@ -139,7 +139,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
     private void addReferenceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field) {
         int fieldRank = field.getRank();
-        SimpleStringProperty property = new SimpleStringProperty("Reference to another topic."); // TODO extract constant
+        SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_REFERENCE);
         controller.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
 
         Label remoteValueLabel = addCustomLabel(fieldBox, fieldReadOnly, DisplayConstants.VALUE_UNKNOWN);
