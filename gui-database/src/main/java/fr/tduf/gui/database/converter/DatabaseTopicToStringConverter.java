@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.converter;
 
+import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.util.StringConverter;
 
@@ -7,7 +8,7 @@ public class DatabaseTopicToStringConverter extends StringConverter<DbDto.Topic>
     @Override
     public String toString(DbDto.Topic topic) {
         if (topic == null) {
-            return "";
+            return DisplayConstants.LABEL_ITEM_TOPIC_DEFAULT;
         }
         return topic.name();
     }

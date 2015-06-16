@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.converter;
 
 import com.google.common.base.Strings;
+import fr.tduf.gui.database.common.DisplayConstants;
 import javafx.util.converter.NumberStringConverter;
 
 /**
@@ -12,7 +13,7 @@ public class PercentNumberToStringConverter extends NumberStringConverter {
     @Override
     public String toString(Number percentNumber) {
         if (percentNumber == null) {
-            return "";
+            return DisplayConstants.LABEL_ITEM_PERCENT_DEFAULT;
         }
 
         float rawNumber = percentNumber.floatValue() / 100;

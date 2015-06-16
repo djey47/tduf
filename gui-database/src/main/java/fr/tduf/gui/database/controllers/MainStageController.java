@@ -466,7 +466,7 @@ public class MainStageController implements Initializable {
     private void initTopicEntryHeaderPane() {
         currentEntryProperty = new SimpleObjectProperty<>();
         currentTopicProperty = new SimpleObjectProperty<>();
-        currentEntryLabelProperty = new SimpleStringProperty("");
+        currentEntryLabelProperty = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_ENTRY_DEFAULT);
         browsableEntryList = FXCollections.observableArrayList();
 
         currentTopicLabel.textProperty().bindBidirectional(currentTopicProperty, new DatabaseTopicToStringConverter());

@@ -38,7 +38,7 @@ public class DialogsHelper {
         alert.setHeaderText(String.format(DisplayConstants.MESSAGE_DELETED_RESOURCE,
                 topic.getLabel(),
                 resource.toDisplayableValue()));
-        alert.setContentText(DisplayConstants.WARNING_DELETED_RESOURCE + "\n" + DisplayConstants.QUESTION_AFFECTED_LOCALES);
+        alert.setContentText(String.format("%s\n%s", DisplayConstants.WARNING_DELETED_RESOURCE, DisplayConstants.QUESTION_AFFECTED_LOCALES));
 
         ButtonType currentLocaleButtonType = new ButtonType(String.format(DisplayConstants.LABEL_BUTTON_CURRENT_LOCALE, localeCode));
         ButtonType allLocalesButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_ALL);
@@ -64,7 +64,7 @@ public class DialogsHelper {
 
         boolean updateResourceMode = updatedResource.isPresent();
         String defaultReference;
-        String defaultValue = "";
+        String defaultValue = DisplayConstants.VALUE_RESOURCE_DEFAULT;
         DbDto.Topic topic = topicObject.getTopic();
         if (updateResourceMode) {
             DatabaseEntry resource = updatedResource.get();

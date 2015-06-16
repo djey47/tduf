@@ -56,7 +56,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         DbStructureDto.FieldType fieldType = field.getFieldType();
         int fieldRank = field.getRank();
 
-        SimpleStringProperty property = new SimpleStringProperty("");
+        SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.VALUE_FIELD_DEFAULT);
         controller.getRawValuePropertyByFieldRank().put(fieldRank, property);
 
         boolean fieldReadOnly = DbStructureDto.FieldType.PERCENT == field.getFieldType();
@@ -164,7 +164,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
 
         int fieldRank = field.getRank();
-        SimpleStringProperty property = new SimpleStringProperty("");
+        SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.VALUE_RESOURCE_DEFAULT);
         controller.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
 
         addResourceValueLabel(fieldBox, property);
