@@ -5,6 +5,7 @@ import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.BrowsedResource;
 import fr.tduf.gui.database.domain.DatabaseEntry;
+import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -23,7 +24,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 
 import java.net.URL;
 import java.util.Optional;
@@ -101,9 +101,8 @@ public class ResourcesStageController implements Initializable {
 
         String currentResourceReference = selectedResource.referenceProperty().get();
         DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
-        // TODO edit for current or all locales
         dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.of(selectedResource), getCurrentLocale())
-                .ifPresent((pair) -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), pair, getCurrentLocale()));
+                .ifPresent((localizedResource) -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), localizedResource));
     }
 
     @FXML
@@ -111,9 +110,8 @@ public class ResourcesStageController implements Initializable {
         System.out.println("handleAddResourceButtonMouseClick");
 
         DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
-        // TODO add for current or all locales
         dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.empty(), getCurrentLocale())
-                .ifPresent((pair) -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.empty(), pair, getCurrentLocale()));
+                .ifPresent((newLocalizedResource) -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.empty(), newLocalizedResource));
     }
 
     @FXML
@@ -225,23 +223,34 @@ public class ResourcesStageController implements Initializable {
         TableViewHelper.selectRowAndScroll(selectedRowIndex, resourcesTableView);
     }
 
-    private void editResourceAndUpdateMainStage(DbDto.Topic topic, Optional<String> currentResourceReference, Pair<String, String> referenceValuePair, DbResourceDto.Locale locale) {
-        if (referenceValuePair == null) {
+    private void editResourceAndUpdateMainStage(DbDto.Topic topic, Optional<String> currentResourceReference, LocalizedResource newLocalizedResource) {
+        if (newLocalizedResource == null) {
             return;
         }
 
         boolean updateResourceMode = currentResourceReference.isPresent();
-        String newResourceReference = referenceValuePair.getKey();
-        String newResourceValue = referenceValuePair.getValue();
+        String newResourceReference = newLocalizedResource.getReferenceValuePair().getKey();
+        String newResourceValue = newLocalizedResource.getReferenceValuePair().getValue();
+        Optional<DbResourceDto.Locale> potentialAffectedLocale = newLocalizedResource.getLocale();
 
         try {
+            // TODO simplify
             if (updateResourceMode) {
-                // TODO Update for all locales at once ?
-                mainStageController.getChangeDataController().updateResourceWithReference(topic, locale, currentResourceReference.get(), newResourceReference, newResourceValue);
-            } else {
-                Stream.of(DbResourceDto.Locale.values())
+                if (potentialAffectedLocale.isPresent()) {
+                    mainStageController.getChangeDataController().updateResourceWithReference(topic, newLocalizedResource.getLocale().get(), currentResourceReference.get(), newResourceReference, newResourceValue);
+                } else {
+                    Stream.of(DbResourceDto.Locale.values())
 
-                        .forEach((affectedLocale) -> mainStageController.getChangeDataController().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue));
+                            .forEach((affectedLocale) -> mainStageController.getChangeDataController().updateResourceWithReference(topic, affectedLocale, currentResourceReference.get(), newResourceReference, newResourceValue));
+                }
+            } else {
+                if (potentialAffectedLocale.isPresent()) {
+                    mainStageController.getChangeDataController().addResourceWithReference(topic, newLocalizedResource.getLocale().get(), newResourceReference, newResourceValue);
+                } else {
+                    Stream.of(DbResourceDto.Locale.values())
+
+                            .forEach((affectedLocale) -> mainStageController.getChangeDataController().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue));
+                }
             }
         } catch(IllegalArgumentException iae) {
             dialogsHelper.showErrorDialog(iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);

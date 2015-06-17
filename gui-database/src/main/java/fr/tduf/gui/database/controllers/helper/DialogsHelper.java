@@ -2,6 +2,7 @@ package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.domain.DatabaseEntry;
+import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -58,12 +59,14 @@ public class DialogsHelper {
     }
 
     /**
+     * Display a dialog box to add or remove a resource.
+     * It enables locale selection.
      * @param topicObject       : topic contents to be affected
      * @param updatedResource   : resource to apply, or absent to create a new one
      * @return resulting resource, or absent if dialog was dismissed.
      */
-    public Optional<Pair<String, String>> showEditResourceDialog(DbDto topicObject, Optional<DatabaseEntry> updatedResource, DbResourceDto.Locale currentLocale) {
-        Dialog<Pair<String, String>> editResourceDialog = new Dialog<>();
+    public Optional<LocalizedResource> showEditResourceDialog(DbDto topicObject, Optional<DatabaseEntry> updatedResource, DbResourceDto.Locale currentLocale) {
+        Dialog<LocalizedResource> editResourceDialog = new Dialog<>();
         editResourceDialog.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
 
         boolean updateResourceMode = updatedResource.isPresent();
@@ -106,7 +109,12 @@ public class DialogsHelper {
 
         editResourceDialog.setResultConverter(dialogButton -> {
             if (dialogButton == okButtonType) {
-                return new Pair<>(referenceTextField.getText(), valueTextField.getText());
+                Optional<DbResourceDto.Locale> affectedLocale = Optional.empty();
+                int selectedLocaleIndex = localeChoiceBox.getSelectionModel().getSelectedIndex();
+                if (selectedLocaleIndex != 0) {
+                    affectedLocale = Optional.of(DbResourceDto.Locale.values()[selectedLocaleIndex - 1]);
+                }
+                return new LocalizedResource( new Pair<>(referenceTextField.getText(), valueTextField.getText()), affectedLocale);
             }
             return null;
         });
