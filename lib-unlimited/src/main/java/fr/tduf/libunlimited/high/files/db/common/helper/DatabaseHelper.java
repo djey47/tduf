@@ -171,7 +171,7 @@ public class DatabaseHelper {
      * @param newResourceValue
      */
     public void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
-        checkResourceDoesNotExistWithReference(topic, locale, newResourceReference);
+        checkResourceExistsWithReference(topic, locale, newResourceReference);
 
         DbResourceDto.Entry existingResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(oldResourceReference, topic, locale).get();
 
@@ -268,6 +268,13 @@ public class DatabaseHelper {
         databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, topic, locale)
                 .ifPresent((resourceEntry) -> {
                     throw new IllegalArgumentException("Resource already exists with reference: " + resourceReference);
+                });
+    }
+
+    private void checkResourceExistsWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference) {
+        databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, topic, locale)
+                .orElseGet(() -> {
+                    throw new IllegalArgumentException("Resource does not exist with reference: " + resourceReference);
                 });
     }
 
