@@ -234,28 +234,36 @@ public class ResourcesStageController implements Initializable {
         Optional<DbResourceDto.Locale> potentialAffectedLocale = newLocalizedResource.getLocale();
 
         try {
-            // TODO simplify
-            if (updateResourceMode) {
-                if (potentialAffectedLocale.isPresent()) {
-                    mainStageController.getChangeDataController().updateResourceWithReference(topic, newLocalizedResource.getLocale().get(), currentResourceReference.get(), newResourceReference, newResourceValue);
-                } else {
-                    Stream.of(DbResourceDto.Locale.values())
-
-                            .forEach((affectedLocale) -> mainStageController.getChangeDataController().updateResourceWithReference(topic, affectedLocale, currentResourceReference.get(), newResourceReference, newResourceValue));
-                }
+            if (potentialAffectedLocale.isPresent()) {
+                DbResourceDto.Locale affectedLocale = potentialAffectedLocale.get();
+                editResourceForLocale(topic, affectedLocale, currentResourceReference, newResourceReference, newResourceValue, updateResourceMode);
             } else {
-                if (potentialAffectedLocale.isPresent()) {
-                    mainStageController.getChangeDataController().addResourceWithReference(topic, newLocalizedResource.getLocale().get(), newResourceReference, newResourceValue);
-                } else {
-                    Stream.of(DbResourceDto.Locale.values())
-
-                            .forEach((affectedLocale) -> mainStageController.getChangeDataController().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue));
-                }
+                editResourceForAllLocales(topic, currentResourceReference, newResourceReference, newResourceValue, updateResourceMode);
             }
-        } catch(IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             dialogsHelper.showErrorDialog(iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
         } finally {
             updateAllStages(Optional.of(newResourceReference));
+        }
+    }
+
+    private void editResourceForAllLocales(DbDto.Topic topic, Optional<String> currentResourceReference, String newResourceReference, String newResourceValue, boolean updateResourceMode) {
+        Stream.of(DbResourceDto.Locale.values())
+
+                .forEach((affectedLocale) -> {
+                    if (updateResourceMode) {
+                        mainStageController.getChangeDataController().updateResourceWithReference(topic, affectedLocale, currentResourceReference.get(), newResourceReference, newResourceValue);
+                    } else {
+                        mainStageController.getChangeDataController().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue);
+                    }
+                });
+    }
+
+    private void editResourceForLocale(DbDto.Topic topic, DbResourceDto.Locale affectedLocale, Optional<String> currentResourceReference, String newResourceReference, String newResourceValue, boolean updateResourceMode) {
+        if (updateResourceMode) {
+            mainStageController.getChangeDataController().updateResourceWithReference(topic, affectedLocale, currentResourceReference.get(), newResourceReference, newResourceValue);
+        } else {
+            mainStageController.getChangeDataController().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue);
         }
     }
 
