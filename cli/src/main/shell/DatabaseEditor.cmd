@@ -1,1 +1,1 @@
-java -cp lib\tduf-gui-database-all-%TDUF_VERSION%.jar fr.tduf.gui.database.Main %*
+java -cp lib\tduf-gui-database-all-%TDUF_VERSION%.jar fr.tduf.gui.database.DatabaseEditor %*
