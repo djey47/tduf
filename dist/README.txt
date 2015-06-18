@@ -48,7 +48,7 @@ Main features:
 
 (3) Updating TDU database with changed contents
 * Click Save button and close the app
-* Type and run: DatabaseTool repack-all -d "C:\Program Files (x86)\Test Drive Unlimited\Euro\Bnk\Database\" -j "C:\tdudb\dump"
+* Type and run: DatabaseTool repack-all -o "C:\Program Files (x86)\Test Drive Unlimited\Euro\Bnk\Database\" -j "C:\tdudb\dump"
 (using proper file locations on your system).
 
 ### Using JAR library and/or CLI Tools in your projects
