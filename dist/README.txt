@@ -7,25 +7,23 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Capitalizing about reverse-engineering
 * ...
 
-### What's new in this version ? (0.5.0)
+### What's in this version ? (1.0.0 ALPHA)
 
-* General (all): contains all bugfixes from 0.4.1 hotfix
-* General (cli): new CameraTool command available in CLI
-* General (cli): all operations are now able to return result as JSON (new -n switch)
+It introduces a brand new tool to edit TDU database, with a GUI (graphical user interface).
 
-* CameraTool (copy-set): new operation to copy camera set to a new one (see 'Using Command Line Tools' below)
-* CameraTool (copy-all-sets): new operation to dupliacte all genuine camera sets to new ones (see 'Using Command Line Tools' below)
+/!\
+Please keep in mind that it is called ALPHA for a reason, you should use it carefully as it may damage your game!
+Thus, you always ought to make a backup of your TDU database before using it!
+/!\
 
-* DatabaseTool (apply-patch): new operation to execute a mini-patch file to update contents and resources in TDU database (tutorial available @TDUCK soon)
+Main features:
+* Opens and saves a database from/to JSON form (is explained above)
+* Provides profiles to address different use cases (car editing, tuning kits ...)
+* Displays all fields within a topic, in an ordered manner
+* Enables navigation over entries in seame or different topics
+* Adds / changes / deletes a particular entry
+* Adds / changes / deletes a particular resource
 
-* FileTool (bankInfo): new operation to display BNK file contents
-* FileTool (unpack): new operation to extract BNK file contents into a directory
-* FileTool (repack): new operation to integrate files into a BNK back
-
-* Research: updates cameras.bin structure with automatic size of 'zero zone'
-
-* Library: misc improvements and bug fixes
-* Library: for now, includes tdumt-cli, a quick and dirty .net CLI app to use good old TDUMT features :)
 
 ### What you will need to run TDUF
 
@@ -37,51 +35,21 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Launch *TDUF.cmd* script from Windows Explorer
 * You may need to create a desktop shortcut to this file.
 
-### Using Command Line Tools
+### Using Database Editor GUI
 
-! Note that you may use -n or --normalized command switches to get output as JSON instead of natural language !
+(1) Preparing your TDU database
+* Type and run: DatabaseTool unpack-all -d "C:\Program Files (x86)\Test Drive Unlimited\Euro\Bnk\Database\" -j "C:\tdudb\dump"
+(using proper file locations on your system).
 
-#### Camera Tool
+(2) Starting GUI
+* Type and run: DatabaseEditor
+* Type or select prepared database directory (C:\tdudb\dump in this case)
+* Click Load button and use the app.
 
-To see all features, type and run: CameraTool
-
-e.g (1) to copy a known camera set to a new one:
-
-* Type and run: CameraTool copy-set --inputCameraFile "C:\TDU\Euro\Bnk\Database\Cameras.bin" --sourceId 108 --targetId 30108 --outputCameraFile "C:\TDU\Euro\Bnk\Database\Cameras.bin.extended"
-
-e.g (2) to duplicate all genuine camera sets to new ones:
-
-* Type and run: CameraTool copy-all-sets --inputCameraFile "C:\TDU\Euro\Bnk\Database\Cameras.bin" --targetId 30000 --outputCameraFile "C:\TDU\Euro\Bnk\Database\Cameras.bin.extended"
-
-#### Database Tool
-
-To see all features, type and run: DatabaseTool
-
-e.g (1) to convert the whole TDU database to JSON format:
-
-* Extract (with TDUMT/TDUF) all DB.bnk and DB_xx.bnk database files in a directory
-* Type and run: DatabaseTool dump --databaseDir "C:\tdudb" --jsonDir "C:\tdudb\dump".
-
-e.g (2) to convert the database in JSON format to TDU files back:
-
-* Type and run: DatabaseTool gen --databaseDir "C:\tdudb" --jsonDir "C:\tdudb\gen"
-* Replace (with TDUMT/TDUF) in DB.bnk and DB_xx.bnk all files by generated ones in the new gen directory.
-
-#### Mapping Tool
-
-To see all features, type and run: MappingTool
-
-e.g, to add missing entries to Bnk1.map:
-
-* Type and run: MappingTool fix-missing --bnkDir "C:\Program Files(x86)\Test Drive Unlmited\Euro\Bnk"
-
-#### File Tool
-
-To see all features, type and run: FileTool
-
-e.g, to get list of all files in a database Bank:
-
-* Type and run: FileTool bankinfo -i "C:\Program Files(x86)\Test Drive Unlmited\Euro\Bnk\Database\DB.BNK"
+(3) Updating TDU database with changed contents
+* Click Save button and close the app
+* Type and run: DatabaseTool repack-all -d "C:\Program Files (x86)\Test Drive Unlimited\Euro\Bnk\Database\" -j "C:\tdudb\dump"
+(using proper file locations on your system).
 
 ### Using JAR library and/or CLI Tools in your projects
 
