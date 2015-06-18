@@ -7,7 +7,7 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Capitalizing about reverse-engineering
 * ...
 
-### What's in this version ? (1.0.0 ALPHA)
+### What's in this version ? (ALPHA 0)
 
 It introduces a brand new tool to edit TDU database, with a GUI (graphical user interface).
 
