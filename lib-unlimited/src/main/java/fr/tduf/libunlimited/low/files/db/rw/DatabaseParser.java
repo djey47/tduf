@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.fromCode;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.BITFIELD;
 import static java.lang.Integer.valueOf;
 import static java.util.Objects.requireNonNull;
@@ -43,11 +42,11 @@ public class DatabaseParser {
     private static final String RES_ENTRY_PATTERN = "^\\{(.*(\\n?.*)*)\\} (\\d+)$";             //e.g {??} 53410835
 
     private final List<String> contentLines;
-    private final List<List<String>> resources;
+    private final Map<DbResourceDto.Locale, List<String>> resources;
 
     private final List<IntegrityError> integrityErrors = new ArrayList<>();
 
-    private DatabaseParser(List<String> contentlines, List<List<String>> resources) {
+    private DatabaseParser(List<String> contentlines, Map<DbResourceDto.Locale, List<String>> resources) {
         this.contentLines = contentlines;
         this.resources = resources;
     }
@@ -58,7 +57,7 @@ public class DatabaseParser {
      * @param resources list of contentLines from per-language resource files
      * @return a {@link DatabaseParser} instance.
      */
-    public static DatabaseParser load(List<String> contentLines, List<List<String>> resources) {
+    public static DatabaseParser load(List<String> contentLines, Map<DbResourceDto.Locale, List<String>> resources) {
         checkPrerequisites(contentLines, resources);
 
         return new DatabaseParser(contentLines, resources);
@@ -83,7 +82,7 @@ public class DatabaseParser {
                 .build();
     }
 
-    private static void checkPrerequisites(List<String> contentLines, List<List<String>> resources) {
+    private static void checkPrerequisites(List<String> contentLines, Map<DbResourceDto.Locale, List<String>> resources) {
         requireNonNull(contentLines, "Contents are required");
         requireNonNull(resources, "Resources are required");
     }
@@ -95,24 +94,24 @@ public class DatabaseParser {
         final Pattern categoryCountPattern = Pattern.compile(META_CATEGORY_COUNT_PATTERN);
         final Pattern resourceEntryPattern = Pattern.compile(RES_ENTRY_PATTERN);
 
-        List<DbResourceDto> dbResourceDtos = this.resources.stream()
+        List<DbResourceDto> dbResourceDtos = this.resources.entrySet().stream()
 
-                .filter(resourceLines -> !resourceLines.isEmpty())
+                .filter(resourceLines -> !resourceLines.getValue().isEmpty())
 
                 .map(resourceLines -> {
                     final List<DbResourceDto.Entry> entries = new ArrayList<>();
                     String version = null;
-                    String localeCode = null;
                     int categoryCount = 0;
+                    DbResourceDto.Locale currentLocale = resourceLines.getKey();
 
-                    for (String line : resourceLines) {
-                        Matcher matcher = resourceNamePattern.matcher(line);
-                        if (matcher.matches()) {
-                            localeCode = matcher.group(2);
-                            continue;
-                        }
+                    for (String line : resourceLines.getValue()) {
+//                        Matcher matcher = resourceNamePattern.matcher(line);
+//                        if (matcher.matches()) {
+//                            localeCode = matcher.group(2);
+//                            continue;
+//                        }
 
-                        matcher = resourceVersionPattern.matcher(line);
+                        Matcher matcher = resourceVersionPattern.matcher(line);
                         if (matcher.matches()) {
                             version = matcher.group(1);
                             continue;
@@ -139,7 +138,7 @@ public class DatabaseParser {
 
                     return DbResourceDto.builder()
                             .atVersion(version)
-                            .withLocale(fromCode(localeCode))
+                            .withLocale(currentLocale)
                             .withCategoryCount(categoryCount)
                             .addEntries(entries)
                             .build();

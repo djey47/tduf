@@ -54,7 +54,7 @@ public class DatabaseReadWriteHelper {
         if(contentLines.isEmpty()) {
             return Optional.empty();
         }
-        List<List<String>> resourcesLines = parseTopicResourcesFromDirectoryAndCheck(topic, databaseDirectory, integrityErrors);
+        Map<Locale, List<String>> resourcesLines = parseTopicResourcesFromDirectoryAndCheck(topic, databaseDirectory, integrityErrors);
 
         DatabaseParser databaseParser = DatabaseParser.load(contentLines, resourcesLines);
         DbDto dbDto = databaseParser.parseAll();
@@ -171,7 +171,7 @@ public class DatabaseReadWriteHelper {
         return parseLinesInFile(contentsFileName, ENCODING_UTF_8);
     }
 
-    static List<List<String>> parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {
+    static Map<Locale, List<String>> parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {
 
         Map<String, List<String>> resourcesLinesByFileNames = readLinesFromResourceFiles(databaseDirectory, topic);
 
@@ -186,7 +186,7 @@ public class DatabaseReadWriteHelper {
     }
 
     private static Map<String, List<String>> readLinesFromResourceFiles(String databaseDirectory, DbDto.Topic topic) throws FileNotFoundException {
-        Map<String, List<String>> resourcesLinesByFileNames = new HashMap<>();
+        Map<Locale, List<String>> resourcesLinesByLocale = new HashMap<>();
         for (DbResourceDto.Locale currentLocale : DbResourceDto.Locale.values()) {
             String resourceFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, currentLocale.getCode());
 
