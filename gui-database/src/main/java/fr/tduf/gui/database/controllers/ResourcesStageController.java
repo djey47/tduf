@@ -6,6 +6,7 @@ import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.BrowsedResource;
 import fr.tduf.gui.database.domain.DatabaseEntry;
 import fr.tduf.gui.database.domain.LocalizedResource;
+import fr.tduf.gui.database.domain.Resource;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -44,20 +45,19 @@ public class ResourcesStageController implements Initializable {
     private ChoiceBox<DbDto.Topic> topicsChoiceBox;
 
     @FXML
-    private ChoiceBox<DbResourceDto.Locale> localesChoiceBox;
-
-    @FXML
-    private TableView<DatabaseEntry> resourcesTableView;
+    private TableView<Resource> resourcesTableView;
 
     private MainStageController mainStageController;
 
-    private ObservableList<DatabaseEntry> resourceData = FXCollections.observableArrayList();
+    private ObservableList<Resource> resourceData = FXCollections.observableArrayList();
 
     private Property<BrowsedResource> browsedResourceProperty;
 
     private SimpleStringProperty resourceReferenceProperty;
 
     private int fieldRank;
+
+    private DbResourceDto.Locale currentLocale;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -76,7 +76,7 @@ public class ResourcesStageController implements Initializable {
 
         if (MouseButton.PRIMARY == mouseEvent.getButton() && mouseEvent.getClickCount() == 2) {
             TableViewHelper.getMouseSelectedItem(mouseEvent)
-                    .ifPresent((selectedResource) -> applyResourceSelectionToMainStageAndClose((DatabaseEntry) selectedResource));
+                    .ifPresent((selectedResource) -> applyResourceSelectionToMainStageAndClose((Resource) selectedResource));
         }
     }
 
@@ -84,7 +84,7 @@ public class ResourcesStageController implements Initializable {
     private void handleSelectResourceButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleSelectResourceButtonMouseClick");
 
-        DatabaseEntry selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
+        Resource selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
         if (selectedResource != null && resourceReferenceProperty != null) {
             applyResourceSelectionToMainStageAndClose(selectedResource);
         }
@@ -94,14 +94,14 @@ public class ResourcesStageController implements Initializable {
     private void handleEditResourceButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleEditResourceButtonMouseClick");
 
-        DatabaseEntry selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
+        Resource selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
         if (selectedResource == null) {
             return;
         }
 
         String currentResourceReference = selectedResource.referenceProperty().get();
         DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
-        dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.of(selectedResource), getCurrentLocale())
+        dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.of(selectedResource), currentLocale)
                 .ifPresent((localizedResource) -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), localizedResource));
     }
 
@@ -110,7 +110,7 @@ public class ResourcesStageController implements Initializable {
         System.out.println("handleAddResourceButtonMouseClick");
 
         DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
-        dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.empty(), getCurrentLocale())
+        dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.empty(), currentLocale)
                 .ifPresent((newLocalizedResource) -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.empty(), newLocalizedResource));
     }
 
@@ -118,12 +118,11 @@ public class ResourcesStageController implements Initializable {
     private void handleRemoveResourceButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleRemoveResourceButtonMouseClick");
 
-        DatabaseEntry selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
+        Resource selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
         if (selectedResource == null) {
             return;
         }
 
-        DbResourceDto.Locale currentLocale = getCurrentLocale();
         DbDto.Topic currentTopic = getCurrentTopic();
         dialogsHelper.showResourceDeletionDialog(currentTopic, selectedResource, currentLocale.getCode())
                 .ifPresent((forAllLocales) -> {
@@ -134,12 +133,6 @@ public class ResourcesStageController implements Initializable {
 
     private void handleTopicChoiceChanged(DbDto.Topic newTopic) {
         System.out.println("handleTopicChoiceChanged: " + newTopic);
-
-        updateResourcesStageData();
-    }
-
-    private void handleLocaleChoiceChanged(DbResourceDto.Locale newLocale) {
-        System.out.println("handleLocaleChoiceChanged: " + newLocale);
 
         updateResourcesStageData();
     }
@@ -155,7 +148,7 @@ public class ResourcesStageController implements Initializable {
     void initAndShowDialog(SimpleStringProperty referenceProperty, int entryFieldRank, DbResourceDto.Locale locale, DbDto.Topic targetTopic) {
         resourceReferenceProperty = referenceProperty;
         fieldRank = entryFieldRank;
-        localesChoiceBox.setValue(locale);
+        currentLocale = locale;
         browsedResourceProperty.setValue(new BrowsedResource(targetTopic, referenceProperty.get()));
 
         Stage stage = (Stage) this.root.getScene().getWindow();
@@ -166,18 +159,17 @@ public class ResourcesStageController implements Initializable {
         fillTopics();
         topicsChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> handleTopicChoiceChanged(newValue));
-
-        fillLocales();
-        localesChoiceBox.getSelectionModel().selectedItemProperty()
-                .addListener(((observable, oldValue, newValue) -> handleLocaleChoiceChanged(newValue)));
     }
 
     private void initTablePane() {
-        TableColumn<DatabaseEntry, String> refColumn = (TableColumn<DatabaseEntry, String>) this.resourcesTableView.getColumns().get(0);
+        TableColumn<Resource, String> refColumn = (TableColumn<Resource, String>) this.resourcesTableView.getColumns().get(0);
         refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
 
-        TableColumn<DatabaseEntry, String> valueColumn = (TableColumn<DatabaseEntry, String>) this.resourcesTableView.getColumns().get(1);
-        valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
+        for (int columnIndex = 1 ; columnIndex < resourcesTableView.getColumns().size() ; columnIndex++) {
+            TableColumn<Resource, String> valueColumn = (TableColumn<Resource, String>) this.resourcesTableView.getColumns().get(columnIndex);
+            DbResourceDto.Locale locale = DbResourceDto.Locale.values()[columnIndex - 1];
+            valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valuePropertyForLocale(locale));
+        }
 
         this.resourcesTableView.setItems(this.resourceData);
     }
@@ -185,11 +177,6 @@ public class ResourcesStageController implements Initializable {
     private void fillTopics() {
         asList(DbDto.Topic.values())
                 .forEach((topic) -> topicsChoiceBox.getItems().add(topic));
-    }
-
-    void fillLocales() {
-        asList(DbResourceDto.Locale.values())
-                .forEach((locale) -> localesChoiceBox.getItems().add(locale));
     }
 
     private void selectResourceInTableAndScroll(String reference) {
@@ -205,7 +192,7 @@ public class ResourcesStageController implements Initializable {
                 });
     }
 
-    private void applyResourceSelectionToMainStageAndClose(DatabaseEntry selectedResource) {
+    private void applyResourceSelectionToMainStageAndClose(Resource selectedResource) {
         String resourceReference = selectedResource.referenceProperty().getValue();
         resourceReferenceProperty.set(resourceReference);
 
@@ -215,7 +202,7 @@ public class ResourcesStageController implements Initializable {
         stage.close();
     }
 
-    private void removeResourceAndUpdateMainStage(DbDto.Topic topic, DatabaseEntry selectedResource, DbResourceDto.Locale locale, boolean forAllLocales, int selectedRowIndex) {
+    private void removeResourceAndUpdateMainStage(DbDto.Topic topic, Resource selectedResource, DbResourceDto.Locale locale, boolean forAllLocales, int selectedRowIndex) {
         mainStageController.getChangeDataController().removeResourceWithReference(topic, locale, selectedResource.referenceProperty().getValue(), forAllLocales);
 
         updateAllStages(Optional.<String>empty());
@@ -277,7 +264,16 @@ public class ResourcesStageController implements Initializable {
     private void updateResourcesStageData() {
         resourceData.clear();
 
-        getMiner().getResourceFromTopicAndLocale(getCurrentTopic(), getCurrentLocale())
+        Stream.of(DbResourceDto.Locale.values())
+                .forEach((locale) -> {
+                    getMiner().getResourceFromTopicAndLocale(getCurrentTopic(), locale)
+                            .ifPresent((resourceObject) -> resourceData.addAll(resourceObject.getEntries().stream()
+
+                });
+
+
+
+        getMiner().getResourceFromTopicAndLocale(getCurrentTopic(), currentLocale)
                 .ifPresent((resourceObject) -> resourceData.addAll(resourceObject.getEntries().stream()
 
                                 .map((resourceEntry) -> {
@@ -297,10 +293,6 @@ public class ResourcesStageController implements Initializable {
 
     private DbDto.Topic getCurrentTopic() {
         return topicsChoiceBox.getValue();
-    }
-
-    private DbResourceDto.Locale getCurrentLocale() {
-        return localesChoiceBox.getValue();
     }
 
     private BulkDatabaseMiner getMiner() {
