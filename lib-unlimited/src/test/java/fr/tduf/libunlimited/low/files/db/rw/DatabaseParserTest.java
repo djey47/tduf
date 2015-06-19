@@ -11,7 +11,9 @@ import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
@@ -26,9 +28,8 @@ public class DatabaseParserTest {
     public void load_whenProvidedContents_shouldReturnParserInstanceWithoutErrors() throws Exception {
         //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
-        List<List<String>> resourceLines = singletonList(
-                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE)
-        );
+        Map<DbResourceDto.Locale, List<String>> resourceLines = new HashMap<>();
+        resourceLines.put(DbResourceDto.Locale.FRANCE, createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE));
 
         //WHEN
         DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
@@ -52,9 +53,8 @@ public class DatabaseParserTest {
                 "// items: 10",
                 "55736935;",
                 "\0");
-        List<List<String>> resourceLines = singletonList(
-                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE)
-        );
+        Map<DbResourceDto.Locale, List<String>> resourceLines = new HashMap<>();
+        resourceLines.put(DbResourceDto.Locale.FRANCE, createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE));
 
         //WHEN
         DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
@@ -73,8 +73,9 @@ public class DatabaseParserTest {
     public void parseAll_whenProvidedContents_andIntegrityErrorOnResourceCount_shouldReturnError() throws Exception {
         //GIVEN : fr resource count  != it resource
         List<String> dbLines = createValidContentsWithOneItem();
-        List<List<String>> resourceLines = asList(
-                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE),
+        Map<DbResourceDto.Locale, List<String>> resourceLines = new HashMap<>();
+        resourceLines.put(DbResourceDto.Locale.FRANCE, createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE));
+        resourceLines.put(DbResourceDto.Locale.ITALY,
                 asList(
                         "// TDU_Achievements.it",
                         "// version: 1,2",
@@ -100,10 +101,9 @@ public class DatabaseParserTest {
     public void parseAll_whenProvidedContents_andIntegrityErrorOnFieldCount_shouldReturnError() throws Exception {
         //GIVEN
         List<String> dbLines = createInvalidContentsWithOneItemAndUnconsistentFieldCount();
-        List<List<String>> resourceLines = asList(
-                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE),
-                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.ITALY)
-        );
+        Map<DbResourceDto.Locale, List<String>> resourceLines = new HashMap<>();
+        resourceLines.put(DbResourceDto.Locale.FRANCE, createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE));
+        resourceLines.put(DbResourceDto.Locale.ITALY, createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.ITALY));
 
         //WHEN
         DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
@@ -348,6 +348,38 @@ public class DatabaseParserTest {
         assertThat(databaseParser.getIntegrityErrors()).isEmpty();
 
         String expectedJson = FilesHelper.readTextFromResourceFile("/db/json/TDU_Achievements.json", FilesHelper.CHARSET_UNICODE_8);
+        assertJsonEquals(expectedJson, jsonResult);
+    }
+
+    @Test
+    public void parseAll_whenRealFiles_andResourceMetaMismatch_shouldReturnProperDto_andParserWithoutError() throws Exception {
+        //GIVEN
+        List<String> dbLines = DbHelper.readContentsFromSample("/db/TDU_Achievements.db", "UTF-8");
+        List<List<String>> resourceLines = DbHelper.readResourcesFromSamples("/db/res/special/TDU_Achievements.it");
+
+
+        //WHEN
+        DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
+        DbDto db = databaseParser.parseAll();
+
+        // JSON DISPLAY
+        ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+        assertThat(objectWriter.canSerialize(db.getClass())).isTrue();
+
+        String jsonResult = objectWriter.writeValueAsString(db);
+
+        // Uncomment below to fetch and actualize JSON result
+//        System.out.println("JSON DISPLAY");
+//        System.out.println(jsonResult);
+        //
+
+
+        //THEN
+        assertThat(databaseParser.getContentLineCount()).isEqualTo(90);
+        assertThat(databaseParser.getResourceCount()).isEqualTo(1);
+        assertThat(databaseParser.getIntegrityErrors()).isEmpty();
+
+        String expectedJson = FilesHelper.readTextFromResourceFile("/db/json/special/TDU_Achievements.json", FilesHelper.CHARSET_UNICODE_8);
         assertJsonEquals(expectedJson, jsonResult);
     }
 
