@@ -43,7 +43,7 @@ public class DialogsHelper {
         alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
         alert.setHeaderText(String.format(DisplayConstants.MESSAGE_DELETED_RESOURCE,
                 topic.getLabel(),
-                resource.toDisplayableValue()));
+                resource.toDisplayableValueForLocale(DbResourceDto.Locale.UNITED_STATES))); // Use current locale
         alert.setContentText(String.format("%s\n%s", DisplayConstants.WARNING_DELETED_RESOURCE, DisplayConstants.QUESTION_AFFECTED_LOCALES));
 
         ButtonType currentLocaleButtonType = new ButtonType(String.format(DisplayConstants.LABEL_BUTTON_CURRENT_LOCALE, localeCode));

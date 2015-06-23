@@ -89,7 +89,6 @@ public class DatabaseParser {
 
     private List<DbResourceDto> parseResources(DbDto.Topic topic) {
 
-        final Pattern resourceNamePattern = Pattern.compile(META_NAME_PATTERN);
         final Pattern resourceVersionPattern = Pattern.compile(META_VERSION_PATTERN);
         final Pattern categoryCountPattern = Pattern.compile(META_CATEGORY_COUNT_PATTERN);
         final Pattern resourceEntryPattern = Pattern.compile(RES_ENTRY_PATTERN);
@@ -105,12 +104,6 @@ public class DatabaseParser {
                     DbResourceDto.Locale currentLocale = resourceLines.getKey();
 
                     for (String line : resourceLines.getValue()) {
-//                        Matcher matcher = resourceNamePattern.matcher(line);
-//                        if (matcher.matches()) {
-//                            localeCode = matcher.group(2);
-//                            continue;
-//                        }
-
                         Matcher matcher = resourceVersionPattern.matcher(line);
                         if (matcher.matches()) {
                             version = matcher.group(1);

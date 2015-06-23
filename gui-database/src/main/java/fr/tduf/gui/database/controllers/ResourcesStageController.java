@@ -4,7 +4,6 @@ import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.BrowsedResource;
-import fr.tduf.gui.database.domain.DatabaseEntry;
 import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.gui.database.domain.Resource;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -266,25 +265,38 @@ public class ResourcesStageController implements Initializable {
 
         Stream.of(DbResourceDto.Locale.values())
                 .forEach((locale) -> {
-                    getMiner().getResourceFromTopicAndLocale(getCurrentTopic(), locale)
+                    DbDto.Topic currentTopic = getCurrentTopic();
+                    getMiner().getResourceFromTopicAndLocale(currentTopic, locale)
                             .ifPresent((resourceObject) -> resourceData.addAll(resourceObject.getEntries().stream()
 
+                                    .map((resourceEntry) -> {
+
+                                        Resource resource = new Resource();
+                                        String resourceRef = resourceEntry.getReference();
+                                        resource.setReference(resourceRef);
+                                        getMiner().getResourceEntryFromTopicAndLocaleWithReference(resourceRef, currentTopic, locale)
+                                                .map(DbResourceDto.Entry::getValue)
+                                                .ifPresent((value) -> resource.setValueForLocale(locale, value));
+                                        return resource;
+                                    })
+
+                                    .collect(toList()))
+                            );
                 });
-
-
-
-        getMiner().getResourceFromTopicAndLocale(getCurrentTopic(), currentLocale)
-                .ifPresent((resourceObject) -> resourceData.addAll(resourceObject.getEntries().stream()
-
-                                .map((resourceEntry) -> {
-                                    DatabaseEntry databaseEntry = new DatabaseEntry();
-                                    databaseEntry.setReference(resourceEntry.getReference());
-                                    databaseEntry.setValue(resourceEntry.getValue());
-                                    return databaseEntry;
-                                })
-
-                                .collect(toList()))
-                );
+//
+//
+//        getMiner().getResourceFromTopicAndLocale(getCurrentTopic(), currentLocale)
+//                .ifPresent((resourceObject) -> resourceData.addAll(resourceObject.getEntries().stream()
+//
+//                                .map((resourceEntry) -> {
+//                                    DatabaseEntry databaseEntry = new DatabaseEntry();
+//                                    databaseEntry.setReference(resourceEntry.getReference());
+//                                    databaseEntry.setValue(resourceEntry.getValue());
+//                                    return databaseEntry;
+//                                })
+//
+//                                .collect(toList()))
+//                );
     }
 
     void setMainStageController(MainStageController mainStageController) {
