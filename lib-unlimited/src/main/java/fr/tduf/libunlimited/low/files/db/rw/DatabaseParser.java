@@ -12,11 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.fromCode;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.BITFIELD;
 import static java.lang.Integer.valueOf;
 import static java.util.Objects.requireNonNull;
@@ -43,22 +42,23 @@ public class DatabaseParser {
     private static final String RES_ENTRY_PATTERN = "^\\{(.*(\\n?.*)*)\\} (\\d+)$";             //e.g {??} 53410835
 
     private final List<String> contentLines;
-    private final List<List<String>> resources;
+    private final Map<DbResourceDto.Locale, List<String>> resources;
 
     private final List<IntegrityError> integrityErrors = new ArrayList<>();
 
-    private DatabaseParser(List<String> contentlines, List<List<String>> resources) {
+    private DatabaseParser(List<String> contentlines, Map<DbResourceDto.Locale, List<String>> resources) {
         this.contentLines = contentlines;
         this.resources = resources;
     }
 
     /**
      * Single entry point for this parser.
+     *
      * @param contentLines contentLines from unencrypted database file
-     * @param resources list of contentLines from per-language resource files
+     * @param resources    list of contentLines from per-language resource files
      * @return a {@link DatabaseParser} instance.
      */
-    public static DatabaseParser load(List<String> contentLines, List<List<String>> resources) {
+    public static DatabaseParser load(List<String> contentLines, Map<DbResourceDto.Locale, List<String>> resources) {
         checkPrerequisites(contentLines, resources);
 
         return new DatabaseParser(contentLines, resources);
@@ -83,36 +83,34 @@ public class DatabaseParser {
                 .build();
     }
 
-    private static void checkPrerequisites(List<String> contentLines, List<List<String>> resources) {
+    private static void checkPrerequisites(List<String> contentLines, Map<DbResourceDto.Locale, List<String>> resources) {
         requireNonNull(contentLines, "Contents are required");
         requireNonNull(resources, "Resources are required");
     }
 
+    // TODO simplify
     private List<DbResourceDto> parseResources(DbDto.Topic topic) {
 
-        final Pattern resourceNamePattern = Pattern.compile(META_NAME_PATTERN);
         final Pattern resourceVersionPattern = Pattern.compile(META_VERSION_PATTERN);
         final Pattern categoryCountPattern = Pattern.compile(META_CATEGORY_COUNT_PATTERN);
         final Pattern resourceEntryPattern = Pattern.compile(RES_ENTRY_PATTERN);
 
-        List<DbResourceDto> dbResourceDtos = this.resources.stream()
+        List<DbResourceDto> dbResourceDtos = new ArrayList<>();
 
-                .filter(resourceLines -> !resourceLines.isEmpty())
+        Stream.of(DbResourceDto.Locale.values())
 
-                .map(resourceLines -> {
+                .filter(resources::containsKey)
+
+                .filter((locale) -> !resources.get(locale).isEmpty())
+
+                .forEach((locale) -> {
+
                     final List<DbResourceDto.Entry> entries = new ArrayList<>();
                     String version = null;
-                    String localeCode = null;
                     int categoryCount = 0;
 
-                    for (String line : resourceLines) {
-                        Matcher matcher = resourceNamePattern.matcher(line);
-                        if (matcher.matches()) {
-                            localeCode = matcher.group(2);
-                            continue;
-                        }
-
-                        matcher = resourceVersionPattern.matcher(line);
+                    for (String line : resources.get(locale)) {
+                        Matcher matcher = resourceVersionPattern.matcher(line);
                         if (matcher.matches()) {
                             version = matcher.group(1);
                             continue;
@@ -137,15 +135,60 @@ public class DatabaseParser {
                         }
                     }
 
-                    return DbResourceDto.builder()
-                            .atVersion(version)
-                            .withLocale(fromCode(localeCode))
-                            .withCategoryCount(categoryCount)
-                            .addEntries(entries)
-                            .build();
-                })
+                    dbResourceDtos.add(
+                            DbResourceDto.builder()
+                                    .atVersion(version)
+                                    .withLocale(locale)
+                                    .withCategoryCount(categoryCount)
+                                    .addEntries(entries)
+                                    .build());
+                });
 
-                .collect(Collectors.toList());
+//        List<DbResourceDto> dbResourceDtos = this.resources.entrySet().stream()
+
+//                .filter(resourceLines -> !resourceLines.getValue().isEmpty())
+
+//                .map(resourceLines -> {
+//            final List<DbResourceDto.Entry> entries = new ArrayList<>();
+//            String version = null;
+//            int categoryCount = 0;
+//            DbResourceDto.Locale currentLocale = resourceLines.getKey();
+//
+//            for (String line : resourceLines.getValue()) {
+//                Matcher matcher = resourceVersionPattern.matcher(line);
+//                if (matcher.matches()) {
+//                    version = matcher.group(1);
+//                    continue;
+//                }
+//
+//                matcher = categoryCountPattern.matcher(line);
+//                if (matcher.matches()) {
+//                    categoryCount = valueOf(matcher.group(1));
+//                    continue;
+//                }
+//
+//                if (Pattern.matches(COMMENT_PATTERN, line)) {
+//                    continue;
+//                }
+//
+//                matcher = resourceEntryPattern.matcher(line);
+//                if (matcher.matches()) {
+//                    entries.add(DbResourceDto.Entry.builder()
+//                            .forReference(matcher.group(3))
+//                            .withValue(matcher.group(1))
+//                            .build());
+//                }
+//            }
+//
+//            return DbResourceDto.builder()
+//                    .atVersion(version)
+//                    .withLocale(currentLocale)
+//                    .withCategoryCount(categoryCount)
+//                    .addEntries(entries)
+//                    .build();
+//        })
+//
+//                .collect(Collectors.toList());
 
         checkItemCountBetweenResources(topic, dbResourceDtos);
 
@@ -194,11 +237,11 @@ public class DatabaseParser {
     private List<DbDataDto.Item> parseContentItems(DbStructureDto structure, String line, long entryIdentifier) {
         List<DbDataDto.Item> items = new ArrayList<>();
         int fieldIndex = 0;
-        for(String itemValue : line.split(VALUE_DELIMITER)) {
+        for (String itemValue : line.split(VALUE_DELIMITER)) {
             DbStructureDto.Field fieldInformation = structure.getFields().get(fieldIndex++);
 
             List<DbDataDto.SwitchValue> switchValues = null;
-            if(fieldInformation.getFieldType() == BITFIELD) {
+            if (fieldInformation.getFieldType() == BITFIELD) {
                 switchValues = prepareSwitchValues(itemValue);
             }
 
@@ -265,13 +308,13 @@ public class DatabaseParser {
 
             // Current reference
             matcher = itemRefPattern.matcher(line);
-            if(matcher.matches()) {
+            if (matcher.matches()) {
                 reference = matcher.group(2);
             }
 
             // Regular item
             matcher = itemPattern.matcher(line);
-            if(matcher.matches()) {
+            if (matcher.matches()) {
                 fieldIndex++;
 
                 String name = matcher.group(1);
@@ -368,7 +411,7 @@ public class DatabaseParser {
 
         String binaryValue = Integer.toBinaryString(Integer.valueOf(rawValue));
 
-        for (int bitIndex = 0 ; bitIndex < maxSize ; bitIndex++) {
+        for (int bitIndex = 0; bitIndex < maxSize; bitIndex++) {
 
             boolean switchState = false;
 

@@ -12,7 +12,6 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
-import static com.google.common.io.Files.getFileExtension;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -54,7 +53,7 @@ public class DatabaseReadWriteHelper {
         if(contentLines.isEmpty()) {
             return Optional.empty();
         }
-        List<List<String>> resourcesLines = parseTopicResourcesFromDirectoryAndCheck(topic, databaseDirectory, integrityErrors);
+        Map<DbResourceDto.Locale, List<String>> resourcesLines = parseTopicResourcesFromDirectoryAndCheck(topic, databaseDirectory, integrityErrors);
 
         DatabaseParser databaseParser = DatabaseParser.load(contentLines, resourcesLines);
         DbDto dbDto = databaseParser.parseAll();
@@ -171,13 +170,15 @@ public class DatabaseReadWriteHelper {
         return parseLinesInFile(contentsFileName, ENCODING_UTF_8);
     }
 
-    static List<List<String>> parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {
+    static Map<DbResourceDto.Locale, List<String>> parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {
 
-        Map<String, List<String>> resourcesLinesByFileNames = readLinesFromResourceFiles(databaseDirectory, topic);
+        Map<DbResourceDto.Locale, List<String>> resourcesLinesByLocale = readLinesFromResourceFiles(databaseDirectory, topic);
 
-        checkResourcesLines(resourcesLinesByFileNames, topic, integrityErrors);
+        checkResourcesLines(resourcesLinesByLocale, topic, integrityErrors);
 
-        return sortResourcesLinesByCountDescending(resourcesLinesByFileNames);
+//        return sortResourcesLinesByCountDescending(resourcesLinesByLocale);
+
+        return resourcesLinesByLocale;
     }
 
     private static File getJsonFileFromDirectory(DbDto.Topic topic, String jsonDirectory) {
@@ -185,29 +186,30 @@ public class DatabaseReadWriteHelper {
         return new File(jsonFileName);
     }
 
-    private static Map<String, List<String>> readLinesFromResourceFiles(String databaseDirectory, DbDto.Topic topic) throws FileNotFoundException {
-        Map<String, List<String>> resourcesLinesByFileNames = new HashMap<>();
+    private static Map<DbResourceDto.Locale, List<String>> readLinesFromResourceFiles(String databaseDirectory, DbDto.Topic topic) throws FileNotFoundException {
+        Map<DbResourceDto.Locale, List<String>> resourcesLinesByLocale = new HashMap<>();
         for (DbResourceDto.Locale currentLocale : DbResourceDto.Locale.values()) {
             String resourceFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, currentLocale.getCode());
 
             List<String> readLines = parseLinesInFile(resourceFileName, ENCODING_UTF_16);
-            resourcesLinesByFileNames.put(resourceFileName, readLines);
+            resourcesLinesByLocale.put(currentLocale, readLines);
         }
-        return resourcesLinesByFileNames;
+        return resourcesLinesByLocale;
     }
 
-    private static void checkResourcesLines(Map<String, List<String>> resourcesLinesByFileNames, DbDto.Topic topic, List<IntegrityError> integrityErrors) {
+    private static void checkResourcesLines(Map<DbResourceDto.Locale, List<String>> resourcesLinesByFileNames, DbDto.Topic topic, List<IntegrityError> integrityErrors) {
+        requireNonNull(integrityErrors, "A list of integrity errors (even empty) is required.");
 
         integrityErrors.addAll(resourcesLinesByFileNames.entrySet().stream()
 
                 .filter((entry) -> entry.getValue().isEmpty())
 
                 .map((entry) -> {
-                    String resourceFileExtension = getFileExtension(entry.getKey());
                     Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
                     info.put(SOURCE_TOPIC, topic);
-                    info.put(FILE, entry.getKey());
-                    info.put(LOCALE, DbResourceDto.Locale.fromCode(resourceFileExtension));
+                    // TODO find a way to get real file name
+//                    info.put(FILE, entry.getKey());
+                    info.put(LOCALE, entry.getKey());
 
                     return IntegrityError.builder()
                             .ofType(IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND)

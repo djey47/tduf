@@ -3,6 +3,7 @@ package fr.tduf.gui.database.controllers.helper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.domain.DatabaseEntry;
 import fr.tduf.gui.database.domain.LocalizedResource;
+import fr.tduf.gui.database.domain.Resource;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -37,12 +38,12 @@ public class DialogsHelper {
     /**
      * @return true if all locales should be affected, false otherwise - or absent if dialog was dismissed.
      */
-    public Optional<Boolean> showResourceDeletionDialog(DbDto.Topic topic, DatabaseEntry resource, String localeCode) {
+    public Optional<Boolean> showResourceDeletionDialog(DbDto.Topic topic, Resource resource, String localeCode) {
         Alert alert = new Alert(CONFIRMATION);
         alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
         alert.setHeaderText(String.format(DisplayConstants.MESSAGE_DELETED_RESOURCE,
                 topic.getLabel(),
-                resource.toDisplayableValue()));
+                resource.toDisplayableValueForLocale(DbResourceDto.Locale.UNITED_STATES))); // Use current locale
         alert.setContentText(String.format("%s\n%s", DisplayConstants.WARNING_DELETED_RESOURCE, DisplayConstants.QUESTION_AFFECTED_LOCALES));
 
         ButtonType currentLocaleButtonType = new ButtonType(String.format(DisplayConstants.LABEL_BUTTON_CURRENT_LOCALE, localeCode));
@@ -65,7 +66,7 @@ public class DialogsHelper {
      * @param updatedResource   : resource to apply, or absent to create a new one
      * @return resulting resource, or absent if dialog was dismissed.
      */
-    public Optional<LocalizedResource> showEditResourceDialog(DbDto topicObject, Optional<DatabaseEntry> updatedResource, DbResourceDto.Locale currentLocale) {
+    public Optional<LocalizedResource> showEditResourceDialog(DbDto topicObject, Optional<Resource> updatedResource, DbResourceDto.Locale currentLocale) {
         Dialog<LocalizedResource> editResourceDialog = new Dialog<>();
         editResourceDialog.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
 
@@ -74,12 +75,12 @@ public class DialogsHelper {
         String defaultValue = DisplayConstants.VALUE_RESOURCE_DEFAULT;
         DbDto.Topic topic = topicObject.getTopic();
         if (updateResourceMode) {
-            DatabaseEntry resource = updatedResource.get();
+            Resource resource = updatedResource.get();
             editResourceDialog.setHeaderText(String.format(DisplayConstants.MESSAGE_EDITED_RESOURCE,
                     topic.getLabel(),
-                    resource.toDisplayableValue()));
+                    resource.toDisplayableValueForLocale(currentLocale)));
             defaultReference = resource.referenceProperty().get();
-            defaultValue = resource.valueProperty().get();
+            defaultValue = resource.valuePropertyForLocale(currentLocale).get();
         } else {
             editResourceDialog.setHeaderText(DisplayConstants.MESSAGE_ADDED_RESOURCE + topic.getLabel());
             defaultReference = DatabaseHelper.generateUniqueResourceEntryIdentifier(topicObject);

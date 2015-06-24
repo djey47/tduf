@@ -1,0 +1,2 @@
+This directory contains files, which are intended to illustrate common issues:
+- TDU_Achievements.it: Meta locale (fr) does not match real locale (it) => This info should not be used when parsing. File name gives us all!
