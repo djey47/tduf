@@ -330,7 +330,8 @@ public class DatabaseParserTest {
                 DbHelper.readResourcesFromSamples("/db/res/TDU_Achievements.fr").get(0));
         resourceLines.put(
                 DbResourceDto.Locale.ITALY,
-                DbHelper.readResourcesFromSamples("/db/res/TDU_Achievements.it").get(1));
+                DbHelper.readResourcesFromSamples("/db/res/TDU_Achievements.it").get(0));
+
 
         //WHEN
         DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
@@ -365,6 +366,7 @@ public class DatabaseParserTest {
                 DbResourceDto.Locale.ITALY,
                 DbHelper.readResourcesFromSamples("/db/res/special/TDU_Achievements.it").get(0));
 
+
         //WHEN
         DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
         DbDto db = databaseParser.parseAll();
@@ -376,8 +378,8 @@ public class DatabaseParserTest {
         String jsonResult = objectWriter.writeValueAsString(db);
 
         // Uncomment below to fetch and actualize JSON result
-//        System.out.println("JSON DISPLAY");
-//        System.out.println(jsonResult);
+        System.out.println("JSON DISPLAY");
+        System.out.println(jsonResult);
         //
 
 
