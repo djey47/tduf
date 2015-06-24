@@ -164,7 +164,7 @@ public class ResourcesStageController implements Initializable {
         TableColumn<Resource, String> refColumn = (TableColumn<Resource, String>) this.resourcesTableView.getColumns().get(0);
         refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
 
-        for (int columnIndex = 1 ; columnIndex < resourcesTableView.getColumns().size() ; columnIndex++) {
+        for (int columnIndex = 1; columnIndex < resourcesTableView.getColumns().size(); columnIndex++) {
             TableColumn<Resource, String> valueColumn = (TableColumn<Resource, String>) this.resourcesTableView.getColumns().get(columnIndex);
             DbResourceDto.Locale locale = DbResourceDto.Locale.values()[columnIndex - 1];
             valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valuePropertyForLocale(locale));
@@ -263,40 +263,31 @@ public class ResourcesStageController implements Initializable {
     private void updateResourcesStageData() {
         resourceData.clear();
 
-        Stream.of(DbResourceDto.Locale.values())
-                .forEach((locale) -> {
-                    DbDto.Topic currentTopic = getCurrentTopic();
-                    getMiner().getResourceFromTopicAndLocale(currentTopic, locale)
-                            .ifPresent((resourceObject) -> resourceData.addAll(resourceObject.getEntries().stream()
+        DbDto.Topic currentTopic = getCurrentTopic();
+        getMiner().getResourceFromTopicAndLocale(currentTopic, currentLocale)
 
-                                    .map((resourceEntry) -> {
+                .ifPresent((resourceObject) -> resourceData.addAll(
 
-                                        Resource resource = new Resource();
-                                        String resourceRef = resourceEntry.getReference();
-                                        resource.setReference(resourceRef);
-                                        getMiner().getResourceEntryFromTopicAndLocaleWithReference(resourceRef, currentTopic, locale)
-                                                .map(DbResourceDto.Entry::getValue)
-                                                .ifPresent((value) -> resource.setValueForLocale(locale, value));
-                                        return resource;
-                                    })
+                        resourceObject.getEntries().stream()
 
-                                    .collect(toList()))
-                            );
-                });
-//
-//
-//        getMiner().getResourceFromTopicAndLocale(getCurrentTopic(), currentLocale)
-//                .ifPresent((resourceObject) -> resourceData.addAll(resourceObject.getEntries().stream()
-//
-//                                .map((resourceEntry) -> {
-//                                    DatabaseEntry databaseEntry = new DatabaseEntry();
-//                                    databaseEntry.setReference(resourceEntry.getReference());
-//                                    databaseEntry.setValue(resourceEntry.getValue());
-//                                    return databaseEntry;
-//                                })
-//
-//                                .collect(toList()))
-//                );
+                                .map((resourceEntry) -> {
+                                    Resource resource = new Resource();
+
+                                    String resourceRef = resourceEntry.getReference();
+                                    resource.setReference(resourceRef);
+
+                                    Stream.of(DbResourceDto.Locale.values())
+
+                                            .forEach((locale) -> getMiner().getResourceEntryFromTopicAndLocaleWithReference(resourceRef, currentTopic, locale)
+
+                                                    .map(DbResourceDto.Entry::getValue)
+
+                                                    .ifPresent((value) -> resource.setValueForLocale(locale, value)));
+
+                                    return resource;
+                                })
+
+                                .collect(toList())));
     }
 
     void setMainStageController(MainStageController mainStageController) {
