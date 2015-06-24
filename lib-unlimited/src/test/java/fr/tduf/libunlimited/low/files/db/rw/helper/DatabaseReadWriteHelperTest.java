@@ -4,6 +4,7 @@ package fr.tduf.libunlimited.low.files.db.rw.helper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.assertj.core.api.Condition;
 import org.junit.Before;
@@ -16,6 +17,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static fr.tduf.libunlimited.common.helper.AssertionsHelper.assertFileDoesNotMatchReference;
@@ -23,7 +25,6 @@ import static fr.tduf.libunlimited.common.helper.AssertionsHelper.assertFileMatc
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.STRUCTURE_FIELDS_COUNT_MISMATCH;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.data.Index.atIndex;
 
 public class DatabaseReadWriteHelperTest {
 
@@ -217,7 +218,7 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        List<List<String>> allResources = DatabaseReadWriteHelper.parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
+        Map<DbResourceDto.Locale, List<String>> allResources = DatabaseReadWriteHelper.parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
 
 
         // THEN
@@ -226,17 +227,21 @@ public class DatabaseReadWriteHelperTest {
         assertThat(allResources).isNotNull();
         assertThat(allResources).hasSize(8);
 
-        Condition<List<String>> lineCountEqualTo253 = new Condition<>( (list) -> list.size() == 253, "253 lines" );
+//        Condition<List<String>> lineCountEqualTo253 = new Condition<>( (list) -> list.size() == 253, "253 lines" );
         Condition<List<String>> empty = new Condition<>(List::isEmpty, "no line" );
-        assertThat(allResources)
-                .has(lineCountEqualTo253, atIndex(0)) // fr or it
-                .has(lineCountEqualTo253, atIndex(1)) // fr or it
-                .is(empty, atIndex(2))
-                .is(empty, atIndex(3))
-                .is(empty, atIndex(4))
-                .is(empty, atIndex(5))
-                .is(empty, atIndex(6))
-                .is(empty, atIndex(7));
+        Condition<List<? extends String>> lineCountEqualTo253 = new Condition<>( (list) -> list.size() == 253, "253 lines" );
+        assertThat(allResources.get(DbResourceDto.Locale.FRANCE)).has(lineCountEqualTo253);
+        assertThat(allResources.get(DbResourceDto.Locale.ITALY)).has(lineCountEqualTo253);
+//
+//
+//                .has(lineCountEqualTo253, atIndex(0)) // fr or it
+//                .has(lineCountEqualTo253, atIndex(1)) // fr or it
+//                .is(empty, atIndex(2))
+//                .is(empty, atIndex(3))
+//                .is(empty, atIndex(4))
+//                .is(empty, atIndex(5))
+//                .is(empty, atIndex(6))
+//                .is(empty, atIndex(7));
     }
 
     @Test

@@ -1,12 +1,19 @@
 package fr.tduf.libunlimited.low.files.db.common.helper;
 
+import com.google.common.io.Files;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Helper class to process TDU database during tests.
@@ -51,14 +58,19 @@ public class DbHelper {
      * Reads provided text files and return contents as lists of lines.
      * @param fileNames : names of ile to be processed
      */
-    public static List<List<String>> readResourcesFromRealFiles(String... fileNames) throws FileNotFoundException {
-        List<List<String>> resourceLines = new ArrayList<>();
+    public static Map<DbResourceDto.Locale, List<String>> readResourcesFromRealFiles(String... fileNames) throws FileNotFoundException {
 
-        for (String fileName : fileNames) {
-            resourceLines.add(readContentsFromRealFile(fileName, "UTF-16"));
-        }
+        return Stream.of(fileNames)
 
-        return resourceLines;
+                .collect(toMap(
+                        DbHelper::getLocaleFromFileName,
+                        (fileName) -> {
+                            try {
+                                return readContentsFromRealFile(fileName, "UTF-16");
+                            } catch (FileNotFoundException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }));
     }
 
     /**
@@ -71,6 +83,11 @@ public class DbHelper {
         InputStream inputStream = new FileInputStream(fileName);
 
         return readContentsFromStream(inputStream, encoding);
+    }
+
+    private static DbResourceDto.Locale getLocaleFromFileName(String fileName) {
+        String fileExtension = Files.getFileExtension(fileName).toLowerCase();
+        return DbResourceDto.Locale.fromCode(fileExtension);
     }
 
     private static List<String> readContentsFromStream(InputStream inputStream, String encoding) {
