@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
 import static fr.tduf.libunlimited.common.helper.CommandLineHelper.EXIT_CODE_SUCCESS;
@@ -111,17 +110,6 @@ public class GenuineBnkGateway implements BankSupport {
                 .filter((path) -> Files.isRegularFile(path))
 
                 .filter((path) -> !EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
-
-                .filter((path) -> {
-                    try {
-                        BasicFileAttributes fileAttributes = Files.readAttributes(path, BasicFileAttributes.class);
-                        // Creation time would be better than last access time - but not handled on Linux (failing tests)
-                        return fileAttributes.lastModifiedTime().compareTo(fileAttributes.lastAccessTime()) > 0;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return true;
-                    }
-                })
 
                 .forEach((path) -> {
                     String packedFilePath = getInternalPackedFilePath(path, inputPath);
