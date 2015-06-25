@@ -3,27 +3,28 @@
 TDUForever aims at making Test Drive Unlmited modding easier:
 
 * Providing base modding features to save time
-* Making database editing less harmful
+* Making database editing less harmful with a new Database Editor (GUI)
 * Capitalizing about reverse-engineering
 * ...
 
-### What's in this version ? (ALPHA 0)
-
-It introduces a brand new tool to edit TDU database, with a GUI (graphical user interface).
+### What's in this version ? (ALPHA 1)
 
 /!\
 Please keep in mind that it is called ALPHA for a reason, you should use it carefully as it may damage your game!
 Thus, you always ought to make a backup of your TDU database before using it!
 /!\
 
-Main features:
-* Opens and saves a database from/to JSON form (is explained above)
-* Provides profiles to address different use cases (car editing, tuning kits ...)
-* Displays all fields within a topic, in an ordered manner
-* Enables navigation over entries in seame or different topics
-* Adds / changes / deletes a particular entry
-* Adds / changes / deletes a particular resource
+* Fixes a bug when unpacking some modified database files.
 
+
+### Main features
+
+* Opens and saves a database from/to JSON form (is explained above)
+* Provides profiles to address different modding use cases (car editing, tuning kits ...)
+* Displays all fields within a topic, in an ordered manner
+* Enables navigation over entries in same or different topics
+* Displays all resources within a topic, for all languages (=locales)
+* Adds / changes / deletes a particular entry or resource
 
 ### What you will need to run TDUF
 
@@ -53,7 +54,7 @@ Main features:
 
 ### Using JAR library and/or CLI Tools in your projects
 
-It's for free, but you ought to put a mention (kinda 'Powered By TDUF project') and give a link to thread @ [TurboDuck](http://forum.turboduck.net/threads/32570-Djey-Discussion-about-new-modding-possibilities)
+Since this is in ALPHA state, using lib is strongly discouraged. Prefer using latest stable version (currently 0.5.0).
 
 ###  And especially...
 
