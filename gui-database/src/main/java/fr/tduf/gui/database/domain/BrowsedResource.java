@@ -7,6 +7,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 /**
  * Describes a resource (globalized ou localized) to browse via dedicated stage.
  */
+// TODO simplify (3 classes for resources ...)
 public class BrowsedResource {
     private DbDto.Topic topic;
     private String reference;

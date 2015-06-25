@@ -11,6 +11,7 @@ import java.util.Map;
 /**
  * Represents a resource with all values for locales, to be displayed in a TableView.
  */
+// TODO simplify (3 classes for resources ...)
 public class Resource {
     private StringProperty reference = new SimpleStringProperty();
 

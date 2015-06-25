@@ -8,6 +8,7 @@ import java.util.Optional;
 /**
  * Represents a selected resource with optional localization information.
  */
+// TODO simplify (3 classes for resources ...)
 public class LocalizedResource {
 
     private Pair<String, String> referenceValuePair;
