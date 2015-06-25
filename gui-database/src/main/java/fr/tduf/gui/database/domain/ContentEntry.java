@@ -1,7 +1,6 @@
 package fr.tduf.gui.database.domain;
 
 import com.google.common.base.MoreObjects;
-import fr.tduf.gui.database.common.DisplayConstants;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -9,10 +8,10 @@ import java.util.OptionalLong;
 
 /**
  * Represents a key-value pair to be displayed in a TableView.
- * Applies to a resource or content entry.
+ * Only applies to a content entry.
  * Also includes database entry identifier (optional).
  */
-public class DatabaseEntry {
+public class ContentEntry {
     private OptionalLong internalEntryId;
 
     private StringProperty reference = new SimpleStringProperty();
@@ -25,13 +24,6 @@ public class DatabaseEntry {
 
     public StringProperty valueProperty() {
         return value;
-    }
-
-    /**
-     * @return reference-value pair to be displayed for current entry.
-     */
-    public String toDisplayableValue() {
-        return String.format(DisplayConstants.LABEL_ITEM_DATABASE_ENTRY, reference.get(), value.get());
     }
 
     public void setReference(String reference) {

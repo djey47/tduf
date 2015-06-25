@@ -2,7 +2,7 @@ package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
-import fr.tduf.gui.database.domain.DatabaseEntry;
+import fr.tduf.gui.database.domain.ContentEntry;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -39,8 +39,8 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
                 .forEach((topicLinkObject) -> addLinkControls(controller.getDefaultTab(), topicLinkObject, controller.getResourceListByTopicLink()));
     }
 
-    private void addLinkControls(VBox defaultTab, TopicLinkDto topicLinkObject, Map<TopicLinkDto, ObservableList<DatabaseEntry>> resourceListByTopicLinkIndex) {
-        ObservableList<DatabaseEntry> resourceData = FXCollections.observableArrayList();
+    private void addLinkControls(VBox defaultTab, TopicLinkDto topicLinkObject, Map<TopicLinkDto, ObservableList<ContentEntry>> resourceListByTopicLinkIndex) {
+        ObservableList<ContentEntry> resourceData = FXCollections.observableArrayList();
         resourceListByTopicLinkIndex.put(topicLinkObject, resourceData);
 
         HBox fieldBox = addFieldBox(Optional.ofNullable(topicLinkObject.getGroup()), 250.0, defaultTab);
@@ -49,7 +49,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
         String targetProfileName = topicLinkObject.getRemoteReferenceProfile();
         DbDto.Topic targetTopic = retrieveTargetTopicForLink(topicLinkObject);
-        TableView<DatabaseEntry> tableView = addTableViewForLinkedTopic(fieldBox, topicLinkObject, resourceData, targetTopic);
+        TableView<ContentEntry> tableView = addTableViewForLinkedTopic(fieldBox, topicLinkObject, resourceData, targetTopic);
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
@@ -60,15 +60,15 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         addButtonsForLinkedTopic(fieldBox, targetProfileName, targetTopic, tableView.getSelectionModel(), topicLinkObject);
     }
 
-    private TableView<DatabaseEntry> addTableViewForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject, ObservableList<DatabaseEntry> resourceData, DbDto.Topic targetTopic) {
-        TableView<DatabaseEntry> tableView = new TableView<>();
+    private TableView<ContentEntry> addTableViewForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject, ObservableList<ContentEntry> resourceData, DbDto.Topic targetTopic) {
+        TableView<ContentEntry> tableView = new TableView<>();
         tableView.setPrefWidth(560);
 
-        TableColumn<DatabaseEntry, String> refColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_REF);
+        TableColumn<ContentEntry, String> refColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_REF);
         refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
         refColumn.setPrefWidth(100);
 
-        TableColumn<DatabaseEntry, String> valueColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_DATA);
+        TableColumn<ContentEntry, String> valueColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_DATA);
         valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
         valueColumn.setPrefWidth(455);
 
@@ -88,7 +88,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         return tableView;
     }
 
-    private void addButtonsForLinkedTopic(HBox fieldBox, String targetProfileName, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<DatabaseEntry> tableSelectionModel, TopicLinkDto topicLinkObject) {
+    private void addButtonsForLinkedTopic(HBox fieldBox, String targetProfileName, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<ContentEntry> tableSelectionModel, TopicLinkDto topicLinkObject) {
         VBox buttonsBox = new VBox(5);
 
         if (targetProfileName != null) {

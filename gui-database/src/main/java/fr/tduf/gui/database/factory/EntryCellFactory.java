@@ -1,17 +1,17 @@
 package fr.tduf.gui.database.factory;
 
 import fr.tduf.gui.database.common.DisplayConstants;
-import fr.tduf.gui.database.domain.DatabaseEntry;
+import fr.tduf.gui.database.domain.ContentEntry;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
 
-public class EntryCellFactory implements Callback<ListView<DatabaseEntry>, ListCell<DatabaseEntry>> {
+public class EntryCellFactory implements Callback<ListView<ContentEntry>, ListCell<ContentEntry>> {
     @Override
-    public ListCell<DatabaseEntry> call(ListView<DatabaseEntry> param) {
-        return new ListCell<DatabaseEntry>() {
+    public ListCell<ContentEntry> call(ListView<ContentEntry> param) {
+        return new ListCell<ContentEntry>() {
             @Override
-            protected void updateItem(DatabaseEntry item, boolean empty) {
+            protected void updateItem(ContentEntry item, boolean empty) {
 
                 if (item == null) {
                     setText(null);

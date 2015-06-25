@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents a resource with all values for locales
+ * Represents a resource with all values for locales, to be displayed in a TableView.
  */
 public class Resource {
     private StringProperty reference = new SimpleStringProperty();

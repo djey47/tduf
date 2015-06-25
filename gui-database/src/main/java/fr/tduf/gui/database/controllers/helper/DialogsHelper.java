@@ -1,7 +1,6 @@
 package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.database.common.DisplayConstants;
-import fr.tduf.gui.database.domain.DatabaseEntry;
 import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.gui.database.domain.Resource;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseHelper;
