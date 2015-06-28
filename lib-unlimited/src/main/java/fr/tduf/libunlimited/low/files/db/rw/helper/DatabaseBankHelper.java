@@ -82,33 +82,48 @@ public class DatabaseBankHelper {
 
     private static void rebuildFileStructureAndRepackDatabase(String databaseDirectory, String targetDirectory, String bankFileName, BankSupport bankSupport) {
         try {
-            String repackedDirectory = prepareFilesToBeRepacked(databaseDirectory, bankFileName, bankSupport);
-            bankSupport.packAll(repackedDirectory, Paths.get(targetDirectory, bankFileName).toString());
+            prepareFilesToBeRepacked(databaseDirectory, bankFileName, bankSupport);
+            bankSupport.packAll(databaseDirectory, Paths.get(targetDirectory, bankFileName).toString());
         } catch (IOException ioe) {
             throw new RuntimeException("Unable to repack database: " + databaseDirectory, ioe);
         }
     }
 
-    private static String prepareFilesToBeRepacked(String databaseDirectory, String targetBankFileName, BankSupport bankSupport) throws IOException {
+    private static void prepareFilesToBeRepacked(String databaseDirectory, String targetBankFileName, BankSupport bankSupport) throws IOException {
 
-        List<Path> repackedPaths = Files.walk(Paths.get(databaseDirectory))
+        Path databasePath = Paths.get(databaseDirectory);
+        int currentDepth = databasePath.getNameCount();
 
-                .filter((filePath) -> {
+        Files.walk(databasePath)
 
-                    if (targetBankFileName.equalsIgnoreCase(DATABASE_BANK_FILE_NAME)) {
-                        return filePath.toString().endsWith(DatabaseReadWriteHelper.EXTENSION_DB_CONTENTS);
+                .filter((path) -> path.getNameCount() == currentDepth + 1)
+
+                .filter((path) -> !Files.isDirectory(path))
+
+                .forEach((filePath) -> {
+
+                    String hierarchy = null;
+                    if (targetBankFileName.equalsIgnoreCase(DATABASE_BANK_FILE_NAME)
+                            && filePath.toString().endsWith(DatabaseReadWriteHelper.EXTENSION_DB_CONTENTS)) {
+                        hierarchy = "4Build/PC/Euro/BDD/Db_encrypted";
+                    } else {
+                        String locale = targetBankFileName.substring(3, 5).toLowerCase();
+                        if (filePath.toString().endsWith("." + locale)) {
+                            hierarchy = "4Build/PC/Euro/BDD/Lang";
+                        }
                     }
+                    if (hierarchy != null) {
+                        Path fullPath = Paths.get(databaseDirectory, targetBankFileName, hierarchy, filePath.getFileName().toString());
+                        try {
+                            Files.createDirectories(fullPath.getParent());
+                            Files.copy(filePath, fullPath, StandardCopyOption.REPLACE_EXISTING);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
 
-                    String locale = targetBankFileName.substring(3, 5).toLowerCase();
-                    return filePath.toString().endsWith("." + locale);
-                })
-
-                .collect(toList());
-
-        String repackedDirectory = createTempDirectory();
-        bankSupport.prepareFilesToBeRepacked(databaseDirectory, repackedPaths, targetBankFileName, repackedDirectory);
-
-        return repackedDirectory;
+        bankSupport.prepareFilesToBeRepacked(databaseDirectory, null, targetBankFileName, null);
     }
 
     private static String checkDatabaseFileExists(String databaseDirectory, String databaseFileName) {

@@ -112,34 +112,34 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test
-    public void packAll_whenSuccess_shouldInvokeCommandLineCorrectlyForModifiedFiles() throws IOException, URISyntaxException {
+    public void packAll_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
         // GIVEN
-        createRepackedFileTree("A3_V6.bnk", true);
+        String officialBankFileName = "A3_V6.bnk";
+        createRepackedFileTree(officialBankFileName);
 
         String outputBankFileName = Paths.get(tempDirectory, "A3_V6.output.bnk").toString();
-
         mockCommandLineHelperToReturnBankInformationSuccess(outputBankFileName);
         mockCommandLineHelperToReturnReplaceSuccess(outputBankFileName);
 
 
         // WHEN
-        genuineBnkGateway.packAll(tempDirectory, outputBankFileName);
+        genuineBnkGateway.packAll(Paths.get(tempDirectory, officialBankFileName).toString(), outputBankFileName);
 
 
         // THEN
         assertThat(new File(outputBankFileName)).exists();
 
         String packedFilePathPrefix = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\";
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".3DD\\A3_V6"), eq(Paths.get(tempDirectory, "A3_V6.3DD").toString()));
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".3DG\\A3_V6"), eq(Paths.get(tempDirectory, "A3_V6.3DG").toString()));
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".2DM\\A3_V6"), eq(Paths.get(tempDirectory, "A3_V6.2DM").toString()));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".3DD\\A3_V6"), eq(Paths.get(tempDirectory, officialBankFileName, "A3_V6.3DD").toString()));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".3DG\\A3_V6"), eq(Paths.get(tempDirectory, officialBankFileName, "A3_V6.3DG").toString()));
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".2DM\\A3_V6"), eq(Paths.get(tempDirectory, officialBankFileName, "A3_V6.2DM").toString()));
     }
 
     @Test
     public void getInternalPackedFilePath() throws Exception {
         // GIVEN
-        Path packedFilePath = Paths.get("/home/bill/work/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55/CLK_55.2DM");
-        Path basePath = Paths.get("/home/bill/work");
+        Path packedFilePath = Paths.get("/home/bill/work/CLK55.bnk/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55/CLK_55.2DM");
+        Path basePath = Paths.get("/home/bill/work/CLK55.bnk");
 
         // WHEN
         String actualPackedFilePath = GenuineBnkGateway.getInternalPackedFilePath(packedFilePath, basePath);
@@ -168,53 +168,31 @@ public class GenuineBnkGatewayTest {
     @Test
     public void searchOriginalBankFileName_whenCorrectFilePresent_shouldReturnFileName() throws IOException {
         // GIVEN
-        String bankFileName = "A3_V6.bnk";
-        createRepackedFileTree(bankFileName, false);
+        String officialBankFileName = "A3_V6.bnk";
+        createRepackedFileTree(officialBankFileName);
 
         // WHEN
         String actualFileName = GenuineBnkGateway.searchOriginalBankFileName(tempDirectory);
 
         // THEN
-        assertThat(actualFileName).isEqualTo("original-" + bankFileName);
-    }
-
-    @Test
-    public void prepareFilesToBeRepacked_shouldCreateCorrectFileLayout() throws IOException {
-        // GIVEN
-        String targetDirectory = createTempDirectory();
-        String targetBankFileName = "A3_V6.bnk";
-        List<Path> repackedPaths = createRepackedFileTree(targetBankFileName, false);
-
-        // WHEN
-        genuineBnkGateway.prepareFilesToBeRepacked(tempDirectory, repackedPaths, targetBankFileName, targetDirectory);
-
-        // THEN
-        assertThat(new File(targetDirectory, PREFIX_ORIGINAL_BANK_FILE + targetBankFileName)).exists();
-        assertThat(new File(targetDirectory, targetBankFileName)).exists();
+        assertThat(actualFileName).isEqualTo("original-" + officialBankFileName);
     }
 
     private static String createTempDirectory() throws IOException {
         return Files.createTempDirectory("libUnlimited-tests").toString();
     }
 
-    private List<Path> createRepackedFileTree(String bankFileName, boolean markFilesModified) throws IOException {
-        assert new File(tempDirectory, PREFIX_ORIGINAL_BANK_FILE + bankFileName ).createNewFile();
+    private List<Path> createRepackedFileTree(String bankFileName) throws IOException {
 
-        File file1 = new File(tempDirectory, "A3_V6.3DD");
-        File file2 = new File(tempDirectory, "A3_V6.3DG");
-        File file3 = new File(tempDirectory, "A3_V6.2DM");
+        Path contentsPath = Paths.get(tempDirectory, bankFileName);
+        Files.createDirectories(contentsPath);
+        Files.createFile(Paths.get(contentsPath.toString(), PREFIX_ORIGINAL_BANK_FILE + bankFileName));
 
-        assert file1.createNewFile();
-        assert file2.createNewFile();
-        assert file3.createNewFile();
+        Path filePath1 = Files.createFile(Paths.get(contentsPath.toString(), "A3_V6.3DD"));
+        Path filePath2 = Files.createFile(Paths.get(contentsPath.toString(), "A3_V6.3DG"));
+        Path filePath3 = Files.createFile(Paths.get(contentsPath.toString(), "A3_V6.2DM"));
 
-        if (markFilesModified) {
-            assert file1.setLastModified(file1.lastModified() + 5000);
-            assert file2.setLastModified(file2.lastModified() + 5000);
-            assert file3.setLastModified(file3.lastModified() + 5000);
-        }
-
-        return asList(file1.toPath(), file2.toPath(), file3.toPath());
+        return asList(filePath1, filePath2, filePath3);
     }
 
     private void mockCommandLineHelperToReturnBankInformationSuccess(String bankFileName) throws URISyntaxException, IOException {

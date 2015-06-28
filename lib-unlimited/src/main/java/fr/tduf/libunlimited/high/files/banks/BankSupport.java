@@ -43,5 +43,6 @@ public interface BankSupport {
      * @param targetDirectory       : directory to place new file layout
      * @throws IOException
      */
+    // TODO simplify signature and rename
      void prepareFilesToBeRepacked(String sourceDirectory, List<Path> repackedPaths, String targetBankFileName, String targetDirectory) throws IOException;
 }
