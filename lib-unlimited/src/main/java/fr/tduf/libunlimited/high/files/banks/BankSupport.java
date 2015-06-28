@@ -25,6 +25,11 @@ public interface BankSupport {
     void extractAll(String bankFileName, String outputDirectory) throws IOException;
 
     /**
+     * Requirements:
+     * - input directory must have official name of BNK file
+     * - input directory must contain:
+     *      -> original-[official bank name].bnk file
+     *      -> packed file hierarchy
      * @param inputDirectory        : location to extracted files to pack into bank
      * @param outputBankFileName    : location of bank file to create.
      */
