@@ -136,28 +136,6 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test
-    public void packAll_whenSuccess_shouldIgnoreUnmodifiedFiles() throws IOException, URISyntaxException {
-        // GIVEN
-        String bankFileName = "A3_V6.bnk";
-
-        createRepackedFileTree(bankFileName, false);
-
-        String outputBankFileName = Paths.get(tempDirectory, "A3_V6.output.bnk").toString();
-
-        mockCommandLineHelperToReturnBankInformationSuccess(outputBankFileName);
-
-
-        // WHEN
-        genuineBnkGateway.packAll(tempDirectory, outputBankFileName);
-
-
-        // THEN
-        assertThat(new File(outputBankFileName)).exists();
-
-        verify(commandLineHelperMock, never()).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), anyString(), anyString(), anyString());
-    }
-
-    @Test
     public void getInternalPackedFilePath() throws Exception {
         // GIVEN
         Path packedFilePath = Paths.get("/home/bill/work/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55/CLK_55.2DM");
