@@ -629,6 +629,7 @@ public class DatabaseTool extends GenericTool {
 
                         .forEach((filePath) -> {
                             try {
+                                FilesHelper.createDirectoryIfNotExists(targetDirectory);
                                 Files.copy(filePath, Paths.get(targetDirectory, filePath.getFileName().toString()));
                             } catch (IOException ioe) {
                                 throw new RuntimeException("Unable to copy original bank files to target directory.", ioe);
