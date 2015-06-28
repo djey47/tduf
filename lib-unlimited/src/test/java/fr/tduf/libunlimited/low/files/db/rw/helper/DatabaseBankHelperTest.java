@@ -18,6 +18,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -86,7 +87,7 @@ public class DatabaseBankHelperTest {
     @Test
     public void repackDatabaseFromDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
         // GIVEN
-        String databaseDirectory = new File(thisClass.getResource("/db/full/unpacked/TDU_CarPhysicsData.db").toURI()).getParent();
+        String databaseDirectory = new File(thisClass.getResource("/db/full/unpacked/original-DB.bnk").toURI()).getParent();
         String targetDirectory = this.tempDirectory;
 
 
@@ -95,15 +96,11 @@ public class DatabaseBankHelperTest {
 
 
         // THEN
-        DatabaseBankHelper.getDatabaseBankFileNames()
+        verify(bankSupportMock, times(9)).prepareFilesToBeRepacked(eq(databaseDirectory), eq(null), anyString(), eq(null));
 
-                .forEach((bankFileName) -> {
-                    try {
-                        verify(bankSupportMock).packAll(anyString(), eq(Paths.get(targetDirectory, bankFileName).toString()));
-                    } catch (IOException ioe) {
-                        throw new RuntimeException(ioe);
-                    }
-                });
+        verify(bankSupportMock, times(9)).packAll(eq(databaseDirectory), anyString());
+        verify(bankSupportMock).packAll(eq(databaseDirectory), eq(Paths.get(targetDirectory, "DB.bnk").toString()));
+        verify(bankSupportMock).packAll(eq(databaseDirectory), eq(Paths.get(targetDirectory, "DB_FR.bnk").toString()));
     }
 
     @Test(expected = NullPointerException.class)

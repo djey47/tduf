@@ -100,7 +100,6 @@ public class GenuineBnkGateway implements BankSupport {
     public void packAll(String inputDirectory, String outputBankFileName) throws IOException {
 
         String originalBankFileName = searchOriginalBankFileName(inputDirectory);
-
         Path originalBankFilePath = Paths.get(inputDirectory, originalBankFileName);
         Files.copy(originalBankFilePath, Paths.get(outputBankFileName), StandardCopyOption.REPLACE_EXISTING);
 
@@ -127,22 +126,9 @@ public class GenuineBnkGateway implements BankSupport {
      */
     @Override
     public void prepareFilesToBeRepacked(String sourceDirectory, List<Path> repackedPaths, String targetBankFileName, String targetDirectory) throws IOException {
-
-        String originalBankFileName = PREFIX_ORIGINAL_BANK_FILE + targetBankFileName;
-        Files.copy(Paths.get(sourceDirectory, originalBankFileName), Paths.get(targetDirectory, originalBankFileName), StandardCopyOption.REPLACE_EXISTING);
-
-        Files.createDirectory(Paths.get(targetDirectory, targetBankFileName));
-
-        repackedPaths
-
-                .forEach((filePath) -> {
-                    Path targetPath = Paths.get(targetDirectory, targetBankFileName, filePath.getFileName().toString());
-                    try {
-                        Files.copy(filePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-                    } catch (IOException ioe) {
-                        throw new RuntimeException("Unable to recreate file structure: " + targetPath, ioe);
-                    }
-                });
+        String originalBankFileName = GenuineBnkGateway.PREFIX_ORIGINAL_BANK_FILE + targetBankFileName;
+        Path originalBankFilePath = Paths.get(sourceDirectory, originalBankFileName);
+        Files.copy(originalBankFilePath, Paths.get(sourceDirectory, targetBankFileName, originalBankFileName));
     }
 
     static String searchOriginalBankFileName(String inputDirectory) throws IOException {
