@@ -7,14 +7,15 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Capitalizing about reverse-engineering
 * ...
 
-### What's in this version ? (ALPHA 1)
+### What's in this version ? (ALPHA 2)
 
 /!\
 Please keep in mind that it is called ALPHA for a reason, you should use it carefully as it may damage your game!
 Thus, you always ought to make a backup of your TDU database before using it!
 /!\
 
-* Fixes a bug when unpacking some modified database files.
+* Unpacking: now creates target directory when needed
+* Repacking: Fixes a bug when processing modified JSON database files.
 
 
 ### Main features
