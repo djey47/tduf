@@ -121,8 +121,8 @@ public class CameraTool extends GenericTool {
     @Override
     protected List<String> getExamples() {
         return asList(
-                COPY_SET.label + " -c \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -s 208 -t 209",
-                COPY_ALL_SETS.label + " -c \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -t 10000 -o \"C:\\Users\\Bill\\Desktop\\NewCameras.bin\"");
+                COPY_SET.label + " -i \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -s 208 -t 209",
+                COPY_ALL_SETS.label + " -i \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -t 10000 -o \"C:\\Users\\Bill\\Desktop\\NewCameras.bin\"");
     }
 
     private void copySet() throws IOException {
