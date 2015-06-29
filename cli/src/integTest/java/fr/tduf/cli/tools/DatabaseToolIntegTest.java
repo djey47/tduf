@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -161,7 +160,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN repack-all
         System.out.println("-> RepackAll!");
-        this.databaseTool.doMain(new String[]{"repack-all", "-n", "-j", repackJsonDirectory, "-o", outputDirectory,});
+        this.databaseTool.doMain(new String[]{"repack-all", /*"-n",*/ "-j", repackJsonDirectory, "-o", outputDirectory,});
 
 
         // THEN: gateway was correctly called
@@ -232,17 +231,14 @@ public class DatabaseToolIntegTest {
     }
 
     private static Object fakeAndAssertPrepareFilesToBeRepacked(InvocationOnMock invocation) {
+        // TODO update when signature change
         String sourceDirectory = (String) invocation.getArguments()[0];
-        List<Path> repackedPaths = (List<Path>) invocation.getArguments()[1];
         String targetBankFileName = (String) invocation.getArguments()[2];
-        String targetDirectory = (String) invocation.getArguments()[3];
 
         String shortBankFileName = Paths.get(targetBankFileName).getFileName().toString();
 
         assertThat(shortBankFileName).startsWith("DB").endsWith(".bnk");
-        assertThat(repackedPaths).hasSize(18);
         assertThat(new File(sourceDirectory)).exists();
-        assertThat(new File(targetDirectory)).exists();
 
         return null;
     }
