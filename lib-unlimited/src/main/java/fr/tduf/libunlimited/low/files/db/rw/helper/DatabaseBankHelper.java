@@ -83,7 +83,12 @@ public class DatabaseBankHelper {
     private static void rebuildFileStructureAndRepackDatabase(String databaseDirectory, String targetDirectory, String bankFileName, BankSupport bankSupport) {
         try {
             prepareFilesToBeRepacked(databaseDirectory, bankFileName, bankSupport);
-            bankSupport.packAll(databaseDirectory, Paths.get(targetDirectory, bankFileName).toString());
+
+//            System.out.println("-> databaseDirectory: " + databaseDirectory);
+//            System.out.println("-> targetDirectory: " + targetDirectory);
+//            System.out.println("-> bankFileName: " + bankFileName);
+
+            bankSupport.packAll(Paths.get(databaseDirectory, bankFileName).toString(), Paths.get(targetDirectory, bankFileName).toString());
         } catch (IOException ioe) {
             throw new RuntimeException("Unable to repack database: " + databaseDirectory, ioe);
         }

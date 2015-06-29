@@ -98,9 +98,9 @@ public class DatabaseBankHelperTest {
         // THEN
         verify(bankSupportMock, times(9)).prepareFilesToBeRepacked(eq(databaseDirectory), eq(null), anyString(), eq(null));
 
-        verify(bankSupportMock, times(9)).packAll(eq(databaseDirectory), anyString());
-        verify(bankSupportMock).packAll(eq(databaseDirectory), eq(Paths.get(targetDirectory, "DB.bnk").toString()));
-        verify(bankSupportMock).packAll(eq(databaseDirectory), eq(Paths.get(targetDirectory, "DB_FR.bnk").toString()));
+        verify(bankSupportMock, times(9)).packAll(anyString(), anyString());
+        verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB.bnk").toString()), eq(Paths.get(targetDirectory, "DB.bnk").toString()));
+        verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB_FR.bnk").toString()), eq(Paths.get(targetDirectory, "DB_FR.bnk").toString()));
     }
 
     @Test(expected = NullPointerException.class)

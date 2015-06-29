@@ -99,9 +99,14 @@ public class GenuineBnkGateway implements BankSupport {
     @Override
     public void packAll(String inputDirectory, String outputBankFileName) throws IOException {
 
+//        System.out.println("-> inputDirectory: " + inputDirectory);
+//        System.out.println("-> outputBankFileName: " + outputBankFileName);
+
         String originalBankFileName = searchOriginalBankFileName(inputDirectory);
         Path originalBankFilePath = Paths.get(inputDirectory, originalBankFileName);
         Files.copy(originalBankFilePath, Paths.get(outputBankFileName), StandardCopyOption.REPLACE_EXISTING);
+
+//        System.out.println("-> originalBankFilePath: " + originalBankFilePath.toString());
 
         Path inputPath = Paths.get(inputDirectory);
         Files.walk(inputPath)
@@ -113,6 +118,9 @@ public class GenuineBnkGateway implements BankSupport {
                 .forEach((path) -> {
                     String packedFilePath = getInternalPackedFilePath(path, inputPath);
                     try {
+//                        System.out.println("-> packedFilePath: " + packedFilePath);
+//                        System.out.println("-> path: " + path.toString());
+
                         ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, path.toString());
                         handleCommandLineErrors(processResult);
                     } catch (IOException ioe) {
