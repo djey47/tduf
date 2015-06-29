@@ -176,8 +176,6 @@ public class DatabaseReadWriteHelper {
 
         checkResourcesLines(resourcesLinesByLocale, topic, integrityErrors);
 
-//        return sortResourcesLinesByCountDescending(resourcesLinesByLocale);
-
         return resourcesLinesByLocale;
     }
 
@@ -197,19 +195,19 @@ public class DatabaseReadWriteHelper {
         return resourcesLinesByLocale;
     }
 
-    private static void checkResourcesLines(Map<DbResourceDto.Locale, List<String>> resourcesLinesByFileNames, DbDto.Topic topic, List<IntegrityError> integrityErrors) {
+    private static void checkResourcesLines(Map<DbResourceDto.Locale, List<String>> resourcesLinesByLocale, DbDto.Topic topic, List<IntegrityError> integrityErrors) {
         requireNonNull(integrityErrors, "A list of integrity errors (even empty) is required.");
 
-        integrityErrors.addAll(resourcesLinesByFileNames.entrySet().stream()
+        integrityErrors.addAll(resourcesLinesByLocale.entrySet().stream()
 
                 .filter((entry) -> entry.getValue().isEmpty())
 
                 .map((entry) -> {
+                    DbResourceDto.Locale locale = entry.getKey();
                     Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
                     info.put(SOURCE_TOPIC, topic);
-                    // TODO find a way to get real file name
-//                    info.put(FILE, entry.getKey());
-                    info.put(LOCALE, entry.getKey());
+                    info.put(FILE, String.format("%s.%s", topic.getLabel(), locale.getCode()));
+                    info.put(LOCALE, locale);
 
                     return IntegrityError.builder()
                             .ofType(IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND)
@@ -218,14 +216,6 @@ public class DatabaseReadWriteHelper {
                 })
 
                 .collect(toList()));
-    }
-
-    private static List<List<String>> sortResourcesLinesByCountDescending(Map<String, List<String>> resourcesLinesByFileNames) {
-        return resourcesLinesByFileNames.values().stream()
-
-                .sorted((list1, list2) -> Integer.compare(list1.size(), list2.size()) * -1)
-
-                .collect(toList());
     }
 
     private static String checkDatabaseContents(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {
