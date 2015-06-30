@@ -153,7 +153,7 @@ public class DatabaseToolIntegTest {
         this.databaseTool.setBankSupport(bankSupportMock);
 
         doAnswer(DatabaseToolIntegTest::fakeAndAssertPrepareFilesToBeRepacked)
-                .when(bankSupportMock).prepareFilesToBeRepacked(anyString(), anyListOf(Path.class), anyString(), anyString());
+                .when(bankSupportMock).preparePackAll(anyString(), anyString());
         doAnswer(DatabaseToolIntegTest::fakeAndAssertPackAll)
                 .when(bankSupportMock).packAll(anyString(), anyString());
 
@@ -164,7 +164,7 @@ public class DatabaseToolIntegTest {
 
 
         // THEN: gateway was correctly called
-        verify(bankSupportMock, times(9)).prepareFilesToBeRepacked(anyString(), anyListOf(Path.class), anyString(), anyString());
+        verify(bankSupportMock, times(9)).preparePackAll(anyString(), anyString());
         verify(bankSupportMock, times(9)).packAll(anyString(), anyString());
     }
 

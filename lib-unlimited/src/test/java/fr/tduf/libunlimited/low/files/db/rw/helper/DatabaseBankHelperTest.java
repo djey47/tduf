@@ -96,7 +96,7 @@ public class DatabaseBankHelperTest {
 
 
         // THEN
-        verify(bankSupportMock, times(9)).prepareFilesToBeRepacked(eq(databaseDirectory), eq(null), anyString(), eq(null));
+        verify(bankSupportMock, times(9)).preparePackAll(eq(databaseDirectory), anyString());
 
         verify(bankSupportMock, times(9)).packAll(anyString(), anyString());
         verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB.bnk").toString()), eq(Paths.get(targetDirectory, "DB.bnk").toString()));
