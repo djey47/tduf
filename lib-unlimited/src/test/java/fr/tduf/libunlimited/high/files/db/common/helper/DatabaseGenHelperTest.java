@@ -9,12 +9,12 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class DatabaseHelperTest {
+public class DatabaseGenHelperTest {
 
     @Test
     public void generateUniqueResourceEntryIdentifier_whenNullTopicObject_shouldReturnNull() throws Exception {
         // GIVEN-WHEN-THEN
-        assertThat(DatabaseHelper.generateUniqueResourceEntryIdentifier(null)).isNull();
+        assertThat(DatabaseGenHelper.generateUniqueResourceEntryIdentifier(null)).isNull();
     }
 
     @Test
@@ -36,7 +36,7 @@ public class DatabaseHelperTest {
                 .build();
 
         // WHEN
-        String actualResourceIdentifier = DatabaseHelper.generateUniqueResourceEntryIdentifier(topicObject);
+        String actualResourceIdentifier = DatabaseGenHelper.generateUniqueResourceEntryIdentifier(topicObject);
 
         // THEN
         assertThat(actualResourceIdentifier).hasSize(8);
@@ -48,7 +48,7 @@ public class DatabaseHelperTest {
     @Test
     public void generateUniqueContentsEntryIdentifier_whenNullTopicObject_shouldReturnNull() throws Exception {
         // GIVEN-WHEN-THEN
-        assertThat(DatabaseHelper.generateUniqueContentsEntryIdentifier(null)).isNull();
+        assertThat(DatabaseGenHelper.generateUniqueContentsEntryIdentifier(null)).isNull();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -64,7 +64,7 @@ public class DatabaseHelperTest {
                 .build();
 
         // WHEN
-        DatabaseHelper.generateUniqueContentsEntryIdentifier(topicObject);
+        DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
 
         // THEN: IllegalArgumentException
     }
@@ -90,7 +90,7 @@ public class DatabaseHelperTest {
                 .build();
 
         // WHEN
-        String actualEntryIdentifier = DatabaseHelper.generateUniqueContentsEntryIdentifier(topicObject);
+        String actualEntryIdentifier = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
 
         // THEN
         assertThat(actualEntryIdentifier).hasSize(8);
