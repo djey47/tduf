@@ -19,6 +19,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Class providing methods to generate database contents and resources.
  */
+// TODO Javadoc
 // TODO unit tests
 // TODO see to use this class from DatabaseIntegrityFixer
 public class DatabaseGenHelper {
@@ -31,8 +32,11 @@ public class DatabaseGenHelper {
 
     private final BulkDatabaseMiner databaseMiner;
 
+    private final DatabaseChangeHelper changeHelper;
+
     public DatabaseGenHelper(BulkDatabaseMiner databaseMiner) {
         this.databaseMiner = databaseMiner;
+        this.changeHelper = new DatabaseChangeHelper(this, databaseMiner);
     }
 
     /**
@@ -104,27 +108,10 @@ public class DatabaseGenHelper {
 
     /**
      *
-     * @param topic
-     * @param locale
-     * @param resourceReference
-     * @param resourceValue
-     */
-    public void addResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, String resourceValue) {
-        checkResourceDoesNotExistWithReference(topic, locale, resourceReference);
-
-        List<DbResourceDto.Entry> resourceEntries = databaseMiner.getResourceFromTopicAndLocale(topic, locale).get().getEntries();
-
-        resourceEntries.add(DbResourceDto.Entry.builder()
-                .forReference(resourceReference)
-                .withValue(resourceValue)
-                .build());
-    }
-
-    /**
-     *
      * @param topicObject
      * @return
      */
+    // TODO rename to gen
     public String getDefaultResourceReference(DbDto topicObject) {
         Optional<DbResourceDto.Entry> potentialDefaultResourceEntry = topicObject.getResources().stream().findAny().get().getEntries().stream()
 
@@ -137,7 +124,7 @@ public class DatabaseGenHelper {
         }
 
         String newResourceReference = generateUniqueResourceEntryIdentifier(topicObject);
-        Stream.of(DbResourceDto.Locale.values()).forEach((locale) -> addResourceWithReference(topicObject.getTopic(), locale, newResourceReference, RESOURCE_VALUE_DEFAULT));
+        Stream.of(DbResourceDto.Locale.values()).forEach((locale) -> changeHelper.addResourceWithReference(topicObject.getTopic(), locale, newResourceReference, RESOURCE_VALUE_DEFAULT));
         return newResourceReference;
     }
 
@@ -161,74 +148,6 @@ public class DatabaseGenHelper {
 
         return newEntry;
     }
-
-    /**
-     *
-     * @param topic
-     * @param locale
-     * @param oldResourceReference
-     * @param newResourceReference
-     * @param newResourceValue
-     */
-    public void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
-        checkResourceExistsWithReference(topic, locale, newResourceReference);
-
-        DbResourceDto.Entry existingResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(oldResourceReference, topic, locale).get();
-
-        existingResourceEntry.setReference(newResourceReference);
-        existingResourceEntry.setValue(newResourceValue);
-    }
-
-    /**
-     *
-     * @param entryId
-     * @param topic
-     */
-    public void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
-        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(topic).get().getData().getEntries();
-        AtomicBoolean removalResult = new AtomicBoolean(false);
-        topicEntries.stream()
-
-                .filter((entry) -> entry.getId() == entryId)
-
-                .findAny()
-
-                .ifPresent((entry) -> {
-                    topicEntries.remove(entry);
-                    removalResult.set(true);
-                });
-
-        // Fix identifiers of next entries
-        if (removalResult.get()) {
-            topicEntries.stream()
-
-                    .filter((entry) -> entry.getId() > entryId)
-
-                    .forEach(DbDataDto.Entry::shiftIdUp);
-        }
-    }
-
-    /**
-     *
-     * @param topic
-     * @param locale
-     * @param resourceReference
-     * @param affectedLocales
-     */
-    public void removeResourcesWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, List<DbResourceDto.Locale> affectedLocales) {
-        affectedLocales.stream()
-
-                .map((affectedLocale) -> databaseMiner.getResourceFromTopicAndLocale(topic, locale).get().getEntries())
-
-                .forEach((resources) -> resources.stream()
-
-                        .filter((resource) -> resource.getReference().equals(resourceReference))
-
-                        .findAny()
-
-                        .ifPresent(resources::remove));
-    }
-
 
     /**
      * Produces a random, unique identifier of content entry.
@@ -264,33 +183,6 @@ public class DatabaseGenHelper {
         return generateUniqueEntryReference(existingResourceRefs);
     }
 
-    /**
-     * @param entry                     : database entry to be updated
-     * @param sourceEntryRef            : reference of source entry (REF field for source topic)
-     * @param potentialTargetEntryRef   : reference of target entry (REF field for target topic). Mandatory.
-     */
-    public static void updateAssociationEntryWithSourceAndTargetReferences(DbDataDto.Entry entry, String sourceEntryRef, Optional<String> potentialTargetEntryRef) {
-        List<DbDataDto.Item> entryItems = entry.getItems();
-
-        // We assume source reference is first field ... target reference (if any) is second field  ...
-        entryItems.get(0).setRawValue(sourceEntryRef);
-        potentialTargetEntryRef.ifPresent((ref) -> entryItems.get(1).setRawValue(ref));
-    }
-
-    private void checkResourceDoesNotExistWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference) {
-        databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, topic, locale)
-                .ifPresent((resourceEntry) -> {
-                    throw new IllegalArgumentException("Resource already exists with reference: " + resourceReference);
-                });
-    }
-
-    private void checkResourceExistsWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference) {
-        databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, topic, locale)
-                .orElseGet(() -> {
-                    throw new IllegalArgumentException("Resource does not exist with reference: " + resourceReference);
-                });
-    }
-
     private static Set<String> extractContentEntryReferences(DbStructureDto.Field identifierField, DbDto topicObject) {
         return topicObject.getData().getEntries().stream()
 
@@ -298,9 +190,9 @@ public class DatabaseGenHelper {
 
                         .filter((item) -> item.getFieldRank() == identifierField.getRank())
 
-                            .findAny().get().getRawValue())
+                        .findAny().get().getRawValue())
 
-                    .collect(toSet());
+                .collect(toSet());
     }
 
     private static Set<String> extractResourceEntryReferences(DbDto topicObject) {
@@ -311,7 +203,7 @@ public class DatabaseGenHelper {
                         .map(DbResourceDto.Entry::getReference)))
 
                 .collect(toSet());
-   }
+    }
 
     private static String generateUniqueEntryReference(Set<String> existingEntryRefs) {
         String generatedRef = null;
