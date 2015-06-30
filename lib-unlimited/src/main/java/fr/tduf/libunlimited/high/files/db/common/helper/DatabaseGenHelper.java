@@ -91,10 +91,10 @@ public class DatabaseGenHelper {
                 break;
             case RESOURCE_CURRENT_GLOBALIZED:
             case RESOURCE_CURRENT_LOCALIZED:
-                rawValue = getDefaultResourceReference(topicObject);
+                rawValue = generateDefaultResourceReference(topicObject);
                 break;
             case RESOURCE_REMOTE:
-                rawValue = getDefaultResourceReference(remoteTopicObject);
+                rawValue = generateDefaultResourceReference(remoteTopicObject);
                 break;
             default:
                 throw new IllegalArgumentException("Unhandled field type: " + fieldType);
@@ -111,8 +111,7 @@ public class DatabaseGenHelper {
      * @param topicObject
      * @return
      */
-    // TODO rename to gen
-    public String getDefaultResourceReference(DbDto topicObject) {
+    public String generateDefaultResourceReference(DbDto topicObject) {
         Optional<DbResourceDto.Entry> potentialDefaultResourceEntry = topicObject.getResources().stream().findAny().get().getEntries().stream()
 
                 .filter((anObject) -> RESOURCE_VALUE_DEFAULT.equals(anObject.getValue()))
