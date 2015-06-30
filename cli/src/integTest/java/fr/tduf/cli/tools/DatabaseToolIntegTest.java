@@ -152,7 +152,7 @@ public class DatabaseToolIntegTest {
         this.databaseTool = new DatabaseTool();
         this.databaseTool.setBankSupport(bankSupportMock);
 
-        doAnswer(DatabaseToolIntegTest::fakeAndAssertPrepareFilesToBeRepacked)
+        doAnswer(DatabaseToolIntegTest::fakeAndAssertPreparePackAll)
                 .when(bankSupportMock).preparePackAll(anyString(), anyString());
         doAnswer(DatabaseToolIntegTest::fakeAndAssertPackAll)
                 .when(bankSupportMock).packAll(anyString(), anyString());
@@ -230,10 +230,9 @@ public class DatabaseToolIntegTest {
         return null;
     }
 
-    private static Object fakeAndAssertPrepareFilesToBeRepacked(InvocationOnMock invocation) {
-        // TODO update when signature change
+    private static Object fakeAndAssertPreparePackAll(InvocationOnMock invocation) {
         String sourceDirectory = (String) invocation.getArguments()[0];
-        String targetBankFileName = (String) invocation.getArguments()[2];
+        String targetBankFileName = (String) invocation.getArguments()[1];
 
         String shortBankFileName = Paths.get(targetBankFileName).getFileName().toString();
 
