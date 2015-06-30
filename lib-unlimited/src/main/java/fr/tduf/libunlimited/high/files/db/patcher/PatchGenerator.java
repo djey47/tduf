@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
-import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseHelper;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -124,7 +124,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
     private DbPatchDto.DbChangeDto createChangeObjectForResource(DbDto.Topic topic, Optional<DbResourceDto.Locale> potentialLocale, String resourceRef) {
         Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceRef, topic, potentialLocale.orElse(DbResourceDto.Locale.FRANCE));
-        String resourceValue = DatabaseHelper.RESOURCE_VALUE_DEFAULT;
+        String resourceValue = DatabaseGenHelper.RESOURCE_VALUE_DEFAULT;
         if (potentialResourceEntry.isPresent()) {
             resourceValue = potentialResourceEntry.get().getValue();
         }

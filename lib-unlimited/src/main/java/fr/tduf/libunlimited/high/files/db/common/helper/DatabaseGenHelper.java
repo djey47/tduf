@@ -18,10 +18,9 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Class providing methods to generate database contents and resources.
  */
-// TODO rename to DatabaseGenHelper
 // TODO unit tests
 // TODO see to use this class from DatabaseIntegrityFixer
-public class DatabaseHelper {
+public class DatabaseGenHelper {
 
     public static final String RESOURCE_VALUE_DEFAULT = "??";
 
@@ -31,7 +30,7 @@ public class DatabaseHelper {
 
     private final BulkDatabaseMiner databaseMiner;
 
-    public DatabaseHelper(BulkDatabaseMiner databaseMiner) {
+    public DatabaseGenHelper(BulkDatabaseMiner databaseMiner) {
         this.databaseMiner = databaseMiner;
     }
 
@@ -67,7 +66,7 @@ public class DatabaseHelper {
                 if (entryReference.isPresent()) {
                     rawValue = entryReference.get();
                 } else {
-                    rawValue = DatabaseHelper.generateUniqueContentsEntryIdentifier(topicObject);
+                    rawValue = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
                 }
                 break;
             case BITFIELD:

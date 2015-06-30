@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
-import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseHelper;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum;
@@ -267,7 +267,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                 if (entryReference.isPresent()) {
                     rawValue = entryReference.get();
                 } else {
-                    rawValue = DatabaseHelper.generateUniqueContentsEntryIdentifier(topicObject);
+                    rawValue = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
                 }
                 break;
             case BITFIELD:
@@ -283,16 +283,16 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                 rawValue = "1";
                 break;
             case REFERENCE:
-                rawValue = DatabaseHelper.generateUniqueContentsEntryIdentifier(remoteTopicObject);
+                rawValue = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(remoteTopicObject);
                 addContentsEntryWithDefaultItems(Optional.of(rawValue), remoteTopicObject.getTopic());
                 break;
             case RESOURCE_CURRENT_GLOBALIZED:
             case RESOURCE_CURRENT_LOCALIZED:
-                rawValue = DatabaseHelper.generateUniqueResourceEntryIdentifier(topicObject);
+                rawValue = DatabaseGenHelper.generateUniqueResourceEntryIdentifier(topicObject);
                 addDefaultResourceReferenceForAllLocales(rawValue, topicObject);
                 break;
             case RESOURCE_REMOTE:
-                rawValue = DatabaseHelper.generateUniqueResourceEntryIdentifier(remoteTopicObject);
+                rawValue = DatabaseGenHelper.generateUniqueResourceEntryIdentifier(remoteTopicObject);
                 addDefaultResourceReferenceForAllLocales(rawValue, remoteTopicObject);
                 break;
             default:
