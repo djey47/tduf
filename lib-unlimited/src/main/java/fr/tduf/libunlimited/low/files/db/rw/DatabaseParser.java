@@ -73,7 +73,7 @@ public class DatabaseParser {
         integrityErrors.clear();
 
         DbStructureDto structure = parseStructure();
-        List<DbResourceDto> resources = parseResources(structure.getTopic());
+        List<DbResourceDto> resources = parseAllResourcesFromTopic(structure.getTopic());
         DbDataDto data = parseContents(structure);
 
         return DbDto.builder()
@@ -88,8 +88,7 @@ public class DatabaseParser {
         requireNonNull(resources, "Resources are required");
     }
 
-    // TODO simplify
-    private List<DbResourceDto> parseResources(DbDto.Topic topic) {
+    private List<DbResourceDto> parseAllResourcesFromTopic(DbDto.Topic topic) {
 
         final Pattern resourceVersionPattern = Pattern.compile(META_VERSION_PATTERN);
         final Pattern categoryCountPattern = Pattern.compile(META_CATEGORY_COUNT_PATTERN);
@@ -104,95 +103,52 @@ public class DatabaseParser {
                 .filter((locale) -> !resources.get(locale).isEmpty())
 
                 .forEach((locale) -> {
-
-                    final List<DbResourceDto.Entry> entries = new ArrayList<>();
-                    String version = null;
-                    int categoryCount = 0;
-
-                    for (String line : resources.get(locale)) {
-                        Matcher matcher = resourceVersionPattern.matcher(line);
-                        if (matcher.matches()) {
-                            version = matcher.group(1);
-                            continue;
-                        }
-
-                        matcher = categoryCountPattern.matcher(line);
-                        if (matcher.matches()) {
-                            categoryCount = valueOf(matcher.group(1));
-                            continue;
-                        }
-
-                        if (Pattern.matches(COMMENT_PATTERN, line)) {
-                            continue;
-                        }
-
-                        matcher = resourceEntryPattern.matcher(line);
-                        if (matcher.matches()) {
-                            entries.add(DbResourceDto.Entry.builder()
-                                    .forReference(matcher.group(3))
-                                    .withValue(matcher.group(1))
-                                    .build());
-                        }
-                    }
-
-                    dbResourceDtos.add(
-                            DbResourceDto.builder()
-                                    .atVersion(version)
-                                    .withLocale(locale)
-                                    .withCategoryCount(categoryCount)
-                                    .addEntries(entries)
-                                    .build());
+                    DbResourceDto dbResourceDto = parseResourcesForLocale(locale, resourceVersionPattern, categoryCountPattern, resourceEntryPattern);
+                    dbResourceDtos.add(dbResourceDto);
                 });
-
-//        List<DbResourceDto> dbResourceDtos = this.resources.entrySet().stream()
-
-//                .filter(resourceLines -> !resourceLines.getValue().isEmpty())
-
-//                .map(resourceLines -> {
-//            final List<DbResourceDto.Entry> entries = new ArrayList<>();
-//            String version = null;
-//            int categoryCount = 0;
-//            DbResourceDto.Locale currentLocale = resourceLines.getKey();
-//
-//            for (String line : resourceLines.getValue()) {
-//                Matcher matcher = resourceVersionPattern.matcher(line);
-//                if (matcher.matches()) {
-//                    version = matcher.group(1);
-//                    continue;
-//                }
-//
-//                matcher = categoryCountPattern.matcher(line);
-//                if (matcher.matches()) {
-//                    categoryCount = valueOf(matcher.group(1));
-//                    continue;
-//                }
-//
-//                if (Pattern.matches(COMMENT_PATTERN, line)) {
-//                    continue;
-//                }
-//
-//                matcher = resourceEntryPattern.matcher(line);
-//                if (matcher.matches()) {
-//                    entries.add(DbResourceDto.Entry.builder()
-//                            .forReference(matcher.group(3))
-//                            .withValue(matcher.group(1))
-//                            .build());
-//                }
-//            }
-//
-//            return DbResourceDto.builder()
-//                    .atVersion(version)
-//                    .withLocale(currentLocale)
-//                    .withCategoryCount(categoryCount)
-//                    .addEntries(entries)
-//                    .build();
-//        })
-//
-//                .collect(Collectors.toList());
 
         checkItemCountBetweenResources(topic, dbResourceDtos);
 
         return dbResourceDtos;
+    }
+
+    private DbResourceDto parseResourcesForLocale(DbResourceDto.Locale locale, Pattern resourceVersionPattern, Pattern categoryCountPattern, Pattern resourceEntryPattern) {
+        final List<DbResourceDto.Entry> entries = new ArrayList<>();
+        String version = null;
+        int categoryCount = 0;
+
+        for (String line : resources.get(locale)) {
+            Matcher matcher = resourceVersionPattern.matcher(line);
+            if (matcher.matches()) {
+                version = matcher.group(1);
+                continue;
+            }
+
+            matcher = categoryCountPattern.matcher(line);
+            if (matcher.matches()) {
+                categoryCount = valueOf(matcher.group(1));
+                continue;
+            }
+
+            if (Pattern.matches(COMMENT_PATTERN, line)) {
+                continue;
+            }
+
+            matcher = resourceEntryPattern.matcher(line);
+            if (matcher.matches()) {
+                entries.add(DbResourceDto.Entry.builder()
+                        .forReference(matcher.group(3))
+                        .withValue(matcher.group(1))
+                        .build());
+            }
+        }
+
+        return DbResourceDto.builder()
+                        .atVersion(version)
+                        .withLocale(locale)
+                        .withCategoryCount(categoryCount)
+                        .addEntries(entries)
+                        .build();
     }
 
     private DbDataDto parseContents(DbStructureDto structure) {
