@@ -128,7 +128,7 @@ public class DatabaseBankHelper {
                     }
                 });
 
-        bankSupport.prepareFilesToBeRepacked(databaseDirectory, null, targetBankFileName, null);
+        bankSupport.preparePackAll(databaseDirectory, targetBankFileName);
     }
 
     private static String checkDatabaseFileExists(String databaseDirectory, String databaseFileName) {

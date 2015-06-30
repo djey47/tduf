@@ -131,9 +131,10 @@ public class GenuineBnkGateway implements BankSupport {
 
     /**
      * To be used only with database repacking ! (file layout does not need packed folders)
+     * Copies original-bnk files to bank name subdirectory.
      */
     @Override
-    public void prepareFilesToBeRepacked(String sourceDirectory, List<Path> repackedPaths, String targetBankFileName, String targetDirectory) throws IOException {
+    public void preparePackAll(String sourceDirectory, String targetBankFileName) throws IOException {
         String originalBankFileName = GenuineBnkGateway.PREFIX_ORIGINAL_BANK_FILE + targetBankFileName;
         Path originalBankFilePath = Paths.get(sourceDirectory, originalBankFileName);
         Files.copy(originalBankFilePath, Paths.get(sourceDirectory, targetBankFileName, originalBankFileName));
