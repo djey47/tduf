@@ -10,7 +10,6 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -214,5 +213,9 @@ public class DatabaseGenHelper {
 
     private static String generateEntryIdentifier(int min, int max) {
         return Integer.valueOf((int) (Math.random() * (max - min) + min)).toString();
+    }
+
+    public DatabaseChangeHelper getChangeHelper() {
+        return changeHelper;
     }
 }
