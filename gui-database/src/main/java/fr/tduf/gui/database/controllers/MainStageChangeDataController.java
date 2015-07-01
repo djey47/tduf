@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
-import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseHelper;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -19,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 public class MainStageChangeDataController {
     private final MainStageController mainStageController;
 
-    private DatabaseHelper databaseGenHelper;
+    private DatabaseGenHelper databaseGenHelper;
 
     MainStageChangeDataController(MainStageController mainStageController) {
         requireNonNull(mainStageController, "Main stage controller is required.");
@@ -39,12 +40,12 @@ public class MainStageChangeDataController {
 
     void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
         requireNonNull(getGenHelper());
-        getGenHelper().updateResourceWithReference(topic, locale, oldResourceReference, newResourceReference, newResourceValue);
+        getChangeHelper().updateResourceWithReference(topic, locale, oldResourceReference, newResourceReference, newResourceValue);
     }
 
     void removeEntryWithIdentifier(long internalEntryId, DbDto.Topic topic) {
         requireNonNull(getGenHelper());
-        getGenHelper().removeEntryWithIdentifier(internalEntryId, topic);
+        getChangeHelper().removeEntryWithIdentifier(internalEntryId, topic);
     }
 
     void removeResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, boolean forAllLocales) {
@@ -53,7 +54,7 @@ public class MainStageChangeDataController {
             affectedLocales = asList(DbResourceDto.Locale.values());
         }
 
-        databaseGenHelper.removeResourcesWithReference(topic, locale, resourceReference, affectedLocales);
+        getChangeHelper().removeResourcesWithReference(topic, locale, resourceReference, affectedLocales);
     }
 
     long addEntryForCurrentTopic() {
@@ -66,27 +67,33 @@ public class MainStageChangeDataController {
     void addLinkedEntry(String sourceEntryRef, Optional<String> targetEntryRef, DbDto.Topic targetTopic) {
         requireNonNull(getGenHelper());
         DbDataDto.Entry newEntry = getGenHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), targetTopic);
-        DatabaseHelper.updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
+        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
     }
 
     void addResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String newResourceReference, String newResourceValue) {
         requireNonNull(getGenHelper());
-        getGenHelper().addResourceWithReference(topic, locale, newResourceReference, newResourceValue);
+        getChangeHelper().addResourceWithReference(topic, locale, newResourceReference, newResourceValue);
     }
 
     private BulkDatabaseMiner getMiner() {
         return this.mainStageController.getMiner();
     }
 
-    private DatabaseHelper getGenHelper() {
+    private DatabaseGenHelper getGenHelper() {
 
         if (databaseGenHelper == null) {
             if (getMiner() == null) {
                 return null;
             }
 
-            databaseGenHelper = new DatabaseHelper(getMiner());
+            databaseGenHelper = new DatabaseGenHelper(getMiner());
         }
         return databaseGenHelper;
+    }
+
+    private DatabaseChangeHelper getChangeHelper() {
+        requireNonNull(getGenHelper());
+
+        return getGenHelper().getChangeHelper();
     }
 }

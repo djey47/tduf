@@ -3,7 +3,7 @@ package fr.tduf.gui.database.controllers.helper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.gui.database.domain.Resource;
-import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseHelper;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import javafx.application.Platform;
@@ -82,7 +82,7 @@ public class DialogsHelper {
             defaultValue = resource.valuePropertyForLocale(currentLocale).get();
         } else {
             editResourceDialog.setHeaderText(DisplayConstants.MESSAGE_ADDED_RESOURCE + topic.getLabel());
-            defaultReference = DatabaseHelper.generateUniqueResourceEntryIdentifier(topicObject);
+            defaultReference = DatabaseGenHelper.generateUniqueResourceEntryIdentifier(topicObject);
         }
 
         GridPane grid = new GridPane();
