@@ -193,4 +193,8 @@ public class DatabaseGenHelper {
     private static String generateEntryIdentifier(int min, int max) {
         return Integer.valueOf((int) (Math.random() * (max - min) + min)).toString();
     }
+
+    public DatabaseChangeHelper getChangeHelper() {
+        return changeHelper;
+    }
 }
