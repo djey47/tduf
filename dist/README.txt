@@ -7,25 +7,21 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Capitalizing about reverse-engineering
 * ...
 
-### What's new in this version ? (0.5.0)
+### What's new in this version ? (0.6.0)
 
-* General (all): contains all bugfixes from 0.4.1 hotfix
-* General (cli): new CameraTool command available in CLI
-* General (cli): all operations are now able to return result as JSON (new -n switch)
+* General (all): contains all bugfixes from 0.5.1
+* General (all): contains all bugfixes from TDUF Database Editor ALPHA 0->2
 
-* CameraTool (copy-set): new operation to copy camera set to a new one (see 'Using Command Line Tools' below)
-* CameraTool (copy-all-sets): new operation to dupliacte all genuine camera sets to new ones (see 'Using Command Line Tools' below)
+* DatabaseTool (fix): fixes a bug preventing from loading database when integrity errors occur
+* DatabaseTool (check): gives some more information about integrity errors
+* DatabaseTool (convert-patch): new operation to convert TDU Patches (pch) to TDUF ones (json-patche) and vice versa
+* DatabaseTool (gen-patch): new operation to create TDUF patches (json-patch) from a full, TDUF-formated, database
 
-* DatabaseTool (apply-patch): new operation to execute a mini-patch file to update contents and resources in TDU database (tutorial available @TDUCK soon)
+* FileTool (bankInfo): displays short name for packed contents
 
-* FileTool (bankInfo): new operation to display BNK file contents
-* FileTool (unpack): new operation to extract BNK file contents into a directory
-* FileTool (repack): new operation to integrate files into a BNK back
+* Research: handles signed numeric values
 
-* Research: updates cameras.bin structure with automatic size of 'zero zone'
-
-* Library: misc improvements and bug fixes
-* Library: for now, includes tdumt-cli, a quick and dirty .net CLI app to use good old TDUMT features :)
+* Library: misc improvements and bug fixes.
 
 ### What you will need to run TDUF
 
@@ -39,7 +35,9 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 ### Using Command Line Tools
 
-! Note that you may use -n or --normalized command switches to get output as JSON instead of natural language !
+To see all available tools, enter and run:  TDUF-intro
+
+! Note that you may use -n or --normalized command switches in commands below to get output as JSON instead of natural language !
 
 #### Camera Tool
 
