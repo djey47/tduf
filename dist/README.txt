@@ -37,7 +37,12 @@ Thus, you always ought to make a backup of your TDU database before using it!
 * Launch *TDUF.cmd* script from Windows Explorer
 * You may need to create a desktop shortcut to this file.
 
-### Using Database Editor GUI
+### Using Database Editor GUI (fast mode)
+
+* Type and run: Alpha-DatabaseEditor "C:\Program Files (x86)\Test Drive Unlimited\Euro\Bnk\Database\"
+(using proper file location on your system).
+
+### Using Database Editor GUI (advanced mode)
 
 (1) Preparing your TDU database
 * Type and run: DatabaseTool unpack-all -d "C:\Program Files (x86)\Test Drive Unlimited\Euro\Bnk\Database\" -j "C:\tdudb\dump"
