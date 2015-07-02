@@ -41,10 +41,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.util.*;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
@@ -630,7 +627,7 @@ public class DatabaseTool extends GenericTool {
                         .forEach((filePath) -> {
                             try {
                                 FilesHelper.createDirectoryIfNotExists(targetDirectory);
-                                Files.copy(filePath, Paths.get(targetDirectory, filePath.getFileName().toString()));
+                                Files.copy(filePath, Paths.get(targetDirectory, filePath.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
                             } catch (IOException ioe) {
                                 throw new RuntimeException("Unable to copy original bank files to target directory.", ioe);
                     }
