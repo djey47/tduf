@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
+import fr.tduf.gui.database.DatabaseEditor;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.SettingsConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
@@ -450,7 +451,12 @@ public class MainStageController implements Initializable {
         profilesChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> handleProfileChoiceChanged((String) newValue));
 
-        databaseLocationTextField.setText(SettingsConstants.DATABASE_DIRECTORY_DEFAULT);
+        String databaseDirectory = SettingsConstants.DATABASE_DIRECTORY_DEFAULT;
+        List<String> appParameters = DatabaseEditor.getParameterList();
+        if (!appParameters.isEmpty()) {
+            databaseDirectory = appParameters.get(0);
+        }
+        databaseLocationTextField.setText(databaseDirectory);
     }
 
     private void initStatusBar() {
