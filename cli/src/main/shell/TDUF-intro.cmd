@@ -5,6 +5,7 @@ ECHO Welcome to TDUF: Command Line Interface v%TDUF_VERSION%.
 ECHO.
 ECHO Available modules :
 DIR *Tool.cmd /B
+ECHO Alpha-DatabaseEditor.cmd
 ECHO DatabaseEditor.cmd
 ECHO Version.cmd
 ECHO.
