@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -45,11 +46,13 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
         HBox fieldBox = addFieldBox(Optional.ofNullable(topicLinkObject.getGroup()), 250.0, defaultTab);
 
-        addFieldLabelForLinkedTopic(fieldBox, topicLinkObject);
+        Optional<String> potentialTooltipText = Optional.ofNullable(topicLinkObject.getTooltip());
+
+        addFieldLabelForLinkedTopic(fieldBox, topicLinkObject, potentialTooltipText);
 
         String targetProfileName = topicLinkObject.getRemoteReferenceProfile();
         DbDto.Topic targetTopic = retrieveTargetTopicForLink(topicLinkObject);
-        TableView<ContentEntryDataItem> tableView = addTableViewForLinkedTopic(fieldBox, topicLinkObject, resourceData, targetTopic);
+        TableView<ContentEntryDataItem> tableView = addTableViewForLinkedTopic(fieldBox, topicLinkObject, resourceData, targetTopic, potentialTooltipText);
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
@@ -60,9 +63,11 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         addButtonsForLinkedTopic(fieldBox, targetProfileName, targetTopic, tableView.getSelectionModel(), topicLinkObject);
     }
 
-    private TableView<ContentEntryDataItem> addTableViewForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject, ObservableList<ContentEntryDataItem> resourceData, DbDto.Topic targetTopic) {
+    private TableView<ContentEntryDataItem> addTableViewForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject, ObservableList<ContentEntryDataItem> resourceData, DbDto.Topic targetTopic, Optional<String> potentialTooltipText) {
         TableView<ContentEntryDataItem> tableView = new TableView<>();
         tableView.setPrefWidth(560);
+
+        potentialTooltipText.ifPresent((text) -> tableView.setTooltip(new Tooltip(text)));
 
         TableColumn<ContentEntryDataItem, String> refColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_REF);
         refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
@@ -130,12 +135,12 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
             return controller.getMiner();
     }
 
-    private static void addFieldLabelForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject) {
+    private static void addFieldLabelForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject, Optional<String> potentialTooltipText) {
         String fieldName = topicLinkObject.getTopic().name();
         if (topicLinkObject.getLabel() != null) {
             fieldName = topicLinkObject.getLabel();
         }
         // TODO handle tooltip for linked field
-        addFieldLabel(fieldBox, topicLinkObject.isReadOnly(), fieldName, Optional.empty());
+        addFieldLabel(fieldBox, topicLinkObject.isReadOnly(), fieldName, potentialTooltipText);
     }
 }
