@@ -30,6 +30,9 @@ public class TopicLinkDto {
     @JsonProperty("remoteReferenceProfile")
     private String remoteReferenceProfile;
 
+    @JsonProperty("tooltip")
+    private String tooltip;
+
     public DbDto.Topic getTopic() {
         return topic;
     }
@@ -62,5 +65,9 @@ public class TopicLinkDto {
 
     public String getRemoteReferenceProfile() {
         return remoteReferenceProfile;
+    }
+
+    public String getTooltip() {
+        return tooltip;
     }
 }
