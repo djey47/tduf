@@ -83,7 +83,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         HBox fieldBox = addFieldBox(Optional.ofNullable(groupName), 25.0, defaultTab);
 
-        addFieldLabel(fieldBox, fieldReadOnly, fieldName);
+        addFieldLabel(fieldBox, fieldReadOnly, fieldName, potentialToolTip);
 
         addValueTextField(fieldBox, field, fieldReadOnly, potentialToolTip, property);
 

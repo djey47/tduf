@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -42,8 +43,10 @@ public abstract class AbstractDynamicControlsHelper {
         return fieldBox;
     }
 
-    protected static void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName) {
+    protected static void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName, Optional<String> potentialToolTipText) {
         Label fieldLabel = addLabel(fieldBox, readOnly, 225.0, fieldName);
+
+        potentialToolTipText.ifPresent((text) -> fieldLabel.setTooltip(new Tooltip(text)));
 
         fieldLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_NAME);
     }

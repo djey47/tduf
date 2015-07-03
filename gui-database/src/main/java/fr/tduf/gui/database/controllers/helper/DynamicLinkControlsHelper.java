@@ -135,6 +135,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         if (topicLinkObject.getLabel() != null) {
             fieldName = topicLinkObject.getLabel();
         }
-        addFieldLabel(fieldBox, topicLinkObject.isReadOnly(), fieldName);
+        // TODO handle tooltip for linked field
+        addFieldLabel(fieldBox, topicLinkObject.isReadOnly(), fieldName, Optional.empty());
     }
 }
