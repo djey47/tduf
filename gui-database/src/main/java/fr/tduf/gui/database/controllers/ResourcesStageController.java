@@ -3,7 +3,6 @@ package fr.tduf.gui.database.controllers;
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
-import fr.tduf.gui.database.domain.BrowsedResource;
 import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.gui.database.domain.Resource;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -50,7 +49,7 @@ public class ResourcesStageController implements Initializable {
 
     private ObservableList<Resource> resourceData = FXCollections.observableArrayList();
 
-    private Property<BrowsedResource> browsedResourceProperty;
+    private Property<LocalizedResource> browsedResourceProperty;
 
     private SimpleStringProperty resourceReferenceProperty;
 
@@ -136,10 +135,10 @@ public class ResourcesStageController implements Initializable {
         updateResourcesStageData();
     }
 
-    private void handleBrowseToResource(BrowsedResource newResource) {
+    private void handleBrowseToResource(LocalizedResource newResource) {
         System.out.println("handleBrowseToResource: " + newResource);
 
-        this.topicsChoiceBox.setValue(newResource.getTopic());
+        this.topicsChoiceBox.setValue(newResource.getTopic().get());
 
         selectResourceInTableAndScroll(newResource.getReference());
     }
@@ -148,7 +147,7 @@ public class ResourcesStageController implements Initializable {
         resourceReferenceProperty = referenceProperty;
         fieldRank = entryFieldRank;
         currentLocale = locale;
-        browsedResourceProperty.setValue(new BrowsedResource(targetTopic, referenceProperty.get()));
+        browsedResourceProperty.setValue(new LocalizedResource(targetTopic, referenceProperty.get()));
 
         Stage stage = (Stage) this.root.getScene().getWindow();
         stage.show();
