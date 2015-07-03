@@ -82,11 +82,8 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
         tableView.setItems(resourceData);
 
-        String targetProfileName = topicLinkObject.getRemoteReferenceProfile();
-        if (targetProfileName != null) {
-            tableView.setOnMousePressed(
-                    controller.handleLinkTableMouseClick(targetProfileName, targetTopic));
-        }
+        Optional.ofNullable(topicLinkObject.getRemoteReferenceProfile())
+                .ifPresent((targetProfileName) -> tableView.setOnMousePressed(controller.handleLinkTableMouseClick(targetProfileName, targetTopic)));
 
         fieldBox.getChildren().add(tableView);
 
@@ -96,25 +93,26 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
     private void addButtonsForLinkedTopic(HBox fieldBox, String targetProfileName, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<ContentEntryDataItem> tableSelectionModel, TopicLinkDto topicLinkObject) {
         VBox buttonsBox = new VBox(5);
 
-        if (targetProfileName != null) {
-            addContextualButton(
-                    buttonsBox,
-                    DisplayConstants.LABEL_BUTTON_GOTO,
-                    DisplayConstants.TOOLTIP_BUTTON_GOTO_SELECTED_ENTRY,
-                    controller.handleGotoReferenceButtonMouseClick(tableSelectionModel, targetTopic, targetProfileName));
-            if (!topicLinkObject.isReadOnly()) {
-                addContextualButton(
-                        buttonsBox,
-                        DisplayConstants.LABEL_BUTTON_PLUS,
-                        DisplayConstants.TOOLTIP_BUTTON_ADD_LINKED_ENTRY,
-                        controller.handleAddLinkedEntryButtonMouseClick(tableSelectionModel, targetTopic, targetProfileName, topicLinkObject));
-                addContextualButton(
-                        buttonsBox,
-                        DisplayConstants.LABEL_BUTTON_MINUS,
-                        DisplayConstants.TOOLTIP_BUTTON_DELETE_LINKED_ENTRY,
-                        controller.handleRemoveLinkedEntryButtonMouseClick(tableSelectionModel, topicLinkObject));
-            }
-        }
+        Optional.ofNullable(targetProfileName)
+                .ifPresent((profileName) -> {
+                    addContextualButton(
+                            buttonsBox,
+                            DisplayConstants.LABEL_BUTTON_GOTO,
+                            DisplayConstants.TOOLTIP_BUTTON_GOTO_SELECTED_ENTRY,
+                            controller.handleGotoReferenceButtonMouseClick(tableSelectionModel, targetTopic, profileName));
+                    if (!topicLinkObject.isReadOnly()) {
+                        addContextualButton(
+                                buttonsBox,
+                                DisplayConstants.LABEL_BUTTON_PLUS,
+                                DisplayConstants.TOOLTIP_BUTTON_ADD_LINKED_ENTRY,
+                                controller.handleAddLinkedEntryButtonMouseClick(tableSelectionModel, targetTopic, profileName, topicLinkObject));
+                        addContextualButton(
+                                buttonsBox,
+                                DisplayConstants.LABEL_BUTTON_MINUS,
+                                DisplayConstants.TOOLTIP_BUTTON_DELETE_LINKED_ENTRY,
+                                controller.handleRemoveLinkedEntryButtonMouseClick(tableSelectionModel, topicLinkObject));
+                    }
+                });
 
         fieldBox.getChildren().add(buttonsBox);
     }
@@ -132,7 +130,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     private BulkDatabaseMiner getMiner() {
-            return controller.getMiner();
+        return controller.getMiner();
     }
 
     private static void addFieldLabelForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject, Optional<String> potentialTooltipText) {
@@ -140,7 +138,6 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         if (topicLinkObject.getLabel() != null) {
             fieldName = topicLinkObject.getLabel();
         }
-        // TODO handle tooltip for linked field
         addFieldLabel(fieldBox, topicLinkObject.isReadOnly(), fieldName, potentialTooltipText);
     }
 }
