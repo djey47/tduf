@@ -13,6 +13,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -47,7 +48,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                         controller.getDefaultTab(),
                         structureField,
                         topic
-                ) );
+                ));
     }
 
     private void addFieldControls(VBox defaultTab, DbStructureDto.Field field, DbDto.Topic currentTopic) {
@@ -92,7 +93,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                 addPercentValueControls(fieldBox, fieldReadOnly, property);
                 break;
             case BITFIELD:
-                // TODO handle bitfield -> requires resolver (0.7.0+)
+                addBitfieldValueControls(fieldBox, fieldReadOnly);
                 break;
             case REFERENCE:
                 addReferenceValueControls(fieldBox, fieldReadOnly, field);
@@ -201,6 +202,35 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                     controller.handleBrowseResourcesButtonMouseClick(topic, rawValueProperty, fieldRank)
             );
         }
+    }
+
+    private void addBitfieldValueControls(HBox fieldBox, boolean fieldReadOnly) {
+        GridPane gridPane = new GridPane();
+        gridPane.setGridLinesVisible(true);
+        gridPane.setPrefWidth(225);
+
+        gridPane.add(new CheckBox("1"), 0, 0);
+        gridPane.add(new CheckBox("2"), 1, 0);
+        gridPane.add(new CheckBox("3"), 2, 0);
+        gridPane.add(new CheckBox("4"), 0, 1);
+        gridPane.add(new CheckBox("5"), 1, 1);
+        gridPane.add(new CheckBox("6"), 2, 1);
+        gridPane.add(new CheckBox("7"), 0, 2);
+        gridPane.add(new CheckBox("8"), 1, 2);
+        gridPane.add(new CheckBox("9"), 2, 2);
+        gridPane.add(new CheckBox("10"), 0, 3);
+        gridPane.add(new CheckBox("11"), 1, 3);
+        gridPane.add(new CheckBox("12"), 2, 3);
+        gridPane.add(new CheckBox("13"), 0, 4);
+        gridPane.add(new CheckBox("14"), 1, 4);
+        gridPane.add(new CheckBox("15"), 2, 4);
+        gridPane.add(new CheckBox("16"), 0, 5);
+        gridPane.add(new CheckBox("17"), 1, 5);
+        gridPane.add(new CheckBox("18"), 2, 5);
+
+
+        fieldBox.getChildren().add(gridPane);
+
     }
 
     private static void addResourceValueLabel(HBox fieldBox, boolean fieldReadOnly, SimpleStringProperty property) {
