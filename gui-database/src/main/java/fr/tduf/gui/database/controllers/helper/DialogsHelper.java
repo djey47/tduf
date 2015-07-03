@@ -2,7 +2,7 @@ package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.domain.LocalizedResource;
-import fr.tduf.gui.database.domain.Resource;
+import fr.tduf.gui.database.domain.javafx.ResourceEntryDataItem;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -37,7 +37,7 @@ public class DialogsHelper {
     /**
      * @return true if all locales should be affected, false otherwise - or absent if dialog was dismissed.
      */
-    public Optional<Boolean> showResourceDeletionDialog(DbDto.Topic topic, Resource resource, String localeCode) {
+    public Optional<Boolean> showResourceDeletionDialog(DbDto.Topic topic, ResourceEntryDataItem resource, String localeCode) {
         Alert alert = new Alert(CONFIRMATION);
         alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
         alert.setHeaderText(String.format(DisplayConstants.MESSAGE_DELETED_RESOURCE,
@@ -65,7 +65,7 @@ public class DialogsHelper {
      * @param updatedResource   : resource to apply, or absent to create a new one
      * @return resulting resource, or absent if dialog was dismissed.
      */
-    public Optional<LocalizedResource> showEditResourceDialog(DbDto topicObject, Optional<Resource> updatedResource, DbResourceDto.Locale currentLocale) {
+    public Optional<LocalizedResource> showEditResourceDialog(DbDto topicObject, Optional<ResourceEntryDataItem> updatedResource, DbResourceDto.Locale currentLocale) {
         Dialog<LocalizedResource> editResourceDialog = new Dialog<>();
         editResourceDialog.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
 
@@ -74,7 +74,7 @@ public class DialogsHelper {
         String defaultValue = DisplayConstants.VALUE_RESOURCE_DEFAULT;
         DbDto.Topic topic = topicObject.getTopic();
         if (updateResourceMode) {
-            Resource resource = updatedResource.get();
+            ResourceEntryDataItem resource = updatedResource.get();
             editResourceDialog.setHeaderText(String.format(DisplayConstants.MESSAGE_EDITED_RESOURCE,
                     topic.getLabel(),
                     resource.toDisplayableValueForLocale(currentLocale)));

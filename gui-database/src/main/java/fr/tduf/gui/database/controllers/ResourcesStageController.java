@@ -4,7 +4,7 @@ import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.LocalizedResource;
-import fr.tduf.gui.database.domain.Resource;
+import fr.tduf.gui.database.domain.javafx.ResourceEntryDataItem;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -43,11 +43,11 @@ public class ResourcesStageController implements Initializable {
     private ChoiceBox<DbDto.Topic> topicsChoiceBox;
 
     @FXML
-    private TableView<Resource> resourcesTableView;
+    private TableView<ResourceEntryDataItem> resourcesTableView;
 
     private MainStageController mainStageController;
 
-    private ObservableList<Resource> resourceData = FXCollections.observableArrayList();
+    private ObservableList<ResourceEntryDataItem> resourceData = FXCollections.observableArrayList();
 
     private Property<LocalizedResource> browsedResourceProperty;
 
@@ -74,7 +74,7 @@ public class ResourcesStageController implements Initializable {
 
         if (MouseButton.PRIMARY == mouseEvent.getButton() && mouseEvent.getClickCount() == 2) {
             TableViewHelper.getMouseSelectedItem(mouseEvent)
-                    .ifPresent((selectedResource) -> applyResourceSelectionToMainStageAndClose((Resource) selectedResource));
+                    .ifPresent((selectedResource) -> applyResourceSelectionToMainStageAndClose((ResourceEntryDataItem) selectedResource));
         }
     }
 
@@ -82,7 +82,7 @@ public class ResourcesStageController implements Initializable {
     private void handleSelectResourceButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleSelectResourceButtonMouseClick");
 
-        Resource selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
+        ResourceEntryDataItem selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
         if (selectedResource != null && resourceReferenceProperty != null) {
             applyResourceSelectionToMainStageAndClose(selectedResource);
         }
@@ -92,7 +92,7 @@ public class ResourcesStageController implements Initializable {
     private void handleEditResourceButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleEditResourceButtonMouseClick");
 
-        Resource selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
+        ResourceEntryDataItem selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
         if (selectedResource == null) {
             return;
         }
@@ -116,7 +116,7 @@ public class ResourcesStageController implements Initializable {
     private void handleRemoveResourceButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleRemoveResourceButtonMouseClick");
 
-        Resource selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
+        ResourceEntryDataItem selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
         if (selectedResource == null) {
             return;
         }
@@ -160,11 +160,11 @@ public class ResourcesStageController implements Initializable {
     }
 
     private void initTablePane() {
-        TableColumn<Resource, String> refColumn = (TableColumn<Resource, String>) this.resourcesTableView.getColumns().get(0);
+        TableColumn<ResourceEntryDataItem, String> refColumn = (TableColumn<ResourceEntryDataItem, String>) this.resourcesTableView.getColumns().get(0);
         refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
 
         for (int columnIndex = 1; columnIndex < resourcesTableView.getColumns().size(); columnIndex++) {
-            TableColumn<Resource, String> valueColumn = (TableColumn<Resource, String>) this.resourcesTableView.getColumns().get(columnIndex);
+            TableColumn<ResourceEntryDataItem, String> valueColumn = (TableColumn<ResourceEntryDataItem, String>) this.resourcesTableView.getColumns().get(columnIndex);
             DbResourceDto.Locale locale = DbResourceDto.Locale.values()[columnIndex - 1];
             valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valuePropertyForLocale(locale));
         }
@@ -190,7 +190,7 @@ public class ResourcesStageController implements Initializable {
                 });
     }
 
-    private void applyResourceSelectionToMainStageAndClose(Resource selectedResource) {
+    private void applyResourceSelectionToMainStageAndClose(ResourceEntryDataItem selectedResource) {
         String resourceReference = selectedResource.referenceProperty().getValue();
         resourceReferenceProperty.set(resourceReference);
 
@@ -200,7 +200,7 @@ public class ResourcesStageController implements Initializable {
         stage.close();
     }
 
-    private void removeResourceAndUpdateMainStage(DbDto.Topic topic, Resource selectedResource, DbResourceDto.Locale locale, boolean forAllLocales, int selectedRowIndex) {
+    private void removeResourceAndUpdateMainStage(DbDto.Topic topic, ResourceEntryDataItem selectedResource, DbResourceDto.Locale locale, boolean forAllLocales, int selectedRowIndex) {
         mainStageController.getChangeDataController().removeResourceWithReference(topic, locale, selectedResource.referenceProperty().getValue(), forAllLocales);
 
         updateAllStages(Optional.<String>empty());
@@ -270,7 +270,7 @@ public class ResourcesStageController implements Initializable {
                         resourceObject.getEntries().stream()
 
                                 .map((resourceEntry) -> {
-                                    Resource resource = new Resource();
+                                    ResourceEntryDataItem resource = new ResourceEntryDataItem();
 
                                     String resourceRef = resourceEntry.getReference();
                                     resource.setReference(resourceRef);

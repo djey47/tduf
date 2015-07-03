@@ -1,4 +1,4 @@
-package fr.tduf.gui.database.domain;
+package fr.tduf.gui.database.domain.javafx;
 
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -11,8 +11,7 @@ import java.util.Map;
 /**
  * Represents a resource with all values for locales, to be displayed in a TableView.
  */
-// TODO simplify (3 classes for resources ...)
-public class Resource {
+public class ResourceEntryDataItem {
     private StringProperty reference = new SimpleStringProperty();
 
     private Map<DbResourceDto.Locale, StringProperty> values = new HashMap<>();

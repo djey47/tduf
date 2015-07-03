@@ -1,4 +1,4 @@
-package fr.tduf.gui.database.domain;
+package fr.tduf.gui.database.domain.javafx;
 
 import com.google.common.base.MoreObjects;
 import javafx.beans.property.SimpleStringProperty;
@@ -11,7 +11,7 @@ import java.util.OptionalLong;
  * Only applies to a content entry.
  * Also includes database entry identifier (optional).
  */
-public class ContentEntry {
+public class ContentEntryDataItem {
     private OptionalLong internalEntryId;
 
     private StringProperty reference = new SimpleStringProperty();

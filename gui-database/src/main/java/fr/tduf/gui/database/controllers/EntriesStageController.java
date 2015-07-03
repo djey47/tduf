@@ -4,7 +4,7 @@ import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
-import fr.tduf.gui.database.domain.ContentEntry;
+import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.Property;
@@ -35,17 +35,17 @@ public class EntriesStageController implements Initializable {
     private Label currentTopicLabel;
 
     @FXML
-    TableView<ContentEntry> entriesTableView;
+    TableView<ContentEntryDataItem> entriesTableView;
 
     private MainStageController mainStageController;
 
-    private ObservableList<ContentEntry> entriesData = FXCollections.observableArrayList();
+    private ObservableList<ContentEntryDataItem> entriesData = FXCollections.observableArrayList();
 
     private Property<DbDto.Topic> currentTopicProperty;
 
     private OptionalInt fieldRankForUpdate = OptionalInt.empty();
 
-    private Optional<ContentEntry> selectedEntry = Optional.empty();
+    private Optional<ContentEntryDataItem> selectedEntry = Optional.empty();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -59,7 +59,7 @@ public class EntriesStageController implements Initializable {
         System.out.println("handleEntriesTableMouseClick");
 
         if (MouseButton.PRIMARY == mouseEvent.getButton()) {
-            Optional<ContentEntry> potentialSelectedEntry = TableViewHelper.getMouseSelectedItem(mouseEvent);
+            Optional<ContentEntryDataItem> potentialSelectedEntry = TableViewHelper.getMouseSelectedItem(mouseEvent);
             if (potentialSelectedEntry.isPresent()) {
                 selectedEntry = potentialSelectedEntry;
 
@@ -81,7 +81,7 @@ public class EntriesStageController implements Initializable {
         selectEntryInTableAndScroll(entryReference);
     }
 
-    Optional<ContentEntry> initAndShowModalDialog(DbDto.Topic topic, String targetProfileName) {
+    Optional<ContentEntryDataItem> initAndShowModalDialog(DbDto.Topic topic, String targetProfileName) {
         fieldRankForUpdate = OptionalInt.empty();
 
         currentTopicProperty.setValue(topic);
@@ -102,10 +102,10 @@ public class EntriesStageController implements Initializable {
     }
 
     private void initTablePane() {
-        TableColumn<ContentEntry, String> refColumn = (TableColumn<ContentEntry, String>) entriesTableView.getColumns().get(0);
+        TableColumn<ContentEntryDataItem, String> refColumn = (TableColumn<ContentEntryDataItem, String>) entriesTableView.getColumns().get(0);
         refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
 
-        TableColumn<ContentEntry, String> valueColumn = (TableColumn<ContentEntry, String>) entriesTableView.getColumns().get(1);
+        TableColumn<ContentEntryDataItem, String> valueColumn = (TableColumn<ContentEntryDataItem, String>) entriesTableView.getColumns().get(1);
         valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
 
         entriesTableView.setItems(entriesData);
@@ -132,25 +132,25 @@ public class EntriesStageController implements Initializable {
                 .ifPresent((topicObject) -> entriesData.addAll(topicObject.getData().getEntries().stream()
 
                         .map((entry) -> {
-                            ContentEntry contentEntry = new ContentEntry();
+                            ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
 
                             long entryInternalIdentifier = entry.getId();
-                            contentEntry.setInternalEntryId(entryInternalIdentifier);
+                            contentEntryDataItem.setInternalEntryId(entryInternalIdentifier);
 
                             String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
-                            contentEntry.setValue(entryValue);
+                            contentEntryDataItem.setValue(entryValue);
 
                             String entryReference = getMiner().getContentEntryRefWithInternalIdentifier(entryInternalIdentifier, topic).get();
-                            contentEntry.setReference(entryReference);
+                            contentEntryDataItem.setReference(entryReference);
 
-                            return contentEntry;
+                            return contentEntryDataItem;
                         })
 
                         .collect(toList()))
                 );
     }
 
-    private void applyEntrySelectionToMainStageAndClose(ContentEntry selectedEntry) {
+    private void applyEntrySelectionToMainStageAndClose(ContentEntryDataItem selectedEntry) {
         fieldRankForUpdate.ifPresent((fieldRank) -> {
             // Update mode: will update a particular field in main stage
             String entryReference = selectedEntry.referenceProperty().getValue();
