@@ -38,8 +38,6 @@ subprojects {
         testCompile group: 'junit', name: 'junit', version: '4.11'
         testCompile group: 'org.mockito', name: 'mockito-core', version: '1.10.19'
         testCompile group: 'org.assertj', name: 'assertj-core-java8', version: '1.0.0m1'
-        // TODO Replace json-lib library
-        testCompile group: 'net.sf.json-lib', name: 'json-lib', classifier: 'jdk15', version: '2.4'
         testCompile group: 'org.skyscreamer', name: 'jsonassert', version: '1.2.3'
     }
 

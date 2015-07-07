@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -119,7 +120,7 @@ public class DatabaseWriterTest {
     }
 
     @Test
-    public void writeAllAsJson_whenRealContents_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException {
+    public void writeAllAsJson_whenRealContents_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException, JSONException {
         //GIVEN
         InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/TDU_Achievements.json");
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);

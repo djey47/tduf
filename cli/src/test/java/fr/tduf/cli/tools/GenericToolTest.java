@@ -2,6 +2,7 @@ package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.AssertionsHelper;
 import fr.tduf.cli.common.helper.ConsoleHelper;
+import org.json.JSONException;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -123,7 +124,7 @@ public class GenericToolTest {
     }
 
     @Test
-    public void doMain_whenKnownCommand_andNormalizedOutputMode_andVoidResult_shouldWriteProperEmptyJsonToConsole() throws IOException {
+    public void doMain_whenKnownCommand_andNormalizedOutputMode_andVoidResult_shouldWriteProperEmptyJsonToConsole() throws IOException, JSONException {
         // GIVEN
         OutputStream outContents = ConsoleHelper.hijackStandardOutput();
 
@@ -135,7 +136,7 @@ public class GenericToolTest {
     }
 
     @Test
-    public void doMain_whenKnownCommand_andNormalizedOutputMode_andResult_shouldWriteProperJsonToConsole() throws IOException {
+    public void doMain_whenKnownCommand_andNormalizedOutputMode_andResult_shouldWriteProperJsonToConsole() throws IOException, JSONException {
         // GIVEN
         OutputStream outContents = ConsoleHelper.hijackStandardOutput();
 

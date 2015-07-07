@@ -3,16 +3,19 @@ package fr.tduf.libunlimited.low.files.research.domain;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.UNKNOWN;
 import static java.util.Arrays.asList;
-import static net.sf.json.test.JSONAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 public class DataStoreTest {
 
@@ -68,7 +71,7 @@ public class DataStoreTest {
     }
 
     @Test
-    public void toJsonString_whenProvidedStore_shouldReturnJsonRepresentation() throws IOException, URISyntaxException {
+    public void toJsonString_whenProvidedStore_shouldReturnJsonRepresentation() throws IOException, URISyntaxException, JSONException {
         // GIVEN
         String expectedJson = getStoreContentsAsJson();
         DataStoreFixture.createStoreEntries(dataStore);
@@ -79,7 +82,7 @@ public class DataStoreTest {
 
         // THEN
         assertThat(actualJson).isNotNull();
-        assertJsonEquals(expectedJson, actualJson);
+        assertEquals(expectedJson, actualJson, JSONCompareMode.STRICT);
     }
 
     @Test

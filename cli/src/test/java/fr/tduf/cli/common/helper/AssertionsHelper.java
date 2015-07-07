@@ -1,7 +1,7 @@
 package fr.tduf.cli.common.helper;
 
 import org.json.JSONException;
-import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,8 +9,8 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 
-import static net.sf.json.test.JSONAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 /**
  *
@@ -24,9 +24,9 @@ public class AssertionsHelper {
      * @param expected
      * @throws IOException
      */
-    public static void assertOutputStreamContainsJsonExactly(OutputStream outputStream, String expected) throws IOException {
+    public static void assertOutputStreamContainsJsonExactly(OutputStream outputStream, String expected) throws IOException, JSONException {
         finalizeOutputStream(outputStream);
-        assertJsonEquals(expected, outputStream.toString());
+        assertEquals(expected, outputStream.toString(), JSONCompareMode.STRICT);
     }
 
     /**
@@ -60,7 +60,7 @@ public class AssertionsHelper {
         String json1 = assertAndReadJsonFileContents(fileName1);
         String json2 = assertAndReadJsonFileContents(fileName2);
 
-        JSONAssert.assertEquals(json1, json2, false);
+        assertEquals(json1, json2, false);
 
 //        assertJsonEquals("Files " + fileName1 + " and " + fileName2 + " must match: ", json1, json2);
     }

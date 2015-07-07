@@ -7,6 +7,7 @@ import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
 import org.apache.commons.io.FileUtils;
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -177,7 +178,7 @@ public class FileToolIntegTest {
     }
 
     @Test
-    public void bankInfo_shouldReturnInformation() throws IOException {
+    public void bankInfo_shouldReturnInformation() throws IOException, JSONException {
         String bankFile = Paths.get(bankDirectory, "Empty.bnk").toString();
 
         // GIVEN

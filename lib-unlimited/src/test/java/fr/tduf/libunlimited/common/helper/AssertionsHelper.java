@@ -1,13 +1,17 @@
 package fr.tduf.libunlimited.common.helper;
 
+import org.json.JSONException;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 
-import static net.sf.json.test.JSONAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 /**
  * Helper class to provide advanced assertions.
@@ -46,7 +50,7 @@ public class AssertionsHelper {
      * @throws URISyntaxException
      * @throws IOException
      */
-    public static void assertJsonFileMatchesReference(String fileName, String resourceDirectory) throws URISyntaxException, IOException {
+    public static void assertJsonFileMatchesReference(String fileName, String resourceDirectory) throws URISyntaxException, IOException, JSONException {
         File actualContentsFile = assertFileExistAndGet(fileName);
         String actualJson = assertAndReadJsonFileContents(fileName);
 
@@ -54,7 +58,7 @@ public class AssertionsHelper {
         byte[] expectedEncoded = Files.readAllBytes(expectedContentsFile.toPath());
         String expectedJson = new String(expectedEncoded, Charset.forName("UTF-8"));
 
-        assertJsonEquals("File must match reference one: " + expectedContentsFile.getPath(), expectedJson, actualJson);
+        assertEquals(expectedJson, actualJson, JSONCompareMode.STRICT);
     }
 
     /**
@@ -62,11 +66,11 @@ public class AssertionsHelper {
      * @param fileName1 : path and file name
      * @param fileName2 : path and file name
      */
-    public static void assertJsonFilesMatch(String fileName1, String fileName2) throws IOException {
+    public static void assertJsonFilesMatch(String fileName1, String fileName2) throws IOException, JSONException {
         String json1 = assertAndReadJsonFileContents(fileName1);
         String json2 = assertAndReadJsonFileContents(fileName2);
 
-        assertJsonEquals("Files " + fileName1 + " and " + fileName2 + " must match: ", json1, json2);
+        assertEquals(json1, json2, JSONCompareMode.STRICT);
     }
 
     /**
