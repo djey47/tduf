@@ -3,12 +3,16 @@ package fr.tduf.libunlimited.low.files.db.mapper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
 
-import static net.sf.json.test.JSONAssert.assertJsonEquals;
+import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
+
 
 public class DbDataMapperTest {
 
@@ -19,7 +23,7 @@ public class DbDataMapperTest {
     }
 
     @Test
-    public void serialize_shouldWriteProperJson() throws IOException {
+    public void serialize_shouldWriteProperJson() throws IOException, JSONException {
         //GIVEN
         DbDataDto.Item item11 = DbDataDto.Item.builder()
                 .ofFieldRank(1)
@@ -106,6 +110,6 @@ public class DbDataMapperTest {
         System.out.println("Actual JSON:" + jsonResult);
 
         //THEN
-        assertJsonEquals(expectedJson, jsonResult);
+        assertEquals(expectedJson, jsonResult, JSONCompareMode.STRICT);
     }
 }

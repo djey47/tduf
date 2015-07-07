@@ -9,6 +9,8 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,8 +20,8 @@ import java.util.Map;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static java.util.Arrays.asList;
-import static net.sf.json.test.JSONAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 public class DatabaseParserTest {
 
@@ -355,7 +357,7 @@ public class DatabaseParserTest {
         assertThat(databaseParser.getIntegrityErrors()).isEmpty();
 
         String expectedJson = FilesHelper.readTextFromResourceFile("/db/json/TDU_Achievements.json", FilesHelper.CHARSET_UNICODE_8);
-        assertJsonEquals(expectedJson, jsonResult);
+        assertEquals(expectedJson, jsonResult, JSONCompareMode.STRICT);
     }
 
     @Test
@@ -389,7 +391,7 @@ public class DatabaseParserTest {
         assertThat(databaseParser.getIntegrityErrors()).isEmpty();
 
         String expectedJson = FilesHelper.readTextFromResourceFile("/db/json/special/TDU_Achievements.json", FilesHelper.CHARSET_UNICODE_8);
-        assertJsonEquals(expectedJson, jsonResult);
+        assertEquals(expectedJson, jsonResult, JSONCompareMode.STRICT);
     }
 
     @Test(expected = NullPointerException.class)
