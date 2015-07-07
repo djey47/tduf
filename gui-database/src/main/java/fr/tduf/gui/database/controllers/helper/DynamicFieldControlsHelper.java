@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers.helper;
 
+import com.google.common.base.Strings;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
@@ -12,10 +13,12 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 
 import java.util.List;
 import java.util.Optional;
@@ -93,7 +96,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                 addPercentValueControls(fieldBox, fieldReadOnly, property);
                 break;
             case BITFIELD:
-                addBitfieldValueControls(fieldBox, fieldReadOnly);
+                addBitfieldValueControls(fieldBox, fieldReadOnly, property);
                 break;
             case REFERENCE:
                 addReferenceValueControls(fieldBox, fieldReadOnly, field);
@@ -204,33 +207,58 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
-    private void addBitfieldValueControls(HBox fieldBox, boolean fieldReadOnly) {
-        GridPane gridPane = new GridPane();
-        gridPane.setGridLinesVisible(true);
-        gridPane.setPrefWidth(225);
+    private void addBitfieldValueControls(HBox fieldBox, boolean fieldReadOnly, SimpleStringProperty rawValueProperty) {
+        FlowPane flowPane = new FlowPane();
+        flowPane.setPrefWidth(350);
 
-        gridPane.add(new CheckBox("1"), 0, 0);
-        gridPane.add(new CheckBox("2"), 1, 0);
-        gridPane.add(new CheckBox("3"), 2, 0);
-        gridPane.add(new CheckBox("4"), 0, 1);
-        gridPane.add(new CheckBox("5"), 1, 1);
-        gridPane.add(new CheckBox("6"), 2, 1);
-        gridPane.add(new CheckBox("7"), 0, 2);
-        gridPane.add(new CheckBox("8"), 1, 2);
-        gridPane.add(new CheckBox("9"), 2, 2);
-        gridPane.add(new CheckBox("10"), 0, 3);
-        gridPane.add(new CheckBox("11"), 1, 3);
-        gridPane.add(new CheckBox("12"), 2, 3);
-        gridPane.add(new CheckBox("13"), 0, 4);
-        gridPane.add(new CheckBox("14"), 1, 4);
-        gridPane.add(new CheckBox("15"), 2, 4);
-        gridPane.add(new CheckBox("16"), 0, 5);
-        gridPane.add(new CheckBox("17"), 1, 5);
-        gridPane.add(new CheckBox("18"), 2, 5);
+        // TODO handle update model when check
+        for (int i = 1 ; i <= 18 ; i++) {
+            CheckBox checkBox = new CheckBox(Strings.padStart(Integer.valueOf(i).toString(), 2, '0'));
 
+            checkBox.setPadding(new Insets(0, 5, 0, 5));
+            checkBox.setDisable(fieldReadOnly);
 
-        fieldBox.getChildren().add(gridPane);
+            final int fieldIndex = i;
+            // TODO extract to converter class
+            Bindings.bindBidirectional(rawValueProperty, checkBox.selectedProperty(), new StringConverter<Boolean>() {
+                @Override
+                public String toString(Boolean object) {
+                    String rawValue = rawValueProperty.getValue();
 
+                    if ("".equals(rawValue)) {
+                        rawValue = "0";
+                    }
+
+                    String binaryString = Integer.toBinaryString(Integer.valueOf(rawValue));
+                    binaryString = Strings.padStart(binaryString, 18, '0');
+
+                    char[] chars = binaryString.toCharArray();
+                    chars[binaryString.length() - fieldIndex] = object ? '1' : '0';
+
+                    return Integer.valueOf(Integer.parseInt(new String(chars), 2)).toString();
+                }
+
+                @Override
+                public Boolean fromString(String rawValue) {
+                    if ("".equals(rawValue)) {
+                        rawValue = "0";
+                    }
+
+                    String binaryString = Integer.toBinaryString(Integer.valueOf(rawValue));
+
+                    if (fieldIndex > binaryString.length()) {
+                        return false;
+                    }
+
+                    String substring = binaryString.substring(binaryString.length() - fieldIndex, binaryString.length() - fieldIndex + 1);
+                    return "1".equals(substring);
+                }
+            });
+
+            flowPane.getChildren().add(checkBox);
+        }
+
+        fieldBox.getChildren().add(flowPane);
     }
 
     private static void addResourceValueLabel(HBox fieldBox, boolean fieldReadOnly, SimpleStringProperty property) {
