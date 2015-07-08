@@ -307,6 +307,17 @@ public class MainStageController implements Initializable {
     }
 
     @FXML
+    public void handleDuplicateEntryButtonAction(ActionEvent actionEvent) {
+        System.out.println("handleDuplicateEntryButtonAction");
+
+        if (currentTopicObject == null) {
+            return;
+        }
+
+        duplicateEntryAndUpdateStage();
+    }
+
+    @FXML
     public void handleRemoveEntryButtonAction(ActionEvent actionEvent) {
         System.out.println("handleRemoveEntryButtonAction");
 
@@ -574,6 +585,10 @@ public class MainStageController implements Initializable {
         long newEntryIndex = changeDataController.addEntryForCurrentTopic();
 
         viewDataController.updateEntryCountAndSwitchToEntry(newEntryIndex);
+    }
+
+    private void duplicateEntryAndUpdateStage() {
+        // TODO
     }
 
     private void addLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, Optional<ContentEntryDataItem> potentialLinkedEntry, TopicLinkDto topicLinkObject) {

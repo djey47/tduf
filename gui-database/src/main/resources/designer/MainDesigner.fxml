@@ -46,6 +46,11 @@
                   </Label>
                   <Separator orientation="VERTICAL" />
                   <Button mnemonicParsing="false" onAction="#handleBackButtonMouseClick" prefWidth="34.0" text="&lt;-"><tooltip><Tooltip text="Goes back to previous topic location." /></tooltip></Button>
+                  <Button layoutX="237.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleDuplicateEntryButtonAction" prefWidth="34.0" text="*">
+                     <tooltip>
+                        <Tooltip text="Adds a new entry in current topic, based on displayed one." />
+                     </tooltip>
+                  </Button>
                   <Button layoutX="199.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleAddEntryButtonAction" prefWidth="34.0" text="+"><tooltip><Tooltip text="Adds a new entry in current topic." /></tooltip></Button>
                   <Button layoutX="237.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleRemoveEntryButtonAction" prefWidth="34.0" text="-"><tooltip><Tooltip text="Removes current entry in topic." /></tooltip></Button>
                   <Separator layoutX="418.0" layoutY="10.0" orientation="VERTICAL" />
