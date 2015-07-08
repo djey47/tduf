@@ -7,6 +7,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -94,15 +95,27 @@ public class DatabaseChangeHelper {
      */
     public void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
         List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(topic).get().getData().getEntries();
+        AtomicBoolean removalResult = new AtomicBoolean(false);
         topicEntries.stream()
 
                 .filter((entry) -> entry.getId() == entryId)
 
                 .findAny()
 
-                .ifPresent(topicEntries::remove);
-    }
+                .ifPresent((entry) -> {
+                    topicEntries.remove(entry);
+                    removalResult.set(true);
+                });
 
+        // Fix identifiers of next entries
+        if (removalResult.get()) {
+            topicEntries.stream()
+
+                    .filter((entry) -> entry.getId() > entryId)
+
+                    .forEach(DbDataDto.Entry::shiftIdUp);
+        }
+    }
     /**
      *
      * @param entryId
