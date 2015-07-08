@@ -45,7 +45,7 @@ public class MainStageChangeDataController {
 
     void removeEntryWithIdentifier(long internalEntryId, DbDto.Topic topic) {
         requireNonNull(getGenHelper());
-        // TODO Check all entry ids are repaired after deletion
+        // FIXME does not refresh contents when first item deleted
         getChangeHelper().removeEntryWithIdentifier(internalEntryId, topic);
     }
 
