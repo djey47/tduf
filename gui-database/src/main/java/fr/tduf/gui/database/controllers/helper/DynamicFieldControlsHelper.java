@@ -5,6 +5,7 @@ import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.converter.BitfieldToStringConverter;
 import fr.tduf.gui.database.converter.PercentNumberToStringConverter;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
@@ -18,7 +19,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.StringConverter;
 
 import java.util.List;
 import java.util.Optional;
@@ -211,48 +211,13 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         FlowPane flowPane = new FlowPane();
         flowPane.setPrefWidth(350);
 
-        for (int i = 1 ; i <= 18 ; i++) {
-            CheckBox checkBox = new CheckBox(Strings.padStart(Integer.valueOf(i).toString(), 2, '0'));
+        for (int bitIndex = 1 ; bitIndex <= BitfieldToStringConverter.MAXIMUM_BIT_COUNT ; bitIndex++) {
+            CheckBox checkBox = new CheckBox(Strings.padStart(Integer.valueOf(bitIndex).toString(), 2, '0'));
 
             checkBox.setPadding(new Insets(0, 5, 0, 5));
             checkBox.setDisable(fieldReadOnly);
 
-            final int bitIndex = i;
-            // TODO extract to converter class
-            Bindings.bindBidirectional(rawValueProperty, checkBox.selectedProperty(), new StringConverter<Boolean>() {
-                @Override
-                public String toString(Boolean object) {
-                    String rawValue = rawValueProperty.getValue();
-
-                    if ("".equals(rawValue)) {
-                        rawValue = "0";
-                    }
-
-                    String binaryString = Integer.toBinaryString(Integer.valueOf(rawValue));
-                    binaryString = Strings.padStart(binaryString, 18, '0');
-
-                    char[] chars = binaryString.toCharArray();
-                    chars[binaryString.length() - bitIndex] = object ? '1' : '0';
-
-                    return Integer.valueOf(Integer.parseInt(new String(chars), 2)).toString();
-                }
-
-                @Override
-                public Boolean fromString(String rawValue) {
-                    if ("".equals(rawValue)) {
-                        rawValue = "0";
-                    }
-
-                    String binaryString = Integer.toBinaryString(Integer.valueOf(rawValue));
-
-                    if (bitIndex > binaryString.length()) {
-                        return false;
-                    }
-
-                    String substring = binaryString.substring(binaryString.length() - bitIndex, binaryString.length() - bitIndex + 1);
-                    return "1".equals(substring);
-                }
-            });
+            Bindings.bindBidirectional(rawValueProperty, checkBox.selectedProperty(), new BitfieldToStringConverter(bitIndex, rawValueProperty));
             checkBox.selectedProperty().addListener(controller.handleBitfieldCheckboxSelectionChange(fieldRank, rawValueProperty));
 
             flowPane.getChildren().add(checkBox);
