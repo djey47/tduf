@@ -96,7 +96,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                 addPercentValueControls(fieldBox, fieldReadOnly, property);
                 break;
             case BITFIELD:
-                addBitfieldValueControls(fieldBox, fieldReadOnly, property);
+                addBitfieldValueControls(fieldBox, fieldRank, fieldReadOnly, property);
                 break;
             case REFERENCE:
                 addReferenceValueControls(fieldBox, fieldReadOnly, field);
@@ -207,18 +207,17 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
-    private void addBitfieldValueControls(HBox fieldBox, boolean fieldReadOnly, SimpleStringProperty rawValueProperty) {
+    private void addBitfieldValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, SimpleStringProperty rawValueProperty) {
         FlowPane flowPane = new FlowPane();
         flowPane.setPrefWidth(350);
 
-        // TODO handle update model when check
         for (int i = 1 ; i <= 18 ; i++) {
             CheckBox checkBox = new CheckBox(Strings.padStart(Integer.valueOf(i).toString(), 2, '0'));
 
             checkBox.setPadding(new Insets(0, 5, 0, 5));
             checkBox.setDisable(fieldReadOnly);
 
-            final int fieldIndex = i;
+            final int bitIndex = i;
             // TODO extract to converter class
             Bindings.bindBidirectional(rawValueProperty, checkBox.selectedProperty(), new StringConverter<Boolean>() {
                 @Override
@@ -233,7 +232,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                     binaryString = Strings.padStart(binaryString, 18, '0');
 
                     char[] chars = binaryString.toCharArray();
-                    chars[binaryString.length() - fieldIndex] = object ? '1' : '0';
+                    chars[binaryString.length() - bitIndex] = object ? '1' : '0';
 
                     return Integer.valueOf(Integer.parseInt(new String(chars), 2)).toString();
                 }
@@ -246,14 +245,15 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
                     String binaryString = Integer.toBinaryString(Integer.valueOf(rawValue));
 
-                    if (fieldIndex > binaryString.length()) {
+                    if (bitIndex > binaryString.length()) {
                         return false;
                     }
 
-                    String substring = binaryString.substring(binaryString.length() - fieldIndex, binaryString.length() - fieldIndex + 1);
+                    String substring = binaryString.substring(binaryString.length() - bitIndex, binaryString.length() - bitIndex + 1);
                     return "1".equals(substring);
                 }
             });
+            checkBox.selectedProperty().addListener(controller.handleBitfieldCheckboxSelectionChange(fieldRank, rawValueProperty));
 
             flowPane.getChildren().add(checkBox);
         }

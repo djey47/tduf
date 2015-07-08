@@ -390,14 +390,24 @@ public class MainStageController implements Initializable {
         };
     }
 
-    public ChangeListener<Boolean> handleTextFieldFocusChange(int fieldRank, SimpleStringProperty fieldValueProperty) {
+    public ChangeListener<Boolean> handleTextFieldFocusChange(int fieldRank, SimpleStringProperty textFieldValueProperty) {
         return (observable, oldFocusState, newFocusState) -> {
-            System.out.println("handleTextFieldFocusChange, focused=" + newFocusState + ", fieldRank=" + fieldRank + ", fieldValue=" + fieldValueProperty.get());
+            System.out.println("handleTextFieldFocusChange, focused=" + newFocusState + ", fieldRank=" + fieldRank + ", fieldValue=" + textFieldValueProperty.get());
 
             if (oldFocusState && !newFocusState) {
-                this.changeDataController.updateContentItem(currentTopicObject.getTopic(), fieldRank, fieldValueProperty.get());
+                changeDataController.updateContentItem(currentTopicObject.getTopic(), fieldRank, textFieldValueProperty.get());
             }
         };
+    }
+
+    public ChangeListener<Boolean> handleBitfieldCheckboxSelectionChange(int fieldRank, SimpleStringProperty textFieldValueProperty ) {
+        return ((observable, oldCheckedState, newCheckedState) -> {
+            System.out.println("handleBitfieldCheckboxSelectionChange, checked=" + newCheckedState + ", fieldRank=" + fieldRank);
+
+            if (newCheckedState != oldCheckedState) {
+                changeDataController.updateContentItem(currentTopicObject.getTopic(), fieldRank, textFieldValueProperty.get());
+            }
+        });
     }
 
     private void handleProfileChoiceChanged(String newProfileName) {
