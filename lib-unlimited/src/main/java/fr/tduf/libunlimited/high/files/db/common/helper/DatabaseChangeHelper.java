@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Utility class to make changes on database contents and resources.
@@ -52,6 +53,7 @@ public class DatabaseChangeHelper {
      * @param topic
      * @return created entry
      */
+    // FIXME duplicated method change/gen
     public DbDataDto.Entry addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {
 
         DbDto topicObject = databaseMiner.getDatabaseTopic(topic).get();
@@ -99,6 +101,38 @@ public class DatabaseChangeHelper {
                 .findAny()
 
                 .ifPresent(topicEntries::remove);
+    }
+
+    /**
+     *
+     * @param entryId
+     * @param topic
+     * @return
+     */
+    public DbDataDto.Entry duplicateEntryWithIdentifier(long entryId, DbDto.Topic topic) {
+        DbDataDto.Entry sourceEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic).get();
+
+        List<DbDataDto.Entry> currentContentEntries = databaseMiner.getDatabaseTopic(topic).get().getData().getEntries();
+        long newIdentifier = currentContentEntries.size();
+        List<DbDataDto.Item> clonedItems = sourceEntry.getItems().stream()
+
+                // TODO clone switch values when needed
+                .map((contentItem) -> DbDataDto.Item.builder()
+                        .forName(contentItem.getName())
+                        .ofFieldRank(contentItem.getFieldRank())
+                        .withRawValue(contentItem.getRawValue())
+                        .build())
+
+                .collect(toList());
+
+        DbDataDto.Entry newEntry = DbDataDto.Entry.builder()
+                .forId(newIdentifier)
+                .addItems(clonedItems)
+                .build();
+
+        currentContentEntries.add(newEntry);
+
+        return newEntry;
     }
 
     /**
