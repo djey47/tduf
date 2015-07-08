@@ -45,7 +45,6 @@ public class MainStageChangeDataController {
 
     void removeEntryWithIdentifier(long internalEntryId, DbDto.Topic topic) {
         requireNonNull(getGenHelper());
-        // FIXME does not refresh contents when first item deleted
         getChangeHelper().removeEntryWithIdentifier(internalEntryId, topic);
     }
 

@@ -610,6 +610,9 @@ public class MainStageController implements Initializable {
         long currentEntryIndex = currentEntryIndexProperty.getValue();
         changeDataController.removeEntryWithIdentifier(currentEntryIndex, currentTopicProperty.getValue());
 
+        if (currentEntryIndex == 0) {
+            currentEntryIndex = 1;
+        }
         viewDataController.updateEntryCountAndSwitchToEntry(currentEntryIndex - 1);
     }
 
