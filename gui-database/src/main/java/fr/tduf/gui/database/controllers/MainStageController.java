@@ -588,7 +588,9 @@ public class MainStageController implements Initializable {
     }
 
     private void duplicateEntryAndUpdateStage() {
-        // TODO
+        long newEntryIndex = changeDataController.duplicateCurrentEntry();
+
+        viewDataController.updateEntryCountAndSwitchToEntry(newEntryIndex);
     }
 
     private void addLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, Optional<ContentEntryDataItem> potentialLinkedEntry, TopicLinkDto topicLinkObject) {

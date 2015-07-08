@@ -45,6 +45,7 @@ public class MainStageChangeDataController {
 
     void removeEntryWithIdentifier(long internalEntryId, DbDto.Topic topic) {
         requireNonNull(getGenHelper());
+        // TODO Check all entry ids are repaired after deletion
         getChangeHelper().removeEntryWithIdentifier(internalEntryId, topic);
     }
 
@@ -60,6 +61,15 @@ public class MainStageChangeDataController {
     long addEntryForCurrentTopic() {
         requireNonNull(getGenHelper());
         DbDataDto.Entry newEntry = getGenHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), mainStageController.currentTopicProperty.getValue());
+
+        return newEntry.getId();
+    }
+
+    long duplicateCurrentEntry() {
+        requireNonNull(getChangeHelper());
+        DbDataDto.Entry newEntry = getChangeHelper().duplicateEntryWithIdentifier(
+                mainStageController.currentEntryIndexProperty.getValue(),
+                mainStageController.currentTopicProperty.getValue());
 
         return newEntry.getId();
     }
