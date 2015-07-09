@@ -9,6 +9,7 @@ import fr.tduf.gui.database.converter.BitfieldToStringConverter;
 import fr.tduf.gui.database.converter.PercentNumberToStringConverter;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
+import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
@@ -16,7 +17,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -96,7 +96,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                 addPercentValueControls(fieldBox, fieldReadOnly, property);
                 break;
             case BITFIELD:
-                addBitfieldValueControls(fieldBox, fieldRank, fieldReadOnly, property);
+                addBitfieldValueControls(fieldBox, fieldRank, fieldReadOnly, property, currentTopic);
                 break;
             case REFERENCE:
                 addReferenceValueControls(fieldBox, fieldReadOnly, field);
@@ -207,23 +207,36 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
-    private void addBitfieldValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, SimpleStringProperty rawValueProperty) {
-        FlowPane flowPane = new FlowPane();
-        flowPane.setPrefWidth(350);
+    private void addBitfieldValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, SimpleStringProperty rawValueProperty, DbDto.Topic currentTopic) {
+        VBox vbox = new VBox();
 
-        for (int bitIndex = 1 ; bitIndex <= BitfieldToStringConverter.MAXIMUM_BIT_COUNT ; bitIndex++) {
-            CheckBox checkBox = new CheckBox(Strings.padStart(Integer.valueOf(bitIndex).toString(), 2, '0'));
+        try {
+            BitfieldHelper bitfieldHelper = new BitfieldHelper();
+            bitfieldHelper.getBitfieldReferenceForTopic(currentTopic)
+                    .ifPresent((refs) -> refs.forEach((ref) -> {
+                        // TODO extract method
+                        int bitIndex = ref.getIndex();
+                        String displayedIndex = Strings.padStart(Integer.valueOf(bitIndex).toString(), 2, '0');
+                        String label = String.format("%s: %s", displayedIndex, ref.getLabel());
+                        CheckBox checkBox = new CheckBox(label);
 
-            checkBox.setPadding(new Insets(0, 5, 0, 5));
-            checkBox.setDisable(fieldReadOnly);
+                        checkBox.setPadding(new Insets(0, 5, 0, 5));
+                        checkBox.setDisable(fieldReadOnly);
 
-            Bindings.bindBidirectional(rawValueProperty, checkBox.selectedProperty(), new BitfieldToStringConverter(bitIndex, rawValueProperty));
-            checkBox.selectedProperty().addListener(controller.handleBitfieldCheckboxSelectionChange(fieldRank, rawValueProperty));
+                        if (!Strings.isNullOrEmpty(ref.getComment())) {
+                            checkBox.setTooltip(new Tooltip(ref.getComment()));
+                        }
 
-            flowPane.getChildren().add(checkBox);
+                        Bindings.bindBidirectional(rawValueProperty, checkBox.selectedProperty(), new BitfieldToStringConverter(currentTopic, bitIndex, rawValueProperty, bitfieldHelper));
+                        checkBox.selectedProperty().addListener(controller.handleBitfieldCheckboxSelectionChange(fieldRank, rawValueProperty));
+
+                        vbox.getChildren().add(checkBox);
+                    }));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        fieldBox.getChildren().add(flowPane);
+        fieldBox.getChildren().add(vbox);
     }
 
     private static void addResourceValueLabel(HBox fieldBox, boolean fieldReadOnly, SimpleStringProperty property) {
