@@ -58,8 +58,8 @@ public class MainStageChangeDataController {
     }
 
     long addEntryForCurrentTopic() {
-        requireNonNull(getGenHelper());
-        DbDataDto.Entry newEntry = getGenHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), mainStageController.currentTopicProperty.getValue());
+        requireNonNull(getChangeHelper());
+        DbDataDto.Entry newEntry = getChangeHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), mainStageController.currentTopicProperty.getValue());
 
         return newEntry.getId();
     }
@@ -74,8 +74,8 @@ public class MainStageChangeDataController {
     }
 
     void addLinkedEntry(String sourceEntryRef, Optional<String> targetEntryRef, DbDto.Topic targetTopic) {
-        requireNonNull(getGenHelper());
-        DbDataDto.Entry newEntry = getGenHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), targetTopic);
+        requireNonNull(getChangeHelper());
+        DbDataDto.Entry newEntry = getChangeHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), targetTopic);
         DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
     }
 

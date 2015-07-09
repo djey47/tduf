@@ -54,7 +54,6 @@ public class DatabaseChangeHelper {
      * @param topic
      * @return created entry
      */
-    // FIXME duplicated method change/gen
     public DbDataDto.Entry addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {
 
         DbDto topicObject = databaseMiner.getDatabaseTopic(topic).get();

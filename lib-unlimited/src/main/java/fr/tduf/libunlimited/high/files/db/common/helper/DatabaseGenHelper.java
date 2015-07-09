@@ -127,27 +127,6 @@ public class DatabaseGenHelper {
     }
 
     /**
-     *  @param reference
-     * @param topic
-     * @return created entry
-     */
-    public DbDataDto.Entry addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {
-
-        DbDto topicObject = databaseMiner.getDatabaseTopic(topic).get();
-
-        DbDataDto dataDto = topicObject.getData();
-
-        DbDataDto.Entry newEntry = DbDataDto.Entry.builder()
-                .forId(dataDto.getEntries().size())
-                .addItems(buildDefaultContentItems(reference, topicObject))
-                .build();
-
-        dataDto.getEntries().add(newEntry);
-
-        return newEntry;
-    }
-
-    /**
      * Produces a random, unique identifier of content entry.
      * @param topicObject   : database topic to provide structure and contents
      * @return null if topicObject is null.
