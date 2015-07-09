@@ -39,4 +39,39 @@ public class BitfieldHelperTest {
         // THEN
         assertThat(bitfieldReferenceForTopic).isPresent();
     }
+
+    @Test(expected = NullPointerException.class)
+    public void resolve_wheNullRawValue_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN - WHEN
+        new BitfieldHelper().resolve(DbDto.Topic.CAR_PHYSICS_DATA, null);
+
+        // THEN: NPE
+    }
+
+    @Test
+    public void resolve_whenNoReference_shouldReturnEmpty() throws IOException, URISyntaxException {
+        // GIVEN - WHEN
+        Optional<List<Boolean>> resolved = new BitfieldHelper().resolve(DbDto.Topic.PNJ, "101");
+
+        // THEN
+        assertThat(resolved).isEmpty();
+    }
+
+    @Test
+    public void resolve_whenReference_shouldReturnResolvedSwitches() throws IOException, URISyntaxException {
+        // GIVEN - WHEN
+        List<Boolean> resolved = new BitfieldHelper().resolve(DbDto.Topic.CAR_PHYSICS_DATA, "101").get();
+
+        // THEN
+        assertThat(resolved).hasSize(7);
+        assertThat(resolved).containsExactly(true, false, true, false, false, true, true);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void resolve_whenRawValueHasIllegalFormat_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN - WHEN
+        new BitfieldHelper().resolve(DbDto.Topic.CAR_PHYSICS_DATA, "abc").get();
+
+        // THEN: IAE
+    }
 }
