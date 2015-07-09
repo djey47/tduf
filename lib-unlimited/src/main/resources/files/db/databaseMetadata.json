@@ -1,6 +1,21 @@
 {
   "topics": [
     {
+      "topicName": "BRANDS",
+      "bitfieldReference": [
+        {
+          "index": 1,
+          "label": "?",
+          "comment": "Always ON"
+        },
+        {
+          "index": 2,
+          "label": "Tuning / clothes",
+          "comment": ""
+        }
+      ]
+    },
+    {
       "topicName": "CAR_PHYSICS_DATA",
       "bitfieldReference": [
         {
@@ -37,6 +52,145 @@
           "index": 7,
           "label": "Car Paint Luxe enabled",
           "comment": ""
+        }
+      ]
+    },
+    {
+      "topicName": "CAR_SHOPS",
+      "bitfieldReference": [
+        {
+          "index": 1,
+          "label": "?",
+          "comment": "Always ON"
+        },
+        {
+          "index": 2,
+          "label": "?",
+          "comment": ""
+        },
+        {
+          "index": 3,
+          "label": "?",
+          "comment": ""
+        },
+        {
+          "index": 4,
+          "label": "Slot #1 active",
+          "comment": ""
+        },
+        {
+          "index": 5,
+          "label": "Slot #2 active",
+          "comment": ""
+        },
+        {
+          "index": 6,
+          "label": "Slot #3 active",
+          "comment": ""
+        },
+        {
+          "index": 7,
+          "label": "Slot #4 active",
+          "comment": ""
+        },
+        {
+          "index": 8,
+          "label": "Slot #5 active",
+          "comment": ""
+        },
+        {
+          "index": 9,
+          "label": "Slot #6 active",
+          "comment": ""
+        },
+        {
+          "index": 10,
+          "label": "Slot #7 active",
+          "comment": ""
+        },
+        {
+          "index": 11,
+          "label": "Slot #8 active",
+          "comment": ""
+        },
+        {
+          "index": 12,
+          "label": "Slot #9 active",
+          "comment": ""
+        },
+        {
+          "index": 13,
+          "label": "Slot #10 active",
+          "comment": ""
+        },
+        {
+          "index": 14,
+          "label": "Slot #11 active",
+          "comment": ""
+        },
+        {
+          "index": 15,
+          "label": "Slot #12 active",
+          "comment": ""
+        },
+        {
+          "index": 16,
+          "label": "Slot #13 active",
+          "comment": ""
+        },
+        {
+          "index": 17,
+          "label": "Slot #14 active",
+          "comment": ""
+        },
+        {
+          "index": 18,
+          "label": "Slot #15 active",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "topicName": "CLOTHES",
+      "bitfieldReference": [
+        {
+          "index": 1,
+          "label": "?",
+          "comment": "Always ON"
+        }
+      ]
+    },
+    {
+      "topicName": "MENUS",
+      "bitfieldReference": []
+    },
+    {
+      "topicName": "PNJ",
+      "bitfieldReference": [
+        {
+          "index": 1,
+          "label": "?",
+          "comment": "Always ON"
+        }
+      ]
+    },
+    {
+      "topicName": "RIMS",
+      "bitfieldReference": [
+        {
+          "index": 1,
+          "label": "?",
+          "comment": "Always OFF"
+        }
+      ]
+    },
+    {
+      "topicName": "SUB_TITLES",
+      "bitfieldReference": [
+        {
+          "index": 1,
+          "label": "?",
+          "comment": "Always ON"
         }
       ]
     }
