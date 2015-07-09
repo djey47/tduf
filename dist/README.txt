@@ -7,24 +7,26 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Capitalizing about reverse-engineering
 * ...
 
-### What's in this version ? (ALPHA 3)
+### What's in this version ? (ALPHA 4)
 
 /!\
 Please keep in mind that it is called ALPHA for a reason, you should use it carefully as it may damage your game!
 Thus, you always ought to make a backup of your TDU database before using it!
 /!\
 
-* Unpacking: now replaces original bank files without complaining
-* Gets a new script (Alpha-DatabaseEditor) to greatly simplify editing process (see 'Using Database Editor GUI (fast mode)' below).
+* Adds a feature to duplicate current entry
+* Basic Bitfield support: now displays bitfield value as a set of checkboxes.
 
 ### Main features
 
 * Opens and saves a database from/to JSON form (is explained above)
 * Provides profiles to address different modding use cases (car editing, tuning kits ...)
 * Displays all fields within a topic, in an ordered manner
+* Makes changes easier for special values (percent, bitfields etc)
 * Enables navigation over entries in same or different topics
 * Displays all resources within a topic, for all languages (=locales)
-* Adds / changes / deletes a particular entry or resource
+* Adds / changes / deletes / duplicates a particular entry
+* Adds / changes / deletes a lresource
 
 ### What you will need to run TDUF
 
