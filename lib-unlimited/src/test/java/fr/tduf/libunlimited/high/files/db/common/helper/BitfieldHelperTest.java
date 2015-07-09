@@ -25,7 +25,7 @@ public class BitfieldHelperTest {
     @Test
     public void getBitfieldReferenceForTopic_whenUnavailable_shouldReturnEmpty() throws Exception {
         // GIVEN-WHEN
-        Optional<List<DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto>> bitfieldReferenceForTopic = new BitfieldHelper().getBitfieldReferenceForTopic(DbDto.Topic.PNJ);
+        Optional<List<DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto>> bitfieldReferenceForTopic = new BitfieldHelper().getBitfieldReferenceForTopic(DbDto.Topic.TUTORIALS);
 
         // THEN
         assertThat(bitfieldReferenceForTopic).isEmpty();
@@ -51,7 +51,7 @@ public class BitfieldHelperTest {
     @Test
     public void resolve_whenNoReference_shouldReturnEmpty() throws IOException, URISyntaxException {
         // GIVEN - WHEN
-        Optional<List<Boolean>> resolved = new BitfieldHelper().resolve(DbDto.Topic.PNJ, "101");
+        Optional<List<Boolean>> resolved = new BitfieldHelper().resolve(DbDto.Topic.TUTORIALS, "101");
 
         // THEN
         assertThat(resolved).isEmpty();
