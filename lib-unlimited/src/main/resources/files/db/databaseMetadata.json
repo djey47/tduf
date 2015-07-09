@@ -162,7 +162,58 @@
     },
     {
       "topicName": "MENUS",
-      "bitfieldReference": []
+      "bitfieldReference": [
+        {
+          "index": 1,
+          "label": "?",
+          "comment": ""
+        },
+        {
+          "index": 2,
+          "label": "?",
+          "comment": ""
+        },
+        {
+          "index": 3,
+          "label": "?",
+          "comment": ""
+        },
+        {
+          "index": 4,
+          "label": "?",
+          "comment": ""
+        },
+        {
+          "index": 5,
+          "label": "?",
+          "comment": ""
+        },
+        {
+          "index": 6,
+          "label": "?",
+          "comment": ""
+        },
+        {
+          "index": 7,
+          "label": "?",
+          "comment": ""
+        },
+        {
+          "index": 8,
+          "label": "?",
+          "comment": ""
+        },
+        {
+          "index": 9,
+          "label": "?",
+          "comment": ""
+        },
+        {
+          "index": 10,
+          "label": "?",
+          "comment": ""
+        }
+      ]
     },
     {
       "topicName": "PNJ",
