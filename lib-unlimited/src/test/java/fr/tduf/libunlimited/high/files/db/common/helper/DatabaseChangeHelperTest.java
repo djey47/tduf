@@ -125,4 +125,60 @@ public class DatabaseChangeHelperTest {
         // THEN: NSEE
         verifyZeroInteractions(genHelperMock);
     }
+
+    @Test
+    public void updateResourceWithReference_whenExistingEntry_shouldReplaceReferenceAndValue() {
+        // GIVEN
+        String initialReference = "0";
+        DbResourceDto.Entry resourceEntry = createDefaultResourceEntry(initialReference);
+
+        when(minerMock.getResourceEntryFromTopicAndLocaleWithReference(initialReference, TOPIC, LOCALE)).thenReturn(Optional.of(resourceEntry));
+        when(minerMock.getResourceEntryFromTopicAndLocaleWithReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(Optional.empty());
+
+
+        // WHEN
+        changeHelper.updateResourceWithReference(TOPIC, LOCALE, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
+
+
+        // THEN
+        assertThat(resourceEntry.getReference()).isEqualTo(RESOURCE_REFERENCE);
+        assertThat(resourceEntry.getValue()).isEqualTo(RESOURCE_VALUE);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void updateResourceWithReference_whenNonexistingEntry_shouldThrowException() {
+        // GIVEN
+        when(minerMock.getResourceEntryFromTopicAndLocaleWithReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(Optional.empty());
+
+        // WHEN
+        changeHelper.updateResourceWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_REFERENCE, RESOURCE_VALUE);
+
+        // THEN: IAE
+        verifyNoMoreInteractions(minerMock);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void updateResourceWithReference_whenEntryExistsWithNewReference_shouldThrowException() {
+        // GIVEN
+        String initialReference = "0";
+        DbResourceDto.Entry resourceEntry = createDefaultResourceEntry(initialReference);
+
+        when(minerMock.getResourceEntryFromTopicAndLocaleWithReference(initialReference, TOPIC, LOCALE)).thenReturn(Optional.of(resourceEntry));
+        when(minerMock.getResourceEntryFromTopicAndLocaleWithReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(Optional.of(resourceEntry));
+
+
+        // WHEN
+        changeHelper.updateResourceWithReference(TOPIC, LOCALE, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
+
+
+        // THEN: IAE
+        verifyNoMoreInteractions(minerMock);
+    }
+
+    private static DbResourceDto.Entry createDefaultResourceEntry(String reference) {
+        return DbResourceDto.Entry.builder()
+                .forReference(reference)
+                .withValue("")
+                .build();
+    }
 }

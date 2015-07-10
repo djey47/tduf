@@ -73,15 +73,20 @@ public class DatabaseChangeHelper {
     }
 
     /**
-     *
-     * @param topic
-     * @param locale
-     * @param oldResourceReference
-     * @param newResourceReference
-     * @param newResourceValue
+     * Modifies existing resource having given reference, with new reference and new value
+     * @param topic                 : database topic where resource entry should be changed
+     * @param locale                : database language for which resource entry should be changed
+     * @param oldResourceReference  : reference of resource to be updated. Must exist
+     * @param newResourceReference  : new reference of resource if needed. Must not exist already
+     * @param newResourceValue      : new value of resource
+     * @throws IllegalArgumentException when source entry does not exist or target reference belongs to an already existing entry.
      */
     public void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
-        checkResourceExistsWithReference(topic, locale, newResourceReference);
+        checkResourceExistsWithReference(topic, locale, oldResourceReference);
+
+        if (!oldResourceReference.equals(newResourceReference)) {
+            checkResourceDoesNotExistWithReference(topic, locale, newResourceReference);
+        }
 
         DbResourceDto.Entry existingResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(oldResourceReference, topic, locale).get();
 
