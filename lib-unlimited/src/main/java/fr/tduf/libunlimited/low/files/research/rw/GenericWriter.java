@@ -137,7 +137,6 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
     private void writeRawValue(byte[] valueBytes, Integer length, ByteArrayOutputStream outputStream) throws IOException {
         assert valueBytes != null;
 
-        //TODO handle endianness ?
         outputStream.write(TypeHelper.fitToSize(valueBytes, length));
     }
 
