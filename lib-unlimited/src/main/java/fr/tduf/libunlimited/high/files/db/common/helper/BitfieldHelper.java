@@ -25,8 +25,12 @@ public class BitfieldHelper {
 
     private DbMetadataDto databaseMetadataObject;
 
-    public BitfieldHelper() throws IOException, URISyntaxException {
-        loadDatabaseReference();
+    public BitfieldHelper() {
+        try {
+            loadDatabaseReference();
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
