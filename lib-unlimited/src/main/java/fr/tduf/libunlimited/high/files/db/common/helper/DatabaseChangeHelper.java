@@ -32,11 +32,12 @@ public class DatabaseChangeHelper {
     }
 
     /**
-     *
-     * @param topic
-     * @param locale
-     * @param resourceReference
-     * @param resourceValue
+     * Adds a resource with given reference and value to resource entries from topic and locale.
+     * @param topic             : database topic where resource entry should be added
+     * @param locale            : language to be affected
+     * @param resourceReference : reference of new resource
+     * @param resourceValue     : value of new resurce
+     * @throws IllegalArgumentException when a resource entry with same reference already exists for topic and locale.
      */
     public void addResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, String resourceValue) {
         checkResourceDoesNotExistWithReference(topic, locale, resourceReference);
