@@ -214,14 +214,10 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     private void addBitfieldValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, SimpleStringProperty rawValueProperty, DbDto.Topic currentTopic) {
         VBox vbox = new VBox();
 
-        try {
-            BitfieldHelper bitfieldHelper = new BitfieldHelper();
-            bitfieldHelper.getBitfieldReferenceForTopic(currentTopic)
-                    .ifPresent((refs) -> refs
-                            .forEach((ref) -> addBitValueCheckbox(vbox, fieldRank, ref, fieldReadOnly, rawValueProperty, currentTopic, bitfieldHelper)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        BitfieldHelper bitfieldHelper = new BitfieldHelper();
+        bitfieldHelper.getBitfieldReferenceForTopic(currentTopic)
+                .ifPresent((refs) -> refs
+                        .forEach((ref) -> addBitValueCheckbox(vbox, fieldRank, ref, fieldReadOnly, rawValueProperty, currentTopic, bitfieldHelper)));
 
         fieldBox.getChildren().add(vbox);
     }
