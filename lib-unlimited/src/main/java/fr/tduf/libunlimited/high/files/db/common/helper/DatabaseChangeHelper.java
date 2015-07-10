@@ -32,7 +32,7 @@ public class DatabaseChangeHelper {
     }
 
     /**
-     * Adds a resource with given reference and value to resource entries from topic and locale.
+     * Adds a resource with given reference and value to resource entries from topic and locale
      * @param topic             : database topic where resource entry should be added
      * @param locale            : language to be affected
      * @param resourceReference : reference of new resource
@@ -51,9 +51,10 @@ public class DatabaseChangeHelper {
     }
 
     /**
-     *  @param reference
-     * @param topic
-     * @return created entry
+     * @param reference : reference of entry to create
+     * @param topic     : database topic where content entry should be added
+     * @return created content entry with items having default values
+     * @throws java.util.NoSuchElementException when specified topic has no loaded content.
      */
     public DbDataDto.Entry addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {
 
