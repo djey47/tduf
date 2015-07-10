@@ -16,9 +16,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class BitfieldToStringConverter extends StringConverter<Boolean>{
 
-    public static final int MAXIMUM_BIT_COUNT = 18;
     private static final char BINARY_ZERO = '0';
-    private static final char BINARY_ONE = '1';
 
     private final SimpleStringProperty rawValueProperty;
     private final int bitIndex;
@@ -36,19 +34,12 @@ public class BitfieldToStringConverter extends StringConverter<Boolean>{
 
     @Override
     public String toString(Boolean switchState) {
-        // TODO extract to Bitfield helper to generate raw value
         String rawValue = rawValueProperty.getValue();
         if (Strings.isNullOrEmpty(rawValue)) {
             rawValue = String.valueOf(BINARY_ZERO);
         }
 
-        String binaryString = Integer.toBinaryString(Integer.valueOf(rawValue));
-        binaryString = Strings.padStart(binaryString, MAXIMUM_BIT_COUNT, BINARY_ZERO);
-
-        char[] chars = binaryString.toCharArray();
-        chars[binaryString.length() - bitIndex] = switchState ? BINARY_ONE : BINARY_ZERO;
-
-        return Integer.valueOf(Integer.parseInt(new String(chars), 2)).toString();
+        return bitfieldHelper.updateRawValue(currentTopic, rawValue, bitIndex, switchState).get();
     }
 
     @Override
