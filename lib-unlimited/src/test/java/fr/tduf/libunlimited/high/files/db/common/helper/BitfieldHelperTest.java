@@ -74,4 +74,39 @@ public class BitfieldHelperTest {
 
         // THEN: IAE
     }
+
+    @Test
+    public void updateRawValue_whenNoReference_shouldReturnEmpty() {
+        // GIVEN-WHEN
+        Optional<String> actualValue = new BitfieldHelper().updateRawValue(DbDto.Topic.CAR_RIMS, "111", 1, false);
+
+        // THEN
+        assertThat(actualValue).isEmpty();
+    }
+
+    @Test
+    public void updateRawValue_whenReference_shouldReturnValueWithChangedBitState() {
+        // GIVEN-WHEN
+        String actualValue = new BitfieldHelper().updateRawValue(DbDto.Topic.CAR_PHYSICS_DATA, "111", 1, false).get();
+
+        // THEN
+        assertThat(actualValue).isEqualTo("110");
+    }
+
+    @Test
+    public void updateRawValue_whenReference_andBitIndexOutOfBounds_shouldReturnInitialValue() {
+        // GIVEN-WHEN
+        String actualValue = new BitfieldHelper().updateRawValue(DbDto.Topic.CAR_PHYSICS_DATA, "111", 50, true).get();
+
+        // THEN
+        assertThat(actualValue).isEqualTo("111");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void updateRawValue_whenRawValueHasIllegalFormat_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN - WHEN
+        new BitfieldHelper().updateRawValue(DbDto.Topic.CAR_PHYSICS_DATA, "abc", 1, false).get();
+
+        // THEN: IAE
+    }
 }

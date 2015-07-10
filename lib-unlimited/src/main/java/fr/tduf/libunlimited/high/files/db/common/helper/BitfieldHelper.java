@@ -60,6 +60,33 @@ public class BitfieldHelper {
                 .map((reference) -> resolveWithReference(reference, bitfieldRawValue));
     }
 
+    /**
+     * @param topic             : database topic to get bitfield reference from
+     * @param bitfieldRawValue  : current value of bitfield, as read in database topic
+     * @param bitIndex          : 1-based rank of modified bit in bitfield
+     * @param switchState       : value of modified bit (true = 1, false = 0)
+     * @return updated raw value if specified bit change does apply to it , or empty if no reference is available.
+     */
+    public Optional<String> updateRawValue(DbDto.Topic topic, String bitfieldRawValue, int bitIndex, boolean switchState) {
+
+        return getBitfieldReferenceForTopic(topic)
+
+                .map((reference) -> {
+                    int bitCount = reference.size();
+                    if (bitIndex < 1 || bitIndex > bitCount) {
+                        return bitfieldRawValue;
+                    }
+
+                    String binaryString = Integer.toBinaryString(Integer.valueOf(bitfieldRawValue));
+                    binaryString = Strings.padStart(binaryString, bitCount, BINARY_ZERO);
+
+                    char[] chars = binaryString.toCharArray();
+                    chars[binaryString.length() - bitIndex] = switchState ? BINARY_ONE : BINARY_ZERO;
+
+                    return Integer.valueOf(Integer.parseInt(new String(chars), 2)).toString();
+                });
+    }
+
     private List<Boolean> resolveWithReference(List<DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto> reference, String bitfieldRawValue) {
         String binaryString = Integer.toBinaryString(Integer.parseInt(bitfieldRawValue));
         String paddedBinaryValue = Strings.padStart(binaryString, reference.size(), BINARY_ZERO);
