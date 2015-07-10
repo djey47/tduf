@@ -1,15 +1,14 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
+import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
+import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -191,6 +190,7 @@ public class DatabaseParser {
     }
 
     private List<DbDataDto.Item> parseContentItems(DbStructureDto structure, String line, long entryIdentifier) {
+
         List<DbDataDto.Item> items = new ArrayList<>();
         int fieldIndex = 0;
         for (String itemValue : line.split(VALUE_DELIMITER)) {
@@ -198,7 +198,7 @@ public class DatabaseParser {
 
             List<DbDataDto.SwitchValue> switchValues = null;
             if (fieldInformation.getFieldType() == BITFIELD) {
-                switchValues = prepareSwitchValues(itemValue);
+                switchValues = prepareSwitchValues(itemValue, structure.getTopic());
             }
 
             items.add(DbDataDto.Item.builder()
@@ -358,27 +358,24 @@ public class DatabaseParser {
         integrityErrors.add(integrityError);
     }
 
-    static List<DbDataDto.SwitchValue> prepareSwitchValues(String rawValue) {
+    static List<DbDataDto.SwitchValue> prepareSwitchValues(String rawValue, DbDto.Topic topic) {
         requireNonNull(rawValue, "A raw value is required");
+        requireNonNull(topic, "A database topic is required");
 
-        // TODO see to set list size automatically -> requires bitfield resolver (0.7.0+)
-        final int maxSize = 8;
-        List<DbDataDto.SwitchValue> switchValues = new ArrayList<>(maxSize);
+        BitfieldHelper bitfieldHelper = new BitfieldHelper();
+        Optional<List<DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto>> bitfieldReference = bitfieldHelper.getBitfieldReferenceForTopic(topic);
 
-        String binaryValue = Integer.toBinaryString(Integer.valueOf(rawValue));
+        List<DbDataDto.SwitchValue> switchValues = new ArrayList<>();
+        bitfieldReference.ifPresent((refs) -> {
 
-        for (int bitIndex = 0; bitIndex < maxSize; bitIndex++) {
+            List<Boolean> values = bitfieldHelper.resolve(topic, rawValue).get();
+            refs.stream()
 
-            boolean switchState = false;
-
-            if (bitIndex < binaryValue.length()) {
-                int bitIndexInString = binaryValue.length() - bitIndex - 1;
-                String bitValue = binaryValue.substring(bitIndexInString, bitIndexInString + 1);
-                switchState = "1".equals(bitValue);
-            }
-
-            switchValues.add(new DbDataDto.SwitchValue(bitIndex + 1, "?", switchState));
-        }
+                    .forEach((ref) -> {
+                        boolean switchState = values.get(ref.getIndex() - 1);
+                        switchValues.add(new DbDataDto.SwitchValue(ref.getIndex(), ref.getLabel(), switchState));
+                    });
+        });
 
         return switchValues;
     }

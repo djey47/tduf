@@ -9,7 +9,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.util.ArrayList;
@@ -19,6 +18,8 @@ import java.util.Map;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
@@ -289,9 +290,9 @@ public class DatabaseParserTest {
 
         List<DbDataDto.SwitchValue> actualSwitchValues = actualEntries.get(0).getItems().get(0).getSwitchValues();
         assertThat(actualSwitchValues).isNotNull();
-        assertThat(actualSwitchValues).extracting("index").containsExactly(1, 2, 3, 4, 5, 6, 7, 8);
-        assertThat(actualSwitchValues).extracting("name").containsOnly("?");
-        assertThat(actualSwitchValues).extracting("enabled").containsExactly(true, true, true, true, false, true, true, false);
+        assertThat(actualSwitchValues).extracting("index").containsExactly(1, 2, 3, 4, 5, 6, 7);
+        assertThat(actualSwitchValues).extracting("name").containsOnly("?", "?", "?", "?", "?", "Add-on key required", "Car Paint Luxe enabled");
+        assertThat(actualSwitchValues).extracting("enabled").containsExactly(true, true, true, true, false, true, true);
     }
 
     @Test
@@ -397,7 +398,15 @@ public class DatabaseParserTest {
     @Test(expected = NullPointerException.class)
     public void prepareSwitchValues_whenNullValue_shouldThrowException() {
         // GIVEN-WHEN
-        DatabaseParser.prepareSwitchValues(null);
+        DatabaseParser.prepareSwitchValues(null, DbDto.Topic.CAR_PHYSICS_DATA);
+
+        // THEN: NPE
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void prepareSwitchValues_whenNullTopic_shouldThrowException() {
+        // GIVEN-WHEN
+        DatabaseParser.prepareSwitchValues("111", null);
 
         // THEN: NPE
     }
@@ -405,13 +414,22 @@ public class DatabaseParserTest {
     @Test
     public void prepareSwitchValues_shouldReturnCorrectValues() {
         // GIVEN-WHEN
-        List<DbDataDto.SwitchValue> actualValues = DatabaseParser.prepareSwitchValues("111");
+        List<DbDataDto.SwitchValue> actualValues = DatabaseParser.prepareSwitchValues("111", CAR_PHYSICS_DATA);
 
         // THEN
-        assertThat(actualValues).hasSize(8);
-        assertThat(actualValues).extracting("index").containsExactly(1, 2, 3, 4, 5, 6, 7, 8);
-        assertThat(actualValues).extracting("name").containsOnly("?");
-        assertThat(actualValues).extracting("enabled").containsExactly(true, true, true, true, false, true, true, false);
+        assertThat(actualValues).hasSize(7);
+        assertThat(actualValues).extracting("index").containsExactly(1, 2, 3, 4, 5, 6, 7);
+        assertThat(actualValues).extracting("name").containsExactly("?", "?", "?", "?", "?", "Add-on key required", "Car Paint Luxe enabled");
+        assertThat(actualValues).extracting("enabled").containsExactly(true, true, true, true, false, true, true);
+    }
+
+    @Test
+    public void prepareSwitchValues_whenReferenceNotFound_shouldReturnEmptyList() {
+        // GIVEN-WHEN
+        List<DbDataDto.SwitchValue> actualValues = DatabaseParser.prepareSwitchValues("111", CAR_RIMS);
+
+        // THEN
+        assertThat(actualValues).isEmpty();
     }
 
     private List<String> createValidContentsWithOneItem() {
@@ -435,9 +453,9 @@ public class DatabaseParserTest {
 
     private List<String> createValidContentsBitfieldOnlyWithOneItem() {
         return asList(
-                "// TDU_Achievements.db",
+                "// TDU_CarPhysicsData.db",
                 "// Fields: 1",
-                "{TDU_Achievements} 2442784645",
+                "{TDU_CarPhysicsData} 2442784645",
                 "{Bitfield_} b",
                 "// items: 1",
                 "111;",
