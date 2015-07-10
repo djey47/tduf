@@ -10,6 +10,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -175,6 +176,23 @@ public class DbDataDto implements Serializable {
                 }
 
                 @Override
+                public ItemBuilder fromExisting(Item contentItem) {
+                    List<DbDataDto.SwitchValue> clonedSwitchValues = null;
+                    if (contentItem.getSwitchValues() != null) {
+                        clonedSwitchValues = contentItem.getSwitchValues().stream()
+
+                                .map((switchValue) -> new DbDataDto.SwitchValue(switchValue.getIndex(), switchValue.getName(), switchValue.isEnabled()))
+
+                                .collect(toList());
+                    }
+                    return DbDataDto.Item.builder()
+                                .forName(contentItem.getName())
+                                .ofFieldRank(contentItem.getFieldRank())
+                                .withRawValue(contentItem.getRawValue())
+                                .withSwitchValues(clonedSwitchValues);
+                }
+
+                @Override
                 public Item build() {
                     requireNonNull(fieldRank, "Rank of associated field must be specified.");
 
@@ -242,6 +260,8 @@ public class DbDataDto implements Serializable {
             ItemBuilder withSwitchValues(List<SwitchValue> values);
 
             ItemBuilder ofFieldRank(int fieldRank);
+
+            ItemBuilder fromExisting(Item contentItem);
 
             Item build();
         }
