@@ -10,6 +10,7 @@ import fr.tduf.gui.database.converter.PercentNumberToStringConverter;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
+import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
@@ -57,7 +58,6 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     private void addFieldControls(VBox defaultTab, DbStructureDto.Field field, DbDto.Topic currentTopic) {
 
         String fieldName = field.getName();
-        DbStructureDto.FieldType fieldType = field.getFieldType();
         int fieldRank = field.getRank();
 
         SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.VALUE_FIELD_DEFAULT);
@@ -91,22 +91,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         addValueTextField(fieldBox, field, fieldReadOnly, potentialToolTip, property);
 
-        switch (fieldType) {
-            case PERCENT:
-                addPercentValueControls(fieldBox, fieldReadOnly, property);
-                break;
-            case BITFIELD:
-                addBitfieldValueControls(fieldBox, fieldRank, fieldReadOnly, property, currentTopic);
-                break;
-            case REFERENCE:
-                addReferenceValueControls(fieldBox, fieldReadOnly, field);
-                break;
-            default:
-                if (field.isAResourceField()) {
-                    addResourceValueControls(fieldBox, fieldReadOnly, field, property, currentTopic);
-                }
-                break;
-        }
+        addCustomControls(fieldBox, field, fieldReadOnly, currentTopic, property);
     }
 
     private void addValueTextField(HBox fieldBox, DbStructureDto.Field field, boolean fieldReadOnly, Optional<String> potentialToolTip, SimpleStringProperty property) {
@@ -123,6 +108,25 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         valueTextField.textProperty().bindBidirectional(property);
         valueTextField.focusedProperty().addListener(controller.handleTextFieldFocusChange(field.getRank(), property));
+    }
+
+    private void addCustomControls(HBox fieldBox, DbStructureDto.Field field, boolean fieldReadOnly, DbDto.Topic currentTopic, SimpleStringProperty property) {
+        switch (field.getFieldType()) {
+            case PERCENT:
+                addPercentValueControls(fieldBox, fieldReadOnly, property);
+                break;
+            case BITFIELD:
+                addBitfieldValueControls(fieldBox, field.getRank(), fieldReadOnly, property, currentTopic);
+                break;
+            case REFERENCE:
+                addReferenceValueControls(fieldBox, fieldReadOnly, field);
+                break;
+            default:
+                if (field.isAResourceField()) {
+                    addResourceValueControls(fieldBox, fieldReadOnly, field, property, currentTopic);
+                }
+                break;
+        }
     }
 
     private void addPercentValueControls(HBox fieldBox, boolean fieldReadOnly, SimpleStringProperty rawValueProperty) {
@@ -213,30 +217,32 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         try {
             BitfieldHelper bitfieldHelper = new BitfieldHelper();
             bitfieldHelper.getBitfieldReferenceForTopic(currentTopic)
-                    .ifPresent((refs) -> refs.forEach((ref) -> {
-                        // TODO extract method
-                        int bitIndex = ref.getIndex();
-                        String displayedIndex = Strings.padStart(Integer.valueOf(bitIndex).toString(), 2, '0');
-                        String label = String.format("%s: %s", displayedIndex, ref.getLabel());
-                        CheckBox checkBox = new CheckBox(label);
-
-                        checkBox.setPadding(new Insets(0, 5, 0, 5));
-                        checkBox.setDisable(fieldReadOnly);
-
-                        if (!Strings.isNullOrEmpty(ref.getComment())) {
-                            checkBox.setTooltip(new Tooltip(ref.getComment()));
-                        }
-
-                        Bindings.bindBidirectional(rawValueProperty, checkBox.selectedProperty(), new BitfieldToStringConverter(currentTopic, bitIndex, rawValueProperty, bitfieldHelper));
-                        checkBox.selectedProperty().addListener(controller.handleBitfieldCheckboxSelectionChange(fieldRank, rawValueProperty));
-
-                        vbox.getChildren().add(checkBox);
-                    }));
+                    .ifPresent((refs) -> refs
+                            .forEach((ref) -> addBitValueCheckbox(vbox, fieldRank, ref, fieldReadOnly, rawValueProperty, currentTopic, bitfieldHelper)));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         fieldBox.getChildren().add(vbox);
+    }
+
+    private void addBitValueCheckbox(VBox vbox, int fieldRank, DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto ref, boolean fieldReadOnly, SimpleStringProperty rawValueProperty, DbDto.Topic currentTopic, BitfieldHelper bitfieldHelper) {
+        int bitIndex = ref.getIndex();
+        String displayedIndex = Strings.padStart(Integer.valueOf(bitIndex).toString(), 2, '0');
+        String label = String.format("%s: %s", displayedIndex, ref.getLabel());
+        CheckBox checkBox = new CheckBox(label);
+
+        checkBox.setPadding(new Insets(0, 5, 0, 5));
+        checkBox.setDisable(fieldReadOnly);
+
+        if (!Strings.isNullOrEmpty(ref.getComment())) {
+            checkBox.setTooltip(new Tooltip(ref.getComment()));
+        }
+
+        Bindings.bindBidirectional(rawValueProperty, checkBox.selectedProperty(), new BitfieldToStringConverter(currentTopic, bitIndex, rawValueProperty, bitfieldHelper));
+        checkBox.selectedProperty().addListener(controller.handleBitfieldCheckboxSelectionChange(fieldRank, rawValueProperty));
+
+        vbox.getChildren().add(checkBox);
     }
 
     private static void addResourceValueLabel(HBox fieldBox, boolean fieldReadOnly, SimpleStringProperty property) {
