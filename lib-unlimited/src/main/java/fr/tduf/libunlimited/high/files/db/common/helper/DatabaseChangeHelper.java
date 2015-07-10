@@ -125,18 +125,9 @@ public class DatabaseChangeHelper {
         DbDataDto.Entry sourceEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic).get();
 
         List<DbDataDto.Entry> currentContentEntries = databaseMiner.getDatabaseTopic(topic).get().getData().getEntries();
+
         long newIdentifier = currentContentEntries.size();
-        List<DbDataDto.Item> clonedItems = sourceEntry.getItems().stream()
-
-                // TODO clone switch values when needed
-                .map((contentItem) -> DbDataDto.Item.builder()
-                        .forName(contentItem.getName())
-                        .ofFieldRank(contentItem.getFieldRank())
-                        .withRawValue(contentItem.getRawValue())
-                        .build())
-
-                .collect(toList());
-
+        List<DbDataDto.Item> clonedItems = cloneContentItems(sourceEntry);
         DbDataDto.Entry newEntry = DbDataDto.Entry.builder()
                 .forId(newIdentifier)
                 .addItems(clonedItems)
@@ -193,5 +184,13 @@ public class DatabaseChangeHelper {
                 .orElseGet(() -> {
                     throw new IllegalArgumentException("Resource does not exist with reference: " + resourceReference);
                 });
+    }
+
+    private static List<DbDataDto.Item> cloneContentItems(DbDataDto.Entry entry) {
+        return entry.getItems().stream()
+
+                .map((contentItem) -> DbDataDto.Item.builder().fromExisting(contentItem).build())
+
+                .collect(toList());
     }
 }
