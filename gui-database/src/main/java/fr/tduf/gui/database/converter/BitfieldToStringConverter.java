@@ -35,11 +35,10 @@ public class BitfieldToStringConverter extends StringConverter<Boolean>{
     }
 
     @Override
-    public String toString(Boolean object) {
+    public String toString(Boolean switchState) {
         // TODO extract to Bitfield helper to generate raw value
         String rawValue = rawValueProperty.getValue();
-
-        if ("".equals(rawValue)) {
+        if (Strings.isNullOrEmpty(rawValue)) {
             rawValue = String.valueOf(BINARY_ZERO);
         }
 
@@ -47,22 +46,22 @@ public class BitfieldToStringConverter extends StringConverter<Boolean>{
         binaryString = Strings.padStart(binaryString, MAXIMUM_BIT_COUNT, BINARY_ZERO);
 
         char[] chars = binaryString.toCharArray();
-        chars[binaryString.length() - bitIndex] = object ? BINARY_ONE : BINARY_ZERO;
+        chars[binaryString.length() - bitIndex] = switchState ? BINARY_ONE : BINARY_ZERO;
 
         return Integer.valueOf(Integer.parseInt(new String(chars), 2)).toString();
     }
 
     @Override
-    public Boolean fromString(String rawValue) {
-        if ("".equals(rawValue)) {
-            rawValue = String.valueOf(BINARY_ZERO);
+    public Boolean fromString(String bitfieldRawValue) {
+        if (Strings.isNullOrEmpty(bitfieldRawValue)) {
+            bitfieldRawValue = String.valueOf(BINARY_ZERO);
         }
 
-        Optional<List<Boolean>> resolvedValues = bitfieldHelper.resolve(currentTopic, rawValue);
+        Optional<List<Boolean>> resolvedValues = bitfieldHelper.resolve(currentTopic, bitfieldRawValue);
         if (resolvedValues.isPresent() && bitIndex <= resolvedValues.get().size()) {
             return resolvedValues.get().get(bitIndex - 1);
-        } else {
-            return false;
         }
+
+        return false;
     }
 }
