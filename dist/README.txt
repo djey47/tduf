@@ -7,21 +7,9 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Capitalizing about reverse-engineering
 * ...
 
-### What's new in this version ? (0.6.0)
+### What's new in this version ? (0.6.1)
 
-* General (all): contains all bugfixes from 0.5.1
-* General (all): contains all bugfixes from TDUF Database Editor ALPHA 0->2
-
-* DatabaseTool (fix): fixes a bug preventing from loading database when integrity errors occur
-* DatabaseTool (check): gives some more information about integrity errors
-* DatabaseTool (convert-patch): new operation to convert TDU Patches (pch) to TDUF ones (json-patche) and vice versa
-* DatabaseTool (gen-patch): new operation to create TDUF patches (json-patch) from a full, TDUF-formated, database
-
-* FileTool (bankInfo): displays short name for packed contents
-
-* Research: handles signed numeric values
-
-* Library: misc improvements and bug fixes.
+* MapTool and Library (fix): fixes a crash when computing checksum of some file names (having extended characters).
 
 ### What you will need to run TDUF
 
