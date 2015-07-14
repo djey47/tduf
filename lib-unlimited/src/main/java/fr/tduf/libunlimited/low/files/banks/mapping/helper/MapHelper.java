@@ -1,14 +1,15 @@
 package fr.tduf.libunlimited.low.files.banks.mapping.helper;
 
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -154,13 +155,21 @@ public class MapHelper {
                 0xB3667A2EL, 0xC4614AB8L, 0x5D681B02L, 0x2A6F2B94L,
                 0xB40BBE37L, 0xC30C8EA1L, 0x5A05DF1BL, 0x2D02EF8DL};
 
-        byte[] bytes = fileName.getBytes();
-
         long crc = init;
-        for (byte b : bytes) {
-            crc = (crc >> 8) ^ crcLookup[((int) ((crc & 0xFF) ^ b))];
+
+        List<Integer> characters = byteArraytoUnsignedIntegers(fileName.getBytes());
+        for (Integer c : characters) {
+            crc = (crc >> 8) ^ crcLookup[((int) ((crc & 0xFF) ^ c ))];
         }
 
         return crc ^ fin;
+    }
+
+    private static List<Integer> byteArraytoUnsignedIntegers(byte[] bytes) {
+        return Stream.of(ArrayUtils.toObject(bytes))
+
+                    .map((b) -> b.intValue() & 0xFF)
+
+                    .collect(toList());
     }
 }
