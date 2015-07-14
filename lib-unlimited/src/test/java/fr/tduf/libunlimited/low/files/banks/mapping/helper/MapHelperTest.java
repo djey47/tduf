@@ -70,6 +70,18 @@ public class MapHelperTest {
     }
 
     @Test
+    public void computeChecksum_forGivenFileName_andExtendedCharacter_shouldReturnMapHash() {
+        // GIVEN
+        String fileName = "bnk1ï.map";
+
+        // WHEN
+        Long checksum = MapHelper.computeChecksum(fileName);
+
+        // THEN
+        assertThat(checksum).isEqualTo(0x68a63bffL);
+    }
+
+    @Test
     public void findNewChecksums_forGivenValues_shouldReturnDifferences() {
         // GIVEN
         BankMap bankMap = new BankMap();
