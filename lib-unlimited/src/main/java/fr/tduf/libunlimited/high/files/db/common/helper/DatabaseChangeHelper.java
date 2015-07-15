@@ -15,8 +15,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Utility class to make changes on database contents and resources.
  */
-// TODO Unit tests
-// TODO Javadoc
 public class DatabaseChangeHelper {
 
     private BulkDatabaseMiner databaseMiner;
@@ -174,6 +172,8 @@ public class DatabaseChangeHelper {
      * @param potentialTargetEntryRef   : reference of target entry (REF field for target topic). Mandatory.
      */
     public static void updateAssociationEntryWithSourceAndTargetReferences(DbDataDto.Entry entry, String sourceEntryRef, Optional<String> potentialTargetEntryRef) {
+        requireNonNull(entry, "A content entry is required.");
+
         List<DbDataDto.Item> entryItems = entry.getItems();
 
         // We assume source reference is first field ... target reference (if any) is second field  ...
