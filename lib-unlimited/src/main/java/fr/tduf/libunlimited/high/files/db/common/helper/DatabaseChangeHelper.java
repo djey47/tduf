@@ -126,10 +126,9 @@ public class DatabaseChangeHelper {
     }
 
     /**
-     *
-     * @param entryId
-     * @param topic
-     * @return
+     * @param entryId   : internal identifier of entry to be copied
+     * @param topic     : database topic where entry should be duplicated
+     * @return a clone of entry with given identifier in specified topic and added to this topic.
      */
     public DbDataDto.Entry duplicateEntryWithIdentifier(long entryId, DbDto.Topic topic) {
         DbDataDto.Entry sourceEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic).get();
