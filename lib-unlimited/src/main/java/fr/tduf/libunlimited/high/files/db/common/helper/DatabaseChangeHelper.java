@@ -148,16 +148,16 @@ public class DatabaseChangeHelper {
     }
 
     /**
-     *
-     * @param topic
-     * @param locale
-     * @param resourceReference
-     * @param affectedLocales
+     * Deletes resource from specified topic, having given reference.
+     * @param topic             : database topic where entry should be duplicated
+     * @param resourceReference : reference of resource to be deleted
+     * @param affectedLocales   : list of locales to be affected by deletion
+     * @throws java.util.NoSuchElementException when such a resource entry does not exist in any of affected locales.
      */
-    public void removeResourcesWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, List<DbResourceDto.Locale> affectedLocales) {
+    public void removeResourcesWithReference(DbDto.Topic topic, String resourceReference, List<DbResourceDto.Locale> affectedLocales) {
         affectedLocales.stream()
 
-                .map((affectedLocale) -> databaseMiner.getResourceFromTopicAndLocale(topic, locale).get().getEntries())
+                .map((affectedLocale) -> databaseMiner.getResourceFromTopicAndLocale(topic, affectedLocale).get().getEntries())
 
                 .forEach((resources) -> resources.stream()
 
