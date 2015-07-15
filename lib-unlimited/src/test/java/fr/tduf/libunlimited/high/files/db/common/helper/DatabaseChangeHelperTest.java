@@ -89,11 +89,8 @@ public class DatabaseChangeHelperTest {
     @Test
     public void addContentsEntryWithDefaultItems_whenTopicObjectAvailable_shouldCreateAndReturnIt() {
         // GIVEN
-        DbDataDto dataObject = DbDataDto.builder()
-                .build();
-        DbDto databaseObject = DbDto.builder()
-                .withData(dataObject)
-                .build();
+        DbDataDto dataObject = createDefaultDataObject();
+        DbDto databaseObject = createDatabaseObject(dataObject);
         List<DbDataDto.Item> contentItems = new ArrayList<>();
         contentItems.add(DbDataDto.Item.builder()
                 .ofFieldRank(1)
@@ -173,6 +170,56 @@ public class DatabaseChangeHelperTest {
 
         // THEN: IAE
         verifyNoMoreInteractions(minerMock);
+    }
+
+    @Test
+    public void removeEntryWithIdentifier_whenEntryExists_shouldDeleteIt_andUpdateIds() {
+        // GIVEN
+        DbDataDto dataObject = createDefaultDataObject();
+        dataObject.getEntries().add(createDefaultContentEntry(1));
+        dataObject.getEntries().add(createDefaultContentEntry(2));
+        dataObject.getEntries().add(createDefaultContentEntry(3));
+
+        DbDto topicObject = createDatabaseObject(dataObject);
+
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+
+
+        // WHEN
+        changeHelper.removeEntryWithIdentifier(2, TOPIC);
+
+
+        // THEN
+        assertThat(dataObject.getEntries()).hasSize(2);
+        assertThat(dataObject.getEntries()).extracting("id").containsExactly(1L, 2L);
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void removeEntryWithIdentifier_whenEntryDoesNotExist_shouldThrowException() {
+        // GIVEN
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.empty());
+
+        // WHEN
+        changeHelper.removeEntryWithIdentifier(1, TOPIC );
+
+        // THEN: NSEE
+    }
+
+    private static DbDto createDatabaseObject(DbDataDto dataObject) {
+        return DbDto.builder()
+                .withData(dataObject)
+                .build();
+    }
+
+    private static DbDataDto createDefaultDataObject() {
+        return DbDataDto.builder()
+                .build();
+    }
+
+    private static DbDataDto.Entry createDefaultContentEntry(long internalId) {
+        return DbDataDto.Entry.builder()
+                .forId(internalId)
+                .build();
     }
 
     private static DbResourceDto.Entry createDefaultResourceEntry(String reference) {

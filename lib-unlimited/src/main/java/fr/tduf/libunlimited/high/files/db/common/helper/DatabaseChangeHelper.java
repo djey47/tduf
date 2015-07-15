@@ -95,9 +95,11 @@ public class DatabaseChangeHelper {
     }
 
     /**
-     *
-     * @param entryId
-     * @param topic
+     * Deletes content entry with given internal identifier in specified topic.
+     * Following entries will have their ids updated (decreased by 1).
+     * @param entryId   : internal identifier of entry to remove
+     * @param topic     : database topic where entry should be changed
+     * @throws java.util.NoSuchElementException when entry to delete does not exist.
      */
     public void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
         List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(topic).get().getData().getEntries();
@@ -122,6 +124,7 @@ public class DatabaseChangeHelper {
                     .forEach(DbDataDto.Entry::shiftIdUp);
         }
     }
+
     /**
      *
      * @param entryId
