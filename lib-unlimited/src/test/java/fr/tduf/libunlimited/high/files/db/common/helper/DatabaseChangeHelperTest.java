@@ -25,6 +25,7 @@ import static org.mockito.Mockito.*;
 public class DatabaseChangeHelperTest {
 
     private static final String ENTRY_REFERENCE = "111111";
+    private static final String ENTRY_REFERENCE_BIS = "222222";
     private static final String RESOURCE_REFERENCE = "000000";
     private static final String RESOURCE_VALUE = "TEST";
     private static final DbDto.Topic TOPIC = DbDto.Topic.CAR_PHYSICS_DATA;
@@ -295,6 +296,43 @@ public class DatabaseChangeHelperTest {
         changeHelper.removeResourcesWithReference(TOPIC, RESOURCE_REFERENCE, singletonList(LOCALE));
 
         // THEN
+    }
+
+    @Test
+    public void updateAssociationEntryWithSourceAndTargetReferences_whenNoTargetReference_shouldOnlyApplySourceRef() {
+        // GIVEN
+        DbDataDto.Entry associationEntry = createDefaultContentEntry(0);
+        associationEntry.getItems().add(DbDataDto.Item.builder().forName("REF").ofFieldRank(1).build());
+        associationEntry.getItems().add(DbDataDto.Item.builder().forName("Other").ofFieldRank(2).build());
+
+        // WHEN
+        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, Optional.empty());
+
+        // THEN
+        assertThat(associationEntry.getItems()).extracting("rawValue").containsExactly(ENTRY_REFERENCE, null);
+    }
+
+    @Test
+    public void updateAssociationEntryWithSourceAndTargetReferences_whenTargetReference_shouldApplySourceAndTargetRefs() {
+        // GIVEN
+        DbDataDto.Entry associationEntry = createDefaultContentEntry(0);
+        associationEntry.getItems().add(DbDataDto.Item.builder().forName("REF").ofFieldRank(1).build());
+        associationEntry.getItems().add(DbDataDto.Item.builder().forName("REF2").ofFieldRank(2).build());
+        associationEntry.getItems().add(DbDataDto.Item.builder().forName("Other").ofFieldRank(3).build());
+
+        // WHEN
+        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, Optional.of(ENTRY_REFERENCE_BIS));
+
+        // THEN
+        assertThat(associationEntry.getItems()).extracting("rawValue").containsExactly(ENTRY_REFERENCE, ENTRY_REFERENCE_BIS, null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void updateAssociationEntryWithSourceAndTargetReferences_whenNullEntry_shouldThrowException() {
+        // GIVEN-WHEN
+        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(null, ENTRY_REFERENCE, Optional.of(ENTRY_REFERENCE_BIS));
+
+        // THEN: NPE
     }
 
     private static DbDto createDatabaseObject(DbDataDto dataObject) {
