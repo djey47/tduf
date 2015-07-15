@@ -54,7 +54,7 @@ public class MainStageChangeDataController {
             affectedLocales = asList(DbResourceDto.Locale.values());
         }
 
-        getChangeHelper().removeResourcesWithReference(topic, locale, resourceReference, affectedLocales);
+        getChangeHelper().removeResourcesWithReference(topic, resourceReference, affectedLocales);
     }
 
     long addEntryForCurrentTopic() {
