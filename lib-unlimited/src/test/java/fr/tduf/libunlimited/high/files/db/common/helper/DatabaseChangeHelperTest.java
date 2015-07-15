@@ -16,9 +16,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -29,6 +27,7 @@ public class DatabaseChangeHelperTest {
     private static final String RESOURCE_VALUE = "TEST";
     private static final DbDto.Topic TOPIC = DbDto.Topic.CAR_PHYSICS_DATA;
     private static final DbResourceDto.Locale LOCALE = DbResourceDto.Locale.CHINA;
+    private static final String CONTENT_ENTRY_NAME = "TEST";
 
     @Mock
     DatabaseGenHelper genHelperMock;
@@ -200,9 +199,50 @@ public class DatabaseChangeHelperTest {
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.empty());
 
         // WHEN
-        changeHelper.removeEntryWithIdentifier(1, TOPIC );
+        changeHelper.removeEntryWithIdentifier(1, TOPIC);
 
         // THEN: NSEE
+    }
+
+    @Test
+    public void duplicateEntryWithIdentifier_whenEntryExists_shouldDupliacteItAndAddItToTopic() {
+        // GIVEN
+        DbDataDto dataObject = createDefaultDataObject();
+        dataObject.getEntries().add(createDefaultContentEntry(0));
+
+        DbDataDto.Entry defaultContentEntry = createDefaultContentEntry(1);
+        defaultContentEntry.getItems().add(DbDataDto.Item.builder().ofFieldRank(1).forName(CONTENT_ENTRY_NAME).build());
+        dataObject.getEntries().add(defaultContentEntry);
+
+        dataObject.getEntries().add(createDefaultContentEntry(2));
+
+        DbDto topicObject = createDatabaseObject(dataObject);
+
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(Optional.of(defaultContentEntry));
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+
+
+        // WHEN
+        changeHelper.duplicateEntryWithIdentifier(2, TOPIC);
+
+
+        //THEN
+        assertThat(dataObject.getEntries()).hasSize(4);
+        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L, 2L, 3L);
+        assertThat(dataObject.getEntries().get(3).getItems()).extracting("name").containsExactly(CONTENT_ENTRY_NAME);
+        assertThat(dataObject.getEntries().get(3).getItems()).extracting("fieldRank").containsExactly(1);
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void duplicateEntryWithIdentifier_whenEntryDoesNotExist_shouldThrowException() {
+        // GIVEN
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(Optional.empty());
+
+        // WHEN
+        changeHelper.duplicateEntryWithIdentifier(2, TOPIC);
+
+        //THEN
+        verifyNoMoreInteractions(minerMock);
     }
 
     private static DbDto createDatabaseObject(DbDataDto dataObject) {
