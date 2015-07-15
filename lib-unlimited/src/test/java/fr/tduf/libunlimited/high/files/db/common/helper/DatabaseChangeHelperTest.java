@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -243,6 +245,56 @@ public class DatabaseChangeHelperTest {
 
         //THEN
         verifyNoMoreInteractions(minerMock);
+    }
+
+    @Test
+    public void removeResourceWithReference_whenResourceEntryExists_andSameLocaleAffected_shouldDeleteIt() {
+        // GIVEN
+        DbResourceDto.Entry resourceEntry = createDefaultResourceEntry(RESOURCE_REFERENCE);
+        DbResourceDto resourceObject = DbResourceDto.builder().addEntry(resourceEntry).build();
+
+        when(minerMock.getResourceFromTopicAndLocale(TOPIC, LOCALE)).thenReturn(Optional.of(resourceObject));
+
+
+        // WHEN
+        changeHelper.removeResourcesWithReference(TOPIC, RESOURCE_REFERENCE, singletonList(LOCALE));
+
+
+        // THEN
+        assertThat(resourceObject.getEntries()).isEmpty();
+    }
+
+    @Test
+    public void removeResourceWithReference_whenResourceEntryExists_andTwoLocalesAffected_shouldDeleteThem() {
+        // GIVEN
+        DbResourceDto.Entry chineseResourceEntry = createDefaultResourceEntry(RESOURCE_REFERENCE);
+        DbResourceDto chineseResourceObject = DbResourceDto.builder().addEntry(chineseResourceEntry).build();
+
+        DbResourceDto.Entry frenchResourceEntry = createDefaultResourceEntry(RESOURCE_REFERENCE);
+        DbResourceDto frenchResourceObject = DbResourceDto.builder().addEntry(frenchResourceEntry).build();
+
+        when(minerMock.getResourceFromTopicAndLocale(TOPIC, LOCALE)).thenReturn(Optional.of(chineseResourceObject));
+        when(minerMock.getResourceFromTopicAndLocale(TOPIC, DbResourceDto.Locale.FRANCE)).thenReturn(Optional.of(frenchResourceObject));
+
+
+        // WHEN
+        changeHelper.removeResourcesWithReference(TOPIC, RESOURCE_REFERENCE, asList(LOCALE, DbResourceDto.Locale.FRANCE));
+
+
+        // THEN
+        assertThat(chineseResourceObject.getEntries()).isEmpty();
+        assertThat(frenchResourceObject.getEntries()).isEmpty();
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void removeResourceWithReference_whenResourceEntryDoesNotExist_shouldThrowException() {
+        // GIVEN
+        when(minerMock.getResourceFromTopicAndLocale(TOPIC, LOCALE)).thenReturn(Optional.empty());
+
+        // WHEN
+        changeHelper.removeResourcesWithReference(TOPIC, RESOURCE_REFERENCE, singletonList(LOCALE));
+
+        // THEN
     }
 
     private static DbDto createDatabaseObject(DbDataDto dataObject) {
