@@ -434,6 +434,10 @@ public class MainStageController implements Initializable {
     private void handleLocaleChoiceChanged(DbResourceDto.Locale newLocale) {
         System.out.println("handleLocaleChoiceChanged: " + newLocale.name());
 
+        if (databaseObjects.isEmpty()) {
+            return;
+        }
+
         viewDataController.updateAllPropertiesWithItemValues();
     }
 
