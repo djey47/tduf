@@ -43,6 +43,9 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .build();
     }
 
+    @Override
+    protected void postPrepare() {}
+
     private List<DbPatchDto.DbChangeDto> makeChangesObjectsForTopic(DbDto.Topic topic, ReferenceRange range) {
 
         this.topicObject = checkTopic(topic);
