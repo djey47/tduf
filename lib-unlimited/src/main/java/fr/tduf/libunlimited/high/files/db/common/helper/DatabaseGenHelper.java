@@ -39,10 +39,9 @@ public class DatabaseGenHelper {
     }
 
     /**
-     *
-     * @param reference
-     * @param topicObject
-     * @return created items list
+     * @param reference     : unique reference of entry to create. If empty, a new one will be generated when necessary
+     * @param topicObject   : database contents hosting items to be created
+     * @return created items list with default values.
      */
     public List<DbDataDto.Item> buildDefaultContentItems(Optional<String> reference, DbDto topicObject) {
 
@@ -192,9 +191,5 @@ public class DatabaseGenHelper {
 
     private static String generateEntryIdentifier(int min, int max) {
         return Integer.valueOf((int) (Math.random() * (max - min) + min)).toString();
-    }
-
-    public DatabaseChangeHelper getChangeHelper() {
-        return changeHelper;
     }
 }
