@@ -18,8 +18,6 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Class providing methods to generate database contents and resources.
  */
-// TODO Javadoc
-// TODO unit tests
 // TODO see to use this class from DatabaseIntegrityFixer
 public class DatabaseGenHelper {
 
@@ -58,7 +56,6 @@ public class DatabaseGenHelper {
     }
 
     /**
-     *
      * @param entryReference    : unique reference of entry to create. If empty, a new one will be generated when necessary
      * @param field             : structure field to create item from
      * @param topicObject       : database contents hosting items to be created
@@ -110,9 +107,8 @@ public class DatabaseGenHelper {
     }
 
     /**
-     *
-     * @param topicObject
-     * @return
+     * @param topicObject   : database contents hosting resources
+     * @return reference to default resource reference in current topic. May exist already, otherwise it will be generated.
      */
     public String generateDefaultResourceReference(DbDto topicObject) {
         Optional<DbResourceDto.Entry> potentialDefaultResourceEntry = findDefaultResourceEntry(topicObject);

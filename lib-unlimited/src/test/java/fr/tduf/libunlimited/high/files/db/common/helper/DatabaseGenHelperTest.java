@@ -16,10 +16,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatabaseGenHelperTest {
@@ -255,6 +254,44 @@ public class DatabaseGenHelperTest {
         verify(changeHelperMock, times(8)).addResourceWithReference(eq(DbDto.Topic.BRANDS), any(DbResourceDto.Locale.class), eq(actualResourceRef), eq("??"));
     }
 
+    @Test
+    public void generateDefaultResourceReference_whenDefaultResourceEntryExists_shouldReturnIt() {
+        // GIVEN
+        DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED);
+        topicObject.getResources().add(DbResourceDto.builder()
+                .addEntry(DbResourceDto.Entry.builder()
+                        .forReference("12345")
+                        .withValue("??")
+                        .build())
+                .build());
+
+
+        // WHEN
+        String actualResourceReference = genHelper.generateDefaultResourceReference(topicObject);
+
+
+        // THEN
+        assertThat(actualResourceReference).isEqualTo("12345");
+
+        verifyZeroInteractions(changeHelperMock);
+    }
+
+    @Test
+    public void generateDefaultResourceReference_whenDefaultResourceEntryDoesNotExist_shouldGenerateIt() {
+        // GIVEN
+        DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED);
+        topicObject.getResources().add(DbResourceDto.builder().build());
+
+
+        // WHEN
+        String actualResourceReference = genHelper.generateDefaultResourceReference(topicObject);
+
+
+        // THEN
+        assertThat(actualResourceReference).isNotEmpty();
+
+        verify(changeHelperMock, times(8)).addResourceWithReference(eq(DbDto.Topic.ACHIEVEMENTS), any(DbResourceDto.Locale.class), anyString(), eq("??"));
+    }
 
     private static DbStructureDto.Field createSingleStructureField(DbStructureDto.FieldType fieldType) {
         return DbStructureDto.Field.builder()
