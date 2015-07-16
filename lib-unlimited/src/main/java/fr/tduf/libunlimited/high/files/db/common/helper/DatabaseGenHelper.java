@@ -196,4 +196,8 @@ public class DatabaseGenHelper {
 
                 .findAny();
     }
+
+    public DatabaseChangeHelper getChangeHelper() {
+        return changeHelper;
+    }
 }
