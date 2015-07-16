@@ -47,6 +47,9 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
        return integrityErrors;
     }
 
+    @Override
+    protected void postPrepare() {}
+
     private void checkRequirements() {
         checkIfAllTopicObjectsPresent();
     }

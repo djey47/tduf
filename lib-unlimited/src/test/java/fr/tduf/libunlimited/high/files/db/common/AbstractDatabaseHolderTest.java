@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AbstractDatabaseHolderTest {
 
     @Test
-    public void prepare_shouldSetDatabaseObject() throws ReflectiveOperationException {
+    public void prepare_shouldSetDatabaseObject_andExecutePostActions() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> databaseObjects = createDefaultDatabaseObjects();
 
@@ -21,6 +21,7 @@ public class AbstractDatabaseHolderTest {
         // THEN
         assertThat(holder).isNotNull();
         assertThat(holder.getDatabaseObjects()).isSameAs(databaseObjects);
+        assertThat(holder.getI()).isEqualTo(1);
     }
 
     @Test(expected = NullPointerException.class)
@@ -28,10 +29,22 @@ public class AbstractDatabaseHolderTest {
         // GIVEN-WHEN
         AbstractDatabaseHolder.prepare(PoorDatabaseHolder.class, null);
 
-        // THEN: NPPE
+        // THEN: NPE
     }
 
-    static class PoorDatabaseHolder extends AbstractDatabaseHolder {}
+    static class PoorDatabaseHolder extends AbstractDatabaseHolder {
+
+        private int i = 0;
+
+        @Override
+        protected void postPrepare() {
+            i++;
+        }
+
+        public int getI() {
+            return i;
+        }
+    }
 
     private static List<DbDto> createDefaultDatabaseObjects() {
         return singletonList(DbDto.builder().build());

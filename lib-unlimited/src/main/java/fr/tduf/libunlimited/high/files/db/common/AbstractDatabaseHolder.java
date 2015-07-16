@@ -28,8 +28,15 @@ public abstract class AbstractDatabaseHolder {
         holderInstance.databaseObjects = requireNonNull(databaseObjects, "Database objects are required.");
         holderInstance.databaseMiner = BulkDatabaseMiner.load(databaseObjects);
 
+        holderInstance.postPrepare();
+
         return holderInstance;
     }
+
+    /**
+     *
+     */
+    protected abstract void postPrepare();
 
     public List<DbDto> getDatabaseObjects() {
         return databaseObjects;

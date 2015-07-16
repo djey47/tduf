@@ -31,6 +31,8 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
     private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH, RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND, CONTENTS_FIELDS_COUNT_MISMATCH));
     private static final Set<IntegrityError.ErrorTypeEnum> UNFIXABLE_ERRORS = new HashSet<>(asList(CONTENTS_NOT_FOUND, CONTENTS_ENCRYPTION_NOT_SUPPORTED));
 
+    private DatabaseGenHelper genHelper;
+
     /**
      * Process fixing over all loaded database objects.
      * @param integrityErrors : integrity errors to fix.
@@ -51,6 +53,11 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         handleFixableErrors(remainingIntegrityErrors);
 
         return remainingIntegrityErrors;
+    }
+
+    @Override
+    protected void postPrepare() {
+        genHelper = new DatabaseGenHelper(databaseMiner);
     }
 
     private void handleUnfixableErrors(List<IntegrityError> remainingIntegrityErrors) {
@@ -242,7 +249,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
         DbDataDto.Entry newEntry = DbDataDto.Entry.builder()
                 .forId(dataDto.getEntries().size())
-                .addItems(buildDefaultContentItems(reference, topicObject))
+                .addItems(genHelper.buildDefaultContentItems(reference, topicObject))
                 .build();
 
         dataDto.getEntries().add(newEntry);

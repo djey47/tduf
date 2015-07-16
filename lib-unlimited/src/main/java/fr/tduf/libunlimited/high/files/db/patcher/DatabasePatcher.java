@@ -31,6 +31,9 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .forEach(this::applyChange);
     }
 
+    @Override
+    protected void postPrepare() {}
+
     private void applyChange(DbPatchDto.DbChangeDto changeObject) {
 
         DbPatchDto.DbChangeDto.ChangeTypeEnum changeType = changeObject.getType();
