@@ -110,12 +110,7 @@ public class DatabaseGenHelper {
      * @return
      */
     public String generateDefaultResourceReference(DbDto topicObject) {
-        Optional<DbResourceDto.Entry> potentialDefaultResourceEntry = topicObject.getResources().stream().findAny().get().getEntries().stream()
-
-                .filter((anObject) -> RESOURCE_VALUE_DEFAULT.equals(anObject.getValue()))
-
-                .findAny();
-
+        Optional<DbResourceDto.Entry> potentialDefaultResourceEntry = findDefaultResourceEntry(topicObject);
         if (potentialDefaultResourceEntry.isPresent()) {
             return potentialDefaultResourceEntry.get().getReference();
         }
@@ -191,5 +186,13 @@ public class DatabaseGenHelper {
 
     private static String generateEntryIdentifier(int min, int max) {
         return Integer.valueOf((int) (Math.random() * (max - min) + min)).toString();
+    }
+
+    private static Optional<DbResourceDto.Entry> findDefaultResourceEntry(DbDto topicObject) {
+        return topicObject.getResources().stream().findAny().get().getEntries().stream()
+
+                .filter((anObject) -> RESOURCE_VALUE_DEFAULT.equals(anObject.getValue()))
+
+                .findAny();
     }
 }
