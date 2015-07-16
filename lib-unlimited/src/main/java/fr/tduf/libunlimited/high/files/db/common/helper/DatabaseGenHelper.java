@@ -23,8 +23,6 @@ public class DatabaseGenHelper {
 
     public static final String RESOURCE_VALUE_DEFAULT = "??";
 
-    private static final String ENTRY_REF_DEFAULT = "00000000";
-
     private static final String BITFIELD_VALUE_DEFAULT = "0";
 
     private final BulkDatabaseMiner databaseMiner;
@@ -87,7 +85,7 @@ public class DatabaseGenHelper {
                 rawValue = "1";
                 break;
             case REFERENCE:
-                rawValue = ENTRY_REF_DEFAULT;
+                rawValue = generateDefaultContentsReference(remoteTopicObject);
                 break;
             case RESOURCE_CURRENT_GLOBALIZED:
             case RESOURCE_CURRENT_LOCALIZED:
@@ -153,6 +151,12 @@ public class DatabaseGenHelper {
 
         Set<String> existingResourceRefs = extractResourceEntryReferences(topicObject);
         return generateUniqueEntryReference(existingResourceRefs);
+    }
+
+    private String generateDefaultContentsReference(DbDto topicObject) {
+        String newContentsReference = generateUniqueContentsEntryIdentifier(topicObject);
+        changeHelper.addContentsEntryWithDefaultItems(Optional.of(newContentsReference), topicObject.getTopic());
+        return newContentsReference;
     }
 
     private static Set<String> extractContentEntryReferences(DbStructureDto.Field identifierField, DbDto topicObject) {
