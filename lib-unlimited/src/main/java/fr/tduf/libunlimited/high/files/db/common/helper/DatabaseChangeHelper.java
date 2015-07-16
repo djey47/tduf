@@ -202,4 +202,8 @@ public class DatabaseChangeHelper {
 
                 .collect(toList());
     }
+
+    private DatabaseGenHelper getGenHelper() {
+        return genHelper;
+    }
 }
