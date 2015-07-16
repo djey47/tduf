@@ -23,7 +23,6 @@ import static java.util.stream.Collectors.*;
 public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
     private static final String RESOURCE_VALUE_DEFAULT = "-FIXED BY TDUF-";
-    private static final String BITFIELD_VALUE_DEFAULT = "00000000";
 
     private List<IntegrityError> integrityErrors;
 
@@ -209,7 +208,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         int newFieldRank = missingField.getRank();
         List<DbDataDto.Item> items = invalidEntry.getItems();
 
-        DbDataDto.Item newItem = buildDefaultContentItem(Optional.empty(), missingField, topicObject);
+        DbDataDto.Item newItem = genHelper.buildDefaultContentItem(Optional.empty(), missingField, topicObject);
         items.add(newFieldRank - 1, newItem);
 
         // Rank update
@@ -253,69 +252,6 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                 .build();
 
         dataDto.getEntries().add(newEntry);
-    }
-
-    private List<DbDataDto.Item> buildDefaultContentItems(Optional<String> reference, DbDto topicObject) {
-
-        return topicObject.getStructure().getFields().stream()
-
-                    .map((structureField) -> buildDefaultContentItem(reference, structureField, topicObject))
-
-                    .collect(toList());
-    }
-
-    private DbDataDto.Item buildDefaultContentItem(Optional<String> entryReference, DbStructureDto.Field field, DbDto topicObject) {
-        String rawValue;
-        DbDto remoteTopicObject = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef());
-
-        DbStructureDto.FieldType fieldType = field.getFieldType();
-        switch (fieldType) {
-            case UID:
-                if (entryReference.isPresent()) {
-                    rawValue = entryReference.get();
-                } else {
-                    rawValue = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
-                }
-                break;
-            case BITFIELD:
-                rawValue = BITFIELD_VALUE_DEFAULT;
-                break;
-            case FLOAT:
-                rawValue = "0.0";
-                break;
-            case INTEGER:
-                rawValue = "0";
-                break;
-            case PERCENT:
-                rawValue = "1";
-                break;
-            case REFERENCE:
-                rawValue = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(remoteTopicObject);
-                addContentsEntryWithDefaultItems(Optional.of(rawValue), remoteTopicObject.getTopic());
-                break;
-            case RESOURCE_CURRENT_GLOBALIZED:
-            case RESOURCE_CURRENT_LOCALIZED:
-                rawValue = DatabaseGenHelper.generateUniqueResourceEntryIdentifier(topicObject);
-                addDefaultResourceReferenceForAllLocales(rawValue, topicObject);
-                break;
-            case RESOURCE_REMOTE:
-                rawValue = DatabaseGenHelper.generateUniqueResourceEntryIdentifier(remoteTopicObject);
-                addDefaultResourceReferenceForAllLocales(rawValue, remoteTopicObject);
-                break;
-            default:
-                throw new IllegalArgumentException("Unhandled field type: " + fieldType);
-        }
-
-        return DbDataDto.Item.builder()
-                .fromStructureField(field)
-                .withRawValue(rawValue)
-                .build();
-    }
-
-    private void addDefaultResourceReferenceForAllLocales(String resourceReference, DbDto topicObject) {
-        Stream.of(DbResourceDto.Locale.values())
-
-                .forEach((locale) -> addResourceEntryFromValidLocale(resourceReference, topicObject.getTopic(), locale));
     }
 
     private Set<DbResourceDto.Locale> findValidResourceLocales() {

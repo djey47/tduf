@@ -18,7 +18,6 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Class providing methods to generate database contents and resources.
  */
-// TODO see to use this class from DatabaseIntegrityFixer
 public class DatabaseGenHelper {
 
     public static final String RESOURCE_VALUE_DEFAULT = "??";
