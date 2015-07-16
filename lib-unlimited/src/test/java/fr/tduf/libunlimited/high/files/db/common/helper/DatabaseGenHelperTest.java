@@ -196,17 +196,24 @@ public class DatabaseGenHelperTest {
     }
 
     @Test
-    public void buildDefaultContentItem_whenReference_shouldCreateItem() {
+    public void buildDefaultContentItem_whenReference_shouldCreateItem_andAddRemoteEntry() {
         // GIVEN
-        DbStructureDto.Field field = createSingleStructureField(DbStructureDto.FieldType.REFERENCE);
+        DbStructureDto.Field field = createStructureFieldForRemoteContent();
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.REFERENCE);
+        DbDto remoteTopicObject = createRemoteTopicObjectOneField(DbStructureDto.FieldType.UID);
+
+        when(minerMock.getDatabaseTopicFromReference("TARGET_REF")).thenReturn(remoteTopicObject);
+
 
         // WHEN
         DbDataDto.Item actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
 
+
         // THEN
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
-        assertThat(actualItem.getRawValue()).isEqualTo("00000000");
+        String newContentEntryRef = actualItem.getRawValue();
+
+        verify(changeHelperMock).addContentsEntryWithDefaultItems(Optional.of(newContentEntryRef), DbDto.Topic.BRANDS);
     }
 
     @Test
@@ -235,7 +242,7 @@ public class DatabaseGenHelperTest {
         // GIVEN
         DbStructureDto.Field field = createStructureFieldForRemoteResource();
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_REMOTE);
-        DbDto remoteTopicObject = createRemoteTopicObjectOneField();
+        DbDto remoteTopicObject = createRemoteTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_REMOTE);
         remoteTopicObject.getResources().add(DbResourceDto.builder().build());
 
         when(minerMock.getDatabaseTopicFromReference("TARGET_REF")).thenReturn(remoteTopicObject);
@@ -308,6 +315,14 @@ public class DatabaseGenHelperTest {
                 .build();
     }
 
+    private static DbStructureDto.Field createStructureFieldForRemoteContent() {
+        return DbStructureDto.Field.builder()
+                .fromType(DbStructureDto.FieldType.REFERENCE)
+                .ofRank(1)
+                .toTargetReference("TARGET_REF")
+                .build();
+    }
+
     private static DbDto createTopicObjectOneUIDField() {
         return DbDto.builder()
                 .withStructure(DbStructureDto.builder()
@@ -336,18 +351,20 @@ public class DatabaseGenHelperTest {
                                 .ofRank(1)
                                 .build())
                         .build())
+                .withData(DbDataDto.builder().build())
                 .build();
     }
 
-    private static DbDto createRemoteTopicObjectOneField() {
+    private static DbDto createRemoteTopicObjectOneField(DbStructureDto.FieldType fieldType) {
         return DbDto.builder()
                 .withStructure(DbStructureDto.builder()
                         .forTopic(DbDto.Topic.BRANDS)
                         .addItem(DbStructureDto.Field.builder()
-                                .fromType(DbStructureDto.FieldType.RESOURCE_REMOTE)
+                                .fromType(fieldType)
                                 .ofRank(1)
                                 .build())
                         .build())
+                .withData(DbDataDto.builder().build())
                 .build();
     }
 }
