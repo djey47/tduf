@@ -15,6 +15,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatabaseGenHelperTest {
@@ -74,7 +79,7 @@ public class DatabaseGenHelperTest {
     @Test(expected = IllegalArgumentException.class)
     public void generateUniqueContentsEntryIdentifier_whenTopicObjectWithoutIdentifierField_shouldThrowIllegalArgumentException() throws Exception {
         // GIVEN-
-        DbDto topicObject = createTopicObjectOneIntegerField();
+        DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.INTEGER);
 
         // WHEN
         DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
@@ -123,7 +128,150 @@ public class DatabaseGenHelperTest {
         assertThat(actualItems.get(0).getRawValue()).isNotEmpty();
     }
 
-    private DbDto createTopicObjectOneUIDField() {
+    @Test(expected = NullPointerException.class)
+    public void buildDefaultContentItem_whenNullFieldType_shouldThrowException() {
+        // GIVEN
+        DbStructureDto.Field field = createSingleStructureField(null);
+        DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.BITFIELD);
+
+        // WHEN
+        genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+
+        // THEN
+    }
+
+    @Test
+    public void buildDefaultContentItem_whenBitfield_shouldCreateItem() {
+        // GIVEN
+        DbStructureDto.Field field = createSingleStructureField(DbStructureDto.FieldType.BITFIELD);
+        DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.BITFIELD);
+
+        // WHEN
+        DbDataDto.Item actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+
+        // THEN
+        assertThat(actualItem.getFieldRank()).isEqualTo(1);
+        assertThat(actualItem.getRawValue()).isEqualTo("0");
+    }
+
+    @Test
+    public void buildDefaultContentItem_whenFloatingPoint_shouldCreateItem() {
+        // GIVEN
+        DbStructureDto.Field field = createSingleStructureField(DbStructureDto.FieldType.FLOAT);
+        DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.FLOAT);
+
+        // WHEN
+        DbDataDto.Item actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+
+        // THEN
+        assertThat(actualItem.getFieldRank()).isEqualTo(1);
+        assertThat(actualItem.getRawValue()).isEqualTo("0.0");
+    }
+
+    @Test
+    public void buildDefaultContentItem_whenInteger_shouldCreateItem() {
+        // GIVEN
+        DbStructureDto.Field field = createSingleStructureField(DbStructureDto.FieldType.INTEGER);
+        DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.INTEGER);
+
+        // WHEN
+        DbDataDto.Item actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+
+        // THEN
+        assertThat(actualItem.getFieldRank()).isEqualTo(1);
+        assertThat(actualItem.getRawValue()).isEqualTo("0");
+    }
+
+    @Test
+    public void buildDefaultContentItem_whenPercent_shouldCreateItem() {
+        // GIVEN
+        DbStructureDto.Field field = createSingleStructureField(DbStructureDto.FieldType.PERCENT);
+        DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.PERCENT);
+
+        // WHEN
+        DbDataDto.Item actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+
+        // THEN
+        assertThat(actualItem.getFieldRank()).isEqualTo(1);
+        assertThat(actualItem.getRawValue()).isEqualTo("1");
+    }
+
+    @Test
+    public void buildDefaultContentItem_whenReference_shouldCreateItem() {
+        // GIVEN
+        DbStructureDto.Field field = createSingleStructureField(DbStructureDto.FieldType.REFERENCE);
+        DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.REFERENCE);
+
+        // WHEN
+        DbDataDto.Item actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+
+        // THEN
+        assertThat(actualItem.getFieldRank()).isEqualTo(1);
+        assertThat(actualItem.getRawValue()).isEqualTo("00000000");
+    }
+
+    @Test
+    public void buildDefaultContentItem_whenResource_shouldCreateItem_andResource() {
+        // GIVEN
+        DbStructureDto.Field field = createSingleStructureField(DbStructureDto.FieldType.RESOURCE_CURRENT_GLOBALIZED);
+        DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_CURRENT_GLOBALIZED);
+        topicObject.getResources().add(DbResourceDto.builder().build());
+
+
+        // WHEN
+        DbDataDto.Item actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+
+
+        // THEN
+        String actualResourceRef = actualItem.getRawValue();
+        assertThat(actualResourceRef).isNotEmpty();
+
+        assertThat(actualItem.getFieldRank()).isEqualTo(1);
+
+        verify(changeHelperMock, times(8)).addResourceWithReference(eq(DbDto.Topic.ACHIEVEMENTS), any(DbResourceDto.Locale.class), eq(actualResourceRef), eq("??"));
+    }
+
+    @Test
+    public void buildDefaultContentItem_whenRemoteResource_shouldCreateItem_andResource() {
+        // GIVEN
+        DbStructureDto.Field field = createStructureFieldForRemoteResource();
+        DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_REMOTE);
+        DbDto remoteTopicObject = createRemoteTopicObjectOneField();
+        remoteTopicObject.getResources().add(DbResourceDto.builder().build());
+
+        when(minerMock.getDatabaseTopicFromReference("TARGET_REF")).thenReturn(remoteTopicObject);
+
+
+        // WHEN
+        DbDataDto.Item actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+
+
+        // THEN
+        String actualResourceRef = actualItem.getRawValue();
+        assertThat(actualResourceRef).isNotEmpty();
+
+        assertThat(actualItem.getFieldRank()).isEqualTo(1);
+
+        verify(changeHelperMock, times(8)).addResourceWithReference(eq(DbDto.Topic.BRANDS), any(DbResourceDto.Locale.class), eq(actualResourceRef), eq("??"));
+    }
+
+
+    private static DbStructureDto.Field createSingleStructureField(DbStructureDto.FieldType fieldType) {
+        return DbStructureDto.Field.builder()
+                    .fromType(fieldType)
+                    .ofRank(1)
+                    .build();
+    }
+
+    private static DbStructureDto.Field createStructureFieldForRemoteResource() {
+        return DbStructureDto.Field.builder()
+                .fromType(DbStructureDto.FieldType.RESOURCE_REMOTE)
+                .ofRank(1)
+                .toTargetReference("TARGET_REF")
+                .build();
+    }
+
+    private static DbDto createTopicObjectOneUIDField() {
         return DbDto.builder()
                 .withStructure(DbStructureDto.builder()
                         .addItem(DbStructureDto.Field.builder()
@@ -142,11 +290,24 @@ public class DatabaseGenHelperTest {
                 .build();
     }
 
-    private DbDto createTopicObjectOneIntegerField() {
+    private static DbDto createTopicObjectOneField(DbStructureDto.FieldType fieldType) {
         return DbDto.builder()
                 .withStructure(DbStructureDto.builder()
+                        .forTopic(DbDto.Topic.ACHIEVEMENTS)
                         .addItem(DbStructureDto.Field.builder()
-                                .fromType(DbStructureDto.FieldType.INTEGER)
+                                .fromType(fieldType)
+                                .ofRank(1)
+                                .build())
+                        .build())
+                .build();
+    }
+
+    private static DbDto createRemoteTopicObjectOneField() {
+        return DbDto.builder()
+                .withStructure(DbStructureDto.builder()
+                        .forTopic(DbDto.Topic.BRANDS)
+                        .addItem(DbStructureDto.Field.builder()
+                                .fromType(DbStructureDto.FieldType.RESOURCE_REMOTE)
                                 .ofRank(1)
                                 .build())
                         .build())

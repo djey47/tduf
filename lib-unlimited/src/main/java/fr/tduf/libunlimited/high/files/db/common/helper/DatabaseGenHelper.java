@@ -38,6 +38,11 @@ public class DatabaseGenHelper {
         this.changeHelper = new DatabaseChangeHelper(this, databaseMiner);
     }
 
+    public DatabaseGenHelper(BulkDatabaseMiner databaseMiner, DatabaseChangeHelper changeHelper) {
+        this.databaseMiner = databaseMiner;
+        this.changeHelper = changeHelper;
+    }
+
     /**
      * @param reference     : unique reference of entry to create. If empty, a new one will be generated when necessary
      * @param topicObject   : database contents hosting items to be created
@@ -54,10 +59,10 @@ public class DatabaseGenHelper {
 
     /**
      *
-     * @param entryReference
-     * @param field
-     * @param topicObject
-     * @return created item
+     * @param entryReference    : unique reference of entry to create. If empty, a new one will be generated when necessary
+     * @param field             : structure field to create item from
+     * @param topicObject       : database contents hosting items to be created
+     * @return created item with default value.
      */
     public DbDataDto.Item buildDefaultContentItem(Optional<String> entryReference, DbStructureDto.Field field, DbDto topicObject) {
         String rawValue;
