@@ -282,4 +282,8 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
     List<IntegrityError> getIntegrityErrors() {
         return integrityErrors;
     }
+
+    void setGenHelper(DatabaseGenHelper genHelper) {
+        this.genHelper = genHelper;
+    }
 }
