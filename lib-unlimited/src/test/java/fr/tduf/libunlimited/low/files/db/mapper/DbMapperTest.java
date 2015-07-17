@@ -59,7 +59,7 @@ public class DbMapperTest {
 
         //WHEN
         String jsonResult = objectWriter.writeValueAsString(dbTopicDto);
-        System.out.println("Actual JSON:" + jsonResult);
+//        System.out.println("Actual JSON:" + jsonResult);
 
 
         //THEN

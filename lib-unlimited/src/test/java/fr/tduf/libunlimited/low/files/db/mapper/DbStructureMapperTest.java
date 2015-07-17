@@ -57,7 +57,7 @@ public class DbStructureMapperTest {
 
         //WHEN
         String jsonResult = objectWriter.writeValueAsString(dbStructureDto);
-        System.out.println("Actual JSON:" + jsonResult);
+//        System.out.println("Actual JSON:" + jsonResult);
 
         //THEN
         assertEquals(expectedJson, jsonResult, JSONCompareMode.STRICT);
