@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -10,6 +11,9 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.*;
 
@@ -18,8 +22,13 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeE
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DatabaseIntegrityFixerTest {
+
+    @Mock
+    private static DatabaseGenHelper genHelperMock;
 
     @Test(expected = NullPointerException.class)
     public void fixAllContentsObjects_whenNullErrors_shouldThrowNPE() throws Exception {
@@ -35,9 +44,11 @@ public class DatabaseIntegrityFixerTest {
         List<DbDto> dbDtos = new ArrayList<>();
         List<IntegrityError> integrityErrors = new ArrayList<>();
 
+
         // WHEN
         DatabaseIntegrityFixer integrityFixer = createFixer(dbDtos);
         List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
+
 
         // THEN
         assertThat(integrityFixer.getIntegrityErrors()).isNotNull();
@@ -143,6 +154,23 @@ public class DatabaseIntegrityFixerTest {
         info.put(REFERENCE, "11111111");
         List<IntegrityError> integrityErrors = singletonList(IntegrityError.builder().ofType(CONTENTS_REFERENCE_NOT_FOUND).addInformations(info).build());
 
+        DbDto remoteTopicObject = dbDtos.get(1);
+        List<DbStructureDto.Field> remoteSTructureFields = remoteTopicObject.getStructure().getFields();
+        DbDataDto.Item fixedItem1 = DbDataDto.Item.builder()
+                .fromStructureField(remoteSTructureFields.get(0))
+                .withRawValue("11111111")
+                .build();
+        DbDataDto.Item fixedItem2 = DbDataDto.Item.builder()
+                .fromStructureField(remoteSTructureFields.get(1))
+                .withRawValue("0")
+                .build();
+        DbDataDto.Item fixedItem3 = DbDataDto.Item.builder()
+                .fromStructureField(remoteSTructureFields.get(2))
+                .withRawValue("REF")
+                .build();
+        List<DbDataDto.Item> fixedItems = asList(fixedItem1, fixedItem2, fixedItem3);
+        when(genHelperMock.buildDefaultContentItems(Optional.of("11111111"), remoteTopicObject)).thenReturn(fixedItems);
+
 
         // WHEN
         DatabaseIntegrityFixer integrityFixer = createFixer(dbDtos);
@@ -175,7 +203,7 @@ public class DatabaseIntegrityFixerTest {
         DbDataDto.Item item3 = createdEntry.getItems().get(2);
         assertThat(item3.getName()).isEqualTo("RemoteRef");
         assertThat(item3.getFieldRank()).isEqualTo(3);
-        assertThat(item3.getRawValue()).isNotNull().hasSize(8);
+        assertThat(item3.getRawValue()).isEqualTo("REF");
     }
 
     @Test
@@ -189,6 +217,21 @@ public class DatabaseIntegrityFixerTest {
         info.put(SOURCE_TOPIC, Topic.AFTER_MARKET_PACKS);
         info.put(ENTRY_ID, 0L);
         List<IntegrityError> integrityErrors = singletonList(IntegrityError.builder().ofType(CONTENTS_FIELDS_COUNT_MISMATCH).addInformations(info).build());
+
+        DbDto topicObject = dbDtos.get(1);
+        DbStructureDto.Field firstStructureField = topicObject.getStructure().getFields().get(0);
+        DbStructureDto.Field thirdStructureField = topicObject.getStructure().getFields().get(2);
+        DbDataDto.Item firstItem = DbDataDto.Item.builder()
+                .fromStructureField(firstStructureField)
+                .withRawValue("11111111")
+                .build();
+        DbDataDto.Item thirdItem = DbDataDto.Item.builder()
+                .fromStructureField(thirdStructureField)
+                .withRawValue("100")
+                .build();
+
+        when(genHelperMock.buildDefaultContentItem(Optional.empty(), firstStructureField,  topicObject)).thenReturn(firstItem);
+        when(genHelperMock.buildDefaultContentItem(Optional.empty(), thirdStructureField,  topicObject)).thenReturn(thirdItem);
 
 
         // WHEN
@@ -213,7 +256,7 @@ public class DatabaseIntegrityFixerTest {
         DbDataDto.Item item1 = createdEntry.getItems().get(0);
         assertThat(item1.getName()).isEqualTo("ID");
         assertThat(item1.getFieldRank()).isEqualTo(1);
-        assertThat(item1.getRawValue()).hasSize(8);
+        assertThat(item1.getRawValue()).isEqualTo("11111111");
 
         DbDataDto.Item item2 = createdEntry.getItems().get(1);
         assertThat(item2.getName()).isEqualTo("Val1");
@@ -295,7 +338,9 @@ public class DatabaseIntegrityFixerTest {
     }
 
     private static DatabaseIntegrityFixer createFixer(List<DbDto> databaseObjects) throws ReflectiveOperationException {
-        return AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
+        DatabaseIntegrityFixer fixer = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
+        fixer.setGenHelper(genHelperMock);
+        return fixer;
     }
 
     private static List<DbDto> createDefaultDatabaseObjects() {
