@@ -54,7 +54,7 @@ public class DbResourceMapperTest {
 
         //WHEN
         String jsonResult = objectWriter.writeValueAsString(dbResourceDto);
-        System.out.println("Actual JSON:" + jsonResult);
+//        System.out.println("Actual JSON:" + jsonResult);
 
         //THEN
         assertEquals(expectedJson, jsonResult, JSONCompareMode.STRICT);

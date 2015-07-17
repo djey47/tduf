@@ -107,7 +107,7 @@ public class DbDataMapperTest {
 
         //WHEN
         String jsonResult = objectWriter.writeValueAsString(dbDataDto);
-        System.out.println("Actual JSON:" + jsonResult);
+//        System.out.println("Actual JSON:" + jsonResult);
 
         //THEN
         assertEquals(expectedJson, jsonResult, JSONCompareMode.STRICT);

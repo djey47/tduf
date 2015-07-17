@@ -381,8 +381,7 @@ public class DatabaseParserTest {
         String jsonResult = objectWriter.writeValueAsString(db);
 
         // Uncomment below to fetch and actualize JSON result
-        System.out.println("JSON DISPLAY");
-        System.out.println(jsonResult);
+//        System.out.println("Actual JSON:" + jsonResult);
         //
 
 
