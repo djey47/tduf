@@ -35,9 +35,8 @@ public class EntriesDesigner {
         String styledToolBarCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TOOLBARS).toExternalForm();
         mainRoot.getStylesheets().add(styledToolBarCss);
 
-        entriesStage.setScene(new Scene(mainRoot, 640, 768));
+        entriesStage.setScene(new Scene(mainRoot, 650, 720));
         entriesStage.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_ENTRIES);
-        entriesStage.setResizable(false);
         entriesStage.initModality(Modality.APPLICATION_MODAL);
     }
 }
