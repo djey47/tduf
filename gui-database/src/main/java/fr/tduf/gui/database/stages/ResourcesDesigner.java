@@ -34,8 +34,7 @@ public class ResourcesDesigner {
         String styledToolBarCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TOOLBARS).toExternalForm();
         mainRoot.getStylesheets().add(styledToolBarCss);
 
-        resourcesStage.setScene(new Scene(mainRoot, 640, 768));
+        resourcesStage.setScene(new Scene(mainRoot, 650, 720));
         resourcesStage.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
-        resourcesStage.setResizable(false);
     }
 }
