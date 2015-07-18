@@ -1,3 +1,7 @@
+.locationToolbar {
+    -fx-base: dodgerBlue;
+}
+
 .settingsToolbar {
     -fx-base: dodgerBlue;
 }

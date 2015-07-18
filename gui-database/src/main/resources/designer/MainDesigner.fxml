@@ -10,7 +10,7 @@
    <children>
       <VBox id="mainVbox" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
           <children>
-              <ToolBar prefHeight="40.0" prefWidth="1280.0" styleClass="settingsToolbar">
+              <ToolBar prefHeight="40.0" prefWidth="1280.0" styleClass="locationToolbar">
                   <items>
                       <Label text="TDU database:" />
                       <TextField fx:id="databaseLocationTextField" />
@@ -20,9 +20,9 @@
                   </items>
               </ToolBar>
       
-              <TitledPane fx:id="settingsPane" prefWidth="1280.0" text="Settings">
+              <TitledPane fx:id="settingsPane" prefWidth="1280.0" text="Settings" styleClass="settingsPane">
                   <content>
-                      <AnchorPane>
+                      <AnchorPane styleClass="settingsPane">
                           <children>
                               <ToolBar styleClass="settingsToolbar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                   <items>

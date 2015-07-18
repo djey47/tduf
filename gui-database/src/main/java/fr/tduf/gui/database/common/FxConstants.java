@@ -10,6 +10,7 @@ public class FxConstants {
 
     public static final String PATH_RESOURCE_CSS_TOOLBARS = "/css/ToolBars.css";
     public static final String PATH_RESOURCE_CSS_TABCONTENTS = "/css/TabContents.css";
+    public static final String PATH_RESOURCE_CSS_PANES = "/css/Panes.css";
 
     public static final String CSS_CLASS_FIELD_LABEL = "fieldLabel";
     public static final String CSS_CLASS_FIELD_NAME = "fieldName";

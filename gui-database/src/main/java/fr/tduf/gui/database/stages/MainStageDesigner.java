@@ -30,7 +30,8 @@ public class MainStageDesigner {
     private static void initMainWindow(Stage primaryStage, Parent mainRoot) {
         String styledToolBarCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TOOLBARS).toExternalForm();
         String styledTabContentsCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TABCONTENTS).toExternalForm();
-        mainRoot.getStylesheets().addAll(styledToolBarCss, styledTabContentsCss);
+        String styledPanesCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_PANES).toExternalForm();
+        mainRoot.getStylesheets().addAll(styledToolBarCss, styledTabContentsCss, styledPanesCss);
 
         primaryStage.setScene(new Scene(mainRoot, 1280, 720));
         primaryStage.setTitle(DisplayConstants.TITLE_APPLICATION);
