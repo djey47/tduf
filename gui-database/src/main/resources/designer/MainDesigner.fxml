@@ -6,9 +6,9 @@
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 
-<AnchorPane fx:id="root" prefHeight="768.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.MainStageController">
+<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.MainStageController">
    <children>
-      <VBox id="mainVbox" prefWidth="1280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <VBox id="mainVbox" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
           <children>
               <ToolBar prefHeight="40.0" prefWidth="1280.0" styleClass="settingsToolbar">
                   <items>
@@ -22,9 +22,9 @@
       
               <TitledPane fx:id="settingsPane" prefWidth="1280.0" text="Settings">
                   <content>
-                      <AnchorPane minHeight="10.0" prefHeight="36.0" prefWidth="1280.0">
+                      <AnchorPane>
                           <children>
-                              <ToolBar prefHeight="37.0" prefWidth="1280.0" styleClass="settingsToolbar" AnchorPane.leftAnchor="-10.0" AnchorPane.rightAnchor="-10.0">
+                              <ToolBar styleClass="settingsToolbar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                   <items>
                                       <Label text="Profile:" />
                                       <ChoiceBox fx:id="profilesChoiceBox" prefWidth="175.0" />
@@ -33,6 +33,9 @@
                                   </items>
                               </ToolBar>
                           </children>
+                     <padding>
+                        <Insets bottom="-1.0" left="-1.0" right="-1.0" top="-1.0" />
+                     </padding>
                       </AnchorPane>
                   </content>
               </TitledPane>

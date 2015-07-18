@@ -32,8 +32,7 @@ public class MainStageDesigner {
         String styledTabContentsCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TABCONTENTS).toExternalForm();
         mainRoot.getStylesheets().addAll(styledToolBarCss, styledTabContentsCss);
 
-        primaryStage.setScene(new Scene(mainRoot, 1280, 768));
+        primaryStage.setScene(new Scene(mainRoot, 1280, 720));
         primaryStage.setTitle(DisplayConstants.TITLE_APPLICATION);
-        primaryStage.setResizable(false);
     }
 }
