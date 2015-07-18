@@ -10,7 +10,7 @@
    <children>
       <VBox id="mainVbox" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
           <children>
-              <ToolBar prefHeight="40.0" prefWidth="1280.0" styleClass="locationToolbar">
+              <ToolBar prefHeight="40.0" prefWidth="1280.0" styleClass="locationToolbar" VBox.vgrow="NEVER">
                   <items>
                       <Label text="TDU database:" />
                       <TextField fx:id="databaseLocationTextField" />
@@ -20,7 +20,7 @@
                   </items>
               </ToolBar>
       
-              <TitledPane fx:id="settingsPane" prefWidth="1280.0" text="Settings" styleClass="settingsPane">
+              <TitledPane fx:id="settingsPane" prefWidth="1280.0" styleClass="settingsPane" text="Settings" VBox.vgrow="SOMETIMES">
                   <content>
                       <AnchorPane styleClass="settingsPane">
                           <children>
@@ -40,7 +40,7 @@
                   </content>
               </TitledPane>
       
-              <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
+              <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
                   <items>
                   <Label fx:id="currentTopicLabel" alignment="TOP_CENTER" prefWidth="175.0" text="&lt;TOPIC&gt;">
                      <font>
@@ -65,7 +65,7 @@
                   </Label>
                   </items>
               </ToolBar>
-                  <TabPane fx:id="tabPane" prefHeight="626.0" prefWidth="1303.0" tabClosingPolicy="UNAVAILABLE">
+                  <TabPane fx:id="tabPane" prefHeight="626.0" prefWidth="1303.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                       <tabs>
                           <Tab text="Default">
                               <content>
@@ -78,7 +78,7 @@
                           </Tab>
                       </tabs>
                   </TabPane>
-            <ToolBar layoutX="10.0" layoutY="112.0" prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
+            <ToolBar layoutX="10.0" layoutY="112.0" prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
                <items>
                   <Button mnemonicParsing="false" onAction="#handleFirstButtonMouseClick" prefWidth="40.0" text="|&lt;"><tooltip><Tooltip text="Goes to first entry." /></tooltip></Button>
                   <Button mnemonicParsing="false" onAction="#handleFastPreviousButtonMouseClick" prefWidth="40.0" text="&lt;&lt;"><tooltip><Tooltip text="Goes back up to 10 entries." /></tooltip></Button>
