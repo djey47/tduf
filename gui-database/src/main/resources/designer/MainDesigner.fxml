@@ -60,6 +60,7 @@
                   <MenuButton mnemonicParsing="false" prefWidth="60.0" text="[]&gt;">
                     <items>
                       <MenuItem mnemonicParsing="false" onAction="#handleExportEntryLineMenuAction" text="Line..." />
+                        <MenuItem mnemonicParsing="false" onAction="#handleExportEntryPchMenuAction" text="PCH instruction..." />
                     </items>
                       <tooltip>
                           <Tooltip text="Exports current entry." />
