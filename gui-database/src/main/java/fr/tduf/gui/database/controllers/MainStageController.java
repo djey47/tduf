@@ -663,31 +663,27 @@ public class MainStageController implements Initializable {
     }
 
     private void exportCurrentEntryAsLineAndShowResult() {
-        // TODO extract method
-        DbDataDto.Entry currentEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicObject.getTopic()).get();
-        List<String> values = currentEntry.getItems().stream()
-
-                .map(DbDataDto.Item::getRawValue)
-
-                .collect(toList());
+        List<String> values = getRawValuesFromCurrentEntry();
 
         String result = String.join(DatabaseParser.VALUE_DELIMITER, values);
         dialogsHelper.showExportResultDialog(result);
     }
 
     private void exportCurrentEntryAsPchValueAndShowResult() {
-        // TODO extract method
-        DbDataDto.Entry currentEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicObject.getTopic()).get();
-        List<String> values = currentEntry.getItems().stream()
-
-                .map(DbDataDto.Item::getRawValue)
-
-                .collect(toList());
-
+        List<String> values = getRawValuesFromCurrentEntry();
         Optional<String> potentialRef = databaseMiner.getContentEntryRefWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicObject.getTopic());
 
         String result = PatchConverter.getContentsValue(potentialRef, values);
         dialogsHelper.showExportResultDialog(result);
+    }
+
+    private List<String> getRawValuesFromCurrentEntry() {
+        DbDataDto.Entry currentEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicObject.getTopic()).get();
+        return currentEntry.getItems().stream()
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .collect(toList());
     }
 
     public DbDto getCurrentTopicObject() {
