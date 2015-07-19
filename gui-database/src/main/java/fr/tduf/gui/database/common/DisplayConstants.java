@@ -20,7 +20,7 @@ public class DisplayConstants {
     public static final String LABEL_BUTTON_MINUS = "-";
     public static final String LABEL_BUTTON_OK = "OK";
     public static final String LABEL_BUTTON_PLUS = "+";
-    public static final String LABEL_BUTTON_COPY = "Copy";
+    public static final String LABEL_BUTTON_CLOSE = "Close";
     public static final String LABEL_CHOICEBOX_LOCALE = "Locale:";
     public static final String LABEL_ITEM_DATABASE_ENTRY = "%s : %s";
     public static final String LABEL_ITEM_ENTRY_COUNT = "/ %d";

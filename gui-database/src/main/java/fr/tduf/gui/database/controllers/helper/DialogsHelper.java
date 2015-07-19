@@ -11,6 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
 
@@ -26,9 +27,9 @@ import static javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE;
 public class DialogsHelper {
 
     /**
-     *
-     * @param errorMessage
-     * @param errorDescription
+     * Displays a single error dialog box.
+     * @param errorMessage      : short text
+     * @param errorDescription  : details.
      */
     public void showErrorDialog(String errorMessage, String errorDescription) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -135,8 +136,22 @@ public class DialogsHelper {
         Dialog resultDialog = new Dialog();
         resultDialog.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT);
 
-        ButtonType copyButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_COPY, ButtonBar.ButtonData.OTHER);
-        resultDialog.getDialogPane().getButtonTypes().setAll(copyButtonType);
+        TextArea textArea = new TextArea(result);
+        textArea.setPrefWidth(650);
+        textArea.setPrefHeight(150);
+        textArea.setEditable(false);
+
+        AnchorPane.setLeftAnchor(textArea, 0.0);
+        AnchorPane.setRightAnchor(textArea, 0.0);
+        AnchorPane.setTopAnchor(textArea, 0.0);
+        AnchorPane.setBottomAnchor(textArea, 0.0);
+
+        AnchorPane anchorPane = new AnchorPane();
+        anchorPane.getChildren().add(textArea);
+        resultDialog.getDialogPane().setContent(anchorPane);
+
+        ButtonType closeButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_CLOSE, CANCEL_CLOSE);
+        resultDialog.getDialogPane().getButtonTypes().setAll(closeButtonType);
 
         resultDialog.show();
     }
