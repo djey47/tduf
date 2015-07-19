@@ -20,6 +20,7 @@ public class DisplayConstants {
     public static final String LABEL_BUTTON_MINUS = "-";
     public static final String LABEL_BUTTON_OK = "OK";
     public static final String LABEL_BUTTON_PLUS = "+";
+    public static final String LABEL_BUTTON_COPY = "Copy";
     public static final String LABEL_CHOICEBOX_LOCALE = "Locale:";
     public static final String LABEL_ITEM_DATABASE_ENTRY = "%s : %s";
     public static final String LABEL_ITEM_ENTRY_COUNT = "/ %d";
@@ -48,6 +49,7 @@ public class DisplayConstants {
     public static final String TITLE_APPLICATION = "TDUF Database Editor";
     public static final String TITLE_SUB_ENTRIES = " : Content entries";
     public static final String TITLE_SUB_RESOURCES = " : Resources";
+    public static final String TITLE_SUB_EXPORT = " : Export entry";
 
     public static final String MESSAGE_ADDED_RESOURCE = "Add resource in topic: ";
     public static final String MESSAGE_DATABASE_SAVED = "Current database was saved.";

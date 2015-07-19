@@ -25,6 +25,11 @@ import static javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE;
  */
 public class DialogsHelper {
 
+    /**
+     *
+     * @param errorMessage
+     * @param errorDescription
+     */
     public void showErrorDialog(String errorMessage, String errorDescription) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
@@ -120,6 +125,20 @@ public class DialogsHelper {
         });
 
         return editResourceDialog.showAndWait();
+    }
+
+    /**
+     * Displays a dialog box with results of export, allowing to copy them to clipboard.
+     * @param result    : exported data to be displayed.
+     */
+    public void showExportResultDialog(String result) {
+        Dialog resultDialog = new Dialog();
+        resultDialog.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT);
+
+        ButtonType copyButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_COPY, ButtonBar.ButtonData.OTHER);
+        resultDialog.getDialogPane().getButtonTypes().setAll(copyButtonType);
+
+        resultDialog.show();
     }
 
     private ChoiceBox<String> createLocaleChoiceBox(DbResourceDto.Locale currentLocale) {

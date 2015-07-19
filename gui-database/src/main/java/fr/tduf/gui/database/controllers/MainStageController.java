@@ -339,7 +339,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        exportCurrentEntryAsLine();
+        exportCurrentEntryAsLineAndShowResult();
     }
 
     public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
@@ -645,8 +645,10 @@ public class MainStageController implements Initializable {
         TableViewHelper.selectRowAndScroll(initialRowIndex, tableViewSelectionModel.getTableView());
     }
 
-    private void exportCurrentEntryAsLine() {
+    private void exportCurrentEntryAsLineAndShowResult() {
+        String result = "";
 
+        dialogsHelper.showExportResultDialog(result);
     }
 
     public DbDto getCurrentTopicObject() {
