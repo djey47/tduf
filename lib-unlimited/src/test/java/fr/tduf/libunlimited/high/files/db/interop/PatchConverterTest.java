@@ -12,12 +12,15 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PatchConverterTest {
@@ -196,7 +199,31 @@ public class PatchConverterTest {
         assertThat(actualChangeObject.getTopic()).isEqualTo(BOTS);
         assertThat(actualChangeObject.getType()).isEqualTo(UPDATE);
         assertThat(actualChangeObject.getValue()).isNull();
-        assertThat(actualChangeObject.getValues()).containsExactly("57167257", "56373256", "600091920", "1", "1" , "551683160", "0", "0.5");
+        assertThat(actualChangeObject.getValues()).containsExactly("57167257", "56373256", "600091920", "1", "1", "551683160", "0", "0.5");
+    }
+
+    @Test
+    public void getContentsValue_whenNoEntryRef_shouldReturnValuesWithCompositeKey() {
+        // GIVEN
+        List<String> values = asList("000000", "111111", "222222");
+
+        // WHEN
+        String actualValue = PatchConverter.getContentsValue(Optional.<String>empty(), values);
+
+        // THEN
+        assertThat(actualValue).isEqualTo("000000=111111|000000\t111111\t222222");
+    }
+
+    @Test
+    public void getContentsValue_whenEntryRef_shouldReturnValuesWithSingleKey() {
+        // GIVEN
+        List<String> values = asList("000000", "111111", "222222");
+
+        // WHEN
+        String actualValue = PatchConverter.getContentsValue(Optional.of("000000"), values);
+
+        // THEN
+        assertThat(actualValue).isEqualTo("000000|000000\t111111\t222222");
     }
 
     private static NodeList assertStructureAndReturnInstructions(Document actualDocument, int instructionsCount) {

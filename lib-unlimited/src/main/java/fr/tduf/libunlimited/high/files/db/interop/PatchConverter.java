@@ -86,6 +86,18 @@ public class PatchConverter {
                 .build();
     }
 
+    /**
+     * @param potentialRef  : value of reference field if available
+     * @param values        : list of all entry values
+     * @return a generated key/values contents entry.
+     */
+    public static String getContentsValue(Optional<String> potentialRef, List<String> values) {
+
+        String entryRef = potentialRef.orElse(values.get(0) + SEPARATOR_COMPOSITE_REF + values.get(1));
+
+        return entryRef + SEPARATOR_KEY_VALUE + String.join(SEPARATOR_ITEMS, values);
+    }
+
     static Document initXmlDocumentFromResource(String resource) throws ParserConfigurationException, URISyntaxException, SAXException, IOException {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -144,13 +156,6 @@ public class PatchConverter {
 
     private static String getResourceValue(String ref, String value) {
         return ref + SEPARATOR_KEY_VALUE + value;
-    }
-
-    private static String getContentsValue(Optional<String> potentialRef, List<String> values) {
-
-        String entryRef = potentialRef.orElse(values.get(0) + SEPARATOR_COMPOSITE_REF + values.get(1));
-
-        return entryRef + SEPARATOR_KEY_VALUE + String.join(SEPARATOR_ITEMS, values);
     }
 
     private static Element createUpdateInstruction(DbDto.Topic topic, DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, List<String> entries, Document patchDocument) {
