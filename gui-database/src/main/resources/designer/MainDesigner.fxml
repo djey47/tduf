@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 
-<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.MainStageController">
+<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.51" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.MainStageController">
    <children>
       <VBox id="mainVbox" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
           <children>
@@ -14,9 +14,9 @@
                   <items>
                       <Label text="TDU database:" />
                       <TextField fx:id="databaseLocationTextField" />
-                      <Button mnemonicParsing="false" onAction="#handleBrowseDirectoryButtonMouseClick" text="..."><tooltip><Tooltip text="Selects a directory for database JSON files." /></tooltip></Button>
-                      <Button mnemonicParsing="false" onAction="#handleLoadButtonMouseClick" text="Load"><tooltip><Tooltip text="Opens database JSON files from selected directory." /></tooltip></Button>
-                      <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleSaveButtonMouseClick" text="Save"><tooltip><Tooltip text="Saves current database to JSON files in selected directory." /></tooltip></Button>
+                      <Button mnemonicParsing="false" onAction="#handleBrowseDirectoryButtonMouseClick" prefWidth="34.0" text="..."><tooltip><Tooltip text="Selects a directory for database JSON files." /></tooltip></Button>
+                      <Button mnemonicParsing="false" onAction="#handleLoadButtonMouseClick" prefWidth="60.0" text="Load"><tooltip><Tooltip text="Opens database JSON files from selected directory." /></tooltip></Button>
+                      <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleSaveButtonMouseClick" prefWidth="60.0" text="Save"><tooltip><Tooltip text="Saves current database to JSON files in selected directory." /></tooltip></Button>
                   </items>
               </ToolBar>
       
@@ -42,13 +42,13 @@
       
               <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
                   <items>
+                  <Button mnemonicParsing="false" onAction="#handleBackButtonMouseClick" prefWidth="34.0" text="&lt;-"><tooltip><Tooltip text="Goes back to previous topic location." /></tooltip></Button>
                   <Label fx:id="currentTopicLabel" alignment="TOP_CENTER" prefWidth="175.0" text="&lt;TOPIC&gt;">
                      <font>
                         <Font name="System Bold Italic" size="13.0" />
                      </font>
                   </Label>
                   <Separator orientation="VERTICAL" />
-                  <Button mnemonicParsing="false" onAction="#handleBackButtonMouseClick" prefWidth="34.0" text="&lt;-"><tooltip><Tooltip text="Goes back to previous topic location." /></tooltip></Button>
                   <Button layoutX="237.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleDuplicateEntryButtonAction" prefWidth="34.0" text="*">
                      <tooltip>
                         <Tooltip text="Adds a new entry in current topic, based on displayed one." />
@@ -56,8 +56,17 @@
                   </Button>
                   <Button layoutX="199.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleAddEntryButtonAction" prefWidth="34.0" text="+"><tooltip><Tooltip text="Adds a new entry in current topic." /></tooltip></Button>
                   <Button layoutX="237.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleRemoveEntryButtonAction" prefWidth="34.0" text="-"><tooltip><Tooltip text="Removes current entry in topic." /></tooltip></Button>
+                  <Separator layoutX="189.0" layoutY="10.0" orientation="VERTICAL" />
+                  <MenuButton mnemonicParsing="false" prefWidth="60.0" text="[]&gt;">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Line..." />
+                    </items>
+                      <tooltip>
+                          <Tooltip text="Exports current entry." />
+                      </tooltip>
+                  </MenuButton>
                   <Separator layoutX="418.0" layoutY="10.0" orientation="VERTICAL" />
-                  <ComboBox fx:id="entryNumberComboBox" prefHeight="26.0" prefWidth="60.0" promptText="..." visibleRowCount="25"><tooltip><Tooltip text="Quick-selects an entry in current topic." /></tooltip></ComboBox>
+                  <ComboBox fx:id="entryNumberComboBox" prefWidth="60.0" promptText="..." visibleRowCount="25"><tooltip><Tooltip text="Quick-selects an entry in current topic." /></tooltip></ComboBox>
                   <Label fx:id="currentEntryLabel" text="&lt;current&gt;">
                      <font>
                         <Font name="System Italic" size="13.0" />
