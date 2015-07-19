@@ -346,6 +346,19 @@ public class MainStageController implements Initializable {
         exportCurrentEntryAsLineAndShowResult();
     }
 
+    @FXML
+    public void handleExportEntryPchMenuAction(ActionEvent actionEvent) {
+        System.out.println("handleExportEntryPchMenuAction");
+
+        if (currentTopicObject == null || currentEntryIndexProperty.getValue() == null) {
+            return;
+        }
+
+        exportCurrentEntryAsPchValueAndShowResult();
+    }
+
+
+
     public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
         return (actionEvent) -> {
             System.out.println("browseResourcesButton clicked");
@@ -650,6 +663,7 @@ public class MainStageController implements Initializable {
     }
 
     private void exportCurrentEntryAsLineAndShowResult() {
+        // TODO extract method
         DbDataDto.Entry currentEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicObject.getTopic()).get();
         List<String> values = currentEntry.getItems().stream()
 
@@ -658,6 +672,21 @@ public class MainStageController implements Initializable {
                 .collect(toList());
 
         String result = String.join(DatabaseParser.VALUE_DELIMITER, values);
+        dialogsHelper.showExportResultDialog(result);
+    }
+
+    private void exportCurrentEntryAsPchValueAndShowResult() {
+        // TODO extract method
+        DbDataDto.Entry currentEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicObject.getTopic()).get();
+        List<String> values = currentEntry.getItems().stream()
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .collect(toList());
+
+        Optional<String> potentialRef = databaseMiner.getContentEntryRefWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicObject.getTopic());
+
+        String result = PatchConverter.getContentsValue(potentialRef, values);
         dialogsHelper.showExportResultDialog(result);
     }
 
