@@ -18,9 +18,12 @@ import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.gui.database.factory.EntryCellFactory;
 import fr.tduf.gui.database.stages.EntriesDesigner;
 import fr.tduf.gui.database.stages.ResourcesDesigner;
+import fr.tduf.libunlimited.high.files.db.interop.PatchConverter;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
@@ -49,6 +52,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
+import static java.util.stream.Collectors.toList;
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
 /**
@@ -646,8 +650,14 @@ public class MainStageController implements Initializable {
     }
 
     private void exportCurrentEntryAsLineAndShowResult() {
-        String result = "";
+        DbDataDto.Entry currentEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicObject.getTopic()).get();
+        List<String> values = currentEntry.getItems().stream()
 
+                .map(DbDataDto.Item::getRawValue)
+
+                .collect(toList());
+
+        String result = String.join(DatabaseParser.VALUE_DELIMITER, values);
         dialogsHelper.showExportResultDialog(result);
     }
 
