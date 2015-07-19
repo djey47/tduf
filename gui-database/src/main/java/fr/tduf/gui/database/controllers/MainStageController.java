@@ -5,6 +5,7 @@ import fr.tduf.gui.database.DatabaseEditor;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.SettingsConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
+import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.controllers.helper.DynamicFieldControlsHelper;
 import fr.tduf.gui.database.controllers.helper.DynamicLinkControlsHelper;
 import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
@@ -56,6 +57,7 @@ import static javafx.scene.control.Alert.AlertType.INFORMATION;
 public class MainStageController implements Initializable {
     private DynamicFieldControlsHelper dynamicFieldControlsHelper;
     private DynamicLinkControlsHelper dynamicLinkControlsHelper;
+    private DialogsHelper dialogsHelper;
 
     private MainStageViewDataController viewDataController;
     private MainStageChangeDataController changeDataController;
@@ -125,11 +127,12 @@ public class MainStageController implements Initializable {
 
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
-        this.viewDataController = new MainStageViewDataController(this);
-        this.changeDataController = new MainStageChangeDataController(this);
+        viewDataController = new MainStageViewDataController(this);
+        changeDataController = new MainStageChangeDataController(this);
 
-        this.dynamicFieldControlsHelper = new DynamicFieldControlsHelper(this);
-        this.dynamicLinkControlsHelper = new DynamicLinkControlsHelper(this);
+        dynamicFieldControlsHelper = new DynamicFieldControlsHelper(this);
+        dynamicLinkControlsHelper = new DynamicLinkControlsHelper(this);
+        dialogsHelper = new DialogsHelper();
 
         try {
             initSettingsPane();
