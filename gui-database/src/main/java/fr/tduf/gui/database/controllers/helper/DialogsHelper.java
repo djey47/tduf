@@ -140,6 +140,7 @@ public class DialogsHelper {
         textArea.setPrefWidth(650);
         textArea.setPrefHeight(150);
         textArea.setEditable(false);
+        textArea.setWrapText(true);
 
         AnchorPane.setLeftAnchor(textArea, 0.0);
         AnchorPane.setRightAnchor(textArea, 0.0);
