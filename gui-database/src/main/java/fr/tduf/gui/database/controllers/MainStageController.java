@@ -328,6 +328,17 @@ public class MainStageController implements Initializable {
         removeCurrentEntryAndUpdateStage();
     }
 
+    @FXML
+    public void handleExportEntryLineMenuAction(ActionEvent actionEvent) {
+        System.out.println("handleExportEntryLineMenuAction");
+
+        if (currentTopicObject == null || currentEntryIndexProperty.getValue() == null) {
+            return;
+        }
+
+        exportCurrentEntryAsLine();
+    }
+
     public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
         return (actionEvent) -> {
             System.out.println("browseResourcesButton clicked");
@@ -629,6 +640,10 @@ public class MainStageController implements Initializable {
         viewDataController.updateLinkProperties(topicLinkObject);
 
         TableViewHelper.selectRowAndScroll(initialRowIndex, tableViewSelectionModel.getTableView());
+    }
+
+    private void exportCurrentEntryAsLine() {
+
     }
 
     public DbDto getCurrentTopicObject() {

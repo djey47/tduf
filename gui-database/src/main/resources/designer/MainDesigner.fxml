@@ -59,7 +59,7 @@
                   <Separator layoutX="189.0" layoutY="10.0" orientation="VERTICAL" />
                   <MenuButton mnemonicParsing="false" prefWidth="60.0" text="[]&gt;">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Line..." />
+                      <MenuItem mnemonicParsing="false" onAction="#handleExportEntryLineMenuAction" text="Line..." />
                     </items>
                       <tooltip>
                           <Tooltip text="Exports current entry." />
