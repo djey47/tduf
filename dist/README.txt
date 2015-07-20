@@ -14,12 +14,13 @@ Please keep in mind that it is called ALPHA for a reason, you should use it care
 Thus, you always ought to make a backup of your TDU database before using it!
 /!\
 
-* Better Bitfield support: now displays bitfield value with meaning when available
-* Now allows to resize main and secondary windows to take benefits of high screen res
-* Adds small UI improvements and tweaks
 * Introduces new feature: export current entry to raw database line
 * Introduces new feature: export current entry to TDUMT patch value
+* Better Bitfield support: now displays bitfield value with meaning when available
 * Fixes some nasty crashes
+* Fixes viewing/editing of remote entries (rims...)
+* Now allows to resize main and secondary windows to take benefit of higher screen resolutions
+* Adds small UI improvements and tweaks
 * Instead of console, Alpha launcher writes all events into a single file for report: Alpha-DatabaseEditor.log.
 
 ### Main features
