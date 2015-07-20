@@ -18,8 +18,12 @@ import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.gui.database.factory.EntryCellFactory;
 import fr.tduf.gui.database.stages.EntriesDesigner;
 import fr.tduf.gui.database.stages.ResourcesDesigner;
+import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.interop.PatchConverter;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
+import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -46,6 +50,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -357,7 +363,16 @@ public class MainStageController implements Initializable {
         exportCurrentEntryAsPchValueAndShowResult();
     }
 
+    @FXML
+    public void handleExportEntryTdufPatchMenuAction(ActionEvent actionEvent) throws IOException {
+        System.out.println("handleExportEntryTdufPatchMenuAction");
 
+        if (currentTopicObject == null || currentEntryIndexProperty.getValue() == null) {
+            return;
+        }
+
+        askForPatchLocationAndExportCurrentEntryToFile();
+    }
 
     public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
         return (actionEvent) -> {
@@ -684,6 +699,43 @@ public class MainStageController implements Initializable {
                 .map(DbDataDto.Item::getRawValue)
 
                 .collect(toList());
+    }
+
+    // FIXME bug when exporting first car physics entry in qwerty db ...
+    private void askForPatchLocationAndExportCurrentEntryToFile() throws IOException {
+
+        DbDto.Topic currentTopic = currentTopicObject.getTopic();
+        Optional<String> potentialEntryRef = databaseMiner.getContentEntryRefWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopic);
+        if(!potentialEntryRef.isPresent()) {
+            // TODO display error
+            return;
+        }
+
+        // TODO ask for location
+
+        Optional<DbPatchDto> potentialPatchObject = potentialEntryRef
+
+                .map((entryRef) -> {
+                    try {
+                        PatchGenerator patchGenerator = AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseObjects);
+                        ReferenceRange range = ReferenceRange.fromCollection(Collections.singletonList(entryRef));
+                        return patchGenerator.makePatch(currentTopic, range);
+                    } catch (ReflectiveOperationException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                });
+
+        if (potentialPatchObject.isPresent()) {
+            // TODO save to file
+            String s = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(potentialPatchObject.get());
+            System.out.println(s);
+
+            // TODO display success dialog
+        } else {
+            // TODO display error dialog
+        }
+
     }
 
     public DbDto getCurrentTopicObject() {
