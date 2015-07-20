@@ -4,6 +4,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -114,12 +115,12 @@ public class FilesHelperTest {
         assertThat(actualContents).hasSize(128);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void readObjectFromJsonResourceFile_whenResourceNotFound_shouldThrowNullPointerException() throws IOException, URISyntaxException {
+    @Test(expected = EOFException.class)
+    public void readObjectFromJsonResourceFile_whenResourceNotFound_shouldThrowException() throws IOException, URISyntaxException {
         // GIVEN-WHEN
         FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/not a resource/");
 
-        // THEN: exception
+        // THEN: EOFE
     }
 
     @Test

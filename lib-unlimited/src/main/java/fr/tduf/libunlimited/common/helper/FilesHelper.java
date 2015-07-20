@@ -1,9 +1,11 @@
 package fr.tduf.libunlimited.common.helper;
 
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -41,8 +43,8 @@ public class FilesHelper {
     public static String readTextFromResourceFile(String resourcePath, Charset charset) throws URISyntaxException, IOException {
         requireNonNull(charset, "A valid charset is required");
 
-        URI fileUri = getUriFromResourcePath(resourcePath);
-        return new String(Files.readAllBytes(Paths.get(fileUri)), charset);
+        byte[] bytes = readBytesFromResourceFile(resourcePath);
+        return new String(bytes, charset);
     }
 
     /**
@@ -51,8 +53,8 @@ public class FilesHelper {
      * @return an array of bytes with resource file contents.
      */
     public static byte[] readBytesFromResourceFile(String resourcePath) throws URISyntaxException, IOException {
-        URI fileURI = getUriFromResourcePath(resourcePath);
-        return Files.readAllBytes(Paths.get(fileURI));
+        InputStream resourceAsStream = thisClass.getResourceAsStream(resourcePath);
+        return IOUtils.toByteArray(resourceAsStream);
     }
 
     /**
@@ -63,8 +65,8 @@ public class FilesHelper {
      * @return contents of read file as generated object instance.
      */
     public static <T> T readObjectFromJsonResourceFile(Class<T> objectClass, String resourcePath) throws URISyntaxException, IOException {
-        URI fileURI = getUriFromResourcePath(resourcePath);
-        return new ObjectMapper().readValue(new File(fileURI), objectClass);
+        InputStream resourceAsStream = thisClass.getResourceAsStream(resourcePath);
+        return new ObjectMapper().readValue(resourceAsStream, objectClass);
     }
 
     /**
@@ -90,6 +92,7 @@ public class FilesHelper {
     }
 
     /**
+     * Only applies to extracted files (test via ide) - not valid if inside a jar.
      * @param resourcePath  : path of resource
      * @return the absolute file name.
      */
@@ -98,6 +101,7 @@ public class FilesHelper {
         return new File(uri).getAbsolutePath();
     }
 
+    /* Only applies to extracted files (test via ide) - not valid if inside a jar. */
     private static URI getUriFromResourcePath(String resourcePath) throws URISyntaxException {
         return thisClass.getResource(resourcePath).toURI();
     }
