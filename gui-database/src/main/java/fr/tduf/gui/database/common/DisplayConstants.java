@@ -56,8 +56,12 @@ public class DisplayConstants {
     public static final String MESSAGE_DELETED_RESOURCE = "Delete: %s - %s";
     public static final String MESSAGE_DIFFERENT_RESOURCE = "Please try again with a different resource reference.";
     public static final String MESSAGE_EDITED_RESOURCE = "Edit: %s - %s";
+    public static final String MESSAGE_ENTRY_WITHOUT_REF = "Current entry has no REF field, making it non exportable.";
+    public static final String MESSAGE_SEE_LOGS = "See logs for details.";
+    public static final String MESSAGE_UNABLE_EXPORT_ENTRY = "Unable to export current entry.";
 
     public static final String QUESTION_AFFECTED_LOCALES = "Which locales should be affected?";
 
     public static final String WARNING_DELETED_RESOURCE = "This resource will be removed.";
+
 }

@@ -50,7 +50,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
@@ -707,7 +706,7 @@ public class MainStageController implements Initializable {
         DbDto.Topic currentTopic = currentTopicObject.getTopic();
         Optional<String> potentialEntryRef = databaseMiner.getContentEntryRefWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopic);
         if(!potentialEntryRef.isPresent()) {
-            // TODO display error
+            dialogsHelper.showErrorDialog(DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_ENTRY_WITHOUT_REF);
             return;
         }
 
@@ -720,7 +719,7 @@ public class MainStageController implements Initializable {
                         PatchGenerator patchGenerator = AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseObjects);
                         ReferenceRange range = ReferenceRange.fromCollection(Collections.singletonList(entryRef));
                         return patchGenerator.makePatch(currentTopic, range);
-                    } catch (ReflectiveOperationException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         return null;
                     }
@@ -733,9 +732,8 @@ public class MainStageController implements Initializable {
 
             // TODO display success dialog
         } else {
-            // TODO display error dialog
+            dialogsHelper.showErrorDialog(DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_SEE_LOGS);
         }
-
     }
 
     public DbDto getCurrentTopicObject() {
