@@ -9,11 +9,9 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BulkDatabaseMinerTest {
@@ -278,11 +276,57 @@ public class BulkDatabaseMinerTest {
         assertThat(BulkDatabaseMiner.getUidFieldRank(structureFields).getAsInt()).isEqualTo(1);
     }
 
+    @Test
+    public void getAllResourceValuesForReference_whenAllValuesPresent_shouldReturnThem() {
+        // GIVEN
+        DbResourceDto resourceObject1 = createResourceObjectWithSingleEntry("111111", "A");
+        DbResourceDto resourceObject2 = createResourceObjectWithSingleEntry("111111", "B");
+        DbResourceDto resourceObject3 = createResourceObjectWithSingleEntry("111111", "C");
+        DbResourceDto resourceObject4 = createResourceObjectWithSingleEntry("111111", "A");
+        List<DbResourceDto> topicResourceObjects = asList(resourceObject1, resourceObject2, resourceObject3, resourceObject4);
+
+        // WHEN
+        Set<String> actualValues = BulkDatabaseMiner.getAllResourceValuesForReference("111111", topicResourceObjects);
+
+        // THEN
+        assertThat(actualValues)
+                .hasSize(3)
+                .contains("A", "B", "C");
+    }
+
+    @Test
+    public void getAllResourceValuesForReference_whenValueMissingForLocale_shouldReturnOnlyExistingValues() {
+        // GIVEN
+        DbResourceDto resourceObject1 = createResourceObjectWithSingleEntry("111111", "A");
+        DbResourceDto resourceObject2 = createResourceObjectWithSingleEntry("000000", "Z");
+        DbResourceDto resourceObject3 = createResourceObjectWithSingleEntry("111111", "B");
+        DbResourceDto resourceObject4 = createResourceObjectWithSingleEntry("111111", "C");
+        List<DbResourceDto> topicResourceObjects = asList(resourceObject1, resourceObject2, resourceObject3, resourceObject4);
+
+        // WHEN
+        Set<String> actualValues = BulkDatabaseMiner.getAllResourceValuesForReference("111111", topicResourceObjects);
+
+        // THEN
+        assertThat(actualValues)
+                .hasSize(3)
+                .contains("A", "B", "C");
+    }
+
     private static ArrayList<DbDto> createTopicObjectsFromResources() throws IOException, URISyntaxException {
         ArrayList<DbDto> dbDtos = new ArrayList<>();
 
         dbDtos.add(FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/miner/TDU_Bots_FAKE.json"));
 
         return dbDtos;
+    }
+
+    private static DbResourceDto createResourceObjectWithSingleEntry(String reference, String value) {
+        return DbResourceDto.builder()
+                .addEntry(DbResourceDto.Entry.builder()
+                                .forReference(reference)
+                                .withValue(value)
+                                .build()
+                )
+                .build();
     }
 }
