@@ -1,11 +1,18 @@
+/* Database location */
 .locationToolbar {
     -fx-base: dodgerBlue;
 }
 
+/* Settings */
 .settingsToolbar {
     -fx-base: dodgerBlue;
 }
 
+#localesChoiceBox .label, #profilesChoiceBox .label {
+    -fx-text-fill: black;
+}
+
+/* Nav */
 .navigationToolbar {
     -fx-base: black;
 }
