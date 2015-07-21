@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.common.helper;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -148,5 +149,19 @@ public class FilesHelperTest {
 
         // THEN
         assertThat(actualFileName.replace('\\', '/')).endsWith("/resources/test/db/json/TDU_Achievements.json");
+    }
+
+    @Test
+    public void writeJsonObjectToFile_whenValidObject_shouldCreateFileWithSameContents() throws IOException, URISyntaxException {
+        // GIVEN
+        Path outputFilePath = Paths.get(tempDirectory, "writtenJson", "TDU_Achievements.json");
+        DbDto sourceObject = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Achievements.json");
+
+        // WHEN
+        FilesHelper.writeJsonObjectToFile(sourceObject, outputFilePath.toString());
+
+        // THEN
+        DbDto actualObject = new ObjectMapper().readValue(outputFilePath.toFile(), DbDto.class);
+        assertThat(actualObject).isEqualTo(sourceObject);
     }
 }

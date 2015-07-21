@@ -3,12 +3,14 @@ package fr.tduf.libunlimited.common.helper;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -99,6 +101,19 @@ public class FilesHelper {
     public static String getFileNameFromResourcePath(String resourcePath) throws URISyntaxException {
         URI uri = getUriFromResourcePath(resourcePath);
         return new File(uri).getAbsolutePath();
+    }
+
+    /**
+     * @param object    : instance to be written to json format
+     * @param fileName  : path of file to be created
+     * @throws IOException
+     */
+    public static void writeJsonObjectToFile(Object object, String fileName) throws IOException {
+        Path patchFilePath = Paths.get(fileName);
+        Files.createDirectories(patchFilePath.getParent());
+        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(patchFilePath, StandardCharsets.UTF_8)) {
+            new ObjectMapper().writer().writeValue(bufferedWriter, object);
+        }
     }
 
     /* Only applies to extracted files (test via ide) - not valid if inside a jar. */
