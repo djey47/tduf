@@ -12,7 +12,11 @@
           <children>
               <ToolBar prefHeight="40.0" prefWidth="1280.0" styleClass="locationToolbar" VBox.vgrow="NEVER">
                   <items>
-                      <Label text="TDU database:" />
+                      <Label text="TDU database:">
+                          <font>
+                              <Font name="System Bold" size="13.0" />
+                          </font>
+                      </Label>
                       <TextField fx:id="databaseLocationTextField" />
                       <Button mnemonicParsing="false" onAction="#handleBrowseDirectoryButtonMouseClick" prefWidth="34.0" text="..."><tooltip><Tooltip text="Selects a directory for database JSON files." /></tooltip></Button>
                       <Button mnemonicParsing="false" onAction="#handleLoadButtonMouseClick" prefWidth="60.0" text="Load"><tooltip><Tooltip text="Opens database JSON files from selected directory." /></tooltip></Button>
@@ -26,9 +30,15 @@
                           <children>
                               <ToolBar styleClass="settingsToolbar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                   <items>
-                                      <Label text="Profile:" />
+                                      <Label text="Profile:">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font></Label>
                                       <ChoiceBox fx:id="profilesChoiceBox" prefWidth="175.0" />
-                                      <Label text="Locale:" />
+                                      <Label text="Locale:">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font></Label>
                                       <ChoiceBox fx:id="localesChoiceBox" prefWidth="175.0" />
                                   </items>
                               </ToolBar>
