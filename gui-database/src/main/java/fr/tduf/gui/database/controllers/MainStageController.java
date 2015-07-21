@@ -711,6 +711,7 @@ public class MainStageController implements Initializable {
         }
 
         // TODO ask for location
+        String location = "";
 
         Optional<DbPatchDto> potentialPatchObject = potentialEntryRef
 
@@ -730,7 +731,7 @@ public class MainStageController implements Initializable {
             String s = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(potentialPatchObject.get());
             System.out.println(s);
 
-            // TODO display success dialog
+            dialogsHelper.showDialog(Alert.AlertType.INFORMATION, DisplayConstants.MESSAGE_ENTRY_EXPORTED, location);
         } else {
             dialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_SEE_LOGS);
         }
