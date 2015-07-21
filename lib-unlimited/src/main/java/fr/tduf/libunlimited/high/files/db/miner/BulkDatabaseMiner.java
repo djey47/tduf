@@ -267,13 +267,20 @@ public class BulkDatabaseMiner {
      */
     public static Set<String> getAllResourceValuesForReference(String reference, List<DbResourceDto> topicResourceObjects) {
 //        System.out.println(new Date().getTime() + " - getAllResourceValuesForReference(" + reference + "," + topicResourceObjects + ")");
+
         return topicResourceObjects.stream()
 
                 .map((resource) -> resource.getEntries().stream()
 
                         .filter((resourceEntry) -> resourceEntry.getReference().equals(reference))
 
-                        .findAny().get().getValue())
+                        .findAny()
+
+                        .map(DbResourceDto.Entry::getValue)
+
+                        .orElse(null))
+
+                .filter((value) -> value != null)
 
                 .collect(toSet());
     }
