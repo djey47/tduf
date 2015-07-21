@@ -162,17 +162,7 @@ public class MainStageController implements Initializable {
     public void handleBrowseDirectoryButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleBrowseDirectoryButtonMouseClick");
 
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-
-        File directory = new File(this.databaseLocationTextField.getText());
-        if (directory.exists()) {
-            directoryChooser.setInitialDirectory(directory);
-        }
-
-        File selectedDirectory = directoryChooser.showDialog(root.getScene().getWindow());
-        if (selectedDirectory != null) {
-            this.databaseLocationTextField.setText(selectedDirectory.getPath());
-        }
+        browseForDatabaseDirectory();
     }
 
     @FXML
@@ -608,6 +598,20 @@ public class MainStageController implements Initializable {
         viewDataController.fillBrowsableEntries(currentTopicObject.getTopic());
 
         initTabPane();
+    }
+
+    private void browseForDatabaseDirectory() {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+
+        File directory = new File(this.databaseLocationTextField.getText());
+        if (directory.exists()) {
+            directoryChooser.setInitialDirectory(directory);
+        }
+
+        File selectedDirectory = directoryChooser.showDialog(root.getScene().getWindow());
+        if (selectedDirectory != null) {
+            this.databaseLocationTextField.setText(selectedDirectory.getPath());
+        }
     }
 
     private void loadDatabaseFromDirectory(String databaseLocation) {
