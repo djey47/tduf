@@ -18,6 +18,7 @@ import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.gui.database.factory.EntryCellFactory;
 import fr.tduf.gui.database.stages.EntriesDesigner;
 import fr.tduf.gui.database.stages.ResourcesDesigner;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.interop.PatchConverter;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -48,9 +49,9 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -613,6 +614,14 @@ public class MainStageController implements Initializable {
         }
     }
 
+    private Optional<File> browseForPatchFilename() {
+        FileChooser fileChooser = new FileChooser();
+
+        File selectedFile = fileChooser.showSaveDialog(root.getScene().getWindow());
+
+        return Optional.ofNullable(selectedFile);
+    }
+
     private void loadDatabaseFromDirectory(String databaseLocation) {
         databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(databaseLocation);
         if (!databaseObjects.isEmpty()) {
@@ -710,30 +719,32 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        // TODO ask for location
-        String location = "";
+        Optional<File> potentialFile = browseForPatchFilename();
+        if (!potentialFile.isPresent()) {
+            return;
+        }
 
         Optional<DbPatchDto> potentialPatchObject = potentialEntryRef
-
-                .map((entryRef) -> {
-                    try {
-                        PatchGenerator patchGenerator = AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseObjects);
-                        ReferenceRange range = ReferenceRange.fromCollection(Collections.singletonList(entryRef));
-                        return patchGenerator.makePatch(currentTopic, range);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                });
+                .map((entryRef) -> generatePatchObject(currentTopic, entryRef));
 
         if (potentialPatchObject.isPresent()) {
-            // TODO save to file
-            String s = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(potentialPatchObject.get());
-            System.out.println(s);
+            String location = potentialFile.get().getPath();
+            FilesHelper.writeJsonObjectToFile(potentialPatchObject.get(), location);
 
             dialogsHelper.showDialog(Alert.AlertType.INFORMATION, DisplayConstants.MESSAGE_ENTRY_EXPORTED, location);
         } else {
             dialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_SEE_LOGS);
+        }
+    }
+
+    private DbPatchDto generatePatchObject(DbDto.Topic currentTopic, String entryRef) {
+        try {
+            PatchGenerator patchGenerator = AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseObjects);
+            ReferenceRange range = ReferenceRange.fromCollection(Collections.singletonList(entryRef));
+            return patchGenerator.makePatch(currentTopic, range);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
