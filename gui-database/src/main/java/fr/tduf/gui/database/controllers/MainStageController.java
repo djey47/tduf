@@ -706,7 +706,7 @@ public class MainStageController implements Initializable {
         DbDto.Topic currentTopic = currentTopicObject.getTopic();
         Optional<String> potentialEntryRef = databaseMiner.getContentEntryRefWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopic);
         if(!potentialEntryRef.isPresent()) {
-            dialogsHelper.showErrorDialog(DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_ENTRY_WITHOUT_REF);
+            dialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_ENTRY_WITHOUT_REF);
             return;
         }
 
@@ -732,7 +732,7 @@ public class MainStageController implements Initializable {
 
             // TODO display success dialog
         } else {
-            dialogsHelper.showErrorDialog(DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_SEE_LOGS);
+            dialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_SEE_LOGS);
         }
     }
 

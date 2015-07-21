@@ -28,11 +28,12 @@ public class DialogsHelper {
 
     /**
      * Displays a single error dialog box.
+     * @param alertType         : type of dialog box to be created
      * @param errorMessage      : short text
      * @param errorDescription  : details.
      */
-    public void showErrorDialog(String errorMessage, String errorDescription) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+    public void showDialog(Alert.AlertType alertType, String errorMessage, String errorDescription) {
+        Alert alert = new Alert(alertType);
         alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
         alert.setHeaderText(errorMessage);
         alert.setContentText(errorDescription);

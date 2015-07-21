@@ -17,6 +17,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -226,7 +227,7 @@ public class ResourcesStageController implements Initializable {
                 editResourceForAllLocales(topic, currentResourceReference, newResourceReference, newResourceValue, updateResourceMode);
             }
         } catch (IllegalArgumentException iae) {
-            dialogsHelper.showErrorDialog(iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
+            dialogsHelper.showDialog(Alert.AlertType.ERROR, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
         } finally {
             updateAllStages(Optional.of(newResourceReference));
         }
