@@ -12,6 +12,11 @@
     -fx-text-fill: black;
 }
 
+/* Actions */
+#entryNumberComboBox .list-cell {
+    -fx-text-fill: white;
+}
+
 /* Nav */
 .navigationToolbar {
     -fx-base: black;
