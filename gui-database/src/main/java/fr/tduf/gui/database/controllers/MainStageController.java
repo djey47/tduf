@@ -58,7 +58,6 @@ import java.net.URL;
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
-import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
 /**
  * Makes it a possible to intercept all GUI events.
@@ -628,10 +627,7 @@ public class MainStageController implements Initializable {
     private void saveDatabaseToDirectory(String databaseLocation) {
         DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects, databaseLocation);
 
-        Alert alertDialog = new Alert(INFORMATION, databaseLocation, ButtonType.OK);
-        alertDialog.setTitle(DisplayConstants.TITLE_APPLICATION);
-        alertDialog.setHeaderText(DisplayConstants.MESSAGE_DATABASE_SAVED);
-        alertDialog.showAndWait();
+        dialogsHelper.showDialog(Alert.AlertType.INFORMATION, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseLocation);
     }
 
     private void addEntryAndUpdateStage() {
