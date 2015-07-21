@@ -13,6 +13,10 @@
 }
 
 /* Actions */
+#entryNumberComboBox .scroll-bar:vertical {
+    -fx-background-color:transparent;
+
+}
 #entryNumberComboBox .list-cell {
     -fx-text-fill: white;
 }
