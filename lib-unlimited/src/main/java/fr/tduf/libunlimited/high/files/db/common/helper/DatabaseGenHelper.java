@@ -24,6 +24,9 @@ public class DatabaseGenHelper {
 
     private static final String BITFIELD_VALUE_DEFAULT = "0";
 
+    private static final int IDENTIFIER_MIN = 10000000;
+    private static final int IDENTIFIER_MAX = 99999999;
+
     private final BulkDatabaseMiner databaseMiner;
 
     private final DatabaseChangeHelper changeHelper;
@@ -183,7 +186,7 @@ public class DatabaseGenHelper {
     private static String generateUniqueEntryReference(Set<String> existingEntryRefs) {
         String generatedRef = null;
         while(generatedRef == null || existingEntryRefs.contains(generatedRef)) {
-            generatedRef = generateEntryIdentifier(10000000, 99999999);
+            generatedRef = generateEntryIdentifier(IDENTIFIER_MIN, IDENTIFIER_MAX);
         }
         return generatedRef;
     }
