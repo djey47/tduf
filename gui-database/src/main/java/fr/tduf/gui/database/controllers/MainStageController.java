@@ -709,7 +709,6 @@ public class MainStageController implements Initializable {
                 .collect(toList());
     }
 
-    // FIXME bug when exporting first car physics entry in qwerty db ...
     private void askForPatchLocationAndExportCurrentEntryToFile() throws IOException {
 
         DbDto.Topic currentTopic = currentTopicObject.getTopic();
