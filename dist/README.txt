@@ -7,21 +7,17 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Capitalizing about reverse-engineering
 * ...
 
-### What's in this version ? (ALPHA 5)
+### What's in this version ? (ALPHA 6)
 
 /!\
 Please keep in mind that it is called ALPHA for a reason, you should use it carefully as it may damage your game!
 Thus, you always ought to make a backup of your TDU database before using it!
 /!\
 
-* Introduces new feature: export current entry to raw database line
-* Introduces new feature: export current entry to TDUMT patch value
-* Better Bitfield support: now displays bitfield value with meaning when available
-* Fixes some nasty crashes
-* Fixes viewing/editing of remote entries (rims...)
-* Now allows to resize main and secondary windows to take benefit of higher screen resolutions
-* Adds small UI improvements and tweaks
-* Instead of console, Alpha launcher writes all events into a single file for report: Alpha-DatabaseEditor.log.
+* Introduces new feature: export current entry to TDUF Mini Patch file, when possible
+* Fix: cloned entry now gets a unique, generated REF to prevent collisions with existing entries
+* Fix: does not crash anymore when corrupted database (missing resource value for some locales)
+* Adds small UI improvements and tweaks (thanks to TDUZoqqer).
 
 ### Main features
 
