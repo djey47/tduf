@@ -145,13 +145,8 @@ public class DatabaseChangeHelper {
         BulkDatabaseMiner.getUidFieldRank(topicObject.getStructure().getFields())
                 .ifPresent((uidFieldRank) -> {
                     String newReference = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
-
-                    // TODO extract search to Miner (extract method from getContentItemFromEntryIdentifierAndFieldRank )
-                    newEntry.getItems().stream()
-                            .filter((item) -> item.getFieldRank() == uidFieldRank)
-                            .findAny()
-                            .get()
-                            .setRawValue(newReference);
+                    DbDataDto.Item uidContentItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(newEntry, uidFieldRank).get();
+                    uidContentItem.setRawValue(newReference);
                 });
 
         currentContentEntries.add(newEntry);
