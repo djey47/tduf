@@ -4,6 +4,8 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import org.assertj.core.api.Condition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -31,6 +34,7 @@ public class DatabaseChangeHelperTest {
     private static final DbDto.Topic TOPIC = DbDto.Topic.CAR_PHYSICS_DATA;
     private static final DbResourceDto.Locale LOCALE = DbResourceDto.Locale.CHINA;
     private static final String CONTENT_ENTRY_NAME = "TEST";
+    private static final String CONTENT_ENTRY_REF_NAME = "REF";
 
     @Mock
     DatabaseGenHelper genHelperMock;
@@ -92,7 +96,8 @@ public class DatabaseChangeHelperTest {
     public void addContentsEntryWithDefaultItems_whenTopicObjectAvailable_shouldCreateAndReturnIt() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        DbDto databaseObject = createDatabaseObject(dataObject);
+        DbStructureDto stuctureObject = createDefaultStructureObject();
+        DbDto databaseObject = createDatabaseObject(dataObject, stuctureObject);
         List<DbDataDto.Item> contentItems = new ArrayList<>();
         contentItems.add(DbDataDto.Item.builder()
                 .ofFieldRank(1)
@@ -182,7 +187,7 @@ public class DatabaseChangeHelperTest {
         dataObject.getEntries().add(createDefaultContentEntry(2));
         dataObject.getEntries().add(createDefaultContentEntry(3));
 
-        DbDto topicObject = createDatabaseObject(dataObject);
+        DbDto topicObject = createDatabaseObject(dataObject, createDefaultStructureObject());
 
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
 
@@ -208,18 +213,20 @@ public class DatabaseChangeHelperTest {
     }
 
     @Test
-    public void duplicateEntryWithIdentifier_whenEntryExists_shouldDupliacteItAndAddItToTopic() {
+    public void duplicateEntryWithIdentifier_whenEntryExists_shouldDuplicateItAndAddItToTopic() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
         dataObject.getEntries().add(createDefaultContentEntry(0));
 
         DbDataDto.Entry defaultContentEntry = createDefaultContentEntry(1);
-        defaultContentEntry.getItems().add(DbDataDto.Item.builder().ofFieldRank(1).forName(CONTENT_ENTRY_NAME).build());
+        defaultContentEntry.getItems().add(createDefaultEntryItem());
         dataObject.getEntries().add(defaultContentEntry);
 
         dataObject.getEntries().add(createDefaultContentEntry(2));
 
-        DbDto topicObject = createDatabaseObject(dataObject);
+        DbStructureDto stuctureObject = createDefaultStructureObject();
+
+        DbDto topicObject = createDatabaseObject(dataObject, stuctureObject);
 
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(Optional.of(defaultContentEntry));
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
@@ -234,6 +241,41 @@ public class DatabaseChangeHelperTest {
         assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L, 2L, 3L);
         assertThat(dataObject.getEntries().get(3).getItems()).extracting("name").containsExactly(CONTENT_ENTRY_NAME);
         assertThat(dataObject.getEntries().get(3).getItems()).extracting("fieldRank").containsExactly(1);
+    }
+
+    @Test
+    public void duplicateEntryWithIdentifier_whenUidField_shouldGenerateNewRefValueWithinBounds() {
+        // GIVEN
+        DbDataDto dataObject = createDefaultDataObject();
+
+        DbDataDto.Entry defaultContentEntry = createDefaultContentEntry(0);
+        defaultContentEntry.getItems().add(createEntryItemForUidField());
+        dataObject.getEntries().add(defaultContentEntry);
+
+        DbStructureDto stuctureObject = createStructureObjectWithUidField();
+
+        DbDto topicObject = createDatabaseObject(dataObject, stuctureObject);
+
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC)).thenReturn(Optional.of(defaultContentEntry));
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+
+
+        // WHEN
+        changeHelper.duplicateEntryWithIdentifier(0, TOPIC);
+
+
+        //THEN
+        assertThat(dataObject.getEntries()).hasSize(2);
+        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L);
+        assertThat(dataObject.getEntries().get(1).getItems()).extracting("name").containsExactly(CONTENT_ENTRY_REF_NAME);
+        assertThat(dataObject.getEntries().get(1).getItems()).extracting("fieldRank").containsExactly(1);
+        assertThat(dataObject.getEntries().get(1).getItems()).extracting("rawValue").doesNotContain(ENTRY_REFERENCE);
+
+        Condition<String> betweenMinAndMaxRefValues = new Condition<>((Predicate<String>) o -> {
+            int i = Integer.parseInt(o);
+            return i >= 10000000 && i <= 99999999;
+        }, "between 10000000 and 99999999 (inclusive)");
+        assertThat(dataObject.getEntries().get(1).getItems().get(0).getRawValue()).is(betweenMinAndMaxRefValues);
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -335,9 +377,10 @@ public class DatabaseChangeHelperTest {
         // THEN: NPE
     }
 
-    private static DbDto createDatabaseObject(DbDataDto dataObject) {
+    private static DbDto createDatabaseObject(DbDataDto dataObject, DbStructureDto stuctureObject) {
         return DbDto.builder()
                 .withData(dataObject)
+                .withStructure(stuctureObject)
                 .build();
     }
 
@@ -352,10 +395,42 @@ public class DatabaseChangeHelperTest {
                 .build();
     }
 
+    private static DbDataDto.Item createDefaultEntryItem() {
+        return DbDataDto.Item.builder()
+                .ofFieldRank(1)
+                .forName(CONTENT_ENTRY_NAME)
+                .build();
+    }
+
+    private static DbDataDto.Item createEntryItemForUidField() {
+        return DbDataDto.Item.builder()
+                .ofFieldRank(1)
+                .forName(CONTENT_ENTRY_REF_NAME)
+                .withRawValue(ENTRY_REFERENCE)
+                .build();
+
+    }
+
     private static DbResourceDto.Entry createDefaultResourceEntry(String reference) {
         return DbResourceDto.Entry.builder()
                 .forReference(reference)
                 .withValue("")
+                .build();
+    }
+
+    private static DbStructureDto createDefaultStructureObject() {
+        return DbStructureDto.builder().build();
+    }
+
+    private static DbStructureDto createStructureObjectWithUidField() {
+        return DbStructureDto.builder()
+                .forTopic(TOPIC)
+                .addItem(DbStructureDto.Field.builder()
+                        .forName(CONTENT_ENTRY_REF_NAME)
+                        .fromType(DbStructureDto.FieldType.UID)
+                        .ofRank(1)
+                        .build()
+                )
                 .build();
     }
 }

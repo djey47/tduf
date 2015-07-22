@@ -127,11 +127,13 @@ public class DatabaseChangeHelper {
      * @param entryId   : internal identifier of entry to be copied
      * @param topic     : database topic where entry should be duplicated
      * @return a clone of entry with given identifier in specified topic and added to this topic.
+     * If a REF field is present, a random, unique identifier will be generated.
      */
     public DbDataDto.Entry duplicateEntryWithIdentifier(long entryId, DbDto.Topic topic) {
         DbDataDto.Entry sourceEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic).get();
 
-        List<DbDataDto.Entry> currentContentEntries = databaseMiner.getDatabaseTopic(topic).get().getData().getEntries();
+        DbDto topicObject = databaseMiner.getDatabaseTopic(topic).get();
+        List<DbDataDto.Entry> currentContentEntries = topicObject.getData().getEntries();
 
         long newIdentifier = currentContentEntries.size();
         List<DbDataDto.Item> clonedItems = cloneContentItems(sourceEntry);
@@ -139,6 +141,18 @@ public class DatabaseChangeHelper {
                 .forId(newIdentifier)
                 .addItems(clonedItems)
                 .build();
+
+        BulkDatabaseMiner.getUidFieldRank(topicObject.getStructure().getFields())
+                .ifPresent((uidFieldRank) -> {
+                    String newReference = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
+
+                    // TODO extract search to Miner (extract method from getContentItemFromEntryIdentifierAndFieldRank )
+                    newEntry.getItems().stream()
+                            .filter((item) -> item.getFieldRank() == uidFieldRank)
+                            .findAny()
+                            .get()
+                            .setRawValue(newReference);
+                });
 
         currentContentEntries.add(newEntry);
 
