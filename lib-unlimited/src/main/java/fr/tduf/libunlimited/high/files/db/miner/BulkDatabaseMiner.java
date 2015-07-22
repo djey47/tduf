@@ -184,7 +184,6 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     *
      * @param entry     : entry containing items to be looked at
      * @param fieldRank : rank of field content item belongs to
      * @return item if it exists, empty otherwise.
@@ -213,6 +212,7 @@ public class BulkDatabaseMiner {
         return getContentEntryFromTopicWithReference(remoteReference, targetTopic);
     }
 
+    // TODO Move to StructureQueryHelper
     /**
      * @param topic : topic in TDU Database to request field from
      * @return rank of UID field if it exists for given topic, empty otherwise.
@@ -297,6 +297,7 @@ public class BulkDatabaseMiner {
                 .collect(toSet());
     }
 
+    // TODO Move to StructureQueryHelper
     /**
      * @param structureFields   : list of structure fields for a topic
      * @return rank of UID field in structure if such a field exists, empty otherwise.
