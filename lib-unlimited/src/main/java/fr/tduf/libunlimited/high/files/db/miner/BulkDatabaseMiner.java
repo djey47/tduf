@@ -178,13 +178,25 @@ public class BulkDatabaseMiner {
 //        System.out.println(new Date().getTime() + " - getContentItemFromInternalIdentifierAndFieldRank(" + fieldRank + "," + entryIdentifier + "," + topic + ")");
 
         return getContentEntryFromTopicWithInternalIdentifier(entryIdentifier, topic)
-                .map((entry) -> entry.getItems().stream()
-
-                        .filter((contentItem) -> contentItem.getFieldRank() == fieldRank)
-
-                        .findAny()
+                .map((entry) -> getContentItemFromEntryAtFieldRank(entry, fieldRank)
 
                         .orElse(null));
+    }
+
+    /**
+     *
+     * @param entry     : entry containing items to be looked at
+     * @param fieldRank : rank of field content item belongs to
+     * @return item if it exists, empty otherwise.
+     */
+    public static Optional<DbDataDto.Item> getContentItemFromEntryAtFieldRank(DbDataDto.Entry entry, int fieldRank) {
+//        System.out.println(new Date().getTime() + " - getContentItemFromEntryAtFieldRank(" + entry + "," + fieldRank + ")");
+
+        return entry.getItems().stream()
+
+                .filter((contentItem) -> contentItem.getFieldRank() == fieldRank)
+
+                .findAny();
     }
 
     /**
@@ -307,19 +319,11 @@ public class BulkDatabaseMiner {
     public static String getEntryReference(DbDataDto.Entry entry, int uidFieldRank) {
 //        System.out.println(new Date().getTime() + " - getEntryReference(" + entry + "," + uidFieldRank + ")");
 
-        return entry.getItems().stream()
-
-                .filter((item) -> item.getFieldRank() == uidFieldRank)
-
-                .findAny().get().getRawValue();
+        return getContentItemFromEntryAtFieldRank(entry, uidFieldRank).get().getRawValue();
     }
 
     private String getRawValueAtEntryIndexAndRank(DbDto.Topic topic, int fieldRank, long entryIndex) {
-        return getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic).get().getItems().stream()
-
-                .filter((contentsItem) -> contentsItem.getFieldRank() == fieldRank)
-
-                .findAny().get().getRawValue();
+        return getContentItemFromEntryAtFieldRank(getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic).get(), fieldRank).get().getRawValue();
     }
 
     private static boolean contentEntryHasForReference(DbDataDto.Entry entry, String ref, List<DbStructureDto.Field> structureFields) {
