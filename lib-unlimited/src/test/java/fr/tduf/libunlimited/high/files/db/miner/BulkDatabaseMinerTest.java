@@ -312,6 +312,38 @@ public class BulkDatabaseMinerTest {
                 .contains("A", "B", "C");
     }
 
+    @Test
+    public void getContentItemFromEntryAtFieldRank_whenNoItem_shouldReturnAbsent() {
+        // GIVEN
+        DbDataDto.Entry entry = DbDataDto.Entry.builder().build();
+
+        // WHEN
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(entry, 1);
+
+        // THEN
+        assertThat(potentialItem).isEmpty();
+    }
+
+    @Test
+    public void getContentItemFromEntryAtFieldRank_whenItemAtSameRank_shouldReturnIt() {
+        // GIVEN
+        DbDataDto.Item expectedItem = DbDataDto.Item.builder()
+                .ofFieldRank(1)
+                .build();
+        DbDataDto.Item otherItem = DbDataDto.Item.builder()
+                .ofFieldRank(2)
+                .build();
+        DbDataDto.Entry entry = DbDataDto.Entry.builder()
+                .addItem(expectedItem, otherItem)
+                .build();
+
+        // WHEN
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(entry, 1);
+
+        // THEN
+        assertThat(potentialItem).contains(expectedItem);
+    }
+
     private static ArrayList<DbDto> createTopicObjectsFromResources() throws IOException, URISyntaxException {
         ArrayList<DbDto> dbDtos = new ArrayList<>();
 
