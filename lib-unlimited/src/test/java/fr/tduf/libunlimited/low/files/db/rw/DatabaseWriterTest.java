@@ -19,7 +19,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
-import static fr.tduf.libunlimited.common.helper.AssertionsHelper.*;
+import static fr.tduf.libtesting.common.helper.AssertionsHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DatabaseWriterTest {

@@ -1,7 +1,7 @@
 package fr.tduf.cli.tools;
 
-import fr.tduf.cli.common.helper.AssertionsHelper;
 import fr.tduf.cli.common.helper.ConsoleHelper;
+import fr.tduf.libtesting.common.helper.AssertionsHelper;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Rule;
