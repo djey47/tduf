@@ -17,6 +17,10 @@ allprojects {
     project.group = 'fr.tduf'
     // version defined by plugin (if changes or ahead commits: x.y.z-SNAPSHOT)
     project.version = scmVersion.version
+
+    // Version for common dependencies
+    ext.assertjVersion = '1.0.0m1'
+    ext.jsonassertVersion = '1.2.3'
 }
 
 subprojects {
@@ -36,11 +40,10 @@ subprojects {
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3.2'
 
         testCompile project(':lib-testing')
-        // TODO externalize versions for assertJ, jsonassert
         testCompile group: 'junit', name: 'junit', version: '4.11'
         testCompile group: 'org.mockito', name: 'mockito-core', version: '1.10.19'
-        testCompile group: 'org.assertj', name: 'assertj-core-java8', version: '1.0.0m1'
-        testCompile group: 'org.skyscreamer', name: 'jsonassert', version: '1.2.3'
+        testCompile group: 'org.assertj', name: 'assertj-core-java8', version: "$assertjVersion"
+        testCompile group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
     }
 
     compileJava {
@@ -134,12 +137,9 @@ project(':cli') {
 }
 
 project('lib-testing') {
-
     dependencies {
-        compile group: 'org.assertj', name: 'assertj-core-java8', version: '1.0.0m1'
-        compile group: 'org.skyscreamer', name: 'jsonassert', version: '1.2.3'
-
-
+        compile group: 'org.assertj', name: 'assertj-core-java8', version: "$assertjVersion"
+        compile group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
     }
 }
 
