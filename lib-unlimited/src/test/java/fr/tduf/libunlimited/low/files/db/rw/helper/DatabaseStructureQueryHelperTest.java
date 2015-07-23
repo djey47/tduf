@@ -1,9 +1,15 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -83,6 +89,24 @@ public class DatabaseStructureQueryHelperTest {
         assertThat(actualField).isEqualTo(identifierField);
     }
 
+    @Test
+    public void getUidFieldRank_whenNoIdentifierField_shouldReturnAbsent() {
+        // GIVEN
+        List<DbStructureDto.Field> structureFields = new ArrayList<>();
+
+        // WHEN-THEN
+        assertThat(DatabaseStructureQueryHelper.getUidFieldRank(structureFields).isPresent()).isFalse();
+    }
+
+    @Test
+    public void getUidFieldRank_whenIdentifierFieldPresent_shouldReturnRank() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbStructureDto.Field> structureFields = createTopicObjectsFromResources().get(0).getStructure().getFields();
+
+        // WHEN-THEN
+        assertThat(DatabaseStructureQueryHelper.getUidFieldRank(structureFields).getAsInt()).isEqualTo(1);
+    }
+
     private DbStructureDto createStructureWithTwoFields(DbStructureDto.Field identifierField) {
         return DbStructureDto.builder()
                 .addItem(identifierField)
@@ -102,5 +126,13 @@ public class DatabaseStructureQueryHelperTest {
                 .ofRank(1)
                 .fromType(DbStructureDto.FieldType.INTEGER)
                 .build();
+    }
+
+    private static ArrayList<DbDto> createTopicObjectsFromResources() throws IOException, URISyntaxException {
+        ArrayList<DbDto> dbDtos = new ArrayList<>();
+
+        dbDtos.add(FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/miner/TDU_Bots_FAKE.json"));
+
+        return dbDtos;
     }
 }

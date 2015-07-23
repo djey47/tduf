@@ -4,7 +4,6 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -256,24 +255,6 @@ public class BulkDatabaseMinerTest {
         assertThat(actualEntry).isPresent();
         assertThat(actualEntry.get().getId()).isEqualTo(0);
         assertThat(actualEntry.get().getItems().get(0).getRawValue()).isEqualTo("606298799");
-    }
-
-    @Test
-    public void getUidFieldRank_whenNoIdentifierField_shouldReturnAbsent() {
-        // GIVEN
-        List<DbStructureDto.Field> structureFields = new ArrayList<>();
-
-        // WHEN-THEN
-        assertThat(BulkDatabaseMiner.getUidFieldRank(structureFields).isPresent()).isFalse();
-    }
-
-    @Test
-    public void getUidFieldRank_whenIdentifierFieldPresent_shouldReturnRank() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbStructureDto.Field> structureFields = createTopicObjectsFromResources().get(0).getStructure().getFields();
-
-        // WHEN-THEN
-        assertThat(BulkDatabaseMiner.getUidFieldRank(structureFields).getAsInt()).isEqualTo(1);
     }
 
     @Test
