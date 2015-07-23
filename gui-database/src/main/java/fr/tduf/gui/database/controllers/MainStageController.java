@@ -363,6 +363,17 @@ public class MainStageController implements Initializable {
         askForPatchLocationAndExportCurrentEntryToFile();
     }
 
+    @FXML
+    public void handleImportEntryTdufPatchMenuAction(ActionEvent actionEvent) throws IOException {
+        System.out.println("handleImportEntryTdufPatchMenuAction");
+
+        if (currentTopicObject == null) {
+            return;
+        }
+
+        askForPatchLocationAndImportData();
+    }
+
     public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
         return (actionEvent) -> {
             System.out.println("browseResourcesButton clicked");
@@ -614,10 +625,15 @@ public class MainStageController implements Initializable {
         }
     }
 
-    private Optional<File> browseForPatchFilename() {
+    private Optional<File> browseForPatchFilename(boolean loadFile) {
         FileChooser fileChooser = new FileChooser();
 
-        File selectedFile = fileChooser.showSaveDialog(root.getScene().getWindow());
+        File selectedFile;
+        if (loadFile) {
+            selectedFile = fileChooser.showOpenDialog(root.getScene().getWindow());
+        } else {
+            selectedFile = fileChooser.showSaveDialog(root.getScene().getWindow());
+        }
 
         return Optional.ofNullable(selectedFile);
     }
@@ -718,7 +734,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        Optional<File> potentialFile = browseForPatchFilename();
+        Optional<File> potentialFile = browseForPatchFilename(false);
         if (!potentialFile.isPresent()) {
             return;
         }
@@ -734,6 +750,14 @@ public class MainStageController implements Initializable {
         } else {
             dialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_SEE_LOGS);
         }
+    }
+
+    private void askForPatchLocationAndImportData() {
+        Optional<File> potentialFile = browseForPatchFilename(false);
+        if (!potentialFile.isPresent()) {
+            return;
+        }
+
     }
 
     private DbPatchDto generatePatchObject(DbDto.Topic currentTopic, String entryRef) {
