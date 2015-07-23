@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static fr.tduf.libunlimited.common.helper.AssertionsHelper.assertFileDoesNotMatchReference;
-import static fr.tduf.libunlimited.common.helper.AssertionsHelper.assertFileMatchesReference;
+import static fr.tduf.libtesting.common.helper.AssertionsHelper.assertFileDoesNotMatchReference;
+import static fr.tduf.libtesting.common.helper.AssertionsHelper.assertFileMatchesReference;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.STRUCTURE_FIELDS_COUNT_MISMATCH;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;

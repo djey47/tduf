@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.common.helper;
+package fr.tduf.libtesting.common.helper;
 
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -6,6 +6,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -58,7 +59,7 @@ public class AssertionsHelper {
         byte[] expectedEncoded = Files.readAllBytes(expectedContentsFile.toPath());
         String expectedJson = new String(expectedEncoded, Charset.forName("UTF-8"));
 
-        assertEquals(expectedJson, actualJson, JSONCompareMode.STRICT);
+        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.STRICT);
     }
 
     /**
@@ -70,7 +71,7 @@ public class AssertionsHelper {
         String json1 = assertAndReadJsonFileContents(fileName1);
         String json2 = assertAndReadJsonFileContents(fileName2);
 
-        assertEquals(json1, json2, JSONCompareMode.STRICT);
+        JSONAssert.assertEquals(json1, json2, JSONCompareMode.STRICT);
     }
 
     /**
@@ -89,9 +90,48 @@ public class AssertionsHelper {
         assertThat(actualBytes).isNotEqualTo(unexpectedBytes);
     }
 
+
+    /**
+     *
+     * @param outputStream
+     * @param expected
+     * @throws IOException
+     */
+    public static void assertOutputStreamContainsJsonExactly(OutputStream outputStream, String expected) throws IOException, JSONException {
+        finalizeOutputStream(outputStream);
+        assertEquals(expected, outputStream.toString(), JSONCompareMode.STRICT);
+    }
+
+    /**
+     *
+     * @param outputStream
+     * @param expected
+     * @throws IOException
+     */
+    public static void assertOutputStreamContainsExactly(OutputStream outputStream, String expected) throws IOException {
+        finalizeOutputStream(outputStream);
+        assertThat(outputStream.toString()).isEqualTo(expected);
+    }
+
+    /**
+     *
+     * @param outputStream
+     * @param expectedItems
+     * @throws IOException
+     */
+    public static void assertOutputStreamContainsSequence(OutputStream outputStream, String... expectedItems) throws IOException {
+        finalizeOutputStream(outputStream);
+        assertThat(outputStream.toString()).containsSequence(expectedItems);
+    }
+
     private static String assertAndReadJsonFileContents(String fileName1) throws IOException {
         File contentsFile1 = assertFileExistAndGet(fileName1);
         byte[] encoded1 = Files.readAllBytes(contentsFile1.toPath());
         return new String(encoded1, Charset.forName("UTF-8"));
+    }
+
+    private static void finalizeOutputStream(OutputStream outputStream) throws IOException {
+        outputStream.flush();
+        outputStream.close();
     }
 }

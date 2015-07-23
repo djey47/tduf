@@ -1,6 +1,6 @@
 package fr.tduf.cli.tools;
 
-import fr.tduf.cli.common.helper.AssertionsHelper;
+import fr.tduf.libtesting.common.helper.AssertionsHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
