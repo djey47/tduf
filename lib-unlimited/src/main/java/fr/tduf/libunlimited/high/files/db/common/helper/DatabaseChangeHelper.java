@@ -4,6 +4,7 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
 import java.util.Optional;
@@ -142,7 +143,7 @@ public class DatabaseChangeHelper {
                 .addItems(clonedItems)
                 .build();
 
-        BulkDatabaseMiner.getUidFieldRank(topicObject.getStructure().getFields())
+        DatabaseStructureQueryHelper.getUidFieldRank(topicObject.getStructure().getFields())
                 .ifPresent((uidFieldRank) -> {
                     String newReference = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
                     DbDataDto.Item uidContentItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(newEntry, uidFieldRank).get();

@@ -212,7 +212,6 @@ public class BulkDatabaseMiner {
         return getContentEntryFromTopicWithReference(remoteReference, targetTopic);
     }
 
-    // TODO Move to StructureQueryHelper
     /**
      * @param topic : topic in TDU Database to request field from
      * @return rank of UID field if it exists for given topic, empty otherwise.
@@ -221,7 +220,7 @@ public class BulkDatabaseMiner {
 //        System.out.println(new Date().getTime() + " - getUidFieldRank(" + topic + "," + topic + ")");
 
         DbStructureDto topicStructure = getDatabaseTopic(topic).get().getStructure();
-        return getUidFieldRank(topicStructure.getFields());
+        return DatabaseStructureQueryHelper.getUidFieldRank(topicStructure.getFields());
     }
 
     /**
@@ -297,21 +296,6 @@ public class BulkDatabaseMiner {
                 .collect(toSet());
     }
 
-    // TODO Move to StructureQueryHelper
-    /**
-     * @param structureFields   : list of structure fields for a topic
-     * @return rank of UID field in structure if such a field exists, empty otherwise.
-     */
-    public static OptionalInt getUidFieldRank(List<DbStructureDto.Field> structureFields) {
-//        System.out.println(new Date().getTime() + " - getUidFieldRank(" + structureFields + ")");
-
-        Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getIdentifierField(structureFields);
-        if (potentialUidField.isPresent()) {
-            return OptionalInt.of(potentialUidField.get().getRank());
-        }
-        return OptionalInt.empty();
-    }
-
     /**
      * @param entry         : contents entry to be analyzed
      * @param uidFieldRank  : rank of UID field in structure
@@ -328,8 +312,8 @@ public class BulkDatabaseMiner {
     }
 
     private static boolean contentEntryHasForReference(DbDataDto.Entry entry, String ref, List<DbStructureDto.Field> structureFields) {
-        OptionalInt potentialUidFieldRank = getUidFieldRank(structureFields);
-        return getUidFieldRank(structureFields).isPresent()
+        OptionalInt potentialUidFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(structureFields);
+        return potentialUidFieldRank.isPresent()
                 && entry.getItems().stream()
 
                 .filter((item) -> item.getFieldRank() == potentialUidFieldRank.getAsInt()

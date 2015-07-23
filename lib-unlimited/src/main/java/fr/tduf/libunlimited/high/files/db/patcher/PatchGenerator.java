@@ -56,7 +56,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         List<DbPatchDto.DbChangeDto> changesObjects = new ArrayList<>();
         List<DbStructureDto.Field> structureFields = this.topicObject.getStructure().getFields();
 
-        changesObjects.addAll(makeChangesObjectsForContents(BulkDatabaseMiner.getUidFieldRank(structureFields), structureFields, range, requiredResourceReferences, requiredContentsReferences));
+        changesObjects.addAll(makeChangesObjectsForContents(DatabaseStructureQueryHelper.getUidFieldRank(structureFields), structureFields, range, requiredResourceReferences, requiredContentsReferences));
 
         changesObjects.addAll(makeChangesObjectsForRequiredResources(requiredResourceReferences));
 
