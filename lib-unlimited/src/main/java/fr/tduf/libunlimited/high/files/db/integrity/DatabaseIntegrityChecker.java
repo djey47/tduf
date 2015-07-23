@@ -4,17 +4,16 @@ import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.CONTENTS_REFERENCE_NOT_FOUND;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND;
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -28,8 +27,9 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
 
     /**
      * Process checking over all loaded database objects.
-     * Beware! This piece of code is very CPU-intensive on a complete database
+     * Beware! This piece of code is very CPU-intelnsive on a complete database
      * and takes a couple of minutes on a modern processor!
+     *
      * @return list of integrity errors.
      */
     public List<IntegrityError> checkAllContentsObjects() {
@@ -44,11 +44,12 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
 
                 .forEach((localTopicObject) -> checkContentsObject(localTopicObject, integrityErrors));
 
-       return integrityErrors;
+        return integrityErrors;
     }
 
     @Override
-    protected void postPrepare() {}
+    protected void postPrepare() {
+    }
 
     private void checkRequirements() {
         checkIfAllTopicObjectsPresent();
@@ -93,43 +94,55 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
                 integrityErrors.addAll(checkContentsReference(item.getRawValue(), remoteTopicObject, currentTopic));
                 break;
             case RESOURCE_CURRENT_GLOBALIZED:
+                integrityErrors.addAll(checkResourceReference(item.getRawValue(), localTopicObject, currentTopic, true));
+                break;
             case RESOURCE_CURRENT_LOCALIZED:
-                integrityErrors.addAll(checkResourceReference(item.getRawValue(), localTopicObject, currentTopic));
+                integrityErrors.addAll(checkResourceReference(item.getRawValue(), localTopicObject, currentTopic, false));
                 break;
             case RESOURCE_REMOTE:
-                integrityErrors.addAll(checkResourceReference(item.getRawValue(), remoteTopicObject, currentTopic));
+                integrityErrors.addAll(checkResourceReference(item.getRawValue(), remoteTopicObject, currentTopic, false));
                 break;
             default:
                 break;
         }
     }
 
-    private List<IntegrityError> checkResourceReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic) {
+    private List<IntegrityError> checkResourceReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic, boolean globalizedResource) {
         List<IntegrityError> integrityErrors = new ArrayList<>();
+        Map<String, Integer> resourceValueCounter = new HashMap<>();
 
-        // Through all language resources
         topicObject.getResources().stream()
 
-                .forEach((resourceDto) -> {
+                .forEach((resourceDto) -> checkLocalizedResourceObject(resourceDto, reference, topicObject, sourceTopic, globalizedResource, integrityErrors, resourceValueCounter));
 
-                    boolean isResourceReferenceFound = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(reference, topicObject.getStructure().getTopic(), resourceDto.getLocale()).isPresent();
-                    if (!isResourceReferenceFound) {
-                        Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
-                        informations.put(SOURCE_TOPIC, sourceTopic);
-                        informations.put(REMOTE_TOPIC, topicObject.getTopic());
-                        informations.put(LOCALE, resourceDto.getLocale());
-                        informations.put(REFERENCE, reference);
-
-                        integrityErrors.add(IntegrityError.builder()
-                                        .ofType(RESOURCE_REFERENCE_NOT_FOUND)
-                                        .addInformations(informations)
-                                        .build()
-                        );
-                    }
-
-                });
+        if (globalizedResource) {
+            checkResourceValuesForReference(reference, sourceTopic, integrityErrors, resourceValueCounter.size());
+        }
 
         return integrityErrors;
+    }
+
+    private void checkLocalizedResourceObject(DbResourceDto resourceDto, String reference, DbDto topicObject, DbDto.Topic sourceTopic, boolean globalizedResource, List<IntegrityError> integrityErrors, Map<String, Integer> resourceValueCounter) {
+        Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(reference, topicObject.getStructure().getTopic(), resourceDto.getLocale());
+
+        boolean isResourceReferenceFound = potentialResourceEntry.isPresent();
+        if (isResourceReferenceFound) {
+            if (globalizedResource) {
+                updateResourceValueCounter(resourceValueCounter, potentialResourceEntry);
+            }
+        } else {
+            Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
+            informations.put(SOURCE_TOPIC, sourceTopic);
+            informations.put(REMOTE_TOPIC, topicObject.getTopic());
+            informations.put(LOCALE, resourceDto.getLocale());
+            informations.put(REFERENCE, reference);
+
+            integrityErrors.add(IntegrityError.builder()
+                            .ofType(RESOURCE_REFERENCE_NOT_FOUND)
+                            .addInformations(informations)
+                            .build()
+            );
+        }
     }
 
     private List<IntegrityError> checkContentsReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic) {
@@ -171,12 +184,35 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         return integrityErrors;
     }
 
+    private void checkResourceValuesForReference(String reference, DbDto.Topic sourceTopic, List<IntegrityError> integrityErrors, int resourceValueCount) {
+        if (resourceValueCount > 1) {
+            Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
+            informations.put(SOURCE_TOPIC, sourceTopic);
+            informations.put(REFERENCE, reference);
+
+            integrityErrors.add(IntegrityError.builder()
+                            .ofType(RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES)
+                            .addInformations(informations)
+                            .build()
+            );
+        }
+    }
+
+    private void updateResourceValueCounter(Map<String, Integer> resourceValueCounter, Optional<DbResourceDto.Entry> potentialResourceEntry) {
+        String resourceValue = potentialResourceEntry.get().getValue();
+        int valueCount = 0;
+        if (resourceValueCounter.containsKey(resourceValue)) {
+            valueCount = resourceValueCounter.get(resourceValue);
+        }
+        resourceValueCounter.put(resourceValue, ++valueCount);
+    }
+
     private void buildIndexes() {
 
         // Topic by reference
         topicObjectsByReferences = databaseObjects.stream()
 
-                .collect( toMap((dto) -> dto.getStructure().getRef(), (dto) -> dto) );
+                .collect(toMap((dto) -> dto.getStructure().getRef(), (dto) -> dto));
 
         // Structure
         fieldsByRanksByTopicObjects = databaseObjects.stream()
