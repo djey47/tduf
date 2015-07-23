@@ -19,32 +19,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DatabaseStructureQueryHelperTest {
 
     @Test(expected = NullPointerException.class)
-    public void getIdentifierField_whenFieldListNull_shouldThrowException() throws Exception {
+    public void getUidField_whenFieldListNull_shouldThrowException() throws Exception {
         // GIVEN-WHEN
-        assertThat(DatabaseStructureQueryHelper.getIdentifierField(null)).isNull();
+        assertThat(DatabaseStructureQueryHelper.getUidField(null)).isNull();
 
         // THEN: NPE
     }
 
     @Test
-    public void getIdentifierField_whenNoIdentifierField_shouldReturnAbsent() throws Exception {
+    public void getUidField_whenNoIdentifierField_shouldReturnAbsent() throws Exception {
         // GIVEN
         DbStructureDto structureObject = DbStructureDto.builder()
                 .addItem(createClassicField())
                 .build();
 
         // WHEN-THEN
-        assertThat(DatabaseStructureQueryHelper.getIdentifierField(structureObject.getFields())).isEmpty();
+        assertThat(DatabaseStructureQueryHelper.getUidField(structureObject.getFields())).isEmpty();
     }
 
     @Test
-    public void getIdentifierField_whenFound_shouldReturnIt() throws Exception {
+    public void getUidField_whenFound_shouldReturnIt() throws Exception {
         // GIVEN
         DbStructureDto.Field identifierField = createIdentifierField();
         DbStructureDto structureObject = createStructureWithTwoFields(identifierField);
 
         // WHEN
-        Optional<DbStructureDto.Field> actualField = DatabaseStructureQueryHelper.getIdentifierField(structureObject.getFields());
+        Optional<DbStructureDto.Field> actualField = DatabaseStructureQueryHelper.getUidField(structureObject.getFields());
 
         // THEN
         assertThat(actualField).contains(identifierField);

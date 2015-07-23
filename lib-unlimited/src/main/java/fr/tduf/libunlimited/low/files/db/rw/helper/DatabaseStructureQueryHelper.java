@@ -1,7 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.List;
@@ -15,13 +14,12 @@ import static java.util.Objects.requireNonNull;
  */
 public class DatabaseStructureQueryHelper {
 
-    // TODO rename to getUidField
     /**
      * Finds structure field used for entry identification.
      * @param structureFields   : list of topic fields to search for such a field
      * @return searched field, or empty if it does not exist.
      */
-    public static Optional<DbStructureDto.Field> getIdentifierField(List<DbStructureDto.Field> structureFields) {
+    public static Optional<DbStructureDto.Field> getUidField(List<DbStructureDto.Field> structureFields) {
         requireNonNull(structureFields, "A list of fields is required.");
 
         return structureFields.stream()
@@ -38,7 +36,7 @@ public class DatabaseStructureQueryHelper {
     public static OptionalInt getUidFieldRank(List<DbStructureDto.Field> structureFields) {
         requireNonNull(structureFields, "A list of fields is required.");
 
-        Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getIdentifierField(structureFields);
+        Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getUidField(structureFields);
         if (potentialUidField.isPresent()) {
             return OptionalInt.of(potentialUidField.get().getRank());
         }

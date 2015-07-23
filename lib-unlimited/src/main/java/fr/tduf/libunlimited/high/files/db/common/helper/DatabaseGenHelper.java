@@ -132,7 +132,7 @@ public class DatabaseGenHelper {
             return null;
         }
 
-        Optional<DbStructureDto.Field> identifierField = DatabaseStructureQueryHelper.getIdentifierField(topicObject.getStructure().getFields());
+        Optional<DbStructureDto.Field> identifierField = DatabaseStructureQueryHelper.getUidField(topicObject.getStructure().getFields());
         if (!identifierField.isPresent()) {
             throw new IllegalArgumentException("Provided contents object has no identifier field described in its structure.");
         }
