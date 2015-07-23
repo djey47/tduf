@@ -67,6 +67,15 @@
                   <Button layoutX="199.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleAddEntryButtonAction" prefWidth="34.0" text="+"><tooltip><Tooltip text="Adds a new entry in current topic." /></tooltip></Button>
                   <Button layoutX="237.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleRemoveEntryButtonAction" prefWidth="34.0" text="-"><tooltip><Tooltip text="Removes current entry in topic." /></tooltip></Button>
                   <Separator layoutX="189.0" layoutY="10.0" orientation="VERTICAL" />
+                  <MenuButton layoutX="361.0" layoutY="10.0" mnemonicParsing="false" prefWidth="60.0" text="[]&lt;">
+                     <items>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleImportEntryTdufPatchMenuAction" text="TDUF patch..." />
+                     </items>
+                     <tooltip>
+                        <Tooltip text="Imports to current database." />
+                     </tooltip>
+                  </MenuButton>
                   <MenuButton mnemonicParsing="false" prefWidth="60.0" text="[]&gt;">
                     <items>
                       <MenuItem mnemonicParsing="false" onAction="#handleExportEntryLineMenuAction" text="Line..." />
