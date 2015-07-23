@@ -162,6 +162,51 @@ public class MainStageViewDataController {
         updateAllPropertiesWithItemValues();
     }
 
+    void switchToNextEntry() {
+        long currentEntryIndex = mainStageController.currentEntryIndexProperty.getValue();
+        if (currentEntryIndex >= mainStageController.getCurrentTopicObject().getData().getEntries().size() - 1) {
+            return;
+        }
+
+        switchToContentEntry(++currentEntryIndex);
+    }
+
+    void switchToNext10Entry() {
+        long currentEntryIndex = mainStageController.currentEntryIndexProperty.getValue();
+        long lastEntryIndex = mainStageController.getCurrentTopicObject().getData().getEntries().size() - 1;
+        if (currentEntryIndex + 10 >= lastEntryIndex) {
+            currentEntryIndex = lastEntryIndex;
+        } else {
+            currentEntryIndex += 10;
+        }
+
+        switchToContentEntry(currentEntryIndex);
+    }
+
+    void switchToPreviousEntry() {
+        long currentEntryIndex = mainStageController.currentEntryIndexProperty.getValue();
+        if (currentEntryIndex <= 0) {
+            return;
+        }
+
+        switchToContentEntry(--currentEntryIndex);
+    }
+
+    void switchToPrevious10Entry() {
+        long currentEntryIndex = mainStageController.currentEntryIndexProperty.getValue();
+        if (currentEntryIndex - 10 < 0) {
+            currentEntryIndex = 0;
+        } else {
+            currentEntryIndex -= 10;
+        }
+
+        switchToContentEntry(currentEntryIndex);
+    }
+
+    void switchToFirstEntry() {
+        switchToContentEntry(0);
+    }
+
     void switchToLastEntry() {
         switchToContentEntry(mainStageController.getCurrentTopicObject().getData().getEntries().size() - 1);
     }

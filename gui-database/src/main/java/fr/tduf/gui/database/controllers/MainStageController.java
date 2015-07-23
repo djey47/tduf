@@ -196,14 +196,11 @@ public class MainStageController implements Initializable {
     public void handleNextButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleNextButtonMouseClick");
 
-        long currentEntryIndex = currentEntryIndexProperty.getValue();
-        if (currentTopicObject == null
-                || currentEntryIndex >= currentTopicObject.getData().getEntries().size() - 1) {
+        if (currentTopicObject == null) {
             return;
         }
 
-        // TODO extract to view Data controller
-        viewDataController.switchToContentEntry(++currentEntryIndex);
+        viewDataController.switchToNextEntry();
     }
 
     @FXML
@@ -214,30 +211,18 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        // TODO extract to view Data controller
-        long currentEntryIndex = currentEntryIndexProperty.getValue();
-        long lastEntryIndex = currentTopicObject.getData().getEntries().size() - 1;
-        if (currentEntryIndex + 10 >= lastEntryIndex) {
-            currentEntryIndex = lastEntryIndex;
-        } else {
-            currentEntryIndex += 10;
-        }
-
-        viewDataController.switchToContentEntry(currentEntryIndex);
+        viewDataController.switchToNext10Entry();
     }
 
     @FXML
     public void handlePreviousButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handlePreviousButtonMouseClick");
 
-        long currentEntryIndex = currentEntryIndexProperty.getValue();
-        if (currentTopicObject == null
-            || currentEntryIndex <= 0) {
+        if (currentTopicObject == null) {
             return;
         }
 
-        // TODO extract to view Data controller
-        viewDataController.switchToContentEntry(--currentEntryIndex);
+        viewDataController.switchToPreviousEntry();
     }
 
     @FXML
@@ -248,15 +233,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        // TODO extract to view Data controller
-        long currentEntryIndex = currentEntryIndexProperty.getValue();
-        if (currentEntryIndex - 10 < 0) {
-            currentEntryIndex = 0;
-        } else {
-            currentEntryIndex -= 10;
-        }
-
-        this.viewDataController.switchToContentEntry(currentEntryIndex);
+        viewDataController.switchToPrevious10Entry();
     }
 
     @FXML
@@ -267,8 +244,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        // TODO extract to view Data controller
-        this.viewDataController.switchToContentEntry(0);
+        viewDataController.switchToFirstEntry();
     }
 
     @FXML
