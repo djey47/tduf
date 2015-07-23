@@ -11,9 +11,10 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.CONTENTS_REFERENCE_NOT_FOUND;
-import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND;
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.CHINA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.stream.Collectors.toList;
@@ -79,7 +80,7 @@ public class DatabaseIntegrityCheckerTest {
         assertThat(integrityErrors).hasSize(18);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(RESOURCE_REFERENCE_NOT_FOUND);
         assertAllIntegrityErrorsContainInformation(integrityErrors, IntegrityError.ErrorInfoEnum.REMOTE_TOPIC, ACHIEVEMENTS);
-        assertAllIntegrityErrorsContainInformation(integrityErrors, IntegrityError.ErrorInfoEnum.REFERENCE, "300" );
+        assertAllIntegrityErrorsContainInformation(integrityErrors, IntegrityError.ErrorInfoEnum.REFERENCE, "300");
     }
 
     @Test
@@ -108,12 +109,29 @@ public class DatabaseIntegrityCheckerTest {
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(CONTENTS_REFERENCE_NOT_FOUND);
     }
 
+    @Test
+    public void checkAll_whenGlobalResourceValuesNotIdentical_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
+        //GIVEN
+        List<DbDto> dbDtos = createAllDtosWithDifferentGlobalResourceValueForLocaleCH();
+
+        //WHEN
+        List<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
+
+        //THEN
+        assertThat(integrityErrors).hasSize(18);
+        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES);
+        assertThat(integrityErrors.get(0).getInformation())
+                .containsKey(IntegrityError.ErrorInfoEnum.REFERENCE)
+                .containsValue("100")
+                .containsKey(SOURCE_TOPIC);
+    }
+
     private List<DbDto> createAllDtosWithoutErrors() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
-        DbResourceDto resourceDto = createResourceNoEntryMissing();
+        DbResourceDto resourceDto = createResourceNoEntryMissing(FRANCE);
 
-        return createAllDtos(dataDto, resourceDto);
+        return createAllDtosWithOneLocale(dataDto, resourceDto);
     }
 
     private List<DbDto> createAllDtosWithMissingLocalResource() {
@@ -121,14 +139,14 @@ public class DatabaseIntegrityCheckerTest {
 
         DbResourceDto resourceDto = createResourceOneLocalEntryMissing();
 
-        return createAllDtos(dataDto, resourceDto);
+        return createAllDtosWithOneLocale(dataDto, resourceDto);
     }
 
     private List<DbDto> createAllDtosWithMissingLocalResourceTypeH() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
         DbResourceDto resourceDto = createResourceAnotherLocalEntryMissing();
-        return createAllDtos(dataDto, resourceDto);
+        return createAllDtosWithOneLocale(dataDto, resourceDto);
     }
 
     private List<DbDto> createAllDtosWithMissingForeignResource() {
@@ -136,7 +154,7 @@ public class DatabaseIntegrityCheckerTest {
 
         DbResourceDto resourceDto = createResourceOneForeignEntryMissing();
 
-        return createAllDtos(dataDto, resourceDto);
+        return createAllDtosWithOneLocale(dataDto, resourceDto);
     }
 
     private List<DbDto> createAllDtosWithMissingLocalAndForeignResource() {
@@ -144,18 +162,40 @@ public class DatabaseIntegrityCheckerTest {
 
         DbResourceDto resourceDto = createResourceOneLocalAndOneForeignEntryMissing();
 
-        return createAllDtos(dataDto, resourceDto);
+        return createAllDtosWithOneLocale(dataDto, resourceDto);
     }
 
     private List<DbDto> createAllDtosWithMissingForeignEntry() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_NON_EXISTING);
 
-        DbResourceDto resourceDto = createResourceNoEntryMissing();
+        DbResourceDto resourceDto = createResourceNoEntryMissing(FRANCE);
 
-        return createAllDtos(dataDto, resourceDto);
+        return createAllDtosWithOneLocale(dataDto, resourceDto);
     }
 
-    private List<DbDto> createAllDtos(DbDataDto dataDto, DbResourceDto resourceDto) {
+    private List<DbDto> createAllDtosWithDifferentGlobalResourceValueForLocaleCH() {
+        DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
+
+        List<DbResourceDto> allResourceObjects = Stream.of(DbResourceDto.Locale.values())
+
+                .map(this::createResourceNoEntryMissing)
+
+                .collect(toList());
+
+        allResourceObjects.stream()
+
+                .filter((resourceObject) -> resourceObject.getLocale() == CHINA)
+
+                .findAny().get().getEntries().stream()
+
+                .filter((resourceEntry) -> "100".equals(resourceEntry.getReference()))
+
+                .findAny().get().setValue("CENT_ALTERED");
+
+        return createAllDtosForAllLocales(dataDto, allResourceObjects);
+    }
+
+    private List<DbDto> createAllDtosWithOneLocale(DbDataDto dataDto, DbResourceDto resourceDto) {
         return Stream.of(DbDto.Topic.values())
 
                 .map((topicEnum) -> {
@@ -171,9 +211,25 @@ public class DatabaseIntegrityCheckerTest {
                 .collect(toList());
     }
 
-    private DbResourceDto createResourceNoEntryMissing() {
+    private List<DbDto> createAllDtosForAllLocales(DbDataDto dataDto, List<DbResourceDto> resourceObjets) {
+        return Stream.of(DbDto.Topic.values())
+
+                .map((topicEnum) -> {
+                    DbStructureDto structureDto = createStructure(topicEnum);
+
+                    return DbDto.builder()
+                            .withStructure(structureDto)
+                            .withData(dataDto)
+                            .addResources(resourceObjets)
+                            .build();
+                })
+
+                .collect(toList());
+    }
+
+    private DbResourceDto createResourceNoEntryMissing(DbResourceDto.Locale locale) {
         return DbResourceDto.builder()
-                                .withLocale(FRANCE)
+                                .withLocale(locale)
                                 .addEntry(createLocalResourceEntry1())
                                 .addEntry(createLocalResourceEntry2())
                                 .addEntry(createLocalResourceEntry3())
