@@ -35,6 +35,8 @@ subprojects {
         compile group: 'com.google.guava', name: 'guava', version: '18.0'
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3.2'
 
+        testCompile project(':lib-testing')
+        // TODO externalize versions for assertJ, jsonassert
         testCompile group: 'junit', name: 'junit', version: '4.11'
         testCompile group: 'org.mockito', name: 'mockito-core', version: '1.10.19'
         testCompile group: 'org.assertj', name: 'assertj-core-java8', version: '1.0.0m1'
@@ -128,6 +130,16 @@ project(':cli') {
         from 'src/main/shell/'
         include '*.cmd'
         into '../pack'
+    }
+}
+
+project('lib-testing') {
+
+    dependencies {
+        compile group: 'org.assertj', name: 'assertj-core-java8', version: '1.0.0m1'
+        compile group: 'org.skyscreamer', name: 'jsonassert', version: '1.2.3'
+
+
     }
 }
 
