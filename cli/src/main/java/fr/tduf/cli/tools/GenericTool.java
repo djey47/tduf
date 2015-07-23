@@ -125,9 +125,10 @@ public abstract class GenericTool {
             checkAndAssignDefaultParameters(parser);
         } catch (CmdLineException e) {
 
-            printUsage(e);
-            System.err.println();
             System.err.println(e.getMessage());
+            System.err.println();
+
+            printUsage(e);
 
             return false;
         }
@@ -147,11 +148,17 @@ public abstract class GenericTool {
 
                 .sorted((entry1, entry2) -> entry1.getKey().compareTo(entry2.getKey()))
 
-                .forEach((entry) -> System.err.println(" " + entry.getKey() + " : " + entry.getValue() ));
+                .forEach((entry) -> {
+                    System.err.println();
+                    System.err.println(" " + entry.getKey() + " : " + entry.getValue());
+                });
+        System.err.println();
         System.err.println();
 
         System.err.println("  .Options:");
+        System.err.println();
         e.getParser().printUsage(System.err);
+        System.err.println();
         System.err.println();
 
         System.err.println("  .Examples:");
@@ -159,7 +166,10 @@ public abstract class GenericTool {
 
                 .sorted(String::compareTo)
 
-                .forEach((example) -> System.err.println(" " + displayedClassName + " " + example));
+                .forEach((example) -> {
+                    System.err.println();
+                    System.err.println(" " + displayedClassName + " " + example);
+                });
     }
 
     private void errLine(String message) {
