@@ -117,9 +117,12 @@ public class MainStageViewDataController {
     }
 
     void updateEntryCountAndSwitchToEntry(long entryIndex) {
-        mainStageController.entryItemsCountProperty.setValue(mainStageController.getCurrentTopicObject().getData().getEntries().size());
-
+        updateEntryCount();
         switchToContentEntry(entryIndex);
+    }
+
+    void updateEntryCount() {
+        mainStageController.entryItemsCountProperty.setValue(mainStageController.getCurrentTopicObject().getData().getEntries().size());
     }
 
     void switchToSelectedResourceForLinkedTopic(ContentEntryDataItem selectedResource, DbDto.Topic targetTopic, String targetProfileName) {
@@ -157,6 +160,10 @@ public class MainStageViewDataController {
 
         mainStageController.currentEntryIndexProperty.setValue(entryIndex);
         updateAllPropertiesWithItemValues();
+    }
+
+    void switchToLastEntry() {
+        switchToContentEntry(mainStageController.getCurrentTopicObject().getData().getEntries().size() - 1);
     }
 
     void switchToPreviousLocation() {

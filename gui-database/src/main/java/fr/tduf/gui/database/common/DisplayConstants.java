@@ -57,9 +57,11 @@ public class DisplayConstants {
     public static final String MESSAGE_DIFFERENT_RESOURCE = "Please try again with a different resource reference.";
     public static final String MESSAGE_EDITED_RESOURCE = "Edit: %s - %s";
     public static final String MESSAGE_ENTRY_EXPORTED = "Current entry was exported to TDUF patch.";
+    public static final String MESSAGE_DATA_IMPORTED = "Current patch file data was imported to database.";
     public static final String MESSAGE_ENTRY_WITHOUT_REF = "Current entry has no REF field, making it non exportable.";
     public static final String MESSAGE_SEE_LOGS = "See logs for details.";
     public static final String MESSAGE_UNABLE_EXPORT_ENTRY = "Unable to export current entry.";
+    public static final String MESSAGE_UNABLE_IMPORT_PATCH = "Unable to import TDUF patch.";
 
     public static final String QUESTION_AFFECTED_LOCALES = "Which locales should be affected?";
 

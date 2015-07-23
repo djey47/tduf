@@ -22,6 +22,7 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.interop.PatchConverter;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -51,6 +52,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -200,6 +202,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
+        // TODO extract to view Data controller
         viewDataController.switchToContentEntry(++currentEntryIndex);
     }
 
@@ -211,6 +214,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
+        // TODO extract to view Data controller
         long currentEntryIndex = currentEntryIndexProperty.getValue();
         long lastEntryIndex = currentTopicObject.getData().getEntries().size() - 1;
         if (currentEntryIndex + 10 >= lastEntryIndex) {
@@ -232,6 +236,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
+        // TODO extract to view Data controller
         viewDataController.switchToContentEntry(--currentEntryIndex);
     }
 
@@ -243,6 +248,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
+        // TODO extract to view Data controller
         long currentEntryIndex = currentEntryIndexProperty.getValue();
         if (currentEntryIndex - 10 < 0) {
             currentEntryIndex = 0;
@@ -261,6 +267,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
+        // TODO extract to view Data controller
         this.viewDataController.switchToContentEntry(0);
     }
 
@@ -272,7 +279,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        viewDataController.switchToContentEntry(this.currentTopicObject.getData().getEntries().size() - 1);
+        viewDataController.switchToLastEntry();
     }
 
     @FXML
@@ -744,6 +751,20 @@ public class MainStageController implements Initializable {
             return;
         }
 
+        try {
+            File patchFile = potentialFile.get();
+            DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
+            DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, databaseObjects);
+            patcher.apply(patchObject);
+
+            viewDataController.updateEntryCount();
+
+            dialogsHelper.showDialog(Alert.AlertType.INFORMATION, DisplayConstants.MESSAGE_DATA_IMPORTED, patchFile.getPath());
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            dialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS);
+        }
     }
 
     private DbPatchDto generatePatchObject(DbDto.Topic currentTopic, String entryRef) {
