@@ -49,7 +49,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 
@@ -625,19 +624,6 @@ public class MainStageController implements Initializable {
         }
     }
 
-    private Optional<File> browseForPatchFilename(boolean loadFile) {
-        FileChooser fileChooser = new FileChooser();
-
-        File selectedFile;
-        if (loadFile) {
-            selectedFile = fileChooser.showOpenDialog(root.getScene().getWindow());
-        } else {
-            selectedFile = fileChooser.showSaveDialog(root.getScene().getWindow());
-        }
-
-        return Optional.ofNullable(selectedFile);
-    }
-
     private void loadDatabaseFromDirectory(String databaseLocation) {
         databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(databaseLocation);
         if (!databaseObjects.isEmpty()) {
@@ -734,7 +720,7 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        Optional<File> potentialFile = browseForPatchFilename(false);
+        Optional<File> potentialFile = dialogsHelper.browseForFilename(false, root.getScene().getWindow());
         if (!potentialFile.isPresent()) {
             return;
         }
@@ -753,7 +739,7 @@ public class MainStageController implements Initializable {
     }
 
     private void askForPatchLocationAndImportData() {
-        Optional<File> potentialFile = browseForPatchFilename(false);
+        Optional<File> potentialFile = dialogsHelper.browseForFilename(true, root.getScene().getWindow());
         if (!potentialFile.isPresent()) {
             return;
         }

@@ -13,8 +13,11 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import javafx.util.Pair;
 
+import java.io.File;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
@@ -25,6 +28,24 @@ import static javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE;
  * Helper class to build and display dialog boxes.
  */
 public class DialogsHelper {
+
+    /**
+     * Displays a system dialog to browse for file name or existing file
+     * @param loadFile  : true to use as file chooser, else to use as target selector
+     * @return chosen file, or empty if no selection has been made (dismissed).
+     */
+    public Optional<File> browseForFilename(boolean loadFile, Window ownerWindow) {
+        FileChooser fileChooser = new FileChooser();
+
+        File selectedFile;
+        if (loadFile) {
+            selectedFile = fileChooser.showOpenDialog(ownerWindow);
+        } else {
+            selectedFile = fileChooser.showSaveDialog(ownerWindow);
+        }
+
+        return Optional.ofNullable(selectedFile);
+    }
 
     /**
      * Displays a single error dialog box.
