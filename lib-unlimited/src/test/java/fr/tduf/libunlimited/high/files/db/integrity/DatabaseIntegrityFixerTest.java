@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
@@ -315,6 +316,32 @@ public class DatabaseIntegrityFixerTest {
     }
 
     @Test
+    public void fixAllContentsObjects_whenOneError_asValuesDiffentForGlobalizedResource_shouldApplyProperValue() throws ReflectiveOperationException {
+        // GIVEN
+        List<DbDto> dbDtos = createDatabaseObjectsWithDifferentResourceValuesGlobalized();
+        List<IntegrityError> integrityErrors = singletonList(createIntegrityError_ResourceValuesDifferentGlobalized());
+
+
+        // WHEN
+        DatabaseIntegrityFixer integrityFixer = createFixer(dbDtos);
+        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
+        List<DbDto> fixedDatabaseObjects = integrityFixer.getDatabaseObjects();
+
+
+        // THEN
+        assertThat(actualRemainingErrors).isEmpty();
+
+        assertThat(fixedDatabaseObjects).isNotEmpty();
+
+        Stream.of(Locale.FRANCE, Locale.UNITED_STATES)
+
+                .forEach((locale) -> {
+                    DbResourceDto.Entry actualResourceEntry = searchResourceEntry("000", Topic.AFTER_MARKET_PACKS, locale, fixedDatabaseObjects);
+                    assertThat(actualResourceEntry.getValue()).isEqualTo("TDUF TEST");
+                });
+    }
+
+    @Test
     public void fixAllContentsObjects_whenManyErrors() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDatabaseObjectsWithUnconsistentResourceEntryCount();
@@ -364,6 +391,13 @@ public class DatabaseIntegrityFixerTest {
         return dbDtos;
     }
 
+    private static List<DbDto> createDatabaseObjectsWithDifferentResourceValuesGlobalized() {
+        List<DbDto> dbDtos = new ArrayList<>();
+        dbDtos.add(createDefaultDatabaseObject());
+        dbDtos.add(createDatabaseObjectWithDifferentResourceValuesGlobalized());
+        return dbDtos;
+    }
+
     private static DbDto createDefaultDatabaseObject() {
         return DbDto.builder()
                 .withStructure(createDefaultStructureObject())
@@ -396,6 +430,15 @@ public class DatabaseIntegrityFixerTest {
                 .addResource(createResourceObjectWithOneResourceEntry(Locale.FRANCE))
                 .addResource(createResourceObjectWithOneResourceEntry(Locale.UNITED_STATES))
                 .addResource(createDefaultResourceObject(Locale.CHINA))
+                .build();
+    }
+
+    private static DbDto createDatabaseObjectWithDifferentResourceValuesGlobalized() {
+        return DbDto.builder()
+                .withStructure(createDefaultStructureObject2())
+                .withData(createDefaultContentsObject())
+                .addResource(createResourceObjectWithOneResourceEntry(Locale.FRANCE))
+                .addResource(createResourceObjectWithAnotherResourceEntry(Locale.UNITED_STATES))
                 .build();
     }
 
@@ -468,6 +511,16 @@ public class DatabaseIntegrityFixerTest {
                 .build();
     }
 
+    private static DbResourceDto createResourceObjectWithAnotherResourceEntry(Locale locale) {
+        return DbResourceDto.builder()
+                .withLocale(locale)
+                .addEntry(DbResourceDto.Entry.builder()
+                        .forReference("000")
+                        .withValue("TDUF TEST ALTERED")
+                        .build())
+                .build();
+    }
+
     private static IntegrityError createIntegrityError_AutoFixed() {
         return IntegrityError.builder().ofType(CONTENT_ITEMS_COUNT_MISMATCH).addInformations(new HashMap<>()).build();
     }
@@ -477,7 +530,6 @@ public class DatabaseIntegrityFixerTest {
     }
 
     private IntegrityError createIntegrityError_ResourceItemsCountMismatch() {
-
         Map<Locale, Integer> perLocaleCountInfo = new HashMap<>();
         perLocaleCountInfo.put(Locale.CHINA, 0);
         perLocaleCountInfo.put(Locale.FRANCE, 1);
@@ -488,6 +540,19 @@ public class DatabaseIntegrityFixerTest {
         info.put(PER_LOCALE_COUNT, perLocaleCountInfo);
 
         return IntegrityError.builder().ofType(RESOURCE_ITEMS_COUNT_MISMATCH).addInformations(info).build();
+    }
+
+    private IntegrityError createIntegrityError_ResourceValuesDifferentGlobalized() {
+        Map<String, Integer> valueCounter = new HashMap<>();
+        valueCounter.put("TDUF TEST", 7);
+        valueCounter.put("TDUF TEST ALTERED", 1);
+
+        Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+        info.put(SOURCE_TOPIC, Topic.AFTER_MARKET_PACKS);
+        info.put(REFERENCE, "000");
+        info.put(PER_VALUE_COUNT, valueCounter);
+
+        return IntegrityError.builder().ofType(RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES).addInformations(info).build();
     }
 
     private static DbResourceDto.Entry searchResourceEntry(String reference, Topic topic, Locale locale, List<DbDto> databaseObjects) {
