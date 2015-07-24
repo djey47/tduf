@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.db.domain;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents an error contained in database files
@@ -56,6 +57,20 @@ public class IntegrityError {
 
     public String getErrorMessageFormat() {
         return errorTypeEnum.errorMessageFormat;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IntegrityError that = (IntegrityError) o;
+        return Objects.equals(errorTypeEnum, that.errorTypeEnum) &&
+                Objects.equals(info, that.info);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(errorTypeEnum, info);
     }
 
     @Override

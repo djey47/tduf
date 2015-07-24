@@ -44,7 +44,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
 
                 .forEach((localTopicObject) -> checkContentsObject(localTopicObject, integrityErrors));
 
-        return integrityErrors;
+        return removeDuplicates(integrityErrors);
     }
 
     @Override
@@ -225,6 +225,14 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         return dto.getStructure().getFields().stream()
 
                 .collect(toMap(DbStructureDto.Field::getRank, (field) -> field));
+    }
+
+    private static List<IntegrityError> removeDuplicates(List<IntegrityError> integrityErrors) {
+        return integrityErrors.stream()
+
+                .distinct()
+
+                .collect(toList());
     }
 
     Map<String, DbDto> getTopicObjectsByReferences() {
