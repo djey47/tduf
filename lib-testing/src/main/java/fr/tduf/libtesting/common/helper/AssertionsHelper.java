@@ -59,7 +59,7 @@ public class AssertionsHelper {
         byte[] expectedEncoded = Files.readAllBytes(expectedContentsFile.toPath());
         String expectedJson = new String(expectedEncoded, Charset.forName("UTF-8"));
 
-        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.STRICT);
+        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.NON_EXTENSIBLE);
     }
 
     /**
@@ -71,7 +71,7 @@ public class AssertionsHelper {
         String json1 = assertAndReadJsonFileContents(fileName1);
         String json2 = assertAndReadJsonFileContents(fileName2);
 
-        JSONAssert.assertEquals(json1, json2, JSONCompareMode.STRICT);
+        JSONAssert.assertEquals(json1, json2, JSONCompareMode.NON_EXTENSIBLE);
     }
 
     /**
