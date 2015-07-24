@@ -124,7 +124,6 @@ public class IntegrityError {
         }
     }
 
-
     /**
      * All error informations.
      */
@@ -135,6 +134,7 @@ public class IntegrityError {
         LOCALE("Locale"),
         REFERENCE("Reference"),
         PER_LOCALE_COUNT("Per-Locale Count"),
+        PER_VALUE_COUNT("Per-Value Count"),
         EXPECTED_COUNT("Expected Count"),
         ACTUAL_COUNT("Actual Count"),
         FILE("File Name"),

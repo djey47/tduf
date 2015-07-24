@@ -116,7 +116,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
                 .forEach((resourceDto) -> checkLocalizedResourceObject(resourceDto, reference, topicObject, sourceTopic, globalizedResource, integrityErrors, resourceValueCounter));
 
         if (globalizedResource) {
-            checkResourceValuesForReference(reference, sourceTopic, integrityErrors, resourceValueCounter.size());
+            checkResourceValuesForReference(reference, sourceTopic, integrityErrors, resourceValueCounter);
         }
 
         return integrityErrors;
@@ -184,11 +184,12 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         return integrityErrors;
     }
 
-    private void checkResourceValuesForReference(String reference, DbDto.Topic sourceTopic, List<IntegrityError> integrityErrors, int resourceValueCount) {
-        if (resourceValueCount > 1) {
+    private void checkResourceValuesForReference(String reference, DbDto.Topic sourceTopic, List<IntegrityError> integrityErrors, Map<String, Integer> resourceValueCounter) {
+        if (resourceValueCounter.size() > 1) {
             Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
             informations.put(SOURCE_TOPIC, sourceTopic);
             informations.put(REFERENCE, reference);
+            informations.put(PER_VALUE_COUNT, resourceValueCounter);
 
             integrityErrors.add(IntegrityError.builder()
                             .ofType(RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES)

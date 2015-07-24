@@ -6,11 +6,14 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import org.assertj.core.data.MapEntry;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.PER_VALUE_COUNT;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
@@ -114,16 +117,25 @@ public class DatabaseIntegrityCheckerTest {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithDifferentGlobalResourceValueForLocaleCH();
 
+
         //WHEN
         List<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
+
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES);
-        assertThat(integrityErrors.get(0).getInformation())
+
+        IntegrityError integrityError = integrityErrors.get(0);
+        assertThat(integrityError.getInformation())
                 .containsKey(IntegrityError.ErrorInfoEnum.REFERENCE)
                 .containsValue("100")
-                .containsKey(SOURCE_TOPIC);
+                .containsKey(SOURCE_TOPIC)
+                .containsKey(PER_VALUE_COUNT);
+
+        Map<String, Integer> valueCounter = (Map<String, Integer>) integrityError.getInformation().get(PER_VALUE_COUNT);
+        assertThat(valueCounter).contains(MapEntry.entry("CENT", 7));
+        assertThat(valueCounter).contains(MapEntry.entry("CENT_ALTERED", 1));
     }
 
     private List<DbDto> createAllDtosWithoutErrors() {
