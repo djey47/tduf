@@ -1,1 +1,2 @@
 - TDU_Hair: missing resource for locale = JAPANESE, ref = 54713527 (replaced by 54713528)
+- TDU_CarPhysicsData: different values for resource REF=59538427 (All except GE='427', GE='428')
