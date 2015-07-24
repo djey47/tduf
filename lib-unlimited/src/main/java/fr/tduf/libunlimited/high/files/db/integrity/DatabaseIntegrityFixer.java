@@ -12,6 +12,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -27,7 +28,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
     private List<IntegrityError> integrityErrors;
 
     // Following errors are auto-handled: CONTENT_ITEMS_COUNT_MISMATCH, STRUCTURE_FIELDS_COUNT_MISMATCH
-    private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH, RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND, CONTENTS_FIELDS_COUNT_MISMATCH));
+    private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH, RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND, CONTENTS_FIELDS_COUNT_MISMATCH, RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES));
     private static final Set<IntegrityError.ErrorTypeEnum> UNFIXABLE_ERRORS = new HashSet<>(asList(CONTENTS_NOT_FOUND, CONTENTS_ENCRYPTION_NOT_SUPPORTED));
 
     private DatabaseGenHelper genHelper;
@@ -90,12 +91,13 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
         try {
             Map<ErrorInfoEnum, Object> information = integrityError.getInformation();
-            DbDto.Topic sourceTopic = (DbDto.Topic) information.get(ErrorInfoEnum.SOURCE_TOPIC);
-            DbDto.Topic remoteTopic = (DbDto.Topic) information.get(ErrorInfoEnum.REMOTE_TOPIC);
-            String reference = (String) information.get(ErrorInfoEnum.REFERENCE);
-            Long entryIdentifier = (Long) information.get(ErrorInfoEnum.ENTRY_ID);
+            DbDto.Topic sourceTopic = (DbDto.Topic) information.get(SOURCE_TOPIC);
+            DbDto.Topic remoteTopic = (DbDto.Topic) information.get(REMOTE_TOPIC);
+            String reference = (String) information.get(REFERENCE);
+            Long entryIdentifier = (Long) information.get(ENTRY_ID);
             DbResourceDto.Locale locale = (DbResourceDto.Locale) information.get(ErrorInfoEnum.LOCALE);
-            Map<DbResourceDto.Locale, Integer> perLocaleCount = (Map<DbResourceDto.Locale, Integer>) information.get(ErrorInfoEnum.PER_LOCALE_COUNT);
+            Map<DbResourceDto.Locale, Integer> perLocaleCount = (Map<DbResourceDto.Locale, Integer>) information.get(PER_LOCALE_COUNT);
+            Map<String, Integer> perValueCount = (Map<String, Integer>) information.get(PER_VALUE_COUNT);
 
             switch(integrityError.getErrorTypeEnum()) {
                 case RESOURCE_REFERENCE_NOT_FOUND:
@@ -112,6 +114,9 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                     break;
                 case RESOURCE_ITEMS_COUNT_MISMATCH:
                     addAllMissingResourceEntries(perLocaleCount, sourceTopic);
+                    break;
+                case RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES:
+                    fixAllResourceEntryValues(reference, perValueCount, sourceTopic);
                     break;
                 default:
                     throw new IllegalArgumentException("Kind of integrity error not handled yet: " + integrityError.getErrorTypeEnum());
@@ -180,6 +185,28 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                         .count() == 0)
 
                 .forEach((missingField) -> addContentItem(missingField, invalidEntry, topicObject));
+    }
+
+    private void fixAllResourceEntryValues(String resourceReference, Map<String, Integer> perValueCount, DbDto.Topic topic) {
+
+        String mostFrequentValue = perValueCount.entrySet().stream()
+
+                .max(Comparator.comparing(Map.Entry::getValue))
+
+                .get().getKey();
+
+        databaseMiner.getAllResourcesFromTopic(topic).get().stream()
+
+                .map(DbResourceDto::getLocale)
+
+                .forEach((locale) -> databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, topic, locale)
+
+                        .ifPresent((resourceEntry) -> {
+                            if (!mostFrequentValue.equals(resourceEntry.getValue())) {
+                                resourceEntry.setValue(mostFrequentValue);
+                            }
+                        })
+                );
     }
 
     private static void addMissingResourceEntries(DbResourceDto corruptedResourceObject, DbResourceDto referenceResourceObject) {
