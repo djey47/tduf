@@ -1,0 +1,41 @@
+{
+  "structure": {
+    "ref": "82704264",
+    "topic": "PNJ",
+    "fields": [
+      {
+        "name": "REF",
+        "rank": 1,
+        "type": "UID"
+      },
+      {
+        "name": "Clothe",
+        "targetRef": "1282586878",
+        "rank": 2,
+        "type": "REFERENCE"
+      }
+    ],
+    "version": "1,2",
+    "categoryCount": 3
+  },
+  "data": {
+    "entries": [
+      {
+        "id": 0,
+        "items": [
+          {
+            "name": "REF",
+            "rawValue": "540091906",
+            "fieldRank": 1
+          },
+          {
+            "name": "Clothe",
+            "rawValue": "82477895",
+            "fieldRank": 2
+          }
+        ]
+      }
+    ]
+  },
+  "resources": []
+}
