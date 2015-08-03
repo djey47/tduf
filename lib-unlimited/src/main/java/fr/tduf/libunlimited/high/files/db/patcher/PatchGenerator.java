@@ -150,7 +150,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
         String entryReference = null;
         if (potentialRefFieldRank.isPresent()) {
-            entryReference = BulkDatabaseMiner.getEntryReference(entry, potentialRefFieldRank.getAsInt());
+            entryReference = BulkDatabaseMiner.getContentEntryReference(entry, potentialRefFieldRank.getAsInt());
         }
 
         return DbPatchDto.DbChangeDto.builder()
@@ -199,7 +199,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
         String entryRef = "whatever";
         if (potentialRefFieldRank.isPresent()) {
-            entryRef = BulkDatabaseMiner.getEntryReference(entry, potentialRefFieldRank.getAsInt());
+            entryRef = BulkDatabaseMiner.getContentEntryReference(entry, potentialRefFieldRank.getAsInt());
         }
         return range.accepts(entryRef);
     }

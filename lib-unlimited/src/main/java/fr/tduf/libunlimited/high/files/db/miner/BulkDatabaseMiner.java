@@ -6,16 +6,17 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.Set;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_REMOTE;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
 
 /**
  * Class providing utility methods to request data from database objects.
  */
-// TODO clean usages (0.7.0+)
 // TODO unit tests (0.7.0+)
 // TODO use debug logs to get performance info (0.7.0+)
 public class BulkDatabaseMiner {
@@ -61,6 +62,7 @@ public class BulkDatabaseMiner {
 //        System.out.println(new Date().getTime() + " - getResourceFromTopicAndLocale(" + topic + ", " + locale + ")");
 
         return getAllResourcesFromTopic(topic)
+
                 .map((allResourcesFromTopic) -> allResourcesFromTopic.stream()
 
                         .filter((resourceObject) -> resourceObject.getLocale() == locale)
@@ -136,54 +138,6 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     * @param ref       : external identifier of entry
-     * @param topic     : topic in TDU Database to search
-     * @return identifier of database entry having specified reference as identifier, empty otherwise.
-     */
-    public OptionalLong getContentEntryIdFromReference(String ref, DbDto.Topic topic) {
-//        System.out.println(new Date().getTime() + " - getContentEntryIdFromReference(" + ref + "," + topic + ")");
-
-        Optional<DbDataDto.Entry> potentialEntry = getContentEntryFromTopicWithReference(ref, topic);
-        if(potentialEntry.isPresent()) {
-            return OptionalLong.of(potentialEntry.get().getId());
-        }
-        return OptionalLong.empty();
-    }
-
-    /**
-     * @param entryIdentifier   : index of entry in source topic
-     * @param topic             : topic in TDU Database to search
-     * @return identifier of database entry having specified reference as identifier, empty otherwise.
-     */
-    public Optional<String> getContentEntryRefWithInternalIdentifier(long entryIdentifier, DbDto.Topic topic) {
-//        System.out.println(new Date().getTime() + " - getContentEntryRefFromEntryIdentifier(" + entryIdentifier + "," + topic ")");
-
-        OptionalInt potentialRefFieldRank = getUidFieldRank(topic);
-        if (potentialRefFieldRank.isPresent()) {
-            Optional<DbDataDto.Item> potentialRefItem = getContentItemFromEntryIdentifierAndFieldRank(topic, potentialRefFieldRank.getAsInt(), entryIdentifier);
-            if (potentialRefItem.isPresent()) {
-                return Optional.of(potentialRefItem.get().getRawValue());
-            }
-        }
-        return Optional.empty();
-    }
-
-    /**
-     * @param topic             : topic in TDU Database to search
-     * @param fieldRank         : rank of field to resolve resource
-     * @param entryIdentifier   : index of entry in source topic
-     * @return item if it exists, empty otherwise.
-     */
-    public Optional<DbDataDto.Item> getContentItemFromEntryIdentifierAndFieldRank(DbDto.Topic topic, int fieldRank, long entryIdentifier) {
-//        System.out.println(new Date().getTime() + " - getContentItemFromInternalIdentifierAndFieldRank(" + fieldRank + "," + entryIdentifier + "," + topic + ")");
-
-        return getContentEntryFromTopicWithInternalIdentifier(entryIdentifier, topic)
-                .map((entry) -> getContentItemFromEntryAtFieldRank(entry, fieldRank)
-
-                        .orElse(null));
-    }
-
-    /**
      * @param entry     : entry containing items to be looked at
      * @param fieldRank : rank of field content item belongs to
      * @return item if it exists, empty otherwise.
@@ -199,31 +153,6 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     * @param sourceTopic   : topic in TDU Database to search
-     * @param fieldRank     : rank of field to resolve resource
-     * @param entryIndex    : index of entry in source topic
-     * @param targetTopic   : topic targeted by current entry
-     * @return full entry if it exists, empty otherwise.
-     */
-    public Optional<DbDataDto.Entry> getRemoteContentEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbDto.Topic targetTopic) {
-//        System.out.println(new Date().getTime() + " - getRemoteContentEntryWithInternalIdentifier(" + sourceTopic + "," + fieldRank + "," + entryIndex + "," + targetTopic +")");
-
-        String remoteReference = getRawValueAtEntryIndexAndRank(sourceTopic, fieldRank, entryIndex);
-        return getContentEntryFromTopicWithReference(remoteReference, targetTopic);
-    }
-
-    /**
-     * @param topic : topic in TDU Database to request field from
-     * @return rank of UID field if it exists for given topic, empty otherwise.
-     */
-    public OptionalInt getUidFieldRank(DbDto.Topic topic) {
-//        System.out.println(new Date().getTime() + " - getUidFieldRank(" + topic + "," + topic + ")");
-
-        DbStructureDto topicStructure = getDatabaseTopic(topic).get().getStructure();
-        return DatabaseStructureQueryHelper.getUidFieldRank(topicStructure.getFields());
-    }
-
-    /**
      * @param reference : unique identifier of resource
      * @param topic     : topic in TDU Database to search
      * @param locale    : game language to fetch related resources
@@ -233,6 +162,7 @@ public class BulkDatabaseMiner {
 //        System.out.println(new Date().getTime() + " - getResourceEntryFromTopicAndLocaleWithReference(" + reference + ", " + topic + ", " + locale + ")");
 
         return getResourceFromTopicAndLocale(topic, locale)
+
                 .map((resourceFromTopicAndLocale) -> resourceFromTopicAndLocale.getEntries().stream()
 
                         .filter((entry) -> entry.getReference().equals(reference))
@@ -240,35 +170,6 @@ public class BulkDatabaseMiner {
                         .findAny()
 
                         .orElse(null));
-    }
-
-    /**
-     * @param sourceTopic   : topic in TDU Database to search
-     * @param fieldRank     : rank of field to resolve resource
-     * @param entryIndex    : index of entry in source topic
-     * @param locale        : language to be used when resolving resource
-     * @return full resource entry targeted by specified entry field.
-     */
-    public Optional<DbResourceDto.Entry> getResourceEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbResourceDto.Locale locale) {
-//        System.out.println(new Date().getTime() + " - getResourceEntryWithInternalIdentifier(" + sourceTopic + "," + fieldRank + "," + entryIndex + "," + locale +")");
-
-        List<DbStructureDto.Field> sourceTopicStructureFields = getDatabaseTopic(sourceTopic).get().getStructure().getFields();
-        return getContentEntryFromTopicWithInternalIdentifier(entryIndex, sourceTopic)
-
-                .map((contentEntry) -> {
-                    DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(contentEntry.getItems().get(fieldRank - 1), sourceTopicStructureFields);
-                    if (structureField.isAResourceField()) {
-                        DbDto.Topic finalTopic = sourceTopic;
-                        if (RESOURCE_REMOTE == structureField.getFieldType()) {
-                            finalTopic = getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
-                        }
-
-                        String resourceReference = getRawValueAtEntryIndexAndRank(sourceTopic, fieldRank, entryIndex);
-                        return getResourceEntryFromTopicAndLocaleWithReference(resourceReference, finalTopic, locale)
-                                .orElse(null);
-                    }
-                    return null;
-                });
     }
 
     /**
@@ -281,15 +182,7 @@ public class BulkDatabaseMiner {
 
         return topicResourceObjects.stream()
 
-                .map((resource) -> resource.getEntries().stream()
-
-                        .filter((resourceEntry) -> resourceEntry.getReference().equals(reference))
-
-                        .findAny()
-
-                        .map(DbResourceDto.Entry::getValue)
-
-                        .orElse(null))
+                .map((resource) -> getResourceValueWithReference(resource, reference))
 
                 .filter((value) -> value != null)
 
@@ -301,14 +194,22 @@ public class BulkDatabaseMiner {
      * @param uidFieldRank  : rank of UID field in structure
      * @return raw value of entry reference
      */
-    public static String getEntryReference(DbDataDto.Entry entry, int uidFieldRank) {
-//        System.out.println(new Date().getTime() + " - getEntryReference(" + entry + "," + uidFieldRank + ")");
+    public static String getContentEntryReference(DbDataDto.Entry entry, int uidFieldRank) {
+//        System.out.println(new Date().getTime() + " - getContentEntryReference(" + entry + "," + uidFieldRank + ")");
 
         return getContentItemFromEntryAtFieldRank(entry, uidFieldRank).get().getRawValue();
     }
 
-    private String getRawValueAtEntryIndexAndRank(DbDto.Topic topic, int fieldRank, long entryIndex) {
-        return getContentItemFromEntryAtFieldRank(getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic).get(), fieldRank).get().getRawValue();
+    private static String getResourceValueWithReference(DbResourceDto resource, String reference) {
+        return resource.getEntries().stream()
+
+                .filter((resourceEntry) -> resourceEntry.getReference().equals(reference))
+
+                .findAny()
+
+                .map(DbResourceDto.Entry::getValue)
+
+                .orElse(null);
     }
 
     private static boolean contentEntryHasForReference(DbDataDto.Entry entry, String ref, List<DbStructureDto.Field> structureFields) {
