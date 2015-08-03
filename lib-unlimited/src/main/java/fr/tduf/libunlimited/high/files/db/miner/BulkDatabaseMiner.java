@@ -17,8 +17,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Class providing utility methods to request data from database objects.
  */
-// TODO unit tests (0.7.0+)
-// TODO use debug logs to get performance info (0.7.0+)
+// TODO use debug logs to get performance info (0.8.0+)
 public class BulkDatabaseMiner {
 
     private final List<DbDto> topicObjects;
