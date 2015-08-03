@@ -472,6 +472,31 @@ public class BulkDatabaseMinerTest {
         assertThat(potentialItem).contains(expectedItem);
     }
 
+    @Test
+    public void getResourceEntryWithContentEntryInternalIdentifier_whenResourceDoesNotExist_shouldReturnEmpty() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsWithRemoteReferencesFromResources();
+
+        // WHEN
+        Optional<DbResourceDto.Entry> potentialResourceEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryWithContentEntryInternalIdentifier(DbDto.Topic.CLOTHES, 2, 0, DbResourceDto.Locale.FRANCE);
+
+        // THEN
+        assertThat(potentialResourceEntry).isEmpty();
+    }
+
+    @Test
+    public void getResourceEntryWithContentEntryInternalIdentifier_whenResourceExists_shouldReturnEntry() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsWithRemoteReferencesFromResources();
+        DbResourceDto.Entry expectedEntry = topicObjects.get(1).getResources().get(0).getEntries().get(0);
+
+        // WHEN
+        Optional<DbResourceDto.Entry> potentialResourceEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryWithContentEntryInternalIdentifier(DbDto.Topic.CLOTHES, 2, 1, DbResourceDto.Locale.FRANCE);
+
+        // THEN
+        assertThat(potentialResourceEntry).contains(expectedEntry);
+    }
+
     private static ArrayList<DbDto> createTopicObjectsFromResources() throws IOException, URISyntaxException {
         ArrayList<DbDto> dbDtos = new ArrayList<>();
 
