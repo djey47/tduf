@@ -310,7 +310,7 @@ public class BulkDatabaseMinerTest {
         // GIVEN
         DbDataDto.Item expectedItem = createContentItemWithRank(1);
         DbDataDto.Item otherItem = createContentItemWithRank(2);
-        DbDataDto.Entry entry = createContentEntryWithTwoItems(expectedItem, otherItem);
+        DbDataDto.Entry entry = createContentEntryWithItems(asList(expectedItem, otherItem));
 
         // WHEN
         Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(entry, 1);
@@ -332,7 +332,7 @@ public class BulkDatabaseMinerTest {
         // GIVEN
         DbDataDto.Item item  = createContentItemWithRank(1);
         DbDataDto.Item otherItem = createContentItemWithRank(2);
-        DbDataDto.Entry entry = createContentEntryWithTwoItems(item, otherItem);
+        DbDataDto.Entry entry = createContentEntryWithItems(asList(item, otherItem));
 
         // WHEN
         BulkDatabaseMiner.getContentEntryReference(entry, 3);
@@ -348,7 +348,7 @@ public class BulkDatabaseMinerTest {
                 .withRawValue("123456789")
                 .build();
         DbDataDto.Item otherItem = createContentItemWithRank(2);
-        DbDataDto.Entry entry = createContentEntryWithTwoItems(uidItem, otherItem);
+        DbDataDto.Entry entry = createContentEntryWithItems(asList(uidItem, otherItem));
 
         // WHEN
         String actualEntryReference = BulkDatabaseMiner.getContentEntryReference(entry, 1);
@@ -357,10 +357,61 @@ public class BulkDatabaseMinerTest {
         assertThat(actualEntryReference).isEqualTo("123456789");
     }
 
+    @Test(expected = NoSuchElementException.class)
+    public void getRemoteContentEntryWithInternalIdentifier_whenEntryInternalIdentifierDoesNotExist_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsWithRemoteReferencesFromResources();
+        DbDto.Topic sourceTopic = DbDto.Topic.PNJ;
+        DbDto.Topic targetTopic = DbDto.Topic.CLOTHES;
+
+        // THEN
+        BulkDatabaseMiner.load(topicObjects).getRemoteContentEntryWithInternalIdentifier(sourceTopic, 2, 10, targetTopic);
+
+        // WHEN:NSE
+    }
+
+    @Test
+    public void getRemoteContentEntryWithInternalIdentifier_whenRemoteEntryDoesNotExist_shouldReturnEmpty() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsWithRemoteReferencesFromResources();
+        DbDto.Topic sourceTopic = DbDto.Topic.PNJ;
+        DbDto.Topic targetTopic = DbDto.Topic.CLOTHES;
+
+        // THEN
+        Optional<DbDataDto.Entry> potentialRemoteEntry = BulkDatabaseMiner.load(topicObjects).getRemoteContentEntryWithInternalIdentifier(sourceTopic, 1, 0, targetTopic);
+
+        // WHEN
+        assertThat(potentialRemoteEntry).isEmpty();
+    }
+
+    @Test
+    public void getRemoteContentEntryWithInternalIdentifier_whenRemoteEntryExists_shouldReturnEntry() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsWithRemoteReferencesFromResources();
+        DbDataDto.Entry expectedEntry = topicObjects.get(1).getData().getEntries().get(0);
+        DbDto.Topic sourceTopic = DbDto.Topic.PNJ;
+        DbDto.Topic targetTopic = DbDto.Topic.CLOTHES;
+
+        // THEN
+        Optional<DbDataDto.Entry> potentialRemoteEntry = BulkDatabaseMiner.load(topicObjects).getRemoteContentEntryWithInternalIdentifier(sourceTopic, 2, 0, targetTopic);
+
+        // WHEN
+        assertThat(potentialRemoteEntry).contains(expectedEntry);
+    }
+
     private static ArrayList<DbDto> createTopicObjectsFromResources() throws IOException, URISyntaxException {
         ArrayList<DbDto> dbDtos = new ArrayList<>();
 
         dbDtos.add(FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/miner/TDU_Bots_FAKE.json"));
+
+        return dbDtos;
+    }
+
+    private static ArrayList<DbDto> createTopicObjectsWithRemoteReferencesFromResources() throws IOException, URISyntaxException {
+        ArrayList<DbDto> dbDtos = new ArrayList<>();
+
+        dbDtos.add(FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/miner/TDU_PNJ_FAKE.json"));
+        dbDtos.add(FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/miner/TDU_Clothes_FAKE.json"));
 
         return dbDtos;
     }
@@ -375,9 +426,9 @@ public class BulkDatabaseMinerTest {
                 .build();
     }
 
-    private static DbDataDto.Entry createContentEntryWithTwoItems(DbDataDto.Item item1, DbDataDto.Item item2) {
+    private DbDataDto.Entry createContentEntryWithItems(List<DbDataDto.Item> items) {
         return DbDataDto.Entry.builder()
-                .addItem(item1, item2)
+                .addItems(items)
                 .build();
     }
 

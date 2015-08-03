@@ -137,6 +137,20 @@ public class BulkDatabaseMiner {
     }
 
     /**
+     * @param sourceTopic   : topic in TDU Database to search
+     * @param fieldRank     : rank of field to resolve reference
+     * @param entryIndex    : index of entry in source topic
+     * @param targetTopic   : topic targeted by current entry
+     * @return full entry if it exists, empty otherwise.
+     */
+    public Optional<DbDataDto.Entry> getRemoteContentEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbDto.Topic targetTopic) {
+//        System.out.println(new Date().getTime() + " - getRemoteContentEntryWithInternalIdentifier(" + sourceTopic + "," + fieldRank + "," + entryIndex + "," + targetTopic +")");
+
+        String remoteReference = getRawValueAtEntryIndexAndRank(sourceTopic, fieldRank, entryIndex);
+        return getContentEntryFromTopicWithReference(remoteReference, targetTopic);
+    }
+
+    /**
      * @param entry     : entry containing items to be looked at
      * @param fieldRank : rank of field content item belongs to
      * @return item if it exists, empty otherwise.
@@ -197,6 +211,10 @@ public class BulkDatabaseMiner {
 //        System.out.println(new Date().getTime() + " - getContentEntryReference(" + entry + "," + uidFieldRank + ")");
 
         return getContentItemFromEntryAtFieldRank(entry, uidFieldRank).get().getRawValue();
+    }
+
+    private String getRawValueAtEntryIndexAndRank(DbDto.Topic topic, int fieldRank, long entryIndex) {
+        return getContentItemFromEntryAtFieldRank(getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic).get(), fieldRank).get().getRawValue();
     }
 
     private static String getResourceValueWithReference(DbResourceDto resource, String reference) {
