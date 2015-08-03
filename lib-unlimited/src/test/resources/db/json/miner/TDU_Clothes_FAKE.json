@@ -197,7 +197,7 @@
           },
           {
             "name": "File_",
-            "rawValue": "553640827",
+            "rawValue": "553640828",
             "fieldRank": 2
           },
           {
@@ -301,5 +301,16 @@
       }
     ]
   },
-  "resources": []
+  "resources": [
+    {
+      "entries": [
+        {
+          "ref": "553640828",
+          "value": "FR"
+        }
+      ],
+      "categoryCount": 0,
+      "locale": "FRANCE"
+    }
+  ]
 }

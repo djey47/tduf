@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_REMOTE;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
 
@@ -217,6 +218,35 @@ public class BulkDatabaseMiner {
                         .findAny()
 
                         .orElse(null));
+    }
+
+    /**
+     * @param sourceTopic   : topic in TDU Database to search
+     * @param fieldRank     : rank of field to resolve resource
+     * @param entryIndex    : index of entry in source topic
+     * @param locale        : language to be used when resolving resource
+     * @return full resource entry targeted by specified entry field.
+     */
+    public Optional<DbResourceDto.Entry> getResourceEntryWithContentEntryInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbResourceDto.Locale locale) {
+//        System.out.println(new Date().getTime() + " - getResourceEntryWithContentEntryInternalIdentifier(" + sourceTopic + "," + fieldRank + "," + entryIndex + "," + locale +")");
+
+        List<DbStructureDto.Field> sourceTopicStructureFields = getDatabaseTopic(sourceTopic).get().getStructure().getFields();
+        return getContentEntryFromTopicWithInternalIdentifier(entryIndex, sourceTopic)
+
+                .map((contentEntry) -> {
+                    DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(contentEntry.getItems().get(fieldRank - 1), sourceTopicStructureFields);
+                    if (structureField.isAResourceField()) {
+                        DbDto.Topic finalTopic = sourceTopic;
+                        if (RESOURCE_REMOTE == structureField.getFieldType()) {
+                            finalTopic = getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
+                        }
+
+                        String resourceReference = getRawValueAtEntryIndexAndRank(sourceTopic, fieldRank, entryIndex);
+                        return getResourceEntryFromTopicAndLocaleWithReference(resourceReference, finalTopic, locale)
+                                .orElse(null);
+                    }
+                    return null;
+                });
     }
 
     /**
