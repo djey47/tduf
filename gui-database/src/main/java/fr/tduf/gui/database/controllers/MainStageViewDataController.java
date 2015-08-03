@@ -129,7 +129,7 @@ public class MainStageViewDataController {
         if (selectedResource != null) {
             String entryReference = selectedResource.referenceProperty().get();
             long remoteContentEntryId;
-            OptionalLong potentialEntryId = getMiner().getContentEntryIdFromReference(entryReference, targetTopic);
+            OptionalLong potentialEntryId = getMiner().getContentEntryInternalIdentifierWithReference(entryReference, targetTopic);
             if (potentialEntryId.isPresent()) {
                 remoteContentEntryId = potentialEntryId.getAsLong();
             } else {
@@ -236,7 +236,7 @@ public class MainStageViewDataController {
         contentEntryDataItem.setValue(entryValue);
 
         String entryReference = Long.valueOf(entryInternalIdentifier).toString();
-        Optional<String> potentialEntryReference = getMiner().getContentEntryRefWithInternalIdentifier(entryInternalIdentifier, topic);
+        Optional<String> potentialEntryReference = getMiner().getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, topic);
         if (potentialEntryReference.isPresent()) {
             entryReference = potentialEntryReference.get();
         }
@@ -265,7 +265,7 @@ public class MainStageViewDataController {
         ObservableList<ContentEntryDataItem> values = remoteEntry.getValue();
         values.clear();
 
-        String currentEntryRef = getMiner().getContentEntryRefWithInternalIdentifier(mainStageController.currentEntryIndexProperty.getValue(), mainStageController.currentTopicProperty.getValue()).get();
+        String currentEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(mainStageController.currentEntryIndexProperty.getValue(), mainStageController.currentTopicProperty.getValue()).get();
         DbDto linkedTopicObject = getMiner().getDatabaseTopic(linkObject.getTopic()).get();
         linkedTopicObject.getData().getEntries().stream()
 
@@ -320,7 +320,7 @@ public class MainStageViewDataController {
     private String fetchRemoteContentsWithEntryRef(DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {
         requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
 
-        OptionalLong potentialEntryId = getMiner().getContentEntryIdFromReference(remoteEntryReference, remoteTopic);
+        OptionalLong potentialEntryId = getMiner().getContentEntryInternalIdentifierWithReference(remoteEntryReference, remoteTopic);
         if (potentialEntryId.isPresent()) {
             return DatabaseQueryHelper.fetchResourceValuesWithEntryId(
                     potentialEntryId.getAsLong(), remoteTopic,

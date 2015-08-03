@@ -30,12 +30,12 @@ public class DatabaseQueryHelper {
         List<String> contents = fieldRanks.stream()
 
                 .map((fieldRank) -> {
-                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = databaseMiner.getResourceEntryWithInternalIdentifier(topic, fieldRank, entryId, locale);
+                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = databaseMiner.getResourceEntryWithContentEntryInternalIdentifier(topic, fieldRank, entryId, locale);
                     if (potentialRemoteResourceEntry.isPresent()) {
                         return potentialRemoteResourceEntry.get().getValue();
                     }
 
-                    return databaseMiner.getContentItemFromEntryIdentifierAndFieldRank(topic, fieldRank, entryId).get().getRawValue();
+                    return databaseMiner.getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, entryId).get().getRawValue();
                 })
 
                 .collect(toList());

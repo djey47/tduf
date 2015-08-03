@@ -29,7 +29,7 @@ public class MainStageChangeDataController {
     }
 
     void updateContentItem(DbDto.Topic topic, int fieldRank, String newRawValue) {
-        DbDataDto.Item contentItem = getMiner().getContentItemFromEntryIdentifierAndFieldRank(topic, fieldRank, mainStageController.currentEntryIndexProperty.getValue()).get();
+        DbDataDto.Item contentItem = getMiner().getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, mainStageController.currentEntryIndexProperty.getValue()).get();
         if (contentItem.getRawValue().equals(newRawValue)) {
             return;
         }

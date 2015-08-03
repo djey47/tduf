@@ -29,8 +29,10 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
@@ -396,7 +398,8 @@ public class MainStageController implements Initializable {
 
             Optional<ContentEntryDataItem> potentialSelectedEntry = Optional.empty();
             DbDto.Topic finalTopic = targetTopic;
-            if (databaseMiner.getUidFieldRank(targetTopic).isPresent()) {
+            List<DbStructureDto.Field> structureFields = databaseMiner.getDatabaseTopic(targetTopic).get().getStructure().getFields();
+            if (DatabaseStructureQueryHelper.getUidFieldRank(structureFields).isPresent()) {
                 // Association topic -> browse remote entries
                 finalTopic = topicLinkObject.getTopic();
                 potentialSelectedEntry = entriesStageController.initAndShowModalDialog(targetTopic, targetProfileName);
@@ -637,7 +640,7 @@ public class MainStageController implements Initializable {
     }
 
     private void addLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, Optional<ContentEntryDataItem> potentialLinkedEntry, TopicLinkDto topicLinkObject) {
-        String sourceEntryRef = databaseMiner.getContentEntryRefWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicProperty.getValue()).get();
+        String sourceEntryRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicProperty.getValue()).get();
         Optional<String> targetEntryRef = Optional.empty();
         if (potentialLinkedEntry.isPresent()) {
             targetEntryRef = Optional.of(potentialLinkedEntry.get().referenceProperty().get());
@@ -679,7 +682,7 @@ public class MainStageController implements Initializable {
 
     private void exportCurrentEntryAsPchValueAndShowResult() {
         List<String> values = getRawValuesFromCurrentEntry();
-        Optional<String> potentialRef = databaseMiner.getContentEntryRefWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicObject.getTopic());
+        Optional<String> potentialRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicObject.getTopic());
 
         String result = PatchConverter.getContentsValue(potentialRef, values);
         dialogsHelper.showExportResultDialog(result);
@@ -697,7 +700,7 @@ public class MainStageController implements Initializable {
     private void askForPatchLocationAndExportCurrentEntryToFile() throws IOException {
 
         DbDto.Topic currentTopic = currentTopicObject.getTopic();
-        Optional<String> potentialEntryRef = databaseMiner.getContentEntryRefWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopic);
+        Optional<String> potentialEntryRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopic);
         if(!potentialEntryRef.isPresent()) {
             dialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_ENTRY_WITHOUT_REF);
             return;

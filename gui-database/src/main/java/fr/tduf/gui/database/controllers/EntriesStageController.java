@@ -140,7 +140,7 @@ public class EntriesStageController implements Initializable {
                             String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
                             contentEntryDataItem.setValue(entryValue);
 
-                            String entryReference = getMiner().getContentEntryRefWithInternalIdentifier(entryInternalIdentifier, topic).get();
+                            String entryReference = getMiner().getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, topic).get();
                             contentEntryDataItem.setReference(entryReference);
 
                             return contentEntryDataItem;
