@@ -399,10 +399,91 @@ public class BulkDatabaseMinerTest {
         assertThat(potentialRemoteEntry).contains(expectedEntry);
     }
 
+    @Test
+    public void getContentEntryReferenceWithInternalIdentifier_whenEntryDoesNotExist_shouldReturnEmpty() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsWithRemoteReferencesFromResources();
+
+        // WHEN
+        Optional<String> potentialEntryReference = BulkDatabaseMiner.load(topicObjects).getContentEntryReferenceWithInternalIdentifier(10, DbDto.Topic.PNJ);
+
+        // THEN
+        assertThat(potentialEntryReference).isEmpty();
+    }
+
+    @Test
+    public void getContentEntryReferenceWithInternalIdentifier_whenUidFieldAbsent_shouldReturnEmpty() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsWithoutUidFieldFromResources();
+
+        // WHEN
+        Optional<String> potentialEntryReference = BulkDatabaseMiner.load(topicObjects).getContentEntryReferenceWithInternalIdentifier(0, DbDto.Topic.ACHIEVEMENTS);
+
+        // THEN
+        assertThat(potentialEntryReference).isEmpty();
+    }
+
+    @Test
+    public void getContentEntryReferenceWithInternalIdentifier_whenEntryExists_andUidFieldPresent_shouldReturnRawValue() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsWithRemoteReferencesFromResources();
+
+        // WHEN
+        Optional<String> potentialEntryReference = BulkDatabaseMiner.load(topicObjects).getContentEntryReferenceWithInternalIdentifier(0, DbDto.Topic.PNJ);
+
+        // THEN
+        assertThat(potentialEntryReference).contains("540091906");
+    }
+
+    @Test
+    public void getContentItemWithEntryIdentifierAndFieldRank_whenEntryDoesNotExist_shouldReturnEmpty() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsFromResources();
+
+        // WHEN
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.load(topicObjects).getContentItemWithEntryIdentifierAndFieldRank(DbDto.Topic.BOTS, 1, 10);
+
+        // THEN
+        assertThat(potentialItem).isEmpty();
+    }
+
+    @Test
+    public void getContentItemWithEntryIdentifierAndFieldRank_whenItemDoesNotExist_shouldReturnEmpty() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsFromResources();
+
+        // WHEN
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.load(topicObjects).getContentItemWithEntryIdentifierAndFieldRank(DbDto.Topic.BOTS, 10, 0);
+
+        // THEN
+        assertThat(potentialItem).isEmpty();
+    }
+
+    @Test
+    public void getContentItemWithEntryIdentifierAndFieldRank_whenItemExists_shouldReturnIt() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsFromResources();
+        DbDataDto.Item expectedItem = topicObjects.get(0).getData().getEntries().get(0).getItems().get(0);
+
+        // WHEN
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.load(topicObjects).getContentItemWithEntryIdentifierAndFieldRank(DbDto.Topic.BOTS, 1, 0);
+
+        // THEN
+        assertThat(potentialItem).contains(expectedItem);
+    }
+
     private static ArrayList<DbDto> createTopicObjectsFromResources() throws IOException, URISyntaxException {
         ArrayList<DbDto> dbDtos = new ArrayList<>();
 
         dbDtos.add(FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/miner/TDU_Bots_FAKE.json"));
+
+        return dbDtos;
+    }
+
+    private static ArrayList<DbDto> createTopicObjectsWithoutUidFieldFromResources() throws IOException, URISyntaxException {
+        ArrayList<DbDto> dbDtos = new ArrayList<>();
+
+        dbDtos.add(FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/miner/TDU_Achievements_FAKE.json"));
 
         return dbDtos;
     }
