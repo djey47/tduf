@@ -6,10 +6,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.Set;
+import java.util.*;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_REMOTE;
 import static java.util.Objects.requireNonNull;
@@ -168,6 +165,21 @@ public class BulkDatabaseMiner {
             }
         }
         return Optional.empty();
+    }
+
+    /**
+     * @param ref       : external identifier of entry
+     * @param topic     : topic in TDU Database to search
+     * @return identifier of database entry having specified reference as identifier, empty otherwise.
+     */
+    public OptionalLong getContentEntryInternalIdentifierWithReference(String ref, DbDto.Topic topic) {
+//        System.out.println(new Date().getTime() + " - getContentEntryInternalIdentifierWithReference(" + ref + "," + topic + ")");
+
+        Optional<DbDataDto.Entry> potentialEntry = getContentEntryFromTopicWithReference(ref, topic);
+        if(potentialEntry.isPresent()) {
+            return OptionalLong.of(potentialEntry.get().getId());
+        }
+        return OptionalLong.empty();
     }
 
     /**
