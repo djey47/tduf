@@ -151,6 +151,25 @@ public class BulkDatabaseMiner {
     }
 
     /**
+     * @param entryIdentifier   : index of entry in source topic
+     * @param topic             : topic in TDU Database to search
+     * @return identifier of database entry having specified reference as identifier, empty otherwise.
+     */
+    public Optional<String> getContentEntryReferenceWithInternalIdentifier(long entryIdentifier, DbDto.Topic topic) {
+//        System.out.println(new Date().getTime() + " - getContentEntryRefFromEntryIdentifier(" + entryIdentifier + "," + topic ")");
+
+        List<DbStructureDto.Field> structureFields = getDatabaseTopic(topic).get().getStructure().getFields();
+        OptionalInt potentialRefFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(structureFields);
+        if (potentialRefFieldRank.isPresent()) {
+            Optional<DbDataDto.Item> potentialRefItem = getContentItemWithEntryIdentifierAndFieldRank(topic, potentialRefFieldRank.getAsInt(), entryIdentifier);
+            if (potentialRefItem.isPresent()) {
+                return Optional.of(potentialRefItem.get().getRawValue());
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
      * @param entry     : entry containing items to be looked at
      * @param fieldRank : rank of field content item belongs to
      * @return item if it exists, empty otherwise.
@@ -163,6 +182,21 @@ public class BulkDatabaseMiner {
                 .filter((contentItem) -> contentItem.getFieldRank() == fieldRank)
 
                 .findAny();
+    }
+
+    /**
+     * @param topic             : topic in TDU Database to search
+     * @param fieldRank         : rank of field to resolve resource
+     * @param entryIdentifier   : index of entry in source topic
+     * @return item if it exists, empty otherwise.
+     */
+    public Optional<DbDataDto.Item> getContentItemWithEntryIdentifierAndFieldRank(DbDto.Topic topic, int fieldRank, long entryIdentifier) {
+//        System.out.println(new Date().getTime() + " - getContentItemWithEntryIdentifierAndFieldRank(" + fieldRank + "," + entryIdentifier + "," + topic + ")");
+
+        return getContentEntryFromTopicWithInternalIdentifier(entryIdentifier, topic)
+                .map((entry) -> getContentItemFromEntryAtFieldRank(entry, fieldRank)
+
+                        .orElse(null));
     }
 
     /**
