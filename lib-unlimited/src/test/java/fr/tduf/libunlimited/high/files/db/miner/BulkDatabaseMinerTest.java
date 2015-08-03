@@ -308,21 +308,53 @@ public class BulkDatabaseMinerTest {
     @Test
     public void getContentItemFromEntryAtFieldRank_whenItemAtSameRank_shouldReturnIt() {
         // GIVEN
-        DbDataDto.Item expectedItem = DbDataDto.Item.builder()
-                .ofFieldRank(1)
-                .build();
-        DbDataDto.Item otherItem = DbDataDto.Item.builder()
-                .ofFieldRank(2)
-                .build();
-        DbDataDto.Entry entry = DbDataDto.Entry.builder()
-                .addItem(expectedItem, otherItem)
-                .build();
+        DbDataDto.Item expectedItem = createContentItemWithRank(1);
+        DbDataDto.Item otherItem = createContentItemWithRank(2);
+        DbDataDto.Entry entry = createContentEntryWithTwoItems(expectedItem, otherItem);
 
         // WHEN
         Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(entry, 1);
 
         // THEN
         assertThat(potentialItem).contains(expectedItem);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void getContentEntryReference_whenNullEntry_shouldThrowException() {
+        // GIVEN-WHEN
+        BulkDatabaseMiner.getContentEntryReference(null, -1);
+
+        // THEN: NPE
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void getContentEntryReference_whenUidFieldNotAvailable_shouldThrowException() {
+        // GIVEN
+        DbDataDto.Item item  = createContentItemWithRank(1);
+        DbDataDto.Item otherItem = createContentItemWithRank(2);
+        DbDataDto.Entry entry = createContentEntryWithTwoItems(item, otherItem);
+
+        // WHEN
+        BulkDatabaseMiner.getContentEntryReference(entry, 3);
+
+        // THEN: NSE
+    }
+
+    @Test
+    public void getContentEntryReference_whenUidFieldAvailable_shouldReturnRef() {
+        // GIVEN
+        DbDataDto.Item uidItem  = DbDataDto.Item.builder()
+                .ofFieldRank(1)
+                .withRawValue("123456789")
+                .build();
+        DbDataDto.Item otherItem = createContentItemWithRank(2);
+        DbDataDto.Entry entry = createContentEntryWithTwoItems(uidItem, otherItem);
+
+        // WHEN
+        String actualEntryReference = BulkDatabaseMiner.getContentEntryReference(entry, 1);
+
+        // THEN
+        assertThat(actualEntryReference).isEqualTo("123456789");
     }
 
     private static ArrayList<DbDto> createTopicObjectsFromResources() throws IOException, URISyntaxException {
@@ -340,6 +372,18 @@ public class BulkDatabaseMinerTest {
                                 .withValue(value)
                                 .build()
                 )
+                .build();
+    }
+
+    private static DbDataDto.Entry createContentEntryWithTwoItems(DbDataDto.Item item1, DbDataDto.Item item2) {
+        return DbDataDto.Entry.builder()
+                .addItem(item1, item2)
+                .build();
+    }
+
+    private static DbDataDto.Item createContentItemWithRank(int fieldRank) {
+        return DbDataDto.Item.builder()
+                .ofFieldRank(fieldRank)
                 .build();
     }
 }
