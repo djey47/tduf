@@ -50,6 +50,23 @@ subprojects {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    task fatJar(type: Jar) {
+        mustRunAfter 'jar'
+        description 'Generates jar with all dependencies bundled into it.'
+
+        baseName = 'tduf-' + project.name + '-all'
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
+    }
+
+    task copyJar(type: Copy) {
+        description 'Copies jar file to release directory.'
+
+        from fatJar
+        into '../pack/lib/'
+    }
+
 }
 
 project(':cli') {
@@ -111,22 +128,6 @@ project(':cli') {
 
     integTest.finalizedBy integTestReport
 
-    task fatJar(type: Jar) {
-        mustRunAfter 'jar'
-        description 'Generates jar with all dependencies bundled into it.'
-
-        baseName = 'tduf-' + project.name + '-all'
-        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-        with jar
-    }
-
-    task copyJar(type: Copy) {
-        description 'Copies jar file to release directory.'
-
-        from fatJar
-        into '../pack/lib/'
-    }
-
     task copyScripts(type: Copy) {
         description 'Copies CLI scripts to release directory.'
 
@@ -182,21 +183,16 @@ project(':gui-database') {
         main 'fr.tduf.gui.database.DatabaseEditor'
         classpath sourceSets.main.runtimeClasspath
     }
+}
 
-    task fatJar(type: Jar) {
-        mustRunAfter 'jar'
-        description 'Generates jar with all dependencies bundled into it.'
-
-        baseName = 'tduf-' + project.name + '-all'
-        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-        with jar
+project(':gui-installer') {
+    dependencies {
+        compile project(':lib-unlimited')
     }
 
-    task copyJar(type: Copy) {
-        description 'Copies jar file to release directory.'
-
-        from fatJar
-        into '../pack/lib/'
+    task execute(type: JavaExec) {
+        main 'fr.tduf.gui.installer.Installer'
+        classpath sourceSets.main.runtimeClasspath
     }
 }
 
@@ -218,7 +214,7 @@ task copyVersionInfo(type: Copy) {
     into 'pack/lib/'
 }
 
-task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', ':cli:copyScripts', ':cli:copyJar', ':lib-unlimited:copyStructures', ':lib-unlimited:copyLibraries', ':lib-unlimited:copyExternalTools', ':gui-database:copyJar'], type: Zip) {
+task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', ':cli:copyScripts', ':cli:copyJar', ':lib-unlimited:copyStructures', ':lib-unlimited:copyLibraries', ':lib-unlimited:copyExternalTools', ':gui-database:copyJar'/*, ':gui-installer:copyJar'*/], type: Zip) {
     description 'Zips all distribution files from pack folder.'
 
     archiveName project.name + "-" + project.version + ".zip"

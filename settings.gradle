@@ -1,1 +1,3 @@
-include 'lib-testing', 'lib-unlimited', 'cli', 'gui-database'
+include 'lib-testing', 'lib-unlimited', 'cli', 'gui-database', 'gui-installer'
+include 'gui-installer'
+
