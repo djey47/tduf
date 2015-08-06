@@ -15,9 +15,11 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 /**
- * Class providing methods to manage BNK mapping.
+ * Class providing methods to manage BNK mapping at low level.
  */
 public class MapHelper {
+
+    public static final String MAPPING_FILE_NAME = "Bnk1.map";
 
     /**
      * Returns list of all Bank files under Bnk folder.
