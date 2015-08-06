@@ -1,24 +1,23 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
+import fr.tduf.libunlimited.high.files.banks.mapping.helper.MagicMapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapParser;
-import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapWriter;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static fr.tduf.cli.tools.MappingTool.Command.*;
+import static fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper.MAPPING_FILE_NAME;
 import static java.lang.Long.compare;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -111,7 +110,7 @@ public class MappingTool extends GenericTool {
 
         // Map file: defaulted to current directory\Bnk1.map
         if (mapFile == null) {
-            mapFile = new File(bankDirectory,"Bnk1.map").getAbsolutePath();
+            mapFile = new File(bankDirectory, MAPPING_FILE_NAME).getAbsolutePath();
         }
     }
 
@@ -184,29 +183,12 @@ public class MappingTool extends GenericTool {
     }
 
     private void fixMissing() throws IOException {
-
-        List<String> banks = MapHelper.parseBanks(this.bankDirectory);
-        Map<Long, String> checksums = MapHelper.computeChecksums(banks);
-        BankMap map = loadBankMap();
-
-        MapHelper.findNewChecksums(map, checksums)
-
-                .keySet()
-
-                .forEach(map::addMagicEntry);
-
-        saveBankMap(map);
+        MagicMapHelper.fixMagicMap(this.mapFile, this.bankDirectory);
 
         outLine("Bnk1.map fixing done: " + this.mapFile);
     }
 
     private BankMap loadBankMap() throws IOException {
         return MapParser.load(this.mapFile).parse();
-    }
-
-    private void saveBankMap(BankMap map) throws IOException {
-        Path mapFilePath = Paths.get(this.mapFile);
-
-        Files.write(mapFilePath, MapWriter.load(map).write().toByteArray());
     }
 }
