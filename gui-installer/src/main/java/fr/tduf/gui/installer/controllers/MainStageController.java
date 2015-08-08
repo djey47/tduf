@@ -2,8 +2,11 @@ package fr.tduf.gui.installer.controllers;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
+import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
+import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.libunlimited.high.files.banks.mapping.helper.MagicMapHelper;
+import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,6 +23,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
 /**
  * Makes it a possible to intercept all GUI events.
@@ -80,5 +85,7 @@ public class MainStageController implements Initializable {
         String bankDirectory = Paths.get(tduDirectoryProperty.getValue(), "Euro", "Bnk").toString();
         MagicMapHelper.fixMagicMap(bankDirectory);
 
+        String magicMapFile = Paths.get(bankDirectory, MapHelper.MAPPING_FILE_NAME).toString();
+        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE, DisplayConstants.MESSAGE_UPDATED_MAP, magicMapFile);
     }
 }
