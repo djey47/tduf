@@ -198,6 +198,51 @@ project(':gui-installer') {
         main 'fr.tduf.gui.installer.Installer'
         classpath sourceSets.main.runtimeClasspath
     }
+
+    task packInstaller(dependsOn: ['cleanInstallerPackDir', 'copyVersionInfo', 'copyInstallerDoc', 'copyInstallerScript', 'copyInstallerJar'], type: Zip) {
+        description 'Zips all distribution files from pack folder.'
+
+        archiveName project.name + "-" + project.version + ".zip"
+        destinationDir new File(projectDir, 'releases')
+        from  'pack/'
+    }
+
+    task copyInstallerJar(type: Copy) {
+        description 'Copies jar file to release directory.'
+
+        from fatJar
+        into 'pack/lib/'
+    }
+
+    task cleanInstallerPackDir(type: Delete) {
+        delete 'pack/'
+    }
+
+    task copyInstallerDoc(type: Copy) {
+        description 'Copies README to release directory.'
+        mustRunAfter 'cleanInstallerPackDir'
+
+        from '.'
+        include 'README.txt'
+        into 'pack/'
+    }
+
+    task copyInstallerScript(type: Copy) {
+        description 'Copies GUI scripts to release directory.'
+
+        from 'src/main/shell/'
+        include '*.cmd'
+        into 'pack'
+    }
+
+    task copyVersionInfo(type: Copy) {
+        description 'Copies version.info file to release libs directory.'
+        mustRunAfter 'cleanInstallerPackDir'
+
+        from '../dist/'
+        include 'version.info'
+        into 'pack/lib/'
+    }
 }
 
 task copyDoc(type: Copy) {
@@ -218,7 +263,7 @@ task copyVersionInfo(type: Copy) {
     into 'pack/lib/'
 }
 
-task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', ':cli:copyScripts', ':cli:copyJar', ':lib-unlimited:copyStructures', ':lib-unlimited:copyLibraries', ':lib-unlimited:copyExternalTools', ':gui-database:copyJar'/*, ':gui-installer:copyJar'*/], type: Zip) {
+task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', ':cli:copyScripts', ':cli:copyJar', ':lib-unlimited:copyStructures', ':lib-unlimited:copyLibraries', ':lib-unlimited:copyExternalTools', ':gui-database:copyJar'], type: Zip) {
     description 'Zips all distribution files from pack folder.'
 
     archiveName project.name + "-" + project.version + ".zip"
