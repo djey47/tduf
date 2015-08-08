@@ -14,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -65,6 +66,13 @@ public class MainStageController implements Initializable {
         updateMagicMap();
     }
 
+    @FXML
+    public void handleBrowseTduLocationButtonAction(ActionEvent actionEvent) {
+        System.out.println("handleBrowseTduLocationButtonAction");
+
+        browseForTduDirectory();
+    }
+
     private void initReadme() throws IOException {
         File readmeFile = new File(InstallerConstants.FILE_README);
 
@@ -78,6 +86,22 @@ public class MainStageController implements Initializable {
         tduDirectoryProperty = new SimpleStringProperty();
 
         tduLocationTextField.textProperty().bindBidirectional(tduDirectoryProperty);
+    }
+
+    private void browseForTduDirectory() {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+
+        if(tduDirectoryProperty.getValue() != null) {
+            File directory = new File(tduLocationTextField.getText());
+            if (directory.exists()) {
+                directoryChooser.setInitialDirectory(directory);
+            }
+        }
+
+        File selectedDirectory = directoryChooser.showDialog(root.getScene().getWindow());
+        if (selectedDirectory != null) {
+            tduDirectoryProperty.set(selectedDirectory.getPath());
+        }
     }
 
     private void updateMagicMap() throws IOException {
