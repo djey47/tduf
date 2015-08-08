@@ -5,8 +5,8 @@ import com.google.common.io.Files;
 import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
-import fr.tduf.libunlimited.high.files.banks.mapping.helper.MagicMapHelper;
-import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
+import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.gui.installer.steps.InstallSteps;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -106,10 +105,11 @@ public class MainStageController implements Initializable {
 
     private void updateMagicMap() throws IOException {
 
-        String bankDirectory = Paths.get(tduDirectoryProperty.getValue(), "Euro", "Bnk").toString();
-        MagicMapHelper.fixMagicMap(bankDirectory);
+        InstallerConfiguration configuration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
+                .build();
 
-        String magicMapFile = Paths.get(bankDirectory, MapHelper.MAPPING_FILE_NAME).toString();
+        String magicMapFile = InstallSteps.updateMagicMapStep(configuration);
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE, DisplayConstants.MESSAGE_UPDATED_MAP, magicMapFile);
     }
 }
