@@ -174,9 +174,12 @@ project('lib-unlimited') {
     }
 }
 
+project(':gui-common') {}
+
 project(':gui-database') {
     dependencies {
         compile project(':lib-unlimited')
+        compile project(':gui-common')
     }
 
     task execute(type:JavaExec) {
@@ -188,6 +191,7 @@ project(':gui-database') {
 project(':gui-installer') {
     dependencies {
         compile project(':lib-unlimited')
+        compile project(':gui-common')
     }
 
     task execute(type: JavaExec) {
