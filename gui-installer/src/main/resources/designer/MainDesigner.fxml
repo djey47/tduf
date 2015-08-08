@@ -18,10 +18,16 @@
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
-                  <TextField />
-                  <Button mnemonicParsing="false" text="..." />
-                <Button mnemonicParsing="false" text="Install" />
-                  <Button layoutX="288.0" layoutY="12.0" mnemonicParsing="false" text="Uninstall" />
+                  <TextField fx:id="tduLocationTextField" prefWidth="300.0" />
+                  <Button fx:id="browseTduLocationButton" mnemonicParsing="false" text="..." />
+                <Button fx:id="installButton" disable="true" mnemonicParsing="false" prefWidth="75.0" text="Install" />
+                  <Button fx:id="uninstallButton" disable="true" layoutX="288.0" layoutY="12.0" mnemonicParsing="false" prefWidth="75.0" text="Uninstall" />
+                  <Separator orientation="VERTICAL" />
+                  <MenuButton mnemonicParsing="false" text="Advanced...">
+                    <items>
+                      <MenuItem fx:id="updateMagicMapMenuItem" mnemonicParsing="false" onAction="#handleUpdateMagicMapMenuItemAction" text="Update Magic Map" />
+                    </items>
+                  </MenuButton>
               </items>
             </ToolBar>
             <ToolBar prefHeight="40.0" VBox.vgrow="NEVER">
