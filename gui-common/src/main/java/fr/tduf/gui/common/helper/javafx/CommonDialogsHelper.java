@@ -32,16 +32,16 @@ public class CommonDialogsHelper {
 
     /**
      * Displays a single error dialog box.
-     * @param alertType         : type of dialog box to be created
-     * @param title             : text in upper dialog bar
-     * @param errorMessage      : short text
-     * @param errorDescription  : details.
+     * @param alertType    : type of dialog box to be created
+     * @param title        : text in upper dialog bar
+     * @param message      : short text
+     * @param description  : details.
      */
-    public static void showDialog(Alert.AlertType alertType, String title, String errorMessage, String errorDescription) {
+    public static void showDialog(Alert.AlertType alertType, String title, String message, String description) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
-        alert.setHeaderText(errorMessage);
-        alert.setContentText(errorDescription);
+        alert.setHeaderText(message);
+        alert.setContentText(description);
 
         alert.showAndWait();
     }
