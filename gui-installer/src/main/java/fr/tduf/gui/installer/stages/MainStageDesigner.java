@@ -28,7 +28,7 @@ public class MainStageDesigner {
     }
 
     private static void initMainWindow(Stage primaryStage, Parent mainRoot) {
-        primaryStage.setScene(new Scene(mainRoot, 640, 640));
+        primaryStage.setScene(new Scene(mainRoot, 750, 750));
         primaryStage.setTitle(DisplayConstants.TITLE_APPLICATION);
     }
 }
