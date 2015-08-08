@@ -30,4 +30,4 @@ CD /D %START_DIR%
 REM SET VERSION TO LOAD RIGHT JARS
 SET /P TDUF_VERSION=<.\lib\version.info
 
-java -cp lib\tduf-gui-installer-all-%TDUF_VERSION%.jar fr.tduf.gui.installer.Installer %*
+java -cp lib\tduf-gui-installer-all-%TDUF_VERSION%.jar fr.tduf.gui.installer.Installer %* >> Alpha-Installer.log 2>>&1
