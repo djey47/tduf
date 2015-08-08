@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.DatabaseEditor;
 import fr.tduf.gui.database.common.DisplayConstants;
@@ -624,7 +625,7 @@ public class MainStageController implements Initializable {
     private void saveDatabaseToDirectory(String databaseLocation) {
         DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects, databaseLocation);
 
-        dialogsHelper.showDialog(Alert.AlertType.INFORMATION, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseLocation);
+        CommonDialogsHelper.showDialog(Alert.AlertType.INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseLocation);
     }
 
     private void addEntryAndUpdateStage() {
@@ -701,12 +702,13 @@ public class MainStageController implements Initializable {
 
         DbDto.Topic currentTopic = currentTopicObject.getTopic();
         Optional<String> potentialEntryRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopic);
+        String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT;
         if(!potentialEntryRef.isPresent()) {
-            dialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_ENTRY_WITHOUT_REF);
+            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_ENTRY_WITHOUT_REF);
             return;
         }
 
-        Optional<File> potentialFile = dialogsHelper.browseForFilename(false, root.getScene().getWindow());
+        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(false, root.getScene().getWindow());
         if (!potentialFile.isPresent()) {
             return;
         }
@@ -718,18 +720,19 @@ public class MainStageController implements Initializable {
             String location = potentialFile.get().getPath();
             FilesHelper.writeJsonObjectToFile(potentialPatchObject.get(), location);
 
-            dialogsHelper.showDialog(Alert.AlertType.INFORMATION, DisplayConstants.MESSAGE_ENTRY_EXPORTED, location);
+            CommonDialogsHelper.showDialog(Alert.AlertType.INFORMATION, dialogTitle, DisplayConstants.MESSAGE_ENTRY_EXPORTED, location);
         } else {
-            dialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_SEE_LOGS);
+            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_SEE_LOGS);
         }
     }
 
     private void askForPatchLocationAndImportData() {
-        Optional<File> potentialFile = dialogsHelper.browseForFilename(true, root.getScene().getWindow());
+        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(true, root.getScene().getWindow());
         if (!potentialFile.isPresent()) {
             return;
         }
 
+        String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_IMPORT;
         try {
             File patchFile = potentialFile.get();
             DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
@@ -738,11 +741,11 @@ public class MainStageController implements Initializable {
 
             viewDataController.updateEntryCount();
 
-            dialogsHelper.showDialog(Alert.AlertType.INFORMATION, DisplayConstants.MESSAGE_DATA_IMPORTED, patchFile.getPath());
+            CommonDialogsHelper.showDialog(Alert.AlertType.INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED, patchFile.getPath());
         } catch (Exception e) {
             e.printStackTrace();
 
-            dialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS);
+            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS);
         }
     }
 

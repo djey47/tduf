@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
@@ -227,7 +228,7 @@ public class ResourcesStageController implements Initializable {
                 editResourceForAllLocales(topic, currentResourceReference, newResourceReference, newResourceValue, updateResourceMode);
             }
         } catch (IllegalArgumentException iae) {
-            dialogsHelper.showDialog(Alert.AlertType.ERROR, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
+            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
         } finally {
             updateAllStages(Optional.of(newResourceReference));
         }

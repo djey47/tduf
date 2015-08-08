@@ -50,6 +50,7 @@ public class DisplayConstants {
     public static final String TITLE_SUB_ENTRIES = " : Content entries";
     public static final String TITLE_SUB_RESOURCES = " : Resources";
     public static final String TITLE_SUB_EXPORT = " : Export entry";
+    public static final String TITLE_SUB_IMPORT = " : Import entry";
 
     public static final String MESSAGE_ADDED_RESOURCE = "Add resource in topic: ";
     public static final String MESSAGE_DATABASE_SAVED = "Current database was saved.";
