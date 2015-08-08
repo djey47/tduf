@@ -2,11 +2,8 @@ package fr.tduf.gui.installer.controllers;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
-import com.google.common.io.LineProcessor;
-import fr.tduf.gui.installer.Installer;
 import fr.tduf.gui.installer.common.InstallerConstants;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import javafx.beans.property.Property;
+import fr.tduf.libunlimited.high.files.banks.mapping.helper.MagicMapHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -52,7 +50,7 @@ public class MainStageController implements Initializable {
     }
 
     @FXML
-    public void handleUpdateMagicMapMenuItemAction(ActionEvent actionEvent) {
+    public void handleUpdateMagicMapMenuItemAction(ActionEvent actionEvent) throws IOException {
         System.out.println("handleUpdateMagicMapMenuItemAction");
 
         if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
@@ -77,7 +75,10 @@ public class MainStageController implements Initializable {
         tduLocationTextField.textProperty().bindBidirectional(tduDirectoryProperty);
     }
 
-    private void updateMagicMap() {
+    private void updateMagicMap() throws IOException {
+
+        String bankDirectory = Paths.get(tduDirectoryProperty.getValue(), "Euro", "Bnk").toString();
+        MagicMapHelper.fixMagicMap(bankDirectory);
 
     }
 }
