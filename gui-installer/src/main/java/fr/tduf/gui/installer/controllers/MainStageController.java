@@ -73,7 +73,7 @@ public class MainStageController implements Initializable {
     }
 
     @FXML
-    public void handleInstallButtonAction(ActionEvent actionEvent) {
+    public void handleInstallButtonAction(ActionEvent actionEvent) throws IOException {
         System.out.println("handleInstallButtonAction");
 
         if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
@@ -125,7 +125,7 @@ public class MainStageController implements Initializable {
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE, DisplayConstants.MESSAGE_UPDATED_MAP, magicMapFile);
     }
 
-    private void install() {
+    private void install() throws IOException {
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())

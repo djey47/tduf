@@ -20,8 +20,14 @@ public class InstallSteps {
      * Entry point for full install
      * @param configuration : settings to install required mod.
      */
-    public static void install(InstallerConfiguration configuration) {
-        // TODO call update magic map step and check for errors
+    public static void install(InstallerConfiguration configuration) throws IOException {
+        // TODO check for errors
+
+        copyFilesStep(configuration);
+
+        updateMagicMapStep(configuration);
+
+        updateDatabaseStep(configuration);
     }
 
     /**
@@ -29,9 +35,9 @@ public class InstallSteps {
      * @param configuration : settings to perform current step
      */
     public static void copyFilesStep(InstallerConfiguration configuration) {
+        System.out.println("Entering step: Copy Files");
 
         String banksDirectory = getTduBanksDirectory(configuration);
-
         asList(DIRECTORY_3D, DIRECTORY_RIMS, DIRECTORY_GAUGES, DIRECTORY_SOUND)
                 .forEach((asset) -> {
                     try {
@@ -49,6 +55,7 @@ public class InstallSteps {
      * @throws IOException
      */
     public static String updateMagicMapStep(InstallerConfiguration configuration) throws IOException {
+        System.out.println("Entering step: Update Magic Map");
 
         String bankDirectory = getTduBanksDirectory(configuration);
         MagicMapHelper.fixMagicMap(bankDirectory);
@@ -56,16 +63,21 @@ public class InstallSteps {
         return Paths.get(bankDirectory, MapHelper.MAPPING_FILE_NAME).toString();
     }
 
+    /**
+     * @param configuration : settings to perform current step
+     */
     public static void updateDatabaseStep(InstallerConfiguration configuration) {
+        System.out.println("Entering step: Update Database");
 
+        // TODO
     }
 
     private static void copyAssets(String assetName, String assetsDirectory, String banksDirectory) throws IOException {
         System.out.println("Copying assets: " + assetName) ;
 
         Path assetPath = Paths.get(assetsDirectory, assetName);
-        Path targetPath;
 
+        Path targetPath;
         switch(assetName) {
             case DIRECTORY_3D:
                 targetPath = Paths.get(banksDirectory, "Vehicules");
