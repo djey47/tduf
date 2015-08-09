@@ -73,7 +73,15 @@ public class MainStageController implements Initializable {
     }
 
     @FXML
-    public void handleInstallButtonAction(ActionEvent actionEvent) {}
+    public void handleInstallButtonAction(ActionEvent actionEvent) {
+        System.out.println("handleInstallButtonAction");
+
+        if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
+            return;
+        }
+
+        install();
+    }
 
     private void initReadme() throws IOException {
         File readmeFile = new File(InstallerConstants.FILE_README);
@@ -115,5 +123,16 @@ public class MainStageController implements Initializable {
 
         String magicMapFile = InstallSteps.updateMagicMapStep(configuration);
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE, DisplayConstants.MESSAGE_UPDATED_MAP, magicMapFile);
+    }
+
+    private void install() {
+
+        InstallerConfiguration configuration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
+                .withAssetsDirectory(InstallerConstants.DIRECTORY_ASSETS)
+                .build();
+
+        InstallSteps.install(configuration);
+        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "");
     }
 }
