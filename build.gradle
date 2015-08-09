@@ -203,7 +203,7 @@ project(':gui-installer') {
         description 'Zips all distribution files from pack folder.'
 
         archiveName project.name + "-" + project.version + ".zip"
-        destinationDir new File(projectDir, 'releases')
+        destinationDir new File(rootProject.projectDir, 'releases')
         from  'pack/'
     }
 
