@@ -1,6 +1,6 @@
 ==== VEHICLE NAME ====
 
-This is a default README file.
+This is a default README file - it's located in assets/README directory.
 
 Please put all mod details and instructions in it.
 
