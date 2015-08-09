@@ -16,7 +16,7 @@ Thus, you always ought to make a backup of your TDU database before using it!
 
 ### Main features
 
-*
+* Ability to only update Magic Map (Advanced feature)
 
 ### What you will need to run TDUF
 
