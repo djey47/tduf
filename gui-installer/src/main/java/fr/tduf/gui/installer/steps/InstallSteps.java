@@ -127,22 +127,23 @@ public class InstallSteps {
 
     private static void copyAsset(Path assetPath, Path targetPath, String assetName) throws IOException {
 
+        Path parentName = assetPath.getParent().getFileName();
+
         if (DIRECTORY_RIMS.equals(assetName)) {
-            targetPath = targetPath.resolve(assetPath.getParent().getFileName());
+            targetPath = targetPath.resolve(parentName);
         }
 
         if (DIRECTORY_GAUGES.equals(assetName)) {
-            Path parentName = assetPath.getParent().getFileName();
-
-            if ("HI".equals(parentName.toString())) {
-                targetPath = targetPath.resolve("HiRes").resolve("Gauges");
-            } else if ("LOW".equals(parentName.toString())) {
-                targetPath = targetPath.resolve("LowRes").resolve("Gauges");
+            Path gaugesPath = null;
+            if (DIRECTORY_HIRES.equals(parentName.toString())) {
+                gaugesPath = Paths.get("HiRes");
+            } else if (DIRECTORY_LOWRES.equals(parentName.toString())) {
+                gaugesPath = Paths.get("LowRes");
             }
+            targetPath = targetPath.resolve(gaugesPath).resolve("Gauges");
         }
 
         FilesHelper.createDirectoryIfNotExists(targetPath.toString());
-
         Path finalPath = targetPath.resolve(assetPath.getFileName());
 
         System.out.println("*> " + assetPath + " to " + finalPath);
