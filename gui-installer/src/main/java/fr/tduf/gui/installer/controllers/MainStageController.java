@@ -72,6 +72,9 @@ public class MainStageController implements Initializable {
         browseForTduDirectory();
     }
 
+    @FXML
+    public void handleInstallButtonAction(ActionEvent actionEvent) {}
+
     private void initReadme() throws IOException {
         File readmeFile = new File(InstallerConstants.FILE_README);
 
@@ -84,6 +87,7 @@ public class MainStageController implements Initializable {
     private void initActionToolbar() {
         tduDirectoryProperty = new SimpleStringProperty();
 
+        tduLocationTextField.setPromptText(DisplayConstants.PROMPT_TEXT_TDU_LOCATION);
         tduLocationTextField.textProperty().bindBidirectional(tduDirectoryProperty);
     }
 
