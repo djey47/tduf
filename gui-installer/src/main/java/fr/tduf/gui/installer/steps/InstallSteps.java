@@ -76,7 +76,22 @@ public class InstallSteps {
         System.out.println("Copying assets: " + assetName) ;
 
         Path assetPath = Paths.get(assetsDirectory, assetName);
+        Path targetPath = getTargetPath(assetName, banksDirectory);
 
+        Files.walk(assetPath, 1, FileVisitOption.FOLLOW_LINKS)
+
+                .filter((path) -> Files.isRegularFile(path))
+
+                .filter((path) -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+
+                .forEach((path) -> copyAsset(path, targetPath));
+    }
+
+    private static String getTduBanksDirectory(InstallerConfiguration configuration) {
+        return Paths.get(configuration.getTestDriveUnlimitedDirectory(), "Euro", "Bnk").toString();
+    }
+
+    private static Path getTargetPath(String assetName, String banksDirectory) {
         Path targetPath;
         switch(assetName) {
             case DIRECTORY_3D:
@@ -96,26 +111,17 @@ public class InstallSteps {
             default:
                 throw new IllegalArgumentException("Unhandled asset type: " + assetName);
         }
-
-        Files.walk(assetPath, 1, FileVisitOption.FOLLOW_LINKS)
-
-                .filter((path) -> Files.isRegularFile(path))
-
-                .filter((path) -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
-
-                .forEach((path) -> {
-                    Path finalPath = targetPath.resolve(path.getFileName());
-
-                    System.out.println("*> " + path + " to " + finalPath);
-                    try {
-                        Files.copy(path, finalPath, StandardCopyOption.REPLACE_EXISTING);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+        return targetPath;
     }
 
-    private static String getTduBanksDirectory(InstallerConfiguration configuration) {
-        return Paths.get(configuration.getTestDriveUnlimitedDirectory(), "Euro", "Bnk").toString();
+    private static void copyAsset(Path assetPath, Path targetPath) {
+        Path finalPath = targetPath.resolve(assetPath.getFileName());
+
+        System.out.println("*> " + assetPath + " to " + finalPath);
+        try {
+            Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
