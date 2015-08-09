@@ -5,6 +5,6 @@ package fr.tduf.gui.installer.common;
  */
 public class InstallerConstants {
 
-    public static final String FILE_README = "README.txt";
+    public static final String FILE_README = "./assets/README/README.txt";
 
 }
