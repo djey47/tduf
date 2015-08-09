@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.banks.mapping.helper.MagicMapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -73,10 +74,26 @@ public class InstallSteps {
     /**
      * @param configuration : settings to perform current step
      */
-    public static void updateDatabaseStep(InstallerConfiguration configuration) {
+    public static void updateDatabaseStep(InstallerConfiguration configuration) throws IOException {
         System.out.println("Entering step: Update Database");
 
-        // TODO
+        unpackDatabaseToJson(configuration);
+
+//        applyPatches();
+//
+//        repackDatabase();
+    }
+
+    static void unpackDatabaseToJson(InstallerConfiguration configuration) throws IOException {
+        Path banksPath = Paths.get(getTduBanksDirectory(configuration));
+        Path databasePath = banksPath.resolve("Database");
+
+        System.out.println("Unpacking TDU database: " + databasePath);
+
+        String unpackedDatabaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databasePath.toString(), configuration.getBankSupport());
+
+        System.out.println("Unpacked TDU database directory: " + unpackedDatabaseDirectory);
+
     }
 
     private static void copyAssets(String assetName, String assetsDirectory, String banksDirectory) throws IOException {
@@ -154,4 +171,5 @@ public class InstallSteps {
             e.printStackTrace();
         }
     }
+
 }
