@@ -1,0 +1,4 @@
++Create subfolder(s) matching rim brand name
++Place all your 3D model BNK onto brand subfolder:
+- xxxxxxx_F_yy.BNK (front rims)
+- xxxxxxx_R_yy.BNK (rear rims when needed)
