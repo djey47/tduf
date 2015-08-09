@@ -199,7 +199,7 @@ project(':gui-installer') {
         classpath sourceSets.main.runtimeClasspath
     }
 
-    task packInstaller(dependsOn: ['cleanInstallerPackDir', 'copyVersionInfo', 'copyInstallerDoc', 'copyInstallerScript', 'copyInstallerJar'], type: Zip) {
+    task packInstaller(dependsOn: ['cleanInstallerPackDir', 'copyVersionInfo', 'copyInstallerDoc', 'copyInstallerAssets', 'copyInstallerScript', 'copyInstallerJar'], type: Zip) {
         description 'Zips all distribution files from pack folder.'
 
         archiveName project.name + "-" + project.version + ".zip"
@@ -222,13 +222,22 @@ project(':gui-installer') {
         description 'Copies README to release directory.'
         mustRunAfter 'cleanInstallerPackDir'
 
-        from '.'
+        from 'dist/'
         include 'README.txt'
         into 'pack/'
     }
 
+    task copyInstallerAssets(type: Copy) {
+        description 'Copies all assets directory structure to release directory.'
+        mustRunAfter 'cleanInstallerPackDir'
+
+        from 'assets/'
+        into 'pack/assets/'
+    }
+
     task copyInstallerScript(type: Copy) {
         description 'Copies GUI scripts to release directory.'
+        mustRunAfter 'cleanInstallerPackDir'
 
         from 'src/main/shell/'
         include '*.cmd'
