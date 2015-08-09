@@ -130,8 +130,9 @@ public class InstallSteps {
 
         if (DIRECTORY_RIMS.equals(assetName)) {
             targetPath = targetPath.resolve(assetPath.getParent().getFileName());
-            FilesHelper.createDirectoryIfNotExists(targetPath.toString());
         }
+
+        FilesHelper.createDirectoryIfNotExists(targetPath.toString());
 
         Path finalPath = targetPath.resolve(assetPath.getFileName());
 
