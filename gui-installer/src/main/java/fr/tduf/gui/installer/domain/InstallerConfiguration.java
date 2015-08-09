@@ -1,5 +1,7 @@
 package fr.tduf.gui.installer.domain;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Class to embed all settings necessary to install/uninstall.
  */
@@ -26,6 +28,8 @@ public class InstallerConfiguration {
 
             @Override
             public InstallerConfiguration build() {
+                requireNonNull(testDriveUnlimitedDirectory, "TDU directory is required.");
+
                 InstallerConfiguration installerConfiguration = new InstallerConfiguration();
                 installerConfiguration.testDriveUnlimitedDirectory = testDriveUnlimitedDirectory;
 
