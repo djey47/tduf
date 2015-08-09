@@ -111,8 +111,7 @@ public class InstallSteps {
                 targetPath = Paths.get(banksDirectory, "Vehicules");
                 break;
             case DIRECTORY_GAUGES:
-                // TODO handle hires+lores
-                targetPath = Paths.get(banksDirectory, "FrontEnd", "HiRes");
+                targetPath = Paths.get(banksDirectory, "FrontEnd");
                 break;
             case DIRECTORY_RIMS:
                 targetPath = Paths.get(banksDirectory, "Vehicules", "Rim");
@@ -130,6 +129,16 @@ public class InstallSteps {
 
         if (DIRECTORY_RIMS.equals(assetName)) {
             targetPath = targetPath.resolve(assetPath.getParent().getFileName());
+        }
+
+        if (DIRECTORY_GAUGES.equals(assetName)) {
+            Path parentName = assetPath.getParent().getFileName();
+
+            if ("HI".equals(parentName.toString())) {
+                targetPath = targetPath.resolve("HiRes").resolve("Gauges");
+            } else if ("LOW".equals(parentName.toString())) {
+                targetPath = targetPath.resolve("LowRes").resolve("Gauges");
+            }
         }
 
         FilesHelper.createDirectoryIfNotExists(targetPath.toString());
