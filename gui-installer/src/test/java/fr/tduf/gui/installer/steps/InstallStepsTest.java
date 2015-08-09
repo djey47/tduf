@@ -42,7 +42,10 @@ public class InstallStepsTest {
         System.out.println("Testing TDU directory: " + tempDirectory);
 
         assertThat(Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules", "AC_289.bnk").toFile()).exists();
-        assertThat(Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules", "AC_289_I.bnk").toFile()).exists();
+        assertThat(Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules", "AC_289.bnk").toFile()).exists();
+
+        assertThat(Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules", "Rim", "AC", "AC_289_F_01.bnk").toFile()).exists();
+
         assertThat(Paths.get(tempDirectory, "Euro", "Bnk", "Sound", "Vehicules", "AC_289_audio.bnk").toFile()).exists();
     }
 

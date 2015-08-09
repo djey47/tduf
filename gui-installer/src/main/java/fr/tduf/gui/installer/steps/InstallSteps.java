@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.steps;
 
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.banks.mapping.helper.MagicMapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
@@ -84,13 +85,19 @@ public class InstallSteps {
         Path assetPath = Paths.get(assetsDirectory, assetName);
         Path targetPath = getTargetPath(assetName, banksDirectory);
 
-        Files.walk(assetPath, 1, FileVisitOption.FOLLOW_LINKS)
+        Files.walk(assetPath, 2, FileVisitOption.FOLLOW_LINKS)
 
                 .filter((path) -> Files.isRegularFile(path))
 
                 .filter((path) -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
 
-                .forEach((path) -> copyAsset(path, targetPath));
+                .forEach((path) -> {
+                    try {
+                        copyAsset(path, targetPath, assetName);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
     private static String getTduBanksDirectory(InstallerConfiguration configuration) {
@@ -108,7 +115,6 @@ public class InstallSteps {
                 targetPath = Paths.get(banksDirectory, "FrontEnd", "HiRes");
                 break;
             case DIRECTORY_RIMS:
-                // TODO handle rim manufacturer folder
                 targetPath = Paths.get(banksDirectory, "Vehicules", "Rim");
                 break;
             case DIRECTORY_SOUND:
@@ -120,10 +126,17 @@ public class InstallSteps {
         return targetPath;
     }
 
-    private static void copyAsset(Path assetPath, Path targetPath) {
+    private static void copyAsset(Path assetPath, Path targetPath, String assetName) throws IOException {
+
+        if (DIRECTORY_RIMS.equals(assetName)) {
+            targetPath = targetPath.resolve(assetPath.getParent().getFileName());
+            FilesHelper.createDirectoryIfNotExists(targetPath.toString());
+        }
+
         Path finalPath = targetPath.resolve(assetPath.getFileName());
 
         System.out.println("*> " + assetPath + " to " + finalPath);
+
         try {
             Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
