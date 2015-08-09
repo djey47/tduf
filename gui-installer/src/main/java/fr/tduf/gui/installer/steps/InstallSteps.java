@@ -58,9 +58,15 @@ public class InstallSteps {
         System.out.println("Entering step: Update Magic Map");
 
         String bankDirectory = getTduBanksDirectory(configuration);
-        MagicMapHelper.fixMagicMap(bankDirectory);
+        String magicMapFile = Paths.get(bankDirectory, MapHelper.MAPPING_FILE_NAME).toString();
 
-        return Paths.get(bankDirectory, MapHelper.MAPPING_FILE_NAME).toString();
+        System.out.println("Magic Map file: " + magicMapFile);
+
+        MagicMapHelper.fixMagicMap(bankDirectory)
+
+                .forEach((fileName) -> System.out.println("*> added checksum of " + fileName));
+
+        return magicMapFile;
     }
 
     /**
