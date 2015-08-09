@@ -28,14 +28,14 @@ public class InstallSteps {
      * Only copies files in assets subfolders to correct TDU locations.
      * @param configuration : settings to perform current step
      */
-    public static void copyFilesStep(String assetsDirectory, InstallerConfiguration configuration) {
+    public static void copyFilesStep(InstallerConfiguration configuration) {
 
         String banksDirectory = getTduBanksDirectory(configuration);
 
         asList(DIRECTORY_3D, DIRECTORY_RIMS, DIRECTORY_GAUGES, DIRECTORY_SOUND)
                 .forEach((asset) -> {
                     try {
-                        InstallSteps.copyAssets(asset, assetsDirectory, banksDirectory);
+                        InstallSteps.copyAssets(asset, configuration.getAssetsDirectory(), banksDirectory);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -62,7 +62,6 @@ public class InstallSteps {
 
     private static void copyAssets(String assetName, String assetsDirectory, String banksDirectory) throws IOException {
         System.out.println("Copying assets: " + assetName) ;
-
 
         Path assetPath = Paths.get(assetsDirectory, assetName);
         Path targetPath;

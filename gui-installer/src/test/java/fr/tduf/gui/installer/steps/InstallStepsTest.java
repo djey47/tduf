@@ -27,15 +27,15 @@ public class InstallStepsTest {
         // GIVEN
         prepareTduDirectoryLayout();
 
+        String assetsDirectory = new File(this.getClass().getResource("/assets-all").toURI()).getAbsolutePath();
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)
+                .withAssetsDirectory(assetsDirectory)
                 .build();
-
-        String assetsDirectory = new File(this.getClass().getResource("/assets-all").toURI()).getAbsolutePath();
 
 
         // WHEN
-        InstallSteps.copyFilesStep(assetsDirectory, configuration);
+        InstallSteps.copyFilesStep(configuration);
 
 
         // THEN
