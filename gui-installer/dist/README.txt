@@ -1,8 +1,8 @@
 # TDUF(orever) - Installer
 
-Here is a new vehicle mod installer :
-* Adds new vehicles to the game
-* Makes new file to be accepted by uodating Magic Map
+Here is a new vehicle mod installer:
+* Adds new vehicle to the game
+* Makes new files to be accepted by updating Magic Map
 * Allows to uninstall it.
 
 ### What's in this version ?
