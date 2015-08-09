@@ -1,0 +1,2 @@
+Place your sound BNK here:
+- xxxxxxx_audio.BNK
