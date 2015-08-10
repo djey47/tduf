@@ -149,8 +149,8 @@ public class DatabaseBankHelper {
             String extractedDirectory = createTempDirectory();
             bankSupport.extractAll(databaseFileName, extractedDirectory);
 
+            // TODO see if method can be modified to one single call
             groupGeneratedFiles(extractedDirectory, targetDirectory);
-
             groupGeneratedFiles(Paths.get(extractedDirectory, shortDatabaseFileName).toString(), targetDirectory);
         } catch (IOException ioe) {
             throw new RuntimeException("Unable to unpack database bank: " + databaseFileName, ioe);
@@ -158,17 +158,21 @@ public class DatabaseBankHelper {
     }
 
     private static void groupGeneratedFiles(String sourceDirectory, String targetDirectory) throws IOException {
-        Files.walk(Paths.get(sourceDirectory))
+        try {
+            Files.walk(Paths.get(sourceDirectory))
 
-                .filter((path) -> Files.isRegularFile(path))
+                    .filter((path) -> Files.isRegularFile(path))
 
-                .forEach((originalBankFilePath) -> {
-                    String shortOriginalBankFileName = originalBankFilePath.getFileName().toString();
-                    try {
-                        Files.move(originalBankFilePath, Paths.get(targetDirectory, shortOriginalBankFileName), StandardCopyOption.REPLACE_EXISTING);
-                    } catch (IOException ioe) {
-                        throw new RuntimeException("Unable to group file: " + shortOriginalBankFileName, ioe);
-                    }
-                });
+                    .forEach((originalBankFilePath) -> {
+                        String shortOriginalBankFileName = originalBankFilePath.getFileName().toString();
+                        try {
+                            Files.move(originalBankFilePath, Paths.get(targetDirectory, shortOriginalBankFileName), StandardCopyOption.REPLACE_EXISTING);
+                        } catch (IOException ioe) {
+                            throw new RuntimeException("Unable to group file: " + shortOriginalBankFileName, ioe);
+                        }
+                    });
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
 }
