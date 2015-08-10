@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
@@ -71,7 +72,7 @@ public class DatabaseWriter {
     public String writeAllAsJson(String path) throws IOException {
         checkPrerequisites(this.databaseDto);
 
-        String outputFileName = String.format("%s.%s", this.databaseDto.getTopic().getLabel(), "json");
+        String outputFileName = String.format("%s.%s", this.databaseDto.getTopic().getLabel(), EXTENSION_JSON);
 
         Path outputFilePath = Paths.get(path, outputFileName);
         try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(outputFilePath, StandardCharsets.UTF_8)) {
