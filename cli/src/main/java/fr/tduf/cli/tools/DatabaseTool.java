@@ -140,7 +140,7 @@ public class DatabaseTool extends GenericTool {
     protected boolean commandDispatch() throws Exception {
         switch (command) {
             case DUMP:
-                dump();
+                dump(databaseDirectory);
                 return true;
             case CHECK:
                 check();
@@ -260,22 +260,20 @@ public class DatabaseTool extends GenericTool {
     }
 
     private void unpackAll() throws IOException {
-        String sourceDirectory = Paths.get(this.databaseDirectory).toAbsolutePath().toString();
+        String sourceDirectory = Paths.get(databaseDirectory).toAbsolutePath().toString();
         outLine("-> TDU database directory: " + sourceDirectory);
-        outLine("Unpacking TDU database to " + this.jsonDirectory + ", please wait...");
+        outLine("Unpacking TDU database to " + jsonDirectory + ", please wait...");
 
-        this.databaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(sourceDirectory, this.bankSupport);
-
-        copyOriginalBankFilesToTargetDirectory(this.databaseDirectory, this.jsonDirectory);
+        String extractedDatabaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(sourceDirectory, Optional.of(jsonDirectory), bankSupport);
 
         outLine("Done!");
 
-        dump();
+        dump(extractedDatabaseDirectory);
 
-        Map<String, Object> resultInfo = (Map<String, Object>) this.commandResult;
+        Map<String, Object> resultInfo = (Map<String, Object>) commandResult;
         resultInfo.put("sourceDirectory", sourceDirectory);
-        resultInfo.put("temporaryDirectory", this.databaseDirectory);
-        resultInfo.put("targetDirectory", this.jsonDirectory);
+        resultInfo.put("temporaryDirectory", extractedDatabaseDirectory);
+        resultInfo.put("targetDirectory", jsonDirectory);
     }
 
     private void convertPatch() throws IOException, SAXException, ParserConfigurationException, URISyntaxException, TransformerException {
@@ -354,7 +352,7 @@ public class DatabaseTool extends GenericTool {
         commandResult = resultInfo;
     }
 
-    private void dump() throws IOException {
+    private void dump(String databaseDirectory) throws IOException {
         FilesHelper.createDirectoryIfNotExists(this.jsonDirectory);
 
         outLine("-> Source directory: " + databaseDirectory);
@@ -366,7 +364,7 @@ public class DatabaseTool extends GenericTool {
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
             outLine("-> Now processing topic: " + currentTopic + "...");
 
-            Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, this.databaseDirectory, this.withClearContents, new ArrayList<>());
+            Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, databaseDirectory, this.withClearContents, new ArrayList<>());
             if (!potentialDbDto.isPresent()) {
                 outLine("  !Database contents not found for topic " + currentTopic + ", skipping...");
                 outLine();
@@ -617,6 +615,7 @@ public class DatabaseTool extends GenericTool {
         }
     }
 
+    // TODO move to Helper
     private static void copyOriginalBankFilesToTargetDirectory(String sourceDirectory, String targetDirectory) throws IOException {
         Files.walk(Paths.get(sourceDirectory))
 
