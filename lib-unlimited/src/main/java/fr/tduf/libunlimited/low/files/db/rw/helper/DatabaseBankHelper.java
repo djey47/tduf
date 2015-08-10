@@ -1,6 +1,8 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.io.FileNotFoundException;
@@ -11,6 +13,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -25,22 +28,31 @@ public class DatabaseBankHelper {
 
     /**
      * Extracts all TDU database files from specified directory to a temporary location.
+     * Optionally, prepares further processing by copying original bank files to targetDirectory.
      *
-     * @param databaseDirectory : directory containing ALL TDU database files.
+     * @param databaseDirectory : directory containing ALL TDU database files
+     * @param targetDirectory   : directory where to copy original bank files, if provided
      * @param bankSupport       : module instance to unpack/repack bnks
      * @return directory where extracted contents are located for further processing.
      */
-    public static String unpackDatabaseFromDirectory(String databaseDirectory, BankSupport bankSupport) throws IOException {
+    public static String unpackDatabaseFromDirectory(String databaseDirectory, Optional<String> targetDirectory, BankSupport bankSupport) throws IOException {
         requireNonNull(databaseDirectory, "A database directory is required.");
         requireNonNull(bankSupport, "A module instance for bank support is required.");
 
         String tempDirectory = createTempDirectory();
-
         getDatabaseBankFileNames().stream()
 
                 .map((fileName) -> checkDatabaseFileExists(databaseDirectory, fileName))
 
                 .forEach((validFileName) -> unpackDatabaseAndGroupFiles(validFileName, tempDirectory, bankSupport));
+
+        targetDirectory.ifPresent((directory) -> {
+            try {
+                copyOriginalBankFilesToTargetDirectory(tempDirectory, directory);
+            } catch (IOException ioe) {
+                throw new RuntimeException("Unsable to copy orginal bank files to target directory.", ioe);
+            }
+        });
 
         return tempDirectory;
     }
@@ -174,5 +186,22 @@ public class DatabaseBankHelper {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+    }
+
+    private static void copyOriginalBankFilesToTargetDirectory(String sourceDirectory, String targetDirectory) throws IOException {
+        Files.walk(Paths.get(sourceDirectory))
+
+                .filter((path) -> Files.isRegularFile(path))
+
+                .filter((filePath) -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(filePath.toString())))
+
+                .forEach((filePath) -> {
+                    try {
+                        FilesHelper.createDirectoryIfNotExists(targetDirectory);
+                        Files.copy(filePath, Paths.get(targetDirectory, filePath.getFileName().toString()));
+                    } catch (IOException ioe) {
+                        throw new RuntimeException("Unable to copy original bank files to target directory.", ioe);
+                    }
+                });
     }
 }

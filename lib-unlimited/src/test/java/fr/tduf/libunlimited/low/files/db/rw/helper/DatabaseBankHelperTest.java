@@ -14,6 +14,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
@@ -37,27 +38,15 @@ public class DatabaseBankHelperTest {
     }
 
     @Test
-    public void unpackDatabaseFromDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
+    public void unpackDatabaseFromDirectory_whenNoTargetDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
         // GIVEN
         String databaseDirectory = new File(thisClass.getResource("/db/full/DB.bnk").toURI()).getParent();
 
-        Mockito
-                .doAnswer((invocation) -> {
-                    String bankFileName = (String) invocation.getArguments()[0];
-                    String outputDirectory = (String) invocation.getArguments()[1];
-
-                    String bankShortFileName = Paths.get(bankFileName).getFileName().toString();
-                    Files.createDirectory(Paths.get(outputDirectory, bankShortFileName));
-                    Files.createFile(Paths.get(outputDirectory, "original-" + bankShortFileName));
-
-                    return invocation;
-                })
-
-                .when(bankSupportMock).extractAll(anyString(), anyString());
+        mockBankSupportToExtract();
 
 
         // WHEN
-        String actualDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseDirectory, bankSupportMock);
+        String actualDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseDirectory, Optional.<String>empty(), bankSupportMock);
 
 
         // THEN
@@ -76,10 +65,33 @@ public class DatabaseBankHelperTest {
                 });
     }
 
+    @Test
+    public void unpackDatabaseFromDirectory_whenTargetDirectory_shouldCopyOriginalBankFiles() throws IOException, URISyntaxException {
+        // GIVEN
+        String tempDir = createTempDirectory();
+        String databaseDirectory = new File(thisClass.getResource("/db/full/DB.bnk").toURI()).getParent();
+
+        mockBankSupportToExtract();
+
+
+        // WHEN
+        String actualDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseDirectory, Optional.of(tempDir), bankSupportMock);
+
+
+        // THEN
+        System.out.println("Using temporary target directory: " + tempDir);
+
+        assertThat(actualDirectory).isNotNull();
+
+        DatabaseBankHelper.getDatabaseBankFileNames()
+
+                .forEach((bankFileName) -> assertThat(new File(tempDir, "original-" + bankFileName)).exists());
+    }
+
     @Test(expected = NullPointerException.class)
     public void unpackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() throws IOException {
         // GIVEN-WHEN
-        DatabaseBankHelper.unpackDatabaseFromDirectory(null, null);
+        DatabaseBankHelper.unpackDatabaseFromDirectory(null, Optional.<String>empty(), null);
 
         // THEN: NPE
     }
@@ -119,5 +131,25 @@ public class DatabaseBankHelperTest {
         // THEN
         String[] expectedFileNames = {"DB.bnk", "DB_CH.bnk", "DB_FR.bnk", "DB_GE.bnk", "DB_IT.bnk", "DB_JA.bnk", "DB_KO.bnk", "DB_SP.bnk", "DB_US.bnk"};
         assertThat(actualFileNames).containsOnly(expectedFileNames);
+    }
+
+    private void mockBankSupportToExtract() throws IOException {
+        Mockito
+                .doAnswer((invocation) -> {
+                    String bankFileName = (String) invocation.getArguments()[0];
+                    String outputDirectory = (String) invocation.getArguments()[1];
+
+                    String bankShortFileName = Paths.get(bankFileName).getFileName().toString();
+                    Files.createDirectory(Paths.get(outputDirectory, bankShortFileName));
+                    Files.createFile(Paths.get(outputDirectory, "original-" + bankShortFileName));
+
+                    return invocation;
+                })
+
+                .when(bankSupportMock).extractAll(anyString(), anyString());
+    }
+
+    private static String createTempDirectory() throws IOException {
+        return Files.createTempDirectory("libUnlimited-tests").toString();
     }
 }
