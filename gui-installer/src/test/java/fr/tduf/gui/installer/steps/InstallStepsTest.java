@@ -35,7 +35,7 @@ public class InstallStepsTest {
 
     @Before
     public void setUp() throws IOException {
-        tempDirectory = Files.createTempDirectory("guiInstaller-tests").toString();
+        tempDirectory = createTempDirectory();
 
         prepareTduDirectoryLayout();
     }
@@ -85,20 +85,18 @@ public class InstallStepsTest {
     }
 
     @Test
-    public void unpackDatabaseToJson() throws IOException, URISyntaxException {
+    public void unpackDatabaseToJson_shouldCallBankSupportComponent() throws IOException, URISyntaxException {
         // GIVEN
         createFakeDatabase();
 
-        String assetsDirectory = new File(thisClass.getResource("/assets-patch-only").toURI()).getAbsolutePath();
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)
                 .usingBankSupport(bankSupportMock)
-                .withAssetsDirectory(assetsDirectory)
                 .build();
 
 
         // WHEN
-        List<String> actualJsonFiles = InstallSteps.unpackDatabaseToJson(configuration);
+        List<String> actualJsonFiles = InstallSteps.unpackDatabaseToJson(configuration, createTempDirectory());
 
 
         // THEN
@@ -116,6 +114,27 @@ public class InstallStepsTest {
         verifyNoMoreInteractions(bankSupportMock);
 
         assertThat(actualJsonFiles).isEmpty();
+    }
+
+    @Test
+    public void applyPatches_() throws URISyntaxException, IOException {
+        // GIVEN
+        String jsonDatabaseDirectory = createTempDirectory();
+
+        String assetsDirectory = new File(thisClass.getResource("/assets-patch-only").toURI()).getAbsolutePath();
+        InstallerConfiguration configuration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tempDirectory)
+                .withAssetsDirectory(assetsDirectory)
+                .build();
+
+
+        // WHEN
+        InstallSteps.applyPatches(configuration, jsonDatabaseDirectory);
+
+
+        // THEN
+
+
     }
 
     private void prepareTduDirectoryLayout() throws IOException {
@@ -157,5 +176,9 @@ public class InstallStepsTest {
         Files.createFile(databaseBanksPath.resolve("DB_JA.bnk"));
         Files.createFile(databaseBanksPath.resolve("DB_SP.bnk"));
         Files.createFile(databaseBanksPath.resolve("DB_US.bnk"));
+    }
+
+    private static String createTempDirectory() throws IOException {
+        return Files.createTempDirectory("guiInstaller-tests").toString();
     }
 }

@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.steps;
 
+import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
@@ -11,6 +12,7 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,20 +83,21 @@ public class InstallSteps {
     public static void updateDatabaseStep(InstallerConfiguration configuration) throws IOException {
         System.out.println("Entering step: Update Database");
 
-        unpackDatabaseToJson(configuration);
+        String jsonDatabaseDirectory = Files.createTempDirectory("guiInstaller").toString();
 
-//        applyPatches();
-//
+        unpackDatabaseToJson(configuration, jsonDatabaseDirectory);
+
+        applyPatches(configuration, jsonDatabaseDirectory);
+
 //        repackDatabase();
     }
 
-    static List<String> unpackDatabaseToJson(InstallerConfiguration configuration) throws IOException {
+    static List<String> unpackDatabaseToJson(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException {
         Path banksPath = Paths.get(getTduBanksDirectory(configuration));
         Path databasePath = banksPath.resolve("Database");
 
         System.out.println("Unpacking TDU database: " + databasePath);
 
-        String jsonDatabaseDirectory = Files.createTempDirectory("guiInstaller").toString();
         String unpackedDatabaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databasePath.toString(), Optional.of(jsonDatabaseDirectory), configuration.getBankSupport());
 
         System.out.println("Unpacked TDU database directory: " + unpackedDatabaseDirectory);
@@ -106,13 +109,30 @@ public class InstallSteps {
         return jsonFiles;
     }
 
+    static void applyPatches(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException {
+        System.out.println("Loading JSON database: " + jsonDatabaseDirectory);
+
+        Path patchPath = Paths.get(configuration.getAssetsDirectory(), InstallerConstants.DIRECTORY_DATABASE);
+
+        Files.walk(patchPath, 1)
+
+                .filter((path) -> Files.isRegularFile(path))
+
+                // TODO use json extension constant (from DatabaseReadWriteHelper, make it public)
+                .filter((path) -> "json".equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+
+                .sorted(Comparator.<Path>naturalOrder())
+
+                .forEach(InstallSteps::applyPatch);
+    }
+
     private static void copyAssets(String assetName, String assetsDirectory, String banksDirectory) throws IOException {
         System.out.println("Copying assets: " + assetName) ;
 
         Path assetPath = Paths.get(assetsDirectory, assetName);
         Path targetPath = getTargetPath(assetName, banksDirectory);
 
-        Files.walk(assetPath, 2, FileVisitOption.FOLLOW_LINKS)
+        Files.walk(assetPath, 2)
 
                 .filter((path) -> Files.isRegularFile(path))
 
@@ -180,6 +200,11 @@ public class InstallSteps {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void applyPatch(Path patchPath) {
+        System.out.println("*> Now applying patch: " + patchPath);
+
     }
 
 }
