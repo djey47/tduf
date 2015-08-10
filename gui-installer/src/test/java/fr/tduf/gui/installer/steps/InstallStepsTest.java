@@ -64,6 +64,22 @@ public class InstallStepsTest {
     }
 
     @Test
+    public void updateMagicMapStep_whenMapFilesExists_andNewFiles_shouldUpdateMap() throws IOException {
+        // GIVEN
+        InstallerConfiguration configuration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tempDirectory)
+                .build();
+
+        // WHEN
+        InstallSteps.updateMagicMapStep(configuration);
+
+        // THEN
+        File actualMagicMapFile = Paths.get(tempDirectory, "Euro", "Bnk", "Bnk1.map").toFile();
+        File expectedMagicMapFile = new File(thisClass.getResource("/banks/Bnk1-enhanced.map").getFile());
+        assertThat(actualMagicMapFile).hasContentEqualTo(expectedMagicMapFile);
+    }
+
+    @Test
     public void unpackDatabaseToJson() throws IOException, URISyntaxException {
         // GIVEN
         createFakeDatabase();
@@ -84,20 +100,29 @@ public class InstallStepsTest {
     }
 
     private void prepareTduDirectoryLayout() throws IOException {
-        Path vehicleBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules");
+        Path banksPath = Paths.get(tempDirectory, "Euro", "Bnk");
+
+        Path vehicleBanksPath = banksPath.resolve("Vehicules");
         FilesHelper.createDirectoryIfNotExists(vehicleBanksPath.toString());
 
-        Path rimBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules", "Rim");
+        Path rimBanksPath = vehicleBanksPath.resolve("Rim");
         FilesHelper.createDirectoryIfNotExists(rimBanksPath.toString());
 
-        Path lowGaugesBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "FrontEnd", "LowRes", "Gauges");
+        Path frontEndPath = banksPath.resolve("FrontEnd");
+        Path lowGaugesBanksPath = frontEndPath.resolve("LowRes").resolve("Gauges");
         FilesHelper.createDirectoryIfNotExists(lowGaugesBanksPath.toString());
-
-        Path highGaugesBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "FrontEnd", "HiRes", "Gauges");
+        Path highGaugesBanksPath = frontEndPath.resolve("HiRes").resolve("Gauges");
         FilesHelper.createDirectoryIfNotExists(highGaugesBanksPath.toString());
 
-        Path soundBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "Sound", "Vehicules");
+        Path soundBanksPath = banksPath.resolve("Sound").resolve("Vehicules");
         FilesHelper.createDirectoryIfNotExists(soundBanksPath.toString());
+
+        Path magicMapPath = Paths.get(thisClass.getResource("/banks/Bnk1.map").getFile());
+        Files.copy(magicMapPath, banksPath.resolve(magicMapPath.getFileName()));
+
+        Files.createFile(banksPath.resolve("test1.bnk"));
+        Files.createFile(banksPath.resolve("test2.bnk"));
+        Files.createFile(banksPath.resolve("test3.bnk"));
     }
 
     private void createFakeDatabase() throws IOException {
