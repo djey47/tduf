@@ -8,6 +8,7 @@ import fr.tduf.libunlimited.high.files.banks.mapping.helper.MagicMapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import fr.tduf.libunlimited.low.files.db.rw.JsonGateway;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static fr.tduf.gui.installer.common.InstallerConstants.*;
+import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.util.Arrays.asList;
 
 /**
@@ -118,8 +120,7 @@ public class InstallSteps {
 
                 .filter((path) -> Files.isRegularFile(path))
 
-                // TODO use json extension constant (from DatabaseReadWriteHelper, make it public)
-                .filter((path) -> "json".equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+                .filter((path) -> EXTENSION_JSON.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
 
                 .sorted(Comparator.<Path>naturalOrder())
 
