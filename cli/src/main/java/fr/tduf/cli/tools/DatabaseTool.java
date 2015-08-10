@@ -46,6 +46,7 @@ import java.nio.file.*;
 import java.util.*;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
+import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -278,11 +279,11 @@ public class DatabaseTool extends GenericTool {
     }
 
     private void convertPatch() throws IOException, SAXException, ParserConfigurationException, URISyntaxException, TransformerException {
-        boolean tdufSource = com.google.common.io.Files.getFileExtension(this.patchFile).equalsIgnoreCase("json");
+        boolean tdufSource = EXTENSION_JSON.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(this.patchFile));
 
         Path patchPath = Paths.get(this.patchFile);
 
-        String outputExtension = tdufSource ? "pch" : "json";
+        String outputExtension = tdufSource ? "pch" : EXTENSION_JSON;
         String outputPatchFile = Paths.get(patchPath.getParent().toString(), com.google.common.io.Files.getNameWithoutExtension(this.patchFile) + "." + outputExtension).toString();
 
         outLine("-> Source patch file: " + this.patchFile);

@@ -23,8 +23,8 @@ import static java.util.stream.Collectors.toList;
 public class DatabaseReadWriteHelper {
 
     public static final String EXTENSION_DB_CONTENTS = "db";
+    public static final String EXTENSION_JSON = "json";
 
-    private static final String EXTENSION_JSON = "json";
     private static final String ENCODING_UTF_8 = "UTF-8";
     private static final String ENCODING_UTF_16 = "UTF-16";
 
