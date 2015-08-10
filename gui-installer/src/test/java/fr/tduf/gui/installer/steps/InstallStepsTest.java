@@ -15,11 +15,11 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -98,7 +98,7 @@ public class InstallStepsTest {
 
 
         // WHEN
-        InstallSteps.unpackDatabaseToJson(configuration);
+        List<String> actualJsonFiles = InstallSteps.unpackDatabaseToJson(configuration);
 
 
         // THEN
@@ -115,7 +115,7 @@ public class InstallStepsTest {
         verify(bankSupportMock).extractAll(eq(databasePath.resolve("DB_JA.bnk").toString()), anyString());
         verifyNoMoreInteractions(bankSupportMock);
 
-
+        assertThat(actualJsonFiles).isEmpty();
     }
 
     private void prepareTduDirectoryLayout() throws IOException {

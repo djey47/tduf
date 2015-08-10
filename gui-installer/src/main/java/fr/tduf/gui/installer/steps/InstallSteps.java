@@ -5,10 +5,13 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.banks.mapping.helper.MagicMapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
+import fr.tduf.libunlimited.low.files.db.rw.JsonGateway;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static fr.tduf.gui.installer.common.InstallerConstants.*;
@@ -85,7 +88,7 @@ public class InstallSteps {
 //        repackDatabase();
     }
 
-    static void unpackDatabaseToJson(InstallerConfiguration configuration) throws IOException {
+    static List<String> unpackDatabaseToJson(InstallerConfiguration configuration) throws IOException {
         Path banksPath = Paths.get(getTduBanksDirectory(configuration));
         Path databasePath = banksPath.resolve("Database");
 
@@ -95,8 +98,12 @@ public class InstallSteps {
         String unpackedDatabaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databasePath.toString(), Optional.of(jsonDatabaseDirectory), configuration.getBankSupport());
 
         System.out.println("Unpacked TDU database directory: " + unpackedDatabaseDirectory);
+
+        List<String> jsonFiles = JsonGateway.dump(unpackedDatabaseDirectory, jsonDatabaseDirectory, false, new ArrayList<>());
+
         System.out.println("Prepared JSON database directory: " + jsonDatabaseDirectory);
 
+        return jsonFiles;
     }
 
     private static void copyAssets(String assetName, String assetsDirectory, String banksDirectory) throws IOException {
