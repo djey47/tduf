@@ -199,7 +199,7 @@ project(':gui-installer') {
         classpath sourceSets.main.runtimeClasspath
     }
 
-    task packInstaller(dependsOn: ['cleanInstallerPackDir', 'copyVersionInfo', 'copyInstallerDoc', 'copyInstallerAssets', 'copyInstallerScript', 'copyInstallerJar'], type: Zip) {
+    task packInstaller(dependsOn: ['cleanInstallerPackDir', 'copyVersionInfo', 'copyInstallerDoc', 'copyInstallerAssets', 'copyInstallerScript', 'copyExternalTools', 'copyInstallerJar'], type: Zip) {
         description 'Zips all distribution files from pack folder.'
 
         archiveName project.name + "-" + project.version + ".zip"
@@ -242,6 +242,14 @@ project(':gui-installer') {
         from 'src/main/shell/'
         include '*.cmd'
         into 'pack'
+    }
+
+    task copyExternalTools(type: Copy) {
+        description 'Copies all external tools to release directory.'
+        mustRunAfter 'cleanInstallerPackDir'
+
+        from '../tools'
+        into 'pack/tools'
     }
 
     task copyVersionInfo(type: Copy) {
