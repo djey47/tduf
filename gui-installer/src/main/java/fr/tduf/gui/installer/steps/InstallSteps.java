@@ -5,13 +5,21 @@ import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.banks.mapping.helper.MagicMapHelper;
+import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
+import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.JsonGateway;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -30,14 +38,26 @@ public class InstallSteps {
      * Entry point for full install
      * @param configuration : settings to install required mod.
      */
-    public static void install(InstallerConfiguration configuration) throws IOException {
-        // TODO check for errors
+    public static void install(InstallerConfiguration configuration) {
+        // TODO handle exceptions
 
-        copyFilesStep(configuration);
+        try {
+            copyFilesStep(configuration);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+        }
 
-        updateMagicMapStep(configuration);
+        try {
+            updateMagicMapStep(configuration);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
 
-        updateDatabaseStep(configuration);
+        try {
+            updateDatabaseStep(configuration);
+        } catch (IOException | ReflectiveOperationException ioe) {
+            ioe.printStackTrace();
+        }
     }
 
     /**
@@ -52,8 +72,8 @@ public class InstallSteps {
                 .forEach((asset) -> {
                     try {
                         InstallSteps.copyAssets(asset, configuration.getAssetsDirectory(), banksDirectory);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } catch (IOException ioe) {
+                        throw new RuntimeException("Unable to perform copy step", ioe);
                     }
                 });
     }
@@ -82,16 +102,18 @@ public class InstallSteps {
     /**
      * @param configuration : settings to perform current step
      */
-    public static void updateDatabaseStep(InstallerConfiguration configuration) throws IOException {
+    public static void updateDatabaseStep(InstallerConfiguration configuration) throws IOException, ReflectiveOperationException {
         System.out.println("Entering step: Update Database");
 
         String jsonDatabaseDirectory = Files.createTempDirectory("guiInstaller").toString();
 
+        // TODO check if all files have been created
         unpackDatabaseToJson(configuration, jsonDatabaseDirectory);
 
+        // TODO check if all files have been written
         applyPatches(configuration, jsonDatabaseDirectory);
 
-//        repackDatabase();
+//        repackJsonDatabase();
     }
 
     static List<String> unpackDatabaseToJson(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException {
@@ -111,8 +133,11 @@ public class InstallSteps {
         return jsonFiles;
     }
 
-    static void applyPatches(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException {
+    static List<String> applyPatches(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException, ReflectiveOperationException {
         System.out.println("Loading JSON database: " + jsonDatabaseDirectory);
+
+        List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseDirectory);
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects);
 
         Path patchPath = Paths.get(configuration.getAssetsDirectory(), InstallerConstants.DIRECTORY_DATABASE);
 
@@ -124,7 +149,17 @@ public class InstallSteps {
 
                 .sorted(Comparator.<Path>naturalOrder())
 
-                .forEach(InstallSteps::applyPatch);
+                .forEach((patch) -> {
+                    try {
+                        applyPatch(patch, patcher);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+        System.out.println("Saving JSON database: " + jsonDatabaseDirectory);
+
+        return DatabaseReadWriteHelper.writeDatabaseTopicsToJson(allTopicObjects, jsonDatabaseDirectory);
     }
 
     private static void copyAssets(String assetName, String assetsDirectory, String banksDirectory) throws IOException {
@@ -203,9 +238,10 @@ public class InstallSteps {
         }
     }
 
-    private static void applyPatch(Path patchPath) {
+    private static void applyPatch(Path patchPath, DatabasePatcher patcher) throws IOException {
         System.out.println("*> Now applying patch: " + patchPath);
 
+        DbPatchDto patchObject = new ObjectMapper().readValue(patchPath.toFile(), DbPatchDto.class);
+        patcher.apply(patchObject);
     }
-
 }

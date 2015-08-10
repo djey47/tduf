@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -117,9 +118,9 @@ public class InstallStepsTest {
     }
 
     @Test
-    public void applyPatches_() throws URISyntaxException, IOException {
+    public void applyPatches_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException {
         // GIVEN
-        String jsonDatabaseDirectory = createTempDirectory();
+        String jsonDatabaseDirectory = createJsonDatabase();
 
         String assetsDirectory = new File(thisClass.getResource("/assets-patch-only").toURI()).getAbsolutePath();
         InstallerConfiguration configuration = InstallerConfiguration.builder()
@@ -133,8 +134,6 @@ public class InstallStepsTest {
 
 
         // THEN
-
-
     }
 
     private void prepareTduDirectoryLayout() throws IOException {
@@ -176,6 +175,28 @@ public class InstallStepsTest {
         Files.createFile(databaseBanksPath.resolve("DB_JA.bnk"));
         Files.createFile(databaseBanksPath.resolve("DB_SP.bnk"));
         Files.createFile(databaseBanksPath.resolve("DB_US.bnk"));
+    }
+
+    private String createJsonDatabase() throws IOException {
+        String jsonDatabaseDirectory = createTempDirectory();
+
+        Path jsonDatabasePath = Paths.get(thisClass.getResource("/db-json").getFile());
+        Files.walk(jsonDatabasePath)
+
+                .filter((path) -> !Files.isDirectory(path))
+
+                .filter((path) -> EXTENSION_JSON.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+
+                .forEach((path) -> {
+                    try {
+                        Files.copy(path, Paths.get(jsonDatabaseDirectory).resolve(path.getFileName()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+
+        return jsonDatabaseDirectory;
     }
 
     private static String createTempDirectory() throws IOException {
