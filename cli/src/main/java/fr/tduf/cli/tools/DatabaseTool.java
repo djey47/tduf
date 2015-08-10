@@ -18,6 +18,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
+import fr.tduf.libunlimited.low.files.db.rw.JsonGateway;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
@@ -356,37 +357,14 @@ public class DatabaseTool extends GenericTool {
     }
 
     private void dump(String databaseDirectory) throws IOException {
-        FilesHelper.createDirectoryIfNotExists(this.jsonDirectory);
+        FilesHelper.createDirectoryIfNotExists(jsonDirectory);
 
         outLine("-> Source directory: " + databaseDirectory);
         outLine("Dumping TDU database to JSON, please wait...");
         outLine();
 
-        List<String> writtenFileNames = new ArrayList<>();
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
-        for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
-            outLine("-> Now processing topic: " + currentTopic + "...");
-
-            Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, databaseDirectory, this.withClearContents, new ArrayList<>());
-            if (!potentialDbDto.isPresent()) {
-                outLine("  !Database contents not found for topic " + currentTopic + ", skipping...");
-                outLine();
-
-                missingTopicContents.add(currentTopic);
-
-                continue;
-            }
-
-            DatabaseReadWriteHelper.writeDatabaseTopicToJson(potentialDbDto.get(), this.jsonDirectory)
-
-                    .ifPresent((writtenFileName) -> {
-                        outLine("Writing done for topic: " + currentTopic);
-                        outLine("-> " + writtenFileName);
-                        outLine();
-
-                        writtenFileNames.add(writtenFileName);
-                    });
-        }
+        List<String> writtenFileNames = JsonGateway.dump(databaseDirectory, jsonDirectory, withClearContents, missingTopicContents);
 
         outLine("All done!");
 
