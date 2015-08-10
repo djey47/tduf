@@ -9,6 +9,7 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.Optional;
 
 import static fr.tduf.gui.installer.common.InstallerConstants.*;
 import static java.util.Arrays.asList;
@@ -90,9 +91,11 @@ public class InstallSteps {
 
         System.out.println("Unpacking TDU database: " + databasePath);
 
-        String unpackedDatabaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databasePath.toString(), configuration.getBankSupport());
+        String jsonDatabaseDirectory = Files.createTempDirectory("guiInstaller").toString();
+        String unpackedDatabaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databasePath.toString(), Optional.of(jsonDatabaseDirectory), configuration.getBankSupport());
 
         System.out.println("Unpacked TDU database directory: " + unpackedDatabaseDirectory);
+        System.out.println("Prepared JSON database directory: " + jsonDatabaseDirectory);
 
     }
 
