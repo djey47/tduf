@@ -136,6 +136,23 @@ public class InstallStepsTest {
         // THEN
     }
 
+    @Test
+    public void repackJsonDatabase_() throws IOException {
+        // GIVEN
+        String jsonDatabaseDirectory = createJsonDatabase();
+
+        InstallerConfiguration configuration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tempDirectory)
+                .build();
+
+
+        // WHEN
+        InstallSteps.repackJsonDatabase(configuration, jsonDatabaseDirectory);
+
+
+        // THEN
+    }
+
     private void prepareTduDirectoryLayout() throws IOException {
         Path banksPath = Paths.get(tempDirectory, "Euro", "Bnk");
 

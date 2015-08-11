@@ -113,7 +113,8 @@ public class InstallSteps {
         // TODO check if all files have been written
         applyPatches(configuration, jsonDatabaseDirectory);
 
-//        repackJsonDatabase();
+        // TODO check if all BNK files present
+        repackJsonDatabase(configuration, jsonDatabaseDirectory);
     }
 
     static List<String> unpackDatabaseToJson(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException {
@@ -160,6 +161,11 @@ public class InstallSteps {
         System.out.println("Saving JSON database: " + jsonDatabaseDirectory);
 
         return DatabaseReadWriteHelper.writeDatabaseTopicsToJson(allTopicObjects, jsonDatabaseDirectory);
+    }
+
+    static void repackJsonDatabase(InstallerConfiguration configuration, String jsonDatabaseDirectory) {
+        System.out.println("Converting JSON database: " + jsonDatabaseDirectory);
+
     }
 
     private static void copyAssets(String assetName, String assetsDirectory, String banksDirectory) throws IOException {
