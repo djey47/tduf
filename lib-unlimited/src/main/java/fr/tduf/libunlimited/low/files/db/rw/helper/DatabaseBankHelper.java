@@ -59,19 +59,28 @@ public class DatabaseBankHelper {
 
     /**
      * Repacks all TDU database files from specified directory to target location.
-     *
-     * @param databaseDirectory : directory containing ALL database files under extracted form.
-     * @param targetDirectory   : directory where to place generated BNK files
-     * @param bankSupport       : module instance to unpack/repack bnks
+     * Optionally, copies original bank files from specified location to source cirectory (extractedDatabaseDirectory).
+     * @param extractedDatabaseDirectory    : directory containing ALL database files under extracted form
+     * @param targetDirectory               : directory where to place generated BNK files
+     * @param originalBanksDirectory        : directory where original bank files are kept, if provided
+     * @param bankSupport                   : module instance to unpack/repack bnks
      */
-    public static void repackDatabaseFromDirectory(String databaseDirectory, String targetDirectory, BankSupport bankSupport) {
-        requireNonNull(databaseDirectory, "A database directory is required.");
+    public static void repackDatabaseFromDirectory(String extractedDatabaseDirectory, String targetDirectory, Optional<String> originalBanksDirectory, BankSupport bankSupport) {
+        requireNonNull(extractedDatabaseDirectory, "A database directory is required.");
         requireNonNull(targetDirectory, "A target directory is required.");
         requireNonNull(bankSupport, "A module instance for bank support is required.");
 
+        originalBanksDirectory.ifPresent((directory) -> {
+            try {
+                copyOriginalBankFilesToTargetDirectory(directory, extractedDatabaseDirectory);
+            } catch (IOException ioe) {
+                throw new RuntimeException("Unsable to copy orginal bank files to target directory.", ioe);
+            }
+        });
+
         getDatabaseBankFileNames()
 
-                .forEach((targetBankFileName) -> rebuildFileStructureAndRepackDatabase(databaseDirectory, targetDirectory, targetBankFileName, bankSupport));
+                .forEach((targetBankFileName) -> rebuildFileStructureAndRepackDatabase(extractedDatabaseDirectory, targetDirectory, targetBankFileName, bankSupport));
     }
 
     static List<String> getDatabaseBankFileNames() {
@@ -198,7 +207,7 @@ public class DatabaseBankHelper {
                 .forEach((filePath) -> {
                     try {
                         FilesHelper.createDirectoryIfNotExists(targetDirectory);
-                        Files.copy(filePath, Paths.get(targetDirectory, filePath.getFileName().toString()));
+                        Files.copy(filePath, Paths.get(targetDirectory, filePath.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
                     } catch (IOException ioe) {
                         throw new RuntimeException("Unable to copy original bank files to target directory.", ioe);
                     }
