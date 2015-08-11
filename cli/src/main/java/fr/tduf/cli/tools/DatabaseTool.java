@@ -17,8 +17,8 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 import fr.tduf.libunlimited.low.files.db.rw.JsonGateway;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
@@ -373,28 +373,14 @@ public class DatabaseTool extends GenericTool {
     }
 
     private void gen() throws IOException {
-        FilesHelper.createDirectoryIfNotExists(this.databaseDirectory);
+        FilesHelper.createDirectoryIfNotExists(databaseDirectory);
 
-        outLine("-> Source directory: " + this.jsonDirectory);
+        outLine("-> Source directory: " + jsonDirectory);
         outLine("Generating TDU database from JSON, please wait...");
         outLine();
 
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
-        List<String> writtenFileNames = new ArrayList<>();
-        for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
-            outLine("-> Now processing topic: " + currentTopic + "...");
-
-            Optional<DbDto> dbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(currentTopic, this.jsonDirectory);
-
-            if (dbDto.isPresent()) {
-                writtenFileNames.addAll(writeDatabaseTopic(dbDto.get(), this.databaseDirectory));
-            } else {
-                outLine("  !Database contents not found for topic " + currentTopic + ", skipping...");
-                outLine();
-
-                missingTopicContents.add(currentTopic);
-            }
-        }
+        List<String> writtenFileNames = JsonGateway.gen(jsonDirectory, databaseDirectory, withClearContents, missingTopicContents);
 
         outLine("All done!");
 
@@ -447,7 +433,12 @@ public class DatabaseTool extends GenericTool {
             for (DbDto databaseObject : fixedDatabaseObjects) {
                 outLine("-> Now processing topic: " + databaseObject.getTopic() + "...");
 
-                writeDatabaseTopic(databaseObject, this.outputDatabaseDirectory);
+                List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabaseTopic(databaseObject, this.outputDatabaseDirectory, this.withClearContents);
+
+                outLine("Writing done for topic: " + databaseObject.getTopic());
+                writtenFiles.stream()
+                        .forEach((fileName) -> outLine("-> " + fileName));
+                outLine();
             }
 
             if (!remainingIntegrityErrors.isEmpty()) {
@@ -569,17 +560,6 @@ public class DatabaseTool extends GenericTool {
         }
 
         return allDtos;
-    }
-
-    private List<String> writeDatabaseTopic(DbDto dbDto, String outputDatabaseDirectory) throws IOException {
-        List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabaseTopic(dbDto, outputDatabaseDirectory, this.withClearContents);
-
-        outLine("Writing done for topic: " + dbDto.getTopic());
-        writtenFiles.stream()
-                .forEach((fileName) -> outLine("-> " + fileName));
-        outLine();
-
-        return writtenFiles;
     }
 
     private void printIntegrityErrors(List<IntegrityError> integrityErrors) {
