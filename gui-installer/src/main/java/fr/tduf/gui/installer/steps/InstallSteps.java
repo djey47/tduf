@@ -134,11 +134,6 @@ public class InstallSteps {
         return jsonFiles;
     }
 
-    private static String getTduDatabaseDirectory(InstallerConfiguration configuration) {
-        Path banksPath = Paths.get(getTduBanksDirectory(configuration));
-        return banksPath.resolve("Database").toString();
-    }
-
     static List<String> applyPatches(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException, ReflectiveOperationException {
         System.out.println("Loading JSON database: " + jsonDatabaseDirectory);
 
@@ -179,9 +174,14 @@ public class InstallSteps {
 
         String databaseDirectory = getTduDatabaseDirectory(configuration);
 
-        DatabaseBankHelper.repackDatabaseFromDirectory(extractedDatabaseDirectory, databaseDirectory, configuration.getBankSupport());
+        DatabaseBankHelper.repackDatabaseFromDirectory(extractedDatabaseDirectory, databaseDirectory, Optional.of(jsonDatabaseDirectory), configuration.getBankSupport());
 
         System.out.println("Repacked database: " + extractedDatabaseDirectory + " to " + databaseDirectory);
+    }
+
+    private static String getTduDatabaseDirectory(InstallerConfiguration configuration) {
+        Path banksPath = Paths.get(getTduBanksDirectory(configuration));
+        return banksPath.resolve("Database").toString();
     }
 
     private static void copyAssets(String assetName, String assetsDirectory, String banksDirectory) throws IOException {
