@@ -114,7 +114,6 @@ public class InstallSteps {
         // TODO check if all files have been written
         applyPatches(configuration, jsonDatabaseDirectory);
 
-        // TODO check if all BNK files present
         repackJsonDatabase(configuration, jsonDatabaseDirectory);
     }
 
