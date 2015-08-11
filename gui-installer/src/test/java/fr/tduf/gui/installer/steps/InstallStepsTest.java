@@ -101,7 +101,7 @@ public class InstallStepsTest {
 
 
         // THEN
-        Path databasePath = Paths.get(tempDirectory).resolve("Euro").resolve("Bnk").resolve("Database");
+        Path databasePath = getTduDatabasePath();
 
         verify(bankSupportMock).extractAll(eq(databasePath.resolve("DB.bnk").toString()), anyString());
         verify(bankSupportMock).extractAll(eq(databasePath.resolve("DB_CH.bnk").toString()), anyString());
@@ -137,7 +137,7 @@ public class InstallStepsTest {
     }
 
     @Test
-    public void repackJsonDatabase_() throws IOException {
+    public void repackJsonDatabase_shouldCallBankSupportComponent() throws IOException {
         // GIVEN
         createFakeDatabase();
 
@@ -154,6 +154,28 @@ public class InstallStepsTest {
 
 
         // THEN
+        Path databasePath = getTduDatabasePath();
+
+        verify(bankSupportMock).preparePackAll(anyString(), eq("DB.bnk"));
+        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_CH.bnk"));
+        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_FR.bnk"));
+        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_GE.bnk"));
+        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_IT.bnk"));
+        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_JA.bnk"));
+        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_KO.bnk"));
+        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_SP.bnk"));
+        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_US.bnk"));
+
+        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_CH.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_FR.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_GE.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_KO.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_IT.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_JA.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_SP.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_US.bnk").toString()));
+        verifyNoMoreInteractions(bankSupportMock);
     }
 
     private void prepareTduDirectoryLayout() throws IOException {
@@ -180,6 +202,10 @@ public class InstallStepsTest {
         Files.createFile(banksPath.resolve("test1.bnk"));
         Files.createFile(banksPath.resolve("test2.bnk"));
         Files.createFile(banksPath.resolve("test3.bnk"));
+    }
+
+    private Path getTduDatabasePath() {
+        return Paths.get(tempDirectory).resolve("Euro").resolve("Bnk").resolve("Database");
     }
 
     private void createFakeDatabase() throws IOException {
