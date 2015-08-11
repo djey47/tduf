@@ -42,7 +42,10 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
@@ -54,8 +57,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Command line interface for handling TDU database.
  */
-// TODO see to merge check and fix operations
-// TODO Move part of bank processing to lib (unpackAll / repackAll)
+// TODO see to merge CHECK and FIX operations
 // TODO see to remove DUMP and GEN operations when UNPACK_ALL / REPACK_ALL are ok
 public class DatabaseTool extends GenericTool {
 
@@ -148,7 +150,7 @@ public class DatabaseTool extends GenericTool {
                 check();
                 return true;
             case GEN:
-                gen();
+                gen(databaseDirectory);
                 return true;
             case FIX:
                 fix();
@@ -237,28 +239,26 @@ public class DatabaseTool extends GenericTool {
     }
 
     private void repackAll() throws IOException {
-        String sourceDirectory = Paths.get(this.jsonDirectory).toAbsolutePath().toString();
-        Path targetPath = Paths.get(this.outputDatabaseDirectory).toAbsolutePath();
+        String sourceDirectory = Paths.get(jsonDirectory).toAbsolutePath().toString();
+        Path targetPath = Paths.get(outputDatabaseDirectory).toAbsolutePath();
         outLine("-> JSON database directory: " + sourceDirectory);
         outLine("Generating TDU database files, please wait...");
 
-        this.databaseDirectory = DatabaseReadWriteHelper.createTempDirectory();
-        gen();
-
-        copyOriginalBankFilesToTargetDirectory(this.jsonDirectory, this.databaseDirectory);
+        String sourceExtractedDatabaseDirectory = DatabaseReadWriteHelper.createTempDirectory();
+        gen(sourceExtractedDatabaseDirectory);
 
         outLine("Repacking TDU database files, please wait...");
 
         Files.createDirectories(targetPath);
         String targetDirectory = targetPath.toString();
-        DatabaseBankHelper.repackDatabaseFromDirectory(this.databaseDirectory, targetDirectory, this.bankSupport);
+        DatabaseBankHelper.repackDatabaseFromDirectory(sourceExtractedDatabaseDirectory, targetDirectory, Optional.of(jsonDirectory), bankSupport);
 
         outLine("All done!");
 
-        Map<String, Object> resultInfo = (Map<String, Object>) this.commandResult;
+        Map<String, Object> resultInfo = (Map<String, Object>) commandResult;
         resultInfo.put("sourceDirectory", sourceDirectory);
         resultInfo.put("targetDirectory", targetDirectory);
-        resultInfo.put("temporaryDirectory", this.databaseDirectory);
+        resultInfo.put("temporaryDirectory", sourceExtractedDatabaseDirectory);
     }
 
     private void unpackAll() throws IOException {
@@ -372,15 +372,15 @@ public class DatabaseTool extends GenericTool {
         commandResult = resultInfo;
     }
 
-    private void gen() throws IOException {
-        FilesHelper.createDirectoryIfNotExists(databaseDirectory);
+    private void gen(String targetExtractedDatabaseDirectory) throws IOException {
+        FilesHelper.createDirectoryIfNotExists(targetExtractedDatabaseDirectory);
 
         outLine("-> Source directory: " + jsonDirectory);
         outLine("Generating TDU database from JSON, please wait...");
         outLine();
 
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
-        List<String> writtenFileNames = JsonGateway.gen(jsonDirectory, databaseDirectory, withClearContents, missingTopicContents);
+        List<String> writtenFileNames = JsonGateway.gen(jsonDirectory, targetExtractedDatabaseDirectory, withClearContents, missingTopicContents);
 
         outLine("All done!");
 
@@ -572,24 +572,6 @@ public class DatabaseTool extends GenericTool {
                         outLine("  (!)" + errorMessage);
                     });
         }
-    }
-
-    // TODO move to Helper
-    private static void copyOriginalBankFilesToTargetDirectory(String sourceDirectory, String targetDirectory) throws IOException {
-        Files.walk(Paths.get(sourceDirectory))
-
-                .filter((path) -> Files.isRegularFile(path))
-
-                .filter((filePath) -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(filePath.toString())))
-
-                        .forEach((filePath) -> {
-                            try {
-                                FilesHelper.createDirectoryIfNotExists(targetDirectory);
-                                Files.copy(filePath, Paths.get(targetDirectory, filePath.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
-                            } catch (IOException ioe) {
-                                throw new RuntimeException("Unable to copy original bank files to target directory.", ioe);
-                    }
-                });
     }
 
     private static void betweenTopicsCheck(List<DbDto> allDtos, List<IntegrityError> integrityErrors) throws ReflectiveOperationException {

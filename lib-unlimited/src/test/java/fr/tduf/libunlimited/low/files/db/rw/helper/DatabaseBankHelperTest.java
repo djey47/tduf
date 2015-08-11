@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -97,28 +98,42 @@ public class DatabaseBankHelperTest {
     }
 
     @Test
-    public void repackDatabaseFromDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
-        // GIVEN
-        String databaseDirectory = new File(thisClass.getResource("/db/full/unpacked/original-DB.bnk").toURI()).getParent();
-        String targetDirectory = this.tempDirectory;
+    public void repackDatabaseFromDirectory_whenNoOriginalBanksDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
+        // GIVEN: original banks provided in same directory
+        String databaseDirectory = thisClass.getResource("/db/full/unpacked").getFile();
+        String targetDirectory = tempDirectory;
+
+        copyOriginalBanksToDirectory(databaseDirectory);
 
 
         // WHEN
-        DatabaseBankHelper.repackDatabaseFromDirectory(databaseDirectory, targetDirectory, bankSupportMock);
+        DatabaseBankHelper.repackDatabaseFromDirectory(databaseDirectory, targetDirectory, Optional.empty(), bankSupportMock);
 
 
         // THEN
-        verify(bankSupportMock, times(9)).preparePackAll(eq(databaseDirectory), anyString());
+        verifyBankSupportCalls(databaseDirectory, targetDirectory);
+    }
 
-        verify(bankSupportMock, times(9)).packAll(anyString(), anyString());
-        verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB.bnk").toString()), eq(Paths.get(targetDirectory, "DB.bnk").toString()));
-        verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB_FR.bnk").toString()), eq(Paths.get(targetDirectory, "DB_FR.bnk").toString()));
+    @Test
+    public void repackDatabaseFromDirectory_whenOriginalBanksDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
+        // GIVEN: original banks provided in another directory
+        String originalBanksDirectory = thisClass.getResource("/db/full/original-banks").getFile();
+        String databaseDirectory = thisClass.getResource("/db/full/unpacked").getFile();
+        String targetDirectory = tempDirectory;
+
+
+        // WHEN
+        DatabaseBankHelper.repackDatabaseFromDirectory(databaseDirectory, targetDirectory, Optional.of(originalBanksDirectory), bankSupportMock);
+
+
+        // THEN
+        verifyBankSupportCalls(databaseDirectory, targetDirectory);
     }
 
     @Test(expected = NullPointerException.class)
     public void repackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() throws IOException {
         // GIVEN-WHEN
-        DatabaseBankHelper.repackDatabaseFromDirectory(null, null, null);
+        DatabaseBankHelper.repackDatabaseFromDirectory(null, null, Optional.<String>empty(), null);
 
         // THEN: NPE
     }
@@ -149,7 +164,32 @@ public class DatabaseBankHelperTest {
                 .when(bankSupportMock).extractAll(anyString(), anyString());
     }
 
+    private void verifyBankSupportCalls(String databaseDirectory, String targetDirectory) throws IOException {
+        verify(bankSupportMock, times(9)).preparePackAll(eq(databaseDirectory), anyString());
+
+        verify(bankSupportMock, times(9)).packAll(anyString(), anyString());
+        verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB.bnk").toString()), eq(Paths.get(targetDirectory, "DB.bnk").toString()));
+        verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB_FR.bnk").toString()), eq(Paths.get(targetDirectory, "DB_FR.bnk").toString()));
+    }
+
     private static String createTempDirectory() throws IOException {
         return Files.createTempDirectory("libUnlimited-tests").toString();
+    }
+
+    private static void copyOriginalBanksToDirectory(String databaseDirectory) throws IOException {
+        String originalBanksDirectory = thisClass.getResource("/db/full/original-banks").getFile();
+        Files.walk(Paths.get(originalBanksDirectory))
+
+                .filter(Files::isRegularFile)
+
+                .filter((path) -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+
+                .forEach((path) -> {
+                    try {
+                        Files.copy(path, Paths.get(databaseDirectory).resolve(path.getFileName()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 }
