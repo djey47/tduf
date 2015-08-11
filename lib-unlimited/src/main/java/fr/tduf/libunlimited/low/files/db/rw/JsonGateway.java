@@ -23,6 +23,7 @@ public class JsonGateway {
      * @param withClearContents         : if true, TDU database files are in an encrypted state, false otherwise
      * @param missingTopicContents      : a list which will contain topic whose contents can't be found.
      * @return list of written file names.
+     * @throws IOException
      */
     public static List<String> dump(String sourceDatabaseDirectory, String targetJsonDirectory, boolean withClearContents, List<DbDto.Topic> missingTopicContents) throws IOException {
         requireNonNull(missingTopicContents, "A list for missing topics is requried.");
@@ -39,6 +40,32 @@ public class JsonGateway {
             DatabaseReadWriteHelper.writeDatabaseTopicToJson(potentialDbDto.get(), targetJsonDirectory)
 
                     .ifPresent(writtenFileNames::add);
+        }
+
+        return writtenFileNames;
+    }
+
+    /**
+     * Converts JSON database to TDU extracted files.
+     * @param sourceJsonDirectory       : directory where JSON files are located
+     * @param targetDatabaseDirectory   : directory where TDU database files will be created
+     * @param withClearContents         : if true, TDU database files will be encrypted, false otherwise
+     * @param missingTopicContents      : a list which will contain topic whose contents can't be found.
+     * @throws IOException
+     */
+    public static List<String> gen(String sourceJsonDirectory, String targetDatabaseDirectory, boolean withClearContents, List<DbDto.Topic> missingTopicContents) throws IOException {
+        requireNonNull(missingTopicContents, "A list for missing topics is requried.");
+
+        List<String> writtenFileNames = new ArrayList<>();
+        for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
+
+            Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(currentTopic, sourceJsonDirectory);
+            if (!potentialDbDto.isPresent()) {
+                missingTopicContents.add(currentTopic);
+                continue;
+            }
+
+            writtenFileNames.addAll(DatabaseReadWriteHelper.writeDatabaseTopic(potentialDbDto.get(), targetDatabaseDirectory, withClearContents));
         }
 
         return writtenFileNames;
