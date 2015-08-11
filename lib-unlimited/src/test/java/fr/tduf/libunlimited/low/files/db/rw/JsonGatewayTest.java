@@ -11,4 +11,12 @@ public class JsonGatewayTest {
 
         // THEN: NPE
     }
+
+    @Test(expected = NullPointerException.class)
+    public void gen_whenNullTopicList_shouldThrowException() throws Exception {
+        // GIVEN-WHEN
+        JsonGateway.gen("", "", true, null);
+
+        // THEN: NPE
+    }
 }
