@@ -27,6 +27,7 @@ import java.util.Optional;
 
 import static fr.tduf.gui.installer.common.InstallerConstants.*;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
+import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.createTempDirectory;
 import static java.util.Arrays.asList;
 
 /**
@@ -118,12 +119,11 @@ public class InstallSteps {
     }
 
     static List<String> unpackDatabaseToJson(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException {
-        Path banksPath = Paths.get(getTduBanksDirectory(configuration));
-        Path databasePath = banksPath.resolve("Database");
+        String databaseDirectory = getTduDatabaseDirectory(configuration);
 
-        System.out.println("Unpacking TDU database: " + databasePath);
+        System.out.println("Unpacking TDU database: " + databaseDirectory);
 
-        String unpackedDatabaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databasePath.toString(), Optional.of(jsonDatabaseDirectory), configuration.getBankSupport());
+        String unpackedDatabaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseDirectory, Optional.of(jsonDatabaseDirectory), configuration.getBankSupport());
 
         System.out.println("Unpacked TDU database directory: " + unpackedDatabaseDirectory);
 
@@ -132,6 +132,11 @@ public class InstallSteps {
         System.out.println("Prepared JSON database directory: " + jsonDatabaseDirectory);
 
         return jsonFiles;
+    }
+
+    private static String getTduDatabaseDirectory(InstallerConfiguration configuration) {
+        Path banksPath = Paths.get(getTduBanksDirectory(configuration));
+        return banksPath.resolve("Database").toString();
     }
 
     static List<String> applyPatches(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException, ReflectiveOperationException {
@@ -163,9 +168,20 @@ public class InstallSteps {
         return DatabaseReadWriteHelper.writeDatabaseTopicsToJson(allTopicObjects, jsonDatabaseDirectory);
     }
 
-    static void repackJsonDatabase(InstallerConfiguration configuration, String jsonDatabaseDirectory) {
+    static void repackJsonDatabase(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException {
         System.out.println("Converting JSON database: " + jsonDatabaseDirectory);
 
+        String extractedDatabaseDirectory = createTempDirectory();
+
+        JsonGateway.gen(jsonDatabaseDirectory, extractedDatabaseDirectory, false, new ArrayList<>());
+
+        System.out.println("Converted TDU database directory: " + extractedDatabaseDirectory);
+
+        String databaseDirectory = getTduDatabaseDirectory(configuration);
+
+        DatabaseBankHelper.repackDatabaseFromDirectory(extractedDatabaseDirectory, databaseDirectory, configuration.getBankSupport());
+
+        System.out.println("Repacked database: " + extractedDatabaseDirectory + " to " + databaseDirectory);
     }
 
     private static void copyAssets(String assetName, String assetsDirectory, String banksDirectory) throws IOException {

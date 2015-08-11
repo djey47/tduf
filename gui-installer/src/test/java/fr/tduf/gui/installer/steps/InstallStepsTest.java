@@ -139,10 +139,13 @@ public class InstallStepsTest {
     @Test
     public void repackJsonDatabase_() throws IOException {
         // GIVEN
+        createFakeDatabase();
+
         String jsonDatabaseDirectory = createJsonDatabase();
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)
+                .usingBankSupport(bankSupportMock)
                 .build();
 
 
