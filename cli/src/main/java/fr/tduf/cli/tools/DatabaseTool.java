@@ -57,8 +57,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Command line interface for handling TDU database.
  */
-// TODO see to merge CHECK and FIX operations
-// TODO see to remove DUMP and GEN operations when UNPACK_ALL / REPACK_ALL are ok
 public class DatabaseTool extends GenericTool {
 
     @Option(name = "-d", aliases = "--databaseDir", usage = "TDU database directory, defaults to current directory.")
@@ -92,11 +90,8 @@ public class DatabaseTool extends GenericTool {
      * All available commands
      */
     enum Command implements CommandHelper.CommandEnum {
-        @Deprecated
         CHECK("check", "Tries to load database and display integrity errors, if any."),
-        @Deprecated
         DUMP("dump", "Writes UNPACKED full database contents to JSON files."),
-        @Deprecated
         GEN("gen", "Writes UNPACKED TDU database files from JSON files."),
         FIX("fix", "Loads database, checks for integrity errors and create database copy with fixed ones."),
         APPLY_PATCH("apply-patch", "Modifies database contents and resources as described in a JSON mini patch file."),
