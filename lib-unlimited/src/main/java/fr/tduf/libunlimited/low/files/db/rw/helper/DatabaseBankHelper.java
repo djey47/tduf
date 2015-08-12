@@ -2,7 +2,6 @@ package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
-import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.io.FileNotFoundException;
@@ -15,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.EXTENSION_BANKS;
+import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_DB_CONTENTS;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -87,9 +88,9 @@ public class DatabaseBankHelper {
 
         List<String> resourceBankFileNames = asList(DbResourceDto.Locale.values()).stream()
 
-                .map((locale) -> "DB_" + locale.getCode().toUpperCase() + ".bnk")
+                .map((locale) -> "DB_" + locale.getCode().toUpperCase() + "." + EXTENSION_BANKS)
 
-                .collect(toList());
+                        .collect(toList());
 
         List<String> databaseBankFileNames = new ArrayList<>(resourceBankFileNames);
         databaseBankFileNames.add(DATABASE_BANK_FILE_NAME);
@@ -119,7 +120,6 @@ public class DatabaseBankHelper {
 
         Path databasePath = Paths.get(databaseDirectory);
         int currentDepth = databasePath.getNameCount();
-
         Files.walk(databasePath)
 
                 .filter((path) -> path.getNameCount() == currentDepth + 1)
@@ -128,18 +128,19 @@ public class DatabaseBankHelper {
 
                 .forEach((filePath) -> {
 
+                    String fileExtension = com.google.common.io.Files.getFileExtension(filePath.toString());
                     String hierarchy = null;
                     if (targetBankFileName.equalsIgnoreCase(DATABASE_BANK_FILE_NAME)
-                            && filePath.toString().endsWith(DatabaseReadWriteHelper.EXTENSION_DB_CONTENTS)) {
+                            && EXTENSION_DB_CONTENTS.equalsIgnoreCase(fileExtension)) {
                         hierarchy = "4Build/PC/Euro/BDD/Db_encrypted";
                     } else {
-                        String locale = targetBankFileName.substring(3, 5).toLowerCase();
-                        if (filePath.toString().endsWith("." + locale)) {
+                        String locale = targetBankFileName.substring(3, 5);
+                        if (locale.equalsIgnoreCase(fileExtension)) {
                             hierarchy = "4Build/PC/Euro/BDD/Lang";
                         }
                     }
                     if (hierarchy != null) {
-                        Path fullPath = Paths.get(databaseDirectory, targetBankFileName, hierarchy, filePath.getFileName().toString());
+                        Path fullPath = Paths.get(databaseDirectory).resolve(targetBankFileName).resolve(hierarchy).resolve(filePath.getFileName());
                         try {
                             Files.createDirectories(fullPath.getParent());
                             Files.copy(filePath, fullPath, StandardCopyOption.REPLACE_EXISTING);
@@ -163,33 +164,28 @@ public class DatabaseBankHelper {
     }
 
     private static void unpackDatabaseAndGroupFiles(String databaseFileName, String targetDirectory, BankSupport bankSupport) {
-
-        String shortDatabaseFileName = Paths.get(databaseFileName).getFileName().toString();
-
         try {
             String extractedDirectory = createTempDirectory();
             bankSupport.extractAll(databaseFileName, extractedDirectory);
 
-            // TODO see if method can be modified to one single call
-            groupGeneratedFiles(extractedDirectory, targetDirectory);
-            groupGeneratedFiles(Paths.get(extractedDirectory, shortDatabaseFileName).toString(), targetDirectory);
+            groupFiles(extractedDirectory, targetDirectory);
         } catch (IOException ioe) {
             throw new RuntimeException("Unable to unpack database bank: " + databaseFileName, ioe);
         }
     }
 
-    private static void groupGeneratedFiles(String sourceDirectory, String targetDirectory) throws IOException {
+    private static void groupFiles(String sourceDirectory, String targetDirectory) throws IOException {
         try {
             Files.walk(Paths.get(sourceDirectory))
 
                     .filter((path) -> Files.isRegularFile(path))
 
-                    .forEach((originalBankFilePath) -> {
-                        String shortOriginalBankFileName = originalBankFilePath.getFileName().toString();
+                    .forEach((filePath) -> {
+                        Path shortFileName = filePath.getFileName();
                         try {
-                            Files.move(originalBankFilePath, Paths.get(targetDirectory, shortOriginalBankFileName), StandardCopyOption.REPLACE_EXISTING);
+                            Files.move(filePath, Paths.get(targetDirectory).resolve(shortFileName), StandardCopyOption.REPLACE_EXISTING);
                         } catch (IOException ioe) {
-                            throw new RuntimeException("Unable to group file: " + shortOriginalBankFileName, ioe);
+                            throw new RuntimeException("Unable to group file: " + shortFileName, ioe);
                         }
                     });
         } catch (IOException ioe) {
@@ -202,14 +198,15 @@ public class DatabaseBankHelper {
 
                 .filter((path) -> Files.isRegularFile(path))
 
-                .filter((filePath) -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(filePath.toString())))
+                .filter((filePath) -> EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(filePath.toString())))
 
                 .forEach((filePath) -> {
+                    Path shortFileName = filePath.getFileName();
                     try {
                         FilesHelper.createDirectoryIfNotExists(targetDirectory);
-                        Files.copy(filePath, Paths.get(targetDirectory, filePath.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
+                        Files.copy(filePath, Paths.get(targetDirectory).resolve(shortFileName), StandardCopyOption.REPLACE_EXISTING);
                     } catch (IOException ioe) {
-                        throw new RuntimeException("Unable to copy original bank files to target directory.", ioe);
+                        throw new RuntimeException("Unable to copy original bank file: " + shortFileName + " to target directory.", ioe);
                     }
                 });
     }
