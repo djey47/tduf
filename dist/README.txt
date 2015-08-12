@@ -1,4 +1,4 @@
-# TDUF(orever)
+# TDUF(orever) Database Editor ALPHA
 
 TDUForever aims at making Test Drive Unlmited modding easier:
 
@@ -7,17 +7,16 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Capitalizing about reverse-engineering
 * ...
 
-### What's in this version ? (ALPHA 6)
+### What's in this version ? (ALPHA 7)
 
 /!\
 Please keep in mind that it is called ALPHA for a reason, you should use it carefully as it may damage your game!
 Thus, you always ought to make a backup of your TDU database before using it!
 /!\
 
-* Introduces new feature: export current entry to TDUF Mini Patch file, when possible
-* Fix: cloned entry now gets a unique, generated REF to prevent collisions with existing entries
-* Fix: does not crash anymore when corrupted database (missing resource value for some locales)
-* Adds small UI improvements and tweaks (thanks to TDUZoqqer).
+* Introduces new feature: import TDUF Mini Patch file
+* Launcher: writes message while launching Alpha-DatabaseEditor script
+* Libray: includes internal changes and bugfixes from upcoming stable version 0.7.0.
 
 ### Main features
 
@@ -29,7 +28,8 @@ Thus, you always ought to make a backup of your TDU database before using it!
 * Displays all resources within a topic, for all languages (=locales)
 * Adds / changes / deletes / duplicates a particular entry
 * Adds / changes / deletes a resource
-* Exports current entry to many forms (classic, TDUMT).
+* Imports data from TDUF (mini-patch file)
+* Exports current entry to many forms (EDEN-classic, TDUMT, TDUF mini-patch).
 
 ### What you will need to run TDUF
 
@@ -38,29 +38,11 @@ Thus, you always ought to make a backup of your TDU database before using it!
 
 ### Running it!
 
-* Launch *TDUF.cmd* script from Windows Explorer
-* You may need to create a desktop shortcut to this file.
-
-### Using Database Editor GUI (fast mode)
-
+* Launch *TDUF.cmd* script from Windows Explorer  (you may need to create a desktop shortcut to this file)
+* (once, to check) Type and run: java -version (should answer with 'java version 1.8.xxxxxx etc')
 * Type and run: Alpha-DatabaseEditor "C:\Program Files (x86)\Test Drive Unlimited\Euro\Bnk\Database\"
 (using proper file location on your system).
 
-### Using Database Editor GUI (advanced mode)
-
-(1) Preparing your TDU database
-* Type and run: DatabaseTool unpack-all -d "C:\Program Files (x86)\Test Drive Unlimited\Euro\Bnk\Database\" -j "C:\tdudb\dump"
-(using proper file locations on your system).
-
-(2) Starting GUI
-* Type and run: DatabaseEditor
-* Type or select prepared database directory (C:\tdudb\dump in this case)
-* Click Load button and use the app.
-
-(3) Updating TDU database with changed contents
-* Click Save button and close the app
-* Type and run: DatabaseTool repack-all -o "C:\Program Files (x86)\Test Drive Unlimited\Euro\Bnk\Database\" -j "C:\tdudb\dump"
-(using proper file locations on your system).
 
 ### Using JAR library and/or CLI Tools in your projects
 
