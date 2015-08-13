@@ -41,7 +41,7 @@ public class AssertionsHelper {
         File actualContentsFile = assertFileExistAndGet(fileName);
         File expectedContentsFile = new File(thisClass.getResource(resourceDirectory + actualContentsFile.getName()).toURI());
 
-        assertThat(actualContentsFile).describedAs("File must match reference one: " + expectedContentsFile.getPath()).hasContentEqualTo(expectedContentsFile);
+        assertThat(actualContentsFile).describedAs("File must match reference one: " + expectedContentsFile.getPath()).hasSameContentAs(expectedContentsFile);
     }
 
     /**
@@ -75,7 +75,7 @@ public class AssertionsHelper {
     }
 
     /**
-     * Ensuires that specified file contents are not the same as the one from the same name in resources.
+     * Ensures that specified file contents are not the same as the one from the same name in resources.
      * @param fileName          : path and file name
      * @param resourceDirectory : directory in app resources
      * @throws URISyntaxException
@@ -92,9 +92,8 @@ public class AssertionsHelper {
 
 
     /**
-     *
-     * @param outputStream
-     * @param expected
+     * @param outputStream  : stream to analyze
+     * @param expected      : JSON contents which must be contained in stream.
      * @throws IOException
      */
     public static void assertOutputStreamContainsJsonExactly(OutputStream outputStream, String expected) throws IOException, JSONException {
@@ -103,9 +102,8 @@ public class AssertionsHelper {
     }
 
     /**
-     *
-     * @param outputStream
-     * @param expected
+     * @param outputStream  : stream to analyze
+     * @param expected      : contents which must be contained in stream.
      * @throws IOException
      */
     public static void assertOutputStreamContainsExactly(OutputStream outputStream, String expected) throws IOException {
@@ -114,9 +112,8 @@ public class AssertionsHelper {
     }
 
     /**
-     *
-     * @param outputStream
-     * @param expectedItems
+     * @param outputStream  : stream to analyze
+     * @param expectedItems : items which must be sequentially contained in stream.
      * @throws IOException
      */
     public static void assertOutputStreamContainsSequence(OutputStream outputStream, String... expectedItems) throws IOException {

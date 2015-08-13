@@ -31,10 +31,6 @@ public class FileToolIntegTest {
     private final String testRootDirectory = "integ-tests";
 
     private final String sourceFileNameToBeEncrypted = "TDU_CarColors.json";
-    private final String sourceFileNameToBeJsonified = "Brutal.btrq";
-    private final String jsonifiedFileName = "Brutal.json";
-    private final String appliedUnencryptedFileName = "Brutal.btrq.dec";
-    private final String sourceUnencryptedFileName = "Brutal.btrq.ref.dec";
 
     private final String encryptedFileName = "TDU_CarColors.json.enc";
     private final String sourceDirectoryForEncryption = Paths.get(testRootDirectory, "crypto").toString();
@@ -97,7 +93,7 @@ public class FileToolIntegTest {
         // THEN: file should exist and have same contents as original one
         File actualFile = new File(outputFile);
         assertThat(actualFile).exists();
-        assertThat(actualFile).hasContentEqualTo(new File(sourceDirectoryForEncryption, sourceFileNameToBeEncrypted));
+        assertThat(actualFile).hasSameContentAs(new File(sourceDirectoryForEncryption, sourceFileNameToBeEncrypted));
     }
 
     @Test
@@ -125,7 +121,7 @@ public class FileToolIntegTest {
         // THEN: file should exist and have same contents as original one
         File actualFile = new File(outputFile);
         assertThat(actualFile).exists();
-        assertThat(actualFile).hasContentEqualTo(new File (sourceDirectoryForEncryption, sourceFileNameToBeEncrypted));
+        assertThat(actualFile).hasSameContentAs(new File(sourceDirectoryForEncryption, sourceFileNameToBeEncrypted));
     }
 
     @Test
@@ -134,7 +130,9 @@ public class FileToolIntegTest {
         String structureFileName = Paths.get(researchDirectory, "BTRQ-map.json").toString();
 
         // GIVEN
+        String sourceFileNameToBeJsonified = "Brutal.btrq";
         String inputFile = Paths.get(researchDirectory, sourceFileNameToBeJsonified).toString();
+        String jsonifiedFileName = "Brutal.json";
         String outputFile = Paths.get(jsonifyDirectory, jsonifiedFileName).toString();
 
         // WHEN: jsonify
@@ -159,9 +157,9 @@ public class FileToolIntegTest {
 
         // GIVEN
         String inputFile1 = outputFile;
-        String outputFile1 = Paths.get(applyjsonDirectory, appliedUnencryptedFileName).toString();
         String inputFile2 = Paths.get(researchDirectory, sourceFileNameToBeJsonified).toString();
-        String outputFile2 = Paths.get(applyjsonDirectory, sourceUnencryptedFileName).toString();
+        String outputFile1 = Paths.get(applyjsonDirectory, "Brutal.btrq.dec").toString();
+        String outputFile2 = Paths.get(applyjsonDirectory, "Brutal.btrq.ref.dec").toString();
 
         // WHEN: decrypt both files
         System.out.println("-> Decrypt!");
@@ -174,7 +172,7 @@ public class FileToolIntegTest {
 
         assertThat(actualFile).exists();
         assertThat(expectedFile).exists();
-        assertThat(actualFile).hasContentEqualTo(expectedFile);
+        assertThat(actualFile).hasSameContentAs(expectedFile);
     }
 
     @Test

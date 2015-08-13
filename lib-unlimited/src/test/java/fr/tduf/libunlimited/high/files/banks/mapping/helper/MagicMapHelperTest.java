@@ -44,7 +44,7 @@ public class MagicMapHelperTest {
         assertThat(actualFiles).containsOnly("avatar/barb.bnk", "bnk1-enhanced.map", "frontend/hires/gauges/hud01.bnk", "bnk1.map", "vehicules/a3_v6.bnk");
 
         Path expectedMagicMapPath = Paths.get(thisClass.getResource("/banks/Bnk1-enhanced.map").toURI());
-        assertThat(magicMapPath.toFile()).hasContentEqualTo(expectedMagicMapPath.toFile());
+        assertThat(magicMapPath.toFile()).hasSameContentAs(expectedMagicMapPath.toFile());
     }
 
     @Test(expected = NullPointerException.class)
