@@ -24,11 +24,11 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * Utility class allowing to convert database patches between different formats (TDUF, TDUMT)
+ * Utility class allowing to convert database patches between TDUMT and TDUF systems.
  */
-public class PatchConverter {
+public class TdumtPatchConverter {
 
-    private static Class<PatchConverter> thisClass = PatchConverter.class;
+    private static Class<TdumtPatchConverter> thisClass = TdumtPatchConverter.class;
 
     private static final String XML_ELEMENT_INSTRUCTIONS = "instructions";
     private static final String XML_ELEMENT_INSTRUCTION = "instruction";

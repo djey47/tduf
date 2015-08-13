@@ -10,7 +10,7 @@ import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
-import fr.tduf.libunlimited.high.files.db.interop.PatchConverter;
+import fr.tduf.libunlimited.high.files.db.interop.TdumtPatchConverter;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
@@ -473,7 +473,7 @@ public class DatabaseTool extends GenericTool {
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         Document patchDocument = docBuilder.parse(patch);
 
-        DbPatchDto patchObject = PatchConverter.pchToJson(patchDocument);
+        DbPatchDto patchObject = TdumtPatchConverter.pchToJson(patchDocument);
 
         return jsonToString(patchObject);
     }
@@ -481,7 +481,7 @@ public class DatabaseTool extends GenericTool {
     private String convertPatchFileToXML(File patch) throws IOException, ParserConfigurationException, URISyntaxException, SAXException, TransformerException {
         DbPatchDto patchObject = new ObjectMapper().readValue(patch, DbPatchDto.class);
 
-        Document patchDocument = PatchConverter.jsonToPch(patchObject);
+        Document patchDocument = TdumtPatchConverter.jsonToPch(patchObject);
 
         String documentString = xmlDocumentToString(patchDocument);
 
