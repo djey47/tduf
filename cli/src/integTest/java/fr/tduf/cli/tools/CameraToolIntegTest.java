@@ -31,7 +31,7 @@ public class CameraToolIntegTest {
         CameraTool.main(new String[]{"copy-all-sets", "-n", "-i", inputCameraFile, "-o", outputCameraFile, "-t", "10000"});
 
         // THEN
-        assertThat(new File(outputCameraFile)).hasContentEqualTo(new File(referenceCameraFile));
+        assertThat(new File(outputCameraFile)).hasSameContentAs(new File(referenceCameraFile));
     }
 
     @Test
@@ -43,6 +43,6 @@ public class CameraToolIntegTest {
         CameraTool.main(new String[]{"copy-set", "-n", "-i", inputCameraFile, "-o", outputCameraFile, "-s", "108", "-t", "109"});
 
         // THEN
-        assertThat(new File(outputCameraFile)).hasContentEqualTo(new File(referenceCameraFile));
+        assertThat(new File(outputCameraFile)).hasSameContentAs(new File(referenceCameraFile));
     }
 }

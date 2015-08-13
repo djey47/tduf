@@ -506,7 +506,7 @@ public class BulkDatabaseMinerTest {
         OptionalLong potentialInternalId = BulkDatabaseMiner.load(topicObjects).getContentEntryInternalIdentifierWithReference("REF", DbDto.Topic.BOTS);
 
         // THEN
-        assertThat(potentialInternalId.isPresent()).isFalse();
+        assertThat(potentialInternalId).isEmpty();
     }
 
     @Test
@@ -518,7 +518,7 @@ public class BulkDatabaseMinerTest {
         OptionalLong potentialInternalId = BulkDatabaseMiner.load(topicObjects).getContentEntryInternalIdentifierWithReference("606298799", DbDto.Topic.BOTS);
 
         // THEN
-        assertThat(potentialInternalId.getAsLong()).isEqualTo(0);
+        assertThat(potentialInternalId).hasValue(0);
     }
 
     private static ArrayList<DbDto> createTopicObjectsFromResources() throws IOException, URISyntaxException {
