@@ -23,12 +23,12 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PatchConverterTest {
+public class TdumtPatchConverterTest {
 
     @Test(expected = NullPointerException.class)
     public void jsonToPch_whenNullObject_shouldThrowException() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN-WHEN
-        PatchConverter.jsonToPch(null);
+        TdumtPatchConverter.jsonToPch(null);
 
         // THEN: NPE
     }
@@ -40,7 +40,7 @@ public class PatchConverterTest {
 
 
         // WHEN
-        Document actualDocument = PatchConverter.jsonToPch(patchObject);
+        Document actualDocument = TdumtPatchConverter.jsonToPch(patchObject);
 
 
         // THEN
@@ -67,7 +67,7 @@ public class PatchConverterTest {
 
 
         // WHEN
-        Document actualDocument = PatchConverter.jsonToPch(patchObject);
+        Document actualDocument = TdumtPatchConverter.jsonToPch(patchObject);
 
 
         // THEN
@@ -86,7 +86,7 @@ public class PatchConverterTest {
 
 
         // WHEN
-        Document actualDocument = PatchConverter.jsonToPch(patchObject);
+        Document actualDocument = TdumtPatchConverter.jsonToPch(patchObject);
 
 
         // THEN
@@ -105,7 +105,7 @@ public class PatchConverterTest {
 
 
         // WHEN
-        Document actualDocument = PatchConverter.jsonToPch(patchObject);
+        Document actualDocument = TdumtPatchConverter.jsonToPch(patchObject);
 
 
         // THEN
@@ -124,7 +124,7 @@ public class PatchConverterTest {
 
 
         // WHEN
-        Document actualDocument = PatchConverter.jsonToPch(patchObject);
+        Document actualDocument = TdumtPatchConverter.jsonToPch(patchObject);
 
 
         // THEN
@@ -142,7 +142,7 @@ public class PatchConverterTest {
     @Test(expected = NullPointerException.class)
     public void pchToJson_whenNullObject_shouldThrowException() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN-WHEN
-        PatchConverter.pchToJson(null);
+        TdumtPatchConverter.pchToJson(null);
 
         // THEN: NPE
     }
@@ -150,10 +150,10 @@ public class PatchConverterTest {
     @Test
     public void pchToJson_whenNoInstruction_shouldReturnEmptyPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
-        Document patchDocument = PatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/empty.pch");
+        Document patchDocument = TdumtPatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/empty.pch");
 
         // WHEN
-        DbPatchDto actualPatchObject = PatchConverter.pchToJson(patchDocument);
+        DbPatchDto actualPatchObject = TdumtPatchConverter.pchToJson(patchDocument);
 
         // THEN
         assertThat(actualPatchObject).isNotNull();
@@ -163,11 +163,11 @@ public class PatchConverterTest {
     @Test
     public void pchToJson_whenRealPatchDocument_forContentsAndResources_shouldReturnPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
-        Document patchDocument = PatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/updateContentsAndResources.pch");
+        Document patchDocument = TdumtPatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/updateContentsAndResources.pch");
 
 
         // WHEN
-        DbPatchDto actualPatchObject = PatchConverter.pchToJson(patchDocument);
+        DbPatchDto actualPatchObject = TdumtPatchConverter.pchToJson(patchDocument);
 
 
         // THEN
@@ -182,11 +182,11 @@ public class PatchConverterTest {
     @Test
     public void pchToJson_whenRealPatchDocument_forContents_andCompositeEntryRef_shouldReturnPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
-        Document patchDocument = PatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/updateContents_compositeRef.pch");
+        Document patchDocument = TdumtPatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/updateContents_compositeRef.pch");
 
 
         // WHEN
-        DbPatchDto actualPatchObject = PatchConverter.pchToJson(patchDocument);
+        DbPatchDto actualPatchObject = TdumtPatchConverter.pchToJson(patchDocument);
 
 
         // THEN
@@ -208,7 +208,7 @@ public class PatchConverterTest {
         List<String> values = asList("000000", "111111", "222222");
 
         // WHEN
-        String actualValue = PatchConverter.getContentsValue(Optional.<String>empty(), values);
+        String actualValue = TdumtPatchConverter.getContentsValue(Optional.<String>empty(), values);
 
         // THEN
         assertThat(actualValue).isEqualTo("000000=111111|000000\t111111\t222222");
@@ -220,7 +220,7 @@ public class PatchConverterTest {
         List<String> values = asList("000000", "111111", "222222");
 
         // WHEN
-        String actualValue = PatchConverter.getContentsValue(Optional.of("000000"), values);
+        String actualValue = TdumtPatchConverter.getContentsValue(Optional.of("000000"), values);
 
         // THEN
         assertThat(actualValue).isEqualTo("000000|000000\t111111\t222222");
