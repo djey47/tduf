@@ -46,6 +46,14 @@ public class AllToolsTest {
     }
 
     @Test
+    public void databaseTool_applyTdupk() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new DatabaseTool(), APPLY_TDUPK);
+    }
+
+    @Test
     public void databaseTool_applyPatch() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
         exitRule.expectSystemExitWithStatus(1);

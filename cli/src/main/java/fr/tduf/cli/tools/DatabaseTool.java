@@ -95,6 +95,7 @@ public class DatabaseTool extends GenericTool {
         GEN("gen", "Writes UNPACKED TDU database files from JSON files."),
         FIX("fix", "Loads database, checks for integrity errors and create database copy with fixed ones."),
         APPLY_PATCH("apply-patch", "Modifies database contents and resources as described in a JSON mini patch file."),
+        APPLY_TDUPK("apply-tdupk", "Modifies vehicle physics as described in a performance pack file from TDUPE."),
         GEN_PATCH("gen-patch", "Creates mini-patch file from selected database contents."),
         CONVERT_PATCH("convert-patch", "Converts a TDUF (JSON) Patch to TDUMT (PCH) one and vice-versa."),
         UNPACK_ALL("unpack-all", "Extracts full database contents from BNK to JSON files."),
@@ -150,6 +151,9 @@ public class DatabaseTool extends GenericTool {
             case FIX:
                 fix();
                 return true;
+            case APPLY_TDUPK:
+                applyPerformancePack();
+                return true;
             case APPLY_PATCH:
                 applyPatch();
                 return true;
@@ -182,9 +186,13 @@ public class DatabaseTool extends GenericTool {
         }
 
         if (jsonDirectory == null) {
-            if (DUMP == command || UNPACK_ALL == command) {
+            if ( DUMP == command
+                    || UNPACK_ALL == command) {
                 jsonDirectory = "tdu-database-dump";
-            } else if (APPLY_PATCH == command || REPACK_ALL == command || GEN_PATCH == command) {
+            } else if ( APPLY_TDUPK == command
+                    || APPLY_PATCH == command
+                    || REPACK_ALL == command
+                    || GEN_PATCH == command) {
                 throw new CmdLineException(parser, "Error: jsonDirectory is required as source database.", null);
             }
         }
@@ -192,7 +200,8 @@ public class DatabaseTool extends GenericTool {
         if (outputDatabaseDirectory == null) {
             if (FIX == command) {
                 outputDatabaseDirectory = "tdu-database-fixed";
-            } else if (APPLY_PATCH == command) {
+            } else if (APPLY_PATCH == command
+                    || APPLY_TDUPK == command) {
                 outputDatabaseDirectory = "tdu-database-patched";
             } else if (REPACK_ALL == command) {
                 outputDatabaseDirectory = "tdu-database-repacked";
@@ -200,7 +209,9 @@ public class DatabaseTool extends GenericTool {
         }
 
         if (patchFile == null
-                && (APPLY_PATCH == command || CONVERT_PATCH == command)) {
+                && (APPLY_TDUPK == command
+                || APPLY_PATCH == command
+                || CONVERT_PATCH == command)) {
             throw new CmdLineException(parser, "Error: patchFile is required.", null);
         }
 
@@ -225,6 +236,7 @@ public class DatabaseTool extends GenericTool {
                 GEN.label + " --jsonDir \"C:\\Users\\Bill\\Desktop\\json-database\" --databaseDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
                 CHECK.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
                 FIX.label + " -c -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -o \"C:\\Users\\Bill\\Desktop\\tdu-database-fixed\"",
+                APPLY_TDUPK.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\vehicle.tdupk\" -r \"606298799\" -o \"C:\\Users\\Bill\\Desktop\\json-database\"",
                 APPLY_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\"",
                 GEN_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\" -t \"CAR_PHYSICS_DATA\" -r \"606298799,637314272\"",
                 CONVERT_PATCH.label + " -p \"C:\\Users\\Bill\\Desktop\\install.PCH\"",
@@ -250,10 +262,11 @@ public class DatabaseTool extends GenericTool {
 
         outLine("All done!");
 
-        Map<String, Object> resultInfo = (Map<String, Object>) commandResult;
+        HashMap<String, Object> resultInfo = new HashMap<> ();
         resultInfo.put("sourceDirectory", sourceDirectory);
         resultInfo.put("targetDirectory", targetDirectory);
         resultInfo.put("temporaryDirectory", sourceExtractedDatabaseDirectory);
+        commandResult = resultInfo;
     }
 
     private void unpackAll() throws IOException {
@@ -267,10 +280,11 @@ public class DatabaseTool extends GenericTool {
 
         dump(extractedDatabaseDirectory);
 
-        Map<String, Object> resultInfo = (Map<String, Object>) commandResult;
+        HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("sourceDirectory", sourceDirectory);
         resultInfo.put("temporaryDirectory", extractedDatabaseDirectory);
         resultInfo.put("targetDirectory", jsonDirectory);
+        commandResult = resultInfo;
     }
 
     private void convertPatch() throws IOException, SAXException, ParserConfigurationException, URISyntaxException, TransformerException {
@@ -324,6 +338,10 @@ public class DatabaseTool extends GenericTool {
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("patchFile", this.patchFile);
         commandResult = resultInfo;
+    }
+
+    private void applyPerformancePack() {
+
     }
 
     private void applyPatch() throws IOException, ReflectiveOperationException {
