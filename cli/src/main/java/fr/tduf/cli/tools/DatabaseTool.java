@@ -630,6 +630,14 @@ public class DatabaseTool extends GenericTool {
         }
     }
 
+    static void checkCarPhysicsDataLine(String carPhysicsDataLine) {
+        Pattern linePattern = Pattern.compile("^([0-9\\-\\.,]*;){103}$");
+
+        if (!linePattern.matcher(carPhysicsDataLine).matches()) {
+            throw new RuntimeException("Unrecognized Car Physics line: " + carPhysicsDataLine);
+        }
+    }
+
     private static void betweenTopicsCheck(List<DbDto> allDtos, List<IntegrityError> integrityErrors) throws ReflectiveOperationException {
         requireNonNull(integrityErrors, "A list is required").addAll(AbstractDatabaseHolder.prepare(DatabaseIntegrityChecker.class, allDtos).checkAllContentsObjects());
     }
@@ -651,14 +659,6 @@ public class DatabaseTool extends GenericTool {
         }
 
         return lines.get(0);
-    }
-
-    private static void checkCarPhysicsDataLine(String carPhysicsDataLine) {
-        Pattern linePattern = Pattern.compile("(.+;){102};?");
-
-        if (!linePattern.matcher(carPhysicsDataLine).matches()) {
-            throw new RuntimeException("Unrecognized Car Physics line: " + carPhysicsDataLine);
-        }
     }
 
     /**
