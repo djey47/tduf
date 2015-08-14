@@ -44,6 +44,7 @@ public abstract class GenericTool {
                 errLine("Command is not implemented, yet.");
                 System.exit(1);
             }
+            // TODO Write 'All done' message when commandDispatch returns true and remove from each tool
         } catch (Exception e) {
             errLine(ExceptionUtils.getStackTrace(e));
 
