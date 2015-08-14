@@ -11,6 +11,8 @@ import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
 import fr.tduf.libunlimited.high.files.db.interop.TdumtPatchConverter;
+import fr.tduf.libunlimited.high.files.db.interop.TdupePerformancePackConverter;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
@@ -46,9 +48,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -340,8 +347,25 @@ public class DatabaseTool extends GenericTool {
         commandResult = resultInfo;
     }
 
-    private void applyPerformancePack() {
+    private void applyPerformancePack() throws IOException {
+        outLine("-> Source database directory: " + jsonDirectory);
+        outLine("-> TDUPE Performance Pack file: " + patchFile);
 
+        outLine("Reading database, please wait...");
+
+        List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
+
+        outLine("Patching TDU database, please wait...");
+
+        List<String> writtenFileNames = new ArrayList<>();
+        BulkDatabaseMiner.load(allTopicObjects).getDatabaseTopic(CAR_PHYSICS_DATA)
+
+                .ifPresent(
+                        (carPhysicsDataTopicObject) -> applyPerformancePackToCarPhysicsData(allTopicObjects, carPhysicsDataTopicObject, writtenFileNames));
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("writtenFiles", writtenFileNames);
+        commandResult = resultInfo;
     }
 
     private void applyPatch() throws IOException, ReflectiveOperationException {
@@ -349,6 +373,7 @@ public class DatabaseTool extends GenericTool {
 
         outLine("-> Source database directory: " + this.jsonDirectory);
         outLine("-> Mini patch file: " + this.patchFile);
+
         outLine("Patching TDU database, please wait...");
 
         DbPatchDto patchObject = new ObjectMapper().readValue(new File(patchFile), DbPatchDto.class);
@@ -478,6 +503,24 @@ public class DatabaseTool extends GenericTool {
         return jsonToString(patchObject);
     }
 
+    private void applyPerformancePackToCarPhysicsData(List<DbDto> allTopicObjects, DbDto carPhysicsDataTopicObject, List<String> writtenFileNames) {
+        String packLine = readLineFromPerformancePack(patchFile);
+        checkCarPhysicsDataLine(packLine);
+
+        Optional<String> potentialCarPhysicsRef = Optional.empty();
+        DbPatchDto patchObject = TdupePerformancePackConverter.tdupkToJson(packLine, potentialCarPhysicsRef, carPhysicsDataTopicObject);
+
+        try {
+            AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).apply(patchObject);
+        } catch (ReflectiveOperationException roe) {
+            throw new RuntimeException("Unable to apply patch.", roe);
+        }
+
+        outLine("Writing patched database to " + outputDatabaseDirectory + ", please wait...");
+
+        writtenFileNames.addAll(DatabaseReadWriteHelper.writeDatabaseTopicsToJson(allTopicObjects, outputDatabaseDirectory));
+    }
+
     private String convertPatchFileToXML(File patch) throws IOException, ParserConfigurationException, URISyntaxException, SAXException, TransformerException {
         DbPatchDto patchObject = new ObjectMapper().readValue(patch, DbPatchDto.class);
 
@@ -597,6 +640,25 @@ public class DatabaseTool extends GenericTool {
                 .map(DatabaseIntegrityErrorDto::fromIntegrityError)
 
                 .collect(toList());
+    }
+
+    private static String readLineFromPerformancePack(String ppFile) {
+        List<String> lines;
+        try {
+            lines = Files.readAllLines(Paths.get(ppFile));
+        } catch (IOException ioe) {
+            throw new RuntimeException("Unable to read performance pack file: " + ppFile, ioe);
+        }
+
+        return lines.get(0);
+    }
+
+    private static void checkCarPhysicsDataLine(String carPhysicsDataLine) {
+        Pattern linePattern = Pattern.compile("(.+;){102};?");
+
+        if (!linePattern.matcher(carPhysicsDataLine).matches()) {
+            throw new RuntimeException("Unrecognized Car Physics line: " + carPhysicsDataLine);
+        }
     }
 
     /**
