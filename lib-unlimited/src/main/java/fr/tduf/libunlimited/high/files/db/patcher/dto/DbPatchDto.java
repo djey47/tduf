@@ -22,6 +22,21 @@ public class DbPatchDto {
     @JsonProperty("changes")
     private List<DbChangeDto> changes = new ArrayList<>();
 
+    @Override
+    public boolean equals(Object o) {
+        return reflectionEquals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return reflectionToString(this);
+    }
+
     private  DbPatchDto() {}
 
     /**

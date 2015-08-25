@@ -14,6 +14,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class TdupePerformancePackConverterTest {
 
     private static Class<TdupePerformancePackConverterTest> thisClass = TdupePerformancePackConverterTest.class;
@@ -44,7 +46,8 @@ public class TdupePerformancePackConverterTest {
         DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, Optional.<String>empty(), carPhysicsTopicObject);
 
         // THEN
-//        assertThat(actualPatchObject).isNotNull();
+        DbPatchDto expectedPatchObject = readPatchObjectFromResource("/db/patch/updateContents-f150PerformancePack.mini.json");
+        assertThat(actualPatchObject).isEqualTo(expectedPatchObject);
     }
 
     @Test
@@ -61,5 +64,10 @@ public class TdupePerformancePackConverterTest {
     private static DbDto loadCarPhysicsTopicFromResources() throws URISyntaxException, IOException {
         URI topicFileURI = thisClass.getResource("/db/json/TDU_CarPhysicsData.json").toURI();
         return new ObjectMapper().readValue(new File(topicFileURI), DbDto.class);
+    }
+
+    private static DbPatchDto readPatchObjectFromResource(String resource) throws URISyntaxException, IOException {
+        URI resourceURI = thisClass.getResource(resource).toURI();
+        return new ObjectMapper().readValue(new File(resourceURI), DbPatchDto.class);
     }
 }
