@@ -37,16 +37,30 @@ public class TdupePerformancePackConverterTest {
     }
 
     @Test
-    public void tdupkToJson_withoutReference_shouldMakePatchObject() throws IOException, URISyntaxException {
+    public void tdupkToJson_withoutReference_andEntryNotFound_shouldMakePatchObject() throws IOException, URISyntaxException {
         // GIVEN
-        String carPhysicsDataLine = readLineFromPack();
+        String carPhysicsDataLine = readLineFromPack("/db/patch/tdupe/F150-newRef.tdupk");
         DbDto carPhysicsTopicObject = loadCarPhysicsTopicFromResources();
 
         // WHEN
         DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, Optional.<String>empty(), carPhysicsTopicObject);
 
         // THEN
-        DbPatchDto expectedPatchObject = readPatchObjectFromResource("/db/patch/updateContents-f150PerformancePack.mini.json");
+        DbPatchDto expectedPatchObject = readPatchObjectFromResource("/db/patch/updateContents-f150PerformancePack-newRef.mini.json");
+        assertThat(actualPatchObject).isEqualTo(expectedPatchObject);
+    }
+
+    @Test
+    public void tdupkToJson_withoutReference_andEntryFound_shouldMakePatchObject() throws IOException, URISyntaxException {
+        // GIVEN
+        String carPhysicsDataLine = readLineFromPack("/db/patch/tdupe/F150.tdupk");
+        DbDto carPhysicsTopicObject = loadCarPhysicsTopicFromResources();
+
+        // WHEN
+        DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, Optional.<String>empty(), carPhysicsTopicObject);
+
+        // THEN
+        DbPatchDto expectedPatchObject = readPatchObjectFromResource("/db/patch/updateContents-f150PerformancePack-ref.mini.json");
         assertThat(actualPatchObject).isEqualTo(expectedPatchObject);
     }
 
@@ -55,8 +69,8 @@ public class TdupePerformancePackConverterTest {
         // TODO
     }
 
-    private static String readLineFromPack() throws IOException, URISyntaxException {
-        URI packFileURI = thisClass.getResource("/db/patch/tdupe/F150.tdupk").toURI();
+    private static String readLineFromPack(String packFile) throws IOException, URISyntaxException {
+        URI packFileURI = thisClass.getResource(packFile).toURI();
         List<String> lines = Files.readAllLines(Paths.get(packFileURI));
         return lines.get(0);
     }
