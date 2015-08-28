@@ -107,7 +107,8 @@ public class GenericToolTest {
         testingTool.doMain(new String[]{"test_outline", "-p", "This is a message"});
 
         // THEN
-        AssertionsHelper.assertOutputStreamContainsExactly(outContents, "This is a message" + System.lineSeparator());
+        AssertionsHelper.assertOutputStreamContainsExactly(outContents, "This is a message" + System.lineSeparator()
+                + "> All done!" + System.lineSeparator());
     }
 
     @Test
