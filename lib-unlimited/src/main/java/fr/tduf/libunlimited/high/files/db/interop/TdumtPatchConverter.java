@@ -219,7 +219,6 @@ public class TdumtPatchConverter {
                 .collect(toList());
     }
 
-    // TODO move to helper
     private static DbPatchDto.DbChangeDto getChangeObjectForContentsUpdate(String contentsEntry, DbDto.Topic topic) {
         String[] entryComponents = contentsEntry.split(REGEX_SEPARATOR_KEY_VALUE);
         String reference = entryComponents[0];
