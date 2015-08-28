@@ -2,9 +2,13 @@ package fr.tduf.cli.tools;
 
 import fr.tduf.libtesting.common.helper.AssertionsHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.apache.commons.io.FileUtils;
+import org.assertj.core.api.Condition;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,9 +23,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
@@ -29,6 +37,11 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatabaseToolIntegTest {
+
+    private static final String DIRECTORY_PATCH = Paths.get("integ-tests", "patcher").toString();
+    private static final String DIRECTORY_ENCRYPTED_DATABASE = Paths.get("integ-tests", "db-encrypted").toString();
+    private static final String DIRECTORY_JSON_DATABASE = Paths.get("integ-tests", "db-json").toString();
+    // TODO add missing directories to prevent duplication
 
     @Mock
     private BankSupport bankSupportMock;
@@ -39,7 +52,8 @@ public class DatabaseToolIntegTest {
     @Before
     public void setUp() throws IOException {
         FileUtils.deleteDirectory(new File("integ-tests/db/out"));
-        FileUtils.deleteDirectory(new File("integ-tests/patcher/out"));
+        FileUtils.deleteDirectory(new File(DIRECTORY_PATCH, "out"));
+        FileUtils.deleteDirectory(new File(DIRECTORY_JSON_DATABASE));
     }
 
     @Test
@@ -102,9 +116,9 @@ public class DatabaseToolIntegTest {
         String sourceDirectory = "integ-tests/db-encrypted";
         String jsonDirectory = "integ-tests/db-json";
         String patchedDirectory = "integ-tests/db-patched";
-        String inputPatchFile = "integ-tests/patcher/mini.json";
-        String outputPatchFile = "integ-tests/patcher/out/mini-gen.json";
-        String referencePatchFile = "integ-tests/patcher/mini-gen.json";
+        String inputPatchFile = Paths.get(DIRECTORY_PATCH, "mini.json").toString();
+        String outputPatchFile = Paths.get(DIRECTORY_PATCH, "mini-gen.json").toString();
+        String referencePatchFile = Paths.get(DIRECTORY_PATCH, "mini-gen.json").toString();
 
         // WHEN: dump
         System.out.println("-> Dump!");
@@ -120,7 +134,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN: genPatch
         System.out.println("-> GenPatch!");
-        DatabaseTool.main(new String[]{"gen-patch", "-n", "-j", jsonDirectory, "-p", outputPatchFile, "-t", DbDto.Topic.CAR_PHYSICS_DATA.name(), "-r", "606298799,632098801"});
+        DatabaseTool.main(new String[]{"gen-patch", "-n", "-j", jsonDirectory, "-p", outputPatchFile, "-t", CAR_PHYSICS_DATA.name(), "-r", "606298799,632098801"});
 
         // THEN: patch file must exist
         AssertionsHelper.assertFileExistAndGet(outputPatchFile);
@@ -171,10 +185,10 @@ public class DatabaseToolIntegTest {
     @Test
     public void convertPatch_fromAndBackPchFile() throws IOException {
         // GIVEN
-        String patchDirectory = "integ-tests/patcher/tdumt";
-        String inputPatchFile = Paths.get(patchDirectory, "install_community_patch.pch").toString();
+        String tdumtPatchDirectory = Paths.get(DIRECTORY_PATCH, "tdumt").toString();
+        String inputPatchFile = Paths.get(tdumtPatchDirectory, "install_community_patch.pch").toString();
 
-        Path outJsonPath = Paths.get(patchDirectory, "out-json");
+        Path outJsonPath = Paths.get(tdumtPatchDirectory, "out-json");
         Path inputPath = Paths.get(inputPatchFile);
 
         String inputPchPatchFile =  Paths.get(outJsonPath.toString(), "install_community_patch.pch").toString();
@@ -196,7 +210,7 @@ public class DatabaseToolIntegTest {
 
 
         // GIVEN
-        Path outPchPath = Paths.get(patchDirectory, "out-pch");
+        Path outPchPath = Paths.get(tdumtPatchDirectory, "out-pch");
         String inputJsonPatchFile =  Paths.get(outPchPath.toString(), "install_community_patch.json").toString();
         String outputPchPatchFile =  Paths.get(outPchPath.toString(), "install_community_patch.pch").toString();
 
@@ -213,6 +227,48 @@ public class DatabaseToolIntegTest {
 
         // THEN: output file exists
         assertThat(new File(outputPchPatchFile)).exists();
+    }
+
+    @Test
+    public void dumpApplyTdupk_withExistingSlotRef_shouldAlterCarPhysicsContents() throws IOException {
+        // GIVEN
+        String inputPerformancePackFile = Paths.get(DIRECTORY_PATCH, "tdupe", "F150.tdupk").toString();
+        String vehicleSlotReference = "606298799";
+
+
+        // WHEN: dump
+        System.out.println("-> Dump!");
+        DatabaseTool.main(new String[]{"dump", "-n", "-d", DIRECTORY_ENCRYPTED_DATABASE, "-j", DIRECTORY_JSON_DATABASE});
+
+
+        // WHEN: apply TDUPE performance pack
+        System.out.println("-> ApplyTdupk!");
+        DatabaseTool.main(new String[]{"apply-tdupk", "-n", "-j", DIRECTORY_JSON_DATABASE, "-p", inputPerformancePackFile, "-o", DIRECTORY_JSON_DATABASE, "-r", vehicleSlotReference});
+
+
+        // THEN
+        List<DbDto> actualDatabaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(DIRECTORY_JSON_DATABASE);
+        Optional<DbDataDto.Entry> potentialEntry = BulkDatabaseMiner.load(actualDatabaseObjects).getContentEntryFromTopicWithReference(vehicleSlotReference, CAR_PHYSICS_DATA);
+
+        assertThat(potentialEntry)
+                .isPresent()
+                .has(new Condition<>(
+
+                        entry -> {
+                            List<String> actualEntryItemValues = entry.get().getItems().stream()
+
+                                    .map(DbDataDto.Item::getRawValue)
+
+                                    .collect(toList());
+
+                            return "77061".equals(actualEntryItemValues.get(1))
+                                    && "78900265".equals(actualEntryItemValues.get(4))
+                                    && "1".equals(actualEntryItemValues.get(5))
+                                    && "43055".equals(actualEntryItemValues.get(6))
+                                    && "59368917".equals(actualEntryItemValues.get(7))
+                                    && "238".equals(actualEntryItemValues.get(98));
+                        }
+                        , "physical contents patched"));
     }
 
     private static Object fakeAndAssertExtractAll(InvocationOnMock invocation) throws IOException {

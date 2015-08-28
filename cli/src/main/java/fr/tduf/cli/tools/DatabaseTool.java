@@ -491,7 +491,7 @@ public class DatabaseTool extends GenericTool {
         String packLine = readLineFromPerformancePack(patchFile);
         checkCarPhysicsDataLine(packLine);
 
-        Optional<String> potentialCarPhysicsRef = Optional.empty();
+        Optional<String> potentialCarPhysicsRef = Optional.ofNullable(itemsRange);
         DbPatchDto patchObject = TdupePerformancePackConverter.tdupkToJson(packLine, potentialCarPhysicsRef, carPhysicsDataTopicObject);
 
         try {
