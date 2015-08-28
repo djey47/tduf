@@ -342,6 +342,8 @@ public class DatabaseTool extends GenericTool {
     }
 
     private void applyPerformancePack() throws IOException {
+        FilesHelper.createDirectoryIfNotExists(outputDatabaseDirectory);
+
         outLine("-> Source database directory: " + jsonDirectory);
         outLine("-> TDUPE Performance Pack file: " + patchFile);
 
