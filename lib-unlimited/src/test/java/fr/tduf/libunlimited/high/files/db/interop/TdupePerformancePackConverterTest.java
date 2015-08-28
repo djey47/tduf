@@ -78,6 +78,20 @@ public class TdupePerformancePackConverterTest {
         assertThat(actualPatchObject).isEqualTo(expectedPatchObject);
     }
 
+    @Test
+    public void tdupkToJson_withReference_andEntryFound_shouldMakePatchObject() throws IOException, URISyntaxException {
+        // GIVEN
+        String carPhysicsDataLine = readLineFromPack("/db/patch/tdupe/F150.tdupk");
+        DbDto carPhysicsTopicObject = loadCarPhysicsTopicFromResources();
+
+        // WHEN
+        DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, Optional.of("601945474"), carPhysicsTopicObject);
+
+        // THEN
+        DbPatchDto expectedPatchObject = readPatchObjectFromResource("/db/patch/updateContents-f150PerformancePack-targetExistingRef.mini.json");
+        assertThat(actualPatchObject).isEqualTo(expectedPatchObject);
+    }
+
     private static String readLineFromPack(String packFile) throws IOException, URISyntaxException {
         URI packFileURI = thisClass.getResource(packFile).toURI();
         List<String> lines = Files.readAllLines(Paths.get(packFileURI));
