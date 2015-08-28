@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,10 +39,16 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class DatabaseToolIntegTest {
 
+    private static final String DIRECTORY_DATABASE_BANKS = Paths.get("integ-tests", "banks", "db").toString();
     private static final String DIRECTORY_PATCH = Paths.get("integ-tests", "patcher").toString();
+    private static final String DIRECTORY_PATCH_OUTPUT = Paths.get("integ-tests", "patcher", "out").toString();
     private static final String DIRECTORY_ENCRYPTED_DATABASE = Paths.get("integ-tests", "db-encrypted").toString();
+    private static final String DIRECTORY_PATCHED_DATABASE = Paths.get("integ-tests", "db-patched").toString();
+    private static final String DIRECTORY_FIXED_DATABASE = Paths.get("integ-tests", "db-fixed").toString();
     private static final String DIRECTORY_JSON_DATABASE = Paths.get("integ-tests", "db-json").toString();
-    // TODO add missing directories to prevent duplication
+    private static final String DIRECTORY_ERR_JSON_DATABASE = Paths.get("integ-tests", "db-json-errors").toString();
+    private static final String DIRECTORY_GENERATED_DATABASE = Paths.get("integ-tests", "db-generated").toString();
+    private static final String DIRECTORY_ERR_GENERATED_DATABASE = Paths.get("integ-tests", "db-generated-errors").toString();
 
     @Mock
     private BankSupport bankSupportMock;
@@ -51,90 +58,79 @@ public class DatabaseToolIntegTest {
 
     @Before
     public void setUp() throws IOException {
-        FileUtils.deleteDirectory(new File("integ-tests/db/out"));
-        FileUtils.deleteDirectory(new File(DIRECTORY_PATCH, "out"));
+        FileUtils.deleteDirectory(new File(DIRECTORY_PATCH_OUTPUT));
         FileUtils.deleteDirectory(new File(DIRECTORY_JSON_DATABASE));
+        FileUtils.deleteDirectory(new File(DIRECTORY_FIXED_DATABASE));
+        FileUtils.deleteDirectory(new File(DIRECTORY_ERR_GENERATED_DATABASE));
+        FileUtils.deleteDirectory(new File(DIRECTORY_GENERATED_DATABASE));
     }
 
     @Test
     public void dumpGenCheck_shouldNotThrowError() throws IOException {
-
-        String sourceDirectory = "integ-tests/db-encrypted";
-        String jsonDirectory = "integ-tests/db-json";
-        String generatedDirectory = "integ-tests/db-generated";
-
         // WHEN: dump
         System.out.println("-> Dump!");
-        DatabaseTool.main(new String[]{"dump", "-n", "-d", sourceDirectory, "-j", jsonDirectory});
+        DatabaseTool.main(new String[]{"dump", "-n", "-d", DIRECTORY_ENCRYPTED_DATABASE, "-j", DIRECTORY_JSON_DATABASE});
 
         // THEN: written json files
-        long jsonFilesCount = getTopicFileCount(jsonDirectory, "json");
+        long jsonFilesCount = getTopicFileCount(DIRECTORY_JSON_DATABASE, EXTENSION_JSON);
         assertThat(jsonFilesCount).isEqualTo(18);
 
 
         // WHEN: gen
         System.out.println("-> Gen!");
-        DatabaseTool.main(new String[]{"gen", "-n", "-d", generatedDirectory, "-j", jsonDirectory});
+        DatabaseTool.main(new String[]{"gen", "-n", "-d", DIRECTORY_GENERATED_DATABASE, "-j", DIRECTORY_JSON_DATABASE});
 
         // THEN: written TDU files
-        assertDatabaseFilesArePresent(generatedDirectory);
+        assertDatabaseFilesArePresent(DIRECTORY_GENERATED_DATABASE);
 
 
         // WHEN: check
         System.out.println("-> Check!");
-        DatabaseTool.main(new String[]{"check", "-n", "-d", generatedDirectory});
+        DatabaseTool.main(new String[]{"check", "-n", "-d", DIRECTORY_GENERATED_DATABASE});
 
         // THEN: should not exit with status code 1
     }
 
     @Test
     public void genFix_shouldNotThrowError() throws IOException {
-
-        String jsonErrorsDirectory = "integ-tests/db-json-errors";
-        String generatedErrorsDirectory = "integ-tests/db-generated-errors";
-        String fixedDirectory = "integ-tests/db-fixed";
-
         // WHEN: gen
         System.out.println("-> Gen!");
-        DatabaseTool.main(new String[]{"gen", "-n", "-d", generatedErrorsDirectory, "-j", jsonErrorsDirectory});
+        DatabaseTool.main(new String[]{"gen", "-n", "-d", DIRECTORY_ERR_GENERATED_DATABASE, "-j", DIRECTORY_ERR_JSON_DATABASE});
 
         // THEN: written TDU files
-        assertDatabaseFilesArePresent(generatedErrorsDirectory);
+        assertDatabaseFilesArePresent(DIRECTORY_ERR_GENERATED_DATABASE);
 
 
         // WHEN: fix
         System.out.println("-> Fix!");
-        DatabaseTool.main(new String[]{"fix", "-n", "-d", generatedErrorsDirectory, "-o", fixedDirectory});
+        DatabaseTool.main(new String[]{"fix", "-n", "-d", DIRECTORY_ERR_GENERATED_DATABASE, "-o", DIRECTORY_FIXED_DATABASE});
 
         // THEN: written fixed TDU files
-        assertDatabaseFilesArePresent(fixedDirectory);
+        assertDatabaseFilesArePresent(DIRECTORY_FIXED_DATABASE);
     }
 
     @Test
     public void dumpApplyPatchGenPatch() throws IOException, JSONException {
         // GIVEN
-        String sourceDirectory = "integ-tests/db-encrypted";
-        String jsonDirectory = "integ-tests/db-json";
-        String patchedDirectory = "integ-tests/db-patched";
         String inputPatchFile = Paths.get(DIRECTORY_PATCH, "mini.json").toString();
-        String outputPatchFile = Paths.get(DIRECTORY_PATCH, "mini-gen.json").toString();
+        String outputPatchFile = Paths.get(DIRECTORY_PATCH_OUTPUT, "mini-gen.json").toString();
         String referencePatchFile = Paths.get(DIRECTORY_PATCH, "mini-gen.json").toString();
 
         // WHEN: dump
         System.out.println("-> Dump!");
-        DatabaseTool.main(new String[]{"dump", "-n", "-d", sourceDirectory, "-j", jsonDirectory});
+        DatabaseTool.main(new String[]{"dump", "-n", "-d", DIRECTORY_ENCRYPTED_DATABASE, "-j", DIRECTORY_JSON_DATABASE});
 
         // WHEN: applyPatch
         System.out.println("-> ApplyPatch!");
-        DatabaseTool.main(new String[]{"apply-patch", "-n", "-j", jsonDirectory, "-o", patchedDirectory, "-p", inputPatchFile});
+        DatabaseTool.main(new String[]{"apply-patch", "-n", "-j", DIRECTORY_JSON_DATABASE, "-o", DIRECTORY_PATCHED_DATABASE, "-p", inputPatchFile});
 
         // THEN: files must exist
-        long jsonFilesCount = getTopicFileCount(patchedDirectory, "json");
+        long jsonFilesCount = getTopicFileCount(DIRECTORY_PATCHED_DATABASE, EXTENSION_JSON);
         assertThat(jsonFilesCount).isEqualTo(18);
 
         // WHEN: genPatch
         System.out.println("-> GenPatch!");
-        DatabaseTool.main(new String[]{"gen-patch", "-n", "-j", jsonDirectory, "-p", outputPatchFile, "-t", CAR_PHYSICS_DATA.name(), "-r", "606298799,632098801"});
+        DatabaseTool.main(new String[]{"gen-patch", "-n", "-j", DIRECTORY_JSON_DATABASE, "-p", outputPatchFile, "-t", CAR_PHYSICS_DATA.name(), "-r", "606298799,632098801"});
 
         // THEN: patch file must exist
         AssertionsHelper.assertFileExistAndGet(outputPatchFile);
@@ -144,10 +140,9 @@ public class DatabaseToolIntegTest {
     @Test
     public void unpackAllRepackAll_shouldCallGateway() throws IOException {
         // GIVEN
-        String databaseDirectory = "integ-tests/banks/db";
-        String unpackJsonDirectory = "integ-tests/banks/db/out/json";
-        String outputDirectory = "integ-tests/banks/db/out";
-        String repackJsonDirectory = "integ-tests/db-json-errors";
+        String outputDirectory = Paths.get(DIRECTORY_DATABASE_BANKS, "out").toString();
+        String unpackJsonDirectory = Paths.get(outputDirectory, "json").toString();
+        String repackJsonDirectory = DIRECTORY_ERR_JSON_DATABASE;
 
         doAnswer(DatabaseToolIntegTest::fakeAndAssertExtractAll)
                 .when(bankSupportMock).extractAll(anyString(), anyString());
@@ -155,7 +150,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN unpack-all
         System.out.println("-> UnpackAll!");
-        this.databaseTool.doMain(new String[]{"unpack-all", "-n", "-d", databaseDirectory, "-j", unpackJsonDirectory});
+        this.databaseTool.doMain(new String[]{"unpack-all", "-n", "-d", DIRECTORY_DATABASE_BANKS, "-j", unpackJsonDirectory});
 
 
         // THEN: gateway was correctly called
