@@ -37,23 +37,24 @@ public class TdupePerformancePackConverter {
         requireNonNull(carPhysicsDataLine, "Line from Performance Pack is required.");
         requireNonNull(carPhysicsTopicObject, "CarPhysicsData topic object is required.");
 
-        DbPatchDto.DbChangeDto changeObject = getChangeObjectForContentsUpdate(carPhysicsDataLine, carPhysicsTopicObject);
+        DbPatchDto.DbChangeDto changeObject = getChangeObjectForContentsUpdate(carPhysicsDataLine, carPhysicsTopicObject, carPhysicsRef);
 
         return DbPatchDto.builder()
                 .addChanges(singletonList(changeObject))
                 .build();
     }
 
-    // TODO move to Helper
-    private static DbPatchDto.DbChangeDto getChangeObjectForContentsUpdate(String contentsEntry, DbDto carPhysicsTopicObject) {
+    private static DbPatchDto.DbChangeDto getChangeObjectForContentsUpdate(String contentsEntry, DbDto carPhysicsTopicObject, Optional<String> carPhysicsRef) {
 
         List<String> packValues = asList(contentsEntry.split(REGEX_SEPARATOR_ITEMS));
+        String slotReference = carPhysicsRef.orElse(packValues.get(0));
 
-        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(carPhysicsTopicObject));
-        String slotReference = packValues.get(0);
-        Optional<DbDataDto.Entry> carPhysicsEntry = databaseMiner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA);
+        Optional<DbDataDto.Entry> carPhysicsEntry = BulkDatabaseMiner.load(singletonList(carPhysicsTopicObject))
+                .getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA);
 
         List<String> itemValues = applyPhysicalChangesToPotentialEntry(packValues, carPhysicsEntry);
+        itemValues.set(0, slotReference);
+
         return DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE)
                 .forTopic(CAR_PHYSICS_DATA)
