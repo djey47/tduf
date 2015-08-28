@@ -139,8 +139,6 @@ public class CameraTool extends GenericTool {
         writeModifiedCameras(parser);
 
         String absolutePath = new File(this.outputCameraFile).getAbsolutePath();
-        outLine("> All done: " + absolutePath);
-
         makeCommandResultForCopy(absolutePath);
     }
 
@@ -166,8 +164,6 @@ public class CameraTool extends GenericTool {
         writeModifiedCameras(parser);
 
         String absolutePath = new File(this.outputCameraFile).getAbsolutePath();
-        outLine("> All done: " + absolutePath );
-
         makeCommandResultForCopy(absolutePath);
     }
 

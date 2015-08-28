@@ -198,8 +198,6 @@ public class FileTool extends GenericTool {
 
         bankSupport.packAll(this.inputFile, this.outputFile);
 
-        outLine("Done creating Bank: " + this.outputFile + ".");
-
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("contentsDirectory", this.inputFile);
         resultInfo.put("bankFileCreated", this.outputFile);
@@ -212,8 +210,6 @@ public class FileTool extends GenericTool {
         FilesHelper.createDirectoryIfNotExists(this.outputFile);
 
         bankSupport.extractAll(this.inputFile, this.outputFile);
-
-        outLine("Done extracting Bank to " + this.outputFile + ".");
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("extractedContentsDirectory", this.outputFile);
@@ -257,8 +253,6 @@ public class FileTool extends GenericTool {
 
         parserToJsonFile(genericParser);
 
-        outLine("TDU to JSON conversion done: " + this.inputFile + " to " + this.outputFile);
-
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("tduFile", this.inputFile);
         resultInfo.put("jsonFile", this.outputFile);
@@ -283,8 +277,6 @@ public class FileTool extends GenericTool {
 
         Files.write(Paths.get(this.outputFile), processInputStream(false));
 
-        outLine("Done: " + this.inputFile + " to " + this.outputFile);
-
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("encryptedFile", this.inputFile);
         resultInfo.put("clearFile", this.outputFile);
@@ -295,8 +287,6 @@ public class FileTool extends GenericTool {
         outLine("Now encrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
 
         Files.write(Paths.get(this.outputFile), processInputStream(true));
-
-        outLine("Done: " + this.inputFile + " to " + this.outputFile);
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("clearFile", this.inputFile);
