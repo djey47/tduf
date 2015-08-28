@@ -60,7 +60,7 @@ public class TdupePerformancePackConverterTest {
         DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, Optional.<String>empty(), carPhysicsTopicObject);
 
         // THEN
-        DbPatchDto expectedPatchObject = readPatchObjectFromResource("/db/patch/updateContents-f150PerformancePack-ref.mini.json");
+        DbPatchDto expectedPatchObject = readPatchObjectFromResource("/db/patch/updateContents-f150PerformancePack-existingRef.mini.json");
         assertThat(actualPatchObject).isEqualTo(expectedPatchObject);
     }
 
@@ -74,7 +74,7 @@ public class TdupePerformancePackConverterTest {
         DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, Optional.of("601945475"), carPhysicsTopicObject);
 
         // THEN
-        DbPatchDto expectedPatchObject = readPatchObjectFromResource("/db/patch/updateContents-f150PerformancePack-targetRef.mini.json");
+        DbPatchDto expectedPatchObject = readPatchObjectFromResource("/db/patch/updateContents-f150PerformancePack-targetNewRef.mini.json");
         assertThat(actualPatchObject).isEqualTo(expectedPatchObject);
     }
 
