@@ -326,7 +326,7 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Reading database, please wait...");
 
-        List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(this.jsonDirectory);
+        List<DbDto> allTopicObjects = loadDatabaseFromJsonFiles();
 
         outLine("Generating patch, please wait...");
 
@@ -347,7 +347,7 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Reading database, please wait...");
 
-        List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
+        List<DbDto> allTopicObjects = loadDatabaseFromJsonFiles();
 
         outLine("Patching TDU database, please wait...");
 
@@ -372,7 +372,7 @@ public class DatabaseTool extends GenericTool {
 
         DbPatchDto patchObject = new ObjectMapper().readValue(new File(patchFile), DbPatchDto.class);
 
-        List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(this.jsonDirectory);
+        List<DbDto> allTopicObjects = loadDatabaseFromJsonFiles();
         AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).apply(patchObject);
 
         outLine("Writing patched database to " + this.outputDatabaseDirectory + ", please wait...");
@@ -559,6 +559,15 @@ public class DatabaseTool extends GenericTool {
         printIntegrityErrors(integrityErrors);
 
         return dbDtos;
+    }
+
+    private List<DbDto> loadDatabaseFromJsonFiles() {
+        List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(this.jsonDirectory);
+        if (allTopicObjects.isEmpty()) {
+            throw new IllegalArgumentException("No database topic found in specified JSON directory.");
+        }
+
+        return allTopicObjects;
     }
 
     private List<DbDto> loadAndCheckDatabase(List<IntegrityError> integrityErrors) throws IOException {
