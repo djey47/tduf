@@ -267,8 +267,6 @@ public class DatabaseTool extends GenericTool {
         String targetDirectory = targetPath.toString();
         DatabaseBankHelper.repackDatabaseFromDirectory(sourceExtractedDatabaseDirectory, targetDirectory, Optional.of(jsonDirectory), bankSupport);
 
-        outLine("All done!");
-
         HashMap<String, Object> resultInfo = new HashMap<> ();
         resultInfo.put("sourceDirectory", sourceDirectory);
         resultInfo.put("targetDirectory", targetDirectory);
@@ -283,7 +281,7 @@ public class DatabaseTool extends GenericTool {
 
         String extractedDatabaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(sourceDirectory, Optional.of(jsonDirectory), bankSupport);
 
-        outLine("Done!");
+        outLine("Done unpacking.");
 
         dump(extractedDatabaseDirectory);
 
@@ -317,8 +315,6 @@ public class DatabaseTool extends GenericTool {
 
         Files.write(Paths.get(outputPatchFile), convertOutput.getBytes(), StandardOpenOption.CREATE);
 
-        outLine("All done!");
-
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("patchFile", outputPatchFile);
         resultInfo.put("convertedContents", convertOutput);
@@ -339,8 +335,6 @@ public class DatabaseTool extends GenericTool {
         outLine("Writing patch to " + this.patchFile + "...");
 
         writePatchFileToDisk(patchObject);
-
-        outLine("All done!");
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("patchFile", this.patchFile);
@@ -385,8 +379,6 @@ public class DatabaseTool extends GenericTool {
 
         List<String> writtenFileNames = DatabaseReadWriteHelper.writeDatabaseTopicsToJson(allTopicObjects, this.outputDatabaseDirectory);
 
-        outLine("All done!");
-
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("writtenFiles", writtenFileNames);
         commandResult = resultInfo;
@@ -401,8 +393,6 @@ public class DatabaseTool extends GenericTool {
 
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
         List<String> writtenFileNames = JsonGateway.dump(databaseDirectory, jsonDirectory, withClearContents, missingTopicContents);
-
-        outLine("All done!");
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("missingTopicContents", missingTopicContents);
@@ -420,8 +410,6 @@ public class DatabaseTool extends GenericTool {
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
         List<String> writtenFileNames = JsonGateway.gen(jsonDirectory, targetExtractedDatabaseDirectory, withClearContents, missingTopicContents);
 
-        outLine("All done!");
-
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("missingJsonTopicContents", missingTopicContents);
         resultInfo.put("writtenFiles", writtenFileNames);
@@ -435,8 +423,6 @@ public class DatabaseTool extends GenericTool {
         if(!integrityErrors.isEmpty()) {
             outLine("At least one integrity error has been found, your database may not be ready-to-use.");
         }
-
-        outLine("All done!");
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("integrityErrors", toDatabaseIntegrityErrors(integrityErrors));
@@ -483,8 +469,6 @@ public class DatabaseTool extends GenericTool {
                 outLine("WARNING! TDU database has been rewritten, but some integrity errors do remain. Your game may not work as expected.");
             }
         }
-
-        outLine("All done!");
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("integrityErrorsRemaining", toDatabaseIntegrityErrors(remainingIntegrityErrors));

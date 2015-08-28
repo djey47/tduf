@@ -184,8 +184,6 @@ public class MappingTool extends GenericTool {
 
     private void fixMissing() throws IOException {
         MagicMapHelper.fixMagicMap(this.mapFile, this.bankDirectory);
-
-        outLine("Bnk1.map fixing done: " + this.mapFile);
     }
 
     private BankMap loadBankMap() throws IOException {
