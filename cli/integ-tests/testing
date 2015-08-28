@@ -15,3 +15,6 @@ Provided files:
  - in patcher, will be used as source for json mini patches
 
  - in research directory, will be used as reference for json conversion.
+
+
+ All other directories and contents are created by integration tests and as such do not have to be put under version control.
