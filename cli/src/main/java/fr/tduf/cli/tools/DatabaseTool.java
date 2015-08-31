@@ -490,6 +490,7 @@ public class DatabaseTool extends GenericTool {
     }
 
     private void applyPerformancePackToCarPhysicsData(List<DbDto> allTopicObjects, DbDto carPhysicsDataTopicObject, List<String> writtenFileNames) {
+        // TODO Move to library for shared usage (cli/gui)
         String packLine = readLineFromPerformancePack(patchFile);
         checkCarPhysicsDataLine(packLine);
 
@@ -625,6 +626,7 @@ public class DatabaseTool extends GenericTool {
         }
     }
 
+    // TODO move to lib
     static void checkCarPhysicsDataLine(String carPhysicsDataLine) {
         Pattern linePattern = Pattern.compile("^([0-9\\-\\.,]*;){103}$");
 
@@ -645,6 +647,7 @@ public class DatabaseTool extends GenericTool {
                 .collect(toList());
     }
 
+    // TODO move to lib
     private static String readLineFromPerformancePack(String ppFile) {
         List<String> lines;
         try {
