@@ -18,8 +18,7 @@ import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TdupeGatewayTest {
@@ -30,7 +29,7 @@ public class TdupeGatewayTest {
     private BulkDatabaseMiner minerMock;
 
     @Mock
-    private DatabasePatcher patcher;
+    private DatabasePatcher patcherMock;
 
     @InjectMocks
     private TdupeGateway gateway;
@@ -50,9 +49,8 @@ public class TdupeGatewayTest {
 
 
         // THEN
-        verify(patcher).apply(any());
+        verify(patcherMock).apply(any());
     }
-
     @Test
     public void applyPerformancePackToEntryWithIdentifier_whenEntryDoesNotExist_shouldInvokeMinerAndPatcher() throws ReflectiveOperationException, IOException, URISyntaxException {
         // GIVEN
@@ -68,7 +66,25 @@ public class TdupeGatewayTest {
 
 
         // THEN
-        verify(patcher).apply(any());
+        verify(patcherMock).apply(any());
+    }
+
+    @Test
+    public void applyPerformancePackToEntryWithReference_shouldInvokeMinerAndPatcher() throws ReflectiveOperationException, IOException, URISyntaxException {
+        // GIVEN
+        String performancePackFile = thisClass.getResource("/db/patch/tdupe/F150.tdupk").getFile();
+
+        DbDto carPhysicsDataTopicObject = loadCarPhysicsTopicFromResources();
+        when(minerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(Optional.of(carPhysicsDataTopicObject));
+
+
+        // WHEN
+        gateway.applyPerformancePackToEntryWithReference(Optional.of("000000"), performancePackFile);
+
+
+        // THEN
+        verify(minerMock, never()).getContentEntryReferenceWithInternalIdentifier(anyLong(), any());
+        verify(patcherMock).apply(any());
     }
 
     @Test(expected = NullPointerException.class)
