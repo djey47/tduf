@@ -5,7 +5,7 @@ import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.interop.TdumtPatchConverter;
-import fr.tduf.libunlimited.high.files.db.interop.TdupePerformancePackConverter;
+import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
@@ -19,14 +19,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -135,29 +131,10 @@ public class MainStageChangeDataController {
         patcher.apply(patchObject);
     }
 
-    void importPerformancePack(String packFile) {
-        requireNonNull(getMiner());
-        // TODO extract to helper and share with CLI-importTdupk
-        String packLine = readLineFromPerformancePack(packFile);
-        checkCarPhysicsDataLine(packLine);
-
-        DbDto carPhysicsDataTopicObject = getMiner().getDatabaseTopic(CAR_PHYSICS_DATA).get();
-        Optional<String> potentialCarPhysicsRef = getMiner().getContentEntryReferenceWithInternalIdentifier(mainStageController.currentEntryIndexProperty.getValue(), CAR_PHYSICS_DATA);
-        DbPatchDto patchObject = TdupePerformancePackConverter.tdupkToJson(packLine, potentialCarPhysicsRef, carPhysicsDataTopicObject);
-
-        try {
-            AbstractDatabaseHolder.prepare(DatabasePatcher.class, mainStageController.getDatabaseObjects()).apply(patchObject);
-        } catch (ReflectiveOperationException roe) {
-            throw new RuntimeException("Unable to apply patch.", roe);
-        }
-    }
-
-    static void checkCarPhysicsDataLine(String carPhysicsDataLine) {
-        Pattern linePattern = Pattern.compile("^([0-9\\-\\.,]*;){103}$");
-
-        if (!linePattern.matcher(carPhysicsDataLine).matches()) {
-            throw new RuntimeException("Unrecognized Car Physics line: " + carPhysicsDataLine);
-        }
+    void importPerformancePack(String packFile) throws ReflectiveOperationException {
+        long currentEntryIndex = mainStageController.currentEntryIndexProperty.getValue();
+        TdupeGateway gateway = AbstractDatabaseHolder.prepare(TdupeGateway.class, mainStageController.getDatabaseObjects());
+        gateway.applyPerformancePackToEntryWithIdentifier(currentEntryIndex, packFile);
     }
 
     private List<String> getRawValuesFromCurrentEntry() {
@@ -180,17 +157,6 @@ public class MainStageChangeDataController {
             e.printStackTrace();
             return null;
         }
-    }
-
-    private static String readLineFromPerformancePack(String ppFile) {
-        List<String> lines;
-        try {
-            lines = Files.readAllLines(Paths.get(ppFile));
-        } catch (IOException ioe) {
-            throw new RuntimeException("Unable to read performance pack file: " + ppFile, ioe);
-        }
-
-        return lines.get(0);
     }
 
     private BulkDatabaseMiner getMiner() {
