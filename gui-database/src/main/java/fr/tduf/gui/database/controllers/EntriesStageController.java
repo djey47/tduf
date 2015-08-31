@@ -18,7 +18,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
 
 import java.util.List;
 import java.util.Optional;
@@ -72,7 +71,7 @@ public class EntriesStageController extends AbstractGuiController {
 
         updateEntriesStageData(labelFieldRanks);
 
-        ((Stage) getWindow()).show();
+        showWindow();
 
         selectEntryInTableAndScroll(entryReference);
     }
@@ -85,7 +84,7 @@ public class EntriesStageController extends AbstractGuiController {
         List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, mainStageController.getLayoutObject()).getEntryLabelFieldRanks();
         updateEntriesStageData(labelFieldRanks);
 
-        ((Stage) getWindow()).showAndWait();
+        showModalWindow();
 
         return selectedEntry;
     }
@@ -152,7 +151,7 @@ public class EntriesStageController extends AbstractGuiController {
             mainStageController.getChangeDataController().updateContentItem(mainStageController.getCurrentTopicObject().getTopic(), fieldRank, entryReference);
         });
 
-        ((Stage) getWindow()).close();
+        closeWindow();
     }
 
     public void setMainStageController(MainStageController mainStageController) {

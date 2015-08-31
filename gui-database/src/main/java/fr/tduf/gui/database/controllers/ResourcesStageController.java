@@ -145,7 +145,7 @@ public class ResourcesStageController extends AbstractGuiController {
         currentLocale = locale;
         browsedResourceProperty.setValue(new LocalizedResource(targetTopic, referenceProperty.get()));
 
-        ((Stage) getWindow()).show();
+        showWindow();
     }
 
     private void initTopicPane() {
@@ -191,7 +191,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
         mainStageController.getChangeDataController().updateContentItem(mainStageController.getCurrentTopicObject().getTopic(), fieldRank, resourceReference);
 
-        ((Stage) getWindow()).close();
+        closeWindow();
     }
 
     private void removeResourceAndUpdateMainStage(DbDto.Topic topic, ResourceEntryDataItem selectedResource, DbResourceDto.Locale locale, boolean forAllLocales, int selectedRowIndex) {
