@@ -359,6 +359,17 @@ public class MainStageController implements Initializable {
         askForPatchLocationAndImportData();
     }
 
+    @FXML
+    public void handleImportPerformancePackMenuAction(ActionEvent actionEvent) {
+        System.out.println("handleImportPerformancePackMenuAction");
+
+        if (currentTopicObject == null) {
+            return;
+        }
+
+        askForPerformancePackLocationAndImportData();
+    }
+
     public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
         return (actionEvent) -> {
             System.out.println("browseResourcesButton clicked");
@@ -747,6 +758,10 @@ public class MainStageController implements Initializable {
 
             CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS);
         }
+    }
+
+    private void askForPerformancePackLocationAndImportData() {
+
     }
 
     private DbPatchDto generatePatchObject(DbDto.Topic currentTopic, String entryRef) {

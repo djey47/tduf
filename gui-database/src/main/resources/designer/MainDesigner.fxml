@@ -69,8 +69,9 @@
                   <Separator layoutX="189.0" layoutY="10.0" orientation="VERTICAL" />
                   <MenuButton layoutX="361.0" layoutY="10.0" mnemonicParsing="false" prefWidth="60.0" text="[]&lt;">
                      <items>
-                        <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#handleImportEntryTdufPatchMenuAction" text="TDUF patch..." />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleImportPerformancePackMenuAction" text="TDUPE Performance Pack..." />
                      </items>
                      <tooltip>
                         <Tooltip text="Imports to current database." />
@@ -78,10 +79,10 @@
                   </MenuButton>
                   <MenuButton mnemonicParsing="false" prefWidth="60.0" text="[]&gt;">
                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#handleExportEntryTdufPatchMenuAction" text="TDUF patch..." />
+                        <SeparatorMenuItem mnemonicParsing="false" />
                       <MenuItem mnemonicParsing="false" onAction="#handleExportEntryLineMenuAction" text="Line..." />
                         <MenuItem mnemonicParsing="false" onAction="#handleExportEntryPchMenuAction" text="PCH instruction..." />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleExportEntryTdufPatchMenuAction" text="TDUF patch..." />
                     </items>
                       <tooltip>
                           <Tooltip text="Exports current entry." />
