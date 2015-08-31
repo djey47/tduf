@@ -19,19 +19,10 @@ import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.gui.database.factory.EntryCellFactory;
 import fr.tduf.gui.database.stages.EntriesDesigner;
 import fr.tduf.gui.database.stages.ResourcesDesigner;
-import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
-import fr.tduf.libunlimited.high.files.db.interop.TdumtPatchConverter;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
-import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
-import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.application.Platform;
@@ -56,14 +47,11 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * Makes it a possible to intercept all GUI events.
@@ -688,27 +676,11 @@ public class MainStageController implements Initializable {
     }
 
     private void exportCurrentEntryAsLineAndShowResult() {
-        List<String> values = getRawValuesFromCurrentEntry();
-
-        String result = String.join(DatabaseParser.VALUE_DELIMITER, values);
-        dialogsHelper.showExportResultDialog(result);
+        dialogsHelper.showExportResultDialog(changeDataController.exportCurrentEntryAsLine());
     }
 
     private void exportCurrentEntryAsPchValueAndShowResult() {
-        List<String> values = getRawValuesFromCurrentEntry();
-        Optional<String> potentialRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicObject.getTopic());
-
-        String result = TdumtPatchConverter.getContentsValue(potentialRef, values);
-        dialogsHelper.showExportResultDialog(result);
-    }
-
-    private List<String> getRawValuesFromCurrentEntry() {
-        DbDataDto.Entry currentEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicObject.getTopic()).get();
-        return currentEntry.getItems().stream()
-
-                .map(DbDataDto.Item::getRawValue)
-
-                .collect(toList());
+        dialogsHelper.showExportResultDialog(changeDataController.exportCurrentEntryToPchValue());
     }
 
     private void askForPatchLocationAndExportCurrentEntryToFile() throws IOException {
@@ -726,15 +698,9 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        // TODO extract to change controller
-        Optional<DbPatchDto> potentialPatchObject = potentialEntryRef
-                .map((entryRef) -> generatePatchObject(currentTopic, entryRef));
-
-        if (potentialPatchObject.isPresent()) {
-            String location = potentialFile.get().getPath();
-            FilesHelper.writeJsonObjectToFile(potentialPatchObject.get(), location);
-
-            CommonDialogsHelper.showDialog(Alert.AlertType.INFORMATION, dialogTitle, DisplayConstants.MESSAGE_ENTRY_EXPORTED, location);
+        String fileLocation = potentialFile.get().getPath();
+        if (changeDataController.exportEntryToPatchFile(currentTopic, potentialEntryRef, fileLocation)) {
+            CommonDialogsHelper.showDialog(Alert.AlertType.INFORMATION, dialogTitle, DisplayConstants.MESSAGE_ENTRY_EXPORTED, fileLocation);
         } else {
             CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_SEE_LOGS);
         }
@@ -748,11 +714,8 @@ public class MainStageController implements Initializable {
 
         String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_IMPORT;
         try {
-            // TODO extract to change controller
             File patchFile = potentialFile.get();
-            DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
-            DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, databaseObjects);
-            patcher.apply(patchObject);
+            changeDataController.importPatch(patchFile);
 
             viewDataController.updateEntryCount();
             viewDataController.updateAllPropertiesWithItemValues();
@@ -783,17 +746,6 @@ public class MainStageController implements Initializable {
             e.printStackTrace();
 
             CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK, DisplayConstants.MESSAGE_SEE_LOGS);
-        }
-    }
-
-    private DbPatchDto generatePatchObject(DbDto.Topic currentTopic, String entryRef) {
-        try {
-            PatchGenerator patchGenerator = AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseObjects);
-            ReferenceRange range = ReferenceRange.fromCollection(Collections.singletonList(entryRef));
-            return patchGenerator.makePatch(currentTopic, range);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
         }
     }
 

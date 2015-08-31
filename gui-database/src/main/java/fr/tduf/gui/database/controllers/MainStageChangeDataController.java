@@ -1,19 +1,27 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
+import fr.tduf.libunlimited.high.files.db.interop.TdumtPatchConverter;
 import fr.tduf.libunlimited.high.files.db.interop.TdupePerformancePackConverter;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
+import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
+import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -22,6 +30,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Specialized controller to update database contents.
@@ -93,6 +102,39 @@ public class MainStageChangeDataController {
         getChangeHelper().addResourceWithReference(topic, locale, newResourceReference, newResourceValue);
     }
 
+    String exportCurrentEntryAsLine() {
+        List<String> values = getRawValuesFromCurrentEntry();
+
+        return String.join(DatabaseParser.VALUE_DELIMITER, values);
+    }
+
+    String exportCurrentEntryToPchValue() {
+        List<String> values = getRawValuesFromCurrentEntry();
+        Optional<String> potentialRef = getMiner().getContentEntryReferenceWithInternalIdentifier(
+                mainStageController.currentEntryIndexProperty.getValue(),
+                mainStageController.currentTopicProperty.getValue());
+
+        return TdumtPatchConverter.getContentsValue(potentialRef, values);
+    }
+
+    boolean exportEntryToPatchFile(DbDto.Topic currentTopic, Optional<String> potentialEntryRef, String patchFileLocation) throws IOException {
+        Optional<DbPatchDto> potentialPatchObject = potentialEntryRef
+                .map((entryRef) -> generatePatchObject(currentTopic, entryRef, mainStageController.getDatabaseObjects()));
+
+        if (potentialPatchObject.isPresent()) {
+            FilesHelper.writeJsonObjectToFile(potentialPatchObject.get(), patchFileLocation);
+            return true;
+        }
+
+        return false;
+    }
+
+    void importPatch(File patchFile) throws IOException, ReflectiveOperationException {
+        DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, mainStageController.getDatabaseObjects());
+        patcher.apply(patchObject);
+    }
+
     void importPerformancePack(String packFile) {
         requireNonNull(getMiner());
         // TODO extract to helper and share with CLI-importTdupk
@@ -115,6 +157,28 @@ public class MainStageChangeDataController {
 
         if (!linePattern.matcher(carPhysicsDataLine).matches()) {
             throw new RuntimeException("Unrecognized Car Physics line: " + carPhysicsDataLine);
+        }
+    }
+
+    private List<String> getRawValuesFromCurrentEntry() {
+        DbDataDto.Entry currentEntry = getMiner().getContentEntryFromTopicWithInternalIdentifier(
+                mainStageController.currentEntryIndexProperty.getValue(),
+                mainStageController.currentTopicProperty.getValue()).get();
+        return currentEntry.getItems().stream()
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .collect(toList());
+    }
+
+    private static DbPatchDto generatePatchObject(DbDto.Topic currentTopic, String entryRef, List<DbDto> databaseObjects) {
+        try {
+            PatchGenerator patchGenerator = AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseObjects);
+            ReferenceRange range = ReferenceRange.fromCollection(Collections.singletonList(entryRef));
+            return patchGenerator.makePatch(currentTopic, range);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
