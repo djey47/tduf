@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
@@ -12,8 +13,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -21,15 +20,13 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-import java.net.URL;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 import static java.util.stream.Collectors.toList;
 
-public class EntriesStageController implements Initializable {
-
-    @FXML
-    private Parent root;
+public class EntriesStageController extends AbstractGuiController {
 
     @FXML
     private Label currentTopicLabel;
@@ -48,7 +45,7 @@ public class EntriesStageController implements Initializable {
     private Optional<ContentEntryDataItem> selectedEntry = Optional.empty();
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void init() {
         initHeaderPane();
 
         initTablePane();
@@ -75,8 +72,7 @@ public class EntriesStageController implements Initializable {
 
         updateEntriesStageData(labelFieldRanks);
 
-        Stage stage = (Stage) root.getScene().getWindow();
-        stage.show();
+        ((Stage) getWindow()).show();
 
         selectEntryInTableAndScroll(entryReference);
     }
@@ -89,8 +85,7 @@ public class EntriesStageController implements Initializable {
         List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, mainStageController.getLayoutObject()).getEntryLabelFieldRanks();
         updateEntriesStageData(labelFieldRanks);
 
-        Stage stage = (Stage) root.getScene().getWindow();
-        stage.showAndWait();
+        ((Stage) getWindow()).showAndWait();
 
         return selectedEntry;
     }
@@ -157,8 +152,7 @@ public class EntriesStageController implements Initializable {
             mainStageController.getChangeDataController().updateContentItem(mainStageController.getCurrentTopicObject().getTopic(), fieldRank, entryReference);
         });
 
-        Stage stage = (Stage) root.getScene().getWindow();
-        stage.close();
+        ((Stage) getWindow()).close();
     }
 
     public void setMainStageController(MainStageController mainStageController) {

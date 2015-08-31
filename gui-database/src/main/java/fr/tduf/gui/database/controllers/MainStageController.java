@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
 import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.DatabaseEditor;
@@ -35,8 +36,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -45,18 +44,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 
 /**
  * Makes it a possible to intercept all GUI events.
  */
-public class MainStageController implements Initializable {
+public class MainStageController extends AbstractGuiController {
     private DynamicFieldControlsHelper dynamicFieldControlsHelper;
     private DynamicLinkControlsHelper dynamicLinkControlsHelper;
     private DialogsHelper dialogsHelper;
@@ -76,9 +73,6 @@ public class MainStageController implements Initializable {
     Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
     Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink = new HashMap<>();
     ObservableList<ContentEntryDataItem> browsableEntryList;
-
-    @FXML
-    private Parent root;
 
     @FXML
     private TitledPane settingsPane;
@@ -128,7 +122,7 @@ public class MainStageController implements Initializable {
     private Stack<EditorLocation> navigationHistory = new Stack<>();
 
     @Override
-    public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
+    protected void init() throws IOException {
         viewDataController = new MainStageViewDataController(this);
         changeDataController = new MainStageChangeDataController(this);
 
@@ -136,19 +130,15 @@ public class MainStageController implements Initializable {
         dynamicLinkControlsHelper = new DynamicLinkControlsHelper(this);
         dialogsHelper = new DialogsHelper();
 
-        try {
-            initSettingsPane();
+        initSettingsPane();
 
-            initResourcesStageController();
+        initResourcesStageController();
 
-            initEntriesStageController();
+        initEntriesStageController();
 
-            initTopicEntryHeaderPane();
+        initTopicEntryHeaderPane();
 
-            initStatusBar();
-        } catch (IOException e) {
-            throw new RuntimeException("Window initializing failed.", e);
-        }
+        initStatusBar();
     }
 
     @FXML
@@ -444,7 +434,7 @@ public class MainStageController implements Initializable {
         };
     }
 
-    public ChangeListener<Boolean> handleBitfieldCheckboxSelectionChange(int fieldRank, SimpleStringProperty textFieldValueProperty ) {
+    public ChangeListener<Boolean> handleBitfieldCheckboxSelectionChange(int fieldRank, SimpleStringProperty textFieldValueProperty) {
         return ((observable, oldCheckedState, newCheckedState) -> {
             System.out.println("handleBitfieldCheckboxSelectionChange, checked=" + newCheckedState + ", fieldRank=" + fieldRank);
 
@@ -477,7 +467,7 @@ public class MainStageController implements Initializable {
     private void handleEntryChoiceChanged(ContentEntryDataItem newEntry) {
         System.out.println("handleEntryChoiceChanged: " + newEntry);
 
-        if(newEntry != null) {
+        if (newEntry != null) {
             viewDataController.switchToContentEntry(newEntry.getInternalEntryId());
         }
     }
@@ -688,7 +678,7 @@ public class MainStageController implements Initializable {
         DbDto.Topic currentTopic = currentTopicObject.getTopic();
         Optional<String> potentialEntryRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopic);
         String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT;
-        if(!potentialEntryRef.isPresent()) {
+        if (!potentialEntryRef.isPresent()) {
             CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_ENTRY_WITHOUT_REF);
             return;
         }
@@ -803,10 +793,5 @@ public class MainStageController implements Initializable {
 
     List<DbDto> getDatabaseObjects() {
         return databaseObjects;
-    }
-
-    // TODO extract to abstract controller component
-    private Window getWindow() {
-        return root.getScene().getWindow();
     }
 }

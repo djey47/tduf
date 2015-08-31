@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
 import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
@@ -16,8 +17,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
@@ -26,20 +25,15 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-import java.net.URL;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
-public class ResourcesStageController implements Initializable {
+public class ResourcesStageController extends AbstractGuiController {
 
     private DialogsHelper dialogsHelper = new DialogsHelper();
-
-    @FXML
-    private Parent root;
 
     @FXML
     private ChoiceBox<DbDto.Topic> topicsChoiceBox;
@@ -60,7 +54,7 @@ public class ResourcesStageController implements Initializable {
     private DbResourceDto.Locale currentLocale;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void init() {
         browsedResourceProperty = new SimpleObjectProperty<>();
         browsedResourceProperty
                 .addListener((observable, oldValue, newValue) -> handleBrowseToResource(newValue));
@@ -151,8 +145,7 @@ public class ResourcesStageController implements Initializable {
         currentLocale = locale;
         browsedResourceProperty.setValue(new LocalizedResource(targetTopic, referenceProperty.get()));
 
-        Stage stage = (Stage) this.root.getScene().getWindow();
-        stage.show();
+        ((Stage) getWindow()).show();
     }
 
     private void initTopicPane() {
@@ -198,8 +191,7 @@ public class ResourcesStageController implements Initializable {
 
         mainStageController.getChangeDataController().updateContentItem(mainStageController.getCurrentTopicObject().getTopic(), fieldRank, resourceReference);
 
-        Stage stage = (Stage) root.getScene().getWindow();
-        stage.close();
+        ((Stage) getWindow()).close();
     }
 
     private void removeResourceAndUpdateMainStage(DbDto.Topic topic, ResourceEntryDataItem selectedResource, DbResourceDto.Locale locale, boolean forAllLocales, int selectedRowIndex) {
