@@ -27,11 +27,20 @@ public class TdupeGateway extends AbstractDatabaseHolder {
      * @param performancePackFile   : location of performance pack file (.tdupk) to be applied.
      */
     public void applyPerformancePackToEntryWithIdentifier(long entryId, String performancePackFile) {
+        Optional<String> potentialCarPhysicsRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(entryId, CAR_PHYSICS_DATA);
+        applyPerformancePackToEntryWithReference(potentialCarPhysicsRef, performancePackFile);
+    }
+
+    /**
+     * Loads a TDUPE Performance Pack File and applies contents
+     * @param potentialCarPhysicsRef    : reference of entry to update, if absent first item of pack will be used instead
+     * @param performancePackFile       : location of performance pack file (.tdupk) to be applied.
+     */
+    public void applyPerformancePackToEntryWithReference(Optional<String> potentialCarPhysicsRef, String performancePackFile) {
         String packLine = readLineFromPerformancePack(performancePackFile);
         checkCarPhysicsDataLine(packLine);
 
         DbDto carPhysicsDataTopicObject = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get();
-        Optional<String> potentialCarPhysicsRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(entryId, CAR_PHYSICS_DATA);
         DbPatchDto patchObject = TdupePerformancePackConverter.tdupkToJson(packLine, potentialCarPhysicsRef, carPhysicsDataTopicObject);
 
         databasePatcher.apply(patchObject);
