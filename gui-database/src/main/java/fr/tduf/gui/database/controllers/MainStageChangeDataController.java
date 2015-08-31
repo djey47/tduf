@@ -1,15 +1,24 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
+import fr.tduf.libunlimited.high.files.db.interop.TdupePerformancePackConverter;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
+import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -82,6 +91,42 @@ public class MainStageChangeDataController {
     void addResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String newResourceReference, String newResourceValue) {
         requireNonNull(getGenHelper());
         getChangeHelper().addResourceWithReference(topic, locale, newResourceReference, newResourceValue);
+    }
+
+    void importPerformancePack(String packFile) {
+        requireNonNull(getMiner());
+        // TODO extract to helper and share with CLI-importTdupk
+        String packLine = readLineFromPerformancePack(packFile);
+        checkCarPhysicsDataLine(packLine);
+
+        DbDto carPhysicsDataTopicObject = getMiner().getDatabaseTopic(CAR_PHYSICS_DATA).get();
+        Optional<String> potentialCarPhysicsRef = getMiner().getContentEntryReferenceWithInternalIdentifier(mainStageController.currentEntryIndexProperty.getValue(), CAR_PHYSICS_DATA);
+        DbPatchDto patchObject = TdupePerformancePackConverter.tdupkToJson(packLine, potentialCarPhysicsRef, carPhysicsDataTopicObject);
+
+        try {
+            AbstractDatabaseHolder.prepare(DatabasePatcher.class, mainStageController.getDatabaseObjects()).apply(patchObject);
+        } catch (ReflectiveOperationException roe) {
+            throw new RuntimeException("Unable to apply patch.", roe);
+        }
+    }
+
+    static void checkCarPhysicsDataLine(String carPhysicsDataLine) {
+        Pattern linePattern = Pattern.compile("^([0-9\\-\\.,]*;){103}$");
+
+        if (!linePattern.matcher(carPhysicsDataLine).matches()) {
+            throw new RuntimeException("Unrecognized Car Physics line: " + carPhysicsDataLine);
+        }
+    }
+
+    private static String readLineFromPerformancePack(String ppFile) {
+        List<String> lines;
+        try {
+            lines = Files.readAllLines(Paths.get(ppFile));
+        } catch (IOException ioe) {
+            throw new RuntimeException("Unable to read performance pack file: " + ppFile, ioe);
+        }
+
+        return lines.get(0);
     }
 
     private BulkDatabaseMiner getMiner() {

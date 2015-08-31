@@ -54,6 +54,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -363,7 +364,8 @@ public class MainStageController implements Initializable {
     public void handleImportPerformancePackMenuAction(ActionEvent actionEvent) {
         System.out.println("handleImportPerformancePackMenuAction");
 
-        if (currentTopicObject == null) {
+        if (currentTopicObject == null
+                || DbDto.Topic.CAR_PHYSICS_DATA != currentTopicProperty.getValue()) {
             return;
         }
 
@@ -494,7 +496,7 @@ public class MainStageController implements Initializable {
 
     private void initResourcesStageController() throws IOException {
         Stage resourcesStage = new Stage();
-        Platform.runLater(() -> resourcesStage.initOwner(root.getScene().getWindow())); // runLater() ensures main stage will be initialized first.
+        Platform.runLater(() -> resourcesStage.initOwner(getWindow())); // runLater() ensures main stage will be initialized first.
 
         resourcesStageController = ResourcesDesigner.init(resourcesStage);
         resourcesStageController.setMainStageController(this);
@@ -502,7 +504,7 @@ public class MainStageController implements Initializable {
 
     private void initEntriesStageController() throws IOException {
         Stage entriesStage = new Stage();
-        Platform.runLater(() -> entriesStage.initOwner(root.getScene().getWindow())); // runLater() ensures main stage will be initialized first.
+        Platform.runLater(() -> entriesStage.initOwner(getWindow())); // runLater() ensures main stage will be initialized first.
 
         entriesStageController = EntriesDesigner.init(entriesStage);
         entriesStageController.setMainStageController(this);
@@ -616,7 +618,7 @@ public class MainStageController implements Initializable {
             directoryChooser.setInitialDirectory(directory);
         }
 
-        File selectedDirectory = directoryChooser.showDialog(root.getScene().getWindow());
+        File selectedDirectory = directoryChooser.showDialog(getWindow());
         if (selectedDirectory != null) {
             this.databaseLocationTextField.setText(selectedDirectory.getPath());
         }
@@ -719,11 +721,12 @@ public class MainStageController implements Initializable {
             return;
         }
 
-        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(false, root.getScene().getWindow());
+        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(false, getWindow());
         if (!potentialFile.isPresent()) {
             return;
         }
 
+        // TODO extract to change controller
         Optional<DbPatchDto> potentialPatchObject = potentialEntryRef
                 .map((entryRef) -> generatePatchObject(currentTopic, entryRef));
 
@@ -738,19 +741,21 @@ public class MainStageController implements Initializable {
     }
 
     private void askForPatchLocationAndImportData() {
-        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(true, root.getScene().getWindow());
+        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(true, getWindow());
         if (!potentialFile.isPresent()) {
             return;
         }
 
         String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_IMPORT;
         try {
+            // TODO extract to change controller
             File patchFile = potentialFile.get();
             DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
             DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, databaseObjects);
             patcher.apply(patchObject);
 
             viewDataController.updateEntryCount();
+            viewDataController.updateAllPropertiesWithItemValues();
 
             CommonDialogsHelper.showDialog(Alert.AlertType.INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED, patchFile.getPath());
         } catch (Exception e) {
@@ -761,7 +766,24 @@ public class MainStageController implements Initializable {
     }
 
     private void askForPerformancePackLocationAndImportData() {
+        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(true, getWindow());
+        if (!potentialFile.isPresent()) {
+            return;
+        }
 
+        String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_IMPORT_PERFORMANCE_PACK;
+        try {
+            String packFilePath = potentialFile.get().getPath();
+            changeDataController.importPerformancePack(packFilePath);
+
+            viewDataController.updateAllPropertiesWithItemValues();
+
+            CommonDialogsHelper.showDialog(Alert.AlertType.INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_PERFORMANCE_PACK, packFilePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK, DisplayConstants.MESSAGE_SEE_LOGS);
+        }
     }
 
     private DbPatchDto generatePatchObject(DbDto.Topic currentTopic, String entryRef) {
@@ -825,5 +847,14 @@ public class MainStageController implements Initializable {
 
     MainStageChangeDataController getChangeDataController() {
         return changeDataController;
+    }
+
+    List<DbDto> getDatabaseObjects() {
+        return databaseObjects;
+    }
+
+    // TODO extract to abstract controller component
+    private Window getWindow() {
+        return root.getScene().getWindow();
     }
 }
