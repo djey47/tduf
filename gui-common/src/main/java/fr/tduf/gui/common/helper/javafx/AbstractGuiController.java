@@ -3,6 +3,7 @@ package fr.tduf.gui.common.helper.javafx;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.IOException;
@@ -35,7 +36,31 @@ public abstract class AbstractGuiController implements Initializable {
      */
     protected abstract void init() throws IOException;
 
+    /**
+     * @return Window associated to current scene.
+     */
     protected Window getWindow() {
         return root.getScene().getWindow();
+    }
+
+    /**
+     * Closes window associated to current scene.
+     */
+    protected void closeWindow() {
+        ((Stage) getWindow()).close();
+    }
+
+    /**
+     * Displays window associated to current scene.
+     */
+    protected void showWindow() {
+        ((Stage) getWindow()).show();
+    }
+
+    /**
+     * Displays window associated to current scene and blocks current thread until it closes.
+     */
+    protected void showModalWindow() {
+        ((Stage) getWindow()).showAndWait();
     }
 }
