@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.high.files.db.interop;
+package fr.tduf.libunlimited.high.files.db.interop.tdupe;
 
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
