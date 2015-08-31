@@ -21,7 +21,7 @@ import fr.tduf.gui.database.stages.EntriesDesigner;
 import fr.tduf.gui.database.stages.ResourcesDesigner;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
-import fr.tduf.libunlimited.high.files.db.interop.PatchConverter;
+import fr.tduf.libunlimited.high.files.db.interop.TdumtPatchConverter;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
@@ -685,7 +685,7 @@ public class MainStageController implements Initializable {
         List<String> values = getRawValuesFromCurrentEntry();
         Optional<String> potentialRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicObject.getTopic());
 
-        String result = PatchConverter.getContentsValue(potentialRef, values);
+        String result = TdumtPatchConverter.getContentsValue(potentialRef, values);
         dialogsHelper.showExportResultDialog(result);
     }
 
