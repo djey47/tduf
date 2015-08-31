@@ -11,7 +11,7 @@ import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
 import fr.tduf.libunlimited.high.files.db.interop.TdumtPatchConverter;
-import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupePerformancePackConverter;
+import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
@@ -52,7 +52,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -106,7 +105,7 @@ public class DatabaseTool extends GenericTool {
         GEN_PATCH("gen-patch", "Creates mini-patch file from selected database contents."),
         CONVERT_PATCH("convert-patch", "Converts a TDUF (JSON) Patch to TDUMT (PCH) one and vice-versa."),
         UNPACK_ALL("unpack-all", "Extracts full database contents from BNK to JSON files."),
-        REPACK_ALL("repack-all", "Repacks full database from JSON files into BNK ones." );
+        REPACK_ALL("repack-all", "Repacks full database from JSON files into BNK ones.");
 
         final String label;
         final String description;
@@ -193,10 +192,10 @@ public class DatabaseTool extends GenericTool {
         }
 
         if (jsonDirectory == null) {
-            if ( DUMP == command
+            if (DUMP == command
                     || UNPACK_ALL == command) {
                 jsonDirectory = "tdu-database-dump";
-            } else if ( APPLY_TDUPK == command
+            } else if (APPLY_TDUPK == command
                     || APPLY_PATCH == command
                     || REPACK_ALL == command
                     || GEN_PATCH == command) {
@@ -267,7 +266,7 @@ public class DatabaseTool extends GenericTool {
         String targetDirectory = targetPath.toString();
         DatabaseBankHelper.repackDatabaseFromDirectory(sourceExtractedDatabaseDirectory, targetDirectory, Optional.of(jsonDirectory), bankSupport);
 
-        HashMap<String, Object> resultInfo = new HashMap<> ();
+        HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("sourceDirectory", sourceDirectory);
         resultInfo.put("targetDirectory", targetDirectory);
         resultInfo.put("temporaryDirectory", sourceExtractedDatabaseDirectory);
@@ -357,7 +356,7 @@ public class DatabaseTool extends GenericTool {
         BulkDatabaseMiner.load(allTopicObjects).getDatabaseTopic(CAR_PHYSICS_DATA)
 
                 .ifPresent(
-                        (carPhysicsDataTopicObject) -> applyPerformancePackToCarPhysicsData(allTopicObjects, carPhysicsDataTopicObject, writtenFileNames));
+                        (carPhysicsDataTopicObject) -> applyPerformancePackToCarPhysicsData(allTopicObjects, writtenFileNames));
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("writtenFiles", writtenFileNames);
@@ -422,7 +421,7 @@ public class DatabaseTool extends GenericTool {
         List<IntegrityError> integrityErrors = new ArrayList<>();
         checkAndReturnIntegrityErrorsAndObjects(integrityErrors);
 
-        if(!integrityErrors.isEmpty()) {
+        if (!integrityErrors.isEmpty()) {
             outLine("At least one integrity error has been found, your database may not be ready-to-use.");
         }
 
@@ -436,7 +435,7 @@ public class DatabaseTool extends GenericTool {
         List<IntegrityError> integrityErrors = new ArrayList<>();
         List<DbDto> databaseObjects = checkAndReturnIntegrityErrorsAndObjects(integrityErrors);
 
-        if(integrityErrors.isEmpty()) {
+        if (integrityErrors.isEmpty()) {
             outLine("No error detected - a fix is not necessary.");
             return;
         }
@@ -448,7 +447,7 @@ public class DatabaseTool extends GenericTool {
 
         printIntegrityErrors(remainingIntegrityErrors);
 
-        if(fixedDatabaseObjects.isEmpty()) {
+        if (fixedDatabaseObjects.isEmpty()) {
             outLine("ERROR! Unrecoverable integrity errors spotted. Consider restoring TDU database from backup.");
         } else {
             outLine("-> Now writing database to " + this.outputDatabaseDirectory + "...");
@@ -489,16 +488,10 @@ public class DatabaseTool extends GenericTool {
         return jsonToString(patchObject);
     }
 
-    private void applyPerformancePackToCarPhysicsData(List<DbDto> allTopicObjects, DbDto carPhysicsDataTopicObject, List<String> writtenFileNames) {
-        // TODO Move to library for shared usage (cli/gui)
-        String packLine = readLineFromPerformancePack(patchFile);
-        checkCarPhysicsDataLine(packLine);
-
-        Optional<String> potentialCarPhysicsRef = Optional.ofNullable(itemsRange);
-        DbPatchDto patchObject = TdupePerformancePackConverter.tdupkToJson(packLine, potentialCarPhysicsRef, carPhysicsDataTopicObject);
-
+    private void applyPerformancePackToCarPhysicsData(List<DbDto> allTopicObjects, List<String> writtenFileNames) {
         try {
-            AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).apply(patchObject);
+            TdupeGateway gateway = AbstractDatabaseHolder.prepare(TdupeGateway.class, allTopicObjects);
+            gateway.applyPerformancePackToEntryWithReference(Optional.ofNullable(itemsRange), patchFile);
         } catch (ReflectiveOperationException roe) {
             throw new RuntimeException("Unable to apply patch.", roe);
         }
@@ -533,7 +526,7 @@ public class DatabaseTool extends GenericTool {
     private void writePatchFileToDisk(DbPatchDto patchObject) throws IOException {
         Path patchFilePath = Paths.get(this.patchFile);
         Files.createDirectories(patchFilePath.getParent());
-        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(patchFilePath, StandardCharsets.UTF_8)) {
+        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(patchFilePath, StandardCharsets.UTF_8)) {
             new ObjectMapper().writer().writeValue(bufferedWriter, patchObject);
         }
     }
@@ -615,7 +608,7 @@ public class DatabaseTool extends GenericTool {
     }
 
     private void printIntegrityErrors(List<IntegrityError> integrityErrors) {
-        if(!integrityErrors.isEmpty()) {
+        if (!integrityErrors.isEmpty()) {
             outLine("-> Integrity errors (" + integrityErrors.size() + "):");
 
             integrityErrors.forEach(
@@ -623,15 +616,6 @@ public class DatabaseTool extends GenericTool {
                         String errorMessage = String.format(integrityError.getErrorMessageFormat(), integrityError.getInformation());
                         outLine("  (!)" + errorMessage);
                     });
-        }
-    }
-
-    // TODO move to lib
-    static void checkCarPhysicsDataLine(String carPhysicsDataLine) {
-        Pattern linePattern = Pattern.compile("^([0-9\\-\\.,]*;){103}$");
-
-        if (!linePattern.matcher(carPhysicsDataLine).matches()) {
-            throw new RuntimeException("Unrecognized Car Physics line: " + carPhysicsDataLine);
         }
     }
 
@@ -645,18 +629,6 @@ public class DatabaseTool extends GenericTool {
                 .map(DatabaseIntegrityErrorDto::fromIntegrityError)
 
                 .collect(toList());
-    }
-
-    // TODO move to lib
-    private static String readLineFromPerformancePack(String ppFile) {
-        List<String> lines;
-        try {
-            lines = Files.readAllLines(Paths.get(ppFile));
-        } catch (IOException ioe) {
-            throw new RuntimeException("Unable to read performance pack file: " + ppFile, ioe);
-        }
-
-        return lines.get(0);
     }
 
     /**
