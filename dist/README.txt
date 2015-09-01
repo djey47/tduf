@@ -5,31 +5,32 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Providing base modding features to save time
 * Making database editing less harmful with a new Database Editor (GUI)
 * Capitalizing about reverse-engineering
+* Bringing new desktop applications for end-users
 * ...
 
-### What's in this version ? (ALPHA 7)
+### What's in this version ? (ALPHA 8)
 
 /!\
 Please keep in mind that it is called ALPHA for a reason, you should use it carefully as it may damage your game!
 Thus, you always ought to make a backup of your TDU database before using it!
 /!\
 
-* Introduces new feature: import TDUF Mini Patch file
-* Launcher: writes message while launching Alpha-DatabaseEditor script
-* Libray: includes internal changes and bugfixes from upcoming stable version 0.7.0.
+* Introduces new feature: import TDUPE Performance Pack file: will apply physics changes to current slot (CarPhysics profile must be selected)
+* Library: includes internal changes and bugfixes from current stable version 0.7.0.
 
 ### Main features
 
 * Opens and saves a database from/to JSON form (is explained above)
 * Provides profiles to address different modding use cases (car editing, tuning kits ...)
 * Displays all fields within a topic, in an ordered manner
-* Makes changes easier for special values (percent, bitfields etc)
+* Makes changes easier for special values (percent, bitfields etc.)
 * Enables navigation over entries in same or different topics
-* Displays all resources within a topic, for all languages (=locales)
+* Displays all resources within a topic, for all locales (=languages)
 * Adds / changes / deletes / duplicates a particular entry
-* Adds / changes / deletes a resource
-* Imports data from TDUF (mini-patch file)
-* Exports current entry to many forms (EDEN-classic, TDUMT, TDUF mini-patch).
+* Adds / changes / deletes a particular resource
+* Imports data from TDUF (mini-patch file .json)
+* Imports data from TDUPE (Performance Pack .tdupk)
+* Exports current entry to many forms (EDEN-classic/TDUPE, TDUMT, TDUF mini-patch).
 
 ### What you will need to run TDUF
 
@@ -46,7 +47,7 @@ Thus, you always ought to make a backup of your TDU database before using it!
 
 ### Using JAR library and/or CLI Tools in your projects
 
-Since this is in ALPHA state, using lib is strongly discouraged. Prefer using latest stable version (currently 0.5.0).
+Since this is in ALPHA state, using lib is strongly discouraged. Prefer using latest stable version (currently 0.7.0).
 
 ###  And especially...
 
