@@ -211,6 +211,11 @@ public class MainStageViewDataController {
         switchToContentEntry(mainStageController.getCurrentTopicObject().getData().getEntries().size() - 1);
     }
 
+    void switchToEntryWithReference(String entryReference, DbDto.Topic topic) {
+        getMiner().getContentEntryInternalIdentifierWithReference(entryReference, topic)
+                .ifPresent(this::switchToContentEntry);
+    }
+
     void switchToPreviousLocation() {
         Stack<EditorLocation> navigationHistory = mainStageController.getNavigationHistory();
         if (navigationHistory.isEmpty()) {

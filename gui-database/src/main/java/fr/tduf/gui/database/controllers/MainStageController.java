@@ -181,6 +181,8 @@ public class MainStageController extends AbstractGuiController {
         if (currentTopicObject == null) {
             return;
         }
+
+        askForReferenceAndSwitchToEntry();
     }
 
     @FXML
@@ -746,6 +748,14 @@ public class MainStageController extends AbstractGuiController {
 
             CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK, DisplayConstants.MESSAGE_SEE_LOGS);
         }
+    }
+
+    private void askForReferenceAndSwitchToEntry() {
+        CommonDialogsHelper.showInputValueDialog(
+                DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SEARCH_ENTRY,
+                DisplayConstants.LABEL_SEARCH_ENTRY)
+
+                .ifPresent((entryReference) -> viewDataController.switchToEntryWithReference(entryReference, currentTopicProperty.getValue()));
     }
 
     public DbDto getCurrentTopicObject() {

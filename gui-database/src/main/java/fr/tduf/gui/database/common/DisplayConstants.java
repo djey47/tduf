@@ -32,6 +32,7 @@ public class DisplayConstants {
     public static final String LABEL_ITEM_PERCENT_DEFAULT = "";
     public static final String LABEL_ITEM_REFERENCE = "Reference to another topic.";
     public static final String LABEL_ITEM_TOPIC_DEFAULT = "";
+    public static final String LABEL_SEARCH_ENTRY = "With REF?";
     public static final String LABEL_STATUS_VERSION = "TDUF Database Editor v1.0 by Djey.";
     public static final String LABEL_TEXTFIELD_REFERENCE = "Reference:";
     public static final String LABEL_TEXTFIELD_VALUE = "Value:";
@@ -52,6 +53,7 @@ public class DisplayConstants {
     public static final String TITLE_SUB_EXPORT = " : Export entry";
     public static final String TITLE_SUB_IMPORT = " : Import entry";
     public static final String TITLE_SUB_IMPORT_PERFORMANCE_PACK = " : Import TDUPE Performance Pack";
+    public static final String TITLE_SUB_SEARCH_ENTRY = " : Search for entry";
 
     public static final String MESSAGE_ADDED_RESOURCE = "Add resource in topic: ";
     public static final String MESSAGE_DATABASE_SAVED = "Current database was saved.";
