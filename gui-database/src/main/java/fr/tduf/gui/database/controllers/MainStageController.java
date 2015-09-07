@@ -175,6 +175,15 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
+    public void handleSearchEntryButtonAction(ActionEvent actionEvent) {
+        System.out.println("handleSearchEntryButtonAction");
+
+        if (currentTopicObject == null) {
+            return;
+        }
+    }
+
+    @FXML
     public void handleNextButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleNextButtonMouseClick");
 
