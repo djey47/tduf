@@ -170,7 +170,14 @@ public class EntriesStageController extends AbstractGuiController {
                 DisplayConstants.LABEL_SEARCH_ENTRY)
 
                 .ifPresent((entryReference) -> {
-
+                    // TODO extract to parametrized method in TableViewHelper
+                    int rowIndex = 0;
+                    for (ContentEntryDataItem item : entriesTableView.getItems()) {
+                        if (item.referenceProperty().getValue().equals(entryReference)) {
+                            TableViewHelper.selectRowAndScroll(rowIndex, entriesTableView);
+                        }
+                        rowIndex++;
+                    }
                 });
     }
 
