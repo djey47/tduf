@@ -1,7 +1,9 @@
 package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
+import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
+import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
@@ -12,6 +14,7 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -52,7 +55,7 @@ public class EntriesStageController extends AbstractGuiController {
 
     @FXML
     private void handleResourceTableMouseClick(MouseEvent mouseEvent) {
-        System.out.println("handleEntriesTableMouseClick");
+        System.out.println("entriesStageController->handleEntriesTableMouseClick");
 
         if (MouseButton.PRIMARY == mouseEvent.getButton()) {
             Optional<ContentEntryDataItem> potentialSelectedEntry = TableViewHelper.getMouseSelectedItem(mouseEvent);
@@ -62,6 +65,13 @@ public class EntriesStageController extends AbstractGuiController {
                 applyEntrySelectionToMainStageAndClose(potentialSelectedEntry.get());
             }
         }
+    }
+
+    @FXML
+    private void handleSearchEntryButtonAction(ActionEvent actionEvent) {
+        System.out.println("entriesStageController->handleSearchEntryButtonAction");
+
+        askForReferenceAndSelectItem();
     }
 
     void initAndShowDialog(String entryReference, int entryFieldRank, DbDto.Topic topic, List<Integer> labelFieldRanks) {
@@ -125,22 +135,22 @@ public class EntriesStageController extends AbstractGuiController {
         getMiner().getDatabaseTopic(topic)
                 .ifPresent((topicObject) -> entriesData.addAll(topicObject.getData().getEntries().stream()
 
-                        .map((entry) -> {
-                            ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
+                                .map((entry) -> {
+                                    ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
 
-                            long entryInternalIdentifier = entry.getId();
-                            contentEntryDataItem.setInternalEntryId(entryInternalIdentifier);
+                                    long entryInternalIdentifier = entry.getId();
+                                    contentEntryDataItem.setInternalEntryId(entryInternalIdentifier);
 
-                            String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
-                            contentEntryDataItem.setValue(entryValue);
+                                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
+                                    contentEntryDataItem.setValue(entryValue);
 
-                            String entryReference = getMiner().getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, topic).get();
-                            contentEntryDataItem.setReference(entryReference);
+                                    String entryReference = getMiner().getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, topic).get();
+                                    contentEntryDataItem.setReference(entryReference);
 
-                            return contentEntryDataItem;
-                        })
+                                    return contentEntryDataItem;
+                                })
 
-                        .collect(toList()))
+                                .collect(toList()))
                 );
     }
 
@@ -152,6 +162,16 @@ public class EntriesStageController extends AbstractGuiController {
         });
 
         closeWindow();
+    }
+
+    private void askForReferenceAndSelectItem() {
+        CommonDialogsHelper.showInputValueDialog(
+                DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SEARCH_ENTRY,
+                DisplayConstants.LABEL_SEARCH_ENTRY)
+
+                .ifPresent((entryReference) -> {
+
+                });
     }
 
     public void setMainStageController(MainStageController mainStageController) {
