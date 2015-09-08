@@ -69,8 +69,8 @@ public class ResourcesStageController extends AbstractGuiController {
         System.out.println("handleResourceTableMouseClick");
 
         if (MouseButton.PRIMARY == mouseEvent.getButton() && mouseEvent.getClickCount() == 2) {
-            TableViewHelper.getMouseSelectedItem(mouseEvent)
-                    .ifPresent((selectedResource) -> applyResourceSelectionToMainStageAndClose((ResourceEntryDataItem) selectedResource));
+            TableViewHelper.getMouseSelectedItem(mouseEvent, ResourceEntryDataItem.class)
+                    .ifPresent(this::applyResourceSelectionToMainStageAndClose);
         }
     }
 

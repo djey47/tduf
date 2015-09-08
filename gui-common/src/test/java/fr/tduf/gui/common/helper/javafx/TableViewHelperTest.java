@@ -23,7 +23,7 @@ public class TableViewHelperTest {
     @Test(expected=NullPointerException.class)
     public void getMouseSelectedItem_whenNullEvent_shouldThrowException() throws Exception {
         // GIVEN-WHEN
-        TableViewHelper.getMouseSelectedItem(null);
+        TableViewHelper.getMouseSelectedItem(null, String.class);
 
         // THEN: NPE
     }
@@ -31,7 +31,7 @@ public class TableViewHelperTest {
     @Test
     public void getMouseSelectedItem_andNoItemSelected_shouldReturnAbsent() {
         // GIVEN-WHEN
-        Optional<String> potentialItem = TableViewHelper.getMouseSelectedItem(createDefaultMouseEvent(new TableRow<>()));
+        Optional<String> potentialItem = TableViewHelper.getMouseSelectedItem(createDefaultMouseEvent(new TableRow<>()), String.class);
 
         // THEN
         assertThat(potentialItem).isEmpty();

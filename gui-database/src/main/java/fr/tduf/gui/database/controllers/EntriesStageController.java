@@ -58,8 +58,8 @@ public class EntriesStageController extends AbstractGuiController {
         System.out.println("entriesStageController->handleEntriesTableMouseClick");
 
         if (MouseButton.PRIMARY == mouseEvent.getButton()) {
-            TableViewHelper.getMouseSelectedItem(mouseEvent)
-                    .ifPresent((entry) -> applyEntrySelectionToMainStageAndClose((ContentEntryDataItem)entry));
+            TableViewHelper.getMouseSelectedItem(mouseEvent, ContentEntryDataItem.class)
+                    .ifPresent(this::applyEntrySelectionToMainStageAndClose);
         }
     }
 
