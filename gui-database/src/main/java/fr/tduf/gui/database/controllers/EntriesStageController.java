@@ -59,6 +59,8 @@ public class EntriesStageController extends AbstractGuiController {
 
         if (MouseButton.PRIMARY == mouseEvent.getButton()) {
             Optional<ContentEntryDataItem> potentialSelectedEntry = TableViewHelper.getMouseSelectedItem(mouseEvent);
+
+            // TODO simplify
             if (potentialSelectedEntry.isPresent()) {
                 selectedEntry = potentialSelectedEntry;
 
@@ -93,6 +95,8 @@ public class EntriesStageController extends AbstractGuiController {
 
         List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, mainStageController.getLayoutObject()).getEntryLabelFieldRanks();
         updateEntriesStageData(labelFieldRanks);
+
+        selectedEntry = Optional.empty();
 
         showModalWindow();
 
