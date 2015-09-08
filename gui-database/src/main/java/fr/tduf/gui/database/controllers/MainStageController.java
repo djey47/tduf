@@ -391,7 +391,7 @@ public class MainStageController extends AbstractGuiController {
         return (actionEvent) -> {
             System.out.println("gotoReferenceButtonForLinkedTopic clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
-            this.viewDataController.switchToSelectedResourceForLinkedTopic(tableViewSelectionModel.getSelectedItem(), targetTopic, targetProfileName);
+            viewDataController.switchToSelectedResourceForLinkedTopic(tableViewSelectionModel.getSelectedItem(), targetTopic, targetProfileName);
         };
     }
 
@@ -399,15 +399,16 @@ public class MainStageController extends AbstractGuiController {
         return (actionEvent) -> {
             System.out.println("handleAddLinkedEntryButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
-            Optional<ContentEntryDataItem> potentialSelectedEntry = Optional.empty();
-            DbDto.Topic finalTopic = targetTopic;
             List<DbStructureDto.Field> structureFields = databaseMiner.getDatabaseTopic(targetTopic).get().getStructure().getFields();
             if (DatabaseStructureQueryHelper.getUidFieldRank(structureFields).isPresent()) {
-                // Association topic -> browse remote entries
-                finalTopic = topicLinkObject.getTopic();
-                potentialSelectedEntry = entriesStageController.initAndShowModalDialog(targetTopic, targetProfileName);
+                // Association topic -> browse remote entries in target topic
+                entriesStageController.initAndShowModalDialog(targetTopic, targetProfileName)
+
+                        .ifPresent((selectedEntry) -> addLinkedEntryAndUpdateStage(tableViewSelectionModel, topicLinkObject.getTopic(), Optional.of(selectedEntry), topicLinkObject));
+            } else {
+                // Direct topic link -> add default entry in target topic
+                addLinkedEntryAndUpdateStage(tableViewSelectionModel, targetTopic, Optional.empty(), topicLinkObject);
             }
-            addLinkedEntryAndUpdateStage(tableViewSelectionModel, finalTopic, potentialSelectedEntry, topicLinkObject);
         };
     }
 
@@ -415,6 +416,7 @@ public class MainStageController extends AbstractGuiController {
         return (actionEvent) -> {
             System.out.println("handleRemoveLinkedEntryButton clicked");
 
+            // TODO simplify
             ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
             if (selectedItem == null) {
                 return;
