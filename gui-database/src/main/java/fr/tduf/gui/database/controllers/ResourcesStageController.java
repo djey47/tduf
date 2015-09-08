@@ -121,6 +121,13 @@ public class ResourcesStageController extends AbstractGuiController {
                 });
     }
 
+    @FXML
+    private void handleSearchEntryButtonAction(ActionEvent actionEvent) {
+        System.out.println("resourcesStageController->handleSearchEntryButtonAction");
+
+        askForReferenceAndSelectItem();
+    }
+
     private void handleTopicChoiceChanged(DbDto.Topic newTopic) {
         System.out.println("handleTopicChoiceChanged: " + newTopic);
 
@@ -277,6 +284,16 @@ public class ResourcesStageController extends AbstractGuiController {
                                 })
 
                                 .collect(toList())));
+    }
+
+    private void askForReferenceAndSelectItem() {
+        CommonDialogsHelper.showInputValueDialog(
+                DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SEARCH_RESOURCE_ENTRY,
+                DisplayConstants.LABEL_SEARCH_ENTRY)
+
+                .ifPresent((entryReference) -> TableViewHelper.selectItemAndScroll(
+                        oneItem -> oneItem.referenceProperty().getValue().equals(entryReference),
+                        resourcesTableView));
     }
 
     void setMainStageController(MainStageController mainStageController) {

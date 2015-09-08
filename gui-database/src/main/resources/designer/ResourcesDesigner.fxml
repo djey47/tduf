@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.ResourcesStageController">
+<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.ResourcesStageController">
    <children>
       <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -53,6 +53,16 @@
                   </TableView>
                </children>
             </AnchorPane>
+            <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
+               <items>
+                  <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="40.0" text="?">
+                     <tooltip>
+                        <Tooltip text="Searches entry with REF." />
+                     </tooltip>
+                  </Button>
+                  <Separator orientation="VERTICAL" />
+               </items>
+            </ToolBar>
          </children>
       </VBox>
    </children>
