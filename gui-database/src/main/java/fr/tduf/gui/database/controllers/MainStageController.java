@@ -50,6 +50,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
+
 /**
  * Makes it a possible to intercept all GUI events.
  */
@@ -178,131 +181,101 @@ public class MainStageController extends AbstractGuiController {
     public void handleSearchEntryButtonAction(ActionEvent actionEvent) {
         System.out.println("handleSearchEntryButtonAction");
 
-        if (currentTopicObject == null) {
-            return;
-        }
-
-        askForReferenceAndSwitchToEntry();
+        ofNullable(currentTopicObject)
+                .ifPresent((topicObject) -> askForReferenceAndSwitchToEntry());
     }
 
     @FXML
     public void handleNextButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleNextButtonMouseClick");
 
-        if (currentTopicObject == null) {
-            return;
-        }
-
-        viewDataController.switchToNextEntry();
+        ofNullable(currentTopicObject)
+                .ifPresent((topicObject) -> viewDataController.switchToNextEntry());
     }
 
     @FXML
     public void handleFastNextButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleFastNextButtonMouseClick");
 
-        if (currentTopicObject == null) {
-            return;
-        }
-
-        viewDataController.switchToNext10Entry();
+        ofNullable(currentTopicObject)
+                .ifPresent((topicObject) -> viewDataController.switchToNext10Entry());
     }
 
     @FXML
     public void handlePreviousButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handlePreviousButtonMouseClick");
 
-        if (currentTopicObject == null) {
-            return;
-        }
-
-        viewDataController.switchToPreviousEntry();
+        ofNullable(currentTopicObject)
+                .ifPresent((topicObject) -> viewDataController.switchToPreviousEntry());
     }
 
     @FXML
     public void handleFastPreviousButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleFastPreviousButtonMouseClick");
 
-        if (currentTopicObject == null) {
-            return;
-        }
-
-        viewDataController.switchToPrevious10Entry();
+        ofNullable(currentTopicObject)
+                .ifPresent((topicObject) -> viewDataController.switchToPrevious10Entry());
     }
 
     @FXML
     public void handleFirstButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleFirstButtonMouseClick");
 
-        if (currentTopicObject == null) {
-            return;
-        }
-
-        viewDataController.switchToFirstEntry();
+        ofNullable(currentTopicObject)
+                .ifPresent((topicObject) -> viewDataController.switchToFirstEntry());
     }
 
     @FXML
     public void handleLastButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleLastButtonMouseClick");
 
-        if (currentTopicObject == null) {
-            return;
-        }
-
-        viewDataController.switchToLastEntry();
+        ofNullable(currentTopicObject)
+                .ifPresent((topicObject) -> viewDataController.switchToLastEntry());
     }
 
     @FXML
     public void handleEntryNumberTextFieldKeyPressed(KeyEvent keyEvent) {
         System.out.println("handleEntryNumberTextFieldKeyPressed");
 
-        if (currentTopicObject == null) {
-            return;
-        }
-
-        if (KeyCode.ENTER == keyEvent.getCode()
-                || KeyCode.TAB == keyEvent.getCode()) {
-            viewDataController.switchToContentEntry(currentEntryIndexProperty.getValue());
-        }
+        ofNullable(currentTopicObject)
+                .ifPresent((topicObject) -> {
+                    if (KeyCode.ENTER == keyEvent.getCode()
+                            || KeyCode.TAB == keyEvent.getCode()) {
+                        viewDataController.switchToContentEntry(currentEntryIndexProperty.getValue());
+                    }
+                });
     }
 
     @FXML
     public void handleBackButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleLastButtonMouseClick");
 
-        viewDataController.switchToPreviousLocation();
+        ofNullable(currentTopicObject)
+                .ifPresent((topicObject) -> viewDataController.switchToPreviousLocation());
     }
 
     @FXML
     public void handleAddEntryButtonAction(ActionEvent actionEvent) {
         System.out.println("handleAddEntryButtonAction");
 
-        if (currentTopicObject == null) {
-            return;
-        }
-
-        addEntryAndUpdateStage();
+        ofNullable(currentTopicObject)
+                .ifPresent((topicObject) -> addEntryAndUpdateStage());
     }
 
     @FXML
     public void handleDuplicateEntryButtonAction(ActionEvent actionEvent) {
         System.out.println("handleDuplicateEntryButtonAction");
 
-        if (currentTopicObject == null) {
-            return;
-        }
-
-        duplicateEntryAndUpdateStage();
+        ofNullable(currentTopicObject)
+                .ifPresent((topicObject) -> duplicateEntryAndUpdateStage());
     }
 
     @FXML
     public void handleRemoveEntryButtonAction(ActionEvent actionEvent) {
         System.out.println("handleRemoveEntryButtonAction");
 
-        if (currentTopicObject == null) {
-            return;
-        }
-
-        removeCurrentEntryAndUpdateStage();
+        ofNullable(currentTopicObject)
+                .ifPresent((topicObject) -> removeCurrentEntryAndUpdateStage());
     }
 
     @FXML
@@ -342,11 +315,9 @@ public class MainStageController extends AbstractGuiController {
     public void handleImportEntryTdufPatchMenuAction(ActionEvent actionEvent) throws IOException {
         System.out.println("handleImportEntryTdufPatchMenuAction");
 
-        if (currentTopicObject == null) {
-            return;
-        }
+        ofNullable(currentTopicObject)
 
-        askForPatchLocationAndImportData();
+                .ifPresent((topicObject) -> askForPatchLocationAndImportData());
     }
 
     @FXML
@@ -382,7 +353,6 @@ public class MainStageController extends AbstractGuiController {
             System.out.println("gotoReferenceButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
             databaseMiner.getRemoteContentEntryWithInternalIdentifier(currentTopicObject.getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic)
-
                     .ifPresent((remoteContentEntry) -> viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId(), true));
         };
     }
@@ -403,8 +373,7 @@ public class MainStageController extends AbstractGuiController {
             if (DatabaseStructureQueryHelper.getUidFieldRank(structureFields).isPresent()) {
                 // Association topic -> browse remote entries in target topic
                 entriesStageController.initAndShowModalDialog(targetTopic, targetProfileName)
-
-                        .ifPresent((selectedEntry) -> addLinkedEntryAndUpdateStage(tableViewSelectionModel, topicLinkObject.getTopic(), Optional.of(selectedEntry), topicLinkObject));
+                        .ifPresent((selectedEntry) -> addLinkedEntryAndUpdateStage(tableViewSelectionModel, topicLinkObject.getTopic(), of(selectedEntry), topicLinkObject));
             } else {
                 // Direct topic link -> add default entry in target topic
                 addLinkedEntryAndUpdateStage(tableViewSelectionModel, targetTopic, Optional.empty(), topicLinkObject);
@@ -416,13 +385,8 @@ public class MainStageController extends AbstractGuiController {
         return (actionEvent) -> {
             System.out.println("handleRemoveLinkedEntryButton clicked");
 
-            // TODO simplify
-            ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
-            if (selectedItem == null) {
-                return;
-            }
-
-            removeLinkedEntryAndUpdateStage(tableViewSelectionModel, topicLinkObject);
+            ofNullable(tableViewSelectionModel.getSelectedItem())
+                    .ifPresent((selectedItem) -> removeLinkedEntryAndUpdateStage(tableViewSelectionModel, topicLinkObject));
         };
     }
 
@@ -480,9 +444,9 @@ public class MainStageController extends AbstractGuiController {
     private void handleEntryChoiceChanged(ContentEntryDataItem newEntry) {
         System.out.println("handleEntryChoiceChanged: " + newEntry);
 
-        if (newEntry != null) {
-            viewDataController.switchToContentEntry(newEntry.getInternalEntryId());
-        }
+        ofNullable(newEntry)
+                .map(ContentEntryDataItem::getInternalEntryId)
+                .ifPresent(viewDataController::switchToContentEntry);
     }
 
     private void initResourcesStageController() throws IOException {
@@ -495,7 +459,7 @@ public class MainStageController extends AbstractGuiController {
 
     private void initEntriesStageController() throws IOException {
         Stage entriesStage = new Stage();
-        Platform.runLater(() -> entriesStage.initOwner(getWindow())); // runLater() ensures main stage will be initialized first.
+        Platform.runLater(() -> entriesStage.initOwner(getWindow()));
 
         entriesStageController = EntriesDesigner.init(entriesStage);
         entriesStageController.setMainStageController(this);
@@ -648,7 +612,7 @@ public class MainStageController extends AbstractGuiController {
         String sourceEntryRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicProperty.getValue()).get();
         Optional<String> targetEntryRef = Optional.empty();
         if (potentialLinkedEntry.isPresent()) {
-            targetEntryRef = Optional.of(potentialLinkedEntry.get().referenceProperty().get());
+            targetEntryRef = of(potentialLinkedEntry.get().referenceProperty().get());
         }
         changeDataController.addLinkedEntry(sourceEntryRef, targetEntryRef, targetTopic);
 
