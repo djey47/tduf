@@ -23,12 +23,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 public class ResourcesStageController extends AbstractGuiController {
@@ -88,15 +88,13 @@ public class ResourcesStageController extends AbstractGuiController {
     private void handleEditResourceButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleEditResourceButtonMouseClick");
 
-        ResourceEntryDataItem selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
-        if (selectedResource == null) {
-            return;
-        }
-
-        String currentResourceReference = selectedResource.referenceProperty().get();
-        DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
-        dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.of(selectedResource), currentLocale)
-                .ifPresent((localizedResource) -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), localizedResource));
+        ofNullable(resourcesTableView.getSelectionModel().selectedItemProperty().getValue())
+                .ifPresent((selectedResource) -> {
+                    String currentResourceReference = selectedResource.referenceProperty().get();
+                    DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
+                    dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.of(selectedResource), currentLocale)
+                            .ifPresent((localizedResource) -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), localizedResource));
+                });
     }
 
     @FXML
@@ -112,16 +110,14 @@ public class ResourcesStageController extends AbstractGuiController {
     private void handleRemoveResourceButtonMouseClick(ActionEvent actionEvent) {
         System.out.println("handleRemoveResourceButtonMouseClick");
 
-        ResourceEntryDataItem selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
-        if (selectedResource == null) {
-            return;
-        }
-
-        DbDto.Topic currentTopic = getCurrentTopic();
-        dialogsHelper.showResourceDeletionDialog(currentTopic, selectedResource, currentLocale.getCode())
-                .ifPresent((forAllLocales) -> {
-                    int selectedRow = resourcesTableView.getSelectionModel().getSelectedIndex();
-                    removeResourceAndUpdateMainStage(currentTopic, selectedResource, currentLocale, forAllLocales, selectedRow);
+        ofNullable(resourcesTableView.getSelectionModel().selectedItemProperty().getValue())
+                .ifPresent((selectedResource) -> {
+                    DbDto.Topic currentTopic = getCurrentTopic();
+                    dialogsHelper.showResourceDeletionDialog(currentTopic, selectedResource, currentLocale.getCode())
+                            .ifPresent((forAllLocales) -> {
+                                int selectedRow = resourcesTableView.getSelectionModel().getSelectedIndex();
+                                removeResourceAndUpdateMainStage(currentTopic, selectedResource, currentLocale, forAllLocales, selectedRow);
+                            });
                 });
     }
 
@@ -134,7 +130,7 @@ public class ResourcesStageController extends AbstractGuiController {
     private void handleBrowseToResource(LocalizedResource newResource) {
         System.out.println("handleBrowseToResource: " + newResource);
 
-        this.topicsChoiceBox.setValue(newResource.getTopic().get());
+        topicsChoiceBox.setValue(newResource.getTopic().get());
 
         selectResourceInTableAndScroll(newResource.getReference());
     }
@@ -155,16 +151,16 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     private void initTablePane() {
-        TableColumn<ResourceEntryDataItem, String> refColumn = (TableColumn<ResourceEntryDataItem, String>) this.resourcesTableView.getColumns().get(0);
+        TableColumn<ResourceEntryDataItem, String> refColumn = (TableColumn<ResourceEntryDataItem, String>) resourcesTableView.getColumns().get(0);
         refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
 
         for (int columnIndex = 1; columnIndex < resourcesTableView.getColumns().size(); columnIndex++) {
-            TableColumn<ResourceEntryDataItem, String> valueColumn = (TableColumn<ResourceEntryDataItem, String>) this.resourcesTableView.getColumns().get(columnIndex);
+            TableColumn<ResourceEntryDataItem, String> valueColumn = (TableColumn<ResourceEntryDataItem, String>) resourcesTableView.getColumns().get(columnIndex);
             DbResourceDto.Locale locale = DbResourceDto.Locale.values()[columnIndex - 1];
             valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valuePropertyForLocale(locale));
         }
 
-        this.resourcesTableView.setItems(this.resourceData);
+        resourcesTableView.setItems(resourceData);
     }
 
     private void fillTopics() {
@@ -173,7 +169,7 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     private void selectResourceInTableAndScroll(String reference) {
-        this.resourceData.stream()
+        resourceData.stream()
 
                 .filter((remoteResource) -> remoteResource.referenceProperty().get().equals(reference))
 
@@ -203,27 +199,27 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     private void editResourceAndUpdateMainStage(DbDto.Topic topic, Optional<String> currentResourceReference, LocalizedResource newLocalizedResource) {
-        if (newLocalizedResource == null) {
-            return;
-        }
+        ofNullable(newLocalizedResource)
+                .ifPresent((localizedResource) -> {
+                            boolean updateResourceMode = currentResourceReference.isPresent();
+                            String newResourceReference = newLocalizedResource.getReferenceValuePair().getKey();
+                            String newResourceValue = newLocalizedResource.getReferenceValuePair().getValue();
+                            Optional<DbResourceDto.Locale> potentialAffectedLocale = newLocalizedResource.getLocale();
 
-        boolean updateResourceMode = currentResourceReference.isPresent();
-        String newResourceReference = newLocalizedResource.getReferenceValuePair().getKey();
-        String newResourceValue = newLocalizedResource.getReferenceValuePair().getValue();
-        Optional<DbResourceDto.Locale> potentialAffectedLocale = newLocalizedResource.getLocale();
-
-        try {
-            if (potentialAffectedLocale.isPresent()) {
-                DbResourceDto.Locale affectedLocale = potentialAffectedLocale.get();
-                editResourceForLocale(topic, affectedLocale, currentResourceReference, newResourceReference, newResourceValue, updateResourceMode);
-            } else {
-                editResourceForAllLocales(topic, currentResourceReference, newResourceReference, newResourceValue, updateResourceMode);
-            }
-        } catch (IllegalArgumentException iae) {
-            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
-        } finally {
-            updateAllStages(Optional.of(newResourceReference));
-        }
+                            try {
+                                if (potentialAffectedLocale.isPresent()) {
+                                    DbResourceDto.Locale affectedLocale = potentialAffectedLocale.get();
+                                    editResourceForLocale(topic, affectedLocale, currentResourceReference, newResourceReference, newResourceValue, updateResourceMode);
+                                } else {
+                                    editResourceForAllLocales(topic, currentResourceReference, newResourceReference, newResourceValue, updateResourceMode);
+                                }
+                            } catch (IllegalArgumentException iae) {
+                                CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
+                            } finally {
+                                updateAllStages(Optional.of(newResourceReference));
+                            }
+                        }
+                );
     }
 
     private void editResourceForAllLocales(DbDto.Topic topic, Optional<String> currentResourceReference, String newResourceReference, String newResourceValue, boolean updateResourceMode) {

@@ -25,6 +25,7 @@ import java.util.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -126,18 +127,19 @@ public class MainStageViewDataController {
     }
 
     void switchToSelectedResourceForLinkedTopic(ContentEntryDataItem selectedResource, DbDto.Topic targetTopic, String targetProfileName) {
-        if (selectedResource != null) {
-            String entryReference = selectedResource.referenceProperty().get();
-            long remoteContentEntryId;
-            OptionalLong potentialEntryId = getMiner().getContentEntryInternalIdentifierWithReference(entryReference, targetTopic);
-            if (potentialEntryId.isPresent()) {
-                remoteContentEntryId = potentialEntryId.getAsLong();
-            } else {
-                remoteContentEntryId = Long.valueOf(entryReference);
-            }
+        ofNullable(selectedResource)
+                .ifPresent((resource) -> {
+                    String entryReference = selectedResource.referenceProperty().get();
+                    long remoteContentEntryId;
+                    OptionalLong potentialEntryId = getMiner().getContentEntryInternalIdentifierWithReference(entryReference, targetTopic);
+                    if (potentialEntryId.isPresent()) {
+                        remoteContentEntryId = potentialEntryId.getAsLong();
+                    } else {
+                        remoteContentEntryId = Long.valueOf(entryReference);
+                    }
 
-            switchToProfileAndEntry(targetProfileName, remoteContentEntryId, true);
-        }
+                    switchToProfileAndEntry(targetProfileName, remoteContentEntryId, true);
+                });
     }
 
     void switchToProfileAndEntry(String profileName, long entryIndex, boolean storeLocation) {
@@ -285,11 +287,11 @@ public class MainStageViewDataController {
         DbDto.Topic remoteTopic = getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
 
         List<Integer> remoteFieldRanks = new ArrayList<>();
-        Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), mainStageController.profilesChoiceBox.getValue(), this.mainStageController.getLayoutObject());
+        Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), mainStageController.profilesChoiceBox.getValue(), mainStageController.getLayoutObject());
         if (fieldSettings.isPresent()) {
             String remoteReferenceProfile = fieldSettings.get().getRemoteReferenceProfile();
             if (remoteReferenceProfile != null) {
-                remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(remoteReferenceProfile, this.mainStageController.getLayoutObject());
+                remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(remoteReferenceProfile, mainStageController.getLayoutObject());
             }
         }
 
@@ -298,7 +300,7 @@ public class MainStageViewDataController {
     }
 
     private ContentEntryDataItem fetchLinkResourceFromContentEntry(DbDto topicObject, DbDataDto.Entry contentEntry, TopicLinkDto linkObject) {
-        List<Integer> remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(linkObject.getRemoteReferenceProfile(), this.mainStageController.getLayoutObject());
+        List<Integer> remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(linkObject.getRemoteReferenceProfile(), mainStageController.getLayoutObject());
         ContentEntryDataItem databaseEntry = new ContentEntryDataItem();
         long entryId = contentEntry.getId();
         databaseEntry.setInternalEntryId(entryId);
