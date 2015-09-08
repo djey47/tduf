@@ -7,6 +7,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
@@ -36,6 +37,32 @@ public class TableViewHelper {
         }
 
         return Optional.ofNullable(selectedItem);
+    }
+
+    /**
+     * Selects and scrolls to first item matching a search criteria
+     * @param searchPredicate   : predicate specifying search criteria.
+     * @param tableView         : table view to be processed
+     * @param <T>               : Type of items in TableView
+     * @return selected item, if any, at given row. Absent otherwise.
+     */
+    public static <T> Optional<T> selectItemAndScroll(Predicate<T> searchPredicate, TableView<T> tableView) {
+        requireNonNull(searchPredicate, "A search predicate is required.");
+        requireNonNull(tableView, "A TableView is required.");
+
+        if (tableView.getItems().isEmpty()) {
+            return Optional.empty();
+        }
+
+        int rowIndex = 0;
+        for (T item : tableView.getItems()) {
+            if (searchPredicate.test(item)) {
+                return selectRowAndScroll(rowIndex, tableView);
+            }
+            rowIndex++;
+        }
+
+        return Optional.empty();
     }
 
     /**

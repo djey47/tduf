@@ -15,7 +15,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class TableViewHelperTest {
 
     @Rule
@@ -33,6 +32,46 @@ public class TableViewHelperTest {
     public void getMouseSelectedItem_andNoItemSelected_shouldReturnAbsent() {
         // GIVEN-WHEN
         Optional<String> potentialItem = TableViewHelper.getMouseSelectedItem(createDefaultMouseEvent(new TableRow<>()));
+
+        // THEN
+        assertThat(potentialItem).isEmpty();
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void selectItemAndScroll_whenNullTableView_shouldThrowException() {
+        // GIVEN-WHEN
+        TableViewHelper.selectItemAndScroll(item -> false, null);
+
+        // THEN: NPE
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void selectItemAndScroll_whenNullPredicate_shouldThrowException() {
+        // GIVEN-WHEN
+        TableViewHelper.selectItemAndScroll(null, new TableView<>());
+
+        // THEN: NPE
+    }
+
+    @Test
+    public void selectItemAndScroll_whenFound_shouldReturnIt() {
+        // GIVEN
+        TableView<String> tableView = createTableViewWithThreeItems();
+
+        // WHEN
+        Optional<String> potentialItem = TableViewHelper.selectItemAndScroll("2"::equals, tableView);
+
+        // THEN
+        assertThat(potentialItem).contains("2");
+    }
+
+    @Test
+    public void selectItemAndScroll_whenNotFound_shouldReturnIt() {
+        // GIVEN
+        TableView<String> tableView = createTableViewWithThreeItems();
+
+        // WHEN
+        Optional<String> potentialItem = TableViewHelper.selectItemAndScroll("SHOULD_NOT_BE_THERE"::equals, tableView);
 
         // THEN
         assertThat(potentialItem).isEmpty();
@@ -58,10 +97,7 @@ public class TableViewHelperTest {
     @Test
     public void selectRowAndScroll_whenIndexAvailable_shouldReturnCorrectItem() {
         // GIVEN
-        ObservableList<String> values = FXCollections.observableArrayList();
-        values.addAll("1", "2", "3");
-        TableView<String> tableView = new TableView<>();
-        tableView.setItems(values);
+        TableView<String> tableView = createTableViewWithThreeItems();
 
         // WHEN
         Optional<String> potentialItem = TableViewHelper.selectRowAndScroll(1, tableView);
@@ -90,10 +126,7 @@ public class TableViewHelperTest {
     @Test
     public void selectLastRowAndScroll_whenManyItems_shouldReturnLastOne() {
         // GIVEN
-        ObservableList<String> values = FXCollections.observableArrayList();
-        values.addAll("1", "2", "3");
-        TableView<String> tableView = new TableView<>();
-        tableView.setItems(values);
+        TableView<String> tableView = createTableViewWithThreeItems();
 
         // WHEN
         Optional<String> potentialItem = TableViewHelper.selectLastRowAndScroll(tableView);
@@ -104,5 +137,13 @@ public class TableViewHelperTest {
 
     private static MouseEvent createDefaultMouseEvent(EventTarget rowTarget) {
         return new MouseEvent(null, rowTarget, MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, true, false, false, false, false, false, null);
+    }
+
+    private static TableView<String> createTableViewWithThreeItems() {
+        ObservableList<String> values = FXCollections.observableArrayList();
+        values.addAll("1", "2", "3");
+        TableView<String> tableView = new TableView<>();
+        tableView.setItems(values);
+        return tableView;
     }
 }
