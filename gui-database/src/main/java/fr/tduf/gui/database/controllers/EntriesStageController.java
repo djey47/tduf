@@ -58,14 +58,8 @@ public class EntriesStageController extends AbstractGuiController {
         System.out.println("entriesStageController->handleEntriesTableMouseClick");
 
         if (MouseButton.PRIMARY == mouseEvent.getButton()) {
-            Optional<ContentEntryDataItem> potentialSelectedEntry = TableViewHelper.getMouseSelectedItem(mouseEvent);
-
-            // TODO simplify
-            if (potentialSelectedEntry.isPresent()) {
-                selectedEntry = potentialSelectedEntry;
-
-                applyEntrySelectionToMainStageAndClose(potentialSelectedEntry.get());
-            }
+            TableViewHelper.getMouseSelectedItem(mouseEvent)
+                    .ifPresent((entry) -> applyEntrySelectionToMainStageAndClose((ContentEntryDataItem)entry));
         }
     }
 
@@ -159,6 +153,8 @@ public class EntriesStageController extends AbstractGuiController {
     }
 
     private void applyEntrySelectionToMainStageAndClose(ContentEntryDataItem selectedEntry) {
+        this.selectedEntry = Optional.of(selectedEntry);
+
         fieldRankForUpdate.ifPresent((fieldRank) -> {
             // Update mode: will update a particular field in main stage
             String entryReference = selectedEntry.referenceProperty().getValue();
