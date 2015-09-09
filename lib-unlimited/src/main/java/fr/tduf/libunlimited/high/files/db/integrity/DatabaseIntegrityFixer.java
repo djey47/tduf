@@ -235,7 +235,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         int newFieldRank = missingField.getRank();
         List<DbDataDto.Item> items = invalidEntry.getItems();
 
-        DbDataDto.Item newItem = genHelper.buildDefaultContentItem(Optional.empty(), missingField, topicObject);
+        DbDataDto.Item newItem = genHelper.buildDefaultContentItem(Optional.empty(), missingField, topicObject, true);
         items.add(newFieldRank - 1, newItem);
 
         // Rank update

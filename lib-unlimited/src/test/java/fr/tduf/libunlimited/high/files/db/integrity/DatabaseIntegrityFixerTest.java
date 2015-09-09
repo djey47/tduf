@@ -231,8 +231,8 @@ public class DatabaseIntegrityFixerTest {
                 .withRawValue("100")
                 .build();
 
-        when(genHelperMock.buildDefaultContentItem(Optional.empty(), firstStructureField,  topicObject)).thenReturn(firstItem);
-        when(genHelperMock.buildDefaultContentItem(Optional.empty(), thirdStructureField,  topicObject)).thenReturn(thirdItem);
+        when(genHelperMock.buildDefaultContentItem(Optional.empty(), firstStructureField,  topicObject, true)).thenReturn(firstItem);
+        when(genHelperMock.buildDefaultContentItem(Optional.empty(), thirdStructureField,  topicObject, true)).thenReturn(thirdItem);
 
 
         // WHEN
