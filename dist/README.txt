@@ -8,29 +8,33 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Bringing new desktop applications for end-users
 * ...
 
-### What's in this version ? (ALPHA 8)
+### Database Editor Main features
 
 /!\
 Please keep in mind that it is called ALPHA for a reason, you should use it carefully as it may damage your game!
 Thus, you always ought to make a backup of your TDU database before using it!
 /!\
 
-* Introduces new feature: import TDUPE Performance Pack file: will apply physics changes to current slot (CarPhysics profile must be selected)
-* Library: includes internal changes and bugfixes from current stable version 0.7.0.
-
-### Main features
-
-* Opens and saves a database from/to JSON form (is explained above)
+* Opens and saves a database from/to JSON form
 * Provides profiles to address different modding use cases (car editing, tuning kits ...)
 * Displays all fields within a topic, in an ordered manner
 * Makes changes easier for special values (percent, bitfields etc.)
 * Enables navigation over entries in same or different topics
 * Displays all resources within a topic, for all locales (=languages)
-* Adds / changes / deletes / duplicates a particular entry
-* Adds / changes / deletes a particular resource
+* Adds / changes / deletes / duplicates a particular content entry
+* Adds / changes / deletes a particular resource entry
+* Searches particular content/resource entry with its REF
 * Imports data from TDUF (mini-patch file .json)
 * Imports data from TDUPE (Performance Pack .tdupk)
-* Exports current entry to many forms (EDEN-classic/TDUPE, TDUMT, TDUF mini-patch).
+* Exports current entry to following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch.
+
+### What's in this version ? (ALPHA 9)
+
+* Enhance startup scripts to help with troubleshooting issues
+* New '?' button allowing searching of content and resource entries by REF
+* Bugfix: invalid and redudant content or resource entries may be inserted
+* Bugfix: dismissed entry box may add empty entries
+
 
 ### What you will need to run TDUF
 
