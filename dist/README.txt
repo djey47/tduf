@@ -28,7 +28,7 @@ Thus, you always ought to make a backup of your TDU database before using it!
 * Imports data from TDUPE (Performance Pack .tdupk)
 * Exports current entry to following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch.
 
-### What's in this version ? (ALPHA 9)
+### What's in this version ? (ALPHA 10)
 
 * Enhance startup scripts to help with troubleshooting issues
 * New '?' button allowing searching of content and resource entries by REF
