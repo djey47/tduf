@@ -38,6 +38,8 @@ subprojects {
         compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
         compile group: 'com.google.guava', name: 'guava', version: '18.0'
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3.2'
+        compile group: 'com.esotericsoftware.minlog', name: 'minlog', version: '1.2'
+
 
         testCompile project(':lib-testing')
         testCompile group: 'junit', name: 'junit', version: '4.11'
