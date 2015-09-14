@@ -86,6 +86,13 @@ public class PerformanceLoggerTest {
     }
 
     private List<String> getLoggedMessages() throws IOException {
+        try {
+            // Wait for asynchronous ops to end
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         assertThat(perfLogPath.toFile()).exists();
 
         return Files.readAllLines(perfLogPath);

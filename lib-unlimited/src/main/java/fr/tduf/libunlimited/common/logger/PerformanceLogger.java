@@ -10,8 +10,10 @@ import static com.esotericsoftware.minlog.Log.*;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Minlog logger implementation for performance tracing into a file.
+ * Minlog logger implementation for asynchronous performance tracing into a file.
+ * Messages are appended to file contents.
  */
+// FIXME maintain logging order with a message queue
 public class PerformanceLogger extends Log.Logger {
 
     private static final String PERF_LOG_FILE_NAME = "tduf-perfs.log";
@@ -20,14 +22,14 @@ public class PerformanceLogger extends Log.Logger {
 
     private final Path logFilePath;
 
+    /**
+     * Unique constructor
+     * @param parentPath    : path to contain a perf.log file.
+     */
     public PerformanceLogger(Path parentPath) {
         requireNonNull(parentPath);
 
         logFilePath = parentPath.resolve(PERF_LOG_FILE_NAME);
-    }
-
-    private PerformanceLogger() {
-        logFilePath = null;
     }
 
     @Override
@@ -90,11 +92,25 @@ public class PerformanceLogger extends Log.Logger {
 
     @Override
     protected void print(String message) {
-        try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath.toFile(), true)))) {
-            out.println(message);
-        } catch (IOException e) {
-            super.print(message);
-            e.printStackTrace();
+        Runnable runnableLogger = new LoggingThread(message);
+        new Thread(runnableLogger).start();
+    }
+
+    private class LoggingThread implements Runnable {
+
+        private final String message;
+
+        private LoggingThread(String message) {
+            this.message = message;
+        }
+
+        @Override
+        public void run() {
+            try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath.toFile(), true)))) {
+                out.println(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
