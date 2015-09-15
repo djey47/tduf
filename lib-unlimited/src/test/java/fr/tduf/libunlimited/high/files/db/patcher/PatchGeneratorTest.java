@@ -1,12 +1,15 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -15,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.esotericsoftware.minlog.Log.LEVEL_TRACE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
@@ -24,6 +28,13 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PatchGeneratorTest {
+
+    @Before
+    public void setUp() {
+        Log.set(LEVEL_TRACE);
+
+        BulkDatabaseMiner.clearAllCaches();
+    }
 
     @Test(expected = NullPointerException.class)
     public void makePatch_whenNullArguments_shouldThrowException() throws ReflectiveOperationException {
@@ -77,7 +88,7 @@ public class PatchGeneratorTest {
     @Test
     public void makePatch_whenUsingRealDatabase_andUniqueRef_andRemoteResources_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
-        List<DbDto> databaseObjects = createDatabaseObjectsWithThreeLinkedTopicsFromRealFiles();
+        List<DbDto> databaseObjects = createDatabaseObjectsWithFourLinkedTopicsFromRealFiles();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
@@ -90,7 +101,7 @@ public class PatchGeneratorTest {
     @Test
     public void makePatch_whenUsingRealDatabase_andUniqueRef_andRemoteContentsReference_shouldReturnCorrectPatchObjectWithExistingRefs_andOtherTopic() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
-        List<DbDto> databaseObjects = createDatabaseObjectsWithThreeLinkedTopicsFromRealFiles();
+        List<DbDto> databaseObjects = createDatabaseObjectsWithFourLinkedTopicsFromRealFiles();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
@@ -154,7 +165,7 @@ public class PatchGeneratorTest {
         return asList(topicObject1, topicObject2);
     }
 
-    private static  List<DbDto> createDatabaseObjectsWithThreeLinkedTopicsFromRealFiles() throws IOException, URISyntaxException {
+    private static  List<DbDto> createDatabaseObjectsWithFourLinkedTopicsFromRealFiles() throws IOException, URISyntaxException {
         DbDto topicObject1 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Clothes.json");
         DbDto topicObject2 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Hair.json");
         DbDto topicObject3 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_PNJ.json");

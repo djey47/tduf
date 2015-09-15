@@ -10,6 +10,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -30,6 +31,11 @@ public class DatabaseIntegrityFixerTest {
 
     @Mock
     private static DatabaseGenHelper genHelperMock;
+
+    @Before
+    public void setUp() {
+        BulkDatabaseMiner.clearAllCaches();
+    }
 
     @Test(expected = NullPointerException.class)
     public void fixAllContentsObjects_whenNullErrors_shouldThrowNPE() throws Exception {

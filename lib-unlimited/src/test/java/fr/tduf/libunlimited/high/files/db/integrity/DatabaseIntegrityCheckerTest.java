@@ -1,12 +1,14 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.assertj.core.data.MapEntry;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -27,6 +29,11 @@ public class DatabaseIntegrityCheckerTest {
 
     private static final String UID_NON_EXISTING = "000";
     private static final String UID_EXISTING = "001";
+
+    @Before
+    public void setUp() {
+        BulkDatabaseMiner.clearAllCaches();
+    }
 
     @Test
     public void checkAll_whenNoError_shouldBuildIndexes_andReturnEmptyList() throws ReflectiveOperationException {
