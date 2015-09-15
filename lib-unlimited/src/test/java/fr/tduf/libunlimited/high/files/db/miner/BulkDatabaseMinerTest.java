@@ -1,19 +1,30 @@
 package fr.tduf.libunlimited.high.files.db.miner;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
 
+import static com.esotericsoftware.minlog.Log.LEVEL_INFO;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BulkDatabaseMinerTest {
+
+    @Before
+    public void setUp() {
+        // Set level to TRACE to get performance information
+        Log.set(LEVEL_INFO);
+
+        BulkDatabaseMiner.clearAllCaches();
+    }
 
     @Test(expected = NullPointerException.class)
     public void load_whenNullDatabaseObjects_shouldThrowNullPointerException() {

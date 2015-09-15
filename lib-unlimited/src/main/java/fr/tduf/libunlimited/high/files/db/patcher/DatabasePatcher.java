@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -52,6 +53,8 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 deleteContents(changeObject);
                 break;
         }
+
+        BulkDatabaseMiner.clearAllCaches();
     }
 
     private void deleteContents(DbPatchDto.DbChangeDto changeObject) {

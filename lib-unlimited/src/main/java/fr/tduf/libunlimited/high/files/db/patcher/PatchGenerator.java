@@ -56,7 +56,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         List<DbPatchDto.DbChangeDto> changesObjects = new ArrayList<>();
         List<DbStructureDto.Field> structureFields = this.topicObject.getStructure().getFields();
 
-        changesObjects.addAll(makeChangesObjectsForContents(DatabaseStructureQueryHelper.getUidFieldRank(structureFields), structureFields, range, requiredResourceReferences, requiredContentsReferences));
+        changesObjects.addAll(makeChangesObjectsForContents(structureFields, range, requiredResourceReferences, requiredContentsReferences));
 
         changesObjects.addAll(makeChangesObjectsForRequiredResources(requiredResourceReferences));
 
@@ -65,14 +65,14 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         return changesObjects;
     }
 
-    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForContents(OptionalInt potentialRefFieldRank, List<DbStructureDto.Field> structureFields, ReferenceRange range, Map<DbDto.Topic, Set<String>> requiredLocalResourceReferences, Map<DbDto.Topic, Set<String>> requiredContentsReferences) {
-        DbDto.Topic topic = this.topicObject.getTopic();
+    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForContents(List<DbStructureDto.Field> structureFields, ReferenceRange range, Map<DbDto.Topic, Set<String>> requiredLocalResourceReferences, Map<DbDto.Topic, Set<String>> requiredContentsReferences) {
+        OptionalInt potentialRefFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(structureFields);
 
-        return this.topicObject.getData().getEntries().stream()
+        return topicObject.getData().getEntries().stream()
 
                 .filter((entry) -> isInRange(entry, potentialRefFieldRank, range))
 
-                .map((acceptedEntry) -> createChangeObjectForEntry(topic, acceptedEntry, potentialRefFieldRank, structureFields, requiredLocalResourceReferences, requiredContentsReferences))
+                .map((acceptedEntry) -> createChangeObjectForEntry(topicObject.getTopic(), acceptedEntry, potentialRefFieldRank, structureFields, requiredLocalResourceReferences, requiredContentsReferences))
 
                 .collect(toSet());
     }
@@ -144,7 +144,10 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     private DbPatchDto.DbChangeDto createChangeObjectForEntry(DbDto.Topic topic, DbDataDto.Entry entry, OptionalInt potentialRefFieldRank, List<DbStructureDto.Field> structureFields, Map<DbDto.Topic, Set<String>> requiredResourceReferences, Map<DbDto.Topic, Set<String>> requiredContentsReferences) {
         List<String> entryValues = entry.getItems().stream()
 
-                .map((entryItem) -> fetchItemValue(topic, structureFields, entryItem, requiredContentsReferences, requiredResourceReferences))
+                .map((entryItem) -> {
+                    DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(entryItem, structureFields);
+                    return fetchItemValue(topic, structureField, entryItem, requiredContentsReferences, requiredResourceReferences);
+                })
 
                 .collect(toList());
 
@@ -161,8 +164,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .build();
     }
 
-    private String fetchItemValue(DbDto.Topic topic, List<DbStructureDto.Field> structureFields, DbDataDto.Item entryItem, Map<DbDto.Topic, Set<String>> requiredContentsReferences, Map<DbDto.Topic, Set<String>> requiredResourceReferences) {
-        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(entryItem, structureFields);
+    private String fetchItemValue(DbDto.Topic topic, DbStructureDto.Field structureField, DbDataDto.Item entryItem, Map<DbDto.Topic, Set<String>> requiredContentsReferences, Map<DbDto.Topic, Set<String>> requiredResourceReferences) {
         DbStructureDto.FieldType fieldType = structureField.getFieldType();
         if (RESOURCE_CURRENT_GLOBALIZED == fieldType
                 || RESOURCE_CURRENT_LOCALIZED == fieldType) {
