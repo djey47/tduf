@@ -27,10 +27,14 @@ public class PerformanceLogger extends Log.Logger {
      * Unique constructor
      * @param parentPath    : path to contain a perf.log file.
      */
-    public PerformanceLogger(Path parentPath) throws IOException {
+    public PerformanceLogger(Path parentPath) {
         requireNonNull(parentPath);
 
-        Files.createDirectories(parentPath);
+        try {
+            Files.createDirectories(parentPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         logFilePath = parentPath.resolve(PERF_LOG_FILE_NAME);
     }
