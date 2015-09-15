@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.common.logger;
 import com.esotericsoftware.minlog.Log;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
 
@@ -26,8 +27,10 @@ public class PerformanceLogger extends Log.Logger {
      * Unique constructor
      * @param parentPath    : path to contain a perf.log file.
      */
-    public PerformanceLogger(Path parentPath) {
+    public PerformanceLogger(Path parentPath) throws IOException {
         requireNonNull(parentPath);
+
+        Files.createDirectories(parentPath);
 
         logFilePath = parentPath.resolve(PERF_LOG_FILE_NAME);
     }
