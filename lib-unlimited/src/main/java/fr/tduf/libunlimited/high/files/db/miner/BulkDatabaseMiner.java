@@ -20,6 +20,8 @@ import static java.util.stream.Collectors.toSet;
  */
 public class BulkDatabaseMiner {
 
+    // TOCO add method to build a cache key with var-args
+
     static {
         Log.setLogger(new PerformanceLogger(Paths.get("perfs").toAbsolutePath()));
         Log.trace("BulkDatabaseMiner", "*** new perf session ***");
@@ -30,7 +32,7 @@ public class BulkDatabaseMiner {
     private static Map<DbDto.Topic, Optional<List<DbResourceDto>>> allResourcesFromTopic = new HashMap<>();
     private static Map<String, Optional<DbResourceDto>> resourceFromTopicAndLocale = new HashMap<>();
     private static Map<String, Optional<DbDataDto.Item>> contentItemWithEntryIdentifierAndFieldRank = new HashMap<>();
-//    private static Map<String, Optional<DbDataDto.Item>> contentItemFromEntryAtFieldRank = new HashMap<>();
+    private static Map<String, Optional<DbDataDto.Item>> contentItemFromEntryAtFieldRank = new HashMap<>();
     private static Map<String, Optional<DbResourceDto.Entry>> resourceEntryFromTopicAndLocaleWithReference = new HashMap<>();
     private static Map<String, Optional<DbDataDto.Entry>> contentEntryFromTopicWithReference = new HashMap<>();
 
@@ -56,7 +58,7 @@ public class BulkDatabaseMiner {
         allResourcesFromTopic.clear();
         resourceFromTopicAndLocale.clear();
         contentItemWithEntryIdentifierAndFieldRank.clear();
-//        contentItemFromEntryAtFieldRank.clear();
+        contentItemFromEntryAtFieldRank.clear();
         resourceEntryFromTopicAndLocaleWithReference.clear();
         contentEntryFromTopicWithReference.clear();
     }
@@ -234,25 +236,18 @@ public class BulkDatabaseMiner {
      */
     public static Optional<DbDataDto.Item> getContentItemFromEntryAtFieldRank(DbDto.Topic topic, DbDataDto.Entry entry, int fieldRank) {
 
-        // TODO introduce current topic to cache key
-        return entry.getItems().stream()
+        String key = topic.name() + ":" + entry.getId() + ":" + fieldRank;
+        if (!contentItemFromEntryAtFieldRank.containsKey(key)) {
+            Log.trace("BulkDatabaseMiner", "getContentItemFromEntryAtFieldRank(" + entry.getId() + ", " + fieldRank + ")");
 
-                .filter((contentItem) -> contentItem.getFieldRank() == fieldRank)
+            contentItemFromEntryAtFieldRank.put(key, entry.getItems().stream()
 
-                .findAny();
+                    .filter((contentItem) -> contentItem.getFieldRank() == fieldRank)
 
-//        String key = entry.getId() + ":" + fieldRank;
-//        if (!contentItemFromEntryAtFieldRank.containsKey(key)) {
-//            Log.trace("BulkDatabaseMiner", "getContentItemFromEntryAtFieldRank(" + entry.getId() + ", " + fieldRank + ")");
-//
-//            contentItemFromEntryAtFieldRank.put(key, entry.getItems().stream()
-//
-//                    .filter((contentItem) -> contentItem.getFieldRank() == fieldRank)
-//
-//                    .findAny());
-//        }
-//
-//        return contentItemFromEntryAtFieldRank.get(key);
+                    .findAny());
+        }
+
+        return contentItemFromEntryAtFieldRank.get(key);
     }
 
     /**
