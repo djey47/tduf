@@ -5,8 +5,6 @@ import fr.tduf.cli.tools.dto.DatabaseIntegrityErrorDto;
 import fr.tduf.cli.tools.dto.ErrorOutputDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.research.domain.DataStore;
-import fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectReader;

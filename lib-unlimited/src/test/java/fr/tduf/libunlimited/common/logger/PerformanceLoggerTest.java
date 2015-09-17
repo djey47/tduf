@@ -20,11 +20,11 @@ public class PerformanceLoggerTest {
 
     @Before
     public void setUp() throws IOException {
-        Log.setLogger(new PerformanceLogger(perfLogPath.getParent()));
-
         perfLogPath = Files
                 .createTempDirectory("libUnlimited-tests")
                 .resolve(Paths.get("tduf-perfs.log"));
+
+        Log.setLogger(new PerformanceLogger(perfLogPath.getParent()));
     }
 
     @Test(expected = NullPointerException.class)
