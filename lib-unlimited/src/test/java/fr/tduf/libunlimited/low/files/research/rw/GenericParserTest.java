@@ -1,6 +1,8 @@
 package fr.tduf.libunlimited.low.files.research.rw;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -11,7 +13,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericParserTest {
 
+    private static Class<GenericParserTest> thisClass = GenericParserTest.class;
     private static final String DATA = "data";
+
+    @Before
+    public void setUp() {
+        Log.set(Log.LEVEL_INFO);
+    }
 
     @Test
     public void newParser_whenProvidedContents_shouldReturnParserInstance() throws Exception {
@@ -70,7 +78,7 @@ public class GenericParserTest {
 
         // WHEN
         String actualDump = actualParser.dump();
-        System.out.println("Dumped contents:\n" + actualDump);
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDumpSizeByField());
@@ -84,7 +92,7 @@ public class GenericParserTest {
 
         // WHEN
         String actualDump = actualParser.dump();
-        System.out.println("Dumped contents:\n" + actualDump);
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDump());
@@ -98,7 +106,7 @@ public class GenericParserTest {
 
         // WHEN
         String actualDump = actualParser.dump();
-        System.out.println("Dumped contents:\n" + actualDump);
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDumpHalfFloat());
@@ -112,7 +120,7 @@ public class GenericParserTest {
 
         // WHEN
         String actualDump = actualParser.dump();
-        System.out.println("Dumped contents:\n" + actualDump);
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDumpVeryShortInt());
@@ -126,7 +134,7 @@ public class GenericParserTest {
 
         // WHEN
         String actualDump = actualParser.dump();
-        System.out.println("Dumped contents:\n" + actualDump);
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDump());
@@ -140,7 +148,7 @@ public class GenericParserTest {
 
         // WHEN
         String actualDump = actualParser.dump();
-        System.out.println("Dumped contents:\n" + actualDump);
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDumpSignedInteger());

@@ -14,15 +14,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PerformanceLoggerTest {
 
+    private static final  Class<PerformanceLoggerTest> thisClass = PerformanceLoggerTest.class;
+
     private Path perfLogPath;
 
     @Before
     public void setUp() throws IOException {
+        Log.setLogger(new PerformanceLogger(perfLogPath.getParent()));
+
         perfLogPath = Files
                 .createTempDirectory("libUnlimited-tests")
                 .resolve(Paths.get("tduf-perfs.log"));
-
-        Log.setLogger(new PerformanceLogger(perfLogPath.getParent()));
     }
 
     @Test(expected = NullPointerException.class)
@@ -37,7 +39,7 @@ public class PerformanceLoggerTest {
     public void info_whenInfoLevel_shouldWriteMessageInFile() throws IOException {
         // GIVEN-WHEN
         Log.set(Log.LEVEL_INFO);
-        Log.info("PerformanceLoggerTest", "here is a logged line!");
+        Log.info(thisClass.getSimpleName(), "here is a logged line!");
 
 
         // THEN

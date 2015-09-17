@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -8,6 +9,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
+import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
@@ -25,6 +27,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 public class DatabaseParserTest {
+
+    private static final Class<DatabaseParserTest> thisClass = DatabaseParserTest.class;
+
+    @Before
+    public void setUp() {
+        Log.set(Log.LEVEL_INFO);
+    }
 
     @Test
     public void load_whenProvidedContents_shouldReturnParserInstanceWithoutErrors() throws Exception {
@@ -346,10 +355,7 @@ public class DatabaseParserTest {
 
         String jsonResult = objectWriter.writeValueAsString(db);
 
-        // Uncomment below to fetch and actualize JSON result
-//        System.out.println("JSON DISPLAY");
-//        System.out.println(jsonResult);
-        //
+        Log.debug(thisClass.getSimpleName(), "Actual JSON:" + jsonResult);
 
 
         //THEN
@@ -380,9 +386,7 @@ public class DatabaseParserTest {
 
         String jsonResult = objectWriter.writeValueAsString(db);
 
-        // Uncomment below to fetch and actualize JSON result
-//        System.out.println("Actual JSON:" + jsonResult);
-        //
+        Log.debug(thisClass.getSimpleName(), "Actual JSON:" + jsonResult);
 
 
         //THEN

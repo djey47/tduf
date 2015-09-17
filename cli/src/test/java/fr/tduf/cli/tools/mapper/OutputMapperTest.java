@@ -1,13 +1,17 @@
 package fr.tduf.cli.tools.mapper;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.cli.tools.dto.DatabaseIntegrityErrorDto;
 import fr.tduf.cli.tools.dto.ErrorOutputDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectReader;
 import org.codehaus.jackson.map.ObjectWriter;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -18,8 +22,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class OutputMapperTest {
 
+    private static final Class<OutputMapperTest> thisClass = OutputMapperTest.class;
+
     private final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
     private final ObjectReader objectReader = new ObjectMapper().reader();
+
+    @Before
+    public void setUp() throws IOException {
+        Log.set(Log.LEVEL_INFO);
+    }
 
     @Test(expected = NullPointerException.class)
     public void errorOutputFromException_whenExceptionIsNull_shouldThrowNullPointerException() throws Exception {
@@ -51,7 +62,7 @@ public class OutputMapperTest {
 
         // WHEN
         String actualJson = objectWriter.writeValueAsString(errorOutputObject);
-        System.out.println("JSON output:\n" + actualJson);
+        Log.debug(thisClass.getSimpleName(), "JSON output:\n" + actualJson);
 
         // THEN
         JsonNode actualRootNode = objectReader.readTree(actualJson);

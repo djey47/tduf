@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import org.junit.Before;
@@ -35,6 +36,8 @@ public class DatabaseBankHelperTest {
 
     @Before
     public void setUp() throws IOException {
+        Log.set(Log.LEVEL_INFO);
+
         tempDirectory = Files.createTempDirectory("libUnlimited-tests").toString();
     }
 
@@ -80,7 +83,7 @@ public class DatabaseBankHelperTest {
 
 
         // THEN
-        System.out.println("Using temporary target directory: " + tempDir);
+        Log.info(thisClass.getSimpleName(), "Using temporary target directory: " + tempDir);
 
         assertThat(actualDirectory).isNotNull();
 

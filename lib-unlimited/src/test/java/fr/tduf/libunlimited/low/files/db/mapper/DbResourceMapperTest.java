@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.mapper;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
@@ -15,10 +16,13 @@ import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 public class DbResourceMapperTest {
 
+    private static final Class<DbResourceMapperTest> thisClass = DbResourceMapperTest.class;
+
     private final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
     @Before
     public void setUp() {
+        Log.set(Log.LEVEL_INFO);
     }
 
     @Test
@@ -54,7 +58,7 @@ public class DbResourceMapperTest {
 
         //WHEN
         String jsonResult = objectWriter.writeValueAsString(dbResourceDto);
-//        System.out.println("Actual JSON:" + jsonResult);
+        Log.debug(thisClass.getSimpleName(), "Actual JSON:" + jsonResult);
 
         //THEN
         assertEquals(expectedJson, jsonResult, JSONCompareMode.STRICT);

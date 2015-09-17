@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
+import com.esotericsoftware.minlog.Log;
 import com.google.common.base.Joiner;
 import fr.tduf.libunlimited.common.domain.ProcessResult;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
@@ -23,6 +24,8 @@ import static java.util.stream.Collectors.toList;
  * Bnk support, implementation relying on TDUMT-cli application.
  */
 public class GenuineBnkGateway implements BankSupport {
+
+    private static final Class<GenuineBnkGateway> thisClass = GenuineBnkGateway.class;
 
     public static final String EXTENSION_BANKS = "bnk";
 
@@ -99,14 +102,14 @@ public class GenuineBnkGateway implements BankSupport {
     @Override
     public void packAll(String inputDirectory, String outputBankFileName) throws IOException {
 
-//        System.out.println("-> inputDirectory: " + inputDirectory);
-//        System.out.println("-> outputBankFileName: " + outputBankFileName);
+        Log.debug(thisClass.getSimpleName(), "inputDirectory: " + inputDirectory);
+        Log.debug(thisClass.getSimpleName(), "outputBankFileName: " + outputBankFileName);
 
         String originalBankFileName = searchOriginalBankFileName(inputDirectory);
         Path originalBankFilePath = Paths.get(inputDirectory, originalBankFileName);
         Files.copy(originalBankFilePath, Paths.get(outputBankFileName), StandardCopyOption.REPLACE_EXISTING);
 
-//        System.out.println("-> originalBankFilePath: " + originalBankFilePath.toString());
+        Log.debug(thisClass.getSimpleName(), "originalBankFilePath: " + originalBankFilePath.toString());
 
         Path inputPath = Paths.get(inputDirectory);
         Files.walk(inputPath)
@@ -118,8 +121,8 @@ public class GenuineBnkGateway implements BankSupport {
                 .forEach((path) -> {
                     String packedFilePath = getInternalPackedFilePath(path, inputPath);
                     try {
-//                        System.out.println("-> packedFilePath: " + packedFilePath);
-//                        System.out.println("-> path: " + path.toString());
+                        Log.debug(thisClass.getSimpleName(), "packedFilePath: " + packedFilePath);
+                        Log.debug(thisClass.getSimpleName(), "path: " + path.toString());
 
                         ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, path.toString());
                         handleCommandLineErrors(processResult);
