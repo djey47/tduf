@@ -67,10 +67,11 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
     private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForContents(List<DbStructureDto.Field> structureFields, ReferenceRange range, Map<DbDto.Topic, Set<String>> requiredLocalResourceReferences, Map<DbDto.Topic, Set<String>> requiredContentsReferences) {
         OptionalInt potentialRefFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(structureFields);
+        DbDto.Topic topic = topicObject.getTopic();
 
         return topicObject.getData().getEntries().stream()
 
-                .filter((entry) -> isInRange(entry, potentialRefFieldRank, range))
+                .filter((entry) -> isInRange(topic, entry, potentialRefFieldRank, range))
 
                 .map((acceptedEntry) -> createChangeObjectForEntry(topicObject.getTopic(), acceptedEntry, potentialRefFieldRank, structureFields, requiredLocalResourceReferences, requiredContentsReferences))
 
@@ -153,7 +154,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
         String entryReference = null;
         if (potentialRefFieldRank.isPresent()) {
-            entryReference = BulkDatabaseMiner.getContentEntryReference(entry, potentialRefFieldRank.getAsInt());
+            entryReference = BulkDatabaseMiner.getContentEntryReference(topic, entry, potentialRefFieldRank.getAsInt());
         }
 
         return DbPatchDto.DbChangeDto.builder()
@@ -197,11 +198,11 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         requiredResourceReferences.get(topic).add(reference);
     }
 
-    private static boolean isInRange(DbDataDto.Entry entry, OptionalInt potentialRefFieldRank, ReferenceRange range) {
+    private static boolean isInRange(DbDto.Topic topic, DbDataDto.Entry entry, OptionalInt potentialRefFieldRank, ReferenceRange range) {
 
         String entryRef = "whatever";
         if (potentialRefFieldRank.isPresent()) {
-            entryRef = BulkDatabaseMiner.getContentEntryReference(entry, potentialRefFieldRank.getAsInt());
+            entryRef = BulkDatabaseMiner.getContentEntryReference(topic, entry, potentialRefFieldRank.getAsInt());
         }
         return range.accepts(entryRef);
     }

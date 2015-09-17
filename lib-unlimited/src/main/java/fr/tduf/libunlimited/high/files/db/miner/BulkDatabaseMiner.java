@@ -227,11 +227,12 @@ public class BulkDatabaseMiner {
     }
 
     /**
+     * @param topic     : topic containing specified entry
      * @param entry     : entry containing items to be looked at
      * @param fieldRank : rank of field content item belongs to
      * @return item if it exists, empty otherwise.
      */
-    public static Optional<DbDataDto.Item> getContentItemFromEntryAtFieldRank(DbDataDto.Entry entry, int fieldRank) {
+    public static Optional<DbDataDto.Item> getContentItemFromEntryAtFieldRank(DbDto.Topic topic, DbDataDto.Entry entry, int fieldRank) {
 
         // TODO introduce current topic to cache key
         return entry.getItems().stream()
@@ -267,7 +268,7 @@ public class BulkDatabaseMiner {
             Log.trace("BulkDatabaseMiner", "getContentItemWithEntryIdentifierAndFieldRank(" + fieldRank + ", " + entryIdentifier + ", " + topic + ")");
 
             contentItemWithEntryIdentifierAndFieldRank.put(key, getContentEntryFromTopicWithInternalIdentifier(entryIdentifier, topic)
-                    .map((entry) -> getContentItemFromEntryAtFieldRank(entry, fieldRank)
+                    .map((entry) -> getContentItemFromEntryAtFieldRank(topic, entry, fieldRank)
 
                             .orElse(null)));
         }
@@ -348,19 +349,21 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     * @param entry        : contents entry to be analyzed
-     * @param uidFieldRank : rank of UID field in structure
+     *
+     * @param topic         : topic containing specified entry
+     * @param entry         : contents entry to be analyzed
+     * @param uidFieldRank  : rank of UID field in structure
      * @return raw value of entry reference
      */
-    public static String getContentEntryReference(DbDataDto.Entry entry, int uidFieldRank) {
-        // TODO introduce current topic
+    public static String getContentEntryReference(DbDto.Topic topic, DbDataDto.Entry entry, int uidFieldRank) {
         Log.trace("BulkDatabaseMiner", "getContentEntryReference(" + entry.getId() + ", " + uidFieldRank + ")");
 
-        return getContentItemFromEntryAtFieldRank(entry, uidFieldRank).get().getRawValue();
+        return getContentItemFromEntryAtFieldRank(topic, entry, uidFieldRank).get().getRawValue();
     }
 
     private String getRawValueAtEntryIndexAndRank(DbDto.Topic topic, int fieldRank, long entryIndex) {
-        return getContentItemFromEntryAtFieldRank(getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic).get(), fieldRank).get().getRawValue();
+        DbDataDto.Entry contentEntry = getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic).get();
+        return getContentItemFromEntryAtFieldRank(topic, contentEntry, fieldRank).get().getRawValue();
     }
 
     private static String getResourceValueWithReference(DbResourceDto resource, String reference) {

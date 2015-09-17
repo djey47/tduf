@@ -310,7 +310,7 @@ public class BulkDatabaseMinerTest {
         DbDataDto.Entry entry = DbDataDto.Entry.builder().build();
 
         // WHEN
-        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(entry, 1);
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(null, entry, 1);
 
         // THEN
         assertThat(potentialItem).isEmpty();
@@ -324,7 +324,7 @@ public class BulkDatabaseMinerTest {
         DbDataDto.Entry entry = createContentEntryWithItems(asList(expectedItem, otherItem));
 
         // WHEN
-        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(entry, 1);
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(null, entry, 1);
 
         // THEN
         assertThat(potentialItem).contains(expectedItem);
@@ -333,7 +333,7 @@ public class BulkDatabaseMinerTest {
     @Test(expected = NullPointerException.class)
     public void getContentEntryReference_whenNullEntry_shouldThrowException() {
         // GIVEN-WHEN
-        BulkDatabaseMiner.getContentEntryReference(null, -1);
+        BulkDatabaseMiner.getContentEntryReference(null, null, -1);
 
         // THEN: NPE
     }
@@ -346,7 +346,7 @@ public class BulkDatabaseMinerTest {
         DbDataDto.Entry entry = createContentEntryWithItems(asList(item, otherItem));
 
         // WHEN
-        BulkDatabaseMiner.getContentEntryReference(entry, 3);
+        BulkDatabaseMiner.getContentEntryReference(null, entry, 3);
 
         // THEN: NSE
     }
@@ -362,7 +362,7 @@ public class BulkDatabaseMinerTest {
         DbDataDto.Entry entry = createContentEntryWithItems(asList(uidItem, otherItem));
 
         // WHEN
-        String actualEntryReference = BulkDatabaseMiner.getContentEntryReference(entry, 1);
+        String actualEntryReference = BulkDatabaseMiner.getContentEntryReference(null, entry, 1);
 
         // THEN
         assertThat(actualEntryReference).isEqualTo("123456789");
