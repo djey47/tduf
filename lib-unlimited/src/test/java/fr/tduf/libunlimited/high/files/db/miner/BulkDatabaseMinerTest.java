@@ -310,7 +310,7 @@ public class BulkDatabaseMinerTest {
         DbDataDto.Entry entry = DbDataDto.Entry.builder().build();
 
         // WHEN
-        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(null, entry, 1);
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(DbDto.Topic.BOTS, entry, 1);
 
         // THEN
         assertThat(potentialItem).isEmpty();
@@ -324,7 +324,7 @@ public class BulkDatabaseMinerTest {
         DbDataDto.Entry entry = createContentEntryWithItems(asList(expectedItem, otherItem));
 
         // WHEN
-        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(null, entry, 1);
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(DbDto.Topic.BOTS, entry, 1);
 
         // THEN
         assertThat(potentialItem).contains(expectedItem);
@@ -346,7 +346,7 @@ public class BulkDatabaseMinerTest {
         DbDataDto.Entry entry = createContentEntryWithItems(asList(item, otherItem));
 
         // WHEN
-        BulkDatabaseMiner.getContentEntryReference(null, entry, 3);
+        BulkDatabaseMiner.getContentEntryReference(DbDto.Topic.BOTS, entry, 3);
 
         // THEN: NSE
     }
@@ -362,7 +362,7 @@ public class BulkDatabaseMinerTest {
         DbDataDto.Entry entry = createContentEntryWithItems(asList(uidItem, otherItem));
 
         // WHEN
-        String actualEntryReference = BulkDatabaseMiner.getContentEntryReference(null, entry, 1);
+        String actualEntryReference = BulkDatabaseMiner.getContentEntryReference(DbDto.Topic.BOTS, entry, 1);
 
         // THEN
         assertThat(actualEntryReference).isEqualTo("123456789");
