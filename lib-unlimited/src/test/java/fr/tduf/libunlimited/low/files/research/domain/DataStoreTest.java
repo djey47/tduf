@@ -1,12 +1,12 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
@@ -19,10 +19,14 @@ import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 public class DataStoreTest {
 
+    private static  Class<DataStoreTest> thisClass = DataStoreTest.class;
+
     private DataStore dataStore;
 
     @Before
     public void setUp() throws IOException {
+        Log.set(Log.LEVEL_INFO);
+
         dataStore = new DataStore(DataStoreFixture.getFileStructure());
     }
 
@@ -78,7 +82,7 @@ public class DataStoreTest {
 
         // WHEN
         String actualJson = dataStore.toJsonString();
-        System.out.println(actualJson);
+        Log.debug(thisClass.getSimpleName(), actualJson);
 
         // THEN
         assertThat(actualJson).isNotNull();

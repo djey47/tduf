@@ -1,7 +1,11 @@
 package fr.tduf.libunlimited.low.files.banks.mapping.rw;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
+import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -11,6 +15,13 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapParserTest {
+
+    private static final Class<MapParserTest> thisClass = MapParserTest.class;
+
+    @Before
+    public void setUp() throws IOException {
+        Log.set(Log.LEVEL_INFO);
+    }
 
     @Test
     public void load_whenProvidedContents_shouldReturnParserInstance() throws Exception {
@@ -33,7 +44,7 @@ public class MapParserTest {
         // WHEN
         MapParser mapParser = MapParser.load(mapContents);
         BankMap actualBankMap = mapParser.parse();
-        System.out.println("Dumped contents:\n" + mapParser.dump());
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + mapParser.dump());
 
 
         // THEN

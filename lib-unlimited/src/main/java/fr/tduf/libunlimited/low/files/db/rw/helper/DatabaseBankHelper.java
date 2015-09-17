@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -25,6 +26,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class DatabaseBankHelper {
 
+    private static final Class<DatabaseBankHelper> thisClass = DatabaseBankHelper.class;
     private static final String DATABASE_BANK_FILE_NAME = "DB.bnk";
 
     /**
@@ -106,9 +108,9 @@ public class DatabaseBankHelper {
         try {
             prepareFilesToBeRepacked(databaseDirectory, bankFileName, bankSupport);
 
-//            System.out.println("-> databaseDirectory: " + databaseDirectory);
-//            System.out.println("-> targetDirectory: " + targetDirectory);
-//            System.out.println("-> bankFileName: " + bankFileName);
+            Log.debug(thisClass.getSimpleName(), "databaseDirectory: " + databaseDirectory);
+            Log.debug(thisClass.getSimpleName(), "targetDirectory: " + targetDirectory);
+            Log.debug(thisClass.getSimpleName(), "bankFileName: " + bankFileName);
 
             bankSupport.packAll(Paths.get(databaseDirectory, bankFileName).toString(), Paths.get(targetDirectory, bankFileName).toString());
         } catch (IOException ioe) {
