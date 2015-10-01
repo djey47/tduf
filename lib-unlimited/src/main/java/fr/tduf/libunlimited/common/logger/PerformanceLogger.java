@@ -6,6 +6,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.esotericsoftware.minlog.Log.*;
 import static java.util.Objects.requireNonNull;
@@ -14,14 +16,17 @@ import static java.util.Objects.requireNonNull;
  * Minlog logger implementation for asynchronous performance tracing into a file.
  * Messages are appended to file contents.
  */
-// FIXME maintain logging order with a message queue
+// FIXME does not write all messages when messageQueue has too much usage... (see unit tests)
 public class PerformanceLogger extends Log.Logger {
 
     private static final String PERF_LOG_FILE_NAME = "tduf-perfs.log";
+    private static final int MAX_QUEUED_MESSAGE_COUNT = 1024;
 
     private final long firstLogTime = new Date().getTime();
 
     private final Path logFilePath;
+
+    private BlockingQueue<String> messageQueue = new LinkedBlockingQueue<>(MAX_QUEUED_MESSAGE_COUNT);
 
     /**
      * Unique constructor
@@ -37,6 +42,9 @@ public class PerformanceLogger extends Log.Logger {
         }
 
         logFilePath = parentPath.resolve(PERF_LOG_FILE_NAME);
+
+        Runnable runnableLogger = new LoggingThread(messageQueue);
+        new Thread(runnableLogger).start();
     }
 
     @Override
@@ -99,24 +107,30 @@ public class PerformanceLogger extends Log.Logger {
 
     @Override
     protected void print(String message) {
-        Runnable runnableLogger = new LoggingThread(message);
-        new Thread(runnableLogger).start();
+        messageQueue.offer(message);
     }
 
+    /**
+     * Actually writes available messages from the queue.
+     */
     private class LoggingThread implements Runnable {
 
-        private final String message;
+        private final BlockingQueue<String> messageQueue;
 
-        private LoggingThread(String message) {
-            this.message = message;
+        private LoggingThread(BlockingQueue<String> messageQueue) {
+            this.messageQueue = messageQueue;
         }
 
         @Override
         public void run() {
-            try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath.toFile(), true)))) {
-                out.println(message);
-            } catch (IOException e) {
-                e.printStackTrace();
+            boolean isThreadTerminated = false;
+            while(!isThreadTerminated) {
+                try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath.toFile(), true)))) {
+                    out.println(messageQueue.take());
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                    isThreadTerminated = true;
+                }
             }
         }
     }
