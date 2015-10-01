@@ -36,7 +36,7 @@ public class PerformanceLoggerTest {
     }
 
     @Test
-    public void info_whenInfoLevel_shouldWriteMessageInFile() throws IOException {
+    public void info_whenInfoLevel_shouldWriteMessageInFile() throws IOException, InterruptedException {
         // GIVEN-WHEN
         Log.set(Log.LEVEL_INFO);
         Log.info(thisClass.getSimpleName(), "here is a logged line!");
@@ -49,11 +49,34 @@ public class PerformanceLoggerTest {
         assertThat(loggedMessages).hasSize(1);
         assertThat(loggedMessages.get(0))
                 .hasSize(66)
-                .contains("INFO: [PerformanceLoggerTest] here is a logged line!");
+                .endsWith("  INFO: [PerformanceLoggerTest] here is a logged line!");
     }
 
     @Test
-    public void info_withoutCategory_shouldWriteMessageInFile() throws IOException {
+    public void info_whenInfoLevel_andManyMessages_shouldWriteMessagesInFile() throws IOException, InterruptedException {
+        // GIVEN-WHEN
+        Log.set(Log.LEVEL_INFO);
+        int messageCount = 1200; // FIXME > 1216 : messages may be lost
+
+        for (int i = 0 ; i < messageCount ; i++) {
+            Log.info(thisClass.getSimpleName(), "here is a logged line! Iteration " + i);
+        }
+
+        // THEN
+        System.out.println("Perf log file:" + perfLogPath);
+
+        List<String> loggedMessages = getLoggedMessages();
+        assertThat(loggedMessages).hasSize(messageCount);
+        assertThat(loggedMessages.get(0))
+                .endsWith("  INFO: [PerformanceLoggerTest] here is a logged line! Iteration 0");
+        assertThat(loggedMessages.get(49))
+                .endsWith("  INFO: [PerformanceLoggerTest] here is a logged line! Iteration 49");
+        assertThat(loggedMessages.get(99))
+                .endsWith("  INFO: [PerformanceLoggerTest] here is a logged line! Iteration 99");
+    }
+
+    @Test
+    public void info_withoutCategory_shouldWriteMessageInFile() throws IOException, InterruptedException {
         // GIVEN-WHEN
         Log.set(Log.LEVEL_INFO);
         Log.info("here is a logged line without category!");
@@ -66,11 +89,11 @@ public class PerformanceLoggerTest {
         assertThat(loggedMessages).hasSize(1);
         assertThat(loggedMessages.get(0))
                 .hasSize(59)
-                .contains("INFO: here is a logged line without category!");
+                .endsWith("  INFO: here is a logged line without category!");
     }
 
     @Test
-    public void error_withException_shouldWriteMessageInFile() throws IOException {
+    public void error_withException_shouldWriteMessageInFile() throws IOException, InterruptedException {
         // GIVEN-WHEN
         Log.set(Log.LEVEL_INFO);
         Log.error("PerformanceLoggerTest", "here is a logged exception!", new IllegalArgumentException("iae!"));
@@ -83,17 +106,13 @@ public class PerformanceLoggerTest {
         assertThat(loggedMessages.size()).isGreaterThan(1);
         assertThat(loggedMessages.get(0))
                 .hasSize(71)
-                .contains("ERROR: [PerformanceLoggerTest] here is a logged exception!");
+                .endsWith(" ERROR: [PerformanceLoggerTest] here is a logged exception!");
         assertThat(loggedMessages.get(1)).isEqualTo("java.lang.IllegalArgumentException: iae!");
     }
 
-    private List<String> getLoggedMessages() throws IOException {
-        try {
-            // Wait for asynchronous ops to end
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    private List<String> getLoggedMessages() throws IOException, InterruptedException {
+        // Wait for asynchronous ops to end
+        Thread.sleep(250);
 
         assertThat(perfLogPath.toFile()).exists();
 
