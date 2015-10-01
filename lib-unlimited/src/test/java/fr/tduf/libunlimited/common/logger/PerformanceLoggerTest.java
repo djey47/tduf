@@ -56,7 +56,7 @@ public class PerformanceLoggerTest {
     public void info_whenInfoLevel_andManyMessages_shouldWriteMessagesInFile() throws IOException, InterruptedException {
         // GIVEN-WHEN
         Log.set(Log.LEVEL_INFO);
-        int messageCount = 1200; // FIXME > 1216 : messages may be lost
+        int messageCount = 600; // FIXME messages may be lost
 
         for (int i = 0 ; i < messageCount ; i++) {
             Log.info(thisClass.getSimpleName(), "here is a logged line! Iteration " + i);
