@@ -1,5 +1,6 @@
 package fr.tduf.gui.database;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.stages.MainStageDesigner;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -16,6 +17,8 @@ public class DatabaseEditor extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         parameters = getParameters().getUnnamed();
+
+        Log.set(Log.LEVEL_TRACE);
 
         MainStageDesigner.init(primaryStage);
         primaryStage.show();

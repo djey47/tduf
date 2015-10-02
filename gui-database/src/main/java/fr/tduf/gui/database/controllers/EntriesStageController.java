@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
 import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
@@ -30,6 +31,8 @@ import static java.util.stream.Collectors.toList;
 
 public class EntriesStageController extends AbstractGuiController {
 
+    private static final String THIS_CLASS_NAME = EntriesStageController.class.getSimpleName();
+
     @FXML
     private Label currentTopicLabel;
 
@@ -55,7 +58,7 @@ public class EntriesStageController extends AbstractGuiController {
 
     @FXML
     private void handleResourceTableMouseClick(MouseEvent mouseEvent) {
-        System.out.println("entriesStageController->handleEntriesTableMouseClick");
+        Log.trace(THIS_CLASS_NAME, "->handleEntriesTableMouseClick");
 
         if (MouseButton.PRIMARY == mouseEvent.getButton()) {
             TableViewHelper.getMouseSelectedItem(mouseEvent, ContentEntryDataItem.class)
@@ -65,7 +68,7 @@ public class EntriesStageController extends AbstractGuiController {
 
     @FXML
     private void handleSearchEntryButtonAction(ActionEvent actionEvent) {
-        System.out.println("entriesStageController->handleSearchEntryButtonAction");
+        Log.trace(THIS_CLASS_NAME, "->handleSearchEntryButtonAction");
 
         askForReferenceAndSelectItem();
     }

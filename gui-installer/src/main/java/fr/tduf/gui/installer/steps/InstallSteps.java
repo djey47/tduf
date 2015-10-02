@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.steps;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
@@ -35,12 +36,16 @@ import static java.util.Arrays.asList;
  */
 public class InstallSteps {
 
+    private static final String THIS_CLASS_NAME = InstallSteps.class.getSimpleName();
+
     /**
      * Entry point for full install
      * @param configuration : settings to install required mod.
      */
     public static void install(InstallerConfiguration configuration) {
         // TODO handle exceptions
+
+        Log.trace(THIS_CLASS_NAME, "->Starting full install");
 
         try {
             copyFilesStep(configuration);
@@ -66,7 +71,7 @@ public class InstallSteps {
      * @param configuration : settings to perform current step
      */
     public static void copyFilesStep(InstallerConfiguration configuration) {
-        System.out.println("Entering step: Copy Files");
+        Log.trace(THIS_CLASS_NAME, "->Entering step: Copy Files");
 
         String banksDirectory = getTduBanksDirectory(configuration);
         asList(DIRECTORY_3D, DIRECTORY_RIMS, DIRECTORY_GAUGES, DIRECTORY_SOUND)
@@ -86,16 +91,16 @@ public class InstallSteps {
      * @throws IOException
      */
     public static String updateMagicMapStep(InstallerConfiguration configuration) throws IOException {
-        System.out.println("Entering step: Update Magic Map");
+        Log.trace(THIS_CLASS_NAME, "->Entering step: Update Magic Map");
 
         String bankDirectory = getTduBanksDirectory(configuration);
         String magicMapFile = Paths.get(bankDirectory, MapHelper.MAPPING_FILE_NAME).toString();
 
-        System.out.println("Magic Map file: " + magicMapFile);
+        Log.info(THIS_CLASS_NAME, "->Magic Map file: " + magicMapFile);
 
         MagicMapHelper.fixMagicMap(bankDirectory)
 
-                .forEach((fileName) -> System.out.println("*> added checksum of " + fileName));
+                .forEach((fileName) -> Log.info(THIS_CLASS_NAME, "*> added checksum of " + fileName));
 
         return magicMapFile;
     }
@@ -104,7 +109,7 @@ public class InstallSteps {
      * @param configuration : settings to perform current step
      */
     public static void updateDatabaseStep(InstallerConfiguration configuration) throws IOException, ReflectiveOperationException {
-        System.out.println("Entering step: Update Database");
+        Log.trace(THIS_CLASS_NAME, "->Entering step: Update Database");
 
         String jsonDatabaseDirectory = Files.createTempDirectory("guiInstaller").toString();
 
@@ -120,21 +125,21 @@ public class InstallSteps {
     static List<String> unpackDatabaseToJson(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException {
         String databaseDirectory = getTduDatabaseDirectory(configuration);
 
-        System.out.println("Unpacking TDU database: " + databaseDirectory);
+        Log.info(THIS_CLASS_NAME, "->Unpacking TDU database: " + databaseDirectory);
 
         String unpackedDatabaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseDirectory, Optional.of(jsonDatabaseDirectory), configuration.getBankSupport());
 
-        System.out.println("Unpacked TDU database directory: " + unpackedDatabaseDirectory);
+        Log.info(THIS_CLASS_NAME, "->Unpacked TDU database directory: " + unpackedDatabaseDirectory);
 
         List<String> jsonFiles = JsonGateway.dump(unpackedDatabaseDirectory, jsonDatabaseDirectory, false, new ArrayList<>());
 
-        System.out.println("Prepared JSON database directory: " + jsonDatabaseDirectory);
+        Log.info(THIS_CLASS_NAME, "->Prepared JSON database directory: " + jsonDatabaseDirectory);
 
         return jsonFiles;
     }
 
     static List<String> applyPatches(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException, ReflectiveOperationException {
-        System.out.println("Loading JSON database: " + jsonDatabaseDirectory);
+        Log.info(THIS_CLASS_NAME, "->>Loading JSON database: " + jsonDatabaseDirectory);
 
         List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseDirectory);
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects);
@@ -157,25 +162,25 @@ public class InstallSteps {
                     }
                 });
 
-        System.out.println("Saving JSON database: " + jsonDatabaseDirectory);
+        Log.info(THIS_CLASS_NAME, "->Saving JSON database: " + jsonDatabaseDirectory);
 
         return DatabaseReadWriteHelper.writeDatabaseTopicsToJson(allTopicObjects, jsonDatabaseDirectory);
     }
 
     static void repackJsonDatabase(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException {
-        System.out.println("Converting JSON database: " + jsonDatabaseDirectory);
+        Log.info(THIS_CLASS_NAME, "->Converting JSON database: " + jsonDatabaseDirectory);
 
         String extractedDatabaseDirectory = createTempDirectory();
 
         JsonGateway.gen(jsonDatabaseDirectory, extractedDatabaseDirectory, false, new ArrayList<>());
 
-        System.out.println("Converted TDU database directory: " + extractedDatabaseDirectory);
+        Log.info(THIS_CLASS_NAME, "->Converted TDU database directory: " + extractedDatabaseDirectory);
 
         String databaseDirectory = getTduDatabaseDirectory(configuration);
 
         DatabaseBankHelper.repackDatabaseFromDirectory(extractedDatabaseDirectory, databaseDirectory, Optional.of(jsonDatabaseDirectory), configuration.getBankSupport());
 
-        System.out.println("Repacked database: " + extractedDatabaseDirectory + " to " + databaseDirectory);
+        Log.info(THIS_CLASS_NAME, "->Repacked database: " + extractedDatabaseDirectory + " to " + databaseDirectory);
     }
 
     private static String getTduDatabaseDirectory(InstallerConfiguration configuration) {
@@ -184,7 +189,7 @@ public class InstallSteps {
     }
 
     private static void copyAssets(String assetName, String assetsDirectory, String banksDirectory) throws IOException {
-        System.out.println("Copying assets: " + assetName) ;
+        Log.info(THIS_CLASS_NAME, "->Copying assets: " + assetName) ;
 
         Path assetPath = Paths.get(assetsDirectory, assetName);
         Path targetPath = getTargetPath(assetName, banksDirectory);
@@ -250,7 +255,7 @@ public class InstallSteps {
         FilesHelper.createDirectoryIfNotExists(targetPath.toString());
         Path finalPath = targetPath.resolve(assetPath.getFileName());
 
-        System.out.println("*> " + assetPath + " to " + finalPath);
+        Log.info(THIS_CLASS_NAME, "*> " + assetPath + " to " + finalPath);
 
         try {
             Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
@@ -260,7 +265,7 @@ public class InstallSteps {
     }
 
     private static void applyPatch(Path patchPath, DatabasePatcher patcher) throws IOException {
-        System.out.println("*> Now applying patch: " + patchPath);
+        Log.info(THIS_CLASS_NAME, "*> Now applying patch: " + patchPath);
 
         DbPatchDto patchObject = new ObjectMapper().readValue(patchPath.toFile(), DbPatchDto.class);
         patcher.apply(patchObject);

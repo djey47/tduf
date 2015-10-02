@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
 import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
@@ -32,6 +33,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 public class ResourcesStageController extends AbstractGuiController {
+    private static final String THIS_CLASS_NAME = ResourcesStageController.class.getSimpleName();
 
     private DialogsHelper dialogsHelper = new DialogsHelper();
 
@@ -66,7 +68,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
     @FXML
     private void handleResourceTableMouseClick(MouseEvent mouseEvent) {
-        System.out.println("handleResourceTableMouseClick");
+        Log.trace(THIS_CLASS_NAME, "->handleResourceTableMouseClick");
 
         if (MouseButton.PRIMARY == mouseEvent.getButton() && mouseEvent.getClickCount() == 2) {
             TableViewHelper.getMouseSelectedItem(mouseEvent, ResourceEntryDataItem.class)
@@ -76,7 +78,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
     @FXML
     private void handleSelectResourceButtonMouseClick(ActionEvent actionEvent) {
-        System.out.println("handleSelectResourceButtonMouseClick");
+        Log.trace(THIS_CLASS_NAME, "->handleSelectResourceButtonMouseClick");
 
         ResourceEntryDataItem selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
         if (selectedResource != null && resourceReferenceProperty != null) {
@@ -86,7 +88,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
     @FXML
     private void handleEditResourceButtonMouseClick(ActionEvent actionEvent) {
-        System.out.println("handleEditResourceButtonMouseClick");
+        Log.trace(THIS_CLASS_NAME, "->handleEditResourceButtonMouseClick");
 
         ofNullable(resourcesTableView.getSelectionModel().selectedItemProperty().getValue())
                 .ifPresent((selectedResource) -> {
@@ -99,7 +101,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
     @FXML
     private void handleAddResourceButtonMouseClick(ActionEvent actionEvent) {
-        System.out.println("handleAddResourceButtonMouseClick");
+        Log.trace(THIS_CLASS_NAME, "->handleAddResourceButtonMouseClick");
 
         DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
         dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.empty(), currentLocale)
@@ -108,7 +110,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
     @FXML
     private void handleRemoveResourceButtonMouseClick(ActionEvent actionEvent) {
-        System.out.println("handleRemoveResourceButtonMouseClick");
+        Log.trace(THIS_CLASS_NAME, "->handleRemoveResourceButtonMouseClick");
 
         ofNullable(resourcesTableView.getSelectionModel().selectedItemProperty().getValue())
                 .ifPresent((selectedResource) -> {
@@ -123,19 +125,19 @@ public class ResourcesStageController extends AbstractGuiController {
 
     @FXML
     private void handleSearchEntryButtonAction(ActionEvent actionEvent) {
-        System.out.println("resourcesStageController->handleSearchEntryButtonAction");
+        Log.trace(THIS_CLASS_NAME, "->handleSearchEntryButtonAction");
 
         askForReferenceAndSelectItem();
     }
 
     private void handleTopicChoiceChanged(DbDto.Topic newTopic) {
-        System.out.println("handleTopicChoiceChanged: " + newTopic);
+        Log.trace(THIS_CLASS_NAME, "->handleTopicChoiceChanged: " + newTopic);
 
         updateResourcesStageData();
     }
 
     private void handleBrowseToResource(LocalizedResource newResource) {
-        System.out.println("handleBrowseToResource: " + newResource);
+        Log.trace(THIS_CLASS_NAME, "->handleBrowseToResource: " + newResource);
 
         topicsChoiceBox.setValue(newResource.getTopic().get());
 

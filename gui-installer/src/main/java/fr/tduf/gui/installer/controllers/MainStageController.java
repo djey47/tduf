@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.controllers;
 
+import com.esotericsoftware.minlog.Log;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
@@ -27,6 +28,7 @@ import static javafx.scene.control.Alert.AlertType.INFORMATION;
  * Makes it a possible to intercept all GUI events.
  */
 public class MainStageController extends AbstractGuiController {
+    private static final String THIS_CLASS_NAME = MainStageController.class.getSimpleName();
 
     private SimpleStringProperty tduDirectoryProperty;
 
@@ -45,7 +47,7 @@ public class MainStageController extends AbstractGuiController {
 
     @FXML
     public void handleUpdateMagicMapMenuItemAction(ActionEvent actionEvent) throws IOException {
-        System.out.println("handleUpdateMagicMapMenuItemAction");
+        Log.trace(THIS_CLASS_NAME, "->handleUpdateMagicMapMenuItemAction");
 
         if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
             return;
@@ -56,14 +58,14 @@ public class MainStageController extends AbstractGuiController {
 
     @FXML
     public void handleBrowseTduLocationButtonAction(ActionEvent actionEvent) {
-        System.out.println("handleBrowseTduLocationButtonAction");
+        Log.trace(THIS_CLASS_NAME, "->handleBrowseTduLocationButtonAction");
 
         browseForTduDirectory();
     }
 
     @FXML
     public void handleInstallButtonAction(ActionEvent actionEvent) throws IOException {
-        System.out.println("handleInstallButtonAction");
+        Log.trace(THIS_CLASS_NAME, "->handleInstallButtonAction");
 
         if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
             return;
