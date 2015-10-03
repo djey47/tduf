@@ -139,7 +139,7 @@ public class InstallSteps {
     }
 
     static List<String> applyPatches(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException, ReflectiveOperationException {
-        Log.info(THIS_CLASS_NAME, "->>Loading JSON database: " + jsonDatabaseDirectory);
+        Log.info(THIS_CLASS_NAME, "->Loading JSON database: " + jsonDatabaseDirectory);
 
         List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseDirectory);
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects);
