@@ -29,6 +29,7 @@ public class BulkDatabaseMiner {
 
     private final List<DbDto> topicObjects;
 
+    private static Map<DbDto.Topic, Optional<DbDto>> topics = new HashMap<>();
     private static Map<DbDto.Topic, Optional<List<DbResourceDto>>> allResourcesFromTopic = new HashMap<>();
     private static Map<String, Optional<DbResourceDto>> resourceFromTopicAndLocale = new HashMap<>();
     private static Map<String, Optional<DbDataDto.Item>> contentItemWithEntryIdentifierAndFieldRank = new HashMap<>();
@@ -52,9 +53,10 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     *
+     * Clears only variant caches.
      */
     public static void clearAllCaches() {
+        topics.clear();
         allResourcesFromTopic.clear();
         resourceFromTopicAndLocale.clear();
         contentItemWithEntryIdentifierAndFieldRank.clear();
@@ -114,13 +116,18 @@ public class BulkDatabaseMiner {
      * @return database object related to this topic.
      */
     public Optional<DbDto> getDatabaseTopic(DbDto.Topic topic) {
-        Log.trace("BulkDatabaseMiner", "getDatabaseTopic(" + topic + ")");
 
-        return topicObjects.stream()
+        if(!topics.containsKey(topic)) {
+            Log.trace("BulkDatabaseMiner", "getDatabaseTopic(" + topic + ")");
 
-                .filter((databaseObject) -> databaseObject.getTopic() == topic)
+            topics.put(topic, topicObjects.stream()
 
-                .findAny();
+                    .filter((databaseObject) -> databaseObject.getTopic() == topic)
+
+                    .findAny());
+        }
+
+        return topics.get(topic);
     }
 
     /**

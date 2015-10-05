@@ -1,5 +1,6 @@
 package fr.tduf.cli.tools;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libtesting.common.helper.AssertionsHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -10,6 +11,7 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Condition;
 import org.json.JSONException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,11 +60,18 @@ public class DatabaseToolIntegTest {
 
     @Before
     public void setUp() throws IOException {
+        Log.set(Log.LEVEL_INFO);
+
         FileUtils.deleteDirectory(new File(DIRECTORY_PATCH_OUTPUT));
         FileUtils.deleteDirectory(new File(DIRECTORY_JSON_DATABASE));
         FileUtils.deleteDirectory(new File(DIRECTORY_FIXED_DATABASE));
         FileUtils.deleteDirectory(new File(DIRECTORY_ERR_GENERATED_DATABASE));
         FileUtils.deleteDirectory(new File(DIRECTORY_GENERATED_DATABASE));
+    }
+
+    @After
+    public void tearDown() {
+        BulkDatabaseMiner.clearAllCaches();
     }
 
     @Test
