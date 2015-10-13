@@ -20,8 +20,7 @@ import static java.util.stream.Collectors.toSet;
  */
 public class BulkDatabaseMiner {
 
-    // TOCO add method to build a cache key with var-args
-
+    // TODO add cache ON/OFF feature
     static {
         Log.setLogger(new PerformanceLogger(Paths.get("perfs").toAbsolutePath()));
         Log.trace("BulkDatabaseMiner", "*** new perf session ***");
@@ -29,8 +28,8 @@ public class BulkDatabaseMiner {
 
     private final List<DbDto> topicObjects;
 
-    private static Map<DbDto.Topic, Optional<DbDto>> topics = new HashMap<>();
-    private static Map<DbDto.Topic, Optional<List<DbResourceDto>>> allResourcesFromTopic = new HashMap<>();
+    private static Map<String, Optional<DbDto>> topics = new HashMap<>();
+    private static Map<String, Optional<List<DbResourceDto>>> allResourcesFromTopic = new HashMap<>();
     private static Map<String, Optional<DbResourceDto>> resourceFromTopicAndLocale = new HashMap<>();
     private static Map<String, Optional<DbDataDto.Item>> contentItemWithEntryIdentifierAndFieldRank = new HashMap<>();
     private static Map<String, Optional<DbDataDto.Item>> contentItemFromEntryAtFieldRank = new HashMap<>();
@@ -71,10 +70,11 @@ public class BulkDatabaseMiner {
      */
     public Optional<List<DbResourceDto>> getAllResourcesFromTopic(DbDto.Topic topic) {
 
-        if (!allResourcesFromTopic.containsKey(topic)) {
+        String key = getCacheKey(topic.name());
+        if (!allResourcesFromTopic.containsKey(key)) {
             Log.trace("BulkDatabaseMiner", "getAllResourcesFromTopic(" + topic + ")");
 
-            allResourcesFromTopic.put(topic, topicObjects.stream()
+            allResourcesFromTopic.put(key, topicObjects.stream()
 
                     .filter((databaseObject) -> databaseObject.getTopic() == topic)
 
@@ -83,7 +83,7 @@ public class BulkDatabaseMiner {
                     .map(DbDto::getResources));
         }
 
-        return allResourcesFromTopic.get(topic);
+        return allResourcesFromTopic.get(key);
     }
 
     /**
@@ -93,7 +93,7 @@ public class BulkDatabaseMiner {
      */
     public Optional<DbResourceDto> getResourceFromTopicAndLocale(DbDto.Topic topic, DbResourceDto.Locale locale) {
 
-        String key = topic.name() + ":" + locale.name();
+        String key = getCacheKey(topic.name(), locale.name());
         if (!resourceFromTopicAndLocale.containsKey(key)) {
             Log.trace("BulkDatabaseMiner", "getResourceFromTopicAndLocale(" + topic + ", " + locale + ")");
 
@@ -117,17 +117,18 @@ public class BulkDatabaseMiner {
      */
     public Optional<DbDto> getDatabaseTopic(DbDto.Topic topic) {
 
-        if(!topics.containsKey(topic)) {
+        String key = getCacheKey(topic.name());
+        if(!topics.containsKey(key)) {
             Log.trace("BulkDatabaseMiner", "getDatabaseTopic(" + topic + ")");
 
-            topics.put(topic, topicObjects.stream()
+            topics.put(key, topicObjects.stream()
 
                     .filter((databaseObject) -> databaseObject.getTopic() == topic)
 
                     .findAny());
         }
 
-        return topics.get(topic);
+        return topics.get(key);
     }
 
     /**
@@ -170,7 +171,7 @@ public class BulkDatabaseMiner {
      */
     public Optional<DbDataDto.Entry> getContentEntryFromTopicWithReference(String ref, DbDto.Topic topic) {
 
-        String key = ref + ":" + topic.name();
+        String key = getCacheKey(ref, topic.name());
         if (!contentEntryFromTopicWithReference.containsKey(key)) {
             Log.trace("BulkDatabaseMiner", "getContentEntryFromTopicWithReference(" + ref + ", " + topic + ")");
 
@@ -243,7 +244,7 @@ public class BulkDatabaseMiner {
      */
     public static Optional<DbDataDto.Item> getContentItemFromEntryAtFieldRank(DbDto.Topic topic, DbDataDto.Entry entry, int fieldRank) {
 
-        String key = topic.name() + ":" + entry.getId() + ":" + fieldRank;
+        String key = getCacheKey(topic.name(), Long.valueOf(entry.getId()).toString(), Integer.valueOf(fieldRank).toString());
         if (!contentItemFromEntryAtFieldRank.containsKey(key)) {
             Log.trace("BulkDatabaseMiner", "getContentItemFromEntryAtFieldRank(" + entry.getId() + ", " + fieldRank + ")");
 
@@ -265,7 +266,7 @@ public class BulkDatabaseMiner {
      */
     public Optional<DbDataDto.Item> getContentItemWithEntryIdentifierAndFieldRank(DbDto.Topic topic, int fieldRank, long entryIdentifier) {
 
-        String key = topic.name() + ":" + fieldRank + ":" + entryIdentifier;
+        String key = getCacheKey(topic.name(), Integer.valueOf(fieldRank).toString(), Long.valueOf(entryIdentifier).toString());
         if (!contentItemWithEntryIdentifierAndFieldRank.containsKey(key)) {
             Log.trace("BulkDatabaseMiner", "getContentItemWithEntryIdentifierAndFieldRank(" + fieldRank + ", " + entryIdentifier + ", " + topic + ")");
 
@@ -286,7 +287,7 @@ public class BulkDatabaseMiner {
      */
     public Optional<DbResourceDto.Entry> getResourceEntryFromTopicAndLocaleWithReference(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
 
-        String key = reference + ":" + topic.name() + ":" + locale.name();
+        String key = getCacheKey(reference, topic.name(), locale.name());
         if (!resourceEntryFromTopicAndLocaleWithReference.containsKey(key)) {
             Log.trace("BulkDatabaseMiner", "getResourceEntryFromTopicAndLocaleWithReference(" + reference + ", " + topic + ", " + locale + ")");
 
@@ -363,6 +364,17 @@ public class BulkDatabaseMiner {
         return getContentItemFromEntryAtFieldRank(topic, entry, uidFieldRank).get().getRawValue();
     }
 
+    static String getCacheKey(String... items) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0 ; i < items.length ; i++) {
+            sb.append(items[i]);
+            if (i < items.length - 1) {
+                sb.append(":");
+            }
+        }
+        return sb.toString();
+    }
+
     private String getRawValueAtEntryIndexAndRank(DbDto.Topic topic, int fieldRank, long entryIndex) {
         DbDataDto.Entry contentEntry = getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic).get();
         return getContentItemFromEntryAtFieldRank(topic, contentEntry, fieldRank).get().getRawValue();
@@ -390,6 +402,7 @@ public class BulkDatabaseMiner {
 
                 .findAny().isPresent();
     }
+
 
     List<DbDto> getTopicObjects() {
         return topicObjects;
