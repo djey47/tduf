@@ -82,7 +82,7 @@ public class InstallStepsTest {
         // THEN
         File actualMagicMapFile = Paths.get(tempDirectory, "Euro", "Bnk", "Bnk1.map").toFile();
         File expectedMagicMapFile = new File(thisClass.getResource("/banks/Bnk1-enhanced.map").getFile());
-        assertThat(actualMagicMapFile).hasContentEqualTo(expectedMagicMapFile);
+        assertThat(actualMagicMapFile).hasSameContentAs(expectedMagicMapFile);
     }
 
     @Test
