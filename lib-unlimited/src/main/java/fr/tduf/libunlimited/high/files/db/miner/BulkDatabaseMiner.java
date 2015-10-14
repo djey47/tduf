@@ -2,14 +2,12 @@ package fr.tduf.libunlimited.high.files.db.miner;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.cache.CacheManager;
-import fr.tduf.libunlimited.common.logger.PerformanceLogger;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
-import java.nio.file.Paths;
 import java.util.*;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_REMOTE;
@@ -22,7 +20,6 @@ import static java.util.stream.Collectors.toSet;
 public class BulkDatabaseMiner {
 
     static {
-        Log.setLogger(new PerformanceLogger(Paths.get("perfs").toAbsolutePath()));
         Log.trace("BulkDatabaseMiner", "*** new perf session ***");
     }
 
