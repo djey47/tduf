@@ -1,11 +1,13 @@
 package fr.tduf.libunlimited.common.cache;
 
+import com.esotericsoftware.minlog.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Optional;
 
+import static com.esotericsoftware.minlog.Log.LEVEL_DEBUG;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -15,6 +17,8 @@ public class CacheManagerTest {
 
     @Before
     public void setUp() {
+        Log.set(LEVEL_DEBUG);
+
         cacheManagerInstance = CacheManager.it.self();
     }
 
@@ -76,7 +80,7 @@ public class CacheManagerTest {
         cacheManagerInstance.getValueFromKey("store", "key", () -> Optional.of("result"));
 
         // WHEN
-        Optional<String> actualValue = cacheManagerInstance.getValueFromKey("store", "key", Optional::empty);
+        Optional<String> actualValue = cacheManagerInstance.getValueFromKey("store", "key", () -> Optional.of("uncached result"));
 
         // THEN
         assertThat(actualValue).contains("result");
@@ -98,14 +102,17 @@ public class CacheManagerTest {
     @Test
     public void clearStoreByName_whenStoreExists_shouldForceCallRealMethod() {
         // GIVEN
-        cacheManagerInstance.getValueFromKey("store", "key", () -> Optional.of("result to be cached"));
+        cacheManagerInstance.getValueFromKey("store1", "key", () -> Optional.of("result to be cached in store 1"));
+        cacheManagerInstance.getValueFromKey("store2", "key", () -> Optional.of("result to be cached in store 2"));
 
         // WHEN
-        cacheManagerInstance.clearStoreByName("store");
-        Optional<String> actualValue = cacheManagerInstance.getValueFromKey("store", "key", () -> Optional.of("real result"));
+        cacheManagerInstance.clearStoreByName("store1");
+        Optional<String> actualValueFromStore1 = cacheManagerInstance.getValueFromKey("store1", "key", () -> Optional.of("real result"));
+        Optional<String> actualValueFromStore2 = cacheManagerInstance.getValueFromKey("store2", "key", () -> Optional.of("real result"));
 
         // THEN
-        assertThat(actualValue).contains("real result");
+        assertThat(actualValueFromStore1).contains("real result");
+        assertThat(actualValueFromStore2).contains("result to be cached in store 2");
     }
 
     @Test
