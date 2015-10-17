@@ -8,6 +8,7 @@ import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
@@ -47,7 +48,7 @@ public class DbPatchDto {
             private List<DbChangeDto> changes = new ArrayList<>();
 
             @Override
-            public DbPatchDtoBuilder addChanges(List<DbChangeDto> changes) {
+            public DbPatchDtoBuilder addChanges(Collection<DbChangeDto> changes) {
                 this.changes.addAll(changes);
                 return this;
             }
@@ -64,7 +65,7 @@ public class DbPatchDto {
     }
 
     public interface DbPatchDtoBuilder {
-        DbPatchDtoBuilder addChanges(List<DbChangeDto> changes);
+        DbPatchDtoBuilder addChanges(Collection<DbChangeDto> changes);
 
         DbPatchDto build();
     }
@@ -91,9 +92,6 @@ public class DbPatchDto {
 
         @JsonProperty("ref")
         private String ref;
-
-        @JsonProperty("item")
-        private String item;
 
         @JsonProperty("value")
         private String value;
