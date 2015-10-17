@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.util.Optional;
 
-import static com.esotericsoftware.minlog.Log.LEVEL_DEBUG;
+import static com.esotericsoftware.minlog.Log.LEVEL_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -17,7 +17,7 @@ public class CacheManagerTest {
 
     @Before
     public void setUp() {
-        Log.set(LEVEL_DEBUG);
+        Log.set(LEVEL_INFO);
 
         cacheManagerInstance = CacheManager.it.self();
     }
