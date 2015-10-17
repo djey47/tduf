@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.esotericsoftware.minlog.Log.LEVEL_DEBUG;
+import static com.esotericsoftware.minlog.Log.LEVEL_INFO;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
@@ -32,7 +33,7 @@ public class PatchGeneratorTest {
 
     @Before
     public void setUp() {
-        Log.set(LEVEL_DEBUG);
+        Log.set(LEVEL_INFO);
     }
 
     @After
@@ -83,7 +84,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(DbDto.Topic.BRANDS, ReferenceRange.fromCliOption(Optional.of("734,735")));
+        DbPatchDto actualPatchObject = generator.makePatch(BRANDS, ReferenceRange.fromCliOption(Optional.of("734,735")));
 
         // THEN
         assertPatchGeneratedWithinRangeForOneTopic(actualPatchObject);
@@ -96,7 +97,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(DbDto.Topic.HAIR, ReferenceRange.fromCliOption(Optional.of("54522")));
+        DbPatchDto actualPatchObject = generator.makePatch(HAIR, ReferenceRange.fromCliOption(Optional.of("54522")));
 
         // THEN
         assertPatchGeneratedWithinRangeForLinkedTopics(actualPatchObject);
@@ -122,7 +123,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(DbDto.Topic.BRANDS, ReferenceRange.fromCliOption(Optional.of("0..735")));
+        DbPatchDto actualPatchObject = generator.makePatch(BRANDS, ReferenceRange.fromCliOption(Optional.of("0..735")));
 
         // THEN
         assertPatchGeneratedWithinRangeForOneTopic(actualPatchObject);
@@ -139,6 +140,19 @@ public class PatchGeneratorTest {
 
         // THEN
         assertPatchGeneratedWithAllEntriesForOneTopic(actualPatchObject);
+    }
+
+    @Test
+    public void makePatch_whenUsingRealDatabase_andHugeTopic_andAllRefs_shouldNotGenerateSameInstructionTwice() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        List<DbDto> databaseObjects = createDatabaseObjectsWithFourLinkedTopicsFromRealFiles();
+        PatchGenerator generator = createPatchGenerator(databaseObjects);
+
+        // WHEN
+        DbPatchDto actualPatchObject = generator.makePatch(PNJ, ReferenceRange.fromCliOption(Optional.<String>empty()));
+
+        // THEN
+        assertThat(actualPatchObject.getChanges()).hasSize(1346);
     }
 
     private static PatchGenerator createPatchGenerator(List<DbDto> databaseObjects) throws ReflectiveOperationException {
@@ -206,7 +220,7 @@ public class PatchGeneratorTest {
 
         DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
         assertThat(changeObject1.getType()).isEqualTo(UPDATE);
-        assertThat(changeObject1.getTopic()).isEqualTo(DbDto.Topic.BRANDS);
+        assertThat(changeObject1.getTopic()).isEqualTo(BRANDS);
         assertThat(changeObject1.getRef()).isEqualTo("735");
         assertThat(changeObject1.getValues()).hasSize(7);
         assertThat(changeObject1.getValues().get(0)).isEqualTo("735");
@@ -214,7 +228,7 @@ public class PatchGeneratorTest {
 
         DbPatchDto.DbChangeDto changeObject2 = actualChanges.get(1);
         assertThat(changeObject2.getType()).isEqualTo(UPDATE_RES);
-        assertThat(changeObject2.getTopic()).isEqualTo(DbDto.Topic.BRANDS);
+        assertThat(changeObject2.getTopic()).isEqualTo(BRANDS);
 
         assertThat(actualChanges).extracting("ref").containsAll(asList("735", "55338337"));
         assertThat(actualChanges).extracting("locale").containsOnly(new Object[]{null});
@@ -229,7 +243,7 @@ public class PatchGeneratorTest {
 
         DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
         assertThat(changeObject1.getType()).isEqualTo(UPDATE);
-        assertThat(changeObject1.getTopic()).isEqualTo(DbDto.Topic.HAIR);
+        assertThat(changeObject1.getTopic()).isEqualTo(HAIR);
         assertThat(changeObject1.getRef()).isEqualTo("54522");
         assertThat(changeObject1.getValues()).hasSize(7);
         assertThat(changeObject1.getValues().get(0)).isEqualTo("54522");

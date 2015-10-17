@@ -46,15 +46,15 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     @Override
     protected void postPrepare() {}
 
-    private List<DbPatchDto.DbChangeDto> makeChangesObjectsForTopic(DbDto.Topic topic, ReferenceRange range) {
+    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForTopic(DbDto.Topic topic, ReferenceRange range) {
 
-        this.topicObject = checkTopic(topic);
+        topicObject = checkTopic(topic);
 
         final Map<DbDto.Topic, Set<String>> requiredResourceReferences = new HashMap<>();
         final Map<DbDto.Topic, Set<String>> requiredContentsReferences = new HashMap<>();
 
-        List<DbPatchDto.DbChangeDto> changesObjects = new ArrayList<>();
-        List<DbStructureDto.Field> structureFields = this.topicObject.getStructure().getFields();
+        Set<DbPatchDto.DbChangeDto> changesObjects = new LinkedHashSet<>();
+        List<DbStructureDto.Field> structureFields = topicObject.getStructure().getFields();
 
         changesObjects.addAll(makeChangesObjectsForContents(structureFields, range, requiredResourceReferences, requiredContentsReferences));
 
@@ -96,7 +96,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     }
 
     private Stream<DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesInTopic(DbDto.Topic topic, Set<String> resources) {
-        List<DbResourceDto> allResourcesFromTopic = this.databaseMiner.getAllResourcesFromTopic(topic).get();
+        List<DbResourceDto> allResourcesFromTopic = databaseMiner.getAllResourcesFromTopic(topic).get();
 
         Set<String> globalizedResourceRefs = new HashSet<>();
         Set<String> localizedResourceRefs = new HashSet<>();
@@ -181,7 +181,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     }
 
     private void updateRequiredRemoteReferences(Map<DbDto.Topic, Set<String>> requiredResourceReferences, Map<DbDto.Topic, Set<String>> requiredContentsReferences, String reference, DbStructureDto.Field structureField) {
-        DbDto remoteTopicObject = this.databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef());
+        DbDto remoteTopicObject = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef());
         DbDto.Topic remoteTopic = remoteTopicObject.getTopic();
 
         DbStructureDto.FieldType fieldType = structureField.getFieldType();
