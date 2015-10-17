@@ -1,8 +1,12 @@
 package fr.tduf.libunlimited.common.cache;
 
+import com.esotericsoftware.minlog.Log;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import static com.esotericsoftware.minlog.Log.DEBUG;
 
 /**
  * Generic manager to simplify caching of items
@@ -13,6 +17,8 @@ public enum CacheManager {
      * Describes unique instance
      */
     it(new CacheManagerInstance(true));
+
+    private static final String LOG_CATEGORY = CacheManager.class.getSimpleName();
 
     private final CacheManagerInstance cacheManagerInstance;
 
@@ -51,15 +57,27 @@ public enum CacheManager {
                 stores.putIfAbsent(storeName, new HashMap<>(16));
                 Map<String, R> storeMap = (Map<String, R>) stores.get(storeName);
 
-                storeMap.putIfAbsent(key, supplier.get());
+                R previousValue = storeMap.putIfAbsent(key, supplier.get());
+                if (DEBUG) {
+                    String storeKeyLabel = "{" + storeName + ", " + key + "}";
+                    if (previousValue == null) {
+                        Log.debug(LOG_CATEGORY, "Cache miss! " + storeKeyLabel);
+                    } else {
+                        Log.debug(LOG_CATEGORY, "Cache hit! " + storeKeyLabel);
+                    }
+                }
                 return storeMap.get(key);
             }
+
+            Log.debug(LOG_CATEGORY, "Caching feature disabled!");
 
             return supplier.get();
         }
 
         public void clearAllStores() {
             stores.clear();
+
+            Log.debug(LOG_CATEGORY, "All stores were cleared!");
         }
 
         /**
@@ -67,6 +85,8 @@ public enum CacheManager {
          */
         public void clearStoreByName(String storeName) {
             stores.getOrDefault(storeName, new HashMap<>()).clear();
+
+            Log.debug(LOG_CATEGORY, "Cleared store! {" + storeName + "}");
         }
     }
 }
