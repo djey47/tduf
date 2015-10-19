@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.assertj.core.api.Condition;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -44,6 +45,11 @@ public class DatabaseChangeHelperTest {
 
     @InjectMocks
     DatabaseChangeHelper changeHelper;
+
+    @After
+    public void tearDown() {
+        BulkDatabaseMiner.clearAllCaches();
+    }
 
     @Test
     public void addResourceWithReference_andNonExisting_shouldCreateNewResourceEntry() throws Exception {
