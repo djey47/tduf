@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.esotericsoftware.minlog.Log.LEVEL_DEBUG;
 import static com.esotericsoftware.minlog.Log.LEVEL_INFO;
+import static com.esotericsoftware.minlog.Log.LEVEL_TRACE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
@@ -103,6 +105,19 @@ public class PatchGeneratorTest {
     }
 
     @Test
+    public void makePatch_whenUsingRealDatabase_andUniqueRef_andAssociatedTopics_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        List<DbDto> databaseObjects = createDatabaseObjectsWithCarPhysicsAssociatedTopicsFromRealFiles();
+        PatchGenerator generator = createPatchGenerator(databaseObjects);
+
+        // WHEN
+        DbPatchDto actualPatchObject = generator.makePatch(CAR_PHYSICS_DATA, ReferenceRange.fromCliOption(Optional.of("606298799")));
+
+        // THEN
+        assertPatchGeneratedForAssociatedTopics(actualPatchObject);
+    }
+
+    @Test
     public void makePatch_whenUsingRealDatabase_andUniqueRef_andRemoteContentsReference_shouldReturnCorrectPatchObjectWithExistingRefs_andOtherTopic() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         List<DbDto> databaseObjects = createDatabaseObjectsWithFourLinkedTopicsFromRealFiles();
@@ -180,6 +195,20 @@ public class PatchGeneratorTest {
         DbDto topicObject2 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Brands.json");
 
         return asList(topicObject1, topicObject2);
+    }
+
+    private static  List<DbDto> createDatabaseObjectsWithCarPhysicsAssociatedTopicsFromRealFiles() throws IOException, URISyntaxException {
+        DbDto topicObject1 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+        DbDto topicObject2 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Brands.json");
+        DbDto topicObject3 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_CarRims.json");
+        DbDto topicObject4 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Rims.json");
+        DbDto topicObject5 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_CarColors.json");
+        DbDto topicObject6 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Interior.json");
+        DbDto topicObject7 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_CarPacks.json");
+        DbDto topicObject8 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_AfterMarketPacks.json");
+        DbDto topicObject9 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_CarShops.json");
+
+        return asList(topicObject1, topicObject2, topicObject3, topicObject4, topicObject5, topicObject6, topicObject7, topicObject8, topicObject9);
     }
 
     private static  List<DbDto> createDatabaseObjectsWithFourLinkedTopicsFromRealFiles() throws IOException, URISyntaxException {
@@ -269,5 +298,16 @@ public class PatchGeneratorTest {
 
         assertThat(actualChanges).extracting("type").contains(UPDATE_RES);
         assertThat(actualChanges).extracting("topic").contains(PNJ, CLOTHES, BRANDS);
+    }
+
+    private static void assertPatchGeneratedForAssociatedTopics(DbPatchDto patchObject) {
+        assertThat(patchObject).isNotNull();
+
+        List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
+        assertThat(actualChanges).hasSize(84);
+        // 9 UPDATE (1 CAR_PHYSICS, 1 BRANDS, 1 CAR_RIMS, 1 RIMS, 4 CAR_COLORS, 1 CAR_PACKS)
+        // 75 UPDATE_RES (60 CAR_PHYSICS, 1 BRANDS, 5 RIMS, 9 CAR_COLORS)
+
+        Log.debug(PatchGeneratorTest.class.getSimpleName(), actualChanges.toString());
     }
 }
