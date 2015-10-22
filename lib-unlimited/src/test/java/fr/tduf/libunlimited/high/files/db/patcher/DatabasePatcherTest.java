@@ -17,6 +17,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -172,7 +174,7 @@ public class DatabasePatcherTest {
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(DbDto.Topic.CAR_PHYSICS_DATA).get().getData().getEntries();
+        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
         int previousEntryCount = topicEntries.size();
 
 
@@ -191,11 +193,42 @@ public class DatabasePatcherTest {
         assertThat(actualCreatedEntry.getItems()).hasSize(103);
         assertThat(actualCreatedEntry.getItems().get(0).getRawValue()).isEqualTo("1221657049");
 
-        DbDataDto.Entry actualUpdatedEntry = databaseMiner.getContentEntryFromTopicWithReference("606298799", DbDto.Topic.CAR_PHYSICS_DATA).get();
+        DbDataDto.Entry actualUpdatedEntry = databaseMiner.getContentEntryFromTopicWithReference("606298799", CAR_PHYSICS_DATA).get();
         assertThat(actualUpdatedEntry.getId()).isEqualTo(0);
 
         assertThat(actualUpdatedEntry.getItems()).hasSize(103);
         assertThat(actualUpdatedEntry.getItems().get(1).getRawValue()).isEqualTo("864426");
+    }
+
+    @Test
+    public void apply_whenUpdateContentsPatch_withAssociationEntries_shouldCreateThem() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-assoc.mini.json");
+        DbDto databaseObject1 = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+        DbDto databaseObject2 = readObjectFromResource(DbDto.class, "/db/json/TDU_CarRims.json");
+        DbDto databaseObject3 = readObjectFromResource(DbDto.class, "/db/json/TDU_CarColors.json");
+        DbDto databaseObject4 = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPacks.json");
+
+        List<DbDto> databaseObjects = asList(databaseObject1, databaseObject2, databaseObject3, databaseObject4);
+        DatabasePatcher patcher = createPatcher(databaseObjects);
+
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(databaseObjects);
+        List<DbDataDto.Entry> carRimsTopicEntries = databaseMiner.getDatabaseTopic(CAR_RIMS).get().getData().getEntries();
+        int carRimsPreviousEntryCount = carRimsTopicEntries.size();
+        List<DbDataDto.Entry> carColorsTopicEntries = databaseMiner.getDatabaseTopic(CAR_COLORS).get().getData().getEntries();
+        int carColorsPreviousEntryCount = carColorsTopicEntries.size();
+        List<DbDataDto.Entry> carPacksTopicEntries = databaseMiner.getDatabaseTopic(CAR_PACKS).get().getData().getEntries();
+        int carPacksPreviousEntryCount = carPacksTopicEntries.size();
+
+
+        // WHEN
+        patcher.apply(updateContentsPatch);
+
+
+        // THEN
+        assertThat(carColorsTopicEntries).hasSize(carColorsPreviousEntryCount + 4);
+        assertThat(carRimsTopicEntries).hasSize(carRimsPreviousEntryCount + 1);
+        assertThat(carPacksTopicEntries).hasSize(carPacksPreviousEntryCount + 1);
     }
 
     @Test
@@ -213,7 +246,7 @@ public class DatabasePatcherTest {
 
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        assertThat(databaseMiner.getContentEntryFromTopicWithReference("606298799", DbDto.Topic.CAR_PHYSICS_DATA)).isEmpty();
+        assertThat(databaseMiner.getContentEntryFromTopicWithReference("606298799", CAR_PHYSICS_DATA)).isEmpty();
     }
 
     private static DatabasePatcher createPatcher(List<DbDto> databaseObjects) throws ReflectiveOperationException {
