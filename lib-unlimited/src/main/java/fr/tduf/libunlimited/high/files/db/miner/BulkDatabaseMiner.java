@@ -12,6 +12,7 @@ import java.util.*;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_REMOTE;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -122,6 +123,30 @@ public class BulkDatabaseMiner {
 
                     .findAny();
         }).get();
+    }
+
+    /**
+     * @param fieldRank : rank of field to look for value
+     * @param itemValue : raw value to be matched
+     * @param topic     : topic in TDU Database to search
+     * @return list of database entries having specified value at an item rank
+     */
+    public List<DbDataDto.Entry> getAllContentEntriesFromTopicWithItemValueAtFieldRank(int fieldRank, String itemValue, DbDto.Topic topic) {
+        String key = getCacheKey(topic.name(), Integer.valueOf(fieldRank).toString(), itemValue);
+        return cacheManager.getValueFromKey("allContentEntriesFromTopicWithItemValueAtFieldRank", key, () -> {
+            DbDto topicObject = getDatabaseTopic(topic).get();
+
+            return topicObject.getData().getEntries().stream()
+
+                    .filter((entry) -> {
+                        Optional<DbDataDto.Item> contentItemFromEntryAtFieldRank = getContentItemFromEntryAtFieldRank(topic, entry, fieldRank);
+
+                        return contentItemFromEntryAtFieldRank.isPresent()
+                                && itemValue.equals(contentItemFromEntryAtFieldRank.get().getRawValue());
+                    })
+
+                    .collect(toList());
+        });
     }
 
     /**
