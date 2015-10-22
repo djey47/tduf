@@ -178,7 +178,7 @@ public class DatabaseReadWriteHelperTest {
 
         // THEN
         assertThat(actualTopicObjects).isNotNull();
-        assertThat(actualTopicObjects).hasSize(7);
+        assertThat(actualTopicObjects).hasSize(14);
 
         actualTopicObjects.forEach(DatabaseReadWriteHelperTest::assertTopicObject);
     }
@@ -227,21 +227,9 @@ public class DatabaseReadWriteHelperTest {
         assertThat(allResources).isNotNull();
         assertThat(allResources).hasSize(8);
 
-//        Condition<List<String>> lineCountEqualTo253 = new Condition<>( (list) -> list.size() == 253, "253 lines" );
-        Condition<List<String>> empty = new Condition<>(List::isEmpty, "no line" );
         Condition<List<? extends String>> lineCountEqualTo253 = new Condition<>( (list) -> list.size() == 253, "253 lines" );
         assertThat(allResources.get(DbResourceDto.Locale.FRANCE)).has(lineCountEqualTo253);
         assertThat(allResources.get(DbResourceDto.Locale.ITALY)).has(lineCountEqualTo253);
-//
-//
-//                .has(lineCountEqualTo253, atIndex(0)) // fr or it
-//                .has(lineCountEqualTo253, atIndex(1)) // fr or it
-//                .is(empty, atIndex(2))
-//                .is(empty, atIndex(3))
-//                .is(empty, atIndex(4))
-//                .is(empty, atIndex(5))
-//                .is(empty, atIndex(6))
-//                .is(empty, atIndex(7));
     }
 
     @Test
