@@ -9,6 +9,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,9 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.esotericsoftware.minlog.Log.LEVEL_DEBUG;
 import static com.esotericsoftware.minlog.Log.LEVEL_INFO;
-import static com.esotericsoftware.minlog.Log.LEVEL_TRACE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
@@ -300,7 +299,7 @@ public class PatchGeneratorTest {
         assertThat(actualChanges).extracting("topic").contains(PNJ, CLOTHES, BRANDS);
     }
 
-    private static void assertPatchGeneratedForAssociatedTopics(DbPatchDto patchObject) {
+    private static void assertPatchGeneratedForAssociatedTopics(DbPatchDto patchObject) throws IOException {
         assertThat(patchObject).isNotNull();
 
         List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
@@ -308,6 +307,7 @@ public class PatchGeneratorTest {
         // 9 UPDATE (1 CAR_PHYSICS, 1 BRANDS, 1 CAR_RIMS, 1 RIMS, 4 CAR_COLORS, 1 CAR_PACKS)
         // 75 UPDATE_RES (60 CAR_PHYSICS, 1 BRANDS, 5 RIMS, 9 CAR_COLORS)
 
-        Log.debug(PatchGeneratorTest.class.getSimpleName(), actualChanges.toString());
+        String jsonPatch = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(patchObject);
+        Log.debug(PatchGeneratorTest.class.getSimpleName(), jsonPatch);
     }
 }
