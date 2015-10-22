@@ -14,8 +14,11 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static com.esotericsoftware.minlog.Log.LEVEL_INFO;
-import static com.esotericsoftware.minlog.Log.LEVEL_TRACE;
+import static com.esotericsoftware.minlog.Log.*;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,7 +27,7 @@ public class BulkDatabaseMinerTest {
     @Before
     public void setUp() {
         // Set level to TRACE to get performance information
-        Log.set(LEVEL_INFO);
+        Log.set(LEVEL_DEBUG);
         Log.setLogger(new PerformanceLogger(Paths.get("perfs").toAbsolutePath()));
 
         BulkDatabaseMiner.clearAllCaches();
@@ -64,7 +67,7 @@ public class BulkDatabaseMinerTest {
         ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<List<DbResourceDto>> actualResult = BulkDatabaseMiner.load(topicObjects).getAllResourcesFromTopic(DbDto.Topic.ACHIEVEMENTS);
+        Optional<List<DbResourceDto>> actualResult = BulkDatabaseMiner.load(topicObjects).getAllResourcesFromTopic(ACHIEVEMENTS);
 
         // THEN
         assertThat(actualResult).isEmpty();
@@ -76,7 +79,7 @@ public class BulkDatabaseMinerTest {
         ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        List<DbResourceDto> actualResources = BulkDatabaseMiner.load(topicObjects).getAllResourcesFromTopic(DbDto.Topic.BOTS).get();
+        List<DbResourceDto> actualResources = BulkDatabaseMiner.load(topicObjects).getAllResourcesFromTopic(BOTS).get();
 
         // THEN
         assertThat(actualResources).hasSize(2);
@@ -88,7 +91,7 @@ public class BulkDatabaseMinerTest {
         ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<DbResourceDto> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceFromTopicAndLocale(DbDto.Topic.BOTS, DbResourceDto.Locale.UNITED_STATES);
+        Optional<DbResourceDto> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceFromTopicAndLocale(BOTS, UNITED_STATES);
 
         // THEN
         assertThat(actualResult).isEmpty();
@@ -100,7 +103,7 @@ public class BulkDatabaseMinerTest {
         ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<DbResourceDto> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceFromTopicAndLocale(DbDto.Topic.ACHIEVEMENTS, DbResourceDto.Locale.FRANCE);
+        Optional<DbResourceDto> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceFromTopicAndLocale(ACHIEVEMENTS, FRANCE);
 
         // THEN
         assertThat(actualResult).isEmpty();
@@ -112,7 +115,7 @@ public class BulkDatabaseMinerTest {
         ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<DbResourceDto> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceFromTopicAndLocale(DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE);
+        Optional<DbResourceDto> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceFromTopicAndLocale(BOTS, FRANCE);
 
         // THEN
         assertThat(actualResult).isPresent();
@@ -124,7 +127,7 @@ public class BulkDatabaseMinerTest {
         ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<DbDto> actualResult = BulkDatabaseMiner.load(topicObjects).getDatabaseTopic(DbDto.Topic.ACHIEVEMENTS);
+        Optional<DbDto> actualResult = BulkDatabaseMiner.load(topicObjects).getDatabaseTopic(ACHIEVEMENTS);
 
         // THEN
         assertThat(actualResult).isEmpty();
@@ -136,7 +139,7 @@ public class BulkDatabaseMinerTest {
         ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        DbDto actualTopicObject = BulkDatabaseMiner.load(topicObjects).getDatabaseTopic(DbDto.Topic.BOTS).get();
+        DbDto actualTopicObject = BulkDatabaseMiner.load(topicObjects).getDatabaseTopic(BOTS).get();
 
         // THEN
         assertThat(actualTopicObject).isNotNull();
@@ -165,13 +168,60 @@ public class BulkDatabaseMinerTest {
         assertThat(actualTopicObject).isNotNull();
     }
 
+    @Test(expected=NoSuchElementException.class)
+    public void getAllContentEntriesWithItemValueAtFieldRank_whenTopicObjectDoesNotExist_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsFromResources();
+
+        // WHEN
+        BulkDatabaseMiner.load(topicObjects).getAllContentEntriesFromTopicWithItemValueAtFieldRank(3, "20", ACHIEVEMENTS);
+
+        // THEN: NSEE
+    }
+
+    @Test
+    public void getAllContentEntriesWithItemValueAtFieldRank_whenFieldDoesNotExist_shouldReturnEmptyList() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsWithoutUidFieldFromResources();
+
+        // WHEN
+        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getAllContentEntriesFromTopicWithItemValueAtFieldRank(99, "20", ACHIEVEMENTS);
+
+        // THEN
+        assertThat(actualEntries).isEmpty();
+    }
+
+    @Test
+    public void getAllContentEntriesWithItemValueAtFieldRank_whenExist_shouldReturnThem() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsWithoutUidFieldFromResources();
+
+        // WHEN
+        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getAllContentEntriesFromTopicWithItemValueAtFieldRank(3, "20", ACHIEVEMENTS);
+
+        // THEN
+        assertThat(actualEntries).hasSize(2);
+    }
+
+    @Test
+    public void getAllContentEntriesWithItemValueAtFieldRank_whenNoneExist_shouldReturnEmptyList() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsWithoutUidFieldFromResources();
+
+        // WHEN
+        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getAllContentEntriesFromTopicWithItemValueAtFieldRank(3, "10", ACHIEVEMENTS);
+
+        // THEN
+        assertThat(actualEntries).isEmpty();
+    }
+
     @Test(expected = NoSuchElementException.class)
     public void getContentEntryFromTopicWithInternalIdentifier_whenTopicNotFound_shouldThrowException() throws IOException, URISyntaxException {
         // GIVEN
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithInternalIdentifier(1, DbDto.Topic.ACHIEVEMENTS);
+        BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithInternalIdentifier(1, ACHIEVEMENTS);
 
         // THEN: exception
     }
@@ -182,7 +232,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithInternalIdentifier(10, DbDto.Topic.BOTS);
+        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithInternalIdentifier(10, BOTS);
 
         // THEN
         assertThat(actualEntry).isEmpty();
@@ -194,7 +244,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithInternalIdentifier(0, DbDto.Topic.BOTS);
+        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithInternalIdentifier(0, BOTS);
 
         // THEN
         assertThat(actualEntry).isPresent();
@@ -206,7 +256,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<DbResourceDto.Entry> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndLocaleWithReference("00000001", DbDto.Topic.ACHIEVEMENTS, DbResourceDto.Locale.FRANCE);
+        Optional<DbResourceDto.Entry> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndLocaleWithReference("00000001", ACHIEVEMENTS, FRANCE);
 
         // THEN
         assertThat(actualResult).isEmpty();
@@ -218,7 +268,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<DbResourceDto.Entry> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndLocaleWithReference("00000001", DbDto.Topic.BOTS, DbResourceDto.Locale.KOREA);
+        Optional<DbResourceDto.Entry> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndLocaleWithReference("00000001", BOTS, DbResourceDto.Locale.KOREA);
 
         // THEN
         assertThat(actualResult).isEmpty();
@@ -230,7 +280,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<DbResourceDto.Entry> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndLocaleWithReference("00000002", DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE);
+        Optional<DbResourceDto.Entry> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndLocaleWithReference("00000002", BOTS, FRANCE);
 
         // THEN
         assertThat(actualResult).isEmpty();
@@ -242,7 +292,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<DbResourceDto.Entry> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndLocaleWithReference("00000001", DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE);
+        Optional<DbResourceDto.Entry> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndLocaleWithReference("00000001", BOTS, FRANCE);
 
         // THEN
         assertThat(actualResult).isPresent();
@@ -264,7 +314,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN-THEN
-        assertThat(BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithReference("1500", DbDto.Topic.BOTS)).isEmpty();
+        assertThat(BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithReference("1500", BOTS)).isEmpty();
     }
 
     @Test
@@ -273,7 +323,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithReference("606298799", DbDto.Topic.BOTS);
+        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithReference("606298799", BOTS);
 
         // THEN
         assertThat(actualEntry).isPresent();
@@ -323,7 +373,7 @@ public class BulkDatabaseMinerTest {
         DbDataDto.Entry entry = DbDataDto.Entry.builder().build();
 
         // WHEN
-        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(DbDto.Topic.BOTS, entry, 1);
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(BOTS, entry, 1);
 
         // THEN
         assertThat(potentialItem).isEmpty();
@@ -337,7 +387,7 @@ public class BulkDatabaseMinerTest {
         DbDataDto.Entry entry = createContentEntryWithItems(asList(expectedItem, otherItem));
 
         // WHEN
-        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(DbDto.Topic.BOTS, entry, 1);
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(BOTS, entry, 1);
 
         // THEN
         assertThat(potentialItem).contains(expectedItem);
@@ -359,7 +409,7 @@ public class BulkDatabaseMinerTest {
         DbDataDto.Entry entry = createContentEntryWithItems(asList(item, otherItem));
 
         // WHEN
-        BulkDatabaseMiner.getContentEntryReference(DbDto.Topic.BOTS, entry, 3);
+        BulkDatabaseMiner.getContentEntryReference(BOTS, entry, 3);
 
         // THEN: NSE
     }
@@ -375,7 +425,7 @@ public class BulkDatabaseMinerTest {
         DbDataDto.Entry entry = createContentEntryWithItems(asList(uidItem, otherItem));
 
         // WHEN
-        String actualEntryReference = BulkDatabaseMiner.getContentEntryReference(DbDto.Topic.BOTS, entry, 1);
+        String actualEntryReference = BulkDatabaseMiner.getContentEntryReference(BOTS, entry, 1);
 
         // THEN
         assertThat(actualEntryReference).isEqualTo("123456789");
@@ -441,7 +491,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsWithoutUidFieldFromResources();
 
         // WHEN
-        Optional<String> potentialEntryReference = BulkDatabaseMiner.load(topicObjects).getContentEntryReferenceWithInternalIdentifier(0, DbDto.Topic.ACHIEVEMENTS);
+        Optional<String> potentialEntryReference = BulkDatabaseMiner.load(topicObjects).getContentEntryReferenceWithInternalIdentifier(0, ACHIEVEMENTS);
 
         // THEN
         assertThat(potentialEntryReference).isEmpty();
@@ -465,7 +515,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.load(topicObjects).getContentItemWithEntryIdentifierAndFieldRank(DbDto.Topic.BOTS, 1, 10);
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.load(topicObjects).getContentItemWithEntryIdentifierAndFieldRank(BOTS, 1, 10);
 
         // THEN
         assertThat(potentialItem).isEmpty();
@@ -477,7 +527,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.load(topicObjects).getContentItemWithEntryIdentifierAndFieldRank(DbDto.Topic.BOTS, 10, 0);
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.load(topicObjects).getContentItemWithEntryIdentifierAndFieldRank(BOTS, 10, 0);
 
         // THEN
         assertThat(potentialItem).isEmpty();
@@ -490,7 +540,7 @@ public class BulkDatabaseMinerTest {
         DbDataDto.Item expectedItem = topicObjects.get(0).getData().getEntries().get(0).getItems().get(0);
 
         // WHEN
-        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.load(topicObjects).getContentItemWithEntryIdentifierAndFieldRank(DbDto.Topic.BOTS, 1, 0);
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.load(topicObjects).getContentItemWithEntryIdentifierAndFieldRank(BOTS, 1, 0);
 
         // THEN
         assertThat(potentialItem).contains(expectedItem);
@@ -502,7 +552,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsWithRemoteReferencesFromResources();
 
         // WHEN
-        Optional<DbResourceDto.Entry> potentialResourceEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryWithContentEntryInternalIdentifier(DbDto.Topic.CLOTHES, 2, 0, DbResourceDto.Locale.FRANCE);
+        Optional<DbResourceDto.Entry> potentialResourceEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryWithContentEntryInternalIdentifier(DbDto.Topic.CLOTHES, 2, 0, FRANCE);
 
         // THEN
         assertThat(potentialResourceEntry).isEmpty();
@@ -515,7 +565,7 @@ public class BulkDatabaseMinerTest {
         DbResourceDto.Entry expectedEntry = topicObjects.get(1).getResources().get(0).getEntries().get(0);
 
         // WHEN
-        Optional<DbResourceDto.Entry> potentialResourceEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryWithContentEntryInternalIdentifier(DbDto.Topic.CLOTHES, 2, 1, DbResourceDto.Locale.FRANCE);
+        Optional<DbResourceDto.Entry> potentialResourceEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryWithContentEntryInternalIdentifier(DbDto.Topic.CLOTHES, 2, 1, FRANCE);
 
         // THEN
         assertThat(potentialResourceEntry).contains(expectedEntry);
@@ -527,7 +577,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        OptionalLong potentialInternalId = BulkDatabaseMiner.load(topicObjects).getContentEntryInternalIdentifierWithReference("REF", DbDto.Topic.BOTS);
+        OptionalLong potentialInternalId = BulkDatabaseMiner.load(topicObjects).getContentEntryInternalIdentifierWithReference("REF", BOTS);
 
         // THEN
         assertThat(potentialInternalId).isEmpty();
@@ -539,7 +589,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        OptionalLong potentialInternalId = BulkDatabaseMiner.load(topicObjects).getContentEntryInternalIdentifierWithReference("606298799", DbDto.Topic.BOTS);
+        OptionalLong potentialInternalId = BulkDatabaseMiner.load(topicObjects).getContentEntryInternalIdentifierWithReference("606298799", BOTS);
 
         // THEN
         assertThat(potentialInternalId).hasValue(0);
