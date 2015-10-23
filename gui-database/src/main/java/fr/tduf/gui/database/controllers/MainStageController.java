@@ -136,7 +136,14 @@ public class MainStageController extends AbstractGuiController {
         dynamicLinkControlsHelper = new DynamicLinkControlsHelper(this);
         dialogsHelper = new DialogsHelper();
 
-        initSettingsPane();
+        String initialDatabaseDirectory = SettingsConstants.DATABASE_DIRECTORY_DEFAULT;
+        boolean databaseAutoLoad = false;
+        List<String> appParameters = DatabaseEditor.getCommandLineParameters();
+        if (!appParameters.isEmpty()) {
+            initialDatabaseDirectory = appParameters.get(0);
+            databaseAutoLoad = true;
+        }
+        initSettingsPane(initialDatabaseDirectory);
 
         initResourcesStageController();
 
@@ -145,6 +152,11 @@ public class MainStageController extends AbstractGuiController {
         initTopicEntryHeaderPane();
 
         initStatusBar();
+
+        if(databaseAutoLoad) {
+            Log.trace(THIS_CLASS_NAME, "->init: database auto load");
+            loadDatabaseFromDirectory(initialDatabaseDirectory);
+        }
     }
 
     @FXML
@@ -468,7 +480,7 @@ public class MainStageController extends AbstractGuiController {
         entriesStageController.setMainStageController(this);
     }
 
-    private void initSettingsPane() throws IOException {
+    private void initSettingsPane(String databaseDirectory) throws IOException {
         settingsPane.setExpanded(false);
 
         viewDataController.fillLocales();
@@ -479,11 +491,6 @@ public class MainStageController extends AbstractGuiController {
         profilesChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> handleProfileChoiceChanged((String) newValue));
 
-        String databaseDirectory = SettingsConstants.DATABASE_DIRECTORY_DEFAULT;
-        List<String> appParameters = DatabaseEditor.getCommandLineParameters();
-        if (!appParameters.isEmpty()) {
-            databaseDirectory = appParameters.get(0);
-        }
         databaseLocationTextField.setText(databaseDirectory);
     }
 
