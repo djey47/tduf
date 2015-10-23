@@ -35,7 +35,7 @@ public class DatabaseEditor extends Application {
     /**
      * @return All arguments passed with command line, if any.
      */
-    public static List<String> getParameterList() {
+    public static List<String> getCommandLineParameters() {
         return parameters;
     }
 }

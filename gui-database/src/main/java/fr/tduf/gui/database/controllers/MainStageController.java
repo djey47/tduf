@@ -480,7 +480,7 @@ public class MainStageController extends AbstractGuiController {
                 .addListener((observable, oldValue, newValue) -> handleProfileChoiceChanged((String) newValue));
 
         String databaseDirectory = SettingsConstants.DATABASE_DIRECTORY_DEFAULT;
-        List<String> appParameters = DatabaseEditor.getParameterList();
+        List<String> appParameters = DatabaseEditor.getCommandLineParameters();
         if (!appParameters.isEmpty()) {
             databaseDirectory = appParameters.get(0);
         }
