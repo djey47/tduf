@@ -28,7 +28,7 @@ Thus, you always ought to make a backup of your TDU database before using it!
 * Imports data from TDUPE (Performance Pack .tdupk)
 * Exports current entry to following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch.
 
-### What's in this version ? (ALPHA 10)
+### What's in this version ? (ALPHA 11)
 
 * New: loads database automatically when directory provided via command line (same applies when launched through Alpha-DatabaseEditor.cmd script)
 * Initiates database read performance improvements
