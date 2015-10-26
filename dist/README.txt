@@ -16,7 +16,7 @@ Thus, you always ought to make a backup of your TDU database before using it!
 /!\
 
 * Opens and saves a database from/to JSON form
-* Provides profiles to address different modding use cases (car editing, tuning kits ...)
+* Provides profiles to address different modding use cases (car editing, tuning kits, rims ...)
 * Displays all fields within a topic, in an ordered manner
 * Makes changes easier for special values (percent, bitfields etc.)
 * Enables navigation over entries in same or different topics
@@ -30,11 +30,11 @@ Thus, you always ought to make a backup of your TDU database before using it!
 
 ### What's in this version ? (ALPHA 10)
 
-* Enhance startup scripts to help with troubleshooting issues
-* New '?' button allowing searching of content and resource entries by REF
-* Bugfix: invalid and redudant content or resource entries may be inserted
-* Bugfix: dismissed entry box may add empty entries
-
+* New: loads database automatically when directory provided via command line (same applies when launched through Alpha-DatabaseEditor.cmd script)
+* Initiates database read performance improvements
+* Writes more debugging details in Alpha-DatabaseEditor.log
+* Uses a normalized way to display some application messages in logs
+* Bugfix: same patch instruction would be generated twice (TDUF mini-patch).
 
 ### What you will need to run TDUF
 
