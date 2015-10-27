@@ -1,6 +1,5 @@
 @ECHO OFF
 
-MKDIR logs 2>NUL
 CD cli 2>NUL
 
 CALL .\CheckJava.cmd
