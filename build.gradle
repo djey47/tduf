@@ -164,7 +164,7 @@ project('lib-unlimited') {
         description 'Copies structures to release directory.'
 
         from 'src/main/resources/files/structures/'
-        include '*.json'
+        include '*'
         into '../pack/structures'
     }
 
