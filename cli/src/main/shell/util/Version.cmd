@@ -1,3 +1,0 @@
-@ECHO OFF
-SET /P TDUF_VERSION=<.\lib\version.info
-ECHO %TDUF_VERSION%
