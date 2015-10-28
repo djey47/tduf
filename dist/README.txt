@@ -43,10 +43,14 @@ Thus, you always ought to make a backup of your TDU database before using it!
 
 ### Running it!
 
-* Launch *TDUF.cmd* script from Windows Explorer  (you may need to create a desktop shortcut to this file)
-* (once, to check) Type and run: java -version (should answer with 'java version 1.8.xxxxxx etc')
-* Type and run: Alpha-DatabaseEditor "C:\Program Files (x86)\Test Drive Unlimited\Euro\Bnk\Database\"
-(using proper file location on your system).
+#### If your TDU database is in normal state (BNK files)
+* Launch *TDUF-cli.cmd* script from Windows Explorer  (you may need to create a desktop shortcut to this file)
+* Please check in console, written Java version: should be 1.8 and later
+* Type and run: Alpha-DatabaseEditor and when asked, enter proper database location on your system.
+
+#### If your TDU database is in advanced state (JSON files)
+* Launch *TDUF-gui.cmd* script from Windows Explorer
+* Select right database directory in the location field
 
 
 ### Using JAR library and/or CLI Tools in your projects
