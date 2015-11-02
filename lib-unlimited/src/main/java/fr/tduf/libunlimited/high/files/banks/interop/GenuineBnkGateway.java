@@ -95,11 +95,11 @@ public class GenuineBnkGateway implements BankSupport {
     static String searchOriginalBankFileName(String inputDirectory) throws IOException {
         return Files.walk(Paths.get(inputDirectory))
 
-                    .filter((path) -> !Files.isDirectory(path))
+                .filter((path) -> !Files.isDirectory(path))
 
-                    .filter((path) -> EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+                .filter((path) -> EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
 
-                    .findAny().get().getFileName().toString();
+                .findAny().get().getFileName().toString();
     }
 
     static String getInternalPathFromRealPath(Path realPath, Path basePath) {
