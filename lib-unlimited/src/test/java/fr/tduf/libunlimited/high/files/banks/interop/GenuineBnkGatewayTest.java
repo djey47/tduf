@@ -98,13 +98,10 @@ public class GenuineBnkGatewayTest {
 
 
         // THEN
-        assertThat(new File(tempDirectory, PREFIX_ORIGINAL_BANK_FILE + Paths.get(bankFileName).getFileName())).exists();
-
-        String shortBankFileName = Paths.get(bankFileName).getFileName().toString();
-        assertThat(Files.exists(Paths.get(tempDirectory, shortBankFileName, "4Build", "PC", "Euro", "Vehicules", "Cars", "Mercedes", "CLK_55")));
+        assertThat(Paths.get(tempDirectory, PREFIX_ORIGINAL_BANK_FILE + Paths.get(bankFileName).getFileName())).exists();
+        assertThat(Paths.get(tempDirectory, "4Build", "PC", "EURO", "Vehicules", "Cars", "Mercedes", "CLK_55")).exists();
 
         verify(commandLineHelperMock, times(28)).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), anyString(), eq(tempDirectory));
-
         String packedFilePathPrefix = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\";
         verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq(packedFilePathPrefix + ".3DD\\CLK_55"), eq(tempDirectory));
         verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq(packedFilePathPrefix + ".3DG\\CLK_55"), eq(tempDirectory));
@@ -146,6 +143,18 @@ public class GenuineBnkGatewayTest {
 
         // THEN
         assertThat(actualPackedFilePath).isEqualTo(PACKED_FILE_FULL_NAME);
+    }
+
+    @Test
+    public void getUnpackedFilePath() {
+        // GIVEN
+        Path basePath = Paths.get("/home/bill/work/");
+
+        // WHEN
+        Path actualFilePath = GenuineBnkGateway.getUnpackedFilePath(PACKED_FILE_FULL_NAME, basePath);
+
+        // THEN
+        assertThat(actualFilePath).isEqualTo(Paths.get("/home/bill/work/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55/CLK_55.2DM"));
     }
 
     @Test
