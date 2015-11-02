@@ -169,6 +169,21 @@ public class GenuineBnkGateway implements BankSupport {
         return PREFIX_PACKED_FILE_PATH + Joiner.on('\\').join(pathElements);
     }
 
+    static Path getUnpackedFilePath(String fullPackedFileName, Path basePath) {
+        String[] nameCompounds = fullPackedFileName.split("\\\\");
+        String shortName = nameCompounds[nameCompounds.length - 1];
+        String extension = nameCompounds[nameCompounds.length - 2];
+        String shortFileName = shortName + extension;
+
+        String[] prefixCompounds = PREFIX_PACKED_FILE_PATH.split("\\\\");
+
+        Path fullPackedFilePath = Paths.get("", nameCompounds);
+        Path followingPath = Paths.get("", prefixCompounds).relativize(fullPackedFilePath);
+        Path followingPathWithoutFileName = followingPath.getParent().getParent();
+
+        return basePath.resolve(followingPathWithoutFileName).resolve(shortFileName);
+    }
+
     static String generatePackedFileReference(String fileName) {
         long hash = fileName.hashCode();
 
@@ -184,7 +199,9 @@ public class GenuineBnkGateway implements BankSupport {
         handleCommandLineErrors(processResult);
 
         Path extractedPath = Paths.get(outputDirectory, packedFileInfo.getShortName());
-        Path targetPath = Paths.get(outputDirectory, bankFilePath.getFileName().toString(), packedFileInfo.getShortName());
+
+
+        Path targetPath = getUnpackedFilePath(packedFileInfo.getFullName(), Paths.get(outputDirectory));
 
         Files.createDirectories(targetPath.getParent());
         Files.move(extractedPath, targetPath);
