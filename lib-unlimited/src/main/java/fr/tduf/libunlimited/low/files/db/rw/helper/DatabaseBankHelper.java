@@ -121,6 +121,7 @@ public class DatabaseBankHelper {
     private static void prepareFilesToBeRepacked(String databaseDirectory, String targetBankFileName, BankSupport bankSupport) throws IOException {
 
         Path databasePath = Paths.get(databaseDirectory);
+        Path repackedBankPath = databasePath.resolve(targetBankFileName);
         int currentDepth = databasePath.getNameCount();
         Files.walk(databasePath)
 
@@ -142,10 +143,10 @@ public class DatabaseBankHelper {
                         }
                     }
                     if (hierarchy != null) {
-                        Path fullPath = Paths.get(databaseDirectory).resolve(targetBankFileName).resolve(hierarchy).resolve(filePath.getFileName());
+                        Path fullPath = repackedBankPath.resolve(hierarchy).resolve(filePath.getFileName());
                         try {
                             Files.createDirectories(fullPath.getParent());
-                            Files.copy(filePath, fullPath, StandardCopyOption.REPLACE_EXISTING);
+                            Files.move(filePath, fullPath, StandardCopyOption.REPLACE_EXISTING);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

@@ -139,9 +139,10 @@ public class GenuineBnkGateway implements BankSupport {
      */
     @Override
     public void preparePackAll(String sourceDirectory, String targetBankFileName) throws IOException {
+        // TODO see to integrate it into DatabaseBankHelper
         String originalBankFileName = GenuineBnkGateway.PREFIX_ORIGINAL_BANK_FILE + targetBankFileName;
         Path originalBankFilePath = Paths.get(sourceDirectory, originalBankFileName);
-        Files.copy(originalBankFilePath, Paths.get(sourceDirectory, targetBankFileName, originalBankFileName));
+        Files.move(originalBankFilePath, Paths.get(sourceDirectory, targetBankFileName, originalBankFileName));
     }
 
     static String searchOriginalBankFileName(String inputDirectory) throws IOException {
