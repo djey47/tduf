@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.domain.ProcessResult;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
@@ -7,6 +8,8 @@ import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -38,9 +41,13 @@ public class GenuineBnkGatewayTest {
     @InjectMocks
     private GenuineBnkGateway genuineBnkGateway;
 
+    @Captor
+    private ArgumentCaptor<String> targetDirectoryCaptor;
+
     private String bankFileName;
 
     private String tempDirectory;
+
 
     @Before
     public void setUp() throws URISyntaxException, IOException {
@@ -98,14 +105,36 @@ public class GenuineBnkGatewayTest {
 
 
         // THEN
-        assertThat(Paths.get(tempDirectory, PREFIX_ORIGINAL_BANK_FILE + Paths.get(bankFileName).getFileName())).exists();
-        assertThat(Paths.get(tempDirectory, "4Build", "PC", "EURO", "Vehicules", "Cars", "Mercedes", "CLK_55")).exists();
+        Log.info("Directory for unpacked contents: " + tempDirectory);
 
-        verify(commandLineHelperMock, times(28)).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), anyString(), eq(tempDirectory));
+        assertThat(Paths.get(tempDirectory, PREFIX_ORIGINAL_BANK_FILE + Paths.get(bankFileName).getFileName())).exists();
+
+        Path targetParentPath = Paths.get(tempDirectory, "4Build", "PC", "EURO", "Vehicules", "Cars", "Mercedes", "CLK_55");
+        assertThat(targetParentPath).exists();
+
         String packedFilePathPrefix = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\";
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq(packedFilePathPrefix + ".3DD\\CLK_55"), eq(tempDirectory));
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq(packedFilePathPrefix + ".3DG\\CLK_55"), eq(tempDirectory));
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq(packedFilePathPrefix + ".2DM\\CLK_55"), eq(tempDirectory));
+        verify(commandLineHelperMock, times(28)).runCliCommand(anyString(), anyString(), anyString(), anyString(), targetDirectoryCaptor.capture());
+        for (int argIndex = 0 ; argIndex < targetDirectoryCaptor.getAllValues().size() ; argIndex++) {
+
+            String argValue = targetDirectoryCaptor.getAllValues().get(argIndex);
+
+            switch (argIndex % 4) {
+                case 0: // Command
+                    assertThat(argValue).isEqualTo(CLI_COMMAND_BANK_UNPACK);
+                    break;
+                case 1: // Bank file name
+                    assertThat(argValue).isEqualTo(bankFileName);
+                    break;
+                case 2: // Full packed file name
+                    assertThat(argValue).startsWith(packedFilePathPrefix);
+                    break;
+                case 3: // Target directory
+                    assertThat(argValue).startsWith(targetParentPath.toString());
+                    break;
+            }
+        }
+
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq(packedFilePathPrefix + ".3DD\\CLK_55"), anyString());
     }
 
     @Test
@@ -146,15 +175,15 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test
-    public void getUnpackedFilePath() {
+    public void getUnpackedFileParentPath() {
         // GIVEN
         Path basePath = Paths.get("/home/bill/work/");
 
         // WHEN
-        Path actualFilePath = GenuineBnkGateway.getUnpackedFilePath(PACKED_FILE_FULL_NAME, basePath);
+        Path actualFilePath = GenuineBnkGateway.getUnpackedFileParentPath(PACKED_FILE_FULL_NAME, basePath);
 
         // THEN
-        assertThat(actualFilePath).isEqualTo(Paths.get("/home/bill/work/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55/CLK_55.2DM"));
+        assertThat(actualFilePath).isEqualTo(Paths.get("/home/bill/work/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55"));
     }
 
     @Test
