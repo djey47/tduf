@@ -168,7 +168,15 @@ public class DatabaseBankHelperTest {
     }
 
     private void verifyBankSupportCalls(String databaseDirectory, String targetDirectory) throws IOException {
-        verify(bankSupportMock, times(9)).preparePackAll(eq(databaseDirectory), anyString());
+        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB.bnk"));
+        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_FR.bnk"));
+        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_GE.bnk"));
+        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_IT.bnk"));
+        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_SP.bnk"));
+        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_CH.bnk"));
+        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_KO.bnk"));
+        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_US.bnk"));
+        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_JA.bnk"));
 
         verify(bankSupportMock, times(9)).packAll(anyString(), anyString());
         verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB.bnk").toString()), eq(Paths.get(targetDirectory, "DB.bnk").toString()));
