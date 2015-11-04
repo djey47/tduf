@@ -24,20 +24,11 @@ public interface BankSupport {
 
     /**
      * Requirements:
-     * - input directory must have official name of BNK file
-     * - input directory must contain:
+     * input directory must contain:
      *      -> original-[official bank name].bnk file
      *      -> packed file hierarchy
      * @param inputDirectory        : location to extracted files to pack into bank
      * @param outputBankFileName    : location of bank file to create.
      */
     void packAll(String inputDirectory, String outputBankFileName) throws IOException;
-
-    /**
-     * Implement and use this method when a particular file layout is required by packing operation.
-     * @param sourceDirectory       : directory as source for repacked files
-     * @param targetBankFileName    : name of bank file to be created
-     * @throws IOException
-     */
-     void preparePackAll(String sourceDirectory, String targetBankFileName) throws IOException;
 }

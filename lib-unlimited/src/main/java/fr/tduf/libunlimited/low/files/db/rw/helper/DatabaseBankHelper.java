@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.low.files.db.rw.helper;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.io.FileNotFoundException;
@@ -153,7 +154,11 @@ public class DatabaseBankHelper {
                     }
                 });
 
-        bankSupport.preparePackAll(databaseDirectory, targetBankFileName);
+        String originalBankFileName = GenuineBnkGateway.PREFIX_ORIGINAL_BANK_FILE + targetBankFileName;
+        Path originalBankFilePath = databasePath.resolve(originalBankFileName);
+
+        Files.createDirectories(repackedBankPath);
+        Files.move(originalBankFilePath, repackedBankPath.resolve(originalBankFileName), StandardCopyOption.REPLACE_EXISTING);
     }
 
     private static String checkDatabaseFileExists(String databaseDirectory, String databaseFileName) {
