@@ -88,7 +88,7 @@ public class InstallStepsTest {
     @Test
     public void unpackDatabaseToJson_shouldCallBankSupportComponent() throws IOException, URISyntaxException {
         // GIVEN
-        createFakeDatabase();
+        createFakeDatabase(tempDirectory, "");
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)
@@ -139,9 +139,9 @@ public class InstallStepsTest {
     @Test
     public void repackJsonDatabase_shouldCallBankSupportComponent() throws IOException {
         // GIVEN
-        createFakeDatabase();
-
         String jsonDatabaseDirectory = createJsonDatabase();
+
+        createFakeDatabase(jsonDatabaseDirectory, "original-");
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)
@@ -155,16 +155,6 @@ public class InstallStepsTest {
 
         // THEN
         Path databasePath = getTduDatabasePath();
-
-        verify(bankSupportMock).preparePackAll(anyString(), eq("DB.bnk"));
-        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_CH.bnk"));
-        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_FR.bnk"));
-        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_GE.bnk"));
-        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_IT.bnk"));
-        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_JA.bnk"));
-        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_KO.bnk"));
-        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_SP.bnk"));
-        verify(bankSupportMock).preparePackAll(anyString(), eq("DB_US.bnk"));
 
         verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB.bnk").toString()));
         verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_CH.bnk").toString()));
@@ -208,22 +198,22 @@ public class InstallStepsTest {
         return Paths.get(tempDirectory).resolve("Euro").resolve("Bnk").resolve("Database");
     }
 
-    private void createFakeDatabase() throws IOException {
-        Path databaseBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "Database");
-        FilesHelper.createDirectoryIfNotExists(databaseBanksPath.toString());
+    private static void createFakeDatabase(String databaseDirectory, String bankFileNamePrefix) throws IOException {
+        Path databaseBanksPath = Paths.get(databaseDirectory, "Euro", "Bnk", "Database");
+        Files.createDirectories(databaseBanksPath);
 
-        Files.createFile(databaseBanksPath.resolve("DB.bnk"));
-        Files.createFile(databaseBanksPath.resolve("DB_CH.bnk"));
-        Files.createFile(databaseBanksPath.resolve("DB_FR.bnk"));
-        Files.createFile(databaseBanksPath.resolve("DB_GE.bnk"));
-        Files.createFile(databaseBanksPath.resolve("DB_KO.bnk"));
-        Files.createFile(databaseBanksPath.resolve("DB_IT.bnk"));
-        Files.createFile(databaseBanksPath.resolve("DB_JA.bnk"));
-        Files.createFile(databaseBanksPath.resolve("DB_SP.bnk"));
-        Files.createFile(databaseBanksPath.resolve("DB_US.bnk"));
+        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB.bnk"));
+        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_CH.bnk"));
+        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_FR.bnk"));
+        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_GE.bnk"));
+        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_KO.bnk"));
+        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_IT.bnk"));
+        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_JA.bnk"));
+        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_SP.bnk"));
+        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_US.bnk"));
     }
 
-    private String createJsonDatabase() throws IOException {
+    private static String createJsonDatabase() throws IOException {
         String jsonDatabaseDirectory = createTempDirectory();
 
         Path jsonDatabasePath = Paths.get(thisClass.getResource("/db-json").getFile());
