@@ -83,17 +83,9 @@ public class GenuineBnkGateway implements BankSupport {
         Path bankFilePath = Paths.get(bankFileName);
         Files.copy(bankFilePath, Paths.get(outputDirectory, PREFIX_ORIGINAL_BANK_FILE + bankFilePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
 
-        BankInfoDto bankInfoObject = getBankInfo(bankFileName);
-        bankInfoObject.getPackedFiles()
+        getBankInfo(bankFileName).getPackedFiles()
 
-                .forEach((infoObject) -> {
-                    try {
-                        extractPackedFileWithFullPath(bankFileName, infoObject.getFullName(), outputDirectory);
-                    } catch (IOException e) {
-                        // Do not fail here.
-                        e.printStackTrace();
-                    }
-                });
+                .forEach((infoObject) -> extractPackedFileWithFullPath(bankFileName, infoObject.getFullName(), outputDirectory));
     }
 
     /**
@@ -119,18 +111,7 @@ public class GenuineBnkGateway implements BankSupport {
 
                 .filter((path) -> !EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
 
-                .forEach((path) -> {
-                    String packedFilePath = getInternalPackedFilePath(path, inputPath);
-                    try {
-                        Log.debug(thisClass.getSimpleName(), "packedFilePath: " + packedFilePath);
-                        Log.debug(thisClass.getSimpleName(), "path: " + path.toString());
-
-                        ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_REPLACE, outputBankFileName, packedFilePath, path.toString());
-                        handleCommandLineErrors(processResult);
-                    } catch (IOException ioe) {
-                        throw new RuntimeException("Error while repacking file: " + packedFilePath, ioe);
-                    }
-                });
+                .forEach((path) -> repackFileWithFullPath(outputBankFileName, inputPath, path));
     }
 
     /**
@@ -192,12 +173,34 @@ public class GenuineBnkGateway implements BankSupport {
         }
     }
 
-    private void extractPackedFileWithFullPath(String bankFile, String packedFileFullName, String outputDirectory) throws IOException {
-        Path targetParentPath = getUnpackedFileParentPath(packedFileFullName, Paths.get(outputDirectory));
-        Files.createDirectories(targetParentPath);
+    private void extractPackedFileWithFullPath(String bankFile, String packedFileFullName, String outputDirectory) {
+        try {
+            Log.debug(thisClass.getSimpleName(), "packedFileFullName: " + packedFileFullName);
+            Log.debug(thisClass.getSimpleName(), "outputDirectory: " + outputDirectory);
 
-        ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_UNPACK, bankFile, packedFileFullName, targetParentPath.toString());
-        handleCommandLineErrors(processResult);
+            Path targetParentPath = getUnpackedFileParentPath(packedFileFullName, Paths.get(outputDirectory));
+            Files.createDirectories(targetParentPath);
+
+            ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_UNPACK, bankFile, packedFileFullName, targetParentPath.toString());
+            handleCommandLineErrors(processResult);
+        } catch (IOException e) {
+            // Do not fail here.
+            e.printStackTrace();
+        }
+    }
+
+    private void repackFileWithFullPath(String outputBankFile, Path basePath, Path filePath) {
+        String packedFilePath = getInternalPackedFilePath(filePath, basePath);
+        try {
+            Log.debug(thisClass.getSimpleName(), "packedFilePath: " + packedFilePath);
+            Log.debug(thisClass.getSimpleName(), "filePath: " + filePath.toString());
+            Log.debug(thisClass.getSimpleName(), "basePath: " + basePath.toString());
+
+            ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_REPLACE, outputBankFile, packedFilePath, filePath.toString());
+            handleCommandLineErrors(processResult);
+        } catch (IOException ioe) {
+            throw new RuntimeException("Error while repacking file: " + packedFilePath, ioe);
+        }
     }
 
     private static void handleCommandLineErrors(ProcessResult processResult) throws IOException {
