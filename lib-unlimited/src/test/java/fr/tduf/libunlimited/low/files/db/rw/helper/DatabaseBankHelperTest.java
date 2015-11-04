@@ -168,19 +168,16 @@ public class DatabaseBankHelperTest {
     }
 
     private void verifyBankSupportCalls(String databaseDirectory, String targetDirectory) throws IOException {
-        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB.bnk"));
-        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_FR.bnk"));
-        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_GE.bnk"));
-        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_IT.bnk"));
-        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_SP.bnk"));
-        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_CH.bnk"));
-        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_KO.bnk"));
-        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_US.bnk"));
-        verify(bankSupportMock).preparePackAll(eq(databaseDirectory), eq("DB_JA.bnk"));
-
         verify(bankSupportMock, times(9)).packAll(anyString(), anyString());
         verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB.bnk").toString()), eq(Paths.get(targetDirectory, "DB.bnk").toString()));
         verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB_FR.bnk").toString()), eq(Paths.get(targetDirectory, "DB_FR.bnk").toString()));
+        verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB_GE.bnk").toString()), eq(Paths.get(targetDirectory, "DB_GE.bnk").toString()));
+        verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB_IT.bnk").toString()), eq(Paths.get(targetDirectory, "DB_IT.bnk").toString()));
+        verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB_SP.bnk").toString()), eq(Paths.get(targetDirectory, "DB_SP.bnk").toString()));
+        verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB_CH.bnk").toString()), eq(Paths.get(targetDirectory, "DB_CH.bnk").toString()));
+        verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB_KO.bnk").toString()), eq(Paths.get(targetDirectory, "DB_KO.bnk").toString()));
+        verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB_US.bnk").toString()), eq(Paths.get(targetDirectory, "DB_US.bnk").toString()));
+        verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB_JA.bnk").toString()), eq(Paths.get(targetDirectory, "DB_JA.bnk").toString()));
     }
 
     private static String createTempDirectory() throws IOException {

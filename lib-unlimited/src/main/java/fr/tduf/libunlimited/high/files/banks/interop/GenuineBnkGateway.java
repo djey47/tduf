@@ -28,13 +28,12 @@ public class GenuineBnkGateway implements BankSupport {
     private static final Class<GenuineBnkGateway> thisClass = GenuineBnkGateway.class;
 
     public static final String EXTENSION_BANKS = "bnk";
+    public static final String PREFIX_ORIGINAL_BANK_FILE = "original-";
 
     static final String EXE_TDUMT_CLI = ".\\tools\\tdumt-cli\\tdumt-cli.exe";
     static final String CLI_COMMAND_BANK_INFO = "BANK-I";
     static final String CLI_COMMAND_BANK_UNPACK = "BANK-U";
     static final String CLI_COMMAND_BANK_REPLACE = "BANK-R";
-
-    static final String PREFIX_ORIGINAL_BANK_FILE = "original-";
 
     private static final String PREFIX_PACKED_FILE_PATH = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\";
 
@@ -55,23 +54,7 @@ public class GenuineBnkGateway implements BankSupport {
 
         GenuineBankInfoOutputDto outputObject = new ObjectMapper().readValue(processResult.getOut(), GenuineBankInfoOutputDto.class);
 
-        List<PackedFileInfoDto> packedFilesInfos = outputObject.getPackedFiles().stream()
-
-                .map((packedFileInfo) -> PackedFileInfoDto.builder()
-                        .forReference(generatePackedFileReference(packedFileInfo.getName()))
-                        .withSize(packedFileInfo.getFileSize())
-                        .withFullName(packedFileInfo.getName())
-                        .withShortName(packedFileInfo.getShortName())
-                        .withTypeDescription(packedFileInfo.getType())
-                        .build())
-
-                .collect(toList());
-
-        return BankInfoDto.builder()
-                .fromYear(outputObject.getYear())
-                .withFileSize(outputObject.getFileSize())
-                .addPackedFiles(packedFilesInfos)
-                .build();
+        return mapGenuineBankInfoToBankInfoObject(outputObject);
     }
 
     /**
@@ -103,7 +86,6 @@ public class GenuineBnkGateway implements BankSupport {
 
         Log.debug(thisClass.getSimpleName(), "originalBankFilePath: " + originalBankFilePath.toString());
 
-        // TODO handle added / removed files
         Path inputPath = Paths.get(inputDirectory);
         Files.walk(inputPath)
 
@@ -112,18 +94,6 @@ public class GenuineBnkGateway implements BankSupport {
                 .filter((path) -> !EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
 
                 .forEach((path) -> repackFileWithFullPath(outputBankFileName, inputPath, path));
-    }
-
-    /**
-     * Copies original-bnk files to bank name subdirectory.
-     * To be used only with database repacking! (file layout does not need packed folders)
-     */
-    @Override
-    public void preparePackAll(String sourceDirectory, String targetBankFileName) throws IOException {
-        // TODO see to integrate it into DatabaseBankHelper
-        String originalBankFileName = GenuineBnkGateway.PREFIX_ORIGINAL_BANK_FILE + targetBankFileName;
-        Path originalBankFilePath = Paths.get(sourceDirectory, originalBankFileName);
-        Files.move(originalBankFilePath, Paths.get(sourceDirectory, targetBankFileName, originalBankFileName));
     }
 
     static String searchOriginalBankFileName(String inputDirectory) throws IOException {
@@ -208,5 +178,25 @@ public class GenuineBnkGateway implements BankSupport {
             Exception parentException = new Exception(processResult.getErr());
             throw new IOException("Unable to execute genuine CLI command: " + processResult.getCommandName(), parentException);
         }
+    }
+
+    private static BankInfoDto mapGenuineBankInfoToBankInfoObject(GenuineBankInfoOutputDto outputObject) {
+        List<PackedFileInfoDto> packedFilesInfos = outputObject.getPackedFiles().stream()
+
+                .map((packedFileInfo) -> PackedFileInfoDto.builder()
+                        .forReference(generatePackedFileReference(packedFileInfo.getName()))
+                        .withSize(packedFileInfo.getFileSize())
+                        .withFullName(packedFileInfo.getName())
+                        .withShortName(packedFileInfo.getShortName())
+                        .withTypeDescription(packedFileInfo.getType())
+                        .build())
+
+                .collect(toList());
+
+        return BankInfoDto.builder()
+                .fromYear(outputObject.getYear())
+                .withFileSize(outputObject.getFileSize())
+                .addPackedFiles(packedFilesInfos)
+                .build();
     }
 }

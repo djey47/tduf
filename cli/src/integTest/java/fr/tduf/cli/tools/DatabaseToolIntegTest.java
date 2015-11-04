@@ -151,7 +151,6 @@ public class DatabaseToolIntegTest {
         // GIVEN
         String outputDirectory = Paths.get(DIRECTORY_DATABASE_BANKS, "out").toString();
         String unpackJsonDirectory = Paths.get(outputDirectory, "json").toString();
-        String repackJsonDirectory = DIRECTORY_ERR_JSON_DATABASE;
 
         doAnswer(DatabaseToolIntegTest::fakeAndAssertExtractAll)
                 .when(bankSupportMock).extractAll(anyString(), anyString());
@@ -170,19 +169,16 @@ public class DatabaseToolIntegTest {
         this.databaseTool = new DatabaseTool();
         this.databaseTool.setBankSupport(bankSupportMock);
 
-        doAnswer(DatabaseToolIntegTest::fakeAndAssertPreparePackAll)
-                .when(bankSupportMock).preparePackAll(anyString(), anyString());
         doAnswer(DatabaseToolIntegTest::fakeAndAssertPackAll)
                 .when(bankSupportMock).packAll(anyString(), anyString());
 
 
         // WHEN repack-all
         System.out.println("-> RepackAll!");
-        this.databaseTool.doMain(new String[]{"repack-all", /*"-n",*/ "-j", repackJsonDirectory, "-o", outputDirectory,});
+        this.databaseTool.doMain(new String[]{"repack-all", /*"-n",*/ "-j", unpackJsonDirectory, "-o", outputDirectory,});
 
 
         // THEN: gateway was correctly called
-        verify(bankSupportMock, times(9)).preparePackAll(anyString(), anyString());
         verify(bankSupportMock, times(9)).packAll(anyString(), anyString());
     }
 
@@ -283,21 +279,12 @@ public class DatabaseToolIntegTest {
         String shortBankFileName = Paths.get(bankFileName).getFileName().toString();
 
         assertThat(shortBankFileName).startsWith("DB").endsWith(".bnk");
-        assertThat(new File(outputDirectory)).exists();
 
-        Files.createDirectories(Paths.get(outputDirectory, shortBankFileName));
+        Path outputPath = Paths.get(outputDirectory);
+        assertThat(Files.exists(outputPath));
 
-        return null;
-    }
-
-    private static Object fakeAndAssertPreparePackAll(InvocationOnMock invocation) {
-        String sourceDirectory = (String) invocation.getArguments()[0];
-        String targetBankFileName = (String) invocation.getArguments()[1];
-
-        String shortBankFileName = Paths.get(targetBankFileName).getFileName().toString();
-
-        assertThat(shortBankFileName).startsWith("DB").endsWith(".bnk");
-        assertThat(new File(sourceDirectory)).exists();
+        Path originalBankPath = outputPath.resolve("original-" + shortBankFileName);
+        Files.createFile(originalBankPath);
 
         return null;
     }
