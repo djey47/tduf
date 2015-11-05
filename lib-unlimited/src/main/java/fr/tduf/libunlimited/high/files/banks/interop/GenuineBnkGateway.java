@@ -31,7 +31,7 @@ public class GenuineBnkGateway implements BankSupport {
     public static final String EXTENSION_BANKS = "bnk";
     public static final String PREFIX_ORIGINAL_BANK_FILE = "original-";
 
-    static final String EXE_TDUMT_CLI = ".\\tools\\tdumt-cli\\tdumt-cli.exe";
+    static final String EXE_TDUMT_CLI = Paths.get(".", "tools", "tdumt-cli", "tdumt-cli.exe").toString();
     static final String CLI_COMMAND_BANK_INFO = "BANK-I";
     static final String CLI_COMMAND_BANK_UNPACK = "BANK-U";
     static final String CLI_COMMAND_BANK_REPLACE = "BANK-R";
