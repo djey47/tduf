@@ -1,5 +1,6 @@
 package fr.tduf.cli.tools;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.cli.common.helper.CommandHelper;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -98,6 +99,9 @@ public class TestingTool extends GenericTool {
     }
 
     private void result() {
+        Log.info(TestingTool.class.getSimpleName(), "");
+        Log.debug(TestingTool.class.getSimpleName(), "This is for sake of verbosity.");
+
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("result", "ok");
         this.commandResult = resultInfo;

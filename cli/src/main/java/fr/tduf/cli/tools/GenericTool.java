@@ -1,5 +1,6 @@
 package fr.tduf.cli.tools;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.cli.tools.dto.ErrorOutputDto;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -26,6 +27,9 @@ public abstract class GenericTool {
     @Option(name = "-n", aliases = "--normalized", usage = "Not mandatory. Produces output as JSON instead of natural language.")
     private boolean withNormalizedOutput = false;
 
+    @Option(name = "-v", aliases = "--verbose", usage = "Not mandatory. Also displays DEBUG messages.")
+    private boolean withVerboseOutput = false;
+
     protected Serializable commandResult = null;
 
     private ObjectWriter jsonWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
@@ -38,6 +42,8 @@ public abstract class GenericTool {
         if (!checkArgumentsAndOptions(args)) {
             System.exit(1);
         }
+
+        Log.set(withVerboseOutput ? Log.LEVEL_DEBUG : Log.LEVEL_NONE);
 
         try {
             if (!commandDispatch()) {
