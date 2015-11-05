@@ -147,4 +147,16 @@ public class GenericToolTest {
         // THEN
         AssertionsHelper.assertOutputStreamContainsJsonExactly(outContents, "{\"result\":\"ok\"}");
     }
+
+    @Test
+    public void doMain_whenKnownCommand_andVerboseModeEnabled_shouldWriteDebugLogsToConsole() throws IOException, JSONException {
+        // GIVEN
+        OutputStream outContents = ConsoleHelper.hijackStandardOutput();
+
+        // WHEN-THEN
+        testingTool.doMain(new String[]{"test_result", "-v", "-p", ""});
+
+        // THEN
+        AssertionsHelper.assertOutputStreamContainsSequence(outContents, "INFO: [TestingTool] ", "DEBUG: [TestingTool] This is for sake of verbosity.", "> All done!");
+    }
 }
