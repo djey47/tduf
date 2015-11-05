@@ -40,6 +40,9 @@ Thus, you always ought to make a backup of your TDU database before using it!
 
 * Please uninstall any Java Runtime < 8
 * [Update / Install Java 8 Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
+* Make sure .net apps can be run
+    - Windows users: check if .net Framework 2.0 is installed
+    - Linux users: check if Mono 2.0 is installed.
 
 ### Running it!
 
