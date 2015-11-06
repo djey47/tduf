@@ -104,8 +104,9 @@ public class DatabaseGenHelper {
                 throw new IllegalArgumentException("Unhandled field type: " + fieldType);
         }
 
+        DbDto.Topic topic = topicObject.getTopic();
         return DbDataDto.Item.builder()
-                .fromStructureField(field)
+                .fromStructureFieldAndTopic(field, topic)
                 .withRawValue(rawValue)
                 .build();
     }
