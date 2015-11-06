@@ -76,7 +76,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .ifPresent((topicObject) -> {
 
                     List<DbDataDto.Entry> topicEntries = topicObject.getData().getEntries();
-                    List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject.getStructure().getFields(), changeObject.getValues());
+                    List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject.getStructure(), changeObject.getValues());
 
                     Optional<String> potentialRef = Optional.ofNullable(changeObject.getRef());
                     if (potentialRef.isPresent()) {
@@ -183,7 +183,8 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .build());
     }
 
-    private static List<DbDataDto.Item> createEntryItemsWithValues(List<DbStructureDto.Field> structureFields, List<String> allValues) {
+    private static List<DbDataDto.Item> createEntryItemsWithValues(DbStructureDto structureObject, List<String> allValues) {
+        List<DbStructureDto.Field> structureFields = structureObject.getFields();
         checkValueCount(allValues, structureFields);
 
         AtomicInteger fieldIndex = new AtomicInteger();
@@ -192,7 +193,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .map((value) -> {
                     DbStructureDto.Field structureField = structureFields.get(fieldIndex.getAndIncrement());
                     return DbDataDto.Item.builder()
-                            .fromStructureField(structureField)
+                            .fromStructureFieldAndTopic(structureField, structureObject.getTopic())
                             .withRawValue(value)
                             .build();
                 })
