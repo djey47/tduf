@@ -1,7 +1,5 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
-import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
-import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -196,16 +194,11 @@ public class DatabaseParser {
         for (String itemValue : line.split(VALUE_DELIMITER)) {
             DbStructureDto.Field fieldInformation = structure.getFields().get(fieldIndex++);
 
-            List<DbDataDto.SwitchValue> switchValues = null;
-            if (fieldInformation.getFieldType() == BITFIELD) {
-                switchValues = prepareSwitchValues(itemValue, structure.getTopic());
-            }
-
             items.add(DbDataDto.Item.builder()
                     .ofFieldRank(fieldInformation.getRank())
                     .forName(fieldInformation.getName())
                     .withRawValue(itemValue)
-                    .withSwitchValues(switchValues)
+                    .bitFieldForTopic(fieldInformation.getFieldType() == BITFIELD, structure.getTopic())
                     .build());
         }
 
@@ -356,28 +349,6 @@ public class DatabaseParser {
                 .addInformations(info)
                 .build();
         integrityErrors.add(integrityError);
-    }
-
-    static List<DbDataDto.SwitchValue> prepareSwitchValues(String rawValue, DbDto.Topic topic) {
-        requireNonNull(rawValue, "A raw value is required");
-        requireNonNull(topic, "A database topic is required");
-
-        BitfieldHelper bitfieldHelper = new BitfieldHelper();
-        Optional<List<DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto>> bitfieldReference = bitfieldHelper.getBitfieldReferenceForTopic(topic);
-
-        List<DbDataDto.SwitchValue> switchValues = new ArrayList<>();
-        bitfieldReference.ifPresent((refs) -> {
-
-            List<Boolean> values = bitfieldHelper.resolve(topic, rawValue).get();
-            refs.stream()
-
-                    .forEach((ref) -> {
-                        boolean switchState = values.get(ref.getIndex() - 1);
-                        switchValues.add(new DbDataDto.SwitchValue(ref.getIndex(), ref.getLabel(), switchState));
-                    });
-        });
-
-        return switchValues;
     }
 
     public long getContentLineCount() {

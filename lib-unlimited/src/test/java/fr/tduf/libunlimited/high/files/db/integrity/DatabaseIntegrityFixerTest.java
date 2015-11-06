@@ -21,6 +21,8 @@ import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.AFTER_MARKET_PACKS;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -98,8 +100,8 @@ public class DatabaseIntegrityFixerTest {
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
 
         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
-        info.put(SOURCE_TOPIC, Topic.ACHIEVEMENTS);
-        info.put(REMOTE_TOPIC, Topic.ACHIEVEMENTS);
+        info.put(SOURCE_TOPIC, ACHIEVEMENTS);
+        info.put(REMOTE_TOPIC, ACHIEVEMENTS);
         info.put(LOCALE, Locale.FRANCE);
         info.put(REFERENCE, "123456");
         List<IntegrityError> integrityErrors = singletonList(IntegrityError.builder().ofType(RESOURCE_REFERENCE_NOT_FOUND).addInformations(info).build());
@@ -116,7 +118,7 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        DbResourceDto.Entry createdEntry = searchResourceEntry("123456", Topic.ACHIEVEMENTS, Locale.FRANCE, fixedDatabaseObjects);
+        DbResourceDto.Entry createdEntry = searchResourceEntry("123456", ACHIEVEMENTS, Locale.FRANCE, fixedDatabaseObjects);
         assertThat(createdEntry).isNotNull();
         assertThat(createdEntry.getValue()).isEqualTo("-FIXED BY TDUF-");
     }
@@ -127,8 +129,8 @@ public class DatabaseIntegrityFixerTest {
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
 
         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
-        info.put(SOURCE_TOPIC, Topic.ACHIEVEMENTS);
-        info.put(REMOTE_TOPIC, Topic.AFTER_MARKET_PACKS);
+        info.put(SOURCE_TOPIC, ACHIEVEMENTS);
+        info.put(REMOTE_TOPIC, AFTER_MARKET_PACKS);
         info.put(LOCALE, Locale.FRANCE);
         info.put(REFERENCE, "1234567");
         List<IntegrityError> integrityErrors = singletonList(IntegrityError.builder().ofType(RESOURCE_REFERENCE_NOT_FOUND).addInformations(info).build());
@@ -145,7 +147,7 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        DbResourceDto.Entry createdEntry = searchResourceEntry("1234567", Topic.AFTER_MARKET_PACKS, Locale.FRANCE, fixedDatabaseObjects);
+        DbResourceDto.Entry createdEntry = searchResourceEntry("1234567", AFTER_MARKET_PACKS, Locale.FRANCE, fixedDatabaseObjects);
         assertThat(createdEntry).isNotNull();
         assertThat(createdEntry.getValue()).isEqualTo("-FIXED BY TDUF-");
     }
@@ -156,23 +158,23 @@ public class DatabaseIntegrityFixerTest {
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
 
         HashMap<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
-        info.put(SOURCE_TOPIC, Topic.ACHIEVEMENTS);
-        info.put(REMOTE_TOPIC, Topic.AFTER_MARKET_PACKS);
+        info.put(SOURCE_TOPIC, ACHIEVEMENTS);
+        info.put(REMOTE_TOPIC, AFTER_MARKET_PACKS);
         info.put(REFERENCE, "11111111");
         List<IntegrityError> integrityErrors = singletonList(IntegrityError.builder().ofType(CONTENTS_REFERENCE_NOT_FOUND).addInformations(info).build());
 
         DbDto remoteTopicObject = dbDtos.get(1);
-        List<DbStructureDto.Field> remoteSTructureFields = remoteTopicObject.getStructure().getFields();
+        List<DbStructureDto.Field> remoteStructureFields = remoteTopicObject.getStructure().getFields();
         DbDataDto.Item fixedItem1 = DbDataDto.Item.builder()
-                .fromStructureField(remoteSTructureFields.get(0))
+                .fromStructureFieldAndTopic(remoteStructureFields.get(0), AFTER_MARKET_PACKS)
                 .withRawValue("11111111")
                 .build();
         DbDataDto.Item fixedItem2 = DbDataDto.Item.builder()
-                .fromStructureField(remoteSTructureFields.get(1))
+                .fromStructureFieldAndTopic(remoteStructureFields.get(1), AFTER_MARKET_PACKS)
                 .withRawValue("0")
                 .build();
         DbDataDto.Item fixedItem3 = DbDataDto.Item.builder()
-                .fromStructureField(remoteSTructureFields.get(2))
+                .fromStructureFieldAndTopic(remoteStructureFields.get(2), AFTER_MARKET_PACKS)
                 .withRawValue("REF")
                 .build();
         List<DbDataDto.Item> fixedItems = asList(fixedItem1, fixedItem2, fixedItem3);
@@ -190,7 +192,7 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        List<DbDataDto.Entry> allEntries = searchContentsEntries(Topic.AFTER_MARKET_PACKS, fixedDatabaseObjects);
+        List<DbDataDto.Entry> allEntries = searchContentsEntries(AFTER_MARKET_PACKS, fixedDatabaseObjects);
         assertThat(allEntries).hasSize(1);
         DbDataDto.Entry createdEntry = allEntries.get(0);
         assertThat(createdEntry.getId()).isEqualTo(0);
@@ -221,7 +223,7 @@ public class DatabaseIntegrityFixerTest {
         HashMap<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
         info.put(EXPECTED_COUNT, 3);
         info.put(ACTUAL_COUNT, 1);
-        info.put(SOURCE_TOPIC, Topic.AFTER_MARKET_PACKS);
+        info.put(SOURCE_TOPIC, AFTER_MARKET_PACKS);
         info.put(ENTRY_ID, 0L);
         List<IntegrityError> integrityErrors = singletonList(IntegrityError.builder().ofType(CONTENTS_FIELDS_COUNT_MISMATCH).addInformations(info).build());
 
@@ -229,11 +231,11 @@ public class DatabaseIntegrityFixerTest {
         DbStructureDto.Field firstStructureField = topicObject.getStructure().getFields().get(0);
         DbStructureDto.Field thirdStructureField = topicObject.getStructure().getFields().get(2);
         DbDataDto.Item firstItem = DbDataDto.Item.builder()
-                .fromStructureField(firstStructureField)
+                .fromStructureFieldAndTopic(firstStructureField, AFTER_MARKET_PACKS)
                 .withRawValue("11111111")
                 .build();
         DbDataDto.Item thirdItem = DbDataDto.Item.builder()
-                .fromStructureField(thirdStructureField)
+                .fromStructureFieldAndTopic(thirdStructureField, AFTER_MARKET_PACKS)
                 .withRawValue("100")
                 .build();
 
@@ -252,7 +254,7 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        List<DbDataDto.Entry> allEntries = searchContentsEntries(Topic.AFTER_MARKET_PACKS, fixedDatabaseObjects);
+        List<DbDataDto.Entry> allEntries = searchContentsEntries(AFTER_MARKET_PACKS, fixedDatabaseObjects);
         assertThat(allEntries).hasSize(1);
         DbDataDto.Entry createdEntry = allEntries.get(0);
         assertThat(createdEntry).isNotNull();
@@ -277,7 +279,7 @@ public class DatabaseIntegrityFixerTest {
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
 
         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
-        info.put(SOURCE_TOPIC, Topic.ACHIEVEMENTS);
+        info.put(SOURCE_TOPIC, ACHIEVEMENTS);
         info.put(FILE, "./TDU_Achievements.fr");
         info.put(LOCALE, Locale.ITALY);
 
@@ -295,7 +297,7 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        DbResourceDto.Entry actualResourceEntry = searchResourceEntry("000", Topic.ACHIEVEMENTS, Locale.ITALY, fixedDatabaseObjects);
+        DbResourceDto.Entry actualResourceEntry = searchResourceEntry("000", ACHIEVEMENTS, Locale.ITALY, fixedDatabaseObjects);
         assertThat(actualResourceEntry.getValue()).isEqualTo("TDUF TEST");
     }
 
@@ -317,7 +319,7 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        DbResourceDto.Entry actualResourceEntry = searchResourceEntry("000", Topic.AFTER_MARKET_PACKS, Locale.CHINA, fixedDatabaseObjects);
+        DbResourceDto.Entry actualResourceEntry = searchResourceEntry("000", AFTER_MARKET_PACKS, Locale.CHINA, fixedDatabaseObjects);
         assertThat(actualResourceEntry.getValue()).isEqualTo("TDUF TEST");
     }
 
@@ -342,7 +344,7 @@ public class DatabaseIntegrityFixerTest {
         Stream.of(Locale.FRANCE, Locale.UNITED_STATES)
 
                 .forEach((locale) -> {
-                    DbResourceDto.Entry actualResourceEntry = searchResourceEntry("000", Topic.AFTER_MARKET_PACKS, locale, fixedDatabaseObjects);
+                    DbResourceDto.Entry actualResourceEntry = searchResourceEntry("000", AFTER_MARKET_PACKS, locale, fixedDatabaseObjects);
                     assertThat(actualResourceEntry.getValue()).isEqualTo("TDUF TEST");
                 });
     }
@@ -451,7 +453,7 @@ public class DatabaseIntegrityFixerTest {
     private static DbStructureDto createDefaultStructureObject() {
         return DbStructureDto.builder()
                 .forReference("1")
-                .forTopic(Topic.ACHIEVEMENTS)
+                .forTopic(ACHIEVEMENTS)
                 .addItem(DbStructureDto.Field.builder()
                         .forName("ID")
                         .fromType(DbStructureDto.FieldType.UID)
@@ -463,7 +465,7 @@ public class DatabaseIntegrityFixerTest {
     private static DbStructureDto createDefaultStructureObject2() {
         return DbStructureDto.builder()
                 .forReference("2")
-                .forTopic(Topic.AFTER_MARKET_PACKS)
+                .forTopic(AFTER_MARKET_PACKS)
                 .addItem(DbStructureDto.Field.builder()
                         .forName("ID")
                         .fromType(DbStructureDto.FieldType.UID)
@@ -542,7 +544,7 @@ public class DatabaseIntegrityFixerTest {
         perLocaleCountInfo.put(Locale.UNITED_STATES, 1);
 
         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
-        info.put(SOURCE_TOPIC, Topic.AFTER_MARKET_PACKS);
+        info.put(SOURCE_TOPIC, AFTER_MARKET_PACKS);
         info.put(PER_LOCALE_COUNT, perLocaleCountInfo);
 
         return IntegrityError.builder().ofType(RESOURCE_ITEMS_COUNT_MISMATCH).addInformations(info).build();
@@ -554,7 +556,7 @@ public class DatabaseIntegrityFixerTest {
         valueCounter.put("TDUF TEST ALTERED", 1);
 
         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
-        info.put(SOURCE_TOPIC, Topic.AFTER_MARKET_PACKS);
+        info.put(SOURCE_TOPIC, AFTER_MARKET_PACKS);
         info.put(REFERENCE, "000");
         info.put(PER_VALUE_COUNT, valueCounter);
 

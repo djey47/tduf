@@ -20,8 +20,6 @@ import java.util.Map;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
@@ -396,43 +394,6 @@ public class DatabaseParserTest {
 
         String expectedJson = FilesHelper.readTextFromResourceFile("/db/json/special/TDU_Achievements.json", FilesHelper.CHARSET_UNICODE_8);
         assertEquals(expectedJson, jsonResult, JSONCompareMode.STRICT);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void prepareSwitchValues_whenNullValue_shouldThrowException() {
-        // GIVEN-WHEN
-        DatabaseParser.prepareSwitchValues(null, DbDto.Topic.CAR_PHYSICS_DATA);
-
-        // THEN: NPE
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void prepareSwitchValues_whenNullTopic_shouldThrowException() {
-        // GIVEN-WHEN
-        DatabaseParser.prepareSwitchValues("111", null);
-
-        // THEN: NPE
-    }
-
-    @Test
-    public void prepareSwitchValues_shouldReturnCorrectValues() {
-        // GIVEN-WHEN
-        List<DbDataDto.SwitchValue> actualValues = DatabaseParser.prepareSwitchValues("111", CAR_PHYSICS_DATA);
-
-        // THEN
-        assertThat(actualValues).hasSize(7);
-        assertThat(actualValues).extracting("index").containsExactly(1, 2, 3, 4, 5, 6, 7);
-        assertThat(actualValues).extracting("name").containsExactly("?", "?", "?", "?", "?", "Add-on key required", "Car Paint Luxe enabled");
-        assertThat(actualValues).extracting("enabled").containsExactly(true, true, true, true, false, true, true);
-    }
-
-    @Test
-    public void prepareSwitchValues_whenReferenceNotFound_shouldReturnEmptyList() {
-        // GIVEN-WHEN
-        List<DbDataDto.SwitchValue> actualValues = DatabaseParser.prepareSwitchValues("111", CAR_RIMS);
-
-        // THEN
-        assertThat(actualValues).isEmpty();
     }
 
     private List<String> createValidContentsWithOneItem() {

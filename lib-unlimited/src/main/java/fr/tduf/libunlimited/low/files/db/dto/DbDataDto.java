@@ -1,5 +1,8 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
+import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
+import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -7,10 +10,11 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.BITFIELD;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -137,17 +141,39 @@ public class DbDataDto implements Serializable {
         @JsonProperty("fieldRank")
         private int fieldRank;
 
+        @JsonIgnore
+        private DbDto.Topic topicForBitfield;
+
+        @JsonIgnore
+        private DbDto.Topic getTopicForBitfield() {
+            return topicForBitfield;
+        }
+
         public static ItemBuilder builder() {
             return new ItemBuilder() {
-                private List<SwitchValue> switchValues;
                 private Integer fieldRank;
                 private String name;
                 private String raw;
 
+                private boolean isBitField = false;
+                private DbDto.Topic topic;
+
                 @Override
-                public ItemBuilder fromStructureField(DbStructureDto.Field field) {
+                public ItemBuilder bitFieldForTopic(boolean isBitField, DbDto.Topic topic) {
+                    this.isBitField = isBitField;
+                    this.topic = topic;
+                    return this;
+                }
+
+                @Override
+                public ItemBuilder fromStructureFieldAndTopic(DbStructureDto.Field field, DbDto.Topic topic) {
                     this.fieldRank = field.getRank();
                     this.name = field.getName();
+
+                    boolean isBitfield = field.getFieldType() == BITFIELD;
+                    this.isBitField = isBitfield;
+                    this.topic = isBitfield ? topic : null;
+
                     return this;
                 }
 
@@ -164,12 +190,6 @@ public class DbDataDto implements Serializable {
                 }
 
                 @Override
-                public ItemBuilder withSwitchValues(List<SwitchValue> values) {
-                    this.switchValues = values;
-                    return this;
-                }
-
-                @Override
                 public ItemBuilder ofFieldRank(int fieldRank) {
                     this.fieldRank = fieldRank;
                     return this;
@@ -177,19 +197,11 @@ public class DbDataDto implements Serializable {
 
                 @Override
                 public ItemBuilder fromExisting(Item contentItem) {
-                    List<DbDataDto.SwitchValue> clonedSwitchValues = null;
-                    if (contentItem.getSwitchValues() != null) {
-                        clonedSwitchValues = contentItem.getSwitchValues().stream()
-
-                                .map((switchValue) -> new DbDataDto.SwitchValue(switchValue.getIndex(), switchValue.getName(), switchValue.isEnabled()))
-
-                                .collect(toList());
-                    }
                     return DbDataDto.Item.builder()
                                 .forName(contentItem.getName())
                                 .ofFieldRank(contentItem.getFieldRank())
                                 .withRawValue(contentItem.getRawValue())
-                                .withSwitchValues(clonedSwitchValues);
+                                .bitFieldForTopic(contentItem.isBitfield(),  contentItem.getTopicForBitfield());
                 }
 
                 @Override
@@ -201,9 +213,35 @@ public class DbDataDto implements Serializable {
                     item.rawValue = this.raw;
                     item.name = this.name;
                     item.fieldRank = this.fieldRank;
-                    item.switchValues = this.switchValues;
+
+                    if (isBitField) {
+                        item.switchValues = buildSwitchValues();
+                        item.topicForBitfield = this.topic;
+                    }
 
                     return item;
+                }
+
+                private List<SwitchValue> buildSwitchValues() {
+                    requireNonNull(raw, "A raw value is required");
+                    requireNonNull(topic, "A database topic is required");
+
+                    BitfieldHelper bitfieldHelper = new BitfieldHelper();
+                    Optional<List<DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto>> bitfieldReference = bitfieldHelper.getBitfieldReferenceForTopic(topic);
+
+                    List<DbDataDto.SwitchValue> switchValues = new ArrayList<>();
+                    bitfieldReference.ifPresent((refs) -> {
+
+                        List<Boolean> values = bitfieldHelper.resolve(topic, raw).get();
+                        refs.stream()
+
+                                .forEach((ref) -> {
+                                    boolean switchState = values.get(ref.getIndex() - 1);
+                                    switchValues.add(new DbDataDto.SwitchValue(ref.getIndex(), ref.getLabel(), switchState));
+                                });
+                    });
+
+                    return switchValues;
                 }
             };
         }
@@ -235,6 +273,11 @@ public class DbDataDto implements Serializable {
             return switchValues;
         }
 
+        @JsonIgnore
+        private boolean isBitfield() {
+            return switchValues != null;
+        }
+
         @Override
         public boolean equals(Object o) {
             return reflectionEquals(this, o, false);
@@ -251,13 +294,13 @@ public class DbDataDto implements Serializable {
         }
 
         public interface ItemBuilder {
-            ItemBuilder fromStructureField(DbStructureDto.Field field);
+            ItemBuilder bitFieldForTopic(boolean isBitField, DbDto.Topic topic);
+
+            ItemBuilder fromStructureFieldAndTopic(DbStructureDto.Field field, DbDto.Topic topic);
 
             ItemBuilder forName(String name);
 
             ItemBuilder withRawValue(String singleValue);
-
-            ItemBuilder withSwitchValues(List<SwitchValue> values);
 
             ItemBuilder ofFieldRank(int fieldRank);
 
