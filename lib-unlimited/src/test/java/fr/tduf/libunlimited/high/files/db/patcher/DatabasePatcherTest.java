@@ -232,6 +232,33 @@ public class DatabasePatcherTest {
     }
 
     @Test
+    public void apply_whenUpdateContentsPatch_andBitfield_shouldUpdateBitfield() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-mixed-bitfield.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarShops.json");
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+
+
+        // WHEN
+        patcher.apply(updateContentsPatch);
+
+
+        // THEN
+        DbDataDto.Entry actualModifiedEntry = databaseMiner.getContentEntryFromTopicWithReference("589356824", CAR_SHOPS).get();
+        assertThat(actualModifiedEntry.getItems().get(18).getSwitchValues())
+                .isNotNull()
+                .isNotEmpty();
+
+        DbDataDto.Entry actualCreatedEntry = databaseMiner.getContentEntryFromTopicWithReference("00000000", CAR_SHOPS).get();
+        assertThat(actualCreatedEntry.getItems().get(18).getSwitchValues())
+                .isNotNull()
+                .isNotEmpty();
+    }
+
+    @Test
     public void apply_whenDeleteContentsPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteContents-ref.mini.json");
