@@ -132,6 +132,26 @@ public class GenericWriterTest {
     }
 
     @Test
+    public void write_whenProvidedFiles_andUnsignedLongValue_shouldReturnBytes() throws IOException, URISyntaxException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterUnsignedLong();
+
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = actualWriter.write();
+
+
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(8);
+
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-unsignedLong.bin");
+        assertThat(actualBytes).isEqualTo(expectedBytes);
+    }
+
+    @Test
     public void write_whenProvidedFiles_andLastFieldAutoSize_shouldReturnBytes() throws IOException, URISyntaxException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterLastFieldAutoSize();
@@ -331,6 +351,21 @@ public class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-veryShortInt-map.json";
+            }
+        };
+    }
+
+    private GenericWriter<String> createGenericWriterUnsignedLong() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {
+                getDataStore().addInteger("my_int_field", 1000);
+                getDataStore().addInteger("my_long_field", 4125000000L);
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-unsignedLong-map.json";
             }
         };
     }
