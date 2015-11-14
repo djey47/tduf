@@ -112,7 +112,7 @@ public class DataStoreTest {
     @Test
     public void fromJsonString_whenProvidedJson_andLongIntegerValues_shouldSetStore() throws IOException, URISyntaxException {
         // GIVEN
-        dataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-largeUnsignedInt-map.json"));
+        dataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-unsignedLong-map.json"));
         String jsonInput = getStoreContentsAsJson("/files/json/store_longInteger.json");
 
         // WHEN
