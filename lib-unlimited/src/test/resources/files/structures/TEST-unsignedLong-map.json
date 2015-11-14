@@ -1,0 +1,16 @@
+{
+  "name" : "TEST file format (unsigned long value only)",
+  "littleEndian" : false,
+  "fields" : [
+    {
+      "name": "my_int_field",
+      "type": "INTEGER",
+      "size": 4
+    },
+    {
+      "name": "my_long_field",
+      "type": "INTEGER",
+      "size": 4
+    }
+  ]
+}
