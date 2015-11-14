@@ -27,7 +27,7 @@ public class DataStoreTest {
     public void setUp() throws IOException {
         Log.set(Log.LEVEL_INFO);
 
-        dataStore = new DataStore(DataStoreFixture.getFileStructure());
+        dataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastore-map.json"));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class DataStoreTest {
     @Test
     public void toJsonString_whenProvidedStore_shouldReturnJsonRepresentation() throws IOException, URISyntaxException, JSONException {
         // GIVEN
-        String expectedJson = getStoreContentsAsJson();
+        String expectedJson = getStoreContentsAsJson("/files/json/store.json");
         DataStoreFixture.createStoreEntries(dataStore);
 
         // WHEN
@@ -92,7 +92,7 @@ public class DataStoreTest {
     @Test
     public void fromJsonString_whenProvidedJson_shouldSetStore() throws IOException, URISyntaxException {
         // GIVEN
-        String jsonInput = getStoreContentsAsJson();
+        String jsonInput = getStoreContentsAsJson("/files/json/store.json");
 
         // WHEN
         dataStore.fromJsonString(jsonInput);
@@ -107,6 +107,21 @@ public class DataStoreTest {
         assertThat(dataStore.getRawValue("entry_list[0].another_field").get()).isEqualTo(new byte[]{0x1, 0x2, 0x3, 0x4});
         assertThat(dataStore.getRawValue("entry_list[1].another_field").get()).isEqualTo(new byte[]{0x5, 0x6, 0x7, 0x8});
         assertThat(dataStore.getRawValue("entry_list[2].another_field").get()).isEqualTo(new byte[]{0x9, 0xA, 0xB, 0xC});
+    }
+
+    @Test
+    public void fromJsonString_whenProvidedJson_andLongIntegerValues_shouldSetStore() throws IOException, URISyntaxException {
+        // GIVEN
+        dataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-largeUnsignedInt-map.json"));
+        String jsonInput = getStoreContentsAsJson("/files/json/store_longInteger.json");
+
+        // WHEN
+        dataStore.fromJsonString(jsonInput);
+
+        // THEN
+        assertThat(dataStore.getStore()).hasSize(2);
+        assertThat(dataStore.getInteger("my_int_field")).contains(10L);
+        assertThat(dataStore.getInteger("my_long_field")).contains(4286700000L);
     }
 
     @Test
@@ -171,12 +186,12 @@ public class DataStoreTest {
         // THEN: IAE
     }
 
-    private static String getStoreContentsAsJson() throws URISyntaxException, IOException {
-        return FilesHelper.readTextFromResourceFile("/files/json/store.json");
+    private static String getStoreContentsAsJson(String resourcePath) throws URISyntaxException, IOException {
+        return FilesHelper.readTextFromResourceFile(resourcePath);
     }
 
     private static DataStore createDataStoreToMerge() throws IOException {
-        DataStore sourceStore = new DataStore(DataStoreFixture.getFileStructure());
+        DataStore sourceStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastore-map.json"));
         // Already existing entries
         sourceStore.addInteger("entry_list[2].my_field", 30L);
         sourceStore.addFloatingPoint("entry_list[2].my_fp_field", 435.666667f);
