@@ -20,7 +20,7 @@ public class DataStore_focusOnAddingValuesTest {
 
     @Before
     public void setUp() throws IOException {
-        dataStore = new DataStore(DataStoreFixture.getFileStructure());
+        dataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastore-map.json"));
     }
 
     @Test
