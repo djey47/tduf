@@ -424,10 +424,10 @@ public class DataStore {
         } else {
             FileStructureDto.Field fieldDefinition = StructureHelper.getFieldDefinitionFromFullName(parentKey, this.fileStructure).get();
 
-            if (jsonNode instanceof IntNode) {
+            if (jsonNode instanceof IntNode || jsonNode instanceof LongNode) {
 
                 type = FileStructureDto.Type.INTEGER;
-                rawValue = TypeHelper.integerToRaw(jsonNode.getIntValue());
+                rawValue = TypeHelper.integerToRaw(jsonNode.getLongValue());
                 signed = fieldDefinition.isSigned();
 
             } else if (jsonNode instanceof TextNode) {

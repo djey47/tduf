@@ -61,7 +61,7 @@ public class DataStoreFixture {
         dataStore.addValue(key, FPOINT, bytes);
     }
 
-    public static FileStructureDto getFileStructure() throws IOException {
-        return StructureHelper.retrieveStructureFromLocation("/files/structures/TEST-datastore-map.json");
+    public static FileStructureDto getFileStructure(String resourcePath) throws IOException {
+        return StructureHelper.retrieveStructureFromLocation(resourcePath);
     }
 }
