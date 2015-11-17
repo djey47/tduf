@@ -7,20 +7,24 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Capitalizing about reverse-engineering
 * ...
 
-### What's new in this version ? (0.7.0)
+### What's new in this version ? (0.8.0)
 
-* General (all): contains all bugfixes from 0.6.1
-* General (all): contains all bugfixes from TDUF Database Editor ALPHA 3->7
-* General (all): re-format usage details in CLI to make reading easier
+* General (all): contains all bugfixes from TDUF Database Editor ALPHA 8->10
+* General (all): re-formats INTRO to display Java version
+* General (all): re-formats messages in console
+* General (all): provides verbose mode switch to get more information on current processing
 
 * DatabaseTool (apply-tdupk): NEW operation to patch TDU database (JSON format) with TDUPE Performance Pack
-* DatabaseTool (check): detects new corruption, values for globalized resource at a given REF should be the same
-* DatabaseTool (fix): fixes corruption above
+* DatabaseTool (gen-patch): enhances mini patch generation, takes association topics into account (CAR_RIMS...)
+* DatabaseTool (apply-patch): now resolves switch values after applying patch
 
-* MappingTool (fix-missing): displays list of new files
+* FileTool (gen): creates correct TDU file from some JSON (solves issue with Bnk1.map file)
+* FileTool (unpack-all/unpack): fixes unpacked directory layout
 
-* Library: adds ability to properly resolve bitfield values (can be improved in the future)
-* Library: misc improvements and bug fixes.
+* Library: updates bitfield reference for CAR SHOPS topic
+* Library: uses minlog library to provide some logging
+* Library: caches DatabaseMinerOperations (can be disabled)
+* Library: includes misc improvements and bug fixes.
 
 ### What you will need to run TDUF
 
