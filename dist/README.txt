@@ -7,7 +7,7 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Capitalizing about reverse-engineering
 * ...
 
-### What's new in this version ? (0.8.0)
+### What's new in this version ? (0.9.0)
 
 * General (all): contains all bugfixes from TDUF Database Editor ALPHA 8->10
 * General (all): re-formats INTRO to display Java version
