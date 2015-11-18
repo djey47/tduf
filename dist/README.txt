@@ -36,6 +36,10 @@ Thus, you always ought to make a backup of your TDU database before using it!
 * Uses a normalized way to display some application messages in logs
 * Bugfix: same patch instruction would be generated twice (TDUF mini-patch).
 
+### Known bugs
+
+*
+
 ### What you will need to run TDUF
 
 * Please uninstall any Java Runtime < 8
