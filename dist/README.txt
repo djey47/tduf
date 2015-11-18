@@ -26,6 +26,10 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Library: caches DatabaseMinerOperations (can be disabled)
 * Library: includes misc improvements and bug fixes.
 
+### Known bugs
+
+* CameraTool: produced Camera.bin files do not work correctly in game. Default camera views seems to be used instead.
+
 ### What you will need to run TDUF
 
 * Please uninstall any Java Runtime < 8
