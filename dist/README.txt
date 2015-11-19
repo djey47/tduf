@@ -28,13 +28,13 @@ Thus, you always ought to make a backup of your TDU database before using it!
 * Imports data from TDUPE (Performance Pack .tdupk)
 * Exports current entry to following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch.
 
-### What's in this version ? (ALPHA 11)
+### What's in this version ? (ALPHA 12)
 
-* Gets all enhancements and bugfixes from TDUF STABLE 0.8
+*
 
 ### Known bugs
 
-* Same as TDUF STABLE 0.8
+*
 
 ### What you will need to run TDUF
 
