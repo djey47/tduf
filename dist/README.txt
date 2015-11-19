@@ -30,15 +30,11 @@ Thus, you always ought to make a backup of your TDU database before using it!
 
 ### What's in this version ? (ALPHA 11)
 
-* New: loads database automatically when directory provided via command line (same applies when launched through Alpha-DatabaseEditor.cmd script)
-* Initiates database read performance improvements
-* Writes more debugging details in Alpha-DatabaseEditor.log
-* Uses a normalized way to display some application messages in logs
-* Bugfix: same patch instruction would be generated twice (TDUF mini-patch).
+* Gets all enhancements and bugfixes from TDUF STABLE 0.8
 
 ### Known bugs
 
-*
+* Same as TDUF STABLE 0.8
 
 ### What you will need to run TDUF
 
