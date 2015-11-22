@@ -10,6 +10,7 @@ import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -86,7 +87,11 @@ public class GenuineBnkGateway implements BankSupport {
 
         Log.debug(thisClass.getSimpleName(), "originalBankFilePath: " + originalBankFilePath.toString());
 
-        Path inputPath = Paths.get(inputDirectory);
+        getBankInfo(originalBankFilePath.toString()).getPackedFiles()
+
+                .forEach((infoObject) -> repackFileWithFullPath(infoObject.getFullName(), outputBankFileName, Paths.get(inputDirectory)));
+
+/*        Path inputPath = Paths.get(inputDirectory);
         Files.walk(inputPath)
 
                 .filter((path) -> Files.isRegularFile(path))
@@ -94,6 +99,7 @@ public class GenuineBnkGateway implements BankSupport {
                 .filter((path) -> !EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
 
                 .forEach((path) -> repackFileWithFullPath(outputBankFileName, inputPath, path));
+                */
     }
 
     static String searchOriginalBankFileName(String inputDirectory) throws IOException {
@@ -133,6 +139,22 @@ public class GenuineBnkGateway implements BankSupport {
         return basePath.resolve(followingPathWithoutFileName);
     }
 
+    static Path getRealFilePath(String packedFilePath, Path basePath) {
+
+        Path filePath = Paths.get(packedFilePath
+                .replace(PREFIX_PACKED_FILE_PATH, "")
+                .replace("\\", File.separator));
+
+        int shortNameComponentIndex = filePath.getNameCount() - 1;
+        int extensionComponentIndex = filePath.getNameCount() - 2;
+        String shortFileName = filePath.subpath(shortNameComponentIndex, filePath.getNameCount()).toString();
+        String extension = filePath.subpath(extensionComponentIndex, shortNameComponentIndex).toString();
+
+        Path realFilePath = filePath.subpath(0, extensionComponentIndex).resolve(shortFileName + extension);
+
+        return basePath.resolve(realFilePath);
+    }
+
     static String generatePackedFileReference(String fileName) {
         long hash = fileName.hashCode();
 
@@ -159,9 +181,10 @@ public class GenuineBnkGateway implements BankSupport {
         }
     }
 
-    private void repackFileWithFullPath(String outputBankFile, Path basePath, Path filePath) {
-        String packedFilePath = getInternalPackedFilePath(filePath, basePath);
+    private void repackFileWithFullPath(String packedFilePath, String outputBankFile, Path basePath) {
         try {
+            Path filePath = getRealFilePath(packedFilePath, basePath);
+
             Log.debug(thisClass.getSimpleName(), "packedFilePath: " + packedFilePath);
             Log.debug(thisClass.getSimpleName(), "filePath: " + filePath.toString());
             Log.debug(thisClass.getSimpleName(), "basePath: " + basePath.toString());
