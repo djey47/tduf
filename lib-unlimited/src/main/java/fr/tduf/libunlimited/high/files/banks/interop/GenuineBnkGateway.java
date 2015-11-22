@@ -90,16 +90,6 @@ public class GenuineBnkGateway implements BankSupport {
         getBankInfo(originalBankFilePath.toString()).getPackedFiles()
 
                 .forEach((infoObject) -> repackFileWithFullPath(infoObject.getFullName(), outputBankFileName, Paths.get(inputDirectory)));
-
-/*        Path inputPath = Paths.get(inputDirectory);
-        Files.walk(inputPath)
-
-                .filter((path) -> Files.isRegularFile(path))
-
-                .filter((path) -> !EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
-
-                .forEach((path) -> repackFileWithFullPath(outputBankFileName, inputPath, path));
-                */
     }
 
     static String searchOriginalBankFileName(String inputDirectory) throws IOException {
@@ -112,8 +102,8 @@ public class GenuineBnkGateway implements BankSupport {
                     .findAny().get().getFileName().toString();
     }
 
-    static String getInternalPackedFilePath(Path packedFilePath, Path basePath) {
-        Path pathRelative = basePath.relativize(packedFilePath);
+    static String getInternalPathFromRealPath(Path realPath, Path basePath) {
+        Path pathRelative = basePath.relativize(realPath);
 
         String[] pathCompounds = pathRelative.toString().replace('/', '\\').split("\\\\");
         String[] pathElements = new String[pathCompounds.length + 1];
@@ -128,20 +118,9 @@ public class GenuineBnkGateway implements BankSupport {
         return PREFIX_PACKED_FILE_PATH + Joiner.on('\\').join(pathElements);
     }
 
-    static Path getUnpackedFileParentPath(String fullPackedFileName, Path basePath) {
-        String[] nameCompounds = fullPackedFileName.split("\\\\");
-        String[] prefixCompounds = PREFIX_PACKED_FILE_PATH.split("\\\\");
+    static Path getRealFilePathFromInternalPath(String internalPath, Path basePath) {
 
-        Path fullPackedFilePath = Paths.get("", nameCompounds);
-        Path followingPath = Paths.get("", prefixCompounds).relativize(fullPackedFilePath);
-        Path followingPathWithoutFileName = followingPath.getParent().getParent();
-
-        return basePath.resolve(followingPathWithoutFileName);
-    }
-
-    static Path getRealFilePath(String packedFilePath, Path basePath) {
-
-        Path filePath = Paths.get(packedFilePath
+        Path filePath = Paths.get(internalPath
                 .replace(PREFIX_PACKED_FILE_PATH, "")
                 .replace("\\", File.separator));
 
@@ -167,10 +146,12 @@ public class GenuineBnkGateway implements BankSupport {
 
     private void extractPackedFileWithFullPath(String bankFile, String packedFileFullName, String outputDirectory) {
         try {
+            Path targetParentPath = getRealFilePathFromInternalPath(packedFileFullName, Paths.get(outputDirectory)).getParent();
+
             Log.debug(thisClass.getSimpleName(), "packedFileFullName: " + packedFileFullName);
             Log.debug(thisClass.getSimpleName(), "outputDirectory: " + outputDirectory);
+            Log.debug(thisClass.getSimpleName(), "targetParentPath: " + targetParentPath);
 
-            Path targetParentPath = getUnpackedFileParentPath(packedFileFullName, Paths.get(outputDirectory));
             Files.createDirectories(targetParentPath);
 
             ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_UNPACK, bankFile, packedFileFullName, targetParentPath.toString());
@@ -183,7 +164,7 @@ public class GenuineBnkGateway implements BankSupport {
 
     private void repackFileWithFullPath(String packedFilePath, String outputBankFile, Path basePath) {
         try {
-            Path filePath = getRealFilePath(packedFilePath, basePath);
+            Path filePath = getRealFilePathFromInternalPath(packedFilePath, basePath);
 
             Log.debug(thisClass.getSimpleName(), "packedFilePath: " + packedFilePath);
             Log.debug(thisClass.getSimpleName(), "filePath: " + filePath.toString());
