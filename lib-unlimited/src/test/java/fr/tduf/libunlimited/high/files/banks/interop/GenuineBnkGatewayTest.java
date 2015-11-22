@@ -184,40 +184,28 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test
-    public void getInternalPackedFilePath() throws Exception {
+    public void getInternalPathFromRealPath() throws Exception {
         // GIVEN
-        Path packedFilePath = Paths.get("/home/bill/work/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55/CLK_55.2DM");
+        Path realFilePath = Paths.get("/home/bill/work/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55/CLK_55.2DM");
         Path basePath = Paths.get("/home/bill/work");
 
         // WHEN
-        String actualPackedFilePath = GenuineBnkGateway.getInternalPackedFilePath(packedFilePath, basePath);
+        String actualPackedFilePath = GenuineBnkGateway.getInternalPathFromRealPath(realFilePath, basePath);
 
         // THEN
         assertThat(actualPackedFilePath).isEqualTo(PACKED_FILE_FULL_NAME);
     }
 
     @Test
-    public void getUnpackedFileParentPath() {
+    public void getRealFilePathFromInternalPath() {
         // GIVEN
         Path basePath = Paths.get("/home/bill/work/");
 
         // WHEN
-        Path actualFilePath = GenuineBnkGateway.getUnpackedFileParentPath(PACKED_FILE_FULL_NAME, basePath);
+        Path actualRealPath = GenuineBnkGateway.getRealFilePathFromInternalPath(PACKED_FILE_FULL_NAME, basePath);
 
         // THEN
-        assertThat(actualFilePath).isEqualTo(Paths.get("/home/bill/work/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55"));
-    }
-
-    @Test
-    public void getRealFilePath() {
-        // GIVEN
-        Path basePath = Paths.get("/home/bill/work/");
-
-        // WHEN
-        Path actualPath = GenuineBnkGateway.getRealFilePath(PACKED_FILE_FULL_NAME, basePath);
-
-        // THEN
-        assertThat(actualPath).isEqualTo(Paths.get("/home/bill/work/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55/CLK_55.2DM"));
+        assertThat(actualRealPath).isEqualTo(Paths.get("/home/bill/work/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55/CLK_55.2DM"));
     }
 
     @Test
