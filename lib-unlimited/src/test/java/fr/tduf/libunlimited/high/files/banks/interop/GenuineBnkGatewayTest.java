@@ -140,10 +140,12 @@ public class GenuineBnkGatewayTest {
     @Test
     public void packAll_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
         // GIVEN
-        createRepackedFileTree("A3_V6.bnk");
+        String bankShortName = "CLK_55.bnk";
+        createRepackedFileTree(bankShortName);
 
-        String outputBankFileName = Paths.get(tempDirectory, "repacked-A3_V6.bnk").toString();
-        mockCommandLineHelperToReturnBankInformationSuccess(outputBankFileName);
+        String originalBankFileName = Paths.get(tempDirectory, "original-" + bankShortName).toString();
+        String outputBankFileName = Paths.get(tempDirectory, "repacked-" + bankShortName).toString();
+        mockCommandLineHelperToReturnBankInformationSuccess(originalBankFileName);
         mockCommandLineHelperToReturnReplaceSuccess(outputBankFileName);
 
 
@@ -156,9 +158,9 @@ public class GenuineBnkGatewayTest {
 
         assertThat(new File(outputBankFileName)).exists();
 
-        Path sourceParentPath = Paths.get(tempDirectory, "4Build", "PC", "EURO", "Vehicules", "Cars", "Audi", "A3_V6");
-        String packedFilePathPrefix = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Audi\\A3_V6\\";
-        verify(commandLineHelperMock, times(3)).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName),  anyString(), commandArgumentsCaptor.capture());
+        Path sourceParentPath = Paths.get(tempDirectory, "4Build", "PC", "EURO", "Vehicules", "Cars", "Mercedes", "CLK_55");
+        String packedFilePathPrefix = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\";
+        verify(commandLineHelperMock, times(28)).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName),  anyString(), commandArgumentsCaptor.capture());
         for (int argIndex = 0 ; argIndex < commandArgumentsCaptor.getAllValues().size() ; argIndex++) {
 
             String argValue = commandArgumentsCaptor.getAllValues().get(argIndex);
@@ -175,13 +177,10 @@ public class GenuineBnkGatewayTest {
                     break;
                 case 3: // Source file to be repacked
                     assertThat(argValue).startsWith(sourceParentPath.toString());
+                    assertThat(argValue).contains(".");
                     break;
             }
         }
-
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".3DD\\A3_V6"), eq(sourceParentPath.resolve("A3_V6.3DD").toString()));
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".3DG\\A3_V6"), eq(sourceParentPath.resolve("A3_V6.3DG").toString()));
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_REPLACE), eq(outputBankFileName), eq(packedFilePathPrefix + ".2DM\\A3_V6"), eq(sourceParentPath.resolve("A3_V6.2DM").toString()));
     }
 
     @Test
@@ -207,6 +206,18 @@ public class GenuineBnkGatewayTest {
 
         // THEN
         assertThat(actualFilePath).isEqualTo(Paths.get("/home/bill/work/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55"));
+    }
+
+    @Test
+    public void getRealFilePath() {
+        // GIVEN
+        Path basePath = Paths.get("/home/bill/work/");
+
+        // WHEN
+        Path actualPath = GenuineBnkGateway.getRealFilePath(PACKED_FILE_FULL_NAME, basePath);
+
+        // THEN
+        assertThat(actualPath).isEqualTo(Paths.get("/home/bill/work/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55/CLK_55.2DM"));
     }
 
     @Test
