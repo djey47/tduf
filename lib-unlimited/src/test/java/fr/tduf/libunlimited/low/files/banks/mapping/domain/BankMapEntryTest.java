@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.banks.mapping.domain;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -7,12 +8,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BankMapEntryTest {
 
+    private BankMap bankMap;
+
+    @Before
+    public void setUp() {
+        bankMap = new BankMap();
+    }
+
     @Test
     public void magify_shouldSetEntrySizesTo0() throws Exception {
         // GIVEN
-        BankMap bankMap = new BankMap();
-        bankMap.addEntry(1589L, 150L, 150L);
-        BankMap.Entry entry = bankMap.getEntries().stream().findAny().get();
+        BankMap.Entry entry = bankMap.addEntry(1589L, 150L, 150L);
 
         // WHEN
         entry.magify();
@@ -25,9 +31,7 @@ public class BankMapEntryTest {
     @Test
     public void isMagic_whenAllSizes0_shouldReturnTrue() {
         // GIVEN
-        BankMap bankMap = new BankMap();
-        bankMap.addEntry(1589L, 0L, 0L);
-        BankMap.Entry entry = bankMap.getEntries().stream().findAny().get();
+        BankMap.Entry entry = bankMap.addEntry(1589L, 0L, 0L);
 
         // WHEN-THEN
         assertThat(entry.isMagic()).isTrue();
@@ -36,9 +40,7 @@ public class BankMapEntryTest {
     @Test
     public void isMagic_whenAllSizesNot0_shouldReturnFalse() {
         // GIVEN
-        BankMap bankMap = new BankMap();
-        bankMap.addEntry(1589L, 150L, 150L);
-        BankMap.Entry entry = bankMap.getEntries().stream().findAny().get();
+        BankMap.Entry entry = bankMap.addEntry(1589L, 150L, 150L);
 
         // WHEN-THEN
         assertThat(entry.isMagic()).isFalse();
@@ -47,9 +49,7 @@ public class BankMapEntryTest {
     @Test
     public void isMagic_whenOneSizeNot0_shouldReturnFalse() {
         // GIVEN
-        BankMap bankMap = new BankMap();
-        bankMap.addEntry(1589L, 0L, 150L);
-        BankMap.Entry entry = bankMap.getEntries().stream().findAny().get();
+        BankMap.Entry entry = bankMap.addEntry(1589L, 0L, 150L);
 
         // WHEN-THEN
         assertThat(entry.isMagic()).isFalse();

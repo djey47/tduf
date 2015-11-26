@@ -18,9 +18,12 @@ public class BankMap {
      * @param size1 : reference size 1
      * @param size2 : reference size 2
      */
-    // TODO return created entry and use it
-    public void addEntry(long hash, long size1, long size2) {
-        entries.put(hash, new Entry(hash, size1, size2));
+    public Entry addEntry(long hash, long size1, long size2) {
+        Entry newEntry = new Entry(hash, size1, size2);
+
+        entries.put(hash, newEntry);
+
+        return newEntry;
     }
 
     /**
@@ -28,9 +31,12 @@ public class BankMap {
      * A magic entry specifies sizes to 0, disabling file size control by the game.
      * @param hash  : unique identifier of bank file to add
      */
-    // TODO return created entry and use it
-    public void addMagicEntry(long hash) {
-        entries.put(hash, new Entry(hash, 0, 0));
+    public Entry addMagicEntry(long hash) {
+        Entry newMagicEntry = new Entry(hash, 0, 0);
+
+        entries.put(hash, newMagicEntry);
+
+        return newMagicEntry;
     }
 
     /**
