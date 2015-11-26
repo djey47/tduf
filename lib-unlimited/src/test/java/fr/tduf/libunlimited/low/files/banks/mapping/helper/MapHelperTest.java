@@ -30,9 +30,10 @@ public class MapHelperTest {
         List<String> actualFileList = MapHelper.parseBanks(bnkFolderName);
 
         // THEN
-        assertThat(actualFileList).isNotNull();
-        assertThat(actualFileList).hasSize(5);
-        assertThat(actualFileList).contains(expectedFileList.toArray(new String[expectedFileList.size()]));
+        assertThat(actualFileList)
+                .isNotNull()
+                .hasSameSizeAs(expectedFileList)
+                .contains(expectedFileList.toArray(new String[expectedFileList.size()]));
     }
 
     @Test
@@ -44,8 +45,9 @@ public class MapHelperTest {
         Map<Long, String> checksums = MapHelper.computeChecksums(files);
 
         // THEN
-        assertThat(checksums).isNotNull();
-        assertThat(checksums).hasSameSizeAs(files);
+        assertThat(checksums)
+                .isNotNull()
+                .hasSameSizeAs(files);
         assertThat(checksums.get(0xc48bdcaaL)).isEqualTo("avatar/barb.bnk");
         assertThat(checksums.get(0xfe168a1cL)).isEqualTo("bnk1.map");
         assertThat(checksums.get(0x0b6b3ea2L)).isEqualTo("frontend/hires/gauges/hud01.bnk");
@@ -99,8 +101,9 @@ public class MapHelperTest {
 
 
         // THEN
-        assertThat(newChecksums).isNotNull();
-        assertThat(newChecksums).hasSize(1);
+        assertThat(newChecksums)
+                .isNotNull()
+                .hasSize(1);
         assertThat(newChecksums.containsKey(0xfe168a1cL)).isTrue();
         assertThat(newChecksums.containsValue("bnk1.map")).isTrue();
     }
@@ -108,6 +111,8 @@ public class MapHelperTest {
     private static List<String> createExpectedFileList() {
         return asList(
                 "Bnk1.map",
+                "Bnk1.no.magic.map",
+                "Bnk1-enhanced.map",
                 String.format("Avatar%1$sBARB.BNK", File.separator),
                 String.format("FrontEnd%1$sHires%1$sGauges%1$shud01.bnk", File.separator),
                 String.format("Vehicules%1$sA3_V6.bnk", File.separator));
