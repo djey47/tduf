@@ -5,6 +5,7 @@ import java.util.*;
 /**
  * Represents contents of Bnk1.map file.
  */
+// TODO add isMagicMap() indicator
 public class BankMap {
 
     private final Map<Long, Entry> entries = new HashMap<>();
@@ -31,6 +32,18 @@ public class BankMap {
     // TODO return created entry and use it
     public void addMagicEntry(long hash) {
         entries.put(hash, new Entry(hash, 0, 0));
+    }
+
+    /**
+     * Makes all entries magic.
+     */
+    public void magifyAll() {
+
+        getEntries().stream().parallel()
+
+                .filter( (entry) -> entry.size1 != 0 || entry.size2 != 0 )
+
+                .forEach(Entry::magify);
     }
 
     /**
