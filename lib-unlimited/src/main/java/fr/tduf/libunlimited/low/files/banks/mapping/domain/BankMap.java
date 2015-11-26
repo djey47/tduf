@@ -5,7 +5,6 @@ import java.util.*;
 /**
  * Represents contents of Bnk1.map file.
  */
-// TODO add isMagicMap() indicator
 public class BankMap {
 
     private final Map<Long, Entry> entries = new HashMap<>();
@@ -101,7 +100,7 @@ public class BankMap {
     /**
      * Structure representing a bank entry
      */
-    // TODO add isMagic indicator and use it
+    // TODO use isMagic indicator
     public class Entry {
         private final long hash;
         private long size1;
@@ -119,6 +118,13 @@ public class BankMap {
          */
         public void magify() {
             size1 = size2 = 0;
+        }
+
+        /**
+         * @return true if current entry is magic
+         */
+        public boolean isMagic() {
+            return size1 == 0 && size2 == 0;
         }
 
         @Override
