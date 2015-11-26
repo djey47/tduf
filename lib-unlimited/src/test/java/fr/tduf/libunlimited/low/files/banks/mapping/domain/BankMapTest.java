@@ -23,4 +23,49 @@ public class BankMapTest {
                 .extracting(BankMap.Entry::getSize1, BankMap.Entry::getSize2)
                 .containsOnly(new Tuple(0L, 0L));
     }
+
+    @Test
+    public void isMagic_whenNoEntry_shouldReturnFalse() {
+        // GIVEN
+        BankMap bankMap = new BankMap();
+
+        // WHEN-THEN
+        assertThat(bankMap.isMagic()).isFalse();
+    }
+
+    @Test
+    public void isMagic_whenAllStandardEntries_shouldReturnFalse() {
+        // GIVEN
+        BankMap bankMap = new BankMap();
+        bankMap.addEntry(1589L, 150L, 150L);
+        bankMap.addEntry(1590L, 160L, 160L);
+
+        // WHEN-THEN
+        assertThat(bankMap.isMagic()).isFalse();
+    }
+
+    @Test
+    public void isMagic_whenOneEntryMagic_shouldReturnFalse() {
+        // GIVEN
+        BankMap bankMap = new BankMap();
+        bankMap.addEntry(1589L, 150L, 150L);
+        bankMap.addEntry(1589L, 0L, 150L);
+        bankMap.addMagicEntry(1590L);
+
+        // WHEN-THEN
+        assertThat(bankMap.isMagic()).isFalse();
+    }
+
+    @Test
+    public void isMagic_whenAllEntriesMagic_shouldReturnTrue() {
+        // GIVEN
+        BankMap bankMap = new BankMap();
+        bankMap.addMagicEntry(1589L);
+        bankMap.addMagicEntry(1590L);
+
+        // WHEN-THEN
+        assertThat(bankMap.isMagic()).isTrue();
+    }
+
+
 }
