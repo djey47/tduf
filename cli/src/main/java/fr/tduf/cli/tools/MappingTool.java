@@ -102,7 +102,7 @@ public class MappingTool extends GenericTool {
 
     @Override
     protected void assignCommand(String commandArgument) {
-        this.command = (Command) CommandHelper.fromLabel(getCommand(), commandArgument);
+        command = (Command) CommandHelper.fromLabel(getCommand(), commandArgument);
     }
 
     @Override
@@ -136,12 +136,12 @@ public class MappingTool extends GenericTool {
 
     private void info() throws IOException {
 
-        outLine("- BNK root folder: " + this.bankDirectory);
+        outLine("- BNK root folder: " + bankDirectory);
 
         BankMap map = loadBankMap();
         Collection<BankMap.Entry> mapEntries = map.getEntries();
 
-        outLine("- Bnk1.map parsing done: " + this.mapFile);
+        outLine("- Bnk1.map parsing done: " + mapFile);
         outLine("  -> Entry count: " + mapEntries.size());
 
         HashMap<String, Object> resultInfo = new HashMap<>();
@@ -158,7 +158,7 @@ public class MappingTool extends GenericTool {
 
                 .collect(toList());
 
-        outLine("Bnk1.map parsing done: " + this.mapFile);
+        outLine("Bnk1.map parsing done: " + mapFile);
         outLine("  -> All entries :" + sortedMapEntries);
 
         HashMap<String, Object> resultInfo = new HashMap<>();
@@ -168,10 +168,10 @@ public class MappingTool extends GenericTool {
 
     private void listMissing() throws IOException {
 
-        List<String> banks = MapHelper.parseBanks(this.bankDirectory);
+        List<String> banks = MapHelper.parseBanks(bankDirectory);
         Map<Long, String> checksums = MapHelper.computeChecksums(banks);
 
-        outLine("- Bank parsing done: " + this.bankDirectory);
+        outLine("- Bank parsing done: " + bankDirectory);
         outLine("  -> File count: " + banks.size());
         outLine("  -> Files: " + banks);
         outLine("  -> Checksums: " + checksums);
@@ -188,14 +188,14 @@ public class MappingTool extends GenericTool {
     }
 
     private void fixMissing() throws IOException {
-        MagicMapHelper.fixMagicMap(this.mapFile, this.bankDirectory);
+        MagicMapHelper.fixMagicMap(mapFile, bankDirectory);
     }
 
-    private void magify() {
-        // TODO
+    private void magify() throws IOException {
+        MagicMapHelper.toMagicMap(mapFile);
     }
 
     private BankMap loadBankMap() throws IOException {
-        return MapParser.load(this.mapFile).parse();
+        return MapParser.load(mapFile).parse();
     }
 }
