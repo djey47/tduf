@@ -42,7 +42,8 @@ public class MappingTool extends GenericTool {
         INFO("info", "Provides general information about Bnk1.map file."),
         LIST("list", "Displays all entries in Bnk1.map file."),
         LIST_MISSING("list-missing", "Displays all files in Bnk directory which have no entry in Bnk1.map file."),
-        FIX_MISSING("fix-missing", "Adds to Bnk1.map file all missing entries.");
+        FIX_MISSING("fix-missing", "Adds to Bnk1.map file all missing entries."),
+        MAGIFY("magify", "Makes a Magic Map (=sets all entry sizes to 0.");
 
         final String label;
         final String description;
@@ -90,6 +91,9 @@ public class MappingTool extends GenericTool {
             case FIX_MISSING:
                 fixMissing();
                 break;
+            case MAGIFY:
+                magify();
+                break;
             default:
                 return false;
         }
@@ -125,7 +129,8 @@ public class MappingTool extends GenericTool {
                 INFO.label + " --bnkDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\"",
                 LIST.label + " --bnkDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\" --mapFile \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Bnk1.map\"",
                 LIST_MISSING.label + " -b \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\"",
-                FIX_MISSING.label + " -b \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\" -m \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Bnk1.map\""
+                FIX_MISSING.label + " -b \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\" -m \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Bnk1.map\"",
+                MAGIFY.label + "-m \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Bnk1.map\""
         );
     }
 
@@ -184,6 +189,10 @@ public class MappingTool extends GenericTool {
 
     private void fixMissing() throws IOException {
         MagicMapHelper.fixMagicMap(this.mapFile, this.bankDirectory);
+    }
+
+    private void magify() {
+        // TODO
     }
 
     private BankMap loadBankMap() throws IOException {

@@ -174,6 +174,12 @@ public class AllToolsTest {
     }
 
     @Test
+    public void mappingTool_magify() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        testToolCommand(new MappingTool(), MAGIFY);
+    }
+
+    @Test
     public void cameraTool_copyAllSets() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
         exitRule.expectSystemExitWithStatus(1);
