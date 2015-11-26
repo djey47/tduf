@@ -62,6 +62,26 @@ public class BankMap {
         return entries.keySet();
     }
 
+    /**
+     * @return true if current map is a magic one.
+     */
+    public boolean isMagic() {
+
+        if (entries.isEmpty()) {
+            return false;
+        }
+
+        return getEntries().stream().parallel()
+
+                .filter( (entry) -> entry.size1 != 0 || entry.size2 != 0 )
+
+                .findAny()
+
+                .map( (entry) -> false )
+
+                .orElse(true);
+    }
+
     public byte[] getEntrySeparator() {
         return entrySeparator;
     }
@@ -81,6 +101,7 @@ public class BankMap {
     /**
      * Structure representing a bank entry
      */
+    // TODO add isMagic indicator and use it
     public class Entry {
         private final long hash;
         private long size1;
