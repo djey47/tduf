@@ -176,6 +176,8 @@ public class AllToolsTest {
     @Test
     public void mappingTool_magify() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
         testToolCommand(new MappingTool(), MAGIFY);
     }
 
