@@ -146,7 +146,7 @@ public class DatabaseChangeHelper {
         DatabaseStructureQueryHelper.getUidFieldRank(topicObject.getStructure().getFields())
                 .ifPresent((uidFieldRank) -> {
                     String newReference = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
-                    DbDataDto.Item uidContentItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(topic, newEntry, uidFieldRank).get();
+                    DbDataDto.Item uidContentItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(newEntry, uidFieldRank).get();
                     uidContentItem.setRawValue(newReference);
                 });
 

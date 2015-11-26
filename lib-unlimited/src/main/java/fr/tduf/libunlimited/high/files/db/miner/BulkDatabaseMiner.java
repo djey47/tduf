@@ -133,7 +133,7 @@ public class BulkDatabaseMiner {
             return topicObject.getData().getEntries().stream()
 
                     .filter((entry) -> {
-                        Optional<DbDataDto.Item> contentItemFromEntryAtFieldRank = getContentItemFromEntryAtFieldRank(topic, entry, fieldRank);
+                        Optional<DbDataDto.Item> contentItemFromEntryAtFieldRank = getContentItemFromEntryAtFieldRank(entry, fieldRank);
 
                         return contentItemFromEntryAtFieldRank.isPresent()
                                 && itemValue.equals(contentItemFromEntryAtFieldRank.get().getRawValue());
@@ -236,13 +236,11 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     * @param topic     : topic containing specified entry
      * @param entry     : entry containing items to be looked at
      * @param fieldRank : rank of field content item belongs to
      * @return item if it exists, empty otherwise.
      */
-    // TODO remove argument
-    public static Optional<DbDataDto.Item> getContentItemFromEntryAtFieldRank(DbDto.Topic topic, DbDataDto.Entry entry, int fieldRank) {
+    public static Optional<DbDataDto.Item> getContentItemFromEntryAtFieldRank(DbDataDto.Entry entry, int fieldRank) {
         Log.trace("BulkDatabaseMiner", "getContentItemFromEntryAtFieldRank(" + entry.getId() + ", " + fieldRank + ")");
 
         return entry.getItems().stream()
@@ -264,7 +262,7 @@ public class BulkDatabaseMiner {
             Log.trace("BulkDatabaseMiner", "getContentItemWithEntryIdentifierAndFieldRank(" + fieldRank + ", " + entryIdentifier + ", " + topic + ")");
 
             return getContentEntryFromTopicWithInternalIdentifier(entryIdentifier, topic)
-                    .map((entry) -> getContentItemFromEntryAtFieldRank(topic, entry, fieldRank)
+                    .map((entry) -> getContentItemFromEntryAtFieldRank(entry, fieldRank)
 
                             .orElse(null));
         });
@@ -344,15 +342,14 @@ public class BulkDatabaseMiner {
 
     /**
      *
-     * @param topic         : topic containing specified entry
      * @param entry         : contents entry to be analyzed
      * @param uidFieldRank  : rank of UID field in structure
      * @return raw value of entry reference
      */
-    public static String getContentEntryReference(DbDto.Topic topic, DbDataDto.Entry entry, int uidFieldRank) {
+    public static String getContentEntryReference(DbDataDto.Entry entry, int uidFieldRank) {
         Log.trace("BulkDatabaseMiner", "getContentEntryReference(" + entry.getId() + ", " + uidFieldRank + ")");
 
-        return getContentItemFromEntryAtFieldRank(topic, entry, uidFieldRank).get().getRawValue();
+        return getContentItemFromEntryAtFieldRank(entry, uidFieldRank).get().getRawValue();
     }
 
     static String getCacheKey(String... items) {
@@ -368,7 +365,7 @@ public class BulkDatabaseMiner {
 
     private String getRawValueAtEntryIndexAndRank(DbDto.Topic topic, int fieldRank, long entryIndex) {
         DbDataDto.Entry contentEntry = getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic).get();
-        return getContentItemFromEntryAtFieldRank(topic, contentEntry, fieldRank).get().getRawValue();
+        return getContentItemFromEntryAtFieldRank(contentEntry, fieldRank).get().getRawValue();
     }
 
     private static String getResourceValueWithReference(DbResourceDto resource, String reference) {
