@@ -55,17 +55,15 @@ public class BulkDatabaseMiner {
      * @return a list of per-locale database resource objects.
      */
     public Optional<List<DbResourceDto>> getAllResourcesFromTopic(DbDto.Topic topic) {
-        return cacheManager.getValueFromKey("allResourcesFromTopic", getCacheKey(topic.name()), () -> {
-            Log.trace("BulkDatabaseMiner", "getAllResourcesFromTopic(" + topic + ")");
+        Log.trace("BulkDatabaseMiner", "getAllResourcesFromTopic(" + topic + ")");
 
-            return topicObjects.stream()
+        return topicObjects.stream()
 
-                    .filter((databaseObject) -> databaseObject.getTopic() == topic)
+                .filter((databaseObject) -> databaseObject.getTopic() == topic)
 
-                    .findAny()
+                .findAny()
 
-                    .map(DbDto::getResources);
-        });
+                .map(DbDto::getResources);
     }
 
     /**
@@ -94,15 +92,13 @@ public class BulkDatabaseMiner {
      * @return database object related to this topic.
      */
     public Optional<DbDto> getDatabaseTopic(DbDto.Topic topic) {
-        return cacheManager.getValueFromKey("topics", getCacheKey(topic.name()), () -> {
-            Log.trace("BulkDatabaseMiner", "getDatabaseTopic(" + topic + ")");
+        Log.trace("BulkDatabaseMiner", "getDatabaseTopic(" + topic + ")");
 
-            return topicObjects.stream()
+        return topicObjects.stream()
 
-                    .filter((databaseObject) -> databaseObject.getTopic() == topic)
+                .filter((databaseObject) -> databaseObject.getTopic() == topic)
 
-                    .findAny();
-        });
+                .findAny();
     }
 
     /**
@@ -110,19 +106,17 @@ public class BulkDatabaseMiner {
      * @return database object having specified reference.
      */
     public DbDto getDatabaseTopicFromReference(String topicReference) {
+        Log.trace("BulkDatabaseMiner", "getDatabaseTopicFromReference(" + topicReference + ")");
+
         if (topicReference == null) {
             return null;
         }
 
-        return cacheManager.getValueFromKey("databaseTopicFromReference", getCacheKey(topicReference), () -> {
-            Log.trace("BulkDatabaseMiner", "getDatabaseTopicFromReference(" + topicReference + ")");
+        return topicObjects.stream()
 
-            return topicObjects.stream()
+                .filter((databaseObject) -> databaseObject.getStructure().getRef().equals(topicReference))
 
-                    .filter((databaseObject) -> databaseObject.getStructure().getRef().equals(topicReference))
-
-                    .findAny();
-        }).get();
+                .findAny().get();
     }
 
     /**
@@ -247,17 +241,15 @@ public class BulkDatabaseMiner {
      * @param fieldRank : rank of field content item belongs to
      * @return item if it exists, empty otherwise.
      */
+    // TODO remove argument
     public static Optional<DbDataDto.Item> getContentItemFromEntryAtFieldRank(DbDto.Topic topic, DbDataDto.Entry entry, int fieldRank) {
-        String key = getCacheKey(topic.name(), Long.valueOf(entry.getId()).toString(), Integer.valueOf(fieldRank).toString());
-        return cacheManager.getValueFromKey("contentItemFromEntryAtFieldRank", key, () -> {
-            Log.trace("BulkDatabaseMiner", "getContentItemFromEntryAtFieldRank(" + entry.getId() + ", " + fieldRank + ")");
+        Log.trace("BulkDatabaseMiner", "getContentItemFromEntryAtFieldRank(" + entry.getId() + ", " + fieldRank + ")");
 
-            return entry.getItems().stream()
+        return entry.getItems().stream()
 
-                    .filter((contentItem) -> contentItem.getFieldRank() == fieldRank)
+                .filter((contentItem) -> contentItem.getFieldRank() == fieldRank)
 
-                    .findAny();
-        });
+                .findAny();
     }
 
     /**
