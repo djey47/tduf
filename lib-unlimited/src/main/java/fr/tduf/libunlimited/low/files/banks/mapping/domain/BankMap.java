@@ -40,7 +40,7 @@ public class BankMap {
 
         getEntries().stream().parallel()
 
-                .filter( (entry) -> entry.size1 != 0 || entry.size2 != 0 )
+                .filter( (entry) -> !entry.isMagic())
 
                 .forEach(Entry::magify);
     }
@@ -72,7 +72,7 @@ public class BankMap {
 
         return getEntries().stream().parallel()
 
-                .filter( (entry) -> entry.size1 != 0 || entry.size2 != 0 )
+                .filter( (entry) -> !entry.isMagic() )
 
                 .findAny()
 
@@ -100,7 +100,6 @@ public class BankMap {
     /**
      * Structure representing a bank entry
      */
-    // TODO use isMagic indicator
     public class Entry {
         private final long hash;
         private long size1;
