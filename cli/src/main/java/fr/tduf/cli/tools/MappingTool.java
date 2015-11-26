@@ -140,12 +140,15 @@ public class MappingTool extends GenericTool {
 
         BankMap map = loadBankMap();
         Collection<BankMap.Entry> mapEntries = map.getEntries();
+        boolean isMagicMap = map.isMagic();
 
         outLine("- Bnk1.map parsing done: " + mapFile);
         outLine("  -> Entry count: " + mapEntries.size());
+        outLine("  -> Magic map? " + isMagicMap);
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("entryCount", mapEntries.size());
+        resultInfo.put("magicMap", isMagicMap);
         commandResult = resultInfo;
     }
 
