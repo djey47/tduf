@@ -64,6 +64,21 @@ public class MagicMapHelper {
         return fixMagicMap(magicMapFile, bankDirectory);
     }
 
+    /**
+     * Converts given map file to magic map.
+     * @param mapFile : map file to be magified
+     * @throws IOException
+     */
+    public static void toMagicMap(String mapFile) throws IOException {
+        requireNonNull(mapFile, "Map file name is required.");
+
+        BankMap bankMap = loadBankMap(mapFile);
+
+        bankMap.magifyAll();
+
+        saveBankMap(bankMap, mapFile);
+    }
+
     private static BankMap loadBankMap(String mapFile) throws IOException {
         return MapParser.load(mapFile).parse();
     }

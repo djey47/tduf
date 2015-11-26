@@ -31,10 +31,8 @@ public class MagicMapHelperTest {
     public void fixMagicMap_shouldUpdateWithNewFiles_andReturnNewFileList() throws Exception {
         // GIVEN
         Path originalMagicMapPath = getOriginalMagicMapPath();
+        Path magicMapPath = getTemporaryMapPath(originalMagicMapPath);
         Path banksPath = originalMagicMapPath.getParent();
-
-        Path magicMapPath = Paths.get(tempDirectory).resolve(originalMagicMapPath.getFileName());
-        Files.copy(originalMagicMapPath, magicMapPath);
 
 
         // WHEN
@@ -44,7 +42,13 @@ public class MagicMapHelperTest {
         // THEN
         Log.info(thisClass.getSimpleName(), "Temp dir: " + tempDirectory);
 
-        assertThat(actualFiles).containsOnly("avatar/barb.bnk", "bnk1-enhanced.map", "frontend/hires/gauges/hud01.bnk", "bnk1.map", "vehicules/a3_v6.bnk");
+        assertThat(actualFiles).containsOnly(
+                "avatar/barb.bnk",
+                "bnk1.no.magic.map",
+                "bnk1-enhanced.map",
+                "frontend/hires/gauges/hud01.bnk",
+                "bnk1.map",
+                "vehicules/a3_v6.bnk");
 
         Path expectedMagicMapPath = Paths.get(thisClass.getResource("/banks/Bnk1-enhanced.map").toURI());
         assertThat(magicMapPath.toFile()).hasSameContentAs(expectedMagicMapPath.toFile());
@@ -74,7 +78,41 @@ public class MagicMapHelperTest {
         // THEN: NPE
     }
 
+    @Test
+    public void toMagicMap_whenNormalMap_shouldSetAllEntrySizesTo0() throws URISyntaxException, IOException {
+        // GIVEN
+        Path originalMapPath = getOriginalMapPath();
+        Path mapPath = getTemporaryMapPath(originalMapPath);
+
+        // WHEN
+        MagicMapHelper.toMagicMap(mapPath.toString());
+
+        // THEN
+        Path originalMagicMapPath = getOriginalMagicMapPath();
+        assertThat(mapPath.toFile()).hasSameContentAs(originalMagicMapPath.toFile());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void toMagicMap_whenNullMapFile_shouldThrowException() throws IOException {
+        // GIVEN-WHEN
+        MagicMapHelper.toMagicMap(null);
+
+        // THEN: NPE
+    }
+
     private static Path getOriginalMagicMapPath() throws URISyntaxException {
         return Paths.get(thisClass.getResource("/banks/Bnk1.map").toURI());
+    }
+
+    private static Path getOriginalMapPath() throws URISyntaxException {
+        return Paths.get(thisClass.getResource("/banks/Bnk1.no.magic.map").toURI());
+    }
+
+    private Path getTemporaryMapPath(Path originalMapPath) throws IOException, URISyntaxException {
+        Path magicMapPath = Paths.get(tempDirectory).resolve(originalMapPath.getFileName());
+
+        Files.copy(originalMapPath, magicMapPath);
+
+        return magicMapPath;
     }
 }
