@@ -20,6 +20,7 @@ import java.util.Optional;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -164,7 +165,6 @@ public class DatabasePatcherTest {
         assertThat(actualCreatedEntry.getItems()).hasSize(8);
         assertThat(actualCreatedEntry.getItems().get(0).getRawValue()).isEqualTo("57167257");
     }
-
     @Test
     public void apply_whenUpdateContentsPatch_forAllFields_withRefSupport_shouldAddNewEntryAndUpdateExisting() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
@@ -259,6 +259,115 @@ public class DatabasePatcherTest {
     }
 
     @Test
+    public void apply_whenUpdateContentsPatch_forOneItem_andREFDoesNotExist_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-newRef.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
+        int previousEntryCount = topicEntries.size();
+
+
+        // WHEN
+        patcher.apply(updateContentsPatch);
+
+
+        // THEN
+        int actualEntryCount = topicEntries.size();
+        assertThat(actualEntryCount).isEqualTo(previousEntryCount);
+    }
+
+    @Test
+    public void apply_whenUpdateContentsPatch_forOneItem_andREFExists_butInvalidRank_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-badRank-existingRef.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
+        int previousEntryCount = topicEntries.size();
+        int previousHashCode = getEntryHashCode(databaseMiner, "1139121456", CAR_PHYSICS_DATA);
+
+
+        // WHEN
+        patcher.apply(updateContentsPatch);
+
+
+        // THEN
+        int actualEntryCount = topicEntries.size();
+        assertThat(actualEntryCount).isEqualTo(previousEntryCount);
+
+        int actualHashCode = getEntryHashCode(databaseMiner, "1139121456", CAR_PHYSICS_DATA);
+        assertThat(actualHashCode).isEqualTo(previousHashCode);
+    }
+
+    @Test
+    public void apply_whenUpdateContentsPatch_forNoItem_andREFExists_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-noValues-existingRef.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+
+        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
+        int previousEntryCount = topicEntries.size();
+        int previousHashCode = getEntryHashCode(databaseMiner, "1139121456", CAR_PHYSICS_DATA);
+
+
+        // WHEN
+        patcher.apply(updateContentsPatch);
+
+
+        // THEN
+        int actualEntryCount = topicEntries.size();
+        assertThat(actualEntryCount).isEqualTo(previousEntryCount);
+
+        int actualHashCode = getEntryHashCode(databaseMiner, "1139121456", CAR_PHYSICS_DATA);
+        assertThat(actualHashCode).isEqualTo(previousHashCode);
+    }
+
+    @Test
+    public void apply_whenUpdateContentsPatch_forOneItem_andREFExists_shouldChangeIt() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-existingRef.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+
+        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
+        int previousEntryCount = topicEntries.size();
+        List<String> previousValues = extractAllItemsFromCarPhysicsEntryExceptedLastOne(databaseMiner, "1139121456");
+
+
+        // WHEN
+        patcher.apply(updateContentsPatch);
+
+
+        // THEN
+        int actualEntryCount = topicEntries.size();
+        assertThat(actualEntryCount).isEqualTo(previousEntryCount);
+
+        List<String> actualValues = extractAllItemsFromCarPhysicsEntryExceptedLastOne(databaseMiner, "1139121456");
+        assertThat(actualValues).isEqualTo(previousValues);
+
+        String actualItemValue = databaseMiner
+                .getContentEntryFromTopicWithReference("1139121456", CAR_PHYSICS_DATA).get()
+                .getItems()
+                .get(102)
+                .getRawValue();
+        assertThat(actualItemValue).isEqualTo("7954");
+    }
+
+    @Test
     public void apply_whenDeleteContentsPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteContents-ref.mini.json");
@@ -287,6 +396,21 @@ public class DatabasePatcherTest {
     private static <T> T readObjectFromResource(Class<T> objectClass, String resource) throws URISyntaxException, IOException {
         URI resourceURI = thisClass.getResource(resource).toURI();
         return new ObjectMapper().readValue(new File(resourceURI), objectClass);
+    }
+
+    private static int getEntryHashCode(BulkDatabaseMiner databaseMiner, String ref, DbDto.Topic topic) {
+        return databaseMiner
+                .getContentEntryFromTopicWithReference(ref, topic)
+                .get().hashCode();
+    }
+
+    private static List<String> extractAllItemsFromCarPhysicsEntryExceptedLastOne(BulkDatabaseMiner databaseMiner, String ref) {
+        return databaseMiner
+                .getContentEntryFromTopicWithReference(ref, CAR_PHYSICS_DATA).get()
+                .getItems().stream()
+                .filter((item) -> item.getFieldRank() != 103)
+                .map(DbDataDto.Item::getRawValue)
+                .collect(toList());
     }
 
     private static void assertResourceEntryPresentAndMatch(BulkDatabaseMiner databaseMiner, DbDto.Topic topic, DbResourceDto.Locale locale, String ref, String value) {

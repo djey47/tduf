@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -14,11 +15,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 /**
- * Used to apply patchs to an existing database.
+ * Used to apply patches to an existing database.
  */
+// TODO simplify
 public class DatabasePatcher extends AbstractDatabaseHolder {
 
     /**
@@ -75,38 +78,63 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         databaseMiner.getDatabaseTopic(changedTopic)
                 .ifPresent((topicObject) -> {
 
-                    List<DbDataDto.Entry> topicEntries = topicObject.getData().getEntries();
-                    List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject.getStructure(), changeObject.getValues());
+                    Optional<DbDataDto.Entry> potentialEntry = ofNullable(changeObject.getRef())
+                            .map( (ref) -> databaseMiner.getContentEntryFromTopicWithReference(ref, changedTopic).orElse(null));
 
-                    Optional<String> potentialRef = Optional.ofNullable(changeObject.getRef());
-                    if (potentialRef.isPresent()) {
-
-                        addOrUpdateEntryWithReference(potentialRef.get(), changedTopic, topicEntries, modifiedItems);
-
+                    if (changeObject.isPartialChange()) {
+                        updateEntryWithPartialChanges(potentialEntry, changeObject.getPartialValues(), topicObject);
                     } else {
-
-                        addEntryToTopic(modifiedItems, topicEntries);
-
+                        addOrUpdateEntryWithReference(potentialEntry, topicObject, changeObject);
                     }
                 });
     }
 
-    private void addOrUpdateEntryWithReference(String ref, DbDto.Topic changedTopic, List<DbDataDto.Entry> topicEntries, List<DbDataDto.Item> modifiedItems) {
-        Optional<DbDataDto.Entry> potentialEntry = databaseMiner.getContentEntryFromTopicWithReference(ref, changedTopic);
+    private void addOrUpdateEntryWithReference(Optional<DbDataDto.Entry> existingEntry, DbDto topicObject, DbPatchDto.DbChangeDto changeObject) {
+        List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject, changeObject);
 
-        if (potentialEntry.isPresent()) {
+        if (existingEntry.isPresent()) {
 
-            potentialEntry.get().setItems(modifiedItems);
+            existingEntry.get().setItems(modifiedItems);
 
         } else {
 
+            List<DbDataDto.Entry> topicEntries = topicObject.getData().getEntries();
             addEntryToTopic(modifiedItems, topicEntries);
 
         }
     }
 
+    private void updateEntryWithPartialChanges(Optional<DbDataDto.Entry> existingEntry, List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues, DbDto topicObject) {
+        if (!existingEntry.isPresent()) {
+            Log.warn("Unknown REF, no entry to be updated with partial values: " + partialValues);
+            return;
+        }
+
+        existingEntry.get().setItems(existingEntry.get().getItems().stream()
+                .map( (item) -> {
+
+                    Optional<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValue = partialValues.stream()
+                            .filter((value) -> value.getRank() == item.getFieldRank())
+                            .findAny();
+
+                    if (partialValue.isPresent()) {
+                        DbStructureDto structureObject = topicObject.getStructure();
+                        List<DbStructureDto.Field> structureFields = structureObject.getFields();
+                        DbStructureDto.Field structureField = structureFields.get(partialValue.get().getRank() - 1);
+                        return DbDataDto.Item.builder()
+                                .fromStructureFieldAndTopic(structureField, structureObject.getTopic())
+                                .withRawValue(partialValue.get().getValue())
+                                .build();
+
+                    } else {
+                        return item;
+                    }
+                })
+                .collect(toList()));
+    }
+
     private void deleteResources(DbPatchDto.DbChangeDto changeObject) {
-        Optional<DbResourceDto.Locale> potentialLocale = Optional.ofNullable(changeObject.getLocale());
+        Optional<DbResourceDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
 
         if (potentialLocale.isPresent()) {
 
@@ -132,7 +160,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     }
 
     private void addOrUpdateResources(DbPatchDto.DbChangeDto changeObject) {
-        Optional<DbResourceDto.Locale> locale = Optional.ofNullable(changeObject.getLocale());
+        Optional<DbResourceDto.Locale> locale = ofNullable(changeObject.getLocale());
 
         if (locale.isPresent()) {
 
@@ -169,6 +197,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
     }
 
+    // TODO inline ?
     private static void checkValueCount(List<String> allValues, List<DbStructureDto.Field> structureFields) {
         int structureFieldsSize = structureFields.size();
         if (allValues.size() != structureFieldsSize) {
@@ -183,8 +212,11 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .build());
     }
 
-    private static List<DbDataDto.Item> createEntryItemsWithValues(DbStructureDto structureObject, List<String> allValues) {
+    private static List<DbDataDto.Item> createEntryItemsWithValues(DbDto topicObject, DbPatchDto.DbChangeDto changeObject) {
+        DbStructureDto structureObject = topicObject.getStructure();
         List<DbStructureDto.Field> structureFields = structureObject.getFields();
+
+        List<String> allValues = changeObject.getValues();
         checkValueCount(allValues, structureFields);
 
         AtomicInteger fieldIndex = new AtomicInteger();
