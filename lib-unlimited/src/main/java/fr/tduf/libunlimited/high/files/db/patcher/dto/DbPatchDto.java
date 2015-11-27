@@ -2,6 +2,8 @@ package fr.tduf.libunlimited.high.files.db.patcher.dto;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
@@ -38,7 +40,7 @@ public class DbPatchDto {
         return reflectionToString(this);
     }
 
-    private  DbPatchDto() {}
+    private DbPatchDto() {}
 
     /**
      * Allows to generate custom instances.
@@ -99,6 +101,9 @@ public class DbPatchDto {
         @JsonProperty("values")
         private List<String> values;
 
+        @JsonProperty("partialValues")
+        private List<DbPartialValueDto> partialValues;
+
         @Override
         public boolean equals(Object o) {
             return reflectionEquals(this, o);
@@ -138,11 +143,20 @@ public class DbPatchDto {
             return values;
         }
 
+        public List<DbPartialValueDto> getPartialValues() {
+            return partialValues;
+        }
+
+        public boolean isPartialChange() {
+            return partialValues != null;
+        }
+
         public static DbChangeDtoBuilder builder() {
             return new DbChangeDtoBuilder() {
                 private DbResourceDto.Locale locale;
                 private String value;
                 private List<String> entryValues;
+                private List<DbPartialValueDto> partialEntryValues;
                 private String reference;
                 private DbDto.Topic topic;
                 private ChangeTypeEnum type;
@@ -172,6 +186,12 @@ public class DbPatchDto {
                 }
 
                 @Override
+                public DbChangeDtoBuilder withPartialEntryValues(List<DbPartialValueDto> partialEntryValues) {
+                    this.partialEntryValues = partialEntryValues;
+                    return this;
+                }
+
+                @Override
                 public DbChangeDtoBuilder withValue(String value) {
                     this.value = value;
                     return this;
@@ -185,12 +205,17 @@ public class DbPatchDto {
 
                 @Override
                 public DbChangeDto build() {
+                    if (partialEntryValues != null && entryValues != null) {
+                        throw new IllegalStateException("Conflict in change: can't have partialEntryValues and entryValues at the same time");
+                    }
+
                     DbChangeDto changeObject = new DbChangeDto();
 
                     changeObject.type = type;
                     changeObject.topic = topic;
                     changeObject.ref = reference;
                     changeObject.values = entryValues;
+                    changeObject.partialValues = partialEntryValues;
                     changeObject.value = value;
                     changeObject.locale = locale;
 
@@ -213,6 +238,8 @@ public class DbPatchDto {
 
             DbChangeDtoBuilder withEntryValues(List<String> entryValues);
 
+            DbChangeDtoBuilder withPartialEntryValues(List<DbPartialValueDto> partialEntryValues);
+
             DbChangeDtoBuilder withValue(String resourceValue);
 
             DbChangeDtoBuilder forLocale(DbResourceDto.Locale locale);
@@ -223,6 +250,51 @@ public class DbPatchDto {
          */
         public enum ChangeTypeEnum {
             UPDATE, DELETE, UPDATE_RES, DELETE_RES
+        }
+
+        /**
+         * A partial entry value for update instruction.
+         */
+        @JsonTypeName("dbPartialEntryValue")
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+        public static class DbPartialValueDto {
+            @JsonProperty("rank")
+            private final int rank;
+
+            @JsonProperty("value")
+            private final String value;
+
+            /** For Jackson **/
+            private DbPartialValueDto() {
+                this(0, null);
+            }
+
+            private DbPartialValueDto(int rank, String value) {
+                this.rank = rank;
+                this.value = value;
+            }
+
+            public static DbPartialValueDto fromCouple(int rank, String value) {
+                return new DbPartialValueDto(rank, value);
+            }
+
+            public int getRank() {
+                return rank;
+            }
+
+            public String getValue() {
+                return value;
+            }
+
+            @Override
+            public String toString() { return reflectionToString(this); }
+
+            @Override
+            public boolean equals(Object o) { return reflectionEquals(this, o); }
+
+            @Override
+            public int hashCode() { return reflectionHashCode(this); }
         }
     }
 }
