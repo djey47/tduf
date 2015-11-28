@@ -90,7 +90,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     }
 
     private void addOrUpdateEntryWithReference(Optional<DbDataDto.Entry> existingEntry, DbDto topicObject, DbPatchDto.DbChangeDto changeObject) {
-        List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject, changeObject);
+        List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject.getStructure(), changeObject.getValues());
 
         if (existingEntry.isPresent()) {
 
@@ -197,14 +197,6 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
     }
 
-    // TODO inline ?
-    private static void checkValueCount(List<String> allValues, List<DbStructureDto.Field> structureFields) {
-        int structureFieldsSize = structureFields.size();
-        if (allValues.size() != structureFieldsSize) {
-            throw new IllegalArgumentException("Values count in current patch does not match topic structure: " + allValues.size() + " VS " + structureFieldsSize);
-        }
-    }
-
     private static void addEntryToTopic(List<DbDataDto.Item> modifiedItems, List<DbDataDto.Entry> topicEntries) {
         topicEntries.add(DbDataDto.Entry.builder()
                 .forId(topicEntries.size())
@@ -212,12 +204,14 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .build());
     }
 
-    private static List<DbDataDto.Item> createEntryItemsWithValues(DbDto topicObject, DbPatchDto.DbChangeDto changeObject) {
-        DbStructureDto structureObject = topicObject.getStructure();
+    private static List<DbDataDto.Item> createEntryItemsWithValues(DbStructureDto structureObject, List<String> allValues) {
         List<DbStructureDto.Field> structureFields = structureObject.getFields();
 
-        List<String> allValues = changeObject.getValues();
-        checkValueCount(allValues, structureFields);
+        int structureFieldsSize = structureFields.size();
+        int patchValuesCount = allValues.size();
+        if (patchValuesCount != structureFieldsSize) {
+            throw new IllegalArgumentException("Values count in current patch does not match topic structure: " + patchValuesCount + " VS " + structureFieldsSize);
+        }
 
         AtomicInteger fieldIndex = new AtomicInteger();
         return allValues.stream()
