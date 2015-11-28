@@ -82,15 +82,15 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                             .map( (ref) -> databaseMiner.getContentEntryFromTopicWithReference(ref, changedTopic).orElse(null));
 
                     if (changeObject.isPartialChange()) {
-                        updateEntryWithPartialChanges(potentialEntry, changeObject.getPartialValues(), topicObject);
+                        updateEntryWithPartialChanges(potentialEntry, topicObject, changeObject.getPartialValues());
                     } else {
-                        addOrUpdateEntryWithReference(potentialEntry, topicObject, changeObject);
+                        addOrUpdateEntryWithFullChanges(potentialEntry, topicObject, changeObject.getValues());
                     }
                 });
     }
 
-    private void addOrUpdateEntryWithReference(Optional<DbDataDto.Entry> existingEntry, DbDto topicObject, DbPatchDto.DbChangeDto changeObject) {
-        List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject.getStructure(), changeObject.getValues());
+    private void addOrUpdateEntryWithFullChanges(Optional<DbDataDto.Entry> existingEntry, DbDto topicObject, List<String> allValues) {
+        List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject.getStructure(), allValues);
 
         if (existingEntry.isPresent()) {
 
@@ -104,33 +104,14 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
     }
 
-    private void updateEntryWithPartialChanges(Optional<DbDataDto.Entry> existingEntry, List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues, DbDto topicObject) {
+    private void updateEntryWithPartialChanges(Optional<DbDataDto.Entry> existingEntry, DbDto topicObject, List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues) {
         if (!existingEntry.isPresent()) {
             Log.warn("Unknown REF, no entry to be updated with partial values: " + partialValues);
             return;
         }
 
-        existingEntry.get().setItems(existingEntry.get().getItems().stream()
-                .map( (item) -> {
-
-                    Optional<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValue = partialValues.stream()
-                            .filter((value) -> value.getRank() == item.getFieldRank())
-                            .findAny();
-
-                    if (partialValue.isPresent()) {
-                        DbStructureDto structureObject = topicObject.getStructure();
-                        List<DbStructureDto.Field> structureFields = structureObject.getFields();
-                        DbStructureDto.Field structureField = structureFields.get(partialValue.get().getRank() - 1);
-                        return DbDataDto.Item.builder()
-                                .fromStructureFieldAndTopic(structureField, structureObject.getTopic())
-                                .withRawValue(partialValue.get().getValue())
-                                .build();
-
-                    } else {
-                        return item;
-                    }
-                })
-                .collect(toList()));
+        List<DbDataDto.Item> modifiedItems = createEntryItemsWithPartialValues(topicObject.getStructure(), existingEntry, partialValues);
+        existingEntry.get().setItems(modifiedItems);
     }
 
     private void deleteResources(DbPatchDto.DbChangeDto changeObject) {
@@ -224,6 +205,29 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                             .build();
                 })
 
+                .collect(toList());
+    }
+
+    private static List<DbDataDto.Item> createEntryItemsWithPartialValues(DbStructureDto structureObject, Optional<DbDataDto.Entry> existingEntry, List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues) {
+        return existingEntry.get().getItems().stream()
+                .map( (item) -> {
+
+                    Optional<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValue = partialValues.stream()
+                            .filter((value) -> value.getRank() == item.getFieldRank())
+                            .findAny();
+
+                    if (partialValue.isPresent()) {
+                        List<DbStructureDto.Field> structureFields = structureObject.getFields();
+                        DbStructureDto.Field structureField = structureFields.get(partialValue.get().getRank() - 1);
+                        return DbDataDto.Item.builder()
+                                .fromStructureFieldAndTopic(structureField, structureObject.getTopic())
+                                .withRawValue(partialValue.get().getValue())
+                                .build();
+
+                    } else {
+                        return item;
+                    }
+                })
                 .collect(toList());
     }
 }
