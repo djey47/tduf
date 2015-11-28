@@ -8,6 +8,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +22,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Used to apply patches to an existing database.
  */
-// TODO simplify
 public class DatabasePatcher extends AbstractDatabaseHolder {
 
     /**
@@ -79,12 +79,19 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .ifPresent((topicObject) -> {
 
                     Optional<DbDataDto.Entry> potentialEntry = ofNullable(changeObject.getRef())
-                            .map( (ref) -> databaseMiner.getContentEntryFromTopicWithReference(ref, changedTopic).orElse(null));
+
+                            .map( (ref) -> databaseMiner.getContentEntryFromTopicWithReference(ref, changedTopic)
+
+                                    .orElse(null));
 
                     if (changeObject.isPartialChange()) {
-                        updateEntryWithPartialChanges(potentialEntry, topicObject, changeObject.getPartialValues());
+
+                        updateEntryWithPartialChanges(potentialEntry, topicObject.getStructure(), changeObject.getPartialValues());
+
                     } else {
+
                         addOrUpdateEntryWithFullChanges(potentialEntry, topicObject, changeObject.getValues());
+
                     }
                 });
     }
@@ -104,13 +111,13 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
     }
 
-    private void updateEntryWithPartialChanges(Optional<DbDataDto.Entry> existingEntry, DbDto topicObject, List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues) {
+    private void updateEntryWithPartialChanges(Optional<DbDataDto.Entry> existingEntry, DbStructureDto structureObject, List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues) {
         if (!existingEntry.isPresent()) {
             Log.warn("Unknown REF, no entry to be updated with partial values: " + partialValues);
             return;
         }
 
-        List<DbDataDto.Item> modifiedItems = createEntryItemsWithPartialValues(topicObject.getStructure(), existingEntry, partialValues);
+        List<DbDataDto.Item> modifiedItems = createEntryItemsWithPartialValues(structureObject, existingEntry.get(), partialValues);
         existingEntry.get().setItems(modifiedItems);
     }
 
@@ -134,6 +141,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         DbDto.Topic topic = changeObject.getTopic();
 
         databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(changeObject.getRef(), topic, locale)
+
                 .ifPresent((resourceEntry) -> {
                     DbResourceDto dbResourceDto = databaseMiner.getResourceFromTopicAndLocale(topic, locale).get();
                     dbResourceDto.getEntries().remove(resourceEntry);
@@ -208,26 +216,30 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .collect(toList());
     }
 
-    private static List<DbDataDto.Item> createEntryItemsWithPartialValues(DbStructureDto structureObject, Optional<DbDataDto.Entry> existingEntry, List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues) {
-        return existingEntry.get().getItems().stream()
+    private static List<DbDataDto.Item> createEntryItemsWithPartialValues(DbStructureDto structureObject, DbDataDto.Entry existingEntry, List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues) {
+        return existingEntry.getItems().stream()
+
                 .map( (item) -> {
 
                     Optional<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValue = partialValues.stream()
+
                             .filter((value) -> value.getRank() == item.getFieldRank())
+
                             .findAny();
 
                     if (partialValue.isPresent()) {
-                        List<DbStructureDto.Field> structureFields = structureObject.getFields();
-                        DbStructureDto.Field structureField = structureFields.get(partialValue.get().getRank() - 1);
+
+                        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, structureObject.getFields());
                         return DbDataDto.Item.builder()
                                 .fromStructureFieldAndTopic(structureField, structureObject.getTopic())
                                 .withRawValue(partialValue.get().getValue())
                                 .build();
 
-                    } else {
-                        return item;
                     }
+
+                    return item;
                 })
+
                 .collect(toList());
     }
 }
