@@ -3,116 +3,6 @@
     {
       "type": "UPDATE",
       "topic": "CAR_PHYSICS_DATA",
-      "ref": "606298799",
-      "values": [
-        "606298799",
-        "735",
-        "59938407",
-        "59538427",
-        "79900264",
-        "0.5",
-        "150000",
-        "54368917",
-        "6296567",
-        "12096442",
-        "6296567",
-        "53338427",
-        "59538427",
-        "53338427",
-        "543629",
-        "553709",
-        "6997",
-        "410",
-        "5600",
-        "626",
-        "2800",
-        "6500",
-        "55356917",
-        "573531",
-        "4",
-        "3,54",
-        "2,32",
-        "1,54",
-        "1,19",
-        "1",
-        "0",
-        "0",
-        "0",
-        "2",
-        "5535936",
-        "297",
-        "273",
-        "5535936",
-        "59338424",
-        "0",
-        "1727",
-        "3962",
-        "1245",
-        "1397",
-        "1372",
-        "2286",
-        "749",
-        "1048",
-        "1035",
-        "170",
-        "170",
-        "305",
-        "286",
-        "110",
-        "100",
-        "100",
-        "90",
-        "100",
-        "90",
-        "100",
-        "8",
-        "54",
-        "0",
-        "0,484",
-        "0,5",
-        "45",
-        "0",
-        "60",
-        "0,4",
-        "0,35",
-        "0,9",
-        "3200",
-        "1",
-        "77678427",
-        "92260406",
-        "55533427",
-        "5666317",
-        "4,5",
-        "4,5",
-        "266",
-        "148",
-        "22,5",
-        "0",
-        "0",
-        "12,4",
-        "0",
-        "0",
-        "950",
-        "104",
-        "79",
-        "64",
-        "88,8",
-        "15",
-        "100",
-        "99",
-        "-1",
-        "1",
-        "102",
-        "102",
-        "1",
-        "100",
-        "102",
-        "104"
-      ]
-    },
-    {
-      "type": "UPDATE",
-      "topic": "CAR_PHYSICS_DATA",
       "ref": "632098801",
       "values": [
         "632098801",
@@ -217,15 +107,131 @@
         "1",
         "100",
         "101",
-        "89"
+        "8900"
       ]
     },
     {
       "type": "UPDATE_RES",
       "topic": "CAR_PHYSICS_DATA",
+      "locale": "JAPAN",
+      "ref": "5535936",
+      "value": "ディスク"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "UNITED_STATES",
+      "ref": "573531",
+      "value": "Mechanical"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
       "locale": "KOREA",
+      "ref": "543629",
+      "value": "전륜"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "UNITED_STATES",
+      "ref": "5666317",
+      "value": "Roadster"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "SPAIN",
+      "ref": "5535936",
+      "value": "Discos"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "SPAIN",
+      "ref": "573531",
+      "value": "Mecánica"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "54368917",
+      "value": "Classic"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "UNITED_STATES",
       "ref": "553709",
       "value": "V8"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "ITALY",
+      "ref": "553709",
+      "value": "V8"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "77678427",
+      "value": "No Window"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "KOREA",
+      "ref": "5535936",
+      "value": "디스크"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "JAPAN",
+      "ref": "573531",
+      "value": "メカニカル"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "GERMANY",
+      "ref": "55356917",
+      "value": "Hinterradantrieb"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "ITALY",
+      "ref": "543629",
+      "value": "Fronte"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "92260406",
+      "value": "2 Points"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "JAPAN",
+      "ref": "543629",
+      "value": "フロント"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "ITALY",
+      "ref": "5535936",
+      "value": "Dischi"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "ITALY",
+      "ref": "5666317",
+      "value": "Roadster"
     },
     {
       "type": "UPDATE_RES",
@@ -237,15 +243,118 @@
     {
       "type": "UPDATE_RES",
       "topic": "CAR_PHYSICS_DATA",
+      "ref": "58538427",
+      "value": "289"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "ITALY",
+      "ref": "573531",
+      "value": "Meccanico"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "FRANCE",
+      "ref": "55356917",
+      "value": "Propulsion"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "CHINA",
+      "ref": "553709",
+      "value": "V8"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "FRANCE",
+      "ref": "573531",
+      "value": "Mécanique"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "SPAIN",
+      "ref": "55356917",
+      "value": "Tracción trasera"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "FRANCE",
+      "ref": "5535936",
+      "value": "Disques"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
       "locale": "KOREA",
-      "ref": "5666317",
-      "value": "로드스터"
+      "ref": "573531",
+      "value": "기계적"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "SPAIN",
+      "ref": "553709",
+      "value": "V8"
     },
     {
       "type": "UPDATE_RES",
       "topic": "CAR_PHYSICS_DATA",
       "ref": "79900264",
       "value": "G"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "FRANCE",
+      "ref": "543629",
+      "value": "Avant"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "FRANCE",
+      "ref": "5666317",
+      "value": "Roadster"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "GERMANY",
+      "ref": "543629",
+      "value": "Front"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "UNITED_STATES",
+      "ref": "55356917",
+      "value": "Rear Wheel Drive"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "JAPAN",
+      "ref": "55356917",
+      "value": "リア ドライブ"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "SPAIN",
+      "ref": "543629",
+      "value": "Delantera"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "55533427",
+      "value": "2"
     },
     {
       "type": "UPDATE_RES",
@@ -257,8 +366,97 @@
     {
       "type": "UPDATE_RES",
       "topic": "CAR_PHYSICS_DATA",
-      "ref": "58538427",
-      "value": "289"
+      "locale": "FRANCE",
+      "ref": "553709",
+      "value": "V8"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "GERMANY",
+      "ref": "573531",
+      "value": "Mechanisch"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "SPAIN",
+      "ref": "5666317",
+      "value": "Deportivo"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "CHINA",
+      "ref": "55356917",
+      "value": "後輪駕駛"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "KOREA",
+      "ref": "553709",
+      "value": "V8"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "KOREA",
+      "ref": "5666317",
+      "value": "로드스터"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "GERMANY",
+      "ref": "5666317",
+      "value": "Roadster"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "59938407",
+      "value": "Cobra"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "CHINA",
+      "ref": "5666317",
+      "value": "敞篷車"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "JAPAN",
+      "ref": "5666317",
+      "value": "ロードスター"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "GERMANY",
+      "ref": "5535936",
+      "value": "Scheiben"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "ITALY",
+      "ref": "55356917",
+      "value": "Trazione posteriore"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "53338427",
+      "value": "??"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "6296567",
+      "value": "AC_427"
     },
     {
       "type": "UPDATE_RES",
@@ -275,282 +473,9 @@
     {
       "type": "UPDATE_RES",
       "topic": "CAR_PHYSICS_DATA",
-      "locale": "JAPAN",
-      "ref": "543629",
-      "value": "フロント"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "FRANCE",
-      "ref": "543629",
-      "value": "Avant"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "ref": "59938407",
-      "value": "Cobra"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "FRANCE",
-      "ref": "5535936",
-      "value": "Disques"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "ITALY",
-      "ref": "55356917",
-      "value": "Trazione posteriore"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "JAPAN",
-      "ref": "573531",
-      "value": "メカニカル"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "GERMANY",
-      "ref": "543629",
-      "value": "Front"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "CHINA",
-      "ref": "55356917",
-      "value": "後輪駕駛"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "UNITED_STATES",
-      "ref": "5666317",
-      "value": "Roadster"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "ref": "59538427",
-      "value": "427"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "FRANCE",
-      "ref": "55356917",
-      "value": "Propulsion"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "ITALY",
-      "ref": "5666317",
-      "value": "Roadster"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "GERMANY",
-      "ref": "573531",
-      "value": "Mechanisch"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "GERMANY",
-      "ref": "5666317",
-      "value": "Roadster"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "SPAIN",
-      "ref": "55356917",
-      "value": "Tracción trasera"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "ref": "6296567",
-      "value": "AC_427"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "CHINA",
-      "ref": "5535936",
-      "value": "碟盤"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "ref": "54368917",
-      "value": "Classic"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "JAPAN",
-      "ref": "5666317",
-      "value": "ロードスター"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "GERMANY",
-      "ref": "55356917",
-      "value": "Hinterradantrieb"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "SPAIN",
-      "ref": "573531",
-      "value": "Mecánica"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "ref": "92260406",
-      "value": "2 Points"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "ref": "55533427",
-      "value": "2"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
       "locale": "UNITED_STATES",
       "ref": "5535936",
       "value": "Discs"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "ITALY",
-      "ref": "573531",
-      "value": "Meccanico"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "GERMANY",
-      "ref": "553709",
-      "value": "V8"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "FRANCE",
-      "ref": "553709",
-      "value": "V8"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "KOREA",
-      "ref": "543629",
-      "value": "전륜"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "CHINA",
-      "ref": "5666317",
-      "value": "敞篷車"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "UNITED_STATES",
-      "ref": "543629",
-      "value": "Front"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "CHINA",
-      "ref": "553709",
-      "value": "V8"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "FRANCE",
-      "ref": "5666317",
-      "value": "Roadster"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "SPAIN",
-      "ref": "553709",
-      "value": "V8"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "GERMANY",
-      "ref": "5535936",
-      "value": "Scheiben"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "KOREA",
-      "ref": "5535936",
-      "value": "디스크"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "UNITED_STATES",
-      "ref": "573531",
-      "value": "Mechanical"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "SPAIN",
-      "ref": "543629",
-      "value": "Delantera"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "ITALY",
-      "ref": "553709",
-      "value": "V8"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "FRANCE",
-      "ref": "573531",
-      "value": "Mécanique"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "SPAIN",
-      "ref": "5666317",
-      "value": "Deportivo"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "ref": "77678427",
-      "value": "No Window"
     },
     {
       "type": "UPDATE_RES",
@@ -562,64 +487,23 @@
     {
       "type": "UPDATE_RES",
       "topic": "CAR_PHYSICS_DATA",
-      "locale": "JAPAN",
-      "ref": "5535936",
-      "value": "ディスク"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "SPAIN",
-      "ref": "5535936",
-      "value": "Discos"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "KOREA",
-      "ref": "573531",
-      "value": "기계적"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "JAPAN",
-      "ref": "55356917",
-      "value": "リア ドライブ"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "ref": "53338427",
-      "value": "??"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "ITALY",
-      "ref": "5535936",
-      "value": "Dischi"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "locale": "ITALY",
-      "ref": "543629",
-      "value": "Fronte"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
       "locale": "UNITED_STATES",
+      "ref": "543629",
+      "value": "Front"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "locale": "GERMANY",
       "ref": "553709",
       "value": "V8"
     },
     {
       "type": "UPDATE_RES",
       "topic": "CAR_PHYSICS_DATA",
-      "locale": "UNITED_STATES",
-      "ref": "55356917",
-      "value": "Rear Wheel Drive"
+      "locale": "CHINA",
+      "ref": "5535936",
+      "value": "碟盤"
     },
     {
       "type": "UPDATE_RES",
@@ -629,16 +513,41 @@
       "value": "후륜 구동"
     },
     {
-      "type": "UPDATE_RES",
+      "type": "UPDATE",
       "topic": "RIMS",
-      "ref": "5516562",
-      "value": "Standard AC 427 Wheels"
+      "ref": "12096448",
+      "values": [
+        "12096448",
+        "55665512",
+        "60266512",
+        "5616562",
+        "185",
+        "70",
+        "15",
+        "185",
+        "70",
+        "15",
+        "0",
+        "10",
+        "55665512",
+        "63458512",
+        "63458512",
+        "1"
+      ]
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_RIMS",
+      "values": [
+        "632098801",
+        "12096448"
+      ]
     },
     {
       "type": "UPDATE_RES",
       "topic": "CAR_COLORS",
-      "ref": "53616457",
-      "value": "Rouge Irise"
+      "ref": "54776127",
+      "value": "V_05"
     },
     {
       "type": "UPDATE_RES",
@@ -648,63 +557,22 @@
     },
     {
       "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "57106457",
-      "value": "Princess Blue"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "61076127",
-      "value": "W_02"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "63166127",
-      "value": "R_01"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "62856127",
-      "value": "Camaro_17"
-    },
-    {
-      "type": "UPDATE",
-      "topic": "RIMS",
-      "ref": "12096442",
-      "values": [
-        "12096442",
-        "55665512",
-        "62166512",
-        "5516562",
-        "205",
-        "70",
-        "15",
-        "205",
-        "70",
-        "15",
-        "0",
-        "10",
-        "55665512",
-        "54458512",
-        "54458512",
-        "1"
-      ]
+      "topic": "BRANDS",
+      "ref": "55338337",
+      "value": "AC"
     },
     {
       "type": "UPDATE",
       "topic": "CAR_COLORS",
       "values": [
         "632098801",
-        "54776127",
-        "59726457",
+        "54966127",
+        "61966457",
         "53356127",
         "53356127",
         "0",
         "0",
-        "114584028",
+        "11099824",
         "109854030",
         "11319636",
         "11319636",
@@ -722,32 +590,10 @@
       ]
     },
     {
-      "type": "UPDATE",
+      "type": "UPDATE_RES",
       "topic": "CAR_COLORS",
-      "values": [
-        "606298799",
-        "63056127",
-        "58926457",
-        "53356127",
-        "53356127",
-        "0",
-        "0",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636"
-      ]
+      "ref": "58456127",
+      "value": "BM_01"
     },
     {
       "type": "UPDATE",
@@ -775,6 +621,43 @@
         "11319636",
         "11319636",
         "11319636"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "53616457",
+      "value": "Rouge Irise"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_PACKS",
+      "values": [
+        "632098801",
+        "735",
+        "57356917",
+        "5893697",
+        "437954033",
+        "92900264",
+        "61085282",
+        "25000",
+        "5,3",
+        "146",
+        "35",
+        "437954035",
+        "92900264",
+        "61085282",
+        "40000",
+        "5,1",
+        "131",
+        "37",
+        "437954037",
+        "92900264",
+        "61085282",
+        "70000",
+        "4,9",
+        "128",
+        "39"
       ]
     },
     {
@@ -812,6 +695,36 @@
       ]
     },
     {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "55665512",
+      "value": "AC"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_SHOPS",
+      "ref": "5893697",
+      "value": "BRITISH PARTS"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "59726457",
+      "value": "Vineyard Green"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "61076127",
+      "value": "W_02"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "57356917",
+      "value": "??"
+    },
+    {
       "type": "UPDATE",
       "topic": "CAR_COLORS",
       "values": [
@@ -824,6 +737,152 @@
         "0",
         "109854030",
         "11099824",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "63166127",
+      "value": "R_01"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "55556127",
+      "value": "BM_08"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_COLORS",
+      "values": [
+        "632098801",
+        "61076127",
+        "56926457",
+        "53356127",
+        "53356127",
+        "0",
+        "0",
+        "109854030",
+        "11099824",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "56926457",
+      "value": "White"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "5616562",
+      "value": "Standard AC 289 Wheels"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "BRANDS",
+      "ref": "735",
+      "values": [
+        "735",
+        "55338337",
+        "55338337",
+        "55338337",
+        "0",
+        "0",
+        "1"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "56816457",
+      "value": "Silver"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "54966127",
+      "value": "N_01"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_COLORS",
+      "values": [
+        "632098801",
+        "54776127",
+        "59726457",
+        "53356127",
+        "53356127",
+        "0",
+        "0",
+        "114584028",
+        "109854030",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "60266512",
+      "value": "Standard AC 289 Wheel"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "92900264",
+      "value": "Z"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_COLORS",
+      "values": [
+        "632098801",
+        "63166127",
+        "61206457",
+        "53356127",
+        "53356127",
+        "0",
+        "0",
+        "109854030",
+        "11319636",
         "11319636",
         "11319636",
         "11319636",
@@ -868,339 +927,10 @@
       ]
     },
     {
-      "type": "UPDATE",
-      "topic": "CAR_RIMS",
-      "values": [
-        "606298799",
-        "12096442"
-      ]
-    },
-    {
       "type": "UPDATE_RES",
       "topic": "CAR_COLORS",
-      "ref": "63066457",
-      "value": "Black / White Stripe"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "ref": "57356917",
-      "value": "??"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "RIMS",
-      "ref": "55665512",
-      "value": "AC"
-    },
-    {
-      "type": "UPDATE",
-      "topic": "CAR_PACKS",
-      "values": [
-        "606298799",
-        "735",
-        "57356917",
-        "5893697",
-        "1054454476",
-        "92900264",
-        "61085282",
-        "30000",
-        "4,5",
-        "148",
-        "15",
-        "1054454477",
-        "92900264",
-        "61085282",
-        "50000",
-        "4,4",
-        "142",
-        "17",
-        "1054454478",
-        "92900264",
-        "61085282",
-        "80000",
-        "4,1",
-        "137",
-        "19"
-      ]
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "60976127",
-      "value": "Viper_01"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "54306457",
-      "value": "Red / White Stripe"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "62376457",
-      "value": "Blue / White Stripe"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "RIMS",
-      "ref": "60266512",
-      "value": "Standard AC 289 Wheel"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "56926457",
-      "value": "White"
-    },
-    {
-      "type": "UPDATE",
-      "topic": "CAR_RIMS",
-      "values": [
-        "632098801",
-        "12096448"
-      ]
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "54966127",
-      "value": "N_01"
-    },
-    {
-      "type": "UPDATE",
-      "topic": "CAR_COLORS",
-      "values": [
-        "606298799",
-        "55076127",
-        "63066457",
-        "53356127",
-        "53356127",
-        "0",
-        "0",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636"
-      ]
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "55076127",
-      "value": "Viper_05"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "63056127",
-      "value": "FordGT_06"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "54776127",
-      "value": "V_05"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "54576457",
-      "value": "Bright Blue"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_PHYSICS_DATA",
-      "ref": "92900264",
-      "value": "Z"
-    },
-    {
-      "type": "UPDATE",
-      "topic": "RIMS",
-      "ref": "12096448",
-      "values": [
-        "12096448",
-        "55665512",
-        "60266512",
-        "5616562",
-        "185",
-        "70",
-        "15",
-        "185",
-        "70",
-        "15",
-        "0",
-        "10",
-        "55665512",
-        "63458512",
-        "63458512",
-        "1"
-      ]
-    },
-    {
-      "type": "UPDATE",
-      "topic": "CAR_PACKS",
-      "values": [
-        "632098801",
-        "735",
-        "57356917",
-        "5893697",
-        "437954033",
-        "92900264",
-        "61085282",
-        "25000",
-        "5,3",
-        "146",
-        "35",
-        "437954035",
-        "92900264",
-        "61085282",
-        "40000",
-        "5,1",
-        "131",
-        "37",
-        "437954037",
-        "92900264",
-        "61085282",
-        "70000",
-        "4,9",
-        "128",
-        "39"
-      ]
-    },
-    {
-      "type": "UPDATE",
-      "topic": "CAR_COLORS",
-      "values": [
-        "632098801",
-        "63166127",
-        "61206457",
-        "53356127",
-        "53356127",
-        "0",
-        "0",
-        "109854030",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636"
-      ]
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "RIMS",
-      "ref": "5616562",
-      "value": "Standard AC 289 Wheels"
-    },
-    {
-      "type": "UPDATE",
-      "topic": "CAR_COLORS",
-      "values": [
-        "632098801",
-        "54966127",
-        "61966457",
-        "53356127",
-        "53356127",
-        "0",
-        "0",
-        "11099824",
-        "109854030",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636"
-      ]
-    },
-    {
-      "type": "UPDATE",
-      "topic": "CAR_COLORS",
-      "values": [
-        "632098801",
-        "61076127",
-        "56926457",
-        "53356127",
-        "53356127",
-        "0",
-        "0",
-        "109854030",
-        "11099824",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636"
-      ]
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "RIMS",
-      "ref": "54458512",
-      "value": "AC_427_F_01"
-    },
-    {
-      "type": "UPDATE",
-      "topic": "BRANDS",
-      "ref": "735",
-      "values": [
-        "735",
-        "55338337",
-        "55338337",
-        "55338337",
-        "0",
-        "0",
-        "1"
-      ]
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "53356127",
-      "value": "??"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "56816457",
-      "value": "Silver"
+      "ref": "57106457",
+      "value": "Princess Blue"
     },
     {
       "type": "UPDATE_RES",
@@ -1211,112 +941,26 @@
     {
       "type": "UPDATE_RES",
       "topic": "CAR_COLORS",
+      "ref": "61966457",
+      "value": "Black"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "54576457",
+      "value": "Bright Blue"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
       "ref": "57376127",
       "value": "RM_07"
     },
     {
       "type": "UPDATE_RES",
       "topic": "CAR_COLORS",
-      "ref": "55556127",
-      "value": "BM_08"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "58456127",
-      "value": "BM_01"
-    },
-    {
-      "type": "UPDATE",
-      "topic": "CAR_COLORS",
-      "values": [
-        "606298799",
-        "60976127",
-        "62376457",
-        "53356127",
-        "53356127",
-        "0",
-        "0",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636"
-      ]
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "RIMS",
-      "ref": "62166512",
-      "value": "Standard AC 427 Wheel"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "61966457",
-      "value": "Black"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "BRANDS",
-      "ref": "55338337",
-      "value": "AC"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "58926457",
-      "value": "White / Blue Stripes"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_COLORS",
-      "ref": "59726457",
-      "value": "Vineyard Green"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "CAR_SHOPS",
-      "ref": "5893697",
-      "value": "BRITISH PARTS"
-    },
-    {
-      "type": "UPDATE",
-      "topic": "CAR_COLORS",
-      "values": [
-        "606298799",
-        "62856127",
-        "54306457",
-        "53356127",
-        "53356127",
-        "0",
-        "0",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636",
-        "11319636"
-      ]
+      "ref": "53356127",
+      "value": "??"
     }
   ]
 }
