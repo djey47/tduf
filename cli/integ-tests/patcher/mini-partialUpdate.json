@@ -1,0 +1,16 @@
+{
+  "changes": [
+    {
+      "comment": "Update bitfield to existing entry: ref 632098801",
+      "type": "UPDATE",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "632098801",
+      "partialValues": [
+        {
+          "rank": 103,
+          "value": "8900"
+        }
+      ]
+    }
+  ]
+}

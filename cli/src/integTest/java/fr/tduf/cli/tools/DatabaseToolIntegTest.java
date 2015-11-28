@@ -122,6 +122,7 @@ public class DatabaseToolIntegTest {
     public void dumpApplyPatchGenPatch() throws IOException, JSONException {
         // GIVEN
         String inputPatchFile = Paths.get(DIRECTORY_PATCH, "mini.json").toString();
+        String inputPatchWithPartialChangesFile = Paths.get(DIRECTORY_PATCH, "mini-partialUpdate.json").toString();
         String outputPatchFile = Paths.get(DIRECTORY_PATCH_OUTPUT, "mini-gen.json").toString();
         String referencePatchFile = Paths.get(DIRECTORY_PATCH, "mini-gen.json").toString();
 
@@ -131,15 +132,32 @@ public class DatabaseToolIntegTest {
 
         // WHEN: applyPatch
         System.out.println("-> ApplyPatch!");
-        DatabaseTool.main(new String[]{"apply-patch", "-n", "-j", DIRECTORY_JSON_DATABASE, "-o", DIRECTORY_PATCHED_DATABASE, "-p", inputPatchFile});
+        DatabaseTool.main(new String[]{"apply-patch", "-n", "-j", DIRECTORY_JSON_DATABASE, "-o", DIRECTORY_JSON_DATABASE, "-p", inputPatchFile});
+        System.out.println("-> ApplyPatch! (partial changes)");
+        DatabaseTool.main(new String[]{"apply-patch", "-n", "-j", DIRECTORY_JSON_DATABASE, "-o", DIRECTORY_PATCHED_DATABASE, "-p", inputPatchWithPartialChangesFile});
 
         // THEN: files must exist
         long jsonFilesCount = getTopicFileCount(DIRECTORY_PATCHED_DATABASE, EXTENSION_JSON);
         assertThat(jsonFilesCount).isEqualTo(18);
 
-        // WHEN: genPatch
+        // THEN: contents must be updated
+        String vehicleSlotReference = "632098801";
+        List<DbDto> actualDatabaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(DIRECTORY_PATCHED_DATABASE);
+        Optional<DbDataDto.Entry> potentialEntry = BulkDatabaseMiner.load(actualDatabaseObjects).getContentEntryFromTopicWithReference(vehicleSlotReference, CAR_PHYSICS_DATA);
+
+        assertThat(potentialEntry)
+                .isPresent()
+                .has(new Condition<>(
+                        entry -> {
+                            List<String> actualEntryItemValues = extractAllRawValues(entry.get());
+                            return "8900".equals(actualEntryItemValues.get(102));
+                        }
+                        , "bitfield patched"));
+
+
+        // WHEN: genPatch from patched database
         System.out.println("-> GenPatch!");
-        DatabaseTool.main(new String[]{"gen-patch", "-n", "-j", DIRECTORY_JSON_DATABASE, "-p", outputPatchFile, "-t", CAR_PHYSICS_DATA.name(), "-r", "606298799,632098801"});
+        DatabaseTool.main(new String[]{"gen-patch", "-n", "-j", DIRECTORY_PATCHED_DATABASE, "-p", outputPatchFile, "-t", CAR_PHYSICS_DATA.name(), "-r", "606298799,632098801"});
 
         // THEN: patch file must exist
         AssertionsHelper.assertFileExistAndGet(outputPatchFile);
@@ -255,11 +273,7 @@ public class DatabaseToolIntegTest {
                 .has(new Condition<>(
 
                         entry -> {
-                            List<String> actualEntryItemValues = entry.get().getItems().stream()
-
-                                    .map(DbDataDto.Item::getRawValue)
-
-                                    .collect(toList());
+                            List<String> actualEntryItemValues = extractAllRawValues(entry.get());
 
                             return "77061".equals(actualEntryItemValues.get(1))
                                     && "78900265".equals(actualEntryItemValues.get(4))
@@ -272,7 +286,6 @@ public class DatabaseToolIntegTest {
     }
 
     private static Object fakeAndAssertExtractAll(InvocationOnMock invocation) throws IOException {
-
         String bankFileName = (String) invocation.getArguments()[0];
         String outputDirectory = (String) invocation.getArguments()[1];
 
@@ -313,6 +326,14 @@ public class DatabaseToolIntegTest {
                 .filter((existingFile) -> true)
 
                 .count();
+    }
+
+    private static List<String> extractAllRawValues(DbDataDto.Entry entry) {
+        return entry.getItems().stream()
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .collect(toList());
     }
 
     private static void assertDatabaseFilesArePresent(String directory) {
