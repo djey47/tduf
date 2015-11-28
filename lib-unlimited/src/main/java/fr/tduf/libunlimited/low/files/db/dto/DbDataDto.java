@@ -334,6 +334,21 @@ public class DbDataDto implements Serializable {
             this.name = name;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            return reflectionEquals(this, o);
+        }
+
+        @Override
+        public int hashCode() {
+            return reflectionHashCode(this);
+        }
+
+        @Override
+        public String toString() {
+            return reflectionToString(this);
+        }
+
         public int getIndex() {
             return index;
         }
