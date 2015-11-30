@@ -41,7 +41,7 @@ public class FileToolIntegTest {
 
     private final String bankFileName =  "Bank.bnk";
     private final String bankDirectory = Paths.get(testRootDirectory, "banks").toString();
-    private final String unpackedDirectory = Paths.get(testRootDirectory, "unpacked").toString();
+    private final String unpackedDirectory = Paths.get(testRootDirectory, "unpacked/").toString();
     private final String repackedDirectory = Paths.get(testRootDirectory, "repacked").toString();
 
     @Mock
@@ -226,5 +226,17 @@ public class FileToolIntegTest {
 
         // THEN
         verify(bankSupportMock).packAll(unpackedDirectory, outputBankFile);
+    }
+
+    @Test
+    public void repack_whenOutputFileNotProvided_andInputEndsWithSeparator_shouldGenerateRightFileName() throws IOException {
+        String expectedOutputBankFile = Paths.get(testRootDirectory, "unpacked-repacked.bnk").toString();
+
+        // WHEN
+        System.out.println("-> Repack!");
+        fileTool.doMain(new String[]{"repack", "-n", "-i", unpackedDirectory + File.separator});
+
+        // THEN
+        verify(bankSupportMock).packAll(unpackedDirectory, expectedOutputBankFile);
     }
 }

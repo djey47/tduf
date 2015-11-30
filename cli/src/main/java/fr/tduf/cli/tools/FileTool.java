@@ -9,6 +9,7 @@ import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 import fr.tduf.libunlimited.low.files.research.rw.GenericWriter;
+import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -99,6 +100,9 @@ public class FileTool extends GenericTool {
 
     @Override
     protected void checkAndAssignDefaultParameters(CmdLineParser parser) throws CmdLineException {
+        // Input file: trailing separator to be removed
+        inputFile = StringUtils.removeEnd(inputFile, File.separator);
+
         // Output file: defaulted to input file.extension
         if (outputFile == null) {
             String extension;
