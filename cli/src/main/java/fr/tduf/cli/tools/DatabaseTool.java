@@ -38,20 +38,14 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -146,7 +140,7 @@ public class DatabaseTool extends GenericTool {
     protected boolean commandDispatch() throws Exception {
         switch (command) {
             case DUMP:
-                dump(databaseDirectory, jsonDirectory);
+                commandResult = (Serializable) dump(databaseDirectory, jsonDirectory);
                 return true;
             case CHECK:
                 check();
@@ -170,7 +164,7 @@ public class DatabaseTool extends GenericTool {
                 convertPatch();
                 return true;
             case UNPACK_ALL:
-                unpackAll();
+                unpackAll(databaseDirectory, jsonDirectory);
                 return true;
             case REPACK_ALL:
                 repackAll();
@@ -273,22 +267,22 @@ public class DatabaseTool extends GenericTool {
         commandResult = resultInfo;
     }
 
-    private void unpackAll() throws IOException {
-        String sourceDirectory = Paths.get(databaseDirectory).toAbsolutePath().toString();
+    private void unpackAll(String sourceDatabaseDirectory, String jsonDatabaseDirectory) throws IOException {
+        String sourceDirectory = Paths.get(sourceDatabaseDirectory).toAbsolutePath().toString();
         outLine("-> TDU database directory: " + sourceDirectory);
-        outLine("Unpacking TDU database to " + jsonDirectory + ", please wait...");
+        outLine("Unpacking TDU database to " + jsonDatabaseDirectory + ", please wait...");
 
         String extractedDatabaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(sourceDirectory, Optional.of(jsonDirectory), bankSupport);
 
         outLine("Done unpacking.");
 
-        dump(extractedDatabaseDirectory, jsonDirectory);
+        Map<String, Object> resultInfo = dump(extractedDatabaseDirectory, jsonDatabaseDirectory);
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("sourceDirectory", sourceDirectory);
+        resultInfo.put("sourceDatabaseDirectory", sourceDirectory);
         resultInfo.put("temporaryDirectory", extractedDatabaseDirectory);
-        resultInfo.put("targetDirectory", jsonDirectory);
-        commandResult = resultInfo;
+        resultInfo.put("jsonDatabaseDirectory", jsonDatabaseDirectory);
+
+        commandResult = (Serializable) resultInfo;
     }
 
     private void convertPatch() throws IOException, SAXException, ParserConfigurationException, URISyntaxException, TransformerException {
@@ -385,7 +379,7 @@ public class DatabaseTool extends GenericTool {
         commandResult = resultInfo;
     }
 
-    private void dump(String databaseDirectory, String databaseJsonDirectory) throws IOException {
+    private Map<String, Object> dump(String databaseDirectory, String databaseJsonDirectory) throws IOException {
         FilesHelper.createDirectoryIfNotExists(jsonDirectory);
 
         outLine("-> Source directory: " + databaseDirectory);
@@ -400,7 +394,8 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("missingTopicContents", missingTopicContents);
         resultInfo.put("integrityErrors", toDatabaseIntegrityErrors(integrityErrors));
         resultInfo.put("writtenFiles", writtenFileNames);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
     private void gen(String targetExtractedDatabaseDirectory) throws IOException {

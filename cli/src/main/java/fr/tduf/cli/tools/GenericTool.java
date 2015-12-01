@@ -30,6 +30,7 @@ public abstract class GenericTool {
     @Option(name = "-v", aliases = "--verbose", usage = "Not mandatory. Also displays DEBUG messages.")
     private boolean withVerboseOutput = false;
 
+    // TODO change type to Map<String, Object> ??
     protected Serializable commandResult = null;
 
     private ObjectWriter jsonWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
