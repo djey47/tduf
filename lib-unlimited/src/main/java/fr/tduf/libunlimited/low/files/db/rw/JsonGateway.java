@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
+import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 
@@ -21,17 +22,19 @@ public class JsonGateway {
      * @param sourceDatabaseDirectory   : directory where extracted TDU database files are located
      * @param targetJsonDirectory       : directory where JSON files will be created
      * @param withClearContents         : if true, TDU database files are in an encrypted state, false otherwise
-     * @param missingTopicContents      : a list which will contain topic whose contents can't be found.
+     * @param missingTopicContents      : a list which will contain topic whose contents can't be found
+     * @param integrityErrors           : a list which will contain database aprsing errors.
      * @return list of written file names.
      * @throws IOException
      */
-    public static List<String> dump(String sourceDatabaseDirectory, String targetJsonDirectory, boolean withClearContents, List<DbDto.Topic> missingTopicContents) throws IOException {
-        requireNonNull(missingTopicContents, "A list for missing topics is requried.");
+    public static List<String> dump(String sourceDatabaseDirectory, String targetJsonDirectory, boolean withClearContents, List<DbDto.Topic> missingTopicContents, List<IntegrityError> integrityErrors) throws IOException {
+        requireNonNull(missingTopicContents, "A list for missing topics is required.");
+        requireNonNull(integrityErrors, "A list for integrity errors is required.");
 
         List<String> writtenFileNames = new ArrayList<>();
         for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
 
-            Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, sourceDatabaseDirectory, withClearContents, new ArrayList<>());
+            Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, sourceDatabaseDirectory, withClearContents, integrityErrors);
             if (!potentialDbDto.isPresent()) {
                 missingTopicContents.add(currentTopic);
                 continue;
