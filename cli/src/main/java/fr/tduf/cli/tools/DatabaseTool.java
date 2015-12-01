@@ -146,7 +146,7 @@ public class DatabaseTool extends GenericTool {
     protected boolean commandDispatch() throws Exception {
         switch (command) {
             case DUMP:
-                dump(databaseDirectory);
+                dump(databaseDirectory, jsonDirectory);
                 return true;
             case CHECK:
                 check();
@@ -282,7 +282,7 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Done unpacking.");
 
-        dump(extractedDatabaseDirectory);
+        dump(extractedDatabaseDirectory, jsonDirectory);
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("sourceDirectory", sourceDirectory);
@@ -385,7 +385,7 @@ public class DatabaseTool extends GenericTool {
         commandResult = resultInfo;
     }
 
-    private void dump(String databaseDirectory) throws IOException {
+    private void dump(String databaseDirectory, String databaseJsonDirectory) throws IOException {
         FilesHelper.createDirectoryIfNotExists(jsonDirectory);
 
         outLine("-> Source directory: " + databaseDirectory);
@@ -393,10 +393,12 @@ public class DatabaseTool extends GenericTool {
         outLine();
 
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
-        List<String> writtenFileNames = JsonGateway.dump(databaseDirectory, jsonDirectory, withClearContents, missingTopicContents);
+        List<IntegrityError> integrityErrors = new ArrayList<>();
+        List<String> writtenFileNames = JsonGateway.dump(databaseDirectory, databaseJsonDirectory, withClearContents, missingTopicContents, integrityErrors);
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("missingTopicContents", missingTopicContents);
+        resultInfo.put("integrityErrors", toDatabaseIntegrityErrors(integrityErrors));
         resultInfo.put("writtenFiles", writtenFileNames);
         commandResult = resultInfo;
     }
