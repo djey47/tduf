@@ -91,12 +91,12 @@ public class FileTool extends GenericTool {
     }
 
     public FileTool() {
-        this.bankSupport = new GenuineBnkGateway(new CommandLineHelper());
+        bankSupport = new GenuineBnkGateway(new CommandLineHelper());
     }
 
     @Override
     protected void assignCommand(String commandArgument) {
-        this.command = (Command) CommandHelper.fromLabel(getCommand(), commandArgument);
+        command = (Command) CommandHelper.fromLabel(getCommand(), commandArgument);
     }
 
     @Override
@@ -171,25 +171,25 @@ public class FileTool extends GenericTool {
 
         switch (command) {
             case JSONIFY:
-                commandResult = jsonify();
+                commandResult = jsonify(structureFile, inputFile, outputFile);
                 break;
             case APPLYJSON:
-                commandResult = applyjson();
+                commandResult = applyjson(structureFile, inputFile, outputFile);
                 break;
             case DECRYPT:
-                commandResult = decrypt();
+                commandResult = decrypt(inputFile, outputFile);
                 break;
             case ENCRYPT:
-                commandResult = encrypt();
+                commandResult = encrypt(inputFile, outputFile);
                 break;
             case BANKINFO:
-                commandResult = bankInfo();
+                commandResult = bankInfo(inputFile);
                 break;
             case UNPACK:
-                commandResult = unpack();
+                commandResult = unpack(inputFile, outputFile);
                 break;
             case REPACK:
-                commandResult = repack();
+                commandResult = repack(inputFile, outputFile);
                 break;
             default:
                 commandResult = null;
@@ -199,36 +199,36 @@ public class FileTool extends GenericTool {
         return true;
     }
 
-    private Map<String, Object> repack() throws IOException {
-        outLine("Will pack contents from directory: " + this.inputFile);
+    private Map<String, Object> repack(String sourceDirectory, String targetBankFile) throws IOException {
+        outLine("Will pack contents from directory: " + sourceDirectory);
 
-        bankSupport.packAll(this.inputFile, this.outputFile);
+        bankSupport.packAll(sourceDirectory, targetBankFile);
 
         Map<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("contentsDirectory", this.inputFile);
-        resultInfo.put("bankFileCreated", this.outputFile);
+        resultInfo.put("contentsDirectory", sourceDirectory);
+        resultInfo.put("bankFileCreated", targetBankFile);
 
         return resultInfo;
     }
 
-    private Map<String, ?> unpack() throws IOException {
-        outLine("Will use Bank file: " + this.inputFile);
+    private Map<String, ?> unpack(String sourceBankFile, String targetDirectory) throws IOException {
+        outLine("Will use Bank file: " + sourceBankFile);
 
-        FilesHelper.createDirectoryIfNotExists(this.outputFile);
+        FilesHelper.createDirectoryIfNotExists(targetDirectory);
 
-        bankSupport.extractAll(this.inputFile, this.outputFile);
+        bankSupport.extractAll(sourceBankFile, targetDirectory);
 
         Map<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("extractedContentsDirectory", this.outputFile);
-        resultInfo.put("bankFile", this.inputFile);
+        resultInfo.put("extractedContentsDirectory", targetDirectory);
+        resultInfo.put("bankFile", sourceBankFile);
 
         return resultInfo;
     }
 
-    private Map<String, ?> bankInfo() throws IOException {
-        outLine("Will use Bank file: " + this.inputFile);
+    private Map<String, ?> bankInfo(String sourceBankFile) throws IOException {
+        outLine("Will use Bank file: " + sourceBankFile);
 
-        BankInfoDto bankInfoObject = bankSupport.getBankInfo(this.inputFile);
+        BankInfoDto bankInfoObject = bankSupport.getBankInfo(sourceBankFile);
 
         outLine("Done reading Bank:");
         outLine("\t-> Year: " + bankInfoObject.getYear());
@@ -246,69 +246,69 @@ public class FileTool extends GenericTool {
                         ));
 
         Map<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("bankFile", this.inputFile);
+        resultInfo.put("bankFile", sourceBankFile);
         resultInfo.put("bankInfo", bankInfoObject);
 
         return resultInfo;
     }
 
-    private Map<String, ?> jsonify() throws IOException {
-        outLine("Will use structure in file: " + this.structureFile);
+    private Map<String, ?> jsonify(String structureFile, String sourceFile, String targetJsonFile) throws IOException {
+        outLine("Will use structure in file: " + structureFile);
 
-        GenericParser<String> genericParser = getFileParser();
+        GenericParser<String> genericParser = getFileParser(sourceFile, structureFile);
         genericParser.parse();
 
         outLine("\t-> Provided file dump:\n" + genericParser.dump());
 
-        parserToJsonFile(genericParser);
+        parserToJsonFile(targetJsonFile, genericParser);
 
         HashMap<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("tduFile", this.inputFile);
-        resultInfo.put("jsonFile", this.outputFile);
+        resultInfo.put("tduFile", sourceFile);
+        resultInfo.put("jsonFile", targetJsonFile);
 
         return resultInfo;
     }
 
-    private Map<String, Object> applyjson() throws IOException {
-        outLine("Will use structure in file: " + this.structureFile);
+    private Map<String, Object> applyjson(String structureFile, String sourceJsonFile, String targetFile) throws IOException {
+        outLine("Will use structure in file: " + structureFile);
 
         writerToBinaryFile(getFileWriter(), readJsonInputFileContents());
 
-        outLine("JSON to TDU conversion done: " + this.inputFile + " to " + this.outputFile);
+        outLine("JSON to TDU conversion done: " + sourceJsonFile + " to " + targetFile);
 
         Map<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("tduFile", this.outputFile);
-        resultInfo.put("jsonFile", this.inputFile);
+        resultInfo.put("tduFile", targetFile);
+        resultInfo.put("jsonFile", sourceJsonFile);
 
         return resultInfo;
     }
 
-    private Map<String, Object> decrypt() throws IOException {
-        outLine("Now decrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
+    private Map<String, Object> decrypt(String sourceEncryptedFile, String targetFile) throws IOException {
+        outLine("Now decrypting: " + sourceEncryptedFile + " with encryption mode " + cryptoMode);
 
-        Files.write(Paths.get(this.outputFile), processInputStream(false));
+        Files.write(Paths.get(targetFile), processInputStream(sourceEncryptedFile, false));
 
         Map<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("encryptedFile", this.inputFile);
-        resultInfo.put("clearFile", this.outputFile);
+        resultInfo.put("encryptedFile", sourceEncryptedFile);
+        resultInfo.put("clearFile", targetFile);
 
         return resultInfo;
     }
 
-    private Map<String, Object> encrypt() throws IOException {
-        outLine("Now encrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
+    private Map<String, Object> encrypt(String sourceFile, String targetEncryptedFile) throws IOException {
+        outLine("Now encrypting: " + sourceFile + " with encryption mode " + cryptoMode);
 
-        Files.write(Paths.get(this.outputFile), processInputStream(true));
+        Files.write(Paths.get(targetEncryptedFile), processInputStream(sourceFile, true));
 
         Map<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("clearFile", this.inputFile);
-        resultInfo.put("encryptedFile", this.outputFile);
+        resultInfo.put("clearFile", sourceFile);
+        resultInfo.put("encryptedFile", targetEncryptedFile);
 
         return resultInfo;
     }
 
-    private GenericParser<String> getFileParser() throws IOException {
-        return new GenericParser<String>(getInputStreamForInputFile()) {
+    private GenericParser<String> getFileParser(final String sourceFile, final String structureFile) throws IOException {
+        return new GenericParser<String>(getInputStreamForFile(sourceFile)) {
             @Override
             protected String generate() {
                 return null;
@@ -339,10 +339,10 @@ public class FileTool extends GenericTool {
         Files.write(Paths.get(outputFile), genericWriter.write().toByteArray());
     }
 
-    private void parserToJsonFile(GenericParser<String> genericParser) throws IOException {
+    private void parserToJsonFile(String targetJsonFile, GenericParser<String> genericParser) throws IOException {
         String jsonOutput = genericParser.getDataStore().toJsonString();
 
-        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(outputFile), StandardCharsets.UTF_8)) {
+        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(targetJsonFile), StandardCharsets.UTF_8)) {
             bufferedWriter.write(jsonOutput);
         }
     }
@@ -352,11 +352,11 @@ public class FileTool extends GenericTool {
         return new String(fileContents, StandardCharsets.UTF_8);
     }
 
-    private byte[] processInputStream(boolean withEncryption) throws IOException {
+    private byte[] processInputStream(String sourceFile, boolean withEncryption) throws IOException {
 
-        CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(this.cryptoMode));
+        CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(cryptoMode));
 
-        ByteArrayInputStream inputStream = getInputStreamForInputFile();
+        ByteArrayInputStream inputStream = getInputStreamForFile(sourceFile);
         ByteArrayOutputStream outputStream;
         if (withEncryption) {
             outputStream = CryptoHelper.encryptXTEA(inputStream, encryptionModeEnum);
@@ -366,8 +366,8 @@ public class FileTool extends GenericTool {
         return outputStream.toByteArray();
     }
 
-    private ByteArrayInputStream getInputStreamForInputFile() throws IOException {
-        Path inputFilePath = new File(this.inputFile).toPath();
+    private ByteArrayInputStream getInputStreamForFile(String sourceFile) throws IOException {
+        Path inputFilePath = new File(sourceFile).toPath();
         return new ByteArrayInputStream(Files.readAllBytes(inputFilePath));
     }
 }
