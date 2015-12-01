@@ -80,21 +80,22 @@ public class MappingTool extends GenericTool {
     protected boolean commandDispatch() throws IOException {
         switch(command) {
             case INFO:
-                info();
+                commandResult = info(mapFile);
                 break;
             case LIST:
-                list();
+                commandResult = list(mapFile);
                 break;
             case LIST_MISSING:
-                listMissing();
+                commandResult = listMissing(bankDirectory, mapFile);
                 break;
             case FIX_MISSING:
-                fixMissing();
+                commandResult = fixMissing(bankDirectory, mapFile);
                 break;
             case MAGIFY:
-                magify();
+                commandResult = magify(mapFile);
                 break;
             default:
+                commandResult = null;
                 return false;
         }
         return true;
@@ -134,52 +135,52 @@ public class MappingTool extends GenericTool {
         );
     }
 
-    private void info() throws IOException {
+    private Map<String, ?> info(String sourceMapFile) throws IOException {
 
-        outLine("- BNK root folder: " + bankDirectory);
-
-        BankMap map = loadBankMap();
+        BankMap map = loadBankMap(sourceMapFile);
         Collection<BankMap.Entry> mapEntries = map.getEntries();
         boolean isMagicMap = map.isMagic();
 
-        outLine("- Bnk1.map parsing done: " + mapFile);
+        outLine("- Bnk1.map parsing done: " + sourceMapFile);
         outLine("  -> Entry count: " + mapEntries.size());
         outLine("  -> Magic map? " + isMagicMap);
 
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("entryCount", mapEntries.size());
         resultInfo.put("magicMap", isMagicMap);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
-    private void list() throws IOException {
+    private Map<String, Object> list(String sourceMapFile) throws IOException {
 
-        BankMap map = loadBankMap();
+        BankMap map = loadBankMap(sourceMapFile);
         Collection<BankMap.Entry> sortedMapEntries = map.getEntries().stream()
 
                 .sorted((entry1, entry2) -> compare(entry1.getHash(), entry2.getHash()))
 
                 .collect(toList());
 
-        outLine("Bnk1.map parsing done: " + mapFile);
+        outLine("Bnk1.map parsing done: " + sourceMapFile);
         outLine("  -> All entries :" + sortedMapEntries);
 
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("allEntries", sortedMapEntries);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
-    private void listMissing() throws IOException {
+    private Map<String, Object> listMissing(String sourceBankDirectory, String sourceMapFile) throws IOException {
 
-        List<String> banks = MapHelper.parseBanks(bankDirectory);
+        List<String> banks = MapHelper.parseBanks(sourceBankDirectory);
         Map<Long, String> checksums = MapHelper.computeChecksums(banks);
 
-        outLine("- Bank parsing done: " + bankDirectory);
+        outLine("- Bank parsing done: " + sourceBankDirectory);
         outLine("  -> File count: " + banks.size());
         outLine("  -> Files: " + banks);
         outLine("  -> Checksums: " + checksums);
 
-        Map<Long, String> newChecksums = MapHelper.findNewChecksums(loadBankMap(), checksums);
+        Map<Long, String> newChecksums = MapHelper.findNewChecksums(loadBankMap(sourceMapFile), checksums);
 
         outLine("  -> Absent from Bnk1.map: " + newChecksums);
 
@@ -187,18 +188,23 @@ public class MappingTool extends GenericTool {
         resultInfo.put("bankFilesFound", banks);
         resultInfo.put("checksums", checksums);
         resultInfo.put("missingChecksums", newChecksums);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
-    private void fixMissing() throws IOException {
-        MagicMapHelper.fixMagicMap(mapFile, bankDirectory);
+    private Map<String, ?> fixMissing(String sourceBankDirectory, String sourceMapFile) throws IOException {
+        MagicMapHelper.fixMagicMap(sourceMapFile, sourceBankDirectory);
+
+        return null;
     }
 
-    private void magify() throws IOException {
-        MagicMapHelper.toMagicMap(mapFile);
+    private Map<String, ?> magify(String sourceMapFile) throws IOException {
+        MagicMapHelper.toMagicMap(sourceMapFile);
+
+        return null;
     }
 
-    private BankMap loadBankMap() throws IOException {
-        return MapParser.load(mapFile).parse();
+    private BankMap loadBankMap(String sourceMapFile) throws IOException {
+        return MapParser.load(sourceMapFile).parse();
     }
 }
