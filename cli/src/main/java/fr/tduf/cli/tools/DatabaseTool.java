@@ -140,36 +140,37 @@ public class DatabaseTool extends GenericTool {
     protected boolean commandDispatch() throws Exception {
         switch (command) {
             case DUMP:
-                commandResult = (Serializable) dump(databaseDirectory, jsonDirectory);
+                commandResult = dump(databaseDirectory, jsonDirectory);
                 return true;
             case CHECK:
-                check();
+                commandResult = check();
                 return true;
             case GEN:
-                gen(databaseDirectory);
+                commandResult = gen(databaseDirectory);
                 return true;
             case FIX:
-                fix();
+                commandResult = fix();
                 return true;
             case APPLY_TDUPK:
-                applyPerformancePack();
+                commandResult = applyPerformancePack();
                 return true;
             case APPLY_PATCH:
-                applyPatch();
+                commandResult = applyPatch();
                 return true;
             case GEN_PATCH:
-                genPatch();
+                commandResult = genPatch();
                 return true;
             case CONVERT_PATCH:
-                convertPatch();
+                commandResult = convertPatch();
                 return true;
             case UNPACK_ALL:
-                unpackAll(databaseDirectory, jsonDirectory);
+                commandResult = unpackAll(databaseDirectory, jsonDirectory);
                 return true;
             case REPACK_ALL:
-                repackAll();
+                commandResult = repackAll();
                 return true;
             default:
+                commandResult = null;
                 return false;
         }
     }
@@ -245,7 +246,7 @@ public class DatabaseTool extends GenericTool {
         );
     }
 
-    private void repackAll() throws IOException {
+    private Map<String, ?> repackAll() throws IOException {
         String sourceDirectory = Paths.get(jsonDirectory).toAbsolutePath().toString();
         Path targetPath = Paths.get(outputDatabaseDirectory).toAbsolutePath();
         outLine("-> JSON database directory: " + sourceDirectory);
@@ -260,14 +261,15 @@ public class DatabaseTool extends GenericTool {
         String targetDirectory = targetPath.toString();
         DatabaseBankHelper.repackDatabaseFromDirectory(sourceExtractedDatabaseDirectory, targetDirectory, Optional.of(jsonDirectory), bankSupport);
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("sourceDirectory", sourceDirectory);
         resultInfo.put("targetDirectory", targetDirectory);
         resultInfo.put("temporaryDirectory", sourceExtractedDatabaseDirectory);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
-    private void unpackAll(String sourceDatabaseDirectory, String jsonDatabaseDirectory) throws IOException {
+    private Map<String, ?> unpackAll(String sourceDatabaseDirectory, String jsonDatabaseDirectory) throws IOException {
         String sourceDirectory = Paths.get(sourceDatabaseDirectory).toAbsolutePath().toString();
         outLine("-> TDU database directory: " + sourceDirectory);
         outLine("Unpacking TDU database to " + jsonDatabaseDirectory + ", please wait...");
@@ -282,10 +284,10 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("temporaryDirectory", extractedDatabaseDirectory);
         resultInfo.put("jsonDatabaseDirectory", jsonDatabaseDirectory);
 
-        commandResult = (Serializable) resultInfo;
+        return resultInfo;
     }
 
-    private void convertPatch() throws IOException, SAXException, ParserConfigurationException, URISyntaxException, TransformerException {
+    private Map<String, ?> convertPatch() throws IOException, SAXException, ParserConfigurationException, URISyntaxException, TransformerException {
         boolean tdufSource = EXTENSION_JSON.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(this.patchFile));
 
         Path patchPath = Paths.get(this.patchFile);
@@ -308,13 +310,14 @@ public class DatabaseTool extends GenericTool {
 
         Files.write(Paths.get(outputPatchFile), convertOutput.getBytes(), StandardOpenOption.CREATE);
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("patchFile", outputPatchFile);
         resultInfo.put("convertedContents", convertOutput);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
-    private void genPatch() throws ReflectiveOperationException, IOException {
+    private Map<String, ?> genPatch() throws ReflectiveOperationException, IOException {
         outLine("-> Source database directory: " + this.jsonDirectory);
 
         outLine("Reading database, please wait...");
@@ -329,12 +332,13 @@ public class DatabaseTool extends GenericTool {
 
         writePatchFileToDisk(patchObject);
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("patchFile", this.patchFile);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
-    private void applyPerformancePack() throws IOException {
+    private Map<String, ?> applyPerformancePack() throws IOException {
         FilesHelper.createDirectoryIfNotExists(outputDatabaseDirectory);
 
         outLine("-> Source database directory: " + jsonDirectory);
@@ -352,12 +356,13 @@ public class DatabaseTool extends GenericTool {
                 .ifPresent(
                         (carPhysicsDataTopicObject) -> applyPerformancePackToCarPhysicsData(allTopicObjects, writtenFileNames));
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("writtenFiles", writtenFileNames);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
-    private void applyPatch() throws IOException, ReflectiveOperationException {
+    private Map<String, ?> applyPatch() throws IOException, ReflectiveOperationException {
         FilesHelper.createDirectoryIfNotExists(this.outputDatabaseDirectory);
 
         outLine("-> Source database directory: " + this.jsonDirectory);
@@ -374,9 +379,10 @@ public class DatabaseTool extends GenericTool {
 
         List<String> writtenFileNames = DatabaseReadWriteHelper.writeDatabaseTopicsToJson(allTopicObjects, this.outputDatabaseDirectory);
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("writtenFiles", writtenFileNames);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
     private Map<String, Object> dump(String databaseDirectory, String databaseJsonDirectory) throws IOException {
@@ -390,7 +396,7 @@ public class DatabaseTool extends GenericTool {
         List<IntegrityError> integrityErrors = new ArrayList<>();
         List<String> writtenFileNames = JsonGateway.dump(databaseDirectory, databaseJsonDirectory, withClearContents, missingTopicContents, integrityErrors);
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("missingTopicContents", missingTopicContents);
         resultInfo.put("integrityErrors", toDatabaseIntegrityErrors(integrityErrors));
         resultInfo.put("writtenFiles", writtenFileNames);
@@ -398,7 +404,7 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
-    private void gen(String targetExtractedDatabaseDirectory) throws IOException {
+    private Map<String, ?> gen(String targetExtractedDatabaseDirectory) throws IOException {
         FilesHelper.createDirectoryIfNotExists(targetExtractedDatabaseDirectory);
 
         outLine("-> Source directory: " + jsonDirectory);
@@ -408,13 +414,14 @@ public class DatabaseTool extends GenericTool {
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
         List<String> writtenFileNames = JsonGateway.gen(jsonDirectory, targetExtractedDatabaseDirectory, withClearContents, missingTopicContents);
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("missingJsonTopicContents", missingTopicContents);
         resultInfo.put("writtenFiles", writtenFileNames);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
-    private void check() throws Exception {
+    private Map<String, ?> check() throws Exception {
         List<IntegrityError> integrityErrors = new ArrayList<>();
         checkAndReturnIntegrityErrorsAndObjects(integrityErrors);
 
@@ -422,19 +429,19 @@ public class DatabaseTool extends GenericTool {
             outLine("At least one integrity error has been found, your database may not be ready-to-use.");
         }
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("integrityErrors", toDatabaseIntegrityErrors(integrityErrors));
 
-        commandResult = resultInfo;
+        return resultInfo;
     }
 
-    private void fix() throws IOException, ReflectiveOperationException {
+    private Map<String, ?> fix() throws IOException, ReflectiveOperationException {
         List<IntegrityError> integrityErrors = new ArrayList<>();
         List<DbDto> databaseObjects = checkAndReturnIntegrityErrorsAndObjects(integrityErrors);
 
         if (integrityErrors.isEmpty()) {
             outLine("No error detected - a fix is not necessary.");
-            return;
+            return null;
         }
 
         outLine("-> Now fixing database...");
@@ -468,11 +475,12 @@ public class DatabaseTool extends GenericTool {
             }
         }
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("integrityErrorsRemaining", toDatabaseIntegrityErrors(remainingIntegrityErrors));
 
         resultInfo.put("fixedDatabaseLocation", this.outputDatabaseDirectory);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
     private String convertPatchFileToJSON(File patch) throws ParserConfigurationException, SAXException, IOException {

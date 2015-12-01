@@ -12,9 +12,9 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Parent class of all CLI tools
@@ -30,8 +30,7 @@ public abstract class GenericTool {
     @Option(name = "-v", aliases = "--verbose", usage = "Not mandatory. Also displays DEBUG messages.")
     private boolean withVerboseOutput = false;
 
-    // TODO change type to Map<String, Object> ??
-    protected Serializable commandResult = null;
+    protected Map<String, ?> commandResult = null;
 
     private ObjectWriter jsonWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 

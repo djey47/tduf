@@ -18,6 +18,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import static fr.tduf.cli.tools.CameraTool.Command.COPY_ALL_SETS;
 import static fr.tduf.cli.tools.CameraTool.Command.COPY_SET;
@@ -84,12 +85,13 @@ public class CameraTool extends GenericTool {
     protected boolean commandDispatch() throws Exception {
         switch (command) {
             case COPY_SET:
-                copySet();
+                commandResult = copySet();
                 return true;
             case COPY_ALL_SETS:
-                copyAllSets();
+                commandResult = copyAllSets();
                 return true;
             default:
+                commandResult = null;
                 return false;
         }
     }
@@ -125,7 +127,7 @@ public class CameraTool extends GenericTool {
                 COPY_ALL_SETS.label + " -i \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -t 10000 -o \"C:\\Users\\Bill\\Desktop\\NewCameras.bin\"");
     }
 
-    private void copySet() throws IOException {
+    private Map<String, ?> copySet() throws IOException {
         outLine("> Will use Cameras file: " + this.inputCameraFile);
 
         CamerasParser parser = loadAndParseCameras();
@@ -138,11 +140,10 @@ public class CameraTool extends GenericTool {
 
         writeModifiedCameras(parser);
 
-        String absolutePath = new File(this.outputCameraFile).getAbsolutePath();
-        makeCommandResultForCopy(absolutePath);
+        return makeCommandResultForCopy(outputCameraFile);
     }
 
-    private void copyAllSets() throws IOException {
+    private Map<String, Object> copyAllSets() throws IOException {
         outLine("> Will use Cameras file: " + this.inputCameraFile);
 
         CamerasParser parser = loadAndParseCameras();
@@ -163,8 +164,7 @@ public class CameraTool extends GenericTool {
 
         writeModifiedCameras(parser);
 
-        String absolutePath = new File(this.outputCameraFile).getAbsolutePath();
-        makeCommandResultForCopy(absolutePath);
+        return makeCommandResultForCopy(outputCameraFile);
     }
 
     private CamerasParser loadAndParseCameras() throws IOException {
@@ -182,9 +182,12 @@ public class CameraTool extends GenericTool {
         Files.write(Paths.get(this.outputCameraFile), outputStream.toByteArray(), StandardOpenOption.CREATE);
     }
 
-    private void makeCommandResultForCopy(String fileName) {
-        HashMap<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("cameraFileCreated", fileName);
-        commandResult = resultInfo;
+    private Map<String, Object> makeCommandResultForCopy(String fileName) {
+        String absolutePath = new File(fileName).getAbsolutePath();
+
+        Map<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("cameraFileCreated", absolutePath);
+
+        return resultInfo;
     }
 }

@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static fr.tduf.cli.tools.FileTool.Command.*;
 import static java.util.Arrays.asList;
@@ -170,58 +171,61 @@ public class FileTool extends GenericTool {
 
         switch (command) {
             case JSONIFY:
-                jsonify();
+                commandResult = jsonify();
                 break;
             case APPLYJSON:
-                applyjson();
+                commandResult = applyjson();
                 break;
             case DECRYPT:
-                decrypt();
+                commandResult = decrypt();
                 break;
             case ENCRYPT:
-                encrypt();
+                commandResult = encrypt();
                 break;
             case BANKINFO:
-                bankInfo();
+                commandResult = bankInfo();
                 break;
             case UNPACK:
-                unpack();
+                commandResult = unpack();
                 break;
             case REPACK:
-                repack();
+                commandResult = repack();
                 break;
             default:
+                commandResult = null;
                 return false;
         }
 
         return true;
     }
 
-    private void repack() throws IOException {
+    private Map<String, Object> repack() throws IOException {
         outLine("Will pack contents from directory: " + this.inputFile);
 
         bankSupport.packAll(this.inputFile, this.outputFile);
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("contentsDirectory", this.inputFile);
         resultInfo.put("bankFileCreated", this.outputFile);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
-    private void unpack() throws IOException {
+    private Map<String, ?> unpack() throws IOException {
         outLine("Will use Bank file: " + this.inputFile);
 
         FilesHelper.createDirectoryIfNotExists(this.outputFile);
 
         bankSupport.extractAll(this.inputFile, this.outputFile);
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("extractedContentsDirectory", this.outputFile);
         resultInfo.put("bankFile", this.inputFile);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
-    private void bankInfo() throws IOException {
+    private Map<String, ?> bankInfo() throws IOException {
         outLine("Will use Bank file: " + this.inputFile);
 
         BankInfoDto bankInfoObject = bankSupport.getBankInfo(this.inputFile);
@@ -241,13 +245,14 @@ public class FileTool extends GenericTool {
                                 packedFileInfoObject.getType())
                         ));
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("bankFile", this.inputFile);
         resultInfo.put("bankInfo", bankInfoObject);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
-    private void jsonify() throws IOException {
+    private Map<String, ?> jsonify() throws IOException {
         outLine("Will use structure in file: " + this.structureFile);
 
         GenericParser<String> genericParser = getFileParser();
@@ -260,42 +265,46 @@ public class FileTool extends GenericTool {
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("tduFile", this.inputFile);
         resultInfo.put("jsonFile", this.outputFile);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
-    private void applyjson() throws IOException {
+    private Map<String, Object> applyjson() throws IOException {
         outLine("Will use structure in file: " + this.structureFile);
 
         writerToBinaryFile(getFileWriter(), readJsonInputFileContents());
 
         outLine("JSON to TDU conversion done: " + this.inputFile + " to " + this.outputFile);
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("tduFile", this.outputFile);
         resultInfo.put("jsonFile", this.inputFile);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
-    private void decrypt() throws IOException {
+    private Map<String, Object> decrypt() throws IOException {
         outLine("Now decrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
 
         Files.write(Paths.get(this.outputFile), processInputStream(false));
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("encryptedFile", this.inputFile);
         resultInfo.put("clearFile", this.outputFile);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
-    private void encrypt() throws IOException {
+    private Map<String, Object> encrypt() throws IOException {
         outLine("Now encrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
 
         Files.write(Paths.get(this.outputFile), processInputStream(true));
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("clearFile", this.inputFile);
         resultInfo.put("encryptedFile", this.outputFile);
-        commandResult = resultInfo;
+
+        return resultInfo;
     }
 
     private GenericParser<String> getFileParser() throws IOException {
