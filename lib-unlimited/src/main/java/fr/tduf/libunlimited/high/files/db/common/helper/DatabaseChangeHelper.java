@@ -47,6 +47,8 @@ public class DatabaseChangeHelper {
                 .forReference(resourceReference)
                 .withValue(resourceValue)
                 .build());
+
+        BulkDatabaseMiner.clearAllCaches();
     }
 
     /**
@@ -67,6 +69,8 @@ public class DatabaseChangeHelper {
                 .build();
 
         dataDto.getEntries().add(newEntry);
+
+        BulkDatabaseMiner.clearAllCaches();
 
         return newEntry;
     }
@@ -91,6 +95,8 @@ public class DatabaseChangeHelper {
 
         existingResourceEntry.setReference(newResourceReference);
         existingResourceEntry.setValue(newResourceValue);
+
+        BulkDatabaseMiner.clearAllCaches();
     }
 
     /**
@@ -121,6 +127,8 @@ public class DatabaseChangeHelper {
                     .filter((entry) -> entry.getId() > entryId)
 
                     .forEach(DbDataDto.Entry::shiftIdUp);
+
+            BulkDatabaseMiner.clearAllCaches();
         }
     }
 
@@ -152,6 +160,8 @@ public class DatabaseChangeHelper {
 
         currentContentEntries.add(newEntry);
 
+        BulkDatabaseMiner.clearAllCaches();
+
         return newEntry;
     }
 
@@ -174,6 +184,8 @@ public class DatabaseChangeHelper {
                         .findAny()
 
                         .ifPresent(resources::remove));
+
+        BulkDatabaseMiner.clearAllCaches();
     }
 
     /**
@@ -188,7 +200,11 @@ public class DatabaseChangeHelper {
 
         // We assume source reference is first field ... target reference (if any) is second field  ...
         entryItems.get(0).setRawValue(sourceEntryRef);
-        potentialTargetEntryRef.ifPresent((ref) -> entryItems.get(1).setRawValue(ref));
+        potentialTargetEntryRef.ifPresent((ref) -> {
+            entryItems.get(1).setRawValue(ref);
+
+            BulkDatabaseMiner.clearAllCaches();
+        });
     }
 
     private void checkResourceDoesNotExistWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference) {
