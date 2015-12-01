@@ -8,7 +8,6 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -108,28 +107,28 @@ public class DatabaseChangeHelper {
      */
     public void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
         List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(topic).get().getData().getEntries();
-        AtomicBoolean removalResult = new AtomicBoolean(false);
+
         topicEntries.stream()
 
                 .filter((entry) -> entry.getId() == entryId)
 
                 .findAny()
 
-                .ifPresent((entry) -> {
+                .map((entry) -> {
                     topicEntries.remove(entry);
-                    removalResult.set(true);
+                    return entry;
+                })
+
+                .ifPresent((removedEntry) -> {
+                    // Fix identifiers of next entries
+                    topicEntries.stream()
+
+                            .filter((entry) -> entry.getId() > removedEntry.getId())
+
+                            .forEach(DbDataDto.Entry::shiftIdUp);
+
+                    BulkDatabaseMiner.clearAllCaches();
                 });
-
-        // Fix identifiers of next entries
-        if (removalResult.get()) {
-            topicEntries.stream()
-
-                    .filter((entry) -> entry.getId() > entryId)
-
-                    .forEach(DbDataDto.Entry::shiftIdUp);
-
-            BulkDatabaseMiner.clearAllCaches();
-        }
     }
 
     /**
@@ -200,11 +199,10 @@ public class DatabaseChangeHelper {
 
         // We assume source reference is first field ... target reference (if any) is second field  ...
         entryItems.get(0).setRawValue(sourceEntryRef);
-        potentialTargetEntryRef.ifPresent((ref) -> {
-            entryItems.get(1).setRawValue(ref);
+        potentialTargetEntryRef
+                .ifPresent((ref) -> entryItems.get(1).setRawValue(ref));
 
-            BulkDatabaseMiner.clearAllCaches();
-        });
+        BulkDatabaseMiner.clearAllCaches();
     }
 
     private void checkResourceDoesNotExistWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference) {
