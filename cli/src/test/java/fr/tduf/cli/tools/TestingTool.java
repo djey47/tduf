@@ -9,6 +9,7 @@ import org.kohsuke.args4j.Option;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static fr.tduf.cli.tools.TestingTool.Command.TEST;
 import static java.util.Arrays.asList;
@@ -60,12 +61,13 @@ public class TestingTool extends GenericTool {
             case TEST_FAIL:
                 throw new IllegalArgumentException("Exception");
             case TEST_OUTLINE:
-                outline();
+                commandResult = outline();
                 break;
             case TEST_RESULT:
-                result();
+                commandResult = result();
                 break;
             default:
+                commandResult = null;
                 return false;
         }
 
@@ -94,16 +96,19 @@ public class TestingTool extends GenericTool {
         return asList("Example1", "Example2");
     }
 
-    private void outline() {
+    private Map<String, ?> outline() {
         outLine(requiredParam);
+
+        return null;
     }
 
-    private void result() {
+    private Map<String, Object> result() {
         Log.info(TestingTool.class.getSimpleName(), "");
         Log.debug(TestingTool.class.getSimpleName(), "This is for sake of verbosity.");
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("result", "ok");
-        this.commandResult = resultInfo;
+
+        return resultInfo;
     }
 }

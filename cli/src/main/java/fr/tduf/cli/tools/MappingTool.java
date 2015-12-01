@@ -146,7 +146,7 @@ public class MappingTool extends GenericTool {
         outLine("  -> Entry count: " + mapEntries.size());
         outLine("  -> Magic map? " + isMagicMap);
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("entryCount", mapEntries.size());
         resultInfo.put("magicMap", isMagicMap);
         commandResult = resultInfo;
@@ -164,7 +164,7 @@ public class MappingTool extends GenericTool {
         outLine("Bnk1.map parsing done: " + mapFile);
         outLine("  -> All entries :" + sortedMapEntries);
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("allEntries", sortedMapEntries);
         commandResult = resultInfo;
     }
@@ -183,7 +183,7 @@ public class MappingTool extends GenericTool {
 
         outLine("  -> Absent from Bnk1.map: " + newChecksums);
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
+        Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("bankFilesFound", banks);
         resultInfo.put("checksums", checksums);
         resultInfo.put("missingChecksums", newChecksums);
