@@ -85,10 +85,10 @@ public class CameraTool extends GenericTool {
     protected boolean commandDispatch() throws Exception {
         switch (command) {
             case COPY_SET:
-                commandResult = copySet();
+                commandResult = copySet(inputCameraFile, outputCameraFile);
                 return true;
             case COPY_ALL_SETS:
-                commandResult = copyAllSets();
+                commandResult = copyAllSets(inputCameraFile, outputCameraFile);
                 return true;
             default:
                 commandResult = null;
@@ -98,7 +98,7 @@ public class CameraTool extends GenericTool {
 
     @Override
     protected void assignCommand(String commandArgument) {
-        this.command = (Command) CommandHelper.fromLabel(getCommand(), commandArgument);
+        command = (Command) CommandHelper.fromLabel(getCommand(), commandArgument);
     }
 
     @Override
@@ -127,29 +127,30 @@ public class CameraTool extends GenericTool {
                 COPY_ALL_SETS.label + " -i \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -t 10000 -o \"C:\\Users\\Bill\\Desktop\\NewCameras.bin\"");
     }
 
-    private Map<String, ?> copySet() throws IOException {
-        outLine("> Will use Cameras file: " + this.inputCameraFile);
+    private Map<String, ?> copySet(String sourceCameraFile, String targetCameraFile) throws IOException {
+        outLine("> Will use Cameras file: " + sourceCameraFile);
 
-        CamerasParser parser = loadAndParseCameras();
+        CamerasParser parser = loadAndParseCameras(sourceCameraFile);
 
         outLine("> Done reading cameras.");
 
-        CamerasHelper.duplicateCameraSet(this.sourceIdentifier, this.targetIdentifier, parser);
+        CamerasHelper.duplicateCameraSet(sourceIdentifier, targetIdentifier, parser);
 
         outLine("> Done copying camera sets.");
 
-        writeModifiedCameras(parser);
+        writeModifiedCameras(parser, targetCameraFile);
 
-        return makeCommandResultForCopy(outputCameraFile);
+        return makeCommandResultForCopy(targetCameraFile);
     }
 
-    private Map<String, Object> copyAllSets() throws IOException {
-        outLine("> Will use Cameras file: " + this.inputCameraFile);
+    private Map<String, Object> copyAllSets(String sourceCameraFile, String targetCameraFile) throws IOException {
+        outLine("> Will use Cameras file: " + sourceCameraFile);
 
-        CamerasParser parser = loadAndParseCameras();
+        CamerasParser parser = loadAndParseCameras(sourceCameraFile);
 
         outLine("> Done reading cameras.");
 
+        // TODO Migrate to library
         new HashSet<>(parser.getCameraViews().keySet())
 
                 .forEach((cameraId) -> {
@@ -162,24 +163,24 @@ public class CameraTool extends GenericTool {
 
         outLine("> Done copying camera sets.");
 
-        writeModifiedCameras(parser);
+        writeModifiedCameras(parser, targetCameraFile);
 
-        return makeCommandResultForCopy(outputCameraFile);
+        return makeCommandResultForCopy(targetCameraFile);
     }
 
-    private CamerasParser loadAndParseCameras() throws IOException {
-        CamerasParser parser = CamerasParser.load(getCamerasInputStream());
+    private CamerasParser loadAndParseCameras(String cameraFile) throws IOException {
+        CamerasParser parser = CamerasParser.load(getCamerasInputStream(cameraFile));
         parser.parse();
         return parser;
     }
 
-    private ByteArrayInputStream getCamerasInputStream() throws IOException {
-        return new ByteArrayInputStream(Files.readAllBytes(Paths.get(this.inputCameraFile)));
+    private ByteArrayInputStream getCamerasInputStream(String sourceCameraFile) throws IOException {
+        return new ByteArrayInputStream(Files.readAllBytes(Paths.get(sourceCameraFile)));
     }
 
-    private void writeModifiedCameras(CamerasParser parser) throws IOException {
+    private void writeModifiedCameras(CamerasParser parser, String targetCameraFile) throws IOException {
         ByteArrayOutputStream outputStream = CamerasWriter.load(parser.getDataStore()).write();
-        Files.write(Paths.get(this.outputCameraFile), outputStream.toByteArray(), StandardOpenOption.CREATE);
+        Files.write(Paths.get(targetCameraFile), outputStream.toByteArray(), StandardOpenOption.CREATE);
     }
 
     private Map<String, Object> makeCommandResultForCopy(String fileName) {
