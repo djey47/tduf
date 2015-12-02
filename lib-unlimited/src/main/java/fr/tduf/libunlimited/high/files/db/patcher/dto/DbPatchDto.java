@@ -1,9 +1,8 @@
 package fr.tduf.libunlimited.high.files.db.patcher.dto;
 
+import fr.tduf.libunlimited.high.files.db.patcher.dto.comparator.DbChangeDtoRenderComparator;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.renderComparator;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -23,6 +23,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  */
 @JsonTypeName("dbPatch")
 public class DbPatchDto {
+
     @JsonProperty("changes")
     private List<DbChangeDto> changes = new ArrayList<>();
 
@@ -60,7 +61,8 @@ public class DbPatchDto {
             public DbPatchDto build() {
                 DbPatchDto patchObject = new DbPatchDto();
 
-                patchObject.changes = this.changes;
+                changes.sort(renderComparator());
+                patchObject.changes = changes;
 
                 return patchObject;
             }
@@ -226,6 +228,10 @@ public class DbPatchDto {
             };
         }
 
+        public static DbChangeDtoRenderComparator renderComparator() {
+            return new DbChangeDtoRenderComparator();
+        }
+
         /**
          * Allows to build custom instances.
          */
@@ -251,7 +257,17 @@ public class DbPatchDto {
          * All supported database changes.
          */
         public enum ChangeTypeEnum {
-            UPDATE, DELETE, UPDATE_RES, DELETE_RES
+            UPDATE(2), DELETE(0), UPDATE_RES(3), DELETE_RES(1);
+
+            private final int renderPriority;
+
+            ChangeTypeEnum(int renderPriority) {
+                this.renderPriority = renderPriority;
+            }
+
+            public int getRenderPriority() {
+                return renderPriority;
+            }
         }
 
         /**
