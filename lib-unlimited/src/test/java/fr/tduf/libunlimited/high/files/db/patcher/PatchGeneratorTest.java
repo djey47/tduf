@@ -268,7 +268,7 @@ public class PatchGeneratorTest {
         List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
         assertThat(actualChanges).hasSize(7); //1 UPDATE + 6 UPDATE_RES ( 5 local resources + 1 remote resource, any locale)
 
-        DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
+        DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(1);
         assertThat(changeObject1.getType()).isEqualTo(UPDATE);
         assertThat(changeObject1.getTopic()).isEqualTo(HAIR);
         assertThat(changeObject1.getRef()).isEqualTo("54522");
@@ -276,10 +276,10 @@ public class PatchGeneratorTest {
         assertThat(changeObject1.getValues().get(0)).isEqualTo("54522");
         assertThat(changeObject1.getValues().get(6)).isEqualTo("54713527");
 
-        assertThat(actualChanges).extracting("type").contains(UPDATE_RES);
-        assertThat(actualChanges).extracting("topic").contains(DbDto.Topic.CLOTHES);
+        assertThat(actualChanges).extracting("type").contains(UPDATE, UPDATE_RES);
+        assertThat(actualChanges).extracting("topic").contains(CLOTHES, HAIR);
         assertThat(actualChanges).extracting("locale").containsOnly(new Object[]{null});
-        assertThat(actualChanges).extracting("value").contains(null, "HA01", "DEFAULT_TOPS_SHIRT", "Rasta", "Mixte", "DEFAULT_BOTTOMS", "ChemiseAFleurs01");
+        assertThat(actualChanges).extracting("value").contains("Mixte", null, "Rasta", "HA01", "DEFAULT_BOTTOMS", "DEFAULT_TOPS_SHIRT", "ChemiseAFleurs01");
     }
 
     private static void assertPatchGeneratedWithinRangeForLinkedTopicsWithRemoteContentsReference(DbPatchDto patchObject) {
@@ -288,15 +288,15 @@ public class PatchGeneratorTest {
         List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
         assertThat(actualChanges).hasSize(91); //2 UPDATE + 89 UPDATE_RES
 
-        DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
+        DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(81);
         assertThat(changeObject1.getType()).isEqualTo(UPDATE);
         assertThat(changeObject1.getTopic()).isEqualTo(PNJ);
         assertThat(changeObject1.getRef()).isEqualTo("540091906");
         assertThat(changeObject1.getValues()).hasSize(17);
         assertThat(changeObject1.getValues().get(0)).isEqualTo("540091906");
 
-        assertThat(actualChanges).extracting("type").contains(UPDATE_RES);
-        assertThat(actualChanges).extracting("topic").contains(PNJ, CLOTHES, BRANDS);
+        assertThat(actualChanges).extracting("type").contains(UPDATE, UPDATE_RES);
+        assertThat(actualChanges).extracting("topic").contains(BRANDS, CLOTHES, PNJ);
     }
 
     private static void assertPatchGeneratedForAssociatedTopics(DbPatchDto patchObject) throws IOException {
