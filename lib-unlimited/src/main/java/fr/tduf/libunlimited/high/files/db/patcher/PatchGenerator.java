@@ -3,7 +3,7 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -38,7 +38,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
      * @param range : range of reference values for concerned entries.
      * @return a patch object with all necessary instructions.
      */
-    public DbPatchDto makePatch(DbDto.Topic topic, ReferenceRange range) {
+    public DbPatchDto makePatch(DbDto.Topic topic, ItemRange range) {
         requireNonNull(topic, "A database topic is required.");
         requireNonNull(range, "A reference range is required.");
 
@@ -50,7 +50,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     @Override
     protected void postPrepare() {}
 
-    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForTopic(DbDto.Topic topic, ReferenceRange range) {
+    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForTopic(DbDto.Topic topic, ItemRange range) {
 
         topicObject = checkTopic(topic);
 
@@ -72,7 +72,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         return changesObjects;
     }
 
-    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForContents(List<DbStructureDto.Field> structureFields, ReferenceRange range, Map<DbDto.Topic, Set<String>> requiredLocalResourceReferences, Map<DbDto.Topic, Set<Long>> requiredContentsReferences) {
+    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForContents(List<DbStructureDto.Field> structureFields, ItemRange range, Map<DbDto.Topic, Set<String>> requiredLocalResourceReferences, Map<DbDto.Topic, Set<Long>> requiredContentsReferences) {
         OptionalInt potentialRefFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(structureFields);
 
         return topicObject.getData().getEntries().stream()
@@ -95,7 +95,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
                             .collect(toSet());
 
-                    return makeChangesObjectsForTopic(topicEntry.getKey(), ReferenceRange.fromCollection(refs)).stream();
+                    return makeChangesObjectsForTopic(topicEntry.getKey(), ItemRange.fromCollection(refs)).stream();
                 })
 
                 .collect(toSet());
@@ -231,7 +231,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         requiredResourceReferences.get(topic).add(reference);
     }
 
-    private static boolean isInRange(DbDataDto.Entry entry, OptionalInt potentialRefFieldRank, ReferenceRange range) {
+    private static boolean isInRange(DbDataDto.Entry entry, OptionalInt potentialRefFieldRank, ItemRange range) {
 
         String entryRef;
         if (potentialRefFieldRank.isPresent()) {
