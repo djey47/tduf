@@ -34,16 +34,17 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     /**
      * Generates a patch based on current database objects.
      *
-     * @param topic : database topic for which the patch should apply
-     * @param range : range of reference values for concerned entries.
+     * @param topic         : database topic for which the patch should apply
+     * @param refRange      : range of reference values for concerned entries
+     * @param fieldRange    : range of field ranks for partial generation
      * @return a patch object with all necessary instructions.
      */
-    public DbPatchDto makePatch(DbDto.Topic topic, ItemRange range) {
+    public DbPatchDto makePatch(DbDto.Topic topic, ItemRange refRange, ItemRange fieldRange) {
         requireNonNull(topic, "A database topic is required.");
-        requireNonNull(range, "A reference range is required.");
+        requireNonNull(refRange, "A reference range is required.");
 
         return DbPatchDto.builder()
-                .addChanges(makeChangesObjectsForTopic(topic, range))
+                .addChanges(makeChangesObjectsForTopic(topic, refRange))
                 .build();
     }
 

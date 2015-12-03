@@ -47,7 +47,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(new ArrayList<>());
 
         // WHEN
-        generator.makePatch(null, null);
+        generator.makePatch(null, null, null);
 
         // THEN: NPE
     }
@@ -58,7 +58,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(new ArrayList<>());
 
         // WHEN
-        generator.makePatch(ACHIEVEMENTS, ItemRange.fromCliOption(Optional.empty()));
+        generator.makePatch(ACHIEVEMENTS, createDefaultRange(), createDefaultRange());
 
         // THEN: IAE
     }
@@ -70,7 +70,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(ACHIEVEMENTS, ItemRange.fromCliOption(Optional.empty()));
+        DbPatchDto actualPatchObject = generator.makePatch(ACHIEVEMENTS, createDefaultRange(), createDefaultRange());
 
         // THEN
         assertThat(generator.getTopicObject()).isNotNull();
@@ -84,7 +84,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(BRANDS, ItemRange.fromCliOption(Optional.of("734,735")));
+        DbPatchDto actualPatchObject = generator.makePatch(BRANDS, ItemRange.fromCliOption(Optional.of("734,735")), createDefaultRange());
 
         // THEN
         assertPatchGeneratedWithinRangeForOneTopic(actualPatchObject);
@@ -97,7 +97,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(HAIR, ItemRange.fromCliOption(Optional.of("54522")));
+        DbPatchDto actualPatchObject = generator.makePatch(HAIR, ItemRange.fromCliOption(Optional.of("54522")), createDefaultRange());
 
         // THEN
         assertPatchGeneratedWithinRangeForLinkedTopics(actualPatchObject);
@@ -110,7 +110,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(CAR_PHYSICS_DATA, ItemRange.fromCliOption(Optional.of("606298799")));
+        DbPatchDto actualPatchObject = generator.makePatch(CAR_PHYSICS_DATA, ItemRange.fromCliOption(Optional.of("606298799")), createDefaultRange());
 
         // THEN
         assertPatchGeneratedForAssociatedTopics(actualPatchObject);
@@ -123,7 +123,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(PNJ, ItemRange.fromCliOption(Optional.of("540091906")));
+        DbPatchDto actualPatchObject = generator.makePatch(PNJ, ItemRange.fromCliOption(Optional.of("540091906")), createDefaultRange());
 
         // THEN
         assertPatchGeneratedWithinRangeForLinkedTopicsWithRemoteContentsReference(actualPatchObject);
@@ -136,7 +136,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(BRANDS, ItemRange.fromCliOption(Optional.of("0..735")));
+        DbPatchDto actualPatchObject = generator.makePatch(BRANDS, ItemRange.fromCliOption(Optional.of("0..735")), createDefaultRange());
 
         // THEN
         assertPatchGeneratedWithinRangeForOneTopic(actualPatchObject);
@@ -149,7 +149,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(ACHIEVEMENTS, ItemRange.fromCliOption(Optional.empty()));
+        DbPatchDto actualPatchObject = generator.makePatch(ACHIEVEMENTS, createDefaultRange(), createDefaultRange());
 
         // THEN
         assertPatchGeneratedWithAllEntriesForOneTopic(actualPatchObject);
@@ -162,10 +162,14 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(PNJ, ItemRange.fromCliOption(Optional.<String>empty()));
+        DbPatchDto actualPatchObject = generator.makePatch(PNJ, ItemRange.fromCliOption(Optional.<String>empty()), createDefaultRange());
 
         // THEN
         assertThat(actualPatchObject.getChanges()).hasSize(1346);
+    }
+
+    private static ItemRange createDefaultRange() {
+        return ItemRange.fromCliOption(Optional.empty());
     }
 
     private static PatchGenerator createPatchGenerator(List<DbDto> databaseObjects) throws ReflectiveOperationException {
