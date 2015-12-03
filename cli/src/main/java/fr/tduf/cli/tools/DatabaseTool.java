@@ -332,7 +332,7 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Generating patch, please wait...");
 
-        DbPatchDto patchObject = AbstractDatabaseHolder.prepare(PatchGenerator.class, allTopicObjects).makePatch(effectiveTopic, effectiveRefRange);
+        DbPatchDto patchObject = AbstractDatabaseHolder.prepare(PatchGenerator.class, allTopicObjects).makePatch(effectiveTopic, effectiveRefRange, effectiveFieldRange);
 
         outLine("Writing patch to " + targetPatchFile + "...");
 
