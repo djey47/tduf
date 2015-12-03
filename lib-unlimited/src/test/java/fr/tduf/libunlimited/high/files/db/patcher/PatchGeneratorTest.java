@@ -12,7 +12,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -30,6 +29,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
+// TODO test other partial cases
 public class PatchGeneratorTest {
 
     @Before
@@ -144,7 +144,6 @@ public class PatchGeneratorTest {
     }
 
     @Test
-    @Ignore
     public void makePatch_whenUsingRealDatabase_andFieldRanksAsBounds_shouldReturnCorrectPatchObjectWithPartialChanges() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         ItemRange refRange = ItemRange.fromCliOption(Optional.of("735"));
@@ -290,23 +289,25 @@ public class PatchGeneratorTest {
         assertThat(patchObject).isNotNull();
 
         List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
-        assertThat(actualChanges).hasSize(2); //1 UPDATE + 1 UPDATE_RES (1 local resource for any locale)
+
+        assertThat(actualChanges)
+                .hasSize(2) //1 UPDATE(3 partial values) + 1 UPDATE_RES
+                .extracting("ref").containsExactly("735", "55338337");
+        assertThat(actualChanges).extracting("topic").containsOnly(BRANDS);
+        assertThat(actualChanges).extracting("locale").containsNull();
+        assertThat(actualChanges).extracting("values").containsNull();
+        assertThat(actualChanges).extracting("value").contains(null, "AC");
 
         DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
         assertThat(changeObject1.getType()).isEqualTo(UPDATE);
-        assertThat(changeObject1.getTopic()).isEqualTo(BRANDS);
-        assertThat(changeObject1.getRef()).isEqualTo("735");
-        assertThat(changeObject1.getValues()).hasSize(7);
-        assertThat(changeObject1.getValues().get(0)).isEqualTo("735");
-        assertThat(changeObject1.getValues().get(6)).isEqualTo("1");
+        assertThat(changeObject1.getPartialValues())
+                .hasSize(3)
+                .extracting("rank").containsExactly(2, 3, 4);
+        assertThat(changeObject1.getPartialValues()).extracting("value").containsExactly("55338337", "55338337", "55338337");
 
         DbPatchDto.DbChangeDto changeObject2 = actualChanges.get(1);
         assertThat(changeObject2.getType()).isEqualTo(UPDATE_RES);
-        assertThat(changeObject2.getTopic()).isEqualTo(BRANDS);
-
-        assertThat(actualChanges).extracting("ref").containsAll(asList("735", "55338337"));
-        assertThat(actualChanges).extracting("locale").containsOnly(new Object[]{null});
-        assertThat(actualChanges).extracting("value").contains(null, "AC");
+        assertThat(changeObject2.getPartialValues()).isNull();
     }
 
     private static void assertPatchGeneratedWithinRangeForLinkedTopics(DbPatchDto patchObject) {

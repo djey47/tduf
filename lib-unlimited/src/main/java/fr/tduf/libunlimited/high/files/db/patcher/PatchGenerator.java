@@ -186,7 +186,19 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                     .build();
         }
 
-        List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues = new ArrayList<>();
+        List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues = entry.getItems().stream()
+
+                .filter((entryItem) -> fieldRange.accepts(Integer.valueOf(entryItem.getFieldRank()).toString()))
+
+                .map((acceptedItem) -> {
+
+                    DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(acceptedItem, structureFields);
+                    String itemValue = fetchItemValue(topic, structureField, acceptedItem, requiredContentsReferences, requiredResourceReferences);
+
+                    return DbPatchDto.DbChangeDto.DbPartialValueDto.fromCouple(acceptedItem.getFieldRank(), itemValue);
+                })
+
+                .collect(toList());
 
         return DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE)
