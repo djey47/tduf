@@ -15,7 +15,7 @@ import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -80,7 +80,7 @@ public class DatabaseTool extends GenericTool {
 
     @Option(name = "-r", aliases = "--range", usage = "REF of entries to create patch for. Can be a comma-separated list or a range <minValue>..<maxValue>. Not mandatory, defaults to all entries in topic.")
     private String itemsRange;
-    private ReferenceRange effectiveRange;
+    private ItemRange effectiveRange;
 
     private BankSupport bankSupport;
 
@@ -221,7 +221,7 @@ public class DatabaseTool extends GenericTool {
                 throw new CmdLineException(parser, "Error: database topic is required.", null);
             }
             effectiveTopic = DbDto.Topic.valueOf(databaseTopic);
-            effectiveRange = ReferenceRange.fromCliOption(Optional.ofNullable(itemsRange));
+            effectiveRange = ItemRange.fromCliOption(Optional.ofNullable(itemsRange));
         }
     }
 
