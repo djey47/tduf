@@ -71,6 +71,12 @@ public class ItemRange {
         return bounds.accept(reference);
     }
 
+    public boolean isGlobal() {
+        return bounds != null
+                && bounds.isGlobal()
+                && enumeratedItems == null;
+    }
+
     ItemRange(Collection<String> enumeratedItems) {
         this.enumeratedItems = new ArrayList<>(enumeratedItems);
         bounds = null;
@@ -79,12 +85,6 @@ public class ItemRange {
     ItemRange(Optional<Long> lowerBound, Optional<Long> upperBound) {
         enumeratedItems = null;
         bounds = RangeBounds.fromBounds(lowerBound, upperBound);
-    }
-
-    boolean isGlobal() {
-        return bounds != null
-                && bounds.isGlobal()
-                && enumeratedItems == null;
     }
 
     private static void checkValueFormat(String rangeOptionValue) {
