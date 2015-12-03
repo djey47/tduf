@@ -169,7 +169,7 @@ public class PatchGeneratorTest {
     }
 
     private static ItemRange createDefaultRange() {
-        return ItemRange.fromCliOption(Optional.empty());
+        return ItemRange.ALL;
     }
 
     private static PatchGenerator createPatchGenerator(List<DbDto> databaseObjects) throws ReflectiveOperationException {

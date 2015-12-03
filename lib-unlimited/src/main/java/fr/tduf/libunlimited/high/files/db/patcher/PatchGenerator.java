@@ -44,14 +44,14 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         requireNonNull(refRange, "A reference range is required.");
 
         return DbPatchDto.builder()
-                .addChanges(makeChangesObjectsForTopic(topic, refRange))
+                .addChanges(makeChangesObjectsForTopic(topic, refRange, fieldRange))
                 .build();
     }
 
     @Override
     protected void postPrepare() {}
 
-    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForTopic(DbDto.Topic topic, ItemRange range) {
+    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForTopic(DbDto.Topic topic, ItemRange refRange, ItemRange fieldRange) {
 
         topicObject = checkTopic(topic);
 
@@ -61,7 +61,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         Set<DbPatchDto.DbChangeDto> changesObjects = new LinkedHashSet<>();
         List<DbStructureDto.Field> structureFields = topicObject.getStructure().getFields();
 
-        changesObjects.addAll(makeChangesObjectsForContents(structureFields, range, requiredResourceReferences, requiredContentsIds));
+        changesObjects.addAll(makeChangesObjectsForContents(structureFields, refRange, requiredResourceReferences, requiredContentsIds));
 
         changesObjects.addAll(makeChangesObjectsForRequiredResources(requiredResourceReferences));
 
@@ -96,7 +96,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
                             .collect(toSet());
 
-                    return makeChangesObjectsForTopic(topicEntry.getKey(), ItemRange.fromCollection(refs)).stream();
+                    return makeChangesObjectsForTopic(topicEntry.getKey(), ItemRange.fromCollection(refs), ItemRange.ALL).stream();
                 })
 
                 .collect(toSet());

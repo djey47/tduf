@@ -14,6 +14,9 @@ import static java.util.Objects.requireNonNull;
  */
 public class ItemRange {
 
+    /** Unique range, accepting all values **/
+    public static final ItemRange ALL = ItemRange.global();
+
     private static final String REGEX_RANGE = "\\d+(,\\d+)*|\\d*\\.\\.\\d*";
 
     private final RangeBounds bounds;
@@ -25,7 +28,7 @@ public class ItemRange {
      */
     public static ItemRange fromCliOption(Optional<String> potentialRangeOptionValue) {
         if (!potentialRangeOptionValue.isPresent()) {
-            return global();
+            return ALL;
         }
 
         String rangeOptionValue = potentialRangeOptionValue.get();
@@ -45,7 +48,7 @@ public class ItemRange {
         requireNonNull(itemValues, "A collection of item values is required.");
 
         if (itemValues.isEmpty()) {
-            return global();
+            return ALL;
         }
 
         return new ItemRange(itemValues);
