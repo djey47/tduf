@@ -52,6 +52,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -225,7 +226,8 @@ public class DatabaseTool extends GenericTool {
                 throw new CmdLineException(parser, "Error: database topic is required.", null);
             }
             effectiveTopic = DbDto.Topic.valueOf(databaseTopic);
-            effectiveRefRange = ItemRange.fromCliOption(Optional.ofNullable(refRange));
+            effectiveRefRange = ItemRange.fromCliOption(ofNullable(refRange));
+            effectiveFieldRange = ItemRange.fromCliOption(ofNullable(fieldRange));
         }
     }
 
@@ -500,7 +502,7 @@ public class DatabaseTool extends GenericTool {
     private void applyPerformancePackToCarPhysicsData(String performancePackFile, String targetJsonDirectory, List<DbDto> allTopicObjects, List<String> writtenFileNames) {
         try {
             TdupeGateway gateway = AbstractDatabaseHolder.prepare(TdupeGateway.class, allTopicObjects);
-            gateway.applyPerformancePackToEntryWithReference(Optional.ofNullable(refRange), performancePackFile);
+            gateway.applyPerformancePackToEntryWithReference(ofNullable(refRange), performancePackFile);
         } catch (ReflectiveOperationException roe) {
             throw new RuntimeException("Unable to apply patch.", roe);
         }
