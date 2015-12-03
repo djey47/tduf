@@ -61,7 +61,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         Set<DbPatchDto.DbChangeDto> changesObjects = new LinkedHashSet<>();
         List<DbStructureDto.Field> structureFields = topicObject.getStructure().getFields();
 
-        changesObjects.addAll(makeChangesObjectsForContents(structureFields, refRange, requiredResourceReferences, requiredContentsIds));
+        changesObjects.addAll(makeChangesObjectsForContents(structureFields, refRange, fieldRange, requiredResourceReferences, requiredContentsIds));
 
         changesObjects.addAll(makeChangesObjectsForRequiredResources(requiredResourceReferences));
 
@@ -73,14 +73,14 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         return changesObjects;
     }
 
-    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForContents(List<DbStructureDto.Field> structureFields, ItemRange range, Map<DbDto.Topic, Set<String>> requiredLocalResourceReferences, Map<DbDto.Topic, Set<Long>> requiredContentsReferences) {
+    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForContents(List<DbStructureDto.Field> structureFields, ItemRange range, ItemRange fieldRange, Map<DbDto.Topic, Set<String>> requiredLocalResourceReferences, Map<DbDto.Topic, Set<Long>> requiredContentsReferences) {
         OptionalInt potentialRefFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(structureFields);
 
         return topicObject.getData().getEntries().stream()
 
                 .filter((entry) -> isInRange(entry, potentialRefFieldRank, range))
 
-                .map((acceptedEntry) -> createChangeObjectForEntry(topicObject.getTopic(), acceptedEntry, potentialRefFieldRank, structureFields, requiredLocalResourceReferences, requiredContentsReferences))
+                .map((acceptedEntry) -> createChangeObjectForEntry(topicObject.getTopic(), acceptedEntry, potentialRefFieldRank, structureFields, fieldRange, requiredLocalResourceReferences, requiredContentsReferences))
 
                 .collect(toSet());
     }
@@ -157,16 +157,8 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .build();
     }
 
-    private DbPatchDto.DbChangeDto createChangeObjectForEntry(DbDto.Topic topic, DbDataDto.Entry entry, OptionalInt potentialRefFieldRank, List<DbStructureDto.Field> structureFields, Map<DbDto.Topic, Set<String>> requiredResourceReferences, Map<DbDto.Topic, Set<Long>> requiredContentsReferences) {
-        List<String> entryValues = entry.getItems().stream()
-
-                .map((entryItem) -> {
-                    DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(entryItem, structureFields);
-                    return fetchItemValue(topic, structureField, entryItem, requiredContentsReferences, requiredResourceReferences);
-                })
-
-                .collect(toList());
-
+    // TODO simplify
+    private DbPatchDto.DbChangeDto createChangeObjectForEntry(DbDto.Topic topic, DbDataDto.Entry entry, OptionalInt potentialRefFieldRank, List<DbStructureDto.Field> structureFields, ItemRange fieldRange, Map<DbDto.Topic, Set<String>> requiredResourceReferences, Map<DbDto.Topic, Set<Long>> requiredContentsReferences) {
         String entryReference = null;
         if (potentialRefFieldRank.isPresent()) {
             entryReference = BulkDatabaseMiner.getContentEntryReference(entry, potentialRefFieldRank.getAsInt());
@@ -176,11 +168,31 @@ public class PatchGenerator extends AbstractDatabaseHolder {
             searchForCarPhysicsAssociatedEntries(entryReference, requiredContentsReferences);
         }
 
+        if (fieldRange.isGlobal()) {
+            List<String> entryValues = entry.getItems().stream()
+
+                    .map((entryItem) -> {
+                        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(entryItem, structureFields);
+                        return fetchItemValue(topic, structureField, entryItem, requiredContentsReferences, requiredResourceReferences);
+                    })
+
+                    .collect(toList());
+
+            return DbPatchDto.DbChangeDto.builder()
+                    .withType(UPDATE)
+                    .forTopic(topic)
+                    .asReference(entryReference)
+                    .withEntryValues(entryValues)
+                    .build();
+        }
+
+        List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues = new ArrayList<>();
+
         return DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE)
                 .forTopic(topic)
                 .asReference(entryReference)
-                .withEntryValues(entryValues)
+                .withPartialEntryValues(partialValues)
                 .build();
     }
 
