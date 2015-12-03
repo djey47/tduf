@@ -70,8 +70,8 @@ public class ItemRangeTest {
 
         // THEN
         assertThat(actualRange).isNotNull();
-        assertThat(actualRange.getLowerBound().get()).isEqualTo(10L);
-        assertThat(actualRange.getUpperBound().get()).isEqualTo(20L);
+        assertThat(actualRange.fetchLowerBound().get()).isEqualTo(10L);
+        assertThat(actualRange.fetchUpperBound().get()).isEqualTo(20L);
         assertThat(actualRange.getEnumeratedItems()).isNull();
     }
 
@@ -82,8 +82,8 @@ public class ItemRangeTest {
 
         // THEN
         assertThat(actualRange).isNotNull();
-        assertThat(actualRange.getLowerBound()).isEmpty();
-        assertThat(actualRange.getUpperBound()).isEmpty();
+        assertThat(actualRange.fetchLowerBound()).isEmpty();
+        assertThat(actualRange.fetchUpperBound()).isEmpty();
         assertThat(actualRange.getEnumeratedItems()).containsExactly("10", "20", "30", "40");
     }
 

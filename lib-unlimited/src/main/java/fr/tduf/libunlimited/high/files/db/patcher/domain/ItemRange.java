@@ -16,8 +16,7 @@ public class ItemRange {
 
     private static final String REGEX_RANGE = "\\d+(,\\d+)*|\\d*\\.\\.\\d*";
 
-    private final Optional<Long> lowerBound;
-    private final Optional<Long> upperBound;
+    private final RangeBounds bounds;
     private final List<String> enumeratedItems;
 
     /**
@@ -26,7 +25,7 @@ public class ItemRange {
      */
     public static ItemRange fromCliOption(Optional<String> potentialRangeOptionValue) {
         if (!potentialRangeOptionValue.isPresent()) {
-            return new ItemRange();
+            return global();
         }
 
         String rangeOptionValue = potentialRangeOptionValue.get();
@@ -46,7 +45,7 @@ public class ItemRange {
         requireNonNull(itemValues, "A collection of item values is required.");
 
         if (itemValues.isEmpty()) {
-            return new ItemRange();
+            return global();
         }
 
         return new ItemRange(itemValues);
@@ -66,31 +65,23 @@ public class ItemRange {
         }
 
         long reference = Long.parseLong(itemValue);
-        return (!lowerBound.isPresent() && reference <= upperBound.get())
-                || (!upperBound.isPresent() && reference >= lowerBound.get())
-                || (reference >= lowerBound.get() && reference <= upperBound.get());
-    }
-
-    ItemRange() {
-        this(Optional.<Long>empty(), Optional.<Long>empty());
+        return bounds.accept(reference);
     }
 
     ItemRange(Collection<String> enumeratedItems) {
         this.enumeratedItems = new ArrayList<>(enumeratedItems);
-        this.lowerBound = Optional.empty();
-        this.upperBound = Optional.empty();
+        bounds = null;
     }
 
     ItemRange(Optional<Long> lowerBound, Optional<Long> upperBound) {
-        this.enumeratedItems = null;
-        this.lowerBound = lowerBound;
-        this.upperBound = upperBound;
+        enumeratedItems = null;
+        bounds = RangeBounds.fromBounds(lowerBound, upperBound);
     }
 
     boolean isGlobal() {
-        return !this.lowerBound.isPresent()
-                && !this.upperBound.isPresent()
-                && this.enumeratedItems == null;
+        return bounds != null
+                && bounds.isGlobal()
+                && enumeratedItems == null;
     }
 
     private static void checkValueFormat(String rangeOptionValue) {
@@ -99,6 +90,10 @@ public class ItemRange {
         if (!rangePattern.matcher(rangeOptionValue).matches()) {
             throw new IllegalArgumentException("Unrecognized range value: " + rangeOptionValue);
         }
+    }
+
+    private static ItemRange global() {
+        return new ItemRange(Optional.<Long>empty(), Optional.<Long>empty());
     }
 
     private static ItemRange fromEnumerated(String enumeratedRange) {
@@ -118,15 +113,41 @@ public class ItemRange {
         return new ItemRange(Optional.of(lowerBound), Optional.of(upperBound));
     }
 
-    Optional<Long> getLowerBound() {
-        return lowerBound;
+    Optional<Long> fetchLowerBound() {
+        return Optional.ofNullable(bounds)
+                .flatMap((bounds) -> bounds.lowerBound);
     }
 
-    Optional<Long> getUpperBound() {
-        return upperBound;
+    Optional<Long> fetchUpperBound() {
+        return Optional.ofNullable(bounds)
+                .flatMap((bounds) -> bounds.upperBound);
     }
 
     List<String> getEnumeratedItems() {
         return enumeratedItems;
+    }
+
+    private static class RangeBounds {
+        private final Optional<Long> lowerBound;
+        private final Optional<Long> upperBound;
+
+        private RangeBounds(Optional<Long> lowerBound, Optional<Long> upperBound) {
+            this.lowerBound = lowerBound;
+            this.upperBound = upperBound;
+        }
+
+        private boolean isGlobal() {
+            return !lowerBound.isPresent() && !upperBound.isPresent();
+        }
+
+        private static RangeBounds fromBounds(Optional<Long> lowerBound, Optional<Long> upperBound) {
+            return new RangeBounds(lowerBound, upperBound);
+        }
+
+        private boolean accept(long value) {
+            return (!lowerBound.isPresent() && value <= upperBound.get())
+                    || (!upperBound.isPresent() && value >= lowerBound.get())
+                    || (value >= lowerBound.get() && value <= upperBound.get());
+        }
     }
 }
