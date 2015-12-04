@@ -40,17 +40,19 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatabaseToolIntegTest {
+    private static final Path PATH_INTEG_TESTS = Paths.get("integ-tests");
+    private static final Path PATH_PATCHER = PATH_INTEG_TESTS.resolve("patcher");
 
-    private static final String DIRECTORY_DATABASE_BANKS = Paths.get("integ-tests", "banks", "db").toString();
-    private static final String DIRECTORY_PATCH = Paths.get("integ-tests", "patcher").toString();
-    private static final String DIRECTORY_PATCH_OUTPUT = Paths.get("integ-tests", "patcher", "out").toString();
-    private static final String DIRECTORY_ENCRYPTED_DATABASE = Paths.get("integ-tests", "db-encrypted").toString();
-    private static final String DIRECTORY_PATCHED_DATABASE = Paths.get("integ-tests", "db-patched").toString();
-    private static final String DIRECTORY_FIXED_DATABASE = Paths.get("integ-tests", "db-fixed").toString();
-    private static final String DIRECTORY_JSON_DATABASE = Paths.get("integ-tests", "db-json").toString();
-    private static final String DIRECTORY_ERR_JSON_DATABASE = Paths.get("integ-tests", "db-json-errors").toString();
-    private static final String DIRECTORY_GENERATED_DATABASE = Paths.get("integ-tests", "db-generated").toString();
-    private static final String DIRECTORY_ERR_GENERATED_DATABASE = Paths.get("integ-tests", "db-generated-errors").toString();
+    private static final String DIRECTORY_DATABASE_BANKS = PATH_INTEG_TESTS.resolve("banks").resolve("db").toString();
+    private static final String DIRECTORY_PATCH = PATH_PATCHER.toString();
+    private static final String DIRECTORY_PATCH_OUTPUT = PATH_PATCHER.resolve("out").toString();
+    private static final String DIRECTORY_ENCRYPTED_DATABASE = PATH_INTEG_TESTS.resolve("db-encrypted").toString();
+    private static final String DIRECTORY_PATCHED_DATABASE = PATH_INTEG_TESTS.resolve("db-patched").toString();
+    private static final String DIRECTORY_FIXED_DATABASE = PATH_INTEG_TESTS.resolve("db-fixed").toString();
+    private static final String DIRECTORY_JSON_DATABASE = PATH_INTEG_TESTS.resolve("db-json").toString();
+    private static final String DIRECTORY_ERR_JSON_DATABASE = PATH_INTEG_TESTS.resolve("db-json-errors").toString();
+    private static final String DIRECTORY_GENERATED_DATABASE = PATH_INTEG_TESTS.resolve("db-generated").toString();
+    private static final String DIRECTORY_ERR_GENERATED_DATABASE = PATH_INTEG_TESTS.resolve("db-generated-errors").toString();
 
     @Mock
     private BankSupport bankSupportMock;
@@ -158,6 +160,21 @@ public class DatabaseToolIntegTest {
         // WHEN: genPatch from patched database
         System.out.println("-> GenPatch!");
         DatabaseTool.main(new String[]{"gen-patch", "-n", "-j", DIRECTORY_PATCHED_DATABASE, "-p", outputPatchFile, "-t", CAR_PHYSICS_DATA.name(), "-r", "606298799,632098801"});
+
+        // THEN: patch file must exist
+        AssertionsHelper.assertFileExistAndGet(outputPatchFile);
+        AssertionsHelper.assertJsonFilesMatch(referencePatchFile, outputPatchFile);
+    }
+
+    @Test
+    public void genPatch_withPartialContents() throws IOException, JSONException {
+        // GIVEN
+        String outputPatchFile = Paths.get(DIRECTORY_PATCH_OUTPUT, "mini-partialUpdate-gen.json").toString();
+        String referencePatchFile = Paths.get(DIRECTORY_PATCH, "mini-partialUpdate-gen.json").toString();
+
+        // WHEN: genPatch
+        System.out.println("-> GenPatch!");
+        DatabaseTool.main(new String[]{"gen-patch", "-n", "-j", DIRECTORY_ERR_JSON_DATABASE, "-p", outputPatchFile, "-t", CAR_PHYSICS_DATA.name(), "-r", "606298799,632098801", "-f", "103"});
 
         // THEN: patch file must exist
         AssertionsHelper.assertFileExistAndGet(outputPatchFile);
