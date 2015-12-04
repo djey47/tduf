@@ -29,7 +29,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-// TODO test other partial cases
 public class PatchGeneratorTest {
 
     @Before
@@ -144,10 +143,46 @@ public class PatchGeneratorTest {
     }
 
     @Test
+    public void makePatch_whenUsingRealDatabase_andUniqueFieldRank_shouldReturnCorrectPatchObjectWithPartialChanges() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        ItemRange refRange = ItemRange.fromCliOption(Optional.of("735"));
+        ItemRange fieldRange = ItemRange.fromCliOption(Optional.of("2"));
+
+        List<DbDto> databaseObjects = createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles();
+        PatchGenerator generator = createPatchGenerator(databaseObjects);
+
+
+        // WHEN
+        DbPatchDto actualPatchObject = generator.makePatch(BRANDS, refRange, fieldRange);
+
+
+        // THEN
+        assertPatchGeneratedWithinRangeForOneTopicAndPartialValue(actualPatchObject);
+    }
+
+    @Test
     public void makePatch_whenUsingRealDatabase_andFieldRanksAsBounds_shouldReturnCorrectPatchObjectWithPartialChanges() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         ItemRange refRange = ItemRange.fromCliOption(Optional.of("735"));
         ItemRange fieldRange = ItemRange.fromCliOption(Optional.of("2..4"));
+
+        List<DbDto> databaseObjects = createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles();
+        PatchGenerator generator = createPatchGenerator(databaseObjects);
+
+
+        // WHEN
+        DbPatchDto actualPatchObject = generator.makePatch(BRANDS, refRange, fieldRange);
+
+
+        // THEN
+        assertPatchGeneratedWithinRangeForOneTopicAndPartialValues(actualPatchObject);
+    }
+
+    @Test
+    public void makePatch_whenUsingRealDatabase_andFieldRanksAsEnumeration_shouldReturnCorrectPatchObjectWithPartialChanges() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        ItemRange refRange = ItemRange.fromCliOption(Optional.of("735"));
+        ItemRange fieldRange = ItemRange.fromCliOption(Optional.of("2,3,4"));
 
         List<DbDto> databaseObjects = createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
@@ -304,6 +339,31 @@ public class PatchGeneratorTest {
                 .hasSize(3)
                 .extracting("rank").containsExactly(2, 3, 4);
         assertThat(changeObject1.getPartialValues()).extracting("value").containsExactly("55338337", "55338337", "55338337");
+
+        DbPatchDto.DbChangeDto changeObject2 = actualChanges.get(1);
+        assertThat(changeObject2.getType()).isEqualTo(UPDATE_RES);
+        assertThat(changeObject2.getPartialValues()).isNull();
+    }
+
+    private static void assertPatchGeneratedWithinRangeForOneTopicAndPartialValue(DbPatchDto patchObject) {
+        assertThat(patchObject).isNotNull();
+
+        List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
+
+        assertThat(actualChanges)
+                .hasSize(2) //1 UPDATE(1 partial value) + 1 UPDATE_RES
+                .extracting("ref").containsExactly("735", "55338337");
+        assertThat(actualChanges).extracting("topic").containsOnly(BRANDS);
+        assertThat(actualChanges).extracting("locale").containsNull();
+        assertThat(actualChanges).extracting("values").containsNull();
+        assertThat(actualChanges).extracting("value").contains(null, "AC");
+
+        DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
+        assertThat(changeObject1.getType()).isEqualTo(UPDATE);
+        assertThat(changeObject1.getPartialValues())
+                .hasSize(1)
+                .extracting("rank").containsExactly(2);
+        assertThat(changeObject1.getPartialValues()).extracting("value").containsExactly("55338337");
 
         DbPatchDto.DbChangeDto changeObject2 = actualChanges.get(1);
         assertThat(changeObject2.getType()).isEqualTo(UPDATE_RES);
