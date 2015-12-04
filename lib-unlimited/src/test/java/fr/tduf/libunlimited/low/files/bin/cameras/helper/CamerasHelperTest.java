@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.low.files.bin.cameras.helper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -42,5 +43,26 @@ public class CamerasHelperTest {
         assertThat(parser.getCameraIndex()).hasSize(152);
         assertThat(parser.getCameraViews()).hasSize(150);
         assertThat(parser.getTotalViewCount()).isEqualTo(599);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void duplicateAllCameraSets_whenNullParser_shouldThrowNullPointerException() throws Exception {
+        // GIVEN-WHEN
+        CamerasHelper.duplicateAllCameraSets(1001, null);
+
+        // THEN: NPE
+    }
+
+    @Test
+    @Ignore //Test trop long, à voir sur un plus petit fichier
+    public void duplicateAllCameraSets_whenSourceExists_shouldCloneAllSets() throws Exception {
+        // GIVEN-WHEN
+        CamerasHelper.duplicateAllCameraSets(10000, parser);
+
+        // THEN
+        assertThat(parser.getDataStore().getInteger("indexSize").get()).isEqualTo(298);
+        assertThat(parser.getCameraIndex()).hasSize(298);
+        assertThat(parser.getCameraViews()).hasSize(296);
+        assertThat(parser.getTotalViewCount()).isEqualTo(1186);
     }
 }

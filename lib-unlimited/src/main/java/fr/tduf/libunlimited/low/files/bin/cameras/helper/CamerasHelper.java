@@ -10,6 +10,9 @@ import static java.util.Objects.requireNonNull;
 
 public class CamerasHelper {
 
+    private static final int MIN_CAMERA_SET_ID = 1;
+    private static final int MAX_GENUINE_CAMERA_SET_ID = 10000;
+
     /**
      * Creates or replace a camera set at targetCameraId with all views from set at sourceCameraId.
      * @param sourceCameraId    : identifier of camera to get views from
@@ -24,6 +27,25 @@ public class CamerasHelper {
         updateViewsInDatastore(dataStore, sourceCameraId, targetCameraId, parser);
 
         parser.flushCaches();
+    }
+
+    /**
+     * For each existing set at initialCameraId (MIN_CAMERA_SET_ID..MAX_GENUINE_CAMERA_SET_ID), creates a clone set at (targetCameraId+initialCameraId).
+     * @param targetCameraId    : delta of camera identifier to create views.
+     * @param parser            : parsed cameras contents
+     */
+    public static void duplicateAllCameraSets(long targetCameraId, CamerasParser parser) {
+        requireNonNull(parser, "Parser with cameras contents is required.").getDataStore();
+
+        parser.getCameraViews().keySet()
+
+                .forEach((cameraId) -> {
+
+                    if (cameraId >= MIN_CAMERA_SET_ID && cameraId <= MAX_GENUINE_CAMERA_SET_ID) {
+                        duplicateCameraSet(cameraId, cameraId + targetCameraId, parser);
+                    }
+
+                });
     }
 
     private static void updateViewsInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, CamerasParser parser) {
