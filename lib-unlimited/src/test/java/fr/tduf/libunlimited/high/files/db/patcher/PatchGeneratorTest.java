@@ -145,7 +145,7 @@ public class PatchGeneratorTest {
     @Test
     public void makePatch_whenUsingRealDatabase_andUniqueFieldRank_shouldReturnCorrectPatchObjectWithPartialChanges() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
-        ItemRange refRange = ItemRange.fromCliOption(Optional.of("735"));
+        ItemRange refRange = ItemRange.fromCliOption(Optional.of("72825"));
         ItemRange fieldRange = ItemRange.fromCliOption(Optional.of("2"));
 
         List<DbDto> databaseObjects = createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles();
@@ -352,18 +352,18 @@ public class PatchGeneratorTest {
 
         assertThat(actualChanges)
                 .hasSize(2) //1 UPDATE(1 partial value) + 1 UPDATE_RES
-                .extracting("ref").containsExactly("735", "55338337");
+                .extracting("ref").containsExactly("72825", "56338337");
         assertThat(actualChanges).extracting("topic").containsOnly(BRANDS);
         assertThat(actualChanges).extracting("locale").containsNull();
         assertThat(actualChanges).extracting("values").containsNull();
-        assertThat(actualChanges).extracting("value").contains(null, "AC");
+        assertThat(actualChanges).extracting("value").contains(null, "ALFA");
 
         DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
         assertThat(changeObject1.getType()).isEqualTo(UPDATE);
         assertThat(changeObject1.getPartialValues())
                 .hasSize(1)
                 .extracting("rank").containsExactly(2);
-        assertThat(changeObject1.getPartialValues()).extracting("value").containsExactly("55338337");
+        assertThat(changeObject1.getPartialValues()).extracting("value").containsExactly("56338337");
 
         DbPatchDto.DbChangeDto changeObject2 = actualChanges.get(1);
         assertThat(changeObject2.getType()).isEqualTo(UPDATE_RES);

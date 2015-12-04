@@ -156,14 +156,9 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     }
 
     private DbPatchDto.DbChangeDto makeChangeObjectForEntry(DbDto.Topic topic, DbDataDto.Entry entry, OptionalInt potentialRefFieldRank, List<DbStructureDto.Field> structureFields, ItemRange fieldRange, RequiredReferences requiredReferences) {
-        String entryReference = null;
-        if (potentialRefFieldRank.isPresent()) {
-            entryReference = BulkDatabaseMiner.getContentEntryReference(entry, potentialRefFieldRank.getAsInt());
-        }
-
-        if (CAR_PHYSICS_DATA == topic) {
-            addCarPhysicsAssociatedEntriesToRequiredContents(entryReference, requiredReferences);
-        }
+        String entryReference = potentialRefFieldRank.isPresent() ?
+                BulkDatabaseMiner.getContentEntryReference(entry, potentialRefFieldRank.getAsInt()) :
+                null;
 
         List<DbDataDto.Item> items = entry.getItems();
         return fieldRange.isGlobal() ?
@@ -173,6 +168,10 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     }
 
     private DbPatchDto.DbChangeDto makeGlobalChangeObject(String entryReference, DbDto.Topic topic, List<DbDataDto.Item> entryItems, List<DbStructureDto.Field> structureFields, RequiredReferences requiredReferences) {
+        if (CAR_PHYSICS_DATA == topic) {
+            addCarPhysicsAssociatedEntriesToRequiredContents(entryReference, requiredReferences);
+        }
+
         List<String> entryValues = entryItems.stream()
 
                 .map((entryItem) -> {
