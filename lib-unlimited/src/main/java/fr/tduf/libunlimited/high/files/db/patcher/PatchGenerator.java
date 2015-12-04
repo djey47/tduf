@@ -25,6 +25,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Used to generate patches from an existing database.
  */
+// TODO Create class for requiredReferences instead of 2 instances and migrate code to populate
 public class PatchGenerator extends AbstractDatabaseHolder {
 
     private static final Set<DbDto.Topic> CAR_PHYSICS_ASSOCIATION_TOPICS = new HashSet<>(asList(CAR_RIMS, CAR_PACKS, CAR_COLORS));
@@ -80,7 +81,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
                 .filter((entry) -> isInRange(entry, potentialRefFieldRank, range))
 
-                .map((acceptedEntry) -> createChangeObjectForEntry(topicObject.getTopic(), acceptedEntry, potentialRefFieldRank, structureFields, fieldRange, requiredLocalResourceReferences, requiredContentsReferences))
+                .map((acceptedEntry) -> makeChangeObjectForEntry(topicObject.getTopic(), acceptedEntry, potentialRefFieldRank, structureFields, fieldRange, requiredLocalResourceReferences, requiredContentsReferences))
 
                 .collect(toSet());
     }
@@ -128,7 +129,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     private Stream<DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesWithLocale(DbDto.Topic topic, Optional<DbResourceDto.Locale> potentialLocale, Set<String> topicResources) {
         return topicResources.stream()
 
-                .map((resourceRef) -> createChangeObjectForResource(topic, potentialLocale, resourceRef));
+                .map((resourceRef) -> makeChangeObjectForResource(topic, potentialLocale, resourceRef));
     }
 
     private DbDto checkTopic(DbDto.Topic topic) {
@@ -141,7 +142,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         return potentielTopicObject.get();
     }
 
-    private DbPatchDto.DbChangeDto createChangeObjectForResource(DbDto.Topic topic, Optional<DbResourceDto.Locale> potentialLocale, String resourceRef) {
+    private DbPatchDto.DbChangeDto makeChangeObjectForResource(DbDto.Topic topic, Optional<DbResourceDto.Locale> potentialLocale, String resourceRef) {
         Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceRef, topic, potentialLocale.orElse(DbResourceDto.Locale.FRANCE));
         String resourceValue = DatabaseGenHelper.RESOURCE_VALUE_DEFAULT;
         if (potentialResourceEntry.isPresent()) {
@@ -157,36 +158,45 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .build();
     }
 
-    // TODO simplify
-    private DbPatchDto.DbChangeDto createChangeObjectForEntry(DbDto.Topic topic, DbDataDto.Entry entry, OptionalInt potentialRefFieldRank, List<DbStructureDto.Field> structureFields, ItemRange fieldRange, Map<DbDto.Topic, Set<String>> requiredResourceReferences, Map<DbDto.Topic, Set<Long>> requiredContentsReferences) {
+    private DbPatchDto.DbChangeDto makeChangeObjectForEntry(DbDto.Topic topic, DbDataDto.Entry entry, OptionalInt potentialRefFieldRank, List<DbStructureDto.Field> structureFields, ItemRange fieldRange, Map<DbDto.Topic, Set<String>> requiredResourceReferences, Map<DbDto.Topic, Set<Long>> requiredContentsReferences) {
         String entryReference = null;
         if (potentialRefFieldRank.isPresent()) {
             entryReference = BulkDatabaseMiner.getContentEntryReference(entry, potentialRefFieldRank.getAsInt());
         }
 
         if (CAR_PHYSICS_DATA == topic) {
-            searchForCarPhysicsAssociatedEntries(entryReference, requiredContentsReferences);
+            addCarPhysicsAssociatedEntriesToRequiredContents(entryReference, requiredContentsReferences);
         }
 
-        if (fieldRange.isGlobal()) {
-            List<String> entryValues = entry.getItems().stream()
+        List<DbDataDto.Item> items = entry.getItems();
+        return fieldRange.isGlobal() ?
+                makeGlobalChangeObject(entryReference, topic, items, structureFields, requiredResourceReferences, requiredContentsReferences) :
+                makePartialChangeObject(entryReference, topic, items, structureFields, fieldRange, requiredResourceReferences, requiredContentsReferences);
 
-                    .map((entryItem) -> {
-                        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(entryItem, structureFields);
-                        return fetchItemValue(topic, structureField, entryItem, requiredContentsReferences, requiredResourceReferences);
-                    })
+    }
 
-                    .collect(toList());
+    private DbPatchDto.DbChangeDto makeGlobalChangeObject(String entryReference, DbDto.Topic topic, List<DbDataDto.Item> entryItems, List<DbStructureDto.Field> structureFields, Map<DbDto.Topic, Set<String>> requiredResourceReferences, Map<DbDto.Topic, Set<Long>> requiredContentsReferences) {
+        List<String> entryValues = entryItems.stream()
 
-            return DbPatchDto.DbChangeDto.builder()
-                    .withType(UPDATE)
-                    .forTopic(topic)
-                    .asReference(entryReference)
-                    .withEntryValues(entryValues)
-                    .build();
-        }
+                .map((entryItem) -> {
+                    DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(entryItem, structureFields);
+                    return fetchItemValue(topic, structureField, entryItem, requiredContentsReferences, requiredResourceReferences);
+                })
 
-        List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues = entry.getItems().stream()
+                .collect(toList());
+
+        return DbPatchDto.DbChangeDto.builder()
+                .withType(UPDATE)
+                .forTopic(topic)
+                .asReference(entryReference)
+                .withEntryValues(entryValues)
+                .build();
+    }
+
+    private DbPatchDto.DbChangeDto makePartialChangeObject(String entryReference, DbDto.Topic topic, List<DbDataDto.Item> entryItems, List<DbStructureDto.Field> structureFields, ItemRange fieldRange, Map<DbDto.Topic, Set<String>> requiredResourceReferences, Map<DbDto.Topic, Set<Long>> requiredContentsReferences) {
+        requireNonNull(entryReference, "Entry reference is required for partial change object.");
+
+        List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues = entryItems.stream()
 
                 .filter((entryItem) -> fieldRange.accepts(Integer.valueOf(entryItem.getFieldRank()).toString()))
 
@@ -208,7 +218,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .build();
     }
 
-    private void searchForCarPhysicsAssociatedEntries(String entryReference, Map<DbDto.Topic, Set<Long>> requiredContentsIds) {
+    private void addCarPhysicsAssociatedEntriesToRequiredContents(String entryReference, Map<DbDto.Topic, Set<Long>> requiredContentsIds) {
         CAR_PHYSICS_ASSOCIATION_TOPICS.stream()
 
                 .forEach((topic) -> databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(1, entryReference, topic)
