@@ -9,7 +9,7 @@ import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.ReferenceRange;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.ALL;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -151,8 +152,8 @@ public class MainStageChangeDataController {
     private static DbPatchDto generatePatchObject(DbDto.Topic currentTopic, String entryRef, List<DbDto> databaseObjects) {
         try {
             PatchGenerator patchGenerator = AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseObjects);
-            ReferenceRange range = ReferenceRange.fromCollection(Collections.singletonList(entryRef));
-            return patchGenerator.makePatch(currentTopic, range);
+            ItemRange range = ItemRange.fromCollection(Collections.singletonList(entryRef));
+            return patchGenerator.makePatch(currentTopic, range, ALL);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
