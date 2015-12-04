@@ -78,9 +78,13 @@ public class DatabaseTool extends GenericTool {
     private String databaseTopic;
     private DbDto.Topic effectiveTopic;
 
-    @Option(name = "-r", aliases = "--range", usage = "REF of entries to create patch for. Can be a comma-separated list or a range <minValue>..<maxValue>. Not mandatory, defaults to all entries in topic.")
-    private String itemsRange;
-    private ItemRange effectiveRange;
+    @Option(name = "-r", aliases = "--refRange", usage = "REF of entries to create patch for. Can be a comma-separated list or a range <minValue>..<maxValue>. Not mandatory, defaults to all entries in topic.")
+    private String refRange;
+    private ItemRange effectiveRefRange;
+
+    @Option(name = "-f", aliases = "--fieldRange", usage = "rank of entry fields to create patch for. Can be a comma-separated list or a range <minValue>..<maxValue>. Not mandatory, defaults to all fields in entry.")
+    private String fieldRange;
+    private ItemRange effectiveFieldRange;
 
     private BankSupport bankSupport;
 
@@ -221,7 +225,7 @@ public class DatabaseTool extends GenericTool {
                 throw new CmdLineException(parser, "Error: database topic is required.", null);
             }
             effectiveTopic = DbDto.Topic.valueOf(databaseTopic);
-            effectiveRange = ItemRange.fromCliOption(Optional.ofNullable(itemsRange));
+            effectiveRefRange = ItemRange.fromCliOption(Optional.ofNullable(refRange));
         }
     }
 
@@ -239,7 +243,7 @@ public class DatabaseTool extends GenericTool {
                 FIX.label + " -c -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -o \"C:\\Users\\Bill\\Desktop\\tdu-database-fixed\"",
                 APPLY_TDUPK.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\vehicle.tdupk\" -r \"606298799\" -o \"C:\\Users\\Bill\\Desktop\\json-database\"",
                 APPLY_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\"",
-                GEN_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\" -t \"CAR_PHYSICS_DATA\" -r \"606298799,637314272\"",
+                GEN_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\" -t \"CAR_PHYSICS_DATA\" -r \"606298799,637314272\" -f \"102,103\"",
                 CONVERT_PATCH.label + " -p \"C:\\Users\\Bill\\Desktop\\install.PCH\"",
                 UNPACK_ALL.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -j \"C:\\Users\\Bill\\Desktop\\json-database\"",
                 REPACK_ALL.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -o \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\""
@@ -326,7 +330,7 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Generating patch, please wait...");
 
-        DbPatchDto patchObject = AbstractDatabaseHolder.prepare(PatchGenerator.class, allTopicObjects).makePatch(effectiveTopic, effectiveRange);
+        DbPatchDto patchObject = AbstractDatabaseHolder.prepare(PatchGenerator.class, allTopicObjects).makePatch(effectiveTopic, effectiveRefRange);
 
         outLine("Writing patch to " + targetPatchFile + "...");
 
@@ -496,7 +500,7 @@ public class DatabaseTool extends GenericTool {
     private void applyPerformancePackToCarPhysicsData(String performancePackFile, String targetJsonDirectory, List<DbDto> allTopicObjects, List<String> writtenFileNames) {
         try {
             TdupeGateway gateway = AbstractDatabaseHolder.prepare(TdupeGateway.class, allTopicObjects);
-            gateway.applyPerformancePackToEntryWithReference(Optional.ofNullable(itemsRange), performancePackFile);
+            gateway.applyPerformancePackToEntryWithReference(Optional.ofNullable(refRange), performancePackFile);
         } catch (ReflectiveOperationException roe) {
             throw new RuntimeException("Unable to apply patch.", roe);
         }
