@@ -16,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -143,23 +142,14 @@ public class CameraTool extends GenericTool {
         return makeCommandResultForCopy(targetCameraFile);
     }
 
-    private Map<String, Object> copyAllSets(String sourceCameraFile, String targetCameraFile) throws IOException {
+    private Map<String, ?> copyAllSets(String sourceCameraFile, String targetCameraFile) throws IOException {
         outLine("> Will use Cameras file: " + sourceCameraFile);
 
         CamerasParser parser = loadAndParseCameras(sourceCameraFile);
 
         outLine("> Done reading cameras.");
 
-        // TODO Migrate to library
-        new HashSet<>(parser.getCameraViews().keySet())
-
-                .forEach((cameraId) -> {
-
-                    if (cameraId >= 1 && cameraId <= 10000) {
-                        CamerasHelper.duplicateCameraSet(cameraId, cameraId + targetIdentifier, parser);
-                    }
-
-                });
+        CamerasHelper.duplicateAllCameraSets(targetIdentifier, parser);
 
         outLine("> Done copying camera sets.");
 
