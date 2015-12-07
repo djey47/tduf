@@ -36,6 +36,8 @@ public class BulkDatabaseMiner {
     public static BulkDatabaseMiner load(List<DbDto> topicObjects) {
         requireNonNull(topicObjects, "A list of per-topic database objects is required.");
 
+        clearAllCaches();
+
         return new BulkDatabaseMiner(topicObjects);
     }
 
