@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.ALL;
+import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.fromCollection;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -114,16 +115,21 @@ public class MainStageChangeDataController {
         return TdumtPatchConverter.getContentsValue(potentialRef, values);
     }
 
-    boolean exportEntryToPatchFile(DbDto.Topic currentTopic, Optional<String> potentialEntryRef, String patchFileLocation) throws IOException {
-        Optional<DbPatchDto> potentialPatchObject = potentialEntryRef
-                .map((entryRef) -> generatePatchObject(currentTopic, entryRef, mainStageController.getDatabaseObjects()));
+    boolean exportEntriesToPatchFile(DbDto.Topic currentTopic, Optional<String> potentialEntryRef, String patchFileLocation) throws IOException {
 
-        if (potentialPatchObject.isPresent()) {
-            FilesHelper.writeJsonObjectToFile(potentialPatchObject.get(), patchFileLocation);
-            return true;
-        }
+        return generatePatchObject(currentTopic, potentialEntryRef, mainStageController.getDatabaseObjects())
 
-        return false;
+                .map((patchObject) -> {
+                    try {
+                        FilesHelper.writeJsonObjectToFile(patchObject, patchFileLocation);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+                    return true;
+                })
+
+                .orElse(false);
     }
 
     void importPatch(File patchFile) throws IOException, ReflectiveOperationException {
@@ -149,14 +155,20 @@ public class MainStageChangeDataController {
                 .collect(toList());
     }
 
-    private static DbPatchDto generatePatchObject(DbDto.Topic currentTopic, String entryRef, List<DbDto> databaseObjects) {
+    private static Optional<DbPatchDto> generatePatchObject(DbDto.Topic currentTopic, Optional<String> potentialEntryRef, List<DbDto> databaseObjects) {
         try {
             PatchGenerator patchGenerator = AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseObjects);
-            ItemRange range = ItemRange.fromCollection(Collections.singletonList(entryRef));
-            return patchGenerator.makePatch(currentTopic, range, ALL);
+
+            if (potentialEntryRef.isPresent()) {
+                ItemRange uniqueRefRange = fromCollection(singletonList(potentialEntryRef.get()));
+                return Optional.of(patchGenerator.makePatch(currentTopic, uniqueRefRange, ALL));
+            } else {
+                return Optional.of(patchGenerator.makePatch(currentTopic, ALL, ALL));
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return Optional.empty();
         }
     }
 

@@ -85,7 +85,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#handleExportEntryPchMenuAction" text="PCH instruction..." />
                     </items>
                       <tooltip>
-                          <Tooltip text="Exports current entry." />
+                          <Tooltip text="Exports one or more entries." />
                       </tooltip>
                   </MenuButton>
                   <Separator layoutX="418.0" layoutY="10.0" orientation="VERTICAL" />

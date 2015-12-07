@@ -323,7 +323,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        askForPatchLocationAndExportCurrentEntryToFile();
+        askForPatchLocationAndExportToFile();
     }
 
     @FXML
@@ -332,7 +332,7 @@ public class MainStageController extends AbstractGuiController {
 
         ofNullable(currentTopicObject)
 
-                .ifPresent((topicObject) -> askForPatchLocationAndImportData());
+                .ifPresent((topicObject) -> askForPatchLocationAndImportDataFromFile());
     }
 
     @FXML
@@ -661,30 +661,32 @@ public class MainStageController extends AbstractGuiController {
         dialogsHelper.showExportResultDialog(changeDataController.exportCurrentEntryToPchValue());
     }
 
-    private void askForPatchLocationAndExportCurrentEntryToFile() throws IOException {
-
-        DbDto.Topic currentTopic = currentTopicObject.getTopic();
-        Optional<String> potentialEntryRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopic);
-        String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT;
-        if (!potentialEntryRef.isPresent()) {
-            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_ENTRY_WITHOUT_REF);
-            return;
-        }
+    private void askForPatchLocationAndExportToFile() throws IOException {
 
         Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(false, getWindow());
         if (!potentialFile.isPresent()) {
             return;
         }
 
+        DbDto.Topic currentTopic = currentTopicObject.getTopic();
+        Optional<String> potentialEntryRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopic);
+        String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT;
         String fileLocation = potentialFile.get().getPath();
-        if (changeDataController.exportEntryToPatchFile(currentTopic, potentialEntryRef, fileLocation)) {
-            CommonDialogsHelper.showDialog(Alert.AlertType.INFORMATION, dialogTitle, DisplayConstants.MESSAGE_ENTRY_EXPORTED, fileLocation);
+
+        if (changeDataController.exportEntriesToPatchFile(currentTopic, potentialEntryRef, fileLocation)) {
+            String message = potentialEntryRef.isPresent() ?
+                    DisplayConstants.MESSAGE_ENTRY_EXPORTED :
+                    DisplayConstants.MESSAGE_ALL_ENTRIES_EXPORTED;
+            CommonDialogsHelper.showDialog(Alert.AlertType.INFORMATION, dialogTitle, message, fileLocation);
         } else {
-            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY, DisplayConstants.MESSAGE_SEE_LOGS);
+            String message = potentialEntryRef.isPresent() ?
+                    DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY :
+                    DisplayConstants.MESSAGE_UNABLE_EXPORT_ALL_ENTRIES;
+            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, dialogTitle, message, DisplayConstants.MESSAGE_SEE_LOGS);
         }
     }
 
-    private void askForPatchLocationAndImportData() {
+    private void askForPatchLocationAndImportDataFromFile() {
         Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(true, getWindow());
         if (!potentialFile.isPresent()) {
             return;
