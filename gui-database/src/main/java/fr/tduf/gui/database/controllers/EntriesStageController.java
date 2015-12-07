@@ -13,9 +13,9 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -67,7 +67,7 @@ public class EntriesStageController extends AbstractGuiController {
     }
 
     @FXML
-    private void handleSearchEntryButtonAction(ActionEvent actionEvent) {
+    private void handleSearchEntryButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleSearchEntryButtonAction");
 
         askForReferenceAndSelectItem();
@@ -107,11 +107,11 @@ public class EntriesStageController extends AbstractGuiController {
     }
 
     private void initTablePane() {
-        TableColumn<ContentEntryDataItem, String> refColumn = (TableColumn<ContentEntryDataItem, String>) entriesTableView.getColumns().get(0);
-        refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
+        TableColumn<ContentEntryDataItem, ?> refColumn = entriesTableView.getColumns().get(0);
+        refColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().referenceProperty());
 
-        TableColumn<ContentEntryDataItem, String> valueColumn = (TableColumn<ContentEntryDataItem, String>) entriesTableView.getColumns().get(1);
-        valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
+        TableColumn<ContentEntryDataItem, ?> valueColumn = entriesTableView.getColumns().get(1);
+        valueColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().valueProperty());
 
         entriesTableView.setItems(entriesData);
     }

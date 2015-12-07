@@ -14,9 +14,9 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
@@ -77,7 +77,7 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     @FXML
-    private void handleSelectResourceButtonMouseClick(ActionEvent actionEvent) {
+    private void handleSelectResourceButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleSelectResourceButtonMouseClick");
 
         ResourceEntryDataItem selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
@@ -87,7 +87,7 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     @FXML
-    private void handleEditResourceButtonMouseClick(ActionEvent actionEvent) {
+    private void handleEditResourceButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleEditResourceButtonMouseClick");
 
         ofNullable(resourcesTableView.getSelectionModel().selectedItemProperty().getValue())
@@ -100,7 +100,7 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     @FXML
-    private void handleAddResourceButtonMouseClick(ActionEvent actionEvent) {
+    private void handleAddResourceButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleAddResourceButtonMouseClick");
 
         DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
@@ -109,7 +109,7 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     @FXML
-    private void handleRemoveResourceButtonMouseClick(ActionEvent actionEvent) {
+    private void handleRemoveResourceButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleRemoveResourceButtonMouseClick");
 
         ofNullable(resourcesTableView.getSelectionModel().selectedItemProperty().getValue())
@@ -124,7 +124,7 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     @FXML
-    private void handleSearchEntryButtonAction(ActionEvent actionEvent) {
+    private void handleSearchEntryButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleSearchEntryButtonAction");
 
         askForReferenceAndSelectItem();
@@ -160,13 +160,13 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     private void initTablePane() {
-        TableColumn<ResourceEntryDataItem, String> refColumn = (TableColumn<ResourceEntryDataItem, String>) resourcesTableView.getColumns().get(0);
-        refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
+        TableColumn<ResourceEntryDataItem, ?> refColumn = resourcesTableView.getColumns().get(0);
+        refColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().referenceProperty());
 
         for (int columnIndex = 1; columnIndex < resourcesTableView.getColumns().size(); columnIndex++) {
-            TableColumn<ResourceEntryDataItem, String> valueColumn = (TableColumn<ResourceEntryDataItem, String>) resourcesTableView.getColumns().get(columnIndex);
+            TableColumn<ResourceEntryDataItem, ?> valueColumn = resourcesTableView.getColumns().get(columnIndex);
             DbResourceDto.Locale locale = DbResourceDto.Locale.values()[columnIndex - 1];
-            valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valuePropertyForLocale(locale));
+            valueColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().valuePropertyForLocale(locale));
         }
 
         resourcesTableView.setItems(resourceData);

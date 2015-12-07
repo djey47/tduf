@@ -160,14 +160,14 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleBrowseDirectoryButtonMouseClick(ActionEvent actionEvent) {
+    public void handleBrowseDirectoryButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleBrowseDirectoryButtonMouseClick");
 
         browseForDatabaseDirectory();
     }
 
     @FXML
-    public void handleLoadButtonMouseClick(ActionEvent actionEvent) {
+    public void handleLoadButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleLoadButtonMouseClick");
 
         String databaseLocation = this.databaseLocationTextField.getText();
@@ -179,7 +179,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleSaveButtonMouseClick(ActionEvent actionEvent) {
+    public void handleSaveButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleSaveButtonMouseClick");
 
         String databaseLocation = this.databaseLocationTextField.getText();
@@ -193,7 +193,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleSearchEntryButtonAction(ActionEvent actionEvent) {
+    public void handleSearchEntryButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleSearchEntryButtonAction");
 
         ofNullable(currentTopicObject)
@@ -201,7 +201,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleNextButtonMouseClick(ActionEvent actionEvent) {
+    public void handleNextButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleNextButtonMouseClick");
 
         ofNullable(currentTopicObject)
@@ -209,7 +209,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleFastNextButtonMouseClick(ActionEvent actionEvent) {
+    public void handleFastNextButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleFastNextButtonMouseClick");
 
         ofNullable(currentTopicObject)
@@ -217,7 +217,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handlePreviousButtonMouseClick(ActionEvent actionEvent) {
+    public void handlePreviousButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handlePreviousButtonMouseClick");
 
         ofNullable(currentTopicObject)
@@ -225,7 +225,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleFastPreviousButtonMouseClick(ActionEvent actionEvent) {
+    public void handleFastPreviousButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleFastPreviousButtonMouseClick");
 
         ofNullable(currentTopicObject)
@@ -233,7 +233,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleFirstButtonMouseClick(ActionEvent actionEvent) {
+    public void handleFirstButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleFirstButtonMouseClick");
 
         ofNullable(currentTopicObject)
@@ -241,7 +241,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleLastButtonMouseClick(ActionEvent actionEvent) {
+    public void handleLastButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleLastButtonMouseClick");
 
         ofNullable(currentTopicObject)
@@ -262,7 +262,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleBackButtonMouseClick(ActionEvent actionEvent) {
+    public void handleBackButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleLastButtonMouseClick");
 
         ofNullable(currentTopicObject)
@@ -270,7 +270,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleAddEntryButtonAction(ActionEvent actionEvent) {
+    public void handleAddEntryButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleAddEntryButtonAction");
 
         ofNullable(currentTopicObject)
@@ -278,7 +278,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleDuplicateEntryButtonAction(ActionEvent actionEvent) {
+    public void handleDuplicateEntryButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleDuplicateEntryButtonAction");
 
         ofNullable(currentTopicObject)
@@ -286,7 +286,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleRemoveEntryButtonAction(ActionEvent actionEvent) {
+    public void handleRemoveEntryButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleRemoveEntryButtonAction");
 
         ofNullable(currentTopicObject)
@@ -294,7 +294,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleExportEntryLineMenuAction(ActionEvent actionEvent) {
+    public void handleExportEntryLineMenuAction() {
         Log.trace(THIS_CLASS_NAME, "->handleExportEntryLineMenuAction");
 
         if (currentTopicObject == null || currentEntryIndexProperty.getValue() == null) {
@@ -305,7 +305,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleExportEntryPchMenuAction(ActionEvent actionEvent) {
+    public void handleExportEntryPchMenuAction() {
         Log.trace(THIS_CLASS_NAME, "->handleExportEntryPchMenuAction");
 
         if (currentTopicObject == null || currentEntryIndexProperty.getValue() == null) {
@@ -316,7 +316,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleExportEntryTdufPatchMenuAction(ActionEvent actionEvent) throws IOException {
+    public void handleExportEntryTdufPatchMenuAction() throws IOException {
         Log.trace(THIS_CLASS_NAME, "->handleExportEntryTdufPatchMenuAction");
 
         if (currentTopicObject == null || currentEntryIndexProperty.getValue() == null) {
@@ -327,7 +327,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleImportEntryTdufPatchMenuAction(ActionEvent actionEvent) throws IOException {
+    public void handleImportEntryTdufPatchMenuAction() throws IOException {
         Log.trace(THIS_CLASS_NAME, "->handleImportEntryTdufPatchMenuAction");
 
         ofNullable(currentTopicObject)
@@ -336,7 +336,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleImportPerformancePackMenuAction(ActionEvent actionEvent) {
+    public void handleImportPerformancePackMenuAction() {
         Log.trace(THIS_CLASS_NAME, "->handleImportPerformancePackMenuAction");
 
         if (currentTopicObject == null
