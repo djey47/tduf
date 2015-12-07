@@ -594,6 +594,7 @@ public class MainStageController extends AbstractGuiController {
         if (!databaseObjects.isEmpty()) {
             databaseMiner = BulkDatabaseMiner.load(this.databaseObjects);
 
+            profilesChoiceBox.getSelectionModel().clearSelection(); // ensures event will be fired even though 1st item is selected
             profilesChoiceBox.getSelectionModel().selectFirst();
 
             navigationHistory.clear();
