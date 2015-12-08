@@ -192,7 +192,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     private DbPatchDto.DbChangeDto makePartialChangeObject(String entryReference, DbDto.Topic topic, List<DbDataDto.Item> entryItems, List<DbStructureDto.Field> structureFields, ItemRange fieldRange, RequiredReferences requiredReferences) {
         requireNonNull(entryReference, "Entry reference is required for partial change object.");
 
-        List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues = entryItems.stream()
+        List<DbPatchDto.DbChangeDto.DbFieldValueDto> partialValues = entryItems.stream()
 
                 .filter((entryItem) -> fieldRange.accepts(Integer.valueOf(entryItem.getFieldRank()).toString()))
 
@@ -201,7 +201,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                     DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(acceptedItem, structureFields);
                     String itemValue = fetchItemValue(topic, structureField, acceptedItem, requiredReferences);
 
-                    return DbPatchDto.DbChangeDto.DbPartialValueDto.fromCouple(acceptedItem.getFieldRank(), itemValue);
+                    return DbPatchDto.DbChangeDto.DbFieldValueDto.fromCouple(acceptedItem.getFieldRank(), itemValue);
                 })
 
                 .collect(toList());
