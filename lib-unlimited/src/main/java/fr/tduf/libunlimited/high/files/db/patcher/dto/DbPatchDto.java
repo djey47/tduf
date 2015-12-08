@@ -105,7 +105,7 @@ public class DbPatchDto {
         private List<String> values;
 
         @JsonProperty("partialValues")
-        private List<DbPartialValueDto> partialValues;
+        private List<DbFieldValueDto> partialValues;
 
         @Override
         public boolean equals(Object o) {
@@ -146,7 +146,7 @@ public class DbPatchDto {
             return values;
         }
 
-        public List<DbPartialValueDto> getPartialValues() {
+        public List<DbFieldValueDto> getPartialValues() {
             return partialValues;
         }
 
@@ -160,7 +160,7 @@ public class DbPatchDto {
                 private DbResourceDto.Locale locale;
                 private String value;
                 private List<String> entryValues;
-                private List<DbPartialValueDto> partialEntryValues;
+                private List<DbFieldValueDto> partialEntryValues;
                 private String reference;
                 private DbDto.Topic topic;
                 private ChangeTypeEnum type;
@@ -190,7 +190,7 @@ public class DbPatchDto {
                 }
 
                 @Override
-                public DbChangeDtoBuilder withPartialEntryValues(List<DbPartialValueDto> partialEntryValues) {
+                public DbChangeDtoBuilder withPartialEntryValues(List<DbFieldValueDto> partialEntryValues) {
                     this.partialEntryValues = partialEntryValues;
                     return this;
                 }
@@ -246,7 +246,7 @@ public class DbPatchDto {
 
             DbChangeDtoBuilder withEntryValues(List<String> entryValues);
 
-            DbChangeDtoBuilder withPartialEntryValues(List<DbPartialValueDto> partialEntryValues);
+            DbChangeDtoBuilder withPartialEntryValues(List<DbFieldValueDto> partialEntryValues);
 
             DbChangeDtoBuilder withValue(String resourceValue);
 
@@ -271,12 +271,12 @@ public class DbPatchDto {
         }
 
         /**
-         * A partial entry value for update instruction.
+         * An entry field value for selection and changes in update/delete instructions.
          */
         @JsonTypeName("dbPartialEntryValue")
         @JsonIgnoreProperties(ignoreUnknown = true)
         @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-        public static class DbPartialValueDto {
+        public static class DbFieldValueDto {
             @JsonProperty("rank")
             private final int rank;
 
@@ -284,17 +284,17 @@ public class DbPatchDto {
             private final String value;
 
             /** For Jackson **/
-            private DbPartialValueDto() {
+            private DbFieldValueDto() {
                 this(0, null);
             }
 
-            private DbPartialValueDto(int rank, String value) {
+            private DbFieldValueDto(int rank, String value) {
                 this.rank = rank;
                 this.value = value;
             }
 
-            public static DbPartialValueDto fromCouple(int rank, String value) {
-                return new DbPartialValueDto(rank, value);
+            public static DbFieldValueDto fromCouple(int rank, String value) {
+                return new DbFieldValueDto(rank, value);
             }
 
             public int getRank() {

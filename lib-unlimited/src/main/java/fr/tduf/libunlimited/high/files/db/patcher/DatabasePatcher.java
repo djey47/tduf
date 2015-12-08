@@ -111,7 +111,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
     }
 
-    private void updateEntryWithPartialChanges(Optional<DbDataDto.Entry> existingEntry, DbStructureDto structureObject, List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues) {
+    private void updateEntryWithPartialChanges(Optional<DbDataDto.Entry> existingEntry, DbStructureDto structureObject, List<DbPatchDto.DbChangeDto.DbFieldValueDto> partialValues) {
         if (!existingEntry.isPresent()) {
             Log.warn("Unknown REF, no entry to be updated with partial values: " + partialValues);
             return;
@@ -216,12 +216,12 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .collect(toList());
     }
 
-    private static List<DbDataDto.Item> createEntryItemsWithPartialValues(DbStructureDto structureObject, DbDataDto.Entry existingEntry, List<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValues) {
+    private static List<DbDataDto.Item> createEntryItemsWithPartialValues(DbStructureDto structureObject, DbDataDto.Entry existingEntry, List<DbPatchDto.DbChangeDto.DbFieldValueDto> partialValues) {
         return existingEntry.getItems().stream()
 
                 .map( (item) -> {
 
-                    Optional<DbPatchDto.DbChangeDto.DbPartialValueDto> partialValue = partialValues.stream()
+                    Optional<DbPatchDto.DbChangeDto.DbFieldValueDto> partialValue = partialValues.stream()
 
                             .filter((value) -> value.getRank() == item.getFieldRank())
 
