@@ -98,6 +98,9 @@ public class DbPatchDto {
         @JsonProperty("ref")
         private String ref;
 
+        @JsonProperty("filter")
+        private List<DbFieldValueDto> filterCompounds;
+
         @JsonProperty("value")
         private String value;
 
@@ -148,6 +151,10 @@ public class DbPatchDto {
 
         public List<DbFieldValueDto> getPartialValues() {
             return partialValues;
+        }
+
+        public List<DbFieldValueDto> getFilterCompounds() {
+            return filterCompounds;
         }
 
         @JsonIgnore
@@ -273,7 +280,7 @@ public class DbPatchDto {
         /**
          * An entry field value for selection and changes in update/delete instructions.
          */
-        @JsonTypeName("dbPartialEntryValue")
+        @JsonTypeName("dbFieldChangeValue")
         @JsonIgnoreProperties(ignoreUnknown = true)
         @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
         public static class DbFieldValueDto {
