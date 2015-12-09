@@ -90,7 +90,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .flatMap((topicEntry) -> {
                     Set<String> refs = topicEntry.getValue().stream()
 
-                            .map((entryId) -> databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topicEntry.getKey()).get().getItems().get(0).getRawValue())
+                            .map((entryId) -> databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topicEntry.getKey()).get().getItemAtRank(1).get().getRawValue())
 
                             .collect(toSet());
 
@@ -259,7 +259,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
             entryRef = BulkDatabaseMiner.getContentEntryReference(entry, potentialRefFieldRank.getAsInt());
         } else {
             // For topics without REF
-            entryRef = entry.getItems().get(0).getRawValue();
+            entryRef = entry.getItemAtRank(1).get().getRawValue();
         }
         return range.accepts(entryRef);
     }

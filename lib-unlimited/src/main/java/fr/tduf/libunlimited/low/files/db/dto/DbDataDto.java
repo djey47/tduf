@@ -108,7 +108,6 @@ public class DbDataDto implements Serializable {
             if (fieldRank < 0 || fieldRank >= items.size()) {
                 return Optional.empty();
             }
-
             return Optional.of(items.get(fieldRank - 1));
         }
 
