@@ -122,8 +122,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
         if (existingEntry.isPresent()) {
 
-            // TODO delegate to dto
-            existingEntry.get().setItems(modifiedItems);
+            existingEntry.get().replaceItems(modifiedItems);
 
         } else {
 
@@ -139,8 +138,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
 
         List<DbDataDto.Item> modifiedItems = createEntryItemsWithPartialValues(structureObject, existingEntry.get(), partialValues);
-        // TODO delegate to dto
-        existingEntry.get().setItems(modifiedItems);
+        existingEntry.get().replaceItems(modifiedItems);
     }
 
     private void deleteResources(DbPatchDto.DbChangeDto changeObject) {

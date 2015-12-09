@@ -91,12 +91,13 @@ public class DbDataDto implements Serializable {
             items.add(item);
         }
 
-        public List<Item> getItems() {
-            return Collections.unmodifiableList(items);
+        public void replaceItems(List<Item> newItems) {
+            items.clear();
+            items.addAll(newItems);
         }
 
-        public void setItems(List<Item> items) {
-            this.items = items;
+        public List<Item> getItems() {
+            return Collections.unmodifiableList(items);
         }
 
         public long getId() {
