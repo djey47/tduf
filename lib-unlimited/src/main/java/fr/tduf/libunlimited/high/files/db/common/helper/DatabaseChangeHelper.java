@@ -23,10 +23,15 @@ public class DatabaseChangeHelper {
 
     public DatabaseChangeHelper(DatabaseGenHelper genHelper, BulkDatabaseMiner databaseMiner) {
         requireNonNull(databaseMiner, "A database miner instance is required.");
-        requireNonNull(genHelper, "A generation helper instanceis required.");
+        requireNonNull(genHelper, "A generation helper instance is required.");
 
         this.databaseMiner = databaseMiner;
         this.genHelper = genHelper;
+    }
+
+    // TODO see to use this constructor when possible
+    public DatabaseChangeHelper(BulkDatabaseMiner databaseMiner) {
+        this(new DatabaseGenHelper(databaseMiner), databaseMiner);
     }
 
     /**
