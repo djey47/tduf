@@ -3,7 +3,6 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
-import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -26,6 +25,8 @@ import static java.util.stream.Collectors.*;
  */
 public class DatabasePatcher extends AbstractDatabaseHolder {
 
+    private DatabaseChangeHelper databaseChangeHelper;
+
     /**
      * Execute provided patch onto current database.
      */
@@ -38,7 +39,9 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     }
 
     @Override
-    protected void postPrepare() {}
+    protected void postPrepare() {
+        databaseChangeHelper = new DatabaseChangeHelper(databaseMiner);
+    }
 
     private void applyChange(DbPatchDto.DbChangeDto changeObject) {
 
@@ -62,34 +65,32 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         BulkDatabaseMiner.clearAllCaches();
     }
 
-    // TODO extract methods
     private void deleteContents(DbPatchDto.DbChangeDto changeObject) {
 
         DbDto.Topic changedTopic = changeObject.getTopic();
         Optional<String> potentialRef = Optional.ofNullable(changeObject.getRef());
 
-        DatabaseGenHelper genHelper = new DatabaseGenHelper(databaseMiner);
-        DatabaseChangeHelper databaseChangeHelper = new DatabaseChangeHelper(genHelper, databaseMiner);
-
         if (potentialRef.isPresent()) {
-            databaseMiner.getContentEntryFromTopicWithReference(potentialRef.get(), changedTopic)
-
-                    .ifPresent((entry) -> databaseChangeHelper.removeEntryWithIdentifier(entry.getId(), changedTopic));
+            databaseChangeHelper.removeEntryWithReference(potentialRef.get(), changedTopic);
         } else {
             requireNonNull(changeObject.getFilterCompounds(), "As no REF is provided, filter attribute is mandatory.");
-
-            changeObject.getFilterCompounds().stream()
-
-                    .flatMap((filter) -> databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(filter.getRank(), filter.getValue(), changedTopic).stream())
-
-                    .collect(groupingBy((topicEntry) -> topicEntry, counting()))
-
-                    .entrySet().stream()
-
-                    .filter((entry) -> entry.getValue() == changeObject.getFilterCompounds().size())
-
-                    .forEach((entry) -> databaseChangeHelper.removeEntryWithIdentifier(entry.getKey().getId(), changedTopic));
+            removeEntryMatchingCriteria(changeObject.getFilterCompounds(), changedTopic);
         }
+    }
+
+    // TODO move to ChangeHelper
+    private void removeEntryMatchingCriteria(List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria, DbDto.Topic changedTopic) {
+        criteria.stream()
+
+                .flatMap((filter) -> databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(filter.getRank(), filter.getValue(), changedTopic).stream())
+
+                .collect(groupingBy((topicEntry) -> topicEntry, counting()))
+
+                .entrySet().stream()
+
+                .filter((entry) -> entry.getValue() == criteria.size())
+
+                .forEach((entry) -> databaseChangeHelper.removeEntryWithIdentifier(entry.getKey().getId(), changedTopic));
     }
 
     private void addOrUpdateContents(DbPatchDto.DbChangeDto changeObject) {
@@ -121,11 +122,12 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
         if (existingEntry.isPresent()) {
 
+            // TODO delegate to dto
             existingEntry.get().setItems(modifiedItems);
 
         } else {
 
-            addEntryToTopic(modifiedItems, topicObject.getData());
+            topicObject.getData().addEntryWithItems(modifiedItems);
 
         }
     }
@@ -137,6 +139,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
 
         List<DbDataDto.Item> modifiedItems = createEntryItemsWithPartialValues(structureObject, existingEntry.get(), partialValues);
+        // TODO delegate to dto
         existingEntry.get().setItems(modifiedItems);
     }
 
@@ -203,13 +206,6 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                                                                                         .withValue(value)
                                                                                         .build()));
         }
-    }
-
-    private static void addEntryToTopic(List<DbDataDto.Item> modifiedItems, DbDataDto topicDataObject) {
-        topicDataObject.addEntry(DbDataDto.Entry.builder()
-                .forId(topicDataObject.getEntries().size())
-                .addItems(modifiedItems)
-                .build());
     }
 
     private static List<DbDataDto.Item> createEntryItemsWithValues(DbStructureDto structureObject, List<String> allValues) {

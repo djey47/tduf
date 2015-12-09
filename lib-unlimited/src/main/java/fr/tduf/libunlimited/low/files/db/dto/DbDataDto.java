@@ -408,6 +408,13 @@ public class DbDataDto implements Serializable {
         entries.add(entry);
     }
 
+    public void addEntryWithItems(List<Item> items) {
+        addEntry(DbDataDto.Entry.builder()
+                .forId(entries.size())
+                .addItems(items)
+                .build());
+    }
+
     public void removeEntry(Entry entry) {
         entries.remove(entry);
 
