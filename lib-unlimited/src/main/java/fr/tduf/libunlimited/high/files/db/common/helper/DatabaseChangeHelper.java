@@ -128,11 +128,11 @@ public class DatabaseChangeHelper {
      * Following entries will have their ids updated (decreased by 1).
      * @param entryRef  : ref value of entry to remove
      * @param topic     : database topic where entry should be changed
-     * @throws java.util.NoSuchElementException when entry to delete does not exist.
      */
     public void removeEntryWithReference(String entryRef, DbDto.Topic topic) {
-        long entryIdentifier = databaseMiner.getContentEntryFromTopicWithReference(entryRef, topic).get().getId();
-        removeEntryWithIdentifier(entryIdentifier, topic);
+        databaseMiner.getContentEntryFromTopicWithReference(entryRef, topic)
+
+                .ifPresent( (entry) -> removeEntryWithIdentifier(entry.getId(), topic));
     }
 
     /**
