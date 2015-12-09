@@ -234,17 +234,9 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
     }
 
     private void addContentItem(DbStructureDto.Field missingField, DbDataDto.Entry invalidEntry, DbDto topicObject) {
-
         int newFieldRank = missingField.getRank();
-        List<DbDataDto.Item> items = invalidEntry.getItems();
-
         DbDataDto.Item newItem = genHelper.buildDefaultContentItem(Optional.empty(), missingField, topicObject, true);
-        items.add(newFieldRank - 1, newItem);
-
-        // Rank update
-        for (int i = newFieldRank ; i < items.size() ; i++) {
-            items.get(i).shiftFieldRankRight();
-        }
+        invalidEntry.addItemAtRank(newFieldRank, newItem);
     }
 
     private void addResourceEntryFromValidLocale(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
