@@ -189,9 +189,9 @@ public class DatabaseChangeHelperTest {
     public void removeEntryWithIdentifier_whenEntryExists_shouldDeleteIt_andUpdateIds() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        dataObject.getEntries().add(createDefaultContentEntry(1));
-        dataObject.getEntries().add(createDefaultContentEntry(2));
-        dataObject.getEntries().add(createDefaultContentEntry(3));
+        dataObject.addEntry(createDefaultContentEntry(1));
+        dataObject.addEntry(createDefaultContentEntry(2));
+        dataObject.addEntry(createDefaultContentEntry(3));
 
         DbDto topicObject = createDatabaseObject(dataObject, createDefaultStructureObject());
 
@@ -222,13 +222,13 @@ public class DatabaseChangeHelperTest {
     public void duplicateEntryWithIdentifier_whenEntryExists_shouldDuplicateItAndAddItToTopic() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        dataObject.getEntries().add(createDefaultContentEntry(0));
+        dataObject.addEntry(createDefaultContentEntry(0));
 
         DbDataDto.Entry defaultContentEntry = createDefaultContentEntry(1);
         defaultContentEntry.getItems().add(createDefaultEntryItem());
-        dataObject.getEntries().add(defaultContentEntry);
+        dataObject.addEntry(defaultContentEntry);
 
-        dataObject.getEntries().add(createDefaultContentEntry(2));
+        dataObject.addEntry(createDefaultContentEntry(2));
 
         DbStructureDto stuctureObject = createDefaultStructureObject();
 
@@ -256,7 +256,7 @@ public class DatabaseChangeHelperTest {
 
         DbDataDto.Entry defaultContentEntry = createDefaultContentEntry(0);
         defaultContentEntry.getItems().add(createEntryItemForUidField());
-        dataObject.getEntries().add(defaultContentEntry);
+        dataObject.addEntry(defaultContentEntry);
 
         DbStructureDto stuctureObject = createStructureObjectWithUidField();
 

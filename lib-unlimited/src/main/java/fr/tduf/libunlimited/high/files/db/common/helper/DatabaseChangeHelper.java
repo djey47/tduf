@@ -67,7 +67,7 @@ public class DatabaseChangeHelper {
                 .addItems(genHelper.buildDefaultContentItems(reference, topicObject))
                 .build();
 
-        dataDto.getEntries().add(newEntry);
+        dataDto.addEntry(newEntry);
 
         BulkDatabaseMiner.clearAllCaches();
 
@@ -106,7 +106,8 @@ public class DatabaseChangeHelper {
      * @throws java.util.NoSuchElementException when entry to delete does not exist.
      */
     public void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
-        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(topic).get().getData().getEntries();
+        DbDataDto topicDataObject = databaseMiner.getDatabaseTopic(topic).get().getData();
+        List<DbDataDto.Entry> topicEntries = topicDataObject.getEntries();
 
         topicEntries.stream()
 
@@ -114,21 +115,7 @@ public class DatabaseChangeHelper {
 
                 .findAny()
 
-                .map((entry) -> {
-                    topicEntries.remove(entry);
-                    return entry;
-                })
-
-                .ifPresent((removedEntry) -> {
-                    // Fix identifiers of next entries
-                    topicEntries.stream()
-
-                            .filter((entry) -> entry.getId() > removedEntry.getId())
-
-                            .forEach(DbDataDto.Entry::shiftIdUp);
-
-                    BulkDatabaseMiner.clearAllCaches();
-                });
+                .ifPresent(topicDataObject::removeEntry);
     }
 
     /**
@@ -141,7 +128,8 @@ public class DatabaseChangeHelper {
         DbDataDto.Entry sourceEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic).get();
 
         DbDto topicObject = databaseMiner.getDatabaseTopic(topic).get();
-        List<DbDataDto.Entry> currentContentEntries = topicObject.getData().getEntries();
+        DbDataDto topicDataObject = topicObject.getData();
+        List<DbDataDto.Entry> currentContentEntries = topicDataObject.getEntries();
 
         long newIdentifier = currentContentEntries.size();
         List<DbDataDto.Item> clonedItems = cloneContentItems(sourceEntry);
@@ -157,7 +145,7 @@ public class DatabaseChangeHelper {
                     uidContentItem.setRawValue(newReference);
                 });
 
-        currentContentEntries.add(newEntry);
+        topicDataObject.addEntry(newEntry);
 
         BulkDatabaseMiner.clearAllCaches();
 
