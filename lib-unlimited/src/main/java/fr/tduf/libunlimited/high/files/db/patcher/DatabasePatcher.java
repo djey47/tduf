@@ -81,21 +81,22 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
     // TODO move to ChangeHelper
     private void removeEntryMatchingCriteria(List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria, DbDto.Topic changedTopic) {
-        criteria.stream()
-
-                .flatMap((filter) -> databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(filter.getRank(), filter.getValue(), changedTopic).stream())
-
-                .collect(groupingBy((topicEntry) -> topicEntry, counting()))
-
-                .entrySet().stream()
-
-                .filter((entry) -> entry.getValue() == criteria.size())
+        getEntryStreamMatchingCriteria(criteria, changedTopic)
 
                 .forEach((entry) -> databaseChangeHelper.removeEntryWithIdentifier(entry.getKey().getId(), changedTopic));
     }
 
     // TODO move to Miner
     private List<DbDataDto.Entry> getEntriesMatchingCriteria(List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria, DbDto.Topic changedTopic) {
+        return getEntryStreamMatchingCriteria(criteria, changedTopic)
+
+                .map(Map.Entry::getKey)
+
+                .collect(toList());
+    }
+
+    // TODO move to Miner
+    private Stream<Map.Entry<DbDataDto.Entry, Long>> getEntryStreamMatchingCriteria(List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria, DbDto.Topic changedTopic) {
         return criteria.stream()
 
                 .flatMap((filter) -> databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(filter.getRank(), filter.getValue(), changedTopic).stream())
@@ -104,11 +105,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
                 .entrySet().stream()
 
-                .filter((entry) -> entry.getValue() == criteria.size())
-
-                .map(Map.Entry::getKey)
-
-                .collect(toList());
+                .filter((entry) -> entry.getValue() == criteria.size());
     }
 
     private void addOrUpdateContents(DbPatchDto.DbChangeDto changeObject) {
@@ -125,24 +122,11 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
                     if (changeObject.isPartialChange()) {
 
-                        // TODO extract method
                         List<DbPatchDto.DbChangeDto.DbFieldValueDto> partialValues = changeObject.getPartialValues();
                         if (potentialEntry.isPresent()) {
                             updateEntryWithPartialChanges(potentialEntry.get(), topicObject.getStructure(), partialValues);
                         } else {
-                            List<DbPatchDto.DbChangeDto.DbFieldValueDto> filterCompounds = changeObject.getFilterCompounds();
-                            if (filterCompounds == null) {
-                                Log.warn("No entry to be updated with partial values: " + partialValues + ", using no filter.");
-                                return;
-                            }
-
-                            List<DbDataDto.Entry> entries = getEntriesMatchingCriteria(filterCompounds, changedTopic);
-                            if (entries.isEmpty()) {
-                                Log.warn("No entry to be updated with partial values: " + partialValues + ", using filter: " + filterCompounds);
-                                return;
-                            }
-
-                            entries.forEach((entry) -> updateEntryWithPartialChanges(entry, topicObject.getStructure(), partialValues));
+                            updateEntriesMatchingCriteriaWithPartialChanges(changeObject, changedTopic, topicObject, partialValues);
                         }
 
                     } else {
@@ -170,6 +154,22 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     private void updateEntryWithPartialChanges(DbDataDto.Entry existingEntry, DbStructureDto structureObject, List<DbPatchDto.DbChangeDto.DbFieldValueDto> partialValues) {
         List<DbDataDto.Item> modifiedItems = createEntryItemsWithPartialValues(structureObject, existingEntry, partialValues);
         existingEntry.replaceItems(modifiedItems);
+    }
+
+    private void updateEntriesMatchingCriteriaWithPartialChanges(DbPatchDto.DbChangeDto changeObject, DbDto.Topic changedTopic, DbDto topicObject, List<DbPatchDto.DbChangeDto.DbFieldValueDto> partialValues) {
+        List<DbPatchDto.DbChangeDto.DbFieldValueDto> filterCompounds = changeObject.getFilterCompounds();
+        if (filterCompounds == null) {
+            Log.warn("No entry to be updated with partial values: " + partialValues + ", using no filter.");
+            return;
+        }
+
+        List<DbDataDto.Entry> entries = getEntriesMatchingCriteria(filterCompounds, changedTopic);
+        if (entries.isEmpty()) {
+            Log.warn("No entry to be updated with partial values: " + partialValues + ", using filter: " + filterCompounds);
+            return;
+        }
+
+        entries.forEach((entry) -> updateEntryWithPartialChanges(entry, topicObject.getStructure(), partialValues));
     }
 
     private void deleteResources(DbPatchDto.DbChangeDto changeObject) {
