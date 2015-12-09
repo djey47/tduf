@@ -1,0 +1,22 @@
+{
+  "changes": [
+    {
+      "comment": "Existing entries to be removed (5): having field #1 (Achievement_Event_) 55736935",
+      "type" : "DELETE",
+      "topic" : "ACHIEVEMENTS",
+      "filter" : [{
+        "rank" : 1,
+        "value" : "55736935"
+      }]
+    },
+    {
+      "comment": "Missing entry: field #1 000000000",
+      "type" : "DELETE",
+      "topic" : "ACHIEVEMENTS",
+      "filter" : [{
+        "rank" : 1,
+        "value" : "000000000"
+      }]
+    }
+  ]
+}

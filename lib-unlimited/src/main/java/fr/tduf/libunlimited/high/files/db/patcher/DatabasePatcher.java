@@ -2,6 +2,8 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -11,13 +13,14 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 /**
  * Used to apply patches to an existing database.
@@ -60,16 +63,34 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         BulkDatabaseMiner.clearAllCaches();
     }
 
+    // TODO extract methods
     private void deleteContents(DbPatchDto.DbChangeDto changeObject) {
 
         DbDto.Topic changedTopic = changeObject.getTopic();
-        databaseMiner.getContentEntryFromTopicWithReference(changeObject.getRef(), changedTopic)
-                .ifPresent((contentEntry) -> {
+        Optional<String> potentialRef = Optional.ofNullable(changeObject.getRef());
 
-                    List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(changedTopic).get().getData().getEntries();
-                    topicEntries.remove(contentEntry);
+        DatabaseGenHelper genHelper = new DatabaseGenHelper(databaseMiner);
+        DatabaseChangeHelper databaseChangeHelper = new DatabaseChangeHelper(genHelper, databaseMiner);
 
-                });
+        if (potentialRef.isPresent()) {
+            databaseMiner.getContentEntryFromTopicWithReference(potentialRef.get(), changedTopic)
+
+                    .ifPresent((entry) -> databaseChangeHelper.removeEntryWithIdentifier(entry.getId(), changedTopic));
+        } else {
+            requireNonNull(changeObject.getFilterCompounds(), "As no REF is provided, filter attribute is mandatory.");
+
+            changeObject.getFilterCompounds().stream()
+
+                    .flatMap((filter) -> databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(filter.getRank(), filter.getValue(), changedTopic).stream())
+
+                    .collect(groupingBy((topicEntry) -> topicEntry, counting()))
+
+                    .entrySet().stream()
+
+                    .filter((entry) -> entry.getValue() == changeObject.getFilterCompounds().size())
+
+                    .forEach((entry) -> databaseChangeHelper.removeEntryWithIdentifier(entry.getKey().getId(), changedTopic));
+        }
     }
 
     private void addOrUpdateContents(DbPatchDto.DbChangeDto changeObject) {
