@@ -291,6 +291,49 @@ public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonT
         assertThat(databaseMiner.getContentEntryFromTopicWithReference("606298799", CAR_PHYSICS_DATA)).isEmpty();
     }
 
+    @Test
+    public void apply_whenDeleteContentsPatch_andFilterWithOneCondition_shouldRemoveExistingEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto deleteContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteContents-filter.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Achievements.json");
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+
+        // WHEN
+        patcher.apply(deleteContentsPatch);
+
+
+        // THEN
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+        assertThat(databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(1, "55736935", ACHIEVEMENTS)).isEmpty();
+    }
+
+    @Test
+    public void apply_whenDeleteContentsPatch_andFilterWithTwoConditions_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto deleteContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteContents-filter2.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Achievements.json");
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+
+        // WHEN
+        patcher.apply(deleteContentsPatch);
+
+        // THEN
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+
+        List<DbDataDto.Entry> actualEntries = databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(1, "55736935", ACHIEVEMENTS);
+        assertThat(actualEntries)
+                .hasSize(4);
+        assertThat(actualEntries.stream()
+
+                .filter((entry) -> "5".equals(entry.getItems().get(1).getRawValue()))
+
+                .findAny()).isEmpty();
+    }
+
     private static int getEntryHashCode(BulkDatabaseMiner databaseMiner, String ref, DbDto.Topic topic) {
         return databaseMiner
                 .getContentEntryFromTopicWithReference(ref, topic)
