@@ -225,7 +225,7 @@ public class DatabaseChangeHelperTest {
         dataObject.addEntry(createDefaultContentEntry(0));
 
         DbDataDto.Entry defaultContentEntry = createDefaultContentEntry(1);
-        defaultContentEntry.getItems().add(createDefaultEntryItem());
+        defaultContentEntry.appendItem(createDefaultEntryItem());
         dataObject.addEntry(defaultContentEntry);
 
         dataObject.addEntry(createDefaultContentEntry(2));
@@ -255,7 +255,7 @@ public class DatabaseChangeHelperTest {
         DbDataDto dataObject = createDefaultDataObject();
 
         DbDataDto.Entry defaultContentEntry = createDefaultContentEntry(0);
-        defaultContentEntry.getItems().add(createEntryItemForUidField());
+        defaultContentEntry.appendItem(createEntryItemForUidField());
         dataObject.addEntry(defaultContentEntry);
 
         DbStructureDto stuctureObject = createStructureObjectWithUidField();
@@ -350,8 +350,8 @@ public class DatabaseChangeHelperTest {
     public void updateAssociationEntryWithSourceAndTargetReferences_whenNoTargetReference_shouldOnlyApplySourceRef() {
         // GIVEN
         DbDataDto.Entry associationEntry = createDefaultContentEntry(0);
-        associationEntry.getItems().add(DbDataDto.Item.builder().forName("REF").ofFieldRank(1).build());
-        associationEntry.getItems().add(DbDataDto.Item.builder().forName("Other").ofFieldRank(2).build());
+        associationEntry.appendItem(DbDataDto.Item.builder().forName("REF").ofFieldRank(1).build());
+        associationEntry.appendItem(DbDataDto.Item.builder().forName("Other").ofFieldRank(2).build());
 
         // WHEN
         DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, Optional.empty());
@@ -364,9 +364,9 @@ public class DatabaseChangeHelperTest {
     public void updateAssociationEntryWithSourceAndTargetReferences_whenTargetReference_shouldApplySourceAndTargetRefs() {
         // GIVEN
         DbDataDto.Entry associationEntry = createDefaultContentEntry(0);
-        associationEntry.getItems().add(DbDataDto.Item.builder().forName("REF").ofFieldRank(1).build());
-        associationEntry.getItems().add(DbDataDto.Item.builder().forName("REF2").ofFieldRank(2).build());
-        associationEntry.getItems().add(DbDataDto.Item.builder().forName("Other").ofFieldRank(3).build());
+        associationEntry.appendItem(DbDataDto.Item.builder().forName("REF").ofFieldRank(1).build());
+        associationEntry.appendItem(DbDataDto.Item.builder().forName("REF2").ofFieldRank(2).build());
+        associationEntry.appendItem(DbDataDto.Item.builder().forName("Other").ofFieldRank(3).build());
 
         // WHEN
         DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, Optional.of(ENTRY_REFERENCE_BIS));

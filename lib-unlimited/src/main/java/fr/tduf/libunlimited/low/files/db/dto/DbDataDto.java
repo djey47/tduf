@@ -77,8 +77,22 @@ public class DbDataDto implements Serializable {
             };
         }
 
+        public void addItemAtRank(int fieldRank, Item item) {
+            items.add(fieldRank - 1, item);
+
+            // Rank update
+            for (int i = fieldRank ; i < items.size() ; i++) {
+                items.get(i).shiftFieldRankRight();
+            }
+
+        }
+
+        public void appendItem(Item item) {
+            items.add(item);
+        }
+
         public List<Item> getItems() {
-            return items;
+            return Collections.unmodifiableList(items);
         }
 
         public void setItems(List<Item> items) {
@@ -244,13 +258,6 @@ public class DbDataDto implements Serializable {
             };
         }
 
-        /**
-         * Increases field rank by one unit.
-         */
-        public void shiftFieldRankRight() {
-            this.fieldRank++;
-        }
-
         public String getName() {
             return name;
         }
@@ -289,6 +296,10 @@ public class DbDataDto implements Serializable {
         @Override
         public String toString() {
             return reflectionToString(this);
+        }
+
+        private void shiftFieldRankRight() {
+            this.fieldRank++;
         }
 
         public interface ItemBuilder {
