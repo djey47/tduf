@@ -219,6 +219,38 @@ public class DatabaseChangeHelperTest {
     }
 
     @Test
+    public void removeEntryWithReference_whenEntryExists_shouldDeleteIt() {
+        // GIVEN
+        DbDataDto dataObject = createDefaultDataObject();
+        DbDataDto.Entry contentEntryWithUidItem = createContentEntryWithUidItem(1);
+        dataObject.addEntry(contentEntryWithUidItem);
+
+        DbDto topicObject = createDatabaseObject(dataObject, createDefaultStructureObject());
+
+        when(minerMock.getContentEntryFromTopicWithReference("111111", TOPIC)).thenReturn(Optional.of(contentEntryWithUidItem));
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+
+
+        // WHEN
+        changeHelper.removeEntryWithReference("111111", TOPIC);
+
+
+        // THEN
+        assertThat(dataObject.getEntries()).isEmpty();
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void removeEntryWithReference_whenEntryDoesNotExist_shouldThrowException() {
+        // GIVEN
+        when(minerMock.getContentEntryFromTopicWithReference("111111", TOPIC)).thenReturn(Optional.empty());
+
+        // WHEN
+        changeHelper.removeEntryWithReference("111111", TOPIC);
+
+        // THEN: NSEE
+    }
+
+    @Test
     public void duplicateEntryWithIdentifier_whenEntryExists_shouldDuplicateItAndAddItToTopic() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
@@ -398,6 +430,13 @@ public class DatabaseChangeHelperTest {
     private static DbDataDto.Entry createDefaultContentEntry(long internalId) {
         return DbDataDto.Entry.builder()
                 .forId(internalId)
+                .build();
+    }
+
+    private static DbDataDto.Entry createContentEntryWithUidItem(long internalId) {
+        return DbDataDto.Entry.builder()
+                .forId(internalId)
+                .addItem(createEntryItemForUidField())
                 .build();
     }
 
