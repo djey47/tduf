@@ -12,6 +12,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
@@ -93,6 +94,23 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .forEach((entry) -> databaseChangeHelper.removeEntryWithIdentifier(entry.getKey().getId(), changedTopic));
     }
 
+    // TODO move to Miner
+    private List<DbDataDto.Entry> getEntriesMatchingCriteria(List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria, DbDto.Topic changedTopic) {
+        return criteria.stream()
+
+                .flatMap((filter) -> databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(filter.getRank(), filter.getValue(), changedTopic).stream())
+
+                .collect(groupingBy((topicEntry) -> topicEntry, counting()))
+
+                .entrySet().stream()
+
+                .filter((entry) -> entry.getValue() == criteria.size())
+
+                .map(Map.Entry::getKey)
+
+                .collect(toList());
+    }
+
     private void addOrUpdateContents(DbPatchDto.DbChangeDto changeObject) {
 
         DbDto.Topic changedTopic = changeObject.getTopic();
@@ -107,7 +125,25 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
                     if (changeObject.isPartialChange()) {
 
-                        updateEntryWithPartialChanges(potentialEntry, topicObject.getStructure(), changeObject.getPartialValues());
+                        // TODO extract method
+                        List<DbPatchDto.DbChangeDto.DbFieldValueDto> partialValues = changeObject.getPartialValues();
+                        if (potentialEntry.isPresent()) {
+                            updateEntryWithPartialChanges(potentialEntry.get(), topicObject.getStructure(), partialValues);
+                        } else {
+                            List<DbPatchDto.DbChangeDto.DbFieldValueDto> filterCompounds = changeObject.getFilterCompounds();
+                            if (filterCompounds == null) {
+                                Log.warn("No entry to be updated with partial values: " + partialValues + ", using no filter.");
+                                return;
+                            }
+
+                            List<DbDataDto.Entry> entries = getEntriesMatchingCriteria(filterCompounds, changedTopic);
+                            if (entries.isEmpty()) {
+                                Log.warn("No entry to be updated with partial values: " + partialValues + ", using filter: " + filterCompounds);
+                                return;
+                            }
+
+                            entries.forEach((entry) -> updateEntryWithPartialChanges(entry, topicObject.getStructure(), partialValues));
+                        }
 
                     } else {
 
@@ -131,14 +167,9 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
     }
 
-    private void updateEntryWithPartialChanges(Optional<DbDataDto.Entry> existingEntry, DbStructureDto structureObject, List<DbPatchDto.DbChangeDto.DbFieldValueDto> partialValues) {
-        if (!existingEntry.isPresent()) {
-            Log.warn("Unknown REF, no entry to be updated with partial values: " + partialValues);
-            return;
-        }
-
-        List<DbDataDto.Item> modifiedItems = createEntryItemsWithPartialValues(structureObject, existingEntry.get(), partialValues);
-        existingEntry.get().replaceItems(modifiedItems);
+    private void updateEntryWithPartialChanges(DbDataDto.Entry existingEntry, DbStructureDto structureObject, List<DbPatchDto.DbChangeDto.DbFieldValueDto> partialValues) {
+        List<DbDataDto.Item> modifiedItems = createEntryItemsWithPartialValues(structureObject, existingEntry, partialValues);
+        existingEntry.replaceItems(modifiedItems);
     }
 
     private void deleteResources(DbPatchDto.DbChangeDto changeObject) {
