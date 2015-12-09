@@ -119,6 +119,18 @@ public class DatabaseChangeHelper {
     }
 
     /**
+     * Deletes content entry with given reference in specified topic.
+     * Following entries will have their ids updated (decreased by 1).
+     * @param entryRef  : ref value of entry to remove
+     * @param topic     : database topic where entry should be changed
+     * @throws java.util.NoSuchElementException when entry to delete does not exist.
+     */
+    public void removeEntryWithReference(String entryRef, DbDto.Topic topic) {
+        long entryIdentifier = databaseMiner.getContentEntryFromTopicWithReference(entryRef, topic).get().getId();
+        removeEntryWithIdentifier(entryIdentifier, topic);
+    }
+
+    /**
      * @param entryId   : internal identifier of entry to be copied
      * @param topic     : database topic where entry should be duplicated
      * @return a clone of entry with given identifier in specified topic and added to this topic.
