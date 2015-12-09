@@ -13,7 +13,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
@@ -126,8 +125,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
         } else {
 
-            List<DbDataDto.Entry> topicEntries = topicObject.getData().getEntries();
-            addEntryToTopic(modifiedItems, topicEntries);
+            addEntryToTopic(modifiedItems, topicObject.getData());
 
         }
     }
@@ -207,9 +205,9 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
     }
 
-    private static void addEntryToTopic(List<DbDataDto.Item> modifiedItems, List<DbDataDto.Entry> topicEntries) {
-        topicEntries.add(DbDataDto.Entry.builder()
-                .forId(topicEntries.size())
+    private static void addEntryToTopic(List<DbDataDto.Item> modifiedItems, DbDataDto topicDataObject) {
+        topicDataObject.addEntry(DbDataDto.Entry.builder()
+                .forId(topicDataObject.getEntries().size())
                 .addItems(modifiedItems)
                 .build());
     }
