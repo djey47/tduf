@@ -309,7 +309,7 @@ public class BulkDatabaseMiner {
             return getContentEntryFromTopicWithInternalIdentifier(entryIndex, sourceTopic)
 
                     .map((contentEntry) -> {
-                        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(contentEntry.getItems().get(fieldRank - 1), sourceTopicStructureFields);
+                        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(contentEntry.getItemAtRank(fieldRank).get(), sourceTopicStructureFields);
                         if (structureField.isAResourceField()) {
                             DbDto.Topic finalTopic = sourceTopic;
                             if (RESOURCE_REMOTE == structureField.getFieldType()) {

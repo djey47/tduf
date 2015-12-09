@@ -313,7 +313,7 @@ public class DatabaseChangeHelperTest {
             int i = Integer.parseInt(o);
             return i >= 10000000 && i <= 99999999;
         }, "between 10000000 and 99999999 (inclusive)");
-        assertThat(dataObject.getEntries().get(1).getItems().get(0).getRawValue()).is(betweenMinAndMaxRefValues);
+        assertThat(dataObject.getEntries().get(1).getItemAtRank(1).get().getRawValue()).is(betweenMinAndMaxRefValues);
     }
 
     @Test(expected = NoSuchElementException.class)
