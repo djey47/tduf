@@ -12,14 +12,13 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Used to apply patches to an existing database.
@@ -75,37 +74,8 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
             databaseChangeHelper.removeEntryWithReference(potentialRef.get(), changedTopic);
         } else {
             requireNonNull(changeObject.getFilterCompounds(), "As no REF is provided, filter attribute is mandatory.");
-            removeEntryMatchingCriteria(changeObject.getFilterCompounds(), changedTopic);
+            databaseChangeHelper.removeEntriesMatchingCriteria(changeObject.getFilterCompounds(), changedTopic);
         }
-    }
-
-    // TODO move to ChangeHelper
-    private void removeEntryMatchingCriteria(List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria, DbDto.Topic changedTopic) {
-        getEntryStreamMatchingCriteria(criteria, changedTopic)
-
-                .forEach((entry) -> databaseChangeHelper.removeEntryWithIdentifier(entry.getKey().getId(), changedTopic));
-    }
-
-    // TODO move to Miner
-    private List<DbDataDto.Entry> getEntriesMatchingCriteria(List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria, DbDto.Topic changedTopic) {
-        return getEntryStreamMatchingCriteria(criteria, changedTopic)
-
-                .map(Map.Entry::getKey)
-
-                .collect(toList());
-    }
-
-    // TODO move to Miner
-    private Stream<Map.Entry<DbDataDto.Entry, Long>> getEntryStreamMatchingCriteria(List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria, DbDto.Topic changedTopic) {
-        return criteria.stream()
-
-                .flatMap((filter) -> databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(filter.getRank(), filter.getValue(), changedTopic).stream())
-
-                .collect(groupingBy((topicEntry) -> topicEntry, counting()))
-
-                .entrySet().stream()
-
-                .filter((entry) -> entry.getValue() == criteria.size());
     }
 
     private void addOrUpdateContents(DbPatchDto.DbChangeDto changeObject) {
@@ -163,7 +133,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
             return;
         }
 
-        List<DbDataDto.Entry> entries = getEntriesMatchingCriteria(filterCompounds, changedTopic);
+        List<DbDataDto.Entry> entries = databaseMiner.getContentEntriesMatchingCriteria(filterCompounds, changedTopic);
         if (entries.isEmpty()) {
             Log.warn("No entry to be updated with partial values: " + partialValues + ", using filter: " + filterCompounds);
             return;
