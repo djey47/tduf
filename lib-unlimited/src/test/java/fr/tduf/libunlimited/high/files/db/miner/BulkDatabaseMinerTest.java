@@ -328,7 +328,7 @@ public class BulkDatabaseMinerTest {
         // THEN
         assertThat(actualEntry).isPresent();
         assertThat(actualEntry.get().getId()).isEqualTo(0);
-        assertThat(actualEntry.get().getItems().get(0).getRawValue()).isEqualTo("606298799");
+        assertThat(actualEntry.get().getItemAtRank(1).get().getRawValue()).isEqualTo("606298799");
     }
 
     @Test
