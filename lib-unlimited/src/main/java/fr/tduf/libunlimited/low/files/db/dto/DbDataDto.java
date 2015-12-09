@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.db.dto;
 
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
@@ -9,6 +10,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,16 +77,6 @@ public class DbDataDto implements Serializable {
             };
         }
 
-        /**
-         * Decreases current entry identifier from one unit.
-         * To be used on all next entries when an entry gets deleted.
-         */
-        public void shiftIdUp() {
-            if (id > 0) {
-                id--;
-            }
-        }
-
         public List<Item> getItems() {
             return items;
         }
@@ -110,6 +102,12 @@ public class DbDataDto implements Serializable {
         @Override
         public String toString() {
             return reflectionToString(this);
+        }
+
+        private void shiftIdUp() {
+            if (id > 0) {
+                id--;
+            }
         }
 
         public interface EntryBuilder {
@@ -198,10 +196,10 @@ public class DbDataDto implements Serializable {
                 @Override
                 public ItemBuilder fromExisting(Item contentItem) {
                     return DbDataDto.Item.builder()
-                                .forName(contentItem.getName())
-                                .ofFieldRank(contentItem.getFieldRank())
-                                .withRawValue(contentItem.getRawValue())
-                                .bitFieldForTopic(contentItem.isBitfield(),  contentItem.getTopicForBitfield());
+                            .forName(contentItem.getName())
+                            .ofFieldRank(contentItem.getFieldRank())
+                            .withRawValue(contentItem.getRawValue())
+                            .bitFieldForTopic(contentItem.isBitfield(), contentItem.getTopicForBitfield());
                 }
 
                 @Override
@@ -363,7 +361,7 @@ public class DbDataDto implements Serializable {
     }
 
     public List<Entry> getEntries() {
-        return entries;
+        return Collections.unmodifiableList(entries);
     }
 
     /**
@@ -393,6 +391,23 @@ public class DbDataDto implements Serializable {
                 return dbDataDto;
             }
         };
+    }
+
+    public void addEntry(Entry entry) {
+        entries.add(entry);
+    }
+
+    public void removeEntry(Entry entry) {
+        entries.remove(entry);
+
+        // Fix identifiers of next entries
+        entries.stream()
+
+                .filter((e) -> e.getId() > entry.getId())
+
+                .forEach(DbDataDto.Entry::shiftIdUp);
+
+        BulkDatabaseMiner.clearAllCaches();
     }
 
     @Override

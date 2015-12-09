@@ -281,7 +281,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                 .addItems(genHelper.buildDefaultContentItems(reference, topicObject))
                 .build();
 
-        dataDto.getEntries().add(newEntry);
+        dataDto.addEntry(newEntry);
     }
 
     private Set<DbResourceDto.Locale> findValidResourceLocales() {
