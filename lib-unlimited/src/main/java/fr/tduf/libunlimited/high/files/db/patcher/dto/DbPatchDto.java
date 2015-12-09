@@ -277,6 +277,7 @@ public class DbPatchDto {
             }
         }
 
+        // TODO move to dedicated class in common package
         /**
          * An entry field value for selection and changes in update/delete instructions.
          */

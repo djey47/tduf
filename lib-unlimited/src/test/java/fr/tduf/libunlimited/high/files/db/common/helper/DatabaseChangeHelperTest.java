@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.common.helper;
 
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -248,6 +250,49 @@ public class DatabaseChangeHelperTest {
         changeHelper.removeEntryWithReference("111111", TOPIC);
 
         // THEN
+    }
+
+    @Test
+    public void removeEntriesMatchingCriteria_whenOneEntryMatches_shouldDeleteIt() {
+        // GIVEN
+        DbDataDto dataObject = createDefaultDataObject();
+        DbDataDto.Entry contentEntryWithUidItem = createContentEntryWithUidItem(1);
+        dataObject.addEntry(contentEntryWithUidItem);
+
+        DbDto topicObject = createDatabaseObject(dataObject, createDefaultStructureObject());
+
+        List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria = singletonList(DbPatchDto.DbChangeDto.DbFieldValueDto.fromCouple(1, "111111"));
+
+        when(minerMock.getContentEntryStreamMatchingCriteria(eq(criteria), eq(TOPIC))).thenReturn(Stream.of(contentEntryWithUidItem));
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+
+
+        // WHEN
+        changeHelper.removeEntriesMatchingCriteria(criteria, TOPIC);
+
+
+        // THEN
+        assertThat(dataObject.getEntries()).isEmpty();
+    }
+
+    @Test
+    public void removeEntriesMatchingCriteria_whenNoEntryMatches_shouldDoNothing() {
+        // GIVEN
+        DbDataDto dataObject = createDefaultDataObject();
+        DbDataDto.Entry contentEntryWithUidItem = createContentEntryWithUidItem(1);
+        dataObject.addEntry(contentEntryWithUidItem);
+
+        List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria = singletonList(DbPatchDto.DbChangeDto.DbFieldValueDto.fromCouple(1, "111111"));
+
+        when(minerMock.getContentEntryStreamMatchingCriteria(eq(criteria), eq(TOPIC))).thenReturn(Stream.empty());
+
+
+        // WHEN
+        changeHelper.removeEntriesMatchingCriteria(criteria, TOPIC);
+
+
+        // THEN
+        assertThat(dataObject.getEntries()).hasSize(1);
     }
 
     @Test
