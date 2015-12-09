@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.high.files.db.miner;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.cache.CacheManager;
+import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -9,11 +10,11 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_REMOTE;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 
 /**
  * Class providing utility methods to request data from database objects.
@@ -181,6 +182,36 @@ public class BulkDatabaseMiner {
 
                             .orElse(null));
         });
+    }
+
+    /**
+     * @param criteria      : list of conditions to select content entries
+     * @param topic         : topic in TDU Database to search
+     * @return all database entries satisfying all conditions.
+     */
+    public List<DbDataDto.Entry> getContentEntriesMatchingCriteria(List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria, DbDto.Topic topic) {
+        return getContentEntryStreamMatchingCriteria(criteria, topic)
+
+                .collect(toList());
+    }
+
+    /**
+     * @param criteria      : list of conditions to select content entries
+     * @param topic         : topic in TDU Database to search
+     * @return a stream of all database entries satisfying all conditions.
+     */
+    public Stream<DbDataDto.Entry> getContentEntryStreamMatchingCriteria(List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria, DbDto.Topic topic) {
+        return criteria.stream()
+
+                .flatMap((filter) -> getAllContentEntriesFromTopicWithItemValueAtFieldRank(filter.getRank(), filter.getValue(), topic).stream())
+
+                .collect(groupingBy((topicEntry) -> topicEntry, counting()))
+
+                .entrySet().stream()
+
+                .filter((entry) -> entry.getValue() == criteria.size())
+
+                .map(Map.Entry::getKey);
     }
 
     /**

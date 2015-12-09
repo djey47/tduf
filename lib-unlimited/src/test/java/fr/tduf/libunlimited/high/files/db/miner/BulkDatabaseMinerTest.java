@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.high.files.db.miner;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.common.logger.PerformanceLogger;
+import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -20,6 +21,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BulkDatabaseMinerTest {
@@ -248,6 +250,34 @@ public class BulkDatabaseMinerTest {
 
         // THEN
         assertThat(actualEntry).isPresent();
+    }
+
+    @Test
+    public void getContentEntriesMatchingCriteria_whenEntryFound_shouldReturnIt() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsFromResources();
+        List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria = singletonList(DbPatchDto.DbChangeDto.DbFieldValueDto.fromCouple(1, "606298799"));
+
+        // WHEN
+        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getContentEntriesMatchingCriteria(criteria, BOTS);
+
+        // THEN
+        assertThat(actualEntries)
+                .hasSize(1)
+                .extracting("id").containsExactly(0L);
+    }
+
+    @Test
+    public void getContentEntriesMatchingCriteria_whenEntryNotFound_shouldReturnEmptyList() throws IOException, URISyntaxException {
+        // GIVEN
+        List<DbDto> topicObjects = createTopicObjectsFromResources();
+        List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria = singletonList(DbPatchDto.DbChangeDto.DbFieldValueDto.fromCouple(1, "0000000"));
+
+        // WHEN
+        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getContentEntriesMatchingCriteria(criteria, BOTS);
+
+        // THEN
+        assertThat(actualEntries).isEmpty();
     }
 
     @Test

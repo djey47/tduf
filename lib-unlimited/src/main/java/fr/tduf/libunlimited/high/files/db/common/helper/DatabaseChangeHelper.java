@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.common.helper;
 
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -107,7 +108,7 @@ public class DatabaseChangeHelper {
      * Deletes content entry with given internal identifier in specified topic.
      * Following entries will have their ids updated (decreased by 1).
      * @param entryId   : internal identifier of entry to remove
-     * @param topic     : database topic where entry should be changed
+     * @param topic     : database topic where entry should be removed
      * @throws java.util.NoSuchElementException when entry to delete does not exist.
      */
     public void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
@@ -127,12 +128,24 @@ public class DatabaseChangeHelper {
      * Deletes content entry with given reference in specified topic.
      * Following entries will have their ids updated (decreased by 1).
      * @param entryRef  : ref value of entry to remove
-     * @param topic     : database topic where entry should be changed
+     * @param topic     : database topic where entry should be removed.
      */
     public void removeEntryWithReference(String entryRef, DbDto.Topic topic) {
         databaseMiner.getContentEntryFromTopicWithReference(entryRef, topic)
 
                 .ifPresent( (entry) -> removeEntryWithIdentifier(entry.getId(), topic));
+    }
+
+    /**
+     * Deletes content entries satisfying all conditions.
+     * Following entries will have their ids updated (decreased by 1).
+     * @param criteria  : list of conditions to select content entries
+     * @param topic     : database topic where entry should be removed
+     */
+    public void removeEntriesMatchingCriteria(List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria, DbDto.Topic topic) {
+        databaseMiner.getContentEntryStreamMatchingCriteria(criteria, topic)
+
+                .forEach((entry) -> removeEntryWithIdentifier(entry.getId(), topic));
     }
 
     /**
