@@ -239,15 +239,15 @@ public class DatabaseChangeHelperTest {
         assertThat(dataObject.getEntries()).isEmpty();
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void removeEntryWithReference_whenEntryDoesNotExist_shouldThrowException() {
+    @Test
+    public void removeEntryWithReference_whenEntryDoesNotExist_shouldDoNothing() {
         // GIVEN
         when(minerMock.getContentEntryFromTopicWithReference("111111", TOPIC)).thenReturn(Optional.empty());
 
         // WHEN
         changeHelper.removeEntryWithReference("111111", TOPIC);
 
-        // THEN: NSEE
+        // THEN
     }
 
     @Test
