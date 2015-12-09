@@ -274,6 +274,64 @@ public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonT
     }
 
     @Test
+    public void apply_whenUpdateContentsPatch_forOneItem_andFilterWithOneCondition_shouldChangeThem() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-filter.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Achievements.json");
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+
+        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(ACHIEVEMENTS).get().getData().getEntries();
+        int previousEntryCount = topicEntries.size();
+
+
+        // WHEN
+        patcher.apply(updateContentsPatch);
+
+
+        // THEN
+        int actualEntryCount = topicEntries.size();
+        assertThat(actualEntryCount).isEqualTo(previousEntryCount);
+
+        assertThat(databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(1, "55736935", ACHIEVEMENTS).stream()
+
+                .filter((entry) -> "5".equals(entry.getItemAtRank(2).get().getRawValue()))
+
+                .count()).isEqualTo(5);
+    }
+
+    @Test
+    public void apply_whenUpdateContentsPatch_forOneItem_andFilterWithTwoConditions_shouldChangeIt() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-filter2.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Achievements.json");
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+
+        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(ACHIEVEMENTS).get().getData().getEntries();
+        int previousEntryCount = topicEntries.size();
+
+
+        // WHEN
+        patcher.apply(updateContentsPatch);
+
+
+        // THEN
+        int actualEntryCount = topicEntries.size();
+        assertThat(actualEntryCount).isEqualTo(previousEntryCount);
+
+        assertThat(databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(1, "55736935", ACHIEVEMENTS).stream()
+
+                .filter((entry) -> "5".equals(entry.getItemAtRank(2).get().getRawValue()))
+
+                .count()).isEqualTo(2);
+    }
+
+    @Test
     public void apply_whenDeleteContentsPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteContents-ref.mini.json");

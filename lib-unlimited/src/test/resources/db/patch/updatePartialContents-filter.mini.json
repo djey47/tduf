@@ -1,0 +1,21 @@
+{
+  "changes": [
+    {
+      "comment": "Partially updates entries (7) with field #1 (Achievement_Event_) =55736935.",
+      "type": "UPDATE",
+      "topic": "ACHIEVEMENTS",
+      "filter": [
+        {
+          "rank": 1,
+          "value": "55736935"
+        }
+      ],
+      "partialValues": [
+        {
+          "rank": 2,
+          "value": "5"
+        }
+      ]
+    }
+  ]
+}
