@@ -54,7 +54,7 @@ public class CamerasHelperTest {
     }
 
     @Test
-    @Ignore //Test trop long, à voir sur un plus petit fichier
+    @Ignore //Test trop long, à voir sur un plus petit fichier. Couvert par le test d'intégration
     public void duplicateAllCameraSets_whenSourceExists_shouldCloneAllSets() throws Exception {
         // GIVEN-WHEN
         CamerasHelper.duplicateAllCameraSets(10000, parser);
