@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.common.helper;
 
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -142,7 +142,7 @@ public class DatabaseChangeHelper {
      * @param criteria  : list of conditions to select content entries
      * @param topic     : database topic where entry should be removed
      */
-    public void removeEntriesMatchingCriteria(List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria, DbDto.Topic topic) {
+    public void removeEntriesMatchingCriteria(List<DbFieldValueDto> criteria, DbDto.Topic topic) {
         databaseMiner.getContentEntryStreamMatchingCriteria(criteria, topic)
 
                 .forEach((entry) -> removeEntryWithIdentifier(entry.getId(), topic));

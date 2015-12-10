@@ -2,7 +2,7 @@ package fr.tduf.libunlimited.high.files.db.miner;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.cache.CacheManager;
-import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -189,7 +189,7 @@ public class BulkDatabaseMiner {
      * @param topic         : topic in TDU Database to search
      * @return all database entries satisfying all conditions.
      */
-    public List<DbDataDto.Entry> getContentEntriesMatchingCriteria(List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria, DbDto.Topic topic) {
+    public List<DbDataDto.Entry> getContentEntriesMatchingCriteria(List<DbFieldValueDto> criteria, DbDto.Topic topic) {
         return getContentEntryStreamMatchingCriteria(criteria, topic)
 
                 .collect(toList());
@@ -200,7 +200,7 @@ public class BulkDatabaseMiner {
      * @param topic         : topic in TDU Database to search
      * @return a stream of all database entries satisfying all conditions.
      */
-    public Stream<DbDataDto.Entry> getContentEntryStreamMatchingCriteria(List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria, DbDto.Topic topic) {
+    public Stream<DbDataDto.Entry> getContentEntryStreamMatchingCriteria(List<DbFieldValueDto> criteria, DbDto.Topic topic) {
         return criteria.stream()
 
                 .flatMap((filter) -> getAllContentEntriesFromTopicWithItemValueAtFieldRank(filter.getRank(), filter.getValue(), topic).stream())

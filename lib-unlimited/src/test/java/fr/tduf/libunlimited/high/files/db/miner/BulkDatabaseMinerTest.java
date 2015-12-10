@@ -3,7 +3,7 @@ package fr.tduf.libunlimited.high.files.db.miner;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.common.logger.PerformanceLogger;
-import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -15,7 +15,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static com.esotericsoftware.minlog.Log.*;
+import static com.esotericsoftware.minlog.Log.LEVEL_DEBUG;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
@@ -256,7 +256,7 @@ public class BulkDatabaseMinerTest {
     public void getContentEntriesMatchingCriteria_whenEntryFound_shouldReturnIt() throws IOException, URISyntaxException {
         // GIVEN
         List<DbDto> topicObjects = createTopicObjectsFromResources();
-        List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria = singletonList(DbPatchDto.DbChangeDto.DbFieldValueDto.fromCouple(1, "606298799"));
+        List<DbFieldValueDto> criteria = singletonList(DbFieldValueDto.fromCouple(1, "606298799"));
 
         // WHEN
         List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getContentEntriesMatchingCriteria(criteria, BOTS);
@@ -271,7 +271,7 @@ public class BulkDatabaseMinerTest {
     public void getContentEntriesMatchingCriteria_whenEntryNotFound_shouldReturnEmptyList() throws IOException, URISyntaxException {
         // GIVEN
         List<DbDto> topicObjects = createTopicObjectsFromResources();
-        List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria = singletonList(DbPatchDto.DbChangeDto.DbFieldValueDto.fromCouple(1, "0000000"));
+        List<DbFieldValueDto> criteria = singletonList(DbFieldValueDto.fromCouple(1, "0000000"));
 
         // WHEN
         List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getContentEntriesMatchingCriteria(criteria, BOTS);
