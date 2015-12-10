@@ -7,6 +7,21 @@
       "ref": "606298799"
     },
     {
+      "comment": "Existing entry to be removed: field #1=637314272 #2=72825",
+      "type" : "DELETE",
+      "topic" : "CAR_PHYSICS_DATA",
+      "filter": [
+        {
+          "rank": 1,
+          "value": "637314272"
+        },
+        {
+          "rank": 2,
+          "value": "72825"
+        }
+      ]
+    },
+    {
       "comment": "Missing entry: ref 000000000",
       "type" : "DELETE",
       "topic" : "CAR_PHYSICS_DATA",
