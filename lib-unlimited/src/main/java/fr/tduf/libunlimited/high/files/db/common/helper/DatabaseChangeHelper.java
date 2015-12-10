@@ -30,7 +30,6 @@ public class DatabaseChangeHelper {
         this.genHelper = genHelper;
     }
 
-    // TODO see to use this constructor when possible
     public DatabaseChangeHelper(BulkDatabaseMiner databaseMiner) {
         this(new DatabaseGenHelper(databaseMiner), databaseMiner);
     }
