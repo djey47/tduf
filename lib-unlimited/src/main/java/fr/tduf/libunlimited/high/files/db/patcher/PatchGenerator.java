@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -192,7 +193,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     private DbPatchDto.DbChangeDto makePartialChangeObject(String entryReference, DbDto.Topic topic, List<DbDataDto.Item> entryItems, List<DbStructureDto.Field> structureFields, ItemRange fieldRange, RequiredReferences requiredReferences) {
         requireNonNull(entryReference, "Entry reference is required for partial change object.");
 
-        List<DbPatchDto.DbChangeDto.DbFieldValueDto> partialValues = entryItems.stream()
+        List<DbFieldValueDto> partialValues = entryItems.stream()
 
                 .filter((entryItem) -> fieldRange.accepts(Integer.valueOf(entryItem.getFieldRank()).toString()))
 
@@ -201,7 +202,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                     DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(acceptedItem, structureFields);
                     String itemValue = fetchItemValue(topic, structureField, acceptedItem, requiredReferences);
 
-                    return DbPatchDto.DbChangeDto.DbFieldValueDto.fromCouple(acceptedItem.getFieldRank(), itemValue);
+                    return DbFieldValueDto.fromCouple(acceptedItem.getFieldRank(), itemValue);
                 })
 
                 .collect(toList());
