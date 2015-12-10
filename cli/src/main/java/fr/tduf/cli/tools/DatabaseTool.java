@@ -148,7 +148,7 @@ public class DatabaseTool extends GenericTool {
     protected boolean commandDispatch() throws Exception {
         switch (command) {
             case DUMP:
-                commandResult = dump(databaseDirectory, jsonDirectory);
+                commandResult = dump(databaseDirectory, jsonDirectory, false);
                 return true;
             case CHECK:
                 commandResult = check(databaseDirectory);
@@ -172,7 +172,7 @@ public class DatabaseTool extends GenericTool {
                 commandResult = convertPatch(patchFile);
                 return true;
             case UNPACK_ALL:
-                commandResult = unpackAll(databaseDirectory, jsonDirectory);
+                commandResult = unpackAll(databaseDirectory, jsonDirectory, fixErrors);
                 return true;
             case REPACK_ALL:
                 commandResult = repackAll(jsonDirectory, outputDatabaseDirectory);
@@ -278,7 +278,7 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
-    private Map<String, ?> unpackAll(String sourceDatabaseDirectory, String jsonDatabaseDirectory) throws IOException {
+    private Map<String, ?> unpackAll(String sourceDatabaseDirectory, String jsonDatabaseDirectory, boolean fixErrors) throws IOException, ReflectiveOperationException {
         String sourceDirectory = Paths.get(sourceDatabaseDirectory).toAbsolutePath().toString();
         outLine("-> TDU database directory: " + sourceDirectory);
         outLine("Unpacking TDU database to " + jsonDatabaseDirectory + ", please wait...");
@@ -287,7 +287,7 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Done unpacking.");
 
-        Map<String, Object> resultInfo = dump(extractedDatabaseDirectory, jsonDatabaseDirectory);
+        Map<String, Object> resultInfo = dump(extractedDatabaseDirectory, jsonDatabaseDirectory, fixErrors);
 
         resultInfo.put("sourceDatabaseDirectory", sourceDirectory);
         resultInfo.put("temporaryDirectory", extractedDatabaseDirectory);
@@ -394,7 +394,7 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
-    private Map<String, Object> dump(String databaseDirectory, String targetJsonDirectory) throws IOException {
+    private Map<String, Object> dump(String databaseDirectory, String targetJsonDirectory, boolean fixErrors) throws IOException, ReflectiveOperationException {
         FilesHelper.createDirectoryIfNotExists(targetJsonDirectory);
 
         outLine("-> Source directory: " + databaseDirectory);
@@ -404,6 +404,20 @@ public class DatabaseTool extends GenericTool {
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
         List<IntegrityError> integrityErrors = new ArrayList<>();
         List<String> writtenFileNames = JsonGateway.dump(databaseDirectory, targetJsonDirectory, withClearContents, missingTopicContents, integrityErrors);
+
+        if (fixErrors) {
+            outLine("-> JSON Source directory: " + targetJsonDirectory);
+            outLine("Now fixing database...");
+            List<DbDto> databaseObjects = loadDatabaseFromJsonFiles(targetJsonDirectory);
+            DatabaseIntegrityFixer databaseIntegrityFixer = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
+            integrityErrors = databaseIntegrityFixer.fixAllContentsObjects(integrityErrors);
+
+            List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getDatabaseObjects();
+            DatabaseReadWriteHelper.writeDatabaseTopicsToJson(fixedDatabaseObjects, targetJsonDirectory);
+
+            printIntegrityErrors(integrityErrors);
+            outLine("Done fixing.");
+        }
 
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("missingTopicContents", missingTopicContents);
