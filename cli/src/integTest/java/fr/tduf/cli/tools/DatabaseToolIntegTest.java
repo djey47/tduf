@@ -148,7 +148,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN: genPatch from patched database
         System.out.println("-> GenPatch!");
-        DatabaseTool.main(new String[]{"gen-patch", "-n", "-j", DIRECTORY_PATCHED_DATABASE, "-p", outputPatchFile, "-t", CAR_PHYSICS_DATA.name(), "-r", "606298799,632098801,70033960"});
+        DatabaseTool.main(new String[]{"gen-patch", "-n", "-j", DIRECTORY_PATCHED_DATABASE, "-p", outputPatchFile, "-t", CAR_PHYSICS_DATA.name(), "-r", "606298799,632098801,637314272,70033960"});
 
         // THEN: patch file must exist
         AssertionsHelper.assertFileExistAndGet(outputPatchFile);
