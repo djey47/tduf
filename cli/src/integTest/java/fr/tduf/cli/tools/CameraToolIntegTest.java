@@ -7,14 +7,18 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CameraToolIntegTest {
-    private final String outputDirectory = "integ-tests/cameras/out";
-    private final String inputCameraFile = Paths.get("integ-tests/cameras", "Cameras.bin").toString();
-    private final String outputCameraFile = Paths.get(outputDirectory, "Cameras.bin.extended").toString();
+
+    private final Path camerasIntegTestPath = Paths.get("integ-tests").resolve("cameras");
+    private final Path outputPath = camerasIntegTestPath.resolve("out");
+    private final String outputDirectory = outputPath.toString();
+    private final String inputCameraFile = camerasIntegTestPath.resolve("Cameras.bin").toString();
+    private final String outputCameraFile = outputPath.resolve("Cameras.bin.extended").toString();
 
     @Before
     public void setUp() throws IOException {
@@ -24,7 +28,7 @@ public class CameraToolIntegTest {
 
     @Test
     public void copyAllSets_shouldProduceCorrectFile() throws IOException {
-        String referenceCameraFile = "integ-tests/cameras/Cameras.allSetsCopied.bin";
+        String referenceCameraFile = camerasIntegTestPath.resolve("Cameras.allSetsCopied.bin").toString();
 
         // WHEN: copy-all-sets
         System.out.println("-> Copy All Sets!");
@@ -36,7 +40,7 @@ public class CameraToolIntegTest {
 
     @Test
     public void copySet_shouldProduceCorrectFile() throws IOException {
-        String referenceCameraFile = "integ-tests/cameras/Cameras.set108CopiedTo109.bin";
+        String referenceCameraFile = camerasIntegTestPath.resolve("Cameras.set108CopiedTo109.bin").toString();
 
         // WHEN: copy-set
         System.out.println("-> Copy Set!");
