@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Comparator.naturalOrder;
 import static java.util.Objects.requireNonNull;
 
 public class CamerasHelper {
@@ -37,7 +38,9 @@ public class CamerasHelper {
     public static void duplicateAllCameraSets(long targetCameraId, CamerasParser parser) {
         requireNonNull(parser, "Parser with cameras contents is required.").getDataStore();
 
-        parser.getCameraViews().keySet()
+        parser.getCameraViews().keySet().stream()
+
+                .sorted(naturalOrder())
 
                 .forEach((cameraId) -> {
 
