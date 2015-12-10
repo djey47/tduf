@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.common.helper;
 
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -261,7 +261,7 @@ public class DatabaseChangeHelperTest {
 
         DbDto topicObject = createDatabaseObject(dataObject, createDefaultStructureObject());
 
-        List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria = singletonList(DbPatchDto.DbChangeDto.DbFieldValueDto.fromCouple(1, "111111"));
+        List<DbFieldValueDto> criteria = singletonList(DbFieldValueDto.fromCouple(1, "111111"));
 
         when(minerMock.getContentEntryStreamMatchingCriteria(eq(criteria), eq(TOPIC))).thenReturn(Stream.of(contentEntryWithUidItem));
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
@@ -282,7 +282,7 @@ public class DatabaseChangeHelperTest {
         DbDataDto.Entry contentEntryWithUidItem = createContentEntryWithUidItem(1);
         dataObject.addEntry(contentEntryWithUidItem);
 
-        List<DbPatchDto.DbChangeDto.DbFieldValueDto> criteria = singletonList(DbPatchDto.DbChangeDto.DbFieldValueDto.fromCouple(1, "111111"));
+        List<DbFieldValueDto> criteria = singletonList(DbFieldValueDto.fromCouple(1, "111111"));
 
         when(minerMock.getContentEntryStreamMatchingCriteria(eq(criteria), eq(TOPIC))).thenReturn(Stream.empty());
 
