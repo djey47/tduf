@@ -281,6 +281,7 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
+    // TODO do not use 2 types of integrity errors here.
     private Map<String, ?> unpackAll(String sourceDatabaseDirectory, String jsonDatabaseDirectory, boolean fixErrors, boolean extensiveCheck) throws IOException, ReflectiveOperationException {
         String sourceDirectory = Paths.get(sourceDatabaseDirectory).toAbsolutePath().toString();
         outLine("-> TDU database directory: " + sourceDirectory);
@@ -291,13 +292,14 @@ public class DatabaseTool extends GenericTool {
         outLine("Done unpacking.");
 
         Map<String, Object> resultInfo = dump(extractedDatabaseDirectory, jsonDatabaseDirectory);
-        List<IntegrityError> integrityErrors = (List<IntegrityError>) resultInfo.get("integrityErrors");
+        List<IntegrityError> integrityErrorsDomain = (List<IntegrityError>) resultInfo.get("integrityErrorsDomain");
+        resultInfo.remove("integrityErrorsDomain");
 
         List<DbDto> databaseObjects;
         outLine("-> JSON database directory: " + sourceDirectory);
         if(extensiveCheck) {
             outLine("Now checking database...");
-            databaseObjects = loadAndCheckDatabase(jsonDatabaseDirectory, integrityErrors);
+            databaseObjects = loadAndCheckDatabase(jsonDatabaseDirectory, integrityErrorsDomain);
             outLine("Done checking.");
         } else {
             outLine("Now loading database...");
@@ -308,10 +310,10 @@ public class DatabaseTool extends GenericTool {
         if (fixErrors) {
             outLine("-> JSON database directory: " + jsonDatabaseDirectory);
             outLine("Now fixing database...");
-            List<IntegrityError> remainingIntegrityErrors = fixIntegrityErrorsAndSaveDatabaseFiles(databaseObjects, integrityErrors, jsonDatabaseDirectory);
+            List<IntegrityError> remainingIntegrityErrors = fixIntegrityErrorsAndSaveDatabaseFiles(databaseObjects, integrityErrorsDomain, jsonDatabaseDirectory);
             outLine("Done fixing.");
 
-            resultInfo.put("remainingIntegrityErrors", remainingIntegrityErrors);
+            resultInfo.put("remainingIntegrityErrors", toDatabaseIntegrityErrors(remainingIntegrityErrors));
         }
 
         resultInfo.put("sourceDatabaseDirectory", sourceDirectory);
@@ -444,6 +446,7 @@ public class DatabaseTool extends GenericTool {
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("missingTopicContents", missingTopicContents);
         resultInfo.put("integrityErrors", toDatabaseIntegrityErrors(integrityErrors));
+        resultInfo.put("integrityErrorsDomain", integrityErrors);
         resultInfo.put("writtenFiles", writtenFileNames);
 
         return resultInfo;
