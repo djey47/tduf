@@ -291,21 +291,22 @@ public class DatabaseTool extends GenericTool {
         outLine("Done unpacking.");
 
         Map<String, Object> resultInfo = dump(extractedDatabaseDirectory, jsonDatabaseDirectory);
-
         List<IntegrityError> integrityErrors = (List<IntegrityError>) resultInfo.get("integrityErrors");
 
-        // TODO mutualize database loading
+        List<DbDto> databaseObjects;
+        outLine("-> JSON database directory: " + sourceDirectory);
         if(extensiveCheck) {
-            outLine("-> JSON database directory: " + sourceDirectory);
             outLine("Now checking database...");
-            loadAndCheckDatabase(jsonDatabaseDirectory, integrityErrors);
+            databaseObjects = loadAndCheckDatabase(jsonDatabaseDirectory, integrityErrors);
+        } else {
+            outLine("Now loading database...");
+            databaseObjects = loadDatabaseFromJsonFiles(jsonDatabaseDirectory);
         }
 
         if (fixErrors) {
             // TODO extract method
             outLine("-> JSON database directory: " + sourceDirectory);
             outLine("Now fixing database...");
-            List<DbDto> databaseObjects = loadDatabaseFromJsonFiles(jsonDatabaseDirectory);
             DatabaseIntegrityFixer databaseIntegrityFixer = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
             integrityErrors = databaseIntegrityFixer.fixAllContentsObjects(integrityErrors);
 
