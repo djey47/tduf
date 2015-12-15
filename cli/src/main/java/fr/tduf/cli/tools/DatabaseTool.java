@@ -151,7 +151,7 @@ public class DatabaseTool extends GenericTool {
     protected boolean commandDispatch() throws Exception {
         switch (command) {
             case DUMP:
-                commandResult = dump(databaseDirectory, jsonDirectory, false);
+                commandResult = dump(databaseDirectory, jsonDirectory);
                 return true;
             case CHECK:
                 commandResult = check(databaseDirectory);
@@ -290,14 +290,33 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Done unpacking.");
 
-        Map<String, Object> resultInfo = dump(extractedDatabaseDirectory, jsonDatabaseDirectory, fixErrors);
+        Map<String, Object> resultInfo = dump(extractedDatabaseDirectory, jsonDatabaseDirectory);
 
+        List<IntegrityError> integrityErrors = (List<IntegrityError>) resultInfo.get("integrityErrors");
+
+        // TODO mutualize database loading
         if(extensiveCheck) {
-            List<IntegrityError> integrityErrors = (List<IntegrityError>) resultInfo.get("integrityErrors");
+            outLine("-> JSON database directory: " + sourceDirectory);
+            outLine("Now checking database...");
             loadAndCheckDatabase(jsonDatabaseDirectory, integrityErrors);
         }
 
-        // TODO run fix here, eventually
+        if (fixErrors) {
+            // TODO extract method
+            outLine("-> JSON database directory: " + sourceDirectory);
+            outLine("Now fixing database...");
+            List<DbDto> databaseObjects = loadDatabaseFromJsonFiles(jsonDatabaseDirectory);
+            DatabaseIntegrityFixer databaseIntegrityFixer = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
+            integrityErrors = databaseIntegrityFixer.fixAllContentsObjects(integrityErrors);
+
+            List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getDatabaseObjects();
+            DatabaseReadWriteHelper.writeDatabaseTopicsToJson(fixedDatabaseObjects, jsonDatabaseDirectory);
+
+            printIntegrityErrors(integrityErrors);
+            outLine("Done fixing.");
+
+            resultInfo.put("remainingIntegrityErrors", sourceDirectory);
+        }
 
         resultInfo.put("sourceDatabaseDirectory", sourceDirectory);
         resultInfo.put("temporaryDirectory", extractedDatabaseDirectory);
@@ -404,7 +423,7 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
-    private Map<String, Object> dump(String databaseDirectory, String targetJsonDirectory, boolean fixErrors) throws IOException, ReflectiveOperationException {
+    private Map<String, Object> dump(String databaseDirectory, String targetJsonDirectory) throws IOException, ReflectiveOperationException {
         FilesHelper.createDirectoryIfNotExists(targetJsonDirectory);
 
         outLine("-> Source directory: " + databaseDirectory);
@@ -414,21 +433,6 @@ public class DatabaseTool extends GenericTool {
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
         List<IntegrityError> integrityErrors = new ArrayList<>();
         List<String> writtenFileNames = JsonGateway.dump(databaseDirectory, targetJsonDirectory, withClearContents, missingTopicContents, integrityErrors);
-
-        // TODO Move outside of dump to process extensive errors as well
-        if (fixErrors) {
-            outLine("-> JSON Source directory: " + targetJsonDirectory);
-            outLine("Now fixing database...");
-            List<DbDto> databaseObjects = loadDatabaseFromJsonFiles(targetJsonDirectory);
-            DatabaseIntegrityFixer databaseIntegrityFixer = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
-            integrityErrors = databaseIntegrityFixer.fixAllContentsObjects(integrityErrors);
-
-            List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getDatabaseObjects();
-            DatabaseReadWriteHelper.writeDatabaseTopicsToJson(fixedDatabaseObjects, targetJsonDirectory);
-
-            printIntegrityErrors(integrityErrors);
-            outLine("Done fixing.");
-        }
 
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("missingTopicContents", missingTopicContents);
