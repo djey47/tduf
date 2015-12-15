@@ -90,6 +90,9 @@ public class DatabaseTool extends GenericTool {
     @Option(name = "-m", aliases = {"--mend", "--fix"}, usage = "Instructs to fix integrity errors when unpack-all operation. Not mandatory.")
     private boolean fixErrors = false;
 
+    @Option(name = "-x", aliases = {"--extensiveCheck"}, usage = "Will process a deeper integrity check, will be slower. Not mandatory.")
+    private boolean extensiveCheck = false;
+
     private BankSupport bankSupport;
 
     private Command command;
