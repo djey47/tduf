@@ -207,6 +207,36 @@ public class DatabaseToolIntegTest {
     }
 
     @Test
+    public void unpackAll_withDeepChecking() throws IOException {
+        // GIVEN
+        String outputDirectory = Paths.get(DIRECTORY_DATABASE_BANKS, "out").toString();
+        String unpackJsonDirectory = Paths.get(outputDirectory, "json").toString();
+
+        doAnswer(DatabaseToolIntegTest::fakeAndAssertExtractAll)
+                .when(bankSupportMock).extractAll(anyString(), anyString());
+
+
+        // WHEN unpack-all
+        System.out.println("-> UnpackAll!");
+        this.databaseTool.doMain(new String[]{"unpack-all", "-n", "-d", DIRECTORY_DATABASE_BANKS, "-j", unpackJsonDirectory, "-x"});
+    }
+
+    @Test
+    public void unpackAll_withFix() throws IOException {
+        // GIVEN
+        String outputDirectory = Paths.get(DIRECTORY_DATABASE_BANKS, "out").toString();
+        String unpackJsonDirectory = Paths.get(outputDirectory, "json").toString();
+
+        doAnswer(DatabaseToolIntegTest::fakeAndAssertExtractAll)
+                .when(bankSupportMock).extractAll(anyString(), anyString());
+
+
+        // WHEN unpack-all
+        System.out.println("-> UnpackAll!");
+        this.databaseTool.doMain(new String[]{"unpack-all", "-n", "-d", DIRECTORY_DATABASE_BANKS, "-j", unpackJsonDirectory, "-m"});
+    }
+
+    @Test
     public void convertPatch_fromAndBackPchFile() throws IOException {
         // GIVEN
         String tdumtPatchDirectory = Paths.get(DIRECTORY_PATCH, "tdumt").toString();
