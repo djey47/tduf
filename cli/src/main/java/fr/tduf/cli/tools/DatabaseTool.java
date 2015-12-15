@@ -298,25 +298,20 @@ public class DatabaseTool extends GenericTool {
         if(extensiveCheck) {
             outLine("Now checking database...");
             databaseObjects = loadAndCheckDatabase(jsonDatabaseDirectory, integrityErrors);
+            outLine("Done checking.");
         } else {
             outLine("Now loading database...");
             databaseObjects = loadDatabaseFromJsonFiles(jsonDatabaseDirectory);
+            outLine("Done loading.");
         }
 
         if (fixErrors) {
-            // TODO extract method
-            outLine("-> JSON database directory: " + sourceDirectory);
+            outLine("-> JSON database directory: " + jsonDatabaseDirectory);
             outLine("Now fixing database...");
-            DatabaseIntegrityFixer databaseIntegrityFixer = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
-            integrityErrors = databaseIntegrityFixer.fixAllContentsObjects(integrityErrors);
-
-            List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getDatabaseObjects();
-            DatabaseReadWriteHelper.writeDatabaseTopicsToJson(fixedDatabaseObjects, jsonDatabaseDirectory);
-
-            printIntegrityErrors(integrityErrors);
+            List<IntegrityError> remainingIntegrityErrors = fixIntegrityErrorsAndSaveDatabaseFiles(databaseObjects, integrityErrors, jsonDatabaseDirectory);
             outLine("Done fixing.");
 
-            resultInfo.put("remainingIntegrityErrors", sourceDirectory);
+            resultInfo.put("remainingIntegrityErrors", remainingIntegrityErrors);
         }
 
         resultInfo.put("sourceDatabaseDirectory", sourceDirectory);
@@ -324,6 +319,17 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("jsonDatabaseDirectory", jsonDatabaseDirectory);
 
         return resultInfo;
+    }
+
+    private List<IntegrityError> fixIntegrityErrorsAndSaveDatabaseFiles(List<DbDto> databaseObjects, List<IntegrityError> integrityErrors, String jsonDatabaseDirectory) throws ReflectiveOperationException {
+        DatabaseIntegrityFixer databaseIntegrityFixer = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
+        List<IntegrityError> remainingIntegrityErrors = databaseIntegrityFixer.fixAllContentsObjects(integrityErrors);
+
+        List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getDatabaseObjects();
+        DatabaseReadWriteHelper.writeDatabaseTopicsToJson(fixedDatabaseObjects, jsonDatabaseDirectory);
+
+        printIntegrityErrors(remainingIntegrityErrors);
+        return remainingIntegrityErrors;
     }
 
     private Map<String, ?> convertPatch(String sourcePatchFile) throws IOException, SAXException, ParserConfigurationException, URISyntaxException, TransformerException {
