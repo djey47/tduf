@@ -175,7 +175,7 @@ public class DatabaseTool extends GenericTool {
                 commandResult = convertPatch(patchFile);
                 return true;
             case UNPACK_ALL:
-                commandResult = unpackAll(databaseDirectory, jsonDirectory, fixErrors);
+                commandResult = unpackAll(databaseDirectory, jsonDirectory, fixErrors, extensiveCheck);
                 return true;
             case REPACK_ALL:
                 commandResult = repackAll(jsonDirectory, outputDatabaseDirectory);
@@ -281,7 +281,7 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
-    private Map<String, ?> unpackAll(String sourceDatabaseDirectory, String jsonDatabaseDirectory, boolean fixErrors) throws IOException, ReflectiveOperationException {
+    private Map<String, ?> unpackAll(String sourceDatabaseDirectory, String jsonDatabaseDirectory, boolean fixErrors, boolean extensiveCheck) throws IOException, ReflectiveOperationException {
         String sourceDirectory = Paths.get(sourceDatabaseDirectory).toAbsolutePath().toString();
         outLine("-> TDU database directory: " + sourceDirectory);
         outLine("Unpacking TDU database to " + jsonDatabaseDirectory + ", please wait...");
@@ -291,6 +291,13 @@ public class DatabaseTool extends GenericTool {
         outLine("Done unpacking.");
 
         Map<String, Object> resultInfo = dump(extractedDatabaseDirectory, jsonDatabaseDirectory, fixErrors);
+
+        if(extensiveCheck) {
+            List<IntegrityError> integrityErrors = (List<IntegrityError>) resultInfo.get("integrityErrors");
+            loadAndCheckDatabase(jsonDatabaseDirectory, integrityErrors);
+        }
+
+        // TODO run fix here, eventually
 
         resultInfo.put("sourceDatabaseDirectory", sourceDirectory);
         resultInfo.put("temporaryDirectory", extractedDatabaseDirectory);
@@ -408,6 +415,7 @@ public class DatabaseTool extends GenericTool {
         List<IntegrityError> integrityErrors = new ArrayList<>();
         List<String> writtenFileNames = JsonGateway.dump(databaseDirectory, targetJsonDirectory, withClearContents, missingTopicContents, integrityErrors);
 
+        // TODO Move outside of dump to process extensive errors as well
         if (fixErrors) {
             outLine("-> JSON Source directory: " + targetJsonDirectory);
             outLine("Now fixing database...");
