@@ -186,7 +186,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN unpack-all
         System.out.println("-> UnpackAll!");
-        this.databaseTool.doMain(new String[]{"unpack-all", "-n", "-d", DIRECTORY_DATABASE_BANKS, "-j", unpackJsonDirectory});
+        databaseTool.doMain(new String[]{"unpack-all", "-n", "-d", DIRECTORY_DATABASE_BANKS, "-j", unpackJsonDirectory});
 
 
         // THEN: gateway was correctly called
@@ -194,8 +194,8 @@ public class DatabaseToolIntegTest {
 
 
         // GIVEN
-        this.databaseTool = new DatabaseTool();
-        this.databaseTool.setBankSupport(bankSupportMock);
+        databaseTool = new DatabaseTool();
+        databaseTool.setBankSupport(bankSupportMock);
 
         doAnswer(DatabaseToolIntegTest::fakeAndAssertPackAll)
                 .when(bankSupportMock).packAll(anyString(), anyString());
@@ -203,7 +203,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN repack-all
         System.out.println("-> RepackAll!");
-        this.databaseTool.doMain(new String[]{"repack-all", /*"-n",*/ "-j", unpackJsonDirectory, "-o", outputDirectory,});
+        databaseTool.doMain(new String[]{"repack-all", /*"-n",*/ "-j", unpackJsonDirectory, "-o", outputDirectory,});
 
 
         // THEN: gateway was correctly called
@@ -220,7 +220,7 @@ public class DatabaseToolIntegTest {
                 .when(bankSupportMock).extractAll(anyString(), anyString());
 
 
-        // WHEN unpack-all
+        // WHEN unpack-all (with fix only)
         System.out.println("-> UnpackAll!");
         OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
         databaseTool.doMain(new String[]{"unpack-all", "-n", "-d", DIRECTORY_DATABASE_BANKS, "-j", unpackJsonDirectory, "-m"});
@@ -252,9 +252,26 @@ public class DatabaseToolIntegTest {
                 .when(bankSupportMock).extractAll(anyString(), anyString());
 
 
-        // WHEN unpack-all
+        // WHEN unpack-all (with deep-check and fix)
         System.out.println("-> UnpackAll!");
-        this.databaseTool.doMain(new String[]{"unpack-all", "-n", "-d", DIRECTORY_DATABASE_BANKS, "-j", unpackJsonDirectory, "-x", "-m"});
+        OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
+        databaseTool.doMain(new String[]{"unpack-all", "-n", "-d", DIRECTORY_DATABASE_BANKS, "-j", unpackJsonDirectory, "-x", "-m"});
+
+
+        // THEN
+        String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
+        JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
+
+        assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 7);
+
+        assertJsonChildArrayHasSize(rootJsonNode, "missingTopicContents", 18);
+        assertJsonChildArrayHasSize(rootJsonNode, "integrityErrors", 18);
+        assertJsonChildArrayHasSize(rootJsonNode, "remainingIntegrityErrors", 36);
+        assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 0);
+
+        assertThat(rootJsonNode.get("sourceDatabaseDirectory").asText()).endsWith(DIRECTORY_DATABASE_BANKS);
+        assertThat(rootJsonNode.get("jsonDatabaseDirectory").asText()).endsWith(unpackJsonDirectory);
+        assertThat(rootJsonNode.get("temporaryDirectory").asText()).startsWith("/tmp/");
     }
 
     @Test
@@ -396,6 +413,7 @@ public class DatabaseToolIntegTest {
                         label));
     }
 
+    // TODO externalize to AssertionsHelper
     private static void assertJsonChildArrayHasSize(JsonNode jsonNode, String childName, int arraySize) {
         JsonNode childNode = jsonNode.get(childName);
         assertThat(childNode).isNotNull();
