@@ -230,12 +230,12 @@ public class DatabaseToolIntegTest {
         String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
         JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
 
-        assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 7);
+        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 7);
 
-        assertJsonChildArrayHasSize(rootJsonNode, "missingTopicContents", 18);
-        assertJsonChildArrayHasSize(rootJsonNode, "integrityErrors", 18);
-        assertJsonChildArrayHasSize(rootJsonNode, "remainingIntegrityErrors", 18);
-        assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 0);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "missingTopicContents", 18);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "integrityErrors", 18);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "remainingIntegrityErrors", 18);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 0);
 
         assertThat(rootJsonNode.get("sourceDatabaseDirectory").asText()).endsWith(DIRECTORY_DATABASE_BANKS);
         assertThat(rootJsonNode.get("jsonDatabaseDirectory").asText()).endsWith(unpackJsonDirectory);
@@ -262,12 +262,12 @@ public class DatabaseToolIntegTest {
         String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
         JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
 
-        assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 7);
+        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 7);
 
-        assertJsonChildArrayHasSize(rootJsonNode, "missingTopicContents", 18);
-        assertJsonChildArrayHasSize(rootJsonNode, "integrityErrors", 18);
-        assertJsonChildArrayHasSize(rootJsonNode, "remainingIntegrityErrors", 36);
-        assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 0);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "missingTopicContents", 18);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "integrityErrors", 18);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "remainingIntegrityErrors", 36);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 0);
 
         assertThat(rootJsonNode.get("sourceDatabaseDirectory").asText()).endsWith(DIRECTORY_DATABASE_BANKS);
         assertThat(rootJsonNode.get("jsonDatabaseDirectory").asText()).endsWith(unpackJsonDirectory);
@@ -411,22 +411,5 @@ public class DatabaseToolIntegTest {
                 .has(new Condition<>(
                         entry -> expectedValue.equals(entry.get().getItemAtRank(fieldRank).get().getRawValue()),
                         label));
-    }
-
-    // TODO externalize to AssertionsHelper
-    private static void assertJsonChildArrayHasSize(JsonNode jsonNode, String childName, int arraySize) {
-        JsonNode childNode = jsonNode.get(childName);
-        assertThat(childNode).isNotNull();
-        assertThat(childNode.isArray()).isTrue();
-
-        assertJsonNodeIteratorHasItems(childNode.getElements(), arraySize);
-    }
-
-    private static void assertJsonNodeIteratorHasItems(Iterator<JsonNode> nodeIterator, int count) {
-        assertThat(nodeIterator).isNotNull();
-
-        List<JsonNode> childNodes = new ArrayList<>();
-        nodeIterator.forEachRemaining(childNodes::add);
-        assertThat(childNodes).hasSize(count);
     }
 }
