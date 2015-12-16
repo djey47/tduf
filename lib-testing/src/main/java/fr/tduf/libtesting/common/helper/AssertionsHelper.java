@@ -1,5 +1,7 @@
 package fr.tduf.libtesting.common.helper;
 
+import org.assertj.core.api.StrictAssertions;
+import org.codehaus.jackson.JsonNode;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -10,6 +12,9 @@ import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
@@ -72,6 +77,29 @@ public class AssertionsHelper {
         String json2 = assertAndReadJsonFileContents(fileName2);
 
         JSONAssert.assertEquals(json1, json2, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    /**
+     * Checks if a child node with specified name is an array with provided size
+     * @param jsonNode  : parent node
+     */
+    public static void assertJsonChildArrayHasSize(JsonNode jsonNode, String childName, int expectedArraySize) {
+        JsonNode childNode = jsonNode.get(childName);
+        assertThat(childNode).isNotNull();
+        StrictAssertions.assertThat(childNode.isArray()).isTrue();
+
+        assertJsonNodeIteratorHasItems(childNode.getElements(), expectedArraySize);
+    }
+
+    /**
+     * Checks if a node iterator has provided item count
+     */
+    public static void assertJsonNodeIteratorHasItems(Iterator<JsonNode> nodeIterator, int expectedCount) {
+        assertThat(nodeIterator).isNotNull();
+
+        List<JsonNode> childNodes = new ArrayList<>();
+        nodeIterator.forEachRemaining(childNodes::add);
+        assertThat(childNodes).hasSize(expectedCount);
     }
 
     /**
