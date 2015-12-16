@@ -154,13 +154,13 @@ public class DatabaseTool extends GenericTool {
                 commandResult = dump(databaseDirectory, jsonDirectory);
                 return true;
             case CHECK:
-                commandResult = check(databaseDirectory);
+                commandResult = check(databaseDirectory, withClearContents);
                 return true;
             case GEN:
                 commandResult = gen(jsonDirectory, databaseDirectory);
                 return true;
             case FIX:
-                commandResult = fix(databaseDirectory, outputDatabaseDirectory);
+                commandResult = fix(databaseDirectory, outputDatabaseDirectory, withClearContents);
                 return true;
             case APPLY_TDUPK:
                 commandResult = applyPerformancePack(patchFile, jsonDirectory, outputDatabaseDirectory);
@@ -299,7 +299,7 @@ public class DatabaseTool extends GenericTool {
         outLine("-> JSON database directory: " + sourceDirectory);
         if(extensiveCheck) {
             outLine("Now checking database...");
-            databaseObjects = loadAndCheckDatabase(jsonDatabaseDirectory, integrityErrorsDomain);
+            databaseObjects = loadAndCheckDatabase(extractedDatabaseDirectory, integrityErrorsDomain, false);
             outLine("Done checking.");
         } else {
             outLine("Now loading database...");
@@ -469,9 +469,9 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
-    private Map<String, ?> check(String sourceDatabaseDirectory) throws Exception {
+    private Map<String, ?> check(String sourceDatabaseDirectory, boolean withClearContents) throws Exception {
         List<IntegrityError> integrityErrors = new ArrayList<>();
-        checkAndReturnIntegrityErrorsAndObjects(sourceDatabaseDirectory, integrityErrors);
+        checkAndReturnIntegrityErrorsAndObjects(sourceDatabaseDirectory, integrityErrors, withClearContents);
 
         if (!integrityErrors.isEmpty()) {
             outLine("At least one integrity error has been found, your database may not be ready-to-use.");
@@ -483,9 +483,9 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
-    private Map<String, ?> fix(String sourceDatabaseDirectory, String targetDatabaseDirectory) throws IOException, ReflectiveOperationException {
+    private Map<String, ?> fix(String sourceDatabaseDirectory, String targetDatabaseDirectory, boolean withClearContents) throws IOException, ReflectiveOperationException {
         List<IntegrityError> integrityErrors = new ArrayList<>();
-        List<DbDto> databaseObjects = checkAndReturnIntegrityErrorsAndObjects(sourceDatabaseDirectory, integrityErrors);
+        List<DbDto> databaseObjects = checkAndReturnIntegrityErrorsAndObjects(sourceDatabaseDirectory, integrityErrors, withClearContents);
 
         if (integrityErrors.isEmpty()) {
             outLine("No error detected - a fix is not necessary.");
@@ -510,7 +510,7 @@ public class DatabaseTool extends GenericTool {
             for (DbDto databaseObject : fixedDatabaseObjects) {
                 outLine("-> Now processing topic: " + databaseObject.getTopic() + "...");
 
-                List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabaseTopic(databaseObject, targetDatabaseDirectory, withClearContents);
+                List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabaseTopic(databaseObject, targetDatabaseDirectory, this.withClearContents);
 
                 outLine("Writing done for topic: " + databaseObject.getTopic());
                 writtenFiles.stream()
@@ -584,14 +584,14 @@ public class DatabaseTool extends GenericTool {
         }
     }
 
-    private List<DbDto> checkAndReturnIntegrityErrorsAndObjects(String sourceDatabaseDirectory, List<IntegrityError> integrityErrors) throws IOException, ReflectiveOperationException {
+    private List<DbDto> checkAndReturnIntegrityErrorsAndObjects(String sourceDatabaseDirectory, List<IntegrityError> integrityErrors, boolean withClearContents) throws IOException, ReflectiveOperationException {
         outLine("-> Source directory: " + sourceDatabaseDirectory);
         outLine("Checking TDU database, please wait...");
         outLine();
 
         outLine("-> Now loading database, step 1...");
 
-        List<DbDto> dbDtos = loadAndCheckDatabase(sourceDatabaseDirectory, integrityErrors);
+        List<DbDto> dbDtos = loadAndCheckDatabase(sourceDatabaseDirectory, integrityErrors, withClearContents);
 
         outLine("-> step 1 finished.");
         outLine();
@@ -619,7 +619,7 @@ public class DatabaseTool extends GenericTool {
         return allTopicObjects;
     }
 
-    private List<DbDto> loadAndCheckDatabase(String sourceDatabaseDirectory, List<IntegrityError> integrityErrors) throws IOException {
+    private List<DbDto> loadAndCheckDatabase(String sourceDatabaseDirectory, List<IntegrityError> integrityErrors, boolean withClearContents) throws IOException {
         requireNonNull(integrityErrors, "A list is required");
 
         List<DbDto> allDtos = new ArrayList<>();
