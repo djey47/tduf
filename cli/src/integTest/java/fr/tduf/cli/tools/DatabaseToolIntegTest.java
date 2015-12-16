@@ -1,6 +1,7 @@
 package fr.tduf.cli.tools;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.cli.common.helper.ConsoleHelper;
 import fr.tduf.libtesting.common.helper.AssertionsHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -10,6 +11,8 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Condition;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
@@ -22,12 +25,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -73,6 +75,8 @@ public class DatabaseToolIntegTest {
     @After
     public void tearDown() {
         BulkDatabaseMiner.clearAllCaches();
+
+        ConsoleHelper.restoreStandardOutput();
     }
 
     @Test
@@ -207,21 +211,6 @@ public class DatabaseToolIntegTest {
     }
 
     @Test
-    public void unpackAll_withDeepChecking() throws IOException {
-        // GIVEN
-        String outputDirectory = Paths.get(DIRECTORY_DATABASE_BANKS, "out").toString();
-        String unpackJsonDirectory = Paths.get(outputDirectory, "json").toString();
-
-        doAnswer(DatabaseToolIntegTest::fakeAndAssertExtractAll)
-                .when(bankSupportMock).extractAll(anyString(), anyString());
-
-
-        // WHEN unpack-all
-        System.out.println("-> UnpackAll!");
-        this.databaseTool.doMain(new String[]{"unpack-all", "-n", "-d", DIRECTORY_DATABASE_BANKS, "-j", unpackJsonDirectory, "-x"});
-    }
-
-    @Test
     public void unpackAll_withFix() throws IOException {
         // GIVEN
         String outputDirectory = Paths.get(DIRECTORY_DATABASE_BANKS, "out").toString();
@@ -233,7 +222,39 @@ public class DatabaseToolIntegTest {
 
         // WHEN unpack-all
         System.out.println("-> UnpackAll!");
-        this.databaseTool.doMain(new String[]{"unpack-all", "-n", "-d", DIRECTORY_DATABASE_BANKS, "-j", unpackJsonDirectory, "-m"});
+        OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
+        databaseTool.doMain(new String[]{"unpack-all", "-n", "-d", DIRECTORY_DATABASE_BANKS, "-j", unpackJsonDirectory, "-m"});
+
+
+        // THEN
+        String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
+        JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
+
+        assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 7);
+
+        assertJsonChildArrayHasSize(rootJsonNode, "missingTopicContents", 18);
+        assertJsonChildArrayHasSize(rootJsonNode, "integrityErrors", 18);
+        assertJsonChildArrayHasSize(rootJsonNode, "remainingIntegrityErrors", 18);
+        assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 0);
+
+        assertThat(rootJsonNode.get("sourceDatabaseDirectory").asText()).endsWith(DIRECTORY_DATABASE_BANKS);
+        assertThat(rootJsonNode.get("jsonDatabaseDirectory").asText()).endsWith(unpackJsonDirectory);
+        assertThat(rootJsonNode.get("temporaryDirectory").asText()).startsWith("/tmp/");
+    }
+
+    @Test
+    public void unpackAll_withDeepCheck_andFix() throws IOException {
+        // GIVEN
+        String outputDirectory = Paths.get(DIRECTORY_DATABASE_BANKS, "out").toString();
+        String unpackJsonDirectory = Paths.get(outputDirectory, "json").toString();
+
+        doAnswer(DatabaseToolIntegTest::fakeAndAssertExtractAll)
+                .when(bankSupportMock).extractAll(anyString(), anyString());
+
+
+        // WHEN unpack-all
+        System.out.println("-> UnpackAll!");
+        this.databaseTool.doMain(new String[]{"unpack-all", "-n", "-d", DIRECTORY_DATABASE_BANKS, "-j", unpackJsonDirectory, "-x", "-m"});
     }
 
     @Test
@@ -373,5 +394,21 @@ public class DatabaseToolIntegTest {
                 .has(new Condition<>(
                         entry -> expectedValue.equals(entry.get().getItemAtRank(fieldRank).get().getRawValue()),
                         label));
+    }
+
+    private static void assertJsonChildArrayHasSize(JsonNode jsonNode, String childName, int arraySize) {
+        JsonNode childNode = jsonNode.get(childName);
+        assertThat(childNode).isNotNull();
+        assertThat(childNode.isArray()).isTrue();
+
+        assertJsonNodeIteratorHasItems(childNode.getElements(), arraySize);
+    }
+
+    private static void assertJsonNodeIteratorHasItems(Iterator<JsonNode> nodeIterator, int count) {
+        assertThat(nodeIterator).isNotNull();
+
+        List<JsonNode> childNodes = new ArrayList<>();
+        nodeIterator.forEachRemaining(childNodes::add);
+        assertThat(childNodes).hasSize(count);
     }
 }
