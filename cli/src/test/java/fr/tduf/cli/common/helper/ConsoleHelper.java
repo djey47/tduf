@@ -1,9 +1,6 @@
 package fr.tduf.cli.common.helper;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 
 /**
  * Utility class to provide useful testing abilities over console
@@ -22,7 +19,18 @@ public class ConsoleHelper {
     }
 
     /**
+     * Redirects standard output to System.out file descriptor
+     */
+    public static void restoreStandardOutput() {
+        PrintStream standardSystemOutput = new PrintStream(new FileOutputStream(FileDescriptor.out));
+        System.setOut(standardSystemOutput);
+
+        System.out.println("All cleared! System standard output is redirected to console again :)");
+    }
+
+    /**
      * Closes output stream and return contents as a String
+     *
      * @throws IOException
      */
     public static String finalizeAndGetContents(OutputStream outputStream) throws IOException {
