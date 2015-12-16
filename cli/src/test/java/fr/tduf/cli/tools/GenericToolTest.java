@@ -23,8 +23,7 @@ public class GenericToolTest {
 
     @After
     public void tearDown() {
-        PrintStream standardSystemOutput = new PrintStream(new FileOutputStream(FileDescriptor.out));
-        System.setOut(standardSystemOutput);
+        ConsoleHelper.restoreStandardOutput();
     }
 
     @Test

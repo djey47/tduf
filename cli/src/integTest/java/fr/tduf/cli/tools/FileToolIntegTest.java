@@ -8,6 +8,7 @@ import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,6 +67,11 @@ public class FileToolIntegTest {
 
         FileUtils.deleteDirectory(new File(repackedDirectory));
         FileUtils.deleteDirectory(new File(unpackedDirectory));
+    }
+
+    @After
+    public void tearDown() {
+        ConsoleHelper.restoreStandardOutput();
     }
 
     @Test
