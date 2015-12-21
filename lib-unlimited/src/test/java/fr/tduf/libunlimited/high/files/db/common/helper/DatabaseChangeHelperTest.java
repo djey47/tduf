@@ -369,7 +369,81 @@ public class DatabaseChangeHelperTest {
         // WHEN
         changeHelper.duplicateEntryWithIdentifier(2, TOPIC);
 
-        //THEN
+        // THEN
+        verifyNoMoreInteractions(minerMock);
+    }
+
+    @Test
+    public void moveEntryWithIdentifier_whenEntryExists_andStepNotInRange_shouldDoNothing() {
+        // GIVEN
+        DbDataDto dataObject = createDefaultDataObject();
+        dataObject.addEntry(createDefaultContentEntry(0));
+        dataObject.addEntry(createDefaultContentEntry(1));
+        final DbDataDto.Entry movedEntry = createDefaultContentEntry(2);
+        dataObject.addEntry(movedEntry);
+        DbDto topicObject = DbDto.builder().withData(dataObject).build();
+
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+
+
+        // WHEN
+        changeHelper.moveEntryWithIdentifier(-3, 2, TOPIC);
+
+
+        // THEN
+        assertThat(movedEntry.getId()).isEqualTo(2);
+        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L,1L,2L);
+    }
+
+    @Test
+    public void moveEntryWithIdentifier_whenEntryExists_andStepInRange_shouldUpdateEntryRank() {
+        // GIVEN
+        DbDataDto dataObject = createDefaultDataObject();
+        dataObject.addEntry(createDefaultContentEntry(0));
+        dataObject.addEntry(createDefaultContentEntry(1));
+        final DbDataDto.Entry movedEntry = createDefaultContentEntry(2);
+        dataObject.addEntry(movedEntry);
+        DbDto topicObject = DbDto.builder().withData(dataObject).build();
+
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(Optional.of(movedEntry));
+
+
+        // WHEN
+        changeHelper.moveEntryWithIdentifier(-2, 2, TOPIC);
+
+
+        // THEN
+        assertThat(movedEntry.getId()).isEqualTo(0);
+        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L, 2L);
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void moveEntryWithIdentifier_whenTopicDoesNotExist_shouldThrowException() {
+        // GIVEN
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.empty());
+
+        // WHEN
+        changeHelper.moveEntryWithIdentifier(0, 2, TOPIC);
+
+        // THEN
+        verifyNoMoreInteractions(minerMock);
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void moveEntryWithIdentifier_whenEntryDoesNotExist_shouldThrowException() {
+        // GIVEN
+        DbDto topicObject = DbDto.builder().withData(createDefaultDataObject()).build();
+
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(Optional.empty());
+
+
+        // WHEN
+        changeHelper.moveEntryWithIdentifier(-2, 2, TOPIC);
+
+
+        // THEN
         verifyNoMoreInteractions(minerMock);
     }
 

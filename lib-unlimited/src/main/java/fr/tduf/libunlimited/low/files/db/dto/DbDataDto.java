@@ -2,7 +2,6 @@ package fr.tduf.libunlimited.low.files.db.dto;
 
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
@@ -130,6 +129,10 @@ public class DbDataDto implements Serializable {
             if (id > 0) {
                 id--;
             }
+        }
+
+        private void shiftIdDown() {
+            id++;
         }
 
         public interface EntryBuilder {
@@ -432,8 +435,36 @@ public class DbDataDto implements Serializable {
                 .filter((e) -> e.getId() > entry.getId())
 
                 .forEach(DbDataDto.Entry::shiftIdUp);
+    }
 
-        BulkDatabaseMiner.clearAllCaches();
+    public void moveEntryUp(Entry entry) {
+        // Moves down previous entry
+        entries.stream()
+
+                .filter((e) -> e.getId() == entry.getId() - 1)
+
+                .findAny()
+
+                .ifPresent(Entry::shiftIdDown);
+
+        entry.shiftIdUp();
+
+        sortEntriesByIdentifier();
+    }
+
+    public void moveEntryDown(Entry entry) {
+        // Moves up next entry
+        entries.stream()
+
+                .filter((e) -> e.getId() == entry.getId() + 1)
+
+                .findAny()
+
+                .ifPresent(Entry::shiftIdUp);
+
+        entry.shiftIdDown();
+
+        sortEntriesByIdentifier();
     }
 
     @Override
@@ -449,6 +480,10 @@ public class DbDataDto implements Serializable {
     @Override
     public String toString() {
         return reflectionToString(this);
+    }
+
+    private void sortEntriesByIdentifier() {
+        entries.sort((e1, e2) -> Long.compare(e1.getId(), e2.getId()));
     }
 
     public interface DbDataDtoBuilder {
