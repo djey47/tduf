@@ -112,7 +112,7 @@
                   </TabPane>
             <ToolBar layoutX="10.0" layoutY="112.0" prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
                <items>
-                  <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="40.0" text="?"><tooltip><Tooltip text="Searches entry with REF." /></tooltip></Button>
+                  <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="40.0" text="&#x1F50E;"><tooltip><Tooltip text="Searches entry with REF." /></tooltip></Button>
                   <Separator orientation="VERTICAL" />
                   <Button mnemonicParsing="false" onAction="#handleFirstButtonMouseClick" prefWidth="40.0" text="|&lt;"><tooltip><Tooltip text="Goes to first entry." /></tooltip></Button>
                   <Button mnemonicParsing="false" onAction="#handleFastPreviousButtonMouseClick" prefWidth="40.0" text="&lt;&lt;"><tooltip><Tooltip text="Goes back up to 10 entries." /></tooltip></Button>
