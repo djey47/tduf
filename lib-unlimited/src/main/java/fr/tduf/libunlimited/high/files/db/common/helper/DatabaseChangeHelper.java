@@ -182,6 +182,19 @@ public class DatabaseChangeHelper {
     }
 
     /**
+     *
+     * @param step
+     * @param internalEntryId
+     * @param topic
+     */
+    public void moveEntryWithIdentifier(int step, long internalEntryId, DbDto.Topic topic) {
+
+        // TODO with unit tests
+
+        BulkDatabaseMiner.clearAllCaches();
+    }
+
+    /**
      * Deletes resource from specified topic, having given reference.
      * @param topic             : database topic where entry should be duplicated
      * @param resourceReference : reference of resource to be deleted
