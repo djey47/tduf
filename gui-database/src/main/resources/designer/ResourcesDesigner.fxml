@@ -55,7 +55,7 @@
             </AnchorPane>
             <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
                <items>
-                  <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="40.0" text="?">
+                  <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="40.0" text="&#x1F50E;">
                      <tooltip>
                         <Tooltip text="Searches entry with REF." />
                      </tooltip>
