@@ -30,11 +30,19 @@ Thus, you always ought to make a backup of your TDU database before using it!
 
 ### What's in this version ? (ALPHA 12)
 
-*
+* Includes all fixes and features of upcoming TDUF 0.9.0
+
+* Cosmetic: some button labels get a fresh design, with symbols
+
+* Bugfix: refreshes Database Editor contents when re-loading database from any location
+
+* Feature: exports all entries in topic if no REF column is present
+* Feature: each field now has a default tooltip, mentioning field rank and name
+* Feature: linked entries (colors, rims etc) can be reordered.
 
 ### Known bugs
 
-*
+You tell me!
 
 ### What you will need to run TDUF
 
