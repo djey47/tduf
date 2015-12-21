@@ -19,8 +19,8 @@ import javafx.scene.layout.VBox;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
 import static javafx.geometry.Orientation.VERTICAL;
 
 /**
@@ -44,15 +44,13 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         ObservableList<ContentEntryDataItem> resourceData = FXCollections.observableArrayList();
         resourceListByTopicLinkIndex.put(topicLinkObject, resourceData);
 
-        HBox fieldBox = addFieldBox(Optional.ofNullable(topicLinkObject.getGroup()), 250.0, defaultTab);
+        HBox fieldBox = addFieldBox(ofNullable(topicLinkObject.getGroup()), 250.0, defaultTab);
 
-        Optional<String> potentialTooltipText = Optional.ofNullable(topicLinkObject.getTooltip());
-
-        addFieldLabelForLinkedTopic(fieldBox, topicLinkObject, potentialTooltipText);
+        addFieldLabelForLinkedTopic(fieldBox, topicLinkObject);
 
         String targetProfileName = topicLinkObject.getRemoteReferenceProfile();
         DbDto.Topic targetTopic = retrieveTargetTopicForLink(topicLinkObject);
-        TableView<ContentEntryDataItem> tableView = addTableViewForLinkedTopic(fieldBox, topicLinkObject, resourceData, targetTopic, potentialTooltipText);
+        TableView<ContentEntryDataItem> tableView = addTableViewForLinkedTopic(fieldBox, topicLinkObject, resourceData, targetTopic);
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
@@ -63,11 +61,12 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         addButtonsForLinkedTopic(fieldBox, targetProfileName, targetTopic, tableView.getSelectionModel(), topicLinkObject);
     }
 
-    private TableView<ContentEntryDataItem> addTableViewForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject, ObservableList<ContentEntryDataItem> resourceData, DbDto.Topic targetTopic, Optional<String> potentialTooltipText) {
+    private TableView<ContentEntryDataItem> addTableViewForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject, ObservableList<ContentEntryDataItem> resourceData, DbDto.Topic targetTopic) {
         TableView<ContentEntryDataItem> tableView = new TableView<>();
         tableView.setPrefWidth(560);
 
-        potentialTooltipText.ifPresent((text) -> tableView.setTooltip(new Tooltip(text)));
+        String toolTipText = ofNullable(topicLinkObject.getTooltip()).orElse("");
+        tableView.setTooltip(new Tooltip(toolTipText));
 
         TableColumn<ContentEntryDataItem, String> refColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_REF);
         refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
@@ -82,7 +81,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
         tableView.setItems(resourceData);
 
-        Optional.ofNullable(topicLinkObject.getRemoteReferenceProfile())
+        ofNullable(topicLinkObject.getRemoteReferenceProfile())
                 .ifPresent((targetProfileName) -> tableView.setOnMousePressed(controller.handleLinkTableMouseClick(targetProfileName, targetTopic)));
 
         fieldBox.getChildren().add(tableView);
@@ -93,7 +92,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
     private void addButtonsForLinkedTopic(HBox fieldBox, String targetProfileName, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<ContentEntryDataItem> tableSelectionModel, TopicLinkDto topicLinkObject) {
         VBox buttonsBox = new VBox(5);
 
-        Optional.ofNullable(targetProfileName)
+        ofNullable(targetProfileName)
                 .ifPresent((profileName) -> {
                     addContextualButton(
                             buttonsBox,
@@ -133,11 +132,14 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         return controller.getMiner();
     }
 
-    private static void addFieldLabelForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject, Optional<String> potentialTooltipText) {
+    private static void addFieldLabelForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject) {
         String fieldName = topicLinkObject.getTopic().name();
         if (topicLinkObject.getLabel() != null) {
             fieldName = topicLinkObject.getLabel();
         }
-        addFieldLabel(fieldBox, topicLinkObject.isReadOnly(), fieldName, potentialTooltipText);
+
+        String toolTipText = ofNullable(topicLinkObject.getTooltip()).orElse("");
+
+        addFieldLabel(fieldBox, topicLinkObject.isReadOnly(), fieldName, toolTipText);
     }
 }

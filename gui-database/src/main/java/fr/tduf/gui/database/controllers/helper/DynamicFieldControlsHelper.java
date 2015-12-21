@@ -65,7 +65,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         boolean fieldReadOnly = false;
         String groupName = null;
-        Optional<String> potentialToolTip = Optional.empty();
+        String toolTipText = String.format(DisplayConstants.TOOLTIP_FIELD_TEMPLATE, fieldRank, fieldName);
         Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank, controller.getCurrentProfileObject().getName(), controller.getLayoutObject());
         if (potentialFieldSettings.isPresent()) {
             FieldSettingsDto fieldSettings = potentialFieldSettings.get();
@@ -82,19 +82,21 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
             groupName = fieldSettings.getGroup();
 
-            potentialToolTip = Optional.ofNullable(fieldSettings.getToolTip());
+            if (fieldSettings.getToolTip() != null) {
+                toolTipText += (":" + fieldSettings.getToolTip());
+            }
         }
 
         HBox fieldBox = addFieldBox(Optional.ofNullable(groupName), 25.0, defaultTab);
 
-        addFieldLabel(fieldBox, fieldReadOnly, fieldName, potentialToolTip);
+        addFieldLabel(fieldBox, fieldReadOnly, fieldName, toolTipText);
 
-        addValueTextField(fieldBox, field, fieldReadOnly, potentialToolTip, property);
+        addValueTextField(fieldBox, field, fieldReadOnly, toolTipText, property);
 
         addCustomControls(fieldBox, field, fieldReadOnly, currentTopic, property);
     }
 
-    private void addValueTextField(HBox fieldBox, DbStructureDto.Field field, boolean fieldReadOnly, Optional<String> potentialToolTip, SimpleStringProperty property) {
+    private void addValueTextField(HBox fieldBox, DbStructureDto.Field field, boolean fieldReadOnly, String toolTip, SimpleStringProperty property) {
         boolean valueTextFieldReadOnly = DbStructureDto.FieldType.PERCENT == field.getFieldType() || fieldReadOnly;
         TextField valueTextField = new TextField();
 
@@ -103,7 +105,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
         valueTextField.setPrefWidth(110.0);
         valueTextField.setEditable(!valueTextFieldReadOnly);
-        potentialToolTip.ifPresent((text) -> valueTextField.setTooltip(new Tooltip(text)));
+        valueTextField.setTooltip(new Tooltip(toolTip));
         fieldBox.getChildren().add(valueTextField);
 
         valueTextField.textProperty().bindBidirectional(property);
