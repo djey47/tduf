@@ -110,6 +110,16 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
                                 DisplayConstants.LABEL_BUTTON_MINUS,
                                 DisplayConstants.TOOLTIP_BUTTON_DELETE_LINKED_ENTRY,
                                 controller.handleRemoveLinkedEntryButtonMouseClick(tableSelectionModel, topicLinkObject));
+                        addContextualButton(
+                                buttonsBox,
+                                DisplayConstants.LABEL_BUTTON_UP,
+                                DisplayConstants.TOOLTIP_BUTTON_MOVE_LINKED_ENTRY_UP,
+                                controller.handleMoveLinkedEntryUpButtonMouseClick(tableSelectionModel, topicLinkObject));
+                        addContextualButton(
+                                buttonsBox,
+                                DisplayConstants.LABEL_BUTTON_DOWN,
+                                DisplayConstants.TOOLTIP_BUTTON_MOVE_LINKED_ENTRY_DOWN,
+                                controller.handleMoveLinkedEntryDownButtonMouseClick(tableSelectionModel, topicLinkObject));
                     }
                 });
 

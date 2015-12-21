@@ -18,6 +18,8 @@ public class DisplayConstants {
     public static final String LABEL_BUTTON_CURRENT_LOCALE = "Current (%s)";
     public static final String LABEL_BUTTON_GOTO = "->";
     public static final String LABEL_BUTTON_MINUS = "-";
+    public static final String LABEL_BUTTON_UP = "\u25B2";
+    public static final String LABEL_BUTTON_DOWN = "\u25BC";
     public static final String LABEL_BUTTON_OK = "OK";
     public static final String LABEL_BUTTON_PLUS = "+";
     public static final String LABEL_BUTTON_CLOSE = "Close";
@@ -43,6 +45,8 @@ public class DisplayConstants {
     public static final String TOOLTIP_BUTTON_DELETE_LINKED_ENTRY = "Removes selected entry.";
     public static final String TOOLTIP_BUTTON_GOTO_LINKED_ENTRY = "Goes to target entry in linked topic.";
     public static final String TOOLTIP_BUTTON_GOTO_SELECTED_ENTRY = "Goes to selected entry in linked topic.";
+    public static final String TOOLTIP_BUTTON_MOVE_LINKED_ENTRY_UP = "Moves current linked entry one rank up.";
+    public static final String TOOLTIP_BUTTON_MOVE_LINKED_ENTRY_DOWN = "Moves current linked entry one rank down.";
     public static final String TOOLTIP_FIELD_TEMPLATE = "#%d:%s";
 
 
