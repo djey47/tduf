@@ -120,7 +120,10 @@ public class DatabaseChangeHelper {
 
                 .findAny()
 
-                .ifPresent(topicDataObject::removeEntry);
+                .ifPresent((entryToDelete) -> {
+                    topicDataObject.removeEntry(entryToDelete);
+                    BulkDatabaseMiner.clearAllCaches();
+                });
     }
 
     /**
@@ -182,14 +185,29 @@ public class DatabaseChangeHelper {
     }
 
     /**
-     *
-     * @param step
-     * @param internalEntryId
-     * @param topic
+     * Changes rank of entry with given identifier and updated ids of sourrounding ones
+     * @param step      : number of moves to perform
+     * @param entryId   : internal identifier of entry to be moved
+     * @param topic     : database topic where entry should be moved
      */
-    public void moveEntryWithIdentifier(int step, long internalEntryId, DbDto.Topic topic) {
+    public void moveEntryWithIdentifier(int step, long entryId, DbDto.Topic topic) {
+        final DbDataDto dataObject = databaseMiner.getDatabaseTopic(topic).get().getData();
 
-        // TODO with unit tests
+        int absoluteSteps = Math.abs(step);
+        if ( step == 0
+                || step < 0 && entryId - absoluteSteps < 0
+                || step > 0 && entryId + absoluteSteps > dataObject.getEntries().size() - 1) {
+            return;
+        }
+
+        DbDataDto.Entry entry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic).get();
+        for (int i = 0 ; i < absoluteSteps ; i++) {
+            if (step < 0) {
+                dataObject.moveEntryUp(entry);
+            } else {
+                dataObject.moveEntryDown(entry);
+            }
+        }
 
         BulkDatabaseMiner.clearAllCaches();
     }
