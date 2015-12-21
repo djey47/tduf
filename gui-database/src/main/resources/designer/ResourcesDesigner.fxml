@@ -13,17 +13,17 @@
                <items>
                   <ChoiceBox fx:id="topicsChoiceBox" prefHeight="25.0" prefWidth="180.0" />
                   <Separator orientation="VERTICAL" prefHeight="30.0" />
-                  <Button mnemonicParsing="false" onAction="#handleEditResourceButtonMouseClick" prefHeight="25.0" prefWidth="45.0" text="Edit">
+                  <Button mnemonicParsing="false" onAction="#handleEditResourceButtonMouseClick" prefHeight="25.0" prefWidth="28.0" text="&#x270E;">
                      <tooltip>
                         <Tooltip text="Modifies selected resource." />
                      </tooltip>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#handleAddResourceButtonMouseClick" prefHeight="25.0" prefWidth="28.0" text="+">
+                  <Button mnemonicParsing="false" onAction="#handleAddResourceButtonMouseClick" prefHeight="25.0" prefWidth="28.0" text="&#x2795;">
                      <tooltip>
                         <Tooltip text="Adds a new resource to current topic and locale." />
                      </tooltip>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#handleRemoveResourceButtonMouseClick" prefWidth="28.0" text="-">
+                  <Button mnemonicParsing="false" onAction="#handleRemoveResourceButtonMouseClick" prefWidth="28.0" text="&#x274E;">
                      <tooltip>
                         <Tooltip text="Removes selected resource from current topic." />
                      </tooltip>
