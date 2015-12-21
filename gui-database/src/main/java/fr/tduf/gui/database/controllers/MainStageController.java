@@ -405,6 +405,24 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
+    public EventHandler<ActionEvent> handleMoveLinkedEntryUpButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
+        return (actionEvent) -> {
+            Log.trace(THIS_CLASS_NAME, "->handleMoveLinkedEntryUpButton clicked");
+
+            ofNullable(tableViewSelectionModel.getSelectedItem())
+                    .ifPresent((selectedItem) -> moveLinkedEntryUpAndUpdateStage(tableViewSelectionModel, topicLinkObject));
+        };
+    }
+
+    public EventHandler<ActionEvent> handleMoveLinkedEntryDownButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
+        return (actionEvent) -> {
+            Log.trace(THIS_CLASS_NAME, "->handleMoveLinkedEntryDownButton clicked");
+
+            ofNullable(tableViewSelectionModel.getSelectedItem())
+                    .ifPresent((selectedItem) -> moveLinkedEntryDownAndUpdateStage(tableViewSelectionModel, topicLinkObject));
+        };
+    }
+
     public EventHandler<MouseEvent> handleLinkTableMouseClick(String targetProfileName, DbDto.Topic targetTopic) {
         return (mouseEvent) -> {
             Log.trace(THIS_CLASS_NAME, "->handleLinkTableMouseClick, targetProfileName:" + targetProfileName + ", targetTopic:" + targetTopic);
@@ -647,6 +665,28 @@ public class MainStageController extends AbstractGuiController {
         ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
 
         changeDataController.removeEntryWithIdentifier(selectedItem.getInternalEntryId(), topicLinkObject.getTopic());
+
+        viewDataController.updateLinkProperties(topicLinkObject);
+
+        TableViewHelper.selectRowAndScroll(initialRowIndex, tableViewSelectionModel.getTableView());
+    }
+
+    private void moveLinkedEntryUpAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
+        int initialRowIndex = tableViewSelectionModel.getSelectedIndex();
+        ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
+
+        changeDataController.moveEntryWithIdentifier(-1, selectedItem.getInternalEntryId(), topicLinkObject.getTopic());
+
+        viewDataController.updateLinkProperties(topicLinkObject);
+
+        TableViewHelper.selectRowAndScroll(initialRowIndex, tableViewSelectionModel.getTableView());
+    }
+
+    private void moveLinkedEntryDownAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
+        int initialRowIndex = tableViewSelectionModel.getSelectedIndex();
+        ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
+
+        changeDataController.moveEntryWithIdentifier(1, selectedItem.getInternalEntryId(), topicLinkObject.getTopic());
 
         viewDataController.updateLinkProperties(topicLinkObject);
 

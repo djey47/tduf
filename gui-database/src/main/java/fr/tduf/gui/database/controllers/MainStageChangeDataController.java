@@ -54,13 +54,18 @@ public class MainStageChangeDataController {
     }
 
     void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
-        requireNonNull(getGenHelper());
+        requireNonNull(getChangeHelper());
         getChangeHelper().updateResourceWithReference(topic, locale, oldResourceReference, newResourceReference, newResourceValue);
     }
 
     void removeEntryWithIdentifier(long internalEntryId, DbDto.Topic topic) {
-        requireNonNull(getGenHelper());
+        requireNonNull(getChangeHelper());
         getChangeHelper().removeEntryWithIdentifier(internalEntryId, topic);
+    }
+
+    void moveEntryWithIdentifier(int step, long internalEntryId, DbDto.Topic topic) {
+        requireNonNull(getChangeHelper());
+        getChangeHelper().moveEntryWithIdentifier(step, internalEntryId, topic);
     }
 
     void removeResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, boolean forAllLocales) {
