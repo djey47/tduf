@@ -43,6 +43,8 @@ public class DisplayConstants {
     public static final String TOOLTIP_BUTTON_DELETE_LINKED_ENTRY = "Removes selected entry.";
     public static final String TOOLTIP_BUTTON_GOTO_LINKED_ENTRY = "Goes to target entry in linked topic.";
     public static final String TOOLTIP_BUTTON_GOTO_SELECTED_ENTRY = "Goes to selected entry in linked topic.";
+    public static final String TOOLTIP_FIELD_TEMPLATE = "#%d:%s";
+
 
     public static final String COLUMN_HEADER_DATA = "Linked data";
     public static final String COLUMN_HEADER_REF = "#";
@@ -74,5 +76,4 @@ public class DisplayConstants {
     public static final String QUESTION_AFFECTED_LOCALES = "Which locales should be affected?";
 
     public static final String WARNING_DELETED_RESOURCE = "This resource will be removed.";
-
 }

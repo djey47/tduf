@@ -43,10 +43,10 @@ public abstract class AbstractDynamicControlsHelper {
         return fieldBox;
     }
 
-    protected static void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName, Optional<String> potentialToolTipText) {
+    protected static void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName, String toolTipText) {
         Label fieldLabel = addLabel(fieldBox, readOnly, 225.0, fieldName);
 
-        potentialToolTipText.ifPresent((text) -> fieldLabel.setTooltip(new Tooltip(text)));
+        fieldLabel.setTooltip(new Tooltip(toolTipText));
 
         fieldLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_NAME);
     }
