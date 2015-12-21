@@ -679,7 +679,7 @@ public class MainStageController extends AbstractGuiController {
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
-        TableViewHelper.selectRowAndScroll(initialRowIndex, tableViewSelectionModel.getTableView());
+        TableViewHelper.selectRowAndScroll(initialRowIndex - 1, tableViewSelectionModel.getTableView());
     }
 
     private void moveLinkedEntryDownAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
@@ -690,7 +690,7 @@ public class MainStageController extends AbstractGuiController {
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
-        TableViewHelper.selectRowAndScroll(initialRowIndex, tableViewSelectionModel.getTableView());
+        TableViewHelper.selectRowAndScroll(initialRowIndex + 1, tableViewSelectionModel.getTableView());
     }
 
     private void exportCurrentEntryAsLineAndShowResult() {
