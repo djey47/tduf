@@ -672,25 +672,35 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void moveLinkedEntryUpAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
+        final TableView<ContentEntryDataItem> tableView = tableViewSelectionModel.getTableView();
         int initialRowIndex = tableViewSelectionModel.getSelectedIndex();
+        if (initialRowIndex == 0) {
+            return;
+        }
+
         ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
 
         changeDataController.moveEntryWithIdentifier(-1, selectedItem.getInternalEntryId(), topicLinkObject.getTopic());
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
-        TableViewHelper.selectRowAndScroll(initialRowIndex - 1, tableViewSelectionModel.getTableView());
+        TableViewHelper.selectRowAndScroll(initialRowIndex - 1, tableView);
     }
 
     private void moveLinkedEntryDownAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
+        final TableView<ContentEntryDataItem> tableView = tableViewSelectionModel.getTableView();
         int initialRowIndex = tableViewSelectionModel.getSelectedIndex();
+        if (initialRowIndex == tableView.getItems().size() - 1) {
+            return;
+        }
+
         ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
 
         changeDataController.moveEntryWithIdentifier(1, selectedItem.getInternalEntryId(), topicLinkObject.getTopic());
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
-        TableViewHelper.selectRowAndScroll(initialRowIndex + 1, tableViewSelectionModel.getTableView());
+        TableViewHelper.selectRowAndScroll(initialRowIndex + 1, tableView);
     }
 
     private void exportCurrentEntryAsLineAndShowResult() {
