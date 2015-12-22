@@ -13,15 +13,15 @@ public class DisplayConstants {
     public static final String VALUE_UNKNOWN = "<?>";
 
     public static final String LABEL_BUTTON_ALL = "All";
-    public static final String LABEL_BUTTON_BROWSE = new String(new int[] { 0x1F50E }, 0, 1);
+    public static final String LABEL_BUTTON_BROWSE = "...";
     public static final String LABEL_BUTTON_CANCEL = "Cancel";
     public static final String LABEL_BUTTON_CURRENT_LOCALE = "Current (%s)";
-    public static final String LABEL_BUTTON_GOTO = "\u2708";
-    public static final String LABEL_BUTTON_MINUS = "\u274E";
+    public static final String LABEL_BUTTON_GOTO = "\u25B6";
+    public static final String LABEL_BUTTON_MINUS = "-";
     public static final String LABEL_BUTTON_UP = "\u25B2";
     public static final String LABEL_BUTTON_DOWN = "\u25BC";
     public static final String LABEL_BUTTON_OK = "OK";
-    public static final String LABEL_BUTTON_PLUS = "\u2795";
+    public static final String LABEL_BUTTON_PLUS = "+";
     public static final String LABEL_BUTTON_CLOSE = "Close";
     public static final String LABEL_CHOICEBOX_LOCALE = "Locale:";
     public static final String LABEL_ITEM_DATABASE_ENTRY = "%s : %s";
