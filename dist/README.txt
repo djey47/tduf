@@ -26,19 +26,12 @@ Thus, you always ought to make a backup of your TDU database before using it!
 * Searches particular content/resource entry with its REF
 * Imports data from TDUF (mini-patch file .json)
 * Imports data from TDUPE (Performance Pack .tdupk)
-* Exports current entry to following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch.
+* Exports current entry to following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch
+* Exports all entries for topics not supporting REF.
 
-### What's in this version ? (ALPHA 12)
+### What's in this version ? (ALPHA 13)
 
-* Includes all fixes and features of upcoming TDUF 0.9.0
-
-* Cosmetic: some button labels get a fresh design, with symbols
-
-* Bugfix: refreshes Database Editor contents when re-loading database from any location
-
-* Feature: exports all entries in topic if no REF column is present
-* Feature: each field now has a default tooltip, mentioning field rank and name
-* Feature: linked entries (colors, rims etc) can be reordered.
+*
 
 ### Known bugs
 
