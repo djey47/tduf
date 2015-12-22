@@ -13,17 +13,17 @@
                <items>
                   <ChoiceBox fx:id="topicsChoiceBox" prefHeight="25.0" prefWidth="180.0" />
                   <Separator orientation="VERTICAL" prefHeight="30.0" />
-                  <Button mnemonicParsing="false" onAction="#handleEditResourceButtonMouseClick" prefHeight="25.0" prefWidth="28.0" text="&#x270E;">
+                  <Button mnemonicParsing="false" onAction="#handleEditResourceButtonMouseClick" prefHeight="25.0" text="Edit...">
                      <tooltip>
                         <Tooltip text="Modifies selected resource." />
                      </tooltip>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#handleAddResourceButtonMouseClick" prefHeight="25.0" prefWidth="28.0" text="&#x2795;">
+                  <Button mnemonicParsing="false" onAction="#handleAddResourceButtonMouseClick" prefHeight="25.0" prefWidth="28.0" text="+">
                      <tooltip>
                         <Tooltip text="Adds a new resource to current topic and locale." />
                      </tooltip>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#handleRemoveResourceButtonMouseClick" prefWidth="28.0" text="&#x274E;">
+                  <Button mnemonicParsing="false" onAction="#handleRemoveResourceButtonMouseClick" prefWidth="28.0" text="-">
                      <tooltip>
                         <Tooltip text="Removes selected resource from current topic." />
                      </tooltip>
@@ -55,10 +55,8 @@
             </AnchorPane>
             <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
                <items>
-                  <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="40.0" text="&#x1F50E;">
-                     <tooltip>
-                        <Tooltip text="Searches entry with REF." />
-                     </tooltip>
+                  <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="80.0" text="REF...">
+                     <tooltip><Tooltip text="Searches entry with REF." /></tooltip>
                   </Button>
                   <Separator orientation="VERTICAL" />
                </items>
