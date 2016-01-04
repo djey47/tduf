@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_REMOTE;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 
@@ -194,6 +195,15 @@ public class BulkDatabaseMiner {
         return getContentEntryStreamMatchingCriteria(criteria, topic)
 
                 .collect(toList());
+    }
+
+    /**
+     * @param condition     : unique condition to select content entries
+     * @param topic         : topic in TDU Database to search
+     * @return a stream of all database entries satisfying the condition.
+     */
+    public Stream<DbDataDto.Entry> getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto condition, DbDto.Topic topic) {
+        return getContentEntryStreamMatchingCriteria(singletonList(condition), topic);
     }
 
     /**
