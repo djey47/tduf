@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
@@ -85,11 +86,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         databaseMiner.getDatabaseTopic(changedTopic)
                 .ifPresent((topicObject) -> {
 
-                    Optional<DbDataDto.Entry> potentialEntry = ofNullable(changeObject.getRef())
-
-                            .map( (ref) -> databaseMiner.getContentEntryFromTopicWithReference(ref, changedTopic)
-
-                                    .orElse(null));
+                    Optional<DbDataDto.Entry> potentialEntry = retrieveExistingEntry(changeObject, changedTopic);
 
                     if (changeObject.isPartialChange()) {
 
@@ -106,6 +103,26 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
                     }
                 });
+    }
+
+    private Optional<DbDataDto.Entry> retrieveExistingEntry(DbPatchDto.DbChangeDto changeObject, DbDto.Topic changedTopic) {
+        final Optional<String> potentialReference = ofNullable(changeObject.getRef());
+        if (potentialReference.isPresent()) {
+            return databaseMiner.getContentEntryFromTopicWithReference(potentialReference.get(), changedTopic);
+        }
+
+        if (changeObject.isPartialChange() || changeObject.getValues() == null) {
+            return empty();
+        }
+
+        AtomicInteger fieldRank = new AtomicInteger(1);
+        List<DbFieldValueDto> fullCriteria = changeObject.getValues().stream()
+
+                .map( (rawValue) -> DbFieldValueDto.fromCouple(fieldRank.getAndIncrement(), rawValue))
+
+                .collect(toList());
+
+        return databaseMiner.getContentEntriesMatchingCriteria(fullCriteria, changedTopic).stream().findAny();
     }
 
     private void addOrUpdateEntryWithFullChanges(Optional<DbDataDto.Entry> existingEntry, DbDto topicObject, List<String> allValues) {

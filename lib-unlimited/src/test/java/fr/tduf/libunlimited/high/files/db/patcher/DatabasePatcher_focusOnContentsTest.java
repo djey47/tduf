@@ -71,6 +71,30 @@ public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonT
         assertThat(actualCreatedEntry.getItems()).hasSize(8);
         assertThat(actualCreatedEntry.getItems().get(0).getRawValue()).isEqualTo("57167257");
     }
+
+    @Test
+    public void apply_whenUpdateContentsPatch_forAllFields_andSameEntryExists_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef-existing.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(DbDto.Topic.BOTS).get().getData().getEntries();
+        int previousEntryCount = topicEntries.size();
+
+
+        // WHEN
+        patcher.apply(updateContentsPatch);
+
+
+        // THEN
+        int actualEntryCount = topicEntries.size();
+        assertThat(actualEntryCount).isEqualTo(previousEntryCount);
+        assertThat(topicEntries.get(0).getItems()).extracting("rawValue").containsExactly("55467256", "54373256", "540091912", "1", "0", "1178042409", "0", "0.5");
+    }
+
     @Test
     public void apply_whenUpdateContentsPatch_forAllFields_withRefSupport_shouldAddNewEntryAndUpdateExisting() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
