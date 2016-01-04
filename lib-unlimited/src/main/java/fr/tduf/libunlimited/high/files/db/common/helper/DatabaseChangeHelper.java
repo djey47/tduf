@@ -164,7 +164,7 @@ public class DatabaseChangeHelper {
         List<DbDataDto.Entry> currentContentEntries = topicDataObject.getEntries();
 
         long newIdentifier = currentContentEntries.size();
-        List<DbDataDto.Item> clonedItems = cloneContentItems(sourceEntry);
+        List<DbDataDto.Item> clonedItems = cloneContentItems(sourceEntry, topic);
         DbDataDto.Entry newEntry = DbDataDto.Entry.builder()
                 .forId(newIdentifier)
                 .addItems(clonedItems)
@@ -267,10 +267,10 @@ public class DatabaseChangeHelper {
                 });
     }
 
-    private static List<DbDataDto.Item> cloneContentItems(DbDataDto.Entry entry) {
+    private static List<DbDataDto.Item> cloneContentItems(DbDataDto.Entry entry, DbDto.Topic topic) {
         return entry.getItems().stream()
 
-                .map((contentItem) -> DbDataDto.Item.builder().fromExisting(contentItem).build())
+                .map((contentItem) -> DbDataDto.Item.builder().fromExisting(contentItem, topic).build())
 
                 .collect(toList());
     }
