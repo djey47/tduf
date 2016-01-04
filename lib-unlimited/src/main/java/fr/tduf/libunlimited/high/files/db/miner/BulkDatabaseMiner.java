@@ -123,31 +123,6 @@ public class BulkDatabaseMiner {
                 .findAny().get();
     }
 
-    // TODO use get by criteria and set visibility to private
-    /**
-     * @param fieldRank : rank of field to look for value
-     * @param itemValue : raw value to be matched
-     * @param topic     : topic in TDU Database to search
-     * @return list of database entries having specified value at an item rank
-     */
-    public List<DbDataDto.Entry> getAllContentEntriesFromTopicWithItemValueAtFieldRank(int fieldRank, String itemValue, DbDto.Topic topic) {
-        String key = getCacheKey(topic.name(), Integer.valueOf(fieldRank).toString(), itemValue);
-        return cacheManager.getValueFromKey("allContentEntriesFromTopicWithItemValueAtFieldRank", key, () -> {
-            DbDto topicObject = getDatabaseTopic(topic).get();
-
-            return topicObject.getData().getEntries().stream()
-
-                    .filter((entry) -> {
-                        Optional<DbDataDto.Item> contentItemFromEntryAtFieldRank = getContentItemFromEntryAtFieldRank(entry, fieldRank);
-
-                        return contentItemFromEntryAtFieldRank.isPresent()
-                                && itemValue.equals(contentItemFromEntryAtFieldRank.get().getRawValue());
-                    })
-
-                    .collect(toList());
-        });
-    }
-
     /**
      * @param entryIdentifier : unique identifier of entry (TDUF specific)
      * @param topic           : topic in TDU Database to search
@@ -410,6 +385,24 @@ public class BulkDatabaseMiner {
     private String getRawValueAtEntryIndexAndRank(DbDto.Topic topic, int fieldRank, long entryIndex) {
         DbDataDto.Entry contentEntry = getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic).get();
         return getContentItemFromEntryAtFieldRank(contentEntry, fieldRank).get().getRawValue();
+    }
+
+    private List<DbDataDto.Entry> getAllContentEntriesFromTopicWithItemValueAtFieldRank(int fieldRank, String itemValue, DbDto.Topic topic) {
+        String key = getCacheKey(topic.name(), Integer.valueOf(fieldRank).toString(), itemValue);
+        return cacheManager.getValueFromKey("allContentEntriesFromTopicWithItemValueAtFieldRank", key, () -> {
+            DbDto topicObject = getDatabaseTopic(topic).get();
+
+            return topicObject.getData().getEntries().stream()
+
+                    .filter((entry) -> {
+                        Optional<DbDataDto.Item> contentItemFromEntryAtFieldRank = getContentItemFromEntryAtFieldRank(entry, fieldRank);
+
+                        return contentItemFromEntryAtFieldRank.isPresent()
+                                && itemValue.equals(contentItemFromEntryAtFieldRank.get().getRawValue());
+                    })
+
+                    .collect(toList());
+        });
     }
 
     private static String getResourceValueWithReference(DbResourceDto resource, String reference) {

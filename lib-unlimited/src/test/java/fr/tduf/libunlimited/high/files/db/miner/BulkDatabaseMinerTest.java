@@ -170,53 +170,6 @@ public class BulkDatabaseMinerTest {
         assertThat(actualTopicObject).isNotNull();
     }
 
-    @Test(expected=NoSuchElementException.class)
-    public void getAllContentEntriesWithItemValueAtFieldRank_whenTopicObjectDoesNotExist_shouldThrowException() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        BulkDatabaseMiner.load(topicObjects).getAllContentEntriesFromTopicWithItemValueAtFieldRank(3, "20", ACHIEVEMENTS);
-
-        // THEN: NSEE
-    }
-
-    @Test
-    public void getAllContentEntriesWithItemValueAtFieldRank_whenFieldDoesNotExist_shouldReturnEmptyList() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsWithoutUidFieldFromResources();
-
-        // WHEN
-        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getAllContentEntriesFromTopicWithItemValueAtFieldRank(99, "20", ACHIEVEMENTS);
-
-        // THEN
-        assertThat(actualEntries).isEmpty();
-    }
-
-    @Test
-    public void getAllContentEntriesWithItemValueAtFieldRank_whenExist_shouldReturnThem() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsWithoutUidFieldFromResources();
-
-        // WHEN
-        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getAllContentEntriesFromTopicWithItemValueAtFieldRank(3, "20", ACHIEVEMENTS);
-
-        // THEN
-        assertThat(actualEntries).hasSize(2);
-    }
-
-    @Test
-    public void getAllContentEntriesWithItemValueAtFieldRank_whenNoneExist_shouldReturnEmptyList() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsWithoutUidFieldFromResources();
-
-        // WHEN
-        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getAllContentEntriesFromTopicWithItemValueAtFieldRank(3, "10", ACHIEVEMENTS);
-
-        // THEN
-        assertThat(actualEntries).isEmpty();
-    }
-
     @Test(expected = NoSuchElementException.class)
     public void getContentEntryFromTopicWithInternalIdentifier_whenTopicNotFound_shouldThrowException() throws IOException, URISyntaxException {
         // GIVEN
