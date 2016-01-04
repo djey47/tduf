@@ -31,6 +31,7 @@ import static org.mockito.Mockito.*;
 public class DatabaseChangeHelperTest {
 
     private static final String ENTRY_REFERENCE = "111111";
+    private static final String ENTRY_BITFIELD = "79";
     private static final String ENTRY_REFERENCE_BIS = "222222";
     private static final String RESOURCE_REFERENCE = "000000";
     private static final String RESOURCE_VALUE = "TEST";
@@ -38,6 +39,7 @@ public class DatabaseChangeHelperTest {
     private static final DbResourceDto.Locale LOCALE = DbResourceDto.Locale.CHINA;
     private static final String CONTENT_ENTRY_NAME = "TEST";
     private static final String CONTENT_ENTRY_REF_NAME = "REF";
+    private static final String CONTENT_ENTRY_BIFIELD_NAME = "BITFIELD";
 
     @Mock
     DatabaseGenHelper genHelperMock;
@@ -327,6 +329,34 @@ public class DatabaseChangeHelperTest {
     }
 
     @Test
+    public void duplicateEntryWithIdentifier_whenEntryExists_withSignleBitfieldItem_shouldDuplicateItAndAddItToTopic() {
+        // GIVEN
+        DbDataDto dataObject = createDefaultDataObject();
+
+        DbDataDto.Entry defaultContentEntry = createDefaultContentEntry(0);
+        defaultContentEntry.appendItem(createEntryItemForBitField());
+        dataObject.addEntry(defaultContentEntry);
+
+        DbStructureDto stuctureObject = createStructureObjectWithBitField();
+
+        DbDto topicObject = createDatabaseObject(dataObject, stuctureObject);
+
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC)).thenReturn(Optional.of(defaultContentEntry));
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+
+
+        // WHEN
+        changeHelper.duplicateEntryWithIdentifier(0, TOPIC);
+
+
+        //THEN
+        assertThat(dataObject.getEntries()).hasSize(2);
+        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L);
+        assertThat(dataObject.getEntries().get(1).getItems()).extracting("name").containsExactly(CONTENT_ENTRY_BIFIELD_NAME);
+        assertThat(dataObject.getEntries().get(1).getItems()).extracting("fieldRank").containsExactly(1);
+    }
+
+    @Test
     public void duplicateEntryWithIdentifier_whenUidField_shouldGenerateNewRefValueWithinBounds() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
@@ -572,7 +602,15 @@ public class DatabaseChangeHelperTest {
                 .forName(CONTENT_ENTRY_REF_NAME)
                 .withRawValue(ENTRY_REFERENCE)
                 .build();
+    }
 
+    private static DbDataDto.Item createEntryItemForBitField() {
+        return DbDataDto.Item.builder()
+                .ofFieldRank(1)
+                .forName(CONTENT_ENTRY_BIFIELD_NAME)
+                .withRawValue(ENTRY_BITFIELD)
+                .bitFieldForTopic(true, TOPIC)
+                .build();
     }
 
     private static DbResourceDto.Entry createDefaultResourceEntry(String reference) {
@@ -592,6 +630,18 @@ public class DatabaseChangeHelperTest {
                 .addItem(DbStructureDto.Field.builder()
                         .forName(CONTENT_ENTRY_REF_NAME)
                         .fromType(DbStructureDto.FieldType.UID)
+                        .ofRank(1)
+                        .build()
+                )
+                .build();
+    }
+
+    private static DbStructureDto createStructureObjectWithBitField() {
+        return DbStructureDto.builder()
+                .forTopic(TOPIC)
+                .addItem(DbStructureDto.Field.builder()
+                        .forName(CONTENT_ENTRY_BIFIELD_NAME)
+                        .fromType(DbStructureDto.FieldType.BITFIELD)
                         .ofRank(1)
                         .build()
                 )
