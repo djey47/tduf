@@ -122,6 +122,7 @@ public class BulkDatabaseMiner {
                 .findAny().get();
     }
 
+    // TODO use get by criteria and set visibility to private
     /**
      * @param fieldRank : rank of field to look for value
      * @param itemValue : raw value to be matched
