@@ -218,7 +218,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     private void addCarPhysicsAssociatedEntriesToRequiredContents(String entryReference, RequiredReferences requiredReferences) {
         CAR_PHYSICS_ASSOCIATION_TOPICS.stream()
 
-                .forEach((topic) -> databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(1, entryReference, topic)
+                .forEach((topic) -> databaseMiner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(1, entryReference), topic)
 
                         .forEach((associationEntry) -> requiredReferences.updateRequiredContentsIds(topic, associationEntry.getId()))
                 );

@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -25,7 +26,6 @@ public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonT
         super.setUp();
         BulkDatabaseMiner.clearAllCaches();
     }
-
 
     @Test(expected = IllegalArgumentException.class)
     public void apply_whenUpdateContentsPatch_forAllFields_andIncorrectValueCount_shouldThrowException() throws IOException, URISyntaxException, ReflectiveOperationException {
@@ -319,7 +319,7 @@ public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonT
         int actualEntryCount = topicEntries.size();
         assertThat(actualEntryCount).isEqualTo(previousEntryCount);
 
-        assertThat(databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(1, "55736935", ACHIEVEMENTS).stream()
+        assertThat(databaseMiner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(1, "55736935"), ACHIEVEMENTS)
 
                 .filter((entry) -> "5".equals(entry.getItemAtRank(2).get().getRawValue()))
 
@@ -348,7 +348,7 @@ public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonT
         int actualEntryCount = topicEntries.size();
         assertThat(actualEntryCount).isEqualTo(previousEntryCount);
 
-        assertThat(databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(1, "55736935", ACHIEVEMENTS).stream()
+        assertThat(databaseMiner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(1, "55736935"), ACHIEVEMENTS)
 
                 .filter((entry) -> "5".equals(entry.getItemAtRank(2).get().getRawValue()))
 
@@ -388,7 +388,7 @@ public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonT
 
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        assertThat(databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(1, "55736935", ACHIEVEMENTS)).isEmpty();
+        assertThat(databaseMiner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(1, "55736935"), ACHIEVEMENTS).findAny().isPresent()).isFalse();
     }
 
     @Test
@@ -406,7 +406,8 @@ public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonT
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
 
-        List<DbDataDto.Entry> actualEntries = databaseMiner.getAllContentEntriesFromTopicWithItemValueAtFieldRank(1, "55736935", ACHIEVEMENTS);
+        List<DbDataDto.Entry> actualEntries = databaseMiner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(1, "55736935"), ACHIEVEMENTS)
+                .collect(toList());
         assertThat(actualEntries)
                 .hasSize(4);
         assertThat(actualEntries.stream()
