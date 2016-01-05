@@ -101,7 +101,6 @@ public class DatabaseTool extends GenericTool {
      * All available commands
      */
     enum Command implements CommandHelper.CommandEnum {
-        CHECK("check", "Tries to load database and display integrity errors, if any."),
         GEN("gen", "Writes UNPACKED TDU database files from JSON files."),
         FIX("fix", "Loads database, checks for integrity errors and create database copy with fixed ones."),
         APPLY_PATCH("apply-patch", "Modifies database contents and resources as described in a JSON mini patch file."),
@@ -149,9 +148,6 @@ public class DatabaseTool extends GenericTool {
     @Override
     protected boolean commandDispatch() throws Exception {
         switch (command) {
-            case CHECK:
-                commandResult = check(databaseDirectory, withClearContents);
-                return true;
             case GEN:
                 commandResult = gen(jsonDirectory, databaseDirectory);
                 return true;
@@ -241,7 +237,6 @@ public class DatabaseTool extends GenericTool {
     protected List<String> getExamples() {
         return asList(
                 GEN.label + " --jsonDir \"C:\\Users\\Bill\\Desktop\\json-database\" --databaseDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
-                CHECK.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
                 FIX.label + " -c -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -o \"C:\\Users\\Bill\\Desktop\\tdu-database-fixed\"",
                 APPLY_TDUPK.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\vehicle.tdupk\" -r \"606298799\" -o \"C:\\Users\\Bill\\Desktop\\json-database\"",
                 APPLY_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\"",
@@ -452,20 +447,6 @@ public class DatabaseTool extends GenericTool {
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("missingJsonTopicContents", missingTopicContents);
         resultInfo.put("writtenFiles", writtenFileNames);
-
-        return resultInfo;
-    }
-
-    private Map<String, ?> check(String sourceDatabaseDirectory, boolean withClearContents) throws Exception {
-        Set<IntegrityError> integrityErrors = new LinkedHashSet<>();
-        checkAndReturnIntegrityErrorsAndObjects(sourceDatabaseDirectory, integrityErrors, withClearContents);
-
-        if (!integrityErrors.isEmpty()) {
-            outLine("At least one integrity error has been found, your database may not be ready-to-use.");
-        }
-
-        Map<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("integrityErrors", toDatabaseIntegrityErrors(integrityErrors));
 
         return resultInfo;
     }
