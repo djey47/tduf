@@ -16,6 +16,7 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoE
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Class providing methods to manage Database read/write ops.
@@ -37,7 +38,7 @@ public class DatabaseReadWriteHelper {
      * @return empty value if topic could not be read properly.
      * @throws FileNotFoundException
      */
-    public static Optional<DbDto> readDatabaseTopic(DbDto.Topic topic, String databaseDirectory, boolean withClearContents, List<IntegrityError> integrityErrors) throws IOException {
+    public static Optional<DbDto> readDatabaseTopic(DbDto.Topic topic, String databaseDirectory, boolean withClearContents, Set<IntegrityError> integrityErrors) throws IOException {
         requireNonNull(integrityErrors, "A list (even empty) must be provided.");
 
         String contentsFileName = checkDatabaseContents(topic, databaseDirectory, integrityErrors);
@@ -170,7 +171,7 @@ public class DatabaseReadWriteHelper {
         return parseLinesInFile(contentsFileName, ENCODING_UTF_8);
     }
 
-    static Map<DbResourceDto.Locale, List<String>> parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {
+    static Map<DbResourceDto.Locale, List<String>> parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic topic, String databaseDirectory, Set<IntegrityError> integrityErrors) throws FileNotFoundException {
 
         Map<DbResourceDto.Locale, List<String>> resourcesLinesByLocale = readLinesFromResourceFiles(databaseDirectory, topic);
 
@@ -195,7 +196,7 @@ public class DatabaseReadWriteHelper {
         return resourcesLinesByLocale;
     }
 
-    private static void checkResourcesLines(Map<DbResourceDto.Locale, List<String>> resourcesLinesByLocale, DbDto.Topic topic, List<IntegrityError> integrityErrors) {
+    private static void checkResourcesLines(Map<DbResourceDto.Locale, List<String>> resourcesLinesByLocale, DbDto.Topic topic, Set<IntegrityError> integrityErrors) {
         requireNonNull(integrityErrors, "A list of integrity errors (even empty) is required.");
 
         integrityErrors.addAll(resourcesLinesByLocale.entrySet().stream()
@@ -215,10 +216,10 @@ public class DatabaseReadWriteHelper {
                             .build();
                 })
 
-                .collect(toList()));
+                .collect(toSet()));
     }
 
-    private static String checkDatabaseContents(DbDto.Topic topic, String databaseDirectory, List<IntegrityError> integrityErrors) throws FileNotFoundException {
+    private static String checkDatabaseContents(DbDto.Topic topic, String databaseDirectory, Set<IntegrityError> integrityErrors) throws FileNotFoundException {
         String contentsFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, EXTENSION_DB_CONTENTS);
         File contentsFile = new File(contentsFileName);
 
@@ -262,7 +263,7 @@ public class DatabaseReadWriteHelper {
         return new File(databaseDirectory, fileName).getAbsolutePath();
     }
 
-    private static String prepareClearContentsIfNecessary(String contentsFileName, boolean withClearContents, List<IntegrityError> integrityErrors) throws IOException {
+    private static String prepareClearContentsIfNecessary(String contentsFileName, boolean withClearContents, Set<IntegrityError> integrityErrors) throws IOException {
         if (withClearContents) {
             return contentsFileName;
         }

@@ -26,7 +26,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
     private static final String RESOURCE_VALUE_DEFAULT = "-FIXED BY TDUF-";
 
-    private List<IntegrityError> integrityErrors;
+    private Set<IntegrityError> integrityErrors;
 
     // Following errors are auto-handled: CONTENT_ITEMS_COUNT_MISMATCH, STRUCTURE_FIELDS_COUNT_MISMATCH
     private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH, RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND, CONTENTS_FIELDS_COUNT_MISMATCH, RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES));
@@ -39,11 +39,11 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
      * @param integrityErrors : integrity errors to fix.
      * @return list of remaining integrity errors.
      */
-    public List<IntegrityError> fixAllContentsObjects(List<IntegrityError> integrityErrors) {
+    public Set<IntegrityError> fixAllContentsObjects(Set<IntegrityError> integrityErrors) {
 
         this.integrityErrors = requireNonNull(integrityErrors, "A list of integrity errors is required.");
 
-        List<IntegrityError> remainingIntegrityErrors = new ArrayList<>();
+        Set<IntegrityError> remainingIntegrityErrors = new LinkedHashSet<>();
 
         if(this.integrityErrors.isEmpty()) {
             return remainingIntegrityErrors;
@@ -61,7 +61,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         genHelper = new DatabaseGenHelper(databaseMiner);
     }
 
-    private void handleUnfixableErrors(List<IntegrityError> remainingIntegrityErrors) {
+    private void handleUnfixableErrors(Set<IntegrityError> remainingIntegrityErrors) {
         remainingIntegrityErrors.addAll(
                 this.integrityErrors.stream()
 
@@ -70,7 +70,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                         .collect(toList()));
     }
 
-    private void handleFixableErrors(List<IntegrityError> remainingIntegrityErrors) {
+    private void handleFixableErrors(Set<IntegrityError> remainingIntegrityErrors) {
         remainingIntegrityErrors.addAll(
                 this.integrityErrors.stream()
 
@@ -301,7 +301,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         return  validResourceLocales.stream().findFirst().get();
     }
 
-    List<IntegrityError> getIntegrityErrors() {
+    Set<IntegrityError> getIntegrityErrors() {
         return integrityErrors;
     }
 

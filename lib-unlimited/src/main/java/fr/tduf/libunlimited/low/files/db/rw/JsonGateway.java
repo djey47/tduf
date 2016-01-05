@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -27,7 +28,7 @@ public class JsonGateway {
      * @return list of written file names.
      * @throws IOException
      */
-    public static List<String> dump(String sourceDatabaseDirectory, String targetJsonDirectory, boolean withClearContents, List<DbDto.Topic> missingTopicContents, List<IntegrityError> integrityErrors) throws IOException {
+    public static List<String> dump(String sourceDatabaseDirectory, String targetJsonDirectory, boolean withClearContents, List<DbDto.Topic> missingTopicContents, Set<IntegrityError> integrityErrors) throws IOException {
         requireNonNull(missingTopicContents, "A list for missing topics is required.");
         requireNonNull(integrityErrors, "A list for integrity errors is required.");
 

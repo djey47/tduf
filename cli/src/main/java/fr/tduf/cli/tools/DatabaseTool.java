@@ -290,7 +290,7 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Done unpacking.");
 
-        List<IntegrityError> integrityErrors = new ArrayList<>();
+        Set<IntegrityError> integrityErrors = new LinkedHashSet<>();
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
         final List<String> writtenFileNames = dumpCommon(extractedDatabaseDirectory, jsonDatabaseDirectory, missingTopicContents, integrityErrors);
 
@@ -298,17 +298,7 @@ public class DatabaseTool extends GenericTool {
         outLine("-> JSON database directory: " + sourceDirectory);
         if(extensiveCheck) {
             outLine("Now checking database...");
-            List<IntegrityError> integrityErrorsFromExtensiveCheck = new ArrayList<>();
-            databaseObjects = loadAndCheckDatabase(extractedDatabaseDirectory, integrityErrorsFromExtensiveCheck, false);
-
-            // TODO treat integrityErrors as set instead of a list + remove merging
-            integrityErrorsFromExtensiveCheck
-                    .forEach((integrityError -> {
-                        if (!integrityErrors.contains(integrityError)) {
-                            integrityErrors.add(integrityError);
-                        }
-                    }));
-
+            databaseObjects = loadAndCheckDatabase(extractedDatabaseDirectory, integrityErrors, false);
             outLine("Done checking.");
         } else {
             outLine("Now loading database...");
@@ -320,7 +310,7 @@ public class DatabaseTool extends GenericTool {
         if (fixErrors) {
             outLine("-> JSON database directory: " + jsonDatabaseDirectory);
             outLine("Now fixing database...");
-            List<IntegrityError> remainingIntegrityErrors = fixIntegrityErrorsAndSaveDatabaseFiles(databaseObjects, integrityErrors, jsonDatabaseDirectory);
+            Set<IntegrityError> remainingIntegrityErrors = fixIntegrityErrorsAndSaveDatabaseFiles(databaseObjects, integrityErrors, jsonDatabaseDirectory);
             outLine("Done fixing.");
 
             resultInfo.put("remainingIntegrityErrors", toDatabaseIntegrityErrors(remainingIntegrityErrors));
@@ -336,9 +326,9 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
-    private List<IntegrityError> fixIntegrityErrorsAndSaveDatabaseFiles(List<DbDto> databaseObjects, List<IntegrityError> integrityErrors, String jsonDatabaseDirectory) throws ReflectiveOperationException {
+    private Set<IntegrityError> fixIntegrityErrorsAndSaveDatabaseFiles(List<DbDto> databaseObjects, Set<IntegrityError> integrityErrors, String jsonDatabaseDirectory) throws ReflectiveOperationException {
         DatabaseIntegrityFixer databaseIntegrityFixer = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
-        List<IntegrityError> remainingIntegrityErrors = databaseIntegrityFixer.fixAllContentsObjects(integrityErrors);
+        Set<IntegrityError> remainingIntegrityErrors = databaseIntegrityFixer.fixAllContentsObjects(integrityErrors);
 
         List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getDatabaseObjects();
         DatabaseReadWriteHelper.writeDatabaseTopicsToJson(fixedDatabaseObjects, jsonDatabaseDirectory);
@@ -447,7 +437,7 @@ public class DatabaseTool extends GenericTool {
 
     private Map<String, Object> dump(String databaseDirectory, String targetJsonDirectory) throws IOException, ReflectiveOperationException {
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
-        List<IntegrityError> integrityErrors = new ArrayList<>();
+        Set<IntegrityError> integrityErrors = new LinkedHashSet<>();
 
         List<String> writtenFileNames = dumpCommon(databaseDirectory, targetJsonDirectory, missingTopicContents, integrityErrors);
 
@@ -460,7 +450,7 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
-    private List<String> dumpCommon(String databaseDirectory, String targetJsonDirectory, List<DbDto.Topic> missingTopicContents, List<IntegrityError> integrityErrors) throws IOException {
+    private List<String> dumpCommon(String databaseDirectory, String targetJsonDirectory, List<DbDto.Topic> missingTopicContents, Set<IntegrityError> integrityErrors) throws IOException {
         FilesHelper.createDirectoryIfNotExists(targetJsonDirectory);
 
         outLine("-> Source directory: " + databaseDirectory);
@@ -488,7 +478,7 @@ public class DatabaseTool extends GenericTool {
     }
 
     private Map<String, ?> check(String sourceDatabaseDirectory, boolean withClearContents) throws Exception {
-        List<IntegrityError> integrityErrors = new ArrayList<>();
+        Set<IntegrityError> integrityErrors = new LinkedHashSet<>();
         checkAndReturnIntegrityErrorsAndObjects(sourceDatabaseDirectory, integrityErrors, withClearContents);
 
         if (!integrityErrors.isEmpty()) {
@@ -502,7 +492,7 @@ public class DatabaseTool extends GenericTool {
     }
 
     private Map<String, ?> fix(String sourceDatabaseDirectory, String targetDatabaseDirectory, boolean withClearContents) throws IOException, ReflectiveOperationException {
-        List<IntegrityError> integrityErrors = new ArrayList<>();
+        Set<IntegrityError> integrityErrors = new LinkedHashSet<>();
         List<DbDto> databaseObjects = checkAndReturnIntegrityErrorsAndObjects(sourceDatabaseDirectory, integrityErrors, withClearContents);
 
         if (integrityErrors.isEmpty()) {
@@ -512,7 +502,7 @@ public class DatabaseTool extends GenericTool {
 
         outLine("-> Now fixing database...");
         DatabaseIntegrityFixer databaseIntegrityFixer = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
-        List<IntegrityError> remainingIntegrityErrors = databaseIntegrityFixer.fixAllContentsObjects(integrityErrors);
+        Set<IntegrityError> remainingIntegrityErrors = databaseIntegrityFixer.fixAllContentsObjects(integrityErrors);
         List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getDatabaseObjects();
 
         printIntegrityErrors(remainingIntegrityErrors);
@@ -602,7 +592,7 @@ public class DatabaseTool extends GenericTool {
         }
     }
 
-    private List<DbDto> checkAndReturnIntegrityErrorsAndObjects(String sourceDatabaseDirectory, List<IntegrityError> integrityErrors, boolean withClearContents) throws IOException, ReflectiveOperationException {
+    private List<DbDto> checkAndReturnIntegrityErrorsAndObjects(String sourceDatabaseDirectory, Set<IntegrityError> integrityErrors, boolean withClearContents) throws IOException, ReflectiveOperationException {
         outLine("-> Source directory: " + sourceDatabaseDirectory);
         outLine("Checking TDU database, please wait...");
         outLine();
@@ -637,7 +627,7 @@ public class DatabaseTool extends GenericTool {
         return allTopicObjects;
     }
 
-    private List<DbDto> loadAndCheckDatabase(String sourceDatabaseDirectory, List<IntegrityError> integrityErrors, boolean withClearContents) throws IOException {
+    private List<DbDto> loadAndCheckDatabase(String sourceDatabaseDirectory, Set<IntegrityError> integrityErrors, boolean withClearContents) throws IOException {
         requireNonNull(integrityErrors, "A list is required");
 
         List<DbDto> allDtos = new ArrayList<>();
@@ -678,7 +668,7 @@ public class DatabaseTool extends GenericTool {
         return allDtos;
     }
 
-    private void printIntegrityErrors(List<IntegrityError> integrityErrors) {
+    private void printIntegrityErrors(Set<IntegrityError> integrityErrors) {
         if (!integrityErrors.isEmpty()) {
             outLine("-> Integrity errors (" + integrityErrors.size() + "):");
 
@@ -690,11 +680,11 @@ public class DatabaseTool extends GenericTool {
         }
     }
 
-    private static void betweenTopicsCheck(List<DbDto> allDtos, List<IntegrityError> integrityErrors) throws ReflectiveOperationException {
+    private static void betweenTopicsCheck(List<DbDto> allDtos, Set<IntegrityError> integrityErrors) throws ReflectiveOperationException {
         requireNonNull(integrityErrors, "A list is required").addAll(AbstractDatabaseHolder.prepare(DatabaseIntegrityChecker.class, allDtos).checkAllContentsObjects());
     }
 
-    private static List<DatabaseIntegrityErrorDto> toDatabaseIntegrityErrors(List<IntegrityError> integrityErrors) {
+    private static List<DatabaseIntegrityErrorDto> toDatabaseIntegrityErrors(Set<IntegrityError> integrityErrors) {
         return integrityErrors.stream()
 
                 .map(DatabaseIntegrityErrorDto::fromIntegrityError)

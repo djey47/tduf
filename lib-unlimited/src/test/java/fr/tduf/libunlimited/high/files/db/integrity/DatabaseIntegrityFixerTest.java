@@ -51,12 +51,12 @@ public class DatabaseIntegrityFixerTest {
     public void fixAllContentsObjects_whenNoError_shouldSetIntegrityErrors_andReturnEmptyList() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = new ArrayList<>();
-        List<IntegrityError> integrityErrors = new ArrayList<>();
+        Set<IntegrityError> integrityErrors = new HashSet<>();
 
 
         // WHEN
         DatabaseIntegrityFixer integrityFixer = createFixer(dbDtos);
-        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
+        Set<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
 
 
         // THEN
@@ -69,11 +69,11 @@ public class DatabaseIntegrityFixerTest {
     public void fixAllContentsObjects_whenOneErrorAutoFixed_shouldReturnEmptyList() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
-        List<IntegrityError> integrityErrors = singletonList(createIntegrityError_AutoFixed());
+        Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(createIntegrityError_AutoFixed()));
 
         // WHEN
         DatabaseIntegrityFixer integrityFixer = createFixer(dbDtos);
-        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
+        Set<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
 
         // THEN
         assertThat(actualRemainingErrors).isEmpty();
@@ -83,11 +83,11 @@ public class DatabaseIntegrityFixerTest {
     public void fixAllContentsObjects_whenOneErrorNotHandled_shouldReturnErrorInList() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
-        List<IntegrityError> integrityErrors = singletonList(createIntegrityError_NotHandled());
+        Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(createIntegrityError_NotHandled()));
 
         // WHEN
         DatabaseIntegrityFixer integrityFixer = createFixer(dbDtos);
-        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
+        Set<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
 
         // THEN
         assertThat(actualRemainingErrors).hasSize(1);
@@ -104,12 +104,12 @@ public class DatabaseIntegrityFixerTest {
         info.put(REMOTE_TOPIC, ACHIEVEMENTS);
         info.put(LOCALE, Locale.FRANCE);
         info.put(REFERENCE, "123456");
-        List<IntegrityError> integrityErrors = singletonList(IntegrityError.builder().ofType(RESOURCE_REFERENCE_NOT_FOUND).addInformations(info).build());
+        Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(IntegrityError.builder().ofType(RESOURCE_REFERENCE_NOT_FOUND).addInformations(info).build()));
 
 
         // WHEN
         DatabaseIntegrityFixer integrityFixer = createFixer(dbDtos);
-        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
+        Set<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
         List<DbDto> fixedDatabaseObjects = integrityFixer.getDatabaseObjects();
 
 
@@ -133,12 +133,12 @@ public class DatabaseIntegrityFixerTest {
         info.put(REMOTE_TOPIC, AFTER_MARKET_PACKS);
         info.put(LOCALE, Locale.FRANCE);
         info.put(REFERENCE, "1234567");
-        List<IntegrityError> integrityErrors = singletonList(IntegrityError.builder().ofType(RESOURCE_REFERENCE_NOT_FOUND).addInformations(info).build());
+        Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(IntegrityError.builder().ofType(RESOURCE_REFERENCE_NOT_FOUND).addInformations(info).build()));
 
 
         // WHEN
         DatabaseIntegrityFixer integrityFixer = createFixer(dbDtos);
-        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
+        Set<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
         List<DbDto> fixedDatabaseObjects = integrityFixer.getDatabaseObjects();
 
 
@@ -161,7 +161,7 @@ public class DatabaseIntegrityFixerTest {
         info.put(SOURCE_TOPIC, ACHIEVEMENTS);
         info.put(REMOTE_TOPIC, AFTER_MARKET_PACKS);
         info.put(REFERENCE, "11111111");
-        List<IntegrityError> integrityErrors = singletonList(IntegrityError.builder().ofType(CONTENTS_REFERENCE_NOT_FOUND).addInformations(info).build());
+        Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(IntegrityError.builder().ofType(CONTENTS_REFERENCE_NOT_FOUND).addInformations(info).build()));
 
         DbDto remoteTopicObject = dbDtos.get(1);
         List<DbStructureDto.Field> remoteStructureFields = remoteTopicObject.getStructure().getFields();
@@ -183,7 +183,7 @@ public class DatabaseIntegrityFixerTest {
 
         // WHEN
         DatabaseIntegrityFixer integrityFixer = createFixer(dbDtos);
-        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
+        Set<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
         List<DbDto> fixedDatabaseObjects = integrityFixer.getDatabaseObjects();
 
 
@@ -225,7 +225,7 @@ public class DatabaseIntegrityFixerTest {
         info.put(ACTUAL_COUNT, 1);
         info.put(SOURCE_TOPIC, AFTER_MARKET_PACKS);
         info.put(ENTRY_ID, 0L);
-        List<IntegrityError> integrityErrors = singletonList(IntegrityError.builder().ofType(CONTENTS_FIELDS_COUNT_MISMATCH).addInformations(info).build());
+        Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(IntegrityError.builder().ofType(CONTENTS_FIELDS_COUNT_MISMATCH).addInformations(info).build()));
 
         DbDto topicObject = dbDtos.get(1);
         DbStructureDto.Field firstStructureField = topicObject.getStructure().getFields().get(0);
@@ -245,7 +245,7 @@ public class DatabaseIntegrityFixerTest {
 
         // WHEN
         DatabaseIntegrityFixer integrityFixer = createFixer(dbDtos);
-        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
+        Set<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
         List<DbDto> fixedDatabaseObjects = integrityFixer.getDatabaseObjects();
 
 
@@ -283,12 +283,12 @@ public class DatabaseIntegrityFixerTest {
         info.put(FILE, "./TDU_Achievements.fr");
         info.put(LOCALE, Locale.ITALY);
 
-        List<IntegrityError> integrityErrors = singletonList(IntegrityError.builder().ofType(RESOURCE_NOT_FOUND).addInformations(info).build());
+        Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(IntegrityError.builder().ofType(RESOURCE_NOT_FOUND).addInformations(info).build()));
 
 
         // WHEN
         DatabaseIntegrityFixer integrityFixer = createFixer(dbDtos);
-        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
+        Set<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
         List<DbDto> fixedDatabaseObjects = integrityFixer.getDatabaseObjects();
 
 
@@ -305,12 +305,12 @@ public class DatabaseIntegrityFixerTest {
     public void fixAllContentsObjects_whenOneError_asResourceItemCountMismatch_shouldCompleteMissingLocale() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDatabaseObjectsWithUnconsistentResourceEntryCount();
-        List<IntegrityError> integrityErrors = singletonList(createIntegrityError_ResourceItemsCountMismatch());
+        Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(createIntegrityError_ResourceItemsCountMismatch()));
 
 
         // WHEN
         DatabaseIntegrityFixer integrityFixer = createFixer(dbDtos);
-        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
+        Set<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
         List<DbDto> fixedDatabaseObjects = integrityFixer.getDatabaseObjects();
 
 
@@ -327,12 +327,12 @@ public class DatabaseIntegrityFixerTest {
     public void fixAllContentsObjects_whenOneError_asValuesDiffentForGlobalizedResource_shouldApplyProperValue() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDatabaseObjectsWithDifferentResourceValuesGlobalized();
-        List<IntegrityError> integrityErrors = singletonList(createIntegrityError_ResourceValuesDifferentGlobalized());
+        Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(createIntegrityError_ResourceValuesDifferentGlobalized()));
 
 
         // WHEN
         DatabaseIntegrityFixer integrityFixer = createFixer(dbDtos);
-        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
+        Set<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
         List<DbDto> fixedDatabaseObjects = integrityFixer.getDatabaseObjects();
 
 
@@ -353,21 +353,21 @@ public class DatabaseIntegrityFixerTest {
     public void fixAllContentsObjects_whenManyErrors() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDatabaseObjectsWithUnconsistentResourceEntryCount();
-        List<IntegrityError> integrityErrors = asList(
+        Set<IntegrityError> integrityErrors = new HashSet<>(asList(
                 createIntegrityError_AutoFixed(),
                 createIntegrityError_NotHandled(),
-                createIntegrityError_ResourceItemsCountMismatch());
+                createIntegrityError_ResourceItemsCountMismatch()));
 
 
         // WHEN
         DatabaseIntegrityFixer integrityFixer = createFixer(dbDtos);
-        List<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
+        Set<IntegrityError> actualRemainingErrors = integrityFixer.fixAllContentsObjects(integrityErrors);
         List<DbDto> fixedDatabaseObjects = integrityFixer.getDatabaseObjects();
 
 
         // THEN
         assertThat(actualRemainingErrors).hasSize(1);
-        assertThat(actualRemainingErrors.get(0).getErrorTypeEnum()).isEqualTo(CONTENTS_NOT_FOUND);
+        assertThat(actualRemainingErrors.stream().findFirst().get().getErrorTypeEnum()).isEqualTo(CONTENTS_NOT_FOUND);
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
     }
