@@ -60,7 +60,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Command line interface for handling TDU database.
  */
-// TODO reorder and rename methods
 public class DatabaseTool extends GenericTool {
 
     @Option(name = "-d", aliases = "--databaseDir", usage = "TDU database directory, defaults to current directory.")
@@ -269,7 +268,7 @@ public class DatabaseTool extends GenericTool {
 
         Set<IntegrityError> integrityErrors = new LinkedHashSet<>();
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
-        final List<String> writtenFileNames = dump(extractedDatabaseDirectory, jsonDatabaseDirectory, missingTopicContents, integrityErrors);
+        final List<String> writtenFileNames = convertDatabaseFilesToJson(extractedDatabaseDirectory, jsonDatabaseDirectory, missingTopicContents, integrityErrors);
 
         List<DbDto> databaseObjects;
         outLine("-> JSON database directory: " + sourceDirectory);
@@ -301,27 +300,6 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("integrityErrors", integrityErrors);
 
         return resultInfo;
-    }
-
-    private List<String> dump(String databaseDirectory, String targetJsonDirectory, List<DbDto.Topic> missingTopicContents, Set<IntegrityError> integrityErrors) throws IOException {
-        FilesHelper.createDirectoryIfNotExists(targetJsonDirectory);
-
-        outLine("-> Source directory: " + databaseDirectory);
-        outLine("Dumping TDU database to JSON, please wait...");
-        outLine();
-
-        return JsonGateway.dump(databaseDirectory, targetJsonDirectory, false, missingTopicContents, integrityErrors);
-    }
-
-    private Set<IntegrityError> fixIntegrityErrorsAndSaveDatabaseFiles(List<DbDto> databaseObjects, Set<IntegrityError> integrityErrors, String jsonDatabaseDirectory) throws ReflectiveOperationException {
-        DatabaseIntegrityFixer databaseIntegrityFixer = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
-        Set<IntegrityError> remainingIntegrityErrors = databaseIntegrityFixer.fixAllContentsObjects(integrityErrors);
-
-        List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getDatabaseObjects();
-        DatabaseReadWriteHelper.writeDatabaseTopicsToJson(fixedDatabaseObjects, jsonDatabaseDirectory);
-
-        printIntegrityErrors(remainingIntegrityErrors);
-        return remainingIntegrityErrors;
     }
 
     private Map<String, ?> convertPatch(String sourcePatchFile) throws IOException, SAXException, ParserConfigurationException, URISyntaxException, TransformerException {
@@ -437,6 +415,27 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("writtenFiles", writtenFileNames);
 
         return resultInfo;
+    }
+
+    private Set<IntegrityError> fixIntegrityErrorsAndSaveDatabaseFiles(List<DbDto> databaseObjects, Set<IntegrityError> integrityErrors, String jsonDatabaseDirectory) throws ReflectiveOperationException {
+        DatabaseIntegrityFixer databaseIntegrityFixer = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
+        Set<IntegrityError> remainingIntegrityErrors = databaseIntegrityFixer.fixAllContentsObjects(integrityErrors);
+
+        List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getDatabaseObjects();
+        DatabaseReadWriteHelper.writeDatabaseTopicsToJson(fixedDatabaseObjects, jsonDatabaseDirectory);
+
+        printIntegrityErrors(remainingIntegrityErrors);
+        return remainingIntegrityErrors;
+    }
+
+    private List<String> convertDatabaseFilesToJson(String databaseDirectory, String targetJsonDirectory, List<DbDto.Topic> missingTopicContents, Set<IntegrityError> integrityErrors) throws IOException {
+        FilesHelper.createDirectoryIfNotExists(targetJsonDirectory);
+
+        outLine("-> Source directory: " + databaseDirectory);
+        outLine("Dumping TDU database to JSON, please wait...");
+        outLine();
+
+        return JsonGateway.dump(databaseDirectory, targetJsonDirectory, false, missingTopicContents, integrityErrors);
     }
 
     private String convertPatchFileToJSON(File patch) throws ParserConfigurationException, SAXException, IOException {
