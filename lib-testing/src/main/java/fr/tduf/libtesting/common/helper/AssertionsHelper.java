@@ -1,6 +1,5 @@
 package fr.tduf.libtesting.common.helper;
 
-import org.assertj.core.api.StrictAssertions;
 import org.codehaus.jackson.JsonNode;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -85,8 +84,12 @@ public class AssertionsHelper {
      */
     public static void assertJsonChildArrayHasSize(JsonNode jsonNode, String childName, int expectedArraySize) {
         JsonNode childNode = jsonNode.get(childName);
-        assertThat(childNode).isNotNull();
-        StrictAssertions.assertThat(childNode.isArray()).isTrue();
+        assertThat(childNode)
+                .as("Child array not found:%s", childName)
+                .isNotNull();
+        assertThat(childNode.isArray())
+                .as("Child node is not an array:%s", childNode)
+                .isTrue();
 
         assertJsonNodeIteratorHasItems(childNode.getElements(), expectedArraySize);
     }
