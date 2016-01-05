@@ -15,10 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static fr.tduf.libtesting.common.helper.AssertionsHelper.assertFileDoesNotMatchReference;
 import static fr.tduf.libtesting.common.helper.AssertionsHelper.assertFileMatchesReference;
@@ -44,7 +41,7 @@ public class DatabaseReadWriteHelperTest {
         // GIVEN
         File dbFile = new File("TDU_Achievements.db.nope");
         String databaseDirectory = dbFile.getParent();
-        ArrayList<IntegrityError> integrityErrors = new ArrayList<>();
+        Set<IntegrityError> integrityErrors = new HashSet<>();
 
 
         // WHEN
@@ -63,7 +60,7 @@ public class DatabaseReadWriteHelperTest {
         // GIVEN
         File dbFile = new File(thisClass.getResource("/db/TDU_Achievements.db").toURI());
         String databaseDirectory = dbFile.getParent();
-        ArrayList<IntegrityError> integrityErrors = new ArrayList<>();
+        Set<IntegrityError> integrityErrors = new HashSet<>();
 
 
         // WHEN
@@ -81,7 +78,7 @@ public class DatabaseReadWriteHelperTest {
     @Test
     public void readDatabase_whenRealFileWithErrors_andClearContents_shouldUpdateIntegrityErrors() throws URISyntaxException, IOException {
         // GIVEN
-        List<IntegrityError> integrityErrors = new ArrayList<>();
+        Set<IntegrityError> integrityErrors = new HashSet<>();
 
         // Errors : field count mismatch in structure
         File dbFile = new File(thisClass.getResource("/db/errors/TDU_Achievements.db").toURI());
@@ -102,7 +99,7 @@ public class DatabaseReadWriteHelperTest {
         // GIVEN
         File dbFile = new File(thisClass.getResource("/db/encrypted/TDU_Achievements.db").toURI());
         String databaseDirectory = dbFile.getParent();
-        ArrayList<IntegrityError> integrityErrors = new ArrayList<>();
+        Set<IntegrityError> integrityErrors = new HashSet<>();
 
 
         // WHEN
@@ -122,7 +119,7 @@ public class DatabaseReadWriteHelperTest {
         // GIVEN (corrupted file)
         File dbFile = new File(thisClass.getResource("/db/encrypted/errors/sizeNotMultipleOf8/TDU_Achievements.db").toURI());
         String databaseDirectory = dbFile.getParent();
-        ArrayList<IntegrityError> integrityErrors = new ArrayList<>();
+        Set<IntegrityError> integrityErrors = new HashSet<>();
 
 
         // WHEN
@@ -212,7 +209,7 @@ public class DatabaseReadWriteHelperTest {
     @Test
     public void parseTopicResourcesFromDirectory_whenRealFiles_andClearContents_shouldReturnContentsAsCollections() throws URISyntaxException, FileNotFoundException {
         // GIVEN
-        List<IntegrityError> integrityErrors = new ArrayList<>();
+        Set<IntegrityError> integrityErrors = new HashSet<>();
         File dbFile = new File(thisClass.getResource("/db/res/TDU_Achievements.fr").toURI());
         String databaseDirectory = dbFile.getParent();
 
