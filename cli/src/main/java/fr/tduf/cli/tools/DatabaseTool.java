@@ -8,7 +8,6 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
-import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
 import fr.tduf.libunlimited.high.files.db.interop.TdumtPatchConverter;
 import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
@@ -38,7 +37,10 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -58,7 +60,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Command line interface for handling TDU database.
  */
-// TODO reorder methods
+// TODO reorder and rename methods
 public class DatabaseTool extends GenericTool {
 
     @Option(name = "-d", aliases = "--databaseDir", usage = "TDU database directory, defaults to current directory.")
@@ -73,6 +75,7 @@ public class DatabaseTool extends GenericTool {
     @Option(name = "-p", aliases = "--patchFile", usage = "File describing patch to apply/create/convert. Required for all -patch operations.")
     private String patchFile;
 
+    // TODO remove unused switch
     @Option(name = "-c", aliases = "--clear", usage = "Indicates unpacked TDU files do not need to be unencrypted and encrypted back. Not mandatory.")
     private boolean withClearContents = false;
 
@@ -102,7 +105,6 @@ public class DatabaseTool extends GenericTool {
      * All available commands
      */
     enum Command implements CommandHelper.CommandEnum {
-        FIX("fix", "Loads database, checks for integrity errors and create database copy with fixed ones."),
         APPLY_PATCH("apply-patch", "Modifies database contents and resources as described in a JSON mini patch file."),
         APPLY_TDUPK("apply-tdupk", "Modifies vehicle physics as described in a performance pack file from TDUPE."),
         GEN_PATCH("gen-patch", "Creates mini-patch file from selected database contents."),
@@ -148,9 +150,6 @@ public class DatabaseTool extends GenericTool {
     @Override
     protected boolean commandDispatch() throws Exception {
         switch (command) {
-            case FIX:
-                commandResult = fixDatabaseFiles(databaseDirectory, outputDatabaseDirectory, withClearContents);
-                return true;
             case APPLY_TDUPK:
                 commandResult = applyPerformancePack(patchFile, jsonDirectory, outputDatabaseDirectory);
                 return true;
@@ -198,9 +197,7 @@ public class DatabaseTool extends GenericTool {
         }
 
         if (outputDatabaseDirectory == null) {
-            if (FIX == command) {
-                outputDatabaseDirectory = "tdu-database-fixed";
-            } else if (APPLY_PATCH == command
+            if (APPLY_PATCH == command
                     || APPLY_TDUPK == command) {
                 outputDatabaseDirectory = "tdu-database-patched";
             } else if (REPACK_ALL == command) {
@@ -233,7 +230,6 @@ public class DatabaseTool extends GenericTool {
     @Override
     protected List<String> getExamples() {
         return asList(
-                FIX.label + " -c -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -o \"C:\\Users\\Bill\\Desktop\\tdu-database-fixed\"",
                 APPLY_TDUPK.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\vehicle.tdupk\" -r \"606298799\" -o \"C:\\Users\\Bill\\Desktop\\json-database\"",
                 APPLY_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\"",
                 GEN_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\" -t \"CAR_PHYSICS_DATA\" -r \"606298799,637314272\" -f \"102,103\"",
@@ -447,54 +443,6 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
-    private Map<String, ?> fixDatabaseFiles(String sourceDatabaseDirectory, String targetDatabaseDirectory, boolean withClearContents) throws IOException, ReflectiveOperationException {
-        Set<IntegrityError> integrityErrors = new LinkedHashSet<>();
-        List<DbDto> databaseObjects = checkAndReturnIntegrityErrorsAndObjects(sourceDatabaseDirectory, integrityErrors, withClearContents);
-
-        if (integrityErrors.isEmpty()) {
-            outLine("No error detected - a fix is not necessary.");
-            return null;
-        }
-
-        outLine("-> Now fixing database...");
-        DatabaseIntegrityFixer databaseIntegrityFixer = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
-        Set<IntegrityError> remainingIntegrityErrors = databaseIntegrityFixer.fixAllContentsObjects(integrityErrors);
-        List<DbDto> fixedDatabaseObjects = databaseIntegrityFixer.getDatabaseObjects();
-
-        printIntegrityErrors(remainingIntegrityErrors);
-
-        if (fixedDatabaseObjects.isEmpty()) {
-            outLine("ERROR! Unrecoverable integrity errors spotted. Consider restoring TDU database from backup.");
-        } else {
-            outLine("-> Now writing database to " + targetDatabaseDirectory + "...");
-            outLine();
-
-            FilesHelper.createDirectoryIfNotExists(targetDatabaseDirectory);
-
-            for (DbDto databaseObject : fixedDatabaseObjects) {
-                outLine("-> Now processing topic: " + databaseObject.getTopic() + "...");
-
-                List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabaseTopic(databaseObject, targetDatabaseDirectory, this.withClearContents);
-
-                outLine("Writing done for topic: " + databaseObject.getTopic());
-                writtenFiles.stream()
-                        .forEach((fileName) -> outLine("-> " + fileName));
-                outLine();
-            }
-
-            if (!remainingIntegrityErrors.isEmpty()) {
-                outLine("WARNING! TDU database has been rewritten, but some integrity errors do remain. Your game may not work as expected.");
-            }
-        }
-
-        Map<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("integrityErrorsRemaining", toDatabaseIntegrityErrors(remainingIntegrityErrors));
-
-        resultInfo.put("fixedDatabaseLocation", targetDatabaseDirectory);
-
-        return resultInfo;
-    }
-
     private String convertPatchFileToJSON(File patch) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -546,32 +494,6 @@ public class DatabaseTool extends GenericTool {
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(patchFilePath, StandardCharsets.UTF_8)) {
             new ObjectMapper().writer().writeValue(bufferedWriter, patchObject);
         }
-    }
-
-    private List<DbDto> checkAndReturnIntegrityErrorsAndObjects(String sourceDatabaseDirectory, Set<IntegrityError> integrityErrors, boolean withClearContents) throws IOException, ReflectiveOperationException {
-        outLine("-> Source directory: " + sourceDatabaseDirectory);
-        outLine("Checking TDU database, please wait...");
-        outLine();
-
-        outLine("-> Now loading database, step 1...");
-
-        List<DbDto> dbDtos = loadAndCheckDatabase(sourceDatabaseDirectory, integrityErrors, withClearContents);
-
-        outLine("-> step 1 finished.");
-        outLine();
-
-        if (dbDtos.size() == DbDto.Topic.values().length) {
-            outLine("-> Now checking integrity between topics, step 2...");
-
-            betweenTopicsCheck(dbDtos, integrityErrors);
-
-            outLine("-> step 2 finished.");
-            outLine();
-        }
-
-        printIntegrityErrors(integrityErrors);
-
-        return dbDtos;
     }
 
     private List<DbDto> loadDatabaseFromJsonFiles(String sourceJsonDirectory) {
@@ -634,10 +556,6 @@ public class DatabaseTool extends GenericTool {
                         outLine("  (!)" + errorMessage);
                     });
         }
-    }
-
-    private static void betweenTopicsCheck(List<DbDto> allDtos, Set<IntegrityError> integrityErrors) throws ReflectiveOperationException {
-        requireNonNull(integrityErrors, "A list is required").addAll(AbstractDatabaseHolder.prepare(DatabaseIntegrityChecker.class, allDtos).checkAllContentsObjects());
     }
 
     private static List<DatabaseIntegrityErrorDto> toDatabaseIntegrityErrors(Set<IntegrityError> integrityErrors) {

@@ -22,12 +22,6 @@ public class AllToolsTest {
     public final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
 
     @Test
-    public void databaseTool_fix() throws NoSuchFieldException, IOException {
-        // GIVEN-WHEN-THEN
-        testToolCommand(new DatabaseTool(), FIX);
-    }
-
-    @Test
     public void databaseTool_applyTdupk() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
         exitRule.expectSystemExitWithStatus(1);
