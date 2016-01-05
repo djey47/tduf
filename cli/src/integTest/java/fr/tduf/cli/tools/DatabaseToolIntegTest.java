@@ -15,7 +15,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -51,7 +50,6 @@ public class DatabaseToolIntegTest {
     private static final String DIRECTORY_DATABASE_BANKS_OUTPUT = PATH_DATABASE_BANKS.resolve("out").toString();
     private static final String DIRECTORY_PATCH = PATH_PATCHER.toString();
     private static final String DIRECTORY_PATCH_OUTPUT = PATH_PATCHER.resolve("out").toString();
-    private static final String DIRECTORY_ENCRYPTED_DATABASE = PATH_INTEG_TESTS.resolve("db-encrypted").toString();
     private static final String DIRECTORY_PATCHED_DATABASE = PATH_INTEG_TESTS.resolve("db-patched").toString();
     private static final String DIRECTORY_FIXED_DATABASE = PATH_INTEG_TESTS.resolve("db-fixed").toString();
     private static final String DIRECTORY_JSON_DATABASE = PATH_INTEG_TESTS.resolve("db-json").toString();
@@ -84,22 +82,16 @@ public class DatabaseToolIntegTest {
     }
 
     @Test
-    @Ignore
-    // FIXME do not use dump command anymore
-    public void dumpApplyPatchGenPatch() throws IOException, JSONException {
+    public void applyPatchGenPatch() throws IOException, JSONException {
         // GIVEN
         String inputPatchFile = Paths.get(DIRECTORY_PATCH, "mini.json").toString();
         String inputPatchWithPartialChangesFile = Paths.get(DIRECTORY_PATCH, "mini-partialUpdate.json").toString();
         String outputPatchFile = Paths.get(DIRECTORY_PATCH_OUTPUT, "mini-gen.json").toString();
         String referencePatchFile = Paths.get(DIRECTORY_PATCH, "mini-gen.json").toString();
 
-        // WHEN: dump
-        System.out.println("-> Dump!");
-        DatabaseTool.main(new String[]{"dump", "-n", "-d", DIRECTORY_ENCRYPTED_DATABASE, "-j", DIRECTORY_JSON_DATABASE});
-
         // WHEN: applyPatch
         System.out.println("-> ApplyPatch!");
-        DatabaseTool.main(new String[]{"apply-patch", "-n", "-j", DIRECTORY_JSON_DATABASE, "-o", DIRECTORY_JSON_DATABASE, "-p", inputPatchFile});
+        DatabaseTool.main(new String[]{"apply-patch", "-n", "-j", DIRECTORY_ERR_JSON_DATABASE, "-o", DIRECTORY_JSON_DATABASE, "-p", inputPatchFile});
         System.out.println("-> ApplyPatch! (partial changes)");
         DatabaseTool.main(new String[]{"apply-patch", "-n", "-j", DIRECTORY_JSON_DATABASE, "-o", DIRECTORY_PATCHED_DATABASE, "-p", inputPatchWithPartialChangesFile});
 
@@ -311,22 +303,15 @@ public class DatabaseToolIntegTest {
     }
 
     @Test
-    @Ignore
-    // TODO do not use dump anymore
-    public void dumpApplyTdupk_withExistingSlotRef_shouldAlterCarPhysicsContents() throws IOException {
+    public void applyTdupk_withExistingSlotRef_shouldAlterCarPhysicsContents() throws IOException {
         // GIVEN
         String inputPerformancePackFile = Paths.get(DIRECTORY_PATCH, "tdupe", "F150.tdupk").toString();
         String vehicleSlotReference = "606298799";
 
 
-        // WHEN: dump
-        System.out.println("-> Dump!");
-        DatabaseTool.main(new String[]{"dump", "-n", "-d", DIRECTORY_ENCRYPTED_DATABASE, "-j", DIRECTORY_JSON_DATABASE});
-
-
         // WHEN: apply TDUPE performance pack
         System.out.println("-> ApplyTdupk!");
-        DatabaseTool.main(new String[]{"apply-tdupk", "-n", "-j", DIRECTORY_JSON_DATABASE, "-p", inputPerformancePackFile, "-o", DIRECTORY_JSON_DATABASE, "-r", vehicleSlotReference});
+        DatabaseTool.main(new String[]{"apply-tdupk", "-n", "-j", DIRECTORY_ERR_JSON_DATABASE, "-p", inputPerformancePackFile, "-o", DIRECTORY_JSON_DATABASE, "-r", vehicleSlotReference});
 
 
         // THEN
