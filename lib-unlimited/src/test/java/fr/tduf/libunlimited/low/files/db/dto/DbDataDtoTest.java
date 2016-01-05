@@ -59,7 +59,7 @@ public class DbDataDtoTest {
         // THEN
         assertThat(actualValues).hasSize(7);
         assertThat(actualValues).extracting("index").containsExactly(1, 2, 3, 4, 5, 6, 7);
-        assertThat(actualValues).extracting("name").containsExactly("?", "?", "?", "?", "?", "Add-on key required", "Car Paint Luxe enabled");
+        assertThat(actualValues).extracting("name").containsExactly("Vehicle slot enabled", "?", "?", "?", "?", "Add-on key required", "Car Paint Luxe enabled");
         assertThat(actualValues).extracting("enabled").containsExactly(true, true, true, true, false, true, true);
     }
 
