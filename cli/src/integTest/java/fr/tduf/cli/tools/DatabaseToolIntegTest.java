@@ -16,6 +16,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -84,32 +85,6 @@ public class DatabaseToolIntegTest {
     }
 
     @Test
-    public void dumpGenCheck_shouldNotThrowError() throws IOException {
-        // WHEN: dump
-        System.out.println("-> Dump!");
-        DatabaseTool.main(new String[]{"dump", "-n", "-d", DIRECTORY_ENCRYPTED_DATABASE, "-j", DIRECTORY_JSON_DATABASE});
-
-        // THEN: written json files
-        long jsonFilesCount = getTopicFileCount(DIRECTORY_JSON_DATABASE, EXTENSION_JSON);
-        assertThat(jsonFilesCount).isEqualTo(18);
-
-
-        // WHEN: gen
-        System.out.println("-> Gen!");
-        DatabaseTool.main(new String[]{"gen", "-n", "-d", DIRECTORY_GENERATED_DATABASE, "-j", DIRECTORY_JSON_DATABASE});
-
-        // THEN: written TDU files
-        assertDatabaseFilesArePresent(DIRECTORY_GENERATED_DATABASE);
-
-
-        // WHEN: check
-        System.out.println("-> Check!");
-        DatabaseTool.main(new String[]{"check", "-n", "-d", DIRECTORY_GENERATED_DATABASE});
-
-        // THEN: should not exit with status code 1
-    }
-
-    @Test
     public void genFix_shouldNotThrowError() throws IOException {
         // WHEN: gen
         System.out.println("-> Gen!");
@@ -128,6 +103,8 @@ public class DatabaseToolIntegTest {
     }
 
     @Test
+    @Ignore
+    // FIXME do not use dump command anymore
     public void dumpApplyPatchGenPatch() throws IOException, JSONException {
         // GIVEN
         String inputPatchFile = Paths.get(DIRECTORY_PATCH, "mini.json").toString();
@@ -353,6 +330,8 @@ public class DatabaseToolIntegTest {
     }
 
     @Test
+    @Ignore
+    // TODO do not use dump anymore
     public void dumpApplyTdupk_withExistingSlotRef_shouldAlterCarPhysicsContents() throws IOException {
         // GIVEN
         String inputPerformancePackFile = Paths.get(DIRECTORY_PATCH, "tdupe", "F150.tdupk").toString();
