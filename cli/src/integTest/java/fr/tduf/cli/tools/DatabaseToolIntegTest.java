@@ -7,7 +7,6 @@ import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Condition;
@@ -82,24 +81,6 @@ public class DatabaseToolIntegTest {
         BulkDatabaseMiner.clearAllCaches();
 
         ConsoleHelper.restoreStandardOutput();
-    }
-
-    @Test
-    public void genFix_shouldNotThrowError() throws IOException {
-        // WHEN: gen
-        System.out.println("-> Gen!");
-        DatabaseTool.main(new String[]{"gen", "-n", "-d", DIRECTORY_ERR_GENERATED_DATABASE, "-j", DIRECTORY_ERR_JSON_DATABASE});
-
-        // THEN: written TDU files
-        assertDatabaseFilesArePresent(DIRECTORY_ERR_GENERATED_DATABASE);
-
-
-        // WHEN: fix
-        System.out.println("-> Fix!");
-        DatabaseTool.main(new String[]{"fix", "-n", "-d", DIRECTORY_ERR_GENERATED_DATABASE, "-o", DIRECTORY_FIXED_DATABASE});
-
-        // THEN: written fixed TDU files
-        assertDatabaseFilesArePresent(DIRECTORY_FIXED_DATABASE);
     }
 
     @Test
@@ -399,18 +380,6 @@ public class DatabaseToolIntegTest {
                 .filter((existingFile) -> true)
 
                 .count();
-    }
-
-    private static void assertDatabaseFilesArePresent(String directory) {
-        long dbFilesCount = getTopicFileCount(directory, "db");
-        assertThat(dbFilesCount).isEqualTo(18);
-
-        Stream.of(DbResourceDto.Locale.values())
-
-                .forEach((locale) -> {
-                    long resFilesCount = getTopicFileCount(directory, locale.getCode());
-                    assertThat(resFilesCount).isEqualTo(18);
-                });
     }
 
     private static void assertCarPhysicsEntryWithRefHasFieldValue(String ref, int fieldRank, String expectedValue, String label, List<DbDto> actualDatabaseObjects) {
