@@ -34,12 +34,6 @@ public class AllToolsTest {
     }
 
     @Test
-    public void databaseTool_dump() throws NoSuchFieldException, IOException {
-        // GIVEN-WHEN-THEN
-        testToolCommand(new DatabaseTool(), DUMP);
-    }
-
-    @Test
     public void databaseTool_gen() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
         testToolCommand(new DatabaseTool(), GEN);

@@ -102,7 +102,6 @@ public class DatabaseTool extends GenericTool {
      */
     enum Command implements CommandHelper.CommandEnum {
         CHECK("check", "Tries to load database and display integrity errors, if any."),
-        DUMP("dump", "Writes UNPACKED full database contents to JSON files."),
         GEN("gen", "Writes UNPACKED TDU database files from JSON files."),
         FIX("fix", "Loads database, checks for integrity errors and create database copy with fixed ones."),
         APPLY_PATCH("apply-patch", "Modifies database contents and resources as described in a JSON mini patch file."),
@@ -150,9 +149,6 @@ public class DatabaseTool extends GenericTool {
     @Override
     protected boolean commandDispatch() throws Exception {
         switch (command) {
-            case DUMP:
-                commandResult = dump(databaseDirectory, jsonDirectory);
-                return true;
             case CHECK:
                 commandResult = check(databaseDirectory, withClearContents);
                 return true;
@@ -198,8 +194,7 @@ public class DatabaseTool extends GenericTool {
         }
 
         if (jsonDirectory == null) {
-            if (DUMP == command
-                    || UNPACK_ALL == command) {
+            if (UNPACK_ALL == command) {
                 jsonDirectory = "tdu-database-dump";
             } else if (APPLY_TDUPK == command
                     || APPLY_PATCH == command
@@ -239,13 +234,12 @@ public class DatabaseTool extends GenericTool {
 
     @Override
     protected CommandHelper.CommandEnum getCommand() {
-        return Command.DUMP;
+        return Command.UNPACK_ALL;
     }
 
     @Override
     protected List<String> getExamples() {
         return asList(
-                DUMP.label + " --databaseDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
                 GEN.label + " --jsonDir \"C:\\Users\\Bill\\Desktop\\json-database\" --databaseDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
                 CHECK.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
                 FIX.label + " -c -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -o \"C:\\Users\\Bill\\Desktop\\tdu-database-fixed\"",
@@ -292,7 +286,7 @@ public class DatabaseTool extends GenericTool {
 
         Set<IntegrityError> integrityErrors = new LinkedHashSet<>();
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
-        final List<String> writtenFileNames = dumpCommon(extractedDatabaseDirectory, jsonDatabaseDirectory, missingTopicContents, integrityErrors);
+        final List<String> writtenFileNames = dump(extractedDatabaseDirectory, jsonDatabaseDirectory, missingTopicContents, integrityErrors);
 
         List<DbDto> databaseObjects;
         outLine("-> JSON database directory: " + sourceDirectory);
@@ -324,6 +318,16 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("integrityErrors", integrityErrors);
 
         return resultInfo;
+    }
+
+    private List<String> dump(String databaseDirectory, String targetJsonDirectory, List<DbDto.Topic> missingTopicContents, Set<IntegrityError> integrityErrors) throws IOException {
+        FilesHelper.createDirectoryIfNotExists(targetJsonDirectory);
+
+        outLine("-> Source directory: " + databaseDirectory);
+        outLine("Dumping TDU database to JSON, please wait...");
+        outLine();
+
+        return JsonGateway.dump(databaseDirectory, targetJsonDirectory, withClearContents, missingTopicContents, integrityErrors);
     }
 
     private Set<IntegrityError> fixIntegrityErrorsAndSaveDatabaseFiles(List<DbDto> databaseObjects, Set<IntegrityError> integrityErrors, String jsonDatabaseDirectory) throws ReflectiveOperationException {
@@ -433,31 +437,6 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("writtenFiles", writtenFileNames);
 
         return resultInfo;
-    }
-
-    private Map<String, Object> dump(String databaseDirectory, String targetJsonDirectory) throws IOException, ReflectiveOperationException {
-        List<DbDto.Topic> missingTopicContents = new ArrayList<>();
-        Set<IntegrityError> integrityErrors = new LinkedHashSet<>();
-
-        List<String> writtenFileNames = dumpCommon(databaseDirectory, targetJsonDirectory, missingTopicContents, integrityErrors);
-
-        Map<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("missingTopicContents", missingTopicContents);
-        resultInfo.put("integrityErrors", toDatabaseIntegrityErrors(integrityErrors));
-        resultInfo.put("integrityErrorsDomain", integrityErrors);
-        resultInfo.put("writtenFiles", writtenFileNames);
-
-        return resultInfo;
-    }
-
-    private List<String> dumpCommon(String databaseDirectory, String targetJsonDirectory, List<DbDto.Topic> missingTopicContents, Set<IntegrityError> integrityErrors) throws IOException {
-        FilesHelper.createDirectoryIfNotExists(targetJsonDirectory);
-
-        outLine("-> Source directory: " + databaseDirectory);
-        outLine("Dumping TDU database to JSON, please wait...");
-        outLine();
-
-        return JsonGateway.dump(databaseDirectory, targetJsonDirectory, withClearContents, missingTopicContents, integrityErrors);
     }
 
     private Map<String, ?> gen(String sourceJsonDirectory, String targetExtractedDatabaseDirectory) throws IOException {
