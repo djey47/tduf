@@ -58,6 +58,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Command line interface for handling TDU database.
  */
+// TODO reorder methods
 public class DatabaseTool extends GenericTool {
 
     @Option(name = "-d", aliases = "--databaseDir", usage = "TDU database directory, defaults to current directory.")
@@ -101,7 +102,6 @@ public class DatabaseTool extends GenericTool {
      * All available commands
      */
     enum Command implements CommandHelper.CommandEnum {
-        GEN("gen", "Writes UNPACKED TDU database files from JSON files."),
         FIX("fix", "Loads database, checks for integrity errors and create database copy with fixed ones."),
         APPLY_PATCH("apply-patch", "Modifies database contents and resources as described in a JSON mini patch file."),
         APPLY_TDUPK("apply-tdupk", "Modifies vehicle physics as described in a performance pack file from TDUPE."),
@@ -148,11 +148,8 @@ public class DatabaseTool extends GenericTool {
     @Override
     protected boolean commandDispatch() throws Exception {
         switch (command) {
-            case GEN:
-                commandResult = gen(jsonDirectory, databaseDirectory);
-                return true;
             case FIX:
-                commandResult = fix(databaseDirectory, outputDatabaseDirectory, withClearContents);
+                commandResult = fixDatabaseFiles(databaseDirectory, outputDatabaseDirectory, withClearContents);
                 return true;
             case APPLY_TDUPK:
                 commandResult = applyPerformancePack(patchFile, jsonDirectory, outputDatabaseDirectory);
@@ -236,7 +233,6 @@ public class DatabaseTool extends GenericTool {
     @Override
     protected List<String> getExamples() {
         return asList(
-                GEN.label + " --jsonDir \"C:\\Users\\Bill\\Desktop\\json-database\" --databaseDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\"",
                 FIX.label + " -c -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -o \"C:\\Users\\Bill\\Desktop\\tdu-database-fixed\"",
                 APPLY_TDUPK.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\vehicle.tdupk\" -r \"606298799\" -o \"C:\\Users\\Bill\\Desktop\\json-database\"",
                 APPLY_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\"",
@@ -254,7 +250,7 @@ public class DatabaseTool extends GenericTool {
         outLine("Generating TDU database files, please wait...");
 
         String sourceExtractedDatabaseDirectory = DatabaseReadWriteHelper.createTempDirectory();
-        gen(jsonSourceDirectory, sourceExtractedDatabaseDirectory);
+        generateDatabaseFiles(jsonSourceDirectory, sourceExtractedDatabaseDirectory);
 
         outLine("Repacking TDU database files, please wait...");
 
@@ -434,7 +430,7 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
-    private Map<String, ?> gen(String sourceJsonDirectory, String targetExtractedDatabaseDirectory) throws IOException {
+    private Map<String, ?> generateDatabaseFiles(String sourceJsonDirectory, String targetExtractedDatabaseDirectory) throws IOException {
         FilesHelper.createDirectoryIfNotExists(targetExtractedDatabaseDirectory);
 
         outLine("-> Source directory: " + sourceJsonDirectory);
@@ -451,7 +447,7 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
-    private Map<String, ?> fix(String sourceDatabaseDirectory, String targetDatabaseDirectory, boolean withClearContents) throws IOException, ReflectiveOperationException {
+    private Map<String, ?> fixDatabaseFiles(String sourceDatabaseDirectory, String targetDatabaseDirectory, boolean withClearContents) throws IOException, ReflectiveOperationException {
         Set<IntegrityError> integrityErrors = new LinkedHashSet<>();
         List<DbDto> databaseObjects = checkAndReturnIntegrityErrorsAndObjects(sourceDatabaseDirectory, integrityErrors, withClearContents);
 
