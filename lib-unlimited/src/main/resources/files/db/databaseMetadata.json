@@ -20,8 +20,8 @@
       "bitfieldReference": [
         {
           "index": 1,
-          "label": "?",
-          "comment": "Always ON"
+          "label": "Vehicle slot enabled",
+          "comment": ""
         },
         {
           "index": 2,

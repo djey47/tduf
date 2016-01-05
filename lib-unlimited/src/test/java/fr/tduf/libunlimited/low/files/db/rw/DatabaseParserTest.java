@@ -298,7 +298,7 @@ public class DatabaseParserTest {
         List<DbDataDto.SwitchValue> actualSwitchValues = actualEntries.get(0).getItems().get(0).getSwitchValues();
         assertThat(actualSwitchValues).isNotNull();
         assertThat(actualSwitchValues).extracting("index").containsExactly(1, 2, 3, 4, 5, 6, 7);
-        assertThat(actualSwitchValues).extracting("name").containsOnly("?", "?", "?", "?", "?", "Add-on key required", "Car Paint Luxe enabled");
+        assertThat(actualSwitchValues).extracting("name").containsOnly("Vehicle slot enabled", "?", "?", "?", "?", "Add-on key required", "Car Paint Luxe enabled");
         assertThat(actualSwitchValues).extracting("enabled").containsExactly(true, true, true, true, false, true, true);
     }
 
