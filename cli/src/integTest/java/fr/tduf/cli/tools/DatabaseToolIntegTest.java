@@ -29,7 +29,9 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -43,8 +45,10 @@ import static org.mockito.Mockito.*;
 public class DatabaseToolIntegTest {
     private static final Path PATH_INTEG_TESTS = Paths.get("integ-tests");
     private static final Path PATH_PATCHER = PATH_INTEG_TESTS.resolve("patcher");
+    private static final Path PATH_DATABASE_BANKS = PATH_INTEG_TESTS.resolve("banks").resolve("db");
 
-    private static final String DIRECTORY_DATABASE_BANKS = PATH_INTEG_TESTS.resolve("banks").resolve("db").toString();
+    private static final String DIRECTORY_DATABASE_BANKS = PATH_DATABASE_BANKS.toString();
+    private static final String DIRECTORY_DATABASE_BANKS_OUTPUT = PATH_DATABASE_BANKS.resolve("out").toString();
     private static final String DIRECTORY_PATCH = PATH_PATCHER.toString();
     private static final String DIRECTORY_PATCH_OUTPUT = PATH_PATCHER.resolve("out").toString();
     private static final String DIRECTORY_ENCRYPTED_DATABASE = PATH_INTEG_TESTS.resolve("db-encrypted").toString();
@@ -177,8 +181,7 @@ public class DatabaseToolIntegTest {
     @Test
     public void unpackAllRepackAll_shouldCallGateway() throws IOException {
         // GIVEN
-        String outputDirectory = Paths.get(DIRECTORY_DATABASE_BANKS, "out").toString();
-        String unpackJsonDirectory = Paths.get(outputDirectory, "json").toString();
+        String unpackJsonDirectory = Paths.get(DIRECTORY_DATABASE_BANKS_OUTPUT, "json").toString();
 
         doAnswer(DatabaseToolIntegTest::fakeAndAssertExtractAll)
                 .when(bankSupportMock).extractAll(anyString(), anyString());
@@ -203,7 +206,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN repack-all
         System.out.println("-> RepackAll!");
-        databaseTool.doMain(new String[]{"repack-all", /*"-n",*/ "-j", unpackJsonDirectory, "-o", outputDirectory,});
+        databaseTool.doMain(new String[]{"repack-all", /*"-n",*/ "-j", unpackJsonDirectory, "-o", DIRECTORY_DATABASE_BANKS_OUTPUT,});
 
 
         // THEN: gateway was correctly called
@@ -211,10 +214,39 @@ public class DatabaseToolIntegTest {
     }
 
     @Test
+    public void unpackAll_simple() throws IOException {
+        // GIVEN
+        String unpackJsonDirectory = Paths.get(DIRECTORY_DATABASE_BANKS_OUTPUT, "json").toString();
+
+        doAnswer(DatabaseToolIntegTest::fakeAndAssertExtractAll)
+                .when(bankSupportMock).extractAll(anyString(), anyString());
+
+
+        // WHEN unpack-all (with fix only)
+        System.out.println("-> UnpackAll!");
+        OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
+        databaseTool.doMain(new String[]{"unpack-all", "-n", "-d", DIRECTORY_DATABASE_BANKS, "-j", unpackJsonDirectory});
+
+
+        // THEN
+        String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
+        JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
+
+        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 6);
+
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "missingTopicContents", 18);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "integrityErrors", 18);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 0);
+
+        assertThat(rootJsonNode.get("sourceDatabaseDirectory").asText()).endsWith(DIRECTORY_DATABASE_BANKS);
+        assertThat(rootJsonNode.get("jsonDatabaseDirectory").asText()).endsWith(unpackJsonDirectory);
+        assertThat(rootJsonNode.get("temporaryDirectory").asText()).startsWith("/tmp/");
+    }
+
+    @Test
     public void unpackAll_withFix() throws IOException {
         // GIVEN
-        String outputDirectory = Paths.get(DIRECTORY_DATABASE_BANKS, "out").toString();
-        String unpackJsonDirectory = Paths.get(outputDirectory, "json").toString();
+        String unpackJsonDirectory = Paths.get(DIRECTORY_DATABASE_BANKS_OUTPUT, "json").toString();
 
         doAnswer(DatabaseToolIntegTest::fakeAndAssertExtractAll)
                 .when(bankSupportMock).extractAll(anyString(), anyString());
@@ -245,8 +277,7 @@ public class DatabaseToolIntegTest {
     @Test
     public void unpackAll_withDeepCheck_andFix() throws IOException {
         // GIVEN
-        String outputDirectory = Paths.get(DIRECTORY_DATABASE_BANKS, "out").toString();
-        String unpackJsonDirectory = Paths.get(outputDirectory, "json").toString();
+        String unpackJsonDirectory = Paths.get(DIRECTORY_DATABASE_BANKS_OUTPUT, "json").toString();
 
         doAnswer(DatabaseToolIntegTest::fakeAndAssertExtractAll)
                 .when(bankSupportMock).extractAll(anyString(), anyString());
@@ -266,7 +297,7 @@ public class DatabaseToolIntegTest {
 
         AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "missingTopicContents", 18);
         AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "integrityErrors", 18);
-        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "remainingIntegrityErrors", 36);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "remainingIntegrityErrors", 18);
         AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 0);
 
         assertThat(rootJsonNode.get("sourceDatabaseDirectory").asText()).endsWith(DIRECTORY_DATABASE_BANKS);

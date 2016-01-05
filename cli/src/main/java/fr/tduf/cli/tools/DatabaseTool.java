@@ -281,7 +281,6 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
-    // TODO do not use 2 types of integrity errors here.
     private Map<String, ?> unpackAll(String sourceDatabaseDirectory, String jsonDatabaseDirectory, boolean fixErrors, boolean extensiveCheck) throws IOException, ReflectiveOperationException {
         String sourceDirectory = Paths.get(sourceDatabaseDirectory).toAbsolutePath().toString();
         outLine("-> TDU database directory: " + sourceDirectory);
@@ -291,15 +290,25 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Done unpacking.");
 
-        Map<String, Object> resultInfo = dump(extractedDatabaseDirectory, jsonDatabaseDirectory);
-        List<IntegrityError> integrityErrorsDomain = (List<IntegrityError>) resultInfo.get("integrityErrorsDomain");
-        resultInfo.remove("integrityErrorsDomain");
+        List<IntegrityError> integrityErrors = new ArrayList<>();
+        List<DbDto.Topic> missingTopicContents = new ArrayList<>();
+        final List<String> writtenFileNames = dumpCommon(extractedDatabaseDirectory, jsonDatabaseDirectory, missingTopicContents, integrityErrors);
 
         List<DbDto> databaseObjects;
         outLine("-> JSON database directory: " + sourceDirectory);
         if(extensiveCheck) {
             outLine("Now checking database...");
-            databaseObjects = loadAndCheckDatabase(extractedDatabaseDirectory, integrityErrorsDomain, false);
+            List<IntegrityError> integrityErrorsFromExtensiveCheck = new ArrayList<>();
+            databaseObjects = loadAndCheckDatabase(extractedDatabaseDirectory, integrityErrorsFromExtensiveCheck, false);
+
+            // TODO treat integrityErrors as set instead of a list + remove merging
+            integrityErrorsFromExtensiveCheck
+                    .forEach((integrityError -> {
+                        if (!integrityErrors.contains(integrityError)) {
+                            integrityErrors.add(integrityError);
+                        }
+                    }));
+
             outLine("Done checking.");
         } else {
             outLine("Now loading database...");
@@ -307,10 +316,11 @@ public class DatabaseTool extends GenericTool {
             outLine("Done loading.");
         }
 
+        Map<String, Object> resultInfo = new HashMap<>();
         if (fixErrors) {
             outLine("-> JSON database directory: " + jsonDatabaseDirectory);
             outLine("Now fixing database...");
-            List<IntegrityError> remainingIntegrityErrors = fixIntegrityErrorsAndSaveDatabaseFiles(databaseObjects, integrityErrorsDomain, jsonDatabaseDirectory);
+            List<IntegrityError> remainingIntegrityErrors = fixIntegrityErrorsAndSaveDatabaseFiles(databaseObjects, integrityErrors, jsonDatabaseDirectory);
             outLine("Done fixing.");
 
             resultInfo.put("remainingIntegrityErrors", toDatabaseIntegrityErrors(remainingIntegrityErrors));
@@ -319,6 +329,9 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("sourceDatabaseDirectory", sourceDirectory);
         resultInfo.put("temporaryDirectory", extractedDatabaseDirectory);
         resultInfo.put("jsonDatabaseDirectory", jsonDatabaseDirectory);
+        resultInfo.put("writtenFiles", writtenFileNames);
+        resultInfo.put("missingTopicContents", missingTopicContents);
+        resultInfo.put("integrityErrors", integrityErrors);
 
         return resultInfo;
     }
@@ -433,15 +446,10 @@ public class DatabaseTool extends GenericTool {
     }
 
     private Map<String, Object> dump(String databaseDirectory, String targetJsonDirectory) throws IOException, ReflectiveOperationException {
-        FilesHelper.createDirectoryIfNotExists(targetJsonDirectory);
-
-        outLine("-> Source directory: " + databaseDirectory);
-        outLine("Dumping TDU database to JSON, please wait...");
-        outLine();
-
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
         List<IntegrityError> integrityErrors = new ArrayList<>();
-        List<String> writtenFileNames = JsonGateway.dump(databaseDirectory, targetJsonDirectory, withClearContents, missingTopicContents, integrityErrors);
+
+        List<String> writtenFileNames = dumpCommon(databaseDirectory, targetJsonDirectory, missingTopicContents, integrityErrors);
 
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("missingTopicContents", missingTopicContents);
@@ -450,6 +458,16 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("writtenFiles", writtenFileNames);
 
         return resultInfo;
+    }
+
+    private List<String> dumpCommon(String databaseDirectory, String targetJsonDirectory, List<DbDto.Topic> missingTopicContents, List<IntegrityError> integrityErrors) throws IOException {
+        FilesHelper.createDirectoryIfNotExists(targetJsonDirectory);
+
+        outLine("-> Source directory: " + databaseDirectory);
+        outLine("Dumping TDU database to JSON, please wait...");
+        outLine();
+
+        return JsonGateway.dump(databaseDirectory, targetJsonDirectory, withClearContents, missingTopicContents, integrityErrors);
     }
 
     private Map<String, ?> gen(String sourceJsonDirectory, String targetExtractedDatabaseDirectory) throws IOException {
