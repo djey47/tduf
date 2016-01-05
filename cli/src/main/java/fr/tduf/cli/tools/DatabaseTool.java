@@ -75,10 +75,6 @@ public class DatabaseTool extends GenericTool {
     @Option(name = "-p", aliases = "--patchFile", usage = "File describing patch to apply/create/convert. Required for all -patch operations.")
     private String patchFile;
 
-    // TODO remove unused switch
-    @Option(name = "-c", aliases = "--clear", usage = "Indicates unpacked TDU files do not need to be unencrypted and encrypted back. Not mandatory.")
-    private boolean withClearContents = false;
-
     @Option(name = "-t", aliases = "--topic", usage = "Database topic to generate patch when gen-patch operation. Allowed values: ACHIEVEMENTS,AFTER_MARKET_PACKS,BOTS,BRANDS,CAR_COLORS,CAR_PACKS,CAR_PHYSICS_DATA,CAR_RIMS,CAR_SHOPS,CLOTHES,HAIR,HOUSES,INTERIOR,MENUS,PNJ,RIMS,SUB_TITLES,TUTORIALS.")
     private String databaseTopic;
     private DbDto.Topic effectiveTopic;
@@ -314,7 +310,7 @@ public class DatabaseTool extends GenericTool {
         outLine("Dumping TDU database to JSON, please wait...");
         outLine();
 
-        return JsonGateway.dump(databaseDirectory, targetJsonDirectory, withClearContents, missingTopicContents, integrityErrors);
+        return JsonGateway.dump(databaseDirectory, targetJsonDirectory, false, missingTopicContents, integrityErrors);
     }
 
     private Set<IntegrityError> fixIntegrityErrorsAndSaveDatabaseFiles(List<DbDto> databaseObjects, Set<IntegrityError> integrityErrors, String jsonDatabaseDirectory) throws ReflectiveOperationException {
@@ -434,7 +430,7 @@ public class DatabaseTool extends GenericTool {
         outLine();
 
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
-        List<String> writtenFileNames = JsonGateway.gen(sourceJsonDirectory, targetExtractedDatabaseDirectory, withClearContents, missingTopicContents);
+        List<String> writtenFileNames = JsonGateway.gen(sourceJsonDirectory, targetExtractedDatabaseDirectory, false, missingTopicContents);
 
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("missingJsonTopicContents", missingTopicContents);
