@@ -9,8 +9,33 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 ### What's new in this version ? (0.9.0)
 
+* All Tools: make them work under Linux OS (current scripts can't be used yet)
+
+* DatabaseTool (all): removes support of unused -c switch
+* DatabaseTool (dump): operation removed, use unpack-all operation instead
+* DatabaseTool (gen): operation removed, use repack-all operation instead
+* DatabaseTool (check): operation removed, use unpack-all operation instead with -x switch (see below)
+* DatabaseTool (fix): operation removed, use unpack-all operation instead with -m switch (see below)
 * DatabaseTool (gen-patch): renamed reference range switch (now -r or --refRange)
 * DatabaseTool (gen-patch): takes new field range switch into account (-f or --fieldRange) to generate partial patch
+* DatabaseTool (gen-patch): changes are now sorted correctly in .mini.json file
+* DatabaseTool (apply-patch): supports patches with partial contents (selected items above)
+* DatabaseTool (repack-all): fixes 'File Not Found' error
+* DatabaseTool (repack-all): fixes invalid '-repacked.bnk' file
+* DatabaseTool (unpack-all): adds ability to performe extensive database check when using -x (or --extensiveCheck) switch
+* DatabaseTool (unpack-all): returns integrity errors when asked
+* DatabaseTool (unpack-all): adds ability to fix database when using -m (or --mend) switch
+
+* MappingTool (magify): new operation to convert any Bnk1.map into MagicMap
+* MappingTool (info): returns MagicMap state of Bnk1.map file
+
+* Library (database): UPDATE patches do not add entry if one with same values already exists
+* Library (database): supports entry filtering with selected item values
+* Library (database): improve performance by cache efficiency
+* Library (database): fixes cache not cleared after succesful change
+* Library (database): updates bitfield reference for CarPhysics topic
+* Library (database): includes misc. improvements and fixes.
+
 
 ### Known bugs
 
@@ -53,13 +78,11 @@ To see all features, type and run: DatabaseTool
 
 e.g (1) to convert the whole TDU database to JSON format:
 
-* Extract (with TDUMT/TDUF) all DB.bnk and DB_xx.bnk database files in a directory
-* Type and run: DatabaseTool dump --databaseDir "C:\tdudb" --jsonDir "C:\tdudb\dump".
+* Type and run: DatabaseTool unpack-all --databaseDir "C:\TDU\Euro\Bnk\Database" --jsonDir "C:\TDU\Euro\Bnk\Database\json".
 
 e.g (2) to convert the database in JSON format to TDU files back:
 
-* Type and run: DatabaseTool gen --databaseDir "C:\tdudb" --jsonDir "C:\tdudb\gen"
-* Replace (with TDUMT/TDUF) in DB.bnk and DB_xx.bnk all files by generated ones in the new gen directory.
+* Type and run: DatabaseTool repack-all --jsonDir "C:\TDU\Euro\Bnk\Database\json" --outputDatabaseDir "C:\TDU\Euro\Bnk\Database".
 
 #### Mapping Tool
 
