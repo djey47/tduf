@@ -7,7 +7,7 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Capitalizing about reverse-engineering
 * ...
 
-### What's new in this version ? (0.9.0)
+### What's new in this version ? (0.10.0)
 
 * All Tools: make them work under Linux OS (current scripts can't be used yet)
 
