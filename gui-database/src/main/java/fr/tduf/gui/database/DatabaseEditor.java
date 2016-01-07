@@ -7,6 +7,8 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
+import static com.esotericsoftware.minlog.Log.LEVEL_INFO;
+
 /**
  * DatabaseEditor Java FX Application.
  */
@@ -18,7 +20,7 @@ public class DatabaseEditor extends Application {
     public void start(Stage primaryStage) throws Exception {
         parameters = getParameters().getUnnamed();
 
-        Log.set(Log.LEVEL_TRACE);
+        Log.set(LEVEL_INFO);
 
         MainStageDesigner.init(primaryStage);
         primaryStage.show();
