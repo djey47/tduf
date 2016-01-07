@@ -41,7 +41,19 @@ You tell me!
     - Linux users: check if Mono 2.0 is installed.
 
 ### Running it!
-TODO
+
+* Quick way to display and update database contents:
+    - Launch TDUF-gui.cmd from Windows explorer
+    - Follow instructions
+    - Make your changes, save and close Database Editor
+    - Database is repacked automatically.
+
+* Advanced method:
+    - Extract TDU database to location of your choice by using DatabaseTool unpack-all operation
+    - Launch TDUF-cli.cmd
+    - Type and run: DatabaseEditor.cmd "location from first step"
+    - Make your changes, save and close Database Editor
+    - Rebuild TDU database by using DatabaseTool repack-all operation.
 
 ### Using JAR library and/or CLI Tools in your projects
 

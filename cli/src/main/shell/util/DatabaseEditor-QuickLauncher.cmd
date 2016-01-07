@@ -17,6 +17,7 @@ CALL %script%
 GOTO exitSuccess
 
 :startGui
+ECHO *** TDUF DATABASE EDITOR QUICK LAUNCHER ***
 ECHO.
 ECHO ...Unpacking TDU database from %1, please wait...
 CALL DatabaseTool unpack-all -d %1 -j %1\tduf-json > ..\logs\DatabaseEditor.log 2>>&1
@@ -51,7 +52,7 @@ PAUSE
 EXIT /B 0
 
 :exitFailure
-ECHO Please check DatabaseEditor.log for details.
+ECHO Please check DatabaseEditor.log in logs directory for details.
 ECHO.
 PAUSE
 EXIT /B 1

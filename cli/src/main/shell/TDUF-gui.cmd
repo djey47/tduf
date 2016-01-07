@@ -5,4 +5,4 @@ CD cli 2>NUL
 
 CALL .\CheckJava.cmd
 CALL .\SetVersion.cmd
-CALL .\DatabaseEditor.cmd %* > ..\logs\Alpha-DatabaseEditor.log 2>>&1
+CALL .\DatabaseEditor-QuickLauncher.cmd %* > ..\logs\TDUF-gui.log 2>>&1
