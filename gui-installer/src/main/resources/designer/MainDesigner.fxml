@@ -32,7 +32,7 @@
             </ToolBar>
             <ToolBar prefHeight="40.0" VBox.vgrow="NEVER">
                <items>
-                  <Label text="TDUF Vehicle Installer v1.0 by Djey.">
+                  <Label text="TDUF Vehicle Installer by Djey.">
                      <font>
                         <Font name="System Italic" size="13.0" />
                      </font>
