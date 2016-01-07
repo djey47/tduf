@@ -9,7 +9,7 @@ SET "batchPath=%~0"
 SETLOCAL EnableDelayedExpansion
 SET "script=%temp%\OEgetDatabaseDir.vbs"
 ECHO Dim directory > %script%
-ECHO directory = InputBox^("This tool will unpack and convert TDU database for you. When finished, whole database will be repacked." ^& vbCrLf ^& "Please enter TDU Database Directory for BNK files:", "TDUF Database Editor ALPHA", "C:\Programs\Atari\Test Drive Unlimited"^) >> %script%
+ECHO directory = InputBox^("This tool will unpack and convert TDU database for you. When finished, whole database will be repacked." ^& vbCrLf ^& "Please enter TDU Database Directory for BNK files:", "TDUF Database Editor: Quick Launcher", "C:\Programs\Atari\Test Drive Unlimited"^) >> %script%
 ECHO If ^(directory = ""^) Then WScript.Quit >> %script%
 ECHO Set shell = CreateObject ^("WScript.Shell"^) >> %script%
 ECHO shell.run "!batchPath!" ^& " " ^& directory >> %script%
@@ -19,15 +19,15 @@ GOTO exitSuccess
 :startGui
 ECHO.
 ECHO ...Unpacking TDU database from %1, please wait...
-CALL DatabaseTool unpack-all -d %1 -j %1\tduf-json > ..\logs\Alpha-DatabaseEditor.log 2>>&1
+CALL DatabaseTool unpack-all -d %1 -j %1\tduf-json > ..\logs\DatabaseEditor.log 2>>&1
 if ERRORLEVEL 1 GOTO handleUnpackError
 	
 ECHO ...Starting Database Editor...
-CALL DatabaseEditor %1\tduf-json >> ..\logs\Alpha-DatabaseEditor.log 2>>&1
+CALL DatabaseEditor %1\tduf-json >> ..\logs\DatabaseEditor.log 2>>&1
 if ERRORLEVEL 1 GOTO handleEditorError
 
 ECHO ...Database Editor ended, now repacking database to %1, please wait...
-CALL DatabaseTool repack-all -o %1 -j %1\tduf-json >> ..\logs\Alpha-DatabaseEditor.log 2>>&1
+CALL DatabaseTool repack-all -o %1 -j %1\tduf-json >> ..\logs\DatabaseEditor.log 2>>&1
 if ERRORLEVEL 1 GOTO handleRepackError
 
 ECHO.
@@ -51,7 +51,7 @@ PAUSE
 EXIT /B 0
 
 :exitFailure
-ECHO Please check Alpha-DatabaseEditor.log for details.
+ECHO Please check DatabaseEditor.log for details.
 ECHO.
 PAUSE
 EXIT /B 1
