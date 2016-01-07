@@ -45,7 +45,7 @@ TODO
 
 ### Using JAR library and/or CLI Tools in your projects
 
-Since this is in ALPHA state, using lib is strongly discouraged. Prefer using latest stable version (currently 0.7.0).
+It's for free, but you ought to put a mention (kinda 'Powered By TDUF project') and give a link to thread @ [TurboDuck](http://forum.turboduck.net/threads/32570-Djey-Discussion-about-new-modding-possibilities)
 
 ###  And especially...
 

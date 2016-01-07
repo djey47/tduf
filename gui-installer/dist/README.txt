@@ -7,11 +7,6 @@ Here is a new vehicle mod installer:
 
 ### What's in this version ?
 
-/!\
-Please keep in mind that it is called ALPHA for a reason, you should use it carefully as it may damage your game!
-Thus, you always ought to make a backup of your TDU database before using it!
-/!\
-
 * Initial release
 
 ### Main features
@@ -33,7 +28,7 @@ Thus, you always ought to make a backup of your TDU database before using it!
 
 ### Using JAR library and/or CLI Tools in your projects
 
-Since this is in ALPHA state, using lib is strongly discouraged. Prefer using latest stable version.
+It's for free, but you ought to put a mention (kinda 'Powered By TDUF project') and give a link to thread @ [TurboDuck](http://forum.turboduck.net/threads/32570-Djey-Discussion-about-new-modding-possibilities)
 
 ###  And especially...
 
