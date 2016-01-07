@@ -1,0 +1,22 @@
+{
+  "name" : "TEST file format (signed integer values only)",
+  "littleEndian" : false,
+  "fields" : [
+    {
+      "name": "si1",
+      "type": "INTEGER",
+      "signed": true,
+      "size": 1
+    },{
+      "name": "si2",
+      "type": "INTEGER",
+      "signed": true,
+      "size": 2
+    },{
+      "name": "si3",
+      "type": "INTEGER",
+      "signed": true,
+      "size": 4
+    }
+  ]
+}

@@ -1,0 +1,1214 @@
+{
+  "profiles": [
+    {
+      "name": "Vehicle slots",
+      "topic": "CAR_PHYSICS_DATA",
+      "entryLabelFieldRanks": [3,4,12,9],
+      "groups": [
+        "Datasheet",
+        "Exterior",
+        "Interior",
+        "Transmission",
+        "Dampers",
+        "Tuning",
+        "Wheels",
+        "Sound"
+      ],
+      "topicLinks": [
+        {
+          "topic": "CAR_RIMS",
+          "group": "Wheels",
+          "label": "Available Rims",
+          "remoteReferenceProfile": "Rims",
+          "tooltip": "List of applicable rims to current vehicle"
+        },
+        {
+          "topic": "CAR_COLORS",
+          "group": "Exterior",
+          "label": "Selectable Paintjobs",
+          "remoteReferenceProfile": "Paints",
+          "tooltip": "List of applicable exterior paints in car shop to current vehicle"
+        },
+        {
+          "topic": "CAR_PACKS",
+          "group": "Tuning",
+          "label": "Selectable tuning packs",
+          "remoteReferenceProfile": "Packs",
+          "tooltip": "List of applicable tuning packs to current vehicle"
+        }
+      ],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "priority": 10000,
+          "readOnly": "true",
+          "label": "(REF) Slot #",
+          "toolTip": "Unique slot number"
+        },
+        {
+          "name": "Car_Brand",
+          "rank": 2,
+          "group": "Datasheet",
+          "remoteReferenceProfile": "Brands"
+        },
+        {
+          "name": "Car_Model",
+          "rank": 3
+        },
+        {
+          "name": "Car_Version",
+          "rank": 4
+        },
+        {
+          "name": "Group",
+          "rank": 5
+        },
+        {
+          "name": "Rarety",
+          "rank": 6,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Price_dollar",
+          "rank": 7,
+          "group": "Datasheet"
+        },
+        {
+          "name": "TestDrive_Cat",
+          "rank": 8
+        },
+        {
+          "name": "Car_File_Name",
+          "rank": 9
+        },
+        {
+          "name": "Default_Rims",
+          "label": "Default Rims",
+          "rank": 10,
+          "group": "Wheels",
+          "remoteReferenceProfile": "Rims"
+        },
+        {
+          "name": "HUD_File_Name",
+          "rank": 11,
+          "group": "Interior"
+        },
+        {
+          "name": "Car_RealName",
+          "rank": 12,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Model_Name",
+          "rank": 13,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Version_Name",
+          "rank": 14,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Engine_Localisation",
+          "rank": 15,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Engine_Type",
+          "rank": 16,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Displacement",
+          "rank": 17,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Power_bhp",
+          "rank": 18,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Power_RPM",
+          "rank": 19,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Torque_Nm",
+          "rank": 20,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Torque_RPM",
+          "rank": 21,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Red_Line",
+          "rank": 22,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Drive",
+          "rank": 23,
+          "group": "Transmission"
+        },
+        {
+          "name": "GearBox",
+          "rank": 24,
+          "group": "Transmission"
+        },
+        {
+          "name": "Nb_Gears",
+          "rank": 25,
+          "group": "Transmission"
+        },
+        {
+          "name": "Final_Drive_Ratio",
+          "rank": 26,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gear_ratio_1",
+          "rank": 27,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gear_ratio_2",
+          "rank": 28,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gear_ratio_3",
+          "rank": 29,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gear_ratio_4",
+          "rank": 30,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gear_ratio_5",
+          "rank": 31,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gear_ratio_6",
+          "rank": 32,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gear_ratio_7",
+          "rank": 33,
+          "group": "Transmission"
+        },
+        {
+          "name": "Nb_Doors",
+          "rank": 34,
+          "group": "Exterior"
+        },
+        {
+          "name": "Brakes_Characteristics_Front",
+          "rank": 35,
+          "group": "Wheels"
+        },
+        {
+          "name": "Brakes_Dim_Front",
+          "rank": 36,
+          "group": "Wheels"
+        },
+        {
+          "name": "Brakes_Dim_Rear",
+          "rank": 37,
+          "group": "Wheels"
+        },
+        {
+          "name": "Brakes_Characteristics_Rear",
+          "rank": 38,
+          "group": "Wheels"
+        },
+        {
+          "name": "Tires_Type",
+          "rank": 39,
+          "group": "Wheels"
+        },
+        {
+          "name": "Nb_Turbos",
+          "rank": 40,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Width",
+          "rank": 41,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Lenght",
+          "rank": 42,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Height",
+          "rank": 43,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Track_Front",
+          "rank": 44,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Track_Back",
+          "rank": 45,
+          "group": "Datasheet"
+
+        },
+        {
+          "name": "WheelBase",
+          "rank": 46,
+          "group": "Datasheet"
+        },
+        {
+          "name": "OverHang_Front",
+          "rank": 47,
+          "group": "Datasheet"
+        },
+        {
+          "name": "OverHang_Rear",
+          "rank": 48,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Weight_Kg",
+          "rank": 49,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Ride_Height_Front",
+          "rank": 50,
+          "group": "Dampers"
+        },
+        {
+          "name": "Ride_Height_Rear",
+          "rank": 51,
+          "group": "Dampers"
+        },
+        {
+          "name": "Ride_Height_Max_Front",
+          "rank": 52,
+          "group": "Dampers"
+        },
+        {
+          "name": "Ride_Height_Max_Rear",
+          "rank": 53,
+          "group": "Dampers"
+        },
+        {
+          "name": "Suspension_Lenght_Front",
+          "rank": 54,
+          "group": "Dampers"
+        },
+        {
+          "name": "Suspension_Lenght_Rear",
+          "rank": 55,
+          "group": "Dampers"
+        },
+        {
+          "name": "Suspension_Rate_Front",
+          "rank": 56,
+          "group": "Dampers"
+        },
+        {
+          "name": "Suspension_Rate_Rear",
+          "rank": 57,
+          "group": "Dampers"
+        },
+        {
+          "name": "Damper_Rate_Front",
+          "rank": 58,
+          "group": "Dampers"
+        },
+        {
+          "name": "Damper_Rate_Rear",
+          "rank": 59,
+          "group": "Dampers"
+        },
+        {
+          "name": "Engine_Inertia",
+          "rank": 60,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gearbox_Inertia",
+          "rank": 61,
+          "group": "Transmission"
+        },
+        {
+          "name": "Gravity_Center_Length",
+          "rank": 62,
+          "group": "Tuning"
+        },
+        {
+          "name": "Gravity_Center_Height",
+          "rank": 63,
+          "group": "Tuning"
+        },
+        {
+          "name": "Cx_Length",
+          "rank": 64,
+          "group": "Tuning"
+        },
+        {
+          "name": "Cx_Height",
+          "rank": 65,
+          "group": "Tuning"
+        },
+        {
+          "name": "SteerLock",
+          "rank": 66,
+          "group": "Wheels"
+        },
+        {
+          "name": "Transmission_Primacy",
+          "rank": 67,
+          "group": "Transmission"
+        },
+        {
+          "name": "Brake_Balance",
+          "rank": 68,
+          "group": "Wheels"
+        },
+        {
+          "name": "Ignition_Time_Ignite",
+          "rank": 69,
+          "group": "Sound"
+        },
+        {
+          "name": "Ignition_Time_RevUp",
+          "rank": 70,
+          "group": "Sound"
+        },
+        {
+          "name": "Ignition_Time_RevDown",
+          "rank": 71,
+          "group": "Sound"
+        },
+        {
+          "name": "Ignition_RPM",
+          "rank": 72,
+          "group": "Sound"
+        },
+        {
+          "name": "DoorMaxAngle",
+          "rank": 73,
+          "group": "Exterior"
+        },
+        {
+          "name": "Windows_Type",
+          "rank": 74,
+          "group": "Exterior"
+        },
+        {
+          "name": "Belt_Type",
+          "rank": 75,
+          "group": "Interior"
+        },
+        {
+          "name": "Nb_Seats",
+          "rank": 76,
+          "group": "Interior"
+        },
+        {
+          "name": "Car_Body",
+          "rank": 77,
+          "group": "Exterior"
+        },
+        {
+          "name": "Acceleration_0_100_kmh",
+          "rank": 78,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Acceleration_0_100_mph",
+          "rank": 79,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Top_Speed_kmh",
+          "rank": 80,
+          "group": "Tuning"
+        },
+        {
+          "name": "Braking_100_0_kmh",
+          "rank": 81,
+          "group": "Datasheet"
+        },
+        {
+          "name": "t0_to_1000m_sec",
+          "rank": 82,
+          "group": "Datasheet"
+        },
+        {
+          "name": "t0_to_1000m_kmh",
+          "rank": 83,
+          "group": "Datasheet"
+        },
+        {
+          "name": "t0_to_1000m_mph",
+          "rank": 84,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Quarter_Mile_sec",
+          "rank": 85,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Quarter_Mile_kmh",
+          "rank": 86,
+          "group": "Datasheet"
+        },
+        {
+          "name": "Quarter_Mile_mph",
+          "rank": 87,
+          "group": "Datasheet"
+        },
+        {
+          "name": "coef_grip",
+          "rank": 88,
+          "group": "Tuning"
+        },
+        {
+          "name": "coef_overturning",
+          "rank": 89,
+          "group": "Tuning"
+        },
+        {
+          "name": "coef_accel",
+          "rank": 90,
+          "group": "Tuning"
+        },
+        {
+          "name": "coef_brake",
+          "rank": 91,
+          "group": "Tuning"
+        },
+        {
+          "name": "BrakingDist_feet",
+          "rank": 92,
+          "group": "Tuning"
+        },
+        {
+          "name": "Handling",
+          "rank": 93,
+          "group": "Tuning"
+        },
+        {
+          "name": "coef_suspension",
+          "rank": 94,
+          "group": "Tuning"
+        },
+        {
+          "name": "coef_sharpness",
+          "rank": 95,
+          "group": "Tuning"
+        },
+        {
+          "name": "GraduationChange_Speed",
+          "rank": 96,
+          "group": "Interior"
+        },
+        {
+          "name": "GraduationChange_Ratio",
+          "rank": 97,
+          "group": "Interior"
+        },
+        {
+          "name": "Camera",
+          "rank": 98
+        },
+        {
+          "name": "Same_IK",
+          "rank": 99
+        },
+        {
+          "name": "Secu1",
+          "rank": 100
+        },
+        {
+          "name": "Secu2",
+          "rank": 101
+        },
+        {
+          "name": "ID_Car",
+          "priority": 9900,
+          "rank": 102
+        },
+        {
+          "name": "BitField",
+          "rank": 103
+        }
+      ]
+    },
+    {
+      "name": "Points of sale",
+      "topic": "CAR_SHOPS",
+      "entryLabelFieldRanks": [3,2],
+      "groups": [
+        "Slots"
+      ],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Shop #"
+        },
+        {
+          "rank": 4,
+          "name": "SLOT_1",
+          "group": "Slots",
+          "label": "(1)",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 5,
+          "name": "SLOT_2",
+          "group": "Slots",
+          "label": "(2)",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 6,
+          "name": "SLOT_3",
+          "group": "Slots",
+          "label": "(3)",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 7,
+          "name": "SLOT_4",
+          "group": "Slots",
+          "label": "(4)",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 8,
+          "name": "SLOT_5",
+          "group": "Slots",
+          "label": "(5)",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 9,
+          "name": "SLOT_6",
+          "group": "Slots",
+          "label": "(6)",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 10,
+          "name": "SLOT_7",
+          "group": "Slots",
+          "label": "(7)",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 11,
+          "name": "SLOT_8",
+          "group": "Slots",
+          "label": "(8)",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 12,
+          "name": "SLOT_9",
+          "group": "Slots",
+          "label": "(9)",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 13,
+          "name": "SLOT_10",
+          "group": "Slots",
+          "label": "(10)",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 14,
+          "name": "SLOT_11",
+          "group": "Slots",
+          "label": "(11)",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 15,
+          "name": "SLOT_12",
+          "group": "Slots",
+          "label": "(12)",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 16,
+          "name": "SLOT_13",
+          "group": "Slots",
+          "label": "(13)",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 17,
+          "name": "SLOT_14",
+          "group": "Slots",
+          "label": "(14)",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 18,
+          "name": "SLOT_15",
+          "group": "Slots",
+          "label": "(15)",
+          "remoteReferenceProfile": "Vehicle slots"
+        }
+      ]
+    },
+    {
+      "name": "Brands",
+      "topic": "BRANDS",
+      "entryLabelFieldRanks": [2,3],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Brand #"
+        }
+      ]
+    },
+    {
+      "name": "Rims",
+      "topic": "RIMS",
+      "entryLabelFieldRanks": [13,2,4,5,6,7],
+      "groups": ["Front","Rear"],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Rim set #",
+          "toolTip": "Unique rim set number"
+        },
+        {
+          "name": "Largeur_Front",
+          "rank": 5,
+          "group": "Front"
+        },
+        {
+          "name": "Hauteur_Front",
+          "rank": 6,
+          "group": "Front"
+        },
+        {
+          "name": "Diameter_Front",
+          "rank": 7,
+          "group": "Front"
+        },
+        {
+          "name": "Largeur_Rear",
+          "rank": 8,
+          "group": "Rear"
+        },
+        {
+          "name": "Hauteur_Rear",
+          "rank": 9,
+          "group": "Rear"
+        },
+        {
+          "name": "Diameter_Rear",
+          "rank": 10,
+          "group": "Rear"
+        },
+        {
+          "name": "Rsc_File_Name_Front",
+          "rank": 14,
+          "group": "Front"
+        },
+        {
+          "name": "Rsc_File_Name_Rear",
+          "rank": 15,
+          "group": "Rear"
+        }
+      ]
+    },
+    {
+      "name": "Paints",
+      "topic": "CAR_COLORS",
+      "entryLabelFieldRanks": [3,2],
+      "groups": ["Interior Sets"],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "Car",
+          "label": "Car slot #",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "rank": 8,
+          "group": "Interior Sets",
+          "label": "(1)",
+          "remoteReferenceProfile": "Interiors"
+        },
+        {
+          "rank": 9,
+          "group": "Interior Sets",
+          "label": "(2)",
+          "remoteReferenceProfile": "Interiors"
+        },
+        {
+          "rank": 10,
+          "group": "Interior Sets",
+          "label": "(3)",
+          "remoteReferenceProfile": "Interiors"
+        },
+        {
+          "rank": 11,
+          "group": "Interior Sets",
+          "label": "(4)",
+          "remoteReferenceProfile": "Interiors"
+        },
+        {
+          "rank": 12,
+          "group": "Interior Sets",
+          "label": "(5)",
+          "remoteReferenceProfile": "Interiors"
+        },
+        {
+          "rank": 13,
+          "group": "Interior Sets",
+          "label": "(6)",
+          "remoteReferenceProfile": "Interiors"
+        },
+        {
+          "rank": 14,
+          "group": "Interior Sets",
+          "label": "(7)",
+          "remoteReferenceProfile": "Interiors"
+        },
+        {
+          "rank": 15,
+          "group": "Interior Sets",
+          "label": "(8)",
+          "remoteReferenceProfile": "Interiors"
+        },
+        {
+          "rank": 16,
+          "group": "Interior Sets",
+          "label": "(9)",
+          "remoteReferenceProfile": "Interiors"
+        },
+        {
+          "rank": 17,
+          "group": "Interior Sets",
+          "label": "(10)",
+          "remoteReferenceProfile": "Interiors"
+        },
+        {
+          "rank": 18,
+          "group": "Interior Sets",
+          "label": "(11)",
+          "remoteReferenceProfile": "Interiors"
+        },
+        {
+          "rank": 19,
+          "group": "Interior Sets",
+          "label": "(12)",
+          "remoteReferenceProfile": "Interiors"
+        },
+        {
+          "rank": 20,
+          "group": "Interior Sets",
+          "label": "(13)",
+          "remoteReferenceProfile": "Interiors"
+        },
+        {
+          "rank": 21,
+          "group": "Interior Sets",
+          "label": "(14)",
+          "remoteReferenceProfile": "Interiors"
+        },
+        {
+          "rank": 22,
+          "group": "Interior Sets",
+          "label": "(15)",
+          "remoteReferenceProfile": "Interiors"
+        }
+      ]
+    },
+    {
+      "name":  "Interiors",
+      "topic": "INTERIOR",
+      "entryLabelFieldRanks": [2,3,4],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Interior set #"
+        }
+      ]
+    },
+    {
+      "name": "Packs",
+      "topic": "CAR_PACKS",
+      "entryLabelFieldRanks": [4,2,1],
+      "groups": ["Pack 1", "Pack 2", "Pack 3"],
+      "fieldSettings": [
+        {
+          "name": "Car",
+          "rank": 1,
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "name": "Brand",
+          "rank": 2,
+          "remoteReferenceProfile": "Brands"
+        },
+        {
+          "name": "Car_File_Name_Swap",
+          "rank": 3
+        },
+        {
+          "name": "Libelle",
+          "rank": 4
+        },
+        {
+          "name": "Pack_1",
+          "rank": 5,
+          "group": "Pack 1",
+          "remoteReferenceProfile": "AMPacks"
+        },
+        {
+          "name": "Group_1",
+          "rank": 6,
+          "group": "Pack 1"
+        },
+        {
+          "name": "Car_1",
+          "rank": 7,
+          "group": "Pack 1",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "name": "Price_1",
+          "rank": 8,
+          "group": "Pack 1"
+        },
+        {
+          "name": "Accel_0_100_1",
+          "rank": 9,
+          "group": "Pack 1"
+        },
+        {
+          "name": "BrakingDist_1",
+          "rank": 10,
+          "group": "Pack 1"
+        },
+        {
+          "name": "Handling_1",
+          "rank": 11,
+          "group": "Pack 1"
+        },
+        {
+          "name": "Pack_2",
+          "rank": 12,
+          "group": "Pack 2",
+          "remoteReferenceProfile": "AMPacks"
+        },
+        {
+          "name": "Group_2",
+          "rank": 13,
+          "group": "Pack 2"
+        },
+        {
+          "name": "Car_2",
+          "rank": 14,
+          "group": "Pack 2",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "name": "Price_2",
+          "rank": 15,
+          "group": "Pack 2"
+        },
+        {
+          "name": "Accel_0_100_2",
+          "rank": 16,
+          "group": "Pack 2"
+        },
+        {
+          "name": "BrakingDist_2",
+          "rank": 17,
+          "group": "Pack 2"
+        },
+        {
+          "name": "Handling_2",
+          "rank": 18,
+          "group": "Pack 2"
+        },
+        {
+          "name": "Pack_3",
+          "rank": 19,
+          "group": "Pack 3",
+          "remoteReferenceProfile": "AMPacks"
+        },
+        {
+          "name": "Group_3",
+          "rank": 20,
+          "group": "Pack 3"
+        },
+        {
+          "name": "Car_3",
+          "rank": 21,
+          "group": "Pack 3",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "name": "Price_3",
+          "rank": 22,
+          "group": "Pack 3"
+        },
+        {
+          "name": "Accel_0_100_3",
+          "rank": 23,
+          "group": "Pack 3"
+        },
+        {
+          "name": "BrakingDist_3",
+          "rank": 24,
+          "group": "Pack 3"
+        },
+        {
+          "name": "Handling_3",
+          "rank": 25,
+          "group": "Pack 3"
+        }
+      ]
+    },
+    {
+      "name": "AMPacks",
+      "topic": "AFTER_MARKET_PACKS",
+      "entryLabelFieldRanks": [2,3],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) AfterMarket Pack #",
+          "toolTip": "Unique pack number"
+        }
+      ]
+    },
+    {
+      "name": "Bots",
+      "topic": "BOTS",
+      "entryLabelFieldRanks": [1],
+      "fieldSettings": [
+        {
+          "name": "PNJ",
+          "rank": 3,
+          "remoteReferenceProfile": "NPCs"
+        },
+        {
+          "name": "BotCar",
+          "rank": 6,
+          "remoteReferenceProfile": "Vehicle slots"
+        }
+      ]
+    },
+    {
+      "name": "NPCs",
+      "topic": "PNJ",
+      "entryLabelFieldRanks": [2,3],
+      "groups": ["Items"],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) NPC #"
+        },
+        {
+          "name": "Clothe",
+          "label": "(1)",
+          "group": "Items",
+          "rank": 5,
+          "remoteReferenceProfile": "Clothes"
+        },
+        {
+          "name": "Clothe",
+          "label": "(2)",
+          "group": "Items",
+          "rank": 6,
+          "remoteReferenceProfile": "Clothes"
+        },
+        {
+          "name": "Clothe",
+          "label": "(3)",
+          "group": "Items",
+          "rank": 7,
+          "remoteReferenceProfile": "Clothes"
+        },
+        {
+          "name": "Clothe",
+          "label": "(4)",
+          "group": "Items",
+          "rank": 8,
+          "remoteReferenceProfile": "Clothes"
+        },
+        {
+          "name": "Clothe",
+          "label": "(5)",
+          "group": "Items",
+          "rank": 9,
+          "remoteReferenceProfile": "Clothes"
+        },
+        {
+          "name": "Clothe",
+          "label": "(6)",
+          "group": "Items",
+          "rank": 10,
+          "remoteReferenceProfile": "Clothes"
+        }
+      ]
+    },
+    {
+      "name": "Haircuts",
+      "topic": "HAIR",
+      "entryLabelFieldRanks": [3,4],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Haircut #"
+        }
+      ]
+    },
+    {
+      "name": "Clothes",
+      "topic": "CLOTHES",
+      "entryLabelFieldRanks": [2,6,7],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Piece of cloth #"
+        },
+        {
+          "name": "Brand_",
+          "rank": 5,
+          "remoteReferenceProfile": "Brands"
+        }
+      ]
+    },
+    {
+      "name": "Houses",
+      "topic": "HOUSES",
+      "entryLabelFieldRanks": [4,2,3],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) House  #"
+        }
+      ]
+    },
+    {
+      "name": "Achievements",
+      "topic": "ACHIEVEMENTS",
+      "entryLabelFieldRanks": [5,1],
+      "fieldSettings": []
+    },
+    {
+      "name": "Menus",
+      "topic": "MENUS",
+      "entryLabelFieldRanks": [2,1],
+      "fieldSettings": []
+    },
+    {
+      "name": "Subtitles",
+      "topic": "SUB_TITLES",
+      "entryLabelFieldRanks": [3],
+      "fieldSettings": []
+    },
+    {
+      "name": "Tutorials",
+      "topic": "TUTORIALS",
+      "entryLabelFieldRanks": [3,1,2],
+      "fieldSettings": []
+    },
+    {
+      "name": "TEST-Remote resource",
+      "topic": "HAIR",
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "label": "(REF) Haircut #"
+        }
+      ]
+    },
+    {
+      "name": "TEST-Hidden fields",
+      "topic": "BOTS",
+      "fieldSettings": [
+        {
+          "name": "PNJ",
+          "rank": 3,
+          "hidden": false
+        },
+        {
+          "name": "Difficulty",
+          "rank": 4,
+          "hidden": true
+        },
+        {
+          "name": "ZoneIndex",
+          "rank": 5,
+          "hidden": true
+        },
+        {
+          "name": "BotCar",
+          "rank": 6,
+          "hidden": true
+        },
+        {
+          "name": "ColorIndex",
+          "rank": 7,
+          "hidden": true
+        },
+        {
+          "name": "Rarety",
+          "rank": 8,
+          "hidden": true
+        }
+      ]
+    },
+    {
+      "name": "TEST-Readonly link",
+      "topic": "CAR_PHYSICS_DATA",
+      "topicLinks": [
+        {
+          "topic": "CAR_RIMS",
+          "remoteReferenceProfile": "Rims",
+          "readOnly": true
+        }
+      ],
+      "fieldSettings": []
+    }
+  ]
+}

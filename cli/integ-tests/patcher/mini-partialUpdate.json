@@ -1,0 +1,37 @@
+{
+  "changes": [
+    {
+      "comment": "Update bitfield to existing entry: ref 632098801",
+      "type": "UPDATE",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "632098801",
+      "partialValues": [
+        {
+          "rank": 103,
+          "value": "8900"
+        }
+      ]
+    },
+    {
+      "comment": "Update bitfield to existing entry: #1=70033960 #2=72825 (selection by filter)",
+      "type": "UPDATE",
+      "topic": "CAR_PHYSICS_DATA",
+      "filter": [
+        {
+          "rank": 1,
+          "value": "70033960"
+        },
+        {
+          "rank": 2,
+          "value": "72825"
+        }
+      ],
+      "partialValues": [
+        {
+          "rank": 103,
+          "value": "8901"
+        }
+      ]
+    }
+  ]
+}

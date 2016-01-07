@@ -1,0 +1,25 @@
+{
+  "changes": [
+    {
+      "comment": "Partially updates entry with field #1 (Achievement_Event_) =55736935 and field #2 (TextIndex_) =10.",
+      "type": "UPDATE",
+      "topic": "ACHIEVEMENTS",
+      "filter": [
+        {
+          "rank": 1,
+          "value": "55736935"
+        },
+        {
+          "rank": 2,
+          "value": "10"
+        }
+      ],
+      "partialValues": [
+        {
+          "rank": 2,
+          "value": "5"
+        }
+      ]
+    }
+  ]
+}

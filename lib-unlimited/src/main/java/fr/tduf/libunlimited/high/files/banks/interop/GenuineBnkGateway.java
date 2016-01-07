@@ -1,93 +1,109 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
+import com.esotericsoftware.minlog.Log;
 import com.google.common.base.Joiner;
+import fr.tduf.libunlimited.common.domain.ProcessResult;
+import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBankInfoOutputDto;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
+import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
+import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+
+import static fr.tduf.libunlimited.common.helper.CommandLineHelper.EXIT_CODE_SUCCESS;
+import static java.util.stream.Collectors.toList;
 
 /**
- * Bnk support, implementation relying on TDUMT .net assemblies.
+ * Bnk support, implementation relying on TDUMT-cli application.
  */
 public class GenuineBnkGateway implements BankSupport {
 
-    static {
-//        try {
-//            File rootDirectory = new File("lib/");
-//            Bridge.init(new File(rootDirectory.getAbsolutePath(), "jni4net.n-0.8.8.0.dll"));
-//            // TODO Generate Assemblies with CSC on Windows platform
-//            Bridge.LoadAndRegisterAssemblyFrom(new File(rootDirectory.getAbsolutePath(), "TduModdingLibrary.j4n.dll"));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+    private static final Class<GenuineBnkGateway> thisClass = GenuineBnkGateway.class;
+
+    public static final String EXTENSION_BANKS = "bnk";
+    public static final String PREFIX_ORIGINAL_BANK_FILE = "original-";
+
+    static final String EXE_TDUMT_CLI = Paths.get(".", "tools", "tdumt-cli", "tdumt-cli.exe").toString();
+    static final String CLI_COMMAND_BANK_INFO = "BANK-I";
+    static final String CLI_COMMAND_BANK_UNPACK = "BANK-U";
+    static final String CLI_COMMAND_BANK_REPLACE = "BANK-R";
+
+    private static final String PREFIX_PACKED_FILE_PATH = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\";
+
+    private CommandLineHelper commandLineHelper;
+
+    public GenuineBnkGateway(CommandLineHelper commandLineHelper) {
+        this.commandLineHelper = commandLineHelper;
     }
 
-//    private static final String ORIGINAL_BANK_NAME = "originalBank.bnk";
-//    private static final String PATH_SEPARATOR_REGEX = "\\\\";
-
+    /**
+     * tdumt-cli syntax: BANK-I <bankFileName>
+     */
     @Override
-    public BankInfoDto getBankInfo(String bankFileName) {
-        return null;
-//
-//        BNK bankFile = (BNK) TduFile.GetFile(bankFileName);
-//
-//        Collection<String> packedFilesNames = (Collection<String>) bankFile.GetPackedFilesPaths(null);
-//
-//        List<PackedFileInfoDto> packedFilesInfos = packedFilesNames.stream()
-//
-//                .map((fileName) -> PackedFileInfoDto.builder()
-//                        .forReference(generatePackedFileReference(fileName))
-//                        .withSize((int) bankFile.GetPackedFileSize(fileName))
-//                        .withFullName(fileName)
-//                        .build())
-//
-//                .collect(toList());
-//
-//        return BankInfoDto.builder()
-//                .fromYear(bankFile.getYear())
-//                .withFileSize(bankFile.getSize())
-//                .addPackedFiles(packedFilesInfos)
-//                .build();
+    public BankInfoDto getBankInfo(String bankFileName) throws IOException {
+
+        ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_INFO, bankFileName);
+        handleCommandLineErrors(processResult);
+
+        GenuineBankInfoOutputDto outputObject = new ObjectMapper().readValue(processResult.getOut(), GenuineBankInfoOutputDto.class);
+
+        return mapGenuineBankInfoToBankInfoObject(outputObject);
     }
 
+    /**
+     * tdumt-cli syntax: BANK-U <bankFileName> <packedFilePath> <outputDirectory>
+     */
     @Override
     public void extractAll(String bankFileName, String outputDirectory) throws IOException {
-//
-//        Files.copy(Paths.get(bankFileName), Paths.get(outputDirectory, ORIGINAL_BANK_NAME), StandardCopyOption.REPLACE_EXISTING);
-//
-//        BNK bankFile = (BNK) TduFile.GetFile(bankFileName);
-//
-//        Collection<String> packedFilesNames = (Collection<String>) bankFile.GetPackedFilesPaths(null);
-//
-//        packedFilesNames.stream()
-//
-//                .forEach((filePath) -> extractPackedFileWithFullPath(bankFile, filePath, outputDirectory));
+
+        Path bankFilePath = Paths.get(bankFileName);
+        Files.copy(bankFilePath, Paths.get(outputDirectory, PREFIX_ORIGINAL_BANK_FILE + bankFilePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+
+        getBankInfo(bankFileName).getPackedFiles()
+
+                .forEach((infoObject) -> extractPackedFileWithFullPath(bankFileName, infoObject.getFullName(), outputDirectory));
     }
 
+    /**
+     * tdumt-cli syntax: BANK-R <bankFileName> <packedFilePath> <sourceFilePath>
+     */
     @Override
     public void packAll(String inputDirectory, String outputBankFileName) throws IOException {
-//
-//        Path originalBankFilePath = Paths.get(inputDirectory, ORIGINAL_BANK_NAME);
-//
-//        Files.copy(originalBankFilePath, Paths.get(outputBankFileName), StandardCopyOption.REPLACE_EXISTING);
-//
-//
-//        BNK outputBankFile = (BNK) TduFile.GetFile(outputBankFileName);
-//
-//        Path inputPath = Paths.get(inputDirectory);
-//        DirectoryStream<Path> paths = Files.newDirectoryStream(inputPath);
-//        for (Path packedFile : paths) {
-//            if (!Files.isDirectory(packedFile)) {
-//                String packedFilePath = getInternalPackedFilePath(packedFile, inputPath);
-//                outputBankFile.ReplacePackedFile(packedFilePath, packedFile.toString());
-//            }
-//        }
+
+        Log.debug(thisClass.getSimpleName(), "inputDirectory: " + inputDirectory);
+        Log.debug(thisClass.getSimpleName(), "outputBankFileName: " + outputBankFileName);
+
+        String originalBankFileName = searchOriginalBankFileName(inputDirectory);
+        Path originalBankFilePath = Paths.get(inputDirectory, originalBankFileName);
+        Files.copy(originalBankFilePath, Paths.get(outputBankFileName), StandardCopyOption.REPLACE_EXISTING);
+
+        Log.debug(thisClass.getSimpleName(), "originalBankFilePath: " + originalBankFilePath.toString());
+
+        getBankInfo(originalBankFilePath.toString()).getPackedFiles()
+
+                .forEach((infoObject) -> repackFileWithFullPath(infoObject.getFullName(), outputBankFileName, Paths.get(inputDirectory)));
     }
 
-    static String getInternalPackedFilePath(Path packedFilePath, Path basePath) {
-        Path pathRelative = basePath.relativize(packedFilePath);
+    static String searchOriginalBankFileName(String inputDirectory) throws IOException {
+        return Files.walk(Paths.get(inputDirectory))
+
+                .filter((path) -> !Files.isDirectory(path))
+
+                .filter((path) -> EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+
+                .findAny().get().getFileName().toString();
+    }
+
+    static String getInternalPathFromRealPath(Path realPath, Path basePath) {
+        Path pathRelative = basePath.relativize(realPath);
 
         String[] pathCompounds = pathRelative.toString().replace('/', '\\').split("\\\\");
         String[] pathElements = new String[pathCompounds.length + 1];
@@ -99,22 +115,23 @@ public class GenuineBnkGateway implements BankSupport {
         pathElements[pathElements.length - 2] = extension;
         pathElements[pathElements.length - 1] = name;
 
-        return "\\D:\\Eden-Prog\\Games\\TestDrive\\Resources\\" + Joiner.on('\\').join(pathElements);
+        return PREFIX_PACKED_FILE_PATH + Joiner.on('\\').join(pathElements);
     }
 
-    static String getTargetFileNameFromPathCompounds(String bankFileName, String[] filePathCompounds) {
-        // Format: '\D:\Eden-Prog\Games\....'
-        String[] pathElements = new String[filePathCompounds.length-7];
+    static Path getRealFilePathFromInternalPath(String internalPath, Path basePath) {
 
-        System.arraycopy(filePathCompounds, 6, pathElements, 0, pathElements.length);
-        pathElements[pathElements.length - 1] = getFileNameFromPathCompounds(filePathCompounds);
+        Path filePath = Paths.get(internalPath
+                .replace(PREFIX_PACKED_FILE_PATH, "")
+                .replace("\\", File.separator));
 
-        return Paths.get(bankFileName, pathElements).toString();
-    }
+        int shortNameComponentIndex = filePath.getNameCount() - 1;
+        int extensionComponentIndex = filePath.getNameCount() - 2;
+        String shortFileName = filePath.subpath(shortNameComponentIndex, filePath.getNameCount()).toString();
+        String extension = filePath.subpath(extensionComponentIndex, shortNameComponentIndex).toString();
 
-    static String getFileNameFromPathCompounds(String[] filePathCompounds) {
-        // Format: '\\D:\Eden-Prog\Games\....'
-        return filePathCompounds[filePathCompounds.length-1] + filePathCompounds[filePathCompounds.length-2];
+        Path realFilePath = filePath.subpath(0, extensionComponentIndex).resolve(shortFileName + extension);
+
+        return basePath.resolve(realFilePath);
     }
 
     static String generatePackedFileReference(String fileName) {
@@ -127,18 +144,63 @@ public class GenuineBnkGateway implements BankSupport {
         }
     }
 
-//    private static void extractPackedFileWithFullPath(BNK bankFile, String filePath, String outputDirectory) {
-//        bankFile.ExtractPackedFile(filePath, outputDirectory, true);
-//
-//        String[] filePathCompounds = filePath.split(PATH_SEPARATOR_REGEX);
-//
-//        File bank = new File(bankFile.getFileName());
-//        File extractedFile = new File(outputDirectory, getFileNameFromPathCompounds(filePathCompounds));
-//        File targetFile = new File(outputDirectory, getTargetFileNameFromPathCompounds(bank.getName(), filePathCompounds));
-//        try {
-//            Files.move(extractedFile.toPath(), targetFile.toPath());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    private void extractPackedFileWithFullPath(String bankFile, String packedFileFullName, String outputDirectory) {
+        try {
+            Path targetParentPath = getRealFilePathFromInternalPath(packedFileFullName, Paths.get(outputDirectory)).getParent();
+
+            Log.debug(thisClass.getSimpleName(), "packedFileFullName: " + packedFileFullName);
+            Log.debug(thisClass.getSimpleName(), "outputDirectory: " + outputDirectory);
+            Log.debug(thisClass.getSimpleName(), "targetParentPath: " + targetParentPath);
+
+            Files.createDirectories(targetParentPath);
+
+            ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_UNPACK, bankFile, packedFileFullName, targetParentPath.toString());
+            handleCommandLineErrors(processResult);
+        } catch (IOException e) {
+            // Do not fail here.
+            e.printStackTrace();
+        }
+    }
+
+    private void repackFileWithFullPath(String packedFilePath, String outputBankFile, Path basePath) {
+        try {
+            Path filePath = getRealFilePathFromInternalPath(packedFilePath, basePath);
+
+            Log.debug(thisClass.getSimpleName(), "packedFilePath: " + packedFilePath);
+            Log.debug(thisClass.getSimpleName(), "filePath: " + filePath.toString());
+            Log.debug(thisClass.getSimpleName(), "basePath: " + basePath.toString());
+
+            ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_REPLACE, outputBankFile, packedFilePath, filePath.toString());
+            handleCommandLineErrors(processResult);
+        } catch (IOException ioe) {
+            throw new RuntimeException("Error while repacking file: " + packedFilePath, ioe);
+        }
+    }
+
+    private static void handleCommandLineErrors(ProcessResult processResult) throws IOException {
+        if (processResult.getReturnCode() != EXIT_CODE_SUCCESS) {
+            Exception parentException = new Exception(processResult.getErr());
+            throw new IOException("Unable to execute genuine CLI command: " + processResult.getCommandName(), parentException);
+        }
+    }
+
+    private static BankInfoDto mapGenuineBankInfoToBankInfoObject(GenuineBankInfoOutputDto outputObject) {
+        List<PackedFileInfoDto> packedFilesInfos = outputObject.getPackedFiles().stream()
+
+                .map((packedFileInfo) -> PackedFileInfoDto.builder()
+                        .forReference(generatePackedFileReference(packedFileInfo.getName()))
+                        .withSize(packedFileInfo.getFileSize())
+                        .withFullName(packedFileInfo.getName())
+                        .withShortName(packedFileInfo.getShortName())
+                        .withTypeDescription(packedFileInfo.getType())
+                        .build())
+
+                .collect(toList());
+
+        return BankInfoDto.builder()
+                .fromYear(outputObject.getYear())
+                .withFileSize(outputObject.getFileSize())
+                .addPackedFiles(packedFilesInfos)
+                .build();
+    }
 }

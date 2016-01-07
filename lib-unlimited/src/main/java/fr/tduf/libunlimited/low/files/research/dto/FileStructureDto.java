@@ -5,7 +5,11 @@ import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
+import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 
 /**
  * Represents contents of structure file
@@ -30,7 +34,34 @@ public class FileStructureDto implements Serializable {
      * @return builder, used to generate custom values.
      */
     public static FileStructureDtoBuilder builder() {
-        return FileStructureDto::new;
+        return new FileStructureDtoBuilder() {
+            private List<Field> fields = new ArrayList<>();
+
+            @Override
+            public FileStructureDtoBuilder addFields(List<Field> fields) {
+                this.fields.addAll(fields);
+                return this;
+            }
+
+            @Override
+            public FileStructureDto build() {
+                FileStructureDto fileStructureDto = new FileStructureDto();
+
+                fileStructureDto.fields = this.fields;
+
+                return fileStructureDto;
+            }
+        };
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return reflectionEquals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return reflectionHashCode(this);
     }
 
     private FileStructureDto() {}
@@ -39,8 +70,8 @@ public class FileStructureDto implements Serializable {
         return fields;
     }
 
-    public Boolean isLittleEndian() {
-        return littleEndian;
+    public boolean isLittleEndian() {
+        return littleEndian != null && littleEndian;
     }
 
     public Integer getCryptoMode() {
@@ -51,6 +82,9 @@ public class FileStructureDto implements Serializable {
      * Represents a field in structure.
      */
     public interface FileStructureDtoBuilder {
+
+        FileStructureDtoBuilder addFields(List<Field> fields);
+
         FileStructureDto build();
     }
 
@@ -63,6 +97,9 @@ public class FileStructureDto implements Serializable {
         @JsonProperty("type")
         private Type type;
 
+        @JsonProperty("signed")
+        private Boolean signed;
+
         @JsonProperty("size")
         private String sizeFormula;
 
@@ -73,6 +110,7 @@ public class FileStructureDto implements Serializable {
 
         public static FieldBuilder builder() {
             return new FieldBuilder() {
+                public boolean signed;
                 private List<Field> subFields;
                 private Type type;
                 private String sizeFormula;
@@ -87,6 +125,12 @@ public class FileStructureDto implements Serializable {
                 @Override
                 public FieldBuilder withType(Type type) {
                     this.type = type;
+                    return this;
+                }
+
+                @Override
+                public FieldBuilder signed(boolean isSigned) {
+                    this.signed = isSigned;
                     return this;
                 }
 
@@ -116,6 +160,7 @@ public class FileStructureDto implements Serializable {
                     field.sizeFormula = this.sizeFormula;
                     field.type = this.type;
                     field.subFields = this.subFields;
+                    field.signed = this.signed;
 
                     return field;
                 }
@@ -129,6 +174,16 @@ public class FileStructureDto implements Serializable {
                     ", type=" + type +
                     ", sizeFormula=" + sizeFormula +
                     '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return reflectionEquals(this, o);
+        }
+
+        @Override
+        public int hashCode() {
+            return reflectionHashCode(this);
         }
 
         public String getSizeFormula() {
@@ -147,11 +202,17 @@ public class FileStructureDto implements Serializable {
             return subFields;
         }
 
+        public boolean isSigned() {
+            return signed != null && signed;
+        }
+
         public interface FieldBuilder {
 
             FieldBuilder forName(String name_hash);
 
             FieldBuilder withType(Type type);
+
+            FieldBuilder signed(boolean isSigned);
 
             FieldBuilder ofSize(String sizeFormula);
 

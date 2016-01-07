@@ -1,0 +1,11 @@
+.fieldName {
+    -fx-font-weight: bold;
+}
+
+.readonlyField {
+    -fx-text-fill: gray;
+}
+
+.fieldLabel {
+    -fx-padding: 5,0,0,5;
+}

@@ -52,7 +52,7 @@ public class MapWriter extends GenericWriter<BankMap> {
     }
 
     @Override
-    protected String getStructureResource() {
+    public String getStructureResource() {
         return "/files/structures/MAP4-map.json";
     }
 }

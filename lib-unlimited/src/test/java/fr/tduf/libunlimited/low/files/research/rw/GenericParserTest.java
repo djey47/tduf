@@ -1,6 +1,8 @@
 package fr.tduf.libunlimited.low.files.research.rw;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -11,18 +13,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericParserTest {
 
+    private static Class<GenericParserTest> thisClass = GenericParserTest.class;
     private static final String DATA = "data";
+
+    @Before
+    public void setUp() {
+        Log.set(Log.LEVEL_INFO);
+    }
 
     @Test
     public void newParser_whenProvidedContents_shouldReturnParserInstance() throws Exception {
-        // GIVEN
-        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile();
-
-        // WHEN
-        GenericParser<String> actualParser = createGenericParser(inputStream);
+        // GIVEN-WHEN
+        GenericParser<String> actualParser = createGenericParser();
 
         // THEN
-        assertThat(actualParser.getInputStream()).isEqualTo(inputStream);
+        assertThat(actualParser.getInputStream()).isNotNull();
         assertThat(actualParser.getFileStructure()).isNotNull();
     }
 
@@ -41,8 +46,7 @@ public class GenericParserTest {
     @Test
     public void parse_whenProvidedFiles_shouldReturnDomainObject() throws IOException, URISyntaxException {
         // GIVEN
-        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile();
-        GenericParser<String> actualParser = createGenericParser(inputStream);
+        GenericParser<String> actualParser = createGenericParser();
 
         // WHEN
         String actualObject = actualParser.parse();
@@ -55,7 +59,7 @@ public class GenericParserTest {
     @Test
     public void parse_whenProvidedFiles_andEncryptedContents_shouldReturnDomainObject() throws IOException, URISyntaxException {
         // GIVEN
-        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileEncrypted();
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-encrypted.bin"));
         GenericParser<String> actualParser = createGenericParserEncrypted(inputStream);
 
         // WHEN
@@ -69,13 +73,12 @@ public class GenericParserTest {
     @Test
     public void dump_whenProvidedContents_andSizeGivenByAnotherField_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
-        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileForFormulas();
-        GenericParser<String> actualParser = createGenericParserForFormulas(inputStream);
+        GenericParser<String> actualParser = createGenericParserForFormulas();
         actualParser.parse();
 
         // WHEN
         String actualDump = actualParser.dump();
-        System.out.println("Dumped contents:\n" + actualDump);
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDumpSizeByField());
@@ -84,13 +87,12 @@ public class GenericParserTest {
     @Test
     public void dump_whenProvidedContents_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
-        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile();
-        GenericParser<String> actualParser = createGenericParser(inputStream);
+        GenericParser<String> actualParser = createGenericParser();
         actualParser.parse();
 
         // WHEN
         String actualDump = actualParser.dump();
-        System.out.println("Dumped contents:\n" + actualDump);
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDump());
@@ -99,13 +101,12 @@ public class GenericParserTest {
     @Test
     public void dump_whenProvidedContents_andHalfFloatValues_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
-        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileHalfFloat();
-        GenericParser<String> actualParser = createGenericParserHalfFloat(inputStream);
+        GenericParser<String> actualParser = createGenericParserHalfFloat();
         actualParser.parse();
 
         // WHEN
         String actualDump = actualParser.dump();
-        System.out.println("Dumped contents:\n" + actualDump);
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDumpHalfFloat());
@@ -114,13 +115,12 @@ public class GenericParserTest {
     @Test
     public void dump_whenProvidedContents_andVeryShortValues_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
-        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileVeryShortInt();
-        GenericParser<String> actualParser = createGenericParserVeryShortInt(inputStream);
+        GenericParser<String> actualParser = createGenericParserVeryShortInt();
         actualParser.parse();
 
         // WHEN
         String actualDump = actualParser.dump();
-        System.out.println("Dumped contents:\n" + actualDump);
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDumpVeryShortInt());
@@ -129,16 +129,29 @@ public class GenericParserTest {
     @Test
     public void dump_whenProvidedContentsInLittleEndian_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
-        ByteArrayInputStream inputStream = createInputStreamFromReferenceFileLittleEndian();
-        GenericParser<String> actualParser = createGenericParserLittleEndian(inputStream);
+        GenericParser<String> actualParser = createGenericParserLittleEndian();
         actualParser.parse();
 
         // WHEN
         String actualDump = actualParser.dump();
-        System.out.println("Dumped contents:\n" + actualDump);
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDump());
+    }
+
+    @Test
+    public void dump_whenProvidedContentsSigned_shouldReturnAllParsedData() throws IOException, URISyntaxException {
+        // GIVEN
+        GenericParser<String> actualParser = createGenericParserSigned();
+        actualParser.parse();
+
+        // WHEN
+        String actualDump = actualParser.dump();
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
+
+        // THEN
+        assertThat(actualDump).isEqualTo(getExpectedDumpSignedInteger());
     }
 
     private String getExpectedDump() throws IOException, URISyntaxException {
@@ -157,7 +170,13 @@ public class GenericParserTest {
         return FilesHelper.readTextFromResourceFile("/files/dumps/TEST-veryShortInt.txt");
     }
 
-    private GenericParser<String> createGenericParser(final ByteArrayInputStream inputStream) throws IOException {
+    private String getExpectedDumpSignedInteger() throws IOException, URISyntaxException {
+        return FilesHelper.readTextFromResourceFile("/files/dumps/TEST-signedInteger.txt");
+    }
+
+    private GenericParser<String> createGenericParser() throws IOException, URISyntaxException {
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile();
+
         return new GenericParser<String>(inputStream) {
             @Override
             protected String generate() {
@@ -185,7 +204,7 @@ public class GenericParserTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
             }
         };
@@ -219,13 +238,15 @@ public class GenericParserTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-encrypted-map.json";
             }
         };
     }
 
-    private GenericParser<String> createGenericParserHalfFloat(final ByteArrayInputStream inputStream) throws IOException {
+    private GenericParser<String> createGenericParserHalfFloat() throws IOException, URISyntaxException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-halfFloat.bin"));
+
         return new GenericParser<String>(inputStream) {
             @Override
             protected String generate() {
@@ -245,13 +266,15 @@ public class GenericParserTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-halfFloat-map.json";
             }
         };
     }
 
-    private GenericParser<String> createGenericParserVeryShortInt(final ByteArrayInputStream inputStream) throws IOException {
+    private GenericParser<String> createGenericParserVeryShortInt() throws IOException, URISyntaxException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-veryShortInt.bin"));
+
         return new GenericParser<String>(inputStream) {
             @Override
             protected String generate() {
@@ -271,13 +294,15 @@ public class GenericParserTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-veryShortInt-map.json";
             }
         };
     }
 
-    private GenericParser<String> createGenericParserLittleEndian(final ByteArrayInputStream inputStream) throws IOException {
+    private GenericParser<String> createGenericParserLittleEndian() throws IOException, URISyntaxException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-littleEndian.bin"));
+
         return new GenericParser<String>(inputStream) {
             @Override
             protected String generate() {
@@ -305,7 +330,7 @@ public class GenericParserTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-littleEndian-map.json";
             }
         };
@@ -319,13 +344,15 @@ public class GenericParserTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "./src/test/resources/files/structures/TEST-map.json";
             }
         };
     }
 
-    private GenericParser<String> createGenericParserForFormulas(ByteArrayInputStream inputStream) throws IOException {
+    private GenericParser<String> createGenericParserForFormulas() throws IOException, URISyntaxException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-formulas.bin"));
+
         return new GenericParser<String>(inputStream) {
             @Override
             protected String generate() {
@@ -349,33 +376,40 @@ public class GenericParserTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-formulas-map.json";
+            }
+        };
+    }
+
+    private GenericParser<String> createGenericParserSigned() throws IOException, URISyntaxException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-signedInteger.bin"));
+
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+                assertThat(getDataStore().size()).isEqualTo(3);
+
+                // Field 1
+                assertThat(getDataStore().getInteger("si1").get()).isEqualTo(-60);
+
+                // Field 2
+                assertThat(getDataStore().getInteger("si2").get()).isEqualTo(0);
+
+                // Field 3
+                assertThat(getDataStore().getInteger("si3").get()).isEqualTo(60);
+
+                return DATA;
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-signedInteger-map.json";
             }
         };
     }
 
     private ByteArrayInputStream createInputStreamFromReferenceFile() throws IOException, URISyntaxException {
         return new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST.bin"));
-    }
-
-    private ByteArrayInputStream createInputStreamFromReferenceFileEncrypted() throws IOException, URISyntaxException {
-        return new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-encrypted.bin"));
-    }
-
-    private ByteArrayInputStream createInputStreamFromReferenceFileHalfFloat() throws IOException, URISyntaxException {
-        return new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-halfFloat.bin"));
-    }
-
-    private ByteArrayInputStream createInputStreamFromReferenceFileVeryShortInt() throws IOException, URISyntaxException {
-        return new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-veryShortInt.bin"));
-    }
-
-    private ByteArrayInputStream createInputStreamFromReferenceFileLittleEndian() throws IOException, URISyntaxException {
-        return new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-littleEndian.bin"));
-    }
-
-    private ByteArrayInputStream createInputStreamFromReferenceFileForFormulas() throws URISyntaxException, IOException {
-        return new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-formulas.bin"));
     }
 }

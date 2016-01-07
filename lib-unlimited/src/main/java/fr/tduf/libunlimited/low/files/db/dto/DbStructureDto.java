@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -50,6 +51,16 @@ public class DbStructureDto implements Serializable {
 
         @JsonProperty("rank")
         private int rank;
+
+        /**
+         * @return true is current field is used to locate a local or remote resource, false otherwise.
+         */
+        @JsonIgnore
+        public boolean isAResourceField() {
+            return DbStructureDto.FieldType.RESOURCE_CURRENT_GLOBALIZED == fieldType
+                    || DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED == fieldType
+                    || DbStructureDto.FieldType.RESOURCE_REMOTE == fieldType;
+        }
 
         /**
          * @return builder, used to generate custom values.
@@ -176,17 +187,19 @@ public class DbStructureDto implements Serializable {
          */
         REFERENCE("r"),
         /**
-         * Identifier of resource in other Topic
+         * Identifier of resource in other Topic (only applies to CarPacks, Hair and Interior)
          */
         RESOURCE_REMOTE("l"),
         /**
-         * Identifier of resource in current Topic
+         * Identifier of resource in current Topic.
+         * Associated resource value does not depend on particular locale (will not be displayed).
          */
-        RESOURCE_CURRENT("u"),
+        RESOURCE_CURRENT_GLOBALIZED("u"),
         /**
-         * Identifier of resource in current Topic (same as above ?!)
+         * Identifier of resource in current Topic.
+         * Associated resource value does depend on locale (will be displayed).
          */
-        RESOURCE_CURRENT_AGAIN("h");
+        RESOURCE_CURRENT_LOCALIZED("h");
 
         private final String code;
 

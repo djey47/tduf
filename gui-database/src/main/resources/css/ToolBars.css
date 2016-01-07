@@ -1,0 +1,27 @@
+/* Database location */
+.locationToolbar {
+    -fx-base: dodgerBlue;
+}
+
+/* Settings */
+.settingsToolbar {
+    -fx-base: dodgerBlue;
+}
+
+#localesChoiceBox .label, #profilesChoiceBox .label {
+    -fx-text-fill: black;
+}
+
+/* Actions */
+#entryNumberComboBox .scroll-bar:vertical {
+    -fx-background-color:transparent;
+
+}
+#entryNumberComboBox .list-cell {
+    -fx-text-fill: white;
+}
+
+/* Nav */
+.navigationToolbar {
+    -fx-base: black;
+}

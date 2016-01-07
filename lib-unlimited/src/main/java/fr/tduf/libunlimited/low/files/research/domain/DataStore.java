@@ -1,5 +1,7 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
+import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
+import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.codehaus.jackson.JsonNode;
@@ -15,9 +17,6 @@ import java.util.stream.Collectors;
 import static fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper.*;
 import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.*;
 import static java.util.Objects.requireNonNull;
-import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
-import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
-import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * Place to store and extract data with {@link fr.tduf.libunlimited.low.files.research.rw.GenericParser}
@@ -54,6 +53,23 @@ public class DataStore {
     }
 
     /**
+     * Adds all entries from provided data store to current one.
+     * If entries with the same key already exist, values will be replaced.
+     * @param sourceStore   : pre-filled data store.
+     */
+    public void mergeAll(DataStore sourceStore) {
+        if (sourceStore == null) {
+            return;
+        }
+
+        if(!this.getFileStructure().equals(sourceStore.getFileStructure())) {
+            throw new IllegalArgumentException("File structure differ between data stores to be merged.");
+        }
+
+        this.getStore().putAll(sourceStore.store);
+    }
+
+    /**
      * Adds provided bytes to the store, if type is stor-able.
      *
      * @param fieldName : identifier of field hosting the value, should not exist already
@@ -61,11 +77,23 @@ public class DataStore {
      * @param rawValue  : value to store
      */
     public void addValue(String fieldName, FileStructureDto.Type type, byte[] rawValue) {
+        addValue(fieldName, type, false, rawValue);
+    }
+
+    /**
+     * Adds provided bytes to the store, if type is stor-able.
+     *
+     * @param fieldName : identifier of field hosting the value, should not exist already
+     * @param type      : value type
+     * @param signed    : indicates if value is signed or not (only applicable to integer data type)
+     * @param rawValue  : value to store
+     */
+    public void addValue(String fieldName, FileStructureDto.Type type, boolean signed, byte[] rawValue) {
         if (!type.isValueToBeStored()) {
             return;
         }
 
-        putEntry(fieldName, type, rawValue);
+        putEntry(fieldName, type, signed, rawValue);
     }
 
     /**
@@ -75,7 +103,7 @@ public class DataStore {
      * @param value     : value to store
      */
     public void addText(String fieldName, String value) {
-        addValue(fieldName, TEXT, TypeHelper.textToRaw(value));
+        addValue(fieldName, TEXT, TypeHelper.textToRaw(value, value.length()));
     }
 
     /**
@@ -131,7 +159,7 @@ public class DataStore {
      */
     public void addRepeatedTextValue(String repeaterFieldName, String fieldName, long index, String value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        addValue(key, TEXT, TypeHelper.textToRaw(value));
+        addValue(key, TEXT, TypeHelper.textToRaw(value, value.length()));
     }
 
     /**
@@ -161,6 +189,23 @@ public class DataStore {
     }
 
     /**
+     * Integrates a sub data store (produced by {@link #getRepeatedValues} method to current store, under a repater field, at a given index.
+     *
+     * @param repeaterFieldName : identifier of repeater field
+     * @param index             : rank in repeater
+     * @param subStore          : sub data store to merge into existing one
+     */
+    public void mergeRepeatedValues(String repeaterFieldName, int index, DataStore subStore) {
+        requireNonNull(subStore, "A sub data store is required.").getStore().entrySet().stream()
+
+                .forEach((entry) -> {
+                    String newKey = generateKeyForRepeatedField(repeaterFieldName, entry.getKey(), index);
+                    Entry currentStoreEntry = entry.getValue();
+                    this.putEntry(newKey, currentStoreEntry.getType(), currentStoreEntry.isSigned(), currentStoreEntry.getRawValue());
+                });
+    }
+
+    /**
      * @return entry count in store.
      */
     public int size() {
@@ -180,7 +225,7 @@ public class DataStore {
             return Optional.empty();
         }
 
-        return Optional.ofNullable(entry.rawValue);
+        return Optional.ofNullable(entry.getRawValue());
     }
 
     /**
@@ -197,8 +242,9 @@ public class DataStore {
         Entry entry = this.store.get(fieldName);
         assert (entry.getType() == FileStructureDto.Type.TEXT);
 
+        byte[] rawValue = entry.getRawValue();
         return Optional.of(
-                rawToText(entry.rawValue));
+                rawToText(rawValue, rawValue.length));
     }
 
     /**
@@ -216,7 +262,7 @@ public class DataStore {
         assert (entry.getType() == FileStructureDto.Type.INTEGER);
 
         return Optional.of(
-                rawToInteger(entry.rawValue));
+                rawToInteger(entry.getRawValue(), entry.isSigned()));
     }
 
     /**
@@ -234,7 +280,7 @@ public class DataStore {
         assert (entry.getType() == FileStructureDto.Type.FPOINT);
 
         return Optional.of(
-                rawToFloatingPoint(entry.rawValue));
+                rawToFloatingPoint(entry.getRawValue()));
     }
 
     /**
@@ -252,9 +298,9 @@ public class DataStore {
                     return matcher.matches() && matcher.group(1).equals(fieldName);
                 })
 
-                .map(key -> this.store.get(key).rawValue)
+                .map(this.store::get)
 
-                .map(TypeHelper::rawToInteger)
+                .map((storeEntry) -> TypeHelper.rawToInteger(storeEntry.getRawValue(), storeEntry.isSigned()))
 
                 .collect(Collectors.toList());
     }
@@ -273,7 +319,7 @@ public class DataStore {
                     return matcher.matches() && matcher.group(1).equals(fieldName);
                 })
 
-                .map(key -> this.store.get(key).rawValue)
+                .map(key -> this.store.get(key).getRawValue())
 
                 .map(TypeHelper::rawToFloatingPoint)
 
@@ -337,6 +383,15 @@ public class DataStore {
     }
 
     /**
+     * @return a full copy of data store instance.
+     */
+    public DataStore copy() {
+        DataStore clone = new DataStore(this.fileStructure);
+        clone.getStore().putAll(copyAllEntries(this.store));
+        return clone;
+    }
+
+    /**
      * Returns key prefix for repeated (under repeater) field.
      *
      * @param repeaterFieldName : name of parent, repeater field
@@ -351,6 +406,7 @@ public class DataStore {
 
         FileStructureDto.Type type = FileStructureDto.Type.GAP;
         byte[] rawValue = new byte[0];
+        boolean signed = false;
 
         if (jsonNode instanceof ObjectNode) {
 
@@ -365,26 +421,36 @@ public class DataStore {
             type = FileStructureDto.Type.FPOINT;
             rawValue = TypeHelper.floatingPoint32ToRaw(((Double) jsonNode.getDoubleValue()).floatValue());
 
-        } else if (jsonNode instanceof IntNode) {
+        } else {
+            FileStructureDto.Field fieldDefinition = StructureHelper.getFieldDefinitionFromFullName(parentKey, this.fileStructure).get();
 
-            type = FileStructureDto.Type.INTEGER;
-            rawValue = TypeHelper.integerToRaw(jsonNode.getIntValue());
+            if (jsonNode instanceof IntNode || jsonNode instanceof LongNode) {
 
-        } else if (jsonNode instanceof TextNode) {
+                type = FileStructureDto.Type.INTEGER;
+                rawValue = TypeHelper.integerToRaw(jsonNode.getLongValue());
+                signed = fieldDefinition.isSigned();
 
-            String stringValue = jsonNode.getTextValue();
-            try {
-                type = FileStructureDto.Type.UNKNOWN;
-                rawValue = TypeHelper.hexRepresentationToByteArray(stringValue);
-            } catch (IllegalArgumentException e) {
-                type = FileStructureDto.Type.TEXT;
-                rawValue = TypeHelper.textToRaw(stringValue);
+            } else if (jsonNode instanceof TextNode) {
+
+                String stringValue = jsonNode.getTextValue();
+                try {
+                    type = FileStructureDto.Type.UNKNOWN;
+                    rawValue = TypeHelper.hexRepresentationToByteArray(stringValue);
+                } catch (IllegalArgumentException e) {
+                    type = FileStructureDto.Type.TEXT;
+                    int length = computeValueLength(fieldDefinition.getSizeFormula(), Optional.ofNullable(parentKey));
+                    rawValue = TypeHelper.textToRaw(stringValue, length);
+                }
             }
         }
 
         if (type.isValueToBeStored()) {
-            putEntry(parentKey, type, rawValue);
+            putEntry(parentKey, type, signed, rawValue);
         }
+    }
+
+    private int computeValueLength(String sizeFormula, Optional<String> potentialParentKey) {
+        return FormulaHelper.resolveToInteger(sizeFormula, potentialParentKey, this);
     }
 
     private void readJsonArrayNode(JsonNode jsonNode, String parentKey) {
@@ -445,22 +511,29 @@ public class DataStore {
         }
     }
 
-    private static void readRegularField(FileStructureDto.Field currentField, ObjectNode currentObjectNode, Entry storeEntry) {
+    private void putEntry(String key, FileStructureDto.Type type, boolean signed, byte[] rawValue) {
+        Entry entry = new Entry(type, signed, rawValue);
+        this.getStore().put(key, entry);
+    }
+
+    private void readRegularField(FileStructureDto.Field currentField, ObjectNode currentObjectNode, Entry storeEntry) {
         FileStructureDto.Type fieldType = currentField.getType();
         String fieldName = currentField.getName();
+        byte[] rawValue = storeEntry.getRawValue();
 
         switch (fieldType) {
             case TEXT:
-                currentObjectNode.put(fieldName, rawToText(storeEntry.rawValue));
+                int length = computeValueLength(currentField.getSizeFormula(), Optional.<String>empty());
+                currentObjectNode.put(fieldName, rawToText(rawValue, length));
                 break;
             case FPOINT:
-                currentObjectNode.put(fieldName, rawToFloatingPoint(storeEntry.getRawValue()));
+                currentObjectNode.put(fieldName, rawToFloatingPoint(rawValue));
                 break;
             case INTEGER:
-                currentObjectNode.put(fieldName, rawToInteger(storeEntry.rawValue));
+                currentObjectNode.put(fieldName, rawToInteger(rawValue, storeEntry.isSigned()));
                 break;
             default:
-                currentObjectNode.put(fieldName, byteArrayToHexRepresentation(storeEntry.rawValue));
+                currentObjectNode.put(fieldName, byteArrayToHexRepresentation(rawValue));
                 break;
         }
     }
@@ -480,9 +553,13 @@ public class DataStore {
         return list;
     }
 
-    private void putEntry(String key, FileStructureDto.Type type, byte[] rawValue) {
-        Entry entry = new Entry(key, type, rawValue);
-        this.getStore().put(key, entry);
+    private static Map<String, Entry> copyAllEntries(Map<String, Entry> store) {
+
+        Map<String, Entry> storeCopy = new HashMap<>();
+
+        store.forEach( (key, entry) -> storeCopy.put(key, entry.copy()));
+
+        return storeCopy;
     }
 
     Map<String, Entry> getStore() {
@@ -491,47 +568,5 @@ public class DataStore {
 
     public FileStructureDto getFileStructure() {
         return fileStructure;
-    }
-
-    /**
-     * Represents a store entry to bring more information.
-     */
-    static class Entry {
-        private final String key;
-        private final FileStructureDto.Type type;
-        private final byte[] rawValue;
-
-        Entry(String key, FileStructureDto.Type type, byte[] rawValue) {
-            this.key = key;
-            this.type = type;
-            this.rawValue = rawValue;
-        }
-
-        byte[] getRawValue() {
-            return rawValue;
-        }
-
-        FileStructureDto.Type getType() {
-            return type;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return reflectionEquals(this, o);
-        }
-
-        @Override
-        public int hashCode() {
-            return reflectionHashCode(this);
-        }
-
-        @Override
-        public String toString() {
-            return reflectionToString(this);
-        }
     }
 }

@@ -1,26 +1,23 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
+import fr.tduf.libunlimited.high.files.banks.mapping.helper.MagicMapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapParser;
-import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapWriter;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static fr.tduf.cli.tools.MappingTool.Command.*;
+import static fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper.MAPPING_FILE_NAME;
 import static java.lang.Long.compare;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -45,7 +42,8 @@ public class MappingTool extends GenericTool {
         INFO("info", "Provides general information about Bnk1.map file."),
         LIST("list", "Displays all entries in Bnk1.map file."),
         LIST_MISSING("list-missing", "Displays all files in Bnk directory which have no entry in Bnk1.map file."),
-        FIX_MISSING("fix-missing", "Adds to Bnk1.map file all missing entries.");
+        FIX_MISSING("fix-missing", "Adds to Bnk1.map file all missing entries."),
+        MAGIFY("magify", "Makes a Magic Map (=sets all entry sizes to 0.");
 
         final String label;
         final String description;
@@ -82,18 +80,22 @@ public class MappingTool extends GenericTool {
     protected boolean commandDispatch() throws IOException {
         switch(command) {
             case INFO:
-                info();
+                commandResult = info(mapFile);
                 break;
             case LIST:
-                list();
+                commandResult = list(mapFile);
                 break;
             case LIST_MISSING:
-                listMissing();
+                commandResult = listMissing(bankDirectory, mapFile);
                 break;
             case FIX_MISSING:
-                fixMissing();
+                commandResult = fixMissing(bankDirectory, mapFile);
+                break;
+            case MAGIFY:
+                commandResult = magify(mapFile);
                 break;
             default:
+                commandResult = null;
                 return false;
         }
         return true;
@@ -101,7 +103,7 @@ public class MappingTool extends GenericTool {
 
     @Override
     protected void assignCommand(String commandArgument) {
-        this.command = (Command) CommandHelper.fromLabel(getCommand(), commandArgument);
+        command = (Command) CommandHelper.fromLabel(getCommand(), commandArgument);
     }
 
     @Override
@@ -113,7 +115,7 @@ public class MappingTool extends GenericTool {
 
         // Map file: defaulted to current directory\Bnk1.map
         if (mapFile == null) {
-            mapFile = new File(bankDirectory,"Bnk1.map").getAbsolutePath();
+            mapFile = new File(bankDirectory, MAPPING_FILE_NAME).getAbsolutePath();
         }
     }
 
@@ -126,81 +128,83 @@ public class MappingTool extends GenericTool {
     protected List<String> getExamples() {
         return asList(
                 INFO.label + " --bnkDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\"",
-                LIST.label + " --bnkDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\" --mapFile \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\"Bnk1.map",
+                LIST.label + " --bnkDir \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\" --mapFile \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Bnk1.map\"",
                 LIST_MISSING.label + " -b \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\"",
-                FIX_MISSING.label + " -b \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\" -m \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\"Bnk1.map\""
+                FIX_MISSING.label + " -b \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\" -m \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Bnk1.map\"",
+                MAGIFY.label + "-m \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Bnk1.map\""
         );
     }
 
-    private void info() throws IOException {
+    private Map<String, ?> info(String sourceMapFile) throws IOException {
 
-        System.out.println("- BNK root folder: " + this.bankDirectory);
-
-        BankMap map = loadBankMap();
+        BankMap map = loadBankMap(sourceMapFile);
         Collection<BankMap.Entry> mapEntries = map.getEntries();
+        boolean isMagicMap = map.isMagic();
 
-        System.out.println("- Bnk1.map parsing done: " + this.mapFile);
-        System.out.println("  -> Entry count: " + mapEntries.size());
+        outLine("- Bnk1.map parsing done: " + sourceMapFile);
+        outLine("  -> Entry count: " + mapEntries.size());
+        outLine("  -> Magic map? " + isMagicMap);
+
+        Map<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("entryCount", mapEntries.size());
+        resultInfo.put("magicMap", isMagicMap);
+
+        return resultInfo;
     }
 
-    private void list() throws IOException {
+    private Map<String, Object> list(String sourceMapFile) throws IOException {
 
-        BankMap map = loadBankMap();
+        BankMap map = loadBankMap(sourceMapFile);
         Collection<BankMap.Entry> sortedMapEntries = map.getEntries().stream()
 
                 .sorted((entry1, entry2) -> compare(entry1.getHash(), entry2.getHash()))
 
                 .collect(toList());
 
-        System.out.println("Bnk1.map parsing done: " + this.mapFile);
-        System.out.println("  -> All entries :" + sortedMapEntries);
+        outLine("Bnk1.map parsing done: " + sourceMapFile);
+        outLine("  -> All entries :" + sortedMapEntries);
+
+        Map<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("allEntries", sortedMapEntries);
+
+        return resultInfo;
     }
 
-    private void listMissing() throws IOException {
+    private Map<String, Object> listMissing(String sourceBankDirectory, String sourceMapFile) throws IOException {
 
-        List<String> banks = MapHelper.parseBanks(this.bankDirectory);
+        List<String> banks = MapHelper.parseBanks(sourceBankDirectory);
         Map<Long, String> checksums = MapHelper.computeChecksums(banks);
 
-        System.out.println("- Bank parsing done: " + this.bankDirectory);
-        System.out.println("  -> File count: " + banks.size());
-        System.out.println("  -> Files: " + banks);
-        System.out.println("  -> Checksums: " + checksums);
+        outLine("- Bank parsing done: " + sourceBankDirectory);
+        outLine("  -> File count: " + banks.size());
+        outLine("  -> Files: " + banks);
+        outLine("  -> Checksums: " + checksums);
 
-        BankMap map = loadBankMap();
-        Map<Long, String> newChecksums = MapHelper.findNewChecksums(map, checksums);
+        Map<Long, String> newChecksums = MapHelper.findNewChecksums(loadBankMap(sourceMapFile), checksums);
 
-        System.out.println("  -> Absent from Bnk1.map: " + newChecksums);
+        outLine("  -> Absent from Bnk1.map: " + newChecksums);
+
+        Map<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("bankFilesFound", banks);
+        resultInfo.put("checksums", checksums);
+        resultInfo.put("missingChecksums", newChecksums);
+
+        return resultInfo;
     }
 
-    private void fixMissing() throws IOException {
+    private Map<String, ?> fixMissing(String sourceBankDirectory, String sourceMapFile) throws IOException {
+        MagicMapHelper.fixMagicMap(sourceMapFile, sourceBankDirectory);
 
-        List<String> banks = MapHelper.parseBanks(this.bankDirectory);
-        Map<Long, String> checksums = MapHelper.computeChecksums(banks);
-        BankMap map = loadBankMap();
-
-        MapHelper.findNewChecksums(map, checksums)
-
-                .keySet()
-
-                .forEach(map::addMagicEntry);
-
-        saveBankMap(map);
-
-        System.out.println("Bnk1.map fixing done: " + this.mapFile);
+        return null;
     }
 
-    private BankMap loadBankMap() throws IOException {
-        Path mapFilePath = Paths.get(this.mapFile);
+    private Map<String, ?> magify(String sourceMapFile) throws IOException {
+        MagicMapHelper.toMagicMap(sourceMapFile);
 
-        byte[] mapContents = Files.readAllBytes(mapFilePath);
-        ByteArrayInputStream mapInputStream = new ByteArrayInputStream(mapContents);
-        return MapParser.load(mapInputStream).parse();
+        return null;
     }
 
-    private void saveBankMap(BankMap map) throws IOException {
-        Path mapFilePath = Paths.get(this.mapFile);
-
-        ByteArrayOutputStream outputStream = MapWriter.load(map).write();
-        Files.write(mapFilePath, outputStream.toByteArray());
+    private BankMap loadBankMap(String sourceMapFile) throws IOException {
+        return MapParser.load(sourceMapFile).parse();
     }
 }

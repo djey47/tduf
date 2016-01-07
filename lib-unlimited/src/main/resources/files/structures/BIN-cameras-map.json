@@ -33,7 +33,7 @@
           "size": 4
         },
         {
-          "name": "gap1",
+          "name": "indexEntryGap",
           "type": "GAP",
           "size": 4
         }
@@ -42,21 +42,26 @@
     {
       "name": "zeroZone",
       "type": "GAP",
-      "size": "=197*12"
+      "size": "=2268+((?indexSize?-144)*16)"
     },
     {
       "name": "views",
       "type": "REPEATER",
       "subFields": [
         {
-          "name": "gap2",
+          "name": "viewEntryGap",
           "type": "GAP",
           "size": 4
         },
         {
           "name": "properties",
           "type": "UNKNOWN",
-          "size": 180
+          "size": 164
+        },
+        {
+          "name": "label",
+          "type": "TEXT",
+          "size": 16
         },
         {
           "name": "tag",
@@ -106,6 +111,7 @@
         {
           "name": "cameraPositionX",
           "type": "INTEGER",
+          "signed": true,
           "size": 1
         },
         {
@@ -116,6 +122,7 @@
         {
           "name": "cameraPositionY",
           "type": "INTEGER",
+          "signed": true,
           "size": 1
         },
         {
@@ -126,6 +133,7 @@
         {
           "name": "cameraPositionZ",
           "type": "INTEGER",
+          "signed": true,
           "size": 1
         },
         {
@@ -136,6 +144,7 @@
         {
           "name": "viewPositionX",
           "type": "INTEGER",
+          "signed": true,
           "size": 1
         },
         {
@@ -146,6 +155,7 @@
         {
           "name": "viewPositionY",
           "type": "INTEGER",
+          "signed": true,
           "size": 1
         },
         {
@@ -156,6 +166,7 @@
         {
           "name": "viewPositionZ",
           "type": "INTEGER",
+          "signed": true,
           "size": 1
         },
         {

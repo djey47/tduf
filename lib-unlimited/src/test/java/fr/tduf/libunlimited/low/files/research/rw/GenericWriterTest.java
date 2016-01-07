@@ -1,20 +1,17 @@
 package fr.tduf.libunlimited.low.files.research.rw;
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 
 import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.UNKNOWN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericWriterTest {
-    private static final Class<GenericWriterTest> thisClass = GenericWriterTest.class;
 
     private static final String DATA = "data";
 
@@ -52,10 +49,9 @@ public class GenericWriterTest {
         assertThat(actualOutputStream).isNotNull();
 
         byte[] actualBytes = actualOutputStream.toByteArray();
-        assertThat(actualBytes).hasSize(45);
+        assertThat(actualBytes).hasSize(47);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
@@ -73,10 +69,9 @@ public class GenericWriterTest {
         assertThat(actualOutputStream).isNotNull();
 
         byte[] actualBytes = actualOutputStream.toByteArray();
-        assertThat(actualBytes).hasSize(45);
+        assertThat(actualBytes).hasSize(47);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-modifiedTextLength.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-modifiedTextLength.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
@@ -96,8 +91,7 @@ public class GenericWriterTest {
         byte[] actualBytes = actualOutputStream.toByteArray();
         assertThat(actualBytes).hasSize(48);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-encrypted.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-encrypted.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
@@ -115,8 +109,7 @@ public class GenericWriterTest {
         byte[] actualBytes = actualOutputStream.toByteArray();
         assertThat(actualBytes).hasSize(6);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-halfFloat.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-halfFloat.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
@@ -134,8 +127,27 @@ public class GenericWriterTest {
         byte[] actualBytes = actualOutputStream.toByteArray();
         assertThat(actualBytes).hasSize(3);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-veryShortInt.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-veryShortInt.bin");
+        assertThat(actualBytes).isEqualTo(expectedBytes);
+    }
+
+    @Test
+    public void write_whenProvidedFiles_andUnsignedLongValue_shouldReturnBytes() throws IOException, URISyntaxException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterUnsignedLong();
+
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = actualWriter.write();
+
+
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(8);
+
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-unsignedLong.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
@@ -155,8 +167,7 @@ public class GenericWriterTest {
         byte[] actualBytes = actualOutputStream.toByteArray();
         assertThat(actualBytes).hasSize(51);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-auto.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-auto.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
@@ -174,10 +185,9 @@ public class GenericWriterTest {
         assertThat(actualOutputStream).isNotNull();
 
         byte[] actualBytes = actualOutputStream.toByteArray();
-        assertThat(actualBytes).hasSize(45);
+        assertThat(actualBytes).hasSize(47);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-littleEndian.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-littleEndian.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
@@ -197,8 +207,7 @@ public class GenericWriterTest {
         byte[] actualBytes = actualOutputStream.toByteArray();
         assertThat(actualBytes).hasSize(26);
 
-        URI referenceFileURI = thisClass.getResource("/files/samples/TEST-formulas.bin").toURI();
-        byte[] expectedBytes = Files.readAllBytes(Paths.get(referenceFileURI));
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-formulas.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
@@ -237,7 +246,7 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
             }
         };
@@ -268,7 +277,7 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
             }
         };
@@ -298,7 +307,7 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-encrypted-map.json";
             }
         };
@@ -319,7 +328,7 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-halfFloat-map.json";
             }
         };
@@ -340,8 +349,23 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-veryShortInt-map.json";
+            }
+        };
+    }
+
+    private GenericWriter<String> createGenericWriterUnsignedLong() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {
+                getDataStore().addInteger("my_int_field", 1000);
+                getDataStore().addInteger("my_long_field", 4125000000L);
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-unsignedLong-map.json";
             }
         };
     }
@@ -373,7 +397,7 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-auto-map.json";
             }
         };
@@ -385,7 +409,7 @@ public class GenericWriterTest {
             protected void fillStore() {}
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "./src/test/resources/files/structures/TEST-map.json";
             }
         };
@@ -415,7 +439,7 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-littleEndian-map.json";
             }
         };
@@ -440,13 +464,11 @@ public class GenericWriterTest {
             }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-formulas-map.json";
             }
         };
     }
-
-
 
     private GenericWriter<String> createGenericWriterWithMissingValues() throws IOException {
         return new GenericWriter<String>(DATA) {
@@ -454,7 +476,7 @@ public class GenericWriterTest {
             protected void fillStore() {}
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
             }
         };

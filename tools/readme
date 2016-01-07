@@ -1,0 +1,1 @@
+All external tools should be located in this directory to be tagged during release / embedded during packaging.

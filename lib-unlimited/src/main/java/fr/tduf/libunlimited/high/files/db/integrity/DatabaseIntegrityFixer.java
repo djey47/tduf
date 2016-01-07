@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
-import fr.tduf.libunlimited.high.files.db.helper.DatabaseHelper;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
+import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum;
@@ -10,54 +11,39 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.*;
+import java.util.stream.Stream;
 
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 
 /**
  * Class providing method to repair Database.
  */
-public class DatabaseIntegrityFixer {
+public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
     private static final String RESOURCE_VALUE_DEFAULT = "-FIXED BY TDUF-";
-    private static final String BITFIELD_VALUE_DEFAULT = "00000000";
 
-    private final List<DbDto> dbDtos;
-    private final List<IntegrityError> integrityErrors;
-    private final BulkDatabaseMiner bulkDatabaseMiner;
+    private Set<IntegrityError> integrityErrors;
 
     // Following errors are auto-handled: CONTENT_ITEMS_COUNT_MISMATCH, STRUCTURE_FIELDS_COUNT_MISMATCH
-    private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH, RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND, CONTENTS_FIELDS_COUNT_MISMATCH));
+    private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH, RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND, CONTENTS_FIELDS_COUNT_MISMATCH, RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES));
     private static final Set<IntegrityError.ErrorTypeEnum> UNFIXABLE_ERRORS = new HashSet<>(asList(CONTENTS_NOT_FOUND, CONTENTS_ENCRYPTION_NOT_SUPPORTED));
 
-    private DatabaseIntegrityFixer(List<DbDto> dbDtos, List<IntegrityError> integrityErrors) {
-        this.dbDtos = dbDtos;
-        this.integrityErrors = integrityErrors;
-        this.bulkDatabaseMiner = BulkDatabaseMiner.load(dbDtos);
-    }
-
-    /**
-     * Single entry point for this fixer.
-     * @param dbDtos            : per topic, database objects
-     * @param integrityErrors   : errors returned by checker module
-     * @return a {@link DatabaseIntegrityChecker} instance.
-     */
-    public static DatabaseIntegrityFixer load(List<DbDto> dbDtos, List<IntegrityError> integrityErrors) {
-        checkRequirements(dbDtos, integrityErrors);
-
-        return new DatabaseIntegrityFixer(dbDtos, integrityErrors);
-    }
+    private DatabaseGenHelper genHelper;
 
     /**
      * Process fixing over all loaded database objects.
+     * @param integrityErrors : integrity errors to fix.
      * @return list of remaining integrity errors.
      */
-    public List<IntegrityError> fixAllContentsObjects() {
-        List<IntegrityError> remainingIntegrityErrors = new ArrayList<>();
+    public Set<IntegrityError> fixAllContentsObjects(Set<IntegrityError> integrityErrors) {
+
+        this.integrityErrors = requireNonNull(integrityErrors, "A list of integrity errors is required.");
+
+        Set<IntegrityError> remainingIntegrityErrors = new LinkedHashSet<>();
 
         if(this.integrityErrors.isEmpty()) {
             return remainingIntegrityErrors;
@@ -70,7 +56,12 @@ public class DatabaseIntegrityFixer {
         return remainingIntegrityErrors;
     }
 
-    private void handleUnfixableErrors(List<IntegrityError> remainingIntegrityErrors) {
+    @Override
+    protected void postPrepare() {
+        genHelper = new DatabaseGenHelper(databaseMiner);
+    }
+
+    private void handleUnfixableErrors(Set<IntegrityError> remainingIntegrityErrors) {
         remainingIntegrityErrors.addAll(
                 this.integrityErrors.stream()
 
@@ -79,7 +70,7 @@ public class DatabaseIntegrityFixer {
                         .collect(toList()));
     }
 
-    private void handleFixableErrors(List<IntegrityError> remainingIntegrityErrors) {
+    private void handleFixableErrors(Set<IntegrityError> remainingIntegrityErrors) {
         remainingIntegrityErrors.addAll(
                 this.integrityErrors.stream()
 
@@ -101,12 +92,13 @@ public class DatabaseIntegrityFixer {
 
         try {
             Map<ErrorInfoEnum, Object> information = integrityError.getInformation();
-            DbDto.Topic sourceTopic = (DbDto.Topic) information.get(ErrorInfoEnum.SOURCE_TOPIC);
-            DbDto.Topic remoteTopic = (DbDto.Topic) information.get(ErrorInfoEnum.REMOTE_TOPIC);
-            String reference = (String) information.get(ErrorInfoEnum.REFERENCE);
-            Long entryIdentifier = (Long) information.get(ErrorInfoEnum.ENTRY_ID);
+            DbDto.Topic sourceTopic = (DbDto.Topic) information.get(SOURCE_TOPIC);
+            DbDto.Topic remoteTopic = (DbDto.Topic) information.get(REMOTE_TOPIC);
+            String reference = (String) information.get(REFERENCE);
+            Long entryIdentifier = (Long) information.get(ENTRY_ID);
             DbResourceDto.Locale locale = (DbResourceDto.Locale) information.get(ErrorInfoEnum.LOCALE);
-            Map<DbResourceDto.Locale, Integer> perLocaleCount = (Map<DbResourceDto.Locale, Integer>) information.get(ErrorInfoEnum.PER_LOCALE_COUNT);
+            Map<DbResourceDto.Locale, Integer> perLocaleCount = (Map<DbResourceDto.Locale, Integer>) information.get(PER_LOCALE_COUNT);
+            Map<String, Integer> perValueCount = (Map<String, Integer>) information.get(PER_VALUE_COUNT);
 
             switch(integrityError.getErrorTypeEnum()) {
                 case RESOURCE_REFERENCE_NOT_FOUND:
@@ -124,9 +116,14 @@ public class DatabaseIntegrityFixer {
                 case RESOURCE_ITEMS_COUNT_MISMATCH:
                     addAllMissingResourceEntries(perLocaleCount, sourceTopic);
                     break;
+                case RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES:
+                    fixAllResourceEntryValues(reference, perValueCount, sourceTopic);
+                    break;
                 default:
                     throw new IllegalArgumentException("Kind of integrity error not handled yet: " + integrityError.getErrorTypeEnum());
             }
+
+            BulkDatabaseMiner.clearAllCaches();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -147,9 +144,9 @@ public class DatabaseIntegrityFixer {
 
         int referenceResourceCount = perLocaleCount.get(referenceLocale);
 
-        List<DbResourceDto> topicResourceObjects = bulkDatabaseMiner.getAllResourcesFromTopic(topic).get();
+        List<DbResourceDto> topicResourceObjects = databaseMiner.getAllResourcesFromTopic(topic).get();
 
-        DbResourceDto referenceResourceObject = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale).get();
+        DbResourceDto referenceResourceObject = databaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale).get();
 
         topicResourceObjects.stream()
 
@@ -166,18 +163,18 @@ public class DatabaseIntegrityFixer {
         }
 
         DbResourceDto.Locale referenceLocale = pickAvailableLocaleOrElseWhatever(DbResourceDto.Locale.UNITED_STATES, validResourceLocales);
-        DbResourceDto referenceResourceObject = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale).get();
+        DbResourceDto referenceResourceObject = databaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale).get();
 
-        bulkDatabaseMiner.getDatabaseTopic(topic).getResources().add(DbResourceDto.builder()
+        databaseMiner.getDatabaseTopic(topic).get().getResources().add(DbResourceDto.builder()
                 .fromExistingResource(referenceResourceObject)
                 .withLocale(missingLocale)
                 .build());
     }
 
     private void addMissingContentsFields(long entryInternalIdentifier, DbDto.Topic topic) {
-        DbDto topicObject = bulkDatabaseMiner.getDatabaseTopic(topic);
+        DbDto topicObject = databaseMiner.getDatabaseTopic(topic).get();
 
-        DbDataDto.Entry invalidEntry = bulkDatabaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryInternalIdentifier, topic);
+        DbDataDto.Entry invalidEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryInternalIdentifier, topic).get();
 
         // Structure is the reference
         topicObject.getStructure().getFields().stream()
@@ -191,6 +188,28 @@ public class DatabaseIntegrityFixer {
                         .count() == 0)
 
                 .forEach((missingField) -> addContentItem(missingField, invalidEntry, topicObject));
+    }
+
+    private void fixAllResourceEntryValues(String resourceReference, Map<String, Integer> perValueCount, DbDto.Topic topic) {
+
+        String mostFrequentValue = perValueCount.entrySet().stream()
+
+                .max(Comparator.comparing(Map.Entry::getValue))
+
+                .get().getKey();
+
+        databaseMiner.getAllResourcesFromTopic(topic).get().stream()
+
+                .map(DbResourceDto::getLocale)
+
+                .forEach((locale) -> databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, topic, locale)
+
+                        .ifPresent((resourceEntry) -> {
+                            if (!mostFrequentValue.equals(resourceEntry.getValue())) {
+                                resourceEntry.setValue(mostFrequentValue);
+                            }
+                        })
+                );
     }
 
     private static void addMissingResourceEntries(DbResourceDto corruptedResourceObject, DbResourceDto referenceResourceObject) {
@@ -215,17 +234,9 @@ public class DatabaseIntegrityFixer {
     }
 
     private void addContentItem(DbStructureDto.Field missingField, DbDataDto.Entry invalidEntry, DbDto topicObject) {
-
         int newFieldRank = missingField.getRank();
-        List<DbDataDto.Item> items = invalidEntry.getItems();
-
-        DbDataDto.Item newItem = buildDefaultContentItem(Optional.empty(), missingField, topicObject);
-        items.add(newFieldRank - 1, newItem);
-
-        // Rank update
-        for (int i = newFieldRank ; i < items.size() ; i++) {
-            items.get(i).shiftFieldRankRight();
-        }
+        DbDataDto.Item newItem = genHelper.buildDefaultContentItem(Optional.empty(), missingField, topicObject, true);
+        invalidEntry.addItemAtRank(newFieldRank, newItem);
     }
 
     private void addResourceEntryFromValidLocale(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
@@ -235,7 +246,7 @@ public class DatabaseIntegrityFixer {
         if ( !validResourceLocales.isEmpty()) {
 
             DbResourceDto.Locale referenceLocale = pickAvailableLocaleOrElseWhatever(DbResourceDto.Locale.UNITED_STATES, validResourceLocales);
-            Optional<DbResourceDto.Entry> referenceEntry = bulkDatabaseMiner.getResourceEntryFromTopicAndLocaleWithReference(reference, topic, referenceLocale);
+            Optional<DbResourceDto.Entry> referenceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(reference, topic, referenceLocale);
 
             if (referenceEntry.isPresent()){
                 resourceValue = referenceEntry.get().getValue();
@@ -247,89 +258,26 @@ public class DatabaseIntegrityFixer {
                 .withValue(resourceValue)
                 .build();
 
-        DbResourceDto resourceDto = bulkDatabaseMiner.getResourceFromTopicAndLocale(topic, locale).get();
+        DbResourceDto resourceDto = databaseMiner.getResourceFromTopicAndLocale(topic, locale).get();
         resourceDto.getEntries().add(newEntry);
     }
 
     private void addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {
 
-        DbDto topicObject = bulkDatabaseMiner.getDatabaseTopic(topic);
+        DbDto topicObject = databaseMiner.getDatabaseTopic(topic).get();
 
         DbDataDto dataDto = topicObject.getData();
 
         DbDataDto.Entry newEntry = DbDataDto.Entry.builder()
                 .forId(dataDto.getEntries().size())
-                .addItems(buildDefaultContentItems(reference, topicObject))
+                .addItems(genHelper.buildDefaultContentItems(reference, topicObject))
                 .build();
 
-        dataDto.getEntries().add(newEntry);
-    }
-
-    private List<DbDataDto.Item> buildDefaultContentItems(Optional<String> reference, DbDto topicObject) {
-
-        return topicObject.getStructure().getFields().stream()
-
-                    .map((structureField) -> buildDefaultContentItem(reference, structureField, topicObject))
-
-                    .collect(toList());
-    }
-
-    private DbDataDto.Item buildDefaultContentItem(Optional<String> entryReference, DbStructureDto.Field field, DbDto topicObject) {
-        String rawValue;
-        DbDto remoteTopicObject = bulkDatabaseMiner.getDatabaseTopicFromReference(field.getTargetRef());
-
-        DbStructureDto.FieldType fieldType = field.getFieldType();
-        switch (fieldType) {
-            case UID:
-                if (entryReference.isPresent()) {
-                    rawValue = entryReference.get();
-                } else {
-                    rawValue = DatabaseHelper.generateUniqueContentsEntryIdentifier(topicObject);
-                }
-                break;
-            case BITFIELD:
-                rawValue = BITFIELD_VALUE_DEFAULT;
-                break;
-            case FLOAT:
-                rawValue = "0.0";
-                break;
-            case INTEGER:
-                rawValue = "0";
-                break;
-            case PERCENT:
-                rawValue = "1";
-                break;
-            case REFERENCE:
-                rawValue = DatabaseHelper.generateUniqueContentsEntryIdentifier(remoteTopicObject);
-                addContentsEntryWithDefaultItems(Optional.of(rawValue), remoteTopicObject.getStructure().getTopic());
-                break;
-            case RESOURCE_CURRENT:
-            case RESOURCE_CURRENT_AGAIN:
-                rawValue = DatabaseHelper.generateUniqueResourceEntryIdentifier(topicObject);
-                addDefaultResourceReferenceForAllLocales(rawValue, topicObject);
-                break;
-            case RESOURCE_REMOTE:
-                rawValue = DatabaseHelper.generateUniqueResourceEntryIdentifier(remoteTopicObject);
-                addDefaultResourceReferenceForAllLocales(rawValue, remoteTopicObject);
-                break;
-            default:
-                throw new IllegalArgumentException("Unhandled field type: " + fieldType);
-        }
-
-        return DbDataDto.Item.builder()
-                .fromStructureField(field)
-                .withRawValue(rawValue)
-                .build();
-    }
-
-    private void addDefaultResourceReferenceForAllLocales(String resourceReference, DbDto topicObject) {
-        asList(DbResourceDto.Locale.values()).stream()
-
-                .forEach((locale) -> addResourceEntryFromValidLocale(resourceReference, topicObject.getStructure().getTopic(), locale));
+        dataDto.addEntry(newEntry);
     }
 
     private Set<DbResourceDto.Locale> findValidResourceLocales() {
-        return asList(DbResourceDto.Locale.values()).stream()
+        return Stream.of(DbResourceDto.Locale.values())
 
                 .filter((locale) -> !this.integrityErrors.stream()
 
@@ -353,16 +301,11 @@ public class DatabaseIntegrityFixer {
         return  validResourceLocales.stream().findFirst().get();
     }
 
-    private static void checkRequirements(List<DbDto> dbDtos, List<IntegrityError> integrityErrors) {
-        requireNonNull(dbDtos, "Database objects to be fixed are required.");
-        requireNonNull(integrityErrors, "List of integrity errors is required.");
-    }
-
-    public List<DbDto> getDbDtos() {
-        return dbDtos;
-    }
-
-    List<IntegrityError> getIntegrityErrors() {
+    Set<IntegrityError> getIntegrityErrors() {
         return integrityErrors;
+    }
+
+    void setGenHelper(DatabaseGenHelper genHelper) {
+        this.genHelper = genHelper;
     }
 }

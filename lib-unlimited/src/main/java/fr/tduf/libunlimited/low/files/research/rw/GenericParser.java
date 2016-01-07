@@ -12,17 +12,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.*;
 import static java.util.Objects.requireNonNull;
 
 /**
  * Helper to read files whose file structure is available as separate asset.
  * Make it possible to extract values from them.
  */
-public abstract class GenericParser<T> {
+public abstract class GenericParser<T> implements StructureBasedProcessor {
 
-    private static final String DUMP_START_ENTRY_FORMAT = "%s\t<%s: %d bytes>\t%s\t%s\n";
+    private static final String DUMP_START_ENTRY_FORMAT = "%s\t<%s%s: %d bytes>\t%s\t%s\n";
     private static final String DUMP_REPEATER_START_ENTRY_FORMAT = "%s\t<%s>\t>>\n";
     private static final String DUMP_REPEATER_FINISH_ENTRY_FORMAT = "<< %s\t<%s: %d items>\n";
+    private static final String DUMP_LABEL_SIGNED = "signed ";
+    private static final String DUMP_LABEL_UNSIGNED = "unsigned ";
 
     private final ByteArrayInputStream inputStream;
 
@@ -65,94 +68,55 @@ public abstract class GenericParser<T> {
      */
     protected abstract T generate();
 
-    /**
-     * Can be used: either resource in classpath, or file path.
-     * @return location of resource used to describe parsed file structure (mandatory).
-     */
-    protected abstract String getStructureResource();
-
     private void readFields(List<FileStructureDto.Field> fields, String repeaterKey) {
 
         for(FileStructureDto.Field field : fields) {
 
-            String name = field.getName();
-            String key = repeaterKey + name;
-            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), repeaterKey, this.dataStore);
+            String key = repeaterKey + field.getName();
+            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), Optional.of(repeaterKey), this.dataStore);
+            boolean signedValue = field.isSigned();
 
+            ReadResult readResult;
             FileStructureDto.Type type = field.getType();
-            byte[] readValueAsBytes = null;
-            long parsedCount;
-
             switch(type) {
 
                 case GAP:
-                    parsedCount = inputStream.skip(length);
+                    readResult = jumpGap(length);
 
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(new byte[length]), ""));
+                    dumpGap(length, key);
                     break;
 
                 case INTEGER:
-                    readValueAsBytes = new byte[8]; // Prepare long values
+                    readResult = readIntegerValue(length);
 
-                    if (this.getFileStructure().isLittleEndian()) {
-                        parsedCount = inputStream.read(readValueAsBytes, 0, length);
-                        readValueAsBytes = TypeHelper.changeEndianType(readValueAsBytes);
-                    } else {
-                        parsedCount = inputStream.read(readValueAsBytes, 8-length, length);
-                    }
-
-                    byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 8 - length, 8);
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(displayedBytes), TypeHelper.rawToInteger(readValueAsBytes)));
+                    dumpIntegerValue(readResult.readValueAsBytes, length, signedValue, key);
                     break;
 
                 case FPOINT:
-                    readValueAsBytes = new byte[length];
-                    parsedCount = inputStream.read(readValueAsBytes, 0, length);
+                    readResult = readFloatingPointValue(length);
 
-                    if (this.getFileStructure().isLittleEndian()) {
-                        readValueAsBytes = TypeHelper.changeEndianType(readValueAsBytes);
-                    }
-
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), TypeHelper.rawToFloatingPoint(readValueAsBytes)));
+                    dumpFloatingPointValue(readResult.readValueAsBytes, length, key);
                     break;
 
                 case DELIMITER:
                 case TEXT:
-                    readValueAsBytes = new byte[length];
-                    parsedCount = inputStream.read(readValueAsBytes, 0, length);
+                    readResult = readDelimiterOrTextValue(length);
 
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), "\"" + TypeHelper.rawToText(readValueAsBytes) + "\""));
-                    break;
-
-                case REPEATER:
-                    parsedCount = 0 ;
-
-                    List<FileStructureDto.Field> subFields = field.getSubFields();
-
-                    dumpBuilder.append(String.format(DUMP_REPEATER_START_ENTRY_FORMAT, key, type.name()));
-
-                    while (inputStream.available() > 0                        // auto
-                            && (length == null || parsedCount < length)) {    // specified
-
-                        String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(name, parsedCount);
-                        readFields(subFields, newRepeaterKeyPrefix);
-
-                        parsedCount++;
-                    }
-
-                    dumpBuilder.append(String.format(DUMP_REPEATER_FINISH_ENTRY_FORMAT, key, type.name(), parsedCount));
+                    dumpDelimiterOrTextValue(readResult.readValueAsBytes, length, key, type);
                     break;
 
                 case UNKNOWN:
-                    // Autosize handle
-                    if (length == null) {
-                        length = inputStream.available();
-                    }
+                    readResult = readRawValue(length);
 
-                    readValueAsBytes = new byte[length];
-                    parsedCount = inputStream.read(readValueAsBytes, 0, length);
+                    dumpRawValue(readResult.readValueAsBytes, length, key);
+                    break;
 
-                    dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, type.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), ""));
+                case REPEATER:
+                    dumpRepeater(key, Optional.<ReadResult>empty());
+
+                    readResult = readRepeatedValues(field, length);
+
+                    dumpRepeater(key, Optional.of(readResult));
                     break;
 
                 default:
@@ -160,9 +124,131 @@ public abstract class GenericParser<T> {
             }
 
             // Check
+            long parsedCount = readResult.parsedCount;
             assert (parsedCount == Optional.ofNullable(length).orElse((int)parsedCount));
 
-            this.dataStore.addValue(key, type, readValueAsBytes);
+            this.dataStore.addValue(key, type, signedValue, readResult.readValueAsBytes);
+        }
+    }
+
+    private ReadResult readRepeatedValues(FileStructureDto.Field repeaterField, Integer length) {
+        List<FileStructureDto.Field> subFields = repeaterField.getSubFields();
+
+        long parsedCount = 0;
+        while (inputStream.available() > 0                        // auto
+                && (length == null || parsedCount < length)) {    // specified
+
+            String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(repeaterField.getName(), parsedCount);
+            readFields(subFields, newRepeaterKeyPrefix);
+
+            parsedCount++;
+        }
+
+        return new ReadResult(parsedCount);
+    }
+
+    private ReadResult jumpGap(Integer length) {
+        long parsedCount = inputStream.skip(length);
+
+        return new ReadResult(parsedCount, new byte[length]);
+    }
+
+    private ReadResult readIntegerValue(Integer length) {
+        byte[] readValueAsBytes = new byte[8]; // Prepare long values
+        long parsedCount;
+
+        if (this.getFileStructure().isLittleEndian()) {
+            parsedCount = inputStream.read(readValueAsBytes, 0, length);
+            readValueAsBytes = TypeHelper.changeEndianType(readValueAsBytes);
+        } else {
+            parsedCount = inputStream.read(readValueAsBytes, 8-length, length);
+        }
+
+        return new ReadResult(parsedCount, readValueAsBytes);
+    }
+
+    private ReadResult readFloatingPointValue(Integer length) {
+        byte[] readValueAsBytes = new byte[length];
+        long parsedCount = inputStream.read(readValueAsBytes, 0, length);
+
+        if (this.getFileStructure().isLittleEndian()) {
+            readValueAsBytes = TypeHelper.changeEndianType(readValueAsBytes);
+        }
+
+        return new ReadResult(parsedCount, readValueAsBytes);
+    }
+
+    private ReadResult readDelimiterOrTextValue(Integer length) {
+        byte[] readValueAsBytes = new byte[length];
+        long parsedCount = inputStream.read(readValueAsBytes, 0, length);
+
+        return new ReadResult(parsedCount, readValueAsBytes);
+    }
+
+    private ReadResult readRawValue(Integer length) {
+        // Autosize handle
+        int actualSize = length == null ? inputStream.available() : length;
+        byte[] readValueAsBytes = new byte[actualSize];
+        long parsedCount = inputStream.read(readValueAsBytes, 0, actualSize);
+
+        return new ReadResult(parsedCount, readValueAsBytes);
+    }
+
+    private void dumpGap(Integer length, String key) {
+        dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
+                key,
+                "",
+                GAP.name(),
+                length,
+                TypeHelper.byteArrayToHexRepresentation(new byte[length]),
+                ""));
+    }
+
+    private void dumpIntegerValue(byte[] readValueAsBytes, Integer length, boolean signedValue, String key) {
+        byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 8 - length, 8);
+        dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
+                key,
+                signedValue ? DUMP_LABEL_SIGNED : DUMP_LABEL_UNSIGNED,
+                INTEGER.name(),
+                length,
+                TypeHelper.byteArrayToHexRepresentation(displayedBytes),
+                TypeHelper.rawToInteger(readValueAsBytes, signedValue)));
+    }
+
+    private void dumpFloatingPointValue(byte[] readValueAsBytes, Integer length,  String key) {
+        dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, "", FPOINT.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), TypeHelper.rawToFloatingPoint(readValueAsBytes)));
+    }
+
+    private void dumpDelimiterOrTextValue(byte[] readValueAsBytes, Integer length, String key, FileStructureDto.Type type) {
+        dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
+                key,
+                "",
+                type.name(),
+                length,
+                TypeHelper.byteArrayToHexRepresentation(readValueAsBytes),
+                "\"" + TypeHelper.rawToText(readValueAsBytes, length) + "\""));
+    }
+
+    private void dumpRawValue(byte[] readValueAsBytes, Integer length, String key) {
+        dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
+                key,
+                "",
+                UNKNOWN.name(),
+                length,
+                TypeHelper.byteArrayToHexRepresentation(readValueAsBytes),
+                ""));
+    }
+
+    private void dumpRepeater(String key, Optional<ReadResult> readResult) {
+        if (readResult.isPresent()) {
+            dumpBuilder.append(String.format(DUMP_REPEATER_FINISH_ENTRY_FORMAT,
+                    key,
+                    REPEATER.name(),
+                    readResult.get().parsedCount));
+        } else {
+            dumpBuilder.append(String.format(DUMP_REPEATER_START_ENTRY_FORMAT,
+                    key,
+                    REPEATER.name()));
         }
     }
 
@@ -176,5 +262,19 @@ public abstract class GenericParser<T> {
 
     ByteArrayInputStream getInputStream() {
         return inputStream;
+    }
+
+    private class ReadResult {
+        private final byte[] readValueAsBytes;
+        private final long parsedCount;
+
+        public ReadResult(long parsedCount, byte[] readValueAsBytes) {
+            this.readValueAsBytes = readValueAsBytes;
+            this.parsedCount = parsedCount;
+        }
+
+        public ReadResult(long parsedCount) {
+            this(parsedCount, new byte[0]);
+        }
     }
 }

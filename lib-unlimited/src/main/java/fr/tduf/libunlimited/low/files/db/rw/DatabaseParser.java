@@ -6,17 +6,14 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.fromCode;
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.BITFIELD;
 import static java.lang.Integer.valueOf;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
@@ -42,22 +39,23 @@ public class DatabaseParser {
     private static final String RES_ENTRY_PATTERN = "^\\{(.*(\\n?.*)*)\\} (\\d+)$";             //e.g {??} 53410835
 
     private final List<String> contentLines;
-    private final List<List<String>> resources;
+    private final Map<DbResourceDto.Locale, List<String>> resources;
 
     private final List<IntegrityError> integrityErrors = new ArrayList<>();
 
-    private DatabaseParser(List<String> contentlines, List<List<String>> resources) {
+    private DatabaseParser(List<String> contentlines, Map<DbResourceDto.Locale, List<String>> resources) {
         this.contentLines = contentlines;
         this.resources = resources;
     }
 
     /**
      * Single entry point for this parser.
+     *
      * @param contentLines contentLines from unencrypted database file
-     * @param resources list of contentLines from per-language resource files
+     * @param resources    list of contentLines from per-language resource files
      * @return a {@link DatabaseParser} instance.
      */
-    public static DatabaseParser load(List<String> contentLines, List<List<String>> resources) {
+    public static DatabaseParser load(List<String> contentLines, Map<DbResourceDto.Locale, List<String>> resources) {
         checkPrerequisites(contentLines, resources);
 
         return new DatabaseParser(contentLines, resources);
@@ -72,7 +70,7 @@ public class DatabaseParser {
         integrityErrors.clear();
 
         DbStructureDto structure = parseStructure();
-        List<DbResourceDto> resources = parseResources(structure.getTopic());
+        List<DbResourceDto> resources = parseAllResourcesFromTopic(structure.getTopic());
         DbDataDto data = parseContents(structure);
 
         return DbDto.builder()
@@ -82,73 +80,72 @@ public class DatabaseParser {
                 .build();
     }
 
-    private static void checkPrerequisites(List<String> contentLines, List<List<String>> resources) {
+    private static void checkPrerequisites(List<String> contentLines, Map<DbResourceDto.Locale, List<String>> resources) {
         requireNonNull(contentLines, "Contents are required");
         requireNonNull(resources, "Resources are required");
     }
 
-    private List<DbResourceDto> parseResources(DbDto.Topic topic) {
+    private List<DbResourceDto> parseAllResourcesFromTopic(DbDto.Topic topic) {
 
-        final Pattern resourceNamePattern = Pattern.compile(META_NAME_PATTERN);
         final Pattern resourceVersionPattern = Pattern.compile(META_VERSION_PATTERN);
         final Pattern categoryCountPattern = Pattern.compile(META_CATEGORY_COUNT_PATTERN);
         final Pattern resourceEntryPattern = Pattern.compile(RES_ENTRY_PATTERN);
 
-        List<DbResourceDto> dbResourceDtos = this.resources.stream()
+        List<DbResourceDto> dbResourceDtos = new ArrayList<>();
 
-                .filter(resourceLines -> !resourceLines.isEmpty())
+        Stream.of(DbResourceDto.Locale.values())
 
-                .map(resourceLines -> {
-                    final List<DbResourceDto.Entry> entries = new ArrayList<>();
-                    String version = null;
-                    String localeCode = null;
-                    int categoryCount = 0;
+                .filter(resources::containsKey)
 
-                    for (String line : resourceLines) {
-                        Matcher matcher = resourceNamePattern.matcher(line);
-                        if (matcher.matches()) {
-                            localeCode = matcher.group(2);
-                            continue;
-                        }
+                .filter((locale) -> !resources.get(locale).isEmpty())
 
-                        matcher = resourceVersionPattern.matcher(line);
-                        if (matcher.matches()) {
-                            version = matcher.group(1);
-                            continue;
-                        }
+                .forEach((locale) -> {
+                    DbResourceDto dbResourceDto = parseResourcesForLocale(locale, resourceVersionPattern, categoryCountPattern, resourceEntryPattern);
+                    dbResourceDtos.add(dbResourceDto);
+                });
 
-                        matcher = categoryCountPattern.matcher(line);
-                        if (matcher.matches()) {
-                            categoryCount = valueOf(matcher.group(1));
-                            continue;
-                        }
-
-                        if (Pattern.matches(COMMENT_PATTERN, line)) {
-                            continue;
-                        }
-
-                        matcher = resourceEntryPattern.matcher(line);
-                        if (matcher.matches()) {
-                            entries.add(DbResourceDto.Entry.builder()
-                                    .forReference(matcher.group(3))
-                                    .withValue(matcher.group(1))
-                                    .build());
-                        }
-                    }
-
-                    return DbResourceDto.builder()
-                            .atVersion(version)
-                            .withLocale(fromCode(localeCode))
-                            .withCategoryCount(categoryCount)
-                            .addEntries(entries)
-                            .build();
-                })
-
-                .collect(Collectors.toList());
-
-        checkItemCountBetweenResources(dbResourceDtos, topic);
+        checkItemCountBetweenResources(topic, dbResourceDtos);
 
         return dbResourceDtos;
+    }
+
+    private DbResourceDto parseResourcesForLocale(DbResourceDto.Locale locale, Pattern resourceVersionPattern, Pattern categoryCountPattern, Pattern resourceEntryPattern) {
+        final List<DbResourceDto.Entry> entries = new ArrayList<>();
+        String version = null;
+        int categoryCount = 0;
+
+        for (String line : resources.get(locale)) {
+            Matcher matcher = resourceVersionPattern.matcher(line);
+            if (matcher.matches()) {
+                version = matcher.group(1);
+                continue;
+            }
+
+            matcher = categoryCountPattern.matcher(line);
+            if (matcher.matches()) {
+                categoryCount = valueOf(matcher.group(1));
+                continue;
+            }
+
+            if (Pattern.matches(COMMENT_PATTERN, line)) {
+                continue;
+            }
+
+            matcher = resourceEntryPattern.matcher(line);
+            if (matcher.matches()) {
+                entries.add(DbResourceDto.Entry.builder()
+                        .forReference(matcher.group(3))
+                        .withValue(matcher.group(1))
+                        .build());
+            }
+        }
+
+        return DbResourceDto.builder()
+                        .atVersion(version)
+                        .withLocale(locale)
+                        .withCategoryCount(categoryCount)
+                        .addEntries(entries)
+                        .build();
     }
 
     private DbDataDto parseContents(DbStructureDto structure) {
@@ -172,8 +169,6 @@ public class DatabaseParser {
                     || Pattern.matches(ITEM_PATTERN, line)
                     || !Pattern.matches(CONTENT_PATTERN, line)) {
 
-                // Uncomment below to debug
-//                System.out.println("Skipped line: " + line);
                 continue;
             }
 
@@ -185,7 +180,7 @@ public class DatabaseParser {
             id++;
         }
 
-        checkContentItemsCount(itemCount, entries);
+        checkContentItemsCount(structure.getTopic(), itemCount, entries);
 
         return DbDataDto.builder()
                 .addEntries(entries)
@@ -193,15 +188,17 @@ public class DatabaseParser {
     }
 
     private List<DbDataDto.Item> parseContentItems(DbStructureDto structure, String line, long entryIdentifier) {
+
         List<DbDataDto.Item> items = new ArrayList<>();
         int fieldIndex = 0;
-        for(String itemValue : line.split(VALUE_DELIMITER)) {
+        for (String itemValue : line.split(VALUE_DELIMITER)) {
             DbStructureDto.Field fieldInformation = structure.getFields().get(fieldIndex++);
 
             items.add(DbDataDto.Item.builder()
                     .ofFieldRank(fieldInformation.getRank())
                     .forName(fieldInformation.getName())
                     .withRawValue(itemValue)
+                    .bitFieldForTopic(fieldInformation.getFieldType() == BITFIELD, structure.getTopic())
                     .build());
         }
 
@@ -221,7 +218,7 @@ public class DatabaseParser {
 
         List<DbStructureDto.Field> fields = new ArrayList<>();
         String reference = null;
-        String topicName = null;
+        DbDto.Topic topic = null;
         String topicVersion = null;
         int categoryCount = 0;
         int fieldCount = 0;
@@ -231,7 +228,7 @@ public class DatabaseParser {
 
             Matcher matcher = topicNamePattern.matcher(line);
             if (matcher.matches()) {
-                topicName = matcher.group(1);
+                topic = DbDto.Topic.fromLabel(matcher.group(1));
                 continue;
             }
 
@@ -260,13 +257,13 @@ public class DatabaseParser {
 
             // Current reference
             matcher = itemRefPattern.matcher(line);
-            if(matcher.matches()) {
+            if (matcher.matches()) {
                 reference = matcher.group(2);
             }
 
             // Regular item
             matcher = itemPattern.matcher(line);
-            if(matcher.matches()) {
+            if (matcher.matches()) {
                 fieldIndex++;
 
                 String name = matcher.group(1);
@@ -284,10 +281,10 @@ public class DatabaseParser {
             }
         }
 
-        checkFieldCountInStructure(fieldCount, fields);
+        checkFieldCountInStructure(topic, fieldCount, fields);
 
         return DbStructureDto.builder()
-                .forTopic(DbDto.Topic.fromLabel(topicName))
+                .forTopic(topic)
                 .forReference(reference)
                 .atVersion(topicVersion)
                 .withCategoryCount(categoryCount)
@@ -295,9 +292,10 @@ public class DatabaseParser {
                 .build();
     }
 
-    private void checkContentItemsCount(long expectedItemCount, List<DbDataDto.Entry> actualEntries) {
+    private void checkContentItemsCount(DbDto.Topic topic, long expectedItemCount, List<DbDataDto.Entry> actualEntries) {
         if (expectedItemCount != actualEntries.size()) {
             Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+            info.put(SOURCE_TOPIC, topic);
             info.put(EXPECTED_COUNT, expectedItemCount);
             info.put(ACTUAL_COUNT, actualEntries.size());
 
@@ -305,9 +303,10 @@ public class DatabaseParser {
         }
     }
 
-    private void checkFieldCountInStructure(int expectedFieldCount, List<DbStructureDto.Field> fields) {
+    private void checkFieldCountInStructure(DbDto.Topic topic, int expectedFieldCount, List<DbStructureDto.Field> fields) {
         if (expectedFieldCount != fields.size()) {
             Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+            info.put(SOURCE_TOPIC, topic);
             info.put(EXPECTED_COUNT, expectedFieldCount);
             info.put(ACTUAL_COUNT, fields.size());
 
@@ -320,16 +319,16 @@ public class DatabaseParser {
 
         if (expectedFieldCount != items.size()) {
             Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+            info.put(SOURCE_TOPIC, structureObject.getTopic());
             info.put(EXPECTED_COUNT, expectedFieldCount);
             info.put(ACTUAL_COUNT, items.size());
-            info.put(SOURCE_TOPIC, structureObject.getTopic());
             info.put(ENTRY_ID, entryIdentifier);
 
             addIntegrityError(CONTENTS_FIELDS_COUNT_MISMATCH, info);
         }
     }
 
-    private void checkItemCountBetweenResources(List<DbResourceDto> dbResourceDtos, DbDto.Topic topic) {
+    private void checkItemCountBetweenResources(DbDto.Topic topic, List<DbResourceDto> dbResourceDtos) {
         Map<Integer, List<DbResourceDto>> dbResourceDtosByItemCount = dbResourceDtos.stream()
 
                 .collect(groupingBy(dbResourceDto -> dbResourceDto.getEntries().size()));

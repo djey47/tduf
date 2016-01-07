@@ -3,7 +3,7 @@ import java.awt.Desktop
 buildscript {}
 
 plugins {
-    id 'pl.allegro.tech.build.axion-release' version '1.0.1'
+    id 'pl.allegro.tech.build.axion-release' version '1.2.3'
 }
 
 // configure version
@@ -17,16 +17,19 @@ allprojects {
     project.group = 'fr.tduf'
     // version defined by plugin (if changes or ahead commits: x.y.z-SNAPSHOT)
     project.version = scmVersion.version
+
+    // Version for common dependencies
+    ext.assertjVersion = '3.1.0'
+    ext.jsonassertVersion = '1.2.3'
+    ext.mockitoVersion = '2.0.31-beta'
 }
 
 subprojects {
     apply plugin: 'java'
 
     repositories {
-        mavenCentral()
-
-        maven {
-            url 'https://jni4net.googlecode.com/svn/mvnrepo/'
+        maven  {
+            url "http://repo1.maven.org/maven2"
         }
 
         flatDir name: 'embeddedRepository', dirs: '../lib'
@@ -36,16 +39,37 @@ subprojects {
         compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
         compile group: 'com.google.guava', name: 'guava', version: '18.0'
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3.2'
+        compile group: 'com.esotericsoftware.minlog', name: 'minlog', version: '1.2'
 
+
+        testCompile project(':lib-testing')
         testCompile group: 'junit', name: 'junit', version: '4.11'
-        testCompile group: 'org.assertj', name: 'assertj-core-java8', version: '1.0.0m1'
-        testCompile group: 'net.sf.json-lib', name: 'json-lib', classifier: 'jdk15', version: '2.4'
+        testCompile group: 'org.mockito', name: 'mockito-core', version: "$mockitoVersion"
+        testCompile group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
+        testCompile group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
     }
 
     compileJava {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    task fatJar(type: Jar) {
+        mustRunAfter 'jar'
+        description 'Generates jar with all dependencies bundled into it.'
+
+        baseName = 'tduf-' + project.name + '-all'
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
+    }
+
+    task copyJar(type: Copy) {
+        description 'Copies jar file to release directory.'
+
+        from fatJar
+        into '../pack/lib/'
+    }
+
 }
 
 project(':cli') {
@@ -107,50 +131,145 @@ project(':cli') {
 
     integTest.finalizedBy integTestReport
 
-    task fatJar(type: Jar) {
-        mustRunAfter 'jar'
-        description 'Generates jar with all dependencies bundled into it.'
-
-        baseName = 'tduf-' + project.name + '-all'
-        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-        with jar
-    }
-
-    task copyJar(type: Copy) {
-        description 'Copies jar file to release directory.'
-
-        from fatJar
-        into '../pack/lib/'
-    }
-
-    task copyScripts(type: Copy) {
-        description 'Copies CLI scripts to release directory.'
+    task copyMainScripts(type: Copy) {
+        description 'Copies CLI main scripts to release directory.'
 
         from 'src/main/shell/'
         include '*.cmd'
         into '../pack'
+    }
+
+    task copyUtilScripts(type: Copy) {
+        description 'Copies CLI utility scripts to release directory.'
+
+        from 'src/main/shell/util/'
+        include '*.cmd'
+        into '../pack/cli'
+    }
+}
+
+project('lib-testing') {
+    dependencies {
+        compile group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
+        compile group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
     }
 }
 
 project('lib-unlimited') {
     dependencies {
         compile group: 'net.objecthunter', name: 'exp4j', version: '0.4.4'
+        compile group: 'commons-io', name: 'commons-io', version: '2.4'
     }
 
     task copyStructures(type: Copy) {
         description 'Copies structures to release directory.'
 
         from 'src/main/resources/files/structures/'
-        include '*.json'
+        include '*'
         into '../pack/structures'
     }
 
     task copyLibraries(type: Copy) {
-        description 'Copies all embedded libs to release directory.'
+        description 'Copies all libs to release directory.'
 
         from '../lib'
         include '*'
         into '../pack/lib'
+    }
+
+    task copyExternalTools(type: Copy) {
+        description 'Copies all external tools to release directory.'
+
+        from '../tools'
+        into '../pack/tools'
+    }
+}
+
+project(':gui-common') {}
+
+project(':gui-database') {
+    dependencies {
+        compile project(':lib-unlimited')
+        compile project(':gui-common')
+    }
+
+    task execute(type:JavaExec) {
+        main 'fr.tduf.gui.database.DatabaseEditor'
+        classpath sourceSets.main.runtimeClasspath
+    }
+}
+
+project(':gui-installer') {
+    dependencies {
+        compile project(':lib-unlimited')
+        compile project(':gui-common')
+    }
+
+    task execute(type: JavaExec) {
+        main 'fr.tduf.gui.installer.Installer'
+        classpath sourceSets.main.runtimeClasspath
+    }
+
+    task packInstaller(dependsOn: ['cleanInstallerPackDir', 'copyVersionInfo', 'copyInstallerDoc', 'copyInstallerAssets', 'copyInstallerScript', 'copyExternalTools', 'copyInstallerJar'], type: Zip) {
+        description 'Zips all distribution files from pack folder.'
+
+        archiveName project.name + "-" + project.version + ".zip"
+        destinationDir new File(rootProject.projectDir, 'releases')
+        from  'pack/'
+    }
+
+    task copyInstallerJar(type: Copy) {
+        description 'Copies jar file to release directory.'
+
+        from fatJar
+        into 'pack/lib/'
+    }
+
+    task cleanInstallerPackDir(type: Delete) {
+        delete 'pack/'
+    }
+
+    task copyInstallerDoc(type: Copy) {
+        description 'Copies README to release directory.'
+        mustRunAfter 'cleanInstallerPackDir'
+
+        from 'dist/'
+        include 'README.txt'
+        into 'pack/'
+    }
+
+    task copyInstallerAssets(type: Copy) {
+        description 'Copies all assets directory structure to release directory.'
+        mustRunAfter 'cleanInstallerPackDir'
+
+        from 'assets/'
+        into 'pack/assets/'
+    }
+
+    task copyInstallerScript(type: Copy) {
+        description 'Copies GUI scripts to release directory.'
+        mustRunAfter 'cleanInstallerPackDir'
+
+        from 'src/main/shell/'
+        include '*.cmd'
+        into 'pack'
+    }
+
+    task copyExternalTools(type: Copy) {
+        description 'Copies all external tools to release directory.'
+        mustRunAfter 'cleanInstallerPackDir'
+
+        from '../tools'
+        into 'pack/tools'
+    }
+
+    task copyVersionInfo(type: Copy) {
+        description 'Copies version.info file to release libs directory.'
+        mustRunAfter 'cleanInstallerPackDir'
+
+        from '../dist/'
+        include 'version.info'
+        into 'pack/lib/'
     }
 }
 
@@ -172,7 +291,16 @@ task copyVersionInfo(type: Copy) {
     into 'pack/lib/'
 }
 
-task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', ':cli:copyScripts', ':cli:copyJar', ':lib-unlimited:copyStructures', ':lib-unlimited:copyLibraries'], type: Zip) {
+task createLogsDirectory(type: Copy) {
+    description 'Copies logs directory to release.'
+    mustRunAfter 'cleanPackDir'
+
+    from 'logs/'
+    include '*'
+    into 'pack/logs/'
+}
+
+task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', 'createLogsDirectory', ':cli:copyMainScripts', ':cli:copyUtilScripts', ':cli:copyJar', ':lib-unlimited:copyStructures', ':lib-unlimited:copyLibraries', ':lib-unlimited:copyExternalTools', ':gui-database:copyJar'], type: Zip) {
     description 'Zips all distribution files from pack folder.'
 
     archiveName project.name + "-" + project.version + ".zip"

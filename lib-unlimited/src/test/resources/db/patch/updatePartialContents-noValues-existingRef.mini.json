@@ -1,0 +1,11 @@
+{
+  "changes": [
+    {
+      "comment": "Partially updates an entry with known REF (but without values).",
+      "type": "UPDATE",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "1139121456",
+      "partialValues": []
+    }
+  ]
+}

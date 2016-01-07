@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.db.domain;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents an error contained in database files
@@ -34,6 +35,12 @@ public class IntegrityError {
             }
 
             @Override
+            public IntegrityErrorBuilder addInformation(ErrorInfoEnum errorInfoEnum, Object value) {
+                this.info.put(errorInfoEnum,value);
+                return this;
+            }
+
+            @Override
             public IntegrityError build() {
                 return new IntegrityError(this.errorTypeEnum, this.info);
             }
@@ -50,6 +57,20 @@ public class IntegrityError {
 
     public String getErrorMessageFormat() {
         return errorTypeEnum.errorMessageFormat;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IntegrityError that = (IntegrityError) o;
+        return Objects.equals(errorTypeEnum, that.errorTypeEnum) &&
+                Objects.equals(info, that.info);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(errorTypeEnum, info);
     }
 
     @Override
@@ -104,7 +125,12 @@ public class IntegrityError {
         /**
          * Read resource items count not same over all language files
          */
-        RESOURCE_ITEMS_COUNT_MISMATCH("Resource items count is not the same over all language files: %s");
+        RESOURCE_ITEMS_COUNT_MISMATCH("Resource items count is not the same over all language files: %s"),
+
+        /**
+         * Per-locale values for a globalized resource reference are not the same
+         */
+        RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES("Resource values for gloablized resource are not the same through all locales: %s");
 
         private final String errorMessageFormat;
 
@@ -112,7 +138,6 @@ public class IntegrityError {
             this.errorMessageFormat = errorMessageFormat;
         }
     }
-
 
     /**
      * All error informations.
@@ -124,9 +149,10 @@ public class IntegrityError {
         LOCALE("Locale"),
         REFERENCE("Reference"),
         PER_LOCALE_COUNT("Per-Locale Count"),
+        PER_VALUE_COUNT("Per-Value Count"),
         EXPECTED_COUNT("Expected Count"),
         ACTUAL_COUNT("Actual Count"),
-        FILE("File name"),
+        FILE("File Name"),
         ENTRY_ID("Data Entry Identifier");
 
         private final String infoLabel;
@@ -139,6 +165,10 @@ public class IntegrityError {
         public String toString() {
             return this.infoLabel;
         }
+
+        public String getInfoLabel() {
+            return infoLabel;
+        }
     }
 
     public interface IntegrityErrorBuilder {
@@ -146,6 +176,8 @@ public class IntegrityError {
         IntegrityErrorBuilder ofType(ErrorTypeEnum errorTypeEnum);
 
         IntegrityErrorBuilder addInformations(Map<ErrorInfoEnum, Object> info);
+
+        IntegrityErrorBuilder addInformation(ErrorInfoEnum errorInfoEnum, Object value);
 
         IntegrityError build();
     }

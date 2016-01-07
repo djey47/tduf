@@ -1,13 +1,19 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
+import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
+import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.BITFIELD;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
@@ -70,12 +76,38 @@ public class DbDataDto implements Serializable {
             };
         }
 
+        public void addItemAtRank(int fieldRank, Item item) {
+            items.add(fieldRank - 1, item);
+
+            // Rank update
+            for (int i = fieldRank ; i < items.size() ; i++) {
+                items.get(i).shiftFieldRankRight();
+            }
+
+        }
+
+        public void appendItem(Item item) {
+            items.add(item);
+        }
+
+        public void replaceItems(List<Item> newItems) {
+            items.clear();
+            items.addAll(newItems);
+        }
+
         public List<Item> getItems() {
-            return items;
+            return Collections.unmodifiableList(items);
         }
 
         public long getId() {
             return id;
+        }
+
+        public Optional<Item> getItemAtRank(int fieldRank) {
+            if (fieldRank <= 0 || fieldRank > items.size()) {
+                return Optional.empty();
+            }
+            return Optional.of(items.get(fieldRank - 1));
         }
 
         @Override
@@ -91,6 +123,16 @@ public class DbDataDto implements Serializable {
         @Override
         public String toString() {
             return reflectionToString(this);
+        }
+
+        private void shiftIdUp() {
+            if (id > 0) {
+                id--;
+            }
+        }
+
+        private void shiftIdDown() {
+            id++;
         }
 
         public interface EntryBuilder {
@@ -116,6 +158,9 @@ public class DbDataDto implements Serializable {
         @JsonProperty("rawValue")
         private String rawValue;
 
+        @JsonProperty("switchValues")
+        private List<SwitchValue> switchValues;
+
         @JsonProperty("fieldRank")
         private int fieldRank;
 
@@ -125,10 +170,25 @@ public class DbDataDto implements Serializable {
                 private String name;
                 private String raw;
 
+                private boolean isBitField = false;
+                private DbDto.Topic topicForBitField;
+
                 @Override
-                public ItemBuilder fromStructureField(DbStructureDto.Field field) {
+                public ItemBuilder bitFieldForTopic(boolean isBitField, DbDto.Topic topic) {
+                    this.isBitField = isBitField;
+                    this.topicForBitField = topic;
+                    return this;
+                }
+
+                @Override
+                public ItemBuilder fromStructureFieldAndTopic(DbStructureDto.Field field, DbDto.Topic topic) {
                     this.fieldRank = field.getRank();
                     this.name = field.getName();
+
+                    boolean isBitfield = field.getFieldType() == BITFIELD;
+                    this.isBitField = isBitfield;
+                    this.topicForBitField = isBitfield ? topic : null;
+
                     return this;
                 }
 
@@ -151,6 +211,15 @@ public class DbDataDto implements Serializable {
                 }
 
                 @Override
+                public ItemBuilder fromExisting(Item contentItem, DbDto.Topic topic) {
+                    return DbDataDto.Item.builder()
+                            .forName(contentItem.getName())
+                            .ofFieldRank(contentItem.getFieldRank())
+                            .withRawValue(contentItem.getRawValue())
+                            .bitFieldForTopic(contentItem.isBitfield(), topic);
+                }
+
+                @Override
                 public Item build() {
                     requireNonNull(fieldRank, "Rank of associated field must be specified.");
 
@@ -160,16 +229,35 @@ public class DbDataDto implements Serializable {
                     item.name = this.name;
                     item.fieldRank = this.fieldRank;
 
+                    if (isBitField) {
+                        item.switchValues = buildSwitchValues();
+                    }
+
                     return item;
                 }
-            };
-        }
 
-        /**
-         * Increases field rank by one unit.
-         */
-        public void shiftFieldRankRight() {
-            this.fieldRank++;
+                private List<SwitchValue> buildSwitchValues() {
+                    requireNonNull(raw, "A raw value is required");
+                    requireNonNull(topicForBitField, "A database topic is required");
+
+                    BitfieldHelper bitfieldHelper = new BitfieldHelper();
+                    Optional<List<DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto>> bitfieldReference = bitfieldHelper.getBitfieldReferenceForTopic(topicForBitField);
+
+                    List<DbDataDto.SwitchValue> switchValues = new ArrayList<>();
+                    bitfieldReference.ifPresent((refs) -> {
+
+                        List<Boolean> values = bitfieldHelper.resolve(topicForBitField, raw).get();
+                        refs.stream()
+
+                                .forEach((ref) -> {
+                                    boolean switchState = values.get(ref.getIndex() - 1);
+                                    switchValues.add(new DbDataDto.SwitchValue(ref.getIndex(), ref.getLabel(), switchState));
+                                });
+                    });
+
+                    return switchValues;
+                }
+            };
         }
 
         public String getName() {
@@ -180,8 +268,21 @@ public class DbDataDto implements Serializable {
             return rawValue;
         }
 
+        public void setRawValue(String rawValue) {
+            this.rawValue = rawValue;
+        }
+
         public int getFieldRank() {
             return fieldRank;
+        }
+
+        public List<SwitchValue> getSwitchValues() {
+            return switchValues;
+        }
+
+        @JsonIgnore
+        private boolean isBitfield() {
+            return switchValues != null;
         }
 
         @Override
@@ -199,8 +300,14 @@ public class DbDataDto implements Serializable {
             return reflectionToString(this);
         }
 
+        private void shiftFieldRankRight() {
+            this.fieldRank++;
+        }
+
         public interface ItemBuilder {
-            ItemBuilder fromStructureField(DbStructureDto.Field field);
+            ItemBuilder bitFieldForTopic(boolean isBitField, DbDto.Topic topic);
+
+            ItemBuilder fromStructureFieldAndTopic(DbStructureDto.Field field, DbDto.Topic topic);
 
             ItemBuilder forName(String name);
 
@@ -208,12 +315,66 @@ public class DbDataDto implements Serializable {
 
             ItemBuilder ofFieldRank(int fieldRank);
 
+            ItemBuilder fromExisting(Item contentItem, DbDto.Topic topic);
+
             Item build();
         }
     }
 
+    @JsonTypeName("dbBitFieldSwitchValue")
+    public static class SwitchValue {
+
+        @JsonProperty("index")
+        private final int index;
+
+        @JsonProperty("name")
+        private final String name;
+
+        @JsonProperty("enabled")
+        private final boolean enabled;
+
+        public SwitchValue() {
+            index = 0;
+            name = null;
+            enabled = false;
+        }
+
+        public SwitchValue(int index, String name, boolean enabled) {
+            this.index = index;
+            this.enabled = enabled;
+            this.name = name;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return reflectionEquals(this, o);
+        }
+
+        @Override
+        public int hashCode() {
+            return reflectionHashCode(this);
+        }
+
+        @Override
+        public String toString() {
+            return reflectionToString(this);
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+    }
+
     public List<Entry> getEntries() {
-        return entries;
+        return Collections.unmodifiableList(entries);
     }
 
     /**
@@ -245,6 +406,58 @@ public class DbDataDto implements Serializable {
         };
     }
 
+    public void addEntry(Entry entry) {
+        entries.add(entry);
+    }
+
+    public void addEntryWithItems(List<Item> items) {
+        addEntry(DbDataDto.Entry.builder()
+                .forId(entries.size())
+                .addItems(items)
+                .build());
+    }
+
+    public void removeEntry(Entry entry) {
+        entries.remove(entry);
+
+        // Fix identifiers of next entries
+        entries.stream()
+
+                .filter((e) -> e.getId() > entry.getId())
+
+                .forEach(DbDataDto.Entry::shiftIdUp);
+    }
+
+    public void moveEntryUp(Entry entry) {
+        // Moves down previous entry
+        entries.stream()
+
+                .filter((e) -> e.getId() == entry.getId() - 1)
+
+                .findAny()
+
+                .ifPresent(Entry::shiftIdDown);
+
+        entry.shiftIdUp();
+
+        sortEntriesByIdentifier();
+    }
+
+    public void moveEntryDown(Entry entry) {
+        // Moves up next entry
+        entries.stream()
+
+                .filter((e) -> e.getId() == entry.getId() + 1)
+
+                .findAny()
+
+                .ifPresent(Entry::shiftIdUp);
+
+        entry.shiftIdDown();
+
+        sortEntriesByIdentifier();
+    }
+
     @Override
     public boolean equals(Object o) {
         return reflectionEquals(this, o, false);
@@ -258,6 +471,10 @@ public class DbDataDto implements Serializable {
     @Override
     public String toString() {
         return reflectionToString(this);
+    }
+
+    private void sortEntriesByIdentifier() {
+        entries.sort((e1, e2) -> Long.compare(e1.getId(), e2.getId()));
     }
 
     public interface DbDataDtoBuilder {

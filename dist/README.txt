@@ -3,72 +3,49 @@
 TDUForever aims at making Test Drive Unlmited modding easier:
 
 * Providing base modding features to save time
-* Making database editing less harmful
+* Making database editing less harmful with a new Database Editor (GUI)
 * Capitalizing about reverse-engineering
+* Bringing new desktop applications for end-users
 * ...
 
-### What's new in this version ? (0.4.0)
+### Database Editor Main features
 
-* General (cli): new command available in CLI: Version.cmd, displaying current toolset version
-* General (cli): commands and examples now sorted by alphabetical order
+* Opens and saves a database from/to JSON form
+* Provides profiles to address different modding use cases (car editing, tuning kits, rims ...)
+* Displays all fields within a topic, in an ordered manner
+* Makes changes easier for special values (percent, bitfields etc.)
+* Enables navigation over entries in same or different topics
+* Displays all resources within a topic, for all locales (=languages)
+* Adds / changes / deletes / duplicates a particular content entry
+* Adds / changes / deletes a particular resource entry
+* Searches particular content/resource entry with its REF
+* Imports data from TDUF (mini-patch file .json)
+* Imports data from TDUPE (Performance Pack .tdupk)
+* Exports current entry to following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch
+* Exports all entries for topics not supporting REF.
 
-* DatabaseTool (fix): new operation to fix database errors
-* DatabaseTool (fix): supports both encrypted and unencrypted DB files (use of -c/--clear parameters)
-* DatabaseTool (check): displays details of error 'unconsistent resource count over locales', sorted by alphabetical order
+### What's in this version ? (1.0.0)
 
-* FileTool (bankInfo/unpack/repack): new operations to handle TDU Banks files (*.bnk) - experimental feature!
-* FileTool (toJson/applyJson): processes fully compliant JSON files, respecting file structure
-* FileTool (toJson/applyJson): writes and reads byte arrays 'the hex way', e.g 0x[00 A5 BF]
+*
 
-* Research: updates cameras.bin structure with known fields
-* Research: adds default support for 2DB/2DM/DDS/XMB
+### Known bugs
 
-* Library: misc improvements and bug fixes
-* Library: adds support for TDUMT libs as temporary solution for BNK management, embedded in current package
+You tell me!
 
 ### What you will need to run TDUF
 
 * Please uninstall any Java Runtime < 8
 * [Update / Install Java 8 Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
+* Make sure .net apps can be run
+    - Windows users: check if .net Framework 2.0 is installed
+    - Linux users: check if Mono 2.0 is installed.
 
 ### Running it!
-
-* Launch *TDUF.cmd* script from Windows Explorer
-* You may need to create a desktop shortcut to this file.
-
-### Using Command Line Tools
-
-#### Database Tool
-
-To see all features, type and run: DatabaseTool
-
-e.g (1) to convert the whole TDU database to JSON format:
-
-* Extract (with TDUMT) all DB.bnk and DB_xx.bnk database files in a directory
-* Type and run: DatabaseTool dump --databaseDir "C:\tdudb" --jsonDir "C:\tdudb\dump".
-
-e.g (2) to convert the database in JSON format to TDU files back:
-
-* Type and run: DatabaseTool gen --databaseDir "C:\tdudb" --jsonDir "C:\tdudb\gen"
-* Replace (with TDUMT) in DB.bnk and DB_xx.bnk all files by generated ones in the new gen directory.
-
-
-#### Mapping Tool
-
-To see all features, type and run: MappingTool
-
-e.g, to add missing entries to Bnk1.map:
-
-* Type and run: MappingTool fix-missing --bnkDir "C:\Program Files(x86)\Test Drive Unlmited\Euro\Bnk"
-
-
-#### File Tool
-
-To see all features, type and run: FileTool
+TODO
 
 ### Using JAR library and/or CLI Tools in your projects
 
-It's for free, but you ought to put a mention (kinda 'Powered By TDUF project') and give a link to thread @ [TurboDuck](http://forum.turboduck.net/threads/32570-Djey-Discussion-about-new-modding-possibilities)
+Since this is in ALPHA state, using lib is strongly discouraged. Prefer using latest stable version (currently 0.7.0).
 
 ###  And especially...
 

@@ -1,12 +1,15 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
+import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 import fr.tduf.libunlimited.low.files.research.rw.GenericWriter;
+import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -16,7 +19,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static fr.tduf.cli.tools.FileTool.Command.*;
 import static java.util.Arrays.asList;
@@ -49,10 +54,10 @@ public class FileTool extends GenericTool {
         DECRYPT("decrypt", "Makes protected TDU file readable by humans or other software."),
         ENCRYPT("encrypt", "Allows protected TDU file to be read by game engine."),
         JSONIFY("jsonify", "Converts TDU file with structure to JSON file."),
-        APPLYJSON("applyjson", "Rewrites TDU file from JSON file with structure.");
-//        BANKINFO("bankinfo", "Gives details about a TDU Bank file."),
-//        UNPACK("unpack", "Extracts all contents from TDU Bank."),
-//        REPACK("repack", "Creates a BNK file, packing all contents in directory.");
+        APPLYJSON("applyjson", "Rewrites TDU file from JSON file with structure."),
+        BANKINFO("bankinfo", "Gives details about a TDU Bank file."),
+        UNPACK("unpack", "Extracts all contents from TDU Bank."),
+        REPACK("repack", "Creates a BNK file, packing all contents in directory.");
 
         final String label;
         final String description;
@@ -86,17 +91,19 @@ public class FileTool extends GenericTool {
     }
 
     public FileTool() {
-        // BNK-step1: using TDU Modding Library
-//        this.bankSupport = new GenuineBnkGateway();
+        bankSupport = new GenuineBnkGateway(new CommandLineHelper());
     }
 
     @Override
     protected void assignCommand(String commandArgument) {
-        this.command = (Command) CommandHelper.fromLabel(getCommand(), commandArgument);
+        command = (Command) CommandHelper.fromLabel(getCommand(), commandArgument);
     }
 
     @Override
     protected void checkAndAssignDefaultParameters(CmdLineParser parser) throws CmdLineException {
+        // Input file: trailing separator to be removed
+        inputFile = StringUtils.removeEnd(inputFile, File.separator);
+
         // Output file: defaulted to input file.extension
         if (outputFile == null) {
             String extension;
@@ -114,12 +121,12 @@ public class FileTool extends GenericTool {
                 case ENCRYPT:
                     extension = ".enc";
                     break;
-//                case UNPACK:
-//                    extension = "_unpacked";
-//                    break;
-//                case REPACK:
-//                    extension = "_repacked.bnk";
-//                    break;
+                case UNPACK:
+                    extension = "-unpacked";
+                    break;
+                case REPACK:
+                    extension = "-repacked.bnk";
+                    break;
                 default:
                     extension = ".";
                     break;
@@ -139,6 +146,7 @@ public class FileTool extends GenericTool {
                 &&  (command == DECRYPT || command == ENCRYPT)) {
             throw new CmdLineException(parser, "Error: cryptoMode is required.", null);
         }
+
     }
 
     @Override
@@ -152,10 +160,10 @@ public class FileTool extends GenericTool {
                 DECRYPT.label + " -c 1 -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.ok\"",
                 ENCRYPT.label + " -c 1 -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.ok\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\"",
                 JSONIFY.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"",
-                APPLYJSON.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.json\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"");
-//                BANKINFO.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk\"",
-//                UNPACK.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk\" -o \"C:\\Users\\Bill\\Desktop\\DB_extracted\"",
-//                REPACK.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk.unpacked\"");
+                APPLYJSON.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.json\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"",
+                BANKINFO.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk\"",
+                UNPACK.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk\" -o \"C:\\Users\\Bill\\Desktop\\DB_extracted\"",
+                REPACK.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk.unpacked\"");
     }
 
     @Override
@@ -163,158 +171,203 @@ public class FileTool extends GenericTool {
 
         switch (command) {
             case JSONIFY:
-                jsonify();
+                commandResult = jsonify(structureFile, inputFile, outputFile);
                 break;
             case APPLYJSON:
-                applyjson();
+                commandResult = applyjson(structureFile, inputFile, outputFile);
                 break;
             case DECRYPT:
-                decrypt();
+                commandResult = decrypt(inputFile, outputFile);
                 break;
             case ENCRYPT:
-                encrypt();
+                commandResult = encrypt(inputFile, outputFile);
                 break;
-//            case BANKINFO:
-//                bankInfo();
-//                break;
-//            case UNPACK:
-//                unpack();
-//                break;
-//            case REPACK:
-//                repack();
-//                break;
+            case BANKINFO:
+                commandResult = bankInfo(inputFile);
+                break;
+            case UNPACK:
+                commandResult = unpack(inputFile, outputFile);
+                break;
+            case REPACK:
+                commandResult = repack(inputFile, outputFile);
+                break;
             default:
+                commandResult = null;
                 return false;
         }
 
         return true;
     }
 
-    private void repack() throws IOException {
-        System.out.println("Will pack contents from directory: " + this.inputFile);
+    private Map<String, Object> repack(String sourceDirectory, String targetBankFile) throws IOException {
+        outLine("Will pack contents from directory: " + sourceDirectory);
 
-        bankSupport.packAll(this.inputFile, this.outputFile);
+        bankSupport.packAll(sourceDirectory, targetBankFile);
 
-        System.out.println("Done creating Bank: " + this.outputFile + ".");
+        Map<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("contentsDirectory", sourceDirectory);
+        resultInfo.put("bankFileCreated", targetBankFile);
+
+        return resultInfo;
     }
 
-    private void unpack() throws IOException {
-        System.out.println("Will use Bank file: " + this.inputFile);
+    private Map<String, ?> unpack(String sourceBankFile, String targetDirectory) throws IOException {
+        outLine("Will use Bank file: " + sourceBankFile);
 
-        FilesHelper.createDirectoryIfNotExists(this.outputFile);
+        FilesHelper.createDirectoryIfNotExists(targetDirectory);
 
-        bankSupport.extractAll(this.inputFile, this.outputFile);
+        bankSupport.extractAll(sourceBankFile, targetDirectory);
 
-        System.out.println("Done extracting Bank to " + this.outputFile + ".");
+        Map<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("extractedContentsDirectory", targetDirectory);
+        resultInfo.put("bankFile", sourceBankFile);
+
+        return resultInfo;
     }
 
-    private void bankInfo() {
-        System.out.println("Will use Bank file: " + this.inputFile);
+    private Map<String, ?> bankInfo(String sourceBankFile) throws IOException {
+        outLine("Will use Bank file: " + sourceBankFile);
 
-        BankInfoDto bankInfoObject = bankSupport.getBankInfo(this.inputFile);
+        BankInfoDto bankInfoObject = bankSupport.getBankInfo(sourceBankFile);
 
-        System.out.println("Done reading Bank:");
-        System.out.println("\t-> Year: " + bankInfoObject.getYear());
-        System.out.println("\t-> Size: " + bankInfoObject.getFileSize() + " bytes");
-        System.out.println("\t-> Packed files (" + bankInfoObject.getPackedFiles().size() + "):");
+        outLine("Done reading Bank:");
+        outLine("\t-> Year: " + bankInfoObject.getYear());
+        outLine("\t-> Size: " + bankInfoObject.getFileSize() + " bytes");
+        outLine("\t-> Packed files (" + bankInfoObject.getPackedFiles().size() + "):");
 
-        bankInfoObject.getPackedFiles().stream()
+        bankInfoObject.getPackedFiles()
+                .forEach((packedFileInfoObject) -> outLine(
+                        String.format("\t\t. %s (%s => %s) : %d bytes - %s",
+                                packedFileInfoObject.getReference(),
+                                packedFileInfoObject.getFullName(),
+                                packedFileInfoObject.getShortName(),
+                                packedFileInfoObject.getSize(),
+                                packedFileInfoObject.getType())
+                        ));
 
-                .forEach((packedFileInfoObject) -> System.out.println("\t\t." + packedFileInfoObject.getReference()
-                        + "(" + packedFileInfoObject.getFullName() + ") :  "
-                        + packedFileInfoObject.getSize() + " bytes"));
+        Map<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("bankFile", sourceBankFile);
+        resultInfo.put("bankInfo", bankInfoObject);
+
+        return resultInfo;
     }
 
-    private void jsonify() throws IOException {
-        System.out.println("Will use structure in file: " + this.structureFile);
+    private Map<String, ?> jsonify(String structureFile, String sourceFile, String targetJsonFile) throws IOException {
+        outLine("Will use structure in file: " + structureFile);
 
-        byte[] fileContents = Files.readAllBytes(Paths.get(inputFile));
-        ByteArrayInputStream fileInputStream = new ByteArrayInputStream(fileContents);
-
-        GenericParser<String> genericParser = new GenericParser<String>(fileInputStream) {
-            @Override
-            protected String generate() {
-                return "BTRQ";
-            }
-
-            @Override
-            protected String getStructureResource() {
-                return structureFile;
-            }
-        };
-
+        GenericParser<String> genericParser = getFileParser(sourceFile, structureFile);
         genericParser.parse();
 
-        System.out.println("\t-> Provided file dump:\n" + genericParser.dump());
+        outLine("\t-> Provided file dump:\n" + genericParser.dump());
 
-        String jsonOutput = genericParser.getDataStore().toJsonString();
+        parserToJsonFile(targetJsonFile, genericParser);
 
-        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(outputFile), StandardCharsets.UTF_8)) {
-            bufferedWriter.write(jsonOutput);
-        }
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("tduFile", sourceFile);
+        resultInfo.put("jsonFile", targetJsonFile);
 
-        System.out.println("TDU to JSON conversion done: " + this.inputFile + " to " + this.outputFile);
+        return resultInfo;
     }
 
-    private void applyjson() throws IOException {
-        System.out.println("Will use structure in file: " + this.structureFile);
+    private Map<String, Object> applyjson(String structureFile, String sourceJsonFile, String targetFile) throws IOException {
+        outLine("Will use structure in file: " + structureFile);
 
-        GenericWriter<String> genericWriter = new GenericWriter<String>("BTRQ") {
+        writerToBinaryFile(getFileWriter(), readJsonInputFileContents());
+
+        outLine("JSON to TDU conversion done: " + sourceJsonFile + " to " + targetFile);
+
+        Map<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("tduFile", targetFile);
+        resultInfo.put("jsonFile", sourceJsonFile);
+
+        return resultInfo;
+    }
+
+    private Map<String, Object> decrypt(String sourceEncryptedFile, String targetFile) throws IOException {
+        outLine("Now decrypting: " + sourceEncryptedFile + " with encryption mode " + cryptoMode);
+
+        Files.write(Paths.get(targetFile), processInputStream(sourceEncryptedFile, false));
+
+        Map<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("encryptedFile", sourceEncryptedFile);
+        resultInfo.put("clearFile", targetFile);
+
+        return resultInfo;
+    }
+
+    private Map<String, Object> encrypt(String sourceFile, String targetEncryptedFile) throws IOException {
+        outLine("Now encrypting: " + sourceFile + " with encryption mode " + cryptoMode);
+
+        Files.write(Paths.get(targetEncryptedFile), processInputStream(sourceFile, true));
+
+        Map<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("clearFile", sourceFile);
+        resultInfo.put("encryptedFile", targetEncryptedFile);
+
+        return resultInfo;
+    }
+
+    private GenericParser<String> getFileParser(final String sourceFile, final String structureFile) throws IOException {
+        return new GenericParser<String>(getInputStreamForFile(sourceFile)) {
             @Override
-            protected void fillStore() {}
+            protected String generate() {
+                return null;
+            }
 
             @Override
-            protected String getStructureResource() {
+            public String getStructureResource() {
                 return structureFile;
             }
         };
+    }
 
-        byte[] fileContents = Files.readAllBytes(Paths.get(inputFile));
-        String jsonContents = new String(fileContents, StandardCharsets.UTF_8);
+    private GenericWriter<String> getFileWriter() throws IOException {
+        return new GenericWriter<String>("") {
+                @Override
+                protected void fillStore() {}
 
+                @Override
+                public String getStructureResource() {
+                    return structureFile;
+                }
+            };
+    }
+
+    private void writerToBinaryFile(GenericWriter<String> genericWriter, String jsonContents) throws IOException {
         genericWriter.getDataStore().fromJsonString(jsonContents);
 
-        ByteArrayOutputStream outputStream = genericWriter.write();
-        Files.write(Paths.get(outputFile), outputStream.toByteArray());
-
-        System.out.println("JSON to TDU conversion done: " + this.inputFile + " to " + this.outputFile);
+        Files.write(Paths.get(outputFile), genericWriter.write().toByteArray());
     }
 
-    private void decrypt() throws IOException {
-        System.out.println("Now decrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
+    private void parserToJsonFile(String targetJsonFile, GenericParser<String> genericParser) throws IOException {
+        String jsonOutput = genericParser.getDataStore().toJsonString();
 
-        ByteArrayOutputStream outputStream = processInputStream(false);
-
-        Files.write(Paths.get(this.outputFile), outputStream.toByteArray());
-
-        System.out.println("Done: " + this.inputFile + " to " + this.outputFile);
-    }
-
-    private void encrypt() throws IOException {
-        System.out.println("Now encrypting: " + this.inputFile + " with encryption mode " + this.cryptoMode);
-
-        ByteArrayOutputStream outputStream = processInputStream(true);
-
-        Files.write(Paths.get(this.outputFile), outputStream.toByteArray());
-
-        System.out.println("Done: " + this.inputFile + " to " + this.outputFile);
-    }
-
-    private ByteArrayOutputStream processInputStream(boolean withEncryption) throws IOException {
-        ByteArrayOutputStream outputStream;
-        CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(this.cryptoMode));
-
-        if (withEncryption) {
-            outputStream = CryptoHelper.encryptXTEA(getInputStream(), encryptionModeEnum);
-        } else {
-            outputStream = CryptoHelper.decryptXTEA(getInputStream(), encryptionModeEnum);
+        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(targetJsonFile), StandardCharsets.UTF_8)) {
+            bufferedWriter.write(jsonOutput);
         }
-
-        return outputStream;
     }
 
-    private ByteArrayInputStream getInputStream() throws IOException {
-        Path inputFilePath = new File(this.inputFile).toPath();
+    private String readJsonInputFileContents() throws IOException {
+        byte[] fileContents = Files.readAllBytes(Paths.get(inputFile));
+        return new String(fileContents, StandardCharsets.UTF_8);
+    }
+
+    private byte[] processInputStream(String sourceFile, boolean withEncryption) throws IOException {
+
+        CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(cryptoMode));
+
+        ByteArrayInputStream inputStream = getInputStreamForFile(sourceFile);
+        ByteArrayOutputStream outputStream;
+        if (withEncryption) {
+            outputStream = CryptoHelper.encryptXTEA(inputStream, encryptionModeEnum);
+        } else {
+            outputStream = CryptoHelper.decryptXTEA(inputStream, encryptionModeEnum);
+        }
+        return outputStream.toByteArray();
+    }
+
+    private ByteArrayInputStream getInputStreamForFile(String sourceFile) throws IOException {
+        Path inputFilePath = new File(sourceFile).toPath();
         return new ByteArrayInputStream(Files.readAllBytes(inputFilePath));
     }
 }

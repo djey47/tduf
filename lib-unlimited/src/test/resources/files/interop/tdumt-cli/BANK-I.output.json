@@ -1,0 +1,174 @@
+{
+  "fileSize": 2947448,
+  "year": 2015,
+  "packedFiles": [
+    {
+      "shortName": "CLK_55.3DD",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.3DD\\CLK_55",
+      "fileSize": 25424,
+      "type": "3D model description"
+    },
+    {
+      "shortName": "CLK_55.3DG",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.3DG\\CLK_55",
+      "fileSize": 2544608,
+      "type": "3D model geometry"
+    },
+    {
+      "shortName": "mirror.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\mirror",
+      "fileSize": 36960,
+      "type": "Texture"
+    },
+    {
+      "shortName": "cock_lr.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\cock_lr",
+      "fileSize": 8288,
+      "type": "Texture"
+    },
+    {
+      "shortName": "detail_2.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\detail_2",
+      "fileSize": 120,
+      "type": "Texture"
+    },
+    {
+      "shortName": "body_lr.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\body_lr",
+      "fileSize": 32864,
+      "type": "Texture"
+    },
+    {
+      "shortName": "ts_partofbody.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\ts_partofbody",
+      "fileSize": 120,
+      "type": "Texture"
+    },
+    {
+      "shortName": "lgt_fof.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\lgt_fof",
+      "fileSize": 120,
+      "type": "Texture"
+    },
+    {
+      "shortName": "ws_lgt_f.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\ws_lgt_f",
+      "fileSize": 120,
+      "type": "Texture"
+    },
+    {
+      "shortName": "lgt_fg.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\lgt_fg",
+      "fileSize": 128,
+      "type": "Texture"
+    },
+    {
+      "shortName": "lgt_fon.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\lgt_fon",
+      "fileSize": 120,
+      "type": "Texture"
+    },
+    {
+      "shortName": "lgt_rof.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\lgt_rof",
+      "fileSize": 131168,
+      "type": "Texture"
+    },
+    {
+      "shortName": "ws_lgt_r.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\ws_lgt_r",
+      "fileSize": 120,
+      "type": "Texture"
+    },
+    {
+      "shortName": "lgt_r_g.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\lgt_r_g",
+      "fileSize": 8288,
+      "type": "Texture"
+    },
+    {
+      "shortName": "lgt_ron.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\lgt_ron",
+      "fileSize": 131168,
+      "type": "Texture"
+    },
+    {
+      "shortName": "ligt.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\ligt",
+      "fileSize": 120,
+      "type": "Texture"
+    },
+    {
+      "shortName": "ws_exhaust.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\ws_exhaust",
+      "fileSize": 120,
+      "type": "Texture"
+    },
+    {
+      "shortName": "ws_exhaust_g.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\ws_exhaust_g",
+      "fileSize": 120,
+      "type": "Texture"
+    },
+    {
+      "shortName": "ts_logo.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\ts_logo",
+      "fileSize": 120,
+      "type": "Texture"
+    },
+    {
+      "shortName": "ts_logoa.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\ts_logoa",
+      "fileSize": 2144,
+      "type": "Texture"
+    },
+    {
+      "shortName": "glass.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\glass",
+      "fileSize": 4192,
+      "type": "Texture"
+    },
+    {
+      "shortName": "glass_g.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\glass_g",
+      "fileSize": 120,
+      "type": "Texture"
+    },
+    {
+      "shortName": "ws_lgt_f1.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\ws_lgt_f1",
+      "fileSize": 120,
+      "type": "Texture"
+    },
+    {
+      "shortName": "logo.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\logo",
+      "fileSize": 120,
+      "type": "Texture"
+    },
+    {
+      "shortName": "details.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\details",
+      "fileSize": 120,
+      "type": "Texture"
+    },
+    {
+      "shortName": "bottom.2db",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\maps\\.2db\\bottom",
+      "fileSize": 120,
+      "type": "Texture"
+    },
+    {
+      "shortName": "CLK_55.2DM",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.2DM\\CLK_55",
+      "fileSize": 18032,
+      "type": "Materials"
+    },
+    {
+      "shortName": "CLK_55.btrq",
+      "name": "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.btrq\\CLK_55",
+      "fileSize": 248,
+      "type": "Vehicle physics data"
+    }
+  ]
+}

@@ -1,7 +1,20 @@
 -Reserved for integration tests-
 
 Provided files:
- - in banks directory will be used as reference for bnk tests
- - in crypto directory will be used as reference for encryption tests
- - in db-encrypted directory will be used as reference for database tests
- - in mapping directory will be used as reference for bnk mapping tests.
+
+ - in banks directory, will be used as reference for bnk tests
+
+ - in cameras directory, will be used as reference for cameras tests
+
+ - in crypto directory, will be used as reference for encryption tests
+
+ - in db-encrypted directory, will be used as reference for database tests
+
+ - in db-json-errors directory, will be used as source for integrity errors
+
+ - in patcher, will be used as source for json mini patches
+
+ - in research directory, will be used as reference for json conversion.
+
+
+ All other directories and contents are created by integration tests and as such do not have to be put under version control.

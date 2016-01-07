@@ -15,25 +15,53 @@ public class TypeHelper {
      * Converts a raw value to TEXT.
      *
      * @param rawValueBytes : raw value to convert
+     * @param length        : length of String. Actual String will be truncated / followed by 0 when necessary.
      * @return corresponding value as String
      */
-    public static String rawToText(byte[] rawValueBytes) {
-        return new String(rawValueBytes);
+    public static String rawToText(byte[] rawValueBytes, int length) {
+        String valueAsString = new String(rawValueBytes);
+
+        if (valueAsString.length() < length) {
+            byte[] zeroBytes = new byte[length - valueAsString.length()];
+            return valueAsString + new String(zeroBytes);
+        } else {
+            return valueAsString.substring(0, length);
+        }
     }
 
     /**
      * Converts a raw value to INTEGER.
      *
      * @param rawValueBytes : raw value to convert
+     * @param signed        : indicates if specified value is signed or not
      * @return corresponding value as 64-bit integer
      * @throws IllegalArgumentException when provided Array is not 64-bit (8 bytes)
      */
-    public static long rawToInteger(byte[] rawValueBytes) throws IllegalArgumentException {
+    public static long rawToInteger(byte[] rawValueBytes, boolean signed) throws IllegalArgumentException {
         check64BitRawValue(rawValueBytes);
 
-        return ByteBuffer
+        long integerValue = ByteBuffer
                 .wrap(rawValueBytes)
                 .getLong();
+
+        if (signed) {
+            int zeroCount = getPrependingZeroCount(rawValueBytes);
+            if (zeroCount >= 7) {
+                integerValue = ByteBuffer
+                        .wrap(rawValueBytes, 7, 1)
+                        .get();
+            } else if (zeroCount >= 6) {
+                integerValue = ByteBuffer
+                        .wrap(rawValueBytes, 6, 2)
+                        .getShort();
+            } else if (zeroCount >= 4) {
+                integerValue = ByteBuffer
+                        .wrap(rawValueBytes, 4, 4)
+                        .getInt();
+            }
+        }
+
+        return integerValue;
     }
 
     /**
@@ -64,10 +92,17 @@ public class TypeHelper {
      * Converts a TEXT value to raw byte array.
      *
      * @param textValue : text value to convert
+     * @param length    : length of raw byte array. Actual bytes will be truncated / followed by 0 when necessary.
      * @return corresponding value with default encoding as byte array.
      */
-    public static byte[] textToRaw(String textValue) {
-        return textValue.getBytes();
+    public static byte[] textToRaw(String textValue, int length) {
+
+        byte[] valueBytes = textValue.getBytes();
+        byte[] targetByteArray = new byte[length];
+
+        System.arraycopy(valueBytes, 0, targetByteArray, 0, valueBytes.length <= length ? valueBytes.length : length);
+
+        return targetByteArray;
     }
 
     /**
@@ -123,7 +158,6 @@ public class TypeHelper {
         return targetArray;
     }
 
-
     /**
      * Provides a byte array to fit particular size (truncate or fill with zeros).
      *
@@ -148,6 +182,7 @@ public class TypeHelper {
 
         return newArray;
     }
+
 
     /**
      * Gives a representation of provided byte array with hexadecimal values.
@@ -189,6 +224,16 @@ public class TypeHelper {
                 .replace(" ", "");
 
         return DatatypeConverter.parseHexBinary(extractedBytes);
+    }
+
+    private static int getPrependingZeroCount(byte[] rawValueBytes) {
+        int zeroCount = 0;
+
+        ByteBuffer wrap = ByteBuffer.wrap(rawValueBytes);
+        while (wrap.remaining() > 0 && wrap.get() == 0) {
+            zeroCount++;
+        }
+        return zeroCount;
     }
 
     private static void check64BitRawValue(byte[] rawValueBytes) {

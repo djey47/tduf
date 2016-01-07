@@ -12,16 +12,70 @@ public class TypeHelperTest {
         byte[] bytes = { 0x4d, 0x41, 0x50, 0x34,  0x00};
 
         // WHEN-THEN
-        assertThat(TypeHelper.rawToText(bytes)).isEqualTo("MAP4\0");
+        assertThat(TypeHelper.rawToText(bytes, 5)).isEqualTo("MAP4\0");
     }
 
     @Test
-    public void rawToInteger_whenArrayHasCorrectSize_shouldReturnNumeric() {
+    public void rawToText_whenGreaterLength_shouldReturnTextFilledWithZeros() {
+        //GIVEN
+        byte[] bytes = { 0x4d, 0x41, 0x50, 0x34 };
+
+        // WHEN-THEN
+        assertThat(TypeHelper.rawToText(bytes, 5)).isEqualTo("MAP4\0");
+    }
+
+    @Test
+    public void rawToText_whenLowerLength_shouldReturnTruncatedText() {
+        //GIVEN
+        byte[] bytes = { 0x4d, 0x41, 0x50, 0x34, 0x00 };
+
+        // WHEN-THEN
+        assertThat(TypeHelper.rawToText(bytes, 4)).isEqualTo("MAP4");
+    }
+
+    @Test
+    public void rawToInteger_whenArrayHasCorrectSize_andUnsignedValue_shouldReturnNumeric() {
         //GIVEN
         byte[] bytes = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x0d, 0x18, (byte)0x81 };
 
         // WHEN-THEN
-        assertThat(TypeHelper.rawToInteger(bytes)).isEqualTo(858241L);
+        assertThat(TypeHelper.rawToInteger(bytes, false)).isEqualTo(858241L);
+    }
+
+    @Test
+    public void rawToInteger_whenArrayHasCorrectSize_andSignedIntegerValue_shouldReturnNumeric() {
+        //GIVEN
+        byte[] bytes = { 0x00, 0x00, 0x00, 0x00, (byte)0xFF, (byte)0xF2, (byte)0xE7, 0x7F };
+
+        // WHEN-THEN
+        assertThat(TypeHelper.rawToInteger(bytes, true)).isEqualTo(-858241L);
+    }
+
+    @Test
+    public void rawToInteger_whenArrayHasCorrectSize_andSignedShortValue_shouldReturnNumeric() {
+        //GIVEN
+        byte[] bytes = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0xE7, 0x7F };
+
+        // WHEN-THEN
+        assertThat(TypeHelper.rawToInteger(bytes, true)).isEqualTo(-6273);
+    }
+
+    @Test
+    public void rawToInteger_whenArrayHasCorrectSize_andSignedByteValue_shouldReturnNumeric() {
+        //GIVEN
+        byte[] bytes = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0xFF };
+
+        // WHEN-THEN
+        assertThat(TypeHelper.rawToInteger(bytes, true)).isEqualTo(-1L);
+    }
+
+    @Test
+    public void rawToInteger_whenArrayHasCorrectSize_andZeroValue_shouldReturnNumeric() {
+        //GIVEN
+        byte[] bytes = new byte[8];
+
+        // WHEN-THEN
+        assertThat(TypeHelper.rawToInteger(bytes, true)).isZero();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -30,7 +84,7 @@ public class TypeHelperTest {
         byte[] bytes = { 0x00, 0x0d, 0x18, (byte)0x81 };
 
         // WHEN-THEN
-        TypeHelper.rawToInteger(bytes);
+        TypeHelper.rawToInteger(bytes, false);
     }
 
     @Test
@@ -66,7 +120,25 @@ public class TypeHelperTest {
         byte[] expectedBytes = { 0x4d, 0x41, 0x50, 0x34,  0x00};
 
         // WHEN-THEN
-        assertThat(TypeHelper.textToRaw("MAP4\0")).isEqualTo(expectedBytes);
+        assertThat(TypeHelper.textToRaw("MAP4\0", 5)).isEqualTo(expectedBytes);
+    }
+
+    @Test
+    public void textToRaw_whenGreaterLength_shouldReturnByteArrayFilledByZeros() {
+        //GIVEN
+        byte[] expectedBytes = { 0x4d, 0x41, 0x50, 0x34,  0x00, 0x00, 0x00, 0x00};
+
+        // WHEN-THEN
+        assertThat(TypeHelper.textToRaw("MAP4", 8)).isEqualTo(expectedBytes);
+    }
+
+    @Test
+    public void textToRaw_whenLowerLength_shouldReturnTruncatedByteArray() {
+        //GIVEN
+        byte[] expectedBytes = { 0x4d, 0x41, 0x50, 0x34};
+
+        // WHEN-THEN
+        assertThat(TypeHelper.textToRaw("MAP4\0", 4)).isEqualTo(expectedBytes);
     }
 
     @Test

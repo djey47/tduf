@@ -1,29 +1,35 @@
 package fr.tduf.libunlimited.low.files.banks.mapping.rw;
 
+import com.esotericsoftware.minlog.Log;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
+import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapParserTest {
 
-    private static Class<MapParserTest> thisClass = MapParserTest.class;
+    private static final Class<MapParserTest> thisClass = MapParserTest.class;
+
+    @Before
+    public void setUp() throws IOException {
+        Log.set(Log.LEVEL_INFO);
+    }
 
     @Test
     public void load_whenProvidedContents_shouldReturnParserInstance() throws Exception {
         //GIVEN
-        ByteArrayInputStream mapInputStream = new ByteArrayInputStream(new byte[]{ 0x0, 0x1, 0x2, 0x3 });
+        byte[] mapData = {0x0, 0x1, 0x2, 0x3};
 
         //WHEN
-        MapParser mapParser = MapParser.load(mapInputStream);
+        MapParser mapParser = MapParser.load(mapData);
 
         //THEN
         assertThat(mapParser).isNotNull();
@@ -32,15 +38,13 @@ public class MapParserTest {
     @Test
     public void parse_whenRealFiles_shouldFillStore_andReadAllEntries() throws IOException, URISyntaxException {
         // GIVEN
-        URI uri = thisClass.getResource("/banks/Bnk1.map").toURI();
-        byte[] mapContents = Files.readAllBytes(Paths.get(uri));
-        ByteArrayInputStream mapInputStream = new ByteArrayInputStream(mapContents);
+        byte[] mapContents = FilesHelper.readBytesFromResourceFile("/banks/Bnk1.map");
 
 
         // WHEN
-        MapParser mapParser = MapParser.load(mapInputStream);
+        MapParser mapParser = MapParser.load(mapContents);
         BankMap actualBankMap = mapParser.parse();
-        System.out.println("Dumped contents:\n" + mapParser.dump());
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + mapParser.dump());
 
 
         // THEN

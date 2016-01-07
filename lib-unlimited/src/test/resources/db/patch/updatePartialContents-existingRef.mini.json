@@ -1,0 +1,16 @@
+{
+  "changes": [
+    {
+      "comment": "Partially (bitfield item only) updates an entry with known REF.",
+      "type": "UPDATE",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "1139121456",
+      "partialValues": [
+        {
+          "rank": 103,
+          "value": "7954"
+        }
+      ]
+    }
+  ]
+}

@@ -7,6 +7,8 @@ import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
 import java.io.IOException;
 
+import static fr.tduf.cli.tools.CameraTool.Command.COPY_ALL_SETS;
+import static fr.tduf.cli.tools.CameraTool.Command.COPY_SET;
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static fr.tduf.cli.tools.FileTool.Command.*;
 import static fr.tduf.cli.tools.MappingTool.Command.*;
@@ -20,29 +22,35 @@ public class AllToolsTest {
     public final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
 
     @Test
-    public void databaseTool_fix() throws NoSuchFieldException, IOException {
-        // GIVEN-WHEN-THEN
-        testToolCommand(new DatabaseTool(), FIX);
-    }
-
-    @Test
-    public void databaseTool_check() throws NoSuchFieldException, IOException {
+    public void databaseTool_applyTdupk() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
         exitRule.expectSystemExitWithStatus(1);
 
-        testToolCommand(new DatabaseTool(), CHECK);
+        testToolCommand(new DatabaseTool(), APPLY_TDUPK);
     }
 
     @Test
-    public void databaseTool_dump() throws NoSuchFieldException, IOException {
+    public void databaseTool_applyPatch() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
-        testToolCommand(new DatabaseTool(), DUMP);
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new DatabaseTool(), APPLY_PATCH);
     }
 
     @Test
-    public void databaseTool_gen() throws NoSuchFieldException, IOException {
+    public void databaseTool_genPatch() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
-        testToolCommand(new DatabaseTool(), GEN);
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new DatabaseTool(), GEN_PATCH);
+    }
+
+    @Test
+    public void databaseTool_convertPatch() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new DatabaseTool(), CONVERT_PATCH);
     }
 
     @Test
@@ -102,6 +110,14 @@ public class AllToolsTest {
 //    }
 //
     @Test
+    public void fileTool_unpackAll() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new FileTool(), UNPACK_ALL);
+    }
+
+    @Test
     public void mappingTool_info() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
         exitRule.expectSystemExitWithStatus(1);
@@ -131,6 +147,30 @@ public class AllToolsTest {
         exitRule.expectSystemExitWithStatus(1);
 
         testToolCommand(new MappingTool(), FIX_MISSING);
+    }
+
+    @Test
+    public void mappingTool_magify() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new MappingTool(), MAGIFY);
+    }
+
+    @Test
+    public void cameraTool_copyAllSets() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new CameraTool(), COPY_ALL_SETS);
+    }
+
+    @Test
+    public void cameraTool_copySet() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new CameraTool(), COPY_SET);
     }
 
     private static void testToolCommand(GenericTool toolInstance, CommandHelper.CommandEnum command) throws NoSuchFieldException, IOException {

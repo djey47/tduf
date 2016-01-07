@@ -1,13 +1,20 @@
 package fr.tduf.cli.tools;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.cli.common.helper.CommandHelper;
+import fr.tduf.cli.tools.dto.ErrorOutputDto;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Parent class of all CLI tools
@@ -17,24 +24,61 @@ public abstract class GenericTool {
     @Argument
     protected List<String> arguments = new ArrayList<>();
 
+    @Option(name = "-n", aliases = "--normalized", usage = "Not mandatory. Produces output as JSON instead of natural language.")
+    private boolean withNormalizedOutput = false;
+
+    @Option(name = "-v", aliases = "--verbose", usage = "Not mandatory. Also displays DEBUG messages.")
+    private boolean withVerboseOutput = false;
+
+    protected Map<String, ?> commandResult = null;
+
+    private ObjectWriter jsonWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+
     /**
      * All-instance entry point.
      * @param args  : command line arguments
      */
     protected void doMain(String[] args) throws IOException {
-
         if (!checkArgumentsAndOptions(args)) {
             System.exit(1);
         }
 
+        Log.set(withVerboseOutput ? Log.LEVEL_DEBUG : Log.LEVEL_NONE);
+
         try {
             if (!commandDispatch()) {
-                System.err.println("Error: command is not implemented, yet.");
+                errLine("Command is not implemented, yet.");
                 System.exit(1);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            errLine(ExceptionUtils.getStackTrace(e));
+
+            processNormalizedErrorOutput(e);
+
             System.exit(1);
+        }
+
+        processNormalizedOutput();
+
+        outLine("> All done!");
+    }
+
+    /**
+     * Displays text on standard output, with a new line. Takes normalization setting into account.
+     * @param message : message to display
+     */
+    protected void outLine(String message) {
+        if (!withNormalizedOutput) {
+            System.out.println(message);
+        }
+    }
+
+    /**
+     * Adds a new line on standard output. Takes normalization setting into account.
+     */
+    protected void outLine() {
+        if (!withNormalizedOutput) {
+            System.out.println();
         }
     }
 
@@ -89,11 +133,10 @@ public abstract class GenericTool {
             checkAndAssignDefaultParameters(parser);
         } catch (CmdLineException e) {
 
-            printUsage(e);
+            System.err.println(e.getMessage());
             System.err.println();
 
-            System.err.println("Error: invalid arguments are given.");
-            System.err.println(e.getMessage());
+            printUsage(e);
 
             return false;
         }
@@ -113,11 +156,17 @@ public abstract class GenericTool {
 
                 .sorted((entry1, entry2) -> entry1.getKey().compareTo(entry2.getKey()))
 
-                .forEach((entry) -> System.err.println(" " + entry.getKey() + " : " + entry.getValue() ));
+                .forEach((entry) -> {
+                    System.err.println();
+                    System.err.println(" " + entry.getKey() + " : " + entry.getValue());
+                });
+        System.err.println();
         System.err.println();
 
         System.err.println("  .Options:");
+        System.err.println();
         e.getParser().printUsage(System.err);
+        System.err.println();
         System.err.println();
 
         System.err.println("  .Examples:");
@@ -125,6 +174,37 @@ public abstract class GenericTool {
 
                 .sorted(String::compareTo)
 
-                .forEach((example) -> System.err.println(" " + displayedClassName + " " + example));
+                .forEach((example) -> {
+                    System.err.println();
+                    System.err.println(" " + displayedClassName + " " + example);
+                });
+    }
+
+    private void errLine(String message) {
+        if (withNormalizedOutput) {
+            return;
+        }
+        System.err.println(message);
+    }
+
+    private void processNormalizedErrorOutput(Exception exception) throws IOException {
+        if (!withNormalizedOutput) {
+            return;
+        }
+
+        ErrorOutputDto errorOutputObject = ErrorOutputDto.fromException(exception);
+        System.out.println(jsonWriter.writeValueAsString(errorOutputObject));
+    }
+
+    private void processNormalizedOutput() throws IOException {
+        if (!withNormalizedOutput) {
+            return;
+        }
+
+        if (commandResult == null) {
+            System.out.println("{}");
+        } else {
+            System.out.println(jsonWriter.writeValueAsString(commandResult));
+        }
     }
 }

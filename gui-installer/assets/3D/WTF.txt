@@ -1,0 +1,3 @@
+Place all your 3D model BNK here:
+- xxxxxxx.BNK (vehicle exterior)
+- xxxxxxx_I.BNK (vehicle interior)

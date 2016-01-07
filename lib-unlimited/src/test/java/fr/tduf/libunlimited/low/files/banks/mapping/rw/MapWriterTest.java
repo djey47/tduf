@@ -1,21 +1,16 @@
 package fr.tduf.libunlimited.low.files.banks.mapping.rw;
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapWriterTest {
-
-    private static Class<MapWriterTest> thisClass = MapWriterTest.class;
 
     @Test
     public void load_whenProvidedContents_shouldReturnWriterInstance() throws Exception {
@@ -32,16 +27,14 @@ public class MapWriterTest {
     @Test
     public void write_whenRealFilesLoaded_shouldReturnSameAsInitialContents() throws URISyntaxException, IOException {
         //GIVEN
-        URI uri = thisClass.getResource("/banks/Bnk1.map").toURI();
-        byte[] mapContents = Files.readAllBytes(Paths.get(uri));
-        ByteArrayInputStream mapInputStream = new ByteArrayInputStream(mapContents);
-        BankMap bankMap = MapParser.load(mapInputStream).parse();
+        byte[] mapData = FilesHelper.readBytesFromResourceFile("/banks/Bnk1.map");
+        BankMap bankMap = MapParser.load(mapData).parse();
 
         //WHEN
         MapWriter actualMapWriter = MapWriter.load(bankMap);
         ByteArrayOutputStream actualBytes = actualMapWriter.write();
 
         //THEN
-        assertThat(actualBytes.toByteArray()).isEqualTo(mapContents);
+        assertThat(actualBytes.toByteArray()).isEqualTo(mapData);
     }
 }

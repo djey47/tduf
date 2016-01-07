@@ -11,7 +11,6 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
-import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * Represents contents of TDU database resources (multilingual)
@@ -83,8 +82,16 @@ public class DbResourceDto implements Serializable {
             return reference;
         }
 
+        public void setReference(String reference) {
+            this.reference = reference;
+        }
+
         public String getValue() {
             return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
         }
 
         @Override
@@ -99,7 +106,7 @@ public class DbResourceDto implements Serializable {
 
         @Override
         public String toString() {
-            return reflectionToString(this);
+            return "(" + reference + " => '" + value + "')";
         }
 
         public interface EntryBuilder {
@@ -128,7 +135,7 @@ public class DbResourceDto implements Serializable {
 
         private final String code;
 
-        private Locale(String code) {
+        Locale(String code) {
             this.code = code;
         }
 
@@ -252,7 +259,7 @@ public class DbResourceDto implements Serializable {
 
     @Override
     public String toString() {
-        return reflectionToString(this);
+        return locale + ": " + entries;
     }
 
     public interface DbResourceDtoBuilder {

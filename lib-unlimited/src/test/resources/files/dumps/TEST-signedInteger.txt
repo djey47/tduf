@@ -1,0 +1,3 @@
+si1	<signed INTEGER: 1 bytes>	0x[C4]	-60
+si2	<signed INTEGER: 2 bytes>	0x[00 00]	0
+si3	<signed INTEGER: 4 bytes>	0x[00 00 00 3C]	60

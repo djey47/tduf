@@ -1,12 +1,16 @@
 package fr.tduf.cli.tools;
 
+import fr.tduf.cli.common.helper.ConsoleHelper;
+import fr.tduf.libtesting.common.helper.AssertionsHelper;
+import org.json.JSONException;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import java.io.IOException;
+import java.io.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,6 +20,11 @@ public class GenericToolTest {
     public final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
 
     private TestingTool testingTool = new TestingTool();
+
+    @After
+    public void tearDown() {
+        ConsoleHelper.restoreStandardOutput();
+    }
 
     @Test
     public void checkArgumentsAndOptions_whenNoArgs_shouldReturnFalse() {
@@ -86,5 +95,67 @@ public class GenericToolTest {
         exitRule.expectSystemExitWithStatus(1);
 
         testingTool.doMain(new String[]{"test"});
+    }
+
+    @Test
+    public void doMain_whenOutlineCommand_andStandardOutputMode_shouldWriteToConsole() throws IOException {
+        // GIVEN
+        OutputStream outContents = ConsoleHelper.hijackStandardOutput();
+
+        // WHEN-THEN
+        testingTool.doMain(new String[]{"test_outline", "-p", "This is a message"});
+
+        // THEN
+        AssertionsHelper.assertOutputStreamContainsExactly(outContents, "This is a message" + System.lineSeparator()
+                + "> All done!" + System.lineSeparator());
+    }
+
+    @Test
+    public void doMain_whenFailCommand_andNormalizedOutputMode_shouldWriteProperErrorJsonToConsole() throws IOException {
+        // GIVEN
+        final OutputStream outContents = ConsoleHelper.hijackStandardOutput();
+        exitRule.expectSystemExitWithStatus(1);
+        exitRule.checkAssertionAfterwards(() -> AssertionsHelper.assertOutputStreamContainsSequence(outContents, "{", "errorMessage", "Exception", "stackTrace", "}"));
+
+        // WHEN-THEN
+        testingTool.doMain(new String[]{"test_fail", "-n", "-p", ""});
+
+        // THEN: asserted by exitRule
+    }
+
+    @Test
+    public void doMain_whenKnownCommand_andNormalizedOutputMode_andVoidResult_shouldWriteProperEmptyJsonToConsole() throws IOException, JSONException {
+        // GIVEN
+        OutputStream outContents = ConsoleHelper.hijackStandardOutput();
+
+        // WHEN-THEN
+        testingTool.doMain(new String[]{"test", "-n", "-p", ""});
+
+        // THEN
+        AssertionsHelper.assertOutputStreamContainsJsonExactly(outContents, "{}");
+    }
+
+    @Test
+    public void doMain_whenKnownCommand_andNormalizedOutputMode_andResult_shouldWriteProperJsonToConsole() throws IOException, JSONException {
+        // GIVEN
+        OutputStream outContents = ConsoleHelper.hijackStandardOutput();
+
+        // WHEN-THEN
+        testingTool.doMain(new String[]{"test_result", "-n", "-p", ""});
+
+        // THEN
+        AssertionsHelper.assertOutputStreamContainsJsonExactly(outContents, "{\"result\":\"ok\"}");
+    }
+
+    @Test
+    public void doMain_whenKnownCommand_andVerboseModeEnabled_shouldWriteDebugLogsToConsole() throws IOException, JSONException {
+        // GIVEN
+        OutputStream outContents = ConsoleHelper.hijackStandardOutput();
+
+        // WHEN-THEN
+        testingTool.doMain(new String[]{"test_result", "-v", "-p", ""});
+
+        // THEN
+        AssertionsHelper.assertOutputStreamContainsSequence(outContents, "INFO: [TestingTool] ", "DEBUG: [TestingTool] This is for sake of verbosity.", "> All done!");
     }
 }

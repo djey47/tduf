@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "comment": "Adds a new entry without identifier (topic does not support UID). Error, 2 fields missing in value list.",
+      "type" : "UPDATE",
+      "topic" : "BOTS",
+      "values": [ "57167257", "56373256", "600091920", "1", "1", "551683160" ]
+    }
+  ]
+}

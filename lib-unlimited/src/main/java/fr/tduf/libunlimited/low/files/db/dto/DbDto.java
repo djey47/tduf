@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -124,6 +125,17 @@ public class DbDto implements Serializable {
         };
     }
 
+    /**
+     * @return current topic if a structure is attached to current object, null otherwise.
+     */
+    @JsonIgnore
+    public Topic getTopic() {
+        if (this.getStructure() == null) {
+            return null;
+        }
+        return this.getStructure().getTopic();
+    }
+
     public DbStructureDto getStructure() {
         return structure;
     }
@@ -135,6 +147,7 @@ public class DbDto implements Serializable {
     public List<DbResourceDto> getResources() {
         return resources;
     }
+
 
     @Override
     public boolean equals(Object o) {

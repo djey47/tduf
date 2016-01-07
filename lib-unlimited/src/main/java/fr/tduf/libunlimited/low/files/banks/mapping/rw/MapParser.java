@@ -6,6 +6,8 @@ import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -20,14 +22,27 @@ public class MapParser extends GenericParser<BankMap> {
     }
 
     /**
-     * Single entry point for this parser.
-     * @param inputStream   : stream containing data to be parsed
+     * Entry point for this parser.
+     * @param mapData   : data to be parsed
      * @return a {@link MapParser} instance.
      */
-    public static MapParser load(ByteArrayInputStream inputStream) throws IOException {
-        requireNonNull(inputStream, "A stream containing map contents is required");
+    public static MapParser load(byte[] mapData) throws IOException {
+        requireNonNull(mapData, "An array containing map contents is required");
 
-        return new MapParser(inputStream);
+        return new MapParser(new ByteArrayInputStream(mapData));
+    }
+
+    /**
+     * Entry point for this parser.
+     * @param mapFileName  : name of file containing data to be parsed
+     * @return a {@link MapParser} instance.
+     */
+    public static MapParser load(String mapFileName) throws IOException {
+        requireNonNull(mapFileName, "A file name is required");
+
+        byte[] mapContents = Files.readAllBytes(Paths.get(mapFileName));
+
+        return load(mapContents);
     }
 
     @Override
@@ -55,7 +70,7 @@ public class MapParser extends GenericParser<BankMap> {
     }
 
     @Override
-    protected String getStructureResource() {
+    public String getStructureResource() {
         return "/files/structures/MAP4-map.json";
     }
 }

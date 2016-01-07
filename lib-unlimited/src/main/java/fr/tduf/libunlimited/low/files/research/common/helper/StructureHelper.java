@@ -5,6 +5,12 @@ import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Utility class to provide common operations on Structures.
@@ -63,4 +69,52 @@ public class StructureHelper {
 
         return new ByteArrayInputStream(outputStream.toByteArray());
     }
+
+    /**
+     * @return Field definition from its full name (including parents and indexes).
+     */
+    public static Optional<FileStructureDto.Field> getFieldDefinitionFromFullName(String fieldName, FileStructureDto fileStructureObject) {
+        requireNonNull(fileStructureObject, "File structure object is required");
+
+        if (fieldName == null) {
+            return Optional.empty();
+        }
+
+        List<String> compounds = Stream.of(fieldName.split("\\."))
+
+                .map(StructureHelper::removeArrayArtefacts)
+
+                .collect(toList());
+
+        return searchFieldWithNameRecursively(compounds, fileStructureObject.getFields());
+    }
+
+    private static String removeArrayArtefacts(String compoundName) {
+        int arrayArtefactIndex = compoundName.indexOf('[');
+
+        if (arrayArtefactIndex == -1) {
+            return compoundName;
+        }
+
+        return compoundName.substring(0, arrayArtefactIndex);
+    }
+
+    private static Optional<FileStructureDto.Field> searchFieldWithNameRecursively(List<String> compounds, List<FileStructureDto.Field> subFields) {
+        requireNonNull(subFields, "A list of sub fields is required");
+
+        for (FileStructureDto.Field field : subFields) {
+             if (field.getName().equals(compounds.get(0))) {
+
+                compounds.remove(0);
+
+                if (compounds.isEmpty()) {
+                    return Optional.of(field);
+                }
+
+                return searchFieldWithNameRecursively(compounds, field.getSubFields());
+            }
+        }
+
+        return Optional.empty();
+   }
 }

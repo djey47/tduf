@@ -1,0 +1,14 @@
+{
+  "bankFile": "integ-tests/banks/Empty.bnk",
+  "bankInfo": {
+    "year" : 2014,
+    "fileSize" : 0,
+    "packedFiles" : [ {
+      "reference" : "10011001",
+      "size" : 1005,
+      "shortName" : "CLK_55.2DM",
+      "fullName" : "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.2DM\\CLK_55",
+      "type" : "Materials"
+    } ]
+  }
+}

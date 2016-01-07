@@ -1,12 +1,13 @@
 package fr.tduf.libunlimited.low.files.banks.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Data object to return information about Bnk file.
  */
-public class BankInfoDto {
+public class BankInfoDto implements Serializable {
 
     private int year;
     private int fileSize;

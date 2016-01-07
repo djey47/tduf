@@ -1,0 +1,18 @@
+{
+  "changes": [
+    {
+      "comment": "Existing resource to be removed: Spyke, 60367256",
+      "type" : "DELETE_RES",
+      "topic" : "BOTS",
+      "locale" : "FRANCE",
+      "ref": "60367256"
+    },
+    {
+      "comment": "Missing resource: 33333333",
+      "type" : "DELETE_RES",
+      "topic" : "BOTS",
+      "locale" : "FRANCE",
+      "ref": "33333333"
+    }
+  ]
+}
