@@ -1,4 +1,4 @@
-# TDUF(orever) Database Editor ALPHA
+# TDUF(orever)
 
 TDUForever aims at making Test Drive Unlmited modding easier:
 
@@ -9,11 +9,6 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * ...
 
 ### Database Editor Main features
-
-/!\
-Please keep in mind that it is called ALPHA for a reason, you should use it carefully as it may damage your game!
-Thus, you always ought to make a backup of your TDU database before using it!
-/!\
 
 * Opens and saves a database from/to JSON form
 * Provides profiles to address different modding use cases (car editing, tuning kits, rims ...)
@@ -29,7 +24,7 @@ Thus, you always ought to make a backup of your TDU database before using it!
 * Exports current entry to following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch
 * Exports all entries for topics not supporting REF.
 
-### What's in this version ? (ALPHA 13)
+### What's in this version ? (1.0.0)
 
 *
 
@@ -46,12 +41,7 @@ You tell me!
     - Linux users: check if Mono 2.0 is installed.
 
 ### Running it!
-
-* Launch *TDUF.cmd* script from Windows Explorer  (you may need to create a desktop shortcut to this file)
-* (once, to check) Type and run: java -version (should answer with 'java version 1.8.xxxxxx etc')
-* Type and run: Alpha-DatabaseEditor "C:\Program Files (x86)\Test Drive Unlimited\Euro\Bnk\Database\"
-(using proper file location on your system).
-
+TODO
 
 ### Using JAR library and/or CLI Tools in your projects
 

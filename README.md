@@ -1,6 +1,6 @@
 # TDUF(orever) #
 
-[ ![Codeship Status for djey/tduf](https://codeship.com/projects/a2317ec0-ca46-0132-0a66-62c0e6e8856f/status?branch=tduf-1.0.x)](https://codeship.com/projects/75428)
+[ ![Codeship Status for djey/tduf](https://codeship.com/projects/a2317ec0-ca46-0132-0a66-62c0e6e8856f/status?branch=master)](https://codeship.com/projects/75428)
 
 This repository hosts all Java projects linked to TDUForever initiative.
 
@@ -13,6 +13,10 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 ### Modules ###
 
 * **cli** : Command Line Interface to use lib-unlimited library
+* **gui-common** : Components to be used with any graphical user interface
+* **gui-database** : Database Editor module
+* **gui-installer** : Mod installer
+* **lib-testing** : Components to help with unit testing in any module
 * **lib-unlimited** : Stand-alone component providing API for building TDU modding applications.
 
 ### Setting-up ###
@@ -39,10 +43,7 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 ### Preparing next development version ###
 
-* Create branch tduf-M.m.x
-* Checkout this branch
-* Make global version changes and commit + push first commit
-* Set next dev version: execute *markNextVersion -Prelease.nextVersion=M.m.r* task from Gradle
+No particular action required.
 
 ### Packaging ###
 
