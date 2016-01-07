@@ -26,4 +26,4 @@ REM Running Admin shell
 setlocal & pushd .
 
 CD /D %START_DIR%
-START "TDUF Command Line Interface" TDUF-intro.cmd
+START "TDUF Command Line Interface" .\cli\Intro.cmd

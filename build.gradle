@@ -131,12 +131,20 @@ project(':cli') {
 
     integTest.finalizedBy integTestReport
 
-    task copyScripts(type: Copy) {
-        description 'Copies CLI scripts to release directory.'
+    task copyMainScripts(type: Copy) {
+        description 'Copies CLI main scripts to release directory.'
 
         from 'src/main/shell/'
         include '*.cmd'
         into '../pack'
+    }
+
+    task copyUtilScripts(type: Copy) {
+        description 'Copies CLI utility scripts to release directory.'
+
+        from 'src/main/shell/util/'
+        include '*.cmd'
+        into '../pack/cli'
     }
 }
 
@@ -157,7 +165,7 @@ project('lib-unlimited') {
         description 'Copies structures to release directory.'
 
         from 'src/main/resources/files/structures/'
-        include '*.json'
+        include '*'
         into '../pack/structures'
     }
 
@@ -283,7 +291,16 @@ task copyVersionInfo(type: Copy) {
     into 'pack/lib/'
 }
 
-task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', ':cli:copyScripts', ':cli:copyJar', ':lib-unlimited:copyStructures', ':lib-unlimited:copyLibraries', ':lib-unlimited:copyExternalTools', ':gui-database:copyJar'], type: Zip) {
+task createLogsDirectory(type: Copy) {
+    description 'Copies logs directory to release.'
+    mustRunAfter 'cleanPackDir'
+
+    from 'logs/'
+    include '*'
+    into 'pack/logs/'
+}
+
+task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', 'createLogsDirectory', ':cli:copyMainScripts', ':cli:copyUtilScripts', ':cli:copyJar', ':lib-unlimited:copyStructures', ':lib-unlimited:copyLibraries', ':lib-unlimited:copyExternalTools', ':gui-database:copyJar'], type: Zip) {
     description 'Zips all distribution files from pack folder.'
 
     archiveName project.name + "-" + project.version + ".zip"
