@@ -201,6 +201,7 @@ public class DatabaseBankHelper {
         }
     }
 
+    // FIXME: limit to current directory and original-... files to prevent from catching wrong banks
     private static void copyOriginalBankFilesToTargetDirectory(String sourceDirectory, String targetDirectory) throws IOException {
         Files.walk(Paths.get(sourceDirectory))
 
