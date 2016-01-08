@@ -169,6 +169,10 @@ public class DbPatchDto {
             return direction;
         }
 
+        public Integer getSteps() {
+            return steps;
+        }
+
         @JsonIgnore
         public boolean isPartialChange() {
             return partialValues != null;
