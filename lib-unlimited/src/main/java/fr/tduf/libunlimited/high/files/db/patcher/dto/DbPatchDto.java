@@ -13,6 +13,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.OptionalInt;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.renderComparator;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
@@ -111,6 +112,12 @@ public class DbPatchDto {
         @JsonProperty("partialValues")
         private List<DbFieldValueDto> partialValues;
 
+        @JsonProperty("direction")
+        private DirectionEnum direction;
+
+        @JsonProperty("steps")
+        private Integer steps;
+
         @Override
         public boolean equals(Object o) {
             return reflectionEquals(this, o);
@@ -172,6 +179,8 @@ public class DbPatchDto {
                 private String reference;
                 private DbDto.Topic topic;
                 private ChangeTypeEnum type;
+                private DirectionEnum moveDirection;
+                private Integer moveSteps;
 
                 @Override
                 public DbChangeDtoBuilder withType(ChangeTypeEnum type) {
@@ -216,6 +225,13 @@ public class DbPatchDto {
                 }
 
                 @Override
+                public DbChangeDtoBuilder moveForDirection(DirectionEnum direction, OptionalInt steps) {
+                    this.moveDirection = direction;
+                    this.moveSteps = steps.orElse(1);
+                    return this;
+                }
+
+                @Override
                 public DbChangeDto build() {
                     if (partialEntryValues != null && entryValues != null) {
                         throw new IllegalStateException("Conflict in change: can't have partialEntryValues and entryValues at the same time");
@@ -230,6 +246,8 @@ public class DbPatchDto {
                     changeObject.partialValues = partialEntryValues;
                     changeObject.value = value;
                     changeObject.locale = locale;
+                    changeObject.direction = moveDirection;
+                    changeObject.steps = moveSteps;
 
                     return changeObject;
                 }
@@ -259,13 +277,15 @@ public class DbPatchDto {
             DbChangeDtoBuilder withValue(String resourceValue);
 
             DbChangeDtoBuilder forLocale(DbResourceDto.Locale locale);
+
+            DbChangeDtoBuilder moveForDirection(DirectionEnum direction, OptionalInt steps);
         }
 
         /**
          * All supported database changes.
          */
         public enum ChangeTypeEnum {
-            UPDATE(2), DELETE(0), UPDATE_RES(3), DELETE_RES(1);
+            MOVE(0), UPDATE(3), DELETE(1), UPDATE_RES(4), DELETE_RES(2);
 
             private final int renderPriority;
 
@@ -276,6 +296,13 @@ public class DbPatchDto {
             public int getRenderPriority() {
                 return renderPriority;
             }
+        }
+
+        /**
+         * All supported move directions
+         */
+        public enum DirectionEnum {
+            UP, DOWN, ATW_UP, ATW_DOWN
         }
     }
 }
