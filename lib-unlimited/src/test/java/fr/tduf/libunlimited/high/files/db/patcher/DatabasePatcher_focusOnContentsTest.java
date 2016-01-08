@@ -438,23 +438,10 @@ public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonT
         assertThat(actualEntries)
                 .hasSize(8);
 
-        assertThat(actualEntries.stream()
+        assertAllEntriesHaveFirstItem(actualEntries, "632098801");
 
-                .map ( (entry) -> entry.getItems().get(0).getRawValue() )
-
-                .collect(toList()))
-
-                .containsOnly("632098801");
-
-        assertThat(actualEntries.stream()
-
-                .sorted( (entry1, entry2) -> Long.valueOf(entry1.getId()).compareTo(entry2.getId()))
-
-                .map ( (entry) -> entry.getItems().get(1).getRawValue() )
-
-                .collect(toList()))
-
-                .containsExactly("63166127", "57376127", "55556127", "58456127", "54776127", "54966127", "55466127", "61076127");
+        assertEntriesHaveSecondItems(actualEntries,
+                "63166127", "57376127", "55556127", "58456127", "54776127", "54966127", "55466127", "61076127");
     }
 
     @Test
@@ -478,23 +465,10 @@ public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonT
         assertThat(actualEntries)
                 .hasSize(8);
 
-        assertThat(actualEntries.stream()
+        assertAllEntriesHaveFirstItem(actualEntries, "632098801");
 
-                .map ( (entry) -> entry.getItems().get(0).getRawValue() )
-
-                .collect(toList()))
-
-                .containsOnly("632098801");
-
-        assertThat(actualEntries.stream()
-
-                .sorted( (entry1, entry2) -> Long.valueOf(entry1.getId()).compareTo(entry2.getId()))
-
-                .map ( (entry) -> entry.getItems().get(1).getRawValue() )
-
-                .collect(toList()))
-
-                .containsExactly("55556127", "57376127", "63166127", "58456127", "54776127", "54966127", "55466127", "61076127");
+        assertEntriesHaveSecondItems(actualEntries,
+                "55556127", "57376127", "63166127", "58456127", "54776127", "54966127", "55466127", "61076127");
     }
 
     @Test
@@ -518,23 +492,10 @@ public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonT
         assertThat(actualEntries)
                 .hasSize(8);
 
-        assertThat(actualEntries.stream()
+        assertAllEntriesHaveFirstItem(actualEntries, "632098801");
 
-                .map ( (entry) -> entry.getItems().get(0).getRawValue() )
-
-                .collect(toList()))
-
-                .containsOnly("632098801");
-
-        assertThat(actualEntries.stream()
-
-                .sorted( (entry1, entry2) -> Long.valueOf(entry1.getId()).compareTo(entry2.getId()))
-
-                .map ( (entry) -> entry.getItems().get(1).getRawValue() )
-
-                .collect(toList()))
-
-                .containsExactly("63166127", "57376127", "55556127", "58456127", "54776127", "54966127", "55466127", "61076127");
+        assertEntriesHaveSecondItems(actualEntries,
+                "63166127", "57376127", "55556127", "58456127", "54776127", "54966127", "55466127", "61076127");
     }
 
     private static int getEntryHashCode(BulkDatabaseMiner databaseMiner, String ref, DbDto.Topic topic) {
@@ -550,5 +511,27 @@ public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonT
                 .filter((item) -> item.getFieldRank() != 103)
                 .map(DbDataDto.Item::getRawValue)
                 .collect(toList());
+    }
+
+    private static void assertAllEntriesHaveFirstItem(List<DbDataDto.Entry> actualEntries, String firstItemValue) {
+        assertThat(actualEntries.stream()
+
+                .map ( (entry) -> entry.getItems().get(0).getRawValue() )
+
+                .collect(toList()))
+
+                .containsOnly(firstItemValue);
+    }
+
+    private static void assertEntriesHaveSecondItems(List<DbDataDto.Entry> actualEntries, String... secondItemValues) {
+        assertThat(actualEntries.stream()
+
+                .sorted( (entry1, entry2) -> Long.valueOf(entry1.getId()).compareTo(entry2.getId()))
+
+                .map ( (entry) -> entry.getItems().get(1).getRawValue() )
+
+                .collect(toList()))
+
+                .containsExactly(secondItemValues);
     }
 }

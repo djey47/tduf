@@ -83,7 +83,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .map(DbDataDto.Entry::getId);
 
         if (potentialIdentifier.isPresent()) {
-            final Long entryId = potentialIdentifier.get();
+
             final DbPatchDto.DbChangeDto.DirectionEnum moveDirection = requireNonNull(changeObject.getDirection(), "Direction is required for MOVE patch");
             final int steps = ofNullable(changeObject.getSteps())
                     .orElse(1);
@@ -91,9 +91,12 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                     steps * -1 :
                     steps);
 
-            databaseChangeHelper.moveEntryWithIdentifier(actualSteps, entryId, changedTopic);
+            databaseChangeHelper.moveEntryWithIdentifier(actualSteps, potentialIdentifier.get(), changedTopic);
+
         } else {
+
             Log.warn("No entry to be moved, using filter: " + filterCompounds);
+
         }
     }
 
