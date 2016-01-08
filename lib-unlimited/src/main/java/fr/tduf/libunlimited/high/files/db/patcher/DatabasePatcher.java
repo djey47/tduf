@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.DirectionEnum.UP;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
@@ -82,12 +83,15 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .map(DbDataDto.Entry::getId);
 
         if (potentialIdentifier.isPresent()) {
+            final Long entryId = potentialIdentifier.get();
             final DbPatchDto.DbChangeDto.DirectionEnum moveDirection = requireNonNull(changeObject.getDirection(), "Direction is required for MOVE patch");
-            final Integer steps = ofNullable(changeObject.getSteps())
+            final int steps = ofNullable(changeObject.getSteps())
                     .orElse(1);
-            final int actualSteps = (DbPatchDto.DbChangeDto.DirectionEnum.UP == moveDirection) ? steps * -1 : steps;
+            final int actualSteps = (UP == moveDirection ?
+                    steps * -1 :
+                    steps);
 
-            databaseChangeHelper.moveEntryWithIdentifier(actualSteps, potentialIdentifier.get(), changedTopic);
+            databaseChangeHelper.moveEntryWithIdentifier(actualSteps, entryId, changedTopic);
         } else {
             Log.warn("No entry to be moved, using filter: " + filterCompounds);
         }

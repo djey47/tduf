@@ -1,7 +1,7 @@
 {
   "changes": [
     {
-      "comment": "Existing entry to be moved one rank UP having field #1 (Car) 632098801 and field #2 (Color_ID_1) 55556127",
+      "comment": "Existing entry to be moved two ranks UP having field #1 (Car) 632098801 and field #2 (Color_ID_1) 55556127",
       "type": "MOVE",
       "direction": "UP",
       "steps": 2,

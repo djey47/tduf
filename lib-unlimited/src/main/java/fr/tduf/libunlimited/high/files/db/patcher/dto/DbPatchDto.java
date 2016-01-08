@@ -310,7 +310,7 @@ public class DbPatchDto {
          * All supported move directions
          */
         public enum DirectionEnum {
-            UP, DOWN, ATW_UP, ATW_DOWN
+            UP, DOWN
         }
     }
 }
