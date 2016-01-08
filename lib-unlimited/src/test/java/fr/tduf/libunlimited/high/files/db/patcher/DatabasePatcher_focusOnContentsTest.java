@@ -417,6 +417,46 @@ public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonT
                 .findAny()).isEmpty();
     }
 
+    @Test
+    public void apply_whenMovePatch_andUpDirection_shouldMoveExistingEntryOnePosition() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto movePatch = readObjectFromResource(DbPatchDto.class, "/db/patch/moveContents-up.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarColors.json");
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+
+        // WHEN
+        patcher.apply(movePatch);
+
+
+        // THEN
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+
+        List<DbDataDto.Entry> actualEntries = databaseMiner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(1, "632098801"), CAR_COLORS)
+                .collect(toList());
+        assertThat(actualEntries)
+                .hasSize(8);
+
+        assertThat(actualEntries.stream()
+
+                .map ( (entry) -> entry.getItems().get(0).getRawValue() )
+
+                .collect(toList()))
+
+                .containsOnly("632098801");
+
+        assertThat(actualEntries.stream()
+
+                .sorted( (entry1, entry2) -> Long.valueOf(entry1.getId()).compareTo(entry2.getId()))
+
+                .map ( (entry) -> entry.getItems().get(1).getRawValue() )
+
+                .collect(toList()))
+
+                .containsExactly("63166127", "57376127", "55556127", "58456127", "54776127", "54966127", "55466127", "61076127");
+    }
+
     private static int getEntryHashCode(BulkDatabaseMiner databaseMiner, String ref, DbDto.Topic topic) {
         return databaseMiner
                 .getContentEntryFromTopicWithReference(ref, topic)

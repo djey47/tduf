@@ -165,6 +165,10 @@ public class DbPatchDto {
             return filterCompounds;
         }
 
+        public DirectionEnum getDirection() {
+            return direction;
+        }
+
         @JsonIgnore
         public boolean isPartialChange() {
             return partialValues != null;

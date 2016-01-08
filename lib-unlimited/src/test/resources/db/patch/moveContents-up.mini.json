@@ -1,0 +1,20 @@
+{
+  "changes": [
+    {
+      "comment": "Existing entry to be moved one rank UP having field #1 (Car) 632098801 and field #2 (Color_ID_1) 63166127",
+      "type": "MOVE",
+      "direction": "UP",
+      "topic": "CAR_COLORS",
+      "filter": [
+        {
+          "rank": 1,
+          "value": "632098801"
+        },
+        {
+          "rank": 2,
+          "value": "63166127"
+        }
+      ]
+    }
+  ]
+}

@@ -62,9 +62,33 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
             case DELETE:
                 deleteContents(changeObject);
                 break;
+            case MOVE:
+                moveContents(changeObject);
+                break;
         }
 
         BulkDatabaseMiner.clearAllCaches();
+    }
+
+    private void moveContents(DbPatchDto.DbChangeDto changeObject) {
+
+        final DbDto.Topic changedTopic = changeObject.getTopic();
+        final List<DbFieldValueDto> filterCompounds = changeObject.getFilterCompounds();
+
+        final Optional<Long> potentialIdentifier = databaseMiner.getContentEntryStreamMatchingCriteria(filterCompounds, changedTopic)
+
+                .findFirst()
+
+                .map(DbDataDto.Entry::getId);
+
+        if (potentialIdentifier.isPresent()) {
+            final DbPatchDto.DbChangeDto.DirectionEnum moveDirection = requireNonNull(changeObject.getDirection(), "Direction is required for MOVE patch");
+            final int step = (DbPatchDto.DbChangeDto.DirectionEnum.UP == moveDirection) ? -1 : 1;
+
+            databaseChangeHelper.moveEntryWithIdentifier(step, potentialIdentifier.get(), changedTopic);
+        } else {
+            Log.warn("No entry to be moved, using filter: " + filterCompounds);
+        }
     }
 
     private void deleteContents(DbPatchDto.DbChangeDto changeObject) {
