@@ -107,7 +107,7 @@ public class DatabaseBankHelper {
 
     private static void rebuildFileStructureAndRepackDatabase(String databaseDirectory, String targetDirectory, String bankFileName, BankSupport bankSupport) {
         try {
-            prepareFilesToBeRepacked(databaseDirectory, bankFileName, bankSupport);
+            prepareFilesToBeRepacked(databaseDirectory, bankFileName);
 
             Log.debug(thisClass.getSimpleName(), "databaseDirectory: " + databaseDirectory);
             Log.debug(thisClass.getSimpleName(), "targetDirectory: " + targetDirectory);
@@ -119,15 +119,13 @@ public class DatabaseBankHelper {
         }
     }
 
-    // TODO remove unused parameter
-    private static void prepareFilesToBeRepacked(String databaseDirectory, String targetBankFileName, BankSupport bankSupport) throws IOException {
+    private static void prepareFilesToBeRepacked(String databaseDirectory, String targetBankFileName) throws IOException {
 
         Path databasePath = Paths.get(databaseDirectory);
         Path repackedBankPath = databasePath.resolve(targetBankFileName);
-        int currentDepth = databasePath.getNameCount();
         Files.walk(databasePath)
 
-                .filter((path) -> path.getNameCount() == currentDepth + 1)
+                .filter((path) -> path.getParent().equals(databasePath))
 
                 .filter((path) -> !Files.isDirectory(path))
 
