@@ -119,6 +119,7 @@ public class DatabaseBankHelper {
         }
     }
 
+    // TODO remove unused parameter
     private static void prepareFilesToBeRepacked(String databaseDirectory, String targetBankFileName, BankSupport bankSupport) throws IOException {
 
         Path databasePath = Paths.get(databaseDirectory);
@@ -201,11 +202,15 @@ public class DatabaseBankHelper {
         }
     }
 
-    // FIXME: limit to current directory and original-... files to prevent from catching wrong banks
     private static void copyOriginalBankFilesToTargetDirectory(String sourceDirectory, String targetDirectory) throws IOException {
-        Files.walk(Paths.get(sourceDirectory))
+        Path sourcePath = Paths.get(sourceDirectory);
+        Files.walk(sourcePath)
+
+                .filter((path) -> path.getParent().equals(sourcePath))
 
                 .filter((path) -> Files.isRegularFile(path))
+
+                .filter((filePath) -> filePath.getFileName().toString().startsWith(GenuineBnkGateway.PREFIX_ORIGINAL_BANK_FILE))
 
                 .filter((filePath) -> EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(filePath.toString())))
 
