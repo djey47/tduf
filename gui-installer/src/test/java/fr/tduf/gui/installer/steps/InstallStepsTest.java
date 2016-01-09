@@ -88,7 +88,8 @@ public class InstallStepsTest {
     @Test
     public void unpackDatabaseToJson_shouldCallBankSupportComponent() throws IOException, URISyntaxException {
         // GIVEN
-        createFakeDatabase(tempDirectory, "");
+        String databaseDirectory = Paths.get(tempDirectory, "Euro", "Bnk", "Database").toString();
+        createFakeDatabase(databaseDirectory, "");
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)
@@ -199,7 +200,7 @@ public class InstallStepsTest {
     }
 
     private static void createFakeDatabase(String databaseDirectory, String bankFileNamePrefix) throws IOException {
-        Path databaseBanksPath = Paths.get(databaseDirectory, "Euro", "Bnk", "Database");
+        Path databaseBanksPath = Paths.get(databaseDirectory);
         Files.createDirectories(databaseBanksPath);
 
         Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB.bnk"));
@@ -219,7 +220,7 @@ public class InstallStepsTest {
         Path jsonDatabasePath = Paths.get(thisClass.getResource("/db-json").getFile());
         Files.walk(jsonDatabasePath)
 
-                .filter((path) -> !Files.isDirectory(path))
+                .filter((path) -> Files.isRegularFile(path))
 
                 .filter((path) -> EXTENSION_JSON.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
 
