@@ -270,7 +270,7 @@ public class DatabaseTool extends GenericTool {
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
         final List<String> writtenFileNames = convertDatabaseFilesToJson(extractedDatabaseDirectory, jsonDatabaseDirectory, missingTopicContents, integrityErrors);
 
-        List<DbDto> databaseObjects;
+        List<DbDto> databaseObjects = new ArrayList<>();
         outLine("-> JSON database directory: " + sourceDirectory);
         if(extensiveCheck) {
             outLine("Now checking database...");
@@ -278,7 +278,9 @@ public class DatabaseTool extends GenericTool {
             outLine("Done checking.");
         } else {
             outLine("Now loading database...");
-            databaseObjects = loadDatabaseFromJsonFiles(jsonDatabaseDirectory);
+            try {
+                databaseObjects = loadDatabaseFromJsonFiles(jsonDatabaseDirectory);
+            } catch (IllegalArgumentException ignored) {}
             outLine("Done loading.");
         }
 
