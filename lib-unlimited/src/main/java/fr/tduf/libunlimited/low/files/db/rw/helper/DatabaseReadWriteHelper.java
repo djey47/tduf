@@ -29,6 +29,8 @@ public class DatabaseReadWriteHelper {
     private static final String ENCODING_UTF_8 = "UTF-8";
     private static final String ENCODING_UTF_16 = "UTF-16";
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     /**
      * Reads all database contents (+resources) from specified topic into databaseDirectory.
      * @param topic             : topic to parse TDU contents from
@@ -76,7 +78,7 @@ public class DatabaseReadWriteHelper {
             return Optional.<DbDto>empty();
         }
 
-        return Optional.of(new ObjectMapper().readValue(jsonFile, DbDto.class));
+        return Optional.of(objectMapper.readValue(jsonFile, DbDto.class));
     }
 
     /**
