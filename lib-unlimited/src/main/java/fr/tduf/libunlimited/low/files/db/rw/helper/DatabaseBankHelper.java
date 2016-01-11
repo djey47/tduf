@@ -123,11 +123,9 @@ public class DatabaseBankHelper {
 
         Path databasePath = Paths.get(databaseDirectory);
         Path repackedBankPath = databasePath.resolve(targetBankFileName);
-        Files.walk(databasePath)
+        Files.walk(databasePath, 1)
 
-                .filter((path) -> path.getParent().equals(databasePath))
-
-                .filter((path) -> !Files.isDirectory(path))
+                .filter((path) -> Files.isRegularFile(path))
 
                 .forEach((filePath) -> {
 
@@ -201,10 +199,7 @@ public class DatabaseBankHelper {
     }
 
     private static void copyOriginalBankFilesToTargetDirectory(String sourceDirectory, String targetDirectory) throws IOException {
-        Path sourcePath = Paths.get(sourceDirectory);
-        Files.walk(sourcePath)
-
-                .filter((path) -> path.getParent().equals(sourcePath))
+        Files.walk(Paths.get(sourceDirectory), 1)
 
                 .filter((path) -> Files.isRegularFile(path))
 

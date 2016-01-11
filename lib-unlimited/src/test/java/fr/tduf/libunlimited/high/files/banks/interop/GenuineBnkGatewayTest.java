@@ -218,24 +218,24 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test(expected = NoSuchElementException.class)
-    public void searchOriginalBankFileName_whenNoFilePresent_shouldThrowException() throws IOException {
+    public void searchOriginalBankFilePath_whenNoFilePresent_shouldThrowException() throws IOException {
         // GIVEN-WHEN
-        GenuineBnkGateway.searchOriginalBankFileName(tempDirectory);
+        GenuineBnkGateway.searchOriginalBankPath(tempDirectory);
 
         // THEN: exception
     }
 
     @Test
-    public void searchOriginalBankFileName_whenCorrectFilePresent_shouldReturnFileName() throws IOException {
+    public void searchOriginalBankFilePath_whenCorrectFilePresent_shouldReturnFileName() throws IOException {
         // GIVEN
         String officialBankFileName = "A3_V6.bnk";
         createRepackedFileTree(officialBankFileName);
 
         // WHEN
-        String actualFileName = GenuineBnkGateway.searchOriginalBankFileName(tempDirectory);
+        Path actualFilePath = GenuineBnkGateway.searchOriginalBankPath(tempDirectory);
 
         // THEN
-        assertThat(actualFileName).isEqualTo("original-" + officialBankFileName);
+        assertThat(actualFilePath.getFileName().toString()).isEqualTo("original-" + officialBankFileName);
     }
 
     private static String createTempDirectory() throws IOException {

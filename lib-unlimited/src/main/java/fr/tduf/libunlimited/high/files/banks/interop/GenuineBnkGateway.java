@@ -81,25 +81,24 @@ public class GenuineBnkGateway implements BankSupport {
         Log.debug(thisClass.getSimpleName(), "inputDirectory: " + inputDirectory);
         Log.debug(thisClass.getSimpleName(), "outputBankFileName: " + outputBankFileName);
 
-        String originalBankFileName = searchOriginalBankFileName(inputDirectory);
-        Path originalBankFilePath = Paths.get(inputDirectory, originalBankFileName);
+        Path originalBankFilePath = searchOriginalBankPath(inputDirectory);
         Files.copy(originalBankFilePath, Paths.get(outputBankFileName), StandardCopyOption.REPLACE_EXISTING);
 
-        Log.debug(thisClass.getSimpleName(), "originalBankFilePath: " + originalBankFilePath.toString());
+        Log.debug(thisClass.getSimpleName(), "originalBankFilePath: " + originalBankFilePath);
 
         getBankInfo(originalBankFilePath.toString()).getPackedFiles()
 
                 .forEach((infoObject) -> repackFileWithFullPath(infoObject.getFullName(), outputBankFileName, Paths.get(inputDirectory)));
     }
 
-    static String searchOriginalBankFileName(String inputDirectory) throws IOException {
-        return Files.walk(Paths.get(inputDirectory))
+    static Path searchOriginalBankPath(String inputDirectory) throws IOException {
+        return Files.walk(Paths.get(inputDirectory), 1)
 
-                .filter((path) -> !Files.isDirectory(path))
+                .filter((path) -> Files.isRegularFile(path))
 
                 .filter((path) -> EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
 
-                .findAny().get().getFileName().toString();
+                .findAny().get();
     }
 
     static String getInternalPathFromRealPath(Path realPath, Path basePath) {
