@@ -85,9 +85,9 @@ public class SlotsBrowserStageController extends AbstractGuiController {
     }
 
     /**
-     *
-     * @param miner
-     * @return
+     * Creates and display dialog.
+     * @param miner : instance of database miner to parse contents
+     * @return selected item, if any.
      */
     public Optional<VehicleSlotDataItem> initAndShowModalDialog(BulkDatabaseMiner miner) {
         this.miner = requireNonNull(miner, "Database miner instance is required.");
@@ -117,6 +117,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
         slotsTableView.setItems(slotsData);
     }
 
+    // TODO see to implement
     private void selectEntryInTableAndScroll(String entryReference) {
         slotsData.stream()
 
@@ -183,19 +184,25 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
                             .map(DbResourceDto.Entry::getValue)
 
+                            .map((resourceValue) -> RESOURCE_VALUE_NONE.equals(resourceValue) ? null : resourceValue)
+
                             .orElse("");
 
                     final String modelName = miner.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, FIELD_RANK_CAR_MODEL_NAME, entryInternalIdentifier, defaultLocale)
 
                             .map(DbResourceDto.Entry::getValue)
 
-                            .orElse(RESOURCE_VALUE_NONE);
+                            .map((resourceValue) -> RESOURCE_VALUE_NONE.equals(resourceValue) ? null : resourceValue)
+
+                            .orElse("");
 
                     final String versionName = miner.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, FIELD_RANK_CAR_VERSION_NAME, entryInternalIdentifier, defaultLocale)
 
                             .map(DbResourceDto.Entry::getValue)
 
-                            .orElse(RESOURCE_VALUE_NONE);
+                            .map((resourceValue) -> RESOURCE_VALUE_NONE.equals(resourceValue) ? null : resourceValue)
+
+                            .orElse("");
 
                     return String.format("%s %s %s", brandName, modelName, versionName).trim();
                 })
