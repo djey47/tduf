@@ -57,6 +57,7 @@ public class DisplayConstants {
 
     public static final String TITLE_APPLICATION = "TDUF Database Editor";
     public static final String TITLE_SUB_ENTRIES = " : Content entries";
+    public static final String TITLE_SUB_FIELDS = " : Content fields";
     public static final String TITLE_SUB_RESOURCES = " : Resources";
     public static final String TITLE_SUB_EXPORT = " : Export entry";
     public static final String TITLE_SUB_IMPORT = " : Import entry";

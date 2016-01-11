@@ -7,6 +7,7 @@ public class FxConstants {
     public static final String PATH_RESOURCE_MAIN_STAGE_DESIGNER = "/designer/MainDesigner.fxml";
     public static final String PATH_RESOURCE_RES_STAGE_DESIGNER = "/designer/ResourcesDesigner.fxml";
     public static final String PATH_ENTRIES_RES_STAGE_DESIGNER = "/designer/EntriesDesigner.fxml";
+    public static final String PATH_FIELDS_BROWSER_STAGE_DESIGNER = "/designer/FieldsBrowserDesigner.fxml";
 
     public static final String PATH_RESOURCE_CSS_TOOLBARS = "/css/ToolBars.css";
     public static final String PATH_RESOURCE_CSS_TABCONTENTS = "/css/TabContents.css";
