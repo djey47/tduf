@@ -53,6 +53,9 @@ import java.util.*;
 
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
+import static javafx.scene.control.Alert.AlertType.ERROR;
+import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
 /**
  * Makes it a possible to intercept all GUI events.
@@ -153,7 +156,7 @@ public class MainStageController extends AbstractGuiController {
 
         initStatusBar();
 
-        if(databaseAutoLoad) {
+        if (databaseAutoLoad) {
             Log.trace(THIS_CLASS_NAME, "->init: database auto load");
             loadDatabaseFromDirectory(initialDatabaseDirectory);
         }
@@ -323,7 +326,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        askForPatchLocationAndExportToFile();
+        askForReferencesAndPatchLocationThenExportToFile();
     }
 
     @FXML
@@ -622,7 +625,7 @@ public class MainStageController extends AbstractGuiController {
     private void saveDatabaseToDirectory(String databaseLocation) {
         DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects, databaseLocation);
 
-        CommonDialogsHelper.showDialog(Alert.AlertType.INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseLocation);
+        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseLocation);
     }
 
     private void addEntryAndUpdateStage() {
@@ -711,28 +714,40 @@ public class MainStageController extends AbstractGuiController {
         dialogsHelper.showExportResultDialog(changeDataController.exportCurrentEntryToPchValue());
     }
 
-    private void askForPatchLocationAndExportToFile() throws IOException {
+    private void askForReferencesAndPatchLocationThenExportToFile() throws IOException {
+
+        final DbDto.Topic currentTopic = currentTopicObject.getTopic();
+        Optional<String> potentialEntryRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopic);
+
+        List<String> selectedEntryRefs = new ArrayList<>();
+        if (potentialEntryRef.isPresent()) {
+            final List<ContentEntryDataItem> selectedItems = entriesStageController.initAndShowModalDialogForMultiSelect(currentTopic, getCurrentProfileObject().getName());
+
+            selectedEntryRefs.addAll(selectedItems.stream()
+
+                    .map((item) -> item.referenceProperty().get())
+
+                    .collect(toList()));
+        }
 
         Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(false, getWindow());
         if (!potentialFile.isPresent()) {
             return;
         }
 
-        DbDto.Topic currentTopic = currentTopicObject.getTopic();
-        Optional<String> potentialEntryRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopic);
         String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT;
         String fileLocation = potentialFile.get().getPath();
 
-        if (changeDataController.exportEntriesToPatchFile(currentTopic, potentialEntryRef, fileLocation)) {
-            String message = potentialEntryRef.isPresent() ?
-                    DisplayConstants.MESSAGE_ENTRY_EXPORTED :
-                    DisplayConstants.MESSAGE_ALL_ENTRIES_EXPORTED;
-            CommonDialogsHelper.showDialog(Alert.AlertType.INFORMATION, dialogTitle, message, fileLocation);
+        if (changeDataController.exportEntriesToPatchFile(currentTopic, selectedEntryRefs, fileLocation)) {
+            String message = selectedEntryRefs.isEmpty() ?
+                    DisplayConstants.MESSAGE_ALL_ENTRIES_EXPORTED :
+                    DisplayConstants.MESSAGE_ENTRIES_EXPORTED;
+            CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, message, fileLocation);
         } else {
-            String message = potentialEntryRef.isPresent() ?
-                    DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRY :
-                    DisplayConstants.MESSAGE_UNABLE_EXPORT_ALL_ENTRIES;
-            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, dialogTitle, message, DisplayConstants.MESSAGE_SEE_LOGS);
+            String message = selectedEntryRefs.isEmpty() ?
+                    DisplayConstants.MESSAGE_UNABLE_EXPORT_ALL_ENTRIES :
+                    DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRIES;
+            CommonDialogsHelper.showDialog(ERROR, dialogTitle, message, DisplayConstants.MESSAGE_SEE_LOGS);
         }
     }
 
@@ -750,11 +765,11 @@ public class MainStageController extends AbstractGuiController {
             viewDataController.updateEntryCount();
             viewDataController.updateAllPropertiesWithItemValues();
 
-            CommonDialogsHelper.showDialog(Alert.AlertType.INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED, patchFile.getPath());
+            CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED, patchFile.getPath());
         } catch (Exception e) {
             e.printStackTrace();
 
-            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS);
+            CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS);
         }
     }
 
@@ -771,11 +786,11 @@ public class MainStageController extends AbstractGuiController {
 
             viewDataController.updateAllPropertiesWithItemValues();
 
-            CommonDialogsHelper.showDialog(Alert.AlertType.INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_PERFORMANCE_PACK, packFilePath);
+            CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_PERFORMANCE_PACK, packFilePath);
         } catch (Exception e) {
             e.printStackTrace();
 
-            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK, DisplayConstants.MESSAGE_SEE_LOGS);
+            CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK, DisplayConstants.MESSAGE_SEE_LOGS);
         }
     }
 
