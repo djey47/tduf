@@ -5,6 +5,7 @@ import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.controllers.SlotsBrowserStageController;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
 import fr.tduf.gui.installer.stages.SlotsBrowserStageDesigner;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
@@ -17,7 +18,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.JsonGateway;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
-import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -79,24 +79,6 @@ public class InstallSteps {
     }
 
     /**
-     * Unpacks TDU database and loads JSON result.
-     * @param configuration : settings to perform current step
-     * @return information to process loaded database
-     * @throws IOException
-     */
-    private static DatabaseContext loadDatabaseStep(InstallerConfiguration configuration) throws IOException {
-        String jsonDatabaseDirectory = Files.createTempDirectory("guiInstaller").toString();
-
-        unpackDatabaseToJson(configuration, jsonDatabaseDirectory);
-
-        // TODO check if all files have been created
-
-        List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseDirectory);
-
-        return new DatabaseContext(allTopicObjects, jsonDatabaseDirectory);
-    }
-
-    /**
      * Only copies files in assets subfolders to correct TDU locations.
      * @param configuration : settings to perform current step
      */
@@ -146,7 +128,7 @@ public class InstallSteps {
         requireNonNull(configuration, "Installer configuration is required.");
         requireNonNull(databaseContext, "Database context is required.");
 
-        selectVehicleSlot(databaseContext);
+        String vehicleSlot = selectVehicleSlot(databaseContext);
 
         applyPatches(configuration, databaseContext);
 
@@ -172,14 +154,20 @@ public class InstallSteps {
         return jsonFiles;
     }
 
-    static void selectVehicleSlot(DatabaseContext databaseContext) throws IOException {
-        Log.trace(THIS_CLASS_NAME, "->Selecting vehicle slot");
+    static String selectVehicleSlot(DatabaseContext databaseContext) throws IOException {
+        Log.info(THIS_CLASS_NAME, "->Selecting vehicle slot");
 
         requireNonNull(databaseContext, "Database context is required.");
 
         SlotsBrowserStageController slotsBrowserController = initSlotsBrowserController();
 
-        slotsBrowserController.initAndShowModalDialog(databaseContext.getMiner());
+        Optional<VehicleSlotDataItem> selectedItem = slotsBrowserController.initAndShowModalDialog(databaseContext.getMiner());
+
+        Log.info(THIS_CLASS_NAME, "->Using vehicle slot: " + selectedItem);
+
+        return selectedItem
+                .map((item) -> item.referenceProperty().get())
+                .orElse("");
     }
 
     static List<String> applyPatches(InstallerConfiguration configuration, DatabaseContext databaseContext) throws IOException, ReflectiveOperationException {
@@ -231,6 +219,24 @@ public class InstallSteps {
         DatabaseBankHelper.repackDatabaseFromDirectory(extractedDatabaseDirectory, databaseDirectory, Optional.of(jsonDatabaseDirectory), configuration.getBankSupport());
 
         Log.info(THIS_CLASS_NAME, "->Repacked database: " + extractedDatabaseDirectory + " to " + databaseDirectory);
+    }
+
+    /**
+     * Unpacks TDU database and loads JSON result.
+     * @param configuration : settings to perform current step
+     * @return information to process loaded database
+     * @throws IOException
+     */
+    private static DatabaseContext loadDatabaseStep(InstallerConfiguration configuration) throws IOException {
+        String jsonDatabaseDirectory = Files.createTempDirectory("guiInstaller").toString();
+
+        unpackDatabaseToJson(configuration, jsonDatabaseDirectory);
+
+        // TODO check if all files have been created
+
+        List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseDirectory);
+
+        return new DatabaseContext(allTopicObjects, jsonDatabaseDirectory);
     }
 
     private static String getTduDatabaseDirectory(InstallerConfiguration configuration) {
