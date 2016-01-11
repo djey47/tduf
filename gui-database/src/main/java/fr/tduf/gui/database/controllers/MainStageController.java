@@ -20,6 +20,7 @@ import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.gui.database.factory.EntryCellFactory;
 import fr.tduf.gui.database.stages.EntriesDesigner;
+import fr.tduf.gui.database.stages.FieldsBrowserDesigner;
 import fr.tduf.gui.database.stages.ResourcesDesigner;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -71,6 +72,7 @@ public class MainStageController extends AbstractGuiController {
     private MainStageChangeDataController changeDataController;
     private ResourcesStageController resourcesStageController;
     private EntriesStageController entriesStageController;
+    private FieldsBrowserStageController fieldsBrowserStageController;
 
     Property<DbDto.Topic> currentTopicProperty;
     Property<DbResourceDto.Locale> currentLocaleProperty;
@@ -151,6 +153,8 @@ public class MainStageController extends AbstractGuiController {
         initResourcesStageController();
 
         initEntriesStageController();
+
+        initFieldsBrowserStageController();
 
         initTopicEntryHeaderPane();
 
@@ -326,7 +330,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        askForReferencesAndPatchLocationThenExportToFile();
+        askForExportOptionsThenExportToFile();
     }
 
     @FXML
@@ -499,6 +503,14 @@ public class MainStageController extends AbstractGuiController {
 
         entriesStageController = EntriesDesigner.init(entriesStage);
         entriesStageController.setMainStageController(this);
+    }
+
+    private void initFieldsBrowserStageController() throws IOException {
+        Stage entriesStage = new Stage();
+        Platform.runLater(() -> entriesStage.initOwner(getWindow()));
+
+        fieldsBrowserStageController = FieldsBrowserDesigner.init(entriesStage);
+        fieldsBrowserStageController.setMainStageController(this);
     }
 
     private void initSettingsPane(String databaseDirectory) throws IOException {
@@ -714,7 +726,8 @@ public class MainStageController extends AbstractGuiController {
         dialogsHelper.showExportResultDialog(changeDataController.exportCurrentEntryToPchValue());
     }
 
-    private void askForReferencesAndPatchLocationThenExportToFile() throws IOException {
+    // TODO extract methods
+    private void askForExportOptionsThenExportToFile() throws IOException {
 
         final DbDto.Topic currentTopic = currentTopicObject.getTopic();
         Optional<String> potentialEntryRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopic);
@@ -730,6 +743,12 @@ public class MainStageController extends AbstractGuiController {
                     .collect(toList()));
         }
 
+        final List<String> selectedEntryFields = fieldsBrowserStageController.initAndShowModalDialog(currentTopic, getCurrentProfileObject().getName()).stream()
+
+                .map((item) -> Integer.valueOf(item.rankProperty().get()).toString())
+
+                .collect(toList());
+
         Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(false, getWindow());
         if (!potentialFile.isPresent()) {
             return;
@@ -738,7 +757,7 @@ public class MainStageController extends AbstractGuiController {
         String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT;
         String fileLocation = potentialFile.get().getPath();
 
-        if (changeDataController.exportEntriesToPatchFile(currentTopic, selectedEntryRefs, fileLocation)) {
+        if (changeDataController.exportEntriesToPatchFile(currentTopic, selectedEntryRefs, selectedEntryFields, fileLocation)) {
             String message = selectedEntryRefs.isEmpty() ?
                     DisplayConstants.MESSAGE_ALL_ENTRIES_EXPORTED :
                     DisplayConstants.MESSAGE_ENTRIES_EXPORTED;

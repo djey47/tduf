@@ -9,6 +9,7 @@ import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -118,9 +119,9 @@ public class MainStageChangeDataController {
         return TdumtPatchConverter.getContentsValue(potentialRef, values);
     }
 
-    boolean exportEntriesToPatchFile(DbDto.Topic currentTopic, List<String> entryReferences, String patchFileLocation) throws IOException {
+    boolean exportEntriesToPatchFile(DbDto.Topic currentTopic, List<String> entryReferences, List<String> entryFields, String patchFileLocation) throws IOException {
 
-        return generatePatchObject(currentTopic, entryReferences, mainStageController.getDatabaseObjects())
+        return generatePatchObject(currentTopic, entryReferences, entryFields, mainStageController.getDatabaseObjects())
 
                 .map((patchObject) -> {
                     try {
@@ -158,16 +159,18 @@ public class MainStageChangeDataController {
                 .collect(toList());
     }
 
-    private static Optional<DbPatchDto> generatePatchObject(DbDto.Topic currentTopic, List<String> entryReferences, List<DbDto> databaseObjects) {
+    private static Optional<DbPatchDto> generatePatchObject(DbDto.Topic currentTopic, List<String> entryReferences, List<String> entryFields, List<DbDto> databaseObjects) {
         try {
             PatchGenerator patchGenerator = AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseObjects);
 
-            if (entryReferences.isEmpty()) {
-                return Optional.of(patchGenerator.makePatch(currentTopic, ALL, ALL));
-            } else {
-                return Optional.of(patchGenerator.makePatch(currentTopic, fromCollection(entryReferences), ALL));
-            }
+            final ItemRange refRange = entryReferences.isEmpty() ?
+                    ALL :
+                    fromCollection(entryReferences);
+            final ItemRange fieldRange = entryFields.isEmpty() ?
+                    ALL :
+                    fromCollection(entryFields);
 
+            return Optional.of(patchGenerator.makePatch(currentTopic, refRange, fieldRange));
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();

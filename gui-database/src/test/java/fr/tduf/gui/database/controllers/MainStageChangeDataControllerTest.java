@@ -60,7 +60,7 @@ public class MainStageChangeDataControllerTest {
 
 
         // WHEN
-        final boolean result = controller.exportEntriesToPatchFile(CAR_PHYSICS_DATA, asList("734237852", "1202238231", "1289993715"), patchFile);
+        final boolean result = controller.exportEntriesToPatchFile(CAR_PHYSICS_DATA, asList("734237852", "1202238231", "1289993715"), new ArrayList<>(), patchFile);
 
 
         // THEN
@@ -78,7 +78,7 @@ public class MainStageChangeDataControllerTest {
 
 
         // WHEN
-        final boolean result = controller.exportEntriesToPatchFile(CAR_PHYSICS_DATA, asList("734237852", "1202238231", "1289993715"), patchFile);
+        final boolean result = controller.exportEntriesToPatchFile(CAR_PHYSICS_DATA, asList("734237852", "1202238231", "1289993715"), new ArrayList<>(), patchFile);
 
 
         // THEN
@@ -88,7 +88,7 @@ public class MainStageChangeDataControllerTest {
     }
 
     @Test
-    public void exportEntriesToPatchFile_whenEmptyReferenceList_shouldExportAllRefs() throws Exception {
+    public void exportEntriesToPatchFile_whenEmptyLists_shouldExportAllRefs_andAllFields() throws Exception {
 
         // GIVEN
         final Path patchPath = Paths.get(createTempDirectory(), "export-all.mini.json");
@@ -98,13 +98,44 @@ public class MainStageChangeDataControllerTest {
 
 
         // WHEN
-        final boolean result = controller.exportEntriesToPatchFile(BRANDS, new ArrayList<>(), patchFile);
+        final boolean result = controller.exportEntriesToPatchFile(BRANDS, new ArrayList<>(), new ArrayList<>(), patchFile);
 
 
         // THEN
         StrictAssertions.assertThat(result).isTrue();
         final DbPatchDto patchObject = objectMapper.readValue(patchPath.toFile(), DbPatchDto.class);
         assertThat(patchObject.getChanges()).hasSize(172);
+
+        patchObject.getChanges().stream()
+
+                .filter((changeObject) -> changeObject.getType() == DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE)
+
+                .forEach((updateObject) -> assertThat(updateObject.isPartialChange()).isFalse());
+    }
+
+    @Test
+    public void exportEntriesToPatchFile_whenFieldList_shouldExportSelectedFields() throws Exception {
+
+        // GIVEN
+        final Path patchPath = Paths.get(createTempDirectory(), "export-partial-3fields.mini.json");
+        String patchFile = patchPath.toString();
+
+        when(mainStageController.getDatabaseObjects()).thenReturn(databaseObjects);
+
+
+        // WHEN
+        final boolean result = controller.exportEntriesToPatchFile(BRANDS, new ArrayList<>(), asList("1","2","3"), patchFile);
+
+
+        // THEN
+        assertThat(result).isTrue();
+        final DbPatchDto patchObject = objectMapper.readValue(patchPath.toFile(), DbPatchDto.class);
+
+        patchObject.getChanges().stream()
+
+                .filter((changeObject) -> changeObject.getType() == DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE)
+
+                .forEach((updateObject) -> assertThat(updateObject.getPartialValues()).hasSize(3));
     }
 
     private static String createTempDirectory() throws IOException {
