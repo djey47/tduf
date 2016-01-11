@@ -17,11 +17,17 @@
                         <Font name="System Bold Italic" size="13.0" />
                      </font>
                   </Label>
-                  <Label alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0" text="Click an entry below to use it.">
+                  <Label fx:id="instructionsLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0" text="Click an entry below to use it.">
                      <font>
                         <Font name="System Italic" size="13.0" />
                      </font>
                   </Label>
+                  <Separator orientation="VERTICAL" prefHeight="30.0" />
+                  <Button fx:id="selectMultiButton" mnemonicParsing="false" onAction="#handleSelectEntriesButtonMouseClick" text="Select">
+                     <tooltip>
+                        <Tooltip text="Uses selected entries." />
+                     </tooltip>
+                  </Button>
                </items>
             </ToolBar>
             <AnchorPane VBox.vgrow="ALWAYS">

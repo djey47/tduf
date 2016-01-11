@@ -17,12 +17,11 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -32,9 +31,14 @@ import static java.util.stream.Collectors.toList;
 public class EntriesStageController extends AbstractGuiController {
 
     private static final String THIS_CLASS_NAME = EntriesStageController.class.getSimpleName();
-
     @FXML
     private Label currentTopicLabel;
+
+    @FXML
+    private Label instructionsLabel;
+
+    @FXML
+    private Button selectMultiButton;
 
     @FXML
     TableView<ContentEntryDataItem> entriesTableView;
@@ -47,7 +51,9 @@ public class EntriesStageController extends AbstractGuiController {
 
     private OptionalInt fieldRankForUpdate = OptionalInt.empty();
 
-    private Optional<ContentEntryDataItem> selectedEntry = Optional.empty();
+    private List<ContentEntryDataItem> selectedEntries = new ArrayList<>();
+
+    private boolean multiSelectMode;
 
     @Override
     public void init() {
@@ -60,10 +66,19 @@ public class EntriesStageController extends AbstractGuiController {
     private void handleResourceTableMouseClick(MouseEvent mouseEvent) {
         Log.trace(THIS_CLASS_NAME, "->handleEntriesTableMouseClick");
 
-        if (MouseButton.PRIMARY == mouseEvent.getButton()) {
+        if (!multiSelectMode && MouseButton.PRIMARY == mouseEvent.getButton()) {
             TableViewHelper.getMouseSelectedItem(mouseEvent, ContentEntryDataItem.class)
-                    .ifPresent(this::applyEntrySelectionToMainStageAndClose);
+                    .ifPresent(this::applySingleEntrySelectionToMainStageAndClose);
         }
+    }
+
+    @FXML
+    private void handleSelectEntriesButtonMouseClick() {
+        Log.trace(THIS_CLASS_NAME, "->handleSelectEntriesButtonMouseClick");
+
+        selectedEntries.addAll(entriesTableView.getSelectionModel().getSelectedItems());
+
+        closeWindow();
     }
 
     @FXML
@@ -74,11 +89,15 @@ public class EntriesStageController extends AbstractGuiController {
     }
 
     void initAndShowDialog(String entryReference, int entryFieldRank, DbDto.Topic topic, List<Integer> labelFieldRanks) {
+        switchMultiSelectMode(false);
+
         fieldRankForUpdate = OptionalInt.of(entryFieldRank);
 
         currentTopicProperty.setValue(topic);
 
         updateEntriesStageData(labelFieldRanks);
+
+        selectedEntries.clear();
 
         showWindow();
 
@@ -86,6 +105,20 @@ public class EntriesStageController extends AbstractGuiController {
     }
 
     Optional<ContentEntryDataItem> initAndShowModalDialog(DbDto.Topic topic, String targetProfileName) {
+        initAndShowModalDialog(topic, targetProfileName, false);
+
+        return selectedEntries.stream().findAny();
+    }
+
+    List<ContentEntryDataItem> initAndShowModalDialogForMultiSelect(DbDto.Topic topic, String targetProfileName) {
+        initAndShowModalDialog(topic, targetProfileName, true);
+
+        return selectedEntries;
+    }
+
+    private void initAndShowModalDialog(DbDto.Topic topic, String targetProfileName, boolean multiSelect) {
+        switchMultiSelectMode(multiSelect);
+
         fieldRankForUpdate = OptionalInt.empty();
 
         currentTopicProperty.setValue(topic);
@@ -93,11 +126,23 @@ public class EntriesStageController extends AbstractGuiController {
         List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, mainStageController.getLayoutObject()).getEntryLabelFieldRanks();
         updateEntriesStageData(labelFieldRanks);
 
-        selectedEntry = Optional.empty();
+        selectedEntries.clear();
 
         showModalWindow();
+    }
 
-        return selectedEntry;
+    private void switchMultiSelectMode(boolean multiSelectEnable) {
+        multiSelectMode = multiSelectEnable;
+
+        selectMultiButton.setVisible(multiSelectEnable);
+
+        instructionsLabel.setText( multiSelectEnable ?
+                DisplayConstants.LABEL_ENTRY_SELECT_MANY :
+                DisplayConstants.LABEL_ENTRY_SELECT_SINGLE );
+
+        entriesTableView.getSelectionModel().setSelectionMode(multiSelectEnable ?
+                SelectionMode.MULTIPLE :
+                SelectionMode.SINGLE);
     }
 
     private void initHeaderPane() {
@@ -155,8 +200,8 @@ public class EntriesStageController extends AbstractGuiController {
                 );
     }
 
-    private void applyEntrySelectionToMainStageAndClose(ContentEntryDataItem selectedEntry) {
-        this.selectedEntry = Optional.of(selectedEntry);
+    private void applySingleEntrySelectionToMainStageAndClose(ContentEntryDataItem selectedEntry) {
+        selectedEntries.add(selectedEntry);
 
         fieldRankForUpdate.ifPresent((fieldRank) -> {
             // Update mode: will update a particular field in main stage

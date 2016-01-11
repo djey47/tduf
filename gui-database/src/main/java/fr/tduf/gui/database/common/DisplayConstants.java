@@ -38,6 +38,8 @@ public class DisplayConstants {
     public static final String LABEL_STATUS_VERSION = "TDUF Database Editor by Djey.";
     public static final String LABEL_TEXTFIELD_REFERENCE = "Reference:";
     public static final String LABEL_TEXTFIELD_VALUE = "Value:";
+    public static final String LABEL_ENTRY_SELECT_SINGLE = "Click an entry below to use it.";
+    public static final String LABEL_ENTRY_SELECT_MANY = "CTRL-Pick one or many entries below.";
 
     public static final String TOOLTIP_BUTTON_ADD_LINKED_ENTRY = "Adds a new linked entry.";
     public static final String TOOLTIP_BUTTON_BROWSE_ENTRIES = "Browses available entries in topic.";
