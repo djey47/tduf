@@ -2,6 +2,7 @@ package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.InstallerConstants;
+import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
@@ -27,6 +28,7 @@ import static fr.tduf.gui.installer.common.InstallerConstants.*;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.createTempDirectory;
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Orchestrates all operations to install vehicle mod.
@@ -44,6 +46,20 @@ public class InstallSteps {
 
         Log.trace(THIS_CLASS_NAME, "->Starting full install");
 
+        // TODO create database backup to perform rollback is anything fails ?
+        DatabaseContext databaseContext = null;
+        try {
+            databaseContext = loadDatabaseStep(configuration);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        try {
+            updateDatabaseStep(configuration, databaseContext);
+        } catch (IOException | ReflectiveOperationException ioe) {
+            ioe.printStackTrace();
+        }
+
         try {
             copyFilesStep(configuration);
         } catch (RuntimeException re) {
@@ -55,12 +71,24 @@ public class InstallSteps {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+    }
 
-        try {
-            updateDatabaseStep(configuration);
-        } catch (IOException | ReflectiveOperationException ioe) {
-            ioe.printStackTrace();
-        }
+    /**
+     * Unpacks TDU database and loads JSON result.
+     * @param configuration : settings to perform current step
+     * @return information to process loaded database
+     * @throws IOException
+     */
+    private static DatabaseContext loadDatabaseStep(InstallerConfiguration configuration) throws IOException {
+        String jsonDatabaseDirectory = Files.createTempDirectory("guiInstaller").toString();
+
+        unpackDatabaseToJson(configuration, jsonDatabaseDirectory);
+
+        // TODO check if all files have been created
+
+        List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseDirectory);
+
+        return new DatabaseContext(allTopicObjects, jsonDatabaseDirectory);
     }
 
     /**
@@ -103,20 +131,21 @@ public class InstallSteps {
     }
 
     /**
-     * @param configuration : settings to perform current step
+     * Applies available patch onto loaded database then convert it to TDU format back
+     * @param configuration     : settings to perform current step
+     * @param databaseContext   : information to process loaded database
      */
-    public static void updateDatabaseStep(InstallerConfiguration configuration) throws IOException, ReflectiveOperationException {
+    public static void updateDatabaseStep(InstallerConfiguration configuration, DatabaseContext databaseContext) throws IOException, ReflectiveOperationException {
         Log.trace(THIS_CLASS_NAME, "->Entering step: Update Database");
 
-        String jsonDatabaseDirectory = Files.createTempDirectory("guiInstaller").toString();
+        requireNonNull(configuration, "Installer configuration is required.");
+        requireNonNull(databaseContext, "Database context is required.");
 
-        // TODO check if all files have been created
-        unpackDatabaseToJson(configuration, jsonDatabaseDirectory);
+        applyPatches(configuration, databaseContext);
+
+        repackJsonDatabase(configuration, databaseContext);
 
         // TODO check if all files have been written
-        applyPatches(configuration, jsonDatabaseDirectory);
-
-        repackJsonDatabase(configuration, jsonDatabaseDirectory);
     }
 
     static List<String> unpackDatabaseToJson(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException {
@@ -136,11 +165,13 @@ public class InstallSteps {
         return jsonFiles;
     }
 
-    static List<String> applyPatches(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException, ReflectiveOperationException {
-        Log.info(THIS_CLASS_NAME, "->Loading JSON database: " + jsonDatabaseDirectory);
+    static List<String> applyPatches(InstallerConfiguration configuration, DatabaseContext databaseContext) throws IOException, ReflectiveOperationException {
+        Log.info(THIS_CLASS_NAME, "->Loading JSON database: " + databaseContext);
 
-        List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseDirectory);
-        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects);
+        requireNonNull(configuration, "Installer configuration is required.");
+        requireNonNull(databaseContext, "Database context is required.");
+
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, databaseContext.getTopicObjects());
 
         Path patchPath = Paths.get(configuration.getAssetsDirectory(), InstallerConstants.DIRECTORY_DATABASE);
 
@@ -160,14 +191,18 @@ public class InstallSteps {
                     }
                 });
 
-        Log.info(THIS_CLASS_NAME, "->Saving JSON database: " + jsonDatabaseDirectory);
+        Log.info(THIS_CLASS_NAME, "->Saving JSON database: " + databaseContext);
 
-        return DatabaseReadWriteHelper.writeDatabaseTopicsToJson(allTopicObjects, jsonDatabaseDirectory);
+        return DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseContext.getTopicObjects(), databaseContext.getJsonDatabaseDirectory());
     }
 
-    static void repackJsonDatabase(InstallerConfiguration configuration, String jsonDatabaseDirectory) throws IOException {
-        Log.info(THIS_CLASS_NAME, "->Converting JSON database: " + jsonDatabaseDirectory);
+    static void repackJsonDatabase(InstallerConfiguration configuration, DatabaseContext databaseContext) throws IOException {
+        Log.info(THIS_CLASS_NAME, "->Converting JSON database: " + databaseContext);
 
+        requireNonNull(configuration, "Installer configuration is required.");
+        requireNonNull(databaseContext, "Database context is required.");
+
+        String jsonDatabaseDirectory = databaseContext.getJsonDatabaseDirectory();
         String extractedDatabaseDirectory = createTempDirectory();
 
         JsonGateway.gen(jsonDatabaseDirectory, extractedDatabaseDirectory, false, new ArrayList<>());

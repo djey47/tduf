@@ -1,8 +1,11 @@
 package fr.tduf.gui.installer.steps;
 
+import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -121,7 +124,7 @@ public class InstallStepsTest {
     @Test
     public void applyPatches_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException {
         // GIVEN
-        String jsonDatabaseDirectory = createJsonDatabase();
+        DatabaseContext databaseContext = createJsonDatabase();
 
         String assetsDirectory = new File(thisClass.getResource("/assets-patch-only").toURI()).getAbsolutePath();
         InstallerConfiguration configuration = InstallerConfiguration.builder()
@@ -131,7 +134,7 @@ public class InstallStepsTest {
 
 
         // WHEN
-        InstallSteps.applyPatches(configuration, jsonDatabaseDirectory);
+        InstallSteps.applyPatches(configuration, databaseContext);
 
 
         // THEN
@@ -140,9 +143,8 @@ public class InstallStepsTest {
     @Test
     public void repackJsonDatabase_shouldCallBankSupportComponent() throws IOException {
         // GIVEN
-        String jsonDatabaseDirectory = createJsonDatabase();
-
-        createFakeDatabase(jsonDatabaseDirectory, "original-");
+        DatabaseContext databaseContext = createJsonDatabase();
+        createFakeDatabase(databaseContext.getJsonDatabaseDirectory(), "original-");
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)
@@ -151,7 +153,7 @@ public class InstallStepsTest {
 
 
         // WHEN
-        InstallSteps.repackJsonDatabase(configuration, jsonDatabaseDirectory);
+        InstallSteps.repackJsonDatabase(configuration, databaseContext);
 
 
         // THEN
@@ -214,7 +216,7 @@ public class InstallStepsTest {
         Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_US.bnk"));
     }
 
-    private static String createJsonDatabase() throws IOException {
+    private static DatabaseContext createJsonDatabase() throws IOException {
         String jsonDatabaseDirectory = createTempDirectory();
 
         Path jsonDatabasePath = Paths.get(thisClass.getResource("/db-json").getFile());
@@ -232,8 +234,9 @@ public class InstallStepsTest {
                     }
                 });
 
+        List<DbDto> topicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseDirectory);
 
-        return jsonDatabaseDirectory;
+        return new DatabaseContext(topicObjects, jsonDatabaseDirectory);
     }
 
     private static String createTempDirectory() throws IOException {
