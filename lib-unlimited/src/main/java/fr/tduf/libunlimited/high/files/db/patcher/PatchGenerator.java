@@ -131,13 +131,13 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     }
 
     private DbDto checkTopic(DbDto.Topic topic) {
-        Optional<DbDto> potentielTopicObject = databaseMiner.getDatabaseTopic(topic);
+        Optional<DbDto> potentialTopicObject = databaseMiner.getDatabaseTopic(topic);
 
-        if (!potentielTopicObject.isPresent()) {
+        if (!potentialTopicObject.isPresent()) {
             throw new IllegalArgumentException("Topic not found in provided database: " + topic);
         }
 
-        return potentielTopicObject.get();
+        return potentialTopicObject.get();
     }
 
     private DbPatchDto.DbChangeDto makeChangeObjectForResource(DbDto.Topic topic, Optional<DbResourceDto.Locale> potentialLocale, String resourceRef) {
