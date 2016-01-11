@@ -54,7 +54,6 @@ import java.util.*;
 
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
 import static javafx.scene.control.Alert.AlertType.ERROR;
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
@@ -71,7 +70,9 @@ public class MainStageController extends AbstractGuiController {
     private MainStageViewDataController viewDataController;
     private MainStageChangeDataController changeDataController;
     private ResourcesStageController resourcesStageController;
+
     private EntriesStageController entriesStageController;
+
     private FieldsBrowserStageController fieldsBrowserStageController;
 
     Property<DbDto.Topic> currentTopicProperty;
@@ -726,28 +727,13 @@ public class MainStageController extends AbstractGuiController {
         dialogsHelper.showExportResultDialog(changeDataController.exportCurrentEntryToPchValue());
     }
 
-    // TODO extract methods
     private void askForExportOptionsThenExportToFile() throws IOException {
 
         final DbDto.Topic currentTopic = currentTopicObject.getTopic();
-        Optional<String> potentialEntryRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopic);
+        final String name = getCurrentProfileObject().getName();
 
-        List<String> selectedEntryRefs = new ArrayList<>();
-        if (potentialEntryRef.isPresent()) {
-            final List<ContentEntryDataItem> selectedItems = entriesStageController.initAndShowModalDialogForMultiSelect(currentTopic, getCurrentProfileObject().getName());
-
-            selectedEntryRefs.addAll(selectedItems.stream()
-
-                    .map((item) -> item.referenceProperty().get())
-
-                    .collect(toList()));
-        }
-
-        final List<String> selectedEntryFields = fieldsBrowserStageController.initAndShowModalDialog(currentTopic, getCurrentProfileObject().getName()).stream()
-
-                .map((item) -> Integer.valueOf(item.rankProperty().get()).toString())
-
-                .collect(toList());
+        final List<String> selectedEntryRefs = viewDataController.selectEntriesFromTopic(currentTopic, name);
+        final List<String> selectedEntryFields = viewDataController.selectFieldsFromTopic(currentTopic, name);
 
         Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(false, getWindow());
         if (!potentialFile.isPresent()) {
@@ -756,7 +742,6 @@ public class MainStageController extends AbstractGuiController {
 
         String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT;
         String fileLocation = potentialFile.get().getPath();
-
         if (changeDataController.exportEntriesToPatchFile(currentTopic, selectedEntryRefs, selectedEntryFields, fileLocation)) {
             String message = selectedEntryRefs.isEmpty() ?
                     DisplayConstants.MESSAGE_ALL_ENTRIES_EXPORTED :
@@ -871,6 +856,14 @@ public class MainStageController extends AbstractGuiController {
 
     MainStageChangeDataController getChangeDataController() {
         return changeDataController;
+    }
+
+    EntriesStageController getEntriesStageController() {
+        return entriesStageController;
+    }
+
+    FieldsBrowserStageController getFieldsBrowserStageController() {
+        return fieldsBrowserStageController;
     }
 
     List<DbDto> getDatabaseObjects() {

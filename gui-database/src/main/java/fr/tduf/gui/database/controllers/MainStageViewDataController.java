@@ -233,6 +233,31 @@ public class MainStageViewDataController {
         mainStageController.tabPane.selectionModelProperty().get().select(tabId);
     }
 
+    List<String> selectEntriesFromTopic(DbDto.Topic topic, String profileName) {
+        DbDto databaseObject = getMiner().getDatabaseTopic(topic).get();
+
+        final Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getUidField(databaseObject.getStructure().getFields());
+        if (potentialUidField.isPresent()) {
+            final List<ContentEntryDataItem> selectedItems = mainStageController.getEntriesStageController().initAndShowModalDialogForMultiSelect(topic, profileName);
+
+            return selectedItems.stream()
+
+                    .map((item) -> item.referenceProperty().get())
+
+                    .collect(toList());
+        }
+
+        return new ArrayList<>();
+    }
+
+    List<String> selectFieldsFromTopic(DbDto.Topic topic, String profileName) {
+        return mainStageController.getFieldsBrowserStageController().initAndShowModalDialog(topic, profileName).stream()
+
+                .map((item) -> Integer.valueOf(item.rankProperty().get()).toString())
+
+                .collect(toList());
+    }
+
     private ContentEntryDataItem getDisplayableEntryForCurrentLocale(DbDataDto.Entry topicEntry, List<Integer> labelFieldRanks, DbDto.Topic topic) {
         ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
 
