@@ -26,6 +26,7 @@ import java.util.Optional;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 public class SlotsBrowserStageController extends AbstractGuiController {
@@ -83,10 +84,17 @@ public class SlotsBrowserStageController extends AbstractGuiController {
         askForReferenceAndSelectItem();
     }
 
-    Optional<VehicleSlotDataItem> initAndShowModalDialog(DbDto.Topic topic, String targetProfileName, BulkDatabaseMiner miner) {
+    /**
+     *
+     * @param miner
+     * @return
+     */
+    public Optional<VehicleSlotDataItem> initAndShowModalDialog(BulkDatabaseMiner miner) {
+        this.miner = requireNonNull(miner, "Database miner instance is required.");
+
         currentTopicProperty.setValue(CAR_PHYSICS_DATA);
 
-        updateEntriesStageData();
+        updateSlotsStageData();
 
         selectedSlot = Optional.empty();
 
@@ -122,7 +130,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
                 });
     }
 
-    private void updateEntriesStageData() {
+    private void updateSlotsStageData() {
         slotsData.clear();
 
         DbDto.Topic topic = currentTopicProperty.getValue();

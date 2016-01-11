@@ -2,8 +2,10 @@ package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.InstallerConstants;
+import fr.tduf.gui.installer.controllers.SlotsBrowserStageController;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.gui.installer.stages.SlotsBrowserStageDesigner;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.banks.mapping.helper.MagicMapHelper;
@@ -15,6 +17,8 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.JsonGateway;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import javafx.application.Platform;
+import javafx.stage.Stage;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
@@ -45,6 +49,7 @@ public class InstallSteps {
         // TODO handle exceptions
 
         Log.trace(THIS_CLASS_NAME, "->Starting full install");
+
 
         // TODO create database backup to perform rollback is anything fails ?
         DatabaseContext databaseContext = null;
@@ -141,6 +146,8 @@ public class InstallSteps {
         requireNonNull(configuration, "Installer configuration is required.");
         requireNonNull(databaseContext, "Database context is required.");
 
+        selectVehicleSlot(databaseContext);
+
         applyPatches(configuration, databaseContext);
 
         repackJsonDatabase(configuration, databaseContext);
@@ -165,8 +172,18 @@ public class InstallSteps {
         return jsonFiles;
     }
 
+    static void selectVehicleSlot(DatabaseContext databaseContext) throws IOException {
+        Log.trace(THIS_CLASS_NAME, "->Selecting vehicle slot");
+
+        requireNonNull(databaseContext, "Database context is required.");
+
+        SlotsBrowserStageController slotsBrowserController = initSlotsBrowserController();
+
+        slotsBrowserController.initAndShowModalDialog(databaseContext.getMiner());
+    }
+
     static List<String> applyPatches(InstallerConfiguration configuration, DatabaseContext databaseContext) throws IOException, ReflectiveOperationException {
-        Log.info(THIS_CLASS_NAME, "->Loading JSON database: " + databaseContext);
+        Log.info(THIS_CLASS_NAME, "->Loading JSON database: " + databaseContext.getJsonDatabaseDirectory());
 
         requireNonNull(configuration, "Installer configuration is required.");
         requireNonNull(databaseContext, "Database context is required.");
@@ -191,7 +208,7 @@ public class InstallSteps {
                     }
                 });
 
-        Log.info(THIS_CLASS_NAME, "->Saving JSON database: " + databaseContext);
+        Log.info(THIS_CLASS_NAME, "->Saving JSON database: " + databaseContext.getJsonDatabaseDirectory());
 
         return DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseContext.getTopicObjects(), databaseContext.getJsonDatabaseDirectory());
     }
@@ -303,4 +320,12 @@ public class InstallSteps {
         DbPatchDto patchObject = new ObjectMapper().readValue(patchPath.toFile(), DbPatchDto.class);
         patcher.apply(patchObject);
     }
+
+    private static SlotsBrowserStageController initSlotsBrowserController() throws IOException {
+        Stage stage = new Stage();
+//        Platform.runLater(() -> entriesStage.initOwner(getWindow()));
+
+        return SlotsBrowserStageDesigner.init(stage);
+    }
+
 }
