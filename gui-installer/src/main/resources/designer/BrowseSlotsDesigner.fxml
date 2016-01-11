@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.installer.controllers.SlotsBrowserStageController">
+   <children>
+      <VBox id="mainVbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ToolBar prefHeight="40.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
+               <items>
+                  <Label fx:id="instructionsLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0" text="Select a slot to install vehicle on it.">
+                     <font>
+                        <Font name="System Italic" size="13.0" />
+                     </font>
+                  </Label>
+               </items>
+            </ToolBar>
+            <AnchorPane VBox.vgrow="ALWAYS">
+               <children>
+                  <TableView fx:id="slotsTableView" onMouseClicked="#handleSlotsTableMouseClick" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columns>
+                      <TableColumn prefWidth="96.0" text="REF" />
+                      <TableColumn prefWidth="543.0" text="Value" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+            <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
+               <items>
+                  <Button mnemonicParsing="false" onAction="#handleSearchSlotButtonAction" prefWidth="80.0" text="REF...">
+                     <tooltip><Tooltip text="Searches entry with REF."/></tooltip>
+                  </Button>
+                  <Separator orientation="VERTICAL" />
+               </items>
+            </ToolBar>
+         </children></VBox>
+   </children>
+</AnchorPane>
