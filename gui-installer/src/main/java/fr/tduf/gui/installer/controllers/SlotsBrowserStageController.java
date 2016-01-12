@@ -5,10 +5,10 @@ import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
 import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.installer.common.DisplayConstants;
+import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -23,9 +23,7 @@ import javafx.scene.input.MouseEvent;
 
 import java.util.Optional;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -33,20 +31,13 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
     private static final String THIS_CLASS_NAME = SlotsBrowserStageController.class.getSimpleName();
 
-    private static final int FIELD_RANK_MANUFACTURER_NAME = 3;  // BRANDS
-
-    private static final int FIELD_RANK_CAR_BRAND = 2;          // CAR PHYSICS
-    private static final int FIELD_RANK_CAR_REAL_NAME = 12;
-    private static final int FIELD_RANK_CAR_MODEL_NAME = 13;
-    private static final int FIELD_RANK_CAR_VERSION_NAME = 14;
-
-    private static final String RESOURCE_VALUE_NONE = "??";
-
     @FXML
     private Label instructionsLabel;
 
     @FXML
     TableView<VehicleSlotDataItem> slotsTableView;
+
+    private VehicleSlotsHelper vehicleSlotsHelper;
 
     private BulkDatabaseMiner miner;
 
@@ -92,6 +83,8 @@ public class SlotsBrowserStageController extends AbstractGuiController {
      */
     public Optional<VehicleSlotDataItem> initAndShowModalDialog(Optional<String> potentialSlotReference, BulkDatabaseMiner miner) {
         this.miner = requireNonNull(miner, "Database miner instance is required.");
+
+        vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
 
         selectedSlot = Optional.empty();
 
@@ -148,68 +141,17 @@ public class SlotsBrowserStageController extends AbstractGuiController {
                                     long entryInternalIdentifier = entry.getId();
                                     dataItem.setInternalEntryId(entryInternalIdentifier);
 
-                                    String slotName = computeVehicleName(topic, entryInternalIdentifier);
-                                    dataItem.setName(slotName);
-
                                     String slotReference = miner.getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, topic).get();
                                     dataItem.setReference(slotReference);
+
+                                    String slotName = vehicleSlotsHelper.getVehicleName(slotReference);
+                                    dataItem.setName(slotName);
 
                                     return dataItem;
                                 })
 
                                 .collect(toList()))
                 );
-    }
-
-    // TODO move to high level library
-    private String computeVehicleName(DbDto.Topic topic, long entryInternalIdentifier) {
-
-        return miner.getContentEntryFromTopicWithInternalIdentifier(entryInternalIdentifier, topic)
-
-                .map((entry) -> {
-
-                    final DbResourceDto.Locale defaultLocale = UNITED_STATES;
-
-                    final String realName = miner.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, FIELD_RANK_CAR_REAL_NAME, entryInternalIdentifier, defaultLocale)
-
-                            .map(DbResourceDto.Entry::getValue)
-
-                            .orElse(RESOURCE_VALUE_NONE);
-
-                    if (!RESOURCE_VALUE_NONE.equals(realName)) {
-                        return realName;
-                    }
-
-                    final String brandName = miner.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, FIELD_RANK_CAR_BRAND, entryInternalIdentifier, BRANDS)
-
-                            .flatMap((brandsEntry) -> miner.getResourceEntryWithContentEntryInternalIdentifier(BRANDS, FIELD_RANK_MANUFACTURER_NAME, brandsEntry.getId(), defaultLocale))
-
-                            .map(DbResourceDto.Entry::getValue)
-
-                            .map((resourceValue) -> RESOURCE_VALUE_NONE.equals(resourceValue) ? null : resourceValue)
-
-                            .orElse("");
-
-                    final String modelName = miner.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, FIELD_RANK_CAR_MODEL_NAME, entryInternalIdentifier, defaultLocale)
-
-                            .map(DbResourceDto.Entry::getValue)
-
-                            .map((resourceValue) -> RESOURCE_VALUE_NONE.equals(resourceValue) ? null : resourceValue)
-
-                            .orElse("");
-
-                    final String versionName = miner.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, FIELD_RANK_CAR_VERSION_NAME, entryInternalIdentifier, defaultLocale)
-
-                            .map(DbResourceDto.Entry::getValue)
-
-                            .map((resourceValue) -> RESOURCE_VALUE_NONE.equals(resourceValue) ? null : resourceValue)
-
-                            .orElse("");
-
-                    return String.format("%s %s %s", brandName, modelName, versionName).trim();
-                })
-
-                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 
     private void askForReferenceAndSelectItem() {
