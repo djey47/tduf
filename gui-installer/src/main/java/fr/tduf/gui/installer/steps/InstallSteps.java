@@ -161,7 +161,7 @@ public class InstallSteps {
 
         SlotsBrowserStageController slotsBrowserController = initSlotsBrowserController();
 
-        Optional<VehicleSlotDataItem> selectedItem = slotsBrowserController.initAndShowModalDialog(databaseContext.getMiner());
+        Optional<VehicleSlotDataItem> selectedItem = slotsBrowserController.initAndShowModalDialog(Optional.empty(), databaseContext.getMiner());
 
         Log.info(THIS_CLASS_NAME, "->Using vehicle slot: " + selectedItem);
 

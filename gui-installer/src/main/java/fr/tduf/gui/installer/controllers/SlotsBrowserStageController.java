@@ -86,17 +86,20 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
     /**
      * Creates and display dialog.
-     * @param miner : instance of database miner to parse contents
+     * @param potentialSlotReference    : slot reference to be selected (optional)
+     * @param miner                     : instance of database miner to parse contents
      * @return selected item, if any.
      */
-    public Optional<VehicleSlotDataItem> initAndShowModalDialog(BulkDatabaseMiner miner) {
+    public Optional<VehicleSlotDataItem> initAndShowModalDialog(Optional<String> potentialSlotReference, BulkDatabaseMiner miner) {
         this.miner = requireNonNull(miner, "Database miner instance is required.");
+
+        selectedSlot = Optional.empty();
 
         currentTopicProperty.setValue(CAR_PHYSICS_DATA);
 
         updateSlotsStageData();
 
-        selectedSlot = Optional.empty();
+        potentialSlotReference.ifPresent( this::selectEntryInTableAndScroll );
 
         showModalWindow();
 
@@ -117,7 +120,6 @@ public class SlotsBrowserStageController extends AbstractGuiController {
         slotsTableView.setItems(slotsData);
     }
 
-    // TODO see to implement
     private void selectEntryInTableAndScroll(String entryReference) {
         slotsData.stream()
 
