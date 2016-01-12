@@ -77,8 +77,9 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
     /**
      * Creates and display dialog.
-     * @param potentialSlotReference    : slot reference to be selected (optional)
-     * @param miner                     : instance of database miner to parse contents
+     *
+     * @param potentialSlotReference : slot reference to be selected (optional)
+     * @param miner                  : instance of database miner to parse contents
      * @return selected item, if any.
      */
     public Optional<VehicleSlotDataItem> initAndShowModalDialog(Optional<String> potentialSlotReference, BulkDatabaseMiner miner) {
@@ -92,7 +93,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
         updateSlotsStageData();
 
-        potentialSlotReference.ifPresent( this::selectEntryInTableAndScroll );
+        potentialSlotReference.ifPresent(this::selectEntryInTableAndScroll);
 
         showModalWindow();
 
@@ -129,29 +130,24 @@ public class SlotsBrowserStageController extends AbstractGuiController {
     private void updateSlotsStageData() {
         slotsData.clear();
 
-        DbDto.Topic topic = currentTopicProperty.getValue();
-        miner.getDatabaseTopic(topic)
-                .ifPresent((topicObject) -> slotsData.addAll(topicObject.getData().getEntries().stream()
+        slotsData.addAll(vehicleSlotsHelper.getDrivableVehicleSlotEntries().stream()
 
-                                // TODO filter drivable slots (exclude traffic and default)
+                .map((entry) -> {
+                    VehicleSlotDataItem dataItem = new VehicleSlotDataItem();
 
-                                .map((entry) -> {
-                                    VehicleSlotDataItem dataItem = new VehicleSlotDataItem();
+                    long entryInternalIdentifier = entry.getId();
+                    dataItem.setInternalEntryId(entryInternalIdentifier);
 
-                                    long entryInternalIdentifier = entry.getId();
-                                    dataItem.setInternalEntryId(entryInternalIdentifier);
+                    String slotReference = miner.getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, CAR_PHYSICS_DATA).get();
+                    dataItem.setReference(slotReference);
 
-                                    String slotReference = miner.getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, topic).get();
-                                    dataItem.setReference(slotReference);
+                    String slotName = vehicleSlotsHelper.getVehicleName(slotReference);
+                    dataItem.setName(slotName);
 
-                                    String slotName = vehicleSlotsHelper.getVehicleName(slotReference);
-                                    dataItem.setName(slotName);
+                    return dataItem;
+                })
 
-                                    return dataItem;
-                                })
-
-                                .collect(toList()))
-                );
+                .collect(toList()));
     }
 
     private void askForReferenceAndSelectItem() {
