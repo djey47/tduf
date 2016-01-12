@@ -6,13 +6,17 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Component to get advanced information on vehicle slots.
@@ -59,6 +63,22 @@ public class VehicleSlotsHelper {
                 })
 
                 .orElse(DisplayConstants.ITEM_UNAVAILABLE);
+    }
+
+    /**
+     * @return list of car physics entries co,ncerning only drivable vehicles
+     */
+    public List<DbDataDto.Entry> getDrivableVehicleSlotEntries() {
+
+        // TODO enhance criteria to express NOT condition and simplify call
+        return miner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries().stream()
+
+                .filter((slotEntry) -> {
+                    final String groupRawValue = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_GROUP).get().getRawValue();
+                    return !DatabaseConstants.RESOURCE_REF_GROUP_Z.equals(groupRawValue);
+                })
+
+                .collect(toList());
     }
 
     // TODO move these methods to library when needed
