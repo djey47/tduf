@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.domain;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
+import javafx.stage.Window;
 
 import static java.util.Objects.requireNonNull;
 
@@ -16,6 +17,8 @@ public class InstallerConfiguration {
     private String assetsDirectory;
 
     private BankSupport bankSupport;
+
+    private Window mainWindow;
 
     private InstallerConfiguration() {}
 
@@ -36,6 +39,8 @@ public class InstallerConfiguration {
      */
     public static InstallerConfigurationBuilder builder() {
         return new InstallerConfigurationBuilder() {
+
+            private Window mainWindow;
 
             private String testDriveUnlimitedDirectory;
 
@@ -62,6 +67,12 @@ public class InstallerConfiguration {
             }
 
             @Override
+            public InstallerConfigurationBuilder withMainWindow(Window window) {
+                this.mainWindow = window;
+                return this;
+            }
+
+            @Override
             public InstallerConfiguration build() {
                 requireNonNull(testDriveUnlimitedDirectory, "TDU directory is required.");
                 requireNonNull(assetsDirectory, "Assets directory is required.");
@@ -71,10 +82,15 @@ public class InstallerConfiguration {
                 installerConfiguration.testDriveUnlimitedDirectory = testDriveUnlimitedDirectory;
                 installerConfiguration.assetsDirectory = assetsDirectory;
                 installerConfiguration.bankSupport = bankSupport;
+                installerConfiguration.mainWindow = mainWindow;
 
                 return installerConfiguration;
             }
         };
+    }
+
+    public Window getMainWindow() {
+        return mainWindow;
     }
 
     public interface InstallerConfigurationBuilder {
@@ -83,6 +99,8 @@ public class InstallerConfiguration {
         InstallerConfigurationBuilder withAssetsDirectory(String testDriveUnlimitedDirectory);
 
         InstallerConfigurationBuilder usingBankSupport(BankSupport bankSupport);
+
+        InstallerConfigurationBuilder withMainWindow(Window window);
 
         InstallerConfiguration build();
     }
