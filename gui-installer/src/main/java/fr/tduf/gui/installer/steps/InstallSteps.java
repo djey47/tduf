@@ -19,6 +19,7 @@ import fr.tduf.libunlimited.low.files.db.rw.JsonGateway;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
@@ -128,7 +129,7 @@ public class InstallSteps {
         requireNonNull(configuration, "Installer configuration is required.");
         requireNonNull(databaseContext, "Database context is required.");
 
-        String vehicleSlot = selectVehicleSlot(databaseContext);
+        String vehicleSlot = selectVehicleSlot(configuration, databaseContext);
 
         applyPatches(configuration, databaseContext);
 
@@ -154,12 +155,12 @@ public class InstallSteps {
         return jsonFiles;
     }
 
-    static String selectVehicleSlot(DatabaseContext databaseContext) throws IOException {
+    static String selectVehicleSlot(InstallerConfiguration configuration, DatabaseContext databaseContext) throws IOException {
         Log.info(THIS_CLASS_NAME, "->Selecting vehicle slot");
 
         requireNonNull(databaseContext, "Database context is required.");
 
-        SlotsBrowserStageController slotsBrowserController = initSlotsBrowserController();
+        SlotsBrowserStageController slotsBrowserController = initSlotsBrowserController(configuration.getMainWindow());
 
         Optional<VehicleSlotDataItem> selectedItem = slotsBrowserController.initAndShowModalDialog(Optional.empty(), databaseContext.getMiner());
 
@@ -327,11 +328,10 @@ public class InstallSteps {
         patcher.apply(patchObject);
     }
 
-    private static SlotsBrowserStageController initSlotsBrowserController() throws IOException {
+    private static SlotsBrowserStageController initSlotsBrowserController(Window mainWindow) throws IOException {
         Stage stage = new Stage();
-//        Platform.runLater(() -> entriesStage.initOwner(getWindow()));
+        stage.initOwner(mainWindow);
 
         return SlotsBrowserStageDesigner.init(stage);
     }
-
 }

@@ -110,6 +110,7 @@ public class MainStageController extends AbstractGuiController {
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
+                .withMainWindow(getWindow())
                 .build();
 
         String magicMapFile = InstallSteps.updateMagicMapStep(configuration);
@@ -121,6 +122,7 @@ public class MainStageController extends AbstractGuiController {
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
                 .withAssetsDirectory(InstallerConstants.DIRECTORY_ASSETS)
+                .withMainWindow(getWindow())
                 .build();
 
         InstallSteps.install(configuration);
