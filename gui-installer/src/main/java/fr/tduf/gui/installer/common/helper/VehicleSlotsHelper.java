@@ -6,11 +6,9 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -66,7 +64,7 @@ public class VehicleSlotsHelper {
     }
 
     /**
-     * @return list of car physics entries co,ncerning only drivable vehicles
+     * @return list of car physics entries concerning only drivable vehicles
      */
     public List<DbDataDto.Entry> getDrivableVehicleSlotEntries() {
 
