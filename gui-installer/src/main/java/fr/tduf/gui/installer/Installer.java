@@ -12,7 +12,7 @@ public class Installer extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Log.set(Log.LEVEL_TRACE);
+        Log.set(Log.LEVEL_INFO);
 
         MainStageDesigner.init(primaryStage);
         primaryStage.show();
