@@ -465,7 +465,7 @@ public class MainStageController extends AbstractGuiController {
     private void handleProfileChoiceChanged(String newProfileName) {
         Log.trace(THIS_CLASS_NAME, "->handleProfileChoiceChanged: " + newProfileName);
 
-        if (databaseObjects.isEmpty()) {
+        if (newProfileName == null || databaseObjects.isEmpty()) {
             return;
         }
 
@@ -626,7 +626,7 @@ public class MainStageController extends AbstractGuiController {
     private void loadDatabaseFromDirectory(String databaseLocation) {
         databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(databaseLocation);
         if (!databaseObjects.isEmpty()) {
-            databaseMiner = BulkDatabaseMiner.load(this.databaseObjects);
+            databaseMiner = BulkDatabaseMiner.load(databaseObjects);
 
             profilesChoiceBox.getSelectionModel().clearSelection(); // ensures event will be fired even though 1st item is selected
             profilesChoiceBox.getSelectionModel().selectFirst();
