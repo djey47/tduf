@@ -44,6 +44,8 @@ public class DatabaseBankHelper {
         requireNonNull(bankSupport, "A module instance for bank support is required.");
 
         String tempDirectory = createTempDirectory();
+
+        // TODO see to parallelize operation
         getDatabaseBankFileNames().stream()
 
                 .map((fileName) -> checkDatabaseFileExists(databaseDirectory, fileName))
@@ -82,6 +84,7 @@ public class DatabaseBankHelper {
             }
         });
 
+        // TODO see to parallelize operation (use stream)
         getDatabaseBankFileNames()
 
                 .forEach((targetBankFileName) -> rebuildFileStructureAndRepackDatabase(extractedDatabaseDirectory, targetDirectory, targetBankFileName, bankSupport));
