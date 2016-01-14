@@ -271,7 +271,7 @@ public class DatabaseTool extends GenericTool {
         final List<String> writtenFileNames = convertDatabaseFilesToJson(extractedDatabaseDirectory, jsonDatabaseDirectory, missingTopicContents, integrityErrors);
 
         List<DbDto> databaseObjects = new ArrayList<>();
-        outLine("-> JSON database directory: " + sourceDirectory);
+        outLine("-> JSON database directory: " + jsonDatabaseDirectory);
         if(extensiveCheck) {
             outLine("Now checking database...");
             databaseObjects = loadAndCheckDatabase(extractedDatabaseDirectory, integrityErrors, false);
