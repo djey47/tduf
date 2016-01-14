@@ -45,8 +45,9 @@ public class DatabaseBankHelper {
 
         String tempDirectory = createTempDirectory();
 
-        // TODO see to parallelize operation
         getDatabaseBankFileNames().stream()
+
+                .parallel()
 
                 .map((fileName) -> checkDatabaseFileExists(databaseDirectory, fileName))
 
@@ -56,7 +57,7 @@ public class DatabaseBankHelper {
             try {
                 copyOriginalBankFilesToTargetDirectory(tempDirectory, directory);
             } catch (IOException ioe) {
-                throw new RuntimeException("Unsable to copy orginal bank files to target directory.", ioe);
+                throw new RuntimeException("Unable to copy orginal bank files to target directory.", ioe);
             }
         });
 

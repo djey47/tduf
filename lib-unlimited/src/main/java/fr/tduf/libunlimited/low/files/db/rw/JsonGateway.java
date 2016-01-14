@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -33,18 +34,25 @@ public class JsonGateway {
         requireNonNull(integrityErrors, "A list for integrity errors is required.");
 
         List<String> writtenFileNames = new ArrayList<>();
-        for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
 
-            Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, sourceDatabaseDirectory, withClearContents, integrityErrors);
-            if (!potentialDbDto.isPresent()) {
-                missingTopicContents.add(currentTopic);
-                continue;
-            }
+        Stream.of(DbDto.Topic.values())
 
-            DatabaseReadWriteHelper.writeDatabaseTopicToJson(potentialDbDto.get(), targetJsonDirectory)
+                .parallel()
 
-                    .ifPresent(writtenFileNames::add);
-        }
+                .forEach((topic) -> {
+                    try {
+                        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(topic, sourceDatabaseDirectory, withClearContents, integrityErrors);
+                        if (potentialDbDto.isPresent()) {
+                            DatabaseReadWriteHelper.writeDatabaseTopicToJson(potentialDbDto.get(), targetJsonDirectory)
+
+                                    .ifPresent(writtenFileNames::add);
+                        } else {
+                            missingTopicContents.add(topic);
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException("Unable to dump database topic: " + topic);
+                    }
+                });
 
         return writtenFileNames;
     }

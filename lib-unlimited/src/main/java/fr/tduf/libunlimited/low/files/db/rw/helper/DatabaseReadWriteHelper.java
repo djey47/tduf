@@ -11,9 +11,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -88,7 +88,9 @@ public class DatabaseReadWriteHelper {
      */
     public static List<DbDto> readFullDatabaseFromJson(String jsonDirectory) {
 
-        return asList(DbDto.Topic.values()).stream()
+        return Stream.of(DbDto.Topic.values())
+
+                .parallel()
 
                 .map((topic) -> {
                     try {
