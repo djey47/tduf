@@ -26,7 +26,26 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 ### What's in this version ? (1.0.0)
 
-*
+* Reorganized directories and scripts, making it simpler to use (TDUF-gui.cmd / TDUF-cli.cmd)
+* DatabaseEditor is not in ALPHA state anymore, it will always be within TDUF releases from now on
+
+### New features
+
+* TDUF-gui.cmd: first asks for TDU database directory in a dialog box
+
+* DatabaseEditor: export to TDUF mini patch may take more REFs at once
+* DatabaseEditor: export to TDUF mini patch may be partial by selecting only necessary fields
+
+* Library/Database: simplify unpacking/repacking internal operations
+* Library/Database: handle MOVE operation in mini patches.
+
+### Fixed issues
+
+* DatabaseTool: do not crash if database files not found whuile unpacking
+
+* DatabaseEditor: fix minor error when loading again TDU database
+
+* Library/Database: fix potential problem when repacking.
 
 ### Known bugs
 
