@@ -85,8 +85,11 @@ public class DatabaseBankHelper {
             }
         });
 
-        // TODO see to parallelize operation (use stream)
         getDatabaseBankFileNames()
+
+                .stream()
+
+                .parallel()
 
                 .forEach((targetBankFileName) -> rebuildFileStructureAndRepackDatabase(extractedDatabaseDirectory, targetDirectory, targetBankFileName, bankSupport));
     }
@@ -148,7 +151,7 @@ public class DatabaseBankHelper {
                         Path fullPath = repackedBankPath.resolve(hierarchy).resolve(filePath.getFileName());
                         try {
                             Files.createDirectories(fullPath.getParent());
-                            Files.move(filePath, fullPath, StandardCopyOption.REPLACE_EXISTING);
+                            Files.copy(filePath, fullPath, StandardCopyOption.REPLACE_EXISTING);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -159,7 +162,7 @@ public class DatabaseBankHelper {
         Path originalBankFilePath = databasePath.resolve(originalBankFileName);
 
         Files.createDirectories(repackedBankPath);
-        Files.move(originalBankFilePath, repackedBankPath.resolve(originalBankFileName), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(originalBankFilePath, repackedBankPath.resolve(originalBankFileName), StandardCopyOption.REPLACE_EXISTING);
     }
 
     private static String checkDatabaseFileExists(String databaseDirectory, String databaseFileName) {

@@ -69,16 +69,22 @@ public class JsonGateway {
         requireNonNull(missingTopicContents, "A list for missing topics is requried.");
 
         List<String> writtenFileNames = new ArrayList<>();
-        for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
+        Stream.of(DbDto.Topic.values())
 
-            Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(currentTopic, sourceJsonDirectory);
-            if (!potentialDbDto.isPresent()) {
-                missingTopicContents.add(currentTopic);
-                continue;
-            }
+                .parallel()
 
-            writtenFileNames.addAll(DatabaseReadWriteHelper.writeDatabaseTopic(potentialDbDto.get(), targetDatabaseDirectory, withClearContents));
-        }
+                .forEach((topic -> {
+                    try {
+                        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(topic, sourceJsonDirectory);
+                        if (potentialDbDto.isPresent()) {
+                            writtenFileNames.addAll(DatabaseReadWriteHelper.writeDatabaseTopic(potentialDbDto.get(), targetDatabaseDirectory, withClearContents));
+                        } else {
+                            missingTopicContents.add(topic);
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException("Unable to generate database topic: " + topic);
+                    }
+                }));
 
         return writtenFileNames;
     }
