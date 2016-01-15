@@ -134,6 +134,8 @@ public class DatabaseReadWriteHelper {
     public static List<String> writeDatabaseTopicsToJson(List<DbDto> allTopicObjects, String outputDirectory) {
         return allTopicObjects.stream()
 
+                .parallel()
+
                 .map( (topicObject) -> writeDatabaseTopicToJson(topicObject, outputDirectory))
 
                 .filter(Optional::isPresent)
