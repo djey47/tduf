@@ -32,7 +32,8 @@ public abstract class GenericTool {
 
     protected Map<String, ?> commandResult = null;
 
-    private ObjectWriter jsonWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+    protected ObjectMapper jsonMapper = new ObjectMapper();
+    protected ObjectWriter jsonWriter = jsonMapper.writerWithDefaultPrettyPrinter();
 
     /**
      * All-instance entry point.
