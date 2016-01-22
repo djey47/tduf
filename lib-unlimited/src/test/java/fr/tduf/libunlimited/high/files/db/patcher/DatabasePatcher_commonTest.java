@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -28,6 +29,14 @@ public class DatabasePatcher_commonTest {
     public void apply_whenNullPatchObject_shouldThrowException() throws ReflectiveOperationException {
         // GIVEN-WHEN
         createPatcher(createDefaultDatabaseObjects()).apply(null);
+
+        // THEN: NPE
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void applyWithProperties_whenNullProperties_shouldThrowException() throws ReflectiveOperationException {
+        // GIVEN-WHEN
+        createPatcher(createDefaultDatabaseObjects()).applyWithProperties(DbPatchDto.builder().build(), null);
 
         // THEN: NPE
     }

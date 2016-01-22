@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -34,7 +35,15 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
      * Execute provided patch onto current database.
      */
     public void apply(DbPatchDto patchObject) {
+        applyWithProperties(patchObject, new PatchProperties());
+    }
+
+    /**
+     * Execute provided patch onto current database, taking properties into account.
+     */
+    public void applyWithProperties(DbPatchDto patchObject, PatchProperties patchProperties) {
         requireNonNull(patchObject, "A patch object is required.");
+        requireNonNull(patchProperties, "Patch properties are required.");
 
         patchObject.getChanges()
 
