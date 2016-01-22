@@ -22,8 +22,9 @@ public class OutputMapperTest {
 
     private static final Class<OutputMapperTest> thisClass = OutputMapperTest.class;
 
-    private final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
-    private final ObjectReader objectReader = new ObjectMapper().reader();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectReader objectReader = objectMapper.reader();
+    private final ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
 
     @Before
     public void setUp() throws IOException {

@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -32,6 +33,8 @@ public class DatabaseWriter {
     private static final String RESOURCE_ENTRY_PATTERN = "{%s} %s";
 
     private final DbDto databaseDto;
+
+    private final ObjectWriter jsonObjectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
     private DatabaseWriter(DbDto dbDto) {
         this.databaseDto = dbDto;
@@ -76,7 +79,7 @@ public class DatabaseWriter {
 
         Path outputFilePath = Paths.get(path, outputFileName);
         try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(outputFilePath, StandardCharsets.UTF_8)) {
-            new ObjectMapper().writer().writeValue(bufferedWriter, this.databaseDto);
+            jsonObjectWriter.writeValue(bufferedWriter, this.databaseDto);
         }
 
         return outputFilePath.toAbsolutePath().toString();

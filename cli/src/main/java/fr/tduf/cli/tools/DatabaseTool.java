@@ -21,8 +21,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.JsonGateway;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -95,6 +93,7 @@ public class DatabaseTool extends GenericTool {
     private BankSupport bankSupport;
 
     private Command command;
+
 
     /**
      * All available commands
@@ -387,7 +386,7 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Patching TDU database, please wait...");
 
-        DbPatchDto patchObject = new ObjectMapper().readValue(new File(sourcePatchFile), DbPatchDto.class);
+        DbPatchDto patchObject = jsonMapper.readValue(new File(sourcePatchFile), DbPatchDto.class);
 
         List<DbDto> allTopicObjects = loadDatabaseFromJsonFiles(sourceJsonDirectory);
         AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).apply(patchObject);
@@ -447,7 +446,7 @@ public class DatabaseTool extends GenericTool {
 
         DbPatchDto patchObject = TdumtPatchConverter.pchToJson(patchDocument);
 
-        return jsonToString(patchObject);
+        return jsonWriter.writeValueAsString(patchObject);
     }
 
     private void applyPerformancePackToCarPhysicsData(String performancePackFile, String targetJsonDirectory, List<DbDto> allTopicObjects, List<String> writtenFileNames) {
@@ -464,7 +463,7 @@ public class DatabaseTool extends GenericTool {
     }
 
     private String convertPatchFileToXML(File patch) throws IOException, ParserConfigurationException, URISyntaxException, SAXException, TransformerException {
-        DbPatchDto patchObject = new ObjectMapper().readValue(patch, DbPatchDto.class);
+        DbPatchDto patchObject = jsonMapper.readValue(patch, DbPatchDto.class);
 
         Document patchDocument = TdumtPatchConverter.jsonToPch(patchObject);
 
@@ -480,16 +479,11 @@ public class DatabaseTool extends GenericTool {
         return writer.toString();
     }
 
-    private String jsonToString(DbPatchDto patchObject) throws IOException {
-        ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
-        return objectWriter.writeValueAsString(patchObject);
-    }
-
     private void writePatchFileToDisk(DbPatchDto patchObject, String targetPatchFile) throws IOException {
         Path patchFilePath = Paths.get(targetPatchFile);
         Files.createDirectories(patchFilePath.getParent());
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(patchFilePath, StandardCharsets.UTF_8)) {
-            new ObjectMapper().writer().writeValue(bufferedWriter, patchObject);
+            jsonWriter.writeValue(bufferedWriter, patchObject);
         }
     }
 
@@ -544,15 +538,17 @@ public class DatabaseTool extends GenericTool {
     }
 
     private void printIntegrityErrors(Set<IntegrityError> integrityErrors) {
-        if (!integrityErrors.isEmpty()) {
-            outLine("-> Integrity errors (" + integrityErrors.size() + "):");
-
-            integrityErrors.forEach(
-                    (integrityError) -> {
-                        String errorMessage = String.format(integrityError.getErrorMessageFormat(), integrityError.getInformation());
-                        outLine("  (!)" + errorMessage);
-                    });
+        if (integrityErrors.isEmpty()) {
+            return;
         }
+
+        outLine("-> Integrity errors (" + integrityErrors.size() + "):");
+
+        integrityErrors.forEach(
+                (integrityError) -> {
+                    String errorMessage = String.format(integrityError.getErrorMessageFormat(), integrityError.getInformation());
+                    outLine("  (!)" + errorMessage);
+                });
     }
 
     private static List<DatabaseIntegrityErrorDto> toDatabaseIntegrityErrors(Set<IntegrityError> integrityErrors) {

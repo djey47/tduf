@@ -27,6 +27,7 @@ import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 public class DatabaseParserTest {
 
     private static final Class<DatabaseParserTest> thisClass = DatabaseParserTest.class;
+    private final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
     @Before
     public void setUp() {
@@ -348,7 +349,6 @@ public class DatabaseParserTest {
         DbDto db = databaseParser.parseAll();
 
         // JSON DISPLAY
-        ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
         assertThat(objectWriter.canSerialize(db.getClass())).isTrue();
 
         String jsonResult = objectWriter.writeValueAsString(db);
@@ -379,7 +379,6 @@ public class DatabaseParserTest {
         DbDto db = databaseParser.parseAll();
 
         // JSON DISPLAY
-        ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
         assertThat(objectWriter.canSerialize(db.getClass())).isTrue();
 
         String jsonResult = objectWriter.writeValueAsString(db);
