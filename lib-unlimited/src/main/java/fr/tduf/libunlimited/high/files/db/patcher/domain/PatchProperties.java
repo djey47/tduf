@@ -28,4 +28,20 @@ public class PatchProperties extends Properties {
 
         return Optional.ofNullable(getProperty(placeholder));
     }
+
+    /**
+     * @return a deep copy of this property store.
+     */
+    public PatchProperties makeCopy() {
+        final PatchProperties patchProperties = new PatchProperties();
+
+        entrySet().forEach((property) -> {
+            final String placeholder = (String) property.getKey();
+            final String value = (String) property.getValue();
+
+            patchProperties.store(placeholder, value);
+        });
+
+        return patchProperties;
+    }
 }
