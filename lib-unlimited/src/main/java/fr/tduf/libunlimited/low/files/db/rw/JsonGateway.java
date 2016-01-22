@@ -5,12 +5,10 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.Collections.synchronizedList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -33,7 +31,9 @@ public class JsonGateway {
         requireNonNull(missingTopicContents, "A list for missing topics is required.");
         requireNonNull(integrityErrors, "A list for integrity errors is required.");
 
-        List<String> writtenFileNames = new ArrayList<>();
+        List<String> writtenFileNames = synchronizedList(new ArrayList<>());
+        List<DbDto.Topic> missingTopicContentsWhileProcessing = synchronizedList(new ArrayList<>());
+        Set<IntegrityError> integrityErrorsWhileProcessing = Collections.synchronizedSet(new HashSet<>());
 
         Stream.of(DbDto.Topic.values())
 
@@ -41,20 +41,23 @@ public class JsonGateway {
 
                 .forEach((topic) -> {
                     try {
-                        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(topic, sourceDatabaseDirectory, withClearContents, integrityErrors);
+                        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(topic, sourceDatabaseDirectory, withClearContents, integrityErrorsWhileProcessing);
                         if (potentialDbDto.isPresent()) {
                             DatabaseReadWriteHelper.writeDatabaseTopicToJson(potentialDbDto.get(), targetJsonDirectory)
 
                                     .ifPresent(writtenFileNames::add);
                         } else {
-                            missingTopicContents.add(topic);
+                            missingTopicContentsWhileProcessing.add(topic);
                         }
                     } catch (IOException e) {
                         throw new RuntimeException("Unable to dump database topic: " + topic);
                     }
                 });
 
-        return writtenFileNames;
+        missingTopicContents.addAll(missingTopicContentsWhileProcessing);
+        integrityErrors.addAll(integrityErrorsWhileProcessing);
+
+        return new ArrayList<>(writtenFileNames);
     }
 
     /**
@@ -68,7 +71,8 @@ public class JsonGateway {
     public static List<String> gen(String sourceJsonDirectory, String targetDatabaseDirectory, boolean withClearContents, List<DbDto.Topic> missingTopicContents) throws IOException {
         requireNonNull(missingTopicContents, "A list for missing topics is requried.");
 
-        List<String> writtenFileNames = new ArrayList<>();
+        List<String> writtenFileNames = synchronizedList(new ArrayList<>());
+        List<DbDto.Topic> missingTopicContentsWhileProcessing = synchronizedList(new ArrayList<>());
         Stream.of(DbDto.Topic.values())
 
                 .parallel()
@@ -79,13 +83,15 @@ public class JsonGateway {
                         if (potentialDbDto.isPresent()) {
                             writtenFileNames.addAll(DatabaseReadWriteHelper.writeDatabaseTopic(potentialDbDto.get(), targetDatabaseDirectory, withClearContents));
                         } else {
-                            missingTopicContents.add(topic);
+                            missingTopicContentsWhileProcessing.add(topic);
                         }
                     } catch (IOException e) {
                         throw new RuntimeException("Unable to generate database topic: " + topic);
                     }
                 }));
 
-        return writtenFileNames;
+        missingTopicContents.addAll(missingTopicContentsWhileProcessing);
+
+        return new ArrayList<>(writtenFileNames);
     }
 }
