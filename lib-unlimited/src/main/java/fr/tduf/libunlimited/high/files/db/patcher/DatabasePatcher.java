@@ -32,22 +32,27 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     private DatabaseChangeHelper databaseChangeHelper;
 
     /**
-     * Execute provided patch onto current database.
+     * Execute provided patch onto current database
+     * @return effective properties.
      */
-    public void apply(DbPatchDto patchObject) {
-        applyWithProperties(patchObject, new PatchProperties());
+    public PatchProperties apply(DbPatchDto patchObject) {
+        return applyWithProperties(patchObject, new PatchProperties());
     }
 
     /**
      * Execute provided patch onto current database, taking properties into account.
+     * @return effective properties.
      */
-    public void applyWithProperties(DbPatchDto patchObject, PatchProperties patchProperties) {
+    public PatchProperties applyWithProperties(DbPatchDto patchObject, PatchProperties patchProperties) {
         requireNonNull(patchObject, "A patch object is required.");
         requireNonNull(patchProperties, "Patch properties are required.");
 
+        PatchProperties effectiveProperties = patchProperties.makeCopy();
         patchObject.getChanges()
 
-                .forEach(this::applyChange);
+                .forEach((changeObject) -> applyChange(changeObject, effectiveProperties));
+
+        return effectiveProperties;
     }
 
     @Override
@@ -55,7 +60,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         databaseChangeHelper = new DatabaseChangeHelper(databaseMiner);
     }
 
-    private void applyChange(DbPatchDto.DbChangeDto changeObject) {
+    private void applyChange(DbPatchDto.DbChangeDto changeObject, PatchProperties patchProperties) {
 
         DbPatchDto.DbChangeDto.ChangeTypeEnum changeType = changeObject.getType();
 
