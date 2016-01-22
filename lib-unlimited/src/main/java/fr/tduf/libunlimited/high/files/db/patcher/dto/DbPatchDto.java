@@ -88,6 +88,9 @@ public class DbPatchDto {
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class DbChangeDto {
+
+        private static final String FORMAT_PLACEHOLDER = "{%s}";
+
         @JsonProperty("type")
         private ChangeTypeEnum type;
 
@@ -209,6 +212,12 @@ public class DbPatchDto {
                 }
 
                 @Override
+                public DbChangeDtoBuilder asReferencePlaceholder(String name) {
+                    this.reference = String.format(FORMAT_PLACEHOLDER, name);
+                    return this;
+                }
+
+                @Override
                 public DbChangeDtoBuilder withEntryValues(List<String> entryValues) {
                     this.entryValues = entryValues;
                     return this;
@@ -277,6 +286,8 @@ public class DbPatchDto {
             DbChangeDtoBuilder forTopic(DbDto.Topic topic);
 
             DbChangeDtoBuilder asReference(String entryReference);
+
+            DbChangeDtoBuilder asReferencePlaceholder(String name);
 
             DbChangeDtoBuilder withEntryValues(List<String> entryValues);
 
