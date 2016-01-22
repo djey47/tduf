@@ -48,12 +48,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.util.Arrays.asList;
+import static java.util.Collections.synchronizedSet;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
@@ -505,23 +508,45 @@ public class DatabaseTool extends GenericTool {
     private List<DbDto> loadAndCheckDatabase(String sourceDatabaseDirectory, Set<IntegrityError> integrityErrors, boolean withClearContents) throws IOException {
         requireNonNull(integrityErrors, "A list is required");
 
-        List<DbDto> allDtos = new ArrayList<>();
+        Set<IntegrityError> integrityErrorsWhileProcessing = synchronizedSet(integrityErrors);
+        final List<DbDto> readObjects = Stream.of(DbDto.Topic.values())
 
-        for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
-            outLine("  -> Now processing topic: " + currentTopic + "...");
+                .parallel()
 
-            int initialErrorCount = integrityErrors.size();
+                .map((currentTopic) -> loadAndCheckSingleTopic(currentTopic, sourceDatabaseDirectory, withClearContents, integrityErrorsWhileProcessing))
 
-            Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, sourceDatabaseDirectory, withClearContents, integrityErrors);
+                .filter(Optional::isPresent)
 
-            if (!potentialDbDto.isPresent()) {
-                outLine("  (!)Database contents not found for topic " + currentTopic + ", skipping.");
-                outLine();
-                continue;
-            }
+                .map(Optional::get)
 
+                .collect(toList());
+
+        integrityErrors.addAll(integrityErrorsWhileProcessing);
+
+        return readObjects;
+    }
+
+    private Optional<DbDto> loadAndCheckSingleTopic(DbDto.Topic currentTopic, String sourceDatabaseDirectory, boolean withClearContents, Set<IntegrityError> integrityErrorsWhileProcessing) {
+        outLine("  -> Now processing topic: " + currentTopic + "...");
+
+        int initialErrorCount = integrityErrorsWhileProcessing.size();
+
+        Optional<DbDto> potentialDbDto = empty();
+        try {
+            potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, sourceDatabaseDirectory, withClearContents, integrityErrorsWhileProcessing);
+        } catch (IOException e) {
+            outLine("  (!)Database contents could not be read for topic " + currentTopic + ", skipping.");
+            outLine();
+            return potentialDbDto;
+        }
+
+        if (!potentialDbDto.isPresent()) {
+            outLine("  (!)Database contents not found for topic " + currentTopic + ", skipping.");
+            outLine();
+            return potentialDbDto;
+        } else {
             DbDto dbDto = potentialDbDto.get();
-            outLine("  .Found topic: " + currentTopic + ", " + (integrityErrors.size() - initialErrorCount) + " error(s).");
+            outLine("  .Found topic: " + currentTopic + ", " + (integrityErrorsWhileProcessing.size() - initialErrorCount) + " error(s).");
             outLine("  .Content line count: " + dbDto.getData().getEntries().size());
 
             if (!dbDto.getResources().isEmpty()) {
@@ -535,12 +560,10 @@ public class DatabaseTool extends GenericTool {
                                 (dbResourceDto) -> outLine("    >" + dbResourceDto.getLocale() + "=" + dbResourceDto.getEntries().size()));
             }
 
-            allDtos.add(dbDto);
-
             outLine();
-        }
 
-        return allDtos;
+            return Optional.of(dbDto);
+        }
     }
 
     private void printIntegrityErrors(Set<IntegrityError> integrityErrors) {
