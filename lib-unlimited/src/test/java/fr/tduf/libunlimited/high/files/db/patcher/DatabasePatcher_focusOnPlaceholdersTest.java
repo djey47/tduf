@@ -11,10 +11,13 @@ import org.junit.Test;
 
 import java.util.Collections;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.DELETE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED;
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,12 +35,18 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
                 .withData(DbDataDto.builder().build())
                 .withStructure(DbStructureDto.builder()
                         .forTopic(CAR_PHYSICS_DATA)
-                        .addItem(DbStructureDto.Field.builder().ofRank(1).build())
-                        .addItem(DbStructureDto.Field.builder().ofRank(2).build())
+                        .addItem(DbStructureDto.Field.builder()
+                                .ofRank(1)
+                                .fromType(UID)
+                                .build())
+                        .addItem(DbStructureDto.Field.builder()
+                                .ofRank(2)
+                                .fromType(RESOURCE_CURRENT_LOCALIZED)
+                                .build())
                         .build())
                 .addResource(DbResourceDto.builder().withLocale(FRANCE).build())
                 .build();
-        databasePatcher =  createPatcher(Collections.singletonList(databaseObject));
+        databasePatcher = createPatcher(Collections.singletonList(databaseObject));
     }
 
     @Test
@@ -83,6 +92,37 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
                 .hasSize(2)
                 .extracting("rawValue")
                 .containsExactly("000000", "103");
+    }
+
+    @Test
+    public void apply_whenDeleteContents_forRef_withProperty_shouldUsePropertyValue() throws ReflectiveOperationException {
+        // GIVEN
+        final String placeholderName = "MYREF";
+        DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
+                .withType(DELETE)
+                .forTopic(CAR_PHYSICS_DATA)
+                .asReferencePlaceholder(placeholderName)
+                .build();
+        DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
+        PatchProperties patchProperties = new PatchProperties();
+        patchProperties.store(placeholderName, "000000");
+
+        databaseObject.getData().addEntryWithItems(asList(
+                DbDataDto.Item.builder()
+                        .ofFieldRank(1)
+                        .withRawValue("000000")
+                        .build(),
+                DbDataDto.Item.builder()
+                        .ofFieldRank(2)
+                        .build()));
+
+
+        // WHEN
+        databasePatcher.applyWithProperties(patchObject, patchProperties);
+
+
+        // THEN
+        assertThat(databaseObject.getData().getEntries()).isEmpty();
     }
 
     @Test

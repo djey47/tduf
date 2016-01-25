@@ -92,7 +92,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 addOrUpdateContents(changeObject, patchProperties);
                 break;
             case DELETE:
-                deleteContents(changeObject);
+                deleteContents(changeObject, patchProperties);
                 break;
             case MOVE:
                 moveContents(changeObject);
@@ -131,13 +131,14 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
     }
 
-    private void deleteContents(DbPatchDto.DbChangeDto changeObject) {
+    private void deleteContents(DbPatchDto.DbChangeDto changeObject, PatchProperties patchProperties) {
 
         DbDto.Topic changedTopic = changeObject.getTopic();
         Optional<String> potentialRef = Optional.ofNullable(changeObject.getRef());
 
         if (potentialRef.isPresent()) {
-            databaseChangeHelper.removeEntryWithReference(potentialRef.get(), changedTopic);
+            String effectiveRef = resolvePlaceholder(potentialRef.get(), patchProperties);
+            databaseChangeHelper.removeEntryWithReference(effectiveRef, changedTopic);
         } else {
             requireNonNull(changeObject.getFilterCompounds(), "As no REF is provided, filter attribute is mandatory.");
             databaseChangeHelper.removeEntriesMatchingCriteria(changeObject.getFilterCompounds(), changedTopic);
