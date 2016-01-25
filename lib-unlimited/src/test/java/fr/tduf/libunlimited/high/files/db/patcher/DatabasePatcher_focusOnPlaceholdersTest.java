@@ -11,9 +11,7 @@ import org.junit.Test;
 
 import java.util.Collections;
 
-import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.DELETE;
-import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
-import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED;
@@ -124,7 +122,6 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
         // THEN
         assertThat(databaseObject.getData().getEntries()).isEmpty();
     }
-
     @Test
     public void apply_whenUpdateResources_forRef_withProperties_shouldUsePropertiesValues() throws ReflectiveOperationException {
         // GIVEN
@@ -153,6 +150,34 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
         final DbResourceDto.Entry resourceEntry = databaseObject.getResources().get(0).getEntries().get(0);
         assertThat(resourceEntry.getReference()).isEqualTo("000000");
         assertThat(resourceEntry.getValue()).isEqualTo("Text");
+    }
+
+    @Test
+    public void apply_whenDeleteResources_forRef_withProperty_shouldUsePropertyValue() throws ReflectiveOperationException {
+        // GIVEN
+        final String placeholderName = "MYREF";
+        DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
+                .withType(DELETE_RES)
+                .forTopic(CAR_PHYSICS_DATA)
+                .asReferencePlaceholder(placeholderName)
+                .build();
+        DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
+        PatchProperties patchProperties = new PatchProperties();
+        patchProperties.store(placeholderName, "000000");
+
+        databaseObject.getResources().get(0).getEntries().add(
+                DbResourceDto.Entry.builder()
+                        .forReference("000000")
+                        .withValue("Text")
+                        .build());
+
+
+        // WHEN
+        databasePatcher.applyWithProperties(patchObject, patchProperties);
+
+
+        // THEN
+        assertThat(databaseObject.getResources().get(0).getEntries()).isEmpty();
     }
 
     @Test

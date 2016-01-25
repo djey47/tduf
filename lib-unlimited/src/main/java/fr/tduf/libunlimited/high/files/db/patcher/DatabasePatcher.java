@@ -86,7 +86,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 addOrUpdateResources(changeObject, patchProperties);
                 break;
             case DELETE_RES:
-                deleteResources(changeObject);
+                deleteResources(changeObject, patchProperties);
                 break;
             case UPDATE:
                 addOrUpdateContents(changeObject, patchProperties);
@@ -226,26 +226,27 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         entries.forEach((entry) -> updateEntryWithPartialChanges(entry, topicObject.getStructure(), partialValues, patchProperties));
     }
 
-    private void deleteResources(DbPatchDto.DbChangeDto changeObject) {
+    private void deleteResources(DbPatchDto.DbChangeDto changeObject, PatchProperties patchProperties) {
         Optional<DbResourceDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
 
         if (potentialLocale.isPresent()) {
 
-            deleteResourcesForLocale(changeObject, potentialLocale.get());
+            deleteResourcesForLocale(changeObject, potentialLocale.get(), patchProperties);
 
         } else {
 
             Stream.of(DbResourceDto.Locale.values())
 
-                    .forEach((currentLocale) -> deleteResourcesForLocale(changeObject, currentLocale));
+                    .forEach((currentLocale) -> deleteResourcesForLocale(changeObject, currentLocale, patchProperties));
 
         }
     }
 
-    private void deleteResourcesForLocale(DbPatchDto.DbChangeDto changeObject, DbResourceDto.Locale locale) {
-        DbDto.Topic topic = changeObject.getTopic();
+    private void deleteResourcesForLocale(DbPatchDto.DbChangeDto changeObject, DbResourceDto.Locale locale, PatchProperties patchProperties) {
+        final DbDto.Topic topic = changeObject.getTopic();
+        final String effectiveRef = resolvePlaceholder(changeObject.getRef(), patchProperties);
 
-        databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(changeObject.getRef(), topic, locale)
+        databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(effectiveRef, topic, locale)
 
                 .ifPresent((resourceEntry) -> {
                     DbResourceDto dbResourceDto = databaseMiner.getResourceFromTopicAndLocale(topic, locale).get();

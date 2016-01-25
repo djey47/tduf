@@ -243,6 +243,7 @@ public class DbResourceDto implements Serializable {
         return categoryCount;
     }
 
+    // TODO return immutable list and provide methods to add/delete/etc
     public List<Entry> getEntries() {
         return entries;
     }
