@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonTest {
 
     @Before
-    public void setUp() {
+    public void setUp() throws ReflectiveOperationException {
         super.setUp();
         BulkDatabaseMiner.clearAllCaches();
     }

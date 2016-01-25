@@ -17,7 +17,7 @@ import static org.assertj.core.api.StrictAssertions.assertThat;
 public class DatabasePatcher_focusOnResourcesTest extends DatabasePatcher_commonTest {
 
     @Before
-    public void setUp() {
+    public void setUp() throws ReflectiveOperationException {
         super.setUp();
     }
 

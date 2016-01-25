@@ -21,7 +21,7 @@ public class DatabasePatcher_commonTest {
     private static final Class<DatabasePatcher_commonTest> thisClass = DatabasePatcher_commonTest.class;
 
     @Before
-    public void setUp() {
+    public void setUp() throws ReflectiveOperationException {
         BulkDatabaseMiner.clearAllCaches();
     }
 

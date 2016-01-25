@@ -16,6 +16,8 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.DirectionEnum.UP;
@@ -28,6 +30,8 @@ import static java.util.stream.Collectors.toList;
  * Used to apply patches to an existing database.
  */
 public class DatabasePatcher extends AbstractDatabaseHolder {
+
+    private static final Pattern PATTERN_PLACEHOLDER = Pattern.compile("\\{(.+)\\}");
 
     private DatabaseChangeHelper databaseChangeHelper;
 
@@ -60,6 +64,18 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         databaseChangeHelper = new DatabaseChangeHelper(databaseMiner);
     }
 
+    static String resolvePlaceholder(String value, PatchProperties patchProperties) {
+        final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
+
+        if(matcher.matches()) {
+            final String placeholderName = matcher.group(1);
+            return patchProperties.retrieve(placeholderName)
+                    .orElse("NF"); // TODO use generator
+        }
+
+        return value;
+    }
+
     private void applyChange(DbPatchDto.DbChangeDto changeObject, PatchProperties patchProperties) {
 
         DbPatchDto.DbChangeDto.ChangeTypeEnum changeType = changeObject.getType();
@@ -72,7 +88,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 deleteResources(changeObject);
                 break;
             case UPDATE:
-                addOrUpdateContents(changeObject);
+                addOrUpdateContents(changeObject, patchProperties);
                 break;
             case DELETE:
                 deleteContents(changeObject);
@@ -127,35 +143,36 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
     }
 
-    private void addOrUpdateContents(DbPatchDto.DbChangeDto changeObject) {
+    private void addOrUpdateContents(DbPatchDto.DbChangeDto changeObject, PatchProperties patchProperties) {
 
         DbDto.Topic changedTopic = changeObject.getTopic();
         databaseMiner.getDatabaseTopic(changedTopic)
                 .ifPresent((topicObject) -> {
 
-                    Optional<DbDataDto.Entry> potentialEntry = retrieveExistingEntry(changeObject, changedTopic);
+                    Optional<DbDataDto.Entry> potentialEntry = retrieveExistingEntry(changeObject, changedTopic, patchProperties);
 
                     if (changeObject.isPartialChange()) {
 
                         List<DbFieldValueDto> partialValues = changeObject.getPartialValues();
                         if (potentialEntry.isPresent()) {
-                            updateEntryWithPartialChanges(potentialEntry.get(), topicObject.getStructure(), partialValues);
+                            updateEntryWithPartialChanges(potentialEntry.get(), topicObject.getStructure(), partialValues, patchProperties);
                         } else {
-                            updateEntriesMatchingCriteriaWithPartialChanges(changeObject, changedTopic, topicObject, partialValues);
+                            updateEntriesMatchingCriteriaWithPartialChanges(changeObject, changedTopic, topicObject, partialValues, patchProperties);
                         }
 
                     } else {
 
-                        addOrUpdateEntryWithFullChanges(potentialEntry, topicObject, changeObject.getValues());
+                        addOrUpdateEntryWithFullChanges(potentialEntry, topicObject, changeObject.getValues(), patchProperties);
 
                     }
                 });
     }
 
-    private Optional<DbDataDto.Entry> retrieveExistingEntry(DbPatchDto.DbChangeDto changeObject, DbDto.Topic changedTopic) {
+    private Optional<DbDataDto.Entry> retrieveExistingEntry(DbPatchDto.DbChangeDto changeObject, DbDto.Topic changedTopic, PatchProperties patchProperties) {
         final Optional<String> potentialReference = ofNullable(changeObject.getRef());
         if (potentialReference.isPresent()) {
-            return databaseMiner.getContentEntryFromTopicWithReference(potentialReference.get(), changedTopic);
+            String effectiveReference = resolvePlaceholder(potentialReference.get(), patchProperties);
+            return databaseMiner.getContentEntryFromTopicWithReference(effectiveReference, changedTopic);
         }
 
         if (changeObject.isPartialChange() || changeObject.getValues() == null) {
@@ -172,8 +189,8 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         return databaseMiner.getContentEntriesMatchingCriteria(fullCriteria, changedTopic).stream().findAny();
     }
 
-    private void addOrUpdateEntryWithFullChanges(Optional<DbDataDto.Entry> existingEntry, DbDto topicObject, List<String> allValues) {
-        List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject.getStructure(), allValues);
+    private void addOrUpdateEntryWithFullChanges(Optional<DbDataDto.Entry> existingEntry, DbDto topicObject, List<String> allValues, PatchProperties patchProperties) {
+        List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject.getStructure(), allValues, patchProperties);
 
         if (existingEntry.isPresent()) {
 
@@ -186,12 +203,12 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
     }
 
-    private void updateEntryWithPartialChanges(DbDataDto.Entry existingEntry, DbStructureDto structureObject, List<DbFieldValueDto> partialValues) {
-        List<DbDataDto.Item> modifiedItems = createEntryItemsWithPartialValues(structureObject, existingEntry, partialValues);
+    private void updateEntryWithPartialChanges(DbDataDto.Entry existingEntry, DbStructureDto structureObject, List<DbFieldValueDto> partialValues, PatchProperties patchProperties) {
+        List<DbDataDto.Item> modifiedItems = createEntryItemsWithPartialValues(structureObject, existingEntry, partialValues, patchProperties);
         existingEntry.replaceItems(modifiedItems);
     }
 
-    private void updateEntriesMatchingCriteriaWithPartialChanges(DbPatchDto.DbChangeDto changeObject, DbDto.Topic changedTopic, DbDto topicObject, List<DbFieldValueDto> partialValues) {
+    private void updateEntriesMatchingCriteriaWithPartialChanges(DbPatchDto.DbChangeDto changeObject, DbDto.Topic changedTopic, DbDto topicObject, List<DbFieldValueDto> partialValues, PatchProperties patchProperties) {
         List<DbFieldValueDto> filterCompounds = changeObject.getFilterCompounds();
         if (filterCompounds == null) {
             Log.warn("No entry to be updated with partial values: " + partialValues + ", using no filter.");
@@ -204,7 +221,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
             return;
         }
 
-        entries.forEach((entry) -> updateEntryWithPartialChanges(entry, topicObject.getStructure(), partialValues));
+        entries.forEach((entry) -> updateEntryWithPartialChanges(entry, topicObject.getStructure(), partialValues, patchProperties));
     }
 
     private void deleteResources(DbPatchDto.DbChangeDto changeObject) {
@@ -272,7 +289,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
     }
 
-    private static List<DbDataDto.Item> createEntryItemsWithValues(DbStructureDto structureObject, List<String> allValues) {
+    private static List<DbDataDto.Item> createEntryItemsWithValues(DbStructureDto structureObject, List<String> allValues, PatchProperties patchProperties) {
         List<DbStructureDto.Field> structureFields = structureObject.getFields();
 
         int structureFieldsSize = structureFields.size();
@@ -286,16 +303,17 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
                 .map((value) -> {
                     DbStructureDto.Field structureField = structureFields.get(fieldIndex.getAndIncrement());
+                    String effectiveValue = resolvePlaceholder(value, patchProperties);
                     return DbDataDto.Item.builder()
                             .fromStructureFieldAndTopic(structureField, structureObject.getTopic())
-                            .withRawValue(value)
+                            .withRawValue(effectiveValue)
                             .build();
                 })
 
                 .collect(toList());
     }
 
-    private static List<DbDataDto.Item> createEntryItemsWithPartialValues(DbStructureDto structureObject, DbDataDto.Entry existingEntry, List<DbFieldValueDto> partialValues) {
+    private static List<DbDataDto.Item> createEntryItemsWithPartialValues(DbStructureDto structureObject, DbDataDto.Entry existingEntry, List<DbFieldValueDto> partialValues, PatchProperties patchProperties) {
         return existingEntry.getItems().stream()
 
                 .map( (item) -> {
@@ -309,11 +327,11 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                     if (partialValue.isPresent()) {
 
                         DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, structureObject.getFields());
+                        final String effectiveValue = resolvePlaceholder(partialValue.get().getValue(), patchProperties);
                         return DbDataDto.Item.builder()
                                 .fromStructureFieldAndTopic(structureField, structureObject.getTopic())
-                                .withRawValue(partialValue.get().getValue())
+                                .withRawValue(effectiveValue)
                                 .build();
-
                     }
 
                     return item;
