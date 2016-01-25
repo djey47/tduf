@@ -236,6 +236,12 @@ public class DbPatchDto {
                 }
 
                 @Override
+                public DbChangeDtoBuilder withValuePlaceholder(String name) {
+                    this.value = String.format(FORMAT_PLACEHOLDER, name);
+                    return this;
+                }
+
+                @Override
                 public DbChangeDtoBuilder forLocale(DbResourceDto.Locale locale) {
                     this.locale = locale;
                     return this;
@@ -294,6 +300,8 @@ public class DbPatchDto {
             DbChangeDtoBuilder withPartialEntryValues(List<DbFieldValueDto> partialEntryValues);
 
             DbChangeDtoBuilder withValue(String resourceValue);
+
+            DbChangeDtoBuilder withValuePlaceholder(String name);
 
             DbChangeDtoBuilder forLocale(DbResourceDto.Locale locale);
 
