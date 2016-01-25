@@ -5,11 +5,10 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Stream;
 
+import static java.util.Collections.synchronizedList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -32,21 +31,33 @@ public class JsonGateway {
         requireNonNull(missingTopicContents, "A list for missing topics is required.");
         requireNonNull(integrityErrors, "A list for integrity errors is required.");
 
-        List<String> writtenFileNames = new ArrayList<>();
-        for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
+        List<String> writtenFileNames = synchronizedList(new ArrayList<>());
+        List<DbDto.Topic> missingTopicContentsWhileProcessing = synchronizedList(new ArrayList<>());
+        Set<IntegrityError> integrityErrorsWhileProcessing = Collections.synchronizedSet(new HashSet<>());
 
-            Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, sourceDatabaseDirectory, withClearContents, integrityErrors);
-            if (!potentialDbDto.isPresent()) {
-                missingTopicContents.add(currentTopic);
-                continue;
-            }
+        Stream.of(DbDto.Topic.values())
 
-            DatabaseReadWriteHelper.writeDatabaseTopicToJson(potentialDbDto.get(), targetJsonDirectory)
+                .parallel()
 
-                    .ifPresent(writtenFileNames::add);
-        }
+                .forEach((topic) -> {
+                    try {
+                        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(topic, sourceDatabaseDirectory, withClearContents, integrityErrorsWhileProcessing);
+                        if (potentialDbDto.isPresent()) {
+                            DatabaseReadWriteHelper.writeDatabaseTopicToJson(potentialDbDto.get(), targetJsonDirectory)
 
-        return writtenFileNames;
+                                    .ifPresent(writtenFileNames::add);
+                        } else {
+                            missingTopicContentsWhileProcessing.add(topic);
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException("Unable to dump database topic: " + topic);
+                    }
+                });
+
+        missingTopicContents.addAll(missingTopicContentsWhileProcessing);
+        integrityErrors.addAll(integrityErrorsWhileProcessing);
+
+        return new ArrayList<>(writtenFileNames);
     }
 
     /**
@@ -60,18 +71,27 @@ public class JsonGateway {
     public static List<String> gen(String sourceJsonDirectory, String targetDatabaseDirectory, boolean withClearContents, List<DbDto.Topic> missingTopicContents) throws IOException {
         requireNonNull(missingTopicContents, "A list for missing topics is requried.");
 
-        List<String> writtenFileNames = new ArrayList<>();
-        for (DbDto.Topic currentTopic : DbDto.Topic.values()) {
+        List<String> writtenFileNames = synchronizedList(new ArrayList<>());
+        List<DbDto.Topic> missingTopicContentsWhileProcessing = synchronizedList(new ArrayList<>());
+        Stream.of(DbDto.Topic.values())
 
-            Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(currentTopic, sourceJsonDirectory);
-            if (!potentialDbDto.isPresent()) {
-                missingTopicContents.add(currentTopic);
-                continue;
-            }
+                .parallel()
 
-            writtenFileNames.addAll(DatabaseReadWriteHelper.writeDatabaseTopic(potentialDbDto.get(), targetDatabaseDirectory, withClearContents));
-        }
+                .forEach((topic -> {
+                    try {
+                        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(topic, sourceJsonDirectory);
+                        if (potentialDbDto.isPresent()) {
+                            writtenFileNames.addAll(DatabaseReadWriteHelper.writeDatabaseTopic(potentialDbDto.get(), targetDatabaseDirectory, withClearContents));
+                        } else {
+                            missingTopicContentsWhileProcessing.add(topic);
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException("Unable to generate database topic: " + topic);
+                    }
+                }));
 
-        return writtenFileNames;
+        missingTopicContents.addAll(missingTopicContentsWhileProcessing);
+
+        return new ArrayList<>(writtenFileNames);
     }
 }
