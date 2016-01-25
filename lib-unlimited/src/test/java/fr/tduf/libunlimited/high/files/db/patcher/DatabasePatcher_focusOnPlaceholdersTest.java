@@ -56,7 +56,6 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
                 DatabasePatcher.resolvePlaceholder("FOO", new PatchProperties(), empty())
         ).isEqualTo("FOO");
     }
-
     @Test
     public void resolvePlaceholder_whenPlaceholder_withProperty_shouldReturnPropertyValue() {
         // GIVEN
@@ -74,6 +73,33 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
         // GIVEN-WHEN-THEN
         assertThat(
                 DatabasePatcher.resolvePlaceholder("{FOO}", new PatchProperties(), of(databaseObject))
+        ).isNotNull();
+    }
+    @Test
+    public void resolveResourcePlaceholder_whenNoPlaceholder_shouldReturnInitialValue() {
+        // GIVEN-WHEN-THEN
+        assertThat(
+                DatabasePatcher.resolveResourcePlaceholder("FOO", new PatchProperties(), empty())
+        ).isEqualTo("FOO");
+    }
+
+    @Test
+    public void resolveResourcePlaceholder_whenPlaceholder_withProperty_shouldReturnPropertyValue() {
+        // GIVEN
+        final PatchProperties patchProperties = new PatchProperties();
+        patchProperties.store("FOO", "1");
+
+        // WHEN-THEN
+        assertThat(
+                DatabasePatcher.resolveResourcePlaceholder("{FOO}", patchProperties, empty())
+        ).isEqualTo("1");
+    }
+
+    @Test
+    public void resolveResourcePlaceholder_whenPlaceholder_withoutProperty_shouldReturnGeneratedValue() {
+        // GIVEN-WHEN-THEN
+        assertThat(
+                DatabasePatcher.resolveResourcePlaceholder("{FOO}", new PatchProperties(), of(databaseObject))
         ).isNotNull();
     }
 
@@ -120,14 +146,14 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
 
 
         // THEN
+        assertThat(actualProperties.size()).isEqualTo(1);
+
+        final String generatedValue = actualProperties.getProperty("MYREF");
         assertThat(databaseObject.getData().getEntries()).hasSize(1);
         assertThat(databaseObject.getData().getEntries().get(0).getItems())
                 .hasSize(2)
                 .extracting("rawValue")
-                .containsOnlyOnce("103");
-
-        assertThat(actualProperties.size()).isEqualTo(1);
-        assertThat(actualProperties.retrieve("MYREF")).isPresent();
+                .containsOnly(generatedValue, "103");
     }
 
     @Test
@@ -188,6 +214,37 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
 
         final DbResourceDto.Entry resourceEntry = databaseObject.getResources().get(0).getEntries().get(0);
         assertThat(resourceEntry.getReference()).isEqualTo("000000");
+        assertThat(resourceEntry.getValue()).isEqualTo("Text");
+    }
+
+    @Test
+    public void apply_whenUpdateResources_forRef_withoutProperty_shouldUseGeneratedValue() throws ReflectiveOperationException {
+        // GIVEN
+        final String placeholderName1 = "MYRESREF";
+        final String placeholderName2 = "MYRESVAL";
+        DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
+                .withType(UPDATE_RES)
+                .forTopic(CAR_PHYSICS_DATA)
+                .forLocale(FRANCE)
+                .asReferencePlaceholder(placeholderName1)
+                .withValuePlaceholder(placeholderName2)
+                .build();
+        DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
+        PatchProperties patchProperties = new PatchProperties();
+        patchProperties.store(placeholderName2, "Text");
+
+
+        // WHEN
+        final PatchProperties actualProperties = databasePatcher.applyWithProperties(patchObject, patchProperties);
+
+
+        // THEN
+        assertThat(actualProperties.size()).isEqualTo(2);
+        assertThat(databaseObject.getResources().get(0).getEntries()).hasSize(1);
+
+        final String generatedValue = actualProperties.getProperty("MYRESREF");
+        final DbResourceDto.Entry resourceEntry = databaseObject.getResources().get(0).getEntries().get(0);
+        assertThat(resourceEntry.getReference()).isEqualTo(generatedValue);
         assertThat(resourceEntry.getValue()).isEqualTo("Text");
     }
 

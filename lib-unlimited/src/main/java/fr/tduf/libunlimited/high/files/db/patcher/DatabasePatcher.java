@@ -66,6 +66,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         databaseChangeHelper = new DatabaseChangeHelper(databaseMiner);
     }
 
+    // TODO introduce notion of simple placeholder vs content Ref vs resource Ref
     static String resolvePlaceholder(String value, PatchProperties patchProperties, Optional<DbDto> topicObject) {
         final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
 
@@ -74,8 +75,29 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
             return patchProperties.retrieve(placeholderName)
                     .orElseGet(() -> {
                         if (topicObject.isPresent()) {
-                            // TODO see to generate content ids / resource ids
+                            // TODO take newly generated values into account for unicity
                             final String generatedValue = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject.get());
+                            patchProperties.store(placeholderName, generatedValue);
+                            return generatedValue;
+                        }
+
+                        return value;
+                    });
+        }
+
+        return value;
+    }
+
+    static String resolveResourcePlaceholder(String value, PatchProperties patchProperties, Optional<DbDto> topicObject) {
+        final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
+
+        if(matcher.matches()) {
+            final String placeholderName = matcher.group(1);
+            return patchProperties.retrieve(placeholderName)
+                    .orElseGet(() -> {
+                        if (topicObject.isPresent()) {
+                            // TODO take newly generated values into account for unicity
+                            final String generatedValue = DatabaseGenHelper.generateUniqueResourceEntryIdentifier(topicObject.get());
                             patchProperties.store(placeholderName, generatedValue);
                             return generatedValue;
                         }
@@ -285,11 +307,12 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         DbDto.Topic topic = changeObject.getTopic();
         String value = changeObject.getValue();
 
-        String effectiveRef = resolvePlaceholder(ref, patchProperties, empty());
+        Optional<DbDto> topicObject = databaseMiner.getDatabaseTopic(topic);
+        String effectiveRef = resolveResourcePlaceholder(ref, patchProperties, topicObject);
         Optional<DbResourceDto.Entry> potentialResourceEntry =
                 databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(effectiveRef, topic, locale);
 
-        String effectiveValue = resolvePlaceholder(value, patchProperties, empty());
+        String effectiveValue = resolveResourcePlaceholder(value, patchProperties, empty());
         if (potentialResourceEntry.isPresent()) {
 
             potentialResourceEntry.get().setValue(effectiveValue);
