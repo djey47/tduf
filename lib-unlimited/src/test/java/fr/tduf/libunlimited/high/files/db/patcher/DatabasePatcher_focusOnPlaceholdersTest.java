@@ -17,6 +17,8 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
 import static java.util.Arrays.asList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // TODO extending another test case also runs those cases...
@@ -51,7 +53,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
     public void resolvePlaceholder_whenNoPlaceholder_shouldReturnInitialValue() {
         // GIVEN-WHEN-THEN
         assertThat(
-                DatabasePatcher.resolvePlaceholder("FOO", new PatchProperties())
+                DatabasePatcher.resolvePlaceholder("FOO", new PatchProperties(), empty())
         ).isEqualTo("FOO");
     }
 
@@ -63,8 +65,16 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
 
         // WHEN-THEN
         assertThat(
-                DatabasePatcher.resolvePlaceholder("{FOO}", patchProperties)
+                DatabasePatcher.resolvePlaceholder("{FOO}", patchProperties, empty())
         ).isEqualTo("1");
+    }
+
+    @Test
+    public void resolvePlaceholder_whenPlaceholder_withoutProperty_shouldReturnGeneratedValue() {
+        // GIVEN-WHEN-THEN
+        assertThat(
+                DatabasePatcher.resolvePlaceholder("{FOO}", new PatchProperties(), of(databaseObject))
+        ).isNotNull();
     }
 
     @Test
@@ -90,6 +100,34 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
                 .hasSize(2)
                 .extracting("rawValue")
                 .containsExactly("000000", "103");
+    }
+
+    @Test
+    public void apply_whenUpdateContents_forRef_withoutProperty_shouldUseGeneratedValue() {
+        // GIVEN
+        final String placeholderName = "MYREF";
+        DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
+                .withType(UPDATE)
+                .forTopic(CAR_PHYSICS_DATA)
+                .asReferencePlaceholder(placeholderName)
+                .withEntryValues(asList("{MYREF}", "103"))
+                .build();
+        DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
+
+
+        // WHEN
+        final PatchProperties actualProperties = databasePatcher.applyWithProperties(patchObject, new PatchProperties());
+
+
+        // THEN
+        assertThat(databaseObject.getData().getEntries()).hasSize(1);
+        assertThat(databaseObject.getData().getEntries().get(0).getItems())
+                .hasSize(2)
+                .extracting("rawValue")
+                .containsOnlyOnce("103");
+
+        assertThat(actualProperties.size()).isEqualTo(1);
+        assertThat(actualProperties.retrieve("MYREF")).isPresent();
     }
 
     @Test
@@ -122,6 +160,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
         // THEN
         assertThat(databaseObject.getData().getEntries()).isEmpty();
     }
+
     @Test
     public void apply_whenUpdateResources_forRef_withProperties_shouldUsePropertiesValues() throws ReflectiveOperationException {
         // GIVEN
@@ -178,11 +217,6 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
 
         // THEN
         assertThat(databaseObject.getResources().get(0).getEntries()).isEmpty();
-    }
-
-    @Test
-    public void apply_whenUpdateContents_forRef_withoutProperty_shouldUseGeneratedValue() {
-
     }
 
     private static DbPatchDto createPatchObjectWithSingleChange(DbPatchDto.DbChangeDto changeObject) {

@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
@@ -65,13 +66,22 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         databaseChangeHelper = new DatabaseChangeHelper(databaseMiner);
     }
 
-    static String resolvePlaceholder(String value, PatchProperties patchProperties) {
+    static String resolvePlaceholder(String value, PatchProperties patchProperties, Optional<DbDto> topicObject) {
         final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
 
         if(matcher.matches()) {
             final String placeholderName = matcher.group(1);
             return patchProperties.retrieve(placeholderName)
-                    .orElse("NF"); // TODO use generator
+                    .orElseGet(() -> {
+                        if (topicObject.isPresent()) {
+                            // TODO see to generate content ids / resource ids
+                            final String generatedValue = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject.get());
+                            patchProperties.store(placeholderName, generatedValue);
+                            return generatedValue;
+                        }
+
+                        return value;
+                    });
         }
 
         return value;
@@ -137,7 +147,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         Optional<String> potentialRef = Optional.ofNullable(changeObject.getRef());
 
         if (potentialRef.isPresent()) {
-            String effectiveRef = resolvePlaceholder(potentialRef.get(), patchProperties);
+            String effectiveRef = resolvePlaceholder(potentialRef.get(), patchProperties, empty());
             databaseChangeHelper.removeEntryWithReference(effectiveRef, changedTopic);
         } else {
             requireNonNull(changeObject.getFilterCompounds(), "As no REF is provided, filter attribute is mandatory.");
@@ -173,7 +183,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     private Optional<DbDataDto.Entry> retrieveExistingEntry(DbPatchDto.DbChangeDto changeObject, DbDto.Topic changedTopic, PatchProperties patchProperties) {
         final Optional<String> potentialReference = ofNullable(changeObject.getRef());
         if (potentialReference.isPresent()) {
-            String effectiveReference = resolvePlaceholder(potentialReference.get(), patchProperties);
+            String effectiveReference = resolvePlaceholder(potentialReference.get(), patchProperties, empty());
             return databaseMiner.getContentEntryFromTopicWithReference(effectiveReference, changedTopic);
         }
 
@@ -192,7 +202,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     }
 
     private void addOrUpdateEntryWithFullChanges(Optional<DbDataDto.Entry> existingEntry, DbDto topicObject, List<String> allValues, PatchProperties patchProperties) {
-        List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject.getStructure(), allValues, patchProperties);
+        List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject, allValues, patchProperties);
 
         if (existingEntry.isPresent()) {
 
@@ -244,7 +254,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
     private void deleteResourcesForLocale(DbPatchDto.DbChangeDto changeObject, DbResourceDto.Locale locale, PatchProperties patchProperties) {
         final DbDto.Topic topic = changeObject.getTopic();
-        final String effectiveRef = resolvePlaceholder(changeObject.getRef(), patchProperties);
+        final String effectiveRef = resolvePlaceholder(changeObject.getRef(), patchProperties, empty());
 
         databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(effectiveRef, topic, locale)
 
@@ -275,11 +285,11 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         DbDto.Topic topic = changeObject.getTopic();
         String value = changeObject.getValue();
 
-        String effectiveRef = resolvePlaceholder(ref, patchProperties);
+        String effectiveRef = resolvePlaceholder(ref, patchProperties, empty());
         Optional<DbResourceDto.Entry> potentialResourceEntry =
                 databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(effectiveRef, topic, locale);
 
-        String effectiveValue = resolvePlaceholder(value, patchProperties);
+        String effectiveValue = resolvePlaceholder(value, patchProperties, empty());
         if (potentialResourceEntry.isPresent()) {
 
             potentialResourceEntry.get().setValue(effectiveValue);
@@ -294,8 +304,8 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
     }
 
-    private static List<DbDataDto.Item> createEntryItemsWithValues(DbStructureDto structureObject, List<String> allValues, PatchProperties patchProperties) {
-        List<DbStructureDto.Field> structureFields = structureObject.getFields();
+    private static List<DbDataDto.Item> createEntryItemsWithValues(DbDto topicObject, List<String> allValues, PatchProperties patchProperties) {
+        List<DbStructureDto.Field> structureFields = topicObject.getStructure().getFields();
 
         int structureFieldsSize = structureFields.size();
         int patchValuesCount = allValues.size();
@@ -308,9 +318,9 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
                 .map((value) -> {
                     DbStructureDto.Field structureField = structureFields.get(fieldIndex.getAndIncrement());
-                    String effectiveValue = resolvePlaceholder(value, patchProperties);
+                    String effectiveValue = resolvePlaceholder(value, patchProperties, Optional.of(topicObject));
                     return DbDataDto.Item.builder()
-                            .fromStructureFieldAndTopic(structureField, structureObject.getTopic())
+                            .fromStructureFieldAndTopic(structureField, topicObject.getTopic())
                             .withRawValue(effectiveValue)
                             .build();
                 })
@@ -332,7 +342,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                     if (partialValue.isPresent()) {
 
                         DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, structureObject.getFields());
-                        final String effectiveValue = resolvePlaceholder(partialValue.get().getValue(), patchProperties);
+                        final String effectiveValue = resolvePlaceholder(partialValue.get().getValue(), patchProperties, empty());
                         return DbDataDto.Item.builder()
                                 .fromStructureFieldAndTopic(structureField, structureObject.getTopic())
                                 .withRawValue(effectiveValue)
