@@ -4,12 +4,17 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collections;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,10 +31,11 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
         databaseObject = DbDto.builder()
                 .withData(DbDataDto.builder().build())
                 .withStructure(DbStructureDto.builder()
-                        .forTopic(DbDto.Topic.CAR_PHYSICS_DATA)
+                        .forTopic(CAR_PHYSICS_DATA)
                         .addItem(DbStructureDto.Field.builder().ofRank(1).build())
                         .addItem(DbStructureDto.Field.builder().ofRank(2).build())
                         .build())
+                .addResource(DbResourceDto.builder().withLocale(FRANCE).build())
                 .build();
         databasePatcher =  createPatcher(Collections.singletonList(databaseObject));
     }
@@ -59,14 +65,12 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
         // GIVEN
         final String placeholderName = "MYREF";
         DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
-                .withType(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE)
-                .forTopic(DbDto.Topic.CAR_PHYSICS_DATA)
+                .withType(UPDATE)
+                .forTopic(CAR_PHYSICS_DATA)
                 .asReferencePlaceholder(placeholderName)
                 .withEntryValues(asList("{MYREF}", "103"))
                 .build();
-        DbPatchDto patchObject = DbPatchDto.builder()
-                .addChanges(Collections.singletonList(changeObject))
-                .build();
+        DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.store(placeholderName, "000000");
 
@@ -82,7 +86,43 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
     }
 
     @Test
+    public void apply_whenUpdateResources_forRef_withProperties_shouldUsePropertiesValues() throws ReflectiveOperationException {
+        // GIVEN
+        final String placeholderName1 = "MYRESREF";
+        final String placeholderName2 = "MYRESVAL";
+        DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
+                .withType(UPDATE_RES)
+                .forTopic(CAR_PHYSICS_DATA)
+                .forLocale(FRANCE)
+                .asReferencePlaceholder(placeholderName1)
+                .withValuePlaceholder(placeholderName2)
+                .build();
+        DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
+        PatchProperties patchProperties = new PatchProperties();
+        patchProperties.store(placeholderName1, "000000");
+        patchProperties.store(placeholderName2, "Text");
+
+
+        // WHEN
+        databasePatcher.applyWithProperties(patchObject, patchProperties);
+
+
+        // THEN
+        assertThat(databaseObject.getResources().get(0).getEntries()).hasSize(1);
+
+        final DbResourceDto.Entry resourceEntry = databaseObject.getResources().get(0).getEntries().get(0);
+        assertThat(resourceEntry.getReference()).isEqualTo("000000");
+        assertThat(resourceEntry.getValue()).isEqualTo("Text");
+    }
+
+    @Test
     public void apply_whenUpdateContents_forRef_withoutProperty_shouldUseGeneratedValue() {
 
+    }
+
+    private static DbPatchDto createPatchObjectWithSingleChange(DbPatchDto.DbChangeDto changeObject) {
+        return DbPatchDto.builder()
+                .addChanges(Collections.singletonList(changeObject))
+                .build();
     }
 }

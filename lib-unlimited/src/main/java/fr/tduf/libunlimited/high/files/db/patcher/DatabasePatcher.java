@@ -29,6 +29,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Used to apply patches to an existing database.
  */
+// TODO resolve placeholders the soonest possible (parse all objects value(s), partialValues etc)
 public class DatabasePatcher extends AbstractDatabaseHolder {
 
     private static final Pattern PATTERN_PLACEHOLDER = Pattern.compile("\\{(.+)\\}");
@@ -82,7 +83,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
         switch (changeType) {
             case UPDATE_RES:
-                addOrUpdateResources(changeObject);
+                addOrUpdateResources(changeObject, patchProperties);
                 break;
             case DELETE_RES:
                 deleteResources(changeObject);
@@ -251,40 +252,42 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 });
     }
 
-    private void addOrUpdateResources(DbPatchDto.DbChangeDto changeObject) {
+    private void addOrUpdateResources(DbPatchDto.DbChangeDto changeObject, PatchProperties patchProperties) {
         Optional<DbResourceDto.Locale> locale = ofNullable(changeObject.getLocale());
 
         if (locale.isPresent()) {
 
-            addOrUpdateResourcesForLocale(changeObject, locale.get());
+            addOrUpdateResourcesForLocale(changeObject, locale.get(), patchProperties);
 
         } else {
 
             Stream.of(DbResourceDto.Locale.values())
 
-                    .forEach((currentLocale) -> addOrUpdateResourcesForLocale(changeObject, currentLocale));
+                    .forEach((currentLocale) -> addOrUpdateResourcesForLocale(changeObject, currentLocale, patchProperties));
 
         }
     }
 
-    private void addOrUpdateResourcesForLocale(DbPatchDto.DbChangeDto changeObject, DbResourceDto.Locale locale) {
+    private void addOrUpdateResourcesForLocale(DbPatchDto.DbChangeDto changeObject, DbResourceDto.Locale locale, PatchProperties patchProperties) {
         String ref = changeObject.getRef();
         DbDto.Topic topic = changeObject.getTopic();
         String value = changeObject.getValue();
 
+        String effectiveRef = resolvePlaceholder(ref, patchProperties);
         Optional<DbResourceDto.Entry> potentialResourceEntry =
-                databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(ref, topic, locale);
+                databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(effectiveRef, topic, locale);
 
+        String effectiveValue = resolvePlaceholder(value, patchProperties);
         if (potentialResourceEntry.isPresent()) {
 
-            potentialResourceEntry.get().setValue(value);
+            potentialResourceEntry.get().setValue(effectiveValue);
 
         } else {
 
             databaseMiner.getResourceFromTopicAndLocale(topic, locale)
                     .ifPresent((localeResources) -> localeResources.getEntries().add(DbResourceDto.Entry.builder()
-                                                                                        .forReference(ref)
-                                                                                        .withValue(value)
+                                                                                        .forReference(effectiveRef)
+                                                                                        .withValue(effectiveValue)
                                                                                         .build()));
         }
     }
