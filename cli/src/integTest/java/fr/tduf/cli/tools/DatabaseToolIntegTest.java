@@ -77,8 +77,6 @@ public class DatabaseToolIntegTest {
         FileUtils.deleteDirectory(new File(DIRECTORY_FIXED_DATABASE));
         FileUtils.deleteDirectory(new File(DIRECTORY_ERR_GENERATED_DATABASE));
         FileUtils.deleteDirectory(new File(DIRECTORY_GENERATED_DATABASE));
-
-        Files.deleteIfExists(PATH_PATCHER.resolve("effective-mini-template.json.properties"));
     }
 
     @After
@@ -124,6 +122,7 @@ public class DatabaseToolIntegTest {
     @Test
     public void applyPatch_withTemplateAndProperties() throws IOException {
         // GIVEN
+        Files.deleteIfExists(PATH_PATCHER.resolve("effective-mini-template.json.properties"));
         String inputPatchFile = Paths.get(DIRECTORY_PATCH, "mini-template.json").toString();
 
         // WHEN: applyPatch
