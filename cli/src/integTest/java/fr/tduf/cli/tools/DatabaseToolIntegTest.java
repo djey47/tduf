@@ -7,6 +7,7 @@ import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Condition;
@@ -34,6 +35,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -103,8 +106,9 @@ public class DatabaseToolIntegTest {
 
         // THEN: contents must be updated
         List<DbDto> actualDatabaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(DIRECTORY_PATCHED_DATABASE);
-        assertCarPhysicsEntryWithRefHasFieldValue("632098801", 103, "8900", "bitfield patched to 8900", actualDatabaseObjects);
-        assertCarPhysicsEntryWithRefHasFieldValue("70033960", 103, "8901", "bitfield patched to 8901", actualDatabaseObjects);
+        BulkDatabaseMiner miner = BulkDatabaseMiner.load(actualDatabaseObjects);
+        assertCarPhysicsEntryWithRefHasFieldValue("632098801", 103, "8900", "bitfield patched to 8900", miner);
+        assertCarPhysicsEntryWithRefHasFieldValue("70033960", 103, "8901", "bitfield patched to 8901", miner);
 
         // WHEN: genPatch from patched database
         System.out.println("-> GenPatch!");
@@ -123,7 +127,7 @@ public class DatabaseToolIntegTest {
         // WHEN: applyPatch
         System.out.println("-> ApplyPatch! (template and properties)");
         OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
-        DatabaseTool.main(new String[]{"apply-patch", "-n", "-j", DIRECTORY_ERR_JSON_DATABASE, "-o", DIRECTORY_JSON_DATABASE, "-p", inputPatchFile});
+        DatabaseTool.main(new String[]{"apply-patch", "-n", "-j", DIRECTORY_ERR_JSON_DATABASE, "-o", DIRECTORY_PATCHED_DATABASE, "-p", inputPatchFile});
 
         // THEN: Normalized output contents
         String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
@@ -135,6 +139,13 @@ public class DatabaseToolIntegTest {
         assertThat(effectivePatchPropertyFile).isNotNull();
 
         // THEN: contents must be updated
+        List<DbDto> actualDatabaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(DIRECTORY_PATCHED_DATABASE);
+        BulkDatabaseMiner miner = BulkDatabaseMiner.load(actualDatabaseObjects);
+        assertCarPhysicsEntryWithRefHasFieldValue("000003000", 9, "3000567", "File name set to 3000567 at #9", miner);
+        assertCarPhysicsEntryWithRefHasFieldValue("000003000", 10, "000030001", "Default rim set to 000030001 at #10", miner);
+        assertCarPhysicsEntryWithRefHasFieldValue("000003000", 102, "3000", "Id car set to 3000 at #102", miner);
+        assertCarPhysicsResourceWithRefHasValue("3000567", UNITED_STATES, "TDUCP_3000", "Created resource value #3000567: TDUCP_3000", miner);
+        assertCarPhysicsResourceWithRefHasValue("3000567", FRANCE, "TDUCP_3000", "Created resource value #3000567: TDUCP_3000", miner);
 
         // THEN: effective property file must exist with right contents
         assertThat(new File(effectivePatchPropertyFile)).exists();
@@ -343,12 +354,13 @@ public class DatabaseToolIntegTest {
 
         // THEN
         List<DbDto> actualDatabaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(DIRECTORY_JSON_DATABASE);
-        assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 2, "77061", "physical contents patched at field rank 2", actualDatabaseObjects);
-        assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 5, "78900265", "physical contents patched at field rank 5", actualDatabaseObjects);
-        assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 6, "1", "physical contents patched at field rank 6", actualDatabaseObjects);
-        assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 7, "43055", "physical contents patched at field rank 7", actualDatabaseObjects);
-        assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 8, "59368917", "physical contents patched at field rank 8", actualDatabaseObjects);
-        assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 99, "238", "physical contents patched at field rank 99", actualDatabaseObjects);
+        BulkDatabaseMiner miner = BulkDatabaseMiner.load(actualDatabaseObjects);
+        assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 2, "77061", "physical contents patched at field rank 2", miner);
+        assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 5, "78900265", "physical contents patched at field rank 5", miner);
+        assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 6, "1", "physical contents patched at field rank 6", miner);
+        assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 7, "43055", "physical contents patched at field rank 7", miner);
+        assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 8, "59368917", "physical contents patched at field rank 8", miner);
+        assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 99, "238", "physical contents patched at field rank 99", miner);
     }
 
     private static Object fakeAndAssertExtractAll(InvocationOnMock invocation) throws IOException {
@@ -394,13 +406,23 @@ public class DatabaseToolIntegTest {
                 .count();
     }
 
-    private static void assertCarPhysicsEntryWithRefHasFieldValue(String ref, int fieldRank, String expectedValue, String label, List<DbDto> actualDatabaseObjects) {
-        Optional<DbDataDto.Entry> potentialEntry = BulkDatabaseMiner.load(actualDatabaseObjects).getContentEntryFromTopicWithReference(ref, CAR_PHYSICS_DATA);
+    private static void assertCarPhysicsEntryWithRefHasFieldValue(String ref, int fieldRank, String expectedValue, String label, BulkDatabaseMiner miner) {
+        Optional<DbDataDto.Entry> potentialEntry = miner.getContentEntryFromTopicWithReference(ref, CAR_PHYSICS_DATA);
 
         assertThat(potentialEntry)
                 .isPresent()
                 .has(new Condition<>(
                         entry -> expectedValue.equals(entry.get().getItemAtRank(fieldRank).get().getRawValue()),
+                        label));
+    }
+
+    private static void assertCarPhysicsResourceWithRefHasValue(String ref, DbResourceDto.Locale locale, String expectedValue, String label, BulkDatabaseMiner miner) {
+        Optional<DbResourceDto.Entry> potentialEntry = miner.getResourceEntryFromTopicAndLocaleWithReference(ref, CAR_PHYSICS_DATA, locale);
+
+        assertThat(potentialEntry)
+                .isPresent()
+                .has(new Condition<>(
+                        entry -> expectedValue.equals(entry.get().getValue()),
                         label));
     }
 }
