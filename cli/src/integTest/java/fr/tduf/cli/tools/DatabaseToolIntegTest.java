@@ -72,6 +72,8 @@ public class DatabaseToolIntegTest {
         FileUtils.deleteDirectory(new File(DIRECTORY_FIXED_DATABASE));
         FileUtils.deleteDirectory(new File(DIRECTORY_ERR_GENERATED_DATABASE));
         FileUtils.deleteDirectory(new File(DIRECTORY_GENERATED_DATABASE));
+
+        Files.deleteIfExists(PATH_PATCHER.resolve("effective-mini-template.json.properties"));
     }
 
     @After
@@ -111,6 +113,31 @@ public class DatabaseToolIntegTest {
         // THEN: patch file must exist
         AssertionsHelper.assertFileExistAndGet(outputPatchFile);
         AssertionsHelper.assertJsonFilesMatch(referencePatchFile, outputPatchFile);
+    }
+
+    @Test
+    public void applyPatch_withTemplateAndProperties() throws IOException {
+        // GIVEN
+        String inputPatchFile = Paths.get(DIRECTORY_PATCH, "mini-template.json").toString();
+
+        // WHEN: applyPatch
+        System.out.println("-> ApplyPatch! (template and properties)");
+        OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
+        DatabaseTool.main(new String[]{"apply-patch", "-n", "-j", DIRECTORY_ERR_JSON_DATABASE, "-o", DIRECTORY_JSON_DATABASE, "-p", inputPatchFile});
+
+        // THEN: Normalized output contents
+        String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
+        JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
+
+        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 2);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 18);
+        final String effectivePatchPropertyFile = rootJsonNode.get("effectivePatchPropertyFile").asText();
+        assertThat(effectivePatchPropertyFile).isNotNull();
+
+        // THEN: contents must be updated
+
+        // THEN: effective property file must exist with right contents
+        assertThat(new File(effectivePatchPropertyFile)).exists();
     }
 
     @Test

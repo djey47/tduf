@@ -25,3 +25,4 @@ releases/
 tests/
 *.iml
 .gradletasknamecache
+/cli/integ-tests/patcher/effective-mini-template.json.properties
