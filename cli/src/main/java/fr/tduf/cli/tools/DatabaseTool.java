@@ -429,6 +429,10 @@ public class DatabaseTool extends GenericTool {
     }
 
     private String writePatchProperties(PatchProperties patchProperties, String patchFile) throws IOException {
+        if (patchProperties.isEmpty()) {
+            return "N/A";
+        }
+
         final Path patchPath = Paths.get(patchFile);
         Path patchParentPath = patchPath.getParent();
         String patchFileName = patchPath.getFileName().toString();
