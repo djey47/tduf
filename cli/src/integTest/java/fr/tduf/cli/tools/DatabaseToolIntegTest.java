@@ -5,6 +5,7 @@ import fr.tduf.cli.common.helper.ConsoleHelper;
 import fr.tduf.libtesting.common.helper.AssertionsHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -24,6 +25,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -148,7 +150,11 @@ public class DatabaseToolIntegTest {
         assertCarPhysicsResourceWithRefHasValue("3000567", FRANCE, "TDUCP_3000", "Created resource value #3000567: TDUCP_3000", miner);
 
         // THEN: effective property file must exist with right contents
-        assertThat(new File(effectivePatchPropertyFile)).exists();
+        final PatchProperties actualProperties = new PatchProperties();
+        final File handle = new File(effectivePatchPropertyFile);
+        assertThat(handle).exists();
+        actualProperties.load(new FileInputStream(handle));
+        assertThat(actualProperties.size()).isEqualTo(24);
     }
 
     @Test
