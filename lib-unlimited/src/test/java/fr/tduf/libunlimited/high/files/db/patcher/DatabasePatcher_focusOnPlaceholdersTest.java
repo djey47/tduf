@@ -60,7 +60,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
     public void resolvePlaceholder_whenPlaceholder_withProperty_shouldReturnPropertyValue() {
         // GIVEN
         final PatchProperties patchProperties = new PatchProperties();
-        patchProperties.store("FOO", "1");
+        patchProperties.register("FOO", "1");
 
         // WHEN-THEN
         assertThat(
@@ -87,7 +87,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
     public void resolveResourcePlaceholder_whenPlaceholder_withProperty_shouldReturnPropertyValue() {
         // GIVEN
         final PatchProperties patchProperties = new PatchProperties();
-        patchProperties.store("FOO", "1");
+        patchProperties.register("FOO", "1");
 
         // WHEN-THEN
         assertThat(
@@ -115,7 +115,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
                 .build();
         DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
         PatchProperties patchProperties = new PatchProperties();
-        patchProperties.store(placeholderName, "000000");
+        patchProperties.register(placeholderName, "000000");
 
         // WHEN
         databasePatcher.applyWithProperties(patchObject, patchProperties);
@@ -167,7 +167,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
                 .build();
         DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
         PatchProperties patchProperties = new PatchProperties();
-        patchProperties.store(placeholderName, "000000");
+        patchProperties.register(placeholderName, "000000");
 
         databaseObject.getData().addEntryWithItems(asList(
                 DbDataDto.Item.builder()
@@ -201,8 +201,8 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
                 .build();
         DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
         PatchProperties patchProperties = new PatchProperties();
-        patchProperties.store(placeholderName1, "000000");
-        patchProperties.store(placeholderName2, "Text");
+        patchProperties.register(placeholderName1, "000000");
+        patchProperties.register(placeholderName2, "Text");
 
 
         // WHEN
@@ -231,7 +231,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
                 .build();
         DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
         PatchProperties patchProperties = new PatchProperties();
-        patchProperties.store(placeholderName2, "Text");
+        patchProperties.register(placeholderName2, "Text");
 
 
         // WHEN
@@ -259,7 +259,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
                 .build();
         DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
         PatchProperties patchProperties = new PatchProperties();
-        patchProperties.store(placeholderName, "000000");
+        patchProperties.register(placeholderName, "000000");
 
         databaseObject.getResources().get(0).getEntries().add(
                 DbResourceDto.Entry.builder()

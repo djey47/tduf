@@ -77,7 +77,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                         if (topicObject.isPresent()) {
                             // TODO take newly generated values into account for unicity
                             final String generatedValue = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject.get());
-                            patchProperties.store(placeholderName, generatedValue);
+                            patchProperties.register(placeholderName, generatedValue);
                             return generatedValue;
                         }
 
@@ -98,7 +98,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                         if (topicObject.isPresent()) {
                             // TODO take newly generated values into account for unicity
                             final String generatedValue = DatabaseGenHelper.generateUniqueResourceEntryIdentifier(topicObject.get());
-                            patchProperties.store(placeholderName, generatedValue);
+                            patchProperties.register(placeholderName, generatedValue);
                             return generatedValue;
                         }
 

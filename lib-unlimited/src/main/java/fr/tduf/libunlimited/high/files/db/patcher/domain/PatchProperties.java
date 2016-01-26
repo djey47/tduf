@@ -13,7 +13,7 @@ public class PatchProperties extends Properties {
     /**
      * Stores value associated to a placeholder.
      */
-    public void store(String placeholder, String value) {
+    public void register(String placeholder, String value) {
         setProperty(
                 requireNonNull(placeholder, "Placeholder is required."),
                 requireNonNull(value, "Value is required")
@@ -39,7 +39,7 @@ public class PatchProperties extends Properties {
             final String placeholder = (String) property.getKey();
             final String value = (String) property.getValue();
 
-            patchProperties.store(placeholder, value);
+            patchProperties.register(placeholder, value);
         });
 
         return patchProperties;
