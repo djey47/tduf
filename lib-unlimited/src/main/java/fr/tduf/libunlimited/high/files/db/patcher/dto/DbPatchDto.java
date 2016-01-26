@@ -148,12 +148,20 @@ public class DbPatchDto {
             return ref;
         }
 
+        public void setRef(String ref) {
+            this.ref = ref;
+        }
+
         public DbDto.Topic getTopic() {
             return topic;
         }
 
         public String getValue() {
             return value;
+        }
+
+        public void setValues(List<String> values) {
+            this.values = values;
         }
 
         public List<String> getValues() {
