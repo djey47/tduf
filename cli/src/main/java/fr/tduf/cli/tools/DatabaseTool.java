@@ -15,6 +15,7 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -35,10 +36,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -387,21 +385,63 @@ public class DatabaseTool extends GenericTool {
         outLine("-> Source database directory: " + sourceJsonDirectory);
         outLine("-> Mini patch file: " + sourcePatchFile);
 
+        PatchProperties patchProperties = readPatchProperties(sourcePatchFile);
+
         outLine("Patching TDU database, please wait...");
 
         DbPatchDto patchObject = jsonMapper.readValue(new File(sourcePatchFile), DbPatchDto.class);
 
         List<DbDto> allTopicObjects = loadDatabaseFromJsonFiles(sourceJsonDirectory);
-        AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).apply(patchObject);
+        final PatchProperties effectivePatchProperties = AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).applyWithProperties(patchObject, patchProperties);
 
         outLine("Writing patched database to " + targetDatabaseDirectory + ", please wait...");
 
         List<String> writtenFileNames = DatabaseReadWriteHelper.writeDatabaseTopicsToJson(allTopicObjects, targetDatabaseDirectory);
 
+        String writtenPropertyFile = writePatchProperties(effectivePatchProperties, sourcePatchFile);
+
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("writtenFiles", writtenFileNames);
+        resultInfo.put("effectivePatchPropertyFile", writtenPropertyFile);
 
         return resultInfo;
+    }
+
+    private PatchProperties readPatchProperties(String patchFile) throws IOException {
+        String propertyFile = patchFile + ".properties";
+
+        final PatchProperties patchProperties = new PatchProperties();
+        final File propertyFileHandle = new File(propertyFile);
+        if(propertyFileHandle.exists()) {
+
+            outLine("-> Patch properties: " + propertyFile);
+
+            final InputStream inputStream = new FileInputStream(propertyFileHandle);
+            patchProperties.load(inputStream);
+
+        } else {
+
+            outLine("-> Patch properties: not provided");
+
+        }
+
+        return patchProperties;
+    }
+
+    private String writePatchProperties(PatchProperties patchProperties, String patchFile) throws IOException {
+        final Path patchPath = Paths.get(patchFile);
+        Path patchParentPath = patchPath.getParent();
+        String patchFileName = patchPath.getFileName().toString();
+        final String targetFileName = "effective-" + patchFileName + ".properties";
+        String targetPropertyFile = patchParentPath.resolve(targetFileName).toString();
+
+        outLine("Writing properties to " + targetPropertyFile + ", please wait...");
+
+        // TODO what if targetPropertyFile already exists ?
+        final OutputStream outputStream = new FileOutputStream(targetPropertyFile);
+        patchProperties.store(outputStream, null);
+
+        return targetPropertyFile;
     }
 
     private Map<String, ?> generateDatabaseFiles(String sourceJsonDirectory, String targetExtractedDatabaseDirectory) throws IOException {
