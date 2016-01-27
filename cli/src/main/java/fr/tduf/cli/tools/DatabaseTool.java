@@ -441,7 +441,6 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Writing properties to " + targetPropertyFile + ", please wait...");
 
-        // TODO what if targetPropertyFile already exists ?
         final OutputStream outputStream = new FileOutputStream(targetPropertyFile);
         patchProperties.store(outputStream, null);
 
