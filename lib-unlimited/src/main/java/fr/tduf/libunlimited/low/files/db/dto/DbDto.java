@@ -16,7 +16,6 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 /**
  * Represents a conytainer for TDU database topic.
  */
-// TODO  Add method to get by locale
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class DbDto implements Serializable {
     @JsonProperty("structure")
