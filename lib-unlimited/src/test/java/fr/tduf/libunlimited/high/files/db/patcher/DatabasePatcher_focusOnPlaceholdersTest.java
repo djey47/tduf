@@ -17,8 +17,6 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
 import static java.util.Arrays.asList;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // TODO extending another test case also runs those cases...
@@ -47,60 +45,6 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
                 .addResource(DbResourceDto.builder().withLocale(FRANCE).build())
                 .build();
         databasePatcher = createPatcher(Collections.singletonList(databaseObject));
-    }
-
-    @Test
-    public void resolvePlaceholder_whenNoPlaceholder_shouldReturnInitialValue() {
-        // GIVEN-WHEN-THEN
-        assertThat(
-                DatabasePatcher.resolvePlaceholder("FOO", new PatchProperties(), empty())
-        ).isEqualTo("FOO");
-    }
-    @Test
-    public void resolvePlaceholder_whenPlaceholder_withProperty_shouldReturnPropertyValue() {
-        // GIVEN
-        final PatchProperties patchProperties = new PatchProperties();
-        patchProperties.register("FOO", "1");
-
-        // WHEN-THEN
-        assertThat(
-                DatabasePatcher.resolvePlaceholder("{FOO}", patchProperties, empty())
-        ).isEqualTo("1");
-    }
-
-    @Test
-    public void resolvePlaceholder_whenPlaceholder_withoutProperty_shouldReturnGeneratedValue() {
-        // GIVEN-WHEN-THEN
-        assertThat(
-                DatabasePatcher.resolvePlaceholder("{FOO}", new PatchProperties(), of(databaseObject))
-        ).isNotNull();
-    }
-    @Test
-    public void resolveResourcePlaceholder_whenNoPlaceholder_shouldReturnInitialValue() {
-        // GIVEN-WHEN-THEN
-        assertThat(
-                DatabasePatcher.resolveResourcePlaceholder("FOO", new PatchProperties(), empty())
-        ).isEqualTo("FOO");
-    }
-
-    @Test
-    public void resolveResourcePlaceholder_whenPlaceholder_withProperty_shouldReturnPropertyValue() {
-        // GIVEN
-        final PatchProperties patchProperties = new PatchProperties();
-        patchProperties.register("FOO", "1");
-
-        // WHEN-THEN
-        assertThat(
-                DatabasePatcher.resolveResourcePlaceholder("{FOO}", patchProperties, empty())
-        ).isEqualTo("1");
-    }
-
-    @Test
-    public void resolveResourcePlaceholder_whenPlaceholder_withoutProperty_shouldReturnGeneratedValue() {
-        // GIVEN-WHEN-THEN
-        assertThat(
-                DatabasePatcher.resolveResourcePlaceholder("{FOO}", new PatchProperties(), of(databaseObject))
-        ).isNotNull();
     }
 
     @Test

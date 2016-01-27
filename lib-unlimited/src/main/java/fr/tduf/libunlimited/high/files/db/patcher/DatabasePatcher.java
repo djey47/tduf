@@ -3,11 +3,11 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
-import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderResolver;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -17,28 +17,22 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.*;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.DirectionEnum.UP;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 /**
  * Used to apply patches to an existing database.
  */
-// TODO resolve placeholders the soonest possible (parse all objects value(s), partialValues etc)
 public class DatabasePatcher extends AbstractDatabaseHolder {
-
-    private static final Pattern PATTERN_PLACEHOLDER = Pattern.compile("\\{(.+)\\}");
 
     private DatabaseChangeHelper databaseChangeHelper;
 
+    // TODO remove unused field (PlaceholderResolver) does
     private PatchProperties effectiveProperties;
 
     /**
@@ -59,7 +53,9 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
         effectiveProperties = patchProperties.makeCopy();
 
-        resolveAllPlaceholders(patchObject);
+        PlaceholderResolver
+                .load(patchObject, effectiveProperties, databaseMiner)
+                .resolveAllPlaceholders();
 
         patchObject.getChanges()
 
@@ -68,141 +64,9 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         return effectiveProperties;
     }
 
-    private void resolveAllPlaceholders(DbPatchDto patchObject) {
-
-        resolveContentsReferencePlaceholders(patchObject);
-
-        resolveResourceReferencePlaceholders(patchObject);
-
-        resolveContentsValuesPlaceholders(patchObject);
-    }
-
-    private void resolveContentsValuesPlaceholders(DbPatchDto patchObject) {
-
-        patchObject.getChanges().stream()
-
-                .filter((changeObject) -> UPDATE == changeObject.getType())
-
-                .forEach((changeObject) -> {
-                    resolveContentsValuesPlaceholders(changeObject);
-                    resolveContentsPartialValuesPlaceholders(changeObject);
-                });
-    }
-
-    private void resolveContentsValuesPlaceholders(DbPatchDto.DbChangeDto changeObject) {
-        if (changeObject.getValues() == null) {
-            return;
-        }
-
-        List<String> effectiveValues = changeObject.getValues().stream()
-
-                .map((value) -> resolvePlaceholder(value, effectiveProperties, empty()))
-
-                .collect(toList());
-
-        changeObject.setValues(effectiveValues);
-    }
-
-    private void resolveContentsPartialValuesPlaceholders(DbPatchDto.DbChangeDto changeObject) {
-        if (changeObject.getPartialValues() == null) {
-            return;
-        }
-
-        // TODO
-    }
-
-    private void resolveContentsReferencePlaceholders(DbPatchDto patchObject) {
-
-        patchObject.getChanges().stream()
-
-                .filter((changeObject) -> DELETE == changeObject.getType()
-                        || UPDATE == changeObject.getType())
-
-                .forEach((changeObject) -> {
-                    DbDto topicObject = databaseMiner.getDatabaseTopic(changeObject.getTopic()).get();
-                    resolveContentReferencePlaceholder(changeObject, topicObject);
-                });
-    }
-
-    private void resolveResourceReferencePlaceholders(DbPatchDto patchObject) {
-
-        patchObject.getChanges().stream()
-
-                .filter((changeObject) -> DELETE_RES == changeObject.getType()
-                        || UPDATE_RES == changeObject.getType())
-
-                .forEach((changeObject) -> {
-                    DbDto topicObject = databaseMiner.getDatabaseTopic(changeObject.getTopic()).get();
-                    resolveResourceReferencePlaceholder(changeObject, topicObject);
-                });
-    }
-
-    private void resolveContentReferencePlaceholder(DbPatchDto.DbChangeDto changeObject, DbDto topicObject) {
-
-        if (changeObject.getRef() == null) {
-            return;
-        }
-
-        String effectiveReference = resolvePlaceholder(changeObject.getRef(), effectiveProperties, of(topicObject));
-        changeObject.setRef(effectiveReference);
-    }
-
-    private void resolveResourceReferencePlaceholder(DbPatchDto.DbChangeDto changeObject, DbDto topicObject) {
-
-        if (changeObject.getRef() == null) {
-            return;
-        }
-
-        String effectiveReference = resolveResourcePlaceholder(changeObject.getRef(), effectiveProperties, of(topicObject));
-        changeObject.setRef(effectiveReference);
-    }
-
     @Override
     protected void postPrepare() {
         databaseChangeHelper = new DatabaseChangeHelper(databaseMiner);
-    }
-
-    // TODO introduce notion of simple placeholder vs content Ref vs resource Ref
-    static String resolvePlaceholder(String value, PatchProperties patchProperties, Optional<DbDto> topicObject) {
-        final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
-
-        if(matcher.matches()) {
-            final String placeholderName = matcher.group(1);
-            return patchProperties.retrieve(placeholderName)
-                    .orElseGet(() -> {
-                        if (topicObject.isPresent()) {
-                            // TODO take newly generated values into account for unicity
-                            final String generatedValue = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject.get());
-                            patchProperties.register(placeholderName, generatedValue);
-                            return generatedValue;
-                        }
-
-                        return value;
-                    });
-        }
-
-        return value;
-    }
-
-    static String resolveResourcePlaceholder(String value, PatchProperties patchProperties, Optional<DbDto> topicObject) {
-        final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
-
-        if(matcher.matches()) {
-            final String placeholderName = matcher.group(1);
-            return patchProperties.retrieve(placeholderName)
-                    .orElseGet(() -> {
-                        if (topicObject.isPresent()) {
-                            // TODO take newly generated values into account for unicity
-                            final String generatedValue = DatabaseGenHelper.generateUniqueResourceEntryIdentifier(topicObject.get());
-                            patchProperties.register(placeholderName, generatedValue);
-                            return generatedValue;
-                        }
-
-                        return value;
-                    });
-        }
-
-        return value;
     }
 
     private void applyChange(DbPatchDto.DbChangeDto changeObject) {
@@ -265,7 +129,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         Optional<String> potentialRef = Optional.ofNullable(changeObject.getRef());
 
         if (potentialRef.isPresent()) {
-            String effectiveRef = resolvePlaceholder(potentialRef.get(), effectiveProperties, empty());
+            String effectiveRef = potentialRef.get();
             databaseChangeHelper.removeEntryWithReference(effectiveRef, changedTopic);
         } else {
             requireNonNull(changeObject.getFilterCompounds(), "As no REF is provided, filter attribute is mandatory.");
@@ -301,7 +165,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     private Optional<DbDataDto.Entry> retrieveExistingEntry(DbPatchDto.DbChangeDto changeObject, DbDto.Topic changedTopic) {
         final Optional<String> potentialReference = ofNullable(changeObject.getRef());
         if (potentialReference.isPresent()) {
-            String effectiveReference = resolvePlaceholder(potentialReference.get(), effectiveProperties, empty());
+            String effectiveReference = potentialReference.get();
             return databaseMiner.getContentEntryFromTopicWithReference(effectiveReference, changedTopic);
         }
 
@@ -372,7 +236,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
     private void deleteResourcesForLocale(DbPatchDto.DbChangeDto changeObject, DbResourceDto.Locale locale) {
         final DbDto.Topic topic = changeObject.getTopic();
-        final String effectiveRef = resolvePlaceholder(changeObject.getRef(), effectiveProperties, empty());
+        final String effectiveRef = changeObject.getRef();
 
         databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(effectiveRef, topic, locale)
 
@@ -403,22 +267,19 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         DbDto.Topic topic = changeObject.getTopic();
         String value = changeObject.getValue();
 
-        Optional<DbDto> topicObject = databaseMiner.getDatabaseTopic(topic);
-        String effectiveRef = resolveResourcePlaceholder(ref, effectiveProperties, topicObject);
         Optional<DbResourceDto.Entry> potentialResourceEntry =
-                databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(effectiveRef, topic, locale);
+                databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(ref, topic, locale);
 
-        String effectiveValue = resolveResourcePlaceholder(value, effectiveProperties, empty());
         if (potentialResourceEntry.isPresent()) {
 
-            potentialResourceEntry.get().setValue(effectiveValue);
+            potentialResourceEntry.get().setValue(value);
 
         } else {
 
             databaseMiner.getResourceFromTopicAndLocale(topic, locale)
                     .ifPresent((localeResources) -> localeResources.getEntries().add(DbResourceDto.Entry.builder()
-                                                                                        .forReference(effectiveRef)
-                                                                                        .withValue(effectiveValue)
+                                                                                        .forReference(ref)
+                                                                                        .withValue(value)
                                                                                         .build()));
         }
     }
@@ -437,10 +298,9 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
                 .map((value) -> {
                     DbStructureDto.Field structureField = structureFields.get(fieldIndex.getAndIncrement());
-                    String effectiveValue = resolvePlaceholder(value, patchProperties, Optional.of(topicObject));
                     return DbDataDto.Item.builder()
                             .fromStructureFieldAndTopic(structureField, topicObject.getTopic())
-                            .withRawValue(effectiveValue)
+                            .withRawValue(value)
                             .build();
                 })
 
@@ -461,7 +321,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                     if (partialValue.isPresent()) {
 
                         DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, structureObject.getFields());
-                        final String effectiveValue = resolvePlaceholder(partialValue.get().getValue(), patchProperties, empty());
+                        final String effectiveValue = partialValue.get().getValue();
                         return DbDataDto.Item.builder()
                                 .fromStructureFieldAndTopic(structureField, structureObject.getTopic())
                                 .withRawValue(effectiveValue)
