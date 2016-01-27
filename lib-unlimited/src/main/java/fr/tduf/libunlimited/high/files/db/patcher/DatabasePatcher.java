@@ -32,9 +32,6 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
     private DatabaseChangeHelper databaseChangeHelper;
 
-    // TODO remove unused field (PlaceholderResolver) does
-    private PatchProperties effectiveProperties;
-
     /**
      * Execute provided patch onto current database
      * @return effective properties.
@@ -51,7 +48,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         requireNonNull(patchObject, "A patch object is required.");
         requireNonNull(patchProperties, "Patch properties are required.");
 
-        effectiveProperties = patchProperties.makeCopy();
+        PatchProperties effectiveProperties = patchProperties.makeCopy();
 
         PlaceholderResolver
                 .load(patchObject, effectiveProperties, databaseMiner)
@@ -184,7 +181,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     }
 
     private void addOrUpdateEntryWithFullChanges(Optional<DbDataDto.Entry> existingEntry, DbDto topicObject, List<String> allValues) {
-        List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject, allValues, effectiveProperties);
+        List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject, allValues);
 
         if (existingEntry.isPresent()) {
 
@@ -198,7 +195,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     }
 
     private void updateEntryWithPartialChanges(DbDataDto.Entry existingEntry, DbStructureDto structureObject, List<DbFieldValueDto> partialValues) {
-        List<DbDataDto.Item> modifiedItems = createEntryItemsWithPartialValues(structureObject, existingEntry, partialValues, effectiveProperties);
+        List<DbDataDto.Item> modifiedItems = createEntryItemsWithPartialValues(structureObject, existingEntry, partialValues);
         existingEntry.replaceItems(modifiedItems);
     }
 
@@ -284,7 +281,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
     }
 
-    private static List<DbDataDto.Item> createEntryItemsWithValues(DbDto topicObject, List<String> allValues, PatchProperties patchProperties) {
+    private static List<DbDataDto.Item> createEntryItemsWithValues(DbDto topicObject, List<String> allValues) {
         List<DbStructureDto.Field> structureFields = topicObject.getStructure().getFields();
 
         int structureFieldsSize = structureFields.size();
@@ -307,7 +304,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .collect(toList());
     }
 
-    private static List<DbDataDto.Item> createEntryItemsWithPartialValues(DbStructureDto structureObject, DbDataDto.Entry existingEntry, List<DbFieldValueDto> partialValues, PatchProperties patchProperties) {
+    private static List<DbDataDto.Item> createEntryItemsWithPartialValues(DbStructureDto structureObject, DbDataDto.Entry existingEntry, List<DbFieldValueDto> partialValues) {
         return existingEntry.getItems().stream()
 
                 .map( (item) -> {
