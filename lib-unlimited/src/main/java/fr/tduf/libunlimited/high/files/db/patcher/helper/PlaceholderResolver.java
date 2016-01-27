@@ -57,6 +57,8 @@ public class PlaceholderResolver {
         resolveResourceReferencePlaceholders();
 
         resolveContentsValuesPlaceholders();
+
+        resolveResourceValuePlaceholders();
     }
 
     private void resolveContentsReferencePlaceholders() {
@@ -66,9 +68,12 @@ public class PlaceholderResolver {
                 .filter((changeObject) -> DELETE == changeObject.getType()
                         || UPDATE == changeObject.getType())
 
+                .filter((changeObject) -> changeObject.getRef() != null)
+
                 .forEach((changeObject) -> {
                     DbDto topicObject = databaseMiner.getDatabaseTopic(changeObject.getTopic()).get();
-                    resolveContentReferencePlaceholder(changeObject, topicObject);
+                    String effectiveReference = resolveContentsReferencePlaceholder(changeObject.getRef(), patchProperties, of(topicObject));
+                    changeObject.setRef(effectiveReference);
                 });
     }
 
@@ -79,9 +84,12 @@ public class PlaceholderResolver {
                 .filter((changeObject) -> DELETE_RES == changeObject.getType()
                         || UPDATE_RES == changeObject.getType())
 
+                .filter((changeObject) -> changeObject.getRef() != null)
+
                 .forEach((changeObject) -> {
                     DbDto topicObject = databaseMiner.getDatabaseTopic(changeObject.getTopic()).get();
-                    resolveResourceReferencePlaceholder(changeObject, topicObject);
+                    String effectiveReference = resolveResourceReferencePlaceholder(changeObject.getRef(), patchProperties, of(topicObject));
+                    changeObject.setRef(effectiveReference);
                 });
     }
 
@@ -97,14 +105,18 @@ public class PlaceholderResolver {
                 });
     }
 
-    private void resolveContentReferencePlaceholder(DbPatchDto.DbChangeDto changeObject, DbDto topicObject) {
+    private void resolveResourceValuePlaceholders() {
 
-        if (changeObject.getRef() == null) {
-            return;
-        }
+        patchObject.getChanges().stream()
 
-        String effectiveReference = resolvePlaceholder(changeObject.getRef(), patchProperties, of(topicObject));
-        changeObject.setRef(effectiveReference);
+                .filter((changeObject) -> UPDATE_RES == changeObject.getType())
+
+                .filter((changeObject) -> changeObject.getValue() != null)
+
+                .forEach((changeObject) -> {
+                    String effectiveValue = resolveResourceValuePlaceholder(changeObject.getValue(), patchProperties);
+                    changeObject.setValue(effectiveValue);
+                });
     }
 
     private void resolveContentsValuesPlaceholders(DbPatchDto.DbChangeDto changeObject) {
@@ -114,21 +126,11 @@ public class PlaceholderResolver {
 
         List<String> effectiveValues = changeObject.getValues().stream()
 
-                .map((value) -> resolvePlaceholder(value, patchProperties, empty()))
+                .map((value) -> resolveContentsReferencePlaceholder(value, patchProperties, empty()))
 
                 .collect(toList());
 
         changeObject.setValues(effectiveValues);
-    }
-
-    private void resolveResourceReferencePlaceholder(DbPatchDto.DbChangeDto changeObject, DbDto topicObject) {
-
-        if (changeObject.getRef() == null) {
-            return;
-        }
-
-        String effectiveReference = resolveResourcePlaceholder(changeObject.getRef(), patchProperties, of(topicObject));
-        changeObject.setRef(effectiveReference);
     }
 
     // TODO
@@ -139,7 +141,8 @@ public class PlaceholderResolver {
 
     }
 
-    static String resolvePlaceholder(String value, PatchProperties patchProperties, Optional<DbDto> topicObject) {
+    // TODO factorize methods below
+    static String resolveContentsReferencePlaceholder(String value, PatchProperties patchProperties, Optional<DbDto> topicObject) {
         final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
 
         if(matcher.matches()) {
@@ -160,7 +163,7 @@ public class PlaceholderResolver {
         return value;
     }
 
-    static String resolveResourcePlaceholder(String value, PatchProperties patchProperties, Optional<DbDto> topicObject) {
+    static String resolveResourceReferencePlaceholder(String value, PatchProperties patchProperties, Optional<DbDto> topicObject) {
         final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
 
         if(matcher.matches()) {
@@ -176,6 +179,19 @@ public class PlaceholderResolver {
 
                         return value;
                     });
+        }
+
+        return value;
+    }
+
+    static String resolveResourceValuePlaceholder(String value, PatchProperties patchProperties) {
+        final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
+
+        if(matcher.matches()) {
+            final String placeholderName = matcher.group(1);
+            return patchProperties.retrieve(placeholderName)
+
+                    .orElseThrow(() -> new IllegalArgumentException("No property found for value placeholder: " + value));
         }
 
         return value;

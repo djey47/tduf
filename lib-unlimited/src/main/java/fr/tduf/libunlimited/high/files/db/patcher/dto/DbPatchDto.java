@@ -160,6 +160,10 @@ public class DbPatchDto {
             return value;
         }
 
+        public void setValue(String value) {
+            this.value = value;
+        }
+
         public void setValues(List<String> values) {
             this.values = values;
         }

@@ -40,58 +40,58 @@ public class PlaceholderResolverTest {
     }
 
     @Test
-    public void resolvePlaceholder_whenNoPlaceholder_shouldReturnInitialValue() {
+    public void resolveContentsReferencePlaceholder_whenNoPlaceholder_shouldReturnInitialValue() {
         // GIVEN-WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolvePlaceholder("FOO", new PatchProperties(), empty())
+                PlaceholderResolver.resolveContentsReferencePlaceholder("FOO", new PatchProperties(), empty())
         ).isEqualTo("FOO");
     }
 
     @Test
-    public void resolvePlaceholder_whenPlaceholder_withProperty_shouldReturnPropertyValue() {
+    public void resolveContentsReferencePlaceholder_whenPlaceholder_withProperty_shouldReturnPropertyValue() {
         // GIVEN
         final PatchProperties patchProperties = new PatchProperties();
         patchProperties.register("FOO", "1");
 
         // WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolvePlaceholder("{FOO}", patchProperties, empty())
+                PlaceholderResolver.resolveContentsReferencePlaceholder("{FOO}", patchProperties, empty())
         ).isEqualTo("1");
     }
 
     @Test
-    public void resolvePlaceholder_whenPlaceholder_withoutProperty_shouldReturnGeneratedValue() {
+    public void resolveContentsReferencePlaceholder_whenPlaceholder_withoutProperty_shouldReturnGeneratedValue() {
         // GIVEN-WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolvePlaceholder("{FOO}", new PatchProperties(), of(databaseObject))
+                PlaceholderResolver.resolveContentsReferencePlaceholder("{FOO}", new PatchProperties(), of(databaseObject))
         ).isNotNull();
     }
 
     @Test
-    public void resolveResourcePlaceholder_whenNoPlaceholder_shouldReturnInitialValue() {
+    public void resolveResourceReferencePlaceholder_whenNoPlaceholder_shouldReturnInitialValue() {
         // GIVEN-WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveResourcePlaceholder("FOO", new PatchProperties(), empty())
+                PlaceholderResolver.resolveResourceReferencePlaceholder("FOO", new PatchProperties(), empty())
         ).isEqualTo("FOO");
     }
 
     @Test
-    public void resolveResourcePlaceholder_whenPlaceholder_withProperty_shouldReturnPropertyValue() {
+    public void resolveResourceReferencePlaceholder_whenPlaceholder_withProperty_shouldReturnPropertyValue() {
         // GIVEN
         final PatchProperties patchProperties = new PatchProperties();
         patchProperties.register("FOO", "1");
 
         // WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveResourcePlaceholder("{FOO}", patchProperties, empty())
+                PlaceholderResolver.resolveResourceReferencePlaceholder("{FOO}", patchProperties, empty())
         ).isEqualTo("1");
     }
 
     @Test
-    public void resolveResourcePlaceholder_whenPlaceholder_withoutProperty_shouldReturnGeneratedValue() {
+    public void resolveResourceReferencePlaceholder_whenPlaceholder_withoutProperty_shouldReturnGeneratedValue() {
         // GIVEN-WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveResourcePlaceholder("{FOO}", new PatchProperties(), of(databaseObject))
+                PlaceholderResolver.resolveResourceReferencePlaceholder("{FOO}", new PatchProperties(), of(databaseObject))
         ).isNotNull();
     }
 
