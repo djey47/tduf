@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.createPatcher;
+import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.readObjectFromResource;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -19,11 +21,10 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonTest {
+public class DatabasePatcher_focusOnContentsTest {
 
     @Before
     public void setUp() throws ReflectiveOperationException {
-        super.setUp();
         BulkDatabaseMiner.clearAllCaches();
     }
 

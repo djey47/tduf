@@ -41,16 +41,16 @@ public class DatabasePatcher_commonTest {
         // THEN: NPE
     }
 
-    protected static DatabasePatcher createPatcher(List<DbDto> databaseObjects) throws ReflectiveOperationException {
+    static DatabasePatcher createPatcher(List<DbDto> databaseObjects) throws ReflectiveOperationException {
         return AbstractDatabaseHolder.prepare(DatabasePatcher.class, databaseObjects);
     }
 
-    protected static List<DbDto> createDefaultDatabaseObjects() {
-        return singletonList(DbDto.builder().build());
-    }
-
-    protected static <T> T readObjectFromResource(Class<T> objectClass, String resource) throws URISyntaxException, IOException {
+    static <T> T readObjectFromResource(Class<T> objectClass, String resource) throws URISyntaxException, IOException {
         URI resourceURI = thisClass.getResource(resource).toURI();
         return new ObjectMapper().readValue(new File(resourceURI), objectClass);
+    }
+
+    private static List<DbDto> createDefaultDatabaseObjects() {
+        return singletonList(DbDto.builder().build());
     }
 }

@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -10,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto.fromCouple;
+import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.createPatcher;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
@@ -19,15 +21,14 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-// TODO extending another test case also runs those cases...
-public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_commonTest {
+public class DatabasePatcher_focusOnPlaceholdersTest {
 
     private DbDto databaseObject;
     private DatabasePatcher databasePatcher;
 
     @Before
     public void setUp() throws ReflectiveOperationException {
-        super.setUp();
+        BulkDatabaseMiner.clearAllCaches();
 
         databaseObject = DbDto.builder()
                 .withData(DbDataDto.builder().build())
@@ -44,6 +45,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
                         .build())
                 .addResource(DbResourceDto.builder().withLocale(FRANCE).build())
                 .build();
+
         databasePatcher = createPatcher(singletonList(databaseObject));
     }
 

@@ -11,14 +11,16 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.createPatcher;
+import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.readObjectFromResource;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.StrictAssertions.assertThat;
 
-public class DatabasePatcher_focusOnResourcesTest extends DatabasePatcher_commonTest {
+public class DatabasePatcher_focusOnResourcesTest {
 
     @Before
     public void setUp() throws ReflectiveOperationException {
-        super.setUp();
+        BulkDatabaseMiner.clearAllCaches();
     }
 
     @Test
