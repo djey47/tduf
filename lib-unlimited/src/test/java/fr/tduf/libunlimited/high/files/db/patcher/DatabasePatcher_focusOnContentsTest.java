@@ -138,8 +138,11 @@ public class DatabasePatcher_focusOnContentsTest extends DatabasePatcher_commonT
         DbDto databaseObject2 = readObjectFromResource(DbDto.class, "/db/json/TDU_CarRims.json");
         DbDto databaseObject3 = readObjectFromResource(DbDto.class, "/db/json/TDU_CarColors.json");
         DbDto databaseObject4 = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPacks.json");
+        DbDto databaseObject5 = readObjectFromResource(DbDto.class, "/db/json/TDU_Rims.json");
+        DbDto databaseObject6 = readObjectFromResource(DbDto.class, "/db/json/TDU_Brands.json");
+        DbDto databaseObject7 = readObjectFromResource(DbDto.class, "/db/json/TDU_CarShops.json");
 
-        List<DbDto> databaseObjects = asList(databaseObject1, databaseObject2, databaseObject3, databaseObject4);
+        List<DbDto> databaseObjects = asList(databaseObject1, databaseObject2, databaseObject3, databaseObject4, databaseObject5, databaseObject6, databaseObject7);
         DatabasePatcher patcher = createPatcher(databaseObjects);
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(databaseObjects);
