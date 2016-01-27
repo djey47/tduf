@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.patcher.helper;
 
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -133,12 +134,21 @@ public class PlaceholderResolver {
         changeObject.setValues(effectiveValues);
     }
 
-    // TODO
     private void resolveContentsPartialValuesPlaceholders(DbPatchDto.DbChangeDto changeObject) {
         if (changeObject.getPartialValues() == null) {
             return;
         }
 
+        final List<DbFieldValueDto> effectivePartialValues = changeObject.getPartialValues().stream()
+
+                .map((partialValue) -> {
+                    String effectiveValue = resolveContentsReferencePlaceholder(partialValue.getValue(), patchProperties, empty());
+                    return DbFieldValueDto.fromCouple(partialValue.getRank(), effectiveValue);
+                })
+
+                .collect(toList());
+
+        changeObject.setPartialValues(effectivePartialValues);
     }
 
     // TODO factorize methods below

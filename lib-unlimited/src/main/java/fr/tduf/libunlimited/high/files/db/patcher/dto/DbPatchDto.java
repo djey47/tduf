@@ -176,6 +176,10 @@ public class DbPatchDto {
             return partialValues;
         }
 
+        public void setPartialValues(List<DbFieldValueDto> partialValues) {
+            this.partialValues = partialValues;
+        }
+
         public List<DbFieldValueDto> getFilterCompounds() {
             return filterCompounds;
         }

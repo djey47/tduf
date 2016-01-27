@@ -9,14 +9,14 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collections;
-
+import static fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto.fromCouple;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // TODO extending another test case also runs those cases...
@@ -44,11 +44,11 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
                         .build())
                 .addResource(DbResourceDto.builder().withLocale(FRANCE).build())
                 .build();
-        databasePatcher = createPatcher(Collections.singletonList(databaseObject));
+        databasePatcher = createPatcher(singletonList(databaseObject));
     }
 
     @Test
-    public void apply_whenUpdateContents_forRef_withProperty_shouldUsePropertyValue() throws ReflectiveOperationException {
+    public void apply_whenUpdateContents_forRef_withProperty_inValues_shouldUsePropertyValue() throws ReflectiveOperationException {
         // GIVEN
         final String placeholderName = "MYREF";
         DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
@@ -70,6 +70,43 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
                 .hasSize(2)
                 .extracting("rawValue")
                 .containsExactly("000000", "103");
+    }
+
+    @Test
+    public void apply_whenUpdateContents_forRef_withProperty_inPartialValues_shouldUsePropertyValue() throws ReflectiveOperationException {
+        // GIVEN
+        final String placeholderName1 = "MYREF";
+        final String placeholderName2 = "MYNEWREF";
+        DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
+                .withType(UPDATE)
+                .forTopic(CAR_PHYSICS_DATA)
+                .asReferencePlaceholder(placeholderName1)
+                .withPartialEntryValues(singletonList(fromCouple(1, "{MYNEWREF}")))
+                .build();
+        DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
+        PatchProperties patchProperties = new PatchProperties();
+        patchProperties.register(placeholderName1, "000000");
+        patchProperties.register(placeholderName2, "111111");
+
+        databaseObject.getData().addEntryWithItems(asList(
+                DbDataDto.Item.builder()
+                        .ofFieldRank(1)
+                        .withRawValue("000000")
+                        .build(),
+                DbDataDto.Item.builder()
+                        .ofFieldRank(2)
+                        .withRawValue("103")
+                        .build()));
+
+        // WHEN
+        databasePatcher.applyWithProperties(patchObject, patchProperties);
+
+        // THEN
+        assertThat(databaseObject.getData().getEntries()).hasSize(1);
+        assertThat(databaseObject.getData().getEntries().get(0).getItems())
+                .hasSize(2)
+                .extracting("rawValue")
+                .containsExactly("111111", "103");
     }
 
     @Test
@@ -222,7 +259,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest extends DatabasePatcher_com
 
     private static DbPatchDto createPatchObjectWithSingleChange(DbPatchDto.DbChangeDto changeObject) {
         return DbPatchDto.builder()
-                .addChanges(Collections.singletonList(changeObject))
+                .addChanges(singletonList(changeObject))
                 .build();
     }
 }
