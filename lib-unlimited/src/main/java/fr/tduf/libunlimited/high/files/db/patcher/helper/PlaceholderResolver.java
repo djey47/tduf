@@ -56,7 +56,7 @@ public class PlaceholderResolver {
 
         resolveResourceReferencePlaceholders();
 
-        resolveContentsValuesPlaceholders();
+        resolveAllContentsValuesPlaceholders();
 
         resolveResourceValuePlaceholders();
     }
@@ -93,7 +93,7 @@ public class PlaceholderResolver {
                 });
     }
 
-    private void resolveContentsValuesPlaceholders() {
+    private void resolveAllContentsValuesPlaceholders() {
 
         patchObject.getChanges().stream()
 
