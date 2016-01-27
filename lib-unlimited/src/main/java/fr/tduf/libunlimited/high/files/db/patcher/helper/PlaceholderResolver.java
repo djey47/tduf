@@ -70,7 +70,7 @@ public class PlaceholderResolver {
 
                 .forEach((changeObject) -> {
                     DbDto topicObject = databaseMiner.getDatabaseTopic(changeObject.getTopic()).get();
-                    String effectiveReference = resolveContentsReferencePlaceholder(changeObject.getRef(), patchProperties, topicObject);
+                    String effectiveReference = resolveReferencePlaceholder(true, changeObject.getRef(), patchProperties, topicObject);
                     changeObject.setRef(effectiveReference);
                 });
     }
@@ -86,7 +86,7 @@ public class PlaceholderResolver {
 
                 .forEach((changeObject) -> {
                     DbDto topicObject = databaseMiner.getDatabaseTopic(changeObject.getTopic()).get();
-                    String effectiveReference = resolveResourceReferencePlaceholder(changeObject.getRef(), patchProperties, topicObject);
+                    String effectiveReference = resolveReferencePlaceholder(false, changeObject.getRef(), patchProperties, topicObject);
                     changeObject.setRef(effectiveReference);
                 });
     }
@@ -148,33 +148,17 @@ public class PlaceholderResolver {
         changeObject.setPartialValues(effectivePartialValues);
     }
 
-    // TODO factorize methods below
-    static String resolveContentsReferencePlaceholder(String value, PatchProperties patchProperties, DbDto topicObject) {
+    static String resolveReferencePlaceholder(boolean forContents, String value, PatchProperties patchProperties, DbDto topicObject) {
         final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
 
         if (matcher.matches()) {
             final String placeholderName = matcher.group(1);
             return patchProperties.retrieve(placeholderName)
                     .orElseGet(() -> {
-                        // TODO take newly generated values into account for unicity
-                        final String generatedValue = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
-                        patchProperties.register(placeholderName, generatedValue);
-                        return generatedValue;
-                    });
-        }
-
-        return value;
-    }
-
-    static String resolveResourceReferencePlaceholder(String value, PatchProperties patchProperties, DbDto topicObject) {
-        final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
-
-        if (matcher.matches()) {
-            final String placeholderName = matcher.group(1);
-            return patchProperties.retrieve(placeholderName)
-                    .orElseGet(() -> {
-                        // TODO take newly generated values into account for unicity
-                        final String generatedValue = DatabaseGenHelper.generateUniqueResourceEntryIdentifier(topicObject);
+                        // TODO Enhancement: take generated values into account for unicity
+                        final String generatedValue = forContents ?
+                                DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject) :
+                                DatabaseGenHelper.generateUniqueResourceEntryIdentifier(topicObject);
                         patchProperties.register(placeholderName, generatedValue);
                         return generatedValue;
                     });
