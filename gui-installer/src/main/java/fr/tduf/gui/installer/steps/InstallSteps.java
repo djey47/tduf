@@ -12,7 +12,9 @@ import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.banks.mapping.helper.MagicMapHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.JsonGateway;
@@ -22,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -134,7 +137,7 @@ public class InstallSteps {
             Log.info(THIS_CLASS_NAME, "No vehicle slot selected.");
         }
 
-        applyPatches(configuration, databaseContext);
+        applyPatches(configuration, databaseContext, potentialVehicleSlot);
 
         repackJsonDatabase(configuration, databaseContext);
 
@@ -173,7 +176,7 @@ public class InstallSteps {
                 .map((item) -> item.referenceProperty().get());
     }
 
-    static List<String> applyPatches(InstallerConfiguration configuration, DatabaseContext databaseContext) throws IOException, ReflectiveOperationException {
+    static List<String> applyPatches(InstallerConfiguration configuration, DatabaseContext databaseContext, Optional<String> potentialVehicleSlot) throws IOException, ReflectiveOperationException {
         Log.info(THIS_CLASS_NAME, "->Loading JSON database: " + databaseContext.getJsonDatabaseDirectory());
 
         requireNonNull(configuration, "Installer configuration is required.");
@@ -326,8 +329,13 @@ public class InstallSteps {
     private static void applyPatch(Path patchPath, DatabasePatcher patcher) throws IOException {
         Log.info(THIS_CLASS_NAME, "*> Now applying patch: " + patchPath);
 
-        DbPatchDto patchObject = new ObjectMapper().readValue(patchPath.toFile(), DbPatchDto.class);
-        patcher.apply(patchObject);
+        final File patchFile = patchPath.toFile();
+        DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
+        PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
+
+        PatchProperties effectivePatchProperties = patcher.applyWithProperties(patchObject, patchProperties);
+
+        PatchPropertiesReadWriteHelper.writePatchProperties(effectivePatchProperties, patchFile.getAbsolutePath());
     }
 
     private static SlotsBrowserStageController initSlotsBrowserController(Window mainWindow) throws IOException {

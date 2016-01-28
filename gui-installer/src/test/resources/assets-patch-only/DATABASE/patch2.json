@@ -6,7 +6,7 @@
       "topic" : "BOTS",
       "locale" : "FRANCE",
       "ref": "54367256",
-      "value": "Brian Molko"
+      "value": "{NAME1}"
     },
     {
       "comment": "Adds Cindy for ref 33333333",
@@ -14,7 +14,7 @@
       "topic" : "BOTS",
       "locale" : "FRANCE",
       "ref": "33333333",
-      "value": "Cindy"
+      "value": "{NAME2}"
     }
   ]
 }

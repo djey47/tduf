@@ -19,8 +19,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
+import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -134,7 +136,7 @@ public class InstallStepsTest {
 
 
         // WHEN
-        InstallSteps.applyPatches(configuration, databaseContext);
+        InstallSteps.applyPatches(configuration, databaseContext, empty());
 
 
         // THEN
