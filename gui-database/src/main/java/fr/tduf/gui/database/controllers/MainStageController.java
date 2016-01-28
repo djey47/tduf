@@ -769,6 +769,7 @@ public class MainStageController extends AbstractGuiController {
             viewDataController.updateEntryCount();
             viewDataController.updateAllPropertiesWithItemValues();
 
+            // TODO write effective properties file name here
             CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED, patchFile.getPath());
         } catch (Exception e) {
             e.printStackTrace();

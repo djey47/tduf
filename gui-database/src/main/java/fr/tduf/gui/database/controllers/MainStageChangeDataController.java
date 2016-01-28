@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
@@ -10,6 +11,7 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -18,7 +20,9 @@ import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +37,8 @@ import static java.util.stream.Collectors.toList;
  * Specialized controller to update database contents.
  */
 public class MainStageChangeDataController {
+    private static final String THIS_CLASS_NAME = MainStageChangeDataController.class.getSimpleName();
+
     private final MainStageController mainStageController;
 
     private DatabaseGenHelper databaseGenHelper;
@@ -139,7 +145,8 @@ public class MainStageChangeDataController {
     void importPatch(File patchFile) throws IOException, ReflectiveOperationException {
         DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, mainStageController.getDatabaseObjects());
-        patcher.apply(patchObject);
+        PatchProperties patchProperties = readPatchProperties(patchFile);
+        patcher.applyWithProperties(patchObject, patchProperties);
     }
 
     void importPerformancePack(String packFile) throws ReflectiveOperationException {
@@ -157,6 +164,27 @@ public class MainStageChangeDataController {
                 .map(DbDataDto.Item::getRawValue)
 
                 .collect(toList());
+    }
+
+    private static PatchProperties readPatchProperties(File patchFile) throws IOException {
+        String propertyFile = patchFile + ".properties";
+
+        final PatchProperties patchProperties = new PatchProperties();
+        final File propertyFileHandle = new File(propertyFile);
+        if(propertyFileHandle.exists()) {
+
+            Log.info(THIS_CLASS_NAME, "Using patch properties file: " + propertyFile);
+
+            final InputStream inputStream = new FileInputStream(propertyFileHandle);
+            patchProperties.load(inputStream);
+
+        } else {
+
+            Log.info(THIS_CLASS_NAME, "Patch properties file not provided: " + propertyFile);
+
+        }
+
+        return patchProperties;
     }
 
     private static Optional<DbPatchDto> generatePatchObject(DbDto.Topic currentTopic, List<String> entryReferences, List<String> entryFields, List<DbDto> databaseObjects) {
