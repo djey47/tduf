@@ -1,3 +1,4 @@
 Place all your patches here:
 - xxxxxxx.json (TDUF/DatabaseEditor patch)
+- xxxxxxx.json.properties (corresponding properties when needed)
 

@@ -45,6 +45,8 @@ public class InstallSteps {
 
     private static final String THIS_CLASS_NAME = InstallSteps.class.getSimpleName();
 
+    private static final String PLACEHOLDER_NAME_SLOT_REFERENCE = "SLOTREF";
+
     /**
      * Entry point for full install
      * @param configuration : settings to install required mod.
@@ -196,7 +198,7 @@ public class InstallSteps {
 
                 .forEach((patch) -> {
                     try {
-                        applyPatch(patch, patcher);
+                        applyPatch(patch, patcher, potentialVehicleSlot);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -326,16 +328,23 @@ public class InstallSteps {
         }
     }
 
-    private static void applyPatch(Path patchPath, DatabasePatcher patcher) throws IOException {
+    private static void applyPatch(Path patchPath, DatabasePatcher patcher, Optional<String> potentialVehicleSlot) throws IOException {
         Log.info(THIS_CLASS_NAME, "*> Now applying patch: " + patchPath);
 
         final File patchFile = patchPath.toFile();
         DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
+
         PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
+
+        potentialVehicleSlot.ifPresent((slotRef) -> overridePatchPropertiesForVehicleSlot(slotRef, patchProperties));
 
         PatchProperties effectivePatchProperties = patcher.applyWithProperties(patchObject, patchProperties);
 
         PatchPropertiesReadWriteHelper.writePatchProperties(effectivePatchProperties, patchFile.getAbsolutePath());
+    }
+
+    private static void overridePatchPropertiesForVehicleSlot(String slotRef, PatchProperties patchProperties) {
+        patchProperties.register(PLACEHOLDER_NAME_SLOT_REFERENCE, slotRef);
     }
 
     private static SlotsBrowserStageController initSlotsBrowserController(Window mainWindow) throws IOException {
