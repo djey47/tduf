@@ -20,6 +20,8 @@ public class InstallerConfiguration {
 
     private Window mainWindow;
 
+    private String effectiveVehicleSlot;
+
     private InstallerConfiguration() {}
 
     public String getTestDriveUnlimitedDirectory() {
@@ -32,6 +34,14 @@ public class InstallerConfiguration {
 
     public BankSupport getBankSupport() {
         return bankSupport;
+    }
+
+    public void setEffectiveVehicleSlot(String effectiveVehicleSlot) {
+        this.effectiveVehicleSlot = effectiveVehicleSlot;
+    }
+
+    public String getEffectiveVehicleSlot() {
+        return effectiveVehicleSlot;
     }
 
     /**

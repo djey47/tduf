@@ -2,6 +2,7 @@ package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.InstallerConstants;
+import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.controllers.SlotsBrowserStageController;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
@@ -11,6 +12,7 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.banks.mapping.helper.MagicMapHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -72,7 +74,7 @@ public class InstallSteps {
         }
 
         try {
-            copyFilesStep(configuration);
+            copyFilesStep(configuration, databaseContext);
         } catch (RuntimeException re) {
             re.printStackTrace();
         }
@@ -87,15 +89,16 @@ public class InstallSteps {
     /**
      * Only copies files in assets subfolders to correct TDU locations.
      * @param configuration : settings to perform current step
+     * @param databaseContext
      */
-    public static void copyFilesStep(InstallerConfiguration configuration) {
+    public static void copyFilesStep(InstallerConfiguration configuration, DatabaseContext databaseContext) {
         Log.trace(THIS_CLASS_NAME, "->Entering step: Copy Files");
 
         String banksDirectory = getTduBanksDirectory(configuration);
-        asList(DIRECTORY_3D, DIRECTORY_RIMS, DIRECTORY_GAUGES, DIRECTORY_SOUND)
+        asList(DIRECTORY_3D, DIRECTORY_RIMS, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH, DIRECTORY_SOUND)
                 .forEach((asset) -> {
                     try {
-                        InstallSteps.copyAssets(asset, configuration.getAssetsDirectory(), banksDirectory);
+                        copyAssets(asset, configuration.getAssetsDirectory(), banksDirectory, databaseContext.getMiner(), configuration.getEffectiveVehicleSlot());
                     } catch (IOException ioe) {
                         throw new RuntimeException("Unable to perform copy step", ioe);
                     }
@@ -135,7 +138,10 @@ public class InstallSteps {
         requireNonNull(databaseContext, "Database context is required.");
 
         Optional<String> potentialVehicleSlot = selectVehicleSlot(configuration, databaseContext);
-        if (!potentialVehicleSlot.isPresent()) {
+        if (potentialVehicleSlot.isPresent()) {
+            configuration.setEffectiveVehicleSlot(potentialVehicleSlot.get());
+        } else {
+            // TODO find a way to set effective slot
             Log.info(THIS_CLASS_NAME, "No vehicle slot selected.");
         }
 
@@ -252,13 +258,13 @@ public class InstallSteps {
         return banksPath.resolve("Database").toString();
     }
 
-    private static void copyAssets(String assetName, String assetsDirectory, String banksDirectory) throws IOException {
+    private static void copyAssets(String assetName, String assetsDirectory, String banksDirectory, BulkDatabaseMiner miner, String slotReference) throws IOException {
         Log.info(THIS_CLASS_NAME, "->Copying assets: " + assetName) ;
 
         Path assetPath = Paths.get(assetsDirectory, assetName);
         Path targetPath = getTargetPath(assetName, banksDirectory);
 
-        Files.walk(assetPath, 2)
+        Files.walk(assetPath, 1)
 
                 .filter((path) -> Files.isRegularFile(path))
 
@@ -266,7 +272,7 @@ public class InstallSteps {
 
                 .forEach((path) -> {
                     try {
-                        copyAsset(path, targetPath, assetName);
+                        copyAsset(path, targetPath, assetName, miner, slotReference);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -283,7 +289,7 @@ public class InstallSteps {
             case DIRECTORY_3D:
                 targetPath = Paths.get(banksDirectory, "Vehicules");
                 break;
-            case DIRECTORY_GAUGES:
+            case DIRECTORY_GAUGES_LOW:
                 targetPath = Paths.get(banksDirectory, "FrontEnd");
                 break;
             case DIRECTORY_RIMS:
@@ -298,25 +304,32 @@ public class InstallSteps {
         return targetPath;
     }
 
-    private static void copyAsset(Path assetPath, Path targetPath, String assetName) throws IOException {
+    private static void copyAsset(Path assetPath, Path targetPath, String assetName, BulkDatabaseMiner miner, String slotReference) throws IOException {
 
+        FilesHelper.createDirectoryIfNotExists(targetPath.toString());
+
+        VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
         Path parentName = assetPath.getParent().getFileName();
+
+
+        if (DIRECTORY_3D.equals(assetName)) {
+            String targetFileNameForExterior = vehicleSlotsHelper.getBankFileName(slotReference, VehicleSlotsHelper.BankFileType.EXTERIOR_MODEL);
+
+        }
+
 
         if (DIRECTORY_RIMS.equals(assetName)) {
             targetPath = targetPath.resolve(parentName);
         }
 
-        if (DIRECTORY_GAUGES.equals(assetName)) {
-            Path gaugesPath = null;
-            if (DIRECTORY_HIRES.equals(parentName.toString())) {
-                gaugesPath = Paths.get("HiRes");
-            } else if (DIRECTORY_LOWRES.equals(parentName.toString())) {
-                gaugesPath = Paths.get("LowRes");
-            }
-            targetPath = targetPath.resolve(gaugesPath).resolve("Gauges");
+        if (DIRECTORY_GAUGES_LOW.equals(assetName)) {
+            targetPath = targetPath.resolve("LowRes").resolve("Gauges");
         }
 
-        FilesHelper.createDirectoryIfNotExists(targetPath.toString());
+        if (DIRECTORY_GAUGES_HIGH.equals(assetName)) {
+            targetPath = targetPath.resolve("HiRes").resolve("Gauges");
+        }
+
         Path finalPath = targetPath.resolve(assetPath.getFileName());
 
         Log.info(THIS_CLASS_NAME, "*> " + assetPath + " to " + finalPath);

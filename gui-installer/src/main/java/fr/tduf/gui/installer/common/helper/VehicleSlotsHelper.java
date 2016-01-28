@@ -2,14 +2,17 @@ package fr.tduf.gui.installer.common.helper;
 
 import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
+import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.EXTENSION_BANKS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
@@ -21,7 +24,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class VehicleSlotsHelper {
 
-    private  static final DbResourceDto.Locale DEFAULT_LOCALE = UNITED_STATES;
+    private static final DbResourceDto.Locale DEFAULT_LOCALE = UNITED_STATES;
 
     private final BulkDatabaseMiner miner;
 
@@ -29,12 +32,80 @@ public class VehicleSlotsHelper {
         this.miner = miner;
     }
 
+    public enum BankFileType { EXTERIOR_MODEL, INTERIOR_MODEL, HUD, SOUND, RIM }
+
     /**
      * @param miner : component to parse database
      * @return a new helper instance.
      */
     public static VehicleSlotsHelper load(BulkDatabaseMiner miner) {
         return new VehicleSlotsHelper(requireNonNull(miner, "Database miner instance is required."));
+    }
+
+    /**
+     *
+     * @param slotReference
+     * @param bankFileType
+     * @return
+     */
+    public String getBankFileName(String slotReference, BankFileType bankFileType) {
+
+        if (BankFileType.RIM == bankFileType) {
+            return getRimBankFileName(slotReference);
+        }
+
+        String suffix;
+        switch (bankFileType) {
+            case HUD:
+            case EXTERIOR_MODEL:
+                suffix = "";
+                break;
+
+            case INTERIOR_MODEL:
+                suffix = "_I";
+                break;
+
+            case SOUND:
+                suffix = "_audio";
+                break;
+
+            default:
+                throw new IllegalArgumentException("Bank file type not handled: " + bankFileType);
+        }
+
+        return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
+
+                .map(DbDataDto.Entry::getId)
+
+                .map((entryInternalIdentifier) -> {
+                    final String simpleName = getNameFromLocalResources(entryInternalIdentifier, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_FILE_NAME, DEFAULT_LOCALE, "");
+                    return String.format("%s%s.%s", simpleName, suffix, EXTENSION_BANKS);
+                })
+
+                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
+
+    }
+
+    private String getRimBankFileName(String slotReference) {
+        return "";
+//        case RIM:
+//        suffix = "_%s_%s";
+//        break;
+//
+//        default:
+//        throw new IllegalArgumentException("Bank file type not handled: " + bankFileType);
+//    }
+//
+//    return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
+//
+//            .map(DbDataDto.Entry::getId)
+//
+//    .map((entryInternalIdentifier) -> {
+//        final String simpleName = getNameFromLocalResources(entryInternalIdentifier, CAR_PHYSICS_DATA, fieldRank, DEFAULT_LOCALE, "");
+//        return String.format("%s%s%s.%s", parentDirectory, simpleName, suffix, EXTENSION_BANKS);
+//    })
+//
+//            .orElse(DisplayConstants.ITEM_UNAVAILABLE);        return null;
     }
 
     /**

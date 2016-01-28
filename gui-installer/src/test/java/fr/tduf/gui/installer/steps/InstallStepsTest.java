@@ -19,7 +19,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.util.Optional.empty;
@@ -57,7 +56,7 @@ public class InstallStepsTest {
 
 
         // WHEN
-        InstallSteps.copyFilesStep(configuration);
+        InstallSteps.copyFilesStep(configuration, databaseContext);
 
 
         // THEN
