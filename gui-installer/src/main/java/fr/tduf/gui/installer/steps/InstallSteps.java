@@ -129,7 +129,10 @@ public class InstallSteps {
         requireNonNull(configuration, "Installer configuration is required.");
         requireNonNull(databaseContext, "Database context is required.");
 
-        String vehicleSlot = selectVehicleSlot(configuration, databaseContext);
+        Optional<String> potentialVehicleSlot = selectVehicleSlot(configuration, databaseContext);
+        if (!potentialVehicleSlot.isPresent()) {
+            Log.info(THIS_CLASS_NAME, "No vehicle slot selected.");
+        }
 
         applyPatches(configuration, databaseContext);
 
@@ -155,7 +158,7 @@ public class InstallSteps {
         return jsonFiles;
     }
 
-    static String selectVehicleSlot(InstallerConfiguration configuration, DatabaseContext databaseContext) throws IOException {
+    static Optional<String> selectVehicleSlot(InstallerConfiguration configuration, DatabaseContext databaseContext) throws IOException {
         Log.info(THIS_CLASS_NAME, "->Selecting vehicle slot");
 
         requireNonNull(databaseContext, "Database context is required.");
@@ -167,8 +170,7 @@ public class InstallSteps {
         Log.info(THIS_CLASS_NAME, "->Using vehicle slot: " + selectedItem);
 
         return selectedItem
-                .map((item) -> item.referenceProperty().get())
-                .orElse("");
+                .map((item) -> item.referenceProperty().get());
     }
 
     static List<String> applyPatches(InstallerConfiguration configuration, DatabaseContext databaseContext) throws IOException, ReflectiveOperationException {
