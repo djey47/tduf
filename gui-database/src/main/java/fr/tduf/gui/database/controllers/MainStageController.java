@@ -764,13 +764,17 @@ public class MainStageController extends AbstractGuiController {
         String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_IMPORT;
         try {
             File patchFile = potentialFile.get();
-            changeDataController.importPatch(patchFile);
+            final Optional<String> potentialPropertiesFile = changeDataController.importPatch(patchFile);
 
             viewDataController.updateEntryCount();
             viewDataController.updateAllPropertiesWithItemValues();
 
-            // TODO write effective properties file name here
-            CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED, patchFile.getPath());
+            String writtenPropertiesPath = "";
+            if (potentialPropertiesFile.isPresent()) {
+                writtenPropertiesPath += ("Written properties file: " +  System.lineSeparator() + potentialPropertiesFile.get());
+            }
+
+            CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED, writtenPropertiesPath);
         } catch (Exception e) {
             e.printStackTrace();
 

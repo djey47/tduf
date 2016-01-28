@@ -19,10 +19,9 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +30,8 @@ import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.fromCo
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -142,11 +143,14 @@ public class MainStageChangeDataController {
                 .orElse(false);
     }
 
-    void importPatch(File patchFile) throws IOException, ReflectiveOperationException {
+    Optional<String> importPatch(File patchFile) throws IOException, ReflectiveOperationException {
         DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, mainStageController.getDatabaseObjects());
         PatchProperties patchProperties = readPatchProperties(patchFile);
-        patcher.applyWithProperties(patchObject, patchProperties);
+
+        final PatchProperties effectiveProperties = patcher.applyWithProperties(patchObject, patchProperties);
+
+        return writePatchProperties(effectiveProperties, patchFile.getAbsolutePath());
     }
 
     void importPerformancePack(String packFile) throws ReflectiveOperationException {
@@ -187,6 +191,25 @@ public class MainStageChangeDataController {
         return patchProperties;
     }
 
+    private static Optional<String> writePatchProperties(PatchProperties patchProperties, String patchFile) throws IOException {
+        if (patchProperties.isEmpty()) {
+            return empty();
+        }
+
+        final Path patchPath = Paths.get(patchFile);
+        Path patchParentPath = patchPath.getParent();
+        String patchFileName = patchPath.getFileName().toString();
+        final String targetFileName = "effective-" + patchFileName + ".properties";
+        String targetPropertyFile = patchParentPath.resolve(targetFileName).toString();
+
+        Log.info(THIS_CLASS_NAME, "Writing properties file: " + targetPropertyFile);
+
+        final OutputStream outputStream = new FileOutputStream(targetPropertyFile);
+        patchProperties.store(outputStream, null);
+
+        return of(targetPropertyFile);
+    }
+
     private static Optional<DbPatchDto> generatePatchObject(DbDto.Topic currentTopic, List<String> entryReferences, List<String> entryFields, List<DbDto> databaseObjects) {
         try {
             PatchGenerator patchGenerator = AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseObjects);
@@ -198,10 +221,10 @@ public class MainStageChangeDataController {
                     ALL :
                     fromCollection(entryFields);
 
-            return Optional.of(patchGenerator.makePatch(currentTopic, refRange, fieldRange));
+            return of(patchGenerator.makePatch(currentTopic, refRange, fieldRange));
         } catch (Exception e) {
             e.printStackTrace();
-            return Optional.empty();
+            return empty();
         }
     }
 
