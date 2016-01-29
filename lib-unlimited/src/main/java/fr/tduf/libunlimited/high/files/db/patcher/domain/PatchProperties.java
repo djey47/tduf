@@ -10,6 +10,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class PatchProperties extends Properties {
 
+    private static final String PLACEHOLDER_NAME_SLOT_REFERENCE = "SLOTREF";
+
     /**
      * Stores value associated to a placeholder.
      */
@@ -43,5 +45,13 @@ public class PatchProperties extends Properties {
         });
 
         return patchProperties;
+    }
+
+    public Optional<String> getVehicleSlotReference() {
+        return retrieve(PLACEHOLDER_NAME_SLOT_REFERENCE);
+    }
+
+    public void setVehicleSlotReference(String slotReference) {
+        register(PLACEHOLDER_NAME_SLOT_REFERENCE, slotReference);
     }
 }
