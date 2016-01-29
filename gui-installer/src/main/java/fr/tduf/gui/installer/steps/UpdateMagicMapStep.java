@@ -20,7 +20,7 @@ public class UpdateMagicMapStep extends GenericStep {
     protected void perform() throws IOException, ReflectiveOperationException {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
 
-        String bankDirectory = getTduBanksDirectory(getInstallerConfiguration());
+        String bankDirectory = getInstallerConfiguration().resolveBanksDirectory();
         String magicMapFile = Paths.get(bankDirectory, MapHelper.MAPPING_FILE_NAME).toString();
 
         Log.info(THIS_CLASS_NAME, "->Magic Map file: " + magicMapFile);

@@ -29,7 +29,7 @@ public class CopyFilesStep extends GenericStep {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
 
-        String banksDirectory = getTduBanksDirectory(getInstallerConfiguration());
+        String banksDirectory = getInstallerConfiguration().resolveBanksDirectory();
         asList(DIRECTORY_3D, DIRECTORY_RIMS, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH, DIRECTORY_SOUND)
                 .forEach((asset) -> {
                     try {

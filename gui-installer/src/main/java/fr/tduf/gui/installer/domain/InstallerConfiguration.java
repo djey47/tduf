@@ -6,7 +6,6 @@ import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import javafx.stage.Window;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.util.Objects.requireNonNull;

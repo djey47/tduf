@@ -5,8 +5,6 @@ import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static java.util.Objects.requireNonNull;
 
@@ -86,11 +84,6 @@ public abstract class GenericStep {
         shareContext(previousStep, updateMagicMapStep);
 
         return updateMagicMapStep;
-    }
-
-    // TODO use configuration instance
-    protected static String getTduBanksDirectory(InstallerConfiguration configuration) {
-        return Paths.get(configuration.getTestDriveUnlimitedDirectory(), "Euro", "Bnk").toString();
     }
 
     private static void shareContext(GenericStep previousStep, GenericStep currentStep) {
