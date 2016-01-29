@@ -8,7 +8,7 @@ import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
-import fr.tduf.gui.installer.steps.InstallSteps;
+import fr.tduf.gui.installer.steps.StepsCoordinator;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -64,7 +64,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleInstallButtonAction(ActionEvent actionEvent) throws IOException {
+    public void handleInstallButtonAction(ActionEvent actionEvent) throws IOException, ReflectiveOperationException {
         Log.trace(THIS_CLASS_NAME, "->handleInstallButtonAction");
 
         if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
@@ -108,16 +108,26 @@ public class MainStageController extends AbstractGuiController {
 
     private void updateMagicMap() throws IOException {
 
-        InstallerConfiguration configuration = InstallerConfiguration.builder()
-                .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
-                .withMainWindow(getWindow())
-                .build();
-
-        String magicMapFile = InstallSteps.updateMagicMapStep(configuration);
-        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE, DisplayConstants.MESSAGE_UPDATED_MAP, magicMapFile);
+        // TODO
+//        InstallerConfiguration configuration = InstallerConfiguration.builder()
+//                .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
+//                .withMainWindow(getWindow())
+//                .build();
+//
+//        GenericStep defaultStep = new GenericStep() {
+//
+//            @Override
+//            protected void perform() throws IOException, ReflectiveOperationException {
+//
+//            }
+//        };
+//        defaultStep.
+//
+//        String magicMapFile = GenericStep.updateMagicMapStep(defaultStep).start();
+//        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE, DisplayConstants.MESSAGE_UPDATED_MAP, magicMapFile);
     }
 
-    private void install() throws IOException {
+    private void install() throws IOException, ReflectiveOperationException {
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
@@ -125,7 +135,7 @@ public class MainStageController extends AbstractGuiController {
                 .withMainWindow(getWindow())
                 .build();
 
-        InstallSteps.install(configuration);
+        StepsCoordinator.install(configuration);
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "");
     }
 }
