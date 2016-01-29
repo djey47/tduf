@@ -22,7 +22,8 @@ public class StepsCoordinator {
         Log.trace(THIS_CLASS_NAME, "->Starting full install");
 
         // TODO create database backup to perform rollback is anything fails ?
-        final LoadDatabaseStep loadDatabaseStep = GenericStep.loadDatabaseStep(null);
+        GenericStep defaultStep = GenericStep.defaultStep(configuration, null);
+        final LoadDatabaseStep loadDatabaseStep = GenericStep.loadDatabaseStep(defaultStep);
         try {
             loadDatabaseStep.start();
         } catch (IOException ioe) {
