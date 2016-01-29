@@ -8,6 +8,7 @@ import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.gui.installer.steps.GenericStep;
 import fr.tduf.gui.installer.steps.StepsCoordinator;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -46,7 +47,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleUpdateMagicMapMenuItemAction(ActionEvent actionEvent) throws IOException {
+    public void handleUpdateMagicMapMenuItemAction(ActionEvent actionEvent) throws IOException, ReflectiveOperationException {
         Log.trace(THIS_CLASS_NAME, "->handleUpdateMagicMapMenuItemAction");
 
         if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
@@ -106,25 +107,17 @@ public class MainStageController extends AbstractGuiController {
         }
     }
 
-    private void updateMagicMap() throws IOException {
+    private void updateMagicMap() throws IOException, ReflectiveOperationException {
+        InstallerConfiguration configuration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
+                .withMainWindow(getWindow())
+                .build();
 
-        // TODO
-//        InstallerConfiguration configuration = InstallerConfiguration.builder()
-//                .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
-//                .withMainWindow(getWindow())
-//                .build();
-//
-//        GenericStep defaultStep = new GenericStep() {
-//
-//            @Override
-//            protected void perform() throws IOException, ReflectiveOperationException {
-//
-//            }
-//        };
-//        defaultStep.
-//
-//        String magicMapFile = GenericStep.updateMagicMapStep(defaultStep).start();
-//        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE, DisplayConstants.MESSAGE_UPDATED_MAP, magicMapFile);
+        GenericStep defaultStep = GenericStep.defaultStep(configuration, null);
+
+        GenericStep.updateMagicMapStep(defaultStep).start();
+        String magicMapFile = configuration.resolveMagicMapFile();
+        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE, DisplayConstants.MESSAGE_UPDATED_MAP, magicMapFile);
     }
 
     private void install() throws IOException, ReflectiveOperationException {

@@ -3,7 +3,10 @@ package fr.tduf.gui.installer.domain;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
+import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import javafx.stage.Window;
+
+import java.nio.file.Paths;
 
 import static java.util.Objects.requireNonNull;
 
@@ -23,6 +26,15 @@ public class InstallerConfiguration {
     private String effectiveVehicleSlot;
 
     private InstallerConfiguration() {}
+
+    public String resolveBanksDirectory() {
+        return Paths.get(testDriveUnlimitedDirectory, "Euro", "Bnk").toString();
+    }
+
+    public String resolveMagicMapFile() {
+        String bankDirectory = resolveBanksDirectory();
+        return Paths.get(bankDirectory, MapHelper.MAPPING_FILE_NAME).toString();
+    }
 
     public String getTestDriveUnlimitedDirectory() {
         return testDriveUnlimitedDirectory;

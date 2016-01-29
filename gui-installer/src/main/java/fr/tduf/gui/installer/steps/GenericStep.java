@@ -94,7 +94,7 @@ public abstract class GenericStep {
         return banksPath.resolve("Database").toString();
     }
 
-    // TODO migrate to configuration
+    // TODO use configuration instance
     protected static String getTduBanksDirectory(InstallerConfiguration configuration) {
         return Paths.get(configuration.getTestDriveUnlimitedDirectory(), "Euro", "Bnk").toString();
     }
