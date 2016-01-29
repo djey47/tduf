@@ -101,7 +101,7 @@ public class UpdateDatabaseStep extends GenericStep {
 
         Log.info(THIS_CLASS_NAME, "->Converted TDU database directory: " + extractedDatabaseDirectory);
 
-        String databaseDirectory = getTduDatabaseDirectory(getInstallerConfiguration());
+        String databaseDirectory = getInstallerConfiguration().resolveDatabaseDirectory();
 
         DatabaseBankHelper.repackDatabaseFromDirectory(extractedDatabaseDirectory, databaseDirectory, Optional.of(jsonDatabaseDirectory), getInstallerConfiguration().getBankSupport());
 

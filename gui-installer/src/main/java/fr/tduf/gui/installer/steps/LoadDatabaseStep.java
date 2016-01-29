@@ -39,7 +39,7 @@ public class LoadDatabaseStep extends GenericStep {
     }
 
     List<String> unpackDatabaseToJson(String jsonDatabaseDirectory) throws IOException {
-        String databaseDirectory = getTduDatabaseDirectory(getInstallerConfiguration());
+        String databaseDirectory = getInstallerConfiguration().resolveDatabaseDirectory();
 
         Log.info(THIS_CLASS_NAME, "->Unpacking TDU database: " + databaseDirectory);
 

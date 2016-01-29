@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import javafx.stage.Window;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.util.Objects.requireNonNull;
@@ -34,6 +35,10 @@ public class InstallerConfiguration {
     public String resolveMagicMapFile() {
         String bankDirectory = resolveBanksDirectory();
         return Paths.get(bankDirectory, MapHelper.MAPPING_FILE_NAME).toString();
+    }
+
+    public String resolveDatabaseDirectory() {
+        return Paths.get(resolveBanksDirectory()).resolve("Database").toString();
     }
 
     public String getTestDriveUnlimitedDirectory() {

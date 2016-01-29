@@ -88,12 +88,6 @@ public abstract class GenericStep {
         return updateMagicMapStep;
     }
 
-    // TODO migrate to configuration
-    protected static String getTduDatabaseDirectory(InstallerConfiguration configuration) {
-        Path banksPath = Paths.get(getTduBanksDirectory(configuration));
-        return banksPath.resolve("Database").toString();
-    }
-
     // TODO use configuration instance
     protected static String getTduBanksDirectory(InstallerConfiguration configuration) {
         return Paths.get(configuration.getTestDriveUnlimitedDirectory(), "Euro", "Bnk").toString();
