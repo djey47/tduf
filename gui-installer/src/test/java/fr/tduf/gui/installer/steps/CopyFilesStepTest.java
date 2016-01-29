@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import static fr.tduf.gui.installer.steps.GenericStep.StepType.COPY_FILES;
 import static org.assertj.core.api.StrictAssertions.assertThat;
 
 public class CopyFilesStepTest {
@@ -35,11 +36,11 @@ public class CopyFilesStepTest {
                 .withTestDriveUnlimitedDirectory(tempDirectory)
                 .withAssetsDirectory(assetsDirectory)
                 .build();
-        final GenericStep previousStep = GenericStep.defaultStep(configuration, null);
+        final GenericStep previousStep = GenericStep.starterStep(configuration, null);
 
 
         // WHEN
-        GenericStep.copyFilesStep(previousStep);
+        GenericStep.loadStep(COPY_FILES, previousStep).start();
 
 
         // THEN

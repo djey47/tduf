@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import static fr.tduf.gui.installer.steps.GenericStep.StepType.UPDATE_MAGIC_MAP;
 import static org.assertj.core.api.StrictAssertions.assertThat;
 
 public class UpdateMagicMapStepTest {
@@ -32,9 +33,8 @@ public class UpdateMagicMapStepTest {
                 .build();
 
         // WHEN
-        GenericStep previousStep = GenericStep.defaultStep(configuration, null);
-
-        GenericStep.updateMagicMapStep(previousStep).perform();
+        GenericStep previousStep = GenericStep.starterStep(configuration, null);
+        GenericStep.loadStep(UPDATE_MAGIC_MAP, previousStep).start();
 
         // THEN
         File actualMagicMapFile = Paths.get(tempDirectory, "Euro", "Bnk", "Bnk1.map").toFile();

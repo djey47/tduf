@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static fr.tduf.gui.installer.steps.GenericStep.StepType.UPDATE_DATABASE;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.util.Optional.empty;
 import static org.mockito.Matchers.anyString;
@@ -53,18 +54,19 @@ public class UpdateDatabaseStepTest {
                 .withAssetsDirectory(assetsDirectory)
                 .build();
 
-        GenericStep previousStep = GenericStep.defaultStep(configuration, databaseContext);
+        GenericStep previousStep = GenericStep.starterStep(configuration, databaseContext);
 
 
         // WHEN
-        GenericStep.updateDatabaseStep(previousStep).applyPatches(empty());
+        final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) GenericStep.loadStep(UPDATE_DATABASE, previousStep);
+        updateDatabaseStep.applyPatches(empty());
 
 
         // THEN
     }
 
     @Test
-    public void repackJsonDatabase_shouldCallBankSupportComponent() throws IOException {
+    public void repackJsonDatabase_shouldCallBankSupportComponent() throws IOException, ReflectiveOperationException {
         // GIVEN
         DatabaseContext databaseContext = createJsonDatabase();
         TestHelper.createFakeDatabase(databaseContext.getJsonDatabaseDirectory(), "original-");
@@ -74,11 +76,12 @@ public class UpdateDatabaseStepTest {
                 .usingBankSupport(bankSupportMock)
                 .build();
 
-        GenericStep previousStep = GenericStep.defaultStep(configuration, databaseContext);
+        GenericStep previousStep = GenericStep.starterStep(configuration, databaseContext);
 
 
         // WHEN
-        GenericStep.updateDatabaseStep(previousStep).repackJsonDatabase();
+        final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) GenericStep.loadStep(UPDATE_DATABASE, previousStep);
+        updateDatabaseStep.repackJsonDatabase();
 
 
         // THEN

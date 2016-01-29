@@ -45,11 +45,12 @@ public class LoadDatabaseStepTest {
                 .usingBankSupport(bankSupportMock)
                 .build();
 
-        GenericStep previousStep = GenericStep.defaultStep(configuration, null);
+        GenericStep previousStep = GenericStep.starterStep(configuration, null);
 
 
         // WHEN
-        List<String> actualJsonFiles = GenericStep.loadDatabaseStep(previousStep).unpackDatabaseToJson(TestHelper.createTempDirectory());
+        final LoadDatabaseStep loadDatabaseStep = (LoadDatabaseStep) GenericStep.loadStep(GenericStep.StepType.LOAD_DATABASE, previousStep);
+        List<String> actualJsonFiles = loadDatabaseStep.unpackDatabaseToJson(TestHelper.createTempDirectory());
 
 
         // THEN

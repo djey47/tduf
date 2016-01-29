@@ -13,38 +13,21 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class GenericStep {
 
+    public enum StepType { LOAD_DATABASE, UPDATE_DATABASE, UPDATE_MAGIC_MAP, COPY_FILES }
+
     private InstallerConfiguration installerConfiguration;
 
     private DatabaseContext databaseContext;
 
     /**
-     *
-     * @throws IOException
-     * @throws ReflectiveOperationException
+     * @param installerConfiguration    : optional configuration
+     * @param databaseContext           : optional context
+     * @return a reference of step to begin process
      */
-    // TODO integrate in common loader
-    public void start() throws IOException, ReflectiveOperationException {
-
-        Log.trace(getClassName(), "->Entering step");
-
-        perform();
-
-        Log.trace(getClassName(), "->Exiting step");
-    }
-
-    /**
-     *
-     * @throws IOException
-     * @throws ReflectiveOperationException
-     */
-    protected abstract void perform() throws IOException, ReflectiveOperationException;
-
-    public static GenericStep defaultStep(InstallerConfiguration installerConfiguration, DatabaseContext databaseContext) {
+    public static GenericStep starterStep(InstallerConfiguration installerConfiguration, DatabaseContext databaseContext) {
         final GenericStep genericStep = new GenericStep() {
             @Override
-            protected void perform() throws IOException, ReflectiveOperationException {
-
-            }
+            protected void perform() throws IOException, ReflectiveOperationException {}
         };
 
         genericStep.setDatabaseContext(databaseContext);
@@ -53,37 +36,55 @@ public abstract class GenericStep {
         return genericStep;
     }
 
-    // TODO create step enum and use only one method
-    public static LoadDatabaseStep loadDatabaseStep(GenericStep previousStep) {
-        final LoadDatabaseStep loadDatabaseStep = new LoadDatabaseStep();
+    /**
+     * @return a reference of step to continue process
+     */
+    public static GenericStep loadStep(StepType stepType, GenericStep previousStep) {
+        final GenericStep currentStep;
+        switch(stepType) {
+            case LOAD_DATABASE:
+                currentStep = new LoadDatabaseStep();
+                break;
+            case UPDATE_DATABASE:
+                currentStep = new UpdateDatabaseStep();
+                break;
+            case COPY_FILES:
+                currentStep = new CopyFilesStep();
+                break;
+            case UPDATE_MAGIC_MAP:
+                currentStep = new UpdateMagicMapStep();
+                break;
+            default:
+                throw new IllegalArgumentException("Step type not handled yet: " + stepType.name());
+        }
 
-        shareContext(previousStep, loadDatabaseStep);
+        shareContext(previousStep, currentStep);
 
-        return loadDatabaseStep;
+        return currentStep;
     }
 
-    public static UpdateDatabaseStep updateDatabaseStep(GenericStep previousStep) {
-        final UpdateDatabaseStep updateDatabaseStep = new UpdateDatabaseStep();
+    /**
+     * What a particular step should do.
+     * Do not call it directly, use {@link GenericStep#start()} method instead
+     * @throws IOException
+     * @throws ReflectiveOperationException
+     */
+    protected abstract void perform() throws IOException, ReflectiveOperationException;
 
-        shareContext(previousStep, updateDatabaseStep);
+    /**
+     * Triggers current step.
+     */
+    public void start() {
+        Log.trace(getClassName(), "->Entering step");
 
-        return updateDatabaseStep;
-    }
+        // TODO handle exceptions
+        try {
+            perform();
+        } catch (IOException | ReflectiveOperationException e) {
+            e.printStackTrace();
+        }
 
-    public static CopyFilesStep copyFilesStep(GenericStep previousStep) {
-        final CopyFilesStep copyFilesStep = new CopyFilesStep();
-
-        shareContext(previousStep, copyFilesStep);
-
-        return copyFilesStep;
-    }
-
-    public static UpdateMagicMapStep updateMagicMapStep(GenericStep previousStep) {
-        final UpdateMagicMapStep updateMagicMapStep = new UpdateMagicMapStep();
-
-        shareContext(previousStep, updateMagicMapStep);
-
-        return updateMagicMapStep;
+        Log.trace(getClassName(), "->Exiting step");
     }
 
     private static void shareContext(GenericStep previousStep, GenericStep currentStep) {

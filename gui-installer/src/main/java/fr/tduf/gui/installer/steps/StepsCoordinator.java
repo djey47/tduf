@@ -5,6 +5,10 @@ import fr.tduf.gui.installer.domain.InstallerConfiguration;
 
 import java.io.IOException;
 
+import static fr.tduf.gui.installer.steps.GenericStep.StepType.LOAD_DATABASE;
+import static fr.tduf.gui.installer.steps.GenericStep.StepType.UPDATE_DATABASE;
+import static fr.tduf.gui.installer.steps.GenericStep.StepType.UPDATE_MAGIC_MAP;
+
 /**
  * Orchestrates all operations to install vehicle mod.
  */
@@ -17,38 +21,21 @@ public class StepsCoordinator {
      * @param configuration : settings to install required mod.
      */
     public static void install(InstallerConfiguration configuration) throws IOException, ReflectiveOperationException {
-        // TODO handle exceptions
-
         Log.trace(THIS_CLASS_NAME, "->Starting full install");
 
+        final GenericStep starterStep = GenericStep.starterStep(configuration, null);
+
         // TODO create database backup to perform rollback is anything fails ?
-        GenericStep defaultStep = GenericStep.defaultStep(configuration, null);
-        final LoadDatabaseStep loadDatabaseStep = GenericStep.loadDatabaseStep(defaultStep);
-        try {
-            loadDatabaseStep.start();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
+        final GenericStep loadDatabaseStep = GenericStep.loadStep(LOAD_DATABASE, starterStep);
+        loadDatabaseStep.start();
 
-        final UpdateDatabaseStep updateDatabaseStep = GenericStep.updateDatabaseStep(loadDatabaseStep);
-        try {
-            updateDatabaseStep.start();
-        } catch (IOException | ReflectiveOperationException ioe) {
-            ioe.printStackTrace();
-        }
+        final GenericStep updateDatabaseStep = GenericStep.loadStep(UPDATE_DATABASE, loadDatabaseStep);
+        updateDatabaseStep.start();
 
-        final CopyFilesStep copyFilesStep = GenericStep.copyFilesStep(updateDatabaseStep);
-        try {
-            copyFilesStep.start();
-        } catch (RuntimeException re) {
-            re.printStackTrace();
-        }
+        final GenericStep copyFilesStep = GenericStep.loadStep(GenericStep.StepType.COPY_FILES, updateDatabaseStep);
+        copyFilesStep.start();
 
-        final UpdateMagicMapStep updateMagicMapStep = GenericStep.updateMagicMapStep(copyFilesStep);
-        try {
-            updateMagicMapStep.start();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
+        final GenericStep updateMagicMapStep = GenericStep.loadStep(UPDATE_MAGIC_MAP, copyFilesStep);
+        updateMagicMapStep.start();
     }
 }
