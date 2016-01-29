@@ -42,8 +42,6 @@ public class UpdateDatabaseStep extends GenericStep {
 
     @Override
     protected void perform() throws IOException, ReflectiveOperationException {
-        Log.trace(THIS_CLASS_NAME, "->Entering step: Update Database");
-
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
 

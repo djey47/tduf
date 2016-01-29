@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.steps;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 
@@ -27,11 +28,11 @@ public abstract class GenericStep {
     // TODO integrate in common loader
     public void start() throws IOException, ReflectiveOperationException {
 
-        // Before actions
+        Log.trace(getClassName(), "->Entering step");
 
         perform();
 
-        // After actions
+        Log.trace(getClassName(), "->Exiting step");
     }
 
     /**
@@ -123,5 +124,9 @@ public abstract class GenericStep {
 
     protected void setInstallerConfiguration(InstallerConfiguration installerConfiguration) {
         this.installerConfiguration = installerConfiguration;
+    }
+
+    private String getClassName() {
+        return this.getClass().getSimpleName();
     }
 }

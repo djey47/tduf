@@ -26,8 +26,6 @@ public class CopyFilesStep extends GenericStep {
 
     @Override
     protected void perform() throws IOException, ReflectiveOperationException {
-        Log.trace(THIS_CLASS_NAME, "->Entering step: Copy Files");
-
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
 

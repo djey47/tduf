@@ -18,8 +18,6 @@ public class UpdateMagicMapStep extends GenericStep {
 
     @Override
     protected void perform() throws IOException, ReflectiveOperationException {
-        Log.trace(THIS_CLASS_NAME, "->Entering step: Update Magic Map");
-
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
 
         String bankDirectory = getTduBanksDirectory(getInstallerConfiguration());

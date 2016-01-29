@@ -25,8 +25,6 @@ public class LoadDatabaseStep extends GenericStep {
 
     @Override
     protected void perform() throws IOException {
-        Log.trace(THIS_CLASS_NAME, "->Entering step: Load Database");
-
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
 
         String jsonDatabaseDirectory = Files.createTempDirectory("guiInstaller").toString();
