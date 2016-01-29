@@ -13,7 +13,6 @@ import static java.util.Objects.requireNonNull;
 /**
  * Parent of all install steps
  */
-// TODO create method to get class name generically
 public abstract class GenericStep {
 
     private InstallerConfiguration installerConfiguration;
