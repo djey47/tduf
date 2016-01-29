@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.steps;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 
 import java.io.IOException;
 
@@ -18,6 +19,8 @@ public abstract class GenericStep {
     private InstallerConfiguration installerConfiguration;
 
     private DatabaseContext databaseContext;
+
+    private PatchProperties patchProperties;
 
     /**
      * @param installerConfiguration    : optional configuration
@@ -111,6 +114,14 @@ public abstract class GenericStep {
 
     protected void setInstallerConfiguration(InstallerConfiguration installerConfiguration) {
         this.installerConfiguration = installerConfiguration;
+    }
+
+    protected PatchProperties getPatchProperties() {
+        return patchProperties;
+    }
+
+    protected void setPatchProperties(PatchProperties patchProperties) {
+        this.patchProperties = patchProperties;
     }
 
     private String getClassName() {

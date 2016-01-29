@@ -38,18 +38,13 @@ public class UpdateDatabaseStep extends GenericStep {
 
     private static final String THIS_CLASS_NAME = UpdateDatabaseStep.class.getSimpleName();
 
-    private static final String PLACEHOLDER_NAME_SLOT_REFERENCE = "SLOTREF";
-
     @Override
     protected void perform() throws IOException, ReflectiveOperationException {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
 
         Optional<String> potentialVehicleSlot = selectVehicleSlot();
-        if (potentialVehicleSlot.isPresent()) {
-            getInstallerConfiguration().setEffectiveVehicleSlot(potentialVehicleSlot.get());
-        } else {
-            // TODO find a way to set effective slot
+        if (!potentialVehicleSlot.isPresent()) {
             Log.info(THIS_CLASS_NAME, "No vehicle slot selected.");
         }
 
@@ -123,7 +118,7 @@ public class UpdateDatabaseStep extends GenericStep {
                 .map((item) -> item.referenceProperty().get());
     }
 
-    private static void applyPatch(Path patchPath, DatabasePatcher patcher, Optional<String> potentialVehicleSlot) throws IOException {
+    private void applyPatch(Path patchPath, DatabasePatcher patcher, Optional<String> potentialVehicleSlot) throws IOException {
         Log.info(THIS_CLASS_NAME, "*> Now applying patch: " + patchPath);
 
         final File patchFile = patchPath.toFile();
@@ -136,10 +131,12 @@ public class UpdateDatabaseStep extends GenericStep {
         PatchProperties effectivePatchProperties = patcher.applyWithProperties(patchObject, patchProperties);
 
         PatchPropertiesReadWriteHelper.writePatchProperties(effectivePatchProperties, patchFile.getAbsolutePath());
+
+        setPatchProperties(patchProperties);
     }
 
     private static void overridePatchPropertiesForVehicleSlot(String slotRef, PatchProperties patchProperties) {
-        patchProperties.register(PLACEHOLDER_NAME_SLOT_REFERENCE, slotRef);
+        patchProperties.setVehicleSlotReference(slotRef);
     }
 
     private static SlotsBrowserStageController initSlotsBrowserController(Window mainWindow) throws IOException {

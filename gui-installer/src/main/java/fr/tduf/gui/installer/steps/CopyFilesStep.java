@@ -28,12 +28,13 @@ public class CopyFilesStep extends GenericStep {
     protected void perform() throws IOException, ReflectiveOperationException {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
+        requireNonNull(getPatchProperties(), "Patch proeprties are required.");
 
         String banksDirectory = getInstallerConfiguration().resolveBanksDirectory();
         asList(DIRECTORY_3D, DIRECTORY_RIMS, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH, DIRECTORY_SOUND)
                 .forEach((asset) -> {
                     try {
-                        copyAssets(asset, getInstallerConfiguration().getAssetsDirectory(), banksDirectory, getDatabaseContext().getMiner(), getInstallerConfiguration().getEffectiveVehicleSlot());
+                        copyAssets(asset, getInstallerConfiguration().getAssetsDirectory(), banksDirectory, getDatabaseContext().getMiner(), getPatchProperties().getVehicleSlotReference().get());
                     } catch (IOException ioe) {
                         throw new RuntimeException("Unable to perform copy step", ioe);
                     }
@@ -119,5 +120,4 @@ public class CopyFilesStep extends GenericStep {
             e.printStackTrace();
         }
     }
-
 }
