@@ -4,6 +4,7 @@ import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -14,15 +15,17 @@ import java.util.List;
 import java.util.Optional;
 
 import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.EXTENSION_BANKS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto.fromCouple;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
  * Component to get advanced information on vehicle slots.
  */
+// TODO tests
 public class VehicleSlotsHelper {
 
     private static final DbResourceDto.Locale DEFAULT_LOCALE = UNITED_STATES;
@@ -44,12 +47,29 @@ public class VehicleSlotsHelper {
     }
 
     /**
+     * @param slotReference : vehicle slot reference
+     * @return first brand directory found for a vehicle rim
+     */
+    public String getRimDirectoryForVehicle(String slotReference) {
+
+        List<DbFieldValueDto> criteria = singletonList(fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference));
+        return miner.getContentEntryStreamMatchingCriteria(criteria, CAR_RIMS)
+
+                .findAny()
+
+                .flatMap((carRimEntry) -> miner.getContentEntryFromTopicWithInternalIdentifier(carRimEntry.getId(), RIMS))
+
+                .map((rimEntry) -> getNameFromLocalResources(rimEntry.getId(), RIMS, DatabaseConstants.FIELD_RANK_RSC_PATH, DEFAULT_LOCALE, ""))
+
+                .orElse("");
+    }
+
+    /**
      *
      * @param slotReference
      * @param bankFileType
      * @return
      */
-    // TODO tests
     public String getBankFileName(String slotReference, BankFileType bankFileType) {
 
         if (BankFileType.RIM == bankFileType) {

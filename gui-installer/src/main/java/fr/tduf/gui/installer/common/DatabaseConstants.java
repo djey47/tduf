@@ -4,6 +4,8 @@ package fr.tduf.gui.installer.common;
  * Gives all constants to access particular information in TDU database.
  */
 public class DatabaseConstants {
+    public static final int FIELD_RANK_CAR_REF = 1;            // CAR PHYSICS, CAR RIMS
+
     public static final int FIELD_RANK_MANUFACTURER_NAME = 3;  // BRANDS
 
     public static final int FIELD_RANK_CAR_BRAND = 2;          // CAR PHYSICS
