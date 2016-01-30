@@ -2,6 +2,7 @@ package fr.tduf.gui.installer.common.helper;
 
 import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
+import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -48,6 +49,7 @@ public class VehicleSlotsHelper {
      * @param bankFileType
      * @return
      */
+    // TODO tests
     public String getBankFileName(String slotReference, BankFileType bankFileType) {
 
         if (BankFileType.RIM == bankFileType) {
@@ -62,11 +64,11 @@ public class VehicleSlotsHelper {
                 break;
 
             case INTERIOR_MODEL:
-                suffix = "_I";
+                suffix = FileConstants.SUFFIX_INTERIOR_BANK_FILE;
                 break;
 
             case SOUND:
-                suffix = "_audio";
+                suffix =  FileConstants.SUFFIX_AUDIO_BANK_FILE;
                 break;
 
             default:
