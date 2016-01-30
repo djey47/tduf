@@ -50,13 +50,11 @@ public class UpdateDatabaseStepTest {
                 .withAssetsDirectory(assetsDirectory)
                 .build();
 
-        GenericStep previousStep = GenericStep.starterStep(configuration, databaseContext, null);
-
-
         // WHEN
-        final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) GenericStep.loadStep(UPDATE_DATABASE, previousStep);
+        final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
+                GenericStep.starterStep(configuration, databaseContext, null)
+                        .nextStep(UPDATE_DATABASE));
         updateDatabaseStep.applyPatches(empty());
-
 
         // THEN
     }
@@ -65,19 +63,16 @@ public class UpdateDatabaseStepTest {
     public void repackJsonDatabase_shouldCallBankSupportComponent() throws IOException, ReflectiveOperationException {
         // GIVEN
         TestHelper.createFakeDatabase(databaseContext.getJsonDatabaseDirectory(), "original-");
-
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)
                 .usingBankSupport(bankSupportMock)
                 .build();
 
-        GenericStep previousStep = GenericStep.starterStep(configuration, databaseContext, null);
-
-
         // WHEN
-        final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) GenericStep.loadStep(UPDATE_DATABASE, previousStep);
+        final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
+                GenericStep.starterStep(configuration, databaseContext, null)
+                        .nextStep(UPDATE_DATABASE));
         updateDatabaseStep.repackJsonDatabase();
-
 
         // THEN
         Path databasePath = TestHelper.getTduDatabasePath(tempDirectory);

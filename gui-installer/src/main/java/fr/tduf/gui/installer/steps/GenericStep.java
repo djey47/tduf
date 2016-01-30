@@ -43,11 +43,18 @@ public abstract class GenericStep {
         };
     }
 
-    // TODO change to instance method nextStep()
+    /**
+     * What a particular step should do.
+     * Do not call it directly, use {@link GenericStep#start()} method instead
+     * @throws IOException
+     * @throws ReflectiveOperationException
+     */
+    protected abstract void perform() throws IOException, ReflectiveOperationException;
+
     /**
      * @return a reference of step to continue process
      */
-    public static GenericStep loadStep(StepType stepType, GenericStep previousStep) {
+    public GenericStep nextStep(StepType stepType) {
         final GenericStep currentStep;
         switch(stepType) {
             case LOAD_DATABASE:
@@ -66,24 +73,15 @@ public abstract class GenericStep {
                 throw new IllegalArgumentException("Step type not handled yet: " + stepType.name());
         }
 
-        shareContext(previousStep, currentStep);
+        shareContext(currentStep);
 
         return currentStep;
     }
 
-    // TODO return step instance to chain calls
-    /**
-     * What a particular step should do.
-     * Do not call it directly, use {@link GenericStep#start()} method instead
-     * @throws IOException
-     * @throws ReflectiveOperationException
-     */
-    protected abstract void perform() throws IOException, ReflectiveOperationException;
-
     /**
      * Triggers current step.
      */
-    public void start() {
+    public GenericStep start() {
         Log.trace(getClassName(), "->Entering step");
 
         // TODO handle exceptions
@@ -94,17 +92,16 @@ public abstract class GenericStep {
         }
 
         Log.trace(getClassName(), "->Exiting step");
+
+        return this;
     }
 
-    private static void shareContext(GenericStep previousStep, GenericStep currentStep) {
+    private void shareContext(GenericStep newStep) {
+        requireNonNull(newStep, "New step is required.");
 
-        requireNonNull(currentStep, "Current step is required.");
-
-        if(previousStep != null) {
-            currentStep.setDatabaseContext(previousStep.databaseContext);
-            currentStep.setInstallerConfiguration(previousStep.installerConfiguration);
-            currentStep.setPatchProperties(previousStep.patchProperties);
-        }
+        newStep.setDatabaseContext(databaseContext);
+        newStep.setInstallerConfiguration(installerConfiguration);
+        newStep.setPatchProperties(patchProperties);
     }
 
     protected DatabaseContext getDatabaseContext() {

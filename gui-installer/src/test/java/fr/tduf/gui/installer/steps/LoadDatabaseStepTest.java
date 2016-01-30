@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static fr.tduf.gui.installer.steps.GenericStep.StepType.LOAD_DATABASE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -45,11 +46,11 @@ public class LoadDatabaseStepTest {
                 .usingBankSupport(bankSupportMock)
                 .build();
 
-        GenericStep previousStep = GenericStep.starterStep(configuration, null, null);
-
 
         // WHEN
-        final LoadDatabaseStep loadDatabaseStep = (LoadDatabaseStep) GenericStep.loadStep(GenericStep.StepType.LOAD_DATABASE, previousStep);
+        LoadDatabaseStep loadDatabaseStep = (LoadDatabaseStep)
+                GenericStep.starterStep(configuration, null, null)
+                        .nextStep(LOAD_DATABASE);
         List<String> actualJsonFiles = loadDatabaseStep.unpackDatabaseToJson(TestHelper.createTempDirectory());
 
 
@@ -69,5 +70,4 @@ public class LoadDatabaseStepTest {
 
         assertThat(actualJsonFiles).isEmpty();
     }
-
 }

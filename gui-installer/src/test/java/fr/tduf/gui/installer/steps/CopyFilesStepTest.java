@@ -39,11 +39,11 @@ public class CopyFilesStepTest {
                 .build();
         DatabaseContext databaseContext = TestHelper.createJsonDatabase();
         PatchProperties patchProperties = new PatchProperties();
-        final GenericStep starterStep = GenericStep.starterStep(configuration, databaseContext, patchProperties);
 
 
         // WHEN
-        GenericStep.loadStep(COPY_FILES, starterStep).start();
+        GenericStep.starterStep(configuration, databaseContext, patchProperties)
+                .nextStep(COPY_FILES).start();
 
 
         // THEN

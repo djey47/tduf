@@ -33,8 +33,8 @@ public class UpdateMagicMapStepTest {
                 .build();
 
         // WHEN
-        GenericStep previousStep = GenericStep.starterStep(configuration, null, null);
-        GenericStep.loadStep(UPDATE_MAGIC_MAP, previousStep).start();
+        GenericStep.starterStep(configuration, null, null)
+                .nextStep(UPDATE_MAGIC_MAP).start();
 
         // THEN
         File actualMagicMapFile = Paths.get(tempDirectory, "Euro", "Bnk", "Bnk1.map").toFile();
