@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
@@ -12,8 +13,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-import static fr.tduf.gui.installer.common.InstallerConstants.*;
-import static fr.tduf.gui.installer.common.InstallerConstants.DIRECTORY_SOUND;
+import static com.google.common.io.Files.getNameWithoutExtension;
+import static fr.tduf.gui.installer.common.InstallerConstants.DIRECTORY_3D;
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.EXTERIOR_MODEL;
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.INTERIOR_MODEL;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -31,7 +34,7 @@ public class CopyFilesStep extends GenericStep {
         requireNonNull(getPatchProperties(), "Patch properties are required.");
 
         String banksDirectory = getInstallerConfiguration().resolveBanksDirectory();
-        asList(DIRECTORY_3D, DIRECTORY_RIMS, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH, DIRECTORY_SOUND)
+        asList(DIRECTORY_3D/*, DIRECTORY_RIMS, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH, DIRECTORY_SOUND*/)
                 .forEach((asset) -> {
                     try {
                         copyAssets(asset, getInstallerConfiguration().getAssetsDirectory(), banksDirectory, getDatabaseContext().getMiner(), getPatchProperties().getVehicleSlotReference().get());
@@ -41,7 +44,7 @@ public class CopyFilesStep extends GenericStep {
                 });
     }
 
-
+    // TODO convert to instance method
     private static void copyAssets(String assetName, String assetsDirectory, String banksDirectory, BulkDatabaseMiner miner, String slotReference) throws IOException {
         Log.info(THIS_CLASS_NAME, "->Copying assets: " + assetName) ;
 
@@ -69,15 +72,15 @@ public class CopyFilesStep extends GenericStep {
             case DIRECTORY_3D:
                 targetPath = Paths.get(banksDirectory, "Vehicules");
                 break;
-            case DIRECTORY_GAUGES_LOW:
-                targetPath = Paths.get(banksDirectory, "FrontEnd");
-                break;
-            case DIRECTORY_RIMS:
-                targetPath = Paths.get(banksDirectory, "Vehicules", "Rim");
-                break;
-            case DIRECTORY_SOUND:
-                targetPath = Paths.get(banksDirectory, "Sound", "Vehicules");
-                break;
+//            case DIRECTORY_GAUGES_LOW:
+//                targetPath = Paths.get(banksDirectory, "FrontEnd");
+//                break;
+//            case DIRECTORY_RIMS:
+//                targetPath = Paths.get(banksDirectory, "Vehicules", "Rim");
+//                break;
+//            case DIRECTORY_SOUND:
+//                targetPath = Paths.get(banksDirectory, "Sound", "Vehicules");
+//                break;
             default:
                 throw new IllegalArgumentException("Unhandled asset type: " + assetName);
         }
@@ -89,35 +92,37 @@ public class CopyFilesStep extends GenericStep {
         FilesHelper.createDirectoryIfNotExists(targetPath.toString());
 
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
-        Path parentName = assetPath.getParent().getFileName();
-
+//        Path parentName = assetPath.getParent().getFileName();
 
         if (DIRECTORY_3D.equals(assetName)) {
-            String targetFileNameForExterior = vehicleSlotsHelper.getBankFileName(slotReference, VehicleSlotsHelper.BankFileType.EXTERIOR_MODEL);
 
+            String assetFileName = assetPath.getFileName().toString();
+            final String targetFileName;
+            if (getNameWithoutExtension(assetFileName).endsWith(FileConstants.SUFFIX_INTERIOR_BANK_FILE)) {
+                targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, INTERIOR_MODEL);
+            } else {
+                targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, EXTERIOR_MODEL);
+            }
+
+            try {
+                Path finalPath = targetPath.resolve(targetFileName);
+                Log.info(THIS_CLASS_NAME, "*> " + assetPath + " to " + finalPath);
+                Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
-
-        if (DIRECTORY_RIMS.equals(assetName)) {
-            targetPath = targetPath.resolve(parentName);
-        }
-
-        if (DIRECTORY_GAUGES_LOW.equals(assetName)) {
-            targetPath = targetPath.resolve("LowRes").resolve("Gauges");
-        }
-
-        if (DIRECTORY_GAUGES_HIGH.equals(assetName)) {
-            targetPath = targetPath.resolve("HiRes").resolve("Gauges");
-        }
-
-        Path finalPath = targetPath.resolve(assetPath.getFileName());
-
-        Log.info(THIS_CLASS_NAME, "*> " + assetPath + " to " + finalPath);
-
-        try {
-            Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        if (DIRECTORY_RIMS.equals(assetName)) {
+//            targetPath = targetPath.resolve(parentName);
+//        }
+//
+//        if (DIRECTORY_GAUGES_LOW.equals(assetName)) {
+//            targetPath = targetPath.resolve("LowRes").resolve("Gauges");
+//        }
+//
+//        if (DIRECTORY_GAUGES_HIGH.equals(assetName)) {
+//            targetPath = targetPath.resolve("HiRes").resolve("Gauges");
+//        }
     }
 }
