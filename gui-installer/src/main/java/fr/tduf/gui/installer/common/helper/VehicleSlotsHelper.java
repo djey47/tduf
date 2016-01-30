@@ -3,22 +3,19 @@ package fr.tduf.gui.installer.common.helper;
 import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.FileConstants;
-import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
-import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.FRONT_RIM;
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.REAR_RIM;
 import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.EXTENSION_BANKS;
-import static fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto.fromCouple;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -36,7 +33,7 @@ public class VehicleSlotsHelper {
         this.miner = miner;
     }
 
-    public enum BankFileType { EXTERIOR_MODEL, INTERIOR_MODEL, HUD, SOUND, RIM }
+    public enum BankFileType { EXTERIOR_MODEL, INTERIOR_MODEL, HUD, SOUND, FRONT_RIM, REAR_RIM}
 
     /**
      * @param miner : component to parse database
@@ -50,14 +47,9 @@ public class VehicleSlotsHelper {
      * @param slotReference : vehicle slot reference
      * @return first brand directory found for a vehicle rim
      */
-    public String getRimDirectoryForVehicle(String slotReference) {
+    public String getDefaultRimDirectoryForVehicle(String slotReference) {
 
-        List<DbFieldValueDto> criteria = singletonList(fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference));
-        return miner.getContentEntryStreamMatchingCriteria(criteria, CAR_RIMS)
-
-                .findAny()
-
-                .flatMap((carRimEntry) -> miner.getContentEntryFromTopicWithInternalIdentifier(carRimEntry.getId(), RIMS))
+        return getDefaultRimEntryForVehicle(slotReference)
 
                 .map((rimEntry) -> getNameFromLocalResources(rimEntry.getId(), RIMS, DatabaseConstants.FIELD_RANK_RSC_PATH, DEFAULT_LOCALE, ""))
 
@@ -72,8 +64,9 @@ public class VehicleSlotsHelper {
      */
     public String getBankFileName(String slotReference, BankFileType bankFileType) {
 
-        if (BankFileType.RIM == bankFileType) {
-            return getRimBankFileName(slotReference);
+        if (FRONT_RIM == bankFileType ||
+                REAR_RIM == bankFileType) {
+            return getDefaultRimBankFileName(slotReference, bankFileType);
         }
 
         String suffix;
@@ -99,35 +92,13 @@ public class VehicleSlotsHelper {
 
                 .map(DbDataDto.Entry::getId)
 
+                // TODO create 2 map instructions
                 .map((entryInternalIdentifier) -> {
                     final String simpleName = getNameFromLocalResources(entryInternalIdentifier, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_FILE_NAME, DEFAULT_LOCALE, "");
                     return String.format("%s%s.%s", simpleName, suffix, EXTENSION_BANKS);
                 })
 
                 .orElse(DisplayConstants.ITEM_UNAVAILABLE);
-
-    }
-
-    private String getRimBankFileName(String slotReference) {
-        return "";
-//        case RIM:
-//        suffix = "_%s_%s";
-//        break;
-//
-//        default:
-//        throw new IllegalArgumentException("Bank file type not handled: " + bankFileType);
-//    }
-//
-//    return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
-//
-//            .map(DbDataDto.Entry::getId)
-//
-//    .map((entryInternalIdentifier) -> {
-//        final String simpleName = getNameFromLocalResources(entryInternalIdentifier, CAR_PHYSICS_DATA, fieldRank, DEFAULT_LOCALE, "");
-//        return String.format("%s%s%s.%s", parentDirectory, simpleName, suffix, EXTENSION_BANKS);
-//    })
-//
-//            .orElse(DisplayConstants.ITEM_UNAVAILABLE);        return null;
     }
 
     /**
@@ -170,6 +141,40 @@ public class VehicleSlotsHelper {
                 })
 
                 .collect(toList());
+    }
+
+    private Optional<DbDataDto.Entry> getDefaultRimEntryForVehicle(String slotReference) {
+        return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
+
+                .map(DbDataDto.Entry::getId)
+
+                .flatMap((entryId) -> miner.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_DEFAULT_RIMS, entryId))
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .flatMap((rimSlotReference) -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS));
+    }
+
+    private String getDefaultRimBankFileName(String slotReference, BankFileType rimBankFileType) {
+
+        return getDefaultRimEntryForVehicle(slotReference)
+
+                .map(DbDataDto.Entry::getId)
+
+                .map((rimEntryIdentifier) -> {
+                    int fieldRank = 0;
+                    if (FRONT_RIM == rimBankFileType) {
+                        fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT;
+                    } else if (REAR_RIM == rimBankFileType) {
+                        fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR;
+                    }
+
+                    return getNameFromLocalResources(rimEntryIdentifier, RIMS, fieldRank, DEFAULT_LOCALE, "");
+                })
+
+                .map((rimBankSimpleName) -> String.format("%s.%s", rimBankSimpleName, EXTENSION_BANKS))
+
+                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 
     // TODO move these methods to library when needed

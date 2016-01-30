@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.COPY_FILES;
 import static org.assertj.core.api.StrictAssertions.assertThat;
 
+// TODO enhance test with front and rear rims having different names
 public class CopyFilesStepTest {
 
     private static final Class<CopyFilesStepTest> thisClass = CopyFilesStepTest.class;
@@ -53,6 +54,7 @@ public class CopyFilesStepTest {
         Path soundBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "Sound", "Vehicules");
         Path highHudBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "FrontEnd", "HiRes", "Gauges");
         Path lowHudBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "FrontEnd", "LowRes", "Gauges");
+        Path rimBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules", "Rim", "AC");
 
         Path vehicleModelAssetsPath = Paths.get(assetsDirectory, "3D");
         assertThat(vehicleBanksPath.resolve("AC_427.bnk").toFile())
@@ -75,7 +77,9 @@ public class CopyFilesStepTest {
                 .exists()
                 .hasSameContentAs(hudAssetsPath.resolve("LOW").resolve("AC_289.bnk").toFile());
 
-
-//        assertThat(Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules", "Rim", "AC", "AC_289_F_01.bnk").toFile()).exists();
+        Path rimAssetsPath = vehicleModelAssetsPath.resolve("RIMS");
+        assertThat(rimBanksPath.resolve("AC_427_F_01.bnk").toFile())
+                .exists()
+                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
     }
 }

@@ -34,7 +34,7 @@ public class CopyFilesStep extends GenericStep {
         requireNonNull(getPatchProperties(), "Patch properties are required.");
 
         String banksDirectory = getInstallerConfiguration().resolveBanksDirectory();
-        asList(DIRECTORY_3D, DIRECTORY_SOUND, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH/*, DIRECTORY_RIMS, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH*/)
+        asList(DIRECTORY_3D, DIRECTORY_SOUND, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH, DIRECTORY_RIMS)
                 .forEach((asset) -> {
                     try {
                         copyAssets(asset, getInstallerConfiguration().getAssetsDirectory(), banksDirectory, getDatabaseContext().getMiner(), getPatchProperties().getVehicleSlotReference().get());
@@ -82,9 +82,9 @@ public class CopyFilesStep extends GenericStep {
             case DIRECTORY_GAUGES_LOW:
                 targetPath = banksPath.resolve("FrontEnd").resolve("LowRes").resolve("Gauges");
                 break;
-//            case DIRECTORY_RIMS:
-//                targetPath = Paths.get(banksDirectory, "Vehicules", "Rim");
-//                break;
+            case DIRECTORY_RIMS:
+                targetPath = banksPath.resolve("Vehicules").resolve("Rim");
+                break;
             default:
                 throw new IllegalArgumentException("Unhandled asset type: " + assetName);
         }
@@ -97,7 +97,6 @@ public class CopyFilesStep extends GenericStep {
 
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
         String assetFileName = assetPath.getFileName().toString();
-//        Path parentName = assetPath.getParent().getFileName();
 
         String targetFileName = null;
         if (DIRECTORY_3D.equals(assetName)) {
@@ -117,14 +116,21 @@ public class CopyFilesStep extends GenericStep {
             targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, HUD);
         }
 
+        if (DIRECTORY_RIMS.equals(assetName)) {
+            String rimBrandName = vehicleSlotsHelper.getDefaultRimDirectoryForVehicle(slotReference);
+            targetPath = targetPath.resolve(rimBrandName);
+            Files.createDirectories(targetPath);
+
+            // TODO replace with regex extraction for more accuracy
+            VehicleSlotsHelper.BankFileType rimBankFileType = assetPath.getFileName().toString().contains("_F_") ?
+                    FRONT_RIM:
+                    REAR_RIM;
+            targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, rimBankFileType);
+        }
+
         if (targetFileName != null) {
             copySingleAsset(assetPath, targetPath, targetFileName);
         }
-
-//        if (DIRECTORY_RIMS.equals(assetName)) {
-//            targetPath = targetPath.resolve(parentName);
-//        }
-//
     }
 
     private static void copySingleAsset(Path assetPath, Path targetPath, String targetFileName) {
