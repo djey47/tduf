@@ -27,9 +27,10 @@ setlocal & pushd .
 
 CD /D %START_DIR%
 
-REM SET VERSION TO LOAD RIGHT JARS
-SET /P TDUF_VERSION=<.\lib\version.info
-
 MKDIR logs 2>NUL
+CD util 2>NUL
 
-java -cp lib\tduf-gui-installer-all-%TDUF_VERSION%.jar fr.tduf.gui.installer.Installer %* >> logs\TDUF-Installer.log 2>>&1
+CALL .\CheckJava.cmd
+CALL .\SetVersion.cmd
+
+java -cp ..\lib\tduf-gui-installer-all-%TDUF_VERSION%.jar fr.tduf.gui.installer.Installer %* >> ..\logs\TDUF-Installer.log 2>>&1
