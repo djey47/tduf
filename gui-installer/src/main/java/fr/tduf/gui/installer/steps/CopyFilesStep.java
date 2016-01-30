@@ -99,30 +99,25 @@ public class CopyFilesStep extends GenericStep {
         String assetFileName = assetPath.getFileName().toString();
 //        Path parentName = assetPath.getParent().getFileName();
 
+        String targetFileName = null;
         if (DIRECTORY_3D.equals(assetName)) {
-
-            final String targetFileName;
             if (getNameWithoutExtension(assetFileName).endsWith(FileConstants.SUFFIX_INTERIOR_BANK_FILE)) {
                 targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, INTERIOR_MODEL);
             } else {
                 targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, EXTERIOR_MODEL);
             }
-
-            copySingleAsset(assetPath, targetPath, targetFileName);
         }
 
         if (DIRECTORY_SOUND.equals(assetName)) {
-
-            final String targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, SOUND);
-
-            copySingleAsset(assetPath, targetPath, targetFileName);
+            targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, SOUND);
         }
 
         if (DIRECTORY_GAUGES_HIGH.equals(assetName)
                 || DIRECTORY_GAUGES_LOW.equals(assetName)) {
+            targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, HUD);
+        }
 
-            final String targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, HUD);
-
+        if (targetFileName != null) {
             copySingleAsset(assetPath, targetPath, targetFileName);
         }
 
