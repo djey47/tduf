@@ -57,10 +57,9 @@ public class VehicleSlotsHelper {
     }
 
     /**
-     *
-     * @param slotReference
-     * @param bankFileType
-     * @return
+     * @param slotReference : vehicle slot reference
+     * @param bankFileType  : type of bank file to be resolved
+     * @return simple file name
      */
     public String getBankFileName(String slotReference, BankFileType bankFileType) {
 
@@ -92,11 +91,9 @@ public class VehicleSlotsHelper {
 
                 .map(DbDataDto.Entry::getId)
 
-                // TODO create 2 map instructions
-                .map((entryInternalIdentifier) -> {
-                    final String simpleName = getNameFromLocalResources(entryInternalIdentifier, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_FILE_NAME, DEFAULT_LOCALE, "");
-                    return String.format("%s%s.%s", simpleName, suffix, EXTENSION_BANKS);
-                })
+                .map((entryInternalIdentifier) -> getNameFromLocalResources(entryInternalIdentifier, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_FILE_NAME, DEFAULT_LOCALE, ""))
+
+                .map((simpleName) -> String.format("%s%s.%s", simpleName, suffix, EXTENSION_BANKS))
 
                 .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
