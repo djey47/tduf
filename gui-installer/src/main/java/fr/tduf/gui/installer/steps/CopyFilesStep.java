@@ -109,26 +109,14 @@ public class CopyFilesStep extends GenericStep {
                 targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, EXTERIOR_MODEL);
             }
 
-            try {
-                Path finalPath = targetPath.resolve(targetFileName);
-                Log.info(THIS_CLASS_NAME, "*> " + assetPath + " to " + finalPath);
-                Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            copySingleAsset(assetPath, targetPath, targetFileName);
         }
 
         if (DIRECTORY_SOUND.equals(assetName)) {
 
             final String targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, SOUND);
 
-            try {
-                Path finalPath = targetPath.resolve(targetFileName);
-                Log.info(THIS_CLASS_NAME, "*> " + assetPath + " to " + finalPath);
-                Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            copySingleAsset(assetPath, targetPath, targetFileName);
         }
 
 //        if (DIRECTORY_RIMS.equals(assetName)) {
@@ -142,5 +130,15 @@ public class CopyFilesStep extends GenericStep {
 //        if (DIRECTORY_GAUGES_HIGH.equals(assetName)) {
 //            targetPath = targetPath.resolve("HiRes").resolve("Gauges");
 //        }
+    }
+
+    private static void copySingleAsset(Path assetPath, Path targetPath, String targetFileName) {
+        try {
+            Path finalPath = targetPath.resolve(targetFileName);
+            Log.info(THIS_CLASS_NAME, "*> " + assetPath + " to " + finalPath);
+            Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
