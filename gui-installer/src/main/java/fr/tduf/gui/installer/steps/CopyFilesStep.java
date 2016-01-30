@@ -5,7 +5,6 @@ import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,23 +32,21 @@ public class CopyFilesStep extends GenericStep {
         requireNonNull(getDatabaseContext(), "Database context is required.");
         requireNonNull(getPatchProperties(), "Patch properties are required.");
 
-        String banksDirectory = getInstallerConfiguration().resolveBanksDirectory();
         asList(DIRECTORY_3D, DIRECTORY_SOUND, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH, DIRECTORY_RIMS)
-                .forEach((asset) -> {
+                .forEach((assetsDirectory) -> {
                     try {
-                        copyAssets(asset, getInstallerConfiguration().getAssetsDirectory(), banksDirectory, getDatabaseContext().getMiner(), getPatchProperties().getVehicleSlotReference().get());
+                        parseAssetsDirectory(assetsDirectory);
                     } catch (IOException ioe) {
                         throw new RuntimeException("Unable to perform copy step", ioe);
                     }
                 });
     }
 
-    // TODO convert to instance method
-    private static void copyAssets(String assetName, String assetsDirectory, String banksDirectory, BulkDatabaseMiner miner, String slotReference) throws IOException {
-        Log.info(THIS_CLASS_NAME, "->Copying assets: " + assetName) ;
+    private void parseAssetsDirectory(String assetDirectoryName) throws IOException {
+        Log.info(THIS_CLASS_NAME, "->Copying assets: " + assetDirectoryName) ;
 
-        Path assetPath = Paths.get(assetsDirectory, assetName);
-        Path targetPath = getTargetPath(assetName, banksDirectory);
+        Path assetPath = Paths.get(getInstallerConfiguration().getAssetsDirectory(), assetDirectoryName);
+        Path targetPath = getTargetPath(assetDirectoryName);
 
         Files.walk(assetPath, 1)
 
@@ -59,17 +56,17 @@ public class CopyFilesStep extends GenericStep {
 
                 .forEach((path) -> {
                     try {
-                        copyAsset(path, targetPath, assetName, miner, slotReference);
+                        copyAsset(path, targetPath, assetDirectoryName);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 });
     }
 
-    private static Path getTargetPath(String assetName, String banksDirectory) {
-        Path banksPath = Paths.get(banksDirectory);
+    private Path getTargetPath(String assetDirectoryName) {
+        Path banksPath = Paths.get(getInstallerConfiguration().resolveBanksDirectory());
         Path targetPath;
-        switch(assetName) {
+        switch(assetDirectoryName) {
             case DIRECTORY_3D:
                 targetPath = banksPath.resolve("Vehicules");
                 break;
@@ -86,20 +83,21 @@ public class CopyFilesStep extends GenericStep {
                 targetPath = banksPath.resolve("Vehicules").resolve("Rim");
                 break;
             default:
-                throw new IllegalArgumentException("Unhandled asset type: " + assetName);
+                throw new IllegalArgumentException("Unhandled asset type: " + assetDirectoryName);
         }
         return targetPath;
     }
 
-    private static void copyAsset(Path assetPath, Path targetPath, String assetName, BulkDatabaseMiner miner, String slotReference) throws IOException {
+    private void copyAsset(Path assetPath, Path targetPath, String assetDirectoryName) throws IOException {
 
         FilesHelper.createDirectoryIfNotExists(targetPath.toString());
 
-        VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
+        VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(getDatabaseContext().getMiner());
         String assetFileName = assetPath.getFileName().toString();
+        String slotReference = getPatchProperties().getVehicleSlotReference().get();
 
         String targetFileName = null;
-        if (DIRECTORY_3D.equals(assetName)) {
+        if (DIRECTORY_3D.equals(assetDirectoryName)) {
             if (getNameWithoutExtension(assetFileName).endsWith(FileConstants.SUFFIX_INTERIOR_BANK_FILE)) {
                 targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, INTERIOR_MODEL);
             } else {
@@ -107,16 +105,16 @@ public class CopyFilesStep extends GenericStep {
             }
         }
 
-        if (DIRECTORY_SOUND.equals(assetName)) {
+        if (DIRECTORY_SOUND.equals(assetDirectoryName)) {
             targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, SOUND);
         }
 
-        if (DIRECTORY_GAUGES_HIGH.equals(assetName)
-                || DIRECTORY_GAUGES_LOW.equals(assetName)) {
+        if (DIRECTORY_GAUGES_HIGH.equals(assetDirectoryName)
+                || DIRECTORY_GAUGES_LOW.equals(assetDirectoryName)) {
             targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, HUD);
         }
 
-        if (DIRECTORY_RIMS.equals(assetName)) {
+        if (DIRECTORY_RIMS.equals(assetDirectoryName)) {
             String rimBrandName = vehicleSlotsHelper.getDefaultRimDirectoryForVehicle(slotReference);
             targetPath = targetPath.resolve(rimBrandName);
             Files.createDirectories(targetPath);
