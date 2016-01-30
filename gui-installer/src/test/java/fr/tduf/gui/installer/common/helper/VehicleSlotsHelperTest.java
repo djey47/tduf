@@ -15,7 +15,10 @@ import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.RIMS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -59,8 +62,8 @@ public class VehicleSlotsHelperTest {
                 .withValue(realName)
                 .build();
 
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(Optional.of(contentEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 12, 1, UNITED_STATES)).thenReturn(Optional.of(resourceEntry));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 12, 1, UNITED_STATES)).thenReturn(of(resourceEntry));
 
 
         // WHEN
@@ -99,12 +102,12 @@ public class VehicleSlotsHelperTest {
                 .withValue(brandName)
                 .build();
 
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(Optional.of(contentEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 12, 1, UNITED_STATES)).thenReturn(Optional.of(resourceEntry));
-        when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(Optional.of(remoteContentEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(BRANDS, 3, 1, UNITED_STATES)).thenReturn(Optional.of(remoteBrandsResourceEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 13, 1, UNITED_STATES)).thenReturn(Optional.of(modelResourceEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 14, 1, UNITED_STATES)).thenReturn(Optional.of(versionResourceEntry));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 12, 1, UNITED_STATES)).thenReturn(of(resourceEntry));
+        when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(of(remoteContentEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(BRANDS, 3, 1, UNITED_STATES)).thenReturn(of(remoteBrandsResourceEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 13, 1, UNITED_STATES)).thenReturn(of(modelResourceEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 14, 1, UNITED_STATES)).thenReturn(of(versionResourceEntry));
 
 
         // WHEN
@@ -135,11 +138,11 @@ public class VehicleSlotsHelperTest {
                 .forId(1)
                 .build();
 
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(Optional.of(contentEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 12, 1, UNITED_STATES)).thenReturn(Optional.of(resourceEntry));
-        when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(Optional.of(remoteContentEntry));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 12, 1, UNITED_STATES)).thenReturn(of(resourceEntry));
+        when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(of(remoteContentEntry));
         when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(BRANDS, 3, 1, UNITED_STATES)).thenReturn(Optional.empty());
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 13, 1, UNITED_STATES)).thenReturn(Optional.of(modelResourceEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 13, 1, UNITED_STATES)).thenReturn(of(modelResourceEntry));
         when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 14, 1, UNITED_STATES)).thenReturn(Optional.empty());
 
 
@@ -175,11 +178,11 @@ public class VehicleSlotsHelperTest {
                 .withValue(brandName)
                 .build();
 
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(Optional.of(contentEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 12, 1, UNITED_STATES)).thenReturn(Optional.of(resourceEntry));
-        when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(Optional.of(remoteContentEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(BRANDS, 3, 1, UNITED_STATES)).thenReturn(Optional.of(remoteBrandsResourceEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 13, 1, UNITED_STATES)).thenReturn(Optional.of(modelResourceEntry));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 12, 1, UNITED_STATES)).thenReturn(of(resourceEntry));
+        when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(of(remoteContentEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(BRANDS, 3, 1, UNITED_STATES)).thenReturn(of(remoteBrandsResourceEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 13, 1, UNITED_STATES)).thenReturn(of(modelResourceEntry));
         when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 14, 1, UNITED_STATES)).thenReturn(Optional.empty());
 
 
@@ -206,7 +209,7 @@ public class VehicleSlotsHelperTest {
         DbDataDto dataObject = DbDataDto.builder().addEntry(undrivableEntry, drivableEntry).build();
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
-        when(bulkDatabaseMinerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(Optional.of(topicObject));
+        when(bulkDatabaseMinerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(of(topicObject));
 
 
         // WHEN
@@ -216,5 +219,57 @@ public class VehicleSlotsHelperTest {
         // THEN
         assertThat(actualEntries).hasSize(1);
         assertThat(actualEntries.get(0).getItemAtRank(1).get().getRawValue()).isEqualTo(drivableRef);
+    }
+
+    @Test
+    public void getDefaultRimDirectoryForVehicle_whenSlotExists() {
+        // GIVEN
+        String slotReference = "11111111";
+        String rimRef = "22222222";
+        String rimResourceRef = "33333333";
+        long entryId = 1;
+        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
+                .forId(entryId)
+                .build();
+        DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
+                .forId(entryId)
+                .build();
+        DbDataDto.Item physicsItem = DbDataDto.Item.builder()
+                .ofFieldRank(10)
+                .withRawValue(rimRef)
+                .build();
+        DbResourceDto.Entry rimsResourceEntry = DbResourceDto.Entry.builder()
+                .forReference(rimResourceRef)
+                .withValue("Toyota")
+                .build();
+
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
+        when(bulkDatabaseMinerMock.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, 10, entryId)).thenReturn(of(physicsItem));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimRef, RIMS)).thenReturn(of(rimsEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(RIMS, 13, entryId, UNITED_STATES)).thenReturn(of(rimsResourceEntry));
+
+
+        // WHEN
+        String actualRimDirectory = vehicleSlotsHelper.getDefaultRimDirectoryForVehicle(slotReference);
+
+
+        // THEN
+        assertThat(actualRimDirectory).isEqualTo("Toyota");
+    }
+
+    @Test
+    public void getDefaultRimDirectoryForVehicle_whenSlotDoesNotExist_shouldReturnEmptyString() {
+        // GIVEN
+        String slotReference = "11111111";
+
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(empty());
+
+
+        // WHEN
+        String actualRimDirectory = vehicleSlotsHelper.getDefaultRimDirectoryForVehicle(slotReference);
+
+
+        // THEN
+        assertThat(actualRimDirectory).isEmpty();
     }
 }

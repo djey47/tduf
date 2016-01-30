@@ -80,7 +80,7 @@ public class VehicleSlotsHelper {
                 break;
 
             case SOUND:
-                suffix =  FileConstants.SUFFIX_AUDIO_BANK_FILE;
+                suffix = FileConstants.SUFFIX_AUDIO_BANK_FILE;
                 break;
 
             default:
