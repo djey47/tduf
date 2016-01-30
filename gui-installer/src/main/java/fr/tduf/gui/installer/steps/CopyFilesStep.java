@@ -11,9 +11,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.regex.Matcher;
 
 import static com.google.common.io.Files.getFileExtension;
-import static com.google.common.io.Files.getNameWithoutExtension;
 import static fr.tduf.gui.installer.common.InstallerConstants.*;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
 import static java.util.Arrays.asList;
@@ -98,7 +98,7 @@ public class CopyFilesStep extends GenericStep {
 
         String targetFileName = null;
         if (DIRECTORY_3D.equals(assetDirectoryName)) {
-            if (getNameWithoutExtension(assetFileName).endsWith(FileConstants.SUFFIX_INTERIOR_BANK_FILE)) {
+            if (FileConstants.PATTERN_INTERIOR_MODEL_BANK_FILE_NAME.matcher(assetFileName).matches()) {
                 targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, INTERIOR_MODEL);
             } else {
                 targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, EXTERIOR_MODEL);
@@ -119,11 +119,17 @@ public class CopyFilesStep extends GenericStep {
             targetPath = targetPath.resolve(rimBrandName);
             Files.createDirectories(targetPath);
 
-            // TODO replace with regex extraction for more accuracy
-            VehicleSlotsHelper.BankFileType rimBankFileType = assetPath.getFileName().toString().contains("_F_") ?
-                    FRONT_RIM:
-                    REAR_RIM;
-            targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, rimBankFileType);
+            Matcher matcher = FileConstants.PATTERN_RIM_BANK_FILE_NAME.matcher(assetPath.getFileName().toString());
+            if (matcher.matches()) {
+                String typeGroupValue = matcher.group(1);
+                VehicleSlotsHelper.BankFileType rimBankFileType;
+                if (FileConstants.INDICATOR_FRONT_RIMS.equalsIgnoreCase(typeGroupValue)) {
+                    rimBankFileType = FRONT_RIM;
+                } else {
+                    rimBankFileType = REAR_RIM;
+                }
+                targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, rimBankFileType);
+            }
         }
 
         if (targetFileName != null) {
