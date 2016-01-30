@@ -1,7 +1,10 @@
 package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.installer.domain.DatabaseContext;
+import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libunlimited.high.files.banks.mapping.helper.MagicMapHelper;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 
 import java.io.IOException;

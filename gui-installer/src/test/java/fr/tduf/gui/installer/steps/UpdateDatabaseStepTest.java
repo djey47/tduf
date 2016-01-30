@@ -50,7 +50,7 @@ public class UpdateDatabaseStepTest {
                 .withAssetsDirectory(assetsDirectory)
                 .build();
 
-        GenericStep previousStep = GenericStep.starterStep(configuration, databaseContext);
+        GenericStep previousStep = GenericStep.starterStep(configuration, databaseContext, null);
 
 
         // WHEN
@@ -71,7 +71,7 @@ public class UpdateDatabaseStepTest {
                 .usingBankSupport(bankSupportMock)
                 .build();
 
-        GenericStep previousStep = GenericStep.starterStep(configuration, databaseContext);
+        GenericStep previousStep = GenericStep.starterStep(configuration, databaseContext, null);
 
 
         // WHEN

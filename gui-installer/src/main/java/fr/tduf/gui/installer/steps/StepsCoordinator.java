@@ -23,7 +23,7 @@ public class StepsCoordinator {
     public static void install(InstallerConfiguration configuration) throws IOException, ReflectiveOperationException {
         Log.trace(THIS_CLASS_NAME, "->Starting full install");
 
-        final GenericStep starterStep = GenericStep.starterStep(configuration, null);
+        final GenericStep starterStep = GenericStep.starterStep(configuration, null, null);
 
         // TODO create database backup to perform rollback is anything fails ?
         final GenericStep loadDatabaseStep = GenericStep.loadStep(LOAD_DATABASE, starterStep);

@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class GenericStep {
 
-    public enum StepType { LOAD_DATABASE, UPDATE_DATABASE, UPDATE_MAGIC_MAP, COPY_FILES }
+    public enum StepType { LOAD_DATABASE, UPDATE_DATABASE, UPDATE_MAGIC_MAP, COPY_FILES}
 
     private InstallerConfiguration installerConfiguration;
 
@@ -22,23 +22,28 @@ public abstract class GenericStep {
 
     private PatchProperties patchProperties;
 
+    protected GenericStep() { }
+
+    private GenericStep(InstallerConfiguration installerConfiguration, DatabaseContext databaseContext, PatchProperties patchProperties) {
+        this.installerConfiguration = installerConfiguration;
+        this.databaseContext = databaseContext;
+        this.patchProperties = patchProperties;
+    }
+
     /**
      * @param installerConfiguration    : optional configuration
      * @param databaseContext           : optional context
+     * @param patchProperties           : optional patch properties
      * @return a reference of step to begin process
      */
-    public static GenericStep starterStep(InstallerConfiguration installerConfiguration, DatabaseContext databaseContext) {
-        final GenericStep genericStep = new GenericStep() {
+    public static GenericStep starterStep(InstallerConfiguration installerConfiguration, DatabaseContext databaseContext, PatchProperties patchProperties) {
+        return new GenericStep(installerConfiguration, databaseContext, patchProperties ) {
             @Override
             protected void perform() throws IOException, ReflectiveOperationException {}
         };
-
-        genericStep.setDatabaseContext(databaseContext);
-        genericStep.setInstallerConfiguration(installerConfiguration);
-
-        return genericStep;
     }
 
+    // TODO change to instance method nextStep()
     /**
      * @return a reference of step to continue process
      */
@@ -66,6 +71,7 @@ public abstract class GenericStep {
         return currentStep;
     }
 
+    // TODO return step instance to chain calls
     /**
      * What a particular step should do.
      * Do not call it directly, use {@link GenericStep#start()} method instead
@@ -97,6 +103,7 @@ public abstract class GenericStep {
         if(previousStep != null) {
             currentStep.setDatabaseContext(previousStep.databaseContext);
             currentStep.setInstallerConfiguration(previousStep.installerConfiguration);
+            currentStep.setPatchProperties(previousStep.patchProperties);
         }
     }
 

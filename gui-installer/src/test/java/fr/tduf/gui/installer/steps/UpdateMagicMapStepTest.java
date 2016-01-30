@@ -33,7 +33,7 @@ public class UpdateMagicMapStepTest {
                 .build();
 
         // WHEN
-        GenericStep previousStep = GenericStep.starterStep(configuration, null);
+        GenericStep previousStep = GenericStep.starterStep(configuration, null, null);
         GenericStep.loadStep(UPDATE_MAGIC_MAP, previousStep).start();
 
         // THEN

@@ -1,7 +1,9 @@
 package fr.tduf.gui.installer.steps;
 
 import fr.tduf.gui.installer.common.helper.TestHelper;
+import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -28,19 +30,20 @@ public class CopyFilesStepTest {
 
     @Test
     @Ignore
-    // TODO
-    public void copyFilesStep_withFakeFilesAllPresent_shouldCopyThemToCorrectLocation() throws Exception {
+    public void copyFilesStep_withFakeFilesAllPresent_shouldCopyThemToCorrectLocation_withRightNames() throws Exception {
         // GIVEN
         String assetsDirectory = new File(thisClass.getResource("/assets-all").toURI()).getAbsolutePath();
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)
                 .withAssetsDirectory(assetsDirectory)
                 .build();
-        final GenericStep previousStep = GenericStep.starterStep(configuration, null);
+        DatabaseContext databaseContext = TestHelper.createJsonDatabase();
+        PatchProperties patchProperties = new PatchProperties();
+        final GenericStep starterStep = GenericStep.starterStep(configuration, databaseContext, patchProperties);
 
 
         // WHEN
-        GenericStep.loadStep(COPY_FILES, previousStep).start();
+        GenericStep.loadStep(COPY_FILES, starterStep).start();
 
 
         // THEN

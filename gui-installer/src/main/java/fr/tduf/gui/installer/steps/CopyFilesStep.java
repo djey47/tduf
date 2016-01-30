@@ -28,7 +28,7 @@ public class CopyFilesStep extends GenericStep {
     protected void perform() throws IOException, ReflectiveOperationException {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
-        requireNonNull(getPatchProperties(), "Patch proeprties are required.");
+        requireNonNull(getPatchProperties(), "Patch properties are required.");
 
         String banksDirectory = getInstallerConfiguration().resolveBanksDirectory();
         asList(DIRECTORY_3D, DIRECTORY_RIMS, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH, DIRECTORY_SOUND)

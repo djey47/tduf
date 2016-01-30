@@ -45,7 +45,7 @@ public class LoadDatabaseStepTest {
                 .usingBankSupport(bankSupportMock)
                 .build();
 
-        GenericStep previousStep = GenericStep.starterStep(configuration, null);
+        GenericStep previousStep = GenericStep.starterStep(configuration, null, null);
 
 
         // WHEN

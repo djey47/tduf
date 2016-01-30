@@ -113,7 +113,7 @@ public class MainStageController extends AbstractGuiController {
                 .withMainWindow(getWindow())
                 .build();
 
-        GenericStep defaultStep = GenericStep.starterStep(configuration, null);
+        GenericStep defaultStep = GenericStep.starterStep(configuration, null, null);
         GenericStep.loadStep(GenericStep.StepType.UPDATE_MAGIC_MAP, defaultStep).start();
 
         String magicMapFile = configuration.resolveMagicMapFile();
