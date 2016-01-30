@@ -51,12 +51,13 @@ public class CopyFilesStepTest {
         // THEN
         Path vehicleBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules");
         Path soundBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "Sound", "Vehicules");
+        Path highHudBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "FrontEnd", "HiRes", "Gauges");
+        Path lowHudBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "FrontEnd", "LowRes", "Gauges");
 
         Path vehicleModelAssetsPath = Paths.get(assetsDirectory, "3D");
         assertThat(vehicleBanksPath.resolve("AC_427.bnk").toFile())
                 .exists()
                 .hasSameContentAs(vehicleModelAssetsPath.resolve("AC_289.bnk").toFile());
-
         assertThat(vehicleBanksPath.resolve("AC_427_I.bnk").toFile())
                 .exists()
                 .hasSameContentAs(vehicleModelAssetsPath.resolve("AC_289_I.bnk").toFile());
@@ -66,12 +67,15 @@ public class CopyFilesStepTest {
                 .exists()
                 .hasSameContentAs(soundAssetsPath.resolve("AC_289_audio.bnk").toFile());
 
+        Path hudAssetsPath = Paths.get(assetsDirectory, "GAUGES");
+        assertThat(highHudBanksPath.resolve("AC_427.bnk").toFile())
+                .exists()
+                .hasSameContentAs(hudAssetsPath.resolve("HI").resolve("AC_289.bnk").toFile());
+        assertThat(lowHudBanksPath.resolve("AC_427.bnk").toFile())
+                .exists()
+                .hasSameContentAs(hudAssetsPath.resolve("LOW").resolve("AC_289.bnk").toFile());
+
 
 //        assertThat(Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules", "Rim", "AC", "AC_289_F_01.bnk").toFile()).exists();
-//
-//        assertThat(Paths.get(tempDirectory, "Euro", "Bnk", "FrontEnd", "LowRes", "Gauges", "AC_289.bnk").toFile()).exists();
-//        assertThat(Paths.get(tempDirectory, "Euro", "Bnk", "FrontEnd", "HiRes", "Gauges", "AC_289.bnk").toFile()).exists();
-//
-//        assertThat(Paths.get(tempDirectory, "Euro", "Bnk", "Sound", "Vehicules", "AC_289_audio.bnk").toFile()).exists();
     }
 }

@@ -2,7 +2,6 @@ package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.FileConstants;
-import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
@@ -16,11 +15,8 @@ import java.nio.file.StandardCopyOption;
 
 import static com.google.common.io.Files.getFileExtension;
 import static com.google.common.io.Files.getNameWithoutExtension;
-import static fr.tduf.gui.installer.common.InstallerConstants.DIRECTORY_3D;
-import static fr.tduf.gui.installer.common.InstallerConstants.DIRECTORY_SOUND;
-import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.EXTERIOR_MODEL;
-import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.INTERIOR_MODEL;
-import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.SOUND;
+import static fr.tduf.gui.installer.common.InstallerConstants.*;
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -38,7 +34,7 @@ public class CopyFilesStep extends GenericStep {
         requireNonNull(getPatchProperties(), "Patch properties are required.");
 
         String banksDirectory = getInstallerConfiguration().resolveBanksDirectory();
-        asList(DIRECTORY_3D, DIRECTORY_SOUND/*, DIRECTORY_RIMS, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH*/)
+        asList(DIRECTORY_3D, DIRECTORY_SOUND, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH/*, DIRECTORY_RIMS, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH*/)
                 .forEach((asset) -> {
                     try {
                         copyAssets(asset, getInstallerConfiguration().getAssetsDirectory(), banksDirectory, getDatabaseContext().getMiner(), getPatchProperties().getVehicleSlotReference().get());
@@ -80,9 +76,12 @@ public class CopyFilesStep extends GenericStep {
             case DIRECTORY_SOUND:
                 targetPath = banksPath.resolve("Sound").resolve("Vehicules");
                 break;
-//            case DIRECTORY_GAUGES_LOW:
-//                targetPath = Paths.get(banksDirectory, "FrontEnd");
-//                break;
+            case DIRECTORY_GAUGES_HIGH:
+                targetPath = banksPath.resolve("FrontEnd").resolve("HiRes").resolve("Gauges");
+                break;
+            case DIRECTORY_GAUGES_LOW:
+                targetPath = banksPath.resolve("FrontEnd").resolve("LowRes").resolve("Gauges");
+                break;
 //            case DIRECTORY_RIMS:
 //                targetPath = Paths.get(banksDirectory, "Vehicules", "Rim");
 //                break;
@@ -119,17 +118,18 @@ public class CopyFilesStep extends GenericStep {
             copySingleAsset(assetPath, targetPath, targetFileName);
         }
 
+        if (DIRECTORY_GAUGES_HIGH.equals(assetName)
+                || DIRECTORY_GAUGES_LOW.equals(assetName)) {
+
+            final String targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, HUD);
+
+            copySingleAsset(assetPath, targetPath, targetFileName);
+        }
+
 //        if (DIRECTORY_RIMS.equals(assetName)) {
 //            targetPath = targetPath.resolve(parentName);
 //        }
 //
-//        if (DIRECTORY_GAUGES_LOW.equals(assetName)) {
-//            targetPath = targetPath.resolve("LowRes").resolve("Gauges");
-//        }
-//
-//        if (DIRECTORY_GAUGES_HIGH.equals(assetName)) {
-//            targetPath = targetPath.resolve("HiRes").resolve("Gauges");
-//        }
     }
 
     private static void copySingleAsset(Path assetPath, Path targetPath, String targetFileName) {
