@@ -13,6 +13,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.RIMS;
@@ -271,5 +272,162 @@ public class VehicleSlotsHelperTest {
 
         // THEN
         assertThat(actualRimDirectory).isEmpty();
+    }
+
+    @Test
+    public void getBankFileName_whenSlotDoesNotExist_shouldReturnUnavailable() {
+        // GIVEN
+        String slotReference = "11111111";
+
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(empty());
+
+
+        // WHEN
+        String actualBankFileName = vehicleSlotsHelper.getBankFileName(slotReference, EXTERIOR_MODEL);
+
+
+        // THEN
+        assertThat(actualBankFileName).isEqualTo("N/A");
+    }
+
+    @Test
+    public void getBankFileName_forExteriorModel() {
+        // GIVEN
+        String slotReference = "11111111";
+        String resourceReference = "22222222";
+        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
+                .forId(1)
+                .build();
+        DbResourceDto.Entry resourceEntry = DbResourceDto.Entry.builder()
+                .forReference(resourceReference)
+                .withValue("RX8")
+                .build();
+
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 9, 1, UNITED_STATES)).thenReturn(of(resourceEntry));
+
+
+        // WHEN
+        String actualBankFileName = vehicleSlotsHelper.getBankFileName(slotReference, EXTERIOR_MODEL);
+
+
+        // THEN
+        assertThat(actualBankFileName).isEqualTo("RX8.bnk");
+    }
+
+    @Test
+    public void getBankFileName_forAudio() {
+        // GIVEN
+        String slotReference = "11111111";
+        String resourceReference = "22222222";
+        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
+                .forId(1)
+                .build();
+        DbResourceDto.Entry resourceEntry = DbResourceDto.Entry.builder()
+                .forReference(resourceReference)
+                .withValue("RX8")
+                .build();
+
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 9, 1, UNITED_STATES)).thenReturn(of(resourceEntry));
+
+
+        // WHEN
+        String actualBankFileName = vehicleSlotsHelper.getBankFileName(slotReference, SOUND);
+
+
+        // THEN
+        assertThat(actualBankFileName).isEqualTo("RX8_audio.bnk");
+    }
+
+    @Test
+    public void getBankFileName_forInteriorModel() {
+        // GIVEN
+        String slotReference = "11111111";
+        String resourceReference = "22222222";
+        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
+                .forId(1)
+                .build();
+        DbResourceDto.Entry resourceEntry = DbResourceDto.Entry.builder()
+                .forReference(resourceReference)
+                .withValue("RX8")
+                .build();
+
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 9, 1, UNITED_STATES)).thenReturn(of(resourceEntry));
+
+
+        // WHEN
+        String actualBankFileName = vehicleSlotsHelper.getBankFileName(slotReference, INTERIOR_MODEL);
+
+
+        // THEN
+        assertThat(actualBankFileName).isEqualTo("RX8_I.bnk");
+    }
+
+    @Test
+    public void getBankFileName_forFrontRimsModel() {
+        // GIVEN
+        String slotReference = "11111111";
+        String rimSlotReference = "22222222";
+        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
+                .forId(1)
+                .build();
+        DbDataDto.Item physicsItem = DbDataDto.Item.builder()
+                .ofFieldRank(10)
+                .withRawValue(rimSlotReference)
+                .build();
+        DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
+                .forId(1)
+                .build();
+        DbResourceDto.Entry rimsResourceEntry = DbResourceDto.Entry.builder()
+                .withValue("RX8_F_01")
+                .build();
+
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
+        when(bulkDatabaseMinerMock.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, 10, 1)).thenReturn(of(physicsItem));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotReference, RIMS)).thenReturn(of(rimsEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(RIMS, 14, 1, UNITED_STATES)).thenReturn(of(rimsResourceEntry));
+
+
+        // WHEN
+        String actualBankFileName = vehicleSlotsHelper.getBankFileName(slotReference, FRONT_RIM);
+
+
+        // THEN
+        assertThat(actualBankFileName).isEqualTo("RX8_F_01.bnk");
+    }
+
+    @Test
+    public void getBankFileName_forRearRimsModel() {
+        // GIVEN
+        String slotReference = "11111111";
+        String rimSlotReference = "22222222";
+        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
+                .forId(1)
+                .build();
+        DbDataDto.Item physicsItem = DbDataDto.Item.builder()
+                .ofFieldRank(10)
+                .withRawValue(rimSlotReference)
+                .build();
+        DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
+                .forId(1)
+                .build();
+        DbResourceDto.Entry rimsResourceEntry = DbResourceDto.Entry.builder()
+                .withValue("RX8_R_01")
+                .build();
+
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
+        when(bulkDatabaseMinerMock.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, 10, 1)).thenReturn(of(physicsItem));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotReference, RIMS)).thenReturn(of(rimsEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(RIMS, 15, 1, UNITED_STATES)).thenReturn(of(rimsResourceEntry));
+
+
+        // WHEN
+        String actualBankFileName = vehicleSlotsHelper.getBankFileName(slotReference, REAR_RIM);
+
+
+        // THEN
+        assertThat(actualBankFileName).isEqualTo("RX8_R_01.bnk");
     }
 }
