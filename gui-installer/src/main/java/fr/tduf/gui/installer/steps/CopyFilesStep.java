@@ -2,6 +2,7 @@ package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.FileConstants;
+import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
@@ -13,10 +14,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import static com.google.common.io.Files.getFileExtension;
 import static com.google.common.io.Files.getNameWithoutExtension;
 import static fr.tduf.gui.installer.common.InstallerConstants.DIRECTORY_3D;
+import static fr.tduf.gui.installer.common.InstallerConstants.DIRECTORY_SOUND;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.EXTERIOR_MODEL;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.INTERIOR_MODEL;
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.SOUND;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -34,7 +38,7 @@ public class CopyFilesStep extends GenericStep {
         requireNonNull(getPatchProperties(), "Patch properties are required.");
 
         String banksDirectory = getInstallerConfiguration().resolveBanksDirectory();
-        asList(DIRECTORY_3D/*, DIRECTORY_RIMS, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH, DIRECTORY_SOUND*/)
+        asList(DIRECTORY_3D, DIRECTORY_SOUND/*, DIRECTORY_RIMS, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH*/)
                 .forEach((asset) -> {
                     try {
                         copyAssets(asset, getInstallerConfiguration().getAssetsDirectory(), banksDirectory, getDatabaseContext().getMiner(), getPatchProperties().getVehicleSlotReference().get());
@@ -55,7 +59,7 @@ public class CopyFilesStep extends GenericStep {
 
                 .filter((path) -> Files.isRegularFile(path))
 
-                .filter((path) -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+                .filter((path) -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(getFileExtension(path.toString())))
 
                 .forEach((path) -> {
                     try {
@@ -67,19 +71,20 @@ public class CopyFilesStep extends GenericStep {
     }
 
     private static Path getTargetPath(String assetName, String banksDirectory) {
+        Path banksPath = Paths.get(banksDirectory);
         Path targetPath;
         switch(assetName) {
             case DIRECTORY_3D:
-                targetPath = Paths.get(banksDirectory, "Vehicules");
+                targetPath = banksPath.resolve("Vehicules");
+                break;
+            case DIRECTORY_SOUND:
+                targetPath = banksPath.resolve("Sound").resolve("Vehicules");
                 break;
 //            case DIRECTORY_GAUGES_LOW:
 //                targetPath = Paths.get(banksDirectory, "FrontEnd");
 //                break;
 //            case DIRECTORY_RIMS:
 //                targetPath = Paths.get(banksDirectory, "Vehicules", "Rim");
-//                break;
-//            case DIRECTORY_SOUND:
-//                targetPath = Paths.get(banksDirectory, "Sound", "Vehicules");
 //                break;
             default:
                 throw new IllegalArgumentException("Unhandled asset type: " + assetName);
@@ -92,17 +97,30 @@ public class CopyFilesStep extends GenericStep {
         FilesHelper.createDirectoryIfNotExists(targetPath.toString());
 
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
+        String assetFileName = assetPath.getFileName().toString();
 //        Path parentName = assetPath.getParent().getFileName();
 
         if (DIRECTORY_3D.equals(assetName)) {
 
-            String assetFileName = assetPath.getFileName().toString();
             final String targetFileName;
             if (getNameWithoutExtension(assetFileName).endsWith(FileConstants.SUFFIX_INTERIOR_BANK_FILE)) {
                 targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, INTERIOR_MODEL);
             } else {
                 targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, EXTERIOR_MODEL);
             }
+
+            try {
+                Path finalPath = targetPath.resolve(targetFileName);
+                Log.info(THIS_CLASS_NAME, "*> " + assetPath + " to " + finalPath);
+                Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (DIRECTORY_SOUND.equals(assetName)) {
+
+            final String targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, SOUND);
 
             try {
                 Path finalPath = targetPath.resolve(targetFileName);

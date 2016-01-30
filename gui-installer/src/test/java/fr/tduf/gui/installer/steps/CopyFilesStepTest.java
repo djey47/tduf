@@ -50,7 +50,7 @@ public class CopyFilesStepTest {
 
         // THEN
         Path vehicleBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules");
-
+        Path soundBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "Sound", "Vehicules");
 
         Path vehicleModelAssetsPath = Paths.get(assetsDirectory, "3D");
         assertThat(vehicleBanksPath.resolve("AC_427.bnk").toFile())
@@ -60,6 +60,12 @@ public class CopyFilesStepTest {
         assertThat(vehicleBanksPath.resolve("AC_427_I.bnk").toFile())
                 .exists()
                 .hasSameContentAs(vehicleModelAssetsPath.resolve("AC_289_I.bnk").toFile());
+
+        Path soundAssetsPath = Paths.get(assetsDirectory, "SOUND");
+        assertThat(soundBanksPath.resolve("AC_427_audio.bnk").toFile())
+                .exists()
+                .hasSameContentAs(soundAssetsPath.resolve("AC_289_audio.bnk").toFile());
+
 
 //        assertThat(Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules", "Rim", "AC", "AC_289_F_01.bnk").toFile()).exists();
 //
