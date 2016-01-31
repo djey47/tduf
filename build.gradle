@@ -6,6 +6,7 @@ plugins {
     id 'pl.allegro.tech.build.axion-release' version '1.2.3'
 }
 
+
 // configure version
 scmVersion {
     tag {
@@ -13,6 +14,8 @@ scmVersion {
     }
 }
 
+
+// Project definition
 allprojects {
     project.group = 'fr.tduf'
     // version defined by plugin (if changes or ahead commits: x.y.z-SNAPSHOT)
@@ -78,7 +81,6 @@ subprojects {
         include '*.cmd'
         into '../pack'
     }
-
 }
 
 project(':cli') {
@@ -161,14 +163,6 @@ project('lib-unlimited') {
         include '*'
         into '../pack/structures'
     }
-
-//    task copyLibraries(type: Copy) {
-//        description 'Copies all libs to release directory.'
-//
-//        from '../lib'
-//        include '*'
-//        into '../pack/lib'
-//    }
 }
 
 project(':gui-common') {}
@@ -214,6 +208,8 @@ project(':gui-installer') {
     }
 }
 
+
+// Main tasks
 task packTDUF(dependsOn: ['cleanPackDir', 'copyDoc', 'createLogsDirectory', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
                           ':cli:copyMainScripts', ':cli:copyJar',
                           ':lib-unlimited:copyStructures',
@@ -227,7 +223,7 @@ task packTDUF(dependsOn: ['cleanPackDir', 'copyDoc', 'createLogsDirectory', 'cop
 
 task packInstallerKit(dependsOn: ['cleanPackDir', 'createLogsDirectory', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
                                   ':gui-installer:copyDoc', ':gui-installer:copyAssets', ':gui-installer:copyMainScripts',  ':gui-installer:copyJar'], type: Zip) {
-    description 'Zips all SDK distribution files from pack folder.'
+    description 'Zips all IK files from pack folder.'
 
     archiveName project.name + "-" + project.version + ".zip"
     destinationDir new File(rootProject.projectDir, 'releases')
@@ -235,6 +231,7 @@ task packInstallerKit(dependsOn: ['cleanPackDir', 'createLogsDirectory', 'copyEx
 }
 
 task cleanPackDir(type: Delete) {
+    description 'Prepares new package by removing all files in pack directory.'
     delete 'pack/'
 }
 
@@ -257,10 +254,10 @@ task createLogsDirectory(type: Copy) {
 }
 
 task copyUtilScripts(type: Copy) {
-    description 'Copies utility scripts to release directory.'
+    description 'Copies CLI utility scripts to release directory.'
     mustRunAfter 'cleanPackDir'
 
-    from 'src/main/shell/util/'
+    from 'src/main/shell/cli-util/'
     include '*.cmd'
     into 'pack/cli'
 }
@@ -282,6 +279,7 @@ task copyVersionInfo(type: Copy) {
     into 'pack/lib/'
 }
 
+// TODO see to upgrade Gradle
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2'
 }
