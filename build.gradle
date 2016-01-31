@@ -70,6 +70,15 @@ subprojects {
         into '../pack/lib/'
     }
 
+    task copyMainScripts(type: Copy) {
+        description 'Copies CLI main scripts to release directory.'
+        mustRunAfter ':cleanPackDir'
+
+        from 'src/main/shell/'
+        include '*.cmd'
+        into '../pack'
+    }
+
 }
 
 project(':cli') {
@@ -130,22 +139,6 @@ project(':cli') {
     }
 
     integTest.finalizedBy integTestReport
-
-    task copyMainScripts(type: Copy) {
-        description 'Copies CLI main scripts to release directory.'
-
-        from 'src/main/shell/'
-        include '*.cmd'
-        into '../pack'
-    }
-
-    task copyUtilScripts(type: Copy) {
-        description 'Copies CLI utility scripts to release directory.'
-
-        from 'src/main/shell/util/'
-        include '*.cmd'
-        into '../pack/cli'
-    }
 }
 
 project('lib-testing') {
@@ -169,20 +162,13 @@ project('lib-unlimited') {
         into '../pack/structures'
     }
 
-    task copyLibraries(type: Copy) {
-        description 'Copies all libs to release directory.'
-
-        from '../lib'
-        include '*'
-        into '../pack/lib'
-    }
-
-    task copyExternalTools(type: Copy) {
-        description 'Copies all external tools to release directory.'
-
-        from '../tools'
-        into '../pack/tools'
-    }
+//    task copyLibraries(type: Copy) {
+//        description 'Copies all libs to release directory.'
+//
+//        from '../lib'
+//        include '*'
+//        into '../pack/lib'
+//    }
 }
 
 project(':gui-common') {}
@@ -210,67 +196,46 @@ project(':gui-installer') {
         classpath sourceSets.main.runtimeClasspath
     }
 
-    task packInstaller(dependsOn: ['cleanInstallerPackDir', 'copyVersionInfo', 'copyInstallerDoc', 'copyInstallerAssets', 'copyInstallerScript', 'copyExternalTools', 'copyInstallerJar'], type: Zip) {
-        description 'Zips all distribution files from pack folder.'
-
-        archiveName project.name + "-" + project.version + ".zip"
-        destinationDir new File(rootProject.projectDir, 'releases')
-        from  'pack/'
-    }
-
-    task copyInstallerJar(type: Copy) {
-        description 'Copies jar file to release directory.'
-
-        from fatJar
-        into 'pack/lib/'
-    }
-
-    task cleanInstallerPackDir(type: Delete) {
-        delete 'pack/'
-    }
-
-    task copyInstallerDoc(type: Copy) {
+    task copyDoc(type: Copy) {
         description 'Copies README to release directory.'
-        mustRunAfter 'cleanInstallerPackDir'
+        mustRunAfter ':cleanPackDir'
 
         from 'dist/'
         include 'README.txt'
         into 'pack/'
     }
 
-    task copyInstallerAssets(type: Copy) {
+    task copyAssets(type: Copy) {
         description 'Copies all assets directory structure to release directory.'
-        mustRunAfter 'cleanInstallerPackDir'
+        mustRunAfter ':cleanPackDir'
 
         from 'assets/'
         into 'pack/assets/'
     }
+}
 
-    task copyInstallerScript(type: Copy) {
-        description 'Copies GUI scripts to release directory.'
-        mustRunAfter 'cleanInstallerPackDir'
+task packTDUF(dependsOn: ['cleanPackDir', 'copyDoc', 'createLogsDirectory', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
+                          ':cli:copyMainScripts', ':cli:copyJar',
+                          ':lib-unlimited:copyStructures',
+                          ':gui-database:copyJar'], type: Zip) {
+    description 'Zips all TDUF distribution files from pack folder.'
 
-        from 'src/main/shell/'
-        include '*.cmd'
-        into 'pack'
-    }
+    archiveName project.name + "-" + project.version + ".zip"
+    destinationDir new File(projectDir, 'releases')
+    from  'pack/'
+}
 
-    task copyExternalTools(type: Copy) {
-        description 'Copies all external tools to release directory.'
-        mustRunAfter 'cleanInstallerPackDir'
+task packInstallerKit(dependsOn: ['cleanPackDir', 'createLogsDirectory', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
+                                  ':gui-installer:copyDoc', ':gui-installer:copyAssets', ':gui-installer:copyMainScripts',  ':gui-installer:copyJar'], type: Zip) {
+    description 'Zips all SDK distribution files from pack folder.'
 
-        from '../tools'
-        into 'pack/tools'
-    }
+    archiveName project.name + "-" + project.version + ".zip"
+    destinationDir new File(rootProject.projectDir, 'releases')
+    from  'pack/'
+}
 
-    task copyVersionInfo(type: Copy) {
-        description 'Copies version.info file to release libs directory.'
-        mustRunAfter 'cleanInstallerPackDir'
-
-        from '../dist/'
-        include 'version.info'
-        into 'pack/lib/'
-    }
+task cleanPackDir(type: Delete) {
+    delete 'pack/'
 }
 
 task copyDoc(type: Copy) {
@@ -282,15 +247,6 @@ task copyDoc(type: Copy) {
     into 'pack/'
 }
 
-task copyVersionInfo(type: Copy) {
-    description 'Copies version.info file to release libs directory.'
-    mustRunAfter 'cleanPackDir'
-
-    from 'dist/'
-    include 'version.info'
-    into 'pack/lib/'
-}
-
 task createLogsDirectory(type: Copy) {
     description 'Copies logs directory to release.'
     mustRunAfter 'cleanPackDir'
@@ -300,16 +256,30 @@ task createLogsDirectory(type: Copy) {
     into 'pack/logs/'
 }
 
-task pack(dependsOn: ['cleanPackDir', 'copyDoc', 'copyVersionInfo', 'createLogsDirectory', ':cli:copyMainScripts', ':cli:copyUtilScripts', ':cli:copyJar', ':lib-unlimited:copyStructures', ':lib-unlimited:copyLibraries', ':lib-unlimited:copyExternalTools', ':gui-database:copyJar'], type: Zip) {
-    description 'Zips all distribution files from pack folder.'
+task copyUtilScripts(type: Copy) {
+    description 'Copies utility scripts to release directory.'
+    mustRunAfter 'cleanPackDir'
 
-    archiveName project.name + "-" + project.version + ".zip"
-    destinationDir new File(projectDir, 'releases')
-    from  'pack/'
+    from 'src/main/shell/util/'
+    include '*.cmd'
+    into 'pack/cli'
 }
 
-task cleanPackDir(type: Delete) {
-    delete 'pack/'
+task copyExternalTools(type: Copy) {
+    description 'Copies all external tools to release directory.'
+    mustRunAfter 'cleanPackDir'
+
+    from 'tools'
+    into 'pack/tools'
+}
+
+task copyVersionInfo(type: Copy) {
+    description 'Copies version.info file to release libs directory.'
+    mustRunAfter 'cleanPackDir'
+
+    from 'dist/'
+    include 'version.info'
+    into 'pack/lib/'
 }
 
 task wrapper(type: Wrapper) {

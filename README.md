@@ -50,11 +50,11 @@ No particular action required.
 This needs a release tag to be set, see *Releasing* section above.
 
 * Checkout project from target release tag *tduf-[version]*
-* Execute *pack* task from Gradle.
+* Execute either *packTDUF* or *packInstallerKit* tasks from Gradle.
 
 ...it will:
 
-* Create a release package in zip in *releases* directory.
+* Create release packages in zip archive, into *releases* directory.
 
 ### Contributing to project ###
 
