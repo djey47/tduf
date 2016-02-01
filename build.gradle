@@ -196,7 +196,7 @@ project(':gui-installer') {
 
         from 'dist/'
         include 'README.txt'
-        into 'pack/'
+        into '../pack/'
     }
 
     task copyAssets(type: Copy) {
@@ -204,29 +204,33 @@ project(':gui-installer') {
         mustRunAfter ':cleanPackDir'
 
         from 'assets/'
-        into 'pack/assets/'
+        into '../pack/assets/'
     }
 }
 
 
 // Main tasks
+task packAll(dependsOn: ['packTDUF', 'packInstallerKit']) {
+    description 'Create single release Zip with ALL components in releases directory.'
+}
+
 task packTDUF(dependsOn: ['cleanPackDir', 'copyDoc', 'createLogsDirectory', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
                           ':cli:copyMainScripts', ':cli:copyJar',
                           ':lib-unlimited:copyStructures',
                           ':gui-database:copyJar'], type: Zip) {
-    description 'Zips all TDUF distribution files from pack folder.'
+    description 'Zips only TDUF CLI, GUI-Database, LIB files from pack folder.'
 
-    archiveName project.name + "-" + project.version + ".zip"
-    destinationDir new File(projectDir, 'releases')
+    archiveName  "tduf-" + project.version + ".zip"
+    destinationDir new File('releases/')
     from  'pack/'
 }
 
 task packInstallerKit(dependsOn: ['cleanPackDir', 'createLogsDirectory', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
                                   ':gui-installer:copyDoc', ':gui-installer:copyAssets', ':gui-installer:copyMainScripts',  ':gui-installer:copyJar'], type: Zip) {
-    description 'Zips all IK files from pack folder.'
+    description 'Zips only IK, LIB files from pack folder.'
 
-    archiveName project.name + "-" + project.version + ".zip"
-    destinationDir new File(rootProject.projectDir, 'releases')
+    archiveName "tduf-IK-" + project.version + ".zip"
+    destinationDir new File('releases/')
     from  'pack/'
 }
 
