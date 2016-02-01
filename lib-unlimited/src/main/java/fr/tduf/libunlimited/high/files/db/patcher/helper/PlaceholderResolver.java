@@ -167,6 +167,7 @@ public class PlaceholderResolver {
         return value;
     }
 
+    // TODO handle CARID placeholder differently if not defined: generate unique ID (between 8000 and 9000 ?)
     static String resolveValuePlaceholder(String value, PatchProperties patchProperties) {
         final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
 
