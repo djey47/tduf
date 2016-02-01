@@ -126,7 +126,7 @@ public class UpdateDatabaseStep extends GenericStep {
 
         PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
 
-        potentialVehicleSlot.ifPresent((slotRef) -> overridePatchPropertiesForVehicleSlot(slotRef, patchProperties));
+        potentialVehicleSlot.ifPresent((slotRef) -> createPatchPropertiesForVehicleSlot(slotRef, patchProperties));
 
         PatchProperties effectivePatchProperties = patcher.applyWithProperties(patchObject, patchProperties);
 
@@ -135,8 +135,8 @@ public class UpdateDatabaseStep extends GenericStep {
         setPatchProperties(patchProperties);
     }
 
-    private static void overridePatchPropertiesForVehicleSlot(String slotRef, PatchProperties patchProperties) {
-        patchProperties.setVehicleSlotReference(slotRef);
+    private static void createPatchPropertiesForVehicleSlot(String slotRef, PatchProperties patchProperties) {
+        patchProperties.setVehicleSlotReferenceIfNotExists(slotRef);
 
         // TODO set other properties matching slotRef
         /*

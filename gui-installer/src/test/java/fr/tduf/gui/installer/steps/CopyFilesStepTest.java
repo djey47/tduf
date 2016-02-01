@@ -41,7 +41,7 @@ public class CopyFilesStepTest {
                 .build();
         DatabaseContext databaseContext = TestHelper.createJsonDatabase();
         PatchProperties patchProperties = new PatchProperties();
-        patchProperties.setVehicleSlotReference("606298799");
+        patchProperties.setVehicleSlotReferenceIfNotExists("606298799");
 
 
         // WHEN

@@ -47,11 +47,19 @@ public class PatchProperties extends Properties {
         return patchProperties;
     }
 
-    public Optional<String> getVehicleSlotReference() {
-        return retrieve(PLACEHOLDER_NAME_SLOT_REFERENCE);
+    public void setVehicleSlotReferenceIfNotExists(String slotReference) {
+        registerIfNotExists(PLACEHOLDER_NAME_SLOT_REFERENCE, slotReference);
     }
 
-    public void setVehicleSlotReference(String slotReference) {
-        register(PLACEHOLDER_NAME_SLOT_REFERENCE, slotReference);
+    private void registerIfNotExists(String placeholder, String value) {
+        if (retrieve(placeholder).isPresent()) {
+            return;
+        }
+
+        register(placeholder, value);
+    }
+
+    public Optional<String> getVehicleSlotReference() {
+        return retrieve(PLACEHOLDER_NAME_SLOT_REFERENCE);
     }
 }
