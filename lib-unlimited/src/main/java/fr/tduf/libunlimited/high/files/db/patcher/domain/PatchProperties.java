@@ -11,6 +11,15 @@ import static java.util.Objects.requireNonNull;
 public class PatchProperties extends Properties {
 
     private static final String PLACEHOLDER_NAME_SLOT_REFERENCE = "SLOTREF";
+    private static final String PLACEHOLDER_NAME_ID_CAR = "CARID";
+    private static final String PLACEHOLDER_NAME_RESOURCE_BANK = "RES_BANKNAME";
+    private static final String PLACEHOLDER_NAME_RESOURCE_MODEL = "RES_MODELNAME";
+    private static final String PLACEHOLDER_NAME_RESOURCE_VERSION = "RES_VERSIONNAME";
+    private static final String PLACEHOLDER_NAME_FMT_RIMS_REFERENCE = "RIMREF.%d";
+    private static final String PLACEHOLDER_NAME_FMT_INTERIOR_REFERENCE = "INTREF.%d";
+    private static final String PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK = "RES_BANKNAME.%s.%d";
+    private static final String PLACEHOLDER_NAME_FMT_RESOURCE_INTERIOR = "RES_INTNAMEE.%d";
+    private static final String PLACEHOLDER_NAME_FMT_RESOURCE_COLOR = "RES_COLORNAME.%d";
 
     /**
      * Stores value associated to a placeholder.
@@ -49,6 +58,27 @@ public class PatchProperties extends Properties {
 
     public void setVehicleSlotReferenceIfNotExists(String slotReference) {
         registerIfNotExists(PLACEHOLDER_NAME_SLOT_REFERENCE, slotReference);
+    }
+
+    public void setCarIdentifierIfNotExists(String carIdentifier) {
+        registerIfNotExists(PLACEHOLDER_NAME_ID_CAR, carIdentifier);
+    }
+
+    public void setResourceModelBankIfNotExists(String modelBankReference) {
+        registerIfNotExists(PLACEHOLDER_NAME_RESOURCE_BANK, modelBankReference);
+    }
+
+    public void setResourceModelNameIfNotExists(String modelNameReference) {
+        registerIfNotExists(PLACEHOLDER_NAME_RESOURCE_MODEL, modelNameReference);
+    }
+
+    public void setResourceVersionNameIfNotExists(String versionNameReference) {
+        registerIfNotExists(PLACEHOLDER_NAME_RESOURCE_VERSION, versionNameReference);
+    }
+
+    public void setRimsSlotReferenceIfNotExists(String rimsSlotReference, int rimSet) {
+        String placeholderName = String.format(PLACEHOLDER_NAME_FMT_RIMS_REFERENCE, rimSet);
+        registerIfNotExists(placeholderName, rimsSlotReference);
     }
 
     private void registerIfNotExists(String placeholder, String value) {

@@ -139,19 +139,7 @@ public class UpdateDatabaseStep extends GenericStep {
         patchProperties.setVehicleSlotReferenceIfNotExists(slotRef);
 
         // TODO set other properties matching slotRef
-        /*
-            #CARID=
-            #SLOTREF=
-            #RIMREF.1=
-            #INTREF.1=
-            #RES_BANKNAME=
-            #RES_MODELNAME=
-            #RES_VERSIONNAME=
-            #RES_BANKNAME.FR.1=
-            #RES_BANKNAME.RR.1=
-            #RES_INTNAME.1=
-            #RES_COLORNAME.1=
-         */
+
     }
 
     private static SlotsBrowserStageController initSlotsBrowserController(Window mainWindow) throws IOException {
