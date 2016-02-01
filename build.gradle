@@ -206,6 +206,14 @@ project(':gui-installer') {
         from 'assets/'
         into '../pack/assets/'
     }
+
+    task copyTemplates(type: Copy) {
+        description 'Copies all patch templates to release directory.'
+        mustRunAfter ':cleanPackDir'
+
+        from 'patchTemplates/'
+        into '../pack/patchTemplates/'
+    }
 }
 
 
@@ -226,7 +234,7 @@ task packTDUF(dependsOn: ['cleanPackDir', 'copyDoc', 'createLogsDirectory', 'cop
 }
 
 task packInstallerKit(dependsOn: ['cleanPackDir', 'createLogsDirectory', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
-                                  ':gui-installer:copyDoc', ':gui-installer:copyAssets', ':gui-installer:copyMainScripts',  ':gui-installer:copyJar'], type: Zip) {
+                                  ':gui-installer:copyDoc', ':gui-installer:copyAssets', ':gui-installer:copyTemplates', ':gui-installer:copyMainScripts',  ':gui-installer:copyJar'], type: Zip) {
     description 'Zips only IK, LIB files from pack folder.'
 
     archiveName "tduf-IK-" + project.version + ".zip"
