@@ -2,6 +2,7 @@ package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.InstallerConstants;
+import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.controllers.SlotsBrowserStageController;
 import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
 import fr.tduf.gui.installer.stages.SlotsBrowserStageDesigner;
@@ -135,8 +136,15 @@ public class UpdateDatabaseStep extends GenericStep {
         setPatchProperties(patchProperties);
     }
 
-    private static void createPatchPropertiesForVehicleSlot(String slotRef, PatchProperties patchProperties) {
+    private void createPatchPropertiesForVehicleSlot(String slotRef, PatchProperties patchProperties) {
+        VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(getDatabaseContext().getMiner());
+
+        String selectedCarIdentifier = vehicleSlotsHelper.getVehicleIdentifier(slotRef);
+        String selectedModelBank = vehicleSlotsHelper.getFileName(slotRef);
+
         patchProperties.setVehicleSlotReferenceIfNotExists(slotRef);
+        patchProperties.setCarIdentifierIfNotExists(selectedCarIdentifier);
+        patchProperties.setResourceModelBankIfNotExists(selectedModelBank);
 
         // TODO set other properties matching slotRef
 
