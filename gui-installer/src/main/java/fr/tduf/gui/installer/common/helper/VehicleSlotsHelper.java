@@ -124,6 +124,36 @@ public class VehicleSlotsHelper {
     }
 
     /**
+     * @return value of ID_Car data for specified slot reference.
+     */
+    public String getVehicleIdentifier(String slotRerence) {
+        return miner.getContentEntryFromTopicWithReference(slotRerence, CAR_PHYSICS_DATA)
+
+                .map(DbDataDto.Entry::getId)
+
+                .flatMap((entryIdentifier) -> miner.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_ID_CAR, entryIdentifier))
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .orElse("0");
+    }
+
+    /**
+     * @return value of Car_FileName data for specified slot reference.
+     */
+    public String getFileName(String slotRerence) {
+        return miner.getContentEntryFromTopicWithReference(slotRerence, CAR_PHYSICS_DATA)
+
+                .map(DbDataDto.Entry::getId)
+
+                .flatMap((entryIdentifier) -> miner.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_FILE_NAME, entryIdentifier))
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .orElse("");
+    }
+
+    /**
      * @return list of car physics entries concerning only drivable vehicles
      */
     public List<DbDataDto.Entry> getDrivableVehicleSlotEntries() {
