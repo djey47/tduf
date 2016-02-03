@@ -144,7 +144,7 @@ public class UpdateDatabaseStep extends GenericStep {
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(getDatabaseContext().getMiner());
 
         String selectedCarIdentifier = vehicleSlotsHelper.getVehicleIdentifier(slotReference);
-        String vehicleBank = vehicleSlotsHelper.getCarFileName(slotReference);
+        String vehicleBank = vehicleSlotsHelper.getCarFileNameReference(slotReference);
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
         patchProperties.setCarIdentifierIfNotExists(selectedCarIdentifier);
         patchProperties.setResourceModelBankIfNotExists(vehicleBank);
@@ -159,15 +159,15 @@ public class UpdateDatabaseStep extends GenericStep {
             patchProperties.setResourceRearRimBankIfNotExists(rearRimBank, 1);
         }
 
-        String selectedModelNameReference = vehicleSlotsHelper.getModelName(slotReference);
-        String selectedVersionNameReference = vehicleSlotsHelper.getVersionName(slotReference);
+        String selectedModelNameReference = vehicleSlotsHelper.getModelNameReference(slotReference);
+        String selectedVersionNameReference = vehicleSlotsHelper.getVersionNameReference(slotReference);
         // To prevent from erasing resource value when model/version name references are the same
         patchProperties.setResourceModelNameIfNotExists(selectedModelNameReference);
         if(!selectedModelNameReference.equals(selectedVersionNameReference)) {
             patchProperties.setResourceVersionNameIfNotExists(selectedVersionNameReference);
         }
 
-        String selectedColorNameReference = vehicleSlotsHelper.getColorName(slotReference, 1);
+        String selectedColorNameReference = vehicleSlotsHelper.getColorNameReference(slotReference, 1);
         String selectedInteriorNameReference = vehicleSlotsHelper.getInteriorNameReference(slotReference, 1, 1);
         String selectedInteriorReference = vehicleSlotsHelper.getInteriorReference(slotReference, 1, 1);
         patchProperties.setResourceColorNameIfNotExists(selectedColorNameReference, 1);

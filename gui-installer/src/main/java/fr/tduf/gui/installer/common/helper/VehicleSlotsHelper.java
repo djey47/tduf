@@ -141,7 +141,7 @@ public class VehicleSlotsHelper {
     /**
      * @return value of Car_FileName data for specified slot reference.
      */
-    public String getCarFileName(String slotReference) {
+    public String getCarFileNameReference(String slotReference) {
         return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
 
                 .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_FILE_NAME))
@@ -154,7 +154,7 @@ public class VehicleSlotsHelper {
     /**
      * @return value of Car_Model data for specified slot reference.
      */
-    public String getModelName(String slotReference) {
+    public String getModelNameReference(String slotReference) {
         return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
 
                 .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_MODEL_NAME))
@@ -167,7 +167,7 @@ public class VehicleSlotsHelper {
     /**
      * @return value of Car_Version data for specified slot reference.
      */
-    public String getVersionName(String slotReference) {
+    public String getVersionNameReference(String slotReference) {
         return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
 
                 .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_VERSION_NAME))
@@ -180,7 +180,7 @@ public class VehicleSlotsHelper {
     /**
      * @return value of Color_Name data (CAR_COLORS) at exteriorIndex for specified slot reference
      */
-    public String getColorName(String slotReference, int exteriorIndex) {
+    public String getColorNameReference(String slotReference, int exteriorIndex) {
         List<DbFieldValueDto> criteria = singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference));
         final List<DbDataDto.Entry> exteriorEntries = miner.getContentEntriesMatchingCriteria(criteria, CAR_COLORS);
 
