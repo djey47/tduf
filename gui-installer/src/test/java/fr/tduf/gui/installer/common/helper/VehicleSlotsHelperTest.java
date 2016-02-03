@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.common.helper;
 
+import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -14,9 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.RIMS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -229,15 +228,16 @@ public class VehicleSlotsHelperTest {
         String rimRef = "22222222";
         String rimResourceRef = "33333333";
         long entryId = 1;
-        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
-                .forId(entryId)
-                .build();
-        DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
-                .forId(entryId)
-                .build();
         DbDataDto.Item physicsItem = DbDataDto.Item.builder()
                 .ofFieldRank(10)
                 .withRawValue(rimRef)
+                .build();
+        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
+                .forId(entryId)
+                .addItem(physicsItem)
+                .build();
+        DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
+                .forId(entryId)
                 .build();
         DbResourceDto.Entry rimsResourceEntry = DbResourceDto.Entry.builder()
                 .forReference(rimResourceRef)
@@ -245,7 +245,6 @@ public class VehicleSlotsHelperTest {
                 .build();
 
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
-        when(bulkDatabaseMinerMock.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, 10, entryId)).thenReturn(of(physicsItem));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimRef, RIMS)).thenReturn(of(rimsEntry));
         when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(RIMS, 13, entryId, UNITED_STATES)).thenReturn(of(rimsResourceEntry));
 
@@ -259,7 +258,7 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
-    public void getDefaultRimDirectoryForVehicle_whenSlotDoesNotExist_shouldReturnEmptyString() {
+    public void getDefaultRimDirectoryForVehicle_whenSlotDoesNotExist_shouldReturnDefault() {
         // GIVEN
         String slotReference = "11111111";
 
@@ -271,7 +270,7 @@ public class VehicleSlotsHelperTest {
 
 
         // THEN
-        assertThat(actualRimDirectory).isEmpty();
+        assertThat(actualRimDirectory).isEqualTo(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
     }
 
     @Test
@@ -370,24 +369,31 @@ public class VehicleSlotsHelperTest {
         // GIVEN
         String slotReference = "11111111";
         String rimSlotReference = "22222222";
-        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
-                .forId(1)
-                .build();
+        String resourceRef = "33333333";
         DbDataDto.Item physicsItem = DbDataDto.Item.builder()
                 .ofFieldRank(10)
                 .withRawValue(rimSlotReference)
                 .build();
+        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
+                .forId(1)
+                .addItem(physicsItem)
+                .build();
+        DbDataDto.Item rimsItem = DbDataDto.Item.builder()
+                .ofFieldRank(14)
+                .withRawValue(resourceRef)
+                .build();
         DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
                 .forId(1)
+                .addItem(rimsItem)
                 .build();
         DbResourceDto.Entry rimsResourceEntry = DbResourceDto.Entry.builder()
+                .forReference(resourceRef)
                 .withValue("RX8_F_01")
                 .build();
 
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
-        when(bulkDatabaseMinerMock.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, 10, 1)).thenReturn(of(physicsItem));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotReference, RIMS)).thenReturn(of(rimsEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(RIMS, 14, 1, UNITED_STATES)).thenReturn(of(rimsResourceEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryFromTopicAndLocaleWithReference(resourceRef, RIMS, UNITED_STATES)).thenReturn(of(rimsResourceEntry));
 
 
         // WHEN
@@ -403,24 +409,31 @@ public class VehicleSlotsHelperTest {
         // GIVEN
         String slotReference = "11111111";
         String rimSlotReference = "22222222";
-        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
-                .forId(1)
-                .build();
+        String resourceRef = "33333333";
         DbDataDto.Item physicsItem = DbDataDto.Item.builder()
                 .ofFieldRank(10)
                 .withRawValue(rimSlotReference)
                 .build();
+        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
+                .forId(1)
+                .addItem(physicsItem)
+                .build();
+        DbDataDto.Item rimsItem = DbDataDto.Item.builder()
+                .ofFieldRank(15)
+                .withRawValue(resourceRef)
+                .build();
         DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
                 .forId(1)
+                .addItem(rimsItem)
                 .build();
         DbResourceDto.Entry rimsResourceEntry = DbResourceDto.Entry.builder()
+                .forReference(resourceRef)
                 .withValue("RX8_R_01")
                 .build();
 
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
-        when(bulkDatabaseMinerMock.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, 10, 1)).thenReturn(of(physicsItem));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotReference, RIMS)).thenReturn(of(rimsEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(RIMS, 15, 1, UNITED_STATES)).thenReturn(of(rimsResourceEntry));
+        when(bulkDatabaseMinerMock.getResourceEntryFromTopicAndLocaleWithReference(resourceRef, RIMS, UNITED_STATES)).thenReturn(of(rimsResourceEntry));
 
 
         // WHEN

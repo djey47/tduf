@@ -293,7 +293,7 @@ public class VehicleSlotsHelper {
 
         return getDefaultRimEntryForVehicle(slotReference)
 
-                .map((rimEntry) -> {
+                .flatMap((rimEntry) -> {
                     int fieldRank;
                     if (FRONT_RIM == rimBankFileType) {
                         fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT;
@@ -305,6 +305,12 @@ public class VehicleSlotsHelper {
 
                     return rimEntry.getItemAtRank(fieldRank);
                 })
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .flatMap((resourceRef) -> miner.getResourceEntryFromTopicAndLocaleWithReference(resourceRef, RIMS, DEFAULT_LOCALE))
+
+                .map(DbResourceDto.Entry::getValue)
 
                 .map((rimBankSimpleName) -> String.format("%s.%s", rimBankSimpleName, EXTENSION_BANKS))
 
