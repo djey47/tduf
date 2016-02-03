@@ -184,6 +184,10 @@ public class DbPatchDto {
             return filterCompounds;
         }
 
+        public void setFilterCompounds(List<DbFieldValueDto> filterCompounds) {
+            this.filterCompounds = filterCompounds;
+        }
+
         public DirectionEnum getDirection() {
             return direction;
         }
