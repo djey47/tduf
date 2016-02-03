@@ -112,6 +112,9 @@ public class UpdateDatabaseStep extends GenericStep {
         SlotsBrowserStageController slotsBrowserController = initSlotsBrowserController(getInstallerConfiguration().getMainWindow());
 
         Optional<VehicleSlotDataItem> selectedItem = slotsBrowserController.initAndShowModalDialog(Optional.empty(), getDatabaseContext().getMiner());
+        if(selectedItem == null) {
+            throw new IOException("Aborted by user");
+        }
 
         Log.info(THIS_CLASS_NAME, "->Using vehicle slot: " + selectedItem);
 

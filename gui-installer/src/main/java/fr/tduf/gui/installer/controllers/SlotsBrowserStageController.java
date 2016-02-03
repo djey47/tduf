@@ -59,10 +59,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleSlotsTableMouseClick");
 
         if (MouseButton.PRIMARY == mouseEvent.getButton()) {
-            final Optional<VehicleSlotDataItem> potentialMouseSelectedItem = TableViewHelper.getMouseSelectedItem(mouseEvent, VehicleSlotDataItem.class);
-            if (potentialMouseSelectedItem.isPresent()) {
-                selectedSlot = potentialMouseSelectedItem;
-            }
+            selectedSlot = TableViewHelper.getMouseSelectedItem(mouseEvent, VehicleSlotDataItem.class);
 
             closeWindow();
         }
@@ -87,7 +84,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
         vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
 
-        selectedSlot = Optional.empty();
+        selectedSlot = null;
 
         currentTopicProperty.setValue(CAR_PHYSICS_DATA);
 
