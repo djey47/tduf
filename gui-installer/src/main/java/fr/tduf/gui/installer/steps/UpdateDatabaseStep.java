@@ -46,7 +46,7 @@ public class UpdateDatabaseStep extends GenericStep {
 
         Optional<String> potentialVehicleSlot = selectVehicleSlot();
         if (!potentialVehicleSlot.isPresent()) {
-            Log.info(THIS_CLASS_NAME, "No vehicle slot selected.");
+            Log.info(THIS_CLASS_NAME, "No vehicle slot selected, creating new one.");
         }
 
         applyPatches(potentialVehicleSlot);

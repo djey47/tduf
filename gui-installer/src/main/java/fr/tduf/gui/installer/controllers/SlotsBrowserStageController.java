@@ -14,6 +14,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -25,6 +26,7 @@ import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 
 public class SlotsBrowserStageController extends AbstractGuiController {
@@ -52,6 +54,15 @@ public class SlotsBrowserStageController extends AbstractGuiController {
         initHeaderPane();
 
         initTablePane();
+    }
+
+    @FXML
+    private void handleCreateNewSlotHyperlinkAction(ActionEvent actionEvent) {
+        Log.trace(THIS_CLASS_NAME, "->handleCreateNewSlotHyperlinkAction");
+
+        selectedSlot = empty();
+
+        closeWindow();
     }
 
     @FXML
