@@ -142,37 +142,10 @@ public class UpdateDatabaseStep extends GenericStep {
 
     private void createPatchPropertiesForVehicleSlot(String slotReference, PatchProperties patchProperties) {
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(getDatabaseContext().getMiner());
-
         String selectedCarIdentifier = vehicleSlotsHelper.getVehicleIdentifier(slotReference);
-        String vehicleBank = vehicleSlotsHelper.getCarFileNameReference(slotReference);
+
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
         patchProperties.setCarIdentifierIfNotExists(selectedCarIdentifier);
-        patchProperties.setResourceModelBankIfNotExists(vehicleBank);
-
-        String rimsReference = vehicleSlotsHelper.getDefaultRimIdentifier(slotReference);
-        String frontRimBank = vehicleSlotsHelper.getDefaultRimFileNameReference(slotReference, VehicleSlotsHelper.BankFileType.FRONT_RIM);
-        String rearRimBank = vehicleSlotsHelper.getDefaultRimFileNameReference(slotReference, VehicleSlotsHelper.BankFileType.REAR_RIM);
-        patchProperties.setRimsSlotReferenceIfNotExists(rimsReference, 1);
-        patchProperties.setResourceFrontRimBankIfNotExists(frontRimBank, 1);
-        // To prevent from erasing resource value when front/rear bank references are the same
-        if(!frontRimBank.equals(rearRimBank)) {
-            patchProperties.setResourceRearRimBankIfNotExists(rearRimBank, 1);
-        }
-
-        String selectedModelNameReference = vehicleSlotsHelper.getModelNameReference(slotReference);
-        String selectedVersionNameReference = vehicleSlotsHelper.getVersionNameReference(slotReference);
-        // To prevent from erasing resource value when model/version name references are the same
-        patchProperties.setResourceModelNameIfNotExists(selectedModelNameReference);
-        if(!selectedModelNameReference.equals(selectedVersionNameReference)) {
-            patchProperties.setResourceVersionNameIfNotExists(selectedVersionNameReference);
-        }
-
-        String selectedColorNameReference = vehicleSlotsHelper.getColorNameReference(slotReference, 1);
-        String selectedInteriorNameReference = vehicleSlotsHelper.getInteriorNameReference(slotReference, 1, 1);
-        String selectedInteriorReference = vehicleSlotsHelper.getInteriorReference(slotReference, 1, 1);
-        patchProperties.setResourceColorNameIfNotExists(selectedColorNameReference, 1);
-        patchProperties.setResourceInteriorNameIfNotExists(selectedInteriorNameReference, 1);
-        patchProperties.setInteriorReferenceIfNotExists(selectedInteriorReference, 1);
     }
 
     private static SlotsBrowserStageController initSlotsBrowserController(Window mainWindow) throws IOException {
