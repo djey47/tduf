@@ -65,7 +65,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         TableView<ContentEntryDataItem> tableView = new TableView<>();
         tableView.setPrefWidth(560);
 
-        String toolTipText = ofNullable(topicLinkObject.getTooltip()).orElse("");
+        String toolTipText = ofNullable(topicLinkObject.getToolTip()).orElse("");
         tableView.setTooltip(new Tooltip(toolTipText));
 
         TableColumn<ContentEntryDataItem, String> refColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_REF);
@@ -148,7 +148,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
             fieldName = topicLinkObject.getLabel();
         }
 
-        String toolTipText = ofNullable(topicLinkObject.getTooltip()).orElse("");
+        String toolTipText = ofNullable(topicLinkObject.getToolTip()).orElse("");
 
         addFieldLabel(fieldBox, topicLinkObject.isReadOnly(), fieldName, toolTipText);
     }

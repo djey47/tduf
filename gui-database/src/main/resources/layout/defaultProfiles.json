@@ -20,21 +20,21 @@
           "group": "Wheels",
           "label": "Available Rims",
           "remoteReferenceProfile": "Rims",
-          "tooltip": "List of applicable rims to current vehicle"
+          "toolTip": "List of applicable rims to current vehicle"
         },
         {
           "topic": "CAR_COLORS",
           "group": "Exterior",
           "label": "Selectable Paintjobs",
           "remoteReferenceProfile": "Paints",
-          "tooltip": "List of applicable exterior paints in car shop to current vehicle"
+          "toolTip": "List of applicable exterior paints in car shop to current vehicle"
         },
         {
           "topic": "CAR_PACKS",
           "group": "Tuning",
           "label": "Selectable tuning packs",
           "remoteReferenceProfile": "Packs",
-          "tooltip": "List of applicable tuning packs to current vehicle"
+          "toolTip": "List of applicable tuning packs to current vehicle"
         }
       ],
       "fieldSettings": [
