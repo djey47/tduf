@@ -24,6 +24,13 @@ public class PatchProperties extends Properties {
     private static final String SUFFIX_REAR_RIMS = "RR";
 
     /**
+     * @return true if provided placeholder matches one used for ID_CAR
+     */
+    public static boolean isPlaceholderForCarIdentifier(String placeholderName) {
+        return PLACEHOLDER_NAME_ID_CAR.equals(placeholderName);
+    }
+
+    /**
      * Stores value associated to a placeholder.
      */
     public void register(String placeholder, String value) {
@@ -108,12 +115,12 @@ public class PatchProperties extends Properties {
         registerIfNotExists(placeholderName, colorNameReference);
     }
 
-    private void registerIfNotExists(String placeholder, String value) {
-        if (retrieve(placeholder).isPresent()) {
+    private void registerIfNotExists(String placeholderName, String value) {
+        if (retrieve(placeholderName).isPresent()) {
             return;
         }
 
-        register(placeholder, value);
+        register(placeholderName, value);
     }
 
     public Optional<String> getVehicleSlotReference() {
