@@ -101,11 +101,13 @@ public class PlaceholderResolver {
 
         patchObject.getChanges().stream()
 
-                .filter((changeObject) -> UPDATE == changeObject.getType())
+                .filter((changeObject) -> UPDATE == changeObject.getType()
+                        || DELETE == changeObject.getType())
 
                 .forEach((changeObject) -> {
                     resolveContentsValuesPlaceholders(changeObject);
                     resolveContentsPartialValuesPlaceholders(changeObject);
+                    resolveContentsFilterValuesPlaceholders(changeObject);
                 });
     }
 
@@ -138,11 +140,23 @@ public class PlaceholderResolver {
     }
 
     private void resolveContentsPartialValuesPlaceholders(DbPatchDto.DbChangeDto changeObject) {
-        if (changeObject.getPartialValues() == null) {
-            return;
+        final List<DbFieldValueDto> effectivePartialValues = resolveFieldValuesPlaceholders(changeObject.getPartialValues());
+
+        changeObject.setPartialValues(effectivePartialValues);
+    }
+
+    private void resolveContentsFilterValuesPlaceholders(DbPatchDto.DbChangeDto changeObject) {
+        final List<DbFieldValueDto> effectiveFilterValues = resolveFieldValuesPlaceholders(changeObject.getFilterCompounds());
+
+        changeObject.setFilterCompounds(effectiveFilterValues);
+    }
+
+    private List<DbFieldValueDto> resolveFieldValuesPlaceholders(List<DbFieldValueDto> fieldValues) {
+        if (fieldValues == null) {
+            return null;
         }
 
-        final List<DbFieldValueDto> effectivePartialValues = changeObject.getPartialValues().stream()
+        return fieldValues.stream()
 
                 .map((partialValue) -> {
                     String effectiveValue = resolveValuePlaceholder(partialValue.getValue(), patchProperties, databaseMiner);
@@ -150,8 +164,6 @@ public class PlaceholderResolver {
                 })
 
                 .collect(toList());
-
-        changeObject.setPartialValues(effectivePartialValues);
     }
 
     static String resolveReferencePlaceholder(boolean forContents, String value, PatchProperties patchProperties, DbDto topicObject) {

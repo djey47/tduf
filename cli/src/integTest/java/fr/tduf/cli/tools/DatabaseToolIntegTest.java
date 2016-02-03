@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.cli.common.helper.ConsoleHelper;
 import fr.tduf.libtesting.common.helper.AssertionsHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -37,9 +38,11 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
@@ -125,10 +128,12 @@ public class DatabaseToolIntegTest {
         Files.deleteIfExists(PATH_PATCHER.resolve("effective-mini-template.json.properties"));
         String inputPatchFile = Paths.get(DIRECTORY_PATCH, "mini-template.json").toString();
 
+
         // WHEN: applyPatch
         System.out.println("-> ApplyPatch! (template and properties)");
         OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
         DatabaseTool.main(new String[]{"apply-patch", "-n", "-j", DIRECTORY_ERR_JSON_DATABASE, "-o", DIRECTORY_PATCHED_DATABASE, "-p", inputPatchFile});
+
 
         // THEN: Normalized output contents
         String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
@@ -139,6 +144,7 @@ public class DatabaseToolIntegTest {
         final String effectivePatchPropertyFile = rootJsonNode.get("effectivePatchPropertyFile").asText();
         assertThat(effectivePatchPropertyFile).isNotNull();
 
+
         // THEN: contents must be updated
         List<DbDto> actualDatabaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(DIRECTORY_PATCHED_DATABASE);
         BulkDatabaseMiner miner = BulkDatabaseMiner.load(actualDatabaseObjects);
@@ -148,12 +154,19 @@ public class DatabaseToolIntegTest {
         assertCarPhysicsResourceWithRefHasValue("3000567", UNITED_STATES, "TDUCP_3000", "Created resource value #3000567: TDUCP_3000", miner);
         assertCarPhysicsResourceWithRefHasValue("3000567", FRANCE, "TDUCP_3000", "Created resource value #3000567: TDUCP_3000", miner);
 
+
+        // THEN: car rims must be deleted for a particular slot
+        DbFieldValueDto criteria = DbFieldValueDto.fromCouple(1, "63518960");
+        List<DbDataDto.Entry> carRims = miner.getContentEntriesMatchingCriteria(singletonList(criteria), CAR_RIMS);
+        assertThat(carRims).isEmpty();
+
+
         // THEN: effective property file must exist with right contents
         final PatchProperties actualProperties = new PatchProperties();
         final File handle = new File(effectivePatchPropertyFile);
         assertThat(handle).exists();
         actualProperties.load(new FileInputStream(handle));
-        assertThat(actualProperties.size()).isEqualTo(24);
+        assertThat(actualProperties.size()).isEqualTo(25);
     }
 
     @Test

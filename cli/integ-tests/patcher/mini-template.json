@@ -35,6 +35,16 @@
       "value": "{COLORNAME.1}"
     },
     {
+      "type": "DELETE",
+      "topic": "CAR_RIMS",
+      "filter": [
+        {
+          "rank": 1,
+          "value": "{SLOTREF-RIMS-DELETION}"
+        }
+      ]
+    },
+    {
       "type": "UPDATE",
       "topic": "CAR_RIMS",
       "values": [
