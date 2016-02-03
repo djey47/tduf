@@ -118,7 +118,7 @@ public class PlaceholderResolver {
                 .filter((changeObject) -> changeObject.getValue() != null)
 
                 .forEach((changeObject) -> {
-                    String effectiveValue = resolveValuePlaceholder(changeObject.getValue(), patchProperties, null);
+                    String effectiveValue = resolveValuePlaceholder(changeObject.getValue(), patchProperties, databaseMiner);
                     changeObject.setValue(effectiveValue);
                 });
     }
@@ -130,7 +130,7 @@ public class PlaceholderResolver {
 
         List<String> effectiveValues = changeObject.getValues().stream()
 
-                .map((value) -> resolveValuePlaceholder(value, patchProperties, null))
+                .map((value) -> resolveValuePlaceholder(value, patchProperties, databaseMiner))
 
                 .collect(toList());
 
@@ -145,7 +145,7 @@ public class PlaceholderResolver {
         final List<DbFieldValueDto> effectivePartialValues = changeObject.getPartialValues().stream()
 
                 .map((partialValue) -> {
-                    String effectiveValue = resolveValuePlaceholder(partialValue.getValue(), patchProperties, null);
+                    String effectiveValue = resolveValuePlaceholder(partialValue.getValue(), patchProperties, databaseMiner);
                     return DbFieldValueDto.fromCouple(partialValue.getRank(), effectiveValue);
                 })
 
