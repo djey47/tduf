@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.common.helper;
 import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.FileConstants;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -16,12 +17,14 @@ import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileTyp
 import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.EXTENSION_BANKS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
  * Component to get advanced information on vehicle slots.
  */
+// TODO check default values if no data found
 public class VehicleSlotsHelper {
 
     private static final DbResourceDto.Locale DEFAULT_LOCALE = UNITED_STATES;
@@ -141,12 +144,89 @@ public class VehicleSlotsHelper {
     /**
      * @return value of Car_FileName data for specified slot reference.
      */
-    public String getFileName(String slotRerence) {
-        return miner.getContentEntryFromTopicWithReference(slotRerence, CAR_PHYSICS_DATA)
+    public String getCarFileName(String slotReference) {
+        return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
 
                 .map(DbDataDto.Entry::getId)
 
                 .flatMap((entryIdentifier) -> miner.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_FILE_NAME, entryIdentifier))
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .orElse("");
+    }
+
+    /**
+     * @return value of Car_Model data for specified slot reference.
+     */
+    public String getModelName(String slotReference) {
+        return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
+
+                .map(DbDataDto.Entry::getId)
+
+                .flatMap((entryIdentifier) -> miner.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_MODEL_NAME, entryIdentifier))
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .orElse("");
+    }
+
+    /**
+     * @return value of Car_Version data for specified slot reference.
+     */
+    public String getVersionName(String slotReference) {
+        return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
+
+                .map(DbDataDto.Entry::getId)
+
+                .flatMap((entryIdentifier) -> miner.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_VERSION_NAME, entryIdentifier))
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .orElse("");
+    }
+
+    /**
+     * @return value of Color_Name data (CAR_COLORS) at exteriorIndex for specified slot reference
+     */
+    public String getColorName(String slotReference, int exteriorIndex) {
+        List<DbFieldValueDto> criteria = singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference));
+        final List<DbDataDto.Entry> exteriorEntries = miner.getContentEntriesMatchingCriteria(criteria, CAR_COLORS);
+
+        if (exteriorEntries.size() >= exteriorIndex) {
+            return exteriorEntries.get(exteriorIndex - 1)
+                    .getItemAtRank(DatabaseConstants.FIELD_RANK_COLOR_NAME).get()
+                    .getRawValue();
+        }
+
+        return "";
+    }
+
+    /**
+     * @return value of Interior_ data (CAR_COLORS) at exteriorIndex and interiorIndex for specified slot reference
+     */
+    public String getInteriorReference(String slotReference, int exteriorIndex, int interiorIndex) {
+        List<DbFieldValueDto> criteria = singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference));
+        final List<DbDataDto.Entry> exteriorEntries = miner.getContentEntriesMatchingCriteria(criteria, CAR_COLORS);
+
+        if (exteriorEntries.size() >= exteriorIndex) {
+            int interiorFieldRank = DatabaseConstants.FIELD_RANK_INTERIOR_1 + interiorIndex - 1;
+            return exteriorEntries.get(exteriorIndex - 1)
+                    .getItemAtRank(interiorFieldRank).get()
+                    .getRawValue();
+        }
+
+        return "";
+    }
+
+    /**
+     * @return
+     */
+    public String getInteriorNameReference(String slotReference, int exteriorIndex, int interiorIndex) {
+        String interiorReference = getInteriorReference(slotReference, exteriorIndex, interiorIndex);
+        return miner.getContentEntryFromTopicWithReference(interiorReference, INTERIOR)
+
+                .flatMap((interiorEntry) -> interiorEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_INTERIOR_NAME))
 
                 .map(DbDataDto.Item::getRawValue)
 
@@ -169,6 +249,46 @@ public class VehicleSlotsHelper {
                 .collect(toList());
     }
 
+    // TODO extract duplicated code to method
+
+    /**
+     * @return
+     */
+    public String getDefaultRimIdentifier(String slotReference) {
+        return getDefaultRimEntryForVehicle(slotReference)
+
+                .flatMap((rimEntry) -> rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RIM_REF))
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .orElse("");
+    }
+
+    /**
+     * @return value of Rsc_File_Name_Front or Rsc_File_Name_Rear
+     */
+    public String getDefaultRimFileNameReference(String slotReference, BankFileType rimBankFileType) {
+
+        return getDefaultRimEntryForVehicle(slotReference)
+
+                .map(DbDataDto.Entry::getId)
+
+                .flatMap((rimEntryIdentifier) -> {
+                    int fieldRank = 0;
+                    if (FRONT_RIM == rimBankFileType) {
+                        fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT;
+                    } else if (REAR_RIM == rimBankFileType) {
+                        fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR;
+                    }
+
+                    return miner.getContentItemWithEntryIdentifierAndFieldRank(RIMS, fieldRank, rimEntryIdentifier);
+                })
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .orElse("");
+    }
+
     private Optional<DbDataDto.Entry> getDefaultRimEntryForVehicle(String slotReference) {
         return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
 
@@ -180,6 +300,7 @@ public class VehicleSlotsHelper {
 
                 .flatMap((rimSlotReference) -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS));
     }
+
 
     private String getDefaultRimBankFileName(String slotReference, BankFileType rimBankFileType) {
 

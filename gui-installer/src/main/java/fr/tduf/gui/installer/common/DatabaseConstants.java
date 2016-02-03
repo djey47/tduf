@@ -4,9 +4,12 @@ package fr.tduf.gui.installer.common;
  * Gives all constants to access particular information in TDU database.
  */
 public class DatabaseConstants {
-    public static final int FIELD_RANK_CAR_REF = 1;            // CAR PHYSICS, CAR RIMS
+    public static final int FIELD_RANK_CAR_REF = 1;            // CAR PHYSICS, CAR RIMS, CAR COLORS
 
     public static final int FIELD_RANK_MANUFACTURER_NAME = 3;  // BRANDS
+
+    public static final int FIELD_RANK_COLOR_NAME = 3;          // CAR COLORS
+    public static final int FIELD_RANK_INTERIOR_1 = 8;
 
     public static final int FIELD_RANK_CAR_BRAND = 2;          // CAR PHYSICS
     public static final int FIELD_RANK_GROUP = 5;
@@ -17,12 +20,13 @@ public class DatabaseConstants {
     public static final int FIELD_RANK_CAR_VERSION_NAME = 14;
     public static final int FIELD_RANK_ID_CAR = 102;
 
+    public static final int FIELD_RANK_INTERIOR_NAME = 3;       // INTERIOR
 
-    public static final int FIELD_RANK_RSC_PATH = 13;               // RIMS
+    public static final int FIELD_RANK_RIM_REF = 1;               // RIMS
+    public static final int FIELD_RANK_RSC_PATH = 13;
     public static final int FIELD_RANK_RSC_FILE_NAME_FRONT = 14;
     public static final int FIELD_RANK_RSC_FILE_NAME_REAR = 15;
 
-
-    public static final String RESOURCE_REF_GROUP_Z = "92900264";
+    public static final String RESOURCE_REF_GROUP_Z = "92900264";   // CAR PHYSICS
     public static final String RESOURCE_VALUE_NONE = "??";
 }
