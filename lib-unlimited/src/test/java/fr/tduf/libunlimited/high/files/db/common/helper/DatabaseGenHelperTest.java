@@ -5,20 +5,21 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import org.apache.commons.lang3.Range;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -339,6 +340,32 @@ public class DatabaseGenHelperTest {
         assertThat(actualResourceReference).isNotEmpty();
 
         verify(changeHelperMock, times(8)).addResourceWithReference(eq(DbDto.Topic.ACHIEVEMENTS), any(DbResourceDto.Locale.class), anyString(), eq("??"));
+    }
+
+    @Test
+    public void generateUniqueIdentifier() {
+        // GIVEN
+        Set<String> existingValues = new HashSet<>(Arrays.asList("1", "2", "3"));
+
+        // WHEN
+        final String actual = DatabaseGenHelper.generateUniqueIdentifier(existingValues, Range.between(1, 10));
+
+        // THEN
+        assertThat(actual).isNotNull();
+        assertThat(existingValues).doesNotContain(actual);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void generateUniqueIdentifier_whenNoSpaceLeftInRange_shouldThrowException() {
+        // GIVEN
+        Set<String> existingValues = new HashSet<>(Arrays.asList("1", "2", "3"));
+
+        // WHEN
+        final String actual = DatabaseGenHelper.generateUniqueIdentifier(existingValues, Range.between(1, 3));
+
+        // THEN
+        assertThat(actual).isNotNull();
+        assertThat(existingValues).doesNotContain(actual);
     }
 
     private static DbStructureDto.Field createSingleStructureField(DbStructureDto.FieldType fieldType) {

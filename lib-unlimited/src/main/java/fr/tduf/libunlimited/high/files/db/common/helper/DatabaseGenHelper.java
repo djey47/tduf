@@ -7,6 +7,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
+import org.apache.commons.lang3.Range;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +38,9 @@ public class DatabaseGenHelper {
         this.changeHelper = new DatabaseChangeHelper(this, databaseMiner);
     }
 
-    /** Only exists for injecting mocks in tests **/
+    /**
+     * Only exists for injecting mocks in tests
+     **/
     @VisibleForTesting
     private DatabaseGenHelper(BulkDatabaseMiner databaseMiner, DatabaseChangeHelper changeHelper) {
         this.databaseMiner = databaseMiner;
@@ -45,8 +48,8 @@ public class DatabaseGenHelper {
     }
 
     /**
-     * @param reference     : unique reference of entry to create. If empty, a new one will be generated when necessary
-     * @param topicObject   : database contents hosting items to be created
+     * @param reference   : unique reference of entry to create. If empty, a new one will be generated when necessary
+     * @param topicObject : database contents hosting items to be created
      * @return created items list with default values.
      */
     public List<DbDataDto.Item> buildDefaultContentItems(Optional<String> reference, DbDto topicObject) {
@@ -59,10 +62,10 @@ public class DatabaseGenHelper {
     }
 
     /**
-     * @param entryReference        : unique reference of entry to create. If empty, a new one will be generated when necessary
-     * @param field                 : structure field to create item from
-     * @param topicObject           : database contents hosting items to be created
-     * @param createTargetEntries   : true to generate target resource and contents entries, false to leave raw values empty.
+     * @param entryReference      : unique reference of entry to create. If empty, a new one will be generated when necessary
+     * @param field               : structure field to create item from
+     * @param topicObject         : database contents hosting items to be created
+     * @param createTargetEntries : true to generate target resource and contents entries, false to leave raw values empty.
      * @return created item with default value.
      */
     public DbDataDto.Item buildDefaultContentItem(Optional<String> entryReference, DbStructureDto.Field field, DbDto topicObject, boolean createTargetEntries) {
@@ -112,7 +115,7 @@ public class DatabaseGenHelper {
     }
 
     /**
-     * @param topicObject   : database contents hosting resources
+     * @param topicObject : database contents hosting resources
      * @return reference to default resource reference in current topic. May exist already, otherwise it will be generated.
      */
     public String generateDefaultResourceReference(DbDto topicObject) {
@@ -128,7 +131,8 @@ public class DatabaseGenHelper {
 
     /**
      * Produces a random, unique identifier of content entry.
-     * @param topicObject   : database topic to provide structure and contents
+     *
+     * @param topicObject : database topic to provide structure and contents
      * @return null if topicObject is null.
      * @throws java.lang.IllegalArgumentException if current topic does not have an identifier field
      */
@@ -143,12 +147,13 @@ public class DatabaseGenHelper {
         }
 
         Set<String> existingEntryRefs = extractContentEntryReferences(identifierField.get(), topicObject);
-        return generateUniqueEntryReference(existingEntryRefs);
+        return generateUniqueIdentifier(existingEntryRefs, Range.between(IDENTIFIER_MIN, IDENTIFIER_MAX));
     }
 
     /**
      * Produces a random, unique identifier of content entry.
-     * @param topicObject   : database topic to provide resources
+     *
+     * @param topicObject : database topic to provide resources
      * @return null if topicObject is null.
      */
     public static String generateUniqueResourceEntryIdentifier(DbDto topicObject) {
@@ -157,7 +162,24 @@ public class DatabaseGenHelper {
         }
 
         Set<String> existingResourceRefs = extractResourceEntryReferences(topicObject);
-        return generateUniqueEntryReference(existingResourceRefs);
+        return generateUniqueIdentifier(existingResourceRefs, Range.between(IDENTIFIER_MIN, IDENTIFIER_MAX));
+    }
+
+    /**
+     * @param existingIdentifiers : set of identifiers which already exist
+     * @param range               : range the generated value will be into
+     * @return a random, unique identifier in provided range.
+     */
+    public static String generateUniqueIdentifier(Set<String> existingIdentifiers, Range<Integer> range) {
+        if (existingIdentifiers.size() >= range.getMaximum() - range.getMinimum()) {
+            throw new IllegalArgumentException("No space left to generate value in provided range: " + range);
+        }
+
+        String generatedId = null;
+        while (generatedId == null || existingIdentifiers.contains(generatedId)) {
+            generatedId = generateIdentifier(range);
+        }
+        return generatedId;
     }
 
     private String generateDefaultContentsReference(DbDto topicObject) {
@@ -188,16 +210,8 @@ public class DatabaseGenHelper {
                 .collect(toSet());
     }
 
-    private static String generateUniqueEntryReference(Set<String> existingEntryRefs) {
-        String generatedRef = null;
-        while(generatedRef == null || existingEntryRefs.contains(generatedRef)) {
-            generatedRef = generateEntryIdentifier(IDENTIFIER_MIN, IDENTIFIER_MAX);
-        }
-        return generatedRef;
-    }
-
-    private static String generateEntryIdentifier(int min, int max) {
-        return Integer.valueOf((int) (Math.random() * (max - min) + min)).toString();
+    private static String generateIdentifier(Range<Integer> range) {
+        return Integer.valueOf((int) (Math.random() * (range.getMaximum() - range.getMinimum()) + range.getMinimum())).toString();
     }
 
     private static Optional<DbResourceDto.Entry> findDefaultResourceEntry(DbDto topicObject) {
