@@ -1,6 +1,16 @@
 {
   "changes": [
     {
+      "type": "DELETE",
+      "topic": "CAR_COLORS",
+      "filter": [
+        {
+          "rank": 1,
+          "value": "{SLOTREF}"
+        }
+      ]
+    },
+    {
       "type": "UPDATE",
       "topic": "CAR_COLORS",
       "values": [
@@ -33,6 +43,16 @@
       "topic": "CAR_COLORS",
       "ref": "{RES_COLORNAME.1}",
       "value": "{COLORNAME.1}"
+    },
+    {
+      "type": "DELETE",
+      "topic": "CAR_RIMS",
+      "filter": [
+        {
+          "rank": 1,
+          "value": "{SLOTREF}"
+        }
+      ]
     },
     {
       "type": "UPDATE",
