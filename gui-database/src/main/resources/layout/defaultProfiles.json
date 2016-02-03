@@ -700,44 +700,90 @@
           "toolTip": "Unique rim set number"
         },
         {
+          "name": "Rim_Manufacturer",
+          "rank": 2,
+          "label": "Manufacturer"
+        },
+        {
+          "name": "Rim_Name",
+          "rank": 3,
+          "label": "Name"
+        },
+        {
+          "name": "DisplayName",
+          "rank": 4,
+          "label": "Displayed name"
+        },
+        {
           "name": "Largeur_Front",
           "rank": 5,
-          "group": "Front"
+          "group": "Front",
+          "label": "Width"
         },
         {
           "name": "Hauteur_Front",
           "rank": 6,
-          "group": "Front"
+          "group": "Front",
+          "label": "Height"
         },
         {
           "name": "Diameter_Front",
           "rank": 7,
-          "group": "Front"
+          "group": "Front",
+          "label": "\u00d8"
         },
         {
           "name": "Largeur_Rear",
           "rank": 8,
-          "group": "Rear"
+          "group": "Rear",
+          "label": "Width"
         },
         {
           "name": "Hauteur_Rear",
           "rank": 9,
-          "group": "Rear"
+          "group": "Rear",
+          "label": "Height"
         },
         {
           "name": "Diameter_Rear",
           "rank": 10,
-          "group": "Rear"
+          "group": "Rear",
+          "label": "\u00d8"
+        },
+        {
+          "name": "Price_dollar",
+          "rank": 11,
+          "label": "Price ($)"
+        },
+        {
+          "name": "Nb_Spokes",
+          "rank": 12,
+          "label": "Spokes"
+        },
+        {
+          "name": "Rsc_Path",
+          "rank": 13,
+          "label": "Directory",
+          "toolTip": "Location under Euro/Bnk/Vehicules/Rim folder"
         },
         {
           "name": "Rsc_File_Name_Front",
           "rank": 14,
-          "group": "Front"
+          "group": "Front",
+          "label": "File name",
+          "toolTip": "Will require <File name>.bnk under <Directory>"
         },
         {
           "name": "Rsc_File_Name_Rear",
           "rank": 15,
-          "group": "Rear"
+          "group": "Rear",
+          "label": "File name",
+          "toolTip": "Will require <File name>.bnk under <Directory>"
+        },
+        {
+          "name": "BitField",
+          "rank": 16,
+          "toolTip": "Effect of this option is yet unknown"
         }
       ]
     },
