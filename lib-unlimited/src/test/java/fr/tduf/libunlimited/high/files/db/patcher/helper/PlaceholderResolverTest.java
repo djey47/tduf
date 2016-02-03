@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher.helper;
 
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -7,14 +8,27 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import javax.swing.text.html.Option;
+
+import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.INTEGER;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class PlaceholderResolverTest {
+
+    @Mock
+    private BulkDatabaseMiner minerMock;
 
     private DbDto databaseObject;
 
@@ -32,6 +46,10 @@ public class PlaceholderResolverTest {
                                 .ofRank(2)
                                 .fromType(RESOURCE_CURRENT_LOCALIZED)
                                 .build())
+                        .addItem(DbStructureDto.Field.builder()
+                                .ofRank(102)
+                                .fromType(INTEGER)
+                                .build())
                         .build())
                 .addResource(DbResourceDto.builder().withLocale(FRANCE).build())
                 .build();
@@ -41,7 +59,7 @@ public class PlaceholderResolverTest {
     public void resolveValuePlaceholder_whenNoPlaceholder_shouldReturnInitialValue() {
         // GIVEN-WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveValuePlaceholder("FOO", new PatchProperties())
+                PlaceholderResolver.resolveValuePlaceholder("FOO", new PatchProperties(), null)
         ).isEqualTo("FOO");
     }
 
@@ -53,7 +71,7 @@ public class PlaceholderResolverTest {
 
         // WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveValuePlaceholder("{FOO}", patchProperties)
+                PlaceholderResolver.resolveValuePlaceholder("{FOO}", patchProperties, null)
         ).isEqualTo("1");
     }
 
@@ -61,8 +79,21 @@ public class PlaceholderResolverTest {
     public void resolveValuePlaceholder_whenPlaceholder_withoutProperty_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveValuePlaceholder("{FOO}", new PatchProperties())
+                PlaceholderResolver.resolveValuePlaceholder("{FOO}", new PatchProperties(), null)
         ).isEqualTo("1");
+    }
+
+    @Test
+    public void resolveValuePlaceholder_whenCARID_withoutProperty_shouldGenerateUniqueIdentifier() {
+        // GIVEN
+        when(minerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(Optional.of(databaseObject));
+
+        // WHEN
+        final String actual = PlaceholderResolver.resolveValuePlaceholder("{CARID}", new PatchProperties(), minerMock);
+
+        // THEN
+        int intValue = Integer.valueOf(actual);
+        assertThat(intValue).isBetween(8000, 8999);
     }
 
     @Test

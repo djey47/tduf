@@ -5,15 +5,21 @@ import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import org.apache.commons.lang3.Range;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.*;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Component to handle placeholder values in patch instructions.
@@ -112,7 +118,7 @@ public class PlaceholderResolver {
                 .filter((changeObject) -> changeObject.getValue() != null)
 
                 .forEach((changeObject) -> {
-                    String effectiveValue = resolveValuePlaceholder(changeObject.getValue(), patchProperties);
+                    String effectiveValue = resolveValuePlaceholder(changeObject.getValue(), patchProperties, null);
                     changeObject.setValue(effectiveValue);
                 });
     }
@@ -124,7 +130,7 @@ public class PlaceholderResolver {
 
         List<String> effectiveValues = changeObject.getValues().stream()
 
-                .map((value) -> resolveValuePlaceholder(value, patchProperties))
+                .map((value) -> resolveValuePlaceholder(value, patchProperties, null))
 
                 .collect(toList());
 
@@ -139,7 +145,7 @@ public class PlaceholderResolver {
         final List<DbFieldValueDto> effectivePartialValues = changeObject.getPartialValues().stream()
 
                 .map((partialValue) -> {
-                    String effectiveValue = resolveValuePlaceholder(partialValue.getValue(), patchProperties);
+                    String effectiveValue = resolveValuePlaceholder(partialValue.getValue(), patchProperties, null);
                     return DbFieldValueDto.fromCouple(partialValue.getRank(), effectiveValue);
                 })
 
@@ -167,16 +173,37 @@ public class PlaceholderResolver {
         return value;
     }
 
-    // TODO handle CARID placeholder differently if not defined: generate unique ID (between 8000 and 9000 ?)
-    static String resolveValuePlaceholder(String value, PatchProperties patchProperties) {
+    static String resolveValuePlaceholder(String value, PatchProperties patchProperties, BulkDatabaseMiner miner) {
         final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
 
         if (matcher.matches()) {
             final String placeholderName = matcher.group(1);
-            return patchProperties.retrieve(placeholderName)
-                    .orElseThrow(() -> new IllegalArgumentException("No property found for value placeholder: " + value));
+            final Optional<String> potentialValue = patchProperties.retrieve(placeholderName);
+
+            if (potentialValue.isPresent()) {
+                return potentialValue.get();
+            }
+
+            if (PatchProperties.isPlaceholderForCarIdentifier(placeholderName)) {
+                return generateValueForCARIDPlaceholder(miner);
+            }
+
+            throw new IllegalArgumentException("No property found for value placeholder: " + value);
         }
 
         return value;
+    }
+
+    private static String generateValueForCARIDPlaceholder(BulkDatabaseMiner miner) {
+        final DbDto topicObject = miner.getDatabaseTopic(CAR_PHYSICS_DATA).get();
+        final Set<String> allIdCars = topicObject.getData().getEntries().stream()
+
+                .map((entry) -> entry.getItemAtRank(10).get())
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .collect(toSet());
+
+        return DatabaseGenHelper.generateUniqueIdentifier(allIdCars, Range.between(8000, 9000));
     }
 }
