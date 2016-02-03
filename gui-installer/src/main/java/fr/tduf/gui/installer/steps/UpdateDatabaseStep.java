@@ -88,7 +88,7 @@ public class UpdateDatabaseStep extends GenericStep {
     }
 
     void repackJsonDatabase() throws IOException {
-        Log.info(THIS_CLASS_NAME, "->Converting JSON database: " + getDatabaseContext());
+        Log.info(THIS_CLASS_NAME, "->Converting JSON database: " + getDatabaseContext().getJsonDatabaseDirectory());
 
         String jsonDatabaseDirectory = getDatabaseContext().getJsonDatabaseDirectory();
         String extractedDatabaseDirectory = createTempDirectory();
