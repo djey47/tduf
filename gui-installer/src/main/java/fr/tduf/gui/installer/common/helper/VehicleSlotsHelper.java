@@ -24,7 +24,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Component to get advanced information on vehicle slots.
  */
-// TODO check default values if no data found
 public class VehicleSlotsHelper {
 
     private static final DbResourceDto.Locale DEFAULT_LOCALE = UNITED_STATES;
@@ -55,7 +54,7 @@ public class VehicleSlotsHelper {
 
                 .map((rimEntry) -> getNameFromLocalResources(rimEntry.getId(), RIMS, DatabaseConstants.FIELD_RANK_RSC_PATH, DEFAULT_LOCALE, ""))
 
-                .orElse("");
+                .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
     }
 
     /**
@@ -132,13 +131,11 @@ public class VehicleSlotsHelper {
     public String getVehicleIdentifier(String slotRerence) {
         return miner.getContentEntryFromTopicWithReference(slotRerence, CAR_PHYSICS_DATA)
 
-                .map(DbDataDto.Entry::getId)
-
-                .flatMap((entryIdentifier) -> miner.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_ID_CAR, entryIdentifier))
+                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_ID_CAR))
 
                 .map(DbDataDto.Item::getRawValue)
 
-                .orElse("0");
+                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 
     /**
@@ -147,13 +144,11 @@ public class VehicleSlotsHelper {
     public String getCarFileName(String slotReference) {
         return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
 
-                .map(DbDataDto.Entry::getId)
-
-                .flatMap((entryIdentifier) -> miner.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_FILE_NAME, entryIdentifier))
+                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_FILE_NAME))
 
                 .map(DbDataDto.Item::getRawValue)
 
-                .orElse("");
+                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 
     /**
@@ -162,13 +157,11 @@ public class VehicleSlotsHelper {
     public String getModelName(String slotReference) {
         return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
 
-                .map(DbDataDto.Entry::getId)
-
-                .flatMap((entryIdentifier) -> miner.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_MODEL_NAME, entryIdentifier))
+                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_MODEL_NAME))
 
                 .map(DbDataDto.Item::getRawValue)
 
-                .orElse("");
+                .orElse(DatabaseConstants.RESOURCE_REF_UNKNOWN_VEHICLE_NAME);
     }
 
     /**
@@ -177,13 +170,11 @@ public class VehicleSlotsHelper {
     public String getVersionName(String slotReference) {
         return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
 
-                .map(DbDataDto.Entry::getId)
-
-                .flatMap((entryIdentifier) -> miner.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_VERSION_NAME, entryIdentifier))
+                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_VERSION_NAME))
 
                 .map(DbDataDto.Item::getRawValue)
 
-                .orElse("");
+                .orElse(DatabaseConstants.RESOURCE_REF_UNKNOWN_VEHICLE_NAME);
     }
 
     /**
@@ -194,12 +185,13 @@ public class VehicleSlotsHelper {
         final List<DbDataDto.Entry> exteriorEntries = miner.getContentEntriesMatchingCriteria(criteria, CAR_COLORS);
 
         if (exteriorEntries.size() >= exteriorIndex) {
-            return exteriorEntries.get(exteriorIndex - 1)
+            int exteriorFieldRank = exteriorIndex - 1;
+            return exteriorEntries.get(exteriorFieldRank)
                     .getItemAtRank(DatabaseConstants.FIELD_RANK_COLOR_NAME).get()
                     .getRawValue();
         }
 
-        return "";
+        return DatabaseConstants.RESOURCE_REF_UNKNOWN_COLOR_NAME;
     }
 
     /**
@@ -216,11 +208,11 @@ public class VehicleSlotsHelper {
                     .getRawValue();
         }
 
-        return "";
+        return DisplayConstants.ITEM_UNAVAILABLE;
     }
 
     /**
-     * @return
+     * @return value of REF data (INTERIOR) at exteriorIndex and interiorIndex for specified slot reference
      */
     public String getInteriorNameReference(String slotReference, int exteriorIndex, int interiorIndex) {
         String interiorReference = getInteriorReference(slotReference, exteriorIndex, interiorIndex);
@@ -230,7 +222,7 @@ public class VehicleSlotsHelper {
 
                 .map(DbDataDto.Item::getRawValue)
 
-                .orElse("");
+                .orElse(DatabaseConstants.RESOURCE_REF_NONE_INTERIOR_NAME);
     }
 
     /**
@@ -249,10 +241,8 @@ public class VehicleSlotsHelper {
                 .collect(toList());
     }
 
-    // TODO extract duplicated code to method
-
     /**
-     * @return
+     * @return value of REF data (RIMS) for default rims for specified slot reference
      */
     public String getDefaultRimIdentifier(String slotReference) {
         return getDefaultRimEntryForVehicle(slotReference)
@@ -261,7 +251,7 @@ public class VehicleSlotsHelper {
 
                 .map(DbDataDto.Item::getRawValue)
 
-                .orElse("");
+                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 
     /**
@@ -271,52 +261,49 @@ public class VehicleSlotsHelper {
 
         return getDefaultRimEntryForVehicle(slotReference)
 
-                .map(DbDataDto.Entry::getId)
-
-                .flatMap((rimEntryIdentifier) -> {
-                    int fieldRank = 0;
+                .flatMap((rimEntry) -> {
+                    int fieldRank;
                     if (FRONT_RIM == rimBankFileType) {
                         fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT;
                     } else if (REAR_RIM == rimBankFileType) {
                         fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR;
+                    } else {
+                        throw new IllegalArgumentException("Invalid bank file type: " + rimBankFileType);
                     }
 
-                    return miner.getContentItemWithEntryIdentifierAndFieldRank(RIMS, fieldRank, rimEntryIdentifier);
+                    return rimEntry.getItemAtRank(fieldRank);
                 })
 
                 .map(DbDataDto.Item::getRawValue)
 
-                .orElse("");
+                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 
     private Optional<DbDataDto.Entry> getDefaultRimEntryForVehicle(String slotReference) {
         return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
 
-                .map(DbDataDto.Entry::getId)
-
-                .flatMap((entryId) -> miner.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_DEFAULT_RIMS, entryId))
+                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEFAULT_RIMS))
 
                 .map(DbDataDto.Item::getRawValue)
 
                 .flatMap((rimSlotReference) -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS));
     }
 
-
     private String getDefaultRimBankFileName(String slotReference, BankFileType rimBankFileType) {
 
         return getDefaultRimEntryForVehicle(slotReference)
 
-                .map(DbDataDto.Entry::getId)
-
-                .map((rimEntryIdentifier) -> {
-                    int fieldRank = 0;
+                .map((rimEntry) -> {
+                    int fieldRank;
                     if (FRONT_RIM == rimBankFileType) {
                         fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT;
                     } else if (REAR_RIM == rimBankFileType) {
                         fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR;
+                    } else {
+                        throw new IllegalArgumentException("Invalid bank file type: " + rimBankFileType);
                     }
 
-                    return getNameFromLocalResources(rimEntryIdentifier, RIMS, fieldRank, DEFAULT_LOCALE, "");
+                    return rimEntry.getItemAtRank(fieldRank);
                 })
 
                 .map((rimBankSimpleName) -> String.format("%s.%s", rimBankSimpleName, EXTENSION_BANKS))

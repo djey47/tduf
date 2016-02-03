@@ -27,6 +27,14 @@ public class DatabaseConstants {
     public static final int FIELD_RANK_RSC_FILE_NAME_FRONT = 14;
     public static final int FIELD_RANK_RSC_FILE_NAME_REAR = 15;
 
-    public static final String RESOURCE_REF_GROUP_Z = "92900264";   // CAR PHYSICS
+    public static final String RESOURCE_REF_UNKNOWN_COLOR_NAME = "53366457";        // CAR COLORS
+
+    public static final String RESOURCE_REF_UNKNOWN_VEHICLE_NAME = "53338427";      // CAR PHYSICS
+    public static final String RESOURCE_REF_GROUP_Z = "92900264";
+
+    public static final String RESOURCE_REF_NONE_INTERIOR_NAME = "53365512";        // INTERIOR
+
+    public static final String RESOURCE_VALUE_DEFAULT = "Default";  // RIMS
     public static final String RESOURCE_VALUE_NONE = "??";
+
 }
