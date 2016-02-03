@@ -19,6 +19,7 @@ cli/integ-tests/jsonified/
 cli/integ-tests/patcher/out/
 cli/integ-tests/patcher/tdumt/out*/
 cli/perfs/
+gui-installer/tools/
 lib-unlimited/perfs/
 pack/
 releases/
