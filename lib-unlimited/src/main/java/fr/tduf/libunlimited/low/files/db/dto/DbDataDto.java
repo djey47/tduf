@@ -104,10 +104,9 @@ public class DbDataDto implements Serializable {
         }
 
         public Optional<Item> getItemAtRank(int fieldRank) {
-            if (fieldRank <= 0 || fieldRank > items.size()) {
-                return Optional.empty();
-            }
-            return Optional.of(items.get(fieldRank - 1));
+            return items.stream()
+                    .filter((item) -> item.fieldRank == fieldRank)
+                    .findAny();
         }
 
         @Override
