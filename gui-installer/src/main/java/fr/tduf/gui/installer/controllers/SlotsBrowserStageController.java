@@ -27,6 +27,7 @@ import java.util.Optional;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 public class SlotsBrowserStageController extends AbstractGuiController {
@@ -70,9 +71,11 @@ public class SlotsBrowserStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleSlotsTableMouseClick");
 
         if (MouseButton.PRIMARY == mouseEvent.getButton()) {
-            selectedSlot = TableViewHelper.getMouseSelectedItem(mouseEvent, VehicleSlotDataItem.class);
-
-            closeWindow();
+            TableViewHelper.getMouseSelectedItem(mouseEvent, VehicleSlotDataItem.class)
+                    .ifPresent((item) -> {
+                        selectedSlot = of(item);
+                        closeWindow();
+                    });
         }
     }
 
