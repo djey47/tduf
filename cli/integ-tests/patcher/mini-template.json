@@ -163,6 +163,16 @@
       ]
     },
     {
+      "type": "UPDATE",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "{SLOTREF-RIMS-DELETION}",
+      "partialValues": [
+        {
+          "rank": 103,
+          "value": "{BITFIELD-PARTIAL-UPDATE}"
+        }
+      ]
+    },    {
       "type": "UPDATE_RES",
       "topic": "CAR_PHYSICS_DATA",
       "ref": "{RES_BANKNAME}",

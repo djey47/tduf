@@ -153,6 +153,7 @@ public class DatabaseToolIntegTest {
         assertCarPhysicsEntryWithRefHasFieldValue("000003000", 102, "3000", "Id car set to 3000 at #102", miner);
         assertCarPhysicsResourceWithRefHasValue("3000567", UNITED_STATES, "TDUCP_3000", "Created resource value #3000567: TDUCP_3000", miner);
         assertCarPhysicsResourceWithRefHasValue("3000567", FRANCE, "TDUCP_3000", "Created resource value #3000567: TDUCP_3000", miner);
+        assertCarPhysicsEntryWithRefHasFieldValue("63518960", 103, "8900", "bitfield patched to 8900", miner);
 
 
         // THEN: car rims must be deleted for a particular slot
@@ -166,7 +167,7 @@ public class DatabaseToolIntegTest {
         final File handle = new File(effectivePatchPropertyFile);
         assertThat(handle).exists();
         actualProperties.load(new FileInputStream(handle));
-        assertThat(actualProperties.size()).isEqualTo(25);
+        assertThat(actualProperties.size()).isEqualTo(26);
     }
 
     @Test
