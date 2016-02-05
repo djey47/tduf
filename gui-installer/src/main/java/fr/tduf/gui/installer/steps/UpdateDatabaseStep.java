@@ -142,10 +142,10 @@ public class UpdateDatabaseStep extends GenericStep {
 
     private void createPatchPropertiesForVehicleSlot(String slotReference, PatchProperties patchProperties) {
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(getDatabaseContext().getMiner());
-        String selectedCarIdentifier = vehicleSlotsHelper.getVehicleIdentifier(slotReference);
+        int selectedCarIdentifier = vehicleSlotsHelper.getVehicleIdentifier(slotReference);
 
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
-        patchProperties.setCarIdentifierIfNotExists(selectedCarIdentifier);
+        patchProperties.setCarIdentifierIfNotExists(Integer.valueOf(selectedCarIdentifier).toString());
     }
 
     private static SlotsBrowserStageController initSlotsBrowserController(Window mainWindow) throws IOException {

@@ -24,6 +24,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Component to get advanced information on vehicle slots.
  */
+// TODO Provide single method to load vehicle data into a domain object (VehicleSlot) and use it
 public class VehicleSlotsHelper {
 
     private static final DbResourceDto.Locale DEFAULT_LOCALE = UNITED_STATES;
@@ -128,14 +129,16 @@ public class VehicleSlotsHelper {
     /**
      * @return value of ID_Car data for specified slot reference.
      */
-    public String getVehicleIdentifier(String slotRerence) {
+    public int getVehicleIdentifier(String slotRerence) {
         return miner.getContentEntryFromTopicWithReference(slotRerence, CAR_PHYSICS_DATA)
 
                 .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_ID_CAR))
 
                 .map(DbDataDto.Item::getRawValue)
 
-                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
+                .map(Integer::valueOf)
+
+                .orElse(0);
     }
 
     /**
