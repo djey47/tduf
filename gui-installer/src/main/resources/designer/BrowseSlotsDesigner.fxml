@@ -24,8 +24,9 @@
                <children>
                   <TableView fx:id="slotsTableView" onMouseClicked="#handleSlotsTableMouseClick" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
-                      <TableColumn prefWidth="96.0" text="REF" />
-                      <TableColumn prefWidth="543.0" text="Vehicle name" />
+                      <TableColumn editable="false" prefWidth="96.0" text="REF" />
+                      <TableColumn editable="false" prefWidth="510.0" text="Vehicle name" />
+                        <TableColumn editable="false" prefWidth="60.0" text="Car ID" />
                     </columns>
                   </TableView>
                </children>

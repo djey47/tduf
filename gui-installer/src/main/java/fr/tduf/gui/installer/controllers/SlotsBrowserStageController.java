@@ -122,6 +122,9 @@ public class SlotsBrowserStageController extends AbstractGuiController {
         TableColumn<VehicleSlotDataItem, ?> nameColumn = slotsTableView.getColumns().get(1);
         nameColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().nameProperty());
 
+        TableColumn<VehicleSlotDataItem, ?> carIdColumn = slotsTableView.getColumns().get(2);
+        carIdColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().carIdProperty());
+
         slotsTableView.setItems(slotsData);
     }
 
@@ -154,6 +157,9 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
                     String slotName = vehicleSlotsHelper.getVehicleName(slotReference);
                     dataItem.setName(slotName);
+
+                    int carId = vehicleSlotsHelper.getVehicleIdentifier(slotReference);
+                    dataItem.setCarId(carId);
 
                     return dataItem;
                 })
