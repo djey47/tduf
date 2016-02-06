@@ -291,7 +291,6 @@ task copyVersionInfo(type: Copy) {
     into 'pack/lib/'
 }
 
-// TODO see to upgrade Gradle
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.2'
+    gradleVersion = '2.10'
 }
