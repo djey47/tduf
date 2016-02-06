@@ -228,9 +228,7 @@
         "{RIMREF.1}",
         "{RIMBRANDREF.1}",
         "54276512",
-        "5436562",
-        "54276512",
-        "5436562",
+        "{RES_RIMNAME.1}",
         "{RIMWIDTH.FR.1}",
         "{RIMHEIGHT.FR.1}",
         "{RIMDIAM.FR.1}",
@@ -244,6 +242,12 @@
         "{RES_BANKNAME.RR.1}",
         "0"
       ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_RIMNAME.1}",
+      "value": "{RIMNAME.1}"
     },
     {
       "type": "UPDATE_RES",
