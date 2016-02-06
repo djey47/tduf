@@ -68,7 +68,7 @@
       "ref": "{SLOTREF}",
       "values": [
         "{SLOTREF}",
-        "85649",
+        "{BRANDREF}",
         "{RES_MODELNAME}",
         "55438427",
         "73900264",
@@ -216,7 +216,7 @@
       "ref": "{RIMREF.1}",
       "values": [
         "{RIMREF.1}",
-        "55765512",
+        "{RIMBRANDREF.1}",
         "54276512",
         "5436562",
         "225",
@@ -227,7 +227,7 @@
         "18",
         "0",
         "5",
-        "55765512",
+        "{RIMBRANDREF.1}",
         "{RES_BANKNAME.FR.1}",
         "{RES_BANKNAME.RR.1}",
         "0"
