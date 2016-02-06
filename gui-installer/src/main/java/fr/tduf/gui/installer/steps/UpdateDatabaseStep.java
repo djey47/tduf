@@ -137,7 +137,7 @@ public class UpdateDatabaseStep extends GenericStep {
 
         PatchPropertiesReadWriteHelper.writePatchProperties(effectivePatchProperties, patchFile.getAbsolutePath());
 
-        setPatchProperties(patchProperties);
+        setPatchProperties(effectivePatchProperties);
     }
 
     private void createPatchPropertiesForVehicleSlot(String slotReference, PatchProperties patchProperties) {
