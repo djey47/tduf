@@ -2,15 +2,16 @@
 
 Here is a new vehicle mod installer:
 * Adds new vehicle to the game
-* Makes new files to be accepted by updating Magic Map
-* Allows to uninstall it.
+* Displays list of current slots to install onto one
+* Makes new files to be accepted by updating Magic Map.
 
 ### What's in this version ?
 
-* Initial release
+* Initial ALPHA release
 
 ### Main features
 
+* Install only
 * Ability to only update Magic Map (Advanced feature)
 
 ### What you will need to run TDUF
@@ -18,13 +19,78 @@ Here is a new vehicle mod installer:
 * Please uninstall any Java Runtime < 8
 * [Update / Install Java 8 Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
 
-### Preparing your install!
+### Performing your install!
 
-* TODO.
+PREPARING
 
-### Using installer!
+- Extract InstallerKit to project Dir: e.g Desktop\F250TR
 
-* Launch *TDUF-installer.cmd* and follow instructions.
+
+
+PUT MODDED FILES UNDER assets directories:
+(MOD can be name of your choice)
+
+- 3D: exterior and interior MOD.BNK, MOD_I.BNK
+
+- 3D\RIMS: Single rim set for front/rear: MOD_F_01.BNK, MOD_R_01.BNK
+(if same rims for front and rear, create copy for rear)
+
+- GAUGES\HIGH: MOD.BNK (high-res hud)
+
+- GAUGES\LOW: MOD.BNK (low-res hud)
+
+- SOUND: MOD_audio.BNK
+
+
+
+
+CUSTOMIZATION
+
+- Edit assets\README\README.txt file and put all important information
+
+- Copy files: patchTemplates\xxxxx.mini.json and xxxxx.mini.json.properties matching mod type
+to:  assets\DATABASE\
+
+- Edit assets\DATABASE\xxxxx.mini.json.properties
+
+
+
+TESTING
+
+- Launch TDUF-installer.cmd
+
+- Enter or browse TDU location
+
+- Click Install. Installer will look unresponsive for a few seconds
+
+- Select target car slot or create new slot for it
+
+- Installer will look unresponsive for a few seconds
+
+- Check install events in logs\TDUF-Installer.log file
+
+
+
+FINAL
+
+(1) Before packing, you can remove:
+
+- patchTemplates (directory)
+- README.txt in root directory
+- WTF.txt (files)
+
+(2) Make sure directories are present:
+
+- assets
+- cli
+- lib
+- logs
+- tools
+
+(3) Rename TDUF-installer.cmd to Name of your choice, BUT keep .cmd extension !
+
+(4) Compress project directory and distribute.
+
 
 ### Using JAR library and/or CLI Tools in your projects
 
