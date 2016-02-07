@@ -4,6 +4,7 @@ import fr.tduf.gui.installer.common.helper.TestHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +17,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.UPDATE_DATABASE;
-import static java.util.Optional.empty;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -42,7 +42,7 @@ public class UpdateDatabaseStepTest {
     }
 
     @Test
-    public void applyPatches_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException {
+    public void applyPatches_whenForcedVehicleSlot_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException {
         // GIVEN
         String assetsDirectory = new File(thisClass.getResource("/assets-patch-only").toURI()).getAbsolutePath();
         InstallerConfiguration configuration = InstallerConfiguration.builder()
@@ -54,7 +54,7 @@ public class UpdateDatabaseStepTest {
         final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
                 GenericStep.starterStep(configuration, databaseContext, null)
                         .nextStep(UPDATE_DATABASE));
-        updateDatabaseStep.applyPatches(empty());
+        updateDatabaseStep.applyPatches();
 
         // THEN
     }

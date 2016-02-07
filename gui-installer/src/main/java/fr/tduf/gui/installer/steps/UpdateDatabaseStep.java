@@ -44,19 +44,14 @@ public class UpdateDatabaseStep extends GenericStep {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
 
-        Optional<String> potentialVehicleSlot = selectVehicleSlot();
-        if (!potentialVehicleSlot.isPresent()) {
-            Log.info(THIS_CLASS_NAME, "No vehicle slot selected, creating new one.");
-        }
-
-        applyPatches(potentialVehicleSlot);
+        applyPatches();
 
         repackJsonDatabase();
 
         // TODO check if all files have been written
     }
 
-    List<String> applyPatches(Optional<String> potentialVehicleSlot) throws IOException, ReflectiveOperationException {
+    List<String> applyPatches() throws IOException, ReflectiveOperationException {
         Log.info(THIS_CLASS_NAME, "->Loading JSON database: " + getDatabaseContext().getJsonDatabaseDirectory());
 
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
@@ -76,7 +71,7 @@ public class UpdateDatabaseStep extends GenericStep {
 
                 .forEach((patch) -> {
                     try {
-                        applyPatch(patch, patcher, potentialVehicleSlot);
+                        applyPatch(patch, patcher);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -104,25 +99,7 @@ public class UpdateDatabaseStep extends GenericStep {
         Log.info(THIS_CLASS_NAME, "->Repacked database: " + extractedDatabaseDirectory + " to " + databaseDirectory);
     }
 
-    private Optional<String> selectVehicleSlot() throws IOException {
-        Log.info(THIS_CLASS_NAME, "->Selecting vehicle slot");
-
-        requireNonNull(getDatabaseContext(), "Database context is required.");
-
-        SlotsBrowserStageController slotsBrowserController = initSlotsBrowserController(getInstallerConfiguration().getMainWindow());
-
-        Optional<VehicleSlotDataItem> selectedItem = slotsBrowserController.initAndShowModalDialog(Optional.empty(), getDatabaseContext().getMiner());
-        if(selectedItem == null) {
-            throw new IOException("Aborted by user");
-        }
-
-        Log.info(THIS_CLASS_NAME, "->Using vehicle slot: " + selectedItem);
-
-        return selectedItem
-                .map((item) -> item.referenceProperty().get());
-    }
-
-    private void applyPatch(Path patchPath, DatabasePatcher patcher, Optional<String> potentialVehicleSlot) throws IOException {
+    private void applyPatch(Path patchPath, DatabasePatcher patcher) throws IOException {
         Log.info(THIS_CLASS_NAME, "*> Now applying patch: " + patchPath);
 
         final File patchFile = patchPath.toFile();
@@ -130,7 +107,7 @@ public class UpdateDatabaseStep extends GenericStep {
 
         PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
 
-        potentialVehicleSlot.ifPresent((slotRef) -> createPatchPropertiesForVehicleSlot(slotRef, patchProperties));
+        selectAndDefineVehicleSlot(patchProperties);
 
         // TODO handle placeholder resolver errors
         PatchProperties effectivePatchProperties = patcher.applyWithProperties(patchObject, patchProperties);
@@ -138,6 +115,33 @@ public class UpdateDatabaseStep extends GenericStep {
         PatchPropertiesReadWriteHelper.writePatchProperties(effectivePatchProperties, patchFile.getAbsolutePath());
 
         setPatchProperties(effectivePatchProperties);
+    }
+
+    private void selectAndDefineVehicleSlot(PatchProperties patchProperties) throws IOException {
+        requireNonNull(getDatabaseContext(), "Database context is required.");
+
+        Optional<String> forcedVehicleSlotRef = patchProperties.getVehicleSlotReference();
+        if (forcedVehicleSlotRef.isPresent()) {
+            Log.info(THIS_CLASS_NAME, "->Forced using vehicle slot: " +  forcedVehicleSlotRef.get());
+            return;
+        }
+
+        Log.info(THIS_CLASS_NAME, "->Selecting vehicle slot");
+
+        SlotsBrowserStageController slotsBrowserController = initSlotsBrowserController(getInstallerConfiguration().getMainWindow());
+        Optional<VehicleSlotDataItem> selectedItem = slotsBrowserController.initAndShowModalDialog(Optional.empty(), getDatabaseContext().getMiner());
+        if(selectedItem == null) {
+            throw new IOException("Aborted by user");
+        }
+
+        Log.info(THIS_CLASS_NAME, "->Using vehicle slot: " + selectedItem);
+
+        Optional<String> potentialVehicleSlot = selectedItem
+                .map((item) -> item.referenceProperty().get());
+        potentialVehicleSlot.ifPresent((slotRef) -> createPatchPropertiesForVehicleSlot(slotRef, patchProperties));
+        if (!potentialVehicleSlot.isPresent()) {
+            Log.info(THIS_CLASS_NAME, "->No vehicle slot selected, will be creating a new one.");
+        }
     }
 
     private void createPatchPropertiesForVehicleSlot(String slotReference, PatchProperties patchProperties) {
