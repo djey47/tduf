@@ -18,6 +18,11 @@
                      </font>
                   </Label>
                   <Hyperlink onAction="#handleCreateNewSlotHyperlinkAction" text="create new slot" />
+                  <Label fx:id="instructionsLabel1" alignment="TOP_CENTER" layoutX="10.0" layoutY="17.0" text="(experimental!)">
+                     <font>
+                        <Font name="System Italic" size="13.0" />
+                     </font>
+                  </Label>
                </items>
             </ToolBar>
             <AnchorPane VBox.vgrow="ALWAYS">
