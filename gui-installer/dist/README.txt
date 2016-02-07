@@ -77,6 +77,8 @@ TESTING
 
 - Check install events in logs\TDUF-Installer.log file
 
+- Check for generated values in effective properties file: assets\DATABASE\effective-xxxxx.mini.json.properties
+
 
 
 FINAL
