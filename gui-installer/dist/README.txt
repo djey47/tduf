@@ -5,19 +5,23 @@ Here is a new vehicle mod installer:
 * Displays list of current slots to install onto one
 * Makes new files to be accepted by updating Magic Map.
 
+
 ### What's in this version ?
 
 * Initial ALPHA release
+
 
 ### Main features
 
 * Install only
 * Ability to only update Magic Map (Advanced feature)
 
+
 ### What you will need to run TDUF
 
 * Please uninstall any Java Runtime < 8
 * [Update / Install Java 8 Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
+
 
 ### Performing your install!
 
@@ -43,7 +47,6 @@ PUT MODDED FILES UNDER assets directories:
 
 
 
-
 CUSTOMIZATION
 
 - Edit assets\README\README.txt file and put all important information
@@ -51,7 +54,12 @@ CUSTOMIZATION
 - Copy files: patchTemplates\xxxxx.mini.json and xxxxx.mini.json.properties matching mod type
 to:  assets\DATABASE\
 
-- Edit assets\DATABASE\xxxxx.mini.json.properties
+- Edit assets\DATABASE\xxxxx.mini.json.properties for wanted values:
+    - BRANDREF: choose a BRANDS slots
+    - RIMBRANDREF: choose a RIMS resource
+    - COLORID.M.x/COLORID.S.x/CALLIPERSID.x: choose CAR_COLORS resources (M=Main, S=Secondary)
+    - INTCOLORID.M.x/INTCOLORID.S.x/INTMATERIALID.x: choose INTERIOR resources
+    - SLOTREF: choose a CAR_PHYSICS slot. If enabled, Installer will not ask for vehicle slot.
 
 
 
@@ -96,11 +104,13 @@ FINAL
 
 It's for free, but you ought to put a mention (kinda 'Powered By TDUF project') and give a link to thread @ [TurboDuck](http://forum.turboduck.net/threads/32570-Djey-Discussion-about-new-modding-possibilities)
 
+
 ###  And especially...
 
 Have fun! As much as I had with developing those tools !
 
 If you wish to donate, please head to [this](http://bit.ly/13YI3bP)
+
 
 ### Contact & useful links
 
