@@ -133,6 +133,10 @@ public class ResourcesStageController extends AbstractGuiController {
     private void handleTopicChoiceChanged(DbDto.Topic newTopic) {
         Log.trace(THIS_CLASS_NAME, "->handleTopicChoiceChanged: " + newTopic);
 
+        if (newTopic == null) {
+            return;
+        }
+
         updateResourcesStageData();
     }
 
@@ -148,6 +152,9 @@ public class ResourcesStageController extends AbstractGuiController {
         resourceReferenceProperty = referenceProperty;
         fieldRank = entryFieldRank;
         currentLocale = locale;
+
+        topicsChoiceBox.getSelectionModel().clearSelection();
+
         browsedResourceProperty.setValue(new LocalizedResource(targetTopic, referenceProperty.get()));
 
         showWindow();
