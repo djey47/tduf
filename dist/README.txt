@@ -24,23 +24,17 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Exports current entry to following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch
 * Exports all entries for topics not supporting REF.
 
-### What's in this version ? (1.1.0)
+### What's in this version ? (1.2.0)
 
-* SPS (Smart Patching System) - Part 1
-* Greatly enhances performance when unpacking/repacking database files
-* Greatly enhances performance when dealing with JSON database.
+*
 
 ### New features
 
-* (databaseEditor) Supports SPS templates in patches
-* (databaseEditor) Supports patch properties files
-
-* (library/all) Produces properly formatted, nice JSON output
-* (library/database) Patches: generate new CARID if necessary
+*
 
 ### Fixed issues
 
-* Misc. bug fixes and enhancements.
+*
 
 ### Known bugs
 
