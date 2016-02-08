@@ -19,22 +19,28 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Adds / changes / deletes / duplicates a particular content entry
 * Adds / changes / deletes a particular resource entry
 * Searches particular content/resource entry with its REF
-* Imports data from TDUF (mini-patch file .json)
+* Imports data from TDUF (mini-patch file .json) with additional properties file
 * Imports data from TDUPE (Performance Pack .tdupk)
 * Exports current entry to following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch
 * Exports all entries for topics not supporting REF.
 
 ### What's in this version ? (1.1.0)
 
-*
+* SPS (Smart Patching System) - Part 1
+* Greatly enhances performance when unpacking/repacking database files
+* Greatly enhances performance when dealing with JSON database.
 
 ### New features
 
-*
+* (databaseEditor) Supports SPS templates in patches
+* (databaseEditor) Supports patch properties files
+
+* (library/all) Produces properly formatted, nice JSON output
+* (library/database) Patches: generate new CARID if necessary
 
 ### Fixed issues
 
-*
+* Misc. bug fixes and enhancements.
 
 ### Known bugs
 
