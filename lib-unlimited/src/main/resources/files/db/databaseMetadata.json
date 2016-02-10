@@ -5,8 +5,7 @@
       "bitfieldReference": [
         {
           "index": 1,
-          "label": "?",
-          "comment": "Always ON"
+          "label": "Brand enabled"
         },
         {
           "index": 2,
