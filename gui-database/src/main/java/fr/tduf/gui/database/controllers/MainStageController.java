@@ -80,6 +80,7 @@ public class MainStageController extends AbstractGuiController {
     Property<ContentEntryDataItem> currentEntryProperty;
     Property<Long> currentEntryIndexProperty;
     SimpleStringProperty currentEntryLabelProperty;
+    // TODO bind to effective list size
     Property<Integer> entryItemsCountProperty;
     Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
     Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
@@ -644,13 +645,14 @@ public class MainStageController extends AbstractGuiController {
     private void addEntryAndUpdateStage() {
         long newEntryIndex = changeDataController.addEntryForCurrentTopic();
 
-        viewDataController.updateEntryCountAndSwitchToEntry(newEntryIndex);
+        viewDataController.updateEntriesAndSwitchTo(newEntryIndex);
+        viewDataController.fillBrowsableEntries(currentTopicObject.getTopic());
     }
 
     private void duplicateEntryAndUpdateStage() {
         long newEntryIndex = changeDataController.duplicateCurrentEntry();
 
-        viewDataController.updateEntryCountAndSwitchToEntry(newEntryIndex);
+        viewDataController.updateEntriesAndSwitchTo(newEntryIndex);
     }
 
     private void addLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, Optional<ContentEntryDataItem> potentialLinkedEntry, TopicLinkDto topicLinkObject) {
@@ -673,7 +675,7 @@ public class MainStageController extends AbstractGuiController {
         if (currentEntryIndex == 0) {
             currentEntryIndex = 1;
         }
-        viewDataController.updateEntryCountAndSwitchToEntry(currentEntryIndex - 1);
+        viewDataController.updateEntriesAndSwitchTo(currentEntryIndex - 1);
     }
 
     private void removeLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {

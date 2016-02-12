@@ -117,8 +117,9 @@ public class MainStageViewDataController {
                 .ifPresent(this::updateLinkProperties);
     }
 
-    void updateEntryCountAndSwitchToEntry(long entryIndex) {
+    void updateEntriesAndSwitchTo(long entryIndex) {
         updateEntryCount();
+        fillBrowsableEntries(mainStageController.getCurrentTopicObject().getTopic());
         switchToContentEntry(entryIndex);
     }
 
