@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.common.helper;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,6 +27,9 @@ public class FilesHelper {
     public static final Charset CHARSET_UNICODE_8 = Charset.forName("UTF-8");
 
     private static Class<FilesHelper> thisClass = FilesHelper.class;
+
+    private static final ObjectMapper jsonMapper = new ObjectMapper();
+    private static final ObjectWriter jsonWriter = jsonMapper.writerWithDefaultPrettyPrinter();
 
     /**
      * Reads text file at provided resource location. Used charset is the default one.
@@ -68,7 +72,7 @@ public class FilesHelper {
      */
     public static <T> T readObjectFromJsonResourceFile(Class<T> objectClass, String resourcePath) throws URISyntaxException, IOException {
         InputStream resourceAsStream = thisClass.getResourceAsStream(resourcePath);
-        return new ObjectMapper().readValue(resourceAsStream, objectClass);
+        return jsonMapper.readValue(resourceAsStream, objectClass);
     }
 
     /**
@@ -108,11 +112,12 @@ public class FilesHelper {
      * @param fileName  : path of file to be created
      * @throws IOException
      */
+    // TODO use this method from other modules (gui etc...)
     public static void writeJsonObjectToFile(Object object, String fileName) throws IOException {
         Path patchFilePath = Paths.get(fileName);
         Files.createDirectories(patchFilePath.getParent());
         try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(patchFilePath, StandardCharsets.UTF_8)) {
-            new ObjectMapper().writer().writeValue(bufferedWriter, object);
+            jsonWriter.writeValue(bufferedWriter, object);
         }
     }
 
