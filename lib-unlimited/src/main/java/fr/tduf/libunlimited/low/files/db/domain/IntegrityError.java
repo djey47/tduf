@@ -83,6 +83,11 @@ public class IntegrityError {
      */
     public enum ErrorTypeEnum {
         /**
+         * An incomplete list of topic objects has been provided to database checker
+         */
+        INCOMPLETE_DATABASE("One or more database topics are missing: %s"),
+
+        /**
          * Read Item count not same as displayed one
          */
         CONTENT_ITEMS_COUNT_MISMATCH("Item count information is not same as actual item count: %s"),
@@ -146,6 +151,7 @@ public class IntegrityError {
 
         SOURCE_TOPIC("Source Topic"),
         REMOTE_TOPIC("Remote Topic"),
+        MISSING_TOPICS("Missing topics"),
         LOCALE("Locale"),
         REFERENCE("Reference"),
         PER_LOCALE_COUNT("Per-Locale Count"),
