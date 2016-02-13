@@ -18,7 +18,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -283,7 +282,6 @@ public class DatabaseToolIntegTest {
     }
 
     @Test
-    @Ignore("Skipped as it does not terminate correctly")
     public void unpackAll_withDeepCheck_andFix() throws IOException {
         // GIVEN
         String unpackJsonDirectory = Paths.get(DIRECTORY_DATABASE_BANKS_OUTPUT, "json").toString();
@@ -305,8 +303,8 @@ public class DatabaseToolIntegTest {
         AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 7);
 
         AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "missingTopicContents", 18);
-        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "integrityErrors", 18);
-        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "remainingIntegrityErrors", 18);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "integrityErrors", 19);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "remainingIntegrityErrors", 19);
         AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 0);
 
         assertThat(rootJsonNode.get("sourceDatabaseDirectory").asText()).endsWith(DIRECTORY_DATABASE_BANKS);
