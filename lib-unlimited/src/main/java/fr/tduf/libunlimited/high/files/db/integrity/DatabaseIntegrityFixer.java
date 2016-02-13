@@ -30,7 +30,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
     // Following errors are auto-handled: CONTENT_ITEMS_COUNT_MISMATCH, STRUCTURE_FIELDS_COUNT_MISMATCH
     private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH, RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND, CONTENTS_FIELDS_COUNT_MISMATCH, RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES));
-    private static final Set<IntegrityError.ErrorTypeEnum> UNFIXABLE_ERRORS = new HashSet<>(asList(CONTENTS_NOT_FOUND, CONTENTS_ENCRYPTION_NOT_SUPPORTED));
+    private static final Set<IntegrityError.ErrorTypeEnum> UNFIXABLE_ERRORS = new HashSet<>(asList(INCOMPLETE_DATABASE, CONTENTS_NOT_FOUND, CONTENTS_ENCRYPTION_NOT_SUPPORTED));
 
     private DatabaseGenHelper genHelper;
 
