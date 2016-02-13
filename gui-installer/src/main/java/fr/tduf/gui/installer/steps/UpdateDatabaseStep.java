@@ -88,7 +88,7 @@ public class UpdateDatabaseStep extends GenericStep {
         String jsonDatabaseDirectory = getDatabaseContext().getJsonDatabaseDirectory();
         String extractedDatabaseDirectory = createTempDirectory();
 
-        JsonGateway.gen(jsonDatabaseDirectory, extractedDatabaseDirectory, false, new ArrayList<>());
+        JsonGateway.gen(jsonDatabaseDirectory, extractedDatabaseDirectory, new ArrayList<>());
 
         Log.info(THIS_CLASS_NAME, "->Converted TDU database directory: " + extractedDatabaseDirectory);
 

@@ -10,7 +10,7 @@ public class JsonGatewayTest {
     @Test(expected = NullPointerException.class)
     public void dump_whenNullTopicList_shouldThrowException() throws Exception {
         // GIVEN-WHEN
-        JsonGateway.dump("", "", true, null, new HashSet<>());
+        JsonGateway.dump("", "", null, new HashSet<>());
 
         // THEN: NPE
     }
@@ -18,7 +18,7 @@ public class JsonGatewayTest {
     @Test(expected = NullPointerException.class)
     public void dump_whenNullIntegrityErrorList_shouldThrowException() throws Exception {
         // GIVEN-WHEN
-        JsonGateway.dump("", "", true, new ArrayList<>(), null);
+        JsonGateway.dump("", "", new ArrayList<>(), null);
 
         // THEN: NPE
     }
@@ -26,7 +26,7 @@ public class JsonGatewayTest {
     @Test(expected = NullPointerException.class)
     public void gen_whenNullTopicList_shouldThrowException() throws Exception {
         // GIVEN-WHEN
-        JsonGateway.gen("", "", true, null);
+        JsonGateway.gen("", "", null);
 
         // THEN: NPE
     }

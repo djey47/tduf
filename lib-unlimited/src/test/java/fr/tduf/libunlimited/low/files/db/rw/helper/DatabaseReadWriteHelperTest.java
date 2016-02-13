@@ -18,8 +18,6 @@ import java.nio.file.Files;
 import java.util.*;
 
 import static fr.tduf.libtesting.common.helper.AssertionsHelper.assertFileDoesNotMatchReference;
-import static fr.tduf.libtesting.common.helper.AssertionsHelper.assertFileMatchesReference;
-import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.STRUCTURE_FIELDS_COUNT_MISMATCH;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,7 +43,7 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, true, integrityErrors);
+        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
 
 
         // THEN
@@ -53,45 +51,6 @@ public class DatabaseReadWriteHelperTest {
 
         assertThat(integrityErrors).hasSize(1);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.CONTENTS_NOT_FOUND);
-    }
-
-    @Test
-    public void readDatabase_whenRealFile_andClearContents_shouldReturnDatabaseContents_andMissingResourceNotices() throws URISyntaxException, IOException {
-        // GIVEN
-        File dbFile = new File(thisClass.getResource("/db/TDU_Achievements.db").toURI());
-        String databaseDirectory = dbFile.getParent();
-        Set<IntegrityError> integrityErrors = new HashSet<>();
-
-
-        // WHEN
-        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, true, integrityErrors);
-
-
-        // THEN
-        assertThat(potentialDbDto).isPresent();
-        assertThat(potentialDbDto.get().getData()).isNotNull();
-
-        assertThat(integrityErrors).hasSize(8);
-        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND);
-    }
-
-    @Test
-    public void readDatabase_whenRealFileWithErrors_andClearContents_shouldUpdateIntegrityErrors() throws URISyntaxException, IOException {
-        // GIVEN
-        Set<IntegrityError> integrityErrors = new HashSet<>();
-
-        // Errors : field count mismatch in structure
-        File dbFile = new File(thisClass.getResource("/db/errors/TDU_Achievements.db").toURI());
-        String databaseDirectory = dbFile.getParent();
-
-
-        // WHEN
-        DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, true, integrityErrors);
-
-
-        // THEN
-        assertThat(integrityErrors).isNotEmpty();
-        assertThat(integrityErrors).extracting("errorTypeEnum").contains(STRUCTURE_FIELDS_COUNT_MISMATCH);
     }
 
     @Test
@@ -103,7 +62,7 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, false, integrityErrors);
+        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
 
 
         // THEN
@@ -123,7 +82,7 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, false, integrityErrors);
+        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
 
 
         // THEN
@@ -194,7 +153,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void parseTopicContentsFromDirectory_whenRealFile_andClear_Contents_shouldReturnContentsAsLines() throws URISyntaxException, FileNotFoundException {
+    public void parseTopicContentsFromDirectory_whenRealFile_shouldReturnContentsAsLines() throws URISyntaxException, FileNotFoundException {
         // GIVEN
         File dbFile = new File(thisClass.getResource("/db/TDU_Achievements.db").toURI());
 
@@ -207,7 +166,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void parseTopicResourcesFromDirectory_whenRealFiles_andClearContents_shouldReturnContentsAsCollections() throws URISyntaxException, FileNotFoundException {
+    public void parseTopicResourcesFromDirectory_whenRealFiles_shouldReturnContentsAsCollections() throws URISyntaxException, FileNotFoundException {
         // GIVEN
         Set<IntegrityError> integrityErrors = new HashSet<>();
         File dbFile = new File(thisClass.getResource("/db/res/TDU_Achievements.fr").toURI());
@@ -230,7 +189,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void writeDatabaseTopicToJson_whenProvidedContents_andClearContents_shouldCreateFile_andReturnAbsolutePath() throws IOException {
+    public void writeDatabaseTopicToJson_whenProvidedContents_shouldCreateFile_andReturnAbsolutePath() throws IOException {
         // GIVEN
         DbDto dbDto = createDatabaseTopicObject();
 
@@ -283,34 +242,14 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void writeDatabaseTopic_whenProvidedContents_WithoutEncryption_shouldCreateClearFiles() throws URISyntaxException, IOException {
+    public void writeDatabaseTopic_whenProvidedContents_shouldCreateEncryptedFiles() throws URISyntaxException, IOException {
         // GIVEN
         String jsonDirectory = getJsonDirectoryFromResourceFile();
         DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory).get();
 
 
         // WHEN
-        List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabaseTopic(dbDto, tempDirectory, true);
-
-
-        // THEN
-        assertThat(writtenFiles).hasSize(3);
-
-        writtenFiles.stream()
-                .forEach((fileName) -> assertThat(new File(fileName)).exists());
-
-        assertFileMatchesReference(writtenFiles.get(0), "/db/");
-    }
-
-    @Test
-    public void writeDatabaseTopic_whenProvidedContents_WithEncryption_shouldCreateEncryptedFiles() throws URISyntaxException, IOException {
-        // GIVEN
-        String jsonDirectory = getJsonDirectoryFromResourceFile();
-        DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory).get();
-
-
-        // WHEN
-        List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabaseTopic(dbDto, tempDirectory, false);
+        List<String> writtenFiles = DatabaseReadWriteHelper.writeDatabaseTopic(dbDto, tempDirectory);
 
 
         // THEN

@@ -456,7 +456,7 @@ public class DatabaseTool extends GenericTool {
         outLine();
 
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
-        List<String> writtenFileNames = JsonGateway.gen(sourceJsonDirectory, targetExtractedDatabaseDirectory, false, missingTopicContents);
+        List<String> writtenFileNames = JsonGateway.gen(sourceJsonDirectory, targetExtractedDatabaseDirectory, missingTopicContents);
 
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("missingJsonTopicContents", missingTopicContents);
@@ -483,7 +483,7 @@ public class DatabaseTool extends GenericTool {
         outLine("Dumping TDU database to JSON, please wait...");
         outLine();
 
-        return JsonGateway.dump(databaseDirectory, targetJsonDirectory, false, missingTopicContents, integrityErrors);
+        return JsonGateway.dump(databaseDirectory, targetJsonDirectory, missingTopicContents, integrityErrors);
     }
 
     private String convertPatchFileToJSON(File patch) throws ParserConfigurationException, SAXException, IOException {
@@ -574,7 +574,7 @@ public class DatabaseTool extends GenericTool {
 
         Optional<DbDto> potentialDbDto = empty();
         try {
-            potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, sourceDatabaseDirectory, false, integrityErrorsWhileProcessing);
+            potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, sourceDatabaseDirectory, integrityErrorsWhileProcessing);
         } catch (IOException e) {
             outLine("  (!)Database contents could not be read for topic " + currentTopic + ", skipping.");
             outLine();

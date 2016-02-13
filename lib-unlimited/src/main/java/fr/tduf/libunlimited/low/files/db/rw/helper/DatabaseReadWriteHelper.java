@@ -35,19 +35,18 @@ public class DatabaseReadWriteHelper {
      * Reads all database contents (+resources) from specified topic into databaseDirectory.
      * @param topic             : topic to parse TDU contents from
      * @param databaseDirectory : location of database contents as db + fr,it,ge... files
-     * @param withClearContents : true indicates contents do not need to be decrypted before processing, false otherwise.
      * @param integrityErrors    : list of database errors, encountered when parsing.  @return a global object for topic.
      * @return empty value if topic could not be read properly.
      * @throws FileNotFoundException
      */
-    public static Optional<DbDto> readDatabaseTopic(DbDto.Topic topic, String databaseDirectory, boolean withClearContents, Set<IntegrityError> integrityErrors) throws IOException {
+    public static Optional<DbDto> readDatabaseTopic(DbDto.Topic topic, String databaseDirectory, Set<IntegrityError> integrityErrors) throws IOException {
         requireNonNull(integrityErrors, "A list (even empty) must be provided.");
 
         String contentsFileName = checkDatabaseContents(topic, databaseDirectory, integrityErrors);
         if (contentsFileName == null) {
             return Optional.empty();
         }
-        contentsFileName = prepareClearContentsIfNecessary(contentsFileName, withClearContents, integrityErrors);
+        contentsFileName = prepareClearContents(contentsFileName, integrityErrors);
         if (contentsFileName == null) {
             return Optional.empty();
         }
@@ -115,12 +114,12 @@ public class DatabaseReadWriteHelper {
      * @return a list of written TDU files
      * @throws FileNotFoundException
      */
-    public static List<String> writeDatabaseTopic(DbDto dbDto, String outputDirectory, boolean withClearContents) throws IOException {
+    public static List<String> writeDatabaseTopic(DbDto dbDto, String outputDirectory) throws IOException {
 
         DatabaseWriter writer = DatabaseWriter.load(dbDto);
         List<String> writtenFileNames = writer.writeAll(outputDirectory);
 
-        encryptContentsIfNecessary(outputDirectory, withClearContents, writtenFileNames);
+        encryptContents(outputDirectory, writtenFileNames);
 
         return writtenFileNames;
     }
@@ -269,11 +268,7 @@ public class DatabaseReadWriteHelper {
         return new File(databaseDirectory, fileName).getAbsolutePath();
     }
 
-    private static String prepareClearContentsIfNecessary(String contentsFileName, boolean withClearContents, Set<IntegrityError> integrityErrors) throws IOException {
-        if (withClearContents) {
-            return contentsFileName;
-        }
-
+    private static String prepareClearContents(String contentsFileName, Set<IntegrityError> integrityErrors) throws IOException {
         File inputFile = new File(contentsFileName);
         File outputFile = new File(createTempDirectory(), inputFile.getName());
 
@@ -298,11 +293,7 @@ public class DatabaseReadWriteHelper {
         return outputFile.getPath();
     }
 
-    private static void encryptContentsIfNecessary(String outputDirectory, boolean withClearContents, List<String> writtenFileNames) throws IOException {
-        if (withClearContents) {
-            return;
-        }
-
+    private static void encryptContents(String outputDirectory, List<String> writtenFileNames) throws IOException {
         writtenFileNames.stream()
 
                 .filter( (fileName) -> fileName.toUpperCase().endsWith(EXTENSION_DB_CONTENTS.toUpperCase()))
