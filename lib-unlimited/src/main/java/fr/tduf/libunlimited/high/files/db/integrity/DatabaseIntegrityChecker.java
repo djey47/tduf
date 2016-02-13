@@ -11,11 +11,11 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
-import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.CONTENTS_REFERENCE_NOT_FOUND;
-import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND;
-import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES;
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Class providing methods to check Database integrity.
@@ -34,18 +34,21 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
      */
     // TODO return set instead of a list
     public List<IntegrityError> checkAllContentsObjects() {
+        List<IntegrityError> integrityErrors = new ArrayList<>();
 
-        // TODO do not continue if integrity errors at requirements
-        checkRequirements();
+        checkRequirements(integrityErrors);
+        if(!integrityErrors.isEmpty()) {
+            return integrityErrors;
+        }
 
         buildIndexes();
 
-        List<IntegrityError> integrityErrors = new ArrayList<>();
-
+        // TODO try to parallelize with synchronized set
         databaseObjects.stream()
 
                 .forEach((localTopicObject) -> checkContentsObject(localTopicObject, integrityErrors));
 
+        // TODO unnecessary when using set
         return removeDuplicates(integrityErrors);
     }
 
@@ -53,20 +56,27 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
     protected void postPrepare() {
     }
 
-    private void checkRequirements() {
-        checkIfAllTopicObjectsPresent();
+    private void checkRequirements(List<IntegrityError> integrityErrors) {
+        requireNonNull(integrityErrors, "A list of integrity errors (even empty) is required.");
+
+        checkIfAllTopicObjectsPresent(integrityErrors);
     }
 
-    private void checkIfAllTopicObjectsPresent() {
-        List<DbDto.Topic> absentTopics = Stream.of(DbDto.Topic.values())
+    private void checkIfAllTopicObjectsPresent(List<IntegrityError> integrityErrors) {
+        Set<DbDto.Topic> absentTopics = Stream.of(DbDto.Topic.values())
 
                 .filter((topicEnum) -> !databaseMiner.getDatabaseTopic(topicEnum).isPresent())
 
-                .collect(toList());
+                .collect(toSet());
 
         if (!absentTopics.isEmpty()) {
-            // TODO add integrity error, do not throw exception
-            throw new IllegalArgumentException("Missing one or more database topics: " + absentTopics);
+            Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
+            informations.put(MISSING_TOPICS, absentTopics);
+
+            integrityErrors.add(IntegrityError.builder()
+                    .ofType(INCOMPLETE_DATABASE)
+                    .addInformations(informations)
+                    .build());
         }
     }
 

@@ -11,8 +11,10 @@ import org.assertj.core.data.MapEntry;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.PER_VALUE_COUNT;
@@ -33,6 +35,27 @@ public class DatabaseIntegrityCheckerTest {
     @Before
     public void setUp() {
         BulkDatabaseMiner.clearAllCaches();
+    }
+
+    @Test
+    public void checkAll_whenEmptyDatabaseObjects_shouldReturnSingleIntegrityError() throws ReflectiveOperationException {
+        //GIVEN
+        DatabaseIntegrityChecker checker = createChecker(new ArrayList<>());
+
+
+        // WHEN
+        List<IntegrityError> integrityErrors = checker.checkAllContentsObjects();
+
+
+        // THEN
+        assertThat(integrityErrors).hasSize(1);
+        assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(INCOMPLETE_DATABASE);
+
+        Set<DbDto.Topic> missingTopics = (Set<DbDto.Topic>) integrityErrors.stream()
+                .findFirst().get()
+                .getInformation().get(IntegrityError.ErrorInfoEnum.MISSING_TOPICS);
+        assertThat(missingTopics)
+                .containsOnly(DbDto.Topic.values());
     }
 
     @Test
