@@ -275,7 +275,7 @@ public class DatabaseTool extends GenericTool {
         outLine("-> JSON database directory: " + jsonDatabaseDirectory);
         if(extensiveCheck) {
             outLine("Now checking database...");
-            databaseObjects = loadAndCheckDatabase(extractedDatabaseDirectory, integrityErrors, false);
+            databaseObjects = loadAndCheckDatabase(extractedDatabaseDirectory, integrityErrors);
             outLine("Done checking.");
         } else {
             outLine("Now loading database...");
@@ -543,8 +543,7 @@ public class DatabaseTool extends GenericTool {
         return allTopicObjects;
     }
 
-    // TODO remove unused withClearContents parameter (always false)
-    private List<DbDto> loadAndCheckDatabase(String sourceDatabaseDirectory, Set<IntegrityError> integrityErrors, boolean withClearContents) throws IOException, ReflectiveOperationException {
+    private List<DbDto> loadAndCheckDatabase(String sourceDatabaseDirectory, Set<IntegrityError> integrityErrors) throws IOException, ReflectiveOperationException {
         requireNonNull(integrityErrors, "A list is required");
 
         Set<IntegrityError> integrityErrorsWhileReading = synchronizedSet(integrityErrors);
@@ -552,7 +551,7 @@ public class DatabaseTool extends GenericTool {
 
                 .parallel()
 
-                .map((currentTopic) -> loadAndCheckSingleTopic(currentTopic, sourceDatabaseDirectory, withClearContents, integrityErrorsWhileReading))
+                .map((currentTopic) -> loadAndCheckSingleTopic(currentTopic, sourceDatabaseDirectory, integrityErrorsWhileReading))
 
                 .filter(Optional::isPresent)
 
@@ -568,14 +567,14 @@ public class DatabaseTool extends GenericTool {
         return readObjects;
     }
 
-    private Optional<DbDto> loadAndCheckSingleTopic(DbDto.Topic currentTopic, String sourceDatabaseDirectory, boolean withClearContents, Set<IntegrityError> integrityErrorsWhileProcessing) {
+    private Optional<DbDto> loadAndCheckSingleTopic(DbDto.Topic currentTopic, String sourceDatabaseDirectory, Set<IntegrityError> integrityErrorsWhileProcessing) {
         outLine("  -> Now processing topic: " + currentTopic + "...");
 
         int initialErrorCount = integrityErrorsWhileProcessing.size();
 
         Optional<DbDto> potentialDbDto = empty();
         try {
-            potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, sourceDatabaseDirectory, withClearContents, integrityErrorsWhileProcessing);
+            potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(currentTopic, sourceDatabaseDirectory, false, integrityErrorsWhileProcessing);
         } catch (IOException e) {
             outLine("  (!)Database contents could not be read for topic " + currentTopic + ", skipping.");
             outLine();
