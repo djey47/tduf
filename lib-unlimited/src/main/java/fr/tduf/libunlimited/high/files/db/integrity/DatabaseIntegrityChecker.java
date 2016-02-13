@@ -32,8 +32,10 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
      *
      * @return list of integrity errors.
      */
+    // TODO return set instead of a list
     public List<IntegrityError> checkAllContentsObjects() {
 
+        // TODO do not continue if integrity errors at requirements
         checkRequirements();
 
         buildIndexes();
@@ -63,6 +65,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
                 .collect(toList());
 
         if (!absentTopics.isEmpty()) {
+            // TODO add integrity error, do not throw exception
             throw new IllegalArgumentException("Missing one or more database topics: " + absentTopics);
         }
     }

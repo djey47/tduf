@@ -8,6 +8,7 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
 import fr.tduf.libunlimited.high.files.db.interop.TdumtPatchConverter;
 import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
@@ -542,15 +543,16 @@ public class DatabaseTool extends GenericTool {
         return allTopicObjects;
     }
 
-    private List<DbDto> loadAndCheckDatabase(String sourceDatabaseDirectory, Set<IntegrityError> integrityErrors, boolean withClearContents) throws IOException {
+    // TODO remove unused withClearContents parameter (always false)
+    private List<DbDto> loadAndCheckDatabase(String sourceDatabaseDirectory, Set<IntegrityError> integrityErrors, boolean withClearContents) throws IOException, ReflectiveOperationException {
         requireNonNull(integrityErrors, "A list is required");
 
-        Set<IntegrityError> integrityErrorsWhileProcessing = synchronizedSet(integrityErrors);
+        Set<IntegrityError> integrityErrorsWhileReading = synchronizedSet(integrityErrors);
         final List<DbDto> readObjects = Stream.of(DbDto.Topic.values())
 
                 .parallel()
 
-                .map((currentTopic) -> loadAndCheckSingleTopic(currentTopic, sourceDatabaseDirectory, withClearContents, integrityErrorsWhileProcessing))
+                .map((currentTopic) -> loadAndCheckSingleTopic(currentTopic, sourceDatabaseDirectory, withClearContents, integrityErrorsWhileReading))
 
                 .filter(Optional::isPresent)
 
@@ -558,7 +560,10 @@ public class DatabaseTool extends GenericTool {
 
                 .collect(toList());
 
-        integrityErrors.addAll(integrityErrorsWhileProcessing);
+        List<IntegrityError> integrityErrorsWhileExtensiveChecking = DatabaseIntegrityChecker.prepare(DatabaseIntegrityChecker.class, readObjects).checkAllContentsObjects();
+
+        integrityErrors.addAll(integrityErrorsWhileReading);
+        integrityErrors.addAll(integrityErrorsWhileExtensiveChecking);
 
         return readObjects;
     }
