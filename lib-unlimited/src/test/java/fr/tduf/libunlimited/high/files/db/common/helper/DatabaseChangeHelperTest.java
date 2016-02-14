@@ -564,6 +564,44 @@ public class DatabaseChangeHelperTest {
         // THEN: NPE
     }
 
+    @Test
+    public void updateItemRawValueAtIndexAndFieldRank_whenRawValueUnchanged_shouldReturnEmpty() {
+        // GIVEN
+        DbDataDto.Item item = createEntryItemForBitField();
+        when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(TOPIC, 1, 1)).thenReturn(Optional.of(item));
+
+        // WHEN
+        Optional<DbDataDto.Item> updatedItem = changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, ENTRY_BITFIELD);
+
+        // THEN
+        assertThat(updatedItem).isEmpty();
+    }
+
+    @Test
+    public void updateItemRawValueAtIndexAndFieldRank_whenRawValueChanged_shouldReturnUpdatedItem() {
+        // GIVEN
+        DbDataDto.Item item = createEntryItemForBitField();
+        when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(TOPIC, 1, 1)).thenReturn(Optional.of(item));
+
+        // WHEN
+        Optional<DbDataDto.Item> updatedItem = changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, "NEW_VALUE");
+
+        // THEN
+        assertThat(updatedItem).isPresent();
+        assertThat(updatedItem.get().getRawValue()).isEqualTo("NEW_VALUE");
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void updateItemRawValueAtIndexAndFieldRank_whenItemDoesNotExist_shouldThrowException() {
+        // GIVEN
+        when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(TOPIC, 1, 1)).thenReturn(Optional.empty());
+
+        // WHEN
+        changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, "NEW_VALUE");
+
+        // THEN: NSE
+    }
+
     private static DbDto createDatabaseObject(DbDataDto dataObject, DbStructureDto stuctureObject) {
         return DbDto.builder()
                 .withData(dataObject)

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -36,6 +37,7 @@ public class DatabaseChangeHelper {
 
     /**
      * Adds a resource with given reference and value to resource entries from topic and locale
+     *
      * @param topic             : database topic where resource entry should be added
      * @param locale            : language to be affected
      * @param resourceReference : reference of new resource
@@ -80,12 +82,33 @@ public class DatabaseChangeHelper {
     }
 
     /**
+     * Changes raw value of existing item at specified index and field rank
+     * @param topic         : database topic where content item should be changed
+     * @param entryIndex    : index of entry in topic
+     * @param fieldRank     : rank of item in entry
+     * @param newRawValue   : value to apply
+     * @return updated item if value has changed, empty otherwise.
+     */
+    public Optional<DbDataDto.Item> updateItemRawValueAtIndexAndFieldRank(DbDto.Topic topic, long entryIndex, int fieldRank, String newRawValue) {
+        DbDataDto.Item contentItem = databaseMiner.getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, entryIndex).get();
+        if (contentItem.getRawValue().equals(newRawValue)) {
+            return empty();
+        }
+
+        contentItem.setRawValue(newRawValue);
+        BulkDatabaseMiner.clearAllCaches();
+
+        return Optional.of(contentItem);
+    }
+
+    /**
      * Modifies existing resource having given reference, with new reference and new value
-     * @param topic                 : database topic where resource entry should be changed
-     * @param locale                : database language for which resource entry should be changed
-     * @param oldResourceReference  : reference of resource to be updated. Must exist
-     * @param newResourceReference  : new reference of resource if needed. Must not exist already
-     * @param newResourceValue      : new value of resource
+     *
+     * @param topic                : database topic where resource entry should be changed
+     * @param locale               : database language for which resource entry should be changed
+     * @param oldResourceReference : reference of resource to be updated. Must exist
+     * @param newResourceReference : new reference of resource if needed. Must not exist already
+     * @param newResourceValue     : new value of resource
      * @throws IllegalArgumentException when source entry does not exist or target reference belongs to an already existing entry.
      */
     public void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
@@ -106,8 +129,9 @@ public class DatabaseChangeHelper {
     /**
      * Deletes content entry with given internal identifier in specified topic.
      * Following entries will have their ids updated (decreased by 1).
-     * @param entryId   : internal identifier of entry to remove
-     * @param topic     : database topic where entry should be removed
+     *
+     * @param entryId : internal identifier of entry to remove
+     * @param topic   : database topic where entry should be removed
      * @throws java.util.NoSuchElementException when entry to delete does not exist.
      */
     public void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
@@ -129,20 +153,22 @@ public class DatabaseChangeHelper {
     /**
      * Deletes content entry with given reference in specified topic.
      * Following entries will have their ids updated (decreased by 1).
-     * @param entryRef  : ref value of entry to remove
-     * @param topic     : database topic where entry should be removed.
+     *
+     * @param entryRef : ref value of entry to remove
+     * @param topic    : database topic where entry should be removed.
      */
     public void removeEntryWithReference(String entryRef, DbDto.Topic topic) {
         databaseMiner.getContentEntryFromTopicWithReference(entryRef, topic)
 
-                .ifPresent( (entry) -> removeEntryWithIdentifier(entry.getId(), topic));
+                .ifPresent((entry) -> removeEntryWithIdentifier(entry.getId(), topic));
     }
 
     /**
      * Deletes content entries satisfying all conditions.
      * Following entries will have their ids updated (decreased by 1).
-     * @param criteria  : list of conditions to select content entries
-     * @param topic     : database topic where entry should be removed
+     *
+     * @param criteria : list of conditions to select content entries
+     * @param topic    : database topic where entry should be removed
      */
     public void removeEntriesMatchingCriteria(List<DbFieldValueDto> criteria, DbDto.Topic topic) {
         databaseMiner.getContentEntryStreamMatchingCriteria(criteria, topic)
@@ -151,8 +177,8 @@ public class DatabaseChangeHelper {
     }
 
     /**
-     * @param entryId   : internal identifier of entry to be copied
-     * @param topic     : database topic where entry should be duplicated
+     * @param entryId : internal identifier of entry to be copied
+     * @param topic   : database topic where entry should be duplicated
      * @return a clone of entry with given identifier in specified topic and added to this topic.
      * If a REF field is present, a random, unique identifier will be generated.
      */
@@ -186,22 +212,23 @@ public class DatabaseChangeHelper {
 
     /**
      * Changes rank of entry with given identifier and updated ids of sourrounding ones
-     * @param step      : number of moves to perform
-     * @param entryId   : internal identifier of entry to be moved
-     * @param topic     : database topic where entry should be moved
+     *
+     * @param step    : number of moves to perform
+     * @param entryId : internal identifier of entry to be moved
+     * @param topic   : database topic where entry should be moved
      */
     public void moveEntryWithIdentifier(int step, long entryId, DbDto.Topic topic) {
         final DbDataDto dataObject = databaseMiner.getDatabaseTopic(topic).get().getData();
 
         int absoluteSteps = Math.abs(step);
-        if ( step == 0
+        if (step == 0
                 || step < 0 && entryId - absoluteSteps < 0
                 || step > 0 && entryId + absoluteSteps > dataObject.getEntries().size() - 1) {
             return;
         }
 
         DbDataDto.Entry entry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic).get();
-        for (int i = 0 ; i < absoluteSteps ; i++) {
+        for (int i = 0; i < absoluteSteps; i++) {
             if (step < 0) {
                 dataObject.moveEntryUp(entry);
             } else {
@@ -214,6 +241,7 @@ public class DatabaseChangeHelper {
 
     /**
      * Deletes resource from specified topic, having given reference.
+     *
      * @param topic             : database topic where entry should be duplicated
      * @param resourceReference : reference of resource to be deleted
      * @param affectedLocales   : list of locales to be affected by deletion
@@ -236,9 +264,9 @@ public class DatabaseChangeHelper {
     }
 
     /**
-     * @param entry                     : database entry to be updated
-     * @param sourceEntryRef            : reference of source entry (REF field for source topic)
-     * @param potentialTargetEntryRef   : reference of target entry (REF field for target topic). Mandatory.
+     * @param entry                   : database entry to be updated
+     * @param sourceEntryRef          : reference of source entry (REF field for source topic)
+     * @param potentialTargetEntryRef : reference of target entry (REF field for target topic). Mandatory.
      */
     public static void updateAssociationEntryWithSourceAndTargetReferences(DbDataDto.Entry entry, String sourceEntryRef, Optional<String> potentialTargetEntryRef) {
         requireNonNull(entry, "A content entry is required.");
