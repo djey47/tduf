@@ -31,6 +31,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Specialized controller to display database contents.
  */
+// FIXME Resolve IOB exception when switching to another entry via browsable entry list
 public class MainStageViewDataController {
 
     private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
@@ -74,19 +75,10 @@ public class MainStageViewDataController {
     }
 
     void updateAllPropertiesWithItemValues() {
+        updateCurrentEntryLabelProperty();
+
         long entryIndex = mainStageController.currentEntryIndexProperty.getValue();
         DbDto.Topic currentTopic = mainStageController.currentTopicProperty.getValue();
-        final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
-                mainStageController.getCurrentProfileObject().getName(),
-                mainStageController.getLayoutObject());
-        String entryLabel = DatabaseQueryHelper.fetchResourceValuesWithEntryId(
-                entryIndex,
-                currentTopic,
-                mainStageController.currentLocaleProperty.getValue(),
-                labelFieldRanks,
-                getMiner());
-        mainStageController.currentEntryLabelProperty.setValue(entryLabel);
-
         getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopic)
                 .ifPresent((entry) -> entry.getItems().forEach(this::updateItemProperties));
 
@@ -109,6 +101,8 @@ public class MainStageViewDataController {
         }
 
         fillBrowsableEntries(currentTopicObject.getTopic());
+
+        updateCurrentEntryLabelProperty();
     }
 
     void updateLinkProperties(TopicLinkDto topicLinkObject) {
@@ -275,6 +269,19 @@ public class MainStageViewDataController {
         contentEntryDataItem.setReference(entryReference);
 
         return contentEntryDataItem;
+    }
+
+    private void updateCurrentEntryLabelProperty() {
+        final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
+                mainStageController.getCurrentProfileObject().getName(),
+                mainStageController.getLayoutObject());
+        String entryLabel = DatabaseQueryHelper.fetchResourceValuesWithEntryId(
+                mainStageController.currentEntryIndexProperty.getValue(),
+                mainStageController.currentTopicProperty.getValue(),
+                mainStageController.currentLocaleProperty.getValue(),
+                labelFieldRanks,
+                getMiner());
+        mainStageController.currentEntryLabelProperty.setValue(entryLabel);
     }
 
     private void updateResourceProperties(DbDataDto.Item resourceItem, DbStructureDto.Field structureField) {
