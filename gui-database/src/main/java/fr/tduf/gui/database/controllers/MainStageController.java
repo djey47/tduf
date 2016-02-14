@@ -77,7 +77,6 @@ public class MainStageController extends AbstractGuiController {
 
     Property<DbDto.Topic> currentTopicProperty;
     Property<DbResourceDto.Locale> currentLocaleProperty;
-    Property<ContentEntryDataItem> currentEntryProperty;
     Property<Long> currentEntryIndexProperty;
     SimpleStringProperty currentEntryLabelProperty;
     Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
@@ -537,7 +536,6 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void initTopicEntryHeaderPane() {
-        currentEntryProperty = new SimpleObjectProperty<>();
         currentTopicProperty = new SimpleObjectProperty<>();
         currentEntryLabelProperty = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_ENTRY_DEFAULT);
         browsableEntries = FXCollections.observableArrayList();
