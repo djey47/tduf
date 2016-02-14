@@ -118,13 +118,8 @@ public class MainStageViewDataController {
     }
 
     void updateEntriesAndSwitchTo(long entryIndex) {
-        updateEntryCount();
         fillBrowsableEntries(mainStageController.getCurrentTopicObject().getTopic());
         switchToContentEntry(entryIndex);
-    }
-
-    void updateEntryCount() {
-        mainStageController.entryItemsCountProperty.setValue(mainStageController.getCurrentTopicObject().getData().getEntries().size());
     }
 
     void switchToSelectedResourceForLinkedTopic(ContentEntryDataItem selectedResource, DbDto.Topic targetTopic, String targetProfileName) {

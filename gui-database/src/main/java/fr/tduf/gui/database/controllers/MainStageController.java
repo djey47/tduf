@@ -13,7 +13,6 @@ import fr.tduf.gui.database.controllers.helper.DynamicFieldControlsHelper;
 import fr.tduf.gui.database.controllers.helper.DynamicLinkControlsHelper;
 import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
-import fr.tduf.gui.database.converter.EntryItemsCountToStringConverter;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
@@ -54,6 +53,7 @@ import java.util.*;
 
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
+import static javafx.beans.binding.Bindings.size;
 import static javafx.scene.control.Alert.AlertType.ERROR;
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
@@ -80,8 +80,6 @@ public class MainStageController extends AbstractGuiController {
     Property<ContentEntryDataItem> currentEntryProperty;
     Property<Long> currentEntryIndexProperty;
     SimpleStringProperty currentEntryLabelProperty;
-    // TODO bind to effective list size
-    Property<Integer> entryItemsCountProperty;
     Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
     Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
     Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink = new HashMap<>();
@@ -530,11 +528,10 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void initStatusBar() {
-        entryItemsCountProperty = new SimpleObjectProperty<>(-1);
         currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
 
         entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new CurrentEntryIndexToStringConverter());
-        entryItemsCountLabel.textProperty().bindBidirectional(entryItemsCountProperty, new EntryItemsCountToStringConverter());
+        entryItemsCountLabel.textProperty().bind(size(browsableEntryList).asString(DisplayConstants.LABEL_ITEM_ENTRY_COUNT));
 
         statusLabel.setText(DisplayConstants.LABEL_STATUS_VERSION);
     }
@@ -600,7 +597,6 @@ public class MainStageController extends AbstractGuiController {
 
         currentTopicProperty.setValue(currentTopicObject.getTopic());
         currentEntryIndexProperty.setValue(0L);
-        entryItemsCountProperty.setValue(currentTopicObject.getData().getEntries().size());
         rawValuePropertyByFieldRank.clear();
         resolvedValuePropertyByFieldRank.clear();
         resourceListByTopicLink.clear();
@@ -768,7 +764,6 @@ public class MainStageController extends AbstractGuiController {
             File patchFile = potentialFile.get();
             final Optional<String> potentialPropertiesFile = changeDataController.importPatch(patchFile);
 
-            viewDataController.updateEntryCount();
             viewDataController.updateAllPropertiesWithItemValues();
 
             String writtenPropertiesPath = "";
