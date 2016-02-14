@@ -48,13 +48,9 @@ public class MainStageChangeDataController {
     }
 
     void updateContentItem(DbDto.Topic topic, int fieldRank, String newRawValue) {
-        DbDataDto.Item contentItem = getMiner().getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, mainStageController.currentEntryIndexProperty.getValue()).get();
-        if (contentItem.getRawValue().equals(newRawValue)) {
-            return;
-        }
-
-        contentItem.setRawValue(newRawValue);
-        mainStageController.getViewDataController().updateItemProperties(contentItem);
+        requireNonNull(getChangeHelper());
+        getChangeHelper().updateItemRawValueAtIndexAndFieldRank(topic,mainStageController.currentEntryIndexProperty.getValue(), fieldRank, newRawValue)
+                .ifPresent((updatedItem) -> mainStageController.getViewDataController().updateItemProperties(updatedItem));
     }
 
     void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {

@@ -96,7 +96,9 @@ public class MainStageViewDataController {
     void updateItemProperties(DbDataDto.Item item) {
         mainStageController.rawValuePropertyByFieldRank.get(item.getFieldRank()).set(item.getRawValue());
 
-        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, mainStageController.getCurrentTopicObject().getStructure().getFields());
+        DbDto currentTopicObject = mainStageController.getCurrentTopicObject();
+
+        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, currentTopicObject.getStructure().getFields());
         if (structureField.isAResourceField()) {
             updateResourceProperties(item, structureField);
         }
@@ -105,6 +107,8 @@ public class MainStageViewDataController {
                 && mainStageController.resolvedValuePropertyByFieldRank.containsKey(item.getFieldRank())) {
             updateReferenceProperties(item, structureField);
         }
+
+        fillBrowsableEntries(currentTopicObject.getTopic());
     }
 
     void updateLinkProperties(TopicLinkDto topicLinkObject) {
