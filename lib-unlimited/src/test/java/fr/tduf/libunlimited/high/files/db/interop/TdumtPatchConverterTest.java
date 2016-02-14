@@ -228,6 +228,19 @@ public class TdumtPatchConverterTest {
     }
 
     @Test
+    public void pchToJson_whenRealPatchDocument_whenDuplicateInstructions_shouldReturnPatchObject_withSingleChange() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+        // GIVEN
+        Document patchDocument = TdumtPatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/removeAllLines_duplicateInstruction.pch");
+
+        // WHEN
+        DbPatchDto actualPatchObject = TdumtPatchConverter.pchToJson(patchDocument);
+
+        // THEN
+        assertThat(actualPatchObject).isNotNull();
+        assertThat(actualPatchObject.getChanges()).hasSize(1);
+    }
+
+    @Test
     public void getContentsValue_whenNoEntryRef_shouldReturnValuesWithCompositeKey() {
         // GIVEN
         List<String> values = asList("000000", "111111", "222222");

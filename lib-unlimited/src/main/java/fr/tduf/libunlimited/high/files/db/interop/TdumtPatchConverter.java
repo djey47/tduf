@@ -24,6 +24,7 @@ import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChange
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Utility class allowing to convert database patches between TDUMT and TDUF systems.
@@ -83,7 +84,7 @@ public class TdumtPatchConverter {
     public static DbPatchDto pchToJson(Document tdumtDatabasePatch) {
         requireNonNull(tdumtDatabasePatch, "A TDUMT database patch document is required.");
 
-        List<DbPatchDto.DbChangeDto> changesObjects = getChangesObjectsForUpdates(tdumtDatabasePatch);
+        Set<DbPatchDto.DbChangeDto> changesObjects = getChangesObjectsForUpdates(tdumtDatabasePatch);
 
         return DbPatchDto.builder()
                 .addChanges(changesObjects)
@@ -181,9 +182,8 @@ public class TdumtPatchConverter {
         return instructionElement;
     }
 
-    private static List<DbPatchDto.DbChangeDto> getChangesObjectsForUpdates(Document patchDocument) {
-        // TODO return set instead of list
-        List<DbPatchDto.DbChangeDto> changesObjects = new ArrayList<>();
+    private static Set<DbPatchDto.DbChangeDto> getChangesObjectsForUpdates(Document patchDocument) {
+        Set<DbPatchDto.DbChangeDto> changesObjects = new HashSet<>();
 
         NodeList instructions = findXMLInstructionsElement(patchDocument).getElementsByTagName(XML_ELEMENT_INSTRUCTION);
         for (int i = 0 ; i < instructions.getLength() ; i++) {
@@ -206,24 +206,24 @@ public class TdumtPatchConverter {
         return changesObjects;
     }
 
-    private static List<DbPatchDto.DbChangeDto> getChangesObjectsForContentsUpdates(InstructionParametersParser parser) {
+    private static Set<DbPatchDto.DbChangeDto> getChangesObjectsForContentsUpdates(InstructionParametersParser parser) {
         DbDto.Topic topic = parser.getResourceFileNameAsTopic();
 
         return Stream.of(parser.resourceValues.split(REGEX_SEPARATOR_ENTRIES))
 
                 .map((contentsEntry) -> getChangeObjectForContentsUpdate(contentsEntry, topic))
 
-                .collect(toList());
+                .collect(toSet());
     }
 
-    private static List<DbPatchDto.DbChangeDto> getChangesObjectsForResourceUpdates(InstructionParametersParser parser) {
+    private static Set<DbPatchDto.DbChangeDto> getChangesObjectsForResourceUpdates(InstructionParametersParser parser) {
         DbDto.Topic topic = parser.getResourceFileNameAsTopic();
 
         return Stream.of(parser.resourceValues.split(REGEX_SEPARATOR_ENTRIES))
 
                 .map((entry) -> getChangeObjectForResourceUpdate(entry, topic))
 
-                .collect(toList());
+                .collect(toSet());
     }
 
     private static DbPatchDto.DbChangeDto getChangeObjectForContentsDeletion(InstructionParametersParser parser) {
