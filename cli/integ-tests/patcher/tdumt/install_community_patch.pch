@@ -413,5 +413,9 @@
       <parameter name="trafficVehicleId" value="2027" />
       <parameter name="distributionValues" value="1|0.010||2|0.200||3|0.020||4|0.200||5|0.050||6|0.200" />
     </instruction>
+    <instruction type="removeAllLinesFromDatabase" failOnError="True" enabled="True" comment="" group="Required">
+      <parameter name="resourceFileName" value="CarPacks" />
+      <parameter name="databaseId" value="916575065" />
+    </instruction>
   </instructions>
 </patcher>
