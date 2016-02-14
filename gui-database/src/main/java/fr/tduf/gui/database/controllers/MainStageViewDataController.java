@@ -48,7 +48,7 @@ public class MainStageViewDataController {
                 mainStageController.getCurrentProfileObject().getName(),
                 mainStageController.getLayoutObject());
 
-        ObservableList<ContentEntryDataItem> browsableEntryList = mainStageController.browsableEntryList;
+        ObservableList<ContentEntryDataItem> browsableEntryList = mainStageController.browsableEntries;
         browsableEntryList.clear();
         getMiner().getDatabaseTopic(topic)
                 .ifPresent((topicObject) -> browsableEntryList.addAll(topicObject.getData().getEntries().stream()

@@ -83,7 +83,7 @@ public class MainStageController extends AbstractGuiController {
     Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
     Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
     Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink = new HashMap<>();
-    ObservableList<ContentEntryDataItem> browsableEntryList;
+    ObservableList<ContentEntryDataItem> browsableEntries;
 
     @FXML
     private TitledPane settingsPane;
@@ -531,7 +531,7 @@ public class MainStageController extends AbstractGuiController {
         currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
 
         entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new CurrentEntryIndexToStringConverter());
-        entryItemsCountLabel.textProperty().bind(size(browsableEntryList).asString(DisplayConstants.LABEL_ITEM_ENTRY_COUNT));
+        entryItemsCountLabel.textProperty().bind(size(browsableEntries).asString(DisplayConstants.LABEL_ITEM_ENTRY_COUNT));
 
         statusLabel.setText(DisplayConstants.LABEL_STATUS_VERSION);
     }
@@ -540,12 +540,12 @@ public class MainStageController extends AbstractGuiController {
         currentEntryProperty = new SimpleObjectProperty<>();
         currentTopicProperty = new SimpleObjectProperty<>();
         currentEntryLabelProperty = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_ENTRY_DEFAULT);
-        browsableEntryList = FXCollections.observableArrayList();
+        browsableEntries = FXCollections.observableArrayList();
 
         currentTopicLabel.textProperty().bindBidirectional(currentTopicProperty, new DatabaseTopicToStringConverter());
         currentEntryLabel.textProperty().bindBidirectional(currentEntryLabelProperty);
 
-        entryNumberComboBox.setItems(browsableEntryList);
+        entryNumberComboBox.setItems(browsableEntries);
         entryNumberComboBox.setCellFactory(new EntryCellFactory());
         entryNumberComboBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> handleEntryChoiceChanged((ContentEntryDataItem) newValue));
