@@ -206,6 +206,7 @@ public class DbPatchDto {
                 private DbResourceDto.Locale locale;
                 private String value;
                 private List<String> entryValues;
+                private List<DbFieldValueDto> filterCompounds;
                 private List<DbFieldValueDto> partialEntryValues;
                 private String reference;
                 private DbDto.Topic topic;
@@ -240,6 +241,12 @@ public class DbPatchDto {
                 @Override
                 public DbChangeDtoBuilder withEntryValues(List<String> entryValues) {
                     this.entryValues = entryValues;
+                    return this;
+                }
+
+                @Override
+                public DbChangeDtoBuilder filteredBy(List<DbFieldValueDto> filterCompounds) {
+                    this.filterCompounds = filterCompounds;
                     return this;
                 }
 
@@ -286,6 +293,7 @@ public class DbPatchDto {
                     changeObject.topic = topic;
                     changeObject.ref = reference;
                     changeObject.values = entryValues;
+                    changeObject.filterCompounds = filterCompounds;
                     changeObject.partialValues = partialEntryValues;
                     changeObject.value = value;
                     changeObject.locale = locale;
@@ -316,6 +324,8 @@ public class DbPatchDto {
             DbChangeDtoBuilder asReferencePlaceholder(String name);
 
             DbChangeDtoBuilder withEntryValues(List<String> entryValues);
+
+            DbChangeDtoBuilder filteredBy(List<DbFieldValueDto> filterCompounds);
 
             DbChangeDtoBuilder withPartialEntryValues(List<DbFieldValueDto> partialEntryValues);
 
