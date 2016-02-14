@@ -15,11 +15,10 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.DELETE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -200,6 +199,32 @@ public class TdumtPatchConverterTest {
         assertThat(actualChangeObject.getType()).isEqualTo(UPDATE);
         assertThat(actualChangeObject.getValue()).isNull();
         assertThat(actualChangeObject.getValues()).containsExactly("57167257", "56373256", "600091920", "1", "1", "551683160", "0", "0.5");
+    }
+
+    @Test
+    public void pchToJson_whenRealPatchDocument_forAllLinesRemoval_shouldReturnPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+        // GIVEN
+        Document patchDocument = TdumtPatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/removeAllLines.pch");
+
+
+        // WHEN
+        DbPatchDto actualPatchObject = TdumtPatchConverter.pchToJson(patchDocument);
+
+
+        // THEN
+        assertThat(actualPatchObject).isNotNull();
+        assertThat(actualPatchObject.getChanges()).hasSize(1);
+
+        DbPatchDto.DbChangeDto actualChangeObject = actualPatchObject.getChanges().get(0);
+        assertThat(actualChangeObject.getRef()).isNull();
+        assertThat(actualChangeObject.getLocale()).isNull();
+        assertThat(actualChangeObject.getTopic()).isEqualTo(CAR_PACKS);
+        assertThat(actualChangeObject.getType()).isEqualTo(DELETE);
+        assertThat(actualChangeObject.getValue()).isNull();
+        assertThat(actualChangeObject.getValues()).isNull();
+        assertThat(actualChangeObject.getPartialValues()).isNull();
+        assertThat(actualChangeObject.getFilterCompounds()).extracting("rank").containsOnly(1);
+        assertThat(actualChangeObject.getFilterCompounds()).extracting("value").containsOnly("916575065");
     }
 
     @Test

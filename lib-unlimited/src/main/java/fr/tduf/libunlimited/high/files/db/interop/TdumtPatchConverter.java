@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.interop;
 
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import org.w3c.dom.Attr;
@@ -17,6 +18,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.DELETE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static java.util.Arrays.asList;
@@ -39,8 +41,10 @@ public class TdumtPatchConverter {
 
     private static final String INSTRUCTION_TDUMT_UPDATE_DATABASE = "updateDatabase";
     private static final String INSTRUCTION_TDUMT_UPDATE_RESOURCE = "updateResource";
+    private static final String INSTRUCTION_TDUMT_REMOVE_ALL_LINES = "removeAllLinesFromDatabase";
     private static final String PARAMETER_TDUMT_RESOURCE_FILE_NAME = "resourceFileName";
     private static final String PARAMETER_TDUMT_RESOURCE_VALUES = "resourceValues";
+    private static final String PARAMETER_TDUMT_DATABASE_IDENTIFIER = "databaseId";
 
     private static final String SEPARATOR_ENTRIES = "||";
     private static final String SEPARATOR_KEY_VALUE = "|";
@@ -178,6 +182,7 @@ public class TdumtPatchConverter {
     }
 
     private static List<DbPatchDto.DbChangeDto> getChangesObjectsForUpdates(Document patchDocument) {
+        // TODO return set instead of list
         List<DbPatchDto.DbChangeDto> changesObjects = new ArrayList<>();
 
         NodeList instructions = findXMLInstructionsElement(patchDocument).getElementsByTagName(XML_ELEMENT_INSTRUCTION);
@@ -192,6 +197,8 @@ public class TdumtPatchConverter {
                 case INSTRUCTION_TDUMT_UPDATE_RESOURCE:
                     changesObjects.addAll(getChangesObjectsForResourceUpdates(parser));
                     break;
+                case INSTRUCTION_TDUMT_REMOVE_ALL_LINES:
+                    changesObjects.add(getChangeObjectForContentsDeletion(parser));
                 default:
             }
         }
@@ -200,9 +207,9 @@ public class TdumtPatchConverter {
     }
 
     private static List<DbPatchDto.DbChangeDto> getChangesObjectsForContentsUpdates(InstructionParametersParser parser) {
-        DbDto.Topic topic = getTopicFromLabel(parser.getResourceFileName());
+        DbDto.Topic topic = parser.getResourceFileNameAsTopic();
 
-        return Stream.of(parser.getResourceValues().split(REGEX_SEPARATOR_ENTRIES))
+        return Stream.of(parser.resourceValues.split(REGEX_SEPARATOR_ENTRIES))
 
                 .map((contentsEntry) -> getChangeObjectForContentsUpdate(contentsEntry, topic))
 
@@ -210,13 +217,23 @@ public class TdumtPatchConverter {
     }
 
     private static List<DbPatchDto.DbChangeDto> getChangesObjectsForResourceUpdates(InstructionParametersParser parser) {
-        DbDto.Topic topic = getTopicFromLabel(parser.getResourceFileName());
+        DbDto.Topic topic = parser.getResourceFileNameAsTopic();
 
-        return Stream.of(parser.getResourceValues().split(REGEX_SEPARATOR_ENTRIES))
+        return Stream.of(parser.resourceValues.split(REGEX_SEPARATOR_ENTRIES))
 
                 .map((entry) -> getChangeObjectForResourceUpdate(entry, topic))
 
                 .collect(toList());
+    }
+
+    private static DbPatchDto.DbChangeDto getChangeObjectForContentsDeletion(InstructionParametersParser parser) {
+        DbDto.Topic topic = parser.getResourceFileNameAsTopic();
+
+        return DbPatchDto.DbChangeDto.builder()
+                .forTopic(topic)
+                .withType(DELETE)
+                .filteredBy(Collections.singletonList(DbFieldValueDto.fromCouple(1, parser.databaseIdentifier)))
+                .build();
     }
 
     private static DbPatchDto.DbChangeDto getChangeObjectForContentsUpdate(String contentsEntry, DbDto.Topic topic) {
@@ -270,25 +287,18 @@ public class TdumtPatchConverter {
         return topicLabel.substring(PREFIX_TOPIC_LABEL.length(), topicLabel.length());
     }
 
-    private static DbDto.Topic getTopicFromLabel(String resourceFileName) {
-        return DbDto.Topic.fromLabel(PREFIX_TOPIC_LABEL + resourceFileName);
-    }
-
     private static class InstructionParametersParser {
         private Element instructionElement;
         private String resourceFileName;
         private String resourceValues;
+        private String databaseIdentifier;
 
         public InstructionParametersParser(Element instructionElement) {
             this.instructionElement = instructionElement;
         }
 
-        public String getResourceFileName() {
-            return resourceFileName;
-        }
-
-        public String getResourceValues() {
-            return resourceValues;
+        public DbDto.Topic getResourceFileNameAsTopic() {
+            return DbDto.Topic.fromLabel(PREFIX_TOPIC_LABEL + resourceFileName);
         }
 
         public InstructionParametersParser invoke() {
@@ -303,6 +313,9 @@ public class TdumtPatchConverter {
                         break;
                     case PARAMETER_TDUMT_RESOURCE_VALUES:
                         resourceValues = value;
+                        break;
+                    case PARAMETER_TDUMT_DATABASE_IDENTIFIER:
+                        databaseIdentifier = value;
                         break;
                     default:
                 }

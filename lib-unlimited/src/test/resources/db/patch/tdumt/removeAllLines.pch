@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<patcher>
+    <properties name="TDUMT patch converted from TDUF" version="0.0" author="unknown" date="2015" ref="00000000" free="" installerFileName="PATCH.exe" infoURL="http://forum.turboduck.net/threads/32570-TDUF-05-Djey-New-tools-and-modding-opportunities">
+        <roles>
+            <role what="Tools development" name="DJEY" />
+        </roles>
+        <groups/>
+    </properties>
+    <instructions>
+        <instruction type="removeAllLinesFromDatabase" failOnError="True" enabled="True" comment="" group="Required">
+            <parameter name="resourceFileName" value="CarPacks" />
+            <parameter name="databaseId" value="916575065" />
+        </instruction>
+    </instructions>
+</patcher>
