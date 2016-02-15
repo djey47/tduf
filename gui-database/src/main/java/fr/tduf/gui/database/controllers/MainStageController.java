@@ -599,7 +599,7 @@ public class MainStageController extends AbstractGuiController {
         resolvedValuePropertyByFieldRank.clear();
         resourceListByTopicLink.clear();
 
-        viewDataController.fillBrowsableEntries(currentTopicObject.getTopic());
+        viewDataController.fillBrowsableEntries();
 
         initTabPane();
     }
@@ -640,7 +640,7 @@ public class MainStageController extends AbstractGuiController {
         long newEntryIndex = changeDataController.addEntryForCurrentTopic();
 
         viewDataController.updateEntriesAndSwitchTo(newEntryIndex);
-        viewDataController.fillBrowsableEntries(currentTopicObject.getTopic());
+        viewDataController.fillBrowsableEntries();
     }
 
     private void duplicateEntryAndUpdateStage() {

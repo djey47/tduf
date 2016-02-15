@@ -31,7 +31,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Specialized controller to display database contents.
  */
-// FIXME Resolve IOB exception when switching to another entry via browsable entry list
 public class MainStageViewDataController {
 
     private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
@@ -44,17 +43,18 @@ public class MainStageViewDataController {
         this.mainStageController = mainStageController;
     }
 
-    void fillBrowsableEntries(DbDto.Topic topic) {
+    void fillBrowsableEntries() {
         final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
                 mainStageController.getCurrentProfileObject().getName(),
                 mainStageController.getLayoutObject());
 
         ObservableList<ContentEntryDataItem> browsableEntryList = mainStageController.browsableEntries;
         browsableEntryList.clear();
-        getMiner().getDatabaseTopic(topic)
+        final DbDto.Topic currentTopic = mainStageController.getCurrentTopicObject().getTopic();
+        getMiner().getDatabaseTopic(currentTopic)
                 .ifPresent((topicObject) -> browsableEntryList.addAll(topicObject.getData().getEntries().stream()
 
-                                .map((topicEntry) -> getDisplayableEntryForCurrentLocale(topicEntry, labelFieldRanks, topic))
+                                .map((topicEntry) -> getDisplayableEntryForCurrentLocale(topicEntry, labelFieldRanks, currentTopic))
 
                                 .collect(toList()))
                 );
@@ -99,10 +99,6 @@ public class MainStageViewDataController {
                 && mainStageController.resolvedValuePropertyByFieldRank.containsKey(item.getFieldRank())) {
             updateReferenceProperties(item, structureField);
         }
-
-        fillBrowsableEntries(currentTopicObject.getTopic());
-
-        updateCurrentEntryLabelProperty();
     }
 
     void updateLinkProperties(TopicLinkDto topicLinkObject) {
@@ -116,7 +112,7 @@ public class MainStageViewDataController {
     }
 
     void updateEntriesAndSwitchTo(long entryIndex) {
-        fillBrowsableEntries(mainStageController.getCurrentTopicObject().getTopic());
+        fillBrowsableEntries();
         switchToContentEntry(entryIndex);
     }
 
