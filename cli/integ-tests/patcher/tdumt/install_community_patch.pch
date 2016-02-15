@@ -417,5 +417,9 @@
       <parameter name="resourceFileName" value="CarPacks" />
       <parameter name="databaseId" value="916575065" />
     </instruction>
+    <instruction type="setVehicleOnSpots" failOnError="True" enabled="True" comment="" group="Required">
+      <parameter name="vehicleDatabaseId" value="916575065" />
+      <parameter name="resourceValues" value="595033714|8" />
+    </instruction>
   </instructions>
 </patcher>
