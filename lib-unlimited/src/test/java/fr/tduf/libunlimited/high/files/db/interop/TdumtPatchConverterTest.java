@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.high.files.db.interop;
 
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -20,6 +21,7 @@ import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChange
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TdumtPatchConverterTest {
@@ -160,6 +162,19 @@ public class TdumtPatchConverterTest {
     }
 
     @Test
+    public void pchToJson_whenRealPatchDocument_andDuplicateInstructions_shouldReturnPatchObject_withSingleChange() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+        // GIVEN
+        Document patchDocument = TdumtPatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/removeAllLines_duplicateInstruction.pch");
+
+        // WHEN
+        DbPatchDto actualPatchObject = TdumtPatchConverter.pchToJson(patchDocument);
+
+        // THEN
+        assertThat(actualPatchObject).isNotNull();
+        assertThat(actualPatchObject.getChanges()).hasSize(1);
+    }
+
+    @Test
     public void pchToJson_whenRealPatchDocument_forContentsAndResources_shouldReturnPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
         Document patchDocument = TdumtPatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/updateContentsAndResources.pch");
@@ -228,16 +243,26 @@ public class TdumtPatchConverterTest {
     }
 
     @Test
-    public void pchToJson_whenRealPatchDocument_whenDuplicateInstructions_shouldReturnPatchObject_withSingleChange() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+    public void pchToJson_whenRealPatchDocument_forSetVehicleOnTwoSpots_shouldReturnTwoChangeObjects() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
-        Document patchDocument = TdumtPatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/removeAllLines_duplicateInstruction.pch");
+        Document patchDocument = TdumtPatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/setVehicleOnSpots.pch");
+
 
         // WHEN
         DbPatchDto actualPatchObject = TdumtPatchConverter.pchToJson(patchDocument);
 
+
         // THEN
         assertThat(actualPatchObject).isNotNull();
-        assertThat(actualPatchObject.getChanges()).hasSize(1);
+        assertThat(actualPatchObject.getChanges()).hasSize(2);
+
+        assertThat(actualPatchObject.getChanges()).extracting("ref").containsOnly("595033714","595033715");
+        assertThat(actualPatchObject.getChanges()).extracting("topic").containsOnly(CAR_SHOPS);
+        assertThat(actualPatchObject.getChanges()).extracting("type").containsOnly(UPDATE);
+
+        DbFieldValueDto partialValue1 = DbFieldValueDto.fromCouple(11, "916575065" );
+        DbFieldValueDto partialValue2 = DbFieldValueDto.fromCouple(13, "916575065" );
+        assertThat(actualPatchObject.getChanges()).extracting("partialValues").containsOnly(singletonList(partialValue1), singletonList(partialValue2));
     }
 
     @Test

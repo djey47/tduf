@@ -21,7 +21,10 @@ import java.util.stream.Stream;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.DELETE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
+import static java.lang.Integer.valueOf;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -43,9 +46,11 @@ public class TdumtPatchConverter {
     private static final String INSTRUCTION_TDUMT_UPDATE_DATABASE = "updateDatabase";
     private static final String INSTRUCTION_TDUMT_UPDATE_RESOURCE = "updateResource";
     private static final String INSTRUCTION_TDUMT_REMOVE_ALL_LINES = "removeAllLinesFromDatabase";
+    private static final String INSTRUCTION_TDUMT_SET_VEHICLE_ON_SPOTS = "setVehicleOnSpots";
     private static final String PARAMETER_TDUMT_RESOURCE_FILE_NAME = "resourceFileName";
     private static final String PARAMETER_TDUMT_RESOURCE_VALUES = "resourceValues";
     private static final String PARAMETER_TDUMT_DATABASE_IDENTIFIER = "databaseId";
+    private static final String PARAMETER_TDUMT_VEHICLE_DATABASE_IDENTIFIER = "vehicleDatabaseId";
 
     private static final String SEPARATOR_ENTRIES = "||";
     private static final String SEPARATOR_KEY_VALUE = "|";
@@ -199,11 +204,23 @@ public class TdumtPatchConverter {
                     break;
                 case INSTRUCTION_TDUMT_REMOVE_ALL_LINES:
                     changesObjects.add(getChangeObjectForContentsDeletion(parser));
+                    break;
+                case INSTRUCTION_TDUMT_SET_VEHICLE_ON_SPOTS:
+                    changesObjects.addAll(getChangesObjectsForSettingVehicleOnSpots(parser));
+                    break;
                 default:
             }
         }
 
         return changesObjects;
+    }
+
+    private static Set<DbPatchDto.DbChangeDto> getChangesObjectsForSettingVehicleOnSpots(InstructionParametersParser parser) {
+        return Stream.of(parser.resourceValues.split(REGEX_SEPARATOR_ENTRIES))
+
+                .map((spotEntry) -> getChangeObjectForSettingVehicleOnSpot(spotEntry, parser.databaseIdentifier))
+
+                .collect(toSet());
     }
 
     private static Set<DbPatchDto.DbChangeDto> getChangesObjectsForContentsUpdates(InstructionParametersParser parser) {
@@ -226,13 +243,28 @@ public class TdumtPatchConverter {
                 .collect(toSet());
     }
 
+    private static DbPatchDto.DbChangeDto getChangeObjectForSettingVehicleOnSpot(String spotEntry, String vehicleDatabaseIdentifier) {
+        String[] entryComponents = spotEntry.split(REGEX_SEPARATOR_KEY_VALUE);
+        String spotReference = entryComponents[0];
+        int spotSlot = valueOf(entryComponents[1]);
+        final int fieldRank = spotSlot + 3;
+        List<DbFieldValueDto> partialValues = singletonList(DbFieldValueDto.fromCouple(fieldRank, vehicleDatabaseIdentifier));
+
+        return DbPatchDto.DbChangeDto.builder()
+                .forTopic(CAR_SHOPS)
+                .withType(UPDATE)
+                .asReference(spotReference)
+                .withPartialEntryValues(partialValues)
+                .build();
+    }
+
     private static DbPatchDto.DbChangeDto getChangeObjectForContentsDeletion(InstructionParametersParser parser) {
         DbDto.Topic topic = parser.getResourceFileNameAsTopic();
 
         return DbPatchDto.DbChangeDto.builder()
                 .forTopic(topic)
                 .withType(DELETE)
-                .filteredBy(Collections.singletonList(DbFieldValueDto.fromCouple(1, parser.databaseIdentifier)))
+                .filteredBy(singletonList(DbFieldValueDto.fromCouple(1, parser.databaseIdentifier)))
                 .build();
     }
 
@@ -315,6 +347,7 @@ public class TdumtPatchConverter {
                         resourceValues = value;
                         break;
                     case PARAMETER_TDUMT_DATABASE_IDENTIFIER:
+                    case PARAMETER_TDUMT_VEHICLE_DATABASE_IDENTIFIER:
                         databaseIdentifier = value;
                         break;
                     default:
