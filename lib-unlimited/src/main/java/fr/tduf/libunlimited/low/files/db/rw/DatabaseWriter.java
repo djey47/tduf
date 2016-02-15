@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -68,7 +69,7 @@ public class DatabaseWriter {
     }
 
     /**
-     * Writes all contents to given path (must exist) as JSON file .
+     * Writes all contents to given path as JSON file .
      * @param path  : location to write db files
      * @return name of JSON file that has been written.
      */
@@ -78,9 +79,7 @@ public class DatabaseWriter {
         String outputFileName = String.format("%s.%s", this.databaseDto.getTopic().getLabel(), EXTENSION_JSON);
 
         Path outputFilePath = Paths.get(path, outputFileName);
-        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(outputFilePath, StandardCharsets.UTF_8)) {
-            jsonObjectWriter.writeValue(bufferedWriter, this.databaseDto);
-        }
+        FilesHelper.writeJsonObjectToFile(databaseDto, outputFilePath.toString());
 
         return outputFilePath.toAbsolutePath().toString();
     }

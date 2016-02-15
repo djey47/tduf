@@ -39,7 +39,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -348,7 +347,7 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Writing patch to " + targetPatchFile + "...");
 
-        writePatchFileToDisk(patchObject, targetPatchFile);
+        FilesHelper.writeJsonObjectToFile(patchObject, targetPatchFile);
 
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("patchFile", targetPatchFile);
@@ -524,14 +523,6 @@ public class DatabaseTool extends GenericTool {
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.transform(new DOMSource(patchDocument), new StreamResult(writer));
         return writer.toString();
-    }
-
-    private void writePatchFileToDisk(DbPatchDto patchObject, String targetPatchFile) throws IOException {
-        Path patchFilePath = Paths.get(targetPatchFile);
-        Files.createDirectories(patchFilePath.getParent());
-        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(patchFilePath, StandardCharsets.UTF_8)) {
-            jsonWriter.writeValue(bufferedWriter, patchObject);
-        }
     }
 
     private List<DbDto> loadDatabaseFromJsonFiles(String sourceJsonDirectory) {

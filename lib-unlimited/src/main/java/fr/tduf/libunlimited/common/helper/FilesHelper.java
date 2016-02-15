@@ -112,7 +112,6 @@ public class FilesHelper {
      * @param fileName  : path of file to be created
      * @throws IOException
      */
-    // TODO use this method from other modules (gui etc...)
     public static void writeJsonObjectToFile(Object object, String fileName) throws IOException {
         Path patchFilePath = Paths.get(fileName);
         Files.createDirectories(patchFilePath.getParent());

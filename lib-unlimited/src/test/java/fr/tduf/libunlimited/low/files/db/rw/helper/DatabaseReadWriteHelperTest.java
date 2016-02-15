@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static fr.tduf.libtesting.common.helper.AssertionsHelper.assertFileDoesNotMatchReference;
@@ -25,13 +26,14 @@ public class DatabaseReadWriteHelperTest {
 
     private static Class<DatabaseReadWriteHelperTest> thisClass = DatabaseReadWriteHelperTest.class;
 
-    private final String nonExistingDirectory = "~nope";
-
     private String tempDirectory;
+
+    private String existingAsFile;
 
     @Before
     public void setUp() throws IOException {
         tempDirectory = Files.createTempDirectory("libUnlimited-tests").toString();
+        existingAsFile = Files.createFile(Paths.get(tempDirectory, "file")).toString();
     }
 
     @Test
@@ -207,10 +209,8 @@ public class DatabaseReadWriteHelperTest {
         // GIVEN
         DbDto dbDto = createDatabaseTopicObject();
 
-
         // WHEN
-        Optional<String> potentialFileName = DatabaseReadWriteHelper.writeDatabaseTopicToJson(dbDto, nonExistingDirectory);
-
+        Optional<String> potentialFileName = DatabaseReadWriteHelper.writeDatabaseTopicToJson(dbDto, existingAsFile);
 
         // THEN
         assertThat(potentialFileName).isEmpty();
@@ -230,12 +230,12 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void writeDatabaseTopicsToJson_whenWriterFailure_shouldReturnEmptyList() {
+    public void writeDatabaseTopicsToJson_whenWriterFailure_shouldReturnEmptyList() throws IOException {
         // GIVEN
         List<DbDto> topicObjects = singletonList(createDatabaseTopicObject());
 
         // WHEN
-        List<String> writtenFileNames = DatabaseReadWriteHelper.writeDatabaseTopicsToJson(topicObjects, nonExistingDirectory);
+        List<String> writtenFileNames = DatabaseReadWriteHelper.writeDatabaseTopicsToJson(topicObjects, existingAsFile);
 
         // THEN
         assertThat(writtenFileNames).isEmpty();
