@@ -24,7 +24,7 @@ public class DatabaseQueryHelper {
         requireNonNull(fieldRanks, "A list of field ranks (even empty) must be provided.");
 
         if (fieldRanks.isEmpty()) {
-            return String.format(DisplayConstants.FORMAT_VALUE_UNKNOWN, "?");
+            return String.format(DisplayConstants.VALUE_UNKNOWN, "?");
         }
 
         List<String> contents = fieldRanks.stream()
@@ -36,7 +36,7 @@ public class DatabaseQueryHelper {
                     }
 
                     final String rawValue = databaseMiner.getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, entryId).get().getRawValue();
-                    return String.format(DisplayConstants.FORMAT_VALUE_UNKNOWN, rawValue);
+                    return String.format(DisplayConstants.VALUE_UNKNOWN, rawValue);
                 })
 
                 .collect(toList());

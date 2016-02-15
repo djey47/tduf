@@ -152,7 +152,8 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_REFERENCE);
         controller.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
 
-        Label remoteValueLabel = addCustomLabel(fieldBox, fieldReadOnly, DisplayConstants.VALUE_UNKNOWN);
+        final String valueUnknown = String.format(DisplayConstants.VALUE_UNKNOWN, "?");
+        Label remoteValueLabel = addCustomLabel(fieldBox, fieldReadOnly, valueUnknown);
         remoteValueLabel.setPrefWidth(450);
         remoteValueLabel.textProperty().bindBidirectional(property);
 

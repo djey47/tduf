@@ -8,11 +8,9 @@ public class DisplayConstants {
     public static final String VALUE_ENTRY_CELL = "%d:%s";
     public static final String VALUE_ERROR_RESOURCE_NOT_FOUND = "<ERROR: resource not found!>";
     public static final String VALUE_ERROR_ENTRY_NOT_FOUND = "<ERROR: entry not found!>";
+    public static final String VALUE_UNKNOWN = "<%s>";
     public static final String VALUE_FIELD_DEFAULT = "";
     public static final String VALUE_RESOURCE_DEFAULT = "";
-    // TODO replace with formatted string
-    public static final String VALUE_UNKNOWN = "<?>";
-    public static final String FORMAT_VALUE_UNKNOWN = "<%s>";
 
     public static final String LABEL_BUTTON_ALL = "All";
     public static final String LABEL_BUTTON_BROWSE = "...";
