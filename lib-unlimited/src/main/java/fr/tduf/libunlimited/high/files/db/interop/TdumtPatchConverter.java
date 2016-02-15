@@ -149,6 +149,9 @@ public class TdumtPatchConverter {
 
         List<String> entries = changeObjects.stream()
 
+                .filter((updateChangeObject) -> updateChangeObject.getValues() != null
+                        || updateChangeObject.getValue() != null)
+
                 .map((updateChangeObject) -> {
 
                     if (UPDATE == changeType) {
