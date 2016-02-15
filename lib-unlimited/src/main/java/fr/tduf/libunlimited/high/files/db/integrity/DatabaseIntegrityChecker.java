@@ -13,7 +13,6 @@ import java.util.stream.Stream;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
@@ -30,11 +29,10 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
      * Beware! This piece of code is very CPU-intelnsive on a complete database
      * and takes a couple of minutes on a modern processor!
      *
-     * @return list of integrity errors.
+     * @return set of integrity errors.
      */
-    // TODO return set instead of a list
-    public List<IntegrityError> checkAllContentsObjects() {
-        List<IntegrityError> integrityErrors = new ArrayList<>();
+    public Set<IntegrityError> checkAllContentsObjects() {
+        Set<IntegrityError> integrityErrors = new HashSet<>();
 
         checkRequirements(integrityErrors);
         if(!integrityErrors.isEmpty()) {
@@ -48,21 +46,20 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
 
                 .forEach((localTopicObject) -> checkContentsObject(localTopicObject, integrityErrors));
 
-        // TODO unnecessary when using set
-        return removeDuplicates(integrityErrors);
+        return integrityErrors;
     }
 
     @Override
     protected void postPrepare() {
     }
 
-    private void checkRequirements(List<IntegrityError> integrityErrors) {
-        requireNonNull(integrityErrors, "A list of integrity errors (even empty) is required.");
+    private void checkRequirements(Set<IntegrityError> integrityErrors) {
+        requireNonNull(integrityErrors, "A set of integrity errors (even empty) is required.");
 
         checkIfAllTopicObjectsPresent(integrityErrors);
     }
 
-    private void checkIfAllTopicObjectsPresent(List<IntegrityError> integrityErrors) {
+    private void checkIfAllTopicObjectsPresent(Set<IntegrityError> integrityErrors) {
         Set<DbDto.Topic> absentTopics = Stream.of(DbDto.Topic.values())
 
                 .filter((topicEnum) -> !databaseMiner.getDatabaseTopic(topicEnum).isPresent())
@@ -80,7 +77,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         }
     }
 
-    private void checkContentsObject(DbDto contentsObject, List<IntegrityError> integrityErrors) {
+    private void checkContentsObject(DbDto contentsObject, Set<IntegrityError> integrityErrors) {
 
         Map<Integer, DbStructureDto.Field> fieldsByRankIndex = fieldsByRanksByTopicObjects.get(contentsObject);
 
@@ -91,7 +88,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
                         .forEach((item) -> checkContentsItem(item, contentsObject, fieldsByRankIndex, integrityErrors)));
     }
 
-    private void checkContentsItem(DbDataDto.Item item, DbDto localTopicObject, Map<Integer, DbStructureDto.Field> fieldsByRanksIndex, List<IntegrityError> integrityErrors) {
+    private void checkContentsItem(DbDataDto.Item item, DbDto localTopicObject, Map<Integer, DbStructureDto.Field> fieldsByRanksIndex, Set<IntegrityError> integrityErrors) {
         DbStructureDto.Field field = fieldsByRanksIndex.get(item.getFieldRank());
         String targetRef = field.getTargetRef();
 
@@ -120,8 +117,8 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         }
     }
 
-    private List<IntegrityError> checkResourceReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic, boolean globalizedResource) {
-        List<IntegrityError> integrityErrors = new ArrayList<>();
+    private Set<IntegrityError> checkResourceReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic, boolean globalizedResource) {
+        Set<IntegrityError> integrityErrors = new HashSet<>();
         Map<String, Integer> resourceValueCounter = new HashMap<>();
 
         topicObject.getResources().stream()
@@ -135,7 +132,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         return integrityErrors;
     }
 
-    private void checkLocalizedResourceObject(DbResourceDto resourceDto, String reference, DbDto topicObject, DbDto.Topic sourceTopic, boolean globalizedResource, List<IntegrityError> integrityErrors, Map<String, Integer> resourceValueCounter) {
+    private void checkLocalizedResourceObject(DbResourceDto resourceDto, String reference, DbDto topicObject, DbDto.Topic sourceTopic, boolean globalizedResource, Set<IntegrityError> integrityErrors, Map<String, Integer> resourceValueCounter) {
         Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(reference, topicObject.getStructure().getTopic(), resourceDto.getLocale());
 
         boolean isResourceReferenceFound = potentialResourceEntry.isPresent();
@@ -158,10 +155,10 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         }
     }
 
-    private List<IntegrityError> checkContentsReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic) {
+    private Set<IntegrityError> checkContentsReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic) {
         Map<Integer, DbStructureDto.Field> fieldsByRanks = fieldsByRanksByTopicObjects.get(topicObject);
 
-        List<IntegrityError> integrityErrors = new ArrayList<>();
+        Set<IntegrityError> integrityErrors = new HashSet<>();
 
         boolean isReferenceFound = topicObject.getData().getEntries().stream()
 
@@ -197,7 +194,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         return integrityErrors;
     }
 
-    private void checkResourceValuesForReference(String reference, DbDto.Topic sourceTopic, List<IntegrityError> integrityErrors, Map<String, Integer> resourceValueCounter) {
+    private void checkResourceValuesForReference(String reference, DbDto.Topic sourceTopic, Set<IntegrityError> integrityErrors, Map<String, Integer> resourceValueCounter) {
         if (resourceValueCounter.size() > 1) {
             Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
             informations.put(SOURCE_TOPIC, sourceTopic);
@@ -238,14 +235,6 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         return dto.getStructure().getFields().stream()
 
                 .collect(toMap(DbStructureDto.Field::getRank, (field) -> field));
-    }
-
-    private static List<IntegrityError> removeDuplicates(List<IntegrityError> integrityErrors) {
-        return integrityErrors.stream()
-
-                .distinct()
-
-                .collect(toList());
     }
 
     Map<String, DbDto> getTopicObjectsByReferences() {

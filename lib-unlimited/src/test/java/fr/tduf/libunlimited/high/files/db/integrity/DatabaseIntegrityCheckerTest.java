@@ -44,7 +44,7 @@ public class DatabaseIntegrityCheckerTest {
 
 
         // WHEN
-        List<IntegrityError> integrityErrors = checker.checkAllContentsObjects();
+        Set<IntegrityError> integrityErrors = checker.checkAllContentsObjects();
 
 
         // THEN
@@ -79,7 +79,7 @@ public class DatabaseIntegrityCheckerTest {
         List<DbDto> dbDtos = createAllDtosWithMissingLocalResource();
 
         //WHEN
-        List<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
+        Set<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
@@ -93,7 +93,7 @@ public class DatabaseIntegrityCheckerTest {
         List<DbDto> dbDtos = createAllDtosWithMissingLocalResourceTypeH();
 
         //WHEN
-        List<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
+        Set<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
@@ -107,7 +107,7 @@ public class DatabaseIntegrityCheckerTest {
         List<DbDto> dbDtos = createAllDtosWithMissingForeignResource();
 
         //WHEN
-        List<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
+        Set<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
@@ -122,7 +122,7 @@ public class DatabaseIntegrityCheckerTest {
         List<DbDto> dbDtos = createAllDtosWithMissingLocalAndForeignResource();
 
         //WHEN
-        List<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
+        Set<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
 
         //THEN
         assertThat(integrityErrors).hasSize(36);
@@ -135,7 +135,7 @@ public class DatabaseIntegrityCheckerTest {
         List<DbDto> dbDtos = createAllDtosWithMissingForeignEntry();
 
         //WHEN
-        List<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
+        Set<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
@@ -149,14 +149,14 @@ public class DatabaseIntegrityCheckerTest {
 
 
         //WHEN
-        List<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
+        Set<IntegrityError> integrityErrors = createChecker(dbDtos).checkAllContentsObjects();
 
 
         //THEN
         assertThat(integrityErrors).hasSize(18);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES);
 
-        IntegrityError integrityError = integrityErrors.get(0);
+        IntegrityError integrityError = integrityErrors.stream().findAny().get();
         assertThat(integrityError.getInformation())
                 .containsKey(IntegrityError.ErrorInfoEnum.REFERENCE)
                 .containsValue("100")
@@ -449,7 +449,7 @@ public class DatabaseIntegrityCheckerTest {
                 .build();
     }
 
-    private static void assertAllIntegrityErrorsContainInformation(List<IntegrityError> integrityErrors, IntegrityError.ErrorInfoEnum infoKey, Object infoValue) {
+    private static void assertAllIntegrityErrorsContainInformation(Set<IntegrityError> integrityErrors, IntegrityError.ErrorInfoEnum infoKey, Object infoValue) {
         for (IntegrityError integrityError : integrityErrors) {
             assertThat(integrityError.getInformation()).containsEntry(infoKey, infoValue);
         }

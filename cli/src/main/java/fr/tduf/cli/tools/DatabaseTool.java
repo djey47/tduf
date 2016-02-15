@@ -550,7 +550,7 @@ public class DatabaseTool extends GenericTool {
 
                 .collect(toList());
 
-        List<IntegrityError> integrityErrorsWhileExtensiveChecking = DatabaseIntegrityChecker.prepare(DatabaseIntegrityChecker.class, readObjects).checkAllContentsObjects();
+        Set<IntegrityError> integrityErrorsWhileExtensiveChecking = DatabaseIntegrityChecker.prepare(DatabaseIntegrityChecker.class, readObjects).checkAllContentsObjects();
 
         integrityErrors.addAll(integrityErrorsWhileReading);
         integrityErrors.addAll(integrityErrorsWhileExtensiveChecking);
