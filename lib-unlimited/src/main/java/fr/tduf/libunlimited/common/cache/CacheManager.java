@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 import static com.esotericsoftware.minlog.Log.DEBUG;
@@ -40,7 +41,7 @@ public enum CacheManager {
 
         private CacheManagerInstance(boolean enabled) {
             this.enabled = enabled;
-            this.stores = new HashMap<>(16);
+            this.stores = new ConcurrentHashMap<>(16);
         }
 
         /**
@@ -53,8 +54,11 @@ public enum CacheManager {
          */
         public <R> R getValueFromKey(String storeName, String key, Supplier<R> supplier) {
             if (enabled) {
+                if (storeName == null || key == null) {
+                    return supplier.get();
+                }
 
-                stores.putIfAbsent(storeName, new HashMap<>(16));
+                stores.putIfAbsent(storeName, new ConcurrentHashMap<>(16));
                 Map<String, R> storeMap = (Map<String, R>) stores.get(storeName);
 
                 R previousValue = storeMap.putIfAbsent(key, supplier.get());
