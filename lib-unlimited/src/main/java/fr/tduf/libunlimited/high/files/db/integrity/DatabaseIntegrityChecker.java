@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
+import static java.util.Collections.synchronizedSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
@@ -32,7 +33,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
      * @return set of integrity errors.
      */
     public Set<IntegrityError> checkAllContentsObjects() {
-        Set<IntegrityError> integrityErrors = new HashSet<>();
+        Set<IntegrityError> integrityErrors = synchronizedSet(new HashSet<>());
 
         checkRequirements(integrityErrors);
         if(!integrityErrors.isEmpty()) {
@@ -41,8 +42,9 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
 
         buildIndexes();
 
-        // TODO try to parallelize with synchronized set
         databaseObjects.stream()
+
+                .parallel()
 
                 .forEach((localTopicObject) -> checkContentsObject(localTopicObject, integrityErrors));
 
