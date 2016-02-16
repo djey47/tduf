@@ -156,10 +156,14 @@ public class DbDto implements Serializable {
         return data;
     }
 
+    public DbResourceEnhancedDto getResource() {
+        return resource;
+    }
+
+    @Deprecated
     public List<DbResourceDto> getResources() {
         return resources;
     }
-
 
     @Override
     public boolean equals(Object o) {

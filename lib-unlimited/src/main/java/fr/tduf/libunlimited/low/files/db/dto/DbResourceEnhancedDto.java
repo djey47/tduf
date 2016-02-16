@@ -48,6 +48,18 @@ public class DbResourceEnhancedDto {
         return reflectionToString(this);
     }
 
+    public Set<Entry> getEntries() {
+        return entries;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public Integer getCategoryCount() {
+        return categoryCount;
+    }
+
     public static class DbResourceEnhancedDtoBuilder {
         private String version;
         private int categoryCount;
@@ -94,6 +106,13 @@ public class DbResourceEnhancedDto {
             return new EntryBuilder();
         }
 
+        public void addItem(Item item) {
+            if (items == null) {
+                items = new LinkedHashSet<>();
+            }
+            items.add(item);
+        }
+
         @Override
         public boolean equals(Object o) {
             return reflectionEquals(this, o);
@@ -107,6 +126,10 @@ public class DbResourceEnhancedDto {
         @Override
         public String toString() {
             return reflectionToString(this);
+        }
+
+        public String getReference() {
+            return reference;
         }
 
         public static class EntryBuilder {
