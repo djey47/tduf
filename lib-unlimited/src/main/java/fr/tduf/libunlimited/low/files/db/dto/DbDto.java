@@ -24,6 +24,10 @@ public class DbDto implements Serializable {
     @JsonProperty("data")
     private DbDataDto data;
 
+    @JsonProperty("resource")
+    private DbResourceEnhancedDto resource;
+
+    @Deprecated
     @JsonProperty("resources")
     private List<DbResourceDto> resources;
 
@@ -87,6 +91,7 @@ public class DbDto implements Serializable {
             private final List<DbResourceDto> resources = new ArrayList<>();
             private DbDataDto data;
             private DbStructureDto structure;
+            private DbResourceEnhancedDto resource;
 
             @Override
             public DbDtoBuilder withStructure(DbStructureDto dbStructureDto) {
@@ -97,6 +102,12 @@ public class DbDto implements Serializable {
             @Override
             public DbDtoBuilder withData(DbDataDto dbDataDto) {
                 this.data = dbDataDto;
+                return this;
+            }
+
+            @Override
+            public DbDtoBuilder withResource(DbResourceEnhancedDto dbResourceEnhancedDto) {
+                this.resource = dbResourceEnhancedDto;
                 return this;
             }
 
@@ -116,9 +127,10 @@ public class DbDto implements Serializable {
             public DbDto build() {
                 DbDto dbDto = new DbDto();
 
-                dbDto.structure = this.structure;
-                dbDto.data = this.data;
-                dbDto.resources = this.resources;
+                dbDto.structure = structure;
+                dbDto.data = data;
+                dbDto.resources = resources;
+                dbDto.resource = resource;
 
                 return dbDto;
             }
@@ -169,8 +181,12 @@ public class DbDto implements Serializable {
 
         DbDtoBuilder withData(DbDataDto dbDataDto);
 
+        DbDtoBuilder withResource(DbResourceEnhancedDto dbResourceEnhancedDto);
+
+        @Deprecated
         DbDtoBuilder addResources(List<DbResourceDto> dbResourcesDtos);
 
+        @Deprecated
         DbDtoBuilder addResource(DbResourceDto dbResourceDto);
 
         DbDto build();

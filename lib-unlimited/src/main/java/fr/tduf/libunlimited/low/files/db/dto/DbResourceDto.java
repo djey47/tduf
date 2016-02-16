@@ -14,7 +14,9 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
 
 /**
  * Represents contents of TDU database resources (multilingual)
+ * @deprecated use {@link DbResourceEnhancedDto} instead
  */
+@Deprecated
 @JsonTypeName("dbResource")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class DbResourceDto implements Serializable {
