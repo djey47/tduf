@@ -14,6 +14,7 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoE
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.BITFIELD;
 import static java.lang.Integer.valueOf;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
@@ -167,22 +168,25 @@ public class DatabaseParser {
 
             matcher = resourceEntryPattern.matcher(line);
             if (matcher.matches()) {
+                final String ref = matcher.group(3);
                 final DbResourceEnhancedDto tempResource = DbResourceEnhancedDto.builder()
                         .atVersion("")
                         .withCategoryCount(0)
                         .containingEntries(entries)
                         .build();
                 DbResourceEnhancedDto.Entry entry =  tempResource.getEntryByReference(matcher.group(3))
-                        .orElse(DbResourceEnhancedDto.Entry.builder()
-                                .forReference(matcher.group(3))
-                                .build());
+                        .orElseGet(() -> {
+                            final DbResourceEnhancedDto.Entry newEntry = DbResourceEnhancedDto.Entry.builder()
+                                    .forReference(ref)
+                                    .build();
+                            entries.add(newEntry);
+                            return newEntry;
+                        });
 
                 entry.addItem(DbResourceEnhancedDto.Item.builder()
                         .withValue(matcher.group(1))
                         .withLocale(locale)
                         .build());
-
-                entries.add(entry);
             }
         }
     }
@@ -423,7 +427,22 @@ public class DatabaseParser {
     }
 
     private void checkItemCountBetweenResourcesEnhanced(DbDto.Topic topic, Set<DbResourceEnhancedDto.Entry> entries) {
-        //TODO
+        entries.stream()
+
+                .forEach((entry) -> {
+
+                    if (entry.getItemCount() != DbResourceEnhancedDto.Locale.values().length) {
+                        Set<DbResourceEnhancedDto.Locale> missingLocales = new HashSet<>(asList(DbResourceEnhancedDto.Locale.values()));
+                        missingLocales.removeAll(entry.getPresentLocales());
+
+                        Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+                        info.put(SOURCE_TOPIC, topic);
+                        info.put(REFERENCE, entry.getReference());
+                        info.put(IntegrityError.ErrorInfoEnum.MISSING_LOCALES, missingLocales);
+
+                        addIntegrityError(RESOURCE_ITEMS_COUNT_MISMATCH, info);
+                    }
+                });
     }
 
     private void addIntegrityError(IntegrityError.ErrorTypeEnum errorTypeEnum, Map<IntegrityError.ErrorInfoEnum, Object> info) {
@@ -440,6 +459,7 @@ public class DatabaseParser {
         return contentLines.size();
     }
 
+    @Deprecated
     public long getResourceCount() {
         checkPrerequisites(this.contentLines, this.resources);
 
