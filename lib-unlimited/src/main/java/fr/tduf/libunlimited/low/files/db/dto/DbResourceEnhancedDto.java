@@ -175,6 +175,7 @@ public class DbResourceEnhancedDto {
                     .findAny();
         }
 
+        @JsonIgnore
         public int getItemCount() {
             return items == null ?
                     0 :

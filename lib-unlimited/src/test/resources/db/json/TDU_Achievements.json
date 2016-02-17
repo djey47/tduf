@@ -2960,7 +2960,6 @@
         "locale" : "SPAIN",
         "value" : "??"
       } ],
-      "itemCount" : 8,
       "ref" : "53410835"
     }, {
       "items" : [ {
@@ -2988,7 +2987,6 @@
         "locale" : "SPAIN",
         "value" : "Ottima prestazione! Ottieni §NB_PTS§ punti."
       } ],
-      "itemCount" : 8,
       "ref" : "70410835"
     }, {
       "items" : [ {
@@ -3016,7 +3014,6 @@
         "locale" : "SPAIN",
         "value" : "Bravo! Hai vinto §NB_REQ§ coppe d'oro su §NB_TOTAL§."
       } ],
-      "itemCount" : 8,
       "ref" : "54410835"
     }, {
       "items" : [ {
@@ -3044,7 +3041,6 @@
         "locale" : "SPAIN",
         "value" : "Complimenti! Hai vinto §NB_REQ§ coppe d'oro su §NB_TOTAL§."
       } ],
-      "itemCount" : 8,
       "ref" : "55410835"
     }, {
       "items" : [ {
@@ -3072,7 +3068,6 @@
         "locale" : "SPAIN",
         "value" : "Straordinario! Hai vinto §NB_REQ§ coppe d'oro su §NB_TOTAL§."
       } ],
-      "itemCount" : 8,
       "ref" : "56410835"
     }, {
       "items" : [ {
@@ -3100,7 +3095,6 @@
         "locale" : "SPAIN",
         "value" : "Incredibile! Vincendo TUTTE le coppe d'ORO hai ottenuto una prestazione eccezionale."
       } ],
-      "itemCount" : 8,
       "ref" : "57410835"
     }, {
       "items" : [ {
@@ -3128,7 +3122,6 @@
         "locale" : "SPAIN",
         "value" : "La tua perseveranza ti ha ripagato! Grazie ai tuoi sforzi hai completato tutte le sfide della categoria TEMPO a giocatore singolo."
       } ],
-      "itemCount" : 8,
       "ref" : "58410835"
     }, {
       "items" : [ {
@@ -3156,7 +3149,6 @@
         "locale" : "SPAIN",
         "value" : "Hai proprio un debole per le sfide della categoria VELOCITÀ a giocatore singolo! Ben fatto! Hai vinto tutte le coppe d'ORO."
       } ],
-      "itemCount" : 8,
       "ref" : "59410835"
     }, {
       "items" : [ {
@@ -3184,7 +3176,6 @@
         "locale" : "SPAIN",
         "value" : "La tua perseveranza ti ha ripagato! Hai vinto tutte le coppe d'oro nella categoria GARE a giocatore singolo."
       } ],
-      "itemCount" : 8,
       "ref" : "60410835"
     }, {
       "items" : [ {
@@ -3212,7 +3203,6 @@
         "locale" : "SPAIN",
         "value" : "Hai completato con successo il \"Giro dell'isola\", la leggendaria sfida di TEST DRIVE!"
       } ],
-      "itemCount" : 8,
       "ref" : "61410835"
     }, {
       "items" : [ {
@@ -3240,7 +3230,6 @@
         "locale" : "SPAIN",
         "value" : "Hai vinto §NB_REQ§ gare multigiocatore."
       } ],
-      "itemCount" : 8,
       "ref" : "62410835"
     }, {
       "items" : [ {
@@ -3268,7 +3257,6 @@
         "locale" : "SPAIN",
         "value" : "Stai diventando un pilota temuto. Hai già vinto §NB_REQ§ gare multigiocatore."
       } ],
-      "itemCount" : 8,
       "ref" : "53510835"
     }, {
       "items" : [ {
@@ -3296,7 +3284,6 @@
         "locale" : "SPAIN",
         "value" : "Ti stai facendo una bella reputazione! Hai raggranellato §NB_REQ§ vittorie nelle gare multigiocatore."
       } ],
-      "itemCount" : 8,
       "ref" : "54510835"
     }, {
       "items" : [ {
@@ -3324,7 +3311,6 @@
         "locale" : "SPAIN",
         "value" : "Fantastico! Hai già completato con successo §NB_REQ§ missioni su §NB_TOTAL§!"
       } ],
-      "itemCount" : 8,
       "ref" : "55510835"
     }, {
       "items" : [ {
@@ -3352,7 +3338,6 @@
         "locale" : "SPAIN",
         "value" : "Un'altra tappa fondamentale nella tua carriera. Hai completato con successo §NB_REQ§ missioni su §NB_TOTAL§."
       } ],
-      "itemCount" : 8,
       "ref" : "56510835"
     }, {
       "items" : [ {
@@ -3380,7 +3365,6 @@
         "locale" : "SPAIN",
         "value" : "Sei davvero una macchina implacabile. Hai completato con successo §NB_REQ§ missioni su §NB_TOTAL§."
       } ],
-      "itemCount" : 8,
       "ref" : "57510835"
     }, {
       "items" : [ {
@@ -3408,7 +3392,6 @@
         "locale" : "SPAIN",
         "value" : "Un'altra vittoria aggiunta al tuo record. Hai completato con successo TUTTE le missioni.\nOttieni §NB_REQ§ punti."
       } ],
-      "itemCount" : 8,
       "ref" : "58510835"
     }, {
       "items" : [ {
@@ -3436,7 +3419,6 @@
         "locale" : "SPAIN",
         "value" : "§NB_REQ§ vittorie nelle SFIDE IMMEDIATE."
       } ],
-      "itemCount" : 8,
       "ref" : "59510835"
     }, {
       "items" : [ {
@@ -3464,7 +3446,6 @@
         "locale" : "SPAIN",
         "value" : "Con §NB_REQ§ vittorie in tasca, sei ormai un vero maestro delle SFIDE IMMEDIATE."
       } ],
-      "itemCount" : 8,
       "ref" : "60510835"
     }, {
       "items" : [ {
@@ -3492,7 +3473,6 @@
         "locale" : "SPAIN",
         "value" : "Le SFIDE IMMEDIATE sono diventate la tua specialità! Hai già collezionato §NB_REQ§ vittorie!"
       } ],
-      "itemCount" : 8,
       "ref" : "61510835"
     }, {
       "items" : [ {
@@ -3520,7 +3500,6 @@
         "locale" : "SPAIN",
         "value" : "Hai condiviso §NB_REQ§ sfida/e personalizzata/e con il resto della comunità."
       } ],
-      "itemCount" : 8,
       "ref" : "62510835"
     }, {
       "items" : [ {
@@ -3548,7 +3527,6 @@
         "locale" : "SPAIN",
         "value" : "§NB_REQ§ vittorie nelle sfide personalizzate!"
       } ],
-      "itemCount" : 8,
       "ref" : "53610835"
     }, {
       "items" : [ {
@@ -3576,7 +3554,6 @@
         "locale" : "SPAIN",
         "value" : "Sei membro di un club."
       } ],
-      "itemCount" : 8,
       "ref" : "54610835"
     }, {
       "items" : [ {
@@ -3604,7 +3581,6 @@
         "locale" : "SPAIN",
         "value" : "Il tuo club si è aggiudicato §NB_REQ§ competizioni per club."
       } ],
-      "itemCount" : 8,
       "ref" : "55610835"
     }, {
       "items" : [ {
@@ -3632,7 +3608,6 @@
         "locale" : "SPAIN",
         "value" : "Hai comprato o venduto §NB_REQ§ veicolo/i da/ad altri membri della comunità."
       } ],
-      "itemCount" : 8,
       "ref" : "56610835"
     }, {
       "items" : [ {
@@ -3660,7 +3635,6 @@
         "locale" : "SPAIN",
         "value" : "Sei un vero appassionato di FERRARI! Ne hai §NB_REQ§ in garage."
       } ],
-      "itemCount" : 8,
       "ref" : "57610835"
     }, {
       "items" : [ {
@@ -3688,7 +3662,6 @@
         "locale" : "SPAIN",
         "value" : "Sei veramente un amante della LAMBORGHINI! Ne possiedi già §NB_REQ§!"
       } ],
-      "itemCount" : 8,
       "ref" : "58610835"
     }, {
       "items" : [ {
@@ -3716,7 +3689,6 @@
         "locale" : "SPAIN",
         "value" : "Hai un debole per le MERCEDES-BENZ visto che ne possiedi già §NB_REQ§!"
       } ],
-      "itemCount" : 8,
       "ref" : "59610835"
     }, {
       "items" : [ {
@@ -3744,7 +3716,6 @@
         "locale" : "SPAIN",
         "value" : "Sei proprio un fan della CHEVROLET.\nNel tuo garage ce ne sono §NB_REQ§! "
       } ],
-      "itemCount" : 8,
       "ref" : "60610835"
     }, {
       "items" : [ {
@@ -3772,7 +3743,6 @@
         "locale" : "SPAIN",
         "value" : "Sei un vero appassionato di ASTON MARTIN. \\nNe possiedi §NB_REQ§!"
       } ],
-      "itemCount" : 8,
       "ref" : "61610835"
     }, {
       "items" : [ {
@@ -3800,7 +3770,6 @@
         "locale" : "SPAIN",
         "value" : "Sei un vero appassionato della FORD. Ne possiedi §NB_REQ§! Non è certo una cosa da tutti."
       } ],
-      "itemCount" : 8,
       "ref" : "62610835"
     }, {
       "items" : [ {
@@ -3828,7 +3797,6 @@
         "locale" : "SPAIN",
         "value" : "Anche se non si può ancora parlare di vera e propria collezione, §NB_REQ§ auto rappresentano un buon punto di partenza."
       } ],
-      "itemCount" : 8,
       "ref" : "53710835"
     }, {
       "items" : [ {
@@ -3856,7 +3824,6 @@
         "locale" : "SPAIN",
         "value" : "Non molti giocatori sono riusciti a fare lo stesso!\nPossiedi §NB_REQ§ auto diverse!"
       } ],
-      "itemCount" : 8,
       "ref" : "54710835"
     }, {
       "items" : [ {
@@ -3884,7 +3851,6 @@
         "locale" : "SPAIN",
         "value" : "Ora sappiamo che sei un vero centauro! In garage hai ben §NB_REQ§ moto."
       } ],
-      "itemCount" : 8,
       "ref" : "55710835"
     }, {
       "items" : [ {
@@ -3912,7 +3878,6 @@
         "locale" : "SPAIN",
         "value" : "Hai davvero buon gusto in fatto di abbigliamento. Nel tuo guardaroba vanti §NB_REQ§ capo/i firmato/i Ben Sherman."
       } ],
-      "itemCount" : 8,
       "ref" : "56710835"
     }, {
       "items" : [ {
@@ -3940,7 +3905,6 @@
         "locale" : "SPAIN",
         "value" : "È chiaro che hai un debole per *ecko unltd. Hai comprato §NB_REQ§ capi con questa griffe."
       } ],
-      "itemCount" : 8,
       "ref" : "57710835"
     }, {
       "items" : [ {
@@ -3968,7 +3932,6 @@
         "locale" : "SPAIN",
         "value" : "Hai fatto la messa a punto a §NB_REQ§ auto."
       } ],
-      "itemCount" : 8,
       "ref" : "58710835"
     }, {
       "items" : [ {
@@ -3996,7 +3959,6 @@
         "locale" : "SPAIN",
         "value" : "FANTASTICO! Conosci ogni centimetro dell'isola. Hai guidato su ogni singola strada."
       } ],
-      "itemCount" : 8,
       "ref" : "59710835"
     }, {
       "items" : [ {
@@ -4024,7 +3986,6 @@
         "locale" : "SPAIN",
         "value" : "È un buon inizio. Hai già percorso §NB_REQ§ miglia."
       } ],
-      "itemCount" : 8,
       "ref" : "60710835"
     }, {
       "items" : [ {
@@ -4052,7 +4013,6 @@
         "locale" : "SPAIN",
         "value" : "Inizi ad accumulare un numero considerevole di miglia. Finora ne hai coperte §NB_REQ§."
       } ],
-      "itemCount" : 8,
       "ref" : "61710835"
     }, {
       "items" : [ {
@@ -4080,7 +4040,6 @@
         "locale" : "SPAIN",
         "value" : "Hai percorso §NB_REQ§ miglia! Prenderai presto il patentino di guida!"
       } ],
-      "itemCount" : 8,
       "ref" : "62710835"
     }, {
       "items" : [ {
@@ -4108,7 +4067,6 @@
         "locale" : "SPAIN",
         "value" : "Mettiti seduto e senti qua: hai coperto una distanza equivalente a quella tra New York e Sydney!"
       } ],
-      "itemCount" : 8,
       "ref" : "53810835"
     }, {
       "items" : [ {
@@ -4136,7 +4094,6 @@
         "locale" : "SPAIN",
         "value" : "Sei arrivato a possedere §NB_REQ§ residenze di lusso."
       } ],
-      "itemCount" : 8,
       "ref" : "54810835"
     }, {
       "items" : [ {
@@ -4164,7 +4121,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi tutte le residenze di lusso dell'isola! Il team di TEST DRIVE si inchina al tuo cospetto!"
       } ],
-      "itemCount" : 8,
       "ref" : "55810835"
     }, {
       "items" : [ {
@@ -4192,7 +4148,6 @@
         "locale" : "SPAIN",
         "value" : "Hai scoperto gli angoli più incantevoli dell'isola. Li trovi tutti nel tuo album fotografico."
       } ],
-      "itemCount" : 8,
       "ref" : "56810835"
     }, {
       "items" : [ {
@@ -4220,7 +4175,6 @@
         "locale" : "SPAIN",
         "value" : "Hai già §NB_REQ§ veicoli. Comincia ad assomigliare a una collezione."
       } ],
-      "itemCount" : 8,
       "ref" : "57810835"
     }, {
       "items" : [ {
@@ -4248,7 +4202,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi §NB_REQ§ veicoli. Una bella collezione che farà ingelosire tutti!"
       } ],
-      "itemCount" : 8,
       "ref" : "58810835"
     }, {
       "items" : [ {
@@ -4276,7 +4229,6 @@
         "locale" : "SPAIN",
         "value" : "Hai una bella gamma di auto nel tuo garage. Hai già §NB_REQ§ veicoli nella tua collezione."
       } ],
-      "itemCount" : 8,
       "ref" : "59810835"
     }, {
       "items" : [ {
@@ -4304,7 +4256,6 @@
         "locale" : "SPAIN",
         "value" : "Prestazione incredibile! Hai viaggiato per §NB_REQ§ miglia!"
       } ],
-      "itemCount" : 8,
       "ref" : "60810835"
     }, {
       "items" : [ {
@@ -4332,7 +4283,6 @@
         "locale" : "SPAIN",
         "value" : "Ben fatto! Hai completato con successo tutte le sfide della categoria TOP MODEL. \nHai sbloccato la §CARNAME§. Puoi ritirarla da §SHOPNAME§"
       } ],
-      "itemCount" : 8,
       "ref" : "547472"
     }, {
       "items" : [ {
@@ -4360,7 +4310,6 @@
         "locale" : "SPAIN",
         "value" : "Ben fatto! Hai completato con successo tutte le sfide della categoria AUTOSTOPPISTA.\nHai sbloccato la §CARNAME§. Puoi ritirarla da §SHOPNAME§"
       } ],
-      "itemCount" : 8,
       "ref" : "557472"
     }, {
       "items" : [ {
@@ -4388,7 +4337,6 @@
         "locale" : "SPAIN",
         "value" : "Ben fatto! Hai completato con successo tutte le sfide della categoria TRASPORTO VEICOLI.\nHai sbloccato la §CARNAME§. Puoi ritirarla da §SHOPNAME§"
       } ],
-      "itemCount" : 8,
       "ref" : "567472"
     }, {
       "items" : [ {
@@ -4416,7 +4364,6 @@
         "locale" : "SPAIN",
         "value" : "Bella guida! Hai completato con successo tutte le sfide della categoria CORRIERE.\nHai sbloccato la §CARNAME§. Puoi ritirarla da §SHOPNAME§"
       } ],
-      "itemCount" : 8,
       "ref" : "577472"
     }, {
       "items" : [ {
@@ -4444,7 +4391,6 @@
         "locale" : "SPAIN",
         "value" : "Compimenti! Hai vinto tutte le sfide della categoria TEMPO singolo giocatore. Hai sbloccato la §CARNAME§. Puoi ritirarla da §SHOPNAME§"
       } ],
-      "itemCount" : 8,
       "ref" : "587472"
     }, {
       "items" : [ {
@@ -4472,7 +4418,6 @@
         "locale" : "SPAIN",
         "value" : "Compimenti! Hai vinto tutte le sfide della categoria GARA a giocatore singolo.\nHai sbloccato la §CARNAME§. Puoi ritirarla da §SHOPNAME§"
       } ],
-      "itemCount" : 8,
       "ref" : "597472"
     }, {
       "items" : [ {
@@ -4500,7 +4445,6 @@
         "locale" : "SPAIN",
         "value" : "Compimenti! Hai vinto tutte le sfide della categoria VELOCITÀ a giocatore singolo.\nHai sbloccato la §CARNAME§. Puoi ritirarla da §SHOPNAME§"
       } ],
-      "itemCount" : 8,
       "ref" : "607472"
     }, {
       "items" : [ {
@@ -4528,7 +4472,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi due auto. Usando il\nCHRONOPACK, puoi confrontare le rispettive prestazioni. Questo dispositivo è ora disponibile attraverso i menu ausiliari premendo sinistra sul tasto direzionale"
       } ],
-      "itemCount" : 8,
       "ref" : "617472"
     }, {
       "items" : [ {
@@ -4556,7 +4499,6 @@
         "locale" : "SPAIN",
         "value" : "Congratulazioni! Hai raggiunto il livello Dilettante. Hai ora accesso alla modalità FOTOGRAFIE."
       } ],
-      "itemCount" : 8,
       "ref" : "627472"
     }, {
       "items" : [ {
@@ -4584,7 +4526,6 @@
         "locale" : "SPAIN",
         "value" : "Ora sei un Professionista! Dal menu di pausa, puoi accedere ora alla modalità EDITOR, che ti permette di creare sfide personalizzate."
       } ],
-      "itemCount" : 8,
       "ref" : "538472"
     }, {
       "items" : [ {
@@ -4612,7 +4553,6 @@
         "locale" : "SPAIN",
         "value" : "Hai raggiunto il livello Esperto. Con questa prestazione hai guadagnato l'accesso al circuito di Ford Island. "
       } ],
-      "itemCount" : 8,
       "ref" : "548472"
     }, {
       "items" : [ {
@@ -4640,7 +4580,6 @@
         "locale" : "SPAIN",
         "value" : "Per celebrare il raggiungimento del livello Campione, hai ora accesso illimitato al circuito velocità."
       } ],
-      "itemCount" : 8,
       "ref" : "558472"
     }, {
       "items" : [ {
@@ -4668,7 +4607,6 @@
         "locale" : "SPAIN",
         "value" : "Hai scoperto tutte le strade dell'isola. Ti meriti un premio speciale: la casa più alta di tutte!"
       } ],
-      "itemCount" : 8,
       "ref" : "568472"
     }, {
       "items" : [ {
@@ -4696,7 +4634,6 @@
         "locale" : "SPAIN",
         "value" : "Hai scoperto tutti i concessionari d'auto dell'isola. Complimenti! Puoi ora visitare i concessionari di moto."
       } ],
-      "itemCount" : 8,
       "ref" : "578472"
     }, {
       "items" : [ {
@@ -4724,7 +4661,6 @@
         "locale" : "SPAIN",
         "value" : "Hai completato con successo la sfida più difficile. Hai sbloccato la §CARNAME§. Puoi ritirarla presso §SHOPNAME§. "
       } ],
-      "itemCount" : 8,
       "ref" : "588472"
     }, {
       "items" : [ {
@@ -4752,7 +4688,6 @@
         "locale" : "SPAIN",
         "value" : "Hai completato con successo una delle gare più dure dell'isola. Hai ora accesso al negozio di vernici di lusso."
       } ],
-      "itemCount" : 8,
       "ref" : "598472"
     }, {
       "items" : [ {
@@ -4780,7 +4715,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi due auto. Utilizzando il CHRONOPACK, potrai confrontare le loro rispettive prestazioni. Puoi ora accedere a questo kit premendo il tasto K."
       } ],
-      "itemCount" : 8,
       "ref" : "608472"
     }, {
       "items" : [ {
@@ -4808,7 +4742,6 @@
         "locale" : "SPAIN",
         "value" : "Per celebrare la tua conquista del livello Campione, puoi ora accedere liberamente alla pista di velocità. La modalità HARDCORE sarà anche disponibile nel menu ogni volta che avvii il gioco."
       } ],
-      "itemCount" : 8,
       "ref" : "618472"
     }, {
       "items" : [ {
@@ -4836,7 +4769,6 @@
         "locale" : "SPAIN",
         "value" : "??"
       } ],
-      "itemCount" : 8,
       "ref" : "551129540"
     }, {
       "items" : [ {
@@ -4864,7 +4796,6 @@
         "locale" : "SPAIN",
         "value" : "Non puoi ancora fare questo"
       } ],
-      "itemCount" : 8,
       "ref" : "561129540"
     }, {
       "items" : [ {
@@ -4892,7 +4823,6 @@
         "locale" : "SPAIN",
         "value" : "Devi completare tutte le sfide a TEMPO a un giocatore per sbloccare quest'auto."
       } ],
-      "itemCount" : 8,
       "ref" : "571129540"
     }, {
       "items" : [ {
@@ -4920,7 +4850,6 @@
         "locale" : "SPAIN",
         "value" : "Devi completare tutte le sfide GARA a un giocatore per sbloccare quest'auto."
       } ],
-      "itemCount" : 8,
       "ref" : "581129540"
     }, {
       "items" : [ {
@@ -4948,7 +4877,6 @@
         "locale" : "SPAIN",
         "value" : "Devi completare tutte le sfide VELOCITÀ a un giocatore per sbloccare quest'auto."
       } ],
-      "itemCount" : 8,
       "ref" : "591129540"
     }, {
       "items" : [ {
@@ -4976,7 +4904,6 @@
         "locale" : "SPAIN",
         "value" : "Devi completare tutte le sfide TOP MODEL per sbloccare quest'auto."
       } ],
-      "itemCount" : 8,
       "ref" : "601129540"
     }, {
       "items" : [ {
@@ -5004,7 +4931,6 @@
         "locale" : "SPAIN",
         "value" : "Devi completare tutte le sfide AUTOSTOP per sbloccare quest'auto."
       } ],
-      "itemCount" : 8,
       "ref" : "611129540"
     }, {
       "items" : [ {
@@ -5032,7 +4958,6 @@
         "locale" : "SPAIN",
         "value" : "Devi completare tutte le sfide TRASPORTO VEICOLI per sbloccare quest'auto."
       } ],
-      "itemCount" : 8,
       "ref" : "621129540"
     }, {
       "items" : [ {
@@ -5060,7 +4985,6 @@
         "locale" : "SPAIN",
         "value" : "Devi completare tutte le sfide CORRIERE per sbloccare quest'auto."
       } ],
-      "itemCount" : 8,
       "ref" : "631129540"
     }, {
       "items" : [ {
@@ -5088,7 +5012,6 @@
         "locale" : "SPAIN",
         "value" : "Quando raggiungerai il livello Dilettante, potrai scattare delle fotografie."
       } ],
-      "itemCount" : 8,
       "ref" : "542129540"
     }, {
       "items" : [ {
@@ -5116,7 +5039,6 @@
         "locale" : "SPAIN",
         "value" : "Quando diventerai un Professionista, potrai accedere all'editor per personalizzare le sfide."
       } ],
-      "itemCount" : 8,
       "ref" : "552129540"
     }, {
       "items" : [ {
@@ -5144,7 +5066,6 @@
         "locale" : "SPAIN",
         "value" : "Per guadagnarti l'accesso a quest'isola, devi raggiungere il livello ESPERTO."
       } ],
-      "itemCount" : 8,
       "ref" : "562129540"
     }, {
       "items" : [ {
@@ -5172,7 +5093,6 @@
         "locale" : "SPAIN",
         "value" : "Per guadagnarti l'accesso a questo circuito, devi raggiungere il livello CAMPIONE."
       } ],
-      "itemCount" : 8,
       "ref" : "572129540"
     }, {
       "items" : [ {
@@ -5200,7 +5120,6 @@
         "locale" : "SPAIN",
         "value" : "Questa casa sarà tua quando avrai scoperto TUTTE le strade dell'isola."
       } ],
-      "itemCount" : 8,
       "ref" : "582129540"
     }, {
       "items" : [ {
@@ -5228,7 +5147,6 @@
         "locale" : "SPAIN",
         "value" : "Per accedere a questo concessionario, devi prima scoprire tutti i concessionari auto."
       } ],
-      "itemCount" : 8,
       "ref" : "592129540"
     }, {
       "items" : [ {
@@ -5256,7 +5174,6 @@
         "locale" : "SPAIN",
         "value" : "Devi completare con successo la sfida \"Giro dell'isola\" per sbloccare questa macchina."
       } ],
-      "itemCount" : 8,
       "ref" : "602129540"
     }, {
       "items" : [ {
@@ -5284,7 +5201,6 @@
         "locale" : "SPAIN",
         "value" : "Per avere accesso a questa zona, devi vincere la Corsa §RACE_LUX§."
       } ],
-      "itemCount" : 8,
       "ref" : "612129540"
     }, {
       "items" : [ {
@@ -5312,7 +5228,6 @@
         "locale" : "SPAIN",
         "value" : "??"
       } ],
-      "itemCount" : 8,
       "ref" : "53400734"
     }, {
       "items" : [ {
@@ -5340,7 +5255,6 @@
         "locale" : "SPAIN",
         "value" : "VITT. GIOC. SINGOLO - LIV. 1"
       } ],
-      "itemCount" : 8,
       "ref" : "54400734"
     }, {
       "items" : [ {
@@ -5368,7 +5282,6 @@
         "locale" : "SPAIN",
         "value" : "VITT. GIOC. SINGOLO - LIV. 2"
       } ],
-      "itemCount" : 8,
       "ref" : "55400734"
     }, {
       "items" : [ {
@@ -5396,7 +5309,6 @@
         "locale" : "SPAIN",
         "value" : "VITT. GIOC. SINGOLO - LIV. 3"
       } ],
-      "itemCount" : 8,
       "ref" : "56400734"
     }, {
       "items" : [ {
@@ -5424,7 +5336,6 @@
         "locale" : "SPAIN",
         "value" : "VITT. GIOC. SINGOLO - LIV. 4"
       } ],
-      "itemCount" : 8,
       "ref" : "57400734"
     }, {
       "items" : [ {
@@ -5452,7 +5363,6 @@
         "locale" : "SPAIN",
         "value" : "VITT. GIOC. SINGOLO - LIV. 5"
       } ],
-      "itemCount" : 8,
       "ref" : "58400734"
     }, {
       "items" : [ {
@@ -5480,7 +5390,6 @@
         "locale" : "SPAIN",
         "value" : "SFIDE A TEMPO GIOC. SINGOLO "
       } ],
-      "itemCount" : 8,
       "ref" : "59400734"
     }, {
       "items" : [ {
@@ -5508,7 +5417,6 @@
         "locale" : "SPAIN",
         "value" : "SFIDE GARA GIOC. SINGOLO "
       } ],
-      "itemCount" : 8,
       "ref" : "60400734"
     }, {
       "items" : [ {
@@ -5536,7 +5444,6 @@
         "locale" : "SPAIN",
         "value" : "SFIDE VEL. GIOC. SINGOLO "
       } ],
-      "itemCount" : 8,
       "ref" : "61400734"
     }, {
       "items" : [ {
@@ -5564,7 +5471,6 @@
         "locale" : "SPAIN",
         "value" : "GIRO DELL'ISOLA"
       } ],
-      "itemCount" : 8,
       "ref" : "62400734"
     }, {
       "items" : [ {
@@ -5592,7 +5498,6 @@
         "locale" : "SPAIN",
         "value" : "VITTORIE MULTI - LIVELLO 1"
       } ],
-      "itemCount" : 8,
       "ref" : "53500734"
     }, {
       "items" : [ {
@@ -5620,7 +5525,6 @@
         "locale" : "SPAIN",
         "value" : "VITTORIE MULTI - LIVELLO 2"
       } ],
-      "itemCount" : 8,
       "ref" : "54500734"
     }, {
       "items" : [ {
@@ -5648,7 +5552,6 @@
         "locale" : "SPAIN",
         "value" : "VITTORIE MULTI - LIVELLO 3"
       } ],
-      "itemCount" : 8,
       "ref" : "55500734"
     }, {
       "items" : [ {
@@ -5676,7 +5579,6 @@
         "locale" : "SPAIN",
         "value" : "MISSIONI COMPLETATE - LIV. 1"
       } ],
-      "itemCount" : 8,
       "ref" : "56500734"
     }, {
       "items" : [ {
@@ -5704,7 +5606,6 @@
         "locale" : "SPAIN",
         "value" : "MISSIONI COMPLETATE - LIV. 2"
       } ],
-      "itemCount" : 8,
       "ref" : "57500734"
     }, {
       "items" : [ {
@@ -5732,7 +5633,6 @@
         "locale" : "SPAIN",
         "value" : "MISSIONI COMPLETATE - LIV. 3"
       } ],
-      "itemCount" : 8,
       "ref" : "58500734"
     }, {
       "items" : [ {
@@ -5760,7 +5660,6 @@
         "locale" : "SPAIN",
         "value" : "MISSIONI COMPLETATE - LIV. 4"
       } ],
-      "itemCount" : 8,
       "ref" : "59500734"
     }, {
       "items" : [ {
@@ -5788,7 +5687,6 @@
         "locale" : "SPAIN",
         "value" : "VITTORIE IN SFIDE IMMEDIATE"
       } ],
-      "itemCount" : 8,
       "ref" : "60500734"
     }, {
       "items" : [ {
@@ -5816,7 +5714,6 @@
         "locale" : "SPAIN",
         "value" : "CONDIVISIONE SFIDE PERSON."
       } ],
-      "itemCount" : 8,
       "ref" : "61500734"
     }, {
       "items" : [ {
@@ -5844,7 +5741,6 @@
         "locale" : "SPAIN",
         "value" : "VITTORIE SFIDE PERSON."
       } ],
-      "itemCount" : 8,
       "ref" : "62500734"
     }, {
       "items" : [ {
@@ -5872,7 +5768,6 @@
         "locale" : "SPAIN",
         "value" : "MEMBRO DEL CLUB"
       } ],
-      "itemCount" : 8,
       "ref" : "53600734"
     }, {
       "items" : [ {
@@ -5900,7 +5795,6 @@
         "locale" : "SPAIN",
         "value" : "VITTORIE IN GARE PER CLUB"
       } ],
-      "itemCount" : 8,
       "ref" : "54600734"
     }, {
       "items" : [ {
@@ -5928,7 +5822,6 @@
         "locale" : "SPAIN",
         "value" : "TRADE"
       } ],
-      "itemCount" : 8,
       "ref" : "55600734"
     }, {
       "items" : [ {
@@ -5956,7 +5849,6 @@
         "locale" : "SPAIN",
         "value" : "COLLEZIONISTA DI FERRARI"
       } ],
-      "itemCount" : 8,
       "ref" : "56600734"
     }, {
       "items" : [ {
@@ -5984,7 +5876,6 @@
         "locale" : "SPAIN",
         "value" : "COLLEZIONISTA DI LAMBORGHINI"
       } ],
-      "itemCount" : 8,
       "ref" : "57600734"
     }, {
       "items" : [ {
@@ -6012,7 +5903,6 @@
         "locale" : "SPAIN",
         "value" : "COLLEZIONISTA MERCEDES-BENZ"
       } ],
-      "itemCount" : 8,
       "ref" : "58600734"
     }, {
       "items" : [ {
@@ -6040,7 +5930,6 @@
         "locale" : "SPAIN",
         "value" : "COLLEZIONISTA DI CHEVROLET"
       } ],
-      "itemCount" : 8,
       "ref" : "59600734"
     }, {
       "items" : [ {
@@ -6068,7 +5957,6 @@
         "locale" : "SPAIN",
         "value" : "COLLEZIONISTA ASTON MARTIN"
       } ],
-      "itemCount" : 8,
       "ref" : "60600734"
     }, {
       "items" : [ {
@@ -6096,7 +5984,6 @@
         "locale" : "SPAIN",
         "value" : "COLLEZIONISTA DI FORD"
       } ],
-      "itemCount" : 8,
       "ref" : "61600734"
     }, {
       "items" : [ {
@@ -6124,7 +6011,6 @@
         "locale" : "SPAIN",
         "value" : "COLLEZIONISTA GENERICO"
       } ],
-      "itemCount" : 8,
       "ref" : "62600734"
     }, {
       "items" : [ {
@@ -6152,7 +6038,6 @@
         "locale" : "SPAIN",
         "value" : "COLLEZIONISTA DI MOTO"
       } ],
-      "itemCount" : 8,
       "ref" : "53700734"
     }, {
       "items" : [ {
@@ -6180,7 +6065,6 @@
         "locale" : "SPAIN",
         "value" : "COLLEZIONISTA BEN SHERMAN"
       } ],
-      "itemCount" : 8,
       "ref" : "54700734"
     }, {
       "items" : [ {
@@ -6208,7 +6092,6 @@
         "locale" : "SPAIN",
         "value" : "COLLEZIONISTA *ecko unltd."
       } ],
-      "itemCount" : 8,
       "ref" : "55700734"
     }, {
       "items" : [ {
@@ -6236,7 +6119,6 @@
         "locale" : "SPAIN",
         "value" : "MECCANICO"
       } ],
-      "itemCount" : 8,
       "ref" : "56700734"
     }, {
       "items" : [ {
@@ -6264,7 +6146,6 @@
         "locale" : "SPAIN",
         "value" : "ESPLORATORE"
       } ],
-      "itemCount" : 8,
       "ref" : "57700734"
     }, {
       "items" : [ {
@@ -6292,7 +6173,6 @@
         "locale" : "SPAIN",
         "value" : "FOTOGRAFO"
       } ],
-      "itemCount" : 8,
       "ref" : "58700734"
     }, {
       "items" : [ {
@@ -6320,7 +6200,6 @@
         "locale" : "SPAIN",
         "value" : "TURISTA OCCASIONALE"
       } ],
-      "itemCount" : 8,
       "ref" : "59700734"
     }, {
       "items" : [ {
@@ -6348,7 +6227,6 @@
         "locale" : "SPAIN",
         "value" : "TURISTA HABITUÉ"
       } ],
-      "itemCount" : 8,
       "ref" : "60700734"
     }, {
       "items" : [ {
@@ -6376,7 +6254,6 @@
         "locale" : "SPAIN",
         "value" : "VIAGGIATORE"
       } ],
-      "itemCount" : 8,
       "ref" : "61700734"
     }, {
       "items" : [ {
@@ -6404,7 +6281,6 @@
         "locale" : "SPAIN",
         "value" : "GRANDE VIAGGIATORE"
       } ],
-      "itemCount" : 8,
       "ref" : "62700734"
     }, {
       "items" : [ {
@@ -6432,7 +6308,6 @@
         "locale" : "SPAIN",
         "value" : "FALCO DELLA STRADA!"
       } ],
-      "itemCount" : 8,
       "ref" : "53800734"
     }, {
       "items" : [ {
@@ -6460,7 +6335,6 @@
         "locale" : "SPAIN",
         "value" : "PROPRIETARIO"
       } ],
-      "itemCount" : 8,
       "ref" : "54800734"
     }, {
       "items" : [ {
@@ -6488,7 +6362,6 @@
         "locale" : "SPAIN",
         "value" : "MAGNATE IMMOBILIARE"
       } ],
-      "itemCount" : 8,
       "ref" : "55800734"
     }, {
       "items" : [ {
@@ -6516,7 +6389,6 @@
         "locale" : "SPAIN",
         "value" : "PICCOLO COLLEZIONISTA"
       } ],
-      "itemCount" : 8,
       "ref" : "56800734"
     }, {
       "items" : [ {
@@ -6544,7 +6416,6 @@
         "locale" : "SPAIN",
         "value" : "VITTORIA SINGOLO GIOCATORE - LIVELLO 6"
       } ],
-      "itemCount" : 8,
       "ref" : "57800734"
     }, {
       "items" : [ {
@@ -6572,7 +6443,6 @@
         "locale" : "SPAIN",
         "value" : "COLLEZIONISTA DILETTANTE"
       } ],
-      "itemCount" : 8,
       "ref" : "58800734"
     }, {
       "items" : [ {
@@ -6600,7 +6470,6 @@
         "locale" : "SPAIN",
         "value" : "COLLEZIONISTA INCALLITO"
       } ],
-      "itemCount" : 8,
       "ref" : "59800734"
     }, {
       "items" : [ {
@@ -6628,7 +6497,6 @@
         "locale" : "SPAIN",
         "value" : "COLLEZIONISTA ESTREMO"
       } ],
-      "itemCount" : 8,
       "ref" : "60800734"
     }, {
       "items" : [ {
@@ -6656,7 +6524,6 @@
         "locale" : "SPAIN",
         "value" : "??"
       } ],
-      "itemCount" : 8,
       "ref" : "53359455"
     }, {
       "items" : [ {
@@ -6684,7 +6551,6 @@
         "locale" : "SPAIN",
         "value" : "Vinci la coppa d'oro in 5 sfide a giocatore singolo."
       } ],
-      "itemCount" : 8,
       "ref" : "54359455"
     }, {
       "items" : [ {
@@ -6712,7 +6578,6 @@
         "locale" : "SPAIN",
         "value" : "Vinci la coppa d'oro in 10 sfide a giocatore singolo."
       } ],
-      "itemCount" : 8,
       "ref" : "55359455"
     }, {
       "items" : [ {
@@ -6740,7 +6605,6 @@
         "locale" : "SPAIN",
         "value" : "Vinci la coppa d'oro in 20 sfide a giocatore singolo."
       } ],
-      "itemCount" : 8,
       "ref" : "56359455"
     }, {
       "items" : [ {
@@ -6768,7 +6632,6 @@
         "locale" : "SPAIN",
         "value" : "Vinci la coppa d'oro in 40 sfide a giocatore singolo."
       } ],
-      "itemCount" : 8,
       "ref" : "57359455"
     }, {
       "items" : [ {
@@ -6796,7 +6659,6 @@
         "locale" : "SPAIN",
         "value" : "Vinci la coppa d'oro in TUTTE le sfide a giocatore singolo."
       } ],
-      "itemCount" : 8,
       "ref" : "58359455"
     }, {
       "items" : [ {
@@ -6824,7 +6686,6 @@
         "locale" : "SPAIN",
         "value" : "Vinci la coppa d'oro in TUTTE le sfide della categoria TEMPO a giocatore singolo."
       } ],
-      "itemCount" : 8,
       "ref" : "59359455"
     }, {
       "items" : [ {
@@ -6852,7 +6713,6 @@
         "locale" : "SPAIN",
         "value" : "Vinci la coppa d'oro in TUTTE le sfide della categoria GARA a giocatore singolo."
       } ],
-      "itemCount" : 8,
       "ref" : "60359455"
     }, {
       "items" : [ {
@@ -6880,7 +6740,6 @@
         "locale" : "SPAIN",
         "value" : "Vinci la coppa d'oro in TUTTE le sfide della categoria VELOCITÀ a giocatore singolo."
       } ],
-      "itemCount" : 8,
       "ref" : "61359455"
     }, {
       "items" : [ {
@@ -6908,7 +6767,6 @@
         "locale" : "SPAIN",
         "value" : "Vinci la coppa d'oro nella sfida \"Giro dell'isola\"."
       } ],
-      "itemCount" : 8,
       "ref" : "62359455"
     }, {
       "items" : [ {
@@ -6936,7 +6794,6 @@
         "locale" : "SPAIN",
         "value" : "Vinci 3 gare MULTIGIOCATORE."
       } ],
-      "itemCount" : 8,
       "ref" : "53459455"
     }, {
       "items" : [ {
@@ -6964,7 +6821,6 @@
         "locale" : "SPAIN",
         "value" : "Consegui 15 vittorie nelle gare multigiocatore."
       } ],
-      "itemCount" : 8,
       "ref" : "54459455"
     }, {
       "items" : [ {
@@ -6992,7 +6848,6 @@
         "locale" : "SPAIN",
         "value" : "Consegui 30 vittorie nelle gare multigiocatore."
       } ],
-      "itemCount" : 8,
       "ref" : "55459455"
     }, {
       "items" : [ {
@@ -7020,7 +6875,6 @@
         "locale" : "SPAIN",
         "value" : "Completa con successo 3 missioni fra le categorie Top Model, Autostoppista, Trasporto veicoli e Corriere."
       } ],
-      "itemCount" : 8,
       "ref" : "56459455"
     }, {
       "items" : [ {
@@ -7048,7 +6902,6 @@
         "locale" : "SPAIN",
         "value" : "Completa con successo 15 missioni fra le categorie Top Model, Autostoppista, Trasporto veicoli e Corriere."
       } ],
-      "itemCount" : 8,
       "ref" : "57459455"
     }, {
       "items" : [ {
@@ -7076,7 +6929,6 @@
         "locale" : "SPAIN",
         "value" : "Completa con successo 40 missioni fra le categorie Top Model, Autostoppista, Trasporto veicoli e Corriere."
       } ],
-      "itemCount" : 8,
       "ref" : "58459455"
     }, {
       "items" : [ {
@@ -7104,7 +6956,6 @@
         "locale" : "SPAIN",
         "value" : "Completa con successo TUTTE le missioni delle categorie Top Model, Autostoppista, Trasporto veicoli e Corriere."
       } ],
-      "itemCount" : 8,
       "ref" : "59459455"
     }, {
       "items" : [ {
@@ -7132,7 +6983,6 @@
         "locale" : "SPAIN",
         "value" : "Consegui 5 vittorie nelle sfide immediate."
       } ],
-      "itemCount" : 8,
       "ref" : "60459455"
     }, {
       "items" : [ {
@@ -7160,7 +7010,6 @@
         "locale" : "SPAIN",
         "value" : "Condividi 3 sfide personalizzate nei drive-in."
       } ],
-      "itemCount" : 8,
       "ref" : "61459455"
     }, {
       "items" : [ {
@@ -7188,7 +7037,6 @@
         "locale" : "SPAIN",
         "value" : "Consegui 2 vittorie nelle sfide personalizzate nei drive-in."
       } ],
-      "itemCount" : 8,
       "ref" : "62459455"
     }, {
       "items" : [ {
@@ -7216,7 +7064,6 @@
         "locale" : "SPAIN",
         "value" : "Crea un club o entra in un club già esistente."
       } ],
-      "itemCount" : 8,
       "ref" : "53559455"
     }, {
       "items" : [ {
@@ -7244,7 +7091,6 @@
         "locale" : "SPAIN",
         "value" : "Consegui 3 vittorie nelle gare inter-club."
       } ],
-      "itemCount" : 8,
       "ref" : "54559455"
     }, {
       "items" : [ {
@@ -7272,7 +7118,6 @@
         "locale" : "SPAIN",
         "value" : "Compra o vendi un veicolo da/a un altro membro tramite SCAMBIA."
       } ],
-      "itemCount" : 8,
       "ref" : "55559455"
     }, {
       "items" : [ {
@@ -7300,7 +7145,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 3 FERRARI differenti."
       } ],
-      "itemCount" : 8,
       "ref" : "56559455"
     }, {
       "items" : [ {
@@ -7328,7 +7172,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 3 LAMBORGHINI differenti."
       } ],
-      "itemCount" : 8,
       "ref" : "57559455"
     }, {
       "items" : [ {
@@ -7356,7 +7199,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 3 MERCEDES-BENZ differenti."
       } ],
-      "itemCount" : 8,
       "ref" : "58559455"
     }, {
       "items" : [ {
@@ -7384,7 +7226,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 3 CHEVROLET differenti."
       } ],
-      "itemCount" : 8,
       "ref" : "59559455"
     }, {
       "items" : [ {
@@ -7412,7 +7253,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 3 ASTON MARTIN differenti."
       } ],
-      "itemCount" : 8,
       "ref" : "60559455"
     }, {
       "items" : [ {
@@ -7440,7 +7280,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 3 FORD differenti."
       } ],
-      "itemCount" : 8,
       "ref" : "61559455"
     }, {
       "items" : [ {
@@ -7468,7 +7307,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 50 modelli diversi di vetture."
       } ],
-      "itemCount" : 8,
       "ref" : "62559455"
     }, {
       "items" : [ {
@@ -7496,7 +7334,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 3 moto differenti."
       } ],
-      "itemCount" : 8,
       "ref" : "53659455"
     }, {
       "items" : [ {
@@ -7524,7 +7361,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 10 articoli firmati BEN SHERMAN."
       } ],
-      "itemCount" : 8,
       "ref" : "54659455"
     }, {
       "items" : [ {
@@ -7552,7 +7388,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 10 articoli firmati *ecko unltd."
       } ],
-      "itemCount" : 8,
       "ref" : "55659455"
     }, {
       "items" : [ {
@@ -7580,7 +7415,6 @@
         "locale" : "SPAIN",
         "value" : "Acquista un kit prestazioni per uno dei tuoi veicoli presso un'officina."
       } ],
-      "itemCount" : 8,
       "ref" : "56659455"
     }, {
       "items" : [ {
@@ -7608,7 +7442,6 @@
         "locale" : "SPAIN",
         "value" : "Scopri tutte le strade dell'isola."
       } ],
-      "itemCount" : 8,
       "ref" : "57659455"
     }, {
       "items" : [ {
@@ -7636,7 +7469,6 @@
         "locale" : "SPAIN",
         "value" : "Fotografa gli angoli più incantevoli dell'isola."
       } ],
-      "itemCount" : 8,
       "ref" : "58659455"
     }, {
       "items" : [ {
@@ -7664,7 +7496,6 @@
         "locale" : "SPAIN",
         "value" : "Percorri 30 miglia (48 km)."
       } ],
-      "itemCount" : 8,
       "ref" : "59659455"
     }, {
       "items" : [ {
@@ -7692,7 +7523,6 @@
         "locale" : "SPAIN",
         "value" : "Percorri 200 miglia (320 km)."
       } ],
-      "itemCount" : 8,
       "ref" : "60659455"
     }, {
       "items" : [ {
@@ -7720,7 +7550,6 @@
         "locale" : "SPAIN",
         "value" : "Percorri 400 miglia (640 km)"
       } ],
-      "itemCount" : 8,
       "ref" : "61659455"
     }, {
       "items" : [ {
@@ -7748,7 +7577,6 @@
         "locale" : "SPAIN",
         "value" : "Percorri 1.000 miglia (1.600 km)"
       } ],
-      "itemCount" : 8,
       "ref" : "62659455"
     }, {
       "items" : [ {
@@ -7776,7 +7604,6 @@
         "locale" : "SPAIN",
         "value" : "Percorri 5.000 miglia (8.000 km)"
       } ],
-      "itemCount" : 8,
       "ref" : "53759455"
     }, {
       "items" : [ {
@@ -7804,7 +7631,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 2 case."
       } ],
-      "itemCount" : 8,
       "ref" : "54759455"
     }, {
       "items" : [ {
@@ -7832,7 +7658,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 64 case sull'isola."
       } ],
-      "itemCount" : 8,
       "ref" : "55759455"
     }, {
       "items" : [ {
@@ -7860,7 +7685,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 2 auto differenti."
       } ],
-      "itemCount" : 8,
       "ref" : "56759455"
     }, {
       "items" : [ {
@@ -7888,7 +7712,6 @@
         "locale" : "SPAIN",
         "value" : "Vinci la coppa d'oro in 60 sfide a giocatore singolo."
       } ],
-      "itemCount" : 8,
       "ref" : "57759455"
     }, {
       "items" : [ {
@@ -7916,7 +7739,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 4 auto differenti."
       } ],
-      "itemCount" : 8,
       "ref" : "58759455"
     }, {
       "items" : [ {
@@ -7944,7 +7766,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 10 auto differenti."
       } ],
-      "itemCount" : 8,
       "ref" : "59759455"
     }, {
       "items" : [ {
@@ -7972,7 +7793,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 20 auto differenti."
       } ],
-      "itemCount" : 8,
       "ref" : "60759455"
     }, {
       "items" : [ {
@@ -8000,7 +7820,6 @@
         "locale" : "SPAIN",
         "value" : "Ottieni 3 vittorie nelle gare multigiocatore. Valgono solo le PARTITE CLASSIFICATE."
       } ],
-      "itemCount" : 8,
       "ref" : "61759455"
     }, {
       "items" : [ {
@@ -8028,7 +7847,6 @@
         "locale" : "SPAIN",
         "value" : "Ottieni 15 vittorie nelle gare multigiocatore. Valgono solo le PARTITE CLASSIFICATE."
       } ],
-      "itemCount" : 8,
       "ref" : "62759455"
     }, {
       "items" : [ {
@@ -8056,7 +7874,6 @@
         "locale" : "SPAIN",
         "value" : "Ottieni 30 vittorie nelle gare multigiocatore. Valgono solo le PARTITE CLASSIFICATE."
       } ],
-      "itemCount" : 8,
       "ref" : "53859455"
     }, {
       "items" : [ {
@@ -8084,7 +7901,6 @@
         "locale" : "SPAIN",
         "value" : "Possiedi almeno 15 case."
       } ],
-      "itemCount" : 8,
       "ref" : "54859455"
     }, {
       "items" : [ {
@@ -8112,7 +7928,6 @@
         "locale" : "SPAIN",
         "value" : "MinGoldCup"
       } ],
-      "itemCount" : 8,
       "ref" : "54736935"
     }, {
       "items" : [ {
@@ -8140,7 +7955,6 @@
         "locale" : "SPAIN",
         "value" : "MinSoloGoldCup"
       } ],
-      "itemCount" : 8,
       "ref" : "55736935"
     }, {
       "items" : [ {
@@ -8168,7 +7982,6 @@
         "locale" : "SPAIN",
         "value" : "MinMultiGoldCup"
       } ],
-      "itemCount" : 8,
       "ref" : "56736935"
     }, {
       "items" : [ {
@@ -8196,7 +8009,6 @@
         "locale" : "SPAIN",
         "value" : "MinExtraGoldCup"
       } ],
-      "itemCount" : 8,
       "ref" : "57736935"
     }, {
       "items" : [ {
@@ -8224,7 +8036,6 @@
         "locale" : "SPAIN",
         "value" : "AllGoldSolo"
       } ],
-      "itemCount" : 8,
       "ref" : "58736935"
     }, {
       "items" : [ {
@@ -8252,7 +8063,6 @@
         "locale" : "SPAIN",
         "value" : "AllGoldSoloTime"
       } ],
-      "itemCount" : 8,
       "ref" : "59736935"
     }, {
       "items" : [ {
@@ -8280,7 +8090,6 @@
         "locale" : "SPAIN",
         "value" : "AllGoldSoloRace"
       } ],
-      "itemCount" : 8,
       "ref" : "60736935"
     }, {
       "items" : [ {
@@ -8308,7 +8117,6 @@
         "locale" : "SPAIN",
         "value" : "AllGoldSoloSpeed"
       } ],
-      "itemCount" : 8,
       "ref" : "61736935"
     }, {
       "items" : [ {
@@ -8336,7 +8144,6 @@
         "locale" : "SPAIN",
         "value" : "AllGoldSoloExtra"
       } ],
-      "itemCount" : 8,
       "ref" : "62736935"
     }, {
       "items" : [ {
@@ -8364,7 +8171,6 @@
         "locale" : "SPAIN",
         "value" : "CarsOwned"
       } ],
-      "itemCount" : 8,
       "ref" : "53836935"
     }, {
       "items" : [ {
@@ -8392,7 +8198,6 @@
         "locale" : "SPAIN",
         "value" : "CarsOwned_Ferrari"
       } ],
-      "itemCount" : 8,
       "ref" : "54836935"
     }, {
       "items" : [ {
@@ -8420,7 +8225,6 @@
         "locale" : "SPAIN",
         "value" : "CarsOwned_Lambo"
       } ],
-      "itemCount" : 8,
       "ref" : "55836935"
     }, {
       "items" : [ {
@@ -8448,7 +8252,6 @@
         "locale" : "SPAIN",
         "value" : "CarsOwned_Merco"
       } ],
-      "itemCount" : 8,
       "ref" : "56836935"
     }, {
       "items" : [ {
@@ -8476,7 +8279,6 @@
         "locale" : "SPAIN",
         "value" : "CarsOwned_Chevy"
       } ],
-      "itemCount" : 8,
       "ref" : "57836935"
     }, {
       "items" : [ {
@@ -8504,7 +8306,6 @@
         "locale" : "SPAIN",
         "value" : "CarsOwned_Aston"
       } ],
-      "itemCount" : 8,
       "ref" : "58836935"
     }, {
       "items" : [ {
@@ -8532,7 +8333,6 @@
         "locale" : "SPAIN",
         "value" : "CarsOwned_Ford"
       } ],
-      "itemCount" : 8,
       "ref" : "59836935"
     }, {
       "items" : [ {
@@ -8560,7 +8360,6 @@
         "locale" : "SPAIN",
         "value" : "CarsOwned_All"
       } ],
-      "itemCount" : 8,
       "ref" : "60836935"
     }, {
       "items" : [ {
@@ -8588,7 +8387,6 @@
         "locale" : "SPAIN",
         "value" : "BikesOwned"
       } ],
-      "itemCount" : 8,
       "ref" : "61836935"
     }, {
       "items" : [ {
@@ -8616,7 +8414,6 @@
         "locale" : "SPAIN",
         "value" : "AllHousesOwned"
       } ],
-      "itemCount" : 8,
       "ref" : "62836935"
     }, {
       "items" : [ {
@@ -8644,7 +8441,6 @@
         "locale" : "SPAIN",
         "value" : "HousesOwned"
       } ],
-      "itemCount" : 8,
       "ref" : "53936935"
     }, {
       "items" : [ {
@@ -8672,7 +8468,6 @@
         "locale" : "SPAIN",
         "value" : "RoadExplored"
       } ],
-      "itemCount" : 8,
       "ref" : "54936935"
     }, {
       "items" : [ {
@@ -8700,7 +8495,6 @@
         "locale" : "SPAIN",
         "value" : "AllRoadExplored"
       } ],
-      "itemCount" : 8,
       "ref" : "55936935"
     }, {
       "items" : [ {
@@ -8728,7 +8522,6 @@
         "locale" : "SPAIN",
         "value" : "MinClubGoldCup"
       } ],
-      "itemCount" : 8,
       "ref" : "56936935"
     }, {
       "items" : [ {
@@ -8756,7 +8549,6 @@
         "locale" : "SPAIN",
         "value" : "IsClubMember"
       } ],
-      "itemCount" : 8,
       "ref" : "57936935"
     }, {
       "items" : [ {
@@ -8784,7 +8576,6 @@
         "locale" : "SPAIN",
         "value" : "CarTunedHistory"
       } ],
-      "itemCount" : 8,
       "ref" : "58936935"
     }, {
       "items" : [ {
@@ -8812,7 +8603,6 @@
         "locale" : "SPAIN",
         "value" : "GoldGeekCha"
       } ],
-      "itemCount" : 8,
       "ref" : "59936935"
     }, {
       "items" : [ {
@@ -8840,7 +8630,6 @@
         "locale" : "SPAIN",
         "value" : "GoldInstantCha"
       } ],
-      "itemCount" : 8,
       "ref" : "60936935"
     }, {
       "items" : [ {
@@ -8868,7 +8657,6 @@
         "locale" : "SPAIN",
         "value" : "GoldInstantChaOffline"
       } ],
-      "itemCount" : 8,
       "ref" : "61936935"
     }, {
       "items" : [ {
@@ -8896,7 +8684,6 @@
         "locale" : "SPAIN",
         "value" : "GoldInstantChaOnline"
       } ],
-      "itemCount" : 8,
       "ref" : "62936935"
     }, {
       "items" : [ {
@@ -8924,7 +8711,6 @@
         "locale" : "SPAIN",
         "value" : "GoldInstantChaAllBots"
       } ],
-      "itemCount" : 8,
       "ref" : "54036935"
     }, {
       "items" : [ {
@@ -8952,7 +8738,6 @@
         "locale" : "SPAIN",
         "value" : "UploadCustom"
       } ],
-      "itemCount" : 8,
       "ref" : "55036935"
     }, {
       "items" : [ {
@@ -8980,7 +8765,6 @@
         "locale" : "SPAIN",
         "value" : "MinGoldCustom"
       } ],
-      "itemCount" : 8,
       "ref" : "56036935"
     }, {
       "items" : [ {
@@ -9008,7 +8792,6 @@
         "locale" : "SPAIN",
         "value" : "MinETradeTransaction"
       } ],
-      "itemCount" : 8,
       "ref" : "57036935"
     }, {
       "items" : [ {
@@ -9036,7 +8819,6 @@
         "locale" : "SPAIN",
         "value" : "ClothesOwned_BenSherman"
       } ],
-      "itemCount" : 8,
       "ref" : "58036935"
     }, {
       "items" : [ {
@@ -9064,7 +8846,6 @@
         "locale" : "SPAIN",
         "value" : "ClothesOwned_Ecko"
       } ],
-      "itemCount" : 8,
       "ref" : "59036935"
     }, {
       "items" : [ {
@@ -9092,7 +8873,6 @@
         "locale" : "SPAIN",
         "value" : "MinSpecialPhotos "
       } ],
-      "itemCount" : 8,
       "ref" : "60036935"
     }, {
       "items" : [ {
@@ -9120,7 +8900,6 @@
         "locale" : "SPAIN",
         "value" : "LevelReached"
       } ],
-      "itemCount" : 8,
       "ref" : "61036935"
     }, {
       "items" : [ {
@@ -9148,7 +8927,6 @@
         "locale" : "SPAIN",
         "value" : "AllGoldSoloExtraShopping"
       } ],
-      "itemCount" : 8,
       "ref" : "62036935"
     }, {
       "items" : [ {
@@ -9176,7 +8954,6 @@
         "locale" : "SPAIN",
         "value" : "AllGoldSoloExtraHitch"
       } ],
-      "itemCount" : 8,
       "ref" : "63036935"
     }, {
       "items" : [ {
@@ -9204,7 +8981,6 @@
         "locale" : "SPAIN",
         "value" : "AllGoldSoloExtraTransp"
       } ],
-      "itemCount" : 8,
       "ref" : "54136935"
     }, {
       "items" : [ {
@@ -9232,7 +9008,6 @@
         "locale" : "SPAIN",
         "value" : "AllGoldSoloExtraConvoy"
       } ],
-      "itemCount" : 8,
       "ref" : "55136935"
     }, {
       "items" : [ {
@@ -9260,7 +9035,6 @@
         "locale" : "SPAIN",
         "value" : "GoldPaintDeluxeCha"
       } ],
-      "itemCount" : 8,
       "ref" : "56136935"
     }, {
       "items" : [ {
@@ -9288,7 +9062,6 @@
         "locale" : "SPAIN",
         "value" : "AllCarDealerUnlocked"
       } ],
-      "itemCount" : 8,
       "ref" : "57136935"
     }, {
       "items" : [ {
@@ -9316,7 +9089,6 @@
         "locale" : "SPAIN",
         "value" : "RoadTraveled"
       } ],
-      "itemCount" : 8,
       "ref" : "58136935"
     }, {
       "items" : [ {
@@ -9344,7 +9116,6 @@
         "locale" : "SPAIN",
         "value" : "Novice_Pts"
       } ],
-      "itemCount" : 8,
       "ref" : "59136935"
     }, {
       "items" : [ {
@@ -9372,7 +9143,6 @@
         "locale" : "SPAIN",
         "value" : "Pro_Pts"
       } ],
-      "itemCount" : 8,
       "ref" : "60136935"
     }, {
       "items" : [ {
@@ -9400,7 +9170,6 @@
         "locale" : "SPAIN",
         "value" : "Expert_Pts"
       } ],
-      "itemCount" : 8,
       "ref" : "61136935"
     }, {
       "items" : [ {
@@ -9428,7 +9197,6 @@
         "locale" : "SPAIN",
         "value" : "Master_Pts"
       } ],
-      "itemCount" : 8,
       "ref" : "62136935"
     }, {
       "items" : [ {
@@ -9456,7 +9224,6 @@
         "locale" : "SPAIN",
         "value" : "Ace_Pts"
       } ],
-      "itemCount" : 8,
       "ref" : "63136935"
     }, {
       "items" : [ {
@@ -9484,7 +9251,6 @@
         "locale" : "SPAIN",
         "value" : "CarsOwnedPC"
       } ],
-      "itemCount" : 8,
       "ref" : "71366935"
     }, {
       "items" : [ {
@@ -9512,7 +9278,6 @@
         "locale" : "SPAIN",
         "value" : "LevelReachedHardcore"
       } ],
-      "itemCount" : 8,
       "ref" : "721036935"
     }, {
       "items" : [ {
@@ -9540,7 +9305,6 @@
         "locale" : "SPAIN",
         "value" : "???"
       } ],
-      "itemCount" : 8,
       "ref" : "5337472"
     }, {
       "items" : [ {
@@ -9568,7 +9332,6 @@
         "locale" : "SPAIN",
         "value" : "ChronoPack"
       } ],
-      "itemCount" : 8,
       "ref" : "5437472"
     }, {
       "items" : [ {
@@ -9596,7 +9359,6 @@
         "locale" : "SPAIN",
         "value" : "Car"
       } ],
-      "itemCount" : 8,
       "ref" : "5537472"
     }, {
       "items" : [ {
@@ -9624,7 +9386,6 @@
         "locale" : "SPAIN",
         "value" : "SnapShot"
       } ],
-      "itemCount" : 8,
       "ref" : "5637472"
     }, {
       "items" : [ {
@@ -9652,7 +9413,6 @@
         "locale" : "SPAIN",
         "value" : "GameMode"
       } ],
-      "itemCount" : 8,
       "ref" : "5737472"
     }, {
       "items" : [ {
@@ -9680,7 +9440,6 @@
         "locale" : "SPAIN",
         "value" : "FordIsland"
       } ],
-      "itemCount" : 8,
       "ref" : "5837472"
     }, {
       "items" : [ {
@@ -9708,7 +9467,6 @@
         "locale" : "SPAIN",
         "value" : "CircuitAccess"
       } ],
-      "itemCount" : 8,
       "ref" : "5937472"
     }, {
       "items" : [ {
@@ -9736,7 +9494,6 @@
         "locale" : "SPAIN",
         "value" : "House"
       } ],
-      "itemCount" : 8,
       "ref" : "6037472"
     }, {
       "items" : [ {
@@ -9764,7 +9521,6 @@
         "locale" : "SPAIN",
         "value" : "CarPaintDeluxe"
       } ],
-      "itemCount" : 8,
       "ref" : "6137472"
     }, {
       "items" : [ {
@@ -9792,7 +9548,6 @@
         "locale" : "SPAIN",
         "value" : "BikeDealer"
       } ],
-      "itemCount" : 8,
       "ref" : "6237472"
     }, {
       "items" : [ {
@@ -9820,7 +9575,6 @@
         "locale" : "SPAIN",
         "value" : "BoatTrip"
       } ],
-      "itemCount" : 8,
       "ref" : "5347472"
     } ]
   },
