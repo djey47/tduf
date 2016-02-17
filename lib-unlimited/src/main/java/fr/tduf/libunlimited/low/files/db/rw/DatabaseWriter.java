@@ -166,7 +166,7 @@ public class DatabaseWriter {
 
         String topicLabel = this.databaseDto.getTopic().getLabel();
 
-        Stream.of(DbResourceDto.Locale.values())
+        Stream.of(DbResourceEnhancedDto.Locale.values())
 
                 .forEach((locale) -> {
 

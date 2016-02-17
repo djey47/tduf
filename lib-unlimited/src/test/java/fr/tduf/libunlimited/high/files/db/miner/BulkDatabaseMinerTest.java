@@ -7,6 +7,7 @@ import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,8 +19,8 @@ import java.util.*;
 import static com.esotericsoftware.minlog.Log.LEVEL_DEBUG;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.UNITED_STATES;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -251,7 +252,7 @@ public class BulkDatabaseMinerTest {
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
         // WHEN
-        Optional<DbResourceDto.Entry> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndLocaleWithReference("00000001", BOTS, DbResourceDto.Locale.KOREA);
+        Optional<DbResourceDto.Entry> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndLocaleWithReference("00000001", BOTS, DbResourceEnhancedDto.Locale.KOREA);
 
         // THEN
         assertThat(actualResult).isEmpty();

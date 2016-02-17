@@ -5,10 +5,7 @@ import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.*;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -96,8 +93,8 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
             DbDto.Topic remoteTopic = (DbDto.Topic) information.get(REMOTE_TOPIC);
             String reference = (String) information.get(REFERENCE);
             Long entryIdentifier = (Long) information.get(ENTRY_ID);
-            DbResourceDto.Locale locale = (DbResourceDto.Locale) information.get(ErrorInfoEnum.LOCALE);
-            Map<DbResourceDto.Locale, Integer> perLocaleCount = (Map<DbResourceDto.Locale, Integer>) information.get(PER_LOCALE_COUNT);
+            DbResourceEnhancedDto.Locale locale = (DbResourceEnhancedDto.Locale) information.get(ErrorInfoEnum.LOCALE);
+            Map<DbResourceEnhancedDto.Locale, Integer> perLocaleCount = (Map<DbResourceEnhancedDto.Locale, Integer>) information.get(PER_LOCALE_COUNT);
             Map<String, Integer> perValueCount = (Map<String, Integer>) information.get(PER_VALUE_COUNT);
 
             switch(integrityError.getErrorTypeEnum()) {
@@ -132,9 +129,9 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         return true;
     }
 
-    private void addAllMissingResourceEntries(Map<DbResourceDto.Locale, Integer> perLocaleCount, DbDto.Topic topic) {
+    private void addAllMissingResourceEntries(Map<DbResourceEnhancedDto.Locale, Integer> perLocaleCount, DbDto.Topic topic) {
         // Find locales with the maximum item count
-        DbResourceDto.Locale referenceLocale = perLocaleCount.entrySet().stream()
+        DbResourceEnhancedDto.Locale referenceLocale = perLocaleCount.entrySet().stream()
 
                 .max((entry1, entry2) -> Integer.compare(entry1.getValue(), entry2.getValue()))
 
@@ -155,14 +152,14 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                     .forEach((corruptedResourceObject) -> addMissingResourceEntries(corruptedResourceObject, referenceResourceObject));
     }
 
-    private void addResourceLocaleFromValidResource(DbResourceDto.Locale missingLocale, DbDto.Topic topic) throws Exception {
-        Set<DbResourceDto.Locale> validResourceLocales = findValidResourceLocales();
+    private void addResourceLocaleFromValidResource(DbResourceEnhancedDto.Locale missingLocale, DbDto.Topic topic) throws Exception {
+        Set<DbResourceEnhancedDto.Locale> validResourceLocales = findValidResourceLocales();
 
         if (validResourceLocales.isEmpty()) {
             throw new Exception("Unable to build missing locale " + missingLocale + ": no valid resource locale exists.");
         }
 
-        DbResourceDto.Locale referenceLocale = pickAvailableLocaleOrElseWhatever(DbResourceDto.Locale.UNITED_STATES, validResourceLocales);
+        DbResourceEnhancedDto.Locale referenceLocale = pickAvailableLocaleOrElseWhatever(DbResourceEnhancedDto.Locale.UNITED_STATES, validResourceLocales);
         DbResourceDto referenceResourceObject = databaseMiner.getResourceFromTopicAndLocale(topic, referenceLocale).get();
 
         databaseMiner.getDatabaseTopic(topic).get().getResources().add(DbResourceDto.builder()
@@ -239,13 +236,13 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         invalidEntry.addItemAtRank(newFieldRank, newItem);
     }
 
-    private void addResourceEntryFromValidLocale(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
-        Set<DbResourceDto.Locale> validResourceLocales = findValidResourceLocales();
+    private void addResourceEntryFromValidLocale(String reference, DbDto.Topic topic, DbResourceEnhancedDto.Locale locale) {
+        Set<DbResourceEnhancedDto.Locale> validResourceLocales = findValidResourceLocales();
 
         String resourceValue = RESOURCE_VALUE_DEFAULT;
         if ( !validResourceLocales.isEmpty()) {
 
-            DbResourceDto.Locale referenceLocale = pickAvailableLocaleOrElseWhatever(DbResourceDto.Locale.UNITED_STATES, validResourceLocales);
+            DbResourceEnhancedDto.Locale referenceLocale = pickAvailableLocaleOrElseWhatever(DbResourceEnhancedDto.Locale.UNITED_STATES, validResourceLocales);
             Optional<DbResourceDto.Entry> referenceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(reference, topic, referenceLocale);
 
             if (referenceEntry.isPresent()){
@@ -276,15 +273,15 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         dataDto.addEntry(newEntry);
     }
 
-    private Set<DbResourceDto.Locale> findValidResourceLocales() {
-        return Stream.of(DbResourceDto.Locale.values())
+    private Set<DbResourceEnhancedDto.Locale> findValidResourceLocales() {
+        return Stream.of(DbResourceEnhancedDto.Locale.values())
 
                 .filter((locale) -> !this.integrityErrors.stream()
 
                         .filter((integrityError) -> integrityError.getErrorTypeEnum() == IntegrityError.ErrorTypeEnum.RESOURCE_REFERENCE_NOT_FOUND
                                 || integrityError.getErrorTypeEnum() == IntegrityError.ErrorTypeEnum.RESOURCE_NOT_FOUND)
 
-                        .map((resourceIntegrityError) -> (DbResourceDto.Locale) resourceIntegrityError.getInformation().get(ErrorInfoEnum.LOCALE))
+                        .map((resourceIntegrityError) -> (DbResourceEnhancedDto.Locale) resourceIntegrityError.getInformation().get(ErrorInfoEnum.LOCALE))
 
                         .collect(toSet())
 
@@ -293,7 +290,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                 .collect(toSet());
     }
 
-    private static DbResourceDto.Locale pickAvailableLocaleOrElseWhatever(DbResourceDto.Locale locale, Set<DbResourceDto.Locale> validResourceLocales) {
+    private static DbResourceEnhancedDto.Locale pickAvailableLocaleOrElseWhatever(DbResourceEnhancedDto.Locale locale, Set<DbResourceEnhancedDto.Locale> validResourceLocales) {
         if (validResourceLocales.contains(locale)) {
             return locale;
         }

@@ -92,6 +92,47 @@ public class DbResourceEnhancedDto {
         }
     }
 
+    /**
+     * All culture variants for game files
+     */
+    public enum Locale {
+        FRANCE("fr"),
+        GERMANY("ge"),
+        UNITED_STATES("us"),
+        KOREA("ko"),
+        CHINA("ch"),
+        JAPAN("ja"),
+        ITALY("it"),
+        SPAIN("sp");
+
+        private final String code;
+
+        Locale(String code) {
+            this.code = code;
+        }
+
+        /**
+         * Retrieves a locale value from its code.
+         */
+        public static Locale fromCode(String code) {
+            for(Locale locale : values()) {
+                if (locale.code.equals(code)) {
+                    return locale;
+                }
+            }
+            throw new IllegalArgumentException("Unknown Locale code: " + code);
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        @Override
+        public String toString() {
+            return super.toString();
+        }
+    }
+
     @JsonTypeName("dbResourceEnhancedEntry")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class Entry implements Serializable {
@@ -114,7 +155,7 @@ public class DbResourceEnhancedDto {
             items.add(item);
         }
 
-        public Optional<Item> getItemForLocale(DbResourceDto.Locale locale) {
+        public Optional<Item> getItemForLocale(Locale locale) {
             if (items == null) {
                 return Optional.empty();
             }
@@ -174,7 +215,7 @@ public class DbResourceEnhancedDto {
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class Item implements Serializable {
         @JsonProperty("locale")
-        private DbResourceDto.Locale locale;
+        private Locale locale;
 
         @JsonProperty("value")
         private String value;
@@ -205,10 +246,10 @@ public class DbResourceEnhancedDto {
         }
 
         public static class ItemBuilder {
-            private DbResourceDto.Locale locale;
+            private Locale locale;
             private String value;
 
-            public ItemBuilder withLocale(DbResourceDto.Locale locale) {
+            public ItemBuilder withLocale(Locale locale) {
                 this.locale = locale;
                 return this;
             }

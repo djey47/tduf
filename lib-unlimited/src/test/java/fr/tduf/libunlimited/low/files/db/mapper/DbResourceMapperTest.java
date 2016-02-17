@@ -11,7 +11,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.FRANCE;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 public class DbResourceMapperTest {

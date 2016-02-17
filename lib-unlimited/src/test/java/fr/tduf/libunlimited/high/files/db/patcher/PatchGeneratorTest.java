@@ -24,7 +24,7 @@ import static com.esotericsoftware.minlog.Log.LEVEL_INFO;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.*;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;

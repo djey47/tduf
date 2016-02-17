@@ -38,11 +38,11 @@ public class DatabaseParser {
     private static final String RES_ENTRY_PATTERN = "^\\{(.*(\\n?.*)*)\\} (\\d+)$";             //e.g {??} 53410835
 
     private final List<String> contentLines;
-    private final Map<DbResourceDto.Locale, List<String>> resources;
+    private final Map<DbResourceEnhancedDto.Locale, List<String>> resources;
 
     private final List<IntegrityError> integrityErrors = new ArrayList<>();
 
-    private DatabaseParser(List<String> contentlines, Map<DbResourceDto.Locale, List<String>> resources) {
+    private DatabaseParser(List<String> contentlines, Map<DbResourceEnhancedDto.Locale, List<String>> resources) {
         this.contentLines = contentlines;
         this.resources = resources;
     }
@@ -54,7 +54,7 @@ public class DatabaseParser {
      * @param resources    list of contentLines from per-language resource files
      * @return a {@link DatabaseParser} instance.
      */
-    public static DatabaseParser load(List<String> contentLines, Map<DbResourceDto.Locale, List<String>> resources) {
+    public static DatabaseParser load(List<String> contentLines, Map<DbResourceEnhancedDto.Locale, List<String>> resources) {
         checkPrerequisites(contentLines, resources);
 
         return new DatabaseParser(contentLines, resources);
@@ -84,7 +84,7 @@ public class DatabaseParser {
                 .build();
     }
 
-    private static void checkPrerequisites(List<String> contentLines, Map<DbResourceDto.Locale, List<String>> resources) {
+    private static void checkPrerequisites(List<String> contentLines, Map<DbResourceEnhancedDto.Locale, List<String>> resources) {
         requireNonNull(contentLines, "Contents are required");
         requireNonNull(resources, "Resources are required");
     }
@@ -97,7 +97,7 @@ public class DatabaseParser {
 
         List<DbResourceDto> dbResourceDtos = new ArrayList<>();
 
-        Stream.of(DbResourceDto.Locale.values())
+        Stream.of(DbResourceEnhancedDto.Locale.values())
 
                 .filter(resources::containsKey)
 
@@ -123,7 +123,7 @@ public class DatabaseParser {
         AtomicInteger categoryCount = new AtomicInteger();
         AtomicReference<String> version = new AtomicReference<>();
 
-        Stream.of(DbResourceDto.Locale.values())
+        Stream.of(DbResourceEnhancedDto.Locale.values())
 
                 .filter(resources::containsKey)
 
@@ -144,7 +144,7 @@ public class DatabaseParser {
                 .build();
     }
 
-    private void parseResourcesEnhancedForLocale(DbResourceDto.Locale locale, Set<DbResourceEnhancedDto.Entry> entries, AtomicInteger categoryCount, AtomicReference<String> version, Pattern resourceVersionPattern, Pattern categoryCountPattern, Pattern resourceEntryPattern) {
+    private void parseResourcesEnhancedForLocale(DbResourceEnhancedDto.Locale locale, Set<DbResourceEnhancedDto.Entry> entries, AtomicInteger categoryCount, AtomicReference<String> version, Pattern resourceVersionPattern, Pattern categoryCountPattern, Pattern resourceEntryPattern) {
         requireNonNull(entries, "A set of entries (even empty) is required.");
 
         for (String line : resources.get(locale)) {
@@ -191,7 +191,7 @@ public class DatabaseParser {
                 .findAny();
     }
 
-    private DbResourceDto parseResourcesForLocale(DbResourceDto.Locale locale, Pattern resourceVersionPattern, Pattern categoryCountPattern, Pattern resourceEntryPattern) {
+    private DbResourceDto parseResourcesForLocale(DbResourceEnhancedDto.Locale locale, Pattern resourceVersionPattern, Pattern categoryCountPattern, Pattern resourceEntryPattern) {
         final List<DbResourceDto.Entry> entries = new ArrayList<>();
         String version = null;
         int categoryCount = 0;

@@ -16,7 +16,7 @@ import java.util.Optional;
 
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.UNITED_STATES;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;

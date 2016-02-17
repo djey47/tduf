@@ -2,10 +2,7 @@ package fr.tduf.libunlimited.high.files.db.common.helper;
 
 import com.google.common.annotations.VisibleForTesting;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.*;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import org.apache.commons.lang3.Range;
 
@@ -125,7 +122,7 @@ public class DatabaseGenHelper {
         }
 
         String newResourceReference = generateUniqueResourceEntryIdentifier(topicObject);
-        Stream.of(DbResourceDto.Locale.values()).forEach((locale) -> changeHelper.addResourceWithReference(topicObject.getTopic(), locale, newResourceReference, RESOURCE_VALUE_DEFAULT));
+        Stream.of(DbResourceEnhancedDto.Locale.values()).forEach((locale) -> changeHelper.addResourceWithReference(topicObject.getTopic(), locale, newResourceReference, RESOURCE_VALUE_DEFAULT));
         return newResourceReference;
     }
 

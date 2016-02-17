@@ -4,6 +4,7 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,8 +39,8 @@ public class DatabasePatcher_focusOnResourcesTest {
 
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "54367256", "Brian Molko");
-        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "33333333", "Cindy");
+        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceEnhancedDto.Locale.FRANCE, "54367256", "Brian Molko");
+        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceEnhancedDto.Locale.FRANCE, "33333333", "Cindy");
     }
 
     @Test
@@ -57,10 +58,10 @@ public class DatabasePatcher_focusOnResourcesTest {
 
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "54367256", "Brian Molko");
-        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "33333333", "Cindy");
-        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.ITALY, "54367256", "Brian Molko");
-        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.ITALY, "33333333", "Cindy");
+        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceEnhancedDto.Locale.FRANCE, "54367256", "Brian Molko");
+        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceEnhancedDto.Locale.FRANCE, "33333333", "Cindy");
+        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceEnhancedDto.Locale.ITALY, "54367256", "Brian Molko");
+        assertResourceEntryPresentAndMatch(databaseMiner, DbDto.Topic.BOTS, DbResourceEnhancedDto.Locale.ITALY, "33333333", "Cindy");
     }
 
     @Test
@@ -78,8 +79,8 @@ public class DatabasePatcher_focusOnResourcesTest {
 
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "60367256");
-        assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "33333333");
+        assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceEnhancedDto.Locale.FRANCE, "60367256");
+        assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceEnhancedDto.Locale.FRANCE, "33333333");
     }
 
     @Test
@@ -97,20 +98,20 @@ public class DatabasePatcher_focusOnResourcesTest {
 
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "60367256");
-        assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE, "33333333");
-        assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.ITALY, "60367256");
-        assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceDto.Locale.ITALY, "33333333");
+        assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceEnhancedDto.Locale.FRANCE, "60367256");
+        assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceEnhancedDto.Locale.FRANCE, "33333333");
+        assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceEnhancedDto.Locale.ITALY, "60367256");
+        assertResourceEntryMissing(databaseMiner, DbDto.Topic.BOTS, DbResourceEnhancedDto.Locale.ITALY, "33333333");
     }
 
-    private static void assertResourceEntryPresentAndMatch(BulkDatabaseMiner databaseMiner, DbDto.Topic topic, DbResourceDto.Locale locale, String ref, String value) {
+    private static void assertResourceEntryPresentAndMatch(BulkDatabaseMiner databaseMiner, DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String ref, String value) {
         Optional<DbResourceDto.Entry> actualUpdatedEntry =
                 databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(ref, topic, locale);
         assertThat(actualUpdatedEntry).isPresent();
         assertThat(actualUpdatedEntry.get().getValue()).isEqualTo(value);
     }
 
-    private static void assertResourceEntryMissing(BulkDatabaseMiner databaseMiner, DbDto.Topic topic, DbResourceDto.Locale locale, String ref) {
+    private static void assertResourceEntryMissing(BulkDatabaseMiner databaseMiner, DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String ref) {
         Optional<DbResourceDto.Entry> actualUpdatedEntry =
                 databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(ref, topic, locale);
         assertThat(actualUpdatedEntry).isEmpty();

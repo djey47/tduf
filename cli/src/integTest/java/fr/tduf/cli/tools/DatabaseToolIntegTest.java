@@ -10,6 +10,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Condition;
@@ -39,8 +40,8 @@ import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toMap;
@@ -435,7 +436,7 @@ public class DatabaseToolIntegTest {
                         label));
     }
 
-    private static void assertCarPhysicsResourceWithRefHasValue(String ref, DbResourceDto.Locale locale, String expectedValue, String label, BulkDatabaseMiner miner) {
+    private static void assertCarPhysicsResourceWithRefHasValue(String ref, DbResourceEnhancedDto.Locale locale, String expectedValue, String label, BulkDatabaseMiner miner) {
         Optional<DbResourceDto.Entry> potentialEntry = miner.getResourceEntryFromTopicAndLocaleWithReference(ref, CAR_PHYSICS_DATA, locale);
 
         assertThat(potentialEntry)

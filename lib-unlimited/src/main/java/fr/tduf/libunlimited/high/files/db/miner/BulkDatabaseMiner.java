@@ -3,10 +3,7 @@ package fr.tduf.libunlimited.high.files.db.miner;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.cache.CacheManager;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.*;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.*;
@@ -75,7 +72,7 @@ public class BulkDatabaseMiner {
      * @param topic  : topic in TDU Database to search resources from
      * @return an optional value: either such a resource object if it exists, else empty.
      */
-    public Optional<DbResourceDto> getResourceFromTopicAndLocale(DbDto.Topic topic, DbResourceDto.Locale locale) {
+    public Optional<DbResourceDto> getResourceFromTopicAndLocale(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale) {
         return(cacheManager.getValueFromKey("resourceFromTopicAndLocale", getCacheKey(topic.name(), locale.name()), () -> {
             Log.trace("BulkDatabaseMiner", "getResourceFromTopicAndLocale(" + topic + ", " + locale + ")");
 
@@ -293,7 +290,7 @@ public class BulkDatabaseMiner {
      * @param locale    : game language to fetch related resources
      * @return an optional value: either such a resource entry if it exists, else absent.
      */
-    public Optional<DbResourceDto.Entry> getResourceEntryFromTopicAndLocaleWithReference(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
+    public Optional<DbResourceDto.Entry> getResourceEntryFromTopicAndLocaleWithReference(String reference, DbDto.Topic topic, DbResourceEnhancedDto.Locale locale) {
         String key = getCacheKey(reference, topic.name(), locale.name());
         return cacheManager.getValueFromKey("resourceEntryFromTopicAndLocaleWithReference", key, () -> {
             Log.trace("BulkDatabaseMiner", "getResourceEntryFromTopicAndLocaleWithReference(" + reference + ", " + topic + ", " + locale + ")");
@@ -317,7 +314,7 @@ public class BulkDatabaseMiner {
      * @param locale      : language to be used when resolving resource
      * @return full resource entry targeted by specified entry field.
      */
-    public Optional<DbResourceDto.Entry> getResourceEntryWithContentEntryInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbResourceDto.Locale locale) {
+    public Optional<DbResourceDto.Entry> getResourceEntryWithContentEntryInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbResourceEnhancedDto.Locale locale) {
         String key = getCacheKey(sourceTopic.name(), locale.name(), Integer.valueOf(fieldRank).toString(), Long.valueOf(entryIndex).toString());
         return cacheManager.getValueFromKey("resourceEntryWithContentEntryInternalIdentifier", key, () -> {
             Log.trace("BulkDatabaseMiner", "getResourceEntryWithContentEntryInternalIdentifier(" + sourceTopic + ", " + fieldRank + ", " + entryIndex + ", " + locale + ")");

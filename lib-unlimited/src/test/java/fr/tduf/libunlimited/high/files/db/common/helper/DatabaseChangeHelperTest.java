@@ -2,10 +2,7 @@ package fr.tduf.libunlimited.high.files.db.common.helper;
 
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.*;
 import org.assertj.core.api.Condition;
 import org.junit.After;
 import org.junit.Test;
@@ -36,7 +33,7 @@ public class DatabaseChangeHelperTest {
     private static final String RESOURCE_REFERENCE = "000000";
     private static final String RESOURCE_VALUE = "TEST";
     private static final DbDto.Topic TOPIC = DbDto.Topic.CAR_PHYSICS_DATA;
-    private static final DbResourceDto.Locale LOCALE = DbResourceDto.Locale.CHINA;
+    private static final DbResourceEnhancedDto.Locale LOCALE = DbResourceEnhancedDto.Locale.CHINA;
     private static final String CONTENT_ENTRY_NAME = "TEST";
     private static final String CONTENT_ENTRY_REF_NAME = "REF";
     private static final String CONTENT_ENTRY_BIFIELD_NAME = "BITFIELD";
@@ -504,11 +501,11 @@ public class DatabaseChangeHelperTest {
         DbResourceDto frenchResourceObject = DbResourceDto.builder().addEntry(frenchResourceEntry).build();
 
         when(minerMock.getResourceFromTopicAndLocale(TOPIC, LOCALE)).thenReturn(Optional.of(chineseResourceObject));
-        when(minerMock.getResourceFromTopicAndLocale(TOPIC, DbResourceDto.Locale.FRANCE)).thenReturn(Optional.of(frenchResourceObject));
+        when(minerMock.getResourceFromTopicAndLocale(TOPIC, DbResourceEnhancedDto.Locale.FRANCE)).thenReturn(Optional.of(frenchResourceObject));
 
 
         // WHEN
-        changeHelper.removeResourcesWithReference(TOPIC, RESOURCE_REFERENCE, asList(LOCALE, DbResourceDto.Locale.FRANCE));
+        changeHelper.removeResourcesWithReference(TOPIC, RESOURCE_REFERENCE, asList(LOCALE, DbResourceEnhancedDto.Locale.FRANCE));
 
 
         // THEN

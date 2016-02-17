@@ -3,10 +3,7 @@ package fr.tduf.libunlimited.high.files.db.integrity;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.*;
 import org.assertj.core.data.MapEntry;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,8 +18,8 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoE
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.CHINA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.CHINA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -218,7 +215,7 @@ public class DatabaseIntegrityCheckerTest {
     private List<DbDto> createAllDtosWithDifferentGlobalResourceValueForLocaleCH() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
-        List<DbResourceDto> allResourceObjects = Stream.of(DbResourceDto.Locale.values())
+        List<DbResourceDto> allResourceObjects = Stream.of(DbResourceEnhancedDto.Locale.values())
 
                 .map(this::createResourceNoEntryMissing)
 
@@ -269,7 +266,7 @@ public class DatabaseIntegrityCheckerTest {
                 .collect(toList());
     }
 
-    private DbResourceDto createResourceNoEntryMissing(DbResourceDto.Locale locale) {
+    private DbResourceDto createResourceNoEntryMissing(DbResourceEnhancedDto.Locale locale) {
         return DbResourceDto.builder()
                                 .withLocale(locale)
                                 .addEntry(createLocalResourceEntry1())

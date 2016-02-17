@@ -4,12 +4,9 @@ import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.*;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -102,7 +99,7 @@ public class DatabaseIntegrityFixerTest {
         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
         info.put(SOURCE_TOPIC, ACHIEVEMENTS);
         info.put(REMOTE_TOPIC, ACHIEVEMENTS);
-        info.put(LOCALE, Locale.FRANCE);
+        info.put(LOCALE, DbResourceEnhancedDto.Locale.FRANCE);
         info.put(REFERENCE, "123456");
         Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(IntegrityError.builder().ofType(RESOURCE_REFERENCE_NOT_FOUND).addInformations(info).build()));
 
@@ -118,7 +115,7 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        DbResourceDto.Entry createdEntry = searchResourceEntry("123456", ACHIEVEMENTS, Locale.FRANCE, fixedDatabaseObjects);
+        DbResourceDto.Entry createdEntry = searchResourceEntry("123456", ACHIEVEMENTS, DbResourceEnhancedDto.Locale.FRANCE, fixedDatabaseObjects);
         assertThat(createdEntry).isNotNull();
         assertThat(createdEntry.getValue()).isEqualTo("-FIXED BY TDUF-");
     }
@@ -131,7 +128,7 @@ public class DatabaseIntegrityFixerTest {
         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
         info.put(SOURCE_TOPIC, ACHIEVEMENTS);
         info.put(REMOTE_TOPIC, AFTER_MARKET_PACKS);
-        info.put(LOCALE, Locale.FRANCE);
+        info.put(LOCALE, DbResourceEnhancedDto.Locale.FRANCE);
         info.put(REFERENCE, "1234567");
         Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(IntegrityError.builder().ofType(RESOURCE_REFERENCE_NOT_FOUND).addInformations(info).build()));
 
@@ -147,7 +144,7 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        DbResourceDto.Entry createdEntry = searchResourceEntry("1234567", AFTER_MARKET_PACKS, Locale.FRANCE, fixedDatabaseObjects);
+        DbResourceDto.Entry createdEntry = searchResourceEntry("1234567", AFTER_MARKET_PACKS, DbResourceEnhancedDto.Locale.FRANCE, fixedDatabaseObjects);
         assertThat(createdEntry).isNotNull();
         assertThat(createdEntry.getValue()).isEqualTo("-FIXED BY TDUF-");
     }
@@ -281,7 +278,7 @@ public class DatabaseIntegrityFixerTest {
         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
         info.put(SOURCE_TOPIC, ACHIEVEMENTS);
         info.put(FILE, "./TDU_Achievements.fr");
-        info.put(LOCALE, Locale.ITALY);
+        info.put(LOCALE, DbResourceEnhancedDto.Locale.ITALY);
 
         Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(IntegrityError.builder().ofType(RESOURCE_NOT_FOUND).addInformations(info).build()));
 
@@ -297,7 +294,7 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        DbResourceDto.Entry actualResourceEntry = searchResourceEntry("000", ACHIEVEMENTS, Locale.ITALY, fixedDatabaseObjects);
+        DbResourceDto.Entry actualResourceEntry = searchResourceEntry("000", ACHIEVEMENTS, DbResourceEnhancedDto.Locale.ITALY, fixedDatabaseObjects);
         assertThat(actualResourceEntry.getValue()).isEqualTo("TDUF TEST");
     }
 
@@ -319,7 +316,7 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        DbResourceDto.Entry actualResourceEntry = searchResourceEntry("000", AFTER_MARKET_PACKS, Locale.CHINA, fixedDatabaseObjects);
+        DbResourceDto.Entry actualResourceEntry = searchResourceEntry("000", AFTER_MARKET_PACKS, DbResourceEnhancedDto.Locale.CHINA, fixedDatabaseObjects);
         assertThat(actualResourceEntry.getValue()).isEqualTo("TDUF TEST");
     }
 
@@ -341,7 +338,7 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        Stream.of(Locale.FRANCE, Locale.UNITED_STATES)
+        Stream.of(DbResourceEnhancedDto.Locale.FRANCE, DbResourceEnhancedDto.Locale.UNITED_STATES)
 
                 .forEach((locale) -> {
                     DbResourceDto.Entry actualResourceEntry = searchResourceEntry("000", AFTER_MARKET_PACKS, locale, fixedDatabaseObjects);
@@ -410,8 +407,8 @@ public class DatabaseIntegrityFixerTest {
         return DbDto.builder()
                 .withStructure(createDefaultStructureObject())
                 .withData(createDefaultContentsObject())
-                .addResource(createResourceObjectWithOneResourceEntry(Locale.FRANCE))
-                .addResource(createResourceObjectWithOneResourceEntry(Locale.UNITED_STATES))
+                .addResource(createResourceObjectWithOneResourceEntry(DbResourceEnhancedDto.Locale.FRANCE))
+                .addResource(createResourceObjectWithOneResourceEntry(DbResourceEnhancedDto.Locale.UNITED_STATES))
                 .build();
     }
 
@@ -419,7 +416,7 @@ public class DatabaseIntegrityFixerTest {
         return DbDto.builder()
                 .withStructure(createDefaultStructureObject2())
                 .withData(createDefaultContentsObject())
-                .addResource(createResourceObjectWithOneResourceEntry(Locale.FRANCE))
+                .addResource(createResourceObjectWithOneResourceEntry(DbResourceEnhancedDto.Locale.FRANCE))
                 .build();
     }
 
@@ -427,7 +424,7 @@ public class DatabaseIntegrityFixerTest {
         return DbDto.builder()
                 .withStructure(createDefaultStructureObject2())
                 .withData(createContentsObjectWithTwoFieldsMissing())
-                .addResource(createResourceObjectWithOneResourceEntry(Locale.FRANCE))
+                .addResource(createResourceObjectWithOneResourceEntry(DbResourceEnhancedDto.Locale.FRANCE))
                 .build();
     }
 
@@ -435,9 +432,9 @@ public class DatabaseIntegrityFixerTest {
         return DbDto.builder()
                 .withStructure(createDefaultStructureObject2())
                 .withData(createDefaultContentsObject())
-                .addResource(createResourceObjectWithOneResourceEntry(Locale.FRANCE))
-                .addResource(createResourceObjectWithOneResourceEntry(Locale.UNITED_STATES))
-                .addResource(createDefaultResourceObject(Locale.CHINA))
+                .addResource(createResourceObjectWithOneResourceEntry(DbResourceEnhancedDto.Locale.FRANCE))
+                .addResource(createResourceObjectWithOneResourceEntry(DbResourceEnhancedDto.Locale.UNITED_STATES))
+                .addResource(createDefaultResourceObject(DbResourceEnhancedDto.Locale.CHINA))
                 .build();
     }
 
@@ -445,8 +442,8 @@ public class DatabaseIntegrityFixerTest {
         return DbDto.builder()
                 .withStructure(createDefaultStructureObject2())
                 .withData(createDefaultContentsObject())
-                .addResource(createResourceObjectWithOneResourceEntry(Locale.FRANCE))
-                .addResource(createResourceObjectWithAnotherResourceEntry(Locale.UNITED_STATES))
+                .addResource(createResourceObjectWithOneResourceEntry(DbResourceEnhancedDto.Locale.FRANCE))
+                .addResource(createResourceObjectWithAnotherResourceEntry(DbResourceEnhancedDto.Locale.UNITED_STATES))
                 .build();
     }
 
@@ -539,9 +536,9 @@ public class DatabaseIntegrityFixerTest {
 
     private IntegrityError createIntegrityError_ResourceItemsCountMismatch() {
         Map<Locale, Integer> perLocaleCountInfo = new HashMap<>();
-        perLocaleCountInfo.put(Locale.CHINA, 0);
-        perLocaleCountInfo.put(Locale.FRANCE, 1);
-        perLocaleCountInfo.put(Locale.UNITED_STATES, 1);
+        perLocaleCountInfo.put(DbResourceEnhancedDto.Locale.CHINA, 0);
+        perLocaleCountInfo.put(DbResourceEnhancedDto.Locale.FRANCE, 1);
+        perLocaleCountInfo.put(DbResourceEnhancedDto.Locale.UNITED_STATES, 1);
 
         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
         info.put(SOURCE_TOPIC, AFTER_MARKET_PACKS);

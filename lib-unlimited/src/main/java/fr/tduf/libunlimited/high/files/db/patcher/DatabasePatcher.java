@@ -8,10 +8,7 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderResolver;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.*;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
@@ -216,7 +213,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     }
 
     private void deleteResources(DbPatchDto.DbChangeDto changeObject) {
-        Optional<DbResourceDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
+        Optional<DbResourceEnhancedDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
 
         if (potentialLocale.isPresent()) {
 
@@ -224,14 +221,14 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
         } else {
 
-            Stream.of(DbResourceDto.Locale.values())
+            Stream.of(DbResourceEnhancedDto.Locale.values())
 
                     .forEach((currentLocale) -> deleteResourcesForLocale(changeObject, currentLocale));
 
         }
     }
 
-    private void deleteResourcesForLocale(DbPatchDto.DbChangeDto changeObject, DbResourceDto.Locale locale) {
+    private void deleteResourcesForLocale(DbPatchDto.DbChangeDto changeObject, DbResourceEnhancedDto.Locale locale) {
         final DbDto.Topic topic = changeObject.getTopic();
         final String effectiveRef = changeObject.getRef();
 
@@ -244,7 +241,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     }
 
     private void addOrUpdateResources(DbPatchDto.DbChangeDto changeObject) {
-        Optional<DbResourceDto.Locale> locale = ofNullable(changeObject.getLocale());
+        Optional<DbResourceEnhancedDto.Locale> locale = ofNullable(changeObject.getLocale());
 
         if (locale.isPresent()) {
 
@@ -252,14 +249,14 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
         } else {
 
-            Stream.of(DbResourceDto.Locale.values())
+            Stream.of(DbResourceEnhancedDto.Locale.values())
 
                     .forEach((currentLocale) -> addOrUpdateResourcesForLocale(changeObject, currentLocale));
 
         }
     }
 
-    private void addOrUpdateResourcesForLocale(DbPatchDto.DbChangeDto changeObject, DbResourceDto.Locale locale) {
+    private void addOrUpdateResourcesForLocale(DbPatchDto.DbChangeDto changeObject, DbResourceEnhancedDto.Locale locale) {
         String ref = changeObject.getRef();
         DbDto.Topic topic = changeObject.getTopic();
         String value = changeObject.getValue();

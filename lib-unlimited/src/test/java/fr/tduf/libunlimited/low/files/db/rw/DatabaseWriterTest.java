@@ -1,10 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
 import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.junit.Before;
@@ -138,7 +135,7 @@ public class DatabaseWriterTest {
 
     private static void assertFilesMatchReferenceObject(DbDto referenceDto, String contentsFileName, String... resourceFileNames) throws FileNotFoundException {
         List<String> dbContents = DbHelper.readContentsFromRealFile(contentsFileName, "UTF-8");
-        Map<DbResourceDto.Locale, List<String>> dbResources = DbHelper.readResourcesFromRealFiles(resourceFileNames);
+        Map<DbResourceEnhancedDto.Locale, List<String>> dbResources = DbHelper.readResourcesFromRealFiles(resourceFileNames);
         DbDto finalDbDto = DatabaseParser.load(dbContents, dbResources).parseAll();
         assertThat(finalDbDto).isEqualTo(referenceDto);
     }

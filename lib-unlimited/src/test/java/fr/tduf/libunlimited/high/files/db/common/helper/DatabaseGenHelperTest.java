@@ -1,10 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.common.helper;
 
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.*;
 import org.apache.commons.lang3.Range;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,13 +45,13 @@ public class DatabaseGenHelperTest {
         // GIVEN
         DbDto topicObject = DbDto.builder()
                 .addResource(DbResourceDto.builder()
-                        .withLocale(DbResourceDto.Locale.FRANCE)
+                        .withLocale(DbResourceEnhancedDto.Locale.FRANCE)
                         .addEntry(DbResourceDto.Entry.builder()
                             .forReference(RESOURCE_REFERENCE)
                             .build())
                         .build())
                 .addResource(DbResourceDto.builder()
-                        .withLocale(DbResourceDto.Locale.ITALY)
+                        .withLocale(DbResourceEnhancedDto.Locale.ITALY)
                         .addEntry(DbResourceDto.Entry.builder()
                             .forReference(RESOURCE_REFERENCE)
                             .build())
@@ -255,7 +252,7 @@ public class DatabaseGenHelperTest {
 
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
 
-        verify(changeHelperMock, times(8)).addResourceWithReference(eq(DbDto.Topic.ACHIEVEMENTS), any(DbResourceDto.Locale.class), eq(actualResourceRef), eq("??"));
+        verify(changeHelperMock, times(8)).addResourceWithReference(eq(DbDto.Topic.ACHIEVEMENTS), any(DbResourceEnhancedDto.Locale.class), eq(actualResourceRef), eq("??"));
     }
 
     @Test
@@ -279,7 +276,7 @@ public class DatabaseGenHelperTest {
 
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
 
-        verify(changeHelperMock, times(8)).addResourceWithReference(eq(BRANDS), any(DbResourceDto.Locale.class), eq(actualResourceRef), eq("??"));
+        verify(changeHelperMock, times(8)).addResourceWithReference(eq(BRANDS), any(DbResourceEnhancedDto.Locale.class), eq(actualResourceRef), eq("??"));
     }
 
     @Test
@@ -300,7 +297,7 @@ public class DatabaseGenHelperTest {
         // THEN
         assertThat(actualItem).isNotNull();
 
-        verify(changeHelperMock, never()).addResourceWithReference(eq(BRANDS), any(DbResourceDto.Locale.class), anyString(), eq("??"));
+        verify(changeHelperMock, never()).addResourceWithReference(eq(BRANDS), any(DbResourceEnhancedDto.Locale.class), anyString(), eq("??"));
     }
 
     @Test
@@ -339,7 +336,7 @@ public class DatabaseGenHelperTest {
         // THEN
         assertThat(actualResourceReference).isNotEmpty();
 
-        verify(changeHelperMock, times(8)).addResourceWithReference(eq(DbDto.Topic.ACHIEVEMENTS), any(DbResourceDto.Locale.class), anyString(), eq("??"));
+        verify(changeHelperMock, times(8)).addResourceWithReference(eq(DbDto.Topic.ACHIEVEMENTS), any(DbResourceEnhancedDto.Locale.class), anyString(), eq("??"));
     }
 
     @Test

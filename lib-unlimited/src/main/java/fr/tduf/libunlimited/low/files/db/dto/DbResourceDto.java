@@ -30,7 +30,7 @@ public class DbResourceDto implements Serializable {
     private Integer categoryCount;
 
     @JsonProperty("locale")
-    private Locale locale;
+    private DbResourceEnhancedDto.Locale locale;
 
     @JsonTypeName("dbResourceEntry")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
@@ -123,55 +123,13 @@ public class DbResourceDto implements Serializable {
     }
 
     /**
-     * All culture variants for game files
-     */
-    // TODO migrate to V2
-    public enum Locale {
-        FRANCE("fr"),
-        GERMANY("ge"),
-        UNITED_STATES("us"),
-        KOREA("ko"),
-        CHINA("ch"),
-        JAPAN("ja"),
-        ITALY("it"),
-        SPAIN("sp");
-
-        private final String code;
-
-        Locale(String code) {
-            this.code = code;
-        }
-
-        /**
-         * Retrieves a locale value from its code.
-         */
-        public static Locale fromCode(String code) {
-            for(Locale locale : values()) {
-                if (locale.code.equals(code)) {
-                    return locale;
-                }
-            }
-            throw new IllegalArgumentException("Unknown Locale code: " + code);
-        }
-
-        public String getCode() {
-            return code;
-        }
-
-        @Override
-        public String toString() {
-            return super.toString();
-        }
-    }
-
-    /**
      * @return builder, used to generate custom values.
      */
     public static DbResourceDtoBuilder builder() {
         return new DbResourceDtoBuilder() {
             private int categoryCount;
             private String version;
-            private Locale locale;
+            private DbResourceEnhancedDto.Locale locale;
             private final List<Entry> entries = new ArrayList<>();
 
             @Override
@@ -191,7 +149,7 @@ public class DbResourceDto implements Serializable {
             }
 
             @Override
-            public DbResourceDtoBuilder withLocale(Locale locale) {
+            public DbResourceDtoBuilder withLocale(DbResourceEnhancedDto.Locale locale) {
                 this.locale = locale;
                 return this;
             }
@@ -234,7 +192,7 @@ public class DbResourceDto implements Serializable {
         };
     }
 
-    public Locale getLocale() {
+    public DbResourceEnhancedDto.Locale getLocale() {
         return locale;
     }
 
@@ -268,7 +226,7 @@ public class DbResourceDto implements Serializable {
     public interface DbResourceDtoBuilder {
         DbResourceDtoBuilder fromExistingResource(DbResourceDto dbResourceDto);
 
-        DbResourceDtoBuilder withLocale(Locale locale);
+        DbResourceDtoBuilder withLocale(DbResourceEnhancedDto.Locale locale);
 
         DbResourceDtoBuilder addEntry(Entry entry);
 
