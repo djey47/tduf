@@ -182,7 +182,7 @@ public class DatabaseParser {
         }
     }
 
-    // TODO externalize to helper
+    // TODO Move to resource object
     private static Optional<DbResourceEnhancedDto.Entry> getResourceEntryByReference(Set<DbResourceEnhancedDto.Entry> entries, String ref) {
         return entries.stream()
 
