@@ -26,7 +26,7 @@ public class DbResourceEnhancedDto {
     private Integer categoryCount;
 
     @JsonProperty("entries")
-    private Set<Entry> entries;
+    private LinkedHashSet<Entry> entries;
 
     private DbResourceEnhancedDto(){}
 
@@ -64,7 +64,7 @@ public class DbResourceEnhancedDto {
     public static class DbResourceEnhancedDtoBuilder {
         private String version;
         private int categoryCount;
-        private Set<Entry> entries;
+        private LinkedHashSet<Entry> entries;
 
         public DbResourceEnhancedDtoBuilder atVersion(String version) {
             this.version = version;
@@ -99,7 +99,7 @@ public class DbResourceEnhancedDto {
         private String reference;
 
         @JsonProperty("items")
-        private Set<Item> items;
+        private LinkedHashSet<Item> items;
 
         private Entry() {}
 
@@ -147,7 +147,7 @@ public class DbResourceEnhancedDto {
 
         public static class EntryBuilder {
             private String reference;
-            private Set<Item> items;
+            private LinkedHashSet<Item> items;
 
             public EntryBuilder forReference(String ref) {
                 this.reference = ref;
