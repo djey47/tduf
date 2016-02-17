@@ -253,7 +253,7 @@ public class DatabaseReadWriteHelperTest {
 
 
         // THEN
-        assertThat(writtenFiles).hasSize(3);
+        assertThat(writtenFiles).hasSize(9);
 
         writtenFiles.stream()
                 .forEach((fileName) -> assertThat(new File(fileName)).exists());

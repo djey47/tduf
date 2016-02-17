@@ -1,12 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
+import fr.tduf.libunlimited.low.files.db.dto.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.lang.String.format;
@@ -34,8 +30,6 @@ public class DatabaseWriter {
     private static final String RESOURCE_ENTRY_PATTERN = "{%s} %s";
 
     private final DbDto databaseDto;
-
-    private final ObjectWriter jsonObjectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
     private DatabaseWriter(DbDto dbDto) {
         this.databaseDto = dbDto;
@@ -63,7 +57,7 @@ public class DatabaseWriter {
         List<String> writtenFilenames = new ArrayList<>();
 
         writtenFilenames.add(writeStructureAndContents(path));
-        writtenFilenames.addAll(writeResources(path));
+        writtenFilenames.addAll(writeResourcesEnhanced(path));
 
         return writtenFilenames;
     }
@@ -160,6 +154,64 @@ public class DatabaseWriter {
         return writtenSize;
     }
 
+    // TODO extract sub methods
+    private List<String> writeResourcesEnhanced(String directoryPath) throws IOException {
+        // TODO remove this fallback when V2 OK
+        if(databaseDto.getResource() == null) {
+            return writeResources(directoryPath);
+        }
+
+        List<String> writtenPaths = new ArrayList<>();
+        DbResourceEnhancedDto dbResourceEnhancedDto = databaseDto.getResource();
+
+        String topicLabel = this.databaseDto.getTopic().getLabel();
+
+        Stream.of(DbResourceDto.Locale.values())
+
+                .forEach((locale) -> {
+
+                    String localeCode = locale.getCode();
+                    String resourceFileName = format("%s.%s", topicLabel, localeCode);
+                    File resourceFile = new File(directoryPath, resourceFileName);
+
+                    try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(resourceFile.toPath(), StandardCharsets.UTF_16LE)) {
+
+                        // Encoding
+                        bufferedWriter.write("\uFEFF");
+
+                        // Meta
+                        writeAndEndWithCRLF(
+                                format(COMMENT_PATTERN, resourceFileName), bufferedWriter);
+                        writeAndEndWithCRLF(
+                                format(COMMENT_INFO_PATTERN, "version", dbResourceEnhancedDto.getVersion()), bufferedWriter);
+                        writeAndEndWithCRLF(
+                                format(COMMENT_INFO_PATTERN, "categories", dbResourceEnhancedDto.getCategoryCount()), bufferedWriter);
+
+                        // Resources
+                        dbResourceEnhancedDto.getEntries().stream()
+
+                                .forEach((entry) -> entry.getItemForLocale(locale)
+
+                                        .ifPresent((item) -> {
+                                            try {
+                                                writeAndEndWithCRLF(
+                                                        format(RESOURCE_ENTRY_PATTERN, item.getValue(), entry.getReference()), bufferedWriter);
+                                            } catch (IOException ioe) {
+                                                throw new RuntimeException("Error occured while writing resource entry", ioe);
+                                            }
+                                        }));
+
+                    } catch (IOException ioe) {
+                        throw new RuntimeException("Error occured while writing database", ioe);
+                    }
+
+                    writtenPaths.add(resourceFile.getAbsolutePath());
+                });
+
+        return writtenPaths;
+    }
+
+    @Deprecated
     private List<String> writeResources(String directoryPath) throws IOException {
 
         List<String> writtenPaths = new ArrayList<>();

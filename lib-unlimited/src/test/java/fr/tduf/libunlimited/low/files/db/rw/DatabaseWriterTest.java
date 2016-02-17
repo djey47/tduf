@@ -64,7 +64,7 @@ public class DatabaseWriterTest {
         String actualResourceFileName1 = new File(tempDirectory, "TDU_Achievements.fr").getAbsolutePath();
         String actualResourceFileName2 = new File(tempDirectory, "TDU_Achievements.it").getAbsolutePath();
 
-        assertThat(actualFilenames).containsExactly(
+        assertThat(actualFilenames).contains(
                 actualContentsFileName,
                 actualResourceFileName1,
                 actualResourceFileName2);
@@ -92,7 +92,7 @@ public class DatabaseWriterTest {
         String actualResourceFileNameFrench = new File(tempDirectory, "TDU_Bots.fr").getAbsolutePath();
         String actualResourceFileNameItalian = new File(tempDirectory, "TDU_Bots.it").getAbsolutePath();
 
-        assertThat(actualFilenames).containsExactly(
+        assertThat(actualFilenames).contains(
                 actualContentsFileName,
                 actualResourceFileNameFrench,
                 actualResourceFileNameItalian);
@@ -113,7 +113,7 @@ public class DatabaseWriterTest {
         List<String> actualFilenames = DatabaseWriter.load(initialDbDto).writeAll(tempDirectory);
 
         //THEN
-        assertThat(actualFilenames).hasSize(3);
+        assertThat(actualFilenames).hasSize(9);
 
         File actualContentsFile = assertFileExistAndGet(new File(tempDirectory,"TDU_Achievements.db").getAbsolutePath());
         assertThat(actualContentsFile.length() % 8).isEqualTo(0);
