@@ -7,6 +7,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
@@ -113,6 +114,18 @@ public class DbResourceEnhancedDto {
             items.add(item);
         }
 
+        public Optional<Item> getItemForLocale(DbResourceDto.Locale locale) {
+            if (items == null) {
+                return Optional.empty();
+            }
+
+            return items.stream()
+
+                    .filter((item) -> item.locale == locale)
+
+                    .findAny();
+        }
+
         @Override
         public boolean equals(Object o) {
             return reflectionEquals(this, o);
@@ -185,6 +198,10 @@ public class DbResourceEnhancedDto {
         @Override
         public String toString() {
             return reflectionToString(this);
+        }
+
+        public String getValue() {
+            return value;
         }
 
         public static class ItemBuilder {
