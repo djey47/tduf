@@ -89,6 +89,7 @@ public class DatabaseParser {
         requireNonNull(resources, "Resources are required");
     }
 
+    @Deprecated
     private List<DbResourceDto> parseAllResourcesFromTopic(DbDto.Topic topic) {
 
         final Pattern resourceVersionPattern = Pattern.compile(META_VERSION_PATTERN);
@@ -137,7 +138,7 @@ public class DatabaseParser {
 
         checkItemCountBetweenResourcesEnhanced(topic, entries);
 
-        return DbResourceEnhancedDto.builder()
+        return  DbResourceEnhancedDto.builder()
                 .atVersion(version.get())
                 .withCategoryCount(categoryCount.get())
                 .containingEntries(entries)
@@ -166,8 +167,12 @@ public class DatabaseParser {
 
             matcher = resourceEntryPattern.matcher(line);
             if (matcher.matches()) {
-
-                DbResourceEnhancedDto.Entry entry = getResourceEntryByReference(entries, matcher.group(3))
+                final DbResourceEnhancedDto tempResource = DbResourceEnhancedDto.builder()
+                        .atVersion("")
+                        .withCategoryCount(0)
+                        .containingEntries(entries)
+                        .build();
+                DbResourceEnhancedDto.Entry entry =  tempResource.getEntryByReference(matcher.group(3))
                         .orElse(DbResourceEnhancedDto.Entry.builder()
                                 .forReference(matcher.group(3))
                                 .build());
@@ -180,15 +185,6 @@ public class DatabaseParser {
                 entries.add(entry);
             }
         }
-    }
-
-    // TODO Move to resource object
-    private static Optional<DbResourceEnhancedDto.Entry> getResourceEntryByReference(Set<DbResourceEnhancedDto.Entry> entries, String ref) {
-        return entries.stream()
-
-                .filter((entry -> entry.getReference().equals(ref)))
-
-                .findAny();
     }
 
     private DbResourceDto parseResourcesForLocale(DbResourceEnhancedDto.Locale locale, Pattern resourceVersionPattern, Pattern categoryCountPattern, Pattern resourceEntryPattern) {
@@ -410,6 +406,7 @@ public class DatabaseParser {
         }
     }
 
+    @Deprecated
     private void checkItemCountBetweenResources(DbDto.Topic topic, List<DbResourceDto> dbResourceDtos) {
         Map<Integer, List<DbResourceDto>> dbResourceDtosByItemCount = dbResourceDtos.stream()
 
