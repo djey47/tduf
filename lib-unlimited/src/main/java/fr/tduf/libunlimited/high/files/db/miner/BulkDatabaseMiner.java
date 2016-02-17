@@ -68,6 +68,22 @@ public class BulkDatabaseMiner {
     }
 
     /**
+     * V2
+     * @param topic  : topic in TDU Database to search resources from
+     * @return an optional value: either such a resource object if it exists, else empty.
+     */
+    // TODO test
+    public Optional<DbResourceEnhancedDto> getResourceEnhancedFromTopic(DbDto.Topic topic) {
+        return topicObjects.stream()
+
+                .filter((databaseObject) -> databaseObject.getTopic() == topic)
+
+                .findAny()
+
+                .map(DbDto::getResource);
+    }
+
+    /**
      * @param locale : game language to fetch related resources
      * @param topic  : topic in TDU Database to search resources from
      * @return an optional value: either such a resource object if it exists, else empty.
@@ -282,6 +298,24 @@ public class BulkDatabaseMiner {
 
                             .orElse(null));
         });
+    }
+
+    /**
+     * V2
+     * @param reference
+     * @param topic
+     * @param locale
+     * @return
+     */
+    // TODO test
+    public Optional<String> getLocalizedResourceValueFromTopicAndReference(String reference, DbDto.Topic topic, DbResourceEnhancedDto.Locale locale) {
+        return getResourceEnhancedFromTopic(topic)
+
+                .flatMap((resource) -> resource.getEntryByReference(reference))
+
+                .flatMap((entry) -> entry.getItemForLocale(locale))
+
+                .map((DbResourceEnhancedDto.Item::getValue));
     }
 
     /**
