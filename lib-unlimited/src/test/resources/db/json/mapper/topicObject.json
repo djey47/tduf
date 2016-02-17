@@ -1,0 +1,28 @@
+{
+  "structure": {
+    "ref": "2442784645",
+    "topic": "ACHIEVEMENTS",
+    "fields": [],
+    "version": "1,0",
+    "categoryCount": 5
+  },
+  "data": {
+    "entries": []
+  },
+  "resource": {
+    "version": "1,2",
+    "categoryCount": 6,
+    "entries": [
+      {
+        "items": [
+          {
+            "locale": "FRANCE",
+            "value": "VAL"
+          }
+        ],
+        "ref": "REF"
+      }
+    ]
+  },
+  "resources": []
+}
