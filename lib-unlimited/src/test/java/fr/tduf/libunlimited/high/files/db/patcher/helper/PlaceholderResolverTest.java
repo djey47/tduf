@@ -4,7 +4,7 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,10 +15,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.FRANCE;
-import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.INTEGER;
-import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED;
-import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -49,7 +46,10 @@ public class PlaceholderResolverTest {
                                 .fromType(INTEGER)
                                 .build())
                         .build())
-                .addResource(DbResourceDto.builder().withLocale(FRANCE).build())
+                .withResource(DbResourceEnhancedDto.builder()
+                        .withCategoryCount(1)
+                        .atVersion("1,0")
+                        .build())
                 .build();
     }
 
