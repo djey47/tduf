@@ -1,16 +1,16 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -175,6 +175,24 @@ public class DbResourceEnhancedDto {
                     .findAny();
         }
 
+        public int getItemCount() {
+            return items == null ?
+                    0 :
+                    items.size();
+        }
+
+        @JsonIgnore
+        public Set<Locale> getPresentLocales() {
+            if(items == null) {
+                return new HashSet<>();
+            }
+            return items.stream()
+
+                    .map((item) -> item.locale)
+
+                    .collect(toSet());
+        }
+
         @Override
         public boolean equals(Object o) {
             return reflectionEquals(this, o);
@@ -193,6 +211,7 @@ public class DbResourceEnhancedDto {
         public String getReference() {
             return reference;
         }
+
 
         public static class EntryBuilder {
             private String reference;
