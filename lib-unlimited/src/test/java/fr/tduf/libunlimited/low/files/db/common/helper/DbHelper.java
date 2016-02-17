@@ -56,7 +56,7 @@ public class DbHelper {
 
     /**
      * Reads provided text files and return contents as lists of lines.
-     * @param fileNames : names of ile to be processed
+     * @param fileNames : names of files to be processed
      */
     public static Map<DbResourceDto.Locale, List<String>> readResourcesFromRealFiles(String... fileNames) throws FileNotFoundException {
 
