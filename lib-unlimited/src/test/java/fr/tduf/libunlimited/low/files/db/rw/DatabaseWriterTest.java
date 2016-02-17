@@ -60,17 +60,38 @@ public class DatabaseWriterTest {
         String actualContentsFileName = new File(tempDirectory, "TDU_Achievements.db").getAbsolutePath();
         String actualResourceFileName1 = new File(tempDirectory, "TDU_Achievements.fr").getAbsolutePath();
         String actualResourceFileName2 = new File(tempDirectory, "TDU_Achievements.it").getAbsolutePath();
+        String actualResourceFileName3 = new File(tempDirectory, "TDU_Achievements.ge").getAbsolutePath();
+        String actualResourceFileName4 = new File(tempDirectory, "TDU_Achievements.sp").getAbsolutePath();
+        String actualResourceFileName5 = new File(tempDirectory, "TDU_Achievements.us").getAbsolutePath();
+        String actualResourceFileName6 = new File(tempDirectory, "TDU_Achievements.ja").getAbsolutePath();
+        String actualResourceFileName7 = new File(tempDirectory, "TDU_Achievements.ko").getAbsolutePath();
+        String actualResourceFileName8 = new File(tempDirectory, "TDU_Achievements.ch").getAbsolutePath();
 
         assertThat(actualFilenames).contains(
                 actualContentsFileName,
                 actualResourceFileName1,
-                actualResourceFileName2);
+                actualResourceFileName2,
+                actualResourceFileName3,
+                actualResourceFileName4,
+                actualResourceFileName5,
+                actualResourceFileName6,
+                actualResourceFileName7,
+                actualResourceFileName8);
 
         assertFileMatchesReference(actualContentsFileName, "/db/");
         assertFileMatchesReference(actualResourceFileName1, "/db/res/clean/");
         assertFileMatchesReference(actualResourceFileName2, "/db/res/clean/");
 
-        assertFilesMatchReferenceObject(initialDbDto, actualContentsFileName, actualResourceFileName1, actualResourceFileName2);
+        assertFilesMatchReferenceObject(initialDbDto,
+                actualContentsFileName,
+                actualResourceFileName1,
+                actualResourceFileName2,
+                actualResourceFileName3,
+                actualResourceFileName4,
+                actualResourceFileName5,
+                actualResourceFileName6,
+                actualResourceFileName7,
+                actualResourceFileName8);
     }
 
     @Test
