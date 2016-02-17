@@ -154,12 +154,16 @@ public class IntegrityError {
         MISSING_TOPICS("Missing topics"),
         LOCALE("Locale"),
         REFERENCE("Reference"),
+
+        @Deprecated
         PER_LOCALE_COUNT("Per-Locale Count"),
+
         PER_VALUE_COUNT("Per-Value Count"),
         EXPECTED_COUNT("Expected Count"),
         ACTUAL_COUNT("Actual Count"),
         FILE("File Name"),
-        ENTRY_ID("Data Entry Identifier");
+        ENTRY_ID("Data Entry Identifier"),
+        MISSING_LOCALES("Missing values for locales");
 
         private final String infoLabel;
 
