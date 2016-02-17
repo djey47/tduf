@@ -34,6 +34,14 @@ public class DbResourceEnhancedDto {
         return new DbResourceEnhancedDto.DbResourceEnhancedDtoBuilder();
     }
 
+    public Optional<DbResourceEnhancedDto.Entry> getEntryByReference(String reference) {
+        return entries.stream()
+
+                .filter((entry -> entry.getReference().equals(reference)))
+
+                .findAny();
+    }
+
     @Override
     public boolean equals(Object o) {
         return reflectionEquals(this, o);
