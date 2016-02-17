@@ -1,12 +1,11 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.*;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -72,9 +71,11 @@ public class DatabaseParser {
         DbStructureDto structure = parseStructure();
         List<DbResourceDto> resources = parseAllResourcesFromTopic(structure.getTopic());
         DbDataDto data = parseContents(structure);
+        DbResourceEnhancedDto resource = parseAllResourcesEnhancedFromTopic(structure.getTopic());
 
         return DbDto.builder()
                 .withData(data)
+                .withResource(resource)
                 .addResources(resources)
                 .withStructure(structure)
                 .build();
@@ -107,6 +108,84 @@ public class DatabaseParser {
         checkItemCountBetweenResources(topic, dbResourceDtos);
 
         return dbResourceDtos;
+    }
+
+    private DbResourceEnhancedDto parseAllResourcesEnhancedFromTopic(DbDto.Topic topic) {
+        // TODO extract to constants
+        final Pattern resourceVersionPattern = Pattern.compile(META_VERSION_PATTERN);
+        final Pattern categoryCountPattern = Pattern.compile(META_CATEGORY_COUNT_PATTERN);
+        final Pattern resourceEntryPattern = Pattern.compile(RES_ENTRY_PATTERN);
+
+        Set<DbResourceEnhancedDto.Entry> entries = new LinkedHashSet<>();
+        AtomicInteger categoryCount = new AtomicInteger();
+        AtomicReference<String> version = new AtomicReference<>();
+
+        Stream.of(DbResourceDto.Locale.values())
+
+                .filter(resources::containsKey)
+
+                .filter((locale) -> !resources.get(locale).isEmpty())
+
+                .forEach((locale) -> parseResourcesEnhancedForLocale(locale, entries, categoryCount, version, resourceVersionPattern, categoryCountPattern, resourceEntryPattern));
+
+        if (entries.isEmpty()) {
+            return null;
+        }
+
+        checkItemCountBetweenResourcesEnhanced(topic, entries);
+
+        return DbResourceEnhancedDto.builder()
+                .atVersion(version.get())
+                .withCategoryCount(categoryCount.get())
+                .containingEntries(entries)
+                .build();
+    }
+
+    private void parseResourcesEnhancedForLocale(DbResourceDto.Locale locale, Set<DbResourceEnhancedDto.Entry> entries, AtomicInteger categoryCount, AtomicReference<String> version, Pattern resourceVersionPattern, Pattern categoryCountPattern, Pattern resourceEntryPattern) {
+        requireNonNull(entries, "A set of entries (even empty) is required.");
+
+        for (String line : resources.get(locale)) {
+            Matcher matcher = resourceVersionPattern.matcher(line);
+            if (matcher.matches()) {
+                version.set(matcher.group(1));
+                continue;
+            }
+
+            matcher = categoryCountPattern.matcher(line);
+            if (matcher.matches()) {
+                categoryCount.set(valueOf(matcher.group(1)));
+                continue;
+            }
+
+            if (Pattern.matches(COMMENT_PATTERN, line)) {
+                continue;
+            }
+
+            matcher = resourceEntryPattern.matcher(line);
+            if (matcher.matches()) {
+
+                DbResourceEnhancedDto.Entry entry = getResourceEntryByReference(entries, matcher.group(3))
+                        .orElse(DbResourceEnhancedDto.Entry.builder()
+                                .forReference(matcher.group(3))
+                                .build());
+
+                entry.addItem(DbResourceEnhancedDto.Item.builder()
+                        .withValue(matcher.group(1))
+                        .withLocale(locale)
+                        .build());
+
+                entries.add(entry);
+            }
+        }
+    }
+
+    // TODO externalize to helper
+    private static Optional<DbResourceEnhancedDto.Entry> getResourceEntryByReference(Set<DbResourceEnhancedDto.Entry> entries, String ref) {
+        return entries.stream()
+
+                .filter((entry -> entry.getReference().equals(ref)))
+
+                .findAny();
     }
 
     private DbResourceDto parseResourcesForLocale(DbResourceDto.Locale locale, Pattern resourceVersionPattern, Pattern categoryCountPattern, Pattern resourceEntryPattern) {
@@ -341,6 +420,10 @@ public class DatabaseParser {
 
             addIntegrityError(RESOURCE_ITEMS_COUNT_MISMATCH, info);
         }
+    }
+
+    private void checkItemCountBetweenResourcesEnhanced(DbDto.Topic topic, Set<DbResourceEnhancedDto.Entry> entries) {
+        //TODO
     }
 
     private void addIntegrityError(IntegrityError.ErrorTypeEnum errorTypeEnum, Map<IntegrityError.ErrorInfoEnum, Object> info) {

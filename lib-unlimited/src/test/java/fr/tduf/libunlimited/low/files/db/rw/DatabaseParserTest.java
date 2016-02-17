@@ -3,23 +3,19 @@ package fr.tduf.libunlimited.low.files.db.rw;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.ITALY;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
@@ -39,7 +35,7 @@ public class DatabaseParserTest {
         //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
         Map<DbResourceDto.Locale, List<String>> resourceLines = new HashMap<>();
-        resourceLines.put(DbResourceDto.Locale.FRANCE, createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE));
+        resourceLines.put(FRANCE, createValidResourcesWithTwoItemsForLocale(FRANCE));
 
         //WHEN
         DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
@@ -64,7 +60,7 @@ public class DatabaseParserTest {
                 "55736935;",
                 "\0");
         Map<DbResourceDto.Locale, List<String>> resourceLines = new HashMap<>();
-        resourceLines.put(DbResourceDto.Locale.FRANCE, createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE));
+        resourceLines.put(FRANCE, createValidResourcesWithTwoItemsForLocale(FRANCE));
 
         //WHEN
         DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
@@ -84,7 +80,7 @@ public class DatabaseParserTest {
         //GIVEN : fr resource count  != it resource
         List<String> dbLines = createValidContentsWithOneItem();
         Map<DbResourceDto.Locale, List<String>> resourceLines = new HashMap<>();
-        resourceLines.put(DbResourceDto.Locale.FRANCE, createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE));
+        resourceLines.put(FRANCE, createValidResourcesWithTwoItemsForLocale(FRANCE));
         resourceLines.put(DbResourceDto.Locale.ITALY,
                 asList(
                         "// TDU_Achievements.it",
@@ -112,7 +108,7 @@ public class DatabaseParserTest {
         //GIVEN
         List<String> dbLines = createInvalidContentsWithOneItemAndUnconsistentFieldCount();
         Map<DbResourceDto.Locale, List<String>> resourceLines = new HashMap<>();
-        resourceLines.put(DbResourceDto.Locale.FRANCE, createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE));
+        resourceLines.put(FRANCE, createValidResourcesWithTwoItemsForLocale(FRANCE));
         resourceLines.put(DbResourceDto.Locale.ITALY, createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.ITALY));
 
         //WHEN
@@ -142,7 +138,7 @@ public class DatabaseParserTest {
                 "// items: 1",
                 "606298799;735;59938407;",
                 "\0");
-        Map<DbResourceDto.Locale, List<String>> resourceLines = createResourceLinesForLocale(DbResourceDto.Locale.FRANCE, asList(
+        Map<DbResourceDto.Locale, List<String>> resourceLines = createResourceLinesForLocale(FRANCE, asList(
                 "// TDU_CarPhysicsData.fr",
                 "// version: 1,2",
                 "// categories: 6",
@@ -182,7 +178,7 @@ public class DatabaseParserTest {
                 "// items: 1",
                 "-33,33;",
                 "\0");
-        Map<DbResourceDto.Locale, List<String>> resourceLines = createResourceLinesForLocale(DbResourceDto.Locale.FRANCE, asList(
+        Map<DbResourceDto.Locale, List<String>> resourceLines = createResourceLinesForLocale(FRANCE, asList(
                 "// TDU_CarPhysicsData.fr",
                 "// version: 1,2",
                 "// categories: 6",
@@ -223,7 +219,7 @@ public class DatabaseParserTest {
                 "1;;3;",
                 "\0");
         Map<DbResourceDto.Locale, List<String>> resourceLines = createResourceLinesForLocale(
-                DbResourceDto.Locale.FRANCE,
+                FRANCE,
                 asList(
                         "// TDU_CarPhysicsData.fr",
                         "// version: 1,2",
@@ -255,8 +251,8 @@ public class DatabaseParserTest {
         //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
         Map<DbResourceDto.Locale, List<String>> resourceLines = createResourceLinesForLocale(
-                DbResourceDto.Locale.FRANCE,
-                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE));
+                FRANCE,
+                createValidResourcesWithTwoItemsForLocale(FRANCE));
         resourceLines.put(
                 DbResourceDto.Locale.ITALY,
                 createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.ITALY));
@@ -270,10 +266,27 @@ public class DatabaseParserTest {
 
         assertThat(actualDb).isNotNull();
 
+        // V1
         List<DbResourceDto> actualDbResources = actualDb.getResources();
         assertThat(actualDbResources).hasSize(2);
         assertThat(actualDbResources.get(0).getEntries()).hasSize(2);
         assertThat(actualDbResources.get(0).getEntries()).hasSameSizeAs(actualDbResources.get(1).getEntries());
+
+        // V2
+        DbResourceEnhancedDto actualDbResource = actualDb.getResource();
+        assertThat(actualDbResource.getCategoryCount()).isEqualTo(6);
+        assertThat(actualDbResource.getVersion()).isEqualTo("1,2");
+
+        final Set<DbResourceEnhancedDto.Entry> actualEntries = actualDbResource.getEntries();
+        assertThat(actualEntries).hasSize(2);
+        assertThat(actualEntries).extracting("reference").containsOnly("53410835", "70410835");
+        Set<DbResourceEnhancedDto.Item> item1 = new HashSet<>(asList(
+                DbResourceEnhancedDto.Item.builder().withLocale(FRANCE).withValue("??").build(),
+                DbResourceEnhancedDto.Item.builder().withLocale(ITALY).withValue("??").build()));
+        Set<DbResourceEnhancedDto.Item> item2 = new HashSet<>(asList(
+                DbResourceEnhancedDto.Item.builder().withLocale(FRANCE).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
+                DbResourceEnhancedDto.Item.builder().withLocale(ITALY).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build()));
+        assertThat(actualEntries).extracting("items").containsOnly(item1, item2);
     }
 
     @Test
@@ -281,8 +294,8 @@ public class DatabaseParserTest {
         //GIVEN
         List<String> dbLines = createValidContentsBitfieldOnlyWithOneItem();
         Map<DbResourceDto.Locale, List<String>> resourceLines = createResourceLinesForLocale(
-                DbResourceDto.Locale.FRANCE,
-                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE));
+                FRANCE,
+                createValidResourcesWithTwoItemsForLocale(FRANCE));
 
         //WHEN
         DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
@@ -308,8 +321,8 @@ public class DatabaseParserTest {
         //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
         Map<DbResourceDto.Locale, List<String>> resourceLines = createResourceLinesForLocale(
-                DbResourceDto.Locale.FRANCE,
-                createValidResourcesWithTwoItemsForLocale(DbResourceDto.Locale.FRANCE));
+                FRANCE,
+                createValidResourcesWithTwoItemsForLocale(FRANCE));
         resourceLines.put(
                 DbResourceDto.Locale.GERMANY,
                 new ArrayList<>());
@@ -328,7 +341,7 @@ public class DatabaseParserTest {
 
         List<DbResourceDto> actualDbResources = actualDb.getResources();
         assertThat(actualDbResources).hasSize(2);
-        assertThat(actualDbResources.get(0).getLocale()).isEqualTo(DbResourceDto.Locale.FRANCE);
+        assertThat(actualDbResources.get(0).getLocale()).isEqualTo(FRANCE);
         assertThat(actualDbResources.get(1).getLocale()).isEqualTo(DbResourceDto.Locale.ITALY);
     }
 
@@ -337,7 +350,7 @@ public class DatabaseParserTest {
         //GIVEN
         List<String> dbLines = DbHelper.readContentsFromSample("/db/TDU_Achievements.db", "UTF-8");
         Map<DbResourceDto.Locale, List<String>> resourceLines = createResourceLinesForLocale(
-                DbResourceDto.Locale.FRANCE,
+                FRANCE,
                 DbHelper.readResourcesFromSamples("/db/res/TDU_Achievements.fr").get(0));
         resourceLines.put(
                 DbResourceDto.Locale.ITALY,

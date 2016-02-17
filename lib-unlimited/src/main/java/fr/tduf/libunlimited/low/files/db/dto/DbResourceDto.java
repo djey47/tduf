@@ -125,6 +125,7 @@ public class DbResourceDto implements Serializable {
     /**
      * All culture variants for game files
      */
+    // TODO migrate to V2
     public enum Locale {
         FRANCE("fr"),
         GERMANY("ge"),
