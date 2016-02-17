@@ -94,7 +94,10 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
             String reference = (String) information.get(REFERENCE);
             Long entryIdentifier = (Long) information.get(ENTRY_ID);
             DbResourceEnhancedDto.Locale locale = (DbResourceEnhancedDto.Locale) information.get(ErrorInfoEnum.LOCALE);
+
+            // TODO do not use it anymore!
             Map<DbResourceEnhancedDto.Locale, Integer> perLocaleCount = (Map<DbResourceEnhancedDto.Locale, Integer>) information.get(PER_LOCALE_COUNT);
+
             Map<String, Integer> perValueCount = (Map<String, Integer>) information.get(PER_VALUE_COUNT);
 
             switch(integrityError.getErrorTypeEnum()) {
