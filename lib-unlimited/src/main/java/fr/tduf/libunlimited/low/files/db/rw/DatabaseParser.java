@@ -69,7 +69,10 @@ public class DatabaseParser {
         integrityErrors.clear();
 
         DbStructureDto structure = parseStructure();
+
+        // TODO Remove when using only V2 files
         List<DbResourceDto> resources = parseAllResourcesFromTopic(structure.getTopic());
+
         DbDataDto data = parseContents(structure);
         DbResourceEnhancedDto resource = parseAllResourcesEnhancedFromTopic(structure.getTopic());
 
