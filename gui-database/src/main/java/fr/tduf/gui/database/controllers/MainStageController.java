@@ -51,6 +51,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.size;
@@ -393,7 +394,7 @@ public class MainStageController extends AbstractGuiController {
             List<DbStructureDto.Field> structureFields = databaseMiner.getDatabaseTopic(targetTopic).get().getStructure().getFields();
             if (DatabaseStructureQueryHelper.getUidFieldRank(structureFields).isPresent()) {
                 // Association topic -> browse remote entries in target topic
-                entriesStageController.initAndShowModalDialog(targetTopic, targetProfileName)
+                entriesStageController.initAndShowModalDialog(empty(), targetTopic, targetProfileName)
                         .ifPresent((selectedEntry) -> addLinkedEntryAndUpdateStage(tableViewSelectionModel, topicLinkObject.getTopic(), of(selectedEntry), topicLinkObject));
             } else {
                 // Direct topic link -> add default entry in target topic

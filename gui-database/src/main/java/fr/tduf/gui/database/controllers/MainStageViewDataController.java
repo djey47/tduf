@@ -225,7 +225,8 @@ public class MainStageViewDataController {
 
         final Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getUidField(databaseObject.getStructure().getFields());
         if (potentialUidField.isPresent()) {
-            final List<ContentEntryDataItem> selectedItems = mainStageController.getEntriesStageController().initAndShowModalDialogForMultiSelect(topic, profileName);
+            Optional<String> potentialEntryReference = getMiner().getContentEntryReferenceWithInternalIdentifier(mainStageController.currentEntryIndexProperty.getValue(), topic);
+            final List<ContentEntryDataItem> selectedItems = mainStageController.getEntriesStageController().initAndShowModalDialogForMultiSelect(potentialEntryReference, topic, profileName);
 
             return selectedItems.stream()
 

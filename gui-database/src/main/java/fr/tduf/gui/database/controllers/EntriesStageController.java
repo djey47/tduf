@@ -99,24 +99,24 @@ public class EntriesStageController extends AbstractGuiController {
 
         selectedEntries.clear();
 
-        showWindow();
-
         selectEntryInTableAndScroll(entryReference);
+
+        showWindow();
     }
 
-    Optional<ContentEntryDataItem> initAndShowModalDialog(DbDto.Topic topic, String targetProfileName) {
-        initAndShowModalDialog(topic, targetProfileName, false);
+    Optional<ContentEntryDataItem> initAndShowModalDialog(Optional<String> potentialEntryReference, DbDto.Topic topic, String targetProfileName) {
+        initAndShowModalDialog(potentialEntryReference, topic, targetProfileName, false);
 
         return selectedEntries.stream().findAny();
     }
 
-    List<ContentEntryDataItem> initAndShowModalDialogForMultiSelect(DbDto.Topic topic, String targetProfileName) {
-        initAndShowModalDialog(topic, targetProfileName, true);
+    List<ContentEntryDataItem> initAndShowModalDialogForMultiSelect(Optional<String> potentialEntryReference, DbDto.Topic topic, String targetProfileName) {
+        initAndShowModalDialog(potentialEntryReference, topic, targetProfileName, true);
 
         return selectedEntries;
     }
 
-    private void initAndShowModalDialog(DbDto.Topic topic, String targetProfileName, boolean multiSelect) {
+    private void initAndShowModalDialog(Optional<String> entryReference, DbDto.Topic topic, String targetProfileName, boolean multiSelect) {
         switchMultiSelectMode(multiSelect);
 
         fieldRankForUpdate = OptionalInt.empty();
@@ -127,6 +127,8 @@ public class EntriesStageController extends AbstractGuiController {
         updateEntriesStageData(labelFieldRanks);
 
         selectedEntries.clear();
+
+        entryReference.ifPresent(this::selectEntryInTableAndScroll);
 
         showModalWindow();
     }
