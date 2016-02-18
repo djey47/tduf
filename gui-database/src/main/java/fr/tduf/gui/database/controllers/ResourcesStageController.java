@@ -10,7 +10,6 @@ import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.gui.database.domain.javafx.ResourceEntryDataItem;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
@@ -26,6 +25,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -266,34 +267,39 @@ public class ResourcesStageController extends AbstractGuiController {
         mainStageController.getViewDataController().updateAllPropertiesWithItemValues();
     }
 
+    // TODO test after v2
     private void updateResourcesStageData() {
         resourceData.clear();
 
         DbDto.Topic currentTopic = getCurrentTopic();
-        getMiner().getResourceFromTopicAndLocale(currentTopic, currentLocale)
+        List<ResourceEntryDataItem> resourceEntryDataItems = getMiner().getResourceEnhancedFromTopic(currentTopic)
 
-                .ifPresent((resourceObject) -> resourceData.addAll(
+                .map((resourceObject) -> resourceObject.getEntries().stream()
 
-                        resourceObject.getEntries().stream()
+                        .map((entry) -> {
+                            ResourceEntryDataItem tableResource = new ResourceEntryDataItem();
 
-                                .map((resourceEntry) -> {
-                                    ResourceEntryDataItem resource = new ResourceEntryDataItem();
+                            String resourceRef = entry.getReference();
+                            tableResource.setReference(resourceRef);
 
-                                    String resourceRef = resourceEntry.getReference();
-                                    resource.setReference(resourceRef);
+                            Stream.of(DbResourceEnhancedDto.Locale.values())
 
-                                    Stream.of(DbResourceEnhancedDto.Locale.values())
+                                    .forEach((locale) -> {
 
-                                            .forEach((locale) -> getMiner().getResourceEntryFromTopicAndLocaleWithReference(resourceRef, currentTopic, locale)
+                                        String displayedValue = entry.getValueForLocale(locale)
+                                                .orElse("");
+                                        tableResource.setValueForLocale(locale, displayedValue);
 
-                                                    .map(DbResourceDto.Entry::getValue)
+                                    });
 
-                                                    .ifPresent((value) -> resource.setValueForLocale(locale, value)));
+                            return tableResource;
+                        })
 
-                                    return resource;
-                                })
+                        .collect(toList()))
 
-                                .collect(toList())));
+                .orElse(new ArrayList<>());
+
+        resourceData.addAll(resourceEntryDataItems);
     }
 
     private void askForReferenceAndSelectItem() {
