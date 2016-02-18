@@ -8,6 +8,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import java.io.Serializable;
 import java.util.*;
 
+import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
@@ -262,7 +263,8 @@ public class DbResourceEnhancedDto {
 
         @Override
         public int hashCode() {
-            return reflectionHashCode(this);
+            // Reference is the only data required for hashing, other ones may mutate.
+            return hash(reference);
         }
 
         @Override
@@ -322,7 +324,8 @@ public class DbResourceEnhancedDto {
 
         @Override
         public int hashCode() {
-            return reflectionHashCode(this);
+            // Locale is the only data required for hashing, other ones may mutate.
+            return hash(locale);
         }
 
         @Override
