@@ -2,7 +2,6 @@ package fr.tduf.gui.database.common.helper;
 
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -40,18 +39,11 @@ public class DatabaseQueryHelperTest {
     public void fetchResourceValuesWithEntryId_whenLocalResourcesAvailable() throws Exception {
         // GIVEN
         List<Integer> fieldRanks = asList(3, 4);
+        String resValue1 = "RES1";
+        String resValue2 = "RES2";
 
-        DbResourceDto.Entry resEntry1 = DbResourceDto.Entry.builder()
-                .forReference("")
-                .withValue("RES1")
-                .build();
-        DbResourceDto.Entry resEntry2 = DbResourceDto.Entry.builder()
-                .forReference("")
-                .withValue("RES2")
-                .build();
-
-        when(minerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 3, 1, FRANCE)).thenReturn(of(resEntry1));
-        when(minerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 4, 1, FRANCE)).thenReturn(of(resEntry2));
+        when(minerMock.getLocalizedResourceValueFromContentEntry(1, 3, CAR_PHYSICS_DATA, FRANCE)).thenReturn(of(resValue1));
+        when(minerMock.getLocalizedResourceValueFromContentEntry(1, 4, CAR_PHYSICS_DATA,  FRANCE)).thenReturn(of(resValue2));
 
 
         // WHEN
@@ -66,18 +58,14 @@ public class DatabaseQueryHelperTest {
     public void fetchResourceValuesWithEntryId_whenLocalResourceUnavailable_shouldReturnItemRawValue() throws Exception {
         // GIVEN
         List<Integer> fieldRanks = asList(3, 4);
-
-        DbResourceDto.Entry resEntry1 = DbResourceDto.Entry.builder()
-                .forReference("")
-                .withValue("RES1")
-                .build();
+        String resValue1 = "RES1";
         DbDataDto.Item item2 = DbDataDto.Item.builder()
                 .ofFieldRank(4)
                 .withRawValue("85467580")
                 .build();
 
-        when(minerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 3, 1, FRANCE)).thenReturn(of(resEntry1));
-        when(minerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 4, 1, FRANCE)).thenReturn(empty());
+        when(minerMock.getLocalizedResourceValueFromContentEntry(1, 3, CAR_PHYSICS_DATA, FRANCE)).thenReturn(of(resValue1));
+        when(minerMock.getLocalizedResourceValueFromContentEntry(1, 4, CAR_PHYSICS_DATA, FRANCE)).thenReturn(empty());
         when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, 4, 1)).thenReturn(of(item2));
 
 
@@ -94,7 +82,7 @@ public class DatabaseQueryHelperTest {
         // GIVEN
         List<Integer> fieldRanks = singletonList(3);
 
-        when(minerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 3, 1, FRANCE)).thenReturn(empty());
+        when(minerMock.getLocalizedResourceValueFromContentEntry(1, 3, CAR_PHYSICS_DATA, FRANCE)).thenReturn(empty());
         when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(CAR_PHYSICS_DATA, 3, 1)).thenReturn(empty());
 
 

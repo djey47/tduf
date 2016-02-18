@@ -2,12 +2,11 @@ package fr.tduf.gui.database.common.helper;
 
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -30,15 +29,13 @@ public class DatabaseQueryHelper {
 
         List<String> contents = fieldRanks.stream()
 
-                .map((fieldRank) -> {
-                    Optional<DbResourceDto.Entry> potentialRemoteResourceEntry = databaseMiner.getResourceEntryWithContentEntryInternalIdentifier(topic, fieldRank, entryId, locale);
-                    if (potentialRemoteResourceEntry.isPresent()) {
-                        return potentialRemoteResourceEntry.get().getValue();
-                    }
-
-                    final String rawValue = databaseMiner.getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, entryId).get().getRawValue();
-                    return String.format(DisplayConstants.VALUE_UNKNOWN, rawValue);
-                })
+                .map((fieldRank) -> databaseMiner.getLocalizedResourceValueFromContentEntry(entryId, fieldRank, topic, locale)
+                        .orElseGet(() -> {
+                            final String rawValue = databaseMiner.getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, entryId)
+                                    .map(DbDataDto.Item::getRawValue)
+                                    .get();
+                            return String.format(DisplayConstants.VALUE_UNKNOWN, rawValue);
+                        }))
 
                 .collect(toList());
 
