@@ -4,7 +4,6 @@ import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -59,13 +58,9 @@ public class VehicleSlotsHelperTest {
         DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
                 .forId(1)
                 .build();
-        DbResourceDto.Entry resourceEntry = DbResourceDto.Entry.builder()
-                .forReference("RES")
-                .withValue(realName)
-                .build();
 
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 12, 1, UNITED_STATES)).thenReturn(of(resourceEntry));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(realName));
 
 
         // WHEN
@@ -87,29 +82,16 @@ public class VehicleSlotsHelperTest {
         DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
                 .forId(1)
                 .build();
-        DbResourceDto.Entry resourceEntry = DbResourceDto.Entry.builder()
-                .withValue("??")
-                .build();
-        DbResourceDto.Entry modelResourceEntry = DbResourceDto.Entry.builder()
-                .withValue(modelName)
-                .build();
-        DbResourceDto.Entry versionResourceEntry = DbResourceDto.Entry.builder()
-                .withValue(versionName)
-                .build();
-
         DbDataDto.Entry remoteContentEntry = DbDataDto.Entry.builder()
                 .forId(1)
                 .build();
-        DbResourceDto.Entry remoteBrandsResourceEntry = DbResourceDto.Entry.builder()
-                .withValue(brandName)
-                .build();
 
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 12, 1, UNITED_STATES)).thenReturn(of(resourceEntry));
         when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(of(remoteContentEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(BRANDS, 3, 1, UNITED_STATES)).thenReturn(of(remoteBrandsResourceEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 13, 1, UNITED_STATES)).thenReturn(of(modelResourceEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 14, 1, UNITED_STATES)).thenReturn(of(versionResourceEntry));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 13, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 14, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(versionName));
 
 
         // WHEN
@@ -129,23 +111,16 @@ public class VehicleSlotsHelperTest {
         DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
                 .forId(1)
                 .build();
-        DbResourceDto.Entry resourceEntry = DbResourceDto.Entry.builder()
-                .withValue("??")
-                .build();
-        DbResourceDto.Entry modelResourceEntry = DbResourceDto.Entry.builder()
-                .withValue(modelName)
-                .build();
-
         DbDataDto.Entry remoteContentEntry = DbDataDto.Entry.builder()
                 .forId(1)
                 .build();
 
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 12, 1, UNITED_STATES)).thenReturn(of(resourceEntry));
         when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(of(remoteContentEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(BRANDS, 3, 1, UNITED_STATES)).thenReturn(Optional.empty());
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 13, 1, UNITED_STATES)).thenReturn(of(modelResourceEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 14, 1, UNITED_STATES)).thenReturn(Optional.empty());
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 3, BRANDS, UNITED_STATES)).thenReturn(empty());
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 13, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 14, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(empty());
 
 
         // WHEN
@@ -166,26 +141,16 @@ public class VehicleSlotsHelperTest {
         DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
                 .forId(1)
                 .build();
-        DbResourceDto.Entry resourceEntry = DbResourceDto.Entry.builder()
-                .withValue("??")
-                .build();
-        DbResourceDto.Entry modelResourceEntry = DbResourceDto.Entry.builder()
-                .withValue(modelName)
-                .build();
-
         DbDataDto.Entry remoteContentEntry = DbDataDto.Entry.builder()
                 .forId(1)
                 .build();
-        DbResourceDto.Entry remoteBrandsResourceEntry = DbResourceDto.Entry.builder()
-                .withValue(brandName)
-                .build();
 
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 12, 1, UNITED_STATES)).thenReturn(of(resourceEntry));
         when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(of(remoteContentEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(BRANDS, 3, 1, UNITED_STATES)).thenReturn(of(remoteBrandsResourceEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 13, 1, UNITED_STATES)).thenReturn(of(modelResourceEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 14, 1, UNITED_STATES)).thenReturn(Optional.empty());
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 13, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 14, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
 
 
         // WHEN
@@ -228,7 +193,6 @@ public class VehicleSlotsHelperTest {
         // GIVEN
         String slotReference = "11111111";
         String rimRef = "22222222";
-        String rimResourceRef = "33333333";
         long entryId = 1;
         DbDataDto.Item physicsItem = DbDataDto.Item.builder()
                 .ofFieldRank(10)
@@ -241,14 +205,11 @@ public class VehicleSlotsHelperTest {
         DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
                 .forId(entryId)
                 .build();
-        DbResourceDto.Entry rimsResourceEntry = DbResourceDto.Entry.builder()
-                .forReference(rimResourceRef)
-                .withValue("Toyota")
-                .build();
+        String resourceValue = "Toyota";
 
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimRef, RIMS)).thenReturn(of(rimsEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(RIMS, 13, entryId, UNITED_STATES)).thenReturn(of(rimsResourceEntry));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(entryId, 13, RIMS, UNITED_STATES)).thenReturn(of(resourceValue));
 
 
         // WHEN
@@ -295,17 +256,13 @@ public class VehicleSlotsHelperTest {
     public void getBankFileName_forExteriorModel() {
         // GIVEN
         String slotReference = "11111111";
-        String resourceReference = "22222222";
         DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
                 .forId(1)
                 .build();
-        DbResourceDto.Entry resourceEntry = DbResourceDto.Entry.builder()
-                .forReference(resourceReference)
-                .withValue("RX8")
-                .build();
+        String resourceValue = "RX8";
 
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 9, 1, UNITED_STATES)).thenReturn(of(resourceEntry));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 9, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(resourceValue));
 
 
         // WHEN
@@ -320,17 +277,13 @@ public class VehicleSlotsHelperTest {
     public void getBankFileName_forAudio() {
         // GIVEN
         String slotReference = "11111111";
-        String resourceReference = "22222222";
         DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
                 .forId(1)
                 .build();
-        DbResourceDto.Entry resourceEntry = DbResourceDto.Entry.builder()
-                .forReference(resourceReference)
-                .withValue("RX8")
-                .build();
+        String resourceValue = "RX8";
 
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 9, 1, UNITED_STATES)).thenReturn(of(resourceEntry));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 9, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(resourceValue));
 
 
         // WHEN
@@ -345,17 +298,13 @@ public class VehicleSlotsHelperTest {
     public void getBankFileName_forInteriorModel() {
         // GIVEN
         String slotReference = "11111111";
-        String resourceReference = "22222222";
         DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
                 .forId(1)
                 .build();
-        DbResourceDto.Entry resourceEntry = DbResourceDto.Entry.builder()
-                .forReference(resourceReference)
-                .withValue("RX8")
-                .build();
+        String resourceValue = "RX8";
 
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryWithContentEntryInternalIdentifier(CAR_PHYSICS_DATA, 9, 1, UNITED_STATES)).thenReturn(of(resourceEntry));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 9, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(resourceValue));
 
 
         // WHEN
@@ -388,14 +337,11 @@ public class VehicleSlotsHelperTest {
                 .forId(1)
                 .addItem(rimsItem)
                 .build();
-        DbResourceDto.Entry rimsResourceEntry = DbResourceDto.Entry.builder()
-                .forReference(resourceRef)
-                .withValue("RX8_F_01")
-                .build();
+        String rimsResourceValue = "RX8_F_01";
 
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotReference, RIMS)).thenReturn(of(rimsEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryFromTopicAndLocaleWithReference(resourceRef, RIMS, UNITED_STATES)).thenReturn(of(rimsResourceEntry));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(resourceRef, RIMS, UNITED_STATES)).thenReturn(of(rimsResourceValue));
 
 
         // WHEN
@@ -428,14 +374,11 @@ public class VehicleSlotsHelperTest {
                 .forId(1)
                 .addItem(rimsItem)
                 .build();
-        DbResourceDto.Entry rimsResourceEntry = DbResourceDto.Entry.builder()
-                .forReference(resourceRef)
-                .withValue("RX8_R_01")
-                .build();
+        String rimsResourceValue = "RX8_R_01";
 
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotReference, RIMS)).thenReturn(of(rimsEntry));
-        when(bulkDatabaseMinerMock.getResourceEntryFromTopicAndLocaleWithReference(resourceRef, RIMS, UNITED_STATES)).thenReturn(of(rimsResourceEntry));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(resourceRef, RIMS, UNITED_STATES)).thenReturn(of(rimsResourceValue));
 
 
         // WHEN

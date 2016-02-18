@@ -7,7 +7,6 @@ import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 
 import java.util.List;
@@ -312,9 +311,7 @@ public class VehicleSlotsHelper {
 
                 .map(DbDataDto.Item::getRawValue)
 
-                .flatMap((resourceRef) -> miner.getResourceEntryFromTopicAndLocaleWithReference(resourceRef, RIMS, DEFAULT_LOCALE))
-
-                .map(DbResourceDto.Entry::getValue)
+                .flatMap((resourceRef) -> miner.getLocalizedResourceValueFromTopicAndReference(resourceRef, RIMS, DEFAULT_LOCALE))
 
                 .map((rimBankSimpleName) -> String.format("%s.%s", rimBankSimpleName, EXTENSION_BANKS))
 
@@ -323,23 +320,18 @@ public class VehicleSlotsHelper {
 
     // TODO move these methods to library when needed
     private String getNameFromRemoteEntryResources(long entryInternalIdentifier, DbDto.Topic localTopic, DbDto.Topic remoteTopic, int localFieldRank, int remoteFieldRank, DbResourceEnhancedDto.Locale locale, String defaultValue) {
-        final Optional<DbResourceDto.Entry> remoteResourceEntry = miner.getRemoteContentEntryWithInternalIdentifier(localTopic, localFieldRank, entryInternalIdentifier, remoteTopic)
-
-                .flatMap((remoteEntry) -> miner.getResourceEntryWithContentEntryInternalIdentifier(remoteTopic, remoteFieldRank, remoteEntry.getId(), locale));
-
-        return getNameFromLocalResources(remoteResourceEntry, defaultValue);
+        final Optional<String> remoteResourceEntry = miner.getRemoteContentEntryWithInternalIdentifier(localTopic, localFieldRank, entryInternalIdentifier, remoteTopic)
+                .flatMap((remoteEntry) -> miner.getLocalizedResourceValueFromContentEntry(remoteEntry.getId(), remoteFieldRank, remoteTopic, locale));
+        return getNameFromLocalResourceValue(remoteResourceEntry, defaultValue);
     }
 
     private String getNameFromLocalResources(long entryInternalIdentifier, DbDto.Topic topic, int fieldRank, DbResourceEnhancedDto.Locale locale, String defaultValue) {
-        final Optional<DbResourceDto.Entry> resourceEntry = miner.getResourceEntryWithContentEntryInternalIdentifier(topic, fieldRank, entryInternalIdentifier, locale);
-
-        return getNameFromLocalResources(resourceEntry, defaultValue);
+        Optional<String> resourceValue = miner.getLocalizedResourceValueFromContentEntry(entryInternalIdentifier, fieldRank, topic, locale);
+        return getNameFromLocalResourceValue(resourceValue, defaultValue);
     }
 
-    private String getNameFromLocalResources(Optional<DbResourceDto.Entry> potentialResourceEntry, String defaultValue) {
-        return potentialResourceEntry
-
-                .map(DbResourceDto.Entry::getValue)
+    private String getNameFromLocalResourceValue(Optional<String> potentialValue, String defaultValue) {
+        return potentialValue
 
                 .map((resourceValue) -> DatabaseConstants.RESOURCE_VALUE_NONE.equals(resourceValue) ? null : resourceValue)
 
