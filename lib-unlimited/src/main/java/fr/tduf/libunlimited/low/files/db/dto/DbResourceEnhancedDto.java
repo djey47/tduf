@@ -7,6 +7,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
@@ -196,10 +197,25 @@ public class DbResourceEnhancedDto {
                     .findAny();
         }
 
+        public Optional<String> pickValue() {
+            if (items == null) {
+                return Optional.empty();
+            }
+
+            return getPresentLocales().stream()
+                    .findAny()
+                    .flatMap(this::getValueForLocale);
+        }
+
         public Optional<String> getValueForLocale(Locale locale) {
             return getItemForLocale(locale)
 
                     .map((item) -> item.value);
+        }
+
+        public void setValue(String value) {
+            Stream.of(Locale.values())
+                    .forEach((locale) -> setValueForLocale(value, locale));
         }
 
         public void setValueForLocale(String value, Locale locale) {
