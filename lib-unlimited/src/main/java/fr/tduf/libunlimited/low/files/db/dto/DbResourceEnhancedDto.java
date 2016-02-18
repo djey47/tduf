@@ -36,9 +36,6 @@ public class DbResourceEnhancedDto {
     }
 
     public Optional<DbResourceEnhancedDto.Entry> getEntryByReference(String reference) {
-        if (entries == null) {
-            return Optional.empty();
-        }
         return entries.stream()
 
                 .filter((entry -> entry.getReference().equals(reference)))
@@ -52,10 +49,6 @@ public class DbResourceEnhancedDto {
                     throw new IllegalArgumentException("An entry with given reference already exists: " + reference);
                 });
 
-        if (entries == null) {
-            entries = new LinkedHashSet<>();
-        }
-
         DbResourceEnhancedDto.Entry newEntry = DbResourceEnhancedDto.Entry.builder()
                 .forReference(reference)
                 .build();
@@ -66,10 +59,6 @@ public class DbResourceEnhancedDto {
     }
 
     public void removeEntryByReference(String reference) {
-        if (entries == null) {
-            return;
-        }
-
         entries.removeIf((entry) -> entry.getReference().equals(reference));
     }
 
@@ -103,7 +92,7 @@ public class DbResourceEnhancedDto {
     public static class DbResourceEnhancedDtoBuilder {
         private String version;
         private int categoryCount;
-        private LinkedHashSet<Entry> entries;
+        private LinkedHashSet<Entry> entries = new LinkedHashSet<>();
 
         public DbResourceEnhancedDtoBuilder atVersion(String version) {
             this.version = version;
