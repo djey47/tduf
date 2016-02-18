@@ -279,18 +279,17 @@ public class MainStageViewDataController {
     }
 
     private void updateResourceProperties(DbDataDto.Item resourceItem, DbStructureDto.Field structureField) {
+        DbResourceEnhancedDto.Locale locale = mainStageController.currentLocaleProperty.getValue();
         DbDto.Topic resourceTopic = mainStageController.getCurrentTopicObject().getTopic();
         if (structureField.getTargetRef() != null) {
             resourceTopic = getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
         }
 
-        Optional<DbResourceDto.Entry> potentialResourceEntry = getMiner().getResourceEntryFromTopicAndLocaleWithReference(resourceItem.getRawValue(), resourceTopic, mainStageController.currentLocaleProperty.getValue());
-        if (potentialResourceEntry.isPresent()) {
-            String resourceValue = potentialResourceEntry.get().getValue();
-            mainStageController.resolvedValuePropertyByFieldRank.get(resourceItem.getFieldRank()).set(resourceValue);
-        } else {
-            mainStageController.resolvedValuePropertyByFieldRank.get(resourceItem.getFieldRank()).set(DisplayConstants.VALUE_ERROR_RESOURCE_NOT_FOUND);
-        }
+        String resourceReference = resourceItem.getRawValue();
+        String resourceValue = getMiner().getLocalizedResourceValueFromTopicAndReference(resourceReference, resourceTopic, locale)
+                .orElse(DisplayConstants.VALUE_ERROR_RESOURCE_NOT_FOUND);
+
+        mainStageController.resolvedValuePropertyByFieldRank.get(resourceItem.getFieldRank()).set(resourceValue);
     }
 
     private void updateLinkProperties(Map.Entry<TopicLinkDto, ObservableList<ContentEntryDataItem>> remoteEntry) {
