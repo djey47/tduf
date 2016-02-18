@@ -309,13 +309,24 @@ public class BulkDatabaseMiner {
      */
     // TODO test
     public Optional<String> getLocalizedResourceValueFromTopicAndReference(String reference, DbDto.Topic topic, DbResourceEnhancedDto.Locale locale) {
-        return getResourceEnhancedFromTopic(topic)
-
-                .flatMap((resource) -> resource.getEntryByReference(reference))
+        return getResourceEntryFromTopicAndReference(topic, reference)
 
                 .flatMap((entry) -> entry.getItemForLocale(locale))
 
                 .map((DbResourceEnhancedDto.Item::getValue));
+    }
+
+    /**
+     * V2
+     * @param reference
+     * @param topic
+     * @return
+     */
+    // TODO test
+    public Optional<DbResourceEnhancedDto.Entry> getResourceEntryFromTopicAndReference(DbDto.Topic topic, String reference) {
+        return getResourceEnhancedFromTopic(topic)
+
+                .flatMap((resource) -> resource.getEntryByReference(reference));
     }
 
     /**

@@ -7,7 +7,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
@@ -28,18 +27,49 @@ public class DbResourceEnhancedDto {
     @JsonProperty("entries")
     private LinkedHashSet<Entry> entries;
 
-    private DbResourceEnhancedDto(){}
+    private DbResourceEnhancedDto() {
+    }
 
     public static DbResourceEnhancedDto.DbResourceEnhancedDtoBuilder builder() {
         return new DbResourceEnhancedDto.DbResourceEnhancedDtoBuilder();
     }
 
     public Optional<DbResourceEnhancedDto.Entry> getEntryByReference(String reference) {
+        if (entries == null) {
+            return Optional.empty();
+        }
         return entries.stream()
 
                 .filter((entry -> entry.getReference().equals(reference)))
 
                 .findAny();
+    }
+
+    public Entry addEntryByReference(String reference) {
+        getEntryByReference(reference)
+                .ifPresent((entry) -> {
+                    throw new IllegalArgumentException("An entry with given reference already exists: " + reference);
+                });
+
+        if (entries == null) {
+            entries = new LinkedHashSet<>();
+        }
+
+        DbResourceEnhancedDto.Entry newEntry = DbResourceEnhancedDto.Entry.builder()
+                .forReference(reference)
+                .build();
+
+        entries.add(newEntry);
+
+        return newEntry;
+    }
+
+    public void removeEntryByReference(String reference) {
+        if (entries == null) {
+            return;
+        }
+
+        entries.removeIf((entry) -> entry.getReference().equals(reference));
     }
 
     @Override
@@ -85,7 +115,7 @@ public class DbResourceEnhancedDto {
         }
 
         public DbResourceEnhancedDtoBuilder containingEntries(Collection<Entry> entries) {
-            this.entries =  new LinkedHashSet<>(entries);
+            this.entries = new LinkedHashSet<>(entries);
             return this;
         }
 
@@ -123,7 +153,7 @@ public class DbResourceEnhancedDto {
          * Retrieves a locale value from its code.
          */
         public static Locale fromCode(String code) {
-            for(Locale locale : values()) {
+            for (Locale locale : values()) {
                 if (locale.code.equals(code)) {
                     return locale;
                 }
@@ -150,7 +180,8 @@ public class DbResourceEnhancedDto {
         @JsonProperty("items")
         private LinkedHashSet<Item> items;
 
-        private Entry() {}
+        private Entry() {
+        }
 
         public static EntryBuilder builder() {
             return new EntryBuilder();
@@ -175,6 +206,36 @@ public class DbResourceEnhancedDto {
                     .findAny();
         }
 
+        public Optional<String> getValueForLocale(Locale locale) {
+            return getItemForLocale(locale)
+
+                    .map((item) -> item.value);
+        }
+
+        public void setValueForLocale(String value, Locale locale) {
+            Optional<Item> potentialItem = getItemForLocale(locale);
+
+            if (potentialItem.isPresent()) {
+
+                potentialItem.get().value = value;
+
+            } else {
+
+                addItem(Item.builder()
+                        .withLocale(locale)
+                        .withValue(value)
+                        .build());
+
+            }
+        }
+
+        public void removeValueForLocale(Locale locale) {
+            if (items == null) {
+                return;
+            }
+            items.removeIf((item) -> item.locale == locale);
+        }
+
         @JsonIgnore
         public int getItemCount() {
             return items == null ?
@@ -184,7 +245,7 @@ public class DbResourceEnhancedDto {
 
         @JsonIgnore
         public Set<Locale> getPresentLocales() {
-            if(items == null) {
+            if (items == null) {
                 return new HashSet<>();
             }
             return items.stream()
@@ -212,7 +273,6 @@ public class DbResourceEnhancedDto {
         public String getReference() {
             return reference;
         }
-
 
         public static class EntryBuilder {
             private String reference;
@@ -248,7 +308,8 @@ public class DbResourceEnhancedDto {
         @JsonProperty("value")
         private String value;
 
-        private Item() {}
+        private Item() {
+        }
 
         public static ItemBuilder builder() {
             return new ItemBuilder();

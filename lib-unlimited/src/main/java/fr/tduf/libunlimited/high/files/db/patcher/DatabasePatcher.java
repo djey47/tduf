@@ -213,68 +213,42 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     }
 
     private void deleteResources(DbPatchDto.DbChangeDto changeObject) {
-        Optional<DbResourceEnhancedDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
+        String ref = changeObject.getRef();
+        databaseMiner.getResourceEntryFromTopicAndReference(changeObject.getTopic(), ref)
+                .ifPresent((entry) -> {
+                    Optional<DbResourceEnhancedDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
 
-        if (potentialLocale.isPresent()) {
+                    if (potentialLocale.isPresent()) {
 
-            deleteResourcesForLocale(changeObject, potentialLocale.get());
+                        entry.removeValueForLocale(potentialLocale.get());
 
-        } else {
+                    } else {
 
-            Stream.of(DbResourceEnhancedDto.Locale.values())
+                        databaseMiner.getResourceEnhancedFromTopic(changeObject.getTopic()).get().removeEntryByReference(ref);
 
-                    .forEach((currentLocale) -> deleteResourcesForLocale(changeObject, currentLocale));
-
-        }
-    }
-
-    private void deleteResourcesForLocale(DbPatchDto.DbChangeDto changeObject, DbResourceEnhancedDto.Locale locale) {
-        final DbDto.Topic topic = changeObject.getTopic();
-        final String effectiveRef = changeObject.getRef();
-
-        databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(effectiveRef, topic, locale)
-
-                .ifPresent((resourceEntry) -> {
-                    DbResourceDto dbResourceDto = databaseMiner.getResourceFromTopicAndLocale(topic, locale).get();
-                    dbResourceDto.getEntries().remove(resourceEntry);
+                    }
                 });
     }
 
     private void addOrUpdateResources(DbPatchDto.DbChangeDto changeObject) {
-        Optional<DbResourceEnhancedDto.Locale> locale = ofNullable(changeObject.getLocale());
+        String ref = changeObject.getRef();
+        DbDto.Topic topic = changeObject.getTopic();
+        String value = changeObject.getValue();
+        Optional<DbResourceEnhancedDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
 
-        if (locale.isPresent()) {
+        DbResourceEnhancedDto.Entry resourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(topic, ref)
+                .orElseGet(() -> databaseMiner.getResourceEnhancedFromTopic(topic).get().addEntryByReference(ref));
 
-            addOrUpdateResourcesForLocale(changeObject, locale.get());
+        if (potentialLocale.isPresent()) {
+
+            resourceEntry.setValueForLocale(value, potentialLocale.get());
 
         } else {
 
             Stream.of(DbResourceEnhancedDto.Locale.values())
 
-                    .forEach((currentLocale) -> addOrUpdateResourcesForLocale(changeObject, currentLocale));
+                    .forEach((currentLocale) -> resourceEntry.setValueForLocale(value, currentLocale));
 
-        }
-    }
-
-    private void addOrUpdateResourcesForLocale(DbPatchDto.DbChangeDto changeObject, DbResourceEnhancedDto.Locale locale) {
-        String ref = changeObject.getRef();
-        DbDto.Topic topic = changeObject.getTopic();
-        String value = changeObject.getValue();
-
-        Optional<DbResourceDto.Entry> potentialResourceEntry =
-                databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(ref, topic, locale);
-
-        if (potentialResourceEntry.isPresent()) {
-
-            potentialResourceEntry.get().setValue(value);
-
-        } else {
-
-            databaseMiner.getResourceFromTopicAndLocale(topic, locale)
-                    .ifPresent((localeResources) -> localeResources.getEntries().add(DbResourceDto.Entry.builder()
-                                                                                        .forReference(ref)
-                                                                                        .withValue(value)
-                                                                                        .build()));
         }
     }
 
