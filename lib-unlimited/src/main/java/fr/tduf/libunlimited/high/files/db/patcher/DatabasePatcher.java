@@ -214,7 +214,8 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
     private void deleteResources(DbPatchDto.DbChangeDto changeObject) {
         String ref = changeObject.getRef();
-        databaseMiner.getResourceEntryFromTopicAndReference(changeObject.getTopic(), ref)
+        final DbDto.Topic topic = changeObject.getTopic();
+        databaseMiner.getResourceEntryFromTopicAndReference(topic, ref)
                 .ifPresent((entry) -> {
                     Optional<DbResourceEnhancedDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
 
@@ -224,7 +225,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
                     } else {
 
-                        databaseMiner.getResourceEnhancedFromTopic(changeObject.getTopic()).get().removeEntryByReference(ref);
+                        databaseMiner.getResourceEnhancedFromTopic(topic).get().removeEntryByReference(ref);
 
                     }
                 });
