@@ -238,8 +238,8 @@ public class MainStageViewDataController {
         return new ArrayList<>();
     }
 
-    List<String> selectFieldsFromTopic(DbDto.Topic topic, String profileName) {
-        return mainStageController.getFieldsBrowserStageController().initAndShowModalDialog(topic, profileName).stream()
+    List<String> selectFieldsFromTopic(DbDto.Topic topic) {
+        return mainStageController.getFieldsBrowserStageController().initAndShowModalDialog(topic).stream()
 
                 .map((item) -> Integer.valueOf(item.rankProperty().get()).toString())
 

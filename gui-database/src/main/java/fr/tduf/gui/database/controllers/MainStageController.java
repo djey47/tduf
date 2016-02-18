@@ -730,7 +730,7 @@ public class MainStageController extends AbstractGuiController {
         final String name = getCurrentProfileObject().getName();
 
         final List<String> selectedEntryRefs = viewDataController.selectEntriesFromTopic(currentTopic, name);
-        final List<String> selectedEntryFields = viewDataController.selectFieldsFromTopic(currentTopic, name);
+        final List<String> selectedEntryFields = viewDataController.selectFieldsFromTopic(currentTopic);
 
         Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(false, getWindow());
         if (!potentialFile.isPresent()) {

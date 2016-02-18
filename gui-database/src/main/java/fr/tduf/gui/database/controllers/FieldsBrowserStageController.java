@@ -57,13 +57,14 @@ public class FieldsBrowserStageController extends AbstractGuiController {
         closeWindow();
     }
 
-    List<ContentFieldDataItem> initAndShowModalDialog(DbDto.Topic topic, String targetProfileName) {
+    List<ContentFieldDataItem> initAndShowModalDialog(DbDto.Topic topic) {
         currentTopicProperty.setValue(topic);
 
-        List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, mainStageController.getLayoutObject()).getEntryLabelFieldRanks();
-        updateFieldsBrowserStageData(labelFieldRanks);
+        updateFieldsBrowserStageData();
 
         selectedFields.clear();
+
+        fieldsTableView.getSelectionModel().selectAll();
 
         showModalWindow();
 
@@ -91,7 +92,7 @@ public class FieldsBrowserStageController extends AbstractGuiController {
         fieldsTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
-    private void updateFieldsBrowserStageData(List<Integer> labelFieldRanks) {
+    private void updateFieldsBrowserStageData() {
         fieldsData.clear();
 
         DbDto.Topic topic = currentTopicProperty.getValue();
