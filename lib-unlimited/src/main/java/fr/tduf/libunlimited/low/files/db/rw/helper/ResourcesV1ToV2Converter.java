@@ -41,7 +41,6 @@ public class ResourcesV1ToV2Converter {
                         DbResourceEnhancedDto tempObjectV2 = DbResourceEnhancedDto.builder()
                                 .atVersion("")
                                 .withCategoryCount(0)
-                                .containingEntries(new LinkedHashSet<>())
                                 .build();
                         dbDto.getResources().forEach(resourceObjectV1 -> {
 
