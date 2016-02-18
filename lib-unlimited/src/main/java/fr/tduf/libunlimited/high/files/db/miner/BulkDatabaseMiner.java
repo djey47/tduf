@@ -414,6 +414,22 @@ public class BulkDatabaseMiner {
     }
 
     /**
+     * V2
+     * @param reference            : unique identifier of resource
+     * @return a set of corresponding values
+     */
+    public static Set<String> getAllResourceValuesForReference(String reference, DbResourceEnhancedDto resourceObject) {
+        return resourceObject.getEntryByReference(reference)
+
+                .map((entry) -> entry.getPresentLocales().stream()
+                        .map((presentLocale) -> entry.getValueForLocale(presentLocale).orElse(null))
+                        .filter((value) -> value != null)
+                        .collect(toSet()))
+
+                .orElse(new HashSet<>());
+    }
+
+    /**
      * @param reference            : unique identifier of resource
      * @param topicResourceObjects : list of topic resource objects to search into
      * @return a set of corresponding values
