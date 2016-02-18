@@ -318,6 +318,35 @@ public class BulkDatabaseMiner {
 
     /**
      * V2
+     * @param sourceEntryIndex : index of entry in source topic
+     * @param sourceFieldRank  : rank of field to resolve resource
+     * @param sourceTopic      : topic in TDU Database to search
+     * @param locale           : language to be used when resolving resource
+     * @return full resource entry targeted by specified entry field.
+     */
+    // TODO test
+    public Optional<String> getLocalizedResourceValueFromContentEntry(long sourceEntryIndex, int sourceFieldRank, DbDto.Topic sourceTopic, DbResourceEnhancedDto.Locale locale) {
+        List<DbStructureDto.Field> sourceTopicStructureFields = getDatabaseTopic(sourceTopic).get().getStructure().getFields();
+        return getContentEntryFromTopicWithInternalIdentifier(sourceEntryIndex, sourceTopic)
+
+                .flatMap((contentEntry) -> {
+                    DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(contentEntry.getItemAtRank(sourceFieldRank).get(), sourceTopicStructureFields);
+                    if (structureField.isAResourceField()) {
+                        DbDto.Topic targetTopic = sourceTopic;
+                        if (RESOURCE_REMOTE == structureField.getFieldType()) {
+                            targetTopic = getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
+                        }
+
+                        String resourceReference = getRawValueAtEntryIndexAndRank(sourceTopic, sourceFieldRank, sourceEntryIndex);
+                        return getLocalizedResourceValueFromTopicAndReference(resourceReference, targetTopic, locale);
+                    }
+                    return Optional.empty();
+                });
+    }
+
+    /**
+     * V2
+     *
      * @param reference
      * @param topic
      * @return
