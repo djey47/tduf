@@ -88,7 +88,7 @@ public class DbDto implements Serializable {
      */
     public static DbDtoBuilder builder() {
         return new DbDtoBuilder() {
-            private final List<DbResourceDto> resources = new ArrayList<>();
+            private List<DbResourceDto> resources = new ArrayList<>();
             private DbDataDto data;
             private DbStructureDto structure;
             private DbResourceEnhancedDto resource;
@@ -108,6 +108,7 @@ public class DbDto implements Serializable {
             @Override
             public DbDtoBuilder withResource(DbResourceEnhancedDto dbResourceEnhancedDto) {
                 this.resource = dbResourceEnhancedDto;
+                this.resources = null;
                 return this;
             }
 
