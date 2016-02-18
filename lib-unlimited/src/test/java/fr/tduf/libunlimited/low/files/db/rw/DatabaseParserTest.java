@@ -3,11 +3,13 @@ package fr.tduf.libunlimited.low.files.db.rw;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
-import fr.tduf.libunlimited.low.files.db.dto.*;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
@@ -245,9 +247,7 @@ public class DatabaseParserTest {
         assertThat(item.getRawValue()).isEqualTo("");
     }
 
-    @Ignore("To be fixed")
     @Test
-    // TODO fix test
     public void parseAll_whenProvidedContents_shouldReturnProperDto() throws Exception {
         //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
@@ -262,13 +262,6 @@ public class DatabaseParserTest {
 
         assertThat(actualDb).isNotNull();
 
-        // V1
-        List<DbResourceDto> actualDbResources = actualDb.getResources();
-        assertThat(actualDbResources).hasSize(8);
-        assertThat(actualDbResources.get(0).getEntries()).hasSize(2);
-        assertThat(actualDbResources.get(0).getEntries()).hasSameSizeAs(actualDbResources.get(1).getEntries());
-
-        // V2
         DbResourceEnhancedDto actualDbResource = actualDb.getResource();
         assertThat(actualDbResource.getCategoryCount()).isEqualTo(6);
         assertThat(actualDbResource.getVersion()).isEqualTo("1,2");
@@ -278,9 +271,21 @@ public class DatabaseParserTest {
         assertThat(actualEntries).extracting("reference").containsOnly("53410835", "70410835");
         Set<DbResourceEnhancedDto.Item> item1 = new HashSet<>(asList(
                 DbResourceEnhancedDto.Item.builder().withLocale(FRANCE).withValue("??").build(),
+                DbResourceEnhancedDto.Item.builder().withLocale(GERMANY).withValue("??").build(),
+                DbResourceEnhancedDto.Item.builder().withLocale(UNITED_STATES).withValue("??").build(),
+                DbResourceEnhancedDto.Item.builder().withLocale(KOREA).withValue("??").build(),
+                DbResourceEnhancedDto.Item.builder().withLocale(CHINA).withValue("??").build(),
+                DbResourceEnhancedDto.Item.builder().withLocale(JAPAN).withValue("??").build(),
+                DbResourceEnhancedDto.Item.builder().withLocale(SPAIN).withValue("??").build(),
                 DbResourceEnhancedDto.Item.builder().withLocale(ITALY).withValue("??").build()));
         Set<DbResourceEnhancedDto.Item> item2 = new HashSet<>(asList(
                 DbResourceEnhancedDto.Item.builder().withLocale(FRANCE).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
+                DbResourceEnhancedDto.Item.builder().withLocale(GERMANY).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
+                DbResourceEnhancedDto.Item.builder().withLocale(UNITED_STATES).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
+                DbResourceEnhancedDto.Item.builder().withLocale(KOREA).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
+                DbResourceEnhancedDto.Item.builder().withLocale(CHINA).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
+                DbResourceEnhancedDto.Item.builder().withLocale(JAPAN).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
+                DbResourceEnhancedDto.Item.builder().withLocale(SPAIN).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
                 DbResourceEnhancedDto.Item.builder().withLocale(ITALY).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build()));
         assertThat(actualEntries).extracting("items").contains(item1, item2);
     }
@@ -335,13 +340,6 @@ public class DatabaseParserTest {
         //THEN
         assertThat(databaseParser.getIntegrityErrors()).hasSize(2);
 
-        // V1
-        List<DbResourceDto> actualDbResources = actualDb.getResources();
-        assertThat(actualDbResources).hasSize(2);
-        assertThat(actualDbResources.get(0).getLocale()).isEqualTo(FRANCE);
-        assertThat(actualDbResources.get(1).getLocale()).isEqualTo(ITALY);
-
-        // V2
         DbResourceEnhancedDto actualResource = actualDb.getResource();
         assertThat(actualResource.getEntries()).hasSize(2);
         final Optional<DbResourceEnhancedDto.Entry> entry1 = actualResource.getEntryByReference("53410835");

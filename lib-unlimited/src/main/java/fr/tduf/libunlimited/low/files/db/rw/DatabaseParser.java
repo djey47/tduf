@@ -460,7 +460,6 @@ public class DatabaseParser {
         return contentLines.size();
     }
 
-    @Deprecated
     public long getResourceCount() {
         checkPrerequisites(this.contentLines, this.resources);
 
