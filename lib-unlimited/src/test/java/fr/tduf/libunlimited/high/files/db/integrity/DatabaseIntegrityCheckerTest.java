@@ -17,9 +17,7 @@ import java.util.stream.Stream;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.PER_VALUE_COUNT;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.CHINA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -109,7 +107,6 @@ public class DatabaseIntegrityCheckerTest {
         //THEN
         assertThat(integrityErrors).hasSize(18);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(RESOURCE_REFERENCE_NOT_FOUND);
-        assertAllIntegrityErrorsContainInformation(integrityErrors, IntegrityError.ErrorInfoEnum.REMOTE_TOPIC, ACHIEVEMENTS);
         assertAllIntegrityErrorsContainInformation(integrityErrors, IntegrityError.ErrorInfoEnum.REFERENCE, "300");
     }
 
@@ -168,73 +165,61 @@ public class DatabaseIntegrityCheckerTest {
     private List<DbDto> createAllDtosWithoutErrors() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
-        DbResourceDto resourceDto = createResourceNoEntryMissing(FRANCE);
+        DbResourceEnhancedDto resourceDto = createResourceEnhancedNoEntryMissing();
 
-        return createAllDtosWithOneLocale(dataDto, resourceDto);
+        return createDtosForAllTopics(dataDto, resourceDto);
     }
 
     private List<DbDto> createAllDtosWithMissingLocalResource() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
-        DbResourceDto resourceDto = createResourceOneLocalEntryMissing();
+        DbResourceEnhancedDto resourceDto = createResourceEnhancedOneLocalEntryMissing();
 
-        return createAllDtosWithOneLocale(dataDto, resourceDto);
-    }
-
-    private List<DbDto> createAllDtosWithMissingLocalResourceTypeH() {
-        DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
-
-        DbResourceDto resourceDto = createResourceAnotherLocalEntryMissing();
-        return createAllDtosWithOneLocale(dataDto, resourceDto);
-    }
-
-    private List<DbDto> createAllDtosWithMissingForeignResource() {
-        DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
-
-        DbResourceDto resourceDto = createResourceOneForeignEntryMissing();
-
-        return createAllDtosWithOneLocale(dataDto, resourceDto);
+        return createDtosForAllTopics(dataDto, resourceDto);
     }
 
     private List<DbDto> createAllDtosWithMissingLocalAndForeignResource() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
-        DbResourceDto resourceDto = createResourceOneLocalAndOneForeignEntryMissing();
+        DbResourceEnhancedDto resourceDto = createResourceEnhancedOneLocalAndOneForeignEntryMissing();
 
-        return createAllDtosWithOneLocale(dataDto, resourceDto);
+        return createDtosForAllTopics(dataDto, resourceDto);
+    }
+
+    private List<DbDto> createAllDtosWithMissingLocalResourceTypeH() {
+        DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
+
+        DbResourceEnhancedDto resourceDto = createResourceAnotherLocalEntryMissing();
+
+        return createDtosForAllTopics(dataDto, resourceDto);
+    }
+
+    private List<DbDto> createAllDtosWithMissingForeignResource() {
+        DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
+
+        DbResourceEnhancedDto resourceDto = createResourceOneForeignEntryMissing();
+
+        return createDtosForAllTopics(dataDto, resourceDto);
     }
 
     private List<DbDto> createAllDtosWithMissingForeignEntry() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_NON_EXISTING);
 
-        DbResourceDto resourceDto = createResourceNoEntryMissing(FRANCE);
+        DbResourceEnhancedDto resourceDto = createResourceEnhancedNoEntryMissing();
 
-        return createAllDtosWithOneLocale(dataDto, resourceDto);
+        return createDtosForAllTopics(dataDto, resourceDto);
     }
 
     private List<DbDto> createAllDtosWithDifferentGlobalResourceValueForLocaleCH() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
-        List<DbResourceDto> allResourceObjects = Stream.of(DbResourceEnhancedDto.Locale.values())
+        DbResourceEnhancedDto resourceDto = createResourceEnhancedNoEntryMissing();
+        resourceDto.getEntryByReference("100").get().setValueForLocale("CENT_ALTERED", CHINA);
 
-                .map(this::createResourceNoEntryMissing)
-
-                .collect(toList());
-
-        allResourceObjects.stream()
-
-                .filter((resourceObject) -> resourceObject.getLocale() == CHINA)
-
-                .findAny().get().getEntries().stream()
-
-                .filter((resourceEntry) -> "100".equals(resourceEntry.getReference()))
-
-                .findAny().get().setValue("CENT_ALTERED");
-
-        return createAllDtosForAllLocales(dataDto, allResourceObjects);
+        return createDtosForAllTopics(dataDto, resourceDto);
     }
 
-    private List<DbDto> createAllDtosWithOneLocale(DbDataDto dataDto, DbResourceDto resourceDto) {
+    private List<DbDto> createDtosForAllTopics(DbDataDto dataDto, DbResourceEnhancedDto resourceDto) {
         return Stream.of(DbDto.Topic.values())
 
                 .map((topicEnum) -> {
@@ -243,72 +228,63 @@ public class DatabaseIntegrityCheckerTest {
                     return DbDto.builder()
                             .withStructure(structureDto)
                             .withData(dataDto)
-                            .addResource(resourceDto)
+                            .withResource(resourceDto)
                             .build();
                 })
 
                 .collect(toList());
     }
 
-    private List<DbDto> createAllDtosForAllLocales(DbDataDto dataDto, List<DbResourceDto> resourceObjets) {
-        return Stream.of(DbDto.Topic.values())
+    private DbResourceEnhancedDto createResourceEnhancedNoEntryMissing() {
+        final DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+        resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
+        resourceObject.addEntryByReference("200").setValue("DEUX CENTS");      //Local 2
+        resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 3
+        resourceObject.addEntryByReference("300").setValue("TROIS CENTS");     //Remote
 
-                .map((topicEnum) -> {
-                    DbStructureDto structureDto = createStructure(topicEnum);
-
-                    return DbDto.builder()
-                            .withStructure(structureDto)
-                            .withData(dataDto)
-                            .addResources(resourceObjets)
-                            .build();
-                })
-
-                .collect(toList());
+        return resourceObject;
     }
 
-    private DbResourceDto createResourceNoEntryMissing(DbResourceEnhancedDto.Locale locale) {
-        return DbResourceDto.builder()
-                                .withLocale(locale)
-                                .addEntry(createLocalResourceEntry1())
-                                .addEntry(createLocalResourceEntry2())
-                                .addEntry(createLocalResourceEntry3())
-                                .addEntry(createRemoteResourceEntry())
-                                .build();
+    private DbResourceEnhancedDto createResourceEnhancedOneLocalEntryMissing() {
+        final DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+        resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
+        resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 2
+        resourceObject.addEntryByReference("300").setValue("TROIS CENTS");     //Remote
+
+        return resourceObject;
     }
 
-    private DbResourceDto createResourceOneForeignEntryMissing() {
-        return DbResourceDto.builder()
-                                .withLocale(FRANCE)
-                                .addEntry(createLocalResourceEntry1())
-                                .addEntry(createLocalResourceEntry2())
-                                .addEntry(createLocalResourceEntry3())
-                                .build();
+    private DbResourceEnhancedDto createResourceEnhancedOneLocalAndOneForeignEntryMissing() {
+        final DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+        resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
+        resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 2
+
+        return resourceObject;
     }
 
-    private DbResourceDto createResourceOneLocalEntryMissing() {
-        return DbResourceDto.builder()
-                                .withLocale(FRANCE)
-                                .addEntry(createLocalResourceEntry1())
-                                .addEntry(createLocalResourceEntry3())
-                                .addEntry(createRemoteResourceEntry())
-                                .build();
+    private DbResourceEnhancedDto createResourceOneForeignEntryMissing() {
+        final DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+        resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
+        resourceObject.addEntryByReference("200").setValue("DEUX CENTS");      //Local 2
+        resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 3
+
+        return resourceObject;
     }
 
-    private DbResourceDto createResourceAnotherLocalEntryMissing() {
-        return DbResourceDto.builder()
-                                .withLocale(FRANCE)
-                                .addEntry(createLocalResourceEntry1())
-                                .addEntry(createLocalResourceEntry2())
-                                .addEntry(createRemoteResourceEntry())
-                                .build();
+    private DbResourceEnhancedDto createResourceAnotherLocalEntryMissing() {
+        final DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+        resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
+        resourceObject.addEntryByReference("200").setValue("DEUX CENTS");      //Local 2
+        resourceObject.addEntryByReference("300").setValue("TROIS CENTS");      //Remote
+
+        return resourceObject;
     }
 
-    private DbResourceDto createResourceOneLocalAndOneForeignEntryMissing() {
-        return DbResourceDto.builder()
-                .withLocale(FRANCE)
-                .addEntry(createLocalResourceEntry1())
-                .addEntry(createLocalResourceEntry3())
-                .build();
+    private DbResourceEnhancedDto createDefaultResourceObjectEnhanced() {
+        return DbResourceEnhancedDto.builder()
+                    .withCategoryCount(1)
+                    .atVersion("1,0")
+                    .build();
     }
 
     private DbDataDto createContentsOneEntryEightItems(String entryUniqueIdentifier) {
@@ -361,34 +337,6 @@ public class DatabaseIntegrityCheckerTest {
                                                 .build())
                                         .build())
                                 .build();
-    }
-
-    private DbResourceDto.Entry createLocalResourceEntry3() {
-        return DbResourceDto.Entry.builder()
-                .forReference("400")
-                .withValue("QUATRE CENTS")
-                .build();
-    }
-
-    private DbResourceDto.Entry createLocalResourceEntry2() {
-        return DbResourceDto.Entry.builder()
-                .forReference("200")
-                .withValue("DEUX CENTS")
-                .build();
-    }
-
-    private DbResourceDto.Entry createLocalResourceEntry1() {
-        return DbResourceDto.Entry.builder()
-                .forReference("100")
-                .withValue("CENT")
-                .build();
-    }
-
-    private DbResourceDto.Entry createRemoteResourceEntry() {
-        return DbResourceDto.Entry.builder()
-                .forReference("300")
-                .withValue("TROIS CENTS")
-                .build();
     }
 
     private DbStructureDto createStructure(DbDto.Topic topicEnum) {

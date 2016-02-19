@@ -2,16 +2,14 @@ package fr.tduf.libunlimited.high.files.db.integrity;
 
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.*;
 
 import java.util.*;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
+import static java.util.Arrays.asList;
 import static java.util.Collections.synchronizedSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
@@ -119,42 +117,61 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         }
     }
 
+    // TODO simplify method
     private Set<IntegrityError> checkResourceReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic, boolean globalizedResource) {
         Set<IntegrityError> integrityErrors = new HashSet<>();
         Map<String, Integer> resourceValueCounter = new HashMap<>();
 
-        topicObject.getResources().stream()
+        final Optional<DbResourceEnhancedDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(sourceTopic, reference);
+        if (potentialResourceEntry.isPresent()) {
+            // TODO extract to object: getMissingLocales()
+            Set<DbResourceEnhancedDto.Locale> missingLocales = new HashSet<>(asList(DbResourceEnhancedDto.Locale.values()));
+            missingLocales.removeAll(potentialResourceEntry.get().getPresentLocales());
 
-                .forEach((resourceDto) -> checkLocalizedResourceObject(resourceDto, reference, topicObject, sourceTopic, globalizedResource, integrityErrors, resourceValueCounter));
+            if (!missingLocales.isEmpty()) {
+                Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
+                informations.put(SOURCE_TOPIC, sourceTopic);
+                if (sourceTopic != topicObject.getTopic()) {
+                    informations.put(REMOTE_TOPIC, topicObject.getTopic());
+                }
+                informations.put(REFERENCE, reference);
+                informations.put(MISSING_LOCALES, missingLocales);
+
+                integrityErrors.add(IntegrityError.builder()
+                        .ofType(RESOURCE_REFERENCE_NOT_FOUND)
+                        .addInformations(informations)
+                        .build()
+                );
+            }
+
+            if (globalizedResource) {
+                potentialResourceEntry.get().getPresentLocales()
+                        .forEach((presentLocale) -> {
+                            final Optional<String> resourceValue = potentialResourceEntry.get().getValueForLocale(presentLocale);
+                            updateResourceValueCounter(resourceValueCounter, resourceValue.get());
+                        });
+            }
+
+        } else {
+            Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
+            informations.put(SOURCE_TOPIC, sourceTopic);
+            if (sourceTopic != topicObject.getTopic()) {
+                informations.put(REMOTE_TOPIC, topicObject.getTopic());
+            }
+            informations.put(REFERENCE, reference);
+
+            integrityErrors.add(IntegrityError.builder()
+                    .ofType(RESOURCE_REFERENCE_NOT_FOUND)
+                    .addInformations(informations)
+                    .build()
+            );
+        }
 
         if (globalizedResource) {
             checkResourceValuesForReference(reference, sourceTopic, integrityErrors, resourceValueCounter);
         }
 
         return integrityErrors;
-    }
-
-    private void checkLocalizedResourceObject(DbResourceDto resourceDto, String reference, DbDto topicObject, DbDto.Topic sourceTopic, boolean globalizedResource, Set<IntegrityError> integrityErrors, Map<String, Integer> resourceValueCounter) {
-        Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(reference, topicObject.getStructure().getTopic(), resourceDto.getLocale());
-
-        boolean isResourceReferenceFound = potentialResourceEntry.isPresent();
-        if (isResourceReferenceFound) {
-            if (globalizedResource) {
-                updateResourceValueCounter(resourceValueCounter, potentialResourceEntry);
-            }
-        } else {
-            Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
-            informations.put(SOURCE_TOPIC, sourceTopic);
-            informations.put(REMOTE_TOPIC, topicObject.getTopic());
-            informations.put(LOCALE, resourceDto.getLocale());
-            informations.put(REFERENCE, reference);
-
-            integrityErrors.add(IntegrityError.builder()
-                            .ofType(RESOURCE_REFERENCE_NOT_FOUND)
-                            .addInformations(informations)
-                            .build()
-            );
-        }
     }
 
     private Set<IntegrityError> checkContentsReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic) {
@@ -211,8 +228,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         }
     }
 
-    private void updateResourceValueCounter(Map<String, Integer> resourceValueCounter, Optional<DbResourceDto.Entry> potentialResourceEntry) {
-        String resourceValue = potentialResourceEntry.get().getValue();
+    private void updateResourceValueCounter(Map<String, Integer> resourceValueCounter, String resourceValue) {
         int valueCount = 0;
         if (resourceValueCounter.containsKey(resourceValue)) {
             valueCount = resourceValueCounter.get(resourceValue);
