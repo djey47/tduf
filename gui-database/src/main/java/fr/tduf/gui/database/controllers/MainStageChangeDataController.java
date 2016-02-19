@@ -55,7 +55,7 @@ public class MainStageChangeDataController {
 
     void updateResourceWithReference(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
         requireNonNull(getChangeHelper());
-        getChangeHelper().updateResourceWithReference(topic, locale, oldResourceReference, newResourceReference, newResourceValue);
+        getChangeHelper().updateResourceItemWithReference(topic, locale, oldResourceReference, newResourceReference, newResourceValue);
     }
 
     void removeEntryWithIdentifier(long internalEntryId, DbDto.Topic topic) {
@@ -74,7 +74,7 @@ public class MainStageChangeDataController {
             affectedLocales = asList(DbResourceEnhancedDto.Locale.values());
         }
 
-        getChangeHelper().removeResourcesWithReference(topic, resourceReference, affectedLocales);
+        getChangeHelper().removeResourceValuesWithReference(topic, resourceReference, affectedLocales);
     }
 
     long addEntryForCurrentTopic() {
@@ -101,7 +101,7 @@ public class MainStageChangeDataController {
 
     void addResourceWithReference(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String newResourceReference, String newResourceValue) {
         requireNonNull(getGenHelper());
-        getChangeHelper().addResourceWithReference(topic, locale, newResourceReference, newResourceValue);
+        getChangeHelper().addResourceValueWithReference(topic, locale, newResourceReference, newResourceValue);
     }
 
     String exportCurrentEntryAsLine() {

@@ -11,20 +11,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.FRANCE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 
 @RunWith(MockitoJUnitRunner.class)
+// TODO create dedicated test class for resources
 public class DatabaseChangeHelperTest {
 
     private static final String ENTRY_REFERENCE = "111111";
@@ -53,48 +54,68 @@ public class DatabaseChangeHelperTest {
     }
 
     @Test
-    public void addResourceWithReference_andNonExisting_shouldCreateNewResourceEntry() throws Exception {
+    public void addResourceWithReference_andNonExistingEntry_shouldCreateNewResourceEntry() throws Exception {
         // GIVEN
-        DbResourceDto resourceObject = DbResourceDto.builder().build();
+        DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
 
-        when(minerMock.getResourceEntryFromTopicAndLocaleWithReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(Optional.empty());
-        when(minerMock.getResourceFromTopicAndLocale(TOPIC, LOCALE)).thenReturn(Optional.of(resourceObject));
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
+        when(minerMock.getResourceEnhancedFromTopic(TOPIC)).thenReturn(of(resourceObject));
 
 
         // WHEN
-        changeHelper.addResourceWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE);
+        changeHelper.addResourceValueWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE);
 
 
         // THEN
         assertThat(resourceObject.getEntries()).hasSize(1);
         assertThat(resourceObject.getEntries()).extracting("reference").containsExactly(RESOURCE_REFERENCE);
-        assertThat(resourceObject.getEntries()).extracting("value").containsExactly(RESOURCE_VALUE);
+    }
+
+    @Test
+    public void addResourceWithReference_andExistingEntry_shouldCreateNewResourceItem() throws Exception {
+        // GIVEN
+        DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+        resourceObject.addEntryByReference(RESOURCE_REFERENCE)
+                .setValueForLocale("", FRANCE);
+
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
+        when(minerMock.getResourceEnhancedFromTopic(TOPIC)).thenReturn(of(resourceObject));
+
+
+        // WHEN
+        changeHelper.addResourceValueWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE);
+
+
+        // THEN
+        assertThat(resourceObject.getEntries()).hasSize(1);
+        assertThat(resourceObject.getEntries()).extracting("reference").containsExactly(RESOURCE_REFERENCE);
+        final DbResourceEnhancedDto.Entry actualEntry = resourceObject.getEntryByReference(RESOURCE_REFERENCE).get();
+        assertThat(actualEntry.getItemCount()).isEqualTo(2);
+        assertThat(actualEntry.getValueForLocale(LOCALE)).contains(RESOURCE_VALUE);
+        assertThat(actualEntry.getValueForLocale(FRANCE)).contains("");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void addResourceWithReference_andExisting_shouldThrowException() throws Exception {
         // GIVEN
-        Optional<DbResourceDto.Entry> entry = Optional.of(DbResourceDto.Entry.builder().build());
-
-        when(minerMock.getResourceEntryFromTopicAndLocaleWithReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(entry);
-
+        String resourceValue = "TEST2";
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(of(resourceValue));
 
         // WHEN
-        changeHelper.addResourceWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE);
-
+        changeHelper.addResourceValueWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE);
 
         // THEN: IAE
         verifyNoMoreInteractions(minerMock);
     }
 
     @Test(expected = NoSuchElementException.class)
-    public void addResourceWithReference_andNoResourceEntries_shouldThrowException() throws Exception {
+    public void addResourceValueWithReference_andNoResource_shouldThrowException() throws Exception {
         // GIVEN
-        when(minerMock.getResourceEntryFromTopicAndLocaleWithReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(Optional.empty());
-        when(minerMock.getResourceFromTopicAndLocale(TOPIC, LOCALE)).thenReturn(Optional.empty());
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
+        when(minerMock.getResourceEnhancedFromTopic(TOPIC)).thenReturn(empty());
 
         // WHEN
-        changeHelper.addResourceWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE);
+        changeHelper.addResourceValueWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE);
 
         // THEN: NSEE
     }
@@ -110,12 +131,12 @@ public class DatabaseChangeHelperTest {
                 .ofFieldRank(1)
                 .build());
 
-        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(databaseObject));
-        when(genHelperMock.buildDefaultContentItems(Optional.of(ENTRY_REFERENCE), databaseObject)).thenReturn(contentItems);
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(databaseObject));
+        when(genHelperMock.buildDefaultContentItems(of(ENTRY_REFERENCE), databaseObject)).thenReturn(contentItems);
 
 
         // WHEN
-        DbDataDto.Entry actualEntry = changeHelper.addContentsEntryWithDefaultItems(Optional.of(ENTRY_REFERENCE), TOPIC);
+        DbDataDto.Entry actualEntry = changeHelper.addContentsEntryWithDefaultItems(of(ENTRY_REFERENCE), TOPIC);
 
 
         // THEN
@@ -128,58 +149,65 @@ public class DatabaseChangeHelperTest {
     @Test(expected = NoSuchElementException.class)
     public void addContentsEntryWithDefaultItems_whenTopicObjectUnavailable_shouldThrowException() {
         // GIVEN
-        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.empty());
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(empty());
 
         // WHEN
-        changeHelper.addContentsEntryWithDefaultItems(Optional.of(ENTRY_REFERENCE), TOPIC);
+        changeHelper.addContentsEntryWithDefaultItems(of(ENTRY_REFERENCE), TOPIC);
 
         // THEN: NSEE
         verifyZeroInteractions(genHelperMock);
     }
 
     @Test
-    public void updateResourceWithReference_whenExistingEntry_shouldReplaceReferenceAndValue() {
+    public void updateResourceItemWithReference_whenExistingEntry_shouldReplaceReferenceAndValue() {
         // GIVEN
         String initialReference = "0";
-        DbResourceDto.Entry resourceEntry = createDefaultResourceEntry(initialReference);
+        String initialValue = "";
+        DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+        DbResourceEnhancedDto.Entry resourceEntry = createDefaultResourceEntryEnhanced(initialReference);
 
-        when(minerMock.getResourceEntryFromTopicAndLocaleWithReference(initialReference, TOPIC, LOCALE)).thenReturn(Optional.of(resourceEntry));
-        when(minerMock.getResourceEntryFromTopicAndLocaleWithReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(Optional.empty());
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(initialReference, TOPIC, LOCALE)).thenReturn(of(initialValue));
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
+        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, initialReference)).thenReturn(of(resourceEntry));
+        when(minerMock.getResourceEnhancedFromTopic(TOPIC)).thenReturn(of(resourceObject));
 
 
         // WHEN
-        changeHelper.updateResourceWithReference(TOPIC, LOCALE, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
+        changeHelper.updateResourceItemWithReference(TOPIC, LOCALE, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
 
 
         // THEN
-        assertThat(resourceEntry.getReference()).isEqualTo(RESOURCE_REFERENCE);
-        assertThat(resourceEntry.getValue()).isEqualTo(RESOURCE_VALUE);
+        assertThat(resourceObject.getEntryByReference(initialReference)).isEmpty();
+        final Optional<DbResourceEnhancedDto.Entry> potentialEntry = resourceObject.getEntryByReference(RESOURCE_REFERENCE);
+        assertThat(potentialEntry).isPresent();
+        assertThat(potentialEntry.get().getValueForLocale(LOCALE)).contains(RESOURCE_VALUE);
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void updateResourceWithReference_whenNonexistingEntry_shouldThrowException() {
+    public void updateResourceItemWithReference_whenNonexistingEntry_shouldThrowException() {
         // GIVEN
-        when(minerMock.getResourceEntryFromTopicAndLocaleWithReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(Optional.empty());
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
 
         // WHEN
-        changeHelper.updateResourceWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_REFERENCE, RESOURCE_VALUE);
+        changeHelper.updateResourceItemWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_REFERENCE, RESOURCE_VALUE);
 
         // THEN: IAE
         verifyNoMoreInteractions(minerMock);
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void updateResourceWithReference_whenEntryExistsWithNewReference_shouldThrowException() {
+    public void updateResourceItemWithReference_whenEntryExistsWithNewReference_shouldThrowException() {
         // GIVEN
         String initialReference = "0";
-        DbResourceDto.Entry resourceEntry = createDefaultResourceEntry(initialReference);
+        String initialValue = "i";
+        String existingValue = "e";
 
-        when(minerMock.getResourceEntryFromTopicAndLocaleWithReference(initialReference, TOPIC, LOCALE)).thenReturn(Optional.of(resourceEntry));
-        when(minerMock.getResourceEntryFromTopicAndLocaleWithReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(Optional.of(resourceEntry));
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(initialReference, TOPIC, LOCALE)).thenReturn(of(initialValue));
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(of(existingValue));
 
 
         // WHEN
-        changeHelper.updateResourceWithReference(TOPIC, LOCALE, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
+        changeHelper.updateResourceItemWithReference(TOPIC, LOCALE, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
 
 
         // THEN: IAE
@@ -196,7 +224,7 @@ public class DatabaseChangeHelperTest {
 
         DbDto topicObject = createDatabaseObject(dataObject, createDefaultStructureObject());
 
-        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
 
 
         // WHEN
@@ -211,7 +239,7 @@ public class DatabaseChangeHelperTest {
     @Test(expected = NoSuchElementException.class)
     public void removeEntryWithIdentifier_whenEntryDoesNotExist_shouldThrowException() {
         // GIVEN
-        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.empty());
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(empty());
 
         // WHEN
         changeHelper.removeEntryWithIdentifier(1, TOPIC);
@@ -228,8 +256,8 @@ public class DatabaseChangeHelperTest {
 
         DbDto topicObject = createDatabaseObject(dataObject, createDefaultStructureObject());
 
-        when(minerMock.getContentEntryFromTopicWithReference("111111", TOPIC)).thenReturn(Optional.of(contentEntryWithUidItem));
-        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+        when(minerMock.getContentEntryFromTopicWithReference("111111", TOPIC)).thenReturn(of(contentEntryWithUidItem));
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
 
 
         // WHEN
@@ -243,7 +271,7 @@ public class DatabaseChangeHelperTest {
     @Test
     public void removeEntryWithReference_whenEntryDoesNotExist_shouldDoNothing() {
         // GIVEN
-        when(minerMock.getContentEntryFromTopicWithReference("111111", TOPIC)).thenReturn(Optional.empty());
+        when(minerMock.getContentEntryFromTopicWithReference("111111", TOPIC)).thenReturn(empty());
 
         // WHEN
         changeHelper.removeEntryWithReference("111111", TOPIC);
@@ -263,7 +291,7 @@ public class DatabaseChangeHelperTest {
         List<DbFieldValueDto> criteria = singletonList(DbFieldValueDto.fromCouple(1, "111111"));
 
         when(minerMock.getContentEntryStreamMatchingCriteria(eq(criteria), eq(TOPIC))).thenReturn(Stream.of(contentEntryWithUidItem));
-        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
 
 
         // WHEN
@@ -310,8 +338,8 @@ public class DatabaseChangeHelperTest {
 
         DbDto topicObject = createDatabaseObject(dataObject, stuctureObject);
 
-        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(Optional.of(defaultContentEntry));
-        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(of(defaultContentEntry));
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
 
 
         // WHEN
@@ -338,8 +366,8 @@ public class DatabaseChangeHelperTest {
 
         DbDto topicObject = createDatabaseObject(dataObject, stuctureObject);
 
-        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC)).thenReturn(Optional.of(defaultContentEntry));
-        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC)).thenReturn(of(defaultContentEntry));
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
 
 
         // WHEN
@@ -366,8 +394,8 @@ public class DatabaseChangeHelperTest {
 
         DbDto topicObject = createDatabaseObject(dataObject, stuctureObject);
 
-        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC)).thenReturn(Optional.of(defaultContentEntry));
-        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC)).thenReturn(of(defaultContentEntry));
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
 
 
         // WHEN
@@ -391,7 +419,7 @@ public class DatabaseChangeHelperTest {
     @Test(expected = NoSuchElementException.class)
     public void duplicateEntryWithIdentifier_whenEntryDoesNotExist_shouldThrowException() {
         // GIVEN
-        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(Optional.empty());
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(empty());
 
         // WHEN
         changeHelper.duplicateEntryWithIdentifier(2, TOPIC);
@@ -410,7 +438,7 @@ public class DatabaseChangeHelperTest {
         dataObject.addEntry(movedEntry);
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
-        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
 
 
         // WHEN
@@ -432,8 +460,8 @@ public class DatabaseChangeHelperTest {
         dataObject.addEntry(movedEntry);
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
-        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
-        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(Optional.of(movedEntry));
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(of(movedEntry));
 
 
         // WHEN
@@ -448,7 +476,7 @@ public class DatabaseChangeHelperTest {
     @Test(expected = NoSuchElementException.class)
     public void moveEntryWithIdentifier_whenTopicDoesNotExist_shouldThrowException() {
         // GIVEN
-        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.empty());
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(empty());
 
         // WHEN
         changeHelper.moveEntryWithIdentifier(0, 2, TOPIC);
@@ -462,8 +490,8 @@ public class DatabaseChangeHelperTest {
         // GIVEN
         DbDto topicObject = DbDto.builder().withData(createDefaultDataObject()).build();
 
-        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(Optional.of(topicObject));
-        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(Optional.empty());
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(empty());
 
 
         // WHEN
@@ -475,53 +503,67 @@ public class DatabaseChangeHelperTest {
     }
 
     @Test
-    public void removeResourceWithReference_whenResourceEntryExists_andSameLocaleAffected_shouldDeleteIt() {
+    public void removeResourceWithReference_whenResourceEntryExists_shouldDeleteIt() {
         // GIVEN
-        DbResourceDto.Entry resourceEntry = createDefaultResourceEntry(RESOURCE_REFERENCE);
-        DbResourceDto resourceObject = DbResourceDto.builder().addEntry(resourceEntry).build();
+        DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+        resourceObject.addEntryByReference(RESOURCE_REFERENCE);
 
-        when(minerMock.getResourceFromTopicAndLocale(TOPIC, LOCALE)).thenReturn(Optional.of(resourceObject));
+        when(minerMock.getResourceEnhancedFromTopic(TOPIC)).thenReturn(of(resourceObject));
 
 
         // WHEN
-        changeHelper.removeResourcesWithReference(TOPIC, RESOURCE_REFERENCE, singletonList(LOCALE));
+        changeHelper.removeResourceWithReference(TOPIC, RESOURCE_REFERENCE);
 
 
         // THEN
-        assertThat(resourceObject.getEntries()).isEmpty();
+        assertThat(resourceObject.getEntryByReference(RESOURCE_REFERENCE)).isEmpty();
     }
 
     @Test
-    public void removeResourceWithReference_whenResourceEntryExists_andTwoLocalesAffected_shouldDeleteThem() {
+    public void removeResourceValuesWithReference_whenResourceEntryExists_andSameLocaleAffected_shouldDeleteLocalizedValue() {
         // GIVEN
-        DbResourceDto.Entry chineseResourceEntry = createDefaultResourceEntry(RESOURCE_REFERENCE);
-        DbResourceDto chineseResourceObject = DbResourceDto.builder().addEntry(chineseResourceEntry).build();
+        DbResourceEnhancedDto.Entry resourceEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
+        resourceEntry.setValueForLocale(RESOURCE_VALUE, LOCALE);
 
-        DbResourceDto.Entry frenchResourceEntry = createDefaultResourceEntry(RESOURCE_REFERENCE);
-        DbResourceDto frenchResourceObject = DbResourceDto.builder().addEntry(frenchResourceEntry).build();
-
-        when(minerMock.getResourceFromTopicAndLocale(TOPIC, LOCALE)).thenReturn(Optional.of(chineseResourceObject));
-        when(minerMock.getResourceFromTopicAndLocale(TOPIC, DbResourceEnhancedDto.Locale.FRANCE)).thenReturn(Optional.of(frenchResourceObject));
+        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
 
 
         // WHEN
-        changeHelper.removeResourcesWithReference(TOPIC, RESOURCE_REFERENCE, asList(LOCALE, DbResourceEnhancedDto.Locale.FRANCE));
+        changeHelper.removeResourceValuesWithReference(TOPIC, RESOURCE_REFERENCE, singletonList(LOCALE));
 
 
         // THEN
-        assertThat(chineseResourceObject.getEntries()).isEmpty();
-        assertThat(frenchResourceObject.getEntries()).isEmpty();
+        assertThat(resourceEntry.getItemForLocale(LOCALE)).isEmpty();
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void removeResourceWithReference_whenResourceEntryDoesNotExist_shouldThrowException() {
+    @Test
+    public void removeResourceValuesWithReference_whenResourceEntryExists_andTwoLocalesAffected_shouldDeleteThem() {
         // GIVEN
-        when(minerMock.getResourceFromTopicAndLocale(TOPIC, LOCALE)).thenReturn(Optional.empty());
+        DbResourceEnhancedDto.Entry resourceEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
+        resourceEntry.setValueForLocale(RESOURCE_VALUE, LOCALE);
+        resourceEntry.setValueForLocale(RESOURCE_VALUE, FRANCE);
+
+        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
+
 
         // WHEN
-        changeHelper.removeResourcesWithReference(TOPIC, RESOURCE_REFERENCE, singletonList(LOCALE));
+        changeHelper.removeResourceValuesWithReference(TOPIC, RESOURCE_REFERENCE, asList(LOCALE, FRANCE));
+
 
         // THEN
+        assertThat(resourceEntry.getItemForLocale(LOCALE)).isEmpty();
+        assertThat(resourceEntry.getItemForLocale(FRANCE)).isEmpty();
+    }
+
+    @Test
+    public void removeResourceValuesWithReference_whenResourceEntryDoesNotExist_shouldNotThrowException() {
+        // GIVEN
+        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(empty());
+
+        // WHEN
+        changeHelper.removeResourceValuesWithReference(TOPIC, RESOURCE_REFERENCE, singletonList(LOCALE));
+
+        // THEN: no exception
     }
 
     @Test
@@ -532,7 +574,7 @@ public class DatabaseChangeHelperTest {
         associationEntry.appendItem(DbDataDto.Item.builder().forName("Other").ofFieldRank(2).build());
 
         // WHEN
-        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, Optional.empty());
+        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, empty());
 
         // THEN
         assertThat(associationEntry.getItems()).extracting("rawValue").containsExactly(ENTRY_REFERENCE, null);
@@ -547,7 +589,7 @@ public class DatabaseChangeHelperTest {
         associationEntry.appendItem(DbDataDto.Item.builder().forName("Other").ofFieldRank(3).build());
 
         // WHEN
-        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, Optional.of(ENTRY_REFERENCE_BIS));
+        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, of(ENTRY_REFERENCE_BIS));
 
         // THEN
         assertThat(associationEntry.getItems()).extracting("rawValue").containsExactly(ENTRY_REFERENCE, ENTRY_REFERENCE_BIS, null);
@@ -556,7 +598,7 @@ public class DatabaseChangeHelperTest {
     @Test(expected = NullPointerException.class)
     public void updateAssociationEntryWithSourceAndTargetReferences_whenNullEntry_shouldThrowException() {
         // GIVEN-WHEN
-        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(null, ENTRY_REFERENCE, Optional.of(ENTRY_REFERENCE_BIS));
+        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(null, ENTRY_REFERENCE, of(ENTRY_REFERENCE_BIS));
 
         // THEN: NPE
     }
@@ -565,7 +607,7 @@ public class DatabaseChangeHelperTest {
     public void updateItemRawValueAtIndexAndFieldRank_whenRawValueUnchanged_shouldReturnEmpty() {
         // GIVEN
         DbDataDto.Item item = createEntryItemForBitField();
-        when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(TOPIC, 1, 1)).thenReturn(Optional.of(item));
+        when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(TOPIC, 1, 1)).thenReturn(of(item));
 
         // WHEN
         Optional<DbDataDto.Item> updatedItem = changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, ENTRY_BITFIELD);
@@ -578,7 +620,7 @@ public class DatabaseChangeHelperTest {
     public void updateItemRawValueAtIndexAndFieldRank_whenRawValueChanged_shouldReturnUpdatedItem() {
         // GIVEN
         DbDataDto.Item item = createEntryItemForBitField();
-        when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(TOPIC, 1, 1)).thenReturn(Optional.of(item));
+        when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(TOPIC, 1, 1)).thenReturn(of(item));
 
         // WHEN
         Optional<DbDataDto.Item> updatedItem = changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, "NEW_VALUE");
@@ -591,7 +633,7 @@ public class DatabaseChangeHelperTest {
     @Test(expected = NoSuchElementException.class)
     public void updateItemRawValueAtIndexAndFieldRank_whenItemDoesNotExist_shouldThrowException() {
         // GIVEN
-        when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(TOPIC, 1, 1)).thenReturn(Optional.empty());
+        when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(TOPIC, 1, 1)).thenReturn(empty());
 
         // WHEN
         changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, "NEW_VALUE");
@@ -648,11 +690,19 @@ public class DatabaseChangeHelperTest {
                 .build();
     }
 
-    private static DbResourceDto.Entry createDefaultResourceEntry(String reference) {
-        return DbResourceDto.Entry.builder()
-                .forReference(reference)
-                .withValue("")
+    private DbResourceEnhancedDto createDefaultResourceObjectEnhanced() {
+        return DbResourceEnhancedDto.builder()
+                .atVersion("1,0")
+                .withCategoryCount(1)
                 .build();
+    }
+
+    private static DbResourceEnhancedDto.Entry createDefaultResourceEntryEnhanced(String reference) {
+        final DbResourceEnhancedDto.Entry entry = DbResourceEnhancedDto.Entry.builder()
+                .forReference(reference)
+                .build();
+        entry.setValueForLocale("", LOCALE);
+        return entry;
     }
 
     private static DbStructureDto createDefaultStructureObject() {

@@ -287,7 +287,7 @@ public class DatabaseGenHelperTest {
         // THEN
         assertThat(actualItem).isNotNull();
 
-        verify(changeHelperMock, never()).addResourceWithReference(eq(BRANDS), any(DbResourceEnhancedDto.Locale.class), anyString(), eq("??"));
+        verify(changeHelperMock, never()).addResourceValueWithReference(eq(BRANDS), any(DbResourceEnhancedDto.Locale.class), anyString(), eq("??"));
     }
 
     @Test

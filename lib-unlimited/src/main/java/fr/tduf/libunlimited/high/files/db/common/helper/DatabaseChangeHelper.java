@@ -4,7 +4,6 @@ import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
@@ -45,15 +44,13 @@ public class DatabaseChangeHelper {
      * @param resourceValue     : value of new resurce
      * @throws IllegalArgumentException when a resource entry with same reference already exists for topic and locale.
      */
-    public void addResourceWithReference(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String resourceReference, String resourceValue) {
-        checkResourceDoesNotExistWithReference(topic, locale, resourceReference);
+    public void addResourceValueWithReference(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String resourceReference, String resourceValue) {
+        checkResourceValueDoesNotExistWithReference(topic, locale, resourceReference);
 
-        List<DbResourceDto.Entry> resourceEntries = databaseMiner.getResourceFromTopicAndLocale(topic, locale).get().getEntries();
-
-        resourceEntries.add(DbResourceDto.Entry.builder()
-                .forReference(resourceReference)
-                .withValue(resourceValue)
-                .build());
+        final DbResourceEnhancedDto resourceEnhancedFromTopic = databaseMiner.getResourceEnhancedFromTopic(topic).get();
+        resourceEnhancedFromTopic.getEntryByReference(resourceReference)
+                .orElseGet(() -> resourceEnhancedFromTopic.addEntryByReference(resourceReference))
+                .setValueForLocale(resourceValue, locale);
 
         BulkDatabaseMiner.clearAllCaches();
     }
@@ -103,7 +100,7 @@ public class DatabaseChangeHelper {
     }
 
     /**
-     * Modifies existing resource having given reference, with new reference and new value
+     * Modifies existing resource item having given reference, with new reference and new value.
      *
      * @param topic                : database topic where resource entry should be changed
      * @param locale               : database language for which resource entry should be changed
@@ -112,19 +109,20 @@ public class DatabaseChangeHelper {
      * @param newResourceValue     : new value of resource
      * @throws IllegalArgumentException when source entry does not exist or target reference belongs to an already existing entry.
      */
-    public void updateResourceWithReference(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
-        checkResourceExistsWithReference(topic, locale, oldResourceReference);
+    public void updateResourceItemWithReference(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
+        checkResourceValueExistsWithReference(topic, locale, oldResourceReference);
 
         if (!oldResourceReference.equals(newResourceReference)) {
-            checkResourceDoesNotExistWithReference(topic, locale, newResourceReference);
+            checkResourceValueDoesNotExistWithReference(topic, locale, newResourceReference);
         }
 
-        DbResourceDto.Entry existingResourceEntry = databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(oldResourceReference, topic, locale).get();
+        databaseMiner.getResourceEntryFromTopicAndReference(topic, oldResourceReference)
+                .ifPresent((entry) -> {
+                    entry.removeValueForLocale(locale);
+                    addResourceValueWithReference(topic, locale, newResourceReference, newResourceValue);
 
-        existingResourceEntry.setReference(newResourceReference);
-        existingResourceEntry.setValue(newResourceValue);
-
-        BulkDatabaseMiner.clearAllCaches();
+                    BulkDatabaseMiner.clearAllCaches();
+                });
     }
 
     /**
@@ -241,25 +239,29 @@ public class DatabaseChangeHelper {
     }
 
     /**
-     * Deletes resource from specified topic, having given reference.
+     * Deletes values from specified topic, having given reference.
      *
      * @param topic             : database topic where entry should be duplicated
      * @param resourceReference : reference of resource to be deleted
      * @param affectedLocales   : list of locales to be affected by deletion
      * @throws java.util.NoSuchElementException when such a resource entry does not exist in any of affected locales.
      */
-    public void removeResourcesWithReference(DbDto.Topic topic, String resourceReference, List<DbResourceEnhancedDto.Locale> affectedLocales) {
-        affectedLocales.stream()
+    public void removeResourceValuesWithReference(DbDto.Topic topic, String resourceReference, List<DbResourceEnhancedDto.Locale> affectedLocales) {
+        databaseMiner.getResourceEntryFromTopicAndReference(topic, resourceReference)
+                .ifPresent((entry) -> affectedLocales.forEach(entry::removeValueForLocale));
 
-                .map((affectedLocale) -> databaseMiner.getResourceFromTopicAndLocale(topic, affectedLocale).get().getEntries())
+        BulkDatabaseMiner.clearAllCaches();
+    }
 
-                .forEach((resources) -> resources.stream()
-
-                        .filter((resource) -> resource.getReference().equals(resourceReference))
-
-                        .findAny()
-
-                        .ifPresent(resources::remove));
+    /**
+     * Deletes all localized values and parent entry.
+     *
+     * @param topic             : database topic where resource entry should be removed from
+     * @param resourceReference : identifier of resource entry to be deleted
+     */
+    public void removeResourceWithReference(DbDto.Topic topic, String resourceReference) {
+        databaseMiner.getResourceEnhancedFromTopic(topic)
+                .ifPresent((resource) -> resource.removeEntryByReference(resourceReference));
 
         BulkDatabaseMiner.clearAllCaches();
     }
@@ -282,18 +284,16 @@ public class DatabaseChangeHelper {
         BulkDatabaseMiner.clearAllCaches();
     }
 
-    private void checkResourceDoesNotExistWithReference(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String resourceReference) {
-        databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, topic, locale)
-                .ifPresent((resourceEntry) -> {
-                    throw new IllegalArgumentException("Resource already exists with reference: " + resourceReference);
+    private void checkResourceValueDoesNotExistWithReference(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String resourceReference) {
+        databaseMiner.getLocalizedResourceValueFromTopicAndReference(resourceReference, topic, locale)
+                .ifPresent((value) -> {
+                    throw new IllegalArgumentException("Resource already exists with reference: " + resourceReference + ", for locale: " + locale);
                 });
     }
 
-    private void checkResourceExistsWithReference(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String resourceReference) {
-        databaseMiner.getResourceEntryFromTopicAndLocaleWithReference(resourceReference, topic, locale)
-                .orElseGet(() -> {
-                    throw new IllegalArgumentException("Resource does not exist with reference: " + resourceReference);
-                });
+    private void checkResourceValueExistsWithReference(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String resourceReference) {
+        databaseMiner.getLocalizedResourceValueFromTopicAndReference(resourceReference, topic, locale)
+                .orElseThrow(() -> new IllegalArgumentException("Resource does not exist with reference: " + resourceReference + ", for locale: " + locale));
     }
 
     private static List<DbDataDto.Item> cloneContentItems(DbDataDto.Entry entry, DbDto.Topic topic) {
