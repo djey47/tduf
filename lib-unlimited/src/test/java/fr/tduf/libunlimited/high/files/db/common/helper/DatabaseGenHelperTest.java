@@ -44,19 +44,12 @@ public class DatabaseGenHelperTest {
     public void generateUniqueResourceEntryIdentifier_shouldReturnCorrectIdentifier() throws Exception {
         // GIVEN
         DbDto topicObject = DbDto.builder()
-                .addResource(DbResourceDto.builder()
-                        .withLocale(DbResourceEnhancedDto.Locale.FRANCE)
-                        .addEntry(DbResourceDto.Entry.builder()
-                            .forReference(RESOURCE_REFERENCE)
-                            .build())
-                        .build())
-                .addResource(DbResourceDto.builder()
-                        .withLocale(DbResourceEnhancedDto.Locale.ITALY)
-                        .addEntry(DbResourceDto.Entry.builder()
-                            .forReference(RESOURCE_REFERENCE)
-                            .build())
+                .withResource(DbResourceEnhancedDto.builder()
+                        .withCategoryCount(1)
+                        .atVersion("1,0")
                         .build())
                 .build();
+        topicObject.getResource().addEntryByReference(RESOURCE_REFERENCE).setValue("VAL");
 
         // WHEN
         String actualResourceIdentifier = DatabaseGenHelper.generateUniqueResourceEntryIdentifier(topicObject);
@@ -239,7 +232,6 @@ public class DatabaseGenHelperTest {
         // GIVEN
         DbStructureDto.Field field = createSingleStructureField(DbStructureDto.FieldType.RESOURCE_CURRENT_GLOBALIZED);
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_CURRENT_GLOBALIZED);
-        topicObject.getResources().add(DbResourceDto.builder().build());
 
 
         // WHEN
@@ -252,7 +244,7 @@ public class DatabaseGenHelperTest {
 
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
 
-        verify(changeHelperMock, times(8)).addResourceWithReference(eq(DbDto.Topic.ACHIEVEMENTS), any(DbResourceEnhancedDto.Locale.class), eq(actualResourceRef), eq("??"));
+        assertResourceExistsWithDefaultItem(topicObject);
     }
 
     @Test
@@ -261,7 +253,6 @@ public class DatabaseGenHelperTest {
         DbStructureDto.Field field = createStructureFieldForRemoteResource();
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_REMOTE);
         DbDto remoteTopicObject = createRemoteTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_REMOTE);
-        remoteTopicObject.getResources().add(DbResourceDto.builder().build());
 
         when(minerMock.getDatabaseTopicFromReference("TARGET_REF")).thenReturn(remoteTopicObject);
 
@@ -276,7 +267,7 @@ public class DatabaseGenHelperTest {
 
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
 
-        verify(changeHelperMock, times(8)).addResourceWithReference(eq(BRANDS), any(DbResourceEnhancedDto.Locale.class), eq(actualResourceRef), eq("??"));
+        assertResourceExistsWithDefaultItem(remoteTopicObject);
     }
 
     @Test
@@ -285,7 +276,6 @@ public class DatabaseGenHelperTest {
         DbStructureDto.Field field = createStructureFieldForRemoteResource();
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_REMOTE);
         DbDto remoteTopicObject = createRemoteTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_REMOTE);
-        remoteTopicObject.getResources().add(DbResourceDto.builder().build());
 
         when(minerMock.getDatabaseTopicFromReference("TARGET_REF")).thenReturn(remoteTopicObject);
 
@@ -304,12 +294,7 @@ public class DatabaseGenHelperTest {
     public void generateDefaultResourceReference_whenDefaultResourceEntryExists_shouldReturnIt() {
         // GIVEN
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED);
-        topicObject.getResources().add(DbResourceDto.builder()
-                .addEntry(DbResourceDto.Entry.builder()
-                        .forReference("12345")
-                        .withValue("??")
-                        .build())
-                .build());
+        topicObject.getResource().addEntryByReference("12345").setValue("??");
 
 
         // WHEN
@@ -326,17 +311,13 @@ public class DatabaseGenHelperTest {
     public void generateDefaultResourceReference_whenDefaultResourceEntryDoesNotExist_shouldGenerateIt() {
         // GIVEN
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED);
-        topicObject.getResources().add(DbResourceDto.builder().build());
-
 
         // WHEN
         String actualResourceReference = genHelper.generateDefaultResourceReference(topicObject);
 
-
         // THEN
         assertThat(actualResourceReference).isNotEmpty();
-
-        verify(changeHelperMock, times(8)).addResourceWithReference(eq(DbDto.Topic.ACHIEVEMENTS), any(DbResourceEnhancedDto.Locale.class), anyString(), eq("??"));
+        assertResourceExistsWithDefaultItem(topicObject);
     }
 
     @Test
@@ -417,6 +398,7 @@ public class DatabaseGenHelperTest {
                                 .build())
                         .build())
                 .withData(DbDataDto.builder().build())
+                .withResource(DbResourceEnhancedDto.builder().atVersion("1,0").withCategoryCount(1).build())
                 .build();
     }
 
@@ -430,6 +412,15 @@ public class DatabaseGenHelperTest {
                                 .build())
                         .build())
                 .withData(DbDataDto.builder().build())
+                .withResource(DbResourceEnhancedDto.builder().atVersion("1,0").withCategoryCount(1).build())
                 .build();
+    }
+
+    private static void assertResourceExistsWithDefaultItem(DbDto topicObject) {
+        final Set<DbResourceEnhancedDto.Entry> actualEntries = topicObject.getResource().getEntries();
+        assertThat(actualEntries).hasSize(1);
+        final DbResourceEnhancedDto.Entry uniqueEntry = actualEntries.stream().findAny().get();
+        assertThat(uniqueEntry.getItemCount()).isEqualTo(8);
+        assertThat(uniqueEntry.pickValue()).contains("??");
     }
 }

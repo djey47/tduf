@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.low.files.db.dto.*;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import org.apache.commons.lang3.Range;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -112,21 +113,6 @@ public class DatabaseGenHelper {
     }
 
     /**
-     * @param topicObject : database contents hosting resources
-     * @return reference to default resource reference in current topic. May exist already, otherwise it will be generated.
-     */
-    public String generateDefaultResourceReference(DbDto topicObject) {
-        Optional<DbResourceDto.Entry> potentialDefaultResourceEntry = findDefaultResourceEntry(topicObject);
-        if (potentialDefaultResourceEntry.isPresent()) {
-            return potentialDefaultResourceEntry.get().getReference();
-        }
-
-        String newResourceReference = generateUniqueResourceEntryIdentifier(topicObject);
-        Stream.of(DbResourceEnhancedDto.Locale.values()).forEach((locale) -> changeHelper.addResourceWithReference(topicObject.getTopic(), locale, newResourceReference, RESOURCE_VALUE_DEFAULT));
-        return newResourceReference;
-    }
-
-    /**
      * Produces a random, unique identifier of content entry.
      *
      * @param topicObject : database topic to provide structure and contents
@@ -179,6 +165,27 @@ public class DatabaseGenHelper {
         return generatedId;
     }
 
+    /**
+     * V2
+     *
+     * @param topicObject : database contents hosting resources
+     * @return reference to default resource reference in current topic. May exist already, otherwise it will be generated.
+     */
+    String generateDefaultResourceReference(DbDto topicObject) {
+        return findDefaultResourceEntry(topicObject)
+
+                .map(DbResourceEnhancedDto.Entry::getReference)
+
+                .orElseGet(() -> {
+                    String newResourceReference = generateUniqueResourceEntryIdentifier(topicObject);
+                    final DbResourceEnhancedDto.Entry newEntry = topicObject.getResource().addEntryByReference(newResourceReference);
+
+                    Stream.of(DbResourceEnhancedDto.Locale.values()).forEach((locale) -> newEntry.setValueForLocale(RESOURCE_VALUE_DEFAULT, locale));
+
+                    return newResourceReference;
+                });
+    }
+
     private String generateDefaultContentsReference(DbDto topicObject) {
         String newContentsReference = generateUniqueContentsEntryIdentifier(topicObject);
         changeHelper.addContentsEntryWithDefaultItems(Optional.of(newContentsReference), topicObject.getTopic());
@@ -198,11 +205,14 @@ public class DatabaseGenHelper {
     }
 
     private static Set<String> extractResourceEntryReferences(DbDto topicObject) {
-        return topicObject.getResources().stream()
+        final Set<DbResourceEnhancedDto.Entry> entries = topicObject.getResource().getEntries();
+        if(entries == null) {
+            return new HashSet<>();
+        }
 
-                .flatMap((resource -> resource.getEntries().stream()
+        return entries.stream()
 
-                        .map(DbResourceDto.Entry::getReference)))
+                .map(DbResourceEnhancedDto.Entry::getReference)
 
                 .collect(toSet());
     }
@@ -211,10 +221,15 @@ public class DatabaseGenHelper {
         return Integer.valueOf((int) (Math.random() * (range.getMaximum() - range.getMinimum()) + range.getMinimum())).toString();
     }
 
-    private static Optional<DbResourceDto.Entry> findDefaultResourceEntry(DbDto topicObject) {
-        return topicObject.getResources().stream().findAny().get().getEntries().stream()
+    private static Optional<DbResourceEnhancedDto.Entry> findDefaultResourceEntry(DbDto topicObject) {
+        final Set<DbResourceEnhancedDto.Entry> entries = topicObject.getResource().getEntries();
+        if (entries == null) {
+            return Optional.empty();
+        }
 
-                .filter((anObject) -> RESOURCE_VALUE_DEFAULT.equals(anObject.getValue()))
+        return entries.stream()
+
+                .filter((entry) -> RESOURCE_VALUE_DEFAULT.equals(entry.pickValue().get()))
 
                 .findAny();
     }
