@@ -286,7 +286,7 @@ public class DatabaseReadWriteHelperTest {
     private static void assertTopicObject(DbDto actualdbDto) {
         assertThat(actualdbDto).isNotNull();
         assertThat(actualdbDto.getData()).isNotNull();
-        assertThat(actualdbDto.getResources()).isNotEmpty();
+        assertThat(actualdbDto.getResource()).isNotNull();
         assertThat(actualdbDto.getStructure()).isNotNull();
     }
 }
