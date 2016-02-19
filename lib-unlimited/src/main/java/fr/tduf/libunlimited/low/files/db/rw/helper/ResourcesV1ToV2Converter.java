@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedHashSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -17,7 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class ResourcesV1ToV2Converter {
 
-    private static final String JSON_DIR = "/media/sf_DevStore/GIT/tdu-cp/database/reference/1.68B";
+    private static final String JSON_DIR = "/media/sf_DevStore/GIT/tduf/lib-unlimited/src/test/resources/db/json/miner/TDU_Clothes_FAKE.json";
 
     public static void main(String... args) throws IOException {
 
@@ -25,7 +24,11 @@ public class ResourcesV1ToV2Converter {
 
         Files.walk(Paths.get(JSON_DIR), 1)
 
-                .filter(path -> path.getFileName().toString().endsWith("json"))
+                .filter(Files::isRegularFile)
+
+                .filter(path -> path.getFileName().toString().startsWith("TDU_"))
+
+                .filter(path -> path.getFileName().toString().endsWith(".json"))
 
                 .map(Path::toFile)
 
