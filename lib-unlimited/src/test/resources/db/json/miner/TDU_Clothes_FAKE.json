@@ -1,316 +1,251 @@
 {
-  "structure": {
-    "ref": "1282586878",
-    "topic": "CLOTHES",
-    "fields": [
-      {
-        "name": "REF_",
-        "rank": 1,
-        "type": "UID"
-      },
-      {
-        "name": "File_",
-        "rank": 2,
-        "type": "RESOURCE_CURRENT_GLOBALIZED"
-      },
-      {
-        "name": "ID_Num_",
-        "rank": 3,
-        "type": "INTEGER"
-      },
-      {
-        "name": "Price_dollar",
-        "rank": 4,
-        "type": "INTEGER"
-      },
-      {
-        "name": "Brand_",
-        "targetRef": "1209165514",
-        "rank": 5,
-        "type": "REFERENCE"
-      },
-      {
-        "name": "ClotheName_",
-        "rank": 6,
-        "type": "RESOURCE_CURRENT_LOCALIZED"
-      },
-      {
-        "name": "Sex_",
-        "rank": 7,
-        "type": "RESOURCE_CURRENT_GLOBALIZED"
-      },
-      {
-        "name": "DrivingType_",
-        "rank": 8,
-        "type": "RESOURCE_CURRENT_GLOBALIZED"
-      },
-      {
-        "name": "Lenght_",
-        "rank": 9,
-        "type": "RESOURCE_CURRENT_GLOBALIZED"
-      },
-      {
-        "name": "PartType_",
-        "rank": 10,
-        "type": "RESOURCE_CURRENT_GLOBALIZED"
-      },
-      {
-        "name": "Size_",
-        "rank": 11,
-        "type": "RESOURCE_CURRENT_GLOBALIZED"
-      },
-      {
-        "name": "Nb_Colors",
-        "rank": 12,
-        "type": "INTEGER"
-      },
-      {
-        "name": "BitField",
-        "rank": 13,
-        "type": "BITFIELD"
-      }
-    ],
-    "version": "1,2",
-    "categoryCount": 8
+  "structure" : {
+    "ref" : "1282586878",
+    "topic" : "CLOTHES",
+    "fields" : [ {
+      "name" : "REF_",
+      "rank" : 1,
+      "type" : "UID"
+    }, {
+      "name" : "File_",
+      "rank" : 2,
+      "type" : "RESOURCE_CURRENT_GLOBALIZED"
+    }, {
+      "name" : "ID_Num_",
+      "rank" : 3,
+      "type" : "INTEGER"
+    }, {
+      "name" : "Price_dollar",
+      "rank" : 4,
+      "type" : "INTEGER"
+    }, {
+      "name" : "Brand_",
+      "targetRef" : "1209165514",
+      "rank" : 5,
+      "type" : "REFERENCE"
+    }, {
+      "name" : "ClotheName_",
+      "rank" : 6,
+      "type" : "RESOURCE_CURRENT_LOCALIZED"
+    }, {
+      "name" : "Sex_",
+      "rank" : 7,
+      "type" : "RESOURCE_CURRENT_GLOBALIZED"
+    }, {
+      "name" : "DrivingType_",
+      "rank" : 8,
+      "type" : "RESOURCE_CURRENT_GLOBALIZED"
+    }, {
+      "name" : "Lenght_",
+      "rank" : 9,
+      "type" : "RESOURCE_CURRENT_GLOBALIZED"
+    }, {
+      "name" : "PartType_",
+      "rank" : 10,
+      "type" : "RESOURCE_CURRENT_GLOBALIZED"
+    }, {
+      "name" : "Size_",
+      "rank" : 11,
+      "type" : "RESOURCE_CURRENT_GLOBALIZED"
+    }, {
+      "name" : "Nb_Colors",
+      "rank" : 12,
+      "type" : "INTEGER"
+    }, {
+      "name" : "BitField",
+      "rank" : 13,
+      "type" : "BITFIELD"
+    } ],
+    "version" : "1,2",
+    "categoryCount" : 8
   },
-  "data": {
-    "entries": [
-      {
-        "id": 0,
-        "items": [
-          {
-            "name": "REF_",
-            "rawValue": "82477895",
-            "fieldRank": 1
-          },
-          {
-            "name": "File_",
-            "rawValue": "543640827",
-            "fieldRank": 2
-          },
-          {
-            "name": "ID_Num_",
-            "rawValue": "0",
-            "fieldRank": 3
-          },
-          {
-            "name": "Price_dollar",
-            "rawValue": "1",
-            "fieldRank": 4
-          },
-          {
-            "name": "Brand_",
-            "rawValue": "87239",
-            "fieldRank": 5
-          },
-          {
-            "name": "ClotheName_",
-            "rawValue": "5566727",
-            "fieldRank": 6
-          },
-          {
-            "name": "Sex_",
-            "rawValue": "54758127",
-            "fieldRank": 7
-          },
-          {
-            "name": "DrivingType_",
-            "rawValue": "916999438",
-            "fieldRank": 8
-          },
-          {
-            "name": "Lenght_",
-            "rawValue": "5857427",
-            "fieldRank": 9
-          },
-          {
-            "name": "PartType_",
-            "rawValue": "5572827",
-            "fieldRank": 10
-          },
-          {
-            "name": "Size_",
-            "rawValue": "545882127",
-            "fieldRank": 11
-          },
-          {
-            "name": "Nb_Colors",
-            "rawValue": "3",
-            "fieldRank": 12
-          },
-          {
-            "name": "BitField",
-            "rawValue": "1",
-            "switchValues": [
-              {
-                "index": 1,
-                "name": "?",
-                "enabled": true
-              },
-              {
-                "index": 2,
-                "name": "?",
-                "enabled": false
-              },
-              {
-                "index": 3,
-                "name": "?",
-                "enabled": false
-              },
-              {
-                "index": 4,
-                "name": "?",
-                "enabled": false
-              },
-              {
-                "index": 5,
-                "name": "?",
-                "enabled": false
-              },
-              {
-                "index": 6,
-                "name": "?",
-                "enabled": false
-              },
-              {
-                "index": 7,
-                "name": "?",
-                "enabled": false
-              },
-              {
-                "index": 8,
-                "name": "?",
-                "enabled": false
-              }
-            ],
-            "fieldRank": 13
-          }
-        ]
-      },
-      {
-        "id": 1,
-        "items": [
-          {
-            "name": "REF_",
-            "rawValue": "773236",
-            "fieldRank": 1
-          },
-          {
-            "name": "File_",
-            "rawValue": "553640828",
-            "fieldRank": 2
-          },
-          {
-            "name": "ID_Num_",
-            "rawValue": "3",
-            "fieldRank": 3
-          },
-          {
-            "name": "Price_dollar",
-            "rawValue": "1",
-            "fieldRank": 4
-          },
-          {
-            "name": "Brand_",
-            "rawValue": "87239",
-            "fieldRank": 5
-          },
-          {
-            "name": "ClotheName_",
-            "rawValue": "5866727",
-            "fieldRank": 6
-          },
-          {
-            "name": "Sex_",
-            "rawValue": "54758127",
-            "fieldRank": 7
-          },
-          {
-            "name": "DrivingType_",
-            "rawValue": "916999438",
-            "fieldRank": 8
-          },
-          {
-            "name": "Lenght_",
-            "rawValue": "5857427",
-            "fieldRank": 9
-          },
-          {
-            "name": "PartType_",
-            "rawValue": "5572827",
-            "fieldRank": 10
-          },
-          {
-            "name": "Size_",
-            "rawValue": "545882127",
-            "fieldRank": 11
-          },
-          {
-            "name": "Nb_Colors",
-            "rawValue": "4",
-            "fieldRank": 12
-          },
-          {
-            "name": "BitField",
-            "rawValue": "1",
-            "switchValues": [
-              {
-                "index": 1,
-                "name": "?",
-                "enabled": true
-              },
-              {
-                "index": 2,
-                "name": "?",
-                "enabled": false
-              },
-              {
-                "index": 3,
-                "name": "?",
-                "enabled": false
-              },
-              {
-                "index": 4,
-                "name": "?",
-                "enabled": false
-              },
-              {
-                "index": 5,
-                "name": "?",
-                "enabled": false
-              },
-              {
-                "index": 6,
-                "name": "?",
-                "enabled": false
-              },
-              {
-                "index": 7,
-                "name": "?",
-                "enabled": false
-              },
-              {
-                "index": 8,
-                "name": "?",
-                "enabled": false
-              }
-            ],
-            "fieldRank": 13
-          }
-        ]
-      }
-    ]
+  "data" : {
+    "entries" : [ {
+      "id" : 0,
+      "items" : [ {
+        "name" : "REF_",
+        "rawValue" : "82477895",
+        "fieldRank" : 1
+      }, {
+        "name" : "File_",
+        "rawValue" : "543640827",
+        "fieldRank" : 2
+      }, {
+        "name" : "ID_Num_",
+        "rawValue" : "0",
+        "fieldRank" : 3
+      }, {
+        "name" : "Price_dollar",
+        "rawValue" : "1",
+        "fieldRank" : 4
+      }, {
+        "name" : "Brand_",
+        "rawValue" : "87239",
+        "fieldRank" : 5
+      }, {
+        "name" : "ClotheName_",
+        "rawValue" : "5566727",
+        "fieldRank" : 6
+      }, {
+        "name" : "Sex_",
+        "rawValue" : "54758127",
+        "fieldRank" : 7
+      }, {
+        "name" : "DrivingType_",
+        "rawValue" : "916999438",
+        "fieldRank" : 8
+      }, {
+        "name" : "Lenght_",
+        "rawValue" : "5857427",
+        "fieldRank" : 9
+      }, {
+        "name" : "PartType_",
+        "rawValue" : "5572827",
+        "fieldRank" : 10
+      }, {
+        "name" : "Size_",
+        "rawValue" : "545882127",
+        "fieldRank" : 11
+      }, {
+        "name" : "Nb_Colors",
+        "rawValue" : "3",
+        "fieldRank" : 12
+      }, {
+        "name" : "BitField",
+        "rawValue" : "1",
+        "switchValues" : [ {
+          "index" : 1,
+          "name" : "?",
+          "enabled" : true
+        }, {
+          "index" : 2,
+          "name" : "?",
+          "enabled" : false
+        }, {
+          "index" : 3,
+          "name" : "?",
+          "enabled" : false
+        }, {
+          "index" : 4,
+          "name" : "?",
+          "enabled" : false
+        }, {
+          "index" : 5,
+          "name" : "?",
+          "enabled" : false
+        }, {
+          "index" : 6,
+          "name" : "?",
+          "enabled" : false
+        }, {
+          "index" : 7,
+          "name" : "?",
+          "enabled" : false
+        }, {
+          "index" : 8,
+          "name" : "?",
+          "enabled" : false
+        } ],
+        "fieldRank" : 13
+      } ]
+    }, {
+      "id" : 1,
+      "items" : [ {
+        "name" : "REF_",
+        "rawValue" : "773236",
+        "fieldRank" : 1
+      }, {
+        "name" : "File_",
+        "rawValue" : "553640828",
+        "fieldRank" : 2
+      }, {
+        "name" : "ID_Num_",
+        "rawValue" : "3",
+        "fieldRank" : 3
+      }, {
+        "name" : "Price_dollar",
+        "rawValue" : "1",
+        "fieldRank" : 4
+      }, {
+        "name" : "Brand_",
+        "rawValue" : "87239",
+        "fieldRank" : 5
+      }, {
+        "name" : "ClotheName_",
+        "rawValue" : "5866727",
+        "fieldRank" : 6
+      }, {
+        "name" : "Sex_",
+        "rawValue" : "54758127",
+        "fieldRank" : 7
+      }, {
+        "name" : "DrivingType_",
+        "rawValue" : "916999438",
+        "fieldRank" : 8
+      }, {
+        "name" : "Lenght_",
+        "rawValue" : "5857427",
+        "fieldRank" : 9
+      }, {
+        "name" : "PartType_",
+        "rawValue" : "5572827",
+        "fieldRank" : 10
+      }, {
+        "name" : "Size_",
+        "rawValue" : "545882127",
+        "fieldRank" : 11
+      }, {
+        "name" : "Nb_Colors",
+        "rawValue" : "4",
+        "fieldRank" : 12
+      }, {
+        "name" : "BitField",
+        "rawValue" : "1",
+        "switchValues" : [ {
+          "index" : 1,
+          "name" : "?",
+          "enabled" : true
+        }, {
+          "index" : 2,
+          "name" : "?",
+          "enabled" : false
+        }, {
+          "index" : 3,
+          "name" : "?",
+          "enabled" : false
+        }, {
+          "index" : 4,
+          "name" : "?",
+          "enabled" : false
+        }, {
+          "index" : 5,
+          "name" : "?",
+          "enabled" : false
+        }, {
+          "index" : 6,
+          "name" : "?",
+          "enabled" : false
+        }, {
+          "index" : 7,
+          "name" : "?",
+          "enabled" : false
+        }, {
+          "index" : 8,
+          "name" : "?",
+          "enabled" : false
+        } ],
+        "fieldRank" : 13
+      } ]
+    } ]
   },
-  "resources": [
-    {
-      "entries": [
-        {
-          "ref": "553640828",
-          "value": "FR"
-        }
-      ],
-      "categoryCount": 0,
-      "locale": "FRANCE"
-    }
-  ]
+  "resource" : {
+    "categoryCount" : 0,
+    "entries" : [ {
+      "items" : [ {
+        "locale" : "FRANCE",
+        "value" : "FR"
+      } ],
+      "ref" : "553640828"
+    } ]
+  }
 }
