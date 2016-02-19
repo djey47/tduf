@@ -284,6 +284,7 @@ public class DbResourceEnhancedDto {
 
         public static class EntryBuilder {
             private String reference;
+            // TODO empty set by default
             private LinkedHashSet<Item> items;
 
             public EntryBuilder forReference(String ref) {
