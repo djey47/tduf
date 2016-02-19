@@ -6,7 +6,6 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -133,8 +132,6 @@ public class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-    @Ignore
-    // TODO migrate JSON files to resources v2
     public void apply_whenUpdateContentsPatch_withAssociationEntries_shouldCreateThem() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-assoc.mini.json");
