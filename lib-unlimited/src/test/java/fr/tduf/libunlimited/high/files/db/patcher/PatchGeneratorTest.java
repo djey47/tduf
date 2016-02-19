@@ -30,8 +30,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore
-// TODO Convert JSON files to resources v2
 public class PatchGeneratorTest {
 
     @Before
