@@ -88,6 +88,7 @@ public class BulkDatabaseMiner {
      * @param topic  : topic in TDU Database to search resources from
      * @return an optional value: either such a resource object if it exists, else empty.
      */
+    @Deprecated
     public Optional<DbResourceDto> getResourceFromTopicAndLocale(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale) {
         return(cacheManager.getValueFromKey("resourceFromTopicAndLocale", getCacheKey(topic.name(), locale.name()), () -> {
             Log.trace("BulkDatabaseMiner", "getResourceFromTopicAndLocale(" + topic + ", " + locale + ")");
@@ -364,6 +365,7 @@ public class BulkDatabaseMiner {
      * @param locale    : game language to fetch related resources
      * @return an optional value: either such a resource entry if it exists, else absent.
      */
+    @Deprecated
     public Optional<DbResourceDto.Entry> getResourceEntryFromTopicAndLocaleWithReference(String reference, DbDto.Topic topic, DbResourceEnhancedDto.Locale locale) {
         String key = getCacheKey(reference, topic.name(), locale.name());
         return cacheManager.getValueFromKey("resourceEntryFromTopicAndLocaleWithReference", key, () -> {
@@ -382,38 +384,6 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     * @param sourceTopic : topic in TDU Database to search
-     * @param fieldRank   : rank of field to resolve resource
-     * @param entryIndex  : index of entry in source topic
-     * @param locale      : language to be used when resolving resource
-     * @return full resource entry targeted by specified entry field.
-     */
-    public Optional<DbResourceDto.Entry> getResourceEntryWithContentEntryInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbResourceEnhancedDto.Locale locale) {
-        String key = getCacheKey(sourceTopic.name(), locale.name(), Integer.valueOf(fieldRank).toString(), Long.valueOf(entryIndex).toString());
-        return cacheManager.getValueFromKey("resourceEntryWithContentEntryInternalIdentifier", key, () -> {
-            Log.trace("BulkDatabaseMiner", "getResourceEntryWithContentEntryInternalIdentifier(" + sourceTopic + ", " + fieldRank + ", " + entryIndex + ", " + locale + ")");
-
-            List<DbStructureDto.Field> sourceTopicStructureFields = getDatabaseTopic(sourceTopic).get().getStructure().getFields();
-            return getContentEntryFromTopicWithInternalIdentifier(entryIndex, sourceTopic)
-
-                    .map((contentEntry) -> {
-                        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(contentEntry.getItemAtRank(fieldRank).get(), sourceTopicStructureFields);
-                        if (structureField.isAResourceField()) {
-                            DbDto.Topic finalTopic = sourceTopic;
-                            if (RESOURCE_REMOTE == structureField.getFieldType()) {
-                                finalTopic = getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
-                            }
-
-                            String resourceReference = getRawValueAtEntryIndexAndRank(sourceTopic, fieldRank, entryIndex);
-                            return getResourceEntryFromTopicAndLocaleWithReference(resourceReference, finalTopic, locale)
-                                    .orElse(null);
-                        }
-                        return null;
-                    });
-        });
-    }
-
-    /**
      * V2
      * @param reference            : unique identifier of resource
      * @return a set of corresponding values
@@ -427,23 +397,6 @@ public class BulkDatabaseMiner {
                         .collect(toSet()))
 
                 .orElse(new HashSet<>());
-    }
-
-    /**
-     * @param reference            : unique identifier of resource
-     * @param topicResourceObjects : list of topic resource objects to search into
-     * @return a set of corresponding values
-     */
-    public static Set<String> getAllResourceValuesForReference(String reference, List<DbResourceDto> topicResourceObjects) {
-        Log.trace("BulkDatabaseMiner", "getAllResourceValuesForReference(" + reference + ", <topicResourceObjects>)");
-
-        return topicResourceObjects.stream()
-
-                .map((resource) -> getResourceValueWithReference(resource, reference))
-
-                .filter((value) -> value != null)
-
-                .collect(toSet());
     }
 
     /**
