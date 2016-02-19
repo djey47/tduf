@@ -433,6 +433,7 @@ public class DatabaseParser {
                 .forEach((entry) -> {
 
                     if (entry.getItemCount() != DbResourceEnhancedDto.Locale.values().length) {
+                        // TODO extract to object: getMissingLocales()
                         Set<DbResourceEnhancedDto.Locale> missingLocales = new HashSet<>(asList(DbResourceEnhancedDto.Locale.values()));
                         missingLocales.removeAll(entry.getPresentLocales());
 
