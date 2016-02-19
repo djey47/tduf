@@ -93,7 +93,7 @@ public class DbResourceEnhancedDto {
     public static class DbResourceEnhancedDtoBuilder {
         private String version;
         private int categoryCount;
-        private LinkedHashSet<Entry> entries = new LinkedHashSet<>();
+        private final LinkedHashSet<Entry> entries = new LinkedHashSet<>();
 
         public DbResourceEnhancedDtoBuilder atVersion(String version) {
             this.version = version;
@@ -106,7 +106,8 @@ public class DbResourceEnhancedDto {
         }
 
         public DbResourceEnhancedDtoBuilder containingEntries(Collection<Entry> entries) {
-            this.entries = new LinkedHashSet<>(entries);
+            this.entries.clear();
+            this.entries.addAll(entries);
             return this;
         }
 
