@@ -445,18 +445,6 @@ public class BulkDatabaseMiner {
         });
     }
 
-    private static String getResourceValueWithReference(DbResourceDto resource, String reference) {
-        return resource.getEntries().stream()
-
-                .filter((resourceEntry) -> resourceEntry.getReference().equals(reference))
-
-                .findAny()
-
-                .map(DbResourceDto.Entry::getValue)
-
-                .orElse(null);
-    }
-
     private static boolean contentEntryHasForReference(DbDataDto.Entry entry, String ref, List<DbStructureDto.Field> structureFields) {
         OptionalInt potentialUidFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(structureFields);
         return potentialUidFieldRank.isPresent()
