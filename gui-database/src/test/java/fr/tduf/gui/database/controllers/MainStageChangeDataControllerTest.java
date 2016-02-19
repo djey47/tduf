@@ -1,9 +1,9 @@
 package fr.tduf.gui.database.controllers;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
-import org.assertj.core.api.StrictAssertions;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,8 @@ public class MainStageChangeDataControllerTest {
 
     @Before
     public void setUp() throws URISyntaxException {
-//        Log.set(Log.LEVEL_TRACE);
+        Log.set(Log.LEVEL_INFO);
+
         objectMapper = new ObjectMapper();
 
         final String jsonFilePath = thisClass.getResource("/database/TDU_CarPhysicsData.json").toURI().getPath();
@@ -102,7 +103,7 @@ public class MainStageChangeDataControllerTest {
 
 
         // THEN
-        StrictAssertions.assertThat(result).isTrue();
+        assertThat(result).isTrue();
         final DbPatchDto patchObject = objectMapper.readValue(patchPath.toFile(), DbPatchDto.class);
         assertThat(patchObject.getChanges()).hasSize(172);
 
