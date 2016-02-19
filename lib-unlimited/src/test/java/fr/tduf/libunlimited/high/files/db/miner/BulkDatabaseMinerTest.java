@@ -6,8 +6,6 @@ import fr.tduf.libunlimited.common.logger.PerformanceLogger;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,8 +17,6 @@ import java.util.*;
 import static com.esotericsoftware.minlog.Log.LEVEL_DEBUG;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.FRANCE;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.UNITED_STATES;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,66 +58,6 @@ public class BulkDatabaseMinerTest {
 
         // THEN
         assertThat(actualKey).isEqualTo("a:b:c");
-    }
-
-    @Test
-    public void getAllResourcesFromTopic_whenTopicNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
-        // GIVEN
-        ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        Optional<List<DbResourceDto>> actualResult = BulkDatabaseMiner.load(topicObjects).getAllResourcesFromTopic(ACHIEVEMENTS);
-
-        // THEN
-        assertThat(actualResult).isEmpty();
-    }
-
-    @Test
-    public void getAllResourcesFromTopic_shouldReturnAllLocales() throws IOException, URISyntaxException {
-        // GIVEN
-        ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        List<DbResourceDto> actualResources = BulkDatabaseMiner.load(topicObjects).getAllResourcesFromTopic(BOTS).get();
-
-        // THEN
-        assertThat(actualResources).hasSize(2);
-    }
-
-    @Test
-    public void getResourceFromTopicAndLocale_whenLocaleNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
-        // GIVEN
-        ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        Optional<DbResourceDto> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceFromTopicAndLocale(BOTS, UNITED_STATES);
-
-        // THEN
-        assertThat(actualResult).isEmpty();
-    }
-
-    @Test
-    public void getResourceFromTopicAndLocale_whenTopicNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
-        // GIVEN
-        ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        Optional<DbResourceDto> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceFromTopicAndLocale(ACHIEVEMENTS, FRANCE);
-
-        // THEN
-        assertThat(actualResult).isEmpty();
-    }
-
-    @Test
-    public void getResourceFromTopicAndLocale_whenExists_shouldReturnIt() throws IOException, URISyntaxException {
-        // GIVEN
-        ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        Optional<DbResourceDto> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceFromTopicAndLocale(BOTS, FRANCE);
-
-        // THEN
-        assertThat(actualResult).isPresent();
     }
 
     @Test
@@ -235,55 +171,6 @@ public class BulkDatabaseMinerTest {
     }
 
     @Test
-    public void getResourceEntryFromTopicAndLocaleWithReference_whenTopicNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        Optional<DbResourceDto.Entry> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndLocaleWithReference("00000001", ACHIEVEMENTS, FRANCE);
-
-        // THEN
-        assertThat(actualResult).isEmpty();
-    }
-
-    @Test
-    public void getResourceEntryFromTopicAndLocaleWithReference_whenLocaleNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        Optional<DbResourceDto.Entry> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndLocaleWithReference("00000001", BOTS, DbResourceEnhancedDto.Locale.KOREA);
-
-        // THEN
-        assertThat(actualResult).isEmpty();
-    }
-
-    @Test
-    public void getResourceEntryFromTopicAndLocaleWithReference_whenEntryNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        Optional<DbResourceDto.Entry> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndLocaleWithReference("00000002", BOTS, FRANCE);
-
-        // THEN
-        assertThat(actualResult).isEmpty();
-    }
-
-    @Test
-    public void getResourceEntryFromTopicAndLocaleWithReference_whenEntryFound_shouldReturnIt() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        Optional<DbResourceDto.Entry> actualResult = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndLocaleWithReference("00000001", BOTS, FRANCE);
-
-        // THEN
-        assertThat(actualResult).isPresent();
-        assertThat(actualResult.get().getValue()).isEqualTo("FR");
-    }
-
-    @Test
     public void getContentEntryFromTopicWithRef_whenTopicNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
         // GIVEN
         List<DbDto> topicObjects = createTopicObjectsFromResources();
@@ -313,42 +200,6 @@ public class BulkDatabaseMinerTest {
         assertThat(actualEntry).isPresent();
         assertThat(actualEntry.get().getId()).isEqualTo(0);
         assertThat(actualEntry.get().getItemAtRank(1).get().getRawValue()).isEqualTo("606298799");
-    }
-
-    @Test
-    public void getAllResourceValuesForReference_whenAllValuesPresent_shouldReturnThem() {
-        // GIVEN
-        DbResourceDto resourceObject1 = createResourceObjectWithSingleEntry("111111", "A");
-        DbResourceDto resourceObject2 = createResourceObjectWithSingleEntry("111111", "B");
-        DbResourceDto resourceObject3 = createResourceObjectWithSingleEntry("111111", "C");
-        DbResourceDto resourceObject4 = createResourceObjectWithSingleEntry("111111", "A");
-        List<DbResourceDto> topicResourceObjects = asList(resourceObject1, resourceObject2, resourceObject3, resourceObject4);
-
-        // WHEN
-        Set<String> actualValues = BulkDatabaseMiner.getAllResourceValuesForReference("111111", topicResourceObjects);
-
-        // THEN
-        assertThat(actualValues)
-                .hasSize(3)
-                .contains("A", "B", "C");
-    }
-
-    @Test
-    public void getAllResourceValuesForReference_whenValueMissingForLocale_shouldReturnOnlyExistingValues() {
-        // GIVEN
-        DbResourceDto resourceObject1 = createResourceObjectWithSingleEntry("111111", "A");
-        DbResourceDto resourceObject2 = createResourceObjectWithSingleEntry("000000", "Z");
-        DbResourceDto resourceObject3 = createResourceObjectWithSingleEntry("111111", "B");
-        DbResourceDto resourceObject4 = createResourceObjectWithSingleEntry("111111", "C");
-        List<DbResourceDto> topicResourceObjects = asList(resourceObject1, resourceObject2, resourceObject3, resourceObject4);
-
-        // WHEN
-        Set<String> actualValues = BulkDatabaseMiner.getAllResourceValuesForReference("111111", topicResourceObjects);
-
-        // THEN
-        assertThat(actualValues)
-                .hasSize(3)
-                .contains("A", "B", "C");
     }
 
     @Test
@@ -531,31 +382,6 @@ public class BulkDatabaseMinerTest {
     }
 
     @Test
-    public void getResourceEntryWithContentEntryInternalIdentifier_whenResourceDoesNotExist_shouldReturnEmpty() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsWithRemoteReferencesFromResources();
-
-        // WHEN
-        Optional<DbResourceDto.Entry> potentialResourceEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryWithContentEntryInternalIdentifier(DbDto.Topic.CLOTHES, 2, 0, FRANCE);
-
-        // THEN
-        assertThat(potentialResourceEntry).isEmpty();
-    }
-
-    @Test
-    public void getResourceEntryWithContentEntryInternalIdentifier_whenResourceExists_shouldReturnEntry() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsWithRemoteReferencesFromResources();
-        DbResourceDto.Entry expectedEntry = topicObjects.get(1).getResources().get(0).getEntries().get(0);
-
-        // WHEN
-        Optional<DbResourceDto.Entry> potentialResourceEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryWithContentEntryInternalIdentifier(DbDto.Topic.CLOTHES, 2, 1, FRANCE);
-
-        // THEN
-        assertThat(potentialResourceEntry).contains(expectedEntry);
-    }
-
-    @Test
     public void getContentEntryInternalIdentifierWithReference_whenEntryDoesNotExist_shouldReturnEmpty() throws IOException, URISyntaxException {
         // GIVEN
         List<DbDto> topicObjects = createTopicObjectsFromResources();
@@ -602,16 +428,6 @@ public class BulkDatabaseMinerTest {
         dbDtos.add(FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/miner/TDU_Clothes_FAKE.json"));
 
         return dbDtos;
-    }
-
-    private static DbResourceDto createResourceObjectWithSingleEntry(String reference, String value) {
-        return DbResourceDto.builder()
-                .addEntry(DbResourceDto.Entry.builder()
-                                .forReference(reference)
-                                .withValue(value)
-                                .build()
-                )
-                .build();
     }
 
     private DbDataDto.Entry createContentEntryWithItems(List<DbDataDto.Item> items) {
