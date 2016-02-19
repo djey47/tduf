@@ -79,8 +79,8 @@ public class DatabaseParser {
 
         return DbDto.builder()
                 .withData(data)
-                .withResource(resource)
                 .addResources(resources)
+                .withResource(resource)
                 .withStructure(structure)
                 .build();
     }
