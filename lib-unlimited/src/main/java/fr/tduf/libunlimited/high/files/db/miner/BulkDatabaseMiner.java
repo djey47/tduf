@@ -52,22 +52,6 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     * @param topic : topic in TDU Database to search resources from
-     * @return a list of per-locale database resource objects.
-     */
-    public Optional<List<DbResourceDto>> getAllResourcesFromTopic(DbDto.Topic topic) {
-        Log.trace("BulkDatabaseMiner", "getAllResourcesFromTopic(" + topic + ")");
-
-        return topicObjects.stream()
-
-                .filter((databaseObject) -> databaseObject.getTopic() == topic)
-
-                .findAny()
-
-                .map(DbDto::getResources);
-    }
-
-    /**
      * V2
      * @param topic  : topic in TDU Database to search resources from
      * @return an optional value: either such a resource object if it exists, else empty.
@@ -81,28 +65,6 @@ public class BulkDatabaseMiner {
                 .findAny()
 
                 .map(DbDto::getResource);
-    }
-
-    /**
-     * @param locale : game language to fetch related resources
-     * @param topic  : topic in TDU Database to search resources from
-     * @return an optional value: either such a resource object if it exists, else empty.
-     */
-    @Deprecated
-    public Optional<DbResourceDto> getResourceFromTopicAndLocale(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale) {
-        return(cacheManager.getValueFromKey("resourceFromTopicAndLocale", getCacheKey(topic.name(), locale.name()), () -> {
-            Log.trace("BulkDatabaseMiner", "getResourceFromTopicAndLocale(" + topic + ", " + locale + ")");
-
-            return getAllResourcesFromTopic(topic)
-
-                    .map((allResourcesFromTopic) -> allResourcesFromTopic.stream()
-
-                            .filter((resourceObject) -> resourceObject.getLocale() == locale)
-
-                            .findAny()
-
-                            .orElse(null));
-        }));
     }
 
     /**
@@ -357,30 +319,6 @@ public class BulkDatabaseMiner {
         return getResourceEnhancedFromTopic(topic)
 
                 .flatMap((resource) -> resource.getEntryByReference(reference));
-    }
-
-    /**
-     * @param reference : unique identifier of resource
-     * @param topic     : topic in TDU Database to search
-     * @param locale    : game language to fetch related resources
-     * @return an optional value: either such a resource entry if it exists, else absent.
-     */
-    @Deprecated
-    public Optional<DbResourceDto.Entry> getResourceEntryFromTopicAndLocaleWithReference(String reference, DbDto.Topic topic, DbResourceEnhancedDto.Locale locale) {
-        String key = getCacheKey(reference, topic.name(), locale.name());
-        return cacheManager.getValueFromKey("resourceEntryFromTopicAndLocaleWithReference", key, () -> {
-            Log.trace("BulkDatabaseMiner", "getResourceEntryFromTopicAndLocaleWithReference(" + reference + ", " + topic + ", " + locale + ")");
-
-            return getResourceFromTopicAndLocale(topic, locale)
-
-                    .map((resourceFromTopicAndLocale) -> resourceFromTopicAndLocale.getEntries().stream()
-
-                            .filter((entry) -> entry.getReference().equals(reference))
-
-                            .findAny()
-
-                            .orElse(null));
-        });
     }
 
     /**
