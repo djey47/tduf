@@ -125,6 +125,7 @@ public class DbResourceEnhancedDto {
     /**
      * All culture variants for game files
      */
+    // TODO add method to return values as stream
     public enum Locale {
         FRANCE("fr"),
         GERMANY("ge"),
@@ -219,6 +220,7 @@ public class DbResourceEnhancedDto {
                     .forEach((locale) -> setValueForLocale(value, locale));
         }
 
+        // TODO return current entry to chain calls
         public void setValueForLocale(String value, Locale locale) {
             Optional<Item> potentialItem = getItemForLocale(locale);
 
