@@ -19,6 +19,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.BIT
 import static java.lang.Integer.valueOf;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.regex.Pattern.compile;
 
 /**
  * Helper class to extract database structure and contents from clear db file.
@@ -27,17 +28,17 @@ public class DatabaseParser {
 
     public static final String VALUE_DELIMITER = ";";
 
-    private static final String COMMENT_PATTERN = "^// (.*)$";                  //e.g // Blabla
-    private static final String ITEM_REF_PATTERN = "^\\{(.*)\\} (\\d*)$";       //e.g {TDU_Achievements} 2442784645
-    private static final String ITEM_PATTERN = "^\\{(.*)\\} (.)( (\\d+))?$";    //e.g {Nb_Achievement_Points_} i OR {Car_Brand} r 1209165514
-    private static final String ITEM_COUNT_PATTERN = "^// items: (\\d+)$";      //e.g // items: 74
-    private static final String CONTENT_PATTERN = "^([0-9\\-\\.,]*;)+$";        //e.g 55736935;5;20;54400734;54359455;54410835;561129540;5337472;211;
+    private static final Pattern COMMENT_PATTERN = compile("^// (.*)$");                                //e.g // Blabla
+    private static final Pattern ITEM_REF_PATTERN = compile("^\\{(.*)\\} (\\d*)$");                     //e.g {TDU_Achievements} 2442784645
+    private static final Pattern ITEM_PATTERN = compile("^\\{(.*)\\} (.)( (\\d+))?$");                  //e.g {Nb_Achievement_Points_} i OR {Car_Brand} r 1209165514
+    private static final Pattern ITEM_COUNT_PATTERN = compile("^// items: (\\d+)$");                    //e.g // items: 74
+    private static final Pattern CONTENT_PATTERN = compile("^([0-9\\-\\.,]*;)+$");                      //e.g 55736935;5;20;54400734;54359455;54410835;561129540;5337472;211;
 
-    private static final String META_NAME_PATTERN = "^// (TDU_.+)\\.(.+)$";                     //e.g // TDU_Achievements.fr
-    private static final String META_VERSION_PATTERN = "^// (?:v|V)ersion: (.+)$";              //e.g // version: 1,2 OR // Version: 1,2
-    private static final String META_CATEGORY_COUNT_PATTERN = "^// (?:c|C)ategories: (.+)$";    //e.g // categories: 6 OR // Categories: 6
-    private static final String META_FIELD_COUNT_PATTERN = "^// Fields: (.+)$";                 //e.g // Fields: 9
-    private static final String RES_ENTRY_PATTERN = "^\\{(.*(\\n?.*)*)\\} (\\d+)$";             //e.g {??} 53410835
+    private static final Pattern META_NAME_PATTERN = compile("^// (TDU_.+)\\.(.+)$");                   //e.g // TDU_Achievements.fr
+    private static final Pattern META_VERSION_PATTERN = compile("^// (?:v|V)ersion: (.+)$");            //e.g // version: 1,2 OR // Version: 1,2
+    private static final Pattern META_CATEGORY_COUNT_PATTERN = compile("^// (?:c|C)ategories: (.+)$");  //e.g // categories: 6 OR // Categories: 6
+    private static final Pattern META_FIELD_COUNT_PATTERN = compile("^// Fields: (.+)$");               //e.g // Fields: 9
+    private static final Pattern RES_ENTRY_PATTERN = compile("^\\{(.*(\\n?.*)*)\\} (\\d+)$");           //e.g {??} 53410835
 
     private final List<String> contentLines;
     private final Map<DbResourceEnhancedDto.Locale, List<String>> resources;
@@ -87,11 +88,6 @@ public class DatabaseParser {
     }
 
     private DbResourceEnhancedDto parseAllResourcesEnhancedFromTopic(DbDto.Topic topic) {
-        // TODO extract to constants
-        final Pattern resourceVersionPattern = Pattern.compile(META_VERSION_PATTERN);
-        final Pattern categoryCountPattern = Pattern.compile(META_CATEGORY_COUNT_PATTERN);
-        final Pattern resourceEntryPattern = Pattern.compile(RES_ENTRY_PATTERN);
-
         Set<DbResourceEnhancedDto.Entry> entries = new LinkedHashSet<>();
         AtomicInteger categoryCount = new AtomicInteger();
         AtomicReference<String> version = new AtomicReference<>();
@@ -102,7 +98,7 @@ public class DatabaseParser {
 
                 .filter((locale) -> !resources.get(locale).isEmpty())
 
-                .forEach((locale) -> parseResourcesEnhancedForLocale(locale, entries, categoryCount, version, resourceVersionPattern, categoryCountPattern, resourceEntryPattern));
+                .forEach((locale) -> parseResourcesEnhancedForLocale(locale, entries, categoryCount, version));
 
         if (entries.isEmpty()) {
             return null;
@@ -117,27 +113,27 @@ public class DatabaseParser {
                 .build();
     }
 
-    private void parseResourcesEnhancedForLocale(DbResourceEnhancedDto.Locale locale, Set<DbResourceEnhancedDto.Entry> entries, AtomicInteger categoryCount, AtomicReference<String> version, Pattern resourceVersionPattern, Pattern categoryCountPattern, Pattern resourceEntryPattern) {
+    private void parseResourcesEnhancedForLocale(DbResourceEnhancedDto.Locale locale, Set<DbResourceEnhancedDto.Entry> entries, AtomicInteger categoryCount, AtomicReference<String> version) {
         requireNonNull(entries, "A set of entries (even empty) is required.");
 
         for (String line : resources.get(locale)) {
-            Matcher matcher = resourceVersionPattern.matcher(line);
+            Matcher matcher = META_VERSION_PATTERN.matcher(line);
             if (matcher.matches()) {
                 version.set(matcher.group(1));
                 continue;
             }
 
-            matcher = categoryCountPattern.matcher(line);
+            matcher = META_CATEGORY_COUNT_PATTERN.matcher(line);
             if (matcher.matches()) {
                 categoryCount.set(valueOf(matcher.group(1)));
                 continue;
             }
 
-            if (Pattern.matches(COMMENT_PATTERN, line)) {
+            if (COMMENT_PATTERN.matcher(line).matches()) {
                 continue;
             }
 
-            matcher = resourceEntryPattern.matcher(line);
+            matcher = RES_ENTRY_PATTERN.matcher(line);
             if (matcher.matches()) {
                 final String ref = matcher.group(3);
                 final DbResourceEnhancedDto tempResource = DbResourceEnhancedDto.builder()
@@ -165,24 +161,22 @@ public class DatabaseParser {
 
     private DbDataDto parseContents(DbStructureDto structure) {
 
-        final Pattern itemCountMatcher = Pattern.compile(ITEM_COUNT_PATTERN);
-
         List<DbDataDto.Entry> entries = new ArrayList<>();
         long id = 0;
         long itemCount = 0;
 
-        for (String line : this.contentLines) {
+        for (String line : contentLines) {
 
-            Matcher matcher = itemCountMatcher.matcher(line);
+            Matcher matcher = ITEM_COUNT_PATTERN.matcher(line);
             if (matcher.matches()) {
                 itemCount = Long.valueOf(matcher.group(1));
                 continue;
             }
 
-            if (Pattern.matches(COMMENT_PATTERN, line)
-                    || Pattern.matches(ITEM_REF_PATTERN, line)
-                    || Pattern.matches(ITEM_PATTERN, line)
-                    || !Pattern.matches(CONTENT_PATTERN, line)) {
+            if (COMMENT_PATTERN.matcher(line).matches()
+                    || ITEM_REF_PATTERN.matcher(line).matches()
+                    || ITEM_PATTERN.matcher(line).matches()
+                    || !CONTENT_PATTERN.matcher(line).matches()) {
 
                 continue;
             }
@@ -224,13 +218,6 @@ public class DatabaseParser {
 
     private DbStructureDto parseStructure() {
 
-        final Pattern topicNamePattern = Pattern.compile(META_NAME_PATTERN);
-        final Pattern topicVersionPattern = Pattern.compile(META_VERSION_PATTERN);
-        final Pattern categoryCountPattern = Pattern.compile(META_CATEGORY_COUNT_PATTERN);
-        final Pattern fieldCountPattern = Pattern.compile(META_FIELD_COUNT_PATTERN);
-        final Pattern itemPattern = Pattern.compile(ITEM_PATTERN);
-        final Pattern itemRefPattern = Pattern.compile(ITEM_REF_PATTERN);
-
         List<DbStructureDto.Field> fields = new ArrayList<>();
         String reference = null;
         DbDto.Topic topic = null;
@@ -239,45 +226,45 @@ public class DatabaseParser {
         int fieldCount = 0;
         int fieldIndex = 0;
 
-        for (String line : this.contentLines) {
+        for (String line : contentLines) {
 
-            Matcher matcher = topicNamePattern.matcher(line);
+            Matcher matcher = META_NAME_PATTERN.matcher(line);
             if (matcher.matches()) {
                 topic = DbDto.Topic.fromLabel(matcher.group(1));
                 continue;
             }
 
-            matcher = topicVersionPattern.matcher(line);
+            matcher = META_VERSION_PATTERN.matcher(line);
             if (matcher.matches()) {
                 topicVersion = matcher.group(1);
                 continue;
             }
 
-            matcher = categoryCountPattern.matcher(line);
+            matcher = META_CATEGORY_COUNT_PATTERN.matcher(line);
             if (matcher.matches()) {
                 categoryCount = valueOf(matcher.group(1));
                 continue;
             }
 
-            matcher = fieldCountPattern.matcher(line);
+            matcher = META_FIELD_COUNT_PATTERN.matcher(line);
             if (matcher.matches()) {
                 fieldCount = valueOf(matcher.group(1));
                 continue;
             }
 
             // Skips other comments
-            if (Pattern.matches(COMMENT_PATTERN, line)) {
+            if (COMMENT_PATTERN.matcher(line).matches()) {
                 continue;
             }
 
             // Current reference
-            matcher = itemRefPattern.matcher(line);
+            matcher = ITEM_REF_PATTERN.matcher(line);
             if (matcher.matches()) {
                 reference = matcher.group(2);
             }
 
             // Regular item
-            matcher = itemPattern.matcher(line);
+            matcher = ITEM_PATTERN.matcher(line);
             if (matcher.matches()) {
                 fieldIndex++;
 
@@ -372,13 +359,13 @@ public class DatabaseParser {
     }
 
     public long getContentLineCount() {
-        checkPrerequisites(this.contentLines, this.resources);
+        checkPrerequisites(contentLines, resources);
 
         return contentLines.size();
     }
 
     public long getResourceCount() {
-        checkPrerequisites(this.contentLines, this.resources);
+        checkPrerequisites(contentLines, resources);
 
         return resources.size();
     }
