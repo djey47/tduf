@@ -25,26 +25,22 @@
       }
     ]
   },
-  "resources": [
-    {
-      "entries": [
-        {
-          "value": "FR",
-          "ref": "00000001"
-        }
-      ],
-      "categoryCount": 0,
-      "locale": "FRANCE"
-    },
-    {
-      "entries": [
-        {
-          "value": "GE",
-          "ref": "00000001"
-        }
-      ],
-      "categoryCount": 0,
-      "locale": "GERMANY"
-    }
-  ]
+  "resource": {
+    "categoryCount": 0,
+    "entries": [
+      {
+        "items": [
+          {
+            "locale": "FRANCE",
+            "value": "FR"
+          },
+          {
+            "locale": "GERMANY",
+            "value": "GE"
+          }
+        ],
+        "ref": "00000001"
+      }
+    ]
+  }
 }
