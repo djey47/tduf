@@ -18,7 +18,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -123,9 +122,7 @@ public class DatabaseToolIntegTest {
         AssertionsHelper.assertJsonFilesMatch(referencePatchFile, outputPatchFile);
     }
 
-    @Ignore("Convert JSON source to resource model V2")
     @Test
-    // TODO
     public void applyPatch_withTemplateAndProperties() throws IOException {
         // GIVEN
         Files.deleteIfExists(PATH_PATCHER.resolve("effective-mini-template.json.properties"));
