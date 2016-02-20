@@ -19,6 +19,7 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
 @Deprecated
 @JsonTypeName("dbResource")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+// TODO delete when no more V1 files exist
 public class DbResourceDto implements Serializable {
     @JsonProperty("entries")
     private List<Entry> entries;

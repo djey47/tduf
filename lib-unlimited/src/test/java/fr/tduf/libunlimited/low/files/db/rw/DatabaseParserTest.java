@@ -99,8 +99,7 @@ public class DatabaseParserTest {
 
         //THEN
         assertThat(actualDb).isNotNull();
-        // TODO Size=2 when V2 ready
-        assertThat(databaseParser.getIntegrityErrors()).hasSize(3);
+        assertThat(databaseParser.getIntegrityErrors()).hasSize(2);
         /** {@link fr.tduf.libunlimited.low.files.db.domain.IntegrityError#getError()} */
         assertThat(databaseParser.getIntegrityErrors()).extracting("error").containsOnly("RESOURCE_ITEMS_COUNT_MISMATCH");
         assertThat(databaseParser.getIntegrityErrors().get(0).getInformation().get(SOURCE_TOPIC)).isEqualTo(ACHIEVEMENTS);

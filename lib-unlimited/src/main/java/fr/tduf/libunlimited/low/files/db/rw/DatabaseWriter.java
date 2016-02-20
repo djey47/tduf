@@ -156,11 +156,6 @@ public class DatabaseWriter {
 
     // TODO extract sub methods
     private List<String> writeResourcesEnhanced(String directoryPath) throws IOException {
-        // TODO remove this fallback when V2 OK
-        if(databaseDto.getResource() == null) {
-            return writeResources(directoryPath);
-        }
-
         List<String> writtenPaths = new ArrayList<>();
         DbResourceEnhancedDto dbResourceEnhancedDto = databaseDto.getResource();
 
@@ -207,45 +202,6 @@ public class DatabaseWriter {
 
                     writtenPaths.add(resourceFile.getAbsolutePath());
                 });
-
-        return writtenPaths;
-    }
-
-    @Deprecated
-    private List<String> writeResources(String directoryPath) throws IOException {
-
-        List<String> writtenPaths = new ArrayList<>();
-        List<DbResourceDto> dbResourceDtos = this.databaseDto.getResources();
-        String topicLabel = this.databaseDto.getTopic().getLabel();
-
-        for(DbResourceDto dbResourceDto : dbResourceDtos) {
-
-            String localeCode = dbResourceDto.getLocale().getCode();
-            String resourceFileName = format("%s.%s", topicLabel, localeCode);
-
-            File resourceFile = new File(directoryPath, resourceFileName);
-            try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(resourceFile.toPath(), StandardCharsets.UTF_16LE)) {
-
-                // Encoding
-                bufferedWriter.write("\uFEFF");
-
-                // Meta
-                writeAndEndWithCRLF(
-                        format(COMMENT_PATTERN, resourceFileName), bufferedWriter);
-                writeAndEndWithCRLF(
-                        format(COMMENT_INFO_PATTERN, "version", dbResourceDto.getVersion()), bufferedWriter);
-                writeAndEndWithCRLF(
-                        format(COMMENT_INFO_PATTERN, "categories", dbResourceDto.getCategoryCount()), bufferedWriter);
-
-                // Resources
-                for(DbResourceDto.Entry entry : dbResourceDto.getEntries()) {
-                    writeAndEndWithCRLF(
-                            format(RESOURCE_ENTRY_PATTERN, entry.getValue(), entry.getReference()), bufferedWriter);
-                }
-            }
-
-            writtenPaths.add(resourceFile.getAbsolutePath());
-        }
 
         return writtenPaths;
     }

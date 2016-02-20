@@ -1,7 +1,10 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import fr.tduf.libunlimited.low.files.db.dto.*;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,8 +19,6 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.BIT
 import static java.lang.Integer.valueOf;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toMap;
 
 /**
  * Helper class to extract database structure and contents from clear db file.
@@ -70,16 +71,11 @@ public class DatabaseParser {
         integrityErrors.clear();
 
         DbStructureDto structure = parseStructure();
-
-        // TODO Remove when using only V2 files
-        List<DbResourceDto> resources = parseAllResourcesFromTopic(structure.getTopic());
-
         DbDataDto data = parseContents(structure);
         DbResourceEnhancedDto resource = parseAllResourcesEnhancedFromTopic(structure.getTopic());
 
         return DbDto.builder()
                 .withData(data)
-                .addResources(resources)
                 .withResource(resource)
                 .withStructure(structure)
                 .build();
@@ -88,31 +84,6 @@ public class DatabaseParser {
     private static void checkPrerequisites(List<String> contentLines, Map<DbResourceEnhancedDto.Locale, List<String>> resources) {
         requireNonNull(contentLines, "Contents are required");
         requireNonNull(resources, "Resources are required");
-    }
-
-    @Deprecated
-    private List<DbResourceDto> parseAllResourcesFromTopic(DbDto.Topic topic) {
-
-        final Pattern resourceVersionPattern = Pattern.compile(META_VERSION_PATTERN);
-        final Pattern categoryCountPattern = Pattern.compile(META_CATEGORY_COUNT_PATTERN);
-        final Pattern resourceEntryPattern = Pattern.compile(RES_ENTRY_PATTERN);
-
-        List<DbResourceDto> dbResourceDtos = new ArrayList<>();
-
-        Stream.of(DbResourceEnhancedDto.Locale.values())
-
-                .filter(resources::containsKey)
-
-                .filter((locale) -> !resources.get(locale).isEmpty())
-
-                .forEach((locale) -> {
-                    DbResourceDto dbResourceDto = parseResourcesForLocale(locale, resourceVersionPattern, categoryCountPattern, resourceEntryPattern);
-                    dbResourceDtos.add(dbResourceDto);
-                });
-
-        checkItemCountBetweenResources(topic, dbResourceDtos);
-
-        return dbResourceDtos;
     }
 
     private DbResourceEnhancedDto parseAllResourcesEnhancedFromTopic(DbDto.Topic topic) {
@@ -190,45 +161,6 @@ public class DatabaseParser {
                         .build());
             }
         }
-    }
-
-    private DbResourceDto parseResourcesForLocale(DbResourceEnhancedDto.Locale locale, Pattern resourceVersionPattern, Pattern categoryCountPattern, Pattern resourceEntryPattern) {
-        final List<DbResourceDto.Entry> entries = new ArrayList<>();
-        String version = null;
-        int categoryCount = 0;
-
-        for (String line : resources.get(locale)) {
-            Matcher matcher = resourceVersionPattern.matcher(line);
-            if (matcher.matches()) {
-                version = matcher.group(1);
-                continue;
-            }
-
-            matcher = categoryCountPattern.matcher(line);
-            if (matcher.matches()) {
-                categoryCount = valueOf(matcher.group(1));
-                continue;
-            }
-
-            if (Pattern.matches(COMMENT_PATTERN, line)) {
-                continue;
-            }
-
-            matcher = resourceEntryPattern.matcher(line);
-            if (matcher.matches()) {
-                entries.add(DbResourceDto.Entry.builder()
-                        .forReference(matcher.group(3))
-                        .withValue(matcher.group(1))
-                        .build());
-            }
-        }
-
-        return DbResourceDto.builder()
-                        .atVersion(version)
-                        .withLocale(locale)
-                        .withCategoryCount(categoryCount)
-                        .addEntries(entries)
-                        .build();
     }
 
     private DbDataDto parseContents(DbStructureDto structure) {
@@ -411,22 +343,6 @@ public class DatabaseParser {
         }
     }
 
-    @Deprecated
-    private void checkItemCountBetweenResources(DbDto.Topic topic, List<DbResourceDto> dbResourceDtos) {
-        Map<Integer, List<DbResourceDto>> dbResourceDtosByItemCount = dbResourceDtos.stream()
-
-                .collect(groupingBy(dbResourceDto -> dbResourceDto.getEntries().size()));
-
-        if (dbResourceDtosByItemCount.size() > 1) {
-            Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
-            info.put(SOURCE_TOPIC, topic);
-            info.put(PER_LOCALE_COUNT, dbResourceDtos.stream()
-                    .collect(toMap(DbResourceDto::getLocale, (dto) -> dto.getEntries().size())));
-
-            addIntegrityError(RESOURCE_ITEMS_COUNT_MISMATCH, info);
-        }
-    }
-
     private void checkItemCountBetweenResourcesEnhanced(DbDto.Topic topic, Set<DbResourceEnhancedDto.Entry> entries) {
         entries.stream()
 
@@ -440,7 +356,7 @@ public class DatabaseParser {
                         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
                         info.put(SOURCE_TOPIC, topic);
                         info.put(REFERENCE, entry.getReference());
-                        info.put(IntegrityError.ErrorInfoEnum.MISSING_LOCALES, missingLocales);
+                        info.put(MISSING_LOCALES, missingLocales);
 
                         addIntegrityError(RESOURCE_ITEMS_COUNT_MISMATCH, info);
                     }

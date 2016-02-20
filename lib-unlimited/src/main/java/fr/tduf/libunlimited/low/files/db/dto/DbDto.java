@@ -6,7 +6,6 @@ import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
@@ -29,6 +28,7 @@ public class DbDto implements Serializable {
 
     @Deprecated
     @JsonProperty("resources")
+    // TODO delete when no more V1 files exist
     private List<DbResourceDto> resources;
 
     /**
@@ -88,7 +88,6 @@ public class DbDto implements Serializable {
      */
     public static DbDtoBuilder builder() {
         return new DbDtoBuilder() {
-            private List<DbResourceDto> resources = new ArrayList<>();
             private DbDataDto data;
             private DbStructureDto structure;
             private DbResourceEnhancedDto resource;
@@ -108,19 +107,6 @@ public class DbDto implements Serializable {
             @Override
             public DbDtoBuilder withResource(DbResourceEnhancedDto dbResourceEnhancedDto) {
                 this.resource = dbResourceEnhancedDto;
-                this.resources = null;
-                return this;
-            }
-
-            @Override
-            public DbDtoBuilder addResources(List<DbResourceDto> dbResourcesDtos) {
-                this.resources.addAll(dbResourcesDtos);
-                return this;
-            }
-
-            @Override
-            public DbDtoBuilder addResource(DbResourceDto dbResourceDto) {
-                this.resources.add(dbResourceDto);
                 return this;
             }
 
@@ -130,7 +116,6 @@ public class DbDto implements Serializable {
 
                 dbDto.structure = structure;
                 dbDto.data = data;
-                dbDto.resources = resources;
                 dbDto.resource = resource;
 
                 return dbDto;
@@ -161,7 +146,6 @@ public class DbDto implements Serializable {
         return resource;
     }
 
-    @Deprecated
     public List<DbResourceDto> getResources() {
         return resources;
     }
@@ -187,12 +171,6 @@ public class DbDto implements Serializable {
         DbDtoBuilder withData(DbDataDto dbDataDto);
 
         DbDtoBuilder withResource(DbResourceEnhancedDto dbResourceEnhancedDto);
-
-        @Deprecated
-        DbDtoBuilder addResources(List<DbResourceDto> dbResourcesDtos);
-
-        @Deprecated
-        DbDtoBuilder addResource(DbResourceDto dbResourceDto);
 
         DbDto build();
     }
