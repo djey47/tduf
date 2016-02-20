@@ -572,30 +572,18 @@ public class DatabaseTool extends GenericTool {
             return potentialDbDto;
         }
 
-        if (!potentialDbDto.isPresent()) {
-            outLine("  (!)Database contents not found for topic " + currentTopic + ", skipping.");
-            outLine();
-            return potentialDbDto;
-        } else {
+        if (potentialDbDto.isPresent()) {
             DbDto dbDto = potentialDbDto.get();
             outLine("  .Found topic: " + currentTopic + ", " + (integrityErrorsWhileProcessing.size() - initialErrorCount) + " error(s).");
             outLine("  .Content line count: " + dbDto.getData().getEntries().size());
-
-            if (!dbDto.getResources().isEmpty()) {
-                outLine("  .Resource count per locale: ");
-                dbDto.getResources().stream()
-
-                        .sorted(
-                                (dbResourceDto1, dbResourceDto2) -> dbResourceDto1.getLocale().name().compareTo(dbResourceDto2.getLocale().name()))
-
-                        .forEach(
-                                (dbResourceDto) -> outLine("    >" + dbResourceDto.getLocale() + "=" + dbResourceDto.getEntries().size()));
-            }
-
+            outLine("  .Resource entry count: " + dbDto.getResource().getEntries().size());
             outLine();
-
-            return Optional.of(dbDto);
+        } else {
+            outLine("  (!)Database contents not found for topic " + currentTopic + ", skipping.");
+            outLine();
         }
+
+        return potentialDbDto;
     }
 
     private void printIntegrityErrors(Set<IntegrityError> integrityErrors) {
