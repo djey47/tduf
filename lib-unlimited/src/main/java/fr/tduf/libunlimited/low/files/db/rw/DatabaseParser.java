@@ -150,11 +150,7 @@ public class DatabaseParser {
                             return newEntry;
                         });
 
-                // TODO use setValueForLocale instead
-                entry.addItem(DbResourceEnhancedDto.Item.builder()
-                        .withValue(matcher.group(1))
-                        .withLocale(locale)
-                        .build());
+                entry.setValueForLocale(matcher.group(1), locale);
             }
         }
     }
