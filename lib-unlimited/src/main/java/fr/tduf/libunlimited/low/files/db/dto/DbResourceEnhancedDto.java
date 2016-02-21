@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
@@ -256,6 +257,13 @@ public class DbResourceEnhancedDto {
                     .map((item) -> item.locale)
 
                     .collect(toSet());
+        }
+
+        @JsonIgnore
+        public Set<Locale> getMissingLocales() {
+            Set<DbResourceEnhancedDto.Locale> missingLocales = new HashSet<>(asList(DbResourceEnhancedDto.Locale.values()));
+            missingLocales.removeAll(getPresentLocales());
+            return missingLocales;
         }
 
         @Override
