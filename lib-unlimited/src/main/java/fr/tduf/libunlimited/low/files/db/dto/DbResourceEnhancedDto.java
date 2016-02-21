@@ -180,18 +180,10 @@ public class DbResourceEnhancedDto {
             return new EntryBuilder();
         }
 
-        public void addItem(Item item) {
-            if (items == null) {
-                items = new LinkedHashSet<>();
-            }
-            items.add(item);
-        }
-
+        /**
+         * @return available item for specified locale, empty otherwise.
+         */
         public Optional<Item> getItemForLocale(Locale locale) {
-            if (items == null) {
-                return Optional.empty();
-            }
-
             return items.stream()
 
                     .filter((item) -> item.locale == locale)
@@ -199,28 +191,35 @@ public class DbResourceEnhancedDto {
                     .findAny();
         }
 
+        /**
+         * @return available value for any locale, empty otherwise.
+         */
         public Optional<String> pickValue() {
-            if (items == null) {
-                return Optional.empty();
-            }
-
             return getPresentLocales().stream()
                     .findAny()
                     .flatMap(this::getValueForLocale);
         }
 
+        /**
+         * @return available value for specified locale, empty otherwise.
+         */
         public Optional<String> getValueForLocale(Locale locale) {
             return getItemForLocale(locale)
-
                     .map((item) -> item.value);
         }
 
+        /**
+         * defines given value for every locale.
+         */
         public void setValue(String value) {
             Stream.of(Locale.values())
                     .forEach((locale) -> setValueForLocale(value, locale));
         }
 
         // TODO return current entry to chain calls
+        /**
+         * defines given value for specified locale
+         */
         public void setValueForLocale(String value, Locale locale) {
             Optional<Item> potentialItem = getItemForLocale(locale);
 
@@ -230,7 +229,7 @@ public class DbResourceEnhancedDto {
 
             } else {
 
-                addItem(Item.builder()
+                items.add(Item.builder()
                         .withLocale(locale)
                         .withValue(value)
                         .build());
@@ -238,25 +237,20 @@ public class DbResourceEnhancedDto {
             }
         }
 
+        /**
+         * does nothing if value does not exist for given locale
+         */
         public void removeValueForLocale(Locale locale) {
-            if (items == null) {
-                return;
-            }
             items.removeIf((item) -> item.locale == locale);
         }
 
         @JsonIgnore
         public int getItemCount() {
-            return items == null ?
-                    0 :
-                    items.size();
+            return items.size();
         }
 
         @JsonIgnore
         public Set<Locale> getPresentLocales() {
-            if (items == null) {
-                return new HashSet<>();
-            }
             return items.stream()
 
                     .map((item) -> item.locale)
@@ -286,8 +280,8 @@ public class DbResourceEnhancedDto {
 
         public static class EntryBuilder {
             private String reference;
-            // TODO empty set by default
-            private LinkedHashSet<Item> items;
+
+            private final LinkedHashSet<Item> items = new LinkedHashSet<>();
 
             public EntryBuilder forReference(String ref) {
                 this.reference = ref;
@@ -295,7 +289,8 @@ public class DbResourceEnhancedDto {
             }
 
             public EntryBuilder withItems(Collection<Item> items) {
-                this.items = new LinkedHashSet<>(items);
+                this.items.clear();
+                this.items.addAll(items);
                 return this;
             }
 
