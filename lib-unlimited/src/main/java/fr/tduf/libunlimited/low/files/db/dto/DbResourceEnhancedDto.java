@@ -126,7 +126,6 @@ public class DbResourceEnhancedDto {
     /**
      * All culture variants for game files
      */
-    // TODO add method to return values as stream
     public enum Locale {
         FRANCE("fr"),
         GERMANY("ge"),
@@ -157,6 +156,10 @@ public class DbResourceEnhancedDto {
 
         public String getCode() {
             return code;
+        }
+
+        public static Stream<Locale> valuesAsStream() {
+            return Stream.of(values());
         }
 
         @Override
