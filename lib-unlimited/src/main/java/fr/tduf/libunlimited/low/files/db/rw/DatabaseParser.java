@@ -17,7 +17,6 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoE
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.BITFIELD;
 import static java.lang.Integer.valueOf;
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.regex.Pattern.compile;
 
@@ -332,14 +331,10 @@ public class DatabaseParser {
                 .forEach((entry) -> {
 
                     if (entry.getItemCount() != DbResourceEnhancedDto.Locale.values().length) {
-                        // TODO extract to object: getMissingLocales()
-                        Set<DbResourceEnhancedDto.Locale> missingLocales = new HashSet<>(asList(DbResourceEnhancedDto.Locale.values()));
-                        missingLocales.removeAll(entry.getPresentLocales());
-
                         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
                         info.put(SOURCE_TOPIC, topic);
                         info.put(REFERENCE, entry.getReference());
-                        info.put(MISSING_LOCALES, missingLocales);
+                        info.put(MISSING_LOCALES, entry.getMissingLocales());
 
                         addIntegrityError(RESOURCE_ITEMS_COUNT_MISMATCH, info);
                     }
