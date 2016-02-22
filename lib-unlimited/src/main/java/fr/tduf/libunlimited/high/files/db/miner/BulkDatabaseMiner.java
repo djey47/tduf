@@ -52,22 +52,6 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     * V2
-     * @param topic  : topic in TDU Database to search resources from
-     * @return an optional value: either such a resource object if it exists, else empty.
-     */
-    // TODO test
-    public Optional<DbResourceEnhancedDto> getResourceEnhancedFromTopic(DbDto.Topic topic) {
-        return topicObjects.stream()
-
-                .filter((databaseObject) -> databaseObject.getTopic() == topic)
-
-                .findAny()
-
-                .map(DbDto::getResource);
-    }
-
-    /**
      * @param topic : topic in TDU Database to search
      * @return database object related to this topic.
      */
@@ -264,6 +248,20 @@ public class BulkDatabaseMiner {
     }
 
     /**
+     * @param topic  : topic in TDU Database to search resources from
+     * @return an optional value: either such a resource object if it exists, else empty.
+     */
+    public Optional<DbResourceEnhancedDto> getResourceEnhancedFromTopic(DbDto.Topic topic) {
+        return topicObjects.stream()
+
+                .filter((databaseObject) -> databaseObject.getTopic() == topic)
+
+                .findAny()
+
+                .map(DbDto::getResource);
+    }
+
+    /**
      * V2
      * @param reference
      * @param topic
@@ -338,7 +336,6 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     *
      * @param entry         : contents entry to be analyzed
      * @param uidFieldRank  : rank of UID field in structure
      * @return raw value of entry reference
