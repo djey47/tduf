@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.PNJ;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.UNITED_STATES;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,7 +18,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BulkDatabaseMiner_focusOnResourcesTest {
 
     private static final DbDto.Topic TOPIC = CAR_PHYSICS_DATA;
+    private static final DbResourceEnhancedDto.Locale LOCALE = UNITED_STATES;
     private static final String RESOURCE_REF = "00000000";
+    private static final String RESOURCE_VALUE = "VALUE";
 
     @Test
     public void getResourceEnhancedFromTopic_whenTopicExists_shouldReturnIt() {
@@ -85,6 +88,63 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
         assertThat(potentialEntry)
                 .isPresent()
                 .contains(entry);
+    }
+
+    @Test
+    public void getLocalizedResourceValueFromTopicAndReference_whenTopicDoesNotExist_shouldReturnEmpty() {
+        //GIVEN
+        List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
+
+        //WHEN
+        final Optional<String> potentialValue = BulkDatabaseMiner.load(topicObjects).getLocalizedResourceValueFromTopicAndReference(RESOURCE_REF, PNJ, LOCALE);
+
+        //THEN
+        assertThat(potentialValue).isEmpty();
+    }
+
+    @Test
+    public void getLocalizedResourceValueFromTopicAndReference_whenTopicExists_butEntryDoesNot_shouldReturnEmpty() {
+        //GIVEN
+        List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
+
+        //WHEN
+        final Optional<String> potentialValue = BulkDatabaseMiner.load(topicObjects).getLocalizedResourceValueFromTopicAndReference(RESOURCE_REF, TOPIC, LOCALE);
+
+        //THEN
+        assertThat(potentialValue).isEmpty();
+    }
+
+    @Test
+    public void getLocalizedResourceValueFromTopicAndReference_whenTopicExists_entryExists_butValueDoesNot_shouldReturnEmpty() {
+        //GIVEN
+        final DbDto topicObject = createDefaultTopicObject(TOPIC);
+        topicObject.getResource().addEntryByReference(RESOURCE_REF);
+        List<DbDto> topicObjects = singletonList(topicObject);
+
+        //WHEN
+        final Optional<String> potentialValue = BulkDatabaseMiner.load(topicObjects).getLocalizedResourceValueFromTopicAndReference(RESOURCE_REF, TOPIC, LOCALE);
+
+        //THEN
+        assertThat(potentialValue).isEmpty();
+    }
+
+    @Test
+    public void getLocalizedResourceValueFromTopicAndReference_whenTopicExists_entryExists_andValueExistsForLocale_shouldReturnIt() {
+        //GIVEN
+        final DbDto topicObject = createDefaultTopicObject(TOPIC);
+        topicObject.getResource()
+                .addEntryByReference(RESOURCE_REF)
+                .setValue("")
+                .setValueForLocale(RESOURCE_VALUE, LOCALE);
+        List<DbDto> topicObjects = singletonList(topicObject);
+
+        //WHEN
+        final Optional<String> potentialValue = BulkDatabaseMiner.load(topicObjects).getLocalizedResourceValueFromTopicAndReference(RESOURCE_REF, TOPIC, LOCALE);
+
+        //THEN
+        assertThat(potentialValue)
+                .isPresent()
+                .contains(RESOURCE_VALUE);
     }
 
     private static DbDto createDefaultTopicObject(DbDto.Topic topic) {

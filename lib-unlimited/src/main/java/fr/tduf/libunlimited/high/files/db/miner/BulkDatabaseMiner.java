@@ -262,13 +262,8 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     * V2
-     * @param reference
-     * @param topic
-     * @param locale
-     * @return
+     * @return localized value if it exists, empty otherwise
      */
-    // TODO test
     public Optional<String> getLocalizedResourceValueFromTopicAndReference(String reference, DbDto.Topic topic, DbResourceEnhancedDto.Locale locale) {
         return getResourceEntryFromTopicAndReference(topic, reference)
 
