@@ -110,19 +110,16 @@ public class DatabaseChangeHelper {
      * @throws IllegalArgumentException when source entry does not exist or target reference belongs to an already existing entry.
      */
     public void updateResourceItemWithReference(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
-        checkResourceValueExistsWithReference(topic, locale, oldResourceReference);
+        DbResourceEnhancedDto.Entry existingEntry = checkResourceEntryExistsWithReference(topic, oldResourceReference);
 
         if (!oldResourceReference.equals(newResourceReference)) {
-            checkResourceValueDoesNotExistWithReference(topic, locale, newResourceReference);
+            checkResourceEntryDoesNotExistWithReference(topic, newResourceReference);
         }
 
-        databaseMiner.getResourceEntryFromTopicAndReference(topic, oldResourceReference)
-                .ifPresent((entry) -> {
-                    entry.removeValueForLocale(locale);
-                    addResourceValueWithReference(topic, locale, newResourceReference, newResourceValue);
+        existingEntry.removeValueForLocale(locale);
+        addResourceValueWithReference(topic, locale, newResourceReference, newResourceValue);
 
-                    BulkDatabaseMiner.clearAllCaches();
-                });
+        BulkDatabaseMiner.clearAllCaches();
     }
 
     /**
@@ -293,13 +290,20 @@ public class DatabaseChangeHelper {
     private void checkResourceValueDoesNotExistWithReference(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String resourceReference) {
         databaseMiner.getLocalizedResourceValueFromTopicAndReference(resourceReference, topic, locale)
                 .ifPresent((value) -> {
-                    throw new IllegalArgumentException("Resource already exists with reference: " + resourceReference + ", for locale: " + locale);
+                    throw new IllegalArgumentException("Resource value already exists with reference: " + resourceReference + ", for locale: " + locale);
                 });
     }
 
-    private void checkResourceValueExistsWithReference(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String resourceReference) {
-        databaseMiner.getLocalizedResourceValueFromTopicAndReference(resourceReference, topic, locale)
-                .orElseThrow(() -> new IllegalArgumentException("Resource does not exist with reference: " + resourceReference + ", for locale: " + locale));
+    private DbResourceEnhancedDto.Entry checkResourceEntryExistsWithReference(DbDto.Topic topic, String resourceReference) {
+        return databaseMiner.getResourceEntryFromTopicAndReference(topic, resourceReference)
+                .orElseThrow(() -> new IllegalArgumentException("Resource does not exist with reference: " + resourceReference));
+    }
+
+    private void checkResourceEntryDoesNotExistWithReference(DbDto.Topic topic, String resourceReference) {
+        databaseMiner.getResourceEntryFromTopicAndReference(topic, resourceReference)
+                .ifPresent((entry) -> {
+                    throw new IllegalArgumentException("Resource already exists with reference: " + resourceReference);
+                });
     }
 
     private static List<DbDataDto.Item> cloneContentItems(DbDataDto.Entry entry, DbDto.Topic topic) {

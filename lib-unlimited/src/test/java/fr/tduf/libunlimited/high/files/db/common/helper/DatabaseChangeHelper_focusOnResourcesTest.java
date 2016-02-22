@@ -122,9 +122,10 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
         DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
         DbResourceEnhancedDto.Entry resourceEntry = createDefaultResourceEntryEnhanced(initialReference);
 
+        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, initialReference)).thenReturn(of(resourceEntry));
+        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(empty());
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(initialReference, TOPIC, LOCALE)).thenReturn(of(initialValue));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
-        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, initialReference)).thenReturn(of(resourceEntry));
         when(minerMock.getResourceEnhancedFromTopic(TOPIC)).thenReturn(of(resourceObject));
 
 
@@ -142,7 +143,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     @Test(expected=IllegalArgumentException.class)
     public void updateResourceItemWithReference_whenNonexistingEntry_shouldThrowException() {
         // GIVEN
-        when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
+        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(empty());
 
         // WHEN
         changeHelper.updateResourceItemWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_REFERENCE, RESOURCE_VALUE);
@@ -155,10 +156,13 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     public void updateResourceItemWithReference_whenEntryExistsWithNewReference_shouldThrowException() {
         // GIVEN
         String initialReference = "0";
-        String initialValue = "i";
         String existingValue = "e";
 
-        when(minerMock.getLocalizedResourceValueFromTopicAndReference(initialReference, TOPIC, LOCALE)).thenReturn(of(initialValue));
+        DbResourceEnhancedDto.Entry existingEntry = createDefaultResourceEntryEnhanced(initialReference);
+        DbResourceEnhancedDto.Entry existingEntry2 = createDefaultResourceEntryEnhanced(initialReference);
+
+        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, initialReference)).thenReturn(of(existingEntry));
+        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(existingEntry2));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(of(existingValue));
 
 
