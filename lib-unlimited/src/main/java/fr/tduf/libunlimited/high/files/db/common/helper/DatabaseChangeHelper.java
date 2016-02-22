@@ -248,7 +248,13 @@ public class DatabaseChangeHelper {
      */
     public void removeResourceValuesWithReference(DbDto.Topic topic, String resourceReference, List<DbResourceEnhancedDto.Locale> affectedLocales) {
         databaseMiner.getResourceEntryFromTopicAndReference(topic, resourceReference)
-                .ifPresent((entry) -> affectedLocales.forEach(entry::removeValueForLocale));
+                .ifPresent((entry) -> {
+                    affectedLocales.forEach(entry::removeValueForLocale);
+
+                    if (entry.getItemCount() == 0) {
+                        databaseMiner.getResourceEnhancedFromTopic(topic).get().removeEntryByReference(resourceReference);
+                    }
+                });
 
         BulkDatabaseMiner.clearAllCaches();
     }

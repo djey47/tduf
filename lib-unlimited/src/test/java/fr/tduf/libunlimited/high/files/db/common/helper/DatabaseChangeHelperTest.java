@@ -13,6 +13,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.FRANCE;
@@ -20,6 +21,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -523,7 +525,7 @@ public class DatabaseChangeHelperTest {
     public void removeResourceValuesWithReference_whenResourceEntryExists_andSameLocaleAffected_shouldDeleteLocalizedValue() {
         // GIVEN
         DbResourceEnhancedDto.Entry resourceEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
-        resourceEntry.setValueForLocale(RESOURCE_VALUE, LOCALE);
+        resourceEntry.setValue(RESOURCE_VALUE);
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
 
@@ -533,6 +535,7 @@ public class DatabaseChangeHelperTest {
 
 
         // THEN
+        assertThat(resourceEntry.getItemCount()).isEqualTo(7);
         assertThat(resourceEntry.getItemForLocale(LOCALE)).isEmpty();
     }
 
@@ -540,8 +543,7 @@ public class DatabaseChangeHelperTest {
     public void removeResourceValuesWithReference_whenResourceEntryExists_andTwoLocalesAffected_shouldDeleteThem() {
         // GIVEN
         DbResourceEnhancedDto.Entry resourceEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
-        resourceEntry.setValueForLocale(RESOURCE_VALUE, LOCALE)
-                .setValueForLocale(RESOURCE_VALUE, FRANCE);
+        resourceEntry.setValue(RESOURCE_VALUE);
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
 
@@ -551,8 +553,28 @@ public class DatabaseChangeHelperTest {
 
 
         // THEN
+        assertThat(resourceEntry.getItemCount()).isEqualTo(6);
         assertThat(resourceEntry.getItemForLocale(LOCALE)).isEmpty();
         assertThat(resourceEntry.getItemForLocale(FRANCE)).isEmpty();
+    }
+
+    @Test
+    public void removeResourceValuesWithReference_whenResourceEntryExists_andAllLocalesAffected_shouldDeleteEntry() {
+        // GIVEN
+        DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+        DbResourceEnhancedDto.Entry resourceEntry = resourceObject.addEntryByReference(RESOURCE_REFERENCE)
+                .setValue(RESOURCE_VALUE);
+
+        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
+        when(minerMock.getResourceEnhancedFromTopic(TOPIC)).thenReturn(of(resourceObject));
+
+
+        // WHEN
+        changeHelper.removeResourceValuesWithReference(TOPIC, RESOURCE_REFERENCE, DbResourceEnhancedDto.Locale.valuesAsStream().collect(toList()));
+
+
+        // THEN
+        assertThat(resourceObject.getEntryByReference(RESOURCE_REFERENCE)).isEmpty();
     }
 
     @Test
