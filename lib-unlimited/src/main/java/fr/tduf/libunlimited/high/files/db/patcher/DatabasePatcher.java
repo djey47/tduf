@@ -246,7 +246,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
         } else {
 
-            Stream.of(DbResourceEnhancedDto.Locale.values())
+            DbResourceEnhancedDto.Locale.valuesAsStream()
 
                     .forEach((currentLocale) -> resourceEntry.setValueForLocale(value, currentLocale));
 

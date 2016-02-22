@@ -540,8 +540,8 @@ public class DatabaseChangeHelperTest {
     public void removeResourceValuesWithReference_whenResourceEntryExists_andTwoLocalesAffected_shouldDeleteThem() {
         // GIVEN
         DbResourceEnhancedDto.Entry resourceEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
-        resourceEntry.setValueForLocale(RESOURCE_VALUE, LOCALE);
-        resourceEntry.setValueForLocale(RESOURCE_VALUE, FRANCE);
+        resourceEntry.setValueForLocale(RESOURCE_VALUE, LOCALE)
+                .setValueForLocale(RESOURCE_VALUE, FRANCE);
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
 
@@ -698,11 +698,10 @@ public class DatabaseChangeHelperTest {
     }
 
     private static DbResourceEnhancedDto.Entry createDefaultResourceEntryEnhanced(String reference) {
-        final DbResourceEnhancedDto.Entry entry = DbResourceEnhancedDto.Entry.builder()
+        return DbResourceEnhancedDto.Entry.builder()
                 .forReference(reference)
-                .build();
-        entry.setValueForLocale("", LOCALE);
-        return entry;
+                .build()
+                .setValueForLocale("", LOCALE);
     }
 
     private static DbStructureDto createDefaultStructureObject() {

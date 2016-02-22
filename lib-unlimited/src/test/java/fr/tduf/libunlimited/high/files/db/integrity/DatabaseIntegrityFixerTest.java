@@ -443,34 +443,41 @@ public class DatabaseIntegrityFixerTest {
 
     private static DbResourceEnhancedDto createResourceObjectEnhancedWithOneEntryOneItem() {
         DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
-        DbResourceEnhancedDto.Entry entry = resourceObject.addEntryByReference("000");
-        entry.setValueForLocale("TDUF TEST", FRANCE);
+
+        resourceObject.addEntryByReference("000")
+                .setValueForLocale("TDUF TEST", FRANCE);
 
         return resourceObject;
     }
 
     private static DbResourceEnhancedDto createResourceObjectEnhancedWithOneEntry() {
         DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
-        DbResourceEnhancedDto.Entry entry = resourceObject.addEntryByReference("000");
-        entry.setValue("TDUF TEST");
+
+        resourceObject
+                .addEntryByReference("000")
+                .setValue("TDUF TEST");
 
         return resourceObject;
     }
 
     private static DbResourceEnhancedDto createResourceObjectEnhancedWithOneEntryOneMissingValueForLocale() {
         DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
-        DbResourceEnhancedDto.Entry entry = resourceObject.addEntryByReference("000");
-        entry.setValue("TDUF TEST");
-        entry.removeValueForLocale(CHINA);
+
+        resourceObject
+                .addEntryByReference("000")
+                .setValue("TDUF TEST")
+                .removeValueForLocale(CHINA);
 
         return resourceObject;
     }
 
     private static DbResourceEnhancedDto createResourceObjectEnhancedWithOneEntryOneDifferentValueForLocale() {
         DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
-        DbResourceEnhancedDto.Entry entry = resourceObject.addEntryByReference("000");
-        entry.setValue("TDUF TEST");
-        entry.setValueForLocale("TDUF TEST ALTERED", UNITED_STATES);
+
+        resourceObject
+                .addEntryByReference("000")
+                .setValue("TDUF TEST")
+                .setValueForLocale("TDUF TEST ALTERED", UNITED_STATES);
 
         return resourceObject;
     }

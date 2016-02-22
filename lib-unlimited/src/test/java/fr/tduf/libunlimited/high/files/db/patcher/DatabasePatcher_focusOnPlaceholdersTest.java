@@ -244,7 +244,8 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.register(placeholderName, "000000");
 
-        databaseObject.getResource().addEntryByReference("000000")
+        databaseObject.getResource()
+                .addEntryByReference("000000")
                 .setValueForLocale("Text", FRANCE);
 
 

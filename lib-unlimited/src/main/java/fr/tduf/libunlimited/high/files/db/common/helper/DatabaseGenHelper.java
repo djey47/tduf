@@ -180,7 +180,7 @@ public class DatabaseGenHelper {
                     String newResourceReference = generateUniqueResourceEntryIdentifier(topicObject);
                     final DbResourceEnhancedDto.Entry newEntry = topicObject.getResource().addEntryByReference(newResourceReference);
 
-                    Stream.of(DbResourceEnhancedDto.Locale.values()).forEach((locale) -> newEntry.setValueForLocale(RESOURCE_VALUE_DEFAULT, locale));
+                    DbResourceEnhancedDto.Locale.valuesAsStream().forEach((locale) -> newEntry.setValueForLocale(RESOURCE_VALUE_DEFAULT, locale));
 
                     return newResourceReference;
                 });
