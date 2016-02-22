@@ -220,7 +220,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     private List<DbDto> createDtosForAllTopics(DbDataDto dataDto, DbResourceEnhancedDto resourceDto) {
-        return Stream.of(DbDto.Topic.values())
+        return DbDto.Topic.valuesAsStream()
 
                 .map((topicEnum) -> {
                     DbStructureDto structureDto = createStructure(topicEnum);

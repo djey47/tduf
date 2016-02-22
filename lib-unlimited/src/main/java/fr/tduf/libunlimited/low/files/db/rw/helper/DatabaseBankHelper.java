@@ -96,7 +96,7 @@ public class DatabaseBankHelper {
 
     static List<String> getDatabaseBankFileNames() {
 
-        List<String> resourceBankFileNames = asList(DbResourceEnhancedDto.Locale.values()).stream()
+        List<String> resourceBankFileNames = DbResourceEnhancedDto.Locale.valuesAsStream()
 
                 .map((locale) -> "DB_" + locale.getCode().toUpperCase() + "." + EXTENSION_BANKS)
 

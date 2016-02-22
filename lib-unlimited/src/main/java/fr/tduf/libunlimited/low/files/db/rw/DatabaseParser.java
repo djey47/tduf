@@ -91,7 +91,7 @@ public class DatabaseParser {
         AtomicInteger categoryCount = new AtomicInteger();
         AtomicReference<String> version = new AtomicReference<>();
 
-        Stream.of(DbResourceEnhancedDto.Locale.values())
+        DbResourceEnhancedDto.Locale.valuesAsStream()
 
                 .filter(resources::containsKey)
 

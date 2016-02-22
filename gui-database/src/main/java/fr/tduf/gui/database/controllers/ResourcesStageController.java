@@ -182,7 +182,7 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     private void fillTopics() {
-        asList(DbDto.Topic.values())
+        DbDto.Topic.valuesAsStream()
                 .forEach((topic) -> topicsChoiceBox.getItems().add(topic));
     }
 
@@ -241,7 +241,7 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     private void editResourceForAllLocales(DbDto.Topic topic, Optional<String> currentResourceReference, String newResourceReference, String newResourceValue, boolean updateResourceMode) {
-        Stream.of(DbResourceEnhancedDto.Locale.values())
+        DbResourceEnhancedDto.Locale.valuesAsStream()
 
                 .forEach((affectedLocale) -> {
                     if (updateResourceMode) {
@@ -282,7 +282,7 @@ public class ResourcesStageController extends AbstractGuiController {
                             String resourceRef = entry.getReference();
                             tableResource.setReference(resourceRef);
 
-                            Stream.of(DbResourceEnhancedDto.Locale.values())
+                            DbResourceEnhancedDto.Locale.valuesAsStream()
 
                                     .forEach((locale) -> {
 

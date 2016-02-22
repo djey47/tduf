@@ -58,7 +58,7 @@ public class MainStageViewDataController {
     }
 
     void fillLocales() {
-        asList(DbResourceEnhancedDto.Locale.values())
+        DbResourceEnhancedDto.Locale.valuesAsStream()
                 .forEach((locale) -> mainStageController.localesChoiceBox.getItems().add(locale));
 
         mainStageController.currentLocaleProperty = new SimpleObjectProperty<>(UNITED_STATES);

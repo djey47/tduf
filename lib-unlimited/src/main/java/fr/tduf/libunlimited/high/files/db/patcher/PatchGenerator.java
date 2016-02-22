@@ -114,7 +114,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         identifyGlobalizedAndLocalizedResourceReferences(resources, resourceFromTopic, globalizedResourceRefs, localizedResourceRefs);
 
         Stream<DbPatchDto.DbChangeDto> changesObjectsForGlobalizedResources = makeChangesObjectsForResourcesWithLocale(topic, Optional.<DbResourceEnhancedDto.Locale>empty(), globalizedResourceRefs);
-        Stream<DbPatchDto.DbChangeDto> changesObjectsForLocalizedResources = Stream.of(DbResourceEnhancedDto.Locale.values())
+        Stream<DbPatchDto.DbChangeDto> changesObjectsForLocalizedResources = DbResourceEnhancedDto.Locale.valuesAsStream()
 
                 .flatMap((locale) -> makeChangesObjectsForResourcesWithLocale(topic, Optional.of(locale), localizedResourceRefs));
 

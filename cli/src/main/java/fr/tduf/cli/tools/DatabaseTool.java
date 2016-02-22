@@ -538,7 +538,7 @@ public class DatabaseTool extends GenericTool {
         requireNonNull(integrityErrors, "A list is required");
 
         Set<IntegrityError> integrityErrorsWhileReading = synchronizedSet(integrityErrors);
-        final List<DbDto> readObjects = Stream.of(DbDto.Topic.values())
+        final List<DbDto> readObjects = DbDto.Topic.valuesAsStream()
 
                 .parallel()
 

@@ -217,7 +217,7 @@ public class DbResourceEnhancedDto {
          * @return current entry
          */
         public Entry setValue(String value) {
-            Stream.of(Locale.values())
+            Locale.valuesAsStream()
                     .forEach((locale) -> setValueForLocale(value, locale));
 
             return this;

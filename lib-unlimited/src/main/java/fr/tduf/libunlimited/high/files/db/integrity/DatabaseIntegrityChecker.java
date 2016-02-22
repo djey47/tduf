@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
@@ -12,6 +13,7 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeE
 import static java.util.Arrays.asList;
 import static java.util.Collections.synchronizedSet;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
@@ -60,7 +62,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
     }
 
     private void checkIfAllTopicObjectsPresent(Set<IntegrityError> integrityErrors) {
-        Set<DbDto.Topic> absentTopics = Stream.of(DbDto.Topic.values())
+        Set<DbDto.Topic> absentTopics = DbDto.Topic.valuesAsStream()
 
                 .filter((topicEnum) -> !databaseMiner.getDatabaseTopic(topicEnum).isPresent())
 

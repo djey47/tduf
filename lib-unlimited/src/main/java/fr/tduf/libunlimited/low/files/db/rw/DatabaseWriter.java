@@ -1,7 +1,10 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.low.files.db.dto.*;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,7 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.lang.String.format;
@@ -160,8 +162,7 @@ public class DatabaseWriter {
         DbResourceEnhancedDto dbResourceEnhancedDto = databaseDto.getResource();
 
         String topicLabel = this.databaseDto.getTopic().getLabel();
-
-        Stream.of(DbResourceEnhancedDto.Locale.values())
+        DbResourceEnhancedDto.Locale.valuesAsStream()
 
                 .forEach((locale) -> {
 

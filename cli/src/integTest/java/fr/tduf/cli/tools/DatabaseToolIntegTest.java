@@ -35,7 +35,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
@@ -213,7 +212,7 @@ public class DatabaseToolIntegTest {
 
         // WHEN repack-all
         System.out.println("-> RepackAll!");
-        databaseTool.doMain(new String[]{"repack-all", /*"-n",*/ "-j", unpackJsonDirectory, "-o", DIRECTORY_DATABASE_BANKS_OUTPUT,});
+        databaseTool.doMain(new String[]{"repack-all", "-n", "-j", unpackJsonDirectory, "-o", DIRECTORY_DATABASE_BANKS_OUTPUT,});
 
 
         // THEN: gateway was correctly called
@@ -412,7 +411,7 @@ public class DatabaseToolIntegTest {
     }
 
     private static long getTopicFileCount(String jsonDirectory, String extension) {
-        Map<String, Boolean> jsonFileResult = Stream.of(DbDto.Topic.values())
+        Map<String, Boolean> jsonFileResult = DbDto.Topic.valuesAsStream()
 
                 .map((topic) -> topic.getLabel() + "." + extension)
 

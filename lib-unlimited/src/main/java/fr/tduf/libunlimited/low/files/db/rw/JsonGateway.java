@@ -34,7 +34,7 @@ public class JsonGateway {
         List<DbDto.Topic> missingTopicContentsWhileProcessing = synchronizedList(new ArrayList<>());
         Set<IntegrityError> integrityErrorsWhileProcessing = Collections.synchronizedSet(new HashSet<>());
 
-        Stream.of(DbDto.Topic.values())
+        DbDto.Topic.valuesAsStream()
 
                 .parallel()
 
@@ -71,7 +71,7 @@ public class JsonGateway {
 
         List<String> writtenFileNames = synchronizedList(new ArrayList<>());
         List<DbDto.Topic> missingTopicContentsWhileProcessing = synchronizedList(new ArrayList<>());
-        Stream.of(DbDto.Topic.values())
+        DbDto.Topic.valuesAsStream()
 
                 .parallel()
 
@@ -84,7 +84,8 @@ public class JsonGateway {
                             missingTopicContentsWhileProcessing.add(topic);
                         }
                     } catch (IOException e) {
-                        throw new RuntimeException("Unable to generate database topic: " + topic);
+                        e.printStackTrace();
+//                        throw new RuntimeException("Unable to generate database topic: " + topic);
                     }
                 }));
 

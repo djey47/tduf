@@ -11,6 +11,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
@@ -87,7 +88,7 @@ public class DatabaseReadWriteHelper {
      */
     public static List<DbDto> readFullDatabaseFromJson(String jsonDirectory) {
 
-        return Stream.of(DbDto.Topic.values())
+        return DbDto.Topic.valuesAsStream()
 
                 .parallel()
 
@@ -191,13 +192,21 @@ public class DatabaseReadWriteHelper {
     }
 
     private static Map<DbResourceEnhancedDto.Locale, List<String>> readLinesFromResourceFiles(String databaseDirectory, DbDto.Topic topic) throws FileNotFoundException {
-        Map<DbResourceEnhancedDto.Locale, List<String>> resourcesLinesByLocale = new HashMap<>();
-        for (DbResourceEnhancedDto.Locale currentLocale : DbResourceEnhancedDto.Locale.values()) {
-            String resourceFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, currentLocale.getCode());
+        Map<DbResourceEnhancedDto.Locale, List<String>> resourcesLinesByLocale = new ConcurrentHashMap<>();
+        DbResourceEnhancedDto.Locale.valuesAsStream()
+                .forEach((currentLocale) -> {
+                    String resourceFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, currentLocale.getCode());
 
-            List<String> readLines = parseLinesInFile(resourceFileName, ENCODING_UTF_16);
-            resourcesLinesByLocale.put(currentLocale, readLines);
-        }
+                    List<String> readLines = null;
+                    try {
+                        readLines = parseLinesInFile(resourceFileName, ENCODING_UTF_16);
+                    } catch (FileNotFoundException fnfe) {
+                        fnfe.printStackTrace();
+                        throw new RuntimeException(fnfe);
+                    }
+
+                    resourcesLinesByLocale.put(currentLocale, readLines);
+                });
         return resourcesLinesByLocale;
     }
 

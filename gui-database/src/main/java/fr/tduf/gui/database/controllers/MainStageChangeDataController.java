@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.ALL;
 import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.fromCollection;
@@ -71,7 +72,7 @@ public class MainStageChangeDataController {
     void removeResourceWithReference(DbDto.Topic topic, DbResourceEnhancedDto.Locale locale, String resourceReference, boolean forAllLocales) {
         List<DbResourceEnhancedDto.Locale> affectedLocales = singletonList(locale);
         if (forAllLocales) {
-            affectedLocales = asList(DbResourceEnhancedDto.Locale.values());
+            affectedLocales = DbResourceEnhancedDto.Locale.valuesAsStream().collect(toList());
         }
 
         getChangeHelper().removeResourceValuesWithReference(topic, resourceReference, affectedLocales);

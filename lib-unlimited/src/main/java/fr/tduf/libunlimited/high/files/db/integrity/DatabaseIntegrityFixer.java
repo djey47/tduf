@@ -234,7 +234,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
     }
 
     private Set<DbResourceEnhancedDto.Locale> findValidResourceLocales() {
-        return Stream.of(DbResourceEnhancedDto.Locale.values())
+        return DbResourceEnhancedDto.Locale.valuesAsStream()
 
                 .filter((locale) -> !this.integrityErrors.stream()
 
