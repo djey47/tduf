@@ -80,12 +80,6 @@ public class DatabaseWriter {
         return outputFilePath.toAbsolutePath().toString();
     }
 
-    private static void checkPrerequisites(DbDto dbDto) {
-        requireNonNull(dbDto, "Full database information is required");
-        requireNonNull(dbDto.getStructure(), "Database structure information is required");
-        requireNonNull(dbDto.getData(), "Database contents are required");
-    }
-
     private String writeStructureAndContents(String directoryPath) throws IOException {
 
         DbStructureDto dbStructureDto = this.databaseDto.getStructure();
@@ -156,55 +150,54 @@ public class DatabaseWriter {
         return writtenSize;
     }
 
-    // TODO extract sub methods
     private List<String> writeResourcesEnhanced(String directoryPath) throws IOException {
         List<String> writtenPaths = new ArrayList<>();
         DbResourceEnhancedDto dbResourceEnhancedDto = databaseDto.getResource();
 
-        String topicLabel = this.databaseDto.getTopic().getLabel();
+        String topicLabel = databaseDto.getTopic().getLabel();
         DbResourceEnhancedDto.Locale.valuesAsStream()
 
                 .forEach((locale) -> {
 
-                    String localeCode = locale.getCode();
-                    String resourceFileName = format("%s.%s", topicLabel, localeCode);
-                    File resourceFile = new File(directoryPath, resourceFileName);
+                    String resourceFilePath = writeResourcesForLocale(locale, topicLabel, dbResourceEnhancedDto, directoryPath);
+                    writtenPaths.add(resourceFilePath);
 
-                    try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(resourceFile.toPath(), StandardCharsets.UTF_16LE)) {
-
-                        // Encoding
-                        bufferedWriter.write("\uFEFF");
-
-                        // Meta
-                        writeAndEndWithCRLF(
-                                format(COMMENT_PATTERN, resourceFileName), bufferedWriter);
-                        writeAndEndWithCRLF(
-                                format(COMMENT_INFO_PATTERN, "version", dbResourceEnhancedDto.getVersion()), bufferedWriter);
-                        writeAndEndWithCRLF(
-                                format(COMMENT_INFO_PATTERN, "categories", dbResourceEnhancedDto.getCategoryCount()), bufferedWriter);
-
-                        // Resources
-                        dbResourceEnhancedDto.getEntries().stream()
-
-                                .forEach((entry) -> entry.getItemForLocale(locale)
-
-                                        .ifPresent((item) -> {
-                                            try {
-                                                writeAndEndWithCRLF(
-                                                        format(RESOURCE_ENTRY_PATTERN, item.getValue(), entry.getReference()), bufferedWriter);
-                                            } catch (IOException ioe) {
-                                                throw new RuntimeException("Error occured while writing resource entry", ioe);
-                                            }
-                                        }));
-
-                    } catch (IOException ioe) {
-                        throw new RuntimeException("Error occured while writing database", ioe);
-                    }
-
-                    writtenPaths.add(resourceFile.getAbsolutePath());
                 });
 
         return writtenPaths;
+    }
+
+    private static void checkPrerequisites(DbDto dbDto) {
+        requireNonNull(dbDto, "Full database information is required");
+        requireNonNull(dbDto.getStructure(), "Database structure information is required");
+        requireNonNull(dbDto.getData(), "Database contents are required");
+    }
+
+    private static String writeResourcesForLocale(DbResourceEnhancedDto.Locale locale, String topicLabel, DbResourceEnhancedDto resourceObject, String directoryPath) {
+        String localeCode = locale.getCode();
+        String resourceFileName = format("%s.%s", topicLabel, localeCode);
+        File resourceFile = new File(directoryPath, resourceFileName);
+
+        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(resourceFile.toPath(), StandardCharsets.UTF_16LE)) {
+
+            // Encoding
+            bufferedWriter.write("\uFEFF");
+
+            // Meta
+            writeAndEndWithCRLF(
+                    format(COMMENT_PATTERN, resourceFileName), bufferedWriter);
+            writeAndEndWithCRLF(
+                    format(COMMENT_INFO_PATTERN, "version", resourceObject.getVersion()), bufferedWriter);
+            writeAndEndWithCRLF(
+                    format(COMMENT_INFO_PATTERN, "categories", resourceObject.getCategoryCount()), bufferedWriter);
+
+            writeResourceLines(locale, resourceObject, bufferedWriter);
+
+        } catch (IOException ioe) {
+            throw new RuntimeException("Error occured while writing database", ioe);
+        }
+
+        return resourceFile.getAbsolutePath();
     }
 
     private static long writeAndEndWithCRLF(String text, BufferedWriter bufferedWriter) throws IOException {
@@ -212,6 +205,21 @@ public class DatabaseWriter {
         bufferedWriter.write("\r\n");
 
         return text.length() + 2;
+    }
+
+    private static void writeResourceLines(DbResourceEnhancedDto.Locale locale, DbResourceEnhancedDto resourceObject, BufferedWriter bufferedWriter) {
+        resourceObject.getEntries().stream()
+
+                .forEach((entry) -> entry.getItemForLocale(locale)
+
+                        .ifPresent((item) -> {
+                            try {
+                                writeAndEndWithCRLF(
+                                        format(RESOURCE_ENTRY_PATTERN, item.getValue(), entry.getReference()), bufferedWriter);
+                            } catch (IOException ioe) {
+                                throw new RuntimeException("Error occured while writing resource entry", ioe);
+                            }
+                        }));
     }
 
     private static long writePaddingForSizeMultipleOfEight(BufferedWriter bufferedWriter, long actualSize) throws IOException {
