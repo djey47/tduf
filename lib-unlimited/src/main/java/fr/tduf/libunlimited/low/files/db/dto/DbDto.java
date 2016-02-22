@@ -7,6 +7,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -59,6 +60,10 @@ public class DbDto implements Serializable {
 
         Topic(String label) {
             this.label = label;
+        }
+
+        public static Stream<Topic> valuesAsStream() {
+            return Stream.of(values());
         }
 
         /**
