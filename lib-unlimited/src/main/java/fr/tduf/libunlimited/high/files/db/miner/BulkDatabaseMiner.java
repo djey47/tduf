@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_REMOTE;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -195,7 +196,7 @@ public class BulkDatabaseMiner {
                     return Optional.of(potentialRefItem.get().getRawValue());
                 }
             }
-            return Optional.empty();
+            return empty();
         });
     }
 
@@ -273,14 +274,12 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     * V2
      * @param sourceEntryIndex : index of entry in source topic
      * @param sourceFieldRank  : rank of field to resolve resource
      * @param sourceTopic      : topic in TDU Database to search
      * @param locale           : language to be used when resolving resource
-     * @return full resource entry targeted by specified entry field.
+     * @return resource value targeted by specified entry field if it exists, empty otherwise
      */
-    // TODO test
     public Optional<String> getLocalizedResourceValueFromContentEntry(long sourceEntryIndex, int sourceFieldRank, DbDto.Topic sourceTopic, DbResourceEnhancedDto.Locale locale) {
         List<DbStructureDto.Field> sourceTopicStructureFields = getDatabaseTopic(sourceTopic).get().getStructure().getFields();
         return getContentEntryFromTopicWithInternalIdentifier(sourceEntryIndex, sourceTopic)
@@ -296,7 +295,7 @@ public class BulkDatabaseMiner {
                         String resourceReference = getRawValueAtEntryIndexAndRank(sourceTopic, sourceFieldRank, sourceEntryIndex);
                         return getLocalizedResourceValueFromTopicAndReference(resourceReference, targetTopic, locale);
                     }
-                    return Optional.empty();
+                    return empty();
                 });
     }
 
