@@ -28,9 +28,7 @@ import javafx.scene.input.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
@@ -268,6 +266,7 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     // TODO test after v2
+    // TODO Editing resource to populate missing localized value should be allowed
     private void updateResourcesStageData() {
         resourceData.clear();
 
