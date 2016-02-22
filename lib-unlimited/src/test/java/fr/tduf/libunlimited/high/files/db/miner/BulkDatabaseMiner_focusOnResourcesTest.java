@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BulkDatabaseMiner_focusOnResourcesTest {
 
     private static final DbDto.Topic TOPIC = CAR_PHYSICS_DATA;
+    private static final String RESOURCE_REF = "00000000";
 
     @Test
     public void getResourceEnhancedFromTopic_whenTopicExists_shouldReturnIt() {
@@ -37,14 +38,53 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     @Test
     public void getResourceEnhancedFromTopic_whenTopicDoesNotExist_shouldReturnEmpty() {
         //GIVEN
-        DbDto topicObject1 = createDefaultTopicObject(TOPIC);
-        List<DbDto> topicObjects = singletonList(topicObject1);
+        List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
 
         //WHEN
-        final Optional<DbResourceEnhancedDto> potentialResource = BulkDatabaseMiner.load(topicObjects).getResourceEnhancedFromTopic(TOPIC);
+        final Optional<DbResourceEnhancedDto> potentialResource = BulkDatabaseMiner.load(topicObjects).getResourceEnhancedFromTopic(PNJ);
 
         //THEN
         assertThat(potentialResource).isEmpty();
+    }
+
+    @Test
+    public void getResourceEntryFromTopicAndReference_whenTopicDoesNotExist_shouldReturnEmpty() {
+        //GIVEN
+        List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
+
+        //WHEN
+        final Optional<DbResourceEnhancedDto.Entry> potentialEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndReference(PNJ, RESOURCE_REF);
+
+        //THEN
+        assertThat(potentialEntry).isEmpty();
+    }
+
+    @Test
+    public void getResourceEntryFromTopicAndReference_whenTopicExists_butEntryDoesNot_shouldReturnEmpty() {
+        //GIVEN
+        List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
+
+        //WHEN
+        final Optional<DbResourceEnhancedDto.Entry> potentialEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REF);
+
+        //THEN
+        assertThat(potentialEntry).isEmpty();
+    }
+
+    @Test
+    public void getResourceEntryFromTopicAndReference_whenEntryExists_shouldReturnIt() {
+        //GIVEN
+        final DbDto topicObject = createDefaultTopicObject(TOPIC);
+        final DbResourceEnhancedDto.Entry entry = topicObject.getResource().addEntryByReference(RESOURCE_REF);
+        List<DbDto> topicObjects = singletonList(topicObject);
+
+        //WHEN
+        final Optional<DbResourceEnhancedDto.Entry> potentialEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REF);
+
+        //THEN
+        assertThat(potentialEntry)
+                .isPresent()
+                .contains(entry);
     }
 
     private static DbDto createDefaultTopicObject(DbDto.Topic topic) {

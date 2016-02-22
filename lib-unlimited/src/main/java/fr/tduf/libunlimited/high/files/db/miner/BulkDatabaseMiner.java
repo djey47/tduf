@@ -306,13 +306,8 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     * V2
-     *
-     * @param reference
-     * @param topic
-     * @return
+     * @return entry having given reference for specified topic, empty otherwise
      */
-    // TODO test
     public Optional<DbResourceEnhancedDto.Entry> getResourceEntryFromTopicAndReference(DbDto.Topic topic, String reference) {
         return getResourceEnhancedFromTopic(topic)
 
@@ -324,6 +319,7 @@ public class BulkDatabaseMiner {
      * @param reference            : unique identifier of resource
      * @return a set of corresponding values
      */
+    // TODO tests
     public static Set<String> getAllResourceValuesForReference(String reference, DbResourceEnhancedDto resourceObject) {
         return resourceObject.getEntryByReference(reference)
 
