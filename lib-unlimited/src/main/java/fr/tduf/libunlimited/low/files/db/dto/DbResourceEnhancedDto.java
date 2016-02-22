@@ -214,17 +214,20 @@ public class DbResourceEnhancedDto {
 
         /**
          * defines given value for every locale.
+         * @return current entry
          */
-        public void setValue(String value) {
+        public Entry setValue(String value) {
             Stream.of(Locale.values())
                     .forEach((locale) -> setValueForLocale(value, locale));
+
+            return this;
         }
 
-        // TODO return current entry to chain calls
         /**
          * defines given value for specified locale
+         * @return current entry
          */
-        public void setValueForLocale(String value, Locale locale) {
+        public Entry setValueForLocale(String value, Locale locale) {
             Optional<Item> potentialItem = getItemForLocale(locale);
 
             if (potentialItem.isPresent()) {
@@ -239,13 +242,18 @@ public class DbResourceEnhancedDto {
                         .build());
 
             }
+
+            return this;
         }
 
         /**
          * does nothing if value does not exist for given locale
+         * @return current entry
          */
-        public void removeValueForLocale(Locale locale) {
+        public Entry removeValueForLocale(Locale locale) {
             items.removeIf((item) -> item.locale == locale);
+
+            return this;
         }
 
         @JsonIgnore
