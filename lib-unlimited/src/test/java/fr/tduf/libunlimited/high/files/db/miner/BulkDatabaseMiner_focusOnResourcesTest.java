@@ -9,9 +9,11 @@ import org.junit.Test;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.PNJ;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.Arrays.asList;
@@ -263,11 +265,53 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
                 .contains(RESOURCE_VALUE);
     }
 
+    @Test
+    public void getAllResourceValuesForReference_whenEntryDoesNotExist_shouldReturnEmptySet() {
+        //GIVEN
+        DbResourceEnhancedDto resourceObject = createDefaultResourceObject();
+
+        //WHEN
+        final Set<String> actualValues = BulkDatabaseMiner.getAllResourceValuesForReference(RESOURCE_REF, resourceObject);
+
+        //THEN
+        assertThat(actualValues).isEmpty();
+    }
+
+    @Test
+    public void getAllResourceValuesForReference_whenEntryExists_withSameValueForItems_shouldReturnValueOnce() {
+        //GIVEN
+        DbResourceEnhancedDto resourceObject = createDefaultResourceObject();
+        resourceObject.addEntryByReference(RESOURCE_REF).setValue(RESOURCE_VALUE);
+
+        //WHEN
+        final Set<String> actualValues = BulkDatabaseMiner.getAllResourceValuesForReference(RESOURCE_REF, resourceObject);
+
+        //THEN
+        assertThat(actualValues)
+                .hasSize(1)
+                .containsOnly(RESOURCE_VALUE);
+    }
+
+    @Test
+    public void getAllResourceValuesForReference_whenEntryExists_withDifferentValuesForItems_shouldReturnValues() {
+        //GIVEN
+        DbResourceEnhancedDto resourceObject = createDefaultResourceObject();
+        resourceObject.addEntryByReference(RESOURCE_REF)
+                .setValue(RESOURCE_VALUE)
+                .setValueForLocale("VALUE2", FRANCE)
+                .setValueForLocale("VALUE3", UNITED_STATES);
+
+        //WHEN
+        final Set<String> actualValues = BulkDatabaseMiner.getAllResourceValuesForReference(RESOURCE_REF, resourceObject);
+
+        //THEN
+        assertThat(actualValues)
+                .hasSize(3)
+                .containsOnly(RESOURCE_VALUE, "VALUE2", "VALUE3");
+    }
+
     private static DbDto createDefaultTopicObject(DbDto.Topic topic) {
-        DbResourceEnhancedDto resourceObject = DbResourceEnhancedDto.builder()
-                .withCategoryCount(1)
-                .atVersion("1,0")
-                .build();
+        DbResourceEnhancedDto resourceObject = createDefaultResourceObject();
         DbStructureDto structureObject = DbStructureDto.builder()
                 .forTopic(topic)
                 .forReference(TOPIC_REF)
@@ -322,5 +366,12 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
                 .withStructure(structureObject)
                 .withResource(resourceObject)
                 .build();
+    }
+
+    private static DbResourceEnhancedDto createDefaultResourceObject() {
+        return DbResourceEnhancedDto.builder()
+                    .withCategoryCount(1)
+                    .atVersion("1,0")
+                    .build();
     }
 }

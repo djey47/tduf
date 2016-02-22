@@ -309,11 +309,8 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     * V2
-     * @param reference            : unique identifier of resource
-     * @return a set of corresponding values
+     * @return a set of corresponding values for exsiting entry
      */
-    // TODO tests
     public static Set<String> getAllResourceValuesForReference(String reference, DbResourceEnhancedDto resourceObject) {
         return resourceObject.getEntryByReference(reference)
 
