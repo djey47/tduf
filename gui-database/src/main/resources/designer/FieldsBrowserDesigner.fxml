@@ -28,6 +28,11 @@
                         <Tooltip text="Uses selected entries." />
                      </tooltip>
                   </Button>
+                  <Button layoutX="397.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleSelectAllFieldsButtonMouseClick" text="Use all">
+                     <tooltip>
+                        <Tooltip text="Uses selected entries." />
+                     </tooltip>
+                  </Button>
                </items>
             </ToolBar>
             <AnchorPane VBox.vgrow="ALWAYS">

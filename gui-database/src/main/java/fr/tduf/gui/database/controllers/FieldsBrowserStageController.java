@@ -57,6 +57,16 @@ public class FieldsBrowserStageController extends AbstractGuiController {
         closeWindow();
     }
 
+    @FXML
+    private void handleSelectAllFieldsButtonMouseClick() {
+        Log.trace(THIS_CLASS_NAME, "->handleSelectAllFieldsButtonMouseClick");
+
+        closeWindow();
+    }
+
+    /**
+     * @return list of selected fields to export, or empty if global export should be performed
+     */
     List<ContentFieldDataItem> initAndShowModalDialog(DbDto.Topic topic) {
         currentTopicProperty.setValue(topic);
 

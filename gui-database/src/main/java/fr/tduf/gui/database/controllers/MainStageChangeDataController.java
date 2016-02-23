@@ -23,11 +23,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.ALL;
 import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.fromCollection;
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
