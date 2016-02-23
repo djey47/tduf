@@ -2,6 +2,7 @@ package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.domain.DatabaseContext;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.JsonGateway;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
@@ -9,6 +10,8 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -27,15 +30,40 @@ public class LoadDatabaseStep extends GenericStep {
     protected void perform() throws IOException {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
 
-        String jsonDatabaseDirectory = Files.createTempDirectory("guiInstaller").toString();
-
-        unpackDatabaseToJson(jsonDatabaseDirectory);
-
-        // TODO check if all files have been created
+        String jsonDatabaseDirectory = handleCacheDirectory();
 
         List<DbDto> allTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseDirectory);
 
         setDatabaseContext(new DatabaseContext(allTopicObjects, jsonDatabaseDirectory));
+    }
+
+    // TODO simplify
+    String handleCacheDirectory() throws IOException {
+
+        Path realDatabasePath = Paths.get(getInstallerConfiguration().resolveDatabaseDirectory());
+
+        final Path cachePath = realDatabasePath.resolve("json-cache");
+        final String jsonDatabaseDirectory = cachePath.toString();
+        if (Files.exists(cachePath)) {
+            Path cacheTimestampFile = cachePath.resolve("last");
+
+            long lastRepackTime = 0;
+            if (Files.exists(cacheTimestampFile)) {
+                lastRepackTime = cacheTimestampFile.toFile().lastModified();
+            }
+
+            Path databaseBankFile = realDatabasePath.resolve("DB.bnk");
+            long databaseBankTime = databaseBankFile.toFile().lastModified();
+
+            if (databaseBankTime > lastRepackTime) {
+                unpackDatabaseToJson(jsonDatabaseDirectory);
+            }
+        } else {
+            FilesHelper.createDirectoryIfNotExists(jsonDatabaseDirectory);
+            unpackDatabaseToJson(jsonDatabaseDirectory);
+        }
+
+        return jsonDatabaseDirectory;
     }
 
     List<String> unpackDatabaseToJson(String jsonDatabaseDirectory) throws IOException {
