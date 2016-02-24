@@ -116,6 +116,7 @@ public class UpdateDatabaseStep extends GenericStep {
 
         PatchPropertiesReadWriteHelper.writePatchProperties(effectivePatchProperties, patchFile.getAbsolutePath());
 
+        // TODO handle no patch or many patches (NPE risk or properties erasure)
         setPatchProperties(effectivePatchProperties);
     }
 
