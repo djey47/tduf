@@ -93,10 +93,7 @@ public class LoadDatabaseStepTest {
 
     @Test
     public void handleCacheDirectory_whenNoCache_shouldUseBankSupportComponent_andReturnNewCacheDirectory() throws IOException {
-        // GIVEN
-
-
-        // WHEN
+        // GIVEN-WHEN
         LoadDatabaseStep loadDatabaseStep = (LoadDatabaseStep)
                 GenericStep.starterStep(configuration, null, null)
                         .nextStep(LOAD_DATABASE);
@@ -115,10 +112,7 @@ public class LoadDatabaseStepTest {
 
     @Test
     public void unpackDatabaseToJson_shouldCallBankSupportComponent() throws IOException, URISyntaxException {
-        // GIVEN
-
-
-        // WHEN
+        // GIVEN-WHEN
         LoadDatabaseStep loadDatabaseStep = (LoadDatabaseStep)
                 GenericStep.starterStep(configuration, null, null)
                         .nextStep(LOAD_DATABASE);

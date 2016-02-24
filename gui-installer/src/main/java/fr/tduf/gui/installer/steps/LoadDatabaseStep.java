@@ -37,29 +37,25 @@ public class LoadDatabaseStep extends GenericStep {
         setDatabaseContext(new DatabaseContext(allTopicObjects, jsonDatabaseDirectory));
     }
 
-    // TODO simplify
     String handleCacheDirectory() throws IOException {
 
         Path realDatabasePath = Paths.get(getInstallerConfiguration().resolveDatabaseDirectory());
 
         final Path cachePath = realDatabasePath.resolve("json-cache");
         final String jsonDatabaseDirectory = cachePath.toString();
+        long lastRepackTime = 0;
         if (Files.exists(cachePath)) {
             Path cacheTimestampFile = cachePath.resolve("last");
 
-            long lastRepackTime = 0;
             if (Files.exists(cacheTimestampFile)) {
                 lastRepackTime = cacheTimestampFile.toFile().lastModified();
             }
-
-            Path databaseBankFile = realDatabasePath.resolve("DB.bnk");
-            long databaseBankTime = databaseBankFile.toFile().lastModified();
-
-            if (databaseBankTime > lastRepackTime) {
-                unpackDatabaseToJson(jsonDatabaseDirectory);
-            }
         } else {
             FilesHelper.createDirectoryIfNotExists(jsonDatabaseDirectory);
+        }
+
+        long databaseBankTime = realDatabasePath.resolve("DB.bnk").toFile().lastModified();
+        if (databaseBankTime > lastRepackTime) {
             unpackDatabaseToJson(jsonDatabaseDirectory);
         }
 
