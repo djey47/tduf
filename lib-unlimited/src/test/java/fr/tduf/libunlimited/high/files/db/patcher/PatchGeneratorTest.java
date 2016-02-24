@@ -12,7 +12,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
