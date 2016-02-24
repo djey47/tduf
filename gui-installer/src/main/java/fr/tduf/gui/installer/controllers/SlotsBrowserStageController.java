@@ -19,8 +19,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.util.StringConverter;
 
 import java.util.Optional;
 
@@ -38,6 +40,9 @@ public class SlotsBrowserStageController extends AbstractGuiController {
     private Label instructionsLabel;
 
     @FXML
+    private TextField slotRefTextField;
+
+    @FXML
     TableView<VehicleSlotDataItem> slotsTableView;
 
     private VehicleSlotsHelper vehicleSlotsHelper;
@@ -48,7 +53,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
     private Property<DbDto.Topic> currentTopicProperty;
 
-    private Optional<VehicleSlotDataItem> selectedSlot;
+    private Property<Optional<VehicleSlotDataItem>> selectedSlotProperty;
 
     @Override
     public void init() {
@@ -61,7 +66,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
     private void handleCreateNewSlotHyperlinkAction(ActionEvent actionEvent) {
         Log.trace(THIS_CLASS_NAME, "->handleCreateNewSlotHyperlinkAction");
 
-        selectedSlot = empty();
+        selectedSlotProperty.setValue(empty());
 
         closeWindow();
     }
@@ -72,10 +77,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
         if (MouseButton.PRIMARY == mouseEvent.getButton()) {
             TableViewHelper.getMouseSelectedItem(mouseEvent, VehicleSlotDataItem.class)
-                    .ifPresent((item) -> {
-                        selectedSlot = of(item);
-                        closeWindow();
-                    });
+                    .ifPresent((item) -> selectedSlotProperty.setValue(of(item)));
         }
     }
 
@@ -85,6 +87,18 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
         askForReferenceAndSelectItem();
     }
+
+    @FXML
+    private void handleOkButtonAction() {
+        Log.trace(THIS_CLASS_NAME, "->handleOkButtonAction");
+
+        if (slotRefTextField.textProperty().getValue().isEmpty()) {
+            return;
+        }
+
+        closeWindow();
+    }
+
 
     /**
      * Creates and display dialog.
@@ -98,7 +112,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
         vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
 
-        selectedSlot = null;
+        selectedSlotProperty.setValue(empty());
 
         currentTopicProperty.setValue(CAR_PHYSICS_DATA);
 
@@ -108,11 +122,25 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
         showModalWindow();
 
-        return selectedSlot;
+        return selectedSlotProperty.getValue();
     }
 
     private void initHeaderPane() {
         currentTopicProperty = new SimpleObjectProperty<>();
+        selectedSlotProperty = new SimpleObjectProperty<>();
+
+        slotRefTextField.textProperty().bindBidirectional(selectedSlotProperty, new StringConverter<Optional<VehicleSlotDataItem>>() {
+            @Override
+            public String toString(Optional<VehicleSlotDataItem> object) {
+                return object.map((item) -> item.referenceProperty().get())
+                        .orElse("");
+            }
+
+            @Override
+            public Optional<VehicleSlotDataItem> fromString(String string) {
+                return null;
+            }
+        });
     }
 
     private void initTablePane() {
