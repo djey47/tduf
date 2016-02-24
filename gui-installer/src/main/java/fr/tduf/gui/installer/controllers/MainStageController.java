@@ -16,11 +16,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
@@ -55,6 +58,17 @@ public class MainStageController extends AbstractGuiController {
         }
 
         updateMagicMap();
+    }
+
+    @FXML
+    public void handleResetDatabaseCacheMenuItemAction(ActionEvent actionEvent) throws IOException, ReflectiveOperationException {
+        Log.trace(THIS_CLASS_NAME, "->handleResetDatabaseCacheMenuItemAction");
+
+        if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
+            return;
+        }
+
+        resetDatabaseCache();
     }
 
     @FXML
@@ -118,6 +132,22 @@ public class MainStageController extends AbstractGuiController {
 
         String magicMapFile = configuration.resolveMagicMapFile();
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE, DisplayConstants.MESSAGE_UPDATED_MAP, magicMapFile);
+    }
+
+    private void resetDatabaseCache() throws IOException, ReflectiveOperationException {
+        InstallerConfiguration configuration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
+                .withMainWindow(getWindow())
+                .build();
+
+        // TODO externalize to helper in lib
+        Path cachePath = Paths.get(configuration.resolveDatabaseDirectory()).resolve("json-cache");
+        final File cacheDirectory = cachePath.toFile();
+        if (cacheDirectory.exists()) {
+            FileUtils.deleteDirectory(cacheDirectory);
+        }
+
+        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE, DisplayConstants.MESSAGE_DELETED_CACHE, cacheDirectory.toString());
     }
 
     private void install() throws IOException, ReflectiveOperationException {

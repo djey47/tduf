@@ -25,7 +25,8 @@
                   <Separator orientation="VERTICAL" />
                   <MenuButton mnemonicParsing="false" text="Advanced...">
                     <items>
-                      <MenuItem fx:id="updateMagicMapMenuItem" mnemonicParsing="false" onAction="#handleUpdateMagicMapMenuItemAction" text="Update Magic Map" />
+                      <MenuItem mnemonicParsing="false" onAction="#handleUpdateMagicMapMenuItemAction" text="Update Magic Map" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleResetDatabaseCacheMenuItemAction" text="Reset database cache" />
                     </items>
                   </MenuButton>
               </items>
