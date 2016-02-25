@@ -163,18 +163,12 @@ public class UpdateDatabaseStep extends GenericStep {
         final File lastFile = lastFilePath.toFile();
         if(lastFile.exists()) {
             Log.debug(THIS_CLASS_NAME, "Database cache timestamp exists, last update: " + lastFile.lastModified());
-
-            // Arbitray adds one second to fight against second-rounding of time in some file systems
-            final long now = System.currentTimeMillis() + 1000;
-            assert lastFile.setLastModified(now);
-
-            Log.debug(THIS_CLASS_NAME, "Database cache timestamp updated to " + now);
-        } else {
-            Log.debug(THIS_CLASS_NAME, "Database cache timestamp does not exist, will be created");
-
-            Files.createDirectories(cacheDirectoryPath);
-            Files.createFile(lastFilePath);
+            Files.delete(lastFilePath);
         }
+
+        Files.createDirectories(cacheDirectoryPath);
+        Files.createFile(lastFilePath);
+        Log.debug(THIS_CLASS_NAME, "Database cache timestamp recreated at " + System.currentTimeMillis());
     }
 
     private static SlotsBrowserStageController initSlotsBrowserController(Window mainWindow) throws IOException {

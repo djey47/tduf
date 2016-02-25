@@ -109,6 +109,7 @@ public class UpdateDatabaseStepTest {
         final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
                 GenericStep.starterStep(configuration, databaseContext, null)
                         .nextStep(UPDATE_DATABASE));
+        Thread.sleep(1000);
         updateDatabaseStep.repackJsonDatabase();
 
         // THEN
