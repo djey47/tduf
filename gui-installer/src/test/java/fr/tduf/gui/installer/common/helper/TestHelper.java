@@ -16,10 +16,12 @@ import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelpe
 /**
  * Static class providing useful methods for testing.
  */
+// TODO migrate to common test lib
 public class TestHelper {
 
     private static final Class<TestHelper> thisClass = TestHelper.class;
 
+    // TODO create methods for various origins
     public static String createTempDirectory() throws IOException {
         return Files.createTempDirectory("guiInstaller-tests").toString();
     }
