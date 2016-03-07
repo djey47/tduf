@@ -119,11 +119,12 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         Set<IntegrityError> integrityErrors = new HashSet<>();
         Map<String, Integer> resourceValueCounter = new HashMap<>();
 
-        final Optional<DbResourceEnhancedDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(sourceTopic, reference);
+        DbDto.Topic currentTopic = topicObject.getTopic();
+        final Optional<DbResourceEnhancedDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(currentTopic, reference);
         if (potentialResourceEntry.isPresent()) {
             final DbResourceEnhancedDto.Entry resourceEntry = potentialResourceEntry.get();
 
-            checkForMissingLocalizedValues(resourceEntry, sourceTopic, topicObject.getTopic(), integrityErrors);
+            checkForMissingLocalizedValues(resourceEntry, sourceTopic, currentTopic, integrityErrors);
 
             if (globalizedResource) {
                 countResourceValues(resourceEntry, resourceValueCounter);
@@ -132,8 +133,8 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         } else {
             Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
             informations.put(SOURCE_TOPIC, sourceTopic);
-            if (sourceTopic != topicObject.getTopic()) {
-                informations.put(REMOTE_TOPIC, topicObject.getTopic());
+            if (sourceTopic != currentTopic) {
+                informations.put(REMOTE_TOPIC, currentTopic);
             }
             informations.put(REFERENCE, reference);
 
@@ -144,6 +145,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
             );
         }
 
+        // TODO simplify: merge with countResourceValues()
         if (globalizedResource) {
             checkResourceValuesForReference(reference, sourceTopic, integrityErrors, resourceValueCounter);
         }
