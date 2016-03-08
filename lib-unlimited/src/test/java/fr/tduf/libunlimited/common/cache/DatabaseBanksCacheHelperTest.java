@@ -13,8 +13,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
+import static java.lang.Long.valueOf;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -47,8 +50,8 @@ public class DatabaseBanksCacheHelperTest {
     public void unpackDatabaseToJsonWithCacheSupport_whenCachePresentAndBankFilesOlder_shouldNotUseBankSupportComponent_andReturnCacheDirectory() throws IOException {
         // GIVEN
         final Path cachePath = createCacheDirectory();
-        final File lastFile = Files.createFile(cachePath.resolve("last")).toFile();
-        long originalTimestamp = lastFile.lastModified();
+        long originalTimestamp = System.currentTimeMillis();
+        final File lastFile = initCacheTimestamp(originalTimestamp).toFile();
 
 
         // WHEN
@@ -60,14 +63,13 @@ public class DatabaseBanksCacheHelperTest {
 
         assertThat(jsonDirectory).isEqualTo(cachePath.toString());
 
-        assertThat(lastFile).exists();
-        assertThat(lastFile.lastModified()).isEqualTo(originalTimestamp);
+        assertLastFileUntouched(lastFile.toPath(), originalTimestamp);
     }
 
     @Test
     public void unpackDatabaseToJsonWithCacheSupport_whenCachePresentAndBankFilesNewer_shouldUseBankSupportComponent_andReturnCacheDirectory() throws IOException {
         // GIVEN
-        final Path cachePath = initCacheTimestamp();
+        final Path cachePath = initCacheTimestamp(0);
 
 
         // WHEN
@@ -81,7 +83,7 @@ public class DatabaseBanksCacheHelperTest {
 
         assertThat(jsonDirectory).isEqualTo(cachePath.toString());
 
-        assertLastFileUpdated(cachePath);
+        assertLastFileUpdated(cachePath, 0);
     }
 
     @Test
@@ -99,7 +101,7 @@ public class DatabaseBanksCacheHelperTest {
         assertThat(jsonDirectory).isEqualTo(cachePath.toString());
         assertThat(cachePath.toFile()).exists();
 
-        assertLastFileUpdated(cachePath);
+        assertLastFileUpdated(cachePath, -1);
     }
 
     @Test
@@ -157,19 +159,19 @@ public class DatabaseBanksCacheHelperTest {
         DatabaseBanksCacheHelper.updateCacheDirectory(Paths.get(databaseDirectory));
 
         // THEN
-        assertLastFileUpdated(Paths.get(databaseDirectory).resolve("json-cache"));
+        assertLastFileUpdated(Paths.get(databaseDirectory).resolve("json-cache"), -1);
     }
 
     @Test
     public void updateCacheDirectory_whenCacheExists_shouldUpdateTimestampInLastFile() throws IOException {
         // GIVEN
-        Path cachePath = initCacheTimestamp();
+        Path cachePath = initCacheTimestamp(0);
 
         // WHEN
         DatabaseBanksCacheHelper.updateCacheDirectory(Paths.get(databaseDirectory));
 
         // THEN
-        assertLastFileUpdated(cachePath);
+        assertLastFileUpdated(cachePath, 0);
     }
 
     @Test
@@ -185,9 +187,10 @@ public class DatabaseBanksCacheHelperTest {
         assertThat(actualPath.getFileName()).isEqualTo(Paths.get("json-cache"));
     }
 
-    private Path initCacheTimestamp() throws IOException {
+    private Path initCacheTimestamp(long time) throws IOException {
         final Path cachePath = createCacheDirectory();
-        assert Files.createFile(cachePath.resolve("last")).toFile().setLastModified(0);
+        final Path lastFilePath = cachePath.resolve("last");
+        Files.write(lastFilePath, singletonList(valueOf(time).toString()), StandardOpenOption.CREATE_NEW);
 
         return cachePath;
     }
@@ -197,10 +200,24 @@ public class DatabaseBanksCacheHelperTest {
         return Files.createDirectories(cachePath);
     }
 
-    private static void assertLastFileUpdated(Path cachePath) {
+    private static File assertLastFileExists(Path cachePath) {
         final File lastFile = cachePath.resolve("last").toFile();
         assertThat(lastFile).exists();
-        assertThat(lastFile.lastModified()).isGreaterThan(0);
+        return lastFile;
+    }
+
+    private static void assertLastFileUpdated(Path cachePath, long initialTime) throws IOException {
+        final File lastFile = assertLastFileExists(cachePath);
+
+        String timestamp = Files.readAllLines(lastFile.toPath()).get(0);
+        assertThat(valueOf(timestamp)).isGreaterThan(initialTime);
+    }
+
+    private static void assertLastFileUntouched(Path cachePath, long initialTime) throws IOException {
+        final File lastFile = assertLastFileExists(cachePath);
+
+        String timestamp = Files.readAllLines(lastFile.toPath()).get(0);
+        assertThat(valueOf(timestamp)).isEqualTo(initialTime);
     }
 
     private void verifyBankSupportComponentUsage(Path databasePath) throws IOException {
