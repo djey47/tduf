@@ -117,7 +117,6 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
 
     private Set<IntegrityError> checkResourceReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic, boolean globalizedResource) {
         Set<IntegrityError> integrityErrors = new HashSet<>();
-        Map<String, Integer> resourceValueCounter = new HashMap<>();
 
         DbDto.Topic currentTopic = topicObject.getTopic();
         final Optional<DbResourceEnhancedDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(currentTopic, reference);
@@ -127,7 +126,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
             checkForMissingLocalizedValues(resourceEntry, sourceTopic, currentTopic, integrityErrors);
 
             if (globalizedResource) {
-                countResourceValues(resourceEntry, resourceValueCounter);
+                checkResourceValuesForReference(resourceEntry, sourceTopic, integrityErrors);
             }
 
         } else {
@@ -143,11 +142,6 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
                     .addInformations(informations)
                     .build()
             );
-        }
-
-        // TODO simplify: merge with countResourceValues()
-        if (globalizedResource) {
-            checkResourceValuesForReference(reference, sourceTopic, integrityErrors, resourceValueCounter);
         }
 
         return integrityErrors;
@@ -232,14 +226,6 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         );
     }
 
-    private static void countResourceValues(DbResourceEnhancedDto.Entry resourceEntry, Map<String, Integer> resourceValueCounter) {
-        resourceEntry.getPresentLocales()
-                .forEach((presentLocale) -> {
-                    final Optional<String> resourceValue = resourceEntry.getValueForLocale(presentLocale);
-                    updateResourceValueCounter(resourceValueCounter, resourceValue.get());
-                });
-    }
-
     private static void updateResourceValueCounter(Map<String, Integer> resourceValueCounter, String resourceValue) {
         int valueCount = 0;
         if (resourceValueCounter.containsKey(resourceValue)) {
@@ -248,11 +234,18 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         resourceValueCounter.put(resourceValue, ++valueCount);
     }
 
-    private static void checkResourceValuesForReference(String reference, DbDto.Topic sourceTopic, Set<IntegrityError> integrityErrors, Map<String, Integer> resourceValueCounter) {
+    private static void checkResourceValuesForReference(DbResourceEnhancedDto.Entry resourceEntry, DbDto.Topic sourceTopic, Set<IntegrityError> integrityErrors) {
+        Map<String, Integer> resourceValueCounter = new HashMap<>();
+        resourceEntry.getPresentLocales()
+                .forEach((presentLocale) -> {
+                    final Optional<String> resourceValue = resourceEntry.getValueForLocale(presentLocale);
+                    updateResourceValueCounter(resourceValueCounter, resourceValue.get());
+                });
+
         if (resourceValueCounter.size() > 1) {
             Map<IntegrityError.ErrorInfoEnum, Object> informations = new HashMap<>();
             informations.put(SOURCE_TOPIC, sourceTopic);
-            informations.put(REFERENCE, reference);
+            informations.put(REFERENCE, resourceEntry.getReference());
             informations.put(PER_VALUE_COUNT, resourceValueCounter);
 
             integrityErrors.add(IntegrityError.builder()
