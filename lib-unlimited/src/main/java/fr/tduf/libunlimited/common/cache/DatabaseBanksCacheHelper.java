@@ -48,6 +48,7 @@ public class DatabaseBanksCacheHelper {
         long databaseBankTime = realDatabasePath.resolve("DB.bnk").toFile().lastModified();
         if (databaseBankTime > lastRepackTime) {
             unpackDatabaseToJson(realDatabasePath.toString(), jsonDatabaseDirectory, bankSupport);
+            updateCacheDirectory(realDatabasePath);
         }
 
         return jsonDatabaseDirectory;
