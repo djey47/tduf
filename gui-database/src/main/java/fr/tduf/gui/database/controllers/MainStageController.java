@@ -21,6 +21,10 @@ import fr.tduf.gui.database.factory.EntryCellFactory;
 import fr.tduf.gui.database.stages.EntriesDesigner;
 import fr.tduf.gui.database.stages.FieldsBrowserDesigner;
 import fr.tduf.gui.database.stages.ResourcesDesigner;
+import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
+import fr.tduf.libunlimited.common.helper.CommandLineHelper;
+import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
@@ -49,6 +53,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static java.util.Optional.empty;
@@ -174,7 +181,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleLoadButtonMouseClick() {
+    public void handleLoadButtonMouseClick() throws IOException {
         Log.trace(THIS_CLASS_NAME, "->handleLoadButtonMouseClick");
 
         String databaseLocation = this.databaseLocationTextField.getText();
@@ -619,8 +626,12 @@ public class MainStageController extends AbstractGuiController {
         }
     }
 
-    private void loadDatabaseFromDirectory(String databaseLocation) {
-        databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(databaseLocation);
+    private void loadDatabaseFromDirectory(String databaseLocation) throws IOException {
+        String jsonDatabaseLocation = resolveJsonDatabaseLocation(databaseLocation);
+
+        Log.debug(THIS_CLASS_NAME, "jsonDatabaseLocation=" + jsonDatabaseLocation);
+
+        databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseLocation);
         if (!databaseObjects.isEmpty()) {
             databaseMiner = BulkDatabaseMiner.load(databaseObjects);
 
@@ -805,6 +816,16 @@ public class MainStageController extends AbstractGuiController {
                 DisplayConstants.LABEL_SEARCH_ENTRY)
 
                 .ifPresent((entryReference) -> viewDataController.switchToEntryWithReference(entryReference, currentTopicProperty.getValue()));
+    }
+
+    private static String resolveJsonDatabaseLocation(String realDatabaseLocation) throws IOException {
+        final BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
+        final Path realDatabasePath = Paths.get(realDatabaseLocation);
+        boolean isPackedDatabase = Files.exists(realDatabasePath.resolve("DB.bnk"))
+                && Files.exists(realDatabasePath.resolve("DB_US.bnk"));
+        return isPackedDatabase ?
+                DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(realDatabasePath, bankSupport) :
+                realDatabaseLocation;
     }
 
     public DbDto getCurrentTopicObject() {
