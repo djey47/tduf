@@ -94,8 +94,8 @@ public class UpdateDatabaseStep extends GenericStep {
 
         String databaseDirectory = getInstallerConfiguration().resolveDatabaseDirectory();
 
+        // TODO use lib instead
         DatabaseBankHelper.repackDatabaseFromDirectory(extractedDatabaseDirectory, databaseDirectory, Optional.of(jsonDatabaseDirectory), getInstallerConfiguration().getBankSupport());
-
         handleCacheDirectory(databaseDirectory);
 
         Log.info(THIS_CLASS_NAME, "->Repacked database: " + extractedDatabaseDirectory + " to " + databaseDirectory);
