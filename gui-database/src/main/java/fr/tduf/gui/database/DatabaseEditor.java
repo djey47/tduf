@@ -20,7 +20,7 @@ public class DatabaseEditor extends Application {
     public void start(Stage primaryStage) throws Exception {
         parameters = getParameters().getUnnamed();
 
-        Log.set(LEVEL_INFO);
+        Log.set(Log.LEVEL_DEBUG);
 
         MainStageDesigner.init(primaryStage);
         primaryStage.show();
