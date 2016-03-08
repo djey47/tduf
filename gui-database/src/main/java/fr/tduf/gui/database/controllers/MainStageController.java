@@ -71,6 +71,8 @@ import static javafx.scene.control.Alert.AlertType.INFORMATION;
 public class MainStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = MainStageController.class.getSimpleName();
 
+    private final BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
+
     private DynamicFieldControlsHelper dynamicFieldControlsHelper;
     private DynamicLinkControlsHelper dynamicLinkControlsHelper;
     private DialogsHelper dialogsHelper;
@@ -627,7 +629,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void loadDatabaseFromDirectory(String databaseLocation) throws IOException {
-        String jsonDatabaseLocation = resolveJsonDatabaseLocationAndUnpack(databaseLocation);
+        String jsonDatabaseLocation = resolveJsonDatabaseLocationAndUnpack(databaseLocation, bankSupport);
         Log.debug(THIS_CLASS_NAME, "jsonDatabaseLocation=" + jsonDatabaseLocation);
 
         databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseLocation);
@@ -648,7 +650,6 @@ public class MainStageController extends AbstractGuiController {
         DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects, jsonDatabaseLocation);
 
         if(!Paths.get(databaseLocation).toAbsolutePath().equals(Paths.get(jsonDatabaseLocation).toAbsolutePath())) {
-            final BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
             DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(Paths.get(databaseLocation), bankSupport);
         }
 
@@ -825,9 +826,7 @@ public class MainStageController extends AbstractGuiController {
                 .ifPresent((entryReference) -> viewDataController.switchToEntryWithReference(entryReference, currentTopicProperty.getValue()));
     }
 
-    private static String resolveJsonDatabaseLocationAndUnpack(String realDatabaseLocation) throws IOException {
-        // TODO externalize BankSupport and pass it
-        final BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
+    private static String resolveJsonDatabaseLocationAndUnpack(String realDatabaseLocation, BankSupport bankSupport) throws IOException {
         final Path realDatabasePath = Paths.get(realDatabaseLocation);
         return isPackedDatabase(realDatabasePath) ?
                 DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(realDatabasePath, bankSupport) :
