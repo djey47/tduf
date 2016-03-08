@@ -14,15 +14,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.UPDATE_DATABASE;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UpdateDatabaseStepTest {
@@ -61,65 +54,5 @@ public class UpdateDatabaseStepTest {
         updateDatabaseStep.applyPatches();
 
         // THEN
-    }
-
-    @Test
-    public void repackJsonDatabasewhenCacheInfoDoesNotExist__shouldCallBankSupportComponent_andSetTimestamp() throws IOException, ReflectiveOperationException {
-        // GIVEN
-        TestHelper.createFakeDatabase(databaseContext.getJsonDatabaseDirectory(), "original-");
-        InstallerConfiguration configuration = createConfigurationForUnpacking();
-
-        // WHEN
-        final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
-                GenericStep.starterStep(configuration, databaseContext, null)
-                        .nextStep(UPDATE_DATABASE));
-        updateDatabaseStep.repackJsonDatabase();
-
-        // THEN
-        Path databasePath = TestHelper.getTduDatabasePath(tempDirectory);
-        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB.bnk").toString()));
-        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_CH.bnk").toString()));
-        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_FR.bnk").toString()));
-        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_GE.bnk").toString()));
-        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_KO.bnk").toString()));
-        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_IT.bnk").toString()));
-        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_JA.bnk").toString()));
-        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_SP.bnk").toString()));
-        verify(bankSupportMock).packAll(anyString(), eq(databasePath.resolve("DB_US.bnk").toString()));
-        verifyNoMoreInteractions(bankSupportMock);
-
-        Path lastFilePath = databasePath.resolve("json-cache").resolve("last");
-        final File lastFile = lastFilePath.toFile();
-        assertThat(lastFile).exists();
-    }
-
-    @Test
-    public void repackJsonDatabase_whenCacheInfoExists_shouldUpdateTimestamp() throws IOException, ReflectiveOperationException, InterruptedException {
-        // GIVEN
-        final Path tduDatabasePath = TestHelper.getTduDatabasePath(tempDirectory);
-        Path lastFilePath = tduDatabasePath.resolve("json-cache").resolve("last");
-        Files.createDirectories(lastFilePath.getParent());
-        Files.createFile(lastFilePath);
-        long initialTimestamp = lastFilePath.toFile().lastModified();
-
-        TestHelper.createFakeDatabase(databaseContext.getJsonDatabaseDirectory(), "original-");
-        InstallerConfiguration configuration = createConfigurationForUnpacking();
-
-        // WHEN
-        final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
-                GenericStep.starterStep(configuration, databaseContext, null)
-                        .nextStep(UPDATE_DATABASE));
-        Thread.sleep(1000);
-        updateDatabaseStep.repackJsonDatabase();
-
-        // THEN
-        assertThat(lastFilePath.toFile().lastModified()).isGreaterThan(initialTimestamp);
-    }
-
-    private InstallerConfiguration createConfigurationForUnpacking() {
-        return InstallerConfiguration.builder()
-                    .withTestDriveUnlimitedDirectory(tempDirectory)
-                    .usingBankSupport(bankSupportMock)
-                    .build();
     }
 }
