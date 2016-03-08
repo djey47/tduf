@@ -34,7 +34,7 @@ public class DatabaseBanksCacheHelper {
     // TODO replace lastModified time method by timestamp written in 'last' file
     public static String unpackDatabaseToJsonWithCacheSupport(Path realDatabasePath, BankSupport bankSupport) throws IOException {
         // TODO externalize directory and file names to constants
-        final Path cachePath = realDatabasePath.resolve("json-cache");
+        final Path cachePath = resolveCachePath(realDatabasePath);
         final String jsonDatabaseDirectory = cachePath.toString();
         long lastRepackTime = 0;
         if (Files.exists(cachePath)) {
@@ -63,7 +63,7 @@ public class DatabaseBanksCacheHelper {
      * @throws IOException
      */
     public static void repackDatabaseFromJsonWithCacheSupport(Path realDatabasePath, BankSupport bankSupport) throws IOException {
-        final String jsonDatabaseDirectory = realDatabasePath.resolve("json-cache").toString();
+        final String jsonDatabaseDirectory = resolveCachePath(realDatabasePath).toString();
 
         repackJsonDatabase(jsonDatabaseDirectory, realDatabasePath.toString(), bankSupport);
 
@@ -77,7 +77,7 @@ public class DatabaseBanksCacheHelper {
      */
     // TODO replace lastModified time method by timestamp written in 'last' file
     public static void updateCacheDirectory(Path realDatabasePath) throws IOException {
-        Path cacheDirectoryPath = realDatabasePath.resolve("json-cache");
+        Path cacheDirectoryPath = resolveCachePath(realDatabasePath);
         Path lastFilePath = cacheDirectoryPath.resolve("last");
 
         final File lastFile = lastFilePath.toFile();
@@ -89,6 +89,13 @@ public class DatabaseBanksCacheHelper {
         Files.createDirectories(cacheDirectoryPath);
         Files.createFile(lastFilePath);
         Log.debug(THIS_CLASS_NAME, "Database cache timestamp recreated at " + System.currentTimeMillis());
+    }
+
+    /**
+     * @return path of JSON database cache
+     */
+    public static Path resolveCachePath(Path databasePath) {
+        return databasePath.resolve("json-cache");
     }
 
     private static List<String> unpackDatabaseToJson(String databaseDirectory, String jsonDatabaseDirectory, BankSupport bankSupport) throws IOException {

@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
-import static org.assertj.core.api.StrictAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -170,6 +170,19 @@ public class DatabaseBanksCacheHelperTest {
 
         // THEN
         assertLastFileUpdated(cachePath);
+    }
+
+    @Test
+    public void resolveCachePath() {
+        // GIVEN
+        final Path databasePath = Paths.get("/home/djey/tdu/db/");
+
+        // WHEN
+        final Path actualPath = DatabaseBanksCacheHelper.resolveCachePath(databasePath);
+
+        // THEN
+        assertThat(actualPath.getParent()).isEqualTo(databasePath);
+        assertThat(actualPath.getFileName()).isEqualTo(Paths.get("json-cache"));
     }
 
     private Path initCacheTimestamp() throws IOException {
