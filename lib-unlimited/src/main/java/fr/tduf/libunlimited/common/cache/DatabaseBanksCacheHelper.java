@@ -15,6 +15,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.createTempDirectory;
+
 /**
  * Helper class to handle caching over database banks and JSON files (prevents from unpacking when unmodified banks)
  */
@@ -55,6 +57,20 @@ public class DatabaseBanksCacheHelper {
     }
 
     /**
+     *
+     * @param realDatabasePath  : TDU database path
+     * @param bankSupport       : component to handle TDU banks
+     * @throws IOException
+     */
+    public static void repackDatabaseFromJsonWithCacheSupport(Path realDatabasePath, BankSupport bankSupport) throws IOException {
+        final String jsonDatabaseDirectory = realDatabasePath.resolve("json-cache").toString();
+
+        repackJsonDatabase(jsonDatabaseDirectory, realDatabasePath.toString(), bankSupport);
+
+        updateCacheDirectory(realDatabasePath);
+    }
+
+    /**
      * Updates timestamp to match last date when database was repacked
      * @param realDatabasePath  : TDU database path
      * @throws IOException
@@ -88,5 +104,19 @@ public class DatabaseBanksCacheHelper {
         Log.info(THIS_CLASS_NAME, "->Prepared JSON database directory: " + jsonDatabaseDirectory);
 
         return jsonFiles;
+    }
+
+    private static void repackJsonDatabase(String jsonDatabaseDirectory, String databaseDirectory, BankSupport bankSupport) throws IOException {
+        Log.info(THIS_CLASS_NAME, "->Converting JSON database: " + jsonDatabaseDirectory);
+
+        String extractedDatabaseDirectory = createTempDirectory();
+
+        JsonGateway.gen(jsonDatabaseDirectory, extractedDatabaseDirectory, new ArrayList<>());
+
+        Log.info(THIS_CLASS_NAME, "->Converted TDU database directory: " + extractedDatabaseDirectory);
+
+        DatabaseBankHelper.repackDatabaseFromDirectory(extractedDatabaseDirectory, databaseDirectory, Optional.of(jsonDatabaseDirectory), bankSupport);
+
+        Log.info(THIS_CLASS_NAME, "->Repacked database: " + extractedDatabaseDirectory + " to " + databaseDirectory);
     }
 }

@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.common.cache;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,15 +14,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static org.assertj.core.api.StrictAssertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatabaseBanksCacheHelperTest {
+
+    private static final Class<DatabaseBanksCacheHelperTest> thisClass = DatabaseBanksCacheHelperTest.class;
 
     @Mock
     private BankSupport bankSupportMock;
@@ -37,6 +39,8 @@ public class DatabaseBanksCacheHelperTest {
         databaseDirectory = Paths.get(tempDirectory, "Euro", "Bnk", "Database").toString();
 
         createFakeDatabase(databaseDirectory, "");
+
+        Log.set(Log.LEVEL_INFO);
     }
 
     @Test
@@ -96,6 +100,55 @@ public class DatabaseBanksCacheHelperTest {
         assertThat(cachePath.toFile()).exists();
 
         assertLastFileUpdated(cachePath);
+    }
+
+    @Test
+    public void repackDatabaseFromJsonWithCacheSupport_whenCacheInfoDoesNotExist_shouldCallBankSupportComponent_andSetTimestamp() throws IOException, ReflectiveOperationException {
+        // GIVEN
+        createCacheDirectory();
+        String jsonDatabaseDirectory = createJsonDatabase(databaseDirectory);
+        createFakeDatabase(jsonDatabaseDirectory, "original-");
+        final Path tduDatabasePath = getTduDatabasePath(tempDirectory);
+
+        // WHEN
+        DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(tduDatabasePath, bankSupportMock);
+
+        // THEN
+        verify(bankSupportMock).packAll(anyString(), eq(tduDatabasePath.resolve("DB.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(tduDatabasePath.resolve("DB_CH.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(tduDatabasePath.resolve("DB_FR.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(tduDatabasePath.resolve("DB_GE.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(tduDatabasePath.resolve("DB_KO.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(tduDatabasePath.resolve("DB_IT.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(tduDatabasePath.resolve("DB_JA.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(tduDatabasePath.resolve("DB_SP.bnk").toString()));
+        verify(bankSupportMock).packAll(anyString(), eq(tduDatabasePath.resolve("DB_US.bnk").toString()));
+        verifyNoMoreInteractions(bankSupportMock);
+
+        Path lastFilePath = tduDatabasePath.resolve("json-cache").resolve("last");
+        final File lastFile = lastFilePath.toFile();
+        assertThat(lastFile).exists();
+    }
+
+    @Test
+    public void repackDatabaseFromJsonWithCacheSupport_whenCacheInfoExists_shouldUpdateTimestamp() throws IOException, ReflectiveOperationException, InterruptedException {
+        // GIVEN
+        createCacheDirectory();
+        String jsonDatabaseDirectory = createJsonDatabase(databaseDirectory);
+        final Path tduDatabasePath = getTduDatabasePath(tempDirectory);
+        Path lastFilePath = tduDatabasePath.resolve("json-cache").resolve("last");
+        Files.createDirectories(lastFilePath.getParent());
+        Files.createFile(lastFilePath);
+        long initialTimestamp = lastFilePath.toFile().lastModified();
+
+        createFakeDatabase(jsonDatabaseDirectory, "original-");
+
+        // WHEN
+        Thread.sleep(1000);
+        DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(tduDatabasePath, bankSupportMock );
+
+        // THEN
+        assertThat(lastFilePath.toFile().lastModified()).isGreaterThan(initialTimestamp);
     }
 
     @Test
@@ -167,5 +220,26 @@ public class DatabaseBanksCacheHelperTest {
         Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_JA.bnk"));
         Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_SP.bnk"));
         Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_US.bnk"));
+    }
+
+    private static String createJsonDatabase(String realDatabaseDirectory) throws IOException {
+        Path jsonDatabasePath = Paths.get(realDatabaseDirectory, "json-cache");
+
+        Path originalJsonDatabasePath = Paths.get(thisClass.getResource("/db/json").getFile());
+        Files.walk(originalJsonDatabasePath, 1)
+
+                .filter((path) -> Files.isRegularFile(path))
+
+                .filter((path) -> EXTENSION_JSON.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+
+                .forEach((path) -> {
+                    try {
+                        Files.copy(path, jsonDatabasePath.resolve(path.getFileName()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+        return jsonDatabasePath.toString();
     }
 }
