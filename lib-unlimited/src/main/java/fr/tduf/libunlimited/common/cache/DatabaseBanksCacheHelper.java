@@ -23,6 +23,8 @@ import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelpe
 public class DatabaseBanksCacheHelper {
 
     private static final String THIS_CLASS_NAME = DatabaseBanksCacheHelper.class.getSimpleName();
+    private static final String DIRECTORY_JSON_CACHE = "json-cache";
+    private static final String FILE_LAST_MODIFIED = "last";
 
     /**
      * Extracts TDU database banks only if necessary (DB.BNK file last modified time > 'last' file or 'last' file not found )
@@ -33,12 +35,11 @@ public class DatabaseBanksCacheHelper {
      */
     // TODO replace lastModified time method by timestamp written in 'last' file
     public static String unpackDatabaseToJsonWithCacheSupport(Path realDatabasePath, BankSupport bankSupport) throws IOException {
-        // TODO externalize directory and file names to constants
         final Path cachePath = resolveCachePath(realDatabasePath);
         final String jsonDatabaseDirectory = cachePath.toString();
         long lastRepackTime = 0;
         if (Files.exists(cachePath)) {
-            Path cacheTimestampFile = cachePath.resolve("last");
+            Path cacheTimestampFile = resolveLastFilePath(realDatabasePath);
 
             if (Files.exists(cacheTimestampFile)) {
                 lastRepackTime = cacheTimestampFile.toFile().lastModified();
@@ -77,8 +78,8 @@ public class DatabaseBanksCacheHelper {
      */
     // TODO replace lastModified time method by timestamp written in 'last' file
     public static void updateCacheDirectory(Path realDatabasePath) throws IOException {
-        Path cacheDirectoryPath = resolveCachePath(realDatabasePath);
-        Path lastFilePath = cacheDirectoryPath.resolve("last");
+        Path cachePath = resolveCachePath(realDatabasePath);
+        Path lastFilePath = resolveLastFilePath(realDatabasePath);
 
         final File lastFile = lastFilePath.toFile();
         if(lastFile.exists()) {
@@ -86,7 +87,7 @@ public class DatabaseBanksCacheHelper {
             Files.delete(lastFilePath);
         }
 
-        Files.createDirectories(cacheDirectoryPath);
+        Files.createDirectories(cachePath);
         Files.createFile(lastFilePath);
         Log.debug(THIS_CLASS_NAME, "Database cache timestamp recreated at " + System.currentTimeMillis());
     }
@@ -95,7 +96,11 @@ public class DatabaseBanksCacheHelper {
      * @return path of JSON database cache
      */
     public static Path resolveCachePath(Path databasePath) {
-        return databasePath.resolve("json-cache");
+        return databasePath.resolve(DIRECTORY_JSON_CACHE);
+    }
+
+    private static Path resolveLastFilePath(Path databasePath) {
+        return resolveCachePath(databasePath).resolve(FILE_LAST_MODIFIED);
     }
 
     private static List<String> unpackDatabaseToJson(String databaseDirectory, String jsonDatabaseDirectory, BankSupport bankSupport) throws IOException {
