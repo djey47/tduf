@@ -193,7 +193,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleSaveButtonMouseClick() {
+    public void handleSaveButtonMouseClick() throws IOException {
         Log.trace(THIS_CLASS_NAME, "->handleSaveButtonMouseClick");
 
         String databaseLocation = this.databaseLocationTextField.getText();
@@ -627,8 +627,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void loadDatabaseFromDirectory(String databaseLocation) throws IOException {
-        String jsonDatabaseLocation = resolveJsonDatabaseLocation(databaseLocation);
-
+        String jsonDatabaseLocation = resolveJsonDatabaseLocationAndUnpack(databaseLocation);
         Log.debug(THIS_CLASS_NAME, "jsonDatabaseLocation=" + jsonDatabaseLocation);
 
         databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseLocation);
@@ -642,8 +641,16 @@ public class MainStageController extends AbstractGuiController {
         }
     }
 
-    private void saveDatabaseToDirectory(String databaseLocation) {
-        DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects, databaseLocation);
+    private void saveDatabaseToDirectory(String databaseLocation) throws IOException {
+        String jsonDatabaseLocation = resolveJsonDatabaseLocation(databaseLocation);
+        Log.debug(THIS_CLASS_NAME, "jsonDatabaseLocation=" + jsonDatabaseLocation);
+
+        DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects, jsonDatabaseLocation);
+
+        if(!Paths.get(databaseLocation).toAbsolutePath().equals(Paths.get(jsonDatabaseLocation).toAbsolutePath())) {
+            final BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
+            DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(Paths.get(databaseLocation), bankSupport);
+        }
 
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseLocation);
     }
@@ -818,14 +825,25 @@ public class MainStageController extends AbstractGuiController {
                 .ifPresent((entryReference) -> viewDataController.switchToEntryWithReference(entryReference, currentTopicProperty.getValue()));
     }
 
-    private static String resolveJsonDatabaseLocation(String realDatabaseLocation) throws IOException {
+    private static String resolveJsonDatabaseLocationAndUnpack(String realDatabaseLocation) throws IOException {
+        // TODO externalize BankSupport and pass it
         final BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
         final Path realDatabasePath = Paths.get(realDatabaseLocation);
-        boolean isPackedDatabase = Files.exists(realDatabasePath.resolve("DB.bnk"))
-                && Files.exists(realDatabasePath.resolve("DB_US.bnk"));
-        return isPackedDatabase ?
+        return isPackedDatabase(realDatabasePath) ?
                 DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(realDatabasePath, bankSupport) :
                 realDatabaseLocation;
+    }
+
+    private static String resolveJsonDatabaseLocation(String realDatabaseLocation) throws IOException {
+        final Path realDatabasePath = Paths.get(realDatabaseLocation);
+        return isPackedDatabase(realDatabasePath) ?
+                DatabaseBanksCacheHelper.resolveCachePath(realDatabasePath).toString() :
+                realDatabaseLocation;
+    }
+
+    private static boolean isPackedDatabase(Path realDatabasePath) {
+        return Files.exists(realDatabasePath.resolve("DB.bnk"))
+                && Files.exists(realDatabasePath.resolve("DB_US.bnk"));
     }
 
     public DbDto getCurrentTopicObject() {
