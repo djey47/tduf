@@ -1,7 +1,8 @@
 package fr.tduf.gui.installer.steps;
 
-import fr.tduf.gui.installer.common.helper.TestHelper;
+import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +33,7 @@ public class LoadDatabaseStepTest {
 
     @Before
     public void setUp() throws IOException {
-        tempDirectory = TestHelper.createTempDirectory();
+        tempDirectory = InstallerTestsHelper.createTempDirectory();
 
         configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)
@@ -40,7 +41,7 @@ public class LoadDatabaseStepTest {
                 .build();
 
         String databaseDirectory = Paths.get(tempDirectory, "Euro", "Bnk", "Database").toString();
-        TestHelper.createFakeDatabase(databaseDirectory, "");
+        FilesHelper.createFakeDatabase(databaseDirectory, "");
     }
 
     @Test
@@ -53,7 +54,7 @@ public class LoadDatabaseStepTest {
 
 
         // THEN
-        Path databasePath = TestHelper.getTduDatabasePath(tempDirectory);
+        Path databasePath = FilesHelper.getTduDatabasePath(tempDirectory);
 
         verifyBankSupportComponentUsage(databasePath);
     }

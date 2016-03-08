@@ -1,8 +1,9 @@
 package fr.tduf.gui.installer.steps;
 
-import fr.tduf.gui.installer.common.helper.TestHelper;
+import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,9 +25,9 @@ public class CopyFilesStepTest {
 
     @Before
     public void setUp() throws IOException {
-        tempDirectory = TestHelper.createTempDirectory();
+        tempDirectory = InstallerTestsHelper.createTempDirectory();
 
-        TestHelper.prepareTduDirectoryLayout(tempDirectory);
+        FilesHelper.prepareTduDirectoryLayout(tempDirectory);
     }
 
     @Test
@@ -39,7 +40,7 @@ public class CopyFilesStepTest {
                 .withTestDriveUnlimitedDirectory(tempDirectory)
                 .withAssetsDirectory(assetsDirectory)
                 .build();
-        DatabaseContext databaseContext = TestHelper.createJsonDatabase();
+        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("606298799");
 

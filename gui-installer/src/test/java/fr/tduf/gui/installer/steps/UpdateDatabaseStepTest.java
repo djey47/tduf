@@ -1,7 +1,7 @@
 package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.installer.common.helper.TestHelper;
+import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
@@ -33,9 +33,9 @@ public class UpdateDatabaseStepTest {
     public void setUp() throws IOException {
         Log.set(Log.LEVEL_DEBUG);
 
-        databaseContext = TestHelper.createJsonDatabase();
+        databaseContext = InstallerTestsHelper.createJsonDatabase();
 
-        tempDirectory = TestHelper.createTempDirectory();
+        tempDirectory = InstallerTestsHelper.createTempDirectory();
     }
 
     @Test
