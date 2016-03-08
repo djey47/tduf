@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.db.rw.JsonGateway;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,6 +93,19 @@ public class DatabaseBanksCacheHelper {
         Files.createFile(lastFilePath);
         final Long timestamp = updateTimestamp(lastFilePath);
         Log.debug(THIS_CLASS_NAME, "Database cache timestamp (re)created at " + timestamp);
+    }
+
+    /**
+     * @param realDatabasePath  : TDU database path
+     * @throws IOException
+     */
+    // TODO test and use
+    public static void clearCache(Path realDatabasePath) throws IOException {
+        Path cachePath = resolveCachePath(realDatabasePath);
+        final File cacheDirectory = cachePath.toFile();
+        if (cacheDirectory.exists()) {
+            FileUtils.deleteDirectory(cacheDirectory);
+        }
     }
 
     /**
