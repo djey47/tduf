@@ -18,7 +18,6 @@ import java.util.Optional;
 
 import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.EXTENSION_BANKS;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_DB_CONTENTS;
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -81,7 +80,7 @@ public class DatabaseBankHelper {
             try {
                 copyOriginalBankFilesToTargetDirectory(directory, extractedDatabaseDirectory);
             } catch (IOException ioe) {
-                throw new RuntimeException("Unsable to copy orginal bank files to target directory.", ioe);
+                throw new RuntimeException("Unable to copy orginal bank files to target directory.", ioe);
             }
         });
 
