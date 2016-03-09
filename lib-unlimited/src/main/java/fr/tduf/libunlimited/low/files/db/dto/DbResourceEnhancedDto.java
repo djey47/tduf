@@ -20,6 +20,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 /**
  * Represents contents of TDU database resources (multilingual)
  */
+// TODO rename to DbResourceDto when no more V1 files exist
 public class DbResourceEnhancedDto {
     @JsonProperty("version")
     private String version;
