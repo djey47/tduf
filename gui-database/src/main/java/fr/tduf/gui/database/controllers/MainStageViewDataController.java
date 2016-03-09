@@ -48,6 +48,7 @@ public class MainStageViewDataController {
                 mainStageController.getLayoutObject());
 
         ObservableList<ContentEntryDataItem> browsableEntryList = mainStageController.browsableEntries;
+        // TODO replace with setAll() call
         browsableEntryList.clear();
         final DbDto.Topic currentTopic = mainStageController.getCurrentTopicObject().getTopic();
         getMiner().getDatabaseTopic(currentTopic)
@@ -59,6 +60,7 @@ public class MainStageViewDataController {
                 );
     }
 
+    // FIXME item not refreshed in combo until scrolling make it disappear/appear again....
     void updateBrowsableEntryLabel(long internalEntryId) {
         mainStageController.browsableEntries.stream()
 
@@ -73,7 +75,6 @@ public class MainStageViewDataController {
 
                     final DbDto.Topic currentTopic = mainStageController.getCurrentTopicObject().getTopic();
                     String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(internalEntryId, currentTopic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
-
                     entry.setValue(entryValue);
                 });
     }
