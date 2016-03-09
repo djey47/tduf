@@ -8,9 +8,16 @@ import java.nio.file.Paths;
 public class FilesHelper {
     private static final Class<FilesHelper> thisClass = FilesHelper.class;
 
-    // TODO create methods for other contexts and use them
     public static String createTempDirectoryForInstaller() throws IOException {
         return Files.createTempDirectory("guiInstaller-tests").toString();
+    }
+
+    public static String createTempDirectoryForLibrary() throws IOException {
+        return Files.createTempDirectory("libUnlimited-tests").toString();
+    }
+
+    public static String createTempDirectoryForDatabaseEditor() throws IOException {
+        return Files.createTempDirectory("guiDatabase-tests").toString();
     }
 
     public static void prepareTduDirectoryLayout(String tduDirectory) throws IOException {
