@@ -53,7 +53,7 @@ public class DatabaseBanksCacheHelper {
         long databaseBankTime = realDatabasePath.resolve("DB.bnk").toFile().lastModified();
         if (databaseBankTime > lastRepackTime) {
             unpackDatabaseToJson(realDatabasePath.toString(), jsonDatabaseDirectory, bankSupport);
-            updateCacheDirectory(realDatabasePath);
+            updateCacheTimestamp(realDatabasePath);
         }
 
         return jsonDatabaseDirectory;
@@ -70,29 +70,7 @@ public class DatabaseBanksCacheHelper {
 
         repackJsonDatabase(jsonDatabaseDirectory, realDatabasePath.toString(), bankSupport);
 
-        updateCacheDirectory(realDatabasePath);
-    }
-
-    /**
-     * Updates timestamp to match last date when database was repacked
-     * @param realDatabasePath  : TDU database path
-     * @throws IOException
-     */
-    public static void updateCacheDirectory(Path realDatabasePath) throws IOException {
-        Path cachePath = resolveCachePath(realDatabasePath);
-        Path lastFilePath = resolveLastFilePath(realDatabasePath);
-
-        final File lastFile = lastFilePath.toFile();
-        if(lastFile.exists()) {
-            final long timestamp = readTimestamp(lastFilePath);
-            Log.debug(THIS_CLASS_NAME, "Database cache timestamp exists, last update at " + timestamp);
-            Files.delete(lastFilePath);
-        }
-
-        Files.createDirectories(cachePath);
-        Files.createFile(lastFilePath);
-        final Long timestamp = updateTimestamp(lastFilePath);
-        Log.debug(THIS_CLASS_NAME, "Database cache timestamp (re)created at " + timestamp);
+        updateCacheTimestamp(realDatabasePath);
     }
 
     /**
@@ -113,6 +91,23 @@ public class DatabaseBanksCacheHelper {
      */
     public static Path resolveCachePath(Path databasePath) {
         return databasePath.resolve(DIRECTORY_JSON_CACHE);
+    }
+
+    static void updateCacheTimestamp(Path realDatabasePath) throws IOException {
+        Path cachePath = resolveCachePath(realDatabasePath);
+        Path lastFilePath = resolveLastFilePath(realDatabasePath);
+
+        final File lastFile = lastFilePath.toFile();
+        if(lastFile.exists()) {
+            final long timestamp = readTimestamp(lastFilePath);
+            Log.debug(THIS_CLASS_NAME, "Database cache timestamp exists, last update at " + timestamp);
+            Files.delete(lastFilePath);
+        }
+
+        Files.createDirectories(cachePath);
+        Files.createFile(lastFilePath);
+        final Long timestamp = updateTimestamp(lastFilePath);
+        Log.debug(THIS_CLASS_NAME, "Database cache timestamp (re)created at " + timestamp);
     }
 
     private static long readTimestamp(Path cacheTimestampPath) throws IOException {

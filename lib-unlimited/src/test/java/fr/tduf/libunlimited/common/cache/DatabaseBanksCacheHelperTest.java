@@ -156,7 +156,7 @@ public class DatabaseBanksCacheHelperTest {
     @Test
     public void updateCacheDirectory_whenNoCache_shouldCreateCacheDirectory() throws IOException {
         // GIVEN-WHEN
-        DatabaseBanksCacheHelper.updateCacheDirectory(Paths.get(databaseDirectory));
+        DatabaseBanksCacheHelper.updateCacheTimestamp(Paths.get(databaseDirectory));
 
         // THEN
         assertLastFileUpdated(Paths.get(databaseDirectory).resolve("json-cache"), -1);
@@ -168,7 +168,7 @@ public class DatabaseBanksCacheHelperTest {
         Path cachePath = initCacheTimestamp(0);
 
         // WHEN
-        DatabaseBanksCacheHelper.updateCacheDirectory(Paths.get(databaseDirectory));
+        DatabaseBanksCacheHelper.updateCacheTimestamp(Paths.get(databaseDirectory));
 
         // THEN
         assertLastFileUpdated(cachePath, 0);
