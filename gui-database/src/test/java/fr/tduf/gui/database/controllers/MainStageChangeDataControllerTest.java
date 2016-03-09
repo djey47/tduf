@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
@@ -140,6 +141,6 @@ public class MainStageChangeDataControllerTest {
     }
 
     private static String createTempDirectory() throws IOException {
-        return Files.createTempDirectory("libUnlimited-patchGeneratorGui").toString();
+        return FilesHelper.createTempDirectoryForDatabaseEditor();
     }
 }

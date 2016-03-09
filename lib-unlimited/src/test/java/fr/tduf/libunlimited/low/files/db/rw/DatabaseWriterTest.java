@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
+import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
 import fr.tduf.libunlimited.low.files.db.dto.*;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -25,7 +26,7 @@ public class DatabaseWriterTest {
 
     @Before
     public void setUp() throws IOException {
-        tempDirectory = Files.createTempDirectory("libUnlimited-tests").toString();
+        tempDirectory = FilesHelper.createTempDirectoryForLibrary();
     }
 
     @Test

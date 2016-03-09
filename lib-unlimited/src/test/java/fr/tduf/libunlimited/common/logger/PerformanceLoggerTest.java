@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.common.logger;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libtesting.common.helper.FilesHelper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,9 +21,8 @@ public class PerformanceLoggerTest {
 
     @Before
     public void setUp() throws IOException {
-        perfLogPath = Files
-                .createTempDirectory("libUnlimited-tests")
-                .resolve(Paths.get("tduf-perfs.log"));
+        final String tempDirectoryForLibrary = FilesHelper.createTempDirectoryForLibrary();
+        perfLogPath = Paths.get(tempDirectoryForLibrary).resolve("tduf-perfs.log");
 
         Log.setLogger(new PerformanceLogger(perfLogPath.getParent()));
     }

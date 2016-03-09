@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 
+import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.*;
 import org.assertj.core.api.Condition;
@@ -29,7 +30,7 @@ public class DatabaseReadWriteHelperTest {
 
     @Before
     public void setUp() throws IOException {
-        tempDirectory = Files.createTempDirectory("libUnlimited-tests").toString();
+        tempDirectory = FilesHelper.createTempDirectoryForLibrary();
         existingAsFile = Files.createFile(Paths.get(tempDirectory, "file")).toString();
     }
 

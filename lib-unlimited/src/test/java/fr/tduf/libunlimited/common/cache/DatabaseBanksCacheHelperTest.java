@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.common.cache;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class DatabaseBanksCacheHelperTest {
 
     @Before
     public void setUp() throws IOException {
-        tempDirectory = Files.createTempDirectory("libUnlimited-tests").toString();
+        tempDirectory = FilesHelper.createTempDirectoryForLibrary();
 
         databaseDirectory = Paths.get(tempDirectory, "Euro", "Bnk", "Database").toString();
 

@@ -21,7 +21,7 @@ public class FilesHelperTest {
 
     @Before
     public void setUp() throws IOException {
-        tempDirectory = Files.createTempDirectory("libUnlimited-tests").toString();
+        tempDirectory = fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForLibrary();
     }
 
     @Test

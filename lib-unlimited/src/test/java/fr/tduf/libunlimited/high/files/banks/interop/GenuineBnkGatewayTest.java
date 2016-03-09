@@ -239,7 +239,7 @@ public class GenuineBnkGatewayTest {
     }
 
     private static String createTempDirectory() throws IOException {
-        return Files.createTempDirectory("libUnlimited-tests").toString();
+        return fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForLibrary();
     }
 
     private List<Path> createRepackedFileTree(String bankFileName) throws IOException {

@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import org.junit.Before;
@@ -38,7 +39,7 @@ public class DatabaseBankHelperTest {
     public void setUp() throws IOException {
         Log.set(Log.LEVEL_INFO);
 
-        tempDirectory = Files.createTempDirectory("libUnlimited-tests").toString();
+        tempDirectory = FilesHelper.createTempDirectoryForLibrary();
     }
 
     @Test
@@ -72,7 +73,7 @@ public class DatabaseBankHelperTest {
     @Test
     public void unpackDatabaseFromDirectory_whenTargetDirectory_shouldCopyOriginalBankFiles() throws IOException, URISyntaxException {
         // GIVEN
-        String tempDir = createTempDirectory();
+        String tempDir = FilesHelper.createTempDirectoryForLibrary();
         String databaseDirectory = new File(thisClass.getResource("/db/full/DB.bnk").toURI()).getParent();
 
         mockBankSupportToExtract();
@@ -178,10 +179,6 @@ public class DatabaseBankHelperTest {
         verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB_KO.bnk").toString()), eq(Paths.get(targetDirectory, "DB_KO.bnk").toString()));
         verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB_US.bnk").toString()), eq(Paths.get(targetDirectory, "DB_US.bnk").toString()));
         verify(bankSupportMock).packAll(eq(Paths.get(databaseDirectory, "DB_JA.bnk").toString()), eq(Paths.get(targetDirectory, "DB_JA.bnk").toString()));
-    }
-
-    private static String createTempDirectory() throws IOException {
-        return Files.createTempDirectory("libUnlimited-tests").toString();
     }
 
     private static void copyOriginalBanksToDirectory(String databaseDirectory) throws IOException {

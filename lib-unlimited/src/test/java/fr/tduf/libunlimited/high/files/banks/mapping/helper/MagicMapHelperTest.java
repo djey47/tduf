@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.banks.mapping.helper;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libtesting.common.helper.FilesHelper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +25,7 @@ public class MagicMapHelperTest {
     public void setUp() throws IOException {
         Log.set(Log.LEVEL_INFO);
 
-        tempDirectory = Files.createTempDirectory("libUnlimited-tests").toString();
+        tempDirectory = FilesHelper.createTempDirectoryForLibrary();
     }
 
     @Test
