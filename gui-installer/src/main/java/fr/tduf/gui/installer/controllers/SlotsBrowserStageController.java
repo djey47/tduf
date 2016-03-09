@@ -23,6 +23,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
 
@@ -131,14 +132,25 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
         slotRefTextField.textProperty().bindBidirectional(selectedSlotProperty, new StringConverter<Optional<VehicleSlotDataItem>>() {
             @Override
-            public String toString(Optional<VehicleSlotDataItem> object) {
-                return object.map((item) -> item.referenceProperty().get())
+            public String toString(Optional<VehicleSlotDataItem> slotItem) {
+                if (slotItem == null) {
+                    slotItem = empty();
+                }
+
+                return slotItem
+                        .map((item) -> item.referenceProperty().get())
                         .orElse("");
             }
 
             @Override
-            public Optional<VehicleSlotDataItem> fromString(String string) {
-                return null;
+            public Optional<VehicleSlotDataItem> fromString(String ref) {
+                if (StringUtils.isEmpty(ref)) {
+                    return empty();
+                }
+
+                VehicleSlotDataItem vehicleSlotDataItem = new VehicleSlotDataItem();
+                vehicleSlotDataItem.setReference(ref);
+                return of(vehicleSlotDataItem);
             }
         });
     }
