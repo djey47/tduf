@@ -10,13 +10,13 @@ import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.steps.GenericStep;
 import fr.tduf.gui.installer.steps.StepsCoordinator;
+import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -140,18 +140,13 @@ public class MainStageController extends AbstractGuiController {
                 .withMainWindow(getWindow())
                 .build();
 
-        // TODO externalize to helper in lib
-        Path cachePath = Paths.get(configuration.resolveDatabaseDirectory()).resolve("json-cache");
-        final File cacheDirectory = cachePath.toFile();
-        if (cacheDirectory.exists()) {
-            FileUtils.deleteDirectory(cacheDirectory);
-        }
+        Path databasePath = Paths.get(configuration.resolveDatabaseDirectory());
+        DatabaseBanksCacheHelper.clearCache(databasePath);
 
-        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE, DisplayConstants.MESSAGE_DELETED_CACHE, cacheDirectory.toString());
+        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE, DisplayConstants.MESSAGE_DELETED_CACHE, databasePath.toString());
     }
 
     private void install() throws IOException, ReflectiveOperationException {
-
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
                 .withAssetsDirectory(InstallerConstants.DIRECTORY_ASSETS)
