@@ -10,7 +10,10 @@ import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.*;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -20,7 +23,6 @@ import java.io.IOException;
 import java.util.*;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.UNITED_STATES;
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -55,6 +57,25 @@ public class MainStageViewDataController {
 
                                 .collect(toList()))
                 );
+    }
+
+    void updateBrowsableEntryLabel(long internalEntryId) {
+        mainStageController.browsableEntries.stream()
+
+                .filter((entry) -> entry.getInternalEntryId() == internalEntryId)
+
+                .findAny()
+
+                .ifPresent((entry) -> {
+                    final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
+                            mainStageController.getCurrentProfileObject().getName(),
+                            mainStageController.getLayoutObject());
+
+                    final DbDto.Topic currentTopic = mainStageController.getCurrentTopicObject().getTopic();
+                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(internalEntryId, currentTopic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
+
+                    entry.setValue(entryValue);
+                });
     }
 
     void fillLocales() {
@@ -246,6 +267,19 @@ public class MainStageViewDataController {
                 .collect(toList());
     }
 
+    void updateCurrentEntryLabelProperty() {
+        final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
+                mainStageController.getCurrentProfileObject().getName(),
+                mainStageController.getLayoutObject());
+        String entryLabel = DatabaseQueryHelper.fetchResourceValuesWithEntryId(
+                mainStageController.currentEntryIndexProperty.getValue(),
+                mainStageController.currentTopicProperty.getValue(),
+                mainStageController.currentLocaleProperty.getValue(),
+                labelFieldRanks,
+                getMiner());
+        mainStageController.currentEntryLabelProperty.setValue(entryLabel);
+    }
+
     private ContentEntryDataItem getDisplayableEntryForCurrentLocale(DbDataDto.Entry topicEntry, List<Integer> labelFieldRanks, DbDto.Topic topic) {
         ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
 
@@ -263,19 +297,6 @@ public class MainStageViewDataController {
         contentEntryDataItem.setReference(entryReference);
 
         return contentEntryDataItem;
-    }
-
-    private void updateCurrentEntryLabelProperty() {
-        final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
-                mainStageController.getCurrentProfileObject().getName(),
-                mainStageController.getLayoutObject());
-        String entryLabel = DatabaseQueryHelper.fetchResourceValuesWithEntryId(
-                mainStageController.currentEntryIndexProperty.getValue(),
-                mainStageController.currentTopicProperty.getValue(),
-                mainStageController.currentLocaleProperty.getValue(),
-                labelFieldRanks,
-                getMiner());
-        mainStageController.currentEntryLabelProperty.setValue(entryLabel);
     }
 
     private void updateResourceProperties(DbDataDto.Item resourceItem, DbStructureDto.Field structureField) {
