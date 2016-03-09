@@ -187,6 +187,31 @@ public class DatabaseBanksCacheHelperTest {
         assertThat(actualPath.getFileName()).isEqualTo(Paths.get("json-cache"));
     }
 
+    @Test
+    public void clearCache_whenDirectoryDoesNotExist_shouldDoNothing() throws IOException {
+        // GIVEN
+        final Path databasePath = Paths.get("/home/djey/tdu/db/");
+
+        // WHEN
+        DatabaseBanksCacheHelper.clearCache(databasePath);
+
+        // THEN
+    }
+
+    @Test
+    public void clearCache_whenDirectoryDoesExist_shouldRemoveIt() throws IOException {
+        // GIVEN
+        final Path cachePath = initCacheTimestamp(0);
+        final Path realDatabasePath = Paths.get(databaseDirectory);
+
+        // WHEN
+        DatabaseBanksCacheHelper.clearCache(realDatabasePath);
+
+        // THEN
+        assertThat(realDatabasePath).exists();
+        assertThat(cachePath).doesNotExist();
+    }
+
     private Path initCacheTimestamp(long time) throws IOException {
         final Path cachePath = createCacheDirectory();
         final Path lastFilePath = cachePath.resolve("last");

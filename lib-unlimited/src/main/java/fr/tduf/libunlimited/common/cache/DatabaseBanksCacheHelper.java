@@ -77,7 +77,6 @@ public class DatabaseBanksCacheHelper {
      * @param realDatabasePath  : TDU database path
      * @throws IOException
      */
-    // TODO test and use
     public static void clearCache(Path realDatabasePath) throws IOException {
         Path cachePath = resolveCachePath(realDatabasePath);
         final File cacheDirectory = cachePath.toFile();
