@@ -47,17 +47,17 @@ public class MainStageViewDataController {
                 mainStageController.getCurrentProfileObject().getName(),
                 mainStageController.getLayoutObject());
 
-        ObservableList<ContentEntryDataItem> browsableEntryList = mainStageController.browsableEntries;
-        // TODO replace with setAll() call
-        browsableEntryList.clear();
         final DbDto.Topic currentTopic = mainStageController.getCurrentTopicObject().getTopic();
-        getMiner().getDatabaseTopic(currentTopic)
-                .ifPresent((topicObject) -> browsableEntryList.addAll(topicObject.getData().getEntries().stream()
+        mainStageController.browsableEntries.setAll(
+                getMiner().getDatabaseTopic(currentTopic)
 
-                                .map((topicEntry) -> getDisplayableEntryForCurrentLocale(topicEntry, labelFieldRanks, currentTopic))
+                .map((topicObject) -> topicObject.getData().getEntries().stream()
 
-                                .collect(toList()))
-                );
+                        .map((topicEntry) -> getDisplayableEntryForCurrentLocale(topicEntry, labelFieldRanks, currentTopic))
+
+                        .collect(toList()))
+
+                .orElse(new ArrayList<>()));
     }
 
     // FIXME item not refreshed in combo until scrolling make it disappear/appear again....
