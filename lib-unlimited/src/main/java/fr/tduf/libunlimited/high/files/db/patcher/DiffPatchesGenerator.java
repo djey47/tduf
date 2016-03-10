@@ -23,8 +23,9 @@ public class DiffPatchesGenerator {
 
     /**
      * Unique entry point.
-     * @param databaseObjects   : database topics to be patched.
-     * @return a patcher instance.
+     * @param databaseObjects           : database topics containing changes
+     * @param referenceDatabaseObjects  : database topics acting as reference
+     * @return a generator instance.
      */
     public static DiffPatchesGenerator prepare(List<DbDto> databaseObjects, List<DbDto> referenceDatabaseObjects) throws ReflectiveOperationException {
         DiffPatchesGenerator holderInstance = new DiffPatchesGenerator();
@@ -39,10 +40,13 @@ public class DiffPatchesGenerator {
     }
 
     /**
-     *
-     * @return
+     * @return patch objects containing differences between current database and reference one.
      */
     public Set<DbPatchDto> makePatches() {
-        return Collections.synchronizedSet(new HashSet<>());
+        Set<DbPatchDto> patchObjects = Collections.synchronizedSet(new HashSet<>());
+
+        // TODO
+
+        return patchObjects;
     }
 }
