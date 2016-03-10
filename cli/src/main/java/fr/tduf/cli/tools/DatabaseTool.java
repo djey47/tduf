@@ -14,6 +14,7 @@ import fr.tduf.libunlimited.high.files.db.interop.TdumtPatchConverter;
 import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
+import fr.tduf.libunlimited.high.files.db.patcher.DiffPatchesGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
@@ -54,6 +55,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Command line interface for handling TDU database.
@@ -359,18 +361,40 @@ public class DatabaseTool extends GenericTool {
 
         DbPatchDto patchObject = AbstractDatabaseHolder.prepare(PatchGenerator.class, allTopicObjects).makePatch(effectiveTopic, effectiveRefRange, effectiveFieldRange);
 
+        // TODO extract to method
         outLine("Writing patch to " + targetPatchFile + "...");
 
         FilesHelper.writeJsonObjectToFile(patchObject, targetPatchFile);
 
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("patchFile", targetPatchFile);
+        // TODO put conflicts
 
         return resultInfo;
     }
 
-    private Map<String, ?> diffPatches(String jsonDirectory, String jsonReferenceDirectory, String targetPatchesDirectory) {
-        return null;
+    private Map<String, ?> diffPatches(String jsonSourceDirectory, String jsonReferenceDirectory, String targetPatchesDirectory) throws ReflectiveOperationException {
+        outLine("-> Source database directory: " + jsonSourceDirectory);
+        outLine("-> Reference database directory: " + jsonReferenceDirectory);
+
+        outLine("Reading source database, please wait...");
+
+        List<DbDto> currentTopicObjects = loadDatabaseFromJsonFiles(jsonSourceDirectory);
+
+        outLine("Reading source database, please wait...");
+
+        List<DbDto> referenceTopicObjects = loadDatabaseFromJsonFiles(jsonReferenceDirectory);
+
+        outLine("Generating patches, please wait...");
+
+        final Set<DbPatchDto> diffPatchObjects = DiffPatchesGenerator.prepare(currentTopicObjects, referenceTopicObjects).makePatches();
+
+        Set<String> targetPatchFiles = writePatches(diffPatchObjects, targetPatchesDirectory);
+
+        Map<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("patchFiles", targetPatchFiles);
+
+        return resultInfo;
     }
 
     private Map<String, ?> applyPerformancePack(String performancePackFile, String sourceJsonDirectory, String targetJsonDirectory) throws IOException {
@@ -616,6 +640,30 @@ public class DatabaseTool extends GenericTool {
                     String errorMessage = String.format(integrityError.getErrorMessageFormat(), integrityError.getInformation());
                     outLine("  (!)" + errorMessage);
                 });
+    }
+
+    private Set<String> writePatches(Set<DbPatchDto> diffPatchObjects, String targetPatchesDirectory) {
+
+        outLine("Writing patches to " + targetPatchesDirectory + "...");
+
+        return diffPatchObjects.parallelStream()
+
+                .map((patchObject) -> {
+                    String targetPatchFile = Paths.get(targetPatchesDirectory, patchObject.getComment() + ".mini.json").toString();
+
+                    // TODO extract to method
+                    outLine(".Writing patch to " + targetPatchFile + "...");
+
+                    try {
+                        FilesHelper.writeJsonObjectToFile(patchObject, targetPatchFile);
+                    } catch (IOException ioe) {
+                        throw new RuntimeException(ioe);
+                    }
+
+                    return targetPatchFile;
+                })
+
+                .collect(toSet());
     }
 
     private static List<DatabaseIntegrityErrorDto> toDatabaseIntegrityErrors(Set<IntegrityError> integrityErrors) {
