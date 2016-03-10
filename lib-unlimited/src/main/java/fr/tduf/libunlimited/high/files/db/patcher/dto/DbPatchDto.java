@@ -19,15 +19,20 @@ import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChange
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
+import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
 /**
  * Represents a patch to be applied to TDU database (TDUF format)
  */
 @JsonTypeName("dbPatch")
+@JsonSerialize(include = NON_NULL)
 public class DbPatchDto {
 
     @JsonProperty("changes")
     private List<DbChangeDto> changes = new ArrayList<>();
+
+    @JsonProperty("comment")
+    private String comment;
 
     @Override
     public boolean equals(Object o) {
@@ -52,6 +57,13 @@ public class DbPatchDto {
     public static DbPatchDtoBuilder builder() {
         return new DbPatchDtoBuilder() {
             private List<DbChangeDto> changes = new ArrayList<>();
+            private String comment = null;
+
+            @Override
+            public DbPatchDtoBuilder withComment(String comment) {
+                this.comment = comment;
+                return this;
+            }
 
             @Override
             public DbPatchDtoBuilder addChanges(Collection<DbChangeDto> changes) {
@@ -65,13 +77,20 @@ public class DbPatchDto {
 
                 changes.sort(renderComparator());
                 patchObject.changes = changes;
+                patchObject.comment = comment;
 
                 return patchObject;
             }
         };
     }
 
+    public String getComment() {
+        return comment;
+    }
+
     public interface DbPatchDtoBuilder {
+        DbPatchDtoBuilder withComment(String comment);
+
         DbPatchDtoBuilder addChanges(Collection<DbChangeDto> changes);
 
         DbPatchDto build();
@@ -86,7 +105,7 @@ public class DbPatchDto {
      */
     @JsonTypeName("dbChange")
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    @JsonSerialize(include = NON_NULL)
     public static class DbChangeDto {
 
         private static final String FORMAT_PLACEHOLDER = "{%s}";
