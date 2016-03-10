@@ -8,6 +8,7 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Bringing new desktop applications for end-users
 * ...
 
+
 ### Database Editor Main features
 
 * Opens and saves a database from/to regular BNK form
@@ -25,36 +26,13 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Exports current entry to following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch
 * Exports all entries for topics not supporting REF.
 
-### What's in this version ? (1.2.0)
+### What's in this version ? (1.3.0)
 
-* databaseEditor: can open TDU database files in BNK format
-* databaseEditor: uses cache to prevent from unpacking database at each run
-* databaseEditor: created JSON files are re-formatted to be more readable
-* databaseEditor: does not export in partial form when all fields selected
-
-* databaseTool: unused 'withClearContents' parameter was removed
-
-* library/database: gives more details on BRANDS bitfield
-* library/database: produces formatted JSON
-* library/database: handles tdumt patch instruction 'removeAllLinesFromDatabase'
-* library/database: handles tdumt patch instruction 'setVehicleOnSpots'
-* library/database: rework on resources layout
-* library/database: detects new integrity error on missing topic(s) - not fixable.
 
 ### Fixed issues
 
-* databaseEditor: resources were not actualized when reloading
-* databaseEditor: entry label was not actualized when changing values
-
-* databaseTool: extensive check was not performed at all
-
-* library/database: misc. fixes end improvements.
 
 ### Known bugs
-
-* databaseEditor: browsable entries combo can't be actualized automatically after changes. Just scroll the list to update
-
-* cameraTool: not working atm
 
 * You tell me!
 
