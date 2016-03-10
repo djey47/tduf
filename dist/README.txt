@@ -27,15 +27,19 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 ### What's in this version ? (1.2.0)
 
+* databaseEditor: can open TDU database files in BNK format
 * databaseEditor: uses cache to prevent from unpacking database at each run
-* databaseEditor: exported JSON files are more readable
-* databaseEditor: do not export partial values when all fields selected
+* databaseEditor: created JSON files are re-formatted to be more readable
+* databaseEditor: does not export in partial form when all fields selected
 
-* library/database: gives more details on BRANDS bitfields
+* databaseTool: unused 'withClearContents' parameter was removed
+
+* library/database: gives more details on BRANDS bitfield
 * library/database: produces formatted JSON
 * library/database: handles tdumt patch instruction 'removeAllLinesFromDatabase'
 * library/database: handles tdumt patch instruction 'setVehicleOnSpots'
-* library/database: rework on resources layout.
+* library/database: rework on resources layout
+* library/database: detects new integrity error on missing topic(s) - not fixable.
 
 ### Fixed issues
 
@@ -44,11 +48,14 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 * databaseTool: extensive check was not performed at all
 
-* library/database: misc. fixes.
+* library/database: misc. fixes end improvements.
 
 ### Known bugs
 
-* databaseEditor: browsable entries combo can't be actualized automatically after changes. Just scroll the list to update.
+* databaseEditor: browsable entries combo can't be actualized automatically after changes. Just scroll the list to update
+
+* cameraTool: not working atm
+
 * You tell me!
 
 
@@ -60,11 +67,12 @@ TDUForever aims at making Test Drive Unlmited modding easier:
     - Windows users: check if .net Framework 2.0 is installed
     - Linux users: check if Mono 2.0 is installed.
 
+
 ### Running Database Editor!
 
     - Launch TDUF-gui.cmd from Windows explorer
-    - In DatabaseEditor, browse location of TDU database BNK or JSON files. Load.
-    - Make your changes, save and close Database Editor
+    - In DatabaseEditor, browse location of TDU database BNK or JSON files. Load (may take a while)
+    - Make your changes. Save (may take a while)
     - Database is repacked automatically.
 
 ### Running Advanced tools!
@@ -72,15 +80,18 @@ TDUForever aims at making Test Drive Unlmited modding easier:
     - Launch TDUF-cli.cmd from Windows explorer
     - Follow instructions.
 
+
 ### Using JAR library and/or CLI Tools in your projects
 
 It's for free, but you ought to put a mention (kinda 'Powered By TDUF project') and give a link to thread @ [TurboDuck](http://forum.turboduck.net/threads/32570-Djey-Discussion-about-new-modding-possibilities)
+
 
 ### And especially...
 
 Have fun! As much as I had with developing those tools !
 
 If you wish to donate, please head to [this](http://bit.ly/13YI3bP)
+
 
 ### Contact & useful links
 
