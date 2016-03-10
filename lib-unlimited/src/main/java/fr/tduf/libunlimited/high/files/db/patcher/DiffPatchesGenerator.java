@@ -49,4 +49,21 @@ public class DiffPatchesGenerator {
 
         return patchObjects;
     }
+
+
+    List<DbDto> getDatabaseObjects() {
+        return databaseObjects;
+    }
+
+    List<DbDto> getReferenceDatabaseObjects() {
+        return referenceDatabaseObjects;
+    }
+
+    BulkDatabaseMiner getDatabaseMiner() {
+        return databaseMiner;
+    }
+
+    BulkDatabaseMiner getReferenceDatabaseMiner() {
+        return referenceDatabaseMiner;
+    }
 }
