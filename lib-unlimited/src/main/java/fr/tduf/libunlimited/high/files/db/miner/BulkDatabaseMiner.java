@@ -333,6 +333,7 @@ public class BulkDatabaseMiner {
         return getContentItemFromEntryAtFieldRank(entry, uidFieldRank).get().getRawValue();
     }
 
+    // TODO provide cache key by miner instance (instance method getCacheKeyForMiner)
     static String getCacheKey(String... items) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0 ; i < items.length ; i++) {
@@ -343,6 +344,15 @@ public class BulkDatabaseMiner {
         }
         return sb.toString();
     }
+
+//    String getCacheKeyForMiner(String... items) {
+//
+//        String[] newItems = new String[items.length + 1];
+//        newItems[0] = id;
+//        System.arraycopy(items, 0, newItems, 1, items.length);
+//
+//        return getCacheKey(newItems);
+//    }
 
     private String getRawValueAtEntryIndexAndRank(DbDto.Topic topic, int fieldRank, long entryIndex) {
         DbDataDto.Entry contentEntry = getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic).get();
