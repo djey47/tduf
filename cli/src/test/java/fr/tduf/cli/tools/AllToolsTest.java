@@ -54,6 +54,14 @@ public class AllToolsTest {
     }
 
     @Test
+    public void databaseTool_diffPatches() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new DatabaseTool(), DIFF_PATCHES);
+    }
+
+    @Test
     public void fileTool_jsonify() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
         exitRule.expectSystemExitWithStatus(1);

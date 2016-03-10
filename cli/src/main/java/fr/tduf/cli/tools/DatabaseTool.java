@@ -44,7 +44,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
-import java.util.stream.Stream;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -66,6 +65,9 @@ public class DatabaseTool extends GenericTool {
 
     @Option(name = "-j", aliases = "--jsonDir", usage = "Source/Target directory for JSON files. When dump or unpack-all, defaults to current directory\\tdu-database-dump.")
     private String jsonDirectory;
+
+    @Option(name = "-J", aliases = "--jsonRefDir", usage = "Reference directory for JSON files.")
+    private String jsonReferenceDirectory;
 
     @Option(name = "-o", aliases = "--outputDatabaseDir", usage = "Fixed/Patched TDU database directory, defaults to .\\tdu-database-fixed or .\\tdu-database-patched.")
     private String outputDatabaseDirectory;
@@ -103,6 +105,7 @@ public class DatabaseTool extends GenericTool {
         APPLY_PATCH("apply-patch", "Modifies database contents and resources as described in a JSON mini patch file."),
         APPLY_TDUPK("apply-tdupk", "Modifies vehicle physics as described in a performance pack file from TDUPE."),
         GEN_PATCH("gen-patch", "Creates mini-patch file from selected database contents."),
+        DIFF_PATCHES("diff-patches", "Creates mini-patch files with differences from JSON database against reference one."),
         CONVERT_PATCH("convert-patch", "Converts a TDUF (JSON) Patch to TDUMT (PCH) one and vice-versa."),
         UNPACK_ALL("unpack-all", "Extracts full database contents from BNK to JSON files. Checks for integrity errors and optionally fixes them."),
         REPACK_ALL("repack-all", "Repacks full database from JSON files into BNK ones.");
@@ -154,6 +157,9 @@ public class DatabaseTool extends GenericTool {
             case GEN_PATCH:
                 commandResult = genPatch(jsonDirectory, patchFile);
                 return true;
+            case DIFF_PATCHES:
+                commandResult = diffPatches(jsonDirectory, jsonReferenceDirectory, patchFile);
+                return true;
             case CONVERT_PATCH:
                 commandResult = convertPatch(patchFile);
                 return true;
@@ -186,9 +192,15 @@ public class DatabaseTool extends GenericTool {
             } else if (APPLY_TDUPK == command
                     || APPLY_PATCH == command
                     || REPACK_ALL == command
-                    || GEN_PATCH == command) {
+                    || GEN_PATCH == command
+                    || DIFF_PATCHES == command) {
                 throw new CmdLineException(parser, "Error: jsonDirectory is required as source database.", null);
             }
+        }
+
+        if (jsonReferenceDirectory == null
+                && DIFF_PATCHES == command) {
+            throw new CmdLineException(parser, "Error: jsonReferenceDirectory is required as reference database.", null);
         }
 
         if (outputDatabaseDirectory == null) {
@@ -203,7 +215,8 @@ public class DatabaseTool extends GenericTool {
         if (patchFile == null
                 && (APPLY_TDUPK == command
                 || APPLY_PATCH == command
-                || CONVERT_PATCH == command)) {
+                || CONVERT_PATCH == command
+                || DIFF_PATCHES == command)) {
             throw new CmdLineException(parser, "Error: patchFile is required.", null);
         }
 
@@ -228,6 +241,7 @@ public class DatabaseTool extends GenericTool {
                 APPLY_TDUPK.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\vehicle.tdupk\" -r \"606298799\" -o \"C:\\Users\\Bill\\Desktop\\json-database\"",
                 APPLY_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\"",
                 GEN_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\" -t \"CAR_PHYSICS_DATA\" -r \"606298799,637314272\" -f \"102,103\"",
+                DIFF_PATCHES.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -J \"C:\\Users\\Bill\\Desktop\\json-database-reference\" -p \"C:\\Users\\Bill\\Desktop\"",
                 CONVERT_PATCH.label + " -p \"C:\\Users\\Bill\\Desktop\\install.PCH\"",
                 UNPACK_ALL.label + " -d \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\" -j \"C:\\Users\\Bill\\Desktop\\json-database\" -m",
                 REPACK_ALL.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -o \"C:\\Program Files (x86)\\Test Drive Unlimited\\Euro\\Bnk\\Database\""
@@ -353,6 +367,10 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("patchFile", targetPatchFile);
 
         return resultInfo;
+    }
+
+    private Map<String, ?> diffPatches(String jsonDirectory, String jsonReferenceDirectory, String targetPatchesDirectory) {
+        return null;
     }
 
     private Map<String, ?> applyPerformancePack(String performancePackFile, String sourceJsonDirectory, String targetJsonDirectory) throws IOException {
