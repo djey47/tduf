@@ -1,11 +1,13 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,7 +26,7 @@ public class DiffPatchesGeneratorTest {
 
     @Before
     public void setUp() {
-        Log.set(Log.LEVEL_DEBUG);
+//        Log.set(Log.LEVEL_DEBUG);
     }
 
     @Test
@@ -56,7 +59,7 @@ public class DiffPatchesGeneratorTest {
     public void makePatches_whenNewContentsEntry_andREF_shouldAddFullUpdate() throws Exception {
         // GIVEN
         List<DbDto> referenceDatabaseObjects = readReferenceDatabase();
-        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/TDU_CarPhysicsData.json");
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-newEntry/TDU_CarPhysicsData.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
 
@@ -72,7 +75,7 @@ public class DiffPatchesGeneratorTest {
         assertThat(actualPatchObject.getChanges()).hasSize(1);
 
         DbPatchDto.DbChangeDto actualChangeObject = actualPatchObject.getChanges().get(0);
-        assertThat(actualChangeObject.getType()).isEqualTo(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE);
+        assertThat(actualChangeObject.getType()).isEqualTo(UPDATE);
         assertThat(actualChangeObject.getRef()).isEqualTo("99999999");
         assertThat(actualChangeObject.getPartialValues()).isNull();
         final List<String> actualValues = actualChangeObject.getValues();
@@ -82,6 +85,38 @@ public class DiffPatchesGeneratorTest {
         for (int i = 0; i < actualValues.size() ; i++) {
             assertThat(actualValues.get(i)).isEqualTo(addedEntry.getItems().get(i).getRawValue());
         }
+    }
+
+    @Test
+    @Ignore
+    public void makePatches_whenExistingContentsEntry_andREF_andChangedItems_shouldAddPartialUpdate() throws Exception {
+        // GIVEN
+        List<DbDto> referenceDatabaseObjects = readReferenceDatabase();
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-existingEntry/TDU_CarPhysicsData.json");
+        DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
+
+
+        // WHEN
+        Set<DbPatchDto> actualPatchObjects = generator.makePatches();
+
+
+        // THEN
+        assertThat(actualPatchObjects).hasSize(1);
+
+        DbPatchDto actualPatchObject = actualPatchObjects.stream().findAny().get();
+        assertThat(actualPatchObject.getComment()).isEqualTo(CAR_PHYSICS_DATA.name());
+        assertThat(actualPatchObject.getChanges()).hasSize(1);
+
+        DbPatchDto.DbChangeDto actualChangeObject = actualPatchObject.getChanges().get(0);
+        assertThat(actualChangeObject.getType()).isEqualTo(UPDATE);
+        assertThat(actualChangeObject.getRef()).isEqualTo("1210773243");
+        assertThat(actualChangeObject.getValues()).isNull();
+        final List<DbFieldValueDto> actualPartialValues = actualChangeObject.getPartialValues();
+        assertThat(actualPartialValues).hasSize(1);
+
+        final DbFieldValueDto actualPartialValue = actualPartialValues.get(0);
+        assertThat(actualPartialValue.getRank()).isEqualTo(103);
+        assertThat(actualPartialValue.getValue()).isEqualTo("105");
     }
 
     private static List<DbDto> readReferenceDatabase() throws URISyntaxException {
