@@ -74,7 +74,30 @@ public class DiffPatchesGenerator {
                             .map((entry) -> {
                                 final OptionalInt refFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(databaseObject.getStructure().getFields());
                                 if (!refFieldRank.isPresent()) {
-                                    return null;
+                                    // Topic without REF: full update if entry does not exist
+
+
+                                    List<DbFieldValueDto> criteria = entry.getItems().stream()
+
+                                            .map((item) -> DbFieldValueDto.fromCouple(item.getFieldRank(), item.getRawValue()))
+
+                                            .collect(toList());
+
+                                    List<DbDataDto.Entry> existingEntries = getReferenceDatabaseMiner().getContentEntriesMatchingCriteria(criteria, currentTopic);
+                                    if (!existingEntries.isEmpty()) {
+                                        return null;
+                                    }
+
+                                    List<String> entryValues = entry.getItems().stream()
+                                            .map(DbDataDto.Item::getRawValue)
+                                            .collect(toList());
+
+                                    return DbPatchDto.DbChangeDto.builder()
+                                            .forTopic(currentTopic)
+                                            .withType(UPDATE)
+                                            .asReference(null)
+                                            .withEntryValues(entryValues)
+                                            .build();
                                 }
 
                                 String entryRef = BulkDatabaseMiner.getContentEntryReference(entry, refFieldRank.getAsInt());
@@ -84,6 +107,7 @@ public class DiffPatchesGenerator {
                                     // Existing: partial update
                                     DbDataDto.Entry referenceEntry = potentialReferenceEntry.get();
 
+                                    // TODO use stream and collect
                                     List<DbFieldValueDto> partialEntryValues = new ArrayList<>();
                                     for (int i = 0 ; i < entry.getItems().size() ; i++) {
                                         String currentValue = entry.getItems().get(i).getRawValue();

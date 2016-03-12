@@ -1,7 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -17,8 +16,7 @@ import java.util.Set;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.PNJ;
-import static java.util.stream.Collectors.toList;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DiffPatchesGeneratorTest {
@@ -28,8 +26,6 @@ public class DiffPatchesGeneratorTest {
     @Before
     public void setUp() {
 //        Log.set(Log.LEVEL_DEBUG);
-
-        BulkDatabaseMiner.clearAllCaches();
     }
 
     @Test
@@ -89,7 +85,6 @@ public class DiffPatchesGeneratorTest {
             assertThat(actualValues.get(i)).isEqualTo(addedEntry.getItems().get(i).getRawValue());
         }
     }
-
     @Test
     public void makePatches_whenExistingContentsEntry_andREF_andChangedItem_shouldAddPartialUpdate() throws Exception {
         // GIVEN
@@ -121,11 +116,37 @@ public class DiffPatchesGeneratorTest {
         assertThat(actualPartialValue.getValue()).isEqualTo("105");
     }
 
+    @Test
+    public void makePatches_whenNewContentsEntry_andNoREF_shouldAddFullUpdate() throws Exception {
+        // GIVEN
+        List<DbDto> referenceDatabaseObjects = readReferenceDatabase();
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/noref-newEntry/TDU_CarRims.json");
+        DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
+
+
+        // WHEN
+        Set<DbPatchDto> actualPatchObjects = generator.makePatches();
+
+
+        // THEN
+        assertThat(actualPatchObjects).hasSize(1);
+
+        DbPatchDto actualPatchObject = actualPatchObjects.stream().findAny().get();
+        assertThat(actualPatchObject.getComment()).isEqualTo(CAR_RIMS.name());
+        assertThat(actualPatchObject.getChanges()).hasSize(1);
+
+        DbPatchDto.DbChangeDto actualChangeObject = actualPatchObject.getChanges().get(0);
+        assertThat(actualChangeObject.getType()).isEqualTo(UPDATE);
+        assertThat(actualChangeObject.getRef()).isNull();
+        assertThat(actualChangeObject.getPartialValues()).isNull();
+        final List<String> actualValues = actualChangeObject.getValues();
+        assertThat(actualValues)
+                .hasSize(2)
+                .containsExactly("700912892" , "1139916842");
+    }
+
     private static List<DbDto> readReferenceDatabase() throws URISyntaxException {
-        // FIXME do not load PNJ topic as there are too many duplicated REF.
-        return readDatabase("/db/json/TDU_Achievements.json").stream()
-                .filter((databaseObject) -> !databaseObject.getTopic().equals(PNJ))
-                .collect(toList());
+        return readDatabase("/db/json/diff/TDU_CarPhysicsData.json");
     }
 
     private static List<DbDto> readDatabase(String jsonFile) throws URISyntaxException {
