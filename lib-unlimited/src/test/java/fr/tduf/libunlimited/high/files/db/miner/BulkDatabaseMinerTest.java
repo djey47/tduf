@@ -1,8 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.miner;
 
-import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.common.logger.PerformanceLogger;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -11,10 +9,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Paths;
 import java.util.*;
 
-import static com.esotericsoftware.minlog.Log.LEVEL_DEBUG;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
 import static java.util.Arrays.asList;
@@ -26,8 +22,8 @@ public class BulkDatabaseMinerTest {
     @Before
     public void setUp() {
         // Set level to TRACE to get performance information
-        Log.set(LEVEL_DEBUG);
-        Log.setLogger(new PerformanceLogger(Paths.get("perfs").toAbsolutePath()));
+//        Log.set(LEVEL_DEBUG);
+//        Log.setLogger(new PerformanceLogger(Paths.get("perfs").toAbsolutePath()));
 
         BulkDatabaseMiner.clearAllCaches();
     }
@@ -52,6 +48,19 @@ public class BulkDatabaseMinerTest {
     }
 
     @Test
+    public void load_whenProvidedDatabaseObjects_shouldGenerateUniqueMinerIdentifiers() {
+        // GIVEN
+        ArrayList<DbDto> topicObjects = new ArrayList<>();
+
+        // WHEN
+        BulkDatabaseMiner bulkDatabaseMiner1 = BulkDatabaseMiner.load(topicObjects);
+        BulkDatabaseMiner bulkDatabaseMiner2 = BulkDatabaseMiner.load(topicObjects);
+
+        // THEN
+        assertThat(bulkDatabaseMiner1.getId()).isNotEqualTo(bulkDatabaseMiner2.getId());
+    }
+
+    @Test
     public void getCacheKey_whenThreeItems_shouldReturnFormattedKey() {
         // GIVEN-WHEN
         String actualKey = BulkDatabaseMiner.getCacheKey("a", "b", "c");
@@ -59,6 +68,8 @@ public class BulkDatabaseMinerTest {
         // THEN
         assertThat(actualKey).isEqualTo("a:b:c");
     }
+
+    // TODO move yo dedicated test class
 
     @Test
     public void getDatabaseTopic_whenNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {

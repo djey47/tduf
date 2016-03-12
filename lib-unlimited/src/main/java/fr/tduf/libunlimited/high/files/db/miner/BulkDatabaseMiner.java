@@ -26,6 +26,8 @@ public class BulkDatabaseMiner {
 
     private static CacheManager.CacheManagerInstance cacheManager = CacheManager.it.self();
 
+    private final UUID id;
+
     private final List<DbDto> topicObjects;
 
 
@@ -43,6 +45,7 @@ public class BulkDatabaseMiner {
 
     private BulkDatabaseMiner(List<DbDto> topicObjects) {
         this.topicObjects = topicObjects;
+        id = UUID.randomUUID();
     }
 
     /**
@@ -90,8 +93,9 @@ public class BulkDatabaseMiner {
      * @return database entry having specified identifier.
      */
     public Optional<DbDataDto.Entry> getContentEntryFromTopicWithInternalIdentifier(long entryIdentifier, DbDto.Topic topic) {
+        String store = getStoreName("contentEntryFromTopicWithInternalIdentifier");
         String key = getCacheKey(topic.name(), Long.valueOf(entryIdentifier).toString());
-        return cacheManager.getValueFromKey("contentEntryFromTopicWithInternalIdentifier", key, () -> {
+        return cacheManager.getValueFromKey(store, key, () -> {
             Log.trace("BulkDatabaseMiner", "getContentEntryFromTopicWithInternalIdentifier(" + entryIdentifier + ", " + topic + ")");
 
             return getDatabaseTopic(topic).get().getData().getEntries().stream()
@@ -108,7 +112,8 @@ public class BulkDatabaseMiner {
      * @return database entry having specified reference as identifier.
      */
     public Optional<DbDataDto.Entry> getContentEntryFromTopicWithReference(String ref, DbDto.Topic topic) {
-        return cacheManager.getValueFromKey("contentEntryFromTopicWithReference", getCacheKey(ref, topic.name()), () -> {
+        String store = getStoreName("contentEntryFromTopicWithReference");
+        return cacheManager.getValueFromKey(store, getCacheKey(ref, topic.name()), () -> {
             Log.trace("BulkDatabaseMiner", "getContentEntryFromTopicWithReference(" + ref + ", " + topic + ")");
 
             return getDatabaseTopic(topic)
@@ -169,8 +174,9 @@ public class BulkDatabaseMiner {
      * @return full entry if it exists, empty otherwise.
      */
     public Optional<DbDataDto.Entry> getRemoteContentEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbDto.Topic targetTopic) {
+        String store = getStoreName("remoteContentEntryWithInternalIdentifier");
         String key = getCacheKey(sourceTopic.name(), targetTopic.name(), Integer.valueOf(fieldRank).toString(), Long.valueOf(entryIndex).toString());
-        return cacheManager.getValueFromKey("remoteContentEntryWithInternalIdentifier", key, () -> {
+        return cacheManager.getValueFromKey(store, key, () -> {
             Log.trace("BulkDatabaseMiner", "getRemoteContentEntryWithInternalIdentifier(" + sourceTopic + ", " + fieldRank + ", " + entryIndex + ", " + targetTopic + ")");
 
             String remoteReference = getRawValueAtEntryIndexAndRank(sourceTopic, fieldRank, entryIndex);
@@ -184,9 +190,10 @@ public class BulkDatabaseMiner {
      * @return identifier of database entry having specified reference as identifier, empty otherwise.
      */
     public Optional<String> getContentEntryReferenceWithInternalIdentifier(long entryIdentifier, DbDto.Topic topic) {
+        String store = getStoreName("contentEntryReferenceWithInternalIdentifier");
         String key = getCacheKey(topic.name(), Long.valueOf(entryIdentifier).toString());
-        return cacheManager.getValueFromKey("contentEntryReferenceWithInternalIdentifier", key, () -> {
-            Log.trace("BulkDatabaseMiner", "getContentEntryRefFromEntryIdentifier(" + entryIdentifier + ", " + topic + ")");
+        return cacheManager.getValueFromKey(store, key, () -> {
+            Log.trace("BulkDatabaseMiner", "getContentEntryReferenceWithInternalIdentifier(" + entryIdentifier + ", " + topic + ")");
 
             List<DbStructureDto.Field> structureFields = getDatabaseTopic(topic).get().getStructure().getFields();
             OptionalInt potentialRefFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(structureFields);
@@ -237,8 +244,9 @@ public class BulkDatabaseMiner {
      * @return item if it exists, empty otherwise.
      */
     public Optional<DbDataDto.Item> getContentItemWithEntryIdentifierAndFieldRank(DbDto.Topic topic, int fieldRank, long entryIdentifier) {
+        String store = getStoreName("contentItemWithEntryIdentifierAndFieldRank");
         String key = getCacheKey(topic.name(), Integer.valueOf(fieldRank).toString(), Long.valueOf(entryIdentifier).toString());
-        return cacheManager.getValueFromKey("contentItemWithEntryIdentifierAndFieldRank", key, () -> {
+        return cacheManager.getValueFromKey(store, key, () -> {
             Log.trace("BulkDatabaseMiner", "getContentItemWithEntryIdentifierAndFieldRank(" + fieldRank + ", " + entryIdentifier + ", " + topic + ")");
 
             return getContentEntryFromTopicWithInternalIdentifier(entryIdentifier, topic)
@@ -333,7 +341,6 @@ public class BulkDatabaseMiner {
         return getContentItemFromEntryAtFieldRank(entry, uidFieldRank).get().getRawValue();
     }
 
-    // TODO provide cache key by miner instance (instance method getCacheKeyForMiner)
     static String getCacheKey(String... items) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0 ; i < items.length ; i++) {
@@ -345,14 +352,11 @@ public class BulkDatabaseMiner {
         return sb.toString();
     }
 
-//    String getCacheKeyForMiner(String... items) {
-//
-//        String[] newItems = new String[items.length + 1];
-//        newItems[0] = id;
-//        System.arraycopy(items, 0, newItems, 1, items.length);
-//
-//        return getCacheKey(newItems);
-//    }
+    private String getStoreName(String methodName) {
+        requireNonNull(methodName, "Method name is required.");
+
+        return String.format("%s:%s", id.toString(), methodName);
+    }
 
     private String getRawValueAtEntryIndexAndRank(DbDto.Topic topic, int fieldRank, long entryIndex) {
         DbDataDto.Entry contentEntry = getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic).get();
@@ -360,8 +364,9 @@ public class BulkDatabaseMiner {
     }
 
     private List<DbDataDto.Entry> getAllContentEntriesFromTopicWithItemValueAtFieldRank(int fieldRank, String itemValue, DbDto.Topic topic) {
+        String store = getStoreName("allContentEntriesFromTopicWithItemValueAtFieldRank");
         String key = getCacheKey(topic.name(), Integer.valueOf(fieldRank).toString(), itemValue);
-        return cacheManager.getValueFromKey("allContentEntriesFromTopicWithItemValueAtFieldRank", key, () -> {
+        return cacheManager.getValueFromKey(store, key, () -> {
             DbDto topicObject = getDatabaseTopic(topic).get();
 
             return topicObject.getData().getEntries().stream()
@@ -390,5 +395,9 @@ public class BulkDatabaseMiner {
 
     List<DbDto> getTopicObjects() {
         return topicObjects;
+    }
+
+    UUID getId() {
+        return id;
     }
 }
