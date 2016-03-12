@@ -1,13 +1,12 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
-import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -18,6 +17,8 @@ import java.util.Set;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.PNJ;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DiffPatchesGeneratorTest {
@@ -27,6 +28,8 @@ public class DiffPatchesGeneratorTest {
     @Before
     public void setUp() {
 //        Log.set(Log.LEVEL_DEBUG);
+
+        BulkDatabaseMiner.clearAllCaches();
     }
 
     @Test
@@ -88,8 +91,7 @@ public class DiffPatchesGeneratorTest {
     }
 
     @Test
-    @Ignore
-    public void makePatches_whenExistingContentsEntry_andREF_andChangedItems_shouldAddPartialUpdate() throws Exception {
+    public void makePatches_whenExistingContentsEntry_andREF_andChangedItem_shouldAddPartialUpdate() throws Exception {
         // GIVEN
         List<DbDto> referenceDatabaseObjects = readReferenceDatabase();
         List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-existingEntry/TDU_CarPhysicsData.json");
@@ -120,7 +122,10 @@ public class DiffPatchesGeneratorTest {
     }
 
     private static List<DbDto> readReferenceDatabase() throws URISyntaxException {
-        return readDatabase("/db/json/TDU_Achievements.json");
+        // FIXME do not load PNJ topic as there are too many duplicated REF.
+        return readDatabase("/db/json/TDU_Achievements.json").stream()
+                .filter((databaseObject) -> !databaseObject.getTopic().equals(PNJ))
+                .collect(toList());
     }
 
     private static List<DbDto> readDatabase(String jsonFile) throws URISyntaxException {

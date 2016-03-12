@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -7,12 +8,9 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -61,40 +59,67 @@ public class DiffPatchesGenerator {
 
     private Optional<DbPatchDto> createPatchObject(DbDto databaseObject) {
 
-        return getDatabaseMiner().getDatabaseTopic(databaseObject.getTopic())
+        DbDto.Topic currentTopic = databaseObject.getTopic();
+        return getDatabaseMiner().getDatabaseTopic(currentTopic)
 
                 .map((topicObject) -> {
 
+                    Optional<DbDto> referenceTopicObject = getReferenceDatabaseMiner().getDatabaseTopic(currentTopic);
+                    if (!referenceTopicObject.isPresent()) {
+                        return null;
+                    }
+
                     Set<DbPatchDto.DbChangeDto> changes = databaseObject.getData().getEntries().stream()
 
-                            .filter((entry) -> {
+                            .map((entry) -> {
                                 final OptionalInt refFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(databaseObject.getStructure().getFields());
                                 if (!refFieldRank.isPresent()) {
-                                    return false;
+                                    return null;
                                 }
 
-                                final Optional<DbDataDto.Entry> potentialReferenceEntry = getReferenceDatabaseMiner().getContentEntryFromTopicWithReference(entry.getItemAtRank(refFieldRank.getAsInt()).get().getRawValue(), databaseObject.getTopic());
+                                String entryRef = BulkDatabaseMiner.getContentEntryReference(entry, refFieldRank.getAsInt());
+                                final Optional<DbDataDto.Entry> potentialReferenceEntry = getReferenceDatabaseMiner().getContentEntryFromTopicWithReference(entryRef, currentTopic);
 
-                                // TODO differentiate cache per miner
-                                BulkDatabaseMiner.clearAllCaches();
+                                if (potentialReferenceEntry.isPresent()) {
+                                    // Existing: partial update
+                                    DbDataDto.Entry referenceEntry = potentialReferenceEntry.get();
 
-                                return !potentialReferenceEntry.isPresent();
+                                    List<DbFieldValueDto> partialEntryValues = new ArrayList<>();
+                                    for (int i = 0 ; i < entry.getItems().size() ; i++) {
+                                        String currentValue = entry.getItems().get(i).getRawValue();
+                                        String referenceValue = referenceEntry.getItems().get(i).getRawValue();
+
+                                        if (!currentValue.equals(referenceValue)) {
+                                            partialEntryValues.add(DbFieldValueDto.fromCouple(i + 1, currentValue));
+                                        }
+                                    }
+
+                                    if (partialEntryValues.isEmpty()) {
+                                        return null;
+                                    }
+
+                                    return DbPatchDto.DbChangeDto.builder()
+                                            .forTopic(currentTopic)
+                                            .withType(UPDATE)
+                                            .asReference(entryRef)
+                                            .withPartialEntryValues(partialEntryValues)
+                                            .build();
+                                } else {
+                                    // Full update
+                                    List<String> entryValues = entry.getItems().stream()
+                                            .map(DbDataDto.Item::getRawValue)
+                                            .collect(toList());
+
+                                    return DbPatchDto.DbChangeDto.builder()
+                                            .forTopic(currentTopic)
+                                            .withType(UPDATE)
+                                            .asReference(entryRef)
+                                            .withEntryValues(entryValues)
+                                            .build();
+                                }
                             })
 
-                            .map((newEntry) -> {
-                                final int refFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(databaseObject.getStructure().getFields()).getAsInt();
-                                String newEntryRef = BulkDatabaseMiner.getContentEntryReference(newEntry, refFieldRank);
-                                List<String> entryValues = newEntry.getItems().stream()
-                                        .map(DbDataDto.Item::getRawValue)
-                                        .collect(toList());
-
-                                return DbPatchDto.DbChangeDto.builder()
-                                        .forTopic(databaseObject.getTopic())
-                                        .withType(UPDATE)
-                                        .asReference(newEntryRef)
-                                        .withEntryValues(entryValues)
-                                        .build();
-                            })
+                            .filter((changeObject) -> changeObject != null)
 
                             .collect(toSet());
 
@@ -104,7 +129,7 @@ public class DiffPatchesGenerator {
 
                     return DbPatchDto.builder()
                             .addChanges(changes)
-                            .withComment(databaseObject.getTopic().name())
+                            .withComment(currentTopic.name())
                             .build();
                 });
     }
