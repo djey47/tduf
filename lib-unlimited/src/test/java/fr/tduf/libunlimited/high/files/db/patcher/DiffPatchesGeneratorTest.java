@@ -15,13 +15,18 @@ import java.util.List;
 import java.util.Set;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.HAIR;
 import static org.assertj.core.api.Assertions.assertThat;
 
+// TODO assert topic info in change objects
 public class DiffPatchesGeneratorTest {
 
     private final static Class<DiffPatchesGeneratorTest> thisClass = DiffPatchesGeneratorTest.class;
+
+    private final static List<DbDto> referenceDatabaseObjects = readReferenceDatabase();
 
     @Before
     public void setUp() {
@@ -44,8 +49,7 @@ public class DiffPatchesGeneratorTest {
     @Test
     public void makePatches_whenNoDifference_shouldReturnEmptySet() throws Exception {
         // GIVEN
-        List<DbDto> databaseObjects = readReferenceDatabase();
-        DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(databaseObjects, databaseObjects);
+        DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(referenceDatabaseObjects, referenceDatabaseObjects);
 
         // WHEN
         Set<DbPatchDto> actualPatchObjects = generator.makePatches();
@@ -57,7 +61,6 @@ public class DiffPatchesGeneratorTest {
     @Test
     public void makePatches_whenNewContentsEntry_andREF_shouldAddFullUpdate() throws Exception {
         // GIVEN
-        List<DbDto> referenceDatabaseObjects = readReferenceDatabase();
         List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-newEntry/TDU_CarPhysicsData.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
@@ -88,7 +91,6 @@ public class DiffPatchesGeneratorTest {
     @Test
     public void makePatches_whenExistingContentsEntry_andREF_andChangedItem_shouldAddPartialUpdate() throws Exception {
         // GIVEN
-        List<DbDto> referenceDatabaseObjects = readReferenceDatabase();
         List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-existingEntry/TDU_CarPhysicsData.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
@@ -119,7 +121,6 @@ public class DiffPatchesGeneratorTest {
     @Test
     public void makePatches_whenNewContentsEntry_andNoREF_shouldAddFullUpdate() throws Exception {
         // GIVEN
-        List<DbDto> referenceDatabaseObjects = readReferenceDatabase();
         List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/noref-newEntry/TDU_CarRims.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
@@ -145,8 +146,39 @@ public class DiffPatchesGeneratorTest {
                 .containsExactly("700912892" , "1139916842");
     }
 
-    private static List<DbDto> readReferenceDatabase() throws URISyntaxException {
-        return readDatabase("/db/json/diff/TDU_CarPhysicsData.json");
+    @Test
+    public void makePatches_whenNewResourceEntry_shouldAddFullResourceUpdate() throws Exception {
+        // GIVEN
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource/TDU_HAIR.json");
+        DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
+
+
+        // WHEN
+        Set<DbPatchDto> actualPatchObjects = generator.makePatches();
+
+
+        // THEN
+        assertThat(actualPatchObjects).hasSize(1);
+
+        DbPatchDto actualPatchObject = actualPatchObjects.stream().findAny().get();
+        assertThat(actualPatchObject.getComment()).isEqualTo(HAIR.name());
+
+        List<DbPatchDto.DbChangeDto> actualChanges = actualPatchObject.getChanges();
+        assertThat(actualChanges)
+                .hasSize(2)
+                .extracting("type").containsOnly(UPDATE_RES);
+        assertThat(actualChanges).extracting("ref").containsOnly("54713528", "54713529");
+        assertThat(actualChanges).extracting("topic").containsOnly(HAIR);
+        assertThat(actualChanges).extracting("value").containsOnly("StringPanthere01", "CulottePetitBateau01");
+    }
+
+    private static List<DbDto> readReferenceDatabase() {
+        try {
+            return readDatabase("/db/json/diff/TDU_CarPhysicsData.json");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
     private static List<DbDto> readDatabase(String jsonFile) throws URISyntaxException {

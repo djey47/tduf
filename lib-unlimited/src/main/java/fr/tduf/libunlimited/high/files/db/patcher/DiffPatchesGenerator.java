@@ -5,11 +5,13 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.*;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -57,6 +59,7 @@ public class DiffPatchesGenerator {
                 .collect(toSet());
     }
 
+    // TODO extract methods
     private Optional<DbPatchDto> createPatchObject(DbDto databaseObject) {
 
         DbDto.Topic currentTopic = databaseObject.getTopic();
@@ -69,14 +72,36 @@ public class DiffPatchesGenerator {
                         return null;
                     }
 
-                    Set<DbPatchDto.DbChangeDto> changes = databaseObject.getData().getEntries().stream()
+                    Set<DbPatchDto.DbChangeDto> resourceChanges = databaseObject.getResource().getEntries().stream()
+
+                            .map((resourceEntry) -> {
+
+                                String ref = resourceEntry.getReference();
+                                Optional<DbResourceEnhancedDto.Entry> potentialReferenceEntry = getReferenceDatabaseMiner().getResourceEntryFromTopicAndReference(currentTopic, ref);
+                                if (potentialReferenceEntry.isPresent()) {
+                                    // Already exists => do nothing
+                                    return null;
+                                }
+
+                                // TODO handle different localized values
+                                return DbPatchDto.DbChangeDto.builder()
+                                        .withType(UPDATE_RES)
+                                        .asReference(ref)
+                                        .withValue(resourceEntry.pickValue().get())
+                                        .forTopic(currentTopic)
+                                        .build();
+                            })
+
+                            .filter((changeObject) -> changeObject != null)
+
+                            .collect(toSet());
+
+                    Set<DbPatchDto.DbChangeDto> contentsChanges = databaseObject.getData().getEntries().stream()
 
                             .map((entry) -> {
                                 final OptionalInt refFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(databaseObject.getStructure().getFields());
                                 if (!refFieldRank.isPresent()) {
                                     // Topic without REF: full update if entry does not exist
-
-
                                     List<DbFieldValueDto> criteria = entry.getItems().stream()
 
                                             .map((item) -> DbFieldValueDto.fromCouple(item.getFieldRank(), item.getRawValue()))
@@ -147,12 +172,13 @@ public class DiffPatchesGenerator {
 
                             .collect(toSet());
 
-                    if (changes.isEmpty()) {
+                    if (resourceChanges.isEmpty() && contentsChanges.isEmpty()) {
                         return null;
                     }
 
                     return DbPatchDto.builder()
-                            .addChanges(changes)
+                            .addChanges(resourceChanges)
+                            .addChanges(contentsChanges)
                             .withComment(currentTopic.name())
                             .build();
                 });
