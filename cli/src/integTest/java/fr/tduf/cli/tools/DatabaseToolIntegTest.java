@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -61,6 +62,7 @@ public class DatabaseToolIntegTest {
     private static final String DIRECTORY_FIXED_DATABASE = PATH_INTEG_TESTS.resolve("db-fixed").toString();
     private static final String DIRECTORY_JSON_DATABASE = PATH_INTEG_TESTS.resolve("db-json").toString();
     private static final String DIRECTORY_ERR_JSON_DATABASE = PATH_INTEG_TESTS.resolve("db-json-errors").toString();
+    private static final String DIRECTORY_DIFF_JSON_DATABASE = PATH_INTEG_TESTS.resolve("db-json-diff").toString();
     private static final String DIRECTORY_GENERATED_DATABASE = PATH_INTEG_TESTS.resolve("db-generated").toString();
     private static final String DIRECTORY_ERR_GENERATED_DATABASE = PATH_INTEG_TESTS.resolve("db-generated-errors").toString();
 
@@ -379,6 +381,38 @@ public class DatabaseToolIntegTest {
         assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 7, "43055", "physical contents patched at field rank 7", miner);
         assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 8, "59368917", "physical contents patched at field rank 8", miner);
         assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 99, "238", "physical contents patched at field rank 99", miner);
+    }
+
+    @Test
+    public void diffPatches_shouldGenerateMiniPatchFiles() throws IOException, URISyntaxException, JSONException {
+        // GIVEN
+
+
+        // WHEN: compute diff between 2 database files and reference
+        System.out.println("-> DiffPatches!");
+        OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
+        DatabaseTool.main(new String[]{"diff-patches", "-n", "-j", DIRECTORY_DIFF_JSON_DATABASE, "-J", DIRECTORY_ERR_JSON_DATABASE, "-p", DIRECTORY_PATCH_OUTPUT});
+
+
+        // THEN: normalized output contents
+        String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
+        JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
+
+        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 1);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 2);
+
+
+        // THEN: output files exist
+        Path actualCarRimsPatchPath = Paths.get(DIRECTORY_PATCH_OUTPUT, "CAR_RIMS.mini.json");
+        Path actualRimsPatchPath = Paths.get(DIRECTORY_PATCH_OUTPUT, "RIMS.mini.json");
+        assertThat(actualCarRimsPatchPath).exists();
+        assertThat(actualRimsPatchPath).exists();
+
+
+        // THEN: change objects have right contents
+        Path referenceDiffPatchesPath = PATH_PATCHER.resolve("diff");
+        AssertionsHelper.assertJsonFilesMatch(referenceDiffPatchesPath.resolve("CAR_RIMS.mini.json").toString(), actualCarRimsPatchPath.toString());
+        AssertionsHelper.assertJsonFilesMatch(referenceDiffPatchesPath.resolve("RIMS.mini.json").toString(), actualRimsPatchPath.toString());
     }
 
     private static Object fakeAndAssertExtractAll(InvocationOnMock invocation) throws IOException {

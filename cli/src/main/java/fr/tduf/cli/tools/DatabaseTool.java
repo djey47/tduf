@@ -392,7 +392,7 @@ public class DatabaseTool extends GenericTool {
         Set<String> targetPatchFiles = writePatches(diffPatchObjects, targetPatchesDirectory);
 
         Map<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("patchFiles", targetPatchFiles);
+        resultInfo.put("writtenFiles", targetPatchFiles);
 
         return resultInfo;
     }
