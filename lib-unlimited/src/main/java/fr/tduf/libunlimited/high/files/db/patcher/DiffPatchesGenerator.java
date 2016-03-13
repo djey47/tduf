@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.*;
@@ -14,6 +15,7 @@ import java.util.stream.Stream;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -51,7 +53,7 @@ public class DiffPatchesGenerator {
     public Set<DbPatchDto> makePatches() {
         return databaseObjects.parallelStream()
 
-                .map(this::createPatchObject)
+                .map(this::seekForChanges)
 
                 .filter(Optional::isPresent)
 
@@ -60,149 +62,161 @@ public class DiffPatchesGenerator {
                 .collect(toSet());
     }
 
-    // TODO extract methods
-    private Optional<DbPatchDto> createPatchObject(DbDto databaseObject) {
+    private Optional<DbPatchDto> seekForChanges(DbDto databaseObject) {
 
         DbDto.Topic currentTopic = databaseObject.getTopic();
+        Optional<DbDto> referenceTopicObject = getReferenceDatabaseMiner().getDatabaseTopic(currentTopic);
+        if (!referenceTopicObject.isPresent()) {
+            return empty();
+        }
+
         return getDatabaseMiner().getDatabaseTopic(currentTopic)
 
                 .map((topicObject) -> {
 
-                    Optional<DbDto> referenceTopicObject = getReferenceDatabaseMiner().getDatabaseTopic(currentTopic);
-                    if (!referenceTopicObject.isPresent()) {
-                        return null;
-                    }
+                    Set<DbPatchDto.DbChangeDto> resourceChanges = seekForResourcesChanges(databaseObject.getResource(), currentTopic);
+                    Set<DbPatchDto.DbChangeDto> contentsChanges = seekForContentsChanges(databaseObject.getData(), databaseObject.getStructure().getFields(), currentTopic);
 
-                    Set<DbPatchDto.DbChangeDto> resourceChanges = databaseObject.getResource().getEntries().stream()
-
-                            .flatMap((resourceEntry) -> {
-
-                                String ref = resourceEntry.getReference();
-                                Optional<DbResourceEnhancedDto.Entry> potentialReferenceEntry = getReferenceDatabaseMiner().getResourceEntryFromTopicAndReference(currentTopic, ref);
-                                if (potentialReferenceEntry.isPresent()) {
-                                    // Already exists => do nothing
-                                    return null;
-                                }
-
-                                Set<String> entryValues = resourceEntry.getPresentLocales().stream()
-
-                                        .map(resourceEntry::getValueForLocale)
-
-                                        .map(Optional::get)
-
-                                        .collect(toSet());
-
-                                if (1 == entryValues.size()) {
-                                    return Stream.of(DbPatchDto.DbChangeDto.builder()
-                                            .withType(UPDATE_RES)
-                                            .asReference(ref)
-                                            .withValue(resourceEntry.pickValue().get())
-                                            .forTopic(currentTopic)
-                                            .build());
-                                }
-
-                                return DbResourceEnhancedDto.Locale.valuesAsStream()
-                                        .map((locale) -> DbPatchDto.DbChangeDto.builder()
-                                                .withType(UPDATE_RES)
-                                                .asReference(ref)
-                                                .forLocale(locale)
-                                                .withValue(resourceEntry.getValueForLocale(locale).orElse("??"))
-                                                .forTopic(currentTopic)
-                                                .build());
-                            })
-
-                            .filter((changeObject) -> changeObject != null)
-
-                            .collect(toSet());
-
-                    Set<DbPatchDto.DbChangeDto> contentsChanges = databaseObject.getData().getEntries().stream()
-
-                            .map((entry) -> {
-                                final OptionalInt refFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(databaseObject.getStructure().getFields());
-                                if (!refFieldRank.isPresent()) {
-                                    // Topic without REF: full update if entry does not exist
-                                    List<DbFieldValueDto> criteria = entry.getItems().stream()
-
-                                            .map((item) -> DbFieldValueDto.fromCouple(item.getFieldRank(), item.getRawValue()))
-
-                                            .collect(toList());
-
-                                    List<DbDataDto.Entry> existingEntries = getReferenceDatabaseMiner().getContentEntriesMatchingCriteria(criteria, currentTopic);
-                                    if (!existingEntries.isEmpty()) {
-                                        return null;
-                                    }
-
-                                    List<String> entryValues = entry.getItems().stream()
-                                            .map(DbDataDto.Item::getRawValue)
-                                            .collect(toList());
-
-                                    return DbPatchDto.DbChangeDto.builder()
-                                            .forTopic(currentTopic)
-                                            .withType(UPDATE)
-                                            .asReference(null)
-                                            .withEntryValues(entryValues)
-                                            .build();
-                                }
-
-                                String entryRef = BulkDatabaseMiner.getContentEntryReference(entry, refFieldRank.getAsInt());
-                                final Optional<DbDataDto.Entry> potentialReferenceEntry = getReferenceDatabaseMiner().getContentEntryFromTopicWithReference(entryRef, currentTopic);
-
-                                if (potentialReferenceEntry.isPresent()) {
-                                    // Existing: partial update
-                                    DbDataDto.Entry referenceEntry = potentialReferenceEntry.get();
-
-                                    // TODO use stream and collect
-                                    List<DbFieldValueDto> partialEntryValues = new ArrayList<>();
-                                    for (int i = 0 ; i < entry.getItems().size() ; i++) {
-                                        String currentValue = entry.getItems().get(i).getRawValue();
-                                        String referenceValue = referenceEntry.getItems().get(i).getRawValue();
-
-                                        if (!currentValue.equals(referenceValue)) {
-                                            partialEntryValues.add(DbFieldValueDto.fromCouple(i + 1, currentValue));
-                                        }
-                                    }
-
-                                    if (partialEntryValues.isEmpty()) {
-                                        return null;
-                                    }
-
-                                    return DbPatchDto.DbChangeDto.builder()
-                                            .forTopic(currentTopic)
-                                            .withType(UPDATE)
-                                            .asReference(entryRef)
-                                            .withPartialEntryValues(partialEntryValues)
-                                            .build();
-                                } else {
-                                    // Full update
-                                    List<String> entryValues = entry.getItems().stream()
-                                            .map(DbDataDto.Item::getRawValue)
-                                            .collect(toList());
-
-                                    return DbPatchDto.DbChangeDto.builder()
-                                            .forTopic(currentTopic)
-                                            .withType(UPDATE)
-                                            .asReference(entryRef)
-                                            .withEntryValues(entryValues)
-                                            .build();
-                                }
-                            })
-
-                            .filter((changeObject) -> changeObject != null)
-
-                            .collect(toSet());
-
-                    if (resourceChanges.isEmpty() && contentsChanges.isEmpty()) {
-                        return null;
-                    }
-
-                    return DbPatchDto.builder()
-                            .addChanges(resourceChanges)
-                            .addChanges(contentsChanges)
-                            .withComment(currentTopic.name())
-                            .build();
+                    return createPatchObject(currentTopic, resourceChanges, contentsChanges);
                 });
     }
 
+    private Set<DbPatchDto.DbChangeDto> seekForResourcesChanges(DbResourceEnhancedDto resourceObject, DbDto.Topic currentTopic) {
+        // TODO simplify
+        return resourceObject.getEntries().stream()
+
+                .flatMap((resourceEntry) -> {
+
+                    String ref = resourceEntry.getReference();
+                    Optional<DbResourceEnhancedDto.Entry> potentialReferenceEntry = getReferenceDatabaseMiner().getResourceEntryFromTopicAndReference(currentTopic, ref);
+                    if (potentialReferenceEntry.isPresent()) {
+                        // Already exists => do nothing
+                        return null;
+                    }
+
+                    Set<String> entryValues = resourceEntry.getPresentLocales().stream()
+
+                            .map(resourceEntry::getValueForLocale)
+
+                            .map(Optional::get)
+
+                            .collect(toSet());
+
+                    if (1 == entryValues.size()) {
+                        return Stream.of(DbPatchDto.DbChangeDto.builder()
+                                .withType(UPDATE_RES)
+                                .asReference(ref)
+                                .withValue(resourceEntry.pickValue().get())
+                                .forTopic(currentTopic)
+                                .build());
+                    }
+
+                    return DbResourceEnhancedDto.Locale.valuesAsStream()
+                            .map((locale) -> DbPatchDto.DbChangeDto.builder()
+                                    .withType(UPDATE_RES)
+                                    .asReference(ref)
+                                    .forLocale(locale)
+                                    .withValue(resourceEntry.getValueForLocale(locale).orElse("??"))
+                                    .forTopic(currentTopic)
+                                    .build());
+                })
+
+                .filter((changeObject) -> changeObject != null)
+
+                .collect(toSet());
+    }
+
+    private Set<DbPatchDto.DbChangeDto> seekForContentsChanges(DbDataDto dataObjects, List<DbStructureDto.Field> structureFields, DbDto.Topic currentTopic) {
+        final OptionalInt potentialRefFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(structureFields);
+
+        return dataObjects.getEntries().stream()
+
+                .map((entry) -> potentialRefFieldRank.isPresent() ?
+                        handleTopicWithREF(currentTopic, entry, potentialRefFieldRank.getAsInt())
+                        :
+                        handleTopicWithoutREF(currentTopic, entry))
+
+                .filter((changeObject) -> changeObject != null)
+
+                .collect(toSet());
+    }
+
+    private DbPatchDto.DbChangeDto handleTopicWithREF(DbDto.Topic currentTopic, DbDataDto.Entry entry, int refFieldRank) {
+        String entryRef = BulkDatabaseMiner.getContentEntryReference(entry, refFieldRank);
+        final Optional<DbDataDto.Entry> potentialReferenceEntry = getReferenceDatabaseMiner().getContentEntryFromTopicWithReference(entryRef, currentTopic);
+
+        if (potentialReferenceEntry.isPresent()) {
+            return createPartialContentsUpdate(currentTopic, entry, entryRef, potentialReferenceEntry);
+        } else {
+            return createFullContentsUpdate(currentTopic, entry, entryRef);
+        }
+    }
+
+    private DbPatchDto.DbChangeDto handleTopicWithoutREF(DbDto.Topic currentTopic, DbDataDto.Entry entry) {
+        List<DbFieldValueDto> criteria = entry.getItems().stream()
+
+                .map((item) -> DbFieldValueDto.fromCouple(item.getFieldRank(), item.getRawValue()))
+
+                .collect(toList());
+
+        List<DbDataDto.Entry> existingEntries = getReferenceDatabaseMiner().getContentEntriesMatchingCriteria(criteria, currentTopic);
+        if (!existingEntries.isEmpty()) {
+            return null;
+        }
+
+        return createFullContentsUpdate(currentTopic, entry, null);
+    }
+
+    private DbPatchDto.DbChangeDto createPartialContentsUpdate(DbDto.Topic currentTopic, DbDataDto.Entry entry, String entryRef, Optional<DbDataDto.Entry> potentialReferenceEntry) {
+        DbDataDto.Entry referenceEntry = potentialReferenceEntry.get();
+
+        // TODO use stream and collect
+        List<DbFieldValueDto> partialEntryValues = new ArrayList<>();
+        for (int i = 0 ; i < entry.getItems().size() ; i++) {
+            String currentValue = entry.getItems().get(i).getRawValue();
+            String referenceValue = referenceEntry.getItems().get(i).getRawValue();
+
+            if (!currentValue.equals(referenceValue)) {
+                partialEntryValues.add(DbFieldValueDto.fromCouple(i + 1, currentValue));
+            }
+        }
+
+        if (partialEntryValues.isEmpty()) {
+            return null;
+        }
+
+        return DbPatchDto.DbChangeDto.builder()
+                .forTopic(currentTopic)
+                .withType(UPDATE)
+                .asReference(entryRef)
+                .withPartialEntryValues(partialEntryValues)
+                .build();
+    }
+
+    private DbPatchDto.DbChangeDto createFullContentsUpdate(DbDto.Topic currentTopic, DbDataDto.Entry entry, String entryRef) {
+        List<String> entryValues = entry.getItems().stream()
+                .map(DbDataDto.Item::getRawValue)
+                .collect(toList());
+
+        return DbPatchDto.DbChangeDto.builder()
+                .forTopic(currentTopic)
+                .withType(UPDATE)
+                .asReference(entryRef)
+                .withEntryValues(entryValues)
+                .build();
+    }
+
+    private DbPatchDto createPatchObject(DbDto.Topic currentTopic, Set<DbPatchDto.DbChangeDto> resourceChanges, Set<DbPatchDto.DbChangeDto> contentsChanges) {
+        if (resourceChanges.isEmpty() && contentsChanges.isEmpty()) {
+            return null;
+        }
+
+        return DbPatchDto.builder()
+                .addChanges(resourceChanges)
+                .addChanges(contentsChanges)
+                .withComment(currentTopic.name())
+                .build();
+    }
 
     List<DbDto> getDatabaseObjects() {
         return databaseObjects;
