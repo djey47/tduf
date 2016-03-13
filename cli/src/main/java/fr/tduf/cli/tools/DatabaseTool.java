@@ -361,14 +361,10 @@ public class DatabaseTool extends GenericTool {
 
         DbPatchDto patchObject = AbstractDatabaseHolder.prepare(PatchGenerator.class, allTopicObjects).makePatch(effectiveTopic, effectiveRefRange, effectiveFieldRange);
 
-        // TODO extract to method
-        outLine("Writing patch to " + targetPatchFile + "...");
-
-        FilesHelper.writeJsonObjectToFile(patchObject, targetPatchFile);
+        writePatchToFile(patchObject, targetPatchFile);
 
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("patchFile", targetPatchFile);
-        // TODO put conflicts
 
         return resultInfo;
     }
@@ -651,19 +647,22 @@ public class DatabaseTool extends GenericTool {
                 .map((patchObject) -> {
                     String targetPatchFile = Paths.get(targetPatchesDirectory, patchObject.getComment() + ".mini.json").toString();
 
-                    // TODO extract to method
-                    outLine(".Writing patch to " + targetPatchFile + "...");
-
-                    try {
-                        FilesHelper.writeJsonObjectToFile(patchObject, targetPatchFile);
-                    } catch (IOException ioe) {
-                        throw new RuntimeException(ioe);
-                    }
+                    writePatchToFile(patchObject, targetPatchFile);
 
                     return targetPatchFile;
                 })
 
                 .collect(toSet());
+    }
+
+    private void writePatchToFile(DbPatchDto patchObject, String targetPatchFile) {
+        outLine(".Writing patch to " + targetPatchFile + "...");
+
+        try {
+            FilesHelper.writeJsonObjectToFile(patchObject, targetPatchFile);
+        } catch (IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
     }
 
     private static List<DatabaseIntegrityErrorDto> toDatabaseIntegrityErrors(Set<IntegrityError> integrityErrors) {
