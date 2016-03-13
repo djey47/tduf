@@ -9,9 +9,13 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.Set;
 import java.util.stream.Stream;
 
+import static fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto.fromCouple;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static java.util.Objects.requireNonNull;
@@ -124,7 +128,7 @@ public class DiffPatchesGenerator {
         final Optional<DbDataDto.Entry> potentialReferenceEntry = getReferenceDatabaseMiner().getContentEntryFromTopicWithReference(entryRef, currentTopic);
 
         if (potentialReferenceEntry.isPresent()) {
-            return createPartialContentsUpdate(currentTopic, entry, entryRef, potentialReferenceEntry);
+            return createPartialContentsUpdate(currentTopic, entryRef, entry, potentialReferenceEntry.get());
         } else {
             return createFullContentsUpdate(currentTopic, entry, entryRef);
         }
@@ -133,7 +137,7 @@ public class DiffPatchesGenerator {
     private DbPatchDto.DbChangeDto handleTopicWithoutREF(DbDto.Topic currentTopic, DbDataDto.Entry entry) {
         List<DbFieldValueDto> criteria = entry.getItems().stream()
 
-                .map((item) -> DbFieldValueDto.fromCouple(item.getFieldRank(), item.getRawValue()))
+                .map((item) -> fromCouple(item.getFieldRank(), item.getRawValue()))
 
                 .collect(toList());
 
@@ -145,19 +149,23 @@ public class DiffPatchesGenerator {
         return createFullContentsUpdate(currentTopic, entry, null);
     }
 
-    private DbPatchDto.DbChangeDto createPartialContentsUpdate(DbDto.Topic currentTopic, DbDataDto.Entry entry, String entryRef, Optional<DbDataDto.Entry> potentialReferenceEntry) {
-        DbDataDto.Entry referenceEntry = potentialReferenceEntry.get();
+    private DbPatchDto.DbChangeDto createPartialContentsUpdate(DbDto.Topic currentTopic, String entryReference, DbDataDto.Entry entry, DbDataDto.Entry referenceEntry) {
+        List<DbFieldValueDto> partialEntryValues = entry.getItems().stream()
 
-        // TODO use stream and collect
-        List<DbFieldValueDto> partialEntryValues = new ArrayList<>();
-        for (int i = 0; i < entry.getItems().size(); i++) {
-            String currentValue = entry.getItems().get(i).getRawValue();
-            String referenceValue = referenceEntry.getItems().get(i).getRawValue();
+                .map((entryItem) -> {
+                    int fieldRank = entryItem.getFieldRank();
+                    String currentValue = entryItem.getRawValue();
+                    String referenceValue = referenceEntry.getItemAtRank(fieldRank).get().getRawValue();
 
-            if (!currentValue.equals(referenceValue)) {
-                partialEntryValues.add(DbFieldValueDto.fromCouple(i + 1, currentValue));
-            }
-        }
+                    return currentValue.equals(referenceValue) ?
+                            null
+                            :
+                            fromCouple(fieldRank, currentValue);
+                })
+
+                .filter((partialValue) -> partialValue != null)
+
+                .collect(toList());
 
         if (partialEntryValues.isEmpty()) {
             return null;
@@ -166,7 +174,7 @@ public class DiffPatchesGenerator {
         return DbPatchDto.DbChangeDto.builder()
                 .forTopic(currentTopic)
                 .withType(UPDATE)
-                .asReference(entryRef)
+                .asReference(entryReference)
                 .withPartialEntryValues(partialEntryValues)
                 .build();
     }
