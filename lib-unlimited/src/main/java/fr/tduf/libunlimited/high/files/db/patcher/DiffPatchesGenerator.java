@@ -31,8 +31,9 @@ public class DiffPatchesGenerator {
 
     /**
      * Unique entry point.
-     * @param databaseObjects           : database topics containing changes
-     * @param referenceDatabaseObjects  : database topics acting as reference
+     *
+     * @param databaseObjects          : database topics containing changes
+     * @param referenceDatabaseObjects : database topics acting as reference
      * @return a generator instance.
      */
     public static DiffPatchesGenerator prepare(List<DbDto> databaseObjects, List<DbDto> referenceDatabaseObjects) throws ReflectiveOperationException {
@@ -82,43 +83,20 @@ public class DiffPatchesGenerator {
     }
 
     private Set<DbPatchDto.DbChangeDto> seekForResourcesChanges(DbResourceEnhancedDto resourceObject, DbDto.Topic currentTopic) {
-        // TODO simplify
         return resourceObject.getEntries().stream()
 
                 .flatMap((resourceEntry) -> {
 
                     String ref = resourceEntry.getReference();
-                    Optional<DbResourceEnhancedDto.Entry> potentialReferenceEntry = getReferenceDatabaseMiner().getResourceEntryFromTopicAndReference(currentTopic, ref);
-                    if (potentialReferenceEntry.isPresent()) {
+                    if (getReferenceDatabaseMiner().getResourceEntryFromTopicAndReference(currentTopic, ref).isPresent()) {
                         // Already exists => do nothing
                         return null;
                     }
 
-                    Set<String> entryValues = resourceEntry.getPresentLocales().stream()
-
-                            .map(resourceEntry::getValueForLocale)
-
-                            .map(Optional::get)
-
-                            .collect(toSet());
-
-                    if (1 == entryValues.size()) {
-                        return Stream.of(DbPatchDto.DbChangeDto.builder()
-                                .withType(UPDATE_RES)
-                                .asReference(ref)
-                                .withValue(resourceEntry.pickValue().get())
-                                .forTopic(currentTopic)
-                                .build());
-                    }
-
-                    return DbResourceEnhancedDto.Locale.valuesAsStream()
-                            .map((locale) -> DbPatchDto.DbChangeDto.builder()
-                                    .withType(UPDATE_RES)
-                                    .asReference(ref)
-                                    .forLocale(locale)
-                                    .withValue(resourceEntry.getValueForLocale(locale).orElse("??"))
-                                    .forTopic(currentTopic)
-                                    .build());
+                    return isGlobalizedResource(resourceEntry) ?
+                            createGlobalizedResourceUpdate(currentTopic, resourceEntry)
+                            :
+                            createLocalizedResourceUpdates(currentTopic, resourceEntry);
                 })
 
                 .filter((changeObject) -> changeObject != null)
@@ -172,7 +150,7 @@ public class DiffPatchesGenerator {
 
         // TODO use stream and collect
         List<DbFieldValueDto> partialEntryValues = new ArrayList<>();
-        for (int i = 0 ; i < entry.getItems().size() ; i++) {
+        for (int i = 0; i < entry.getItems().size(); i++) {
             String currentValue = entry.getItems().get(i).getRawValue();
             String referenceValue = referenceEntry.getItems().get(i).getRawValue();
 
@@ -206,6 +184,26 @@ public class DiffPatchesGenerator {
                 .build();
     }
 
+    private Stream<? extends DbPatchDto.DbChangeDto> createLocalizedResourceUpdates(DbDto.Topic currentTopic, DbResourceEnhancedDto.Entry resourceEntry) {
+        return DbResourceEnhancedDto.Locale.valuesAsStream()
+                .map((locale) -> DbPatchDto.DbChangeDto.builder()
+                        .withType(UPDATE_RES)
+                        .asReference(resourceEntry.getReference())
+                        .forLocale(locale)
+                        .withValue(resourceEntry.getValueForLocale(locale).orElse("??"))
+                        .forTopic(currentTopic)
+                        .build());
+    }
+
+    private Stream<? extends DbPatchDto.DbChangeDto> createGlobalizedResourceUpdate(DbDto.Topic currentTopic, DbResourceEnhancedDto.Entry resourceEntry) {
+        return Stream.of(DbPatchDto.DbChangeDto.builder()
+                .withType(UPDATE_RES)
+                .asReference(resourceEntry.getReference())
+                .withValue(resourceEntry.pickValue().get())
+                .forTopic(currentTopic)
+                .build());
+    }
+
     private DbPatchDto createPatchObject(DbDto.Topic currentTopic, Set<DbPatchDto.DbChangeDto> resourceChanges, Set<DbPatchDto.DbChangeDto> contentsChanges) {
         if (resourceChanges.isEmpty() && contentsChanges.isEmpty()) {
             return null;
@@ -216,6 +214,16 @@ public class DiffPatchesGenerator {
                 .addChanges(contentsChanges)
                 .withComment(currentTopic.name())
                 .build();
+    }
+
+    private static boolean isGlobalizedResource(DbResourceEnhancedDto.Entry resourceEntry) {
+        return 1 == resourceEntry.getPresentLocales().stream()
+
+                .map(resourceEntry::getValueForLocale)
+
+                .map(Optional::get)
+
+                .collect(toSet()).size();
     }
 
     List<DbDto> getDatabaseObjects() {
