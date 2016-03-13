@@ -4,6 +4,7 @@ import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -147,7 +148,7 @@ public class DiffPatchesGeneratorTest {
     }
 
     @Test
-    public void makePatches_whenNewResourceEntry_shouldAddFullResourceUpdate() throws Exception {
+    public void makePatches_whenNewResourceEntries_shouldAddFullResourceUpdates() throws Exception {
         // GIVEN
         List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource/TDU_HAIR.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
@@ -170,6 +171,33 @@ public class DiffPatchesGeneratorTest {
         assertThat(actualChanges).extracting("ref").containsOnly("54713528", "54713529");
         assertThat(actualChanges).extracting("topic").containsOnly(HAIR);
         assertThat(actualChanges).extracting("value").containsOnly("StringPanthere01", "CulottePetitBateau01");
+    }
+
+    @Test
+    public void makePatches_whenNewResourceEntry_withLocalizedValues_shouldAddFullResourceUpdates() throws Exception {
+        // GIVEN
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource-localized/TDU_HAIR.json");
+        DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
+
+
+        // WHEN
+        Set<DbPatchDto> actualPatchObjects = generator.makePatches();
+
+
+        // THEN
+        assertThat(actualPatchObjects).hasSize(1);
+
+        DbPatchDto actualPatchObject = actualPatchObjects.stream().findAny().get();
+        assertThat(actualPatchObject.getComment()).isEqualTo(HAIR.name());
+
+        List<DbPatchDto.DbChangeDto> actualChanges = actualPatchObject.getChanges();
+        assertThat(actualChanges)
+                .hasSize(8)
+                .extracting("type").containsOnly(UPDATE_RES);
+        assertThat(actualChanges).extracting("ref").containsOnly("54713528");
+        assertThat(actualChanges).extracting("topic").containsOnly(HAIR);
+        assertThat(actualChanges).extracting("locale").containsOnly(DbResourceEnhancedDto.Locale.values());
+        assertThat(actualChanges).extracting("value").contains("StringPanthere01-FR", "StringPanthere01-CH", "StringPanthere01-US");
     }
 
     private static List<DbDto> readReferenceDatabase() {

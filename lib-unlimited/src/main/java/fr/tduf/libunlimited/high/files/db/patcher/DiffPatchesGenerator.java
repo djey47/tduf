@@ -9,6 +9,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
@@ -74,7 +75,7 @@ public class DiffPatchesGenerator {
 
                     Set<DbPatchDto.DbChangeDto> resourceChanges = databaseObject.getResource().getEntries().stream()
 
-                            .map((resourceEntry) -> {
+                            .flatMap((resourceEntry) -> {
 
                                 String ref = resourceEntry.getReference();
                                 Optional<DbResourceEnhancedDto.Entry> potentialReferenceEntry = getReferenceDatabaseMiner().getResourceEntryFromTopicAndReference(currentTopic, ref);
@@ -83,13 +84,31 @@ public class DiffPatchesGenerator {
                                     return null;
                                 }
 
-                                // TODO handle different localized values
-                                return DbPatchDto.DbChangeDto.builder()
-                                        .withType(UPDATE_RES)
-                                        .asReference(ref)
-                                        .withValue(resourceEntry.pickValue().get())
-                                        .forTopic(currentTopic)
-                                        .build();
+                                Set<String> entryValues = resourceEntry.getPresentLocales().stream()
+
+                                        .map(resourceEntry::getValueForLocale)
+
+                                        .map(Optional::get)
+
+                                        .collect(toSet());
+
+                                if (1 == entryValues.size()) {
+                                    return Stream.of(DbPatchDto.DbChangeDto.builder()
+                                            .withType(UPDATE_RES)
+                                            .asReference(ref)
+                                            .withValue(resourceEntry.pickValue().get())
+                                            .forTopic(currentTopic)
+                                            .build());
+                                }
+
+                                return DbResourceEnhancedDto.Locale.valuesAsStream()
+                                        .map((locale) -> DbPatchDto.DbChangeDto.builder()
+                                                .withType(UPDATE_RES)
+                                                .asReference(ref)
+                                                .forLocale(locale)
+                                                .withValue(resourceEntry.getValueForLocale(locale).orElse("??"))
+                                                .forTopic(currentTopic)
+                                                .build());
                             })
 
                             .filter((changeObject) -> changeObject != null)
