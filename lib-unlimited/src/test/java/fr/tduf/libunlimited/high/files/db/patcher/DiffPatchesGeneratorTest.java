@@ -22,7 +22,6 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.HAIR;
 import static org.assertj.core.api.Assertions.assertThat;
 
-// TODO assert topic info in change objects
 public class DiffPatchesGeneratorTest {
 
     private final static Class<DiffPatchesGeneratorTest> thisClass = DiffPatchesGeneratorTest.class;
@@ -81,6 +80,8 @@ public class DiffPatchesGeneratorTest {
         assertThat(actualChangeObject.getType()).isEqualTo(UPDATE);
         assertThat(actualChangeObject.getRef()).isEqualTo("99999999");
         assertThat(actualChangeObject.getPartialValues()).isNull();
+        assertThat(actualChangeObject.getTopic()).isEqualTo(CAR_PHYSICS_DATA);
+
         final List<String> actualValues = actualChangeObject.getValues();
         assertThat(actualValues).hasSize(103);
 
@@ -111,6 +112,8 @@ public class DiffPatchesGeneratorTest {
         assertThat(actualChangeObject.getType()).isEqualTo(UPDATE);
         assertThat(actualChangeObject.getRef()).isEqualTo("1210773243");
         assertThat(actualChangeObject.getValues()).isNull();
+        assertThat(actualChangeObject.getTopic()).isEqualTo(CAR_PHYSICS_DATA);
+
         final List<DbFieldValueDto> actualPartialValues = actualChangeObject.getPartialValues();
         assertThat(actualPartialValues).hasSize(1);
 
@@ -141,6 +144,8 @@ public class DiffPatchesGeneratorTest {
         assertThat(actualChangeObject.getType()).isEqualTo(UPDATE);
         assertThat(actualChangeObject.getRef()).isNull();
         assertThat(actualChangeObject.getPartialValues()).isNull();
+        assertThat(actualChangeObject.getTopic()).isEqualTo(CAR_RIMS);
+
         final List<String> actualValues = actualChangeObject.getValues();
         assertThat(actualValues)
                 .hasSize(2)
