@@ -38,6 +38,14 @@ public class AllToolsTest {
     }
 
     @Test
+    public void databaseTool_applyPatches() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new DatabaseTool(), APPLY_PATCHES);
+    }
+
+    @Test
     public void databaseTool_genPatch() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
         exitRule.expectSystemExitWithStatus(1);

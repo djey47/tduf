@@ -74,7 +74,7 @@ public class DatabaseTool extends GenericTool {
     @Option(name = "-o", aliases = "--outputDatabaseDir", usage = "Fixed/Patched TDU database directory, defaults to .\\tdu-database-fixed or .\\tdu-database-patched.")
     private String outputDatabaseDirectory;
 
-    @Option(name = "-p", aliases = "--patchFile", usage = "File describing patch to apply/create/convert. Required for all -patch operations.")
+    @Option(name = "-p", aliases = "--patchFile", usage = "File describing patch (or directory containing patches) to apply/create/convert. Required for all -patch operations.")
     private String patchFile;
 
     @Option(name = "-t", aliases = "--topic", usage = "Database topic to generate patch when gen-patch operation. Allowed values: ACHIEVEMENTS,AFTER_MARKET_PACKS,BOTS,BRANDS,CAR_COLORS,CAR_PACKS,CAR_PHYSICS_DATA,CAR_RIMS,CAR_SHOPS,CLOTHES,HAIR,HOUSES,INTERIOR,MENUS,PNJ,RIMS,SUB_TITLES,TUTORIALS.")
@@ -105,6 +105,7 @@ public class DatabaseTool extends GenericTool {
      */
     enum Command implements CommandHelper.CommandEnum {
         APPLY_PATCH("apply-patch", "Modifies database contents and resources as described in a JSON mini patch file."),
+        APPLY_PATCHES("apply-patches", "Modifies database contents and resources as described in JSON mini patch files form a directory."),
         APPLY_TDUPK("apply-tdupk", "Modifies vehicle physics as described in a performance pack file from TDUPE."),
         GEN_PATCH("gen-patch", "Creates mini-patch file from selected database contents."),
         DIFF_PATCHES("diff-patches", "Creates mini-patch files with differences from JSON database against reference one."),
@@ -156,6 +157,9 @@ public class DatabaseTool extends GenericTool {
             case APPLY_PATCH:
                 commandResult = applyPatch(patchFile, jsonDirectory, outputDatabaseDirectory);
                 return true;
+            case APPLY_PATCHES:
+                commandResult = applyPatches(patchFile, jsonDirectory, outputDatabaseDirectory);
+                return true;
             case GEN_PATCH:
                 commandResult = genPatch(jsonDirectory, patchFile);
                 return true;
@@ -193,6 +197,7 @@ public class DatabaseTool extends GenericTool {
                 jsonDirectory = "tdu-database-dump";
             } else if (APPLY_TDUPK == command
                     || APPLY_PATCH == command
+                    || APPLY_PATCHES == command
                     || REPACK_ALL == command
                     || GEN_PATCH == command
                     || DIFF_PATCHES == command) {
@@ -217,6 +222,7 @@ public class DatabaseTool extends GenericTool {
         if (patchFile == null
                 && (APPLY_TDUPK == command
                 || APPLY_PATCH == command
+                || APPLY_PATCHES == command
                 || CONVERT_PATCH == command
                 || DIFF_PATCHES == command)) {
             throw new CmdLineException(parser, "Error: patchFile is required.", null);
@@ -242,6 +248,7 @@ public class DatabaseTool extends GenericTool {
         return asList(
                 APPLY_TDUPK.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\vehicle.tdupk\" -r \"606298799\" -o \"C:\\Users\\Bill\\Desktop\\json-database\"",
                 APPLY_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\"",
+                APPLY_PATCHES.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\\"",
                 GEN_PATCH.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -p \"C:\\Users\\Bill\\Desktop\\miniPatch.json\" -t \"CAR_PHYSICS_DATA\" -r \"606298799,637314272\" -f \"102,103\"",
                 DIFF_PATCHES.label + " -j \"C:\\Users\\Bill\\Desktop\\json-database\" -J \"C:\\Users\\Bill\\Desktop\\json-database-reference\" -p \"C:\\Users\\Bill\\Desktop\"",
                 CONVERT_PATCH.label + " -p \"C:\\Users\\Bill\\Desktop\\install.PCH\"",
@@ -441,6 +448,34 @@ public class DatabaseTool extends GenericTool {
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("writtenFiles", writtenFileNames);
         resultInfo.put("effectivePatchPropertyFile", writtenPropertyFile);
+
+        return resultInfo;
+    }
+
+    private Map<String, ?> applyPatches(String sourcePatchesDirectory, String sourceJsonDirectory, String targetDatabaseDirectory) throws IOException, ReflectiveOperationException {
+        FilesHelper.createDirectoryIfNotExists(targetDatabaseDirectory);
+
+        outLine("-> Source database directory: " + sourceJsonDirectory);
+//        outLine("-> Mini patch file: " + sourcePatchFile);
+//
+//        PatchProperties patchProperties = readPatchProperties(sourcePatchFile);
+//
+//        outLine("Patching TDU database, please wait...");
+//
+//        DbPatchDto patchObject = jsonMapper.readValue(new File(sourcePatchFile), DbPatchDto.class);
+//
+//        List<DbDto> allTopicObjects = loadDatabaseFromJsonFiles(sourceJsonDirectory);
+//        final PatchProperties effectivePatchProperties = AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).applyWithProperties(patchObject, patchProperties);
+//
+//        outLine("Writing patched database to " + targetDatabaseDirectory + ", please wait...");
+//
+//        List<String> writtenFileNames = DatabaseReadWriteHelper.writeDatabaseTopicsToJson(allTopicObjects, targetDatabaseDirectory);
+//
+//        String writtenPropertyFile = writePatchProperties(effectivePatchProperties, sourcePatchFile);
+
+        Map<String, Object> resultInfo = new HashMap<>();
+//        resultInfo.put("writtenFiles", writtenFileNames);
+//        resultInfo.put("effectivePatchPropertyFile", writtenPropertyFile);
 
         return resultInfo;
     }
