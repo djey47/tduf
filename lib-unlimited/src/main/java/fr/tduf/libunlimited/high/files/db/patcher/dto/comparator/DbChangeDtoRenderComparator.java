@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 
 import java.util.Comparator;
 
+// TODO order by filter values and values
 public class DbChangeDtoRenderComparator implements Comparator<DbPatchDto.DbChangeDto> {
     @Override
     public int compare(DbPatchDto.DbChangeDto o1, DbPatchDto.DbChangeDto o2) {
