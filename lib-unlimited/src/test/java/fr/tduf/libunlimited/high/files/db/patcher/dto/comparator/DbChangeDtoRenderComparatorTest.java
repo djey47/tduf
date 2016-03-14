@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher.dto.comparator;
 
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
@@ -7,8 +8,10 @@ import org.junit.Test;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.TUTORIALS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.*;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -301,12 +304,98 @@ public class DbChangeDtoRenderComparatorTest {
         assertThat(compareResult).isPositive();
     }
 
+    @Test
+    public void compare_filter_against_filter_returns_negative() throws Exception {
+        // GIVEN
+        DbPatchDto.DbChangeDto deleteChangeObject1 = createChangeObjectForCarPhysicsWithFilter(DELETE, DbFieldValueDto.fromCouple(1, "1000"));
+        DbPatchDto.DbChangeDto deleteChangeObject2 = createChangeObjectForCarPhysicsWithFilter(DELETE, DbFieldValueDto.fromCouple(1, "1001"));
+
+        // WHEN
+        int compareResult = renderComparator.compare(deleteChangeObject1, deleteChangeObject2);
+
+        // THEN
+        assertThat(compareResult).isNegative();
+    }
+
+    @Test
+    public void compare_filter_against_same_filter_returns_zero() throws Exception {
+        // GIVEN
+        DbPatchDto.DbChangeDto deleteChangeObject1 = createChangeObjectForCarPhysicsWithFilter(DELETE, DbFieldValueDto.fromCouple(1, "1000"));
+        DbPatchDto.DbChangeDto deleteChangeObject2 = createChangeObjectForCarPhysicsWithFilter(DELETE, DbFieldValueDto.fromCouple(1, "1000"));
+
+        // WHEN
+        int compareResult = renderComparator.compare(deleteChangeObject1, deleteChangeObject2);
+
+        // THEN
+        assertThat(compareResult).isZero();
+    }
+
+    @Test
+    public void compare_filter_against_filter_returns_positive() throws Exception {
+        // GIVEN
+        DbPatchDto.DbChangeDto deleteChangeObject1 = createChangeObjectForCarPhysicsWithFilter(DELETE, DbFieldValueDto.fromCouple(1, "1001"));
+        DbPatchDto.DbChangeDto deleteChangeObject2 = createChangeObjectForCarPhysicsWithFilter(DELETE, DbFieldValueDto.fromCouple(1, "1000"));
+
+        // WHEN
+        int compareResult = renderComparator.compare(deleteChangeObject1, deleteChangeObject2);
+
+        // THEN
+        assertThat(compareResult).isPositive();
+    }
+
+    @Test
+    public void compare_values_against_values_returns_negative() throws Exception {
+        // GIVEN
+        DbPatchDto.DbChangeDto updateChangeObject1 = createChangeObjectWithEntryValues(UPDATE, CAR_RIMS, "1000", "2000");
+        DbPatchDto.DbChangeDto updateChangeObject2 = createChangeObjectWithEntryValues(UPDATE, CAR_RIMS, "1001", "1999");
+
+        // WHEN
+        int compareResult = renderComparator.compare(updateChangeObject1, updateChangeObject2);
+
+        // THEN
+        assertThat(compareResult).isNegative();
+    }
+
+    @Test
+    public void compare_values_against_same_values_returns_zero() throws Exception {
+        // GIVEN
+        DbPatchDto.DbChangeDto updateChangeObject1 = createChangeObjectWithEntryValues(UPDATE, CAR_RIMS, "1000", "2000");
+        DbPatchDto.DbChangeDto updateChangeObject2 = createChangeObjectWithEntryValues(UPDATE, CAR_RIMS, "1000", "1999");
+
+        // WHEN
+        int compareResult = renderComparator.compare(updateChangeObject1, updateChangeObject2);
+
+        // THEN
+        assertThat(compareResult).isZero();
+    }
+
+    @Test
+    public void compare_values_against_values_returns_positive() throws Exception {
+        // GIVEN
+        DbPatchDto.DbChangeDto updateChangeObject1 = createChangeObjectWithEntryValues(UPDATE, CAR_RIMS, "1001", "1999");
+        DbPatchDto.DbChangeDto updateChangeObject2 = createChangeObjectWithEntryValues(UPDATE, CAR_RIMS, "1000", "2000");
+
+        // WHEN
+        int compareResult = renderComparator.compare(updateChangeObject1, updateChangeObject2);
+
+        // THEN
+        assertThat(compareResult).isPositive();
+    }
+
     private static DbPatchDto.DbChangeDto createChangeObjectForCarPhysicsWithRefForLocale(DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, String ref, DbResourceEnhancedDto.Locale locale) {
         return DbPatchDto.DbChangeDto.builder()
                 .forTopic(CAR_PHYSICS_DATA)
                 .withType(changeType)
                 .asReference(ref)
                 .forLocale(locale)
+                .build();
+    }
+
+    private static DbPatchDto.DbChangeDto createChangeObjectForCarPhysicsWithFilter(DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, DbFieldValueDto... fieldValues) {
+        return DbPatchDto.DbChangeDto.builder()
+                .forTopic(CAR_PHYSICS_DATA)
+                .withType(changeType)
+                .filteredBy(asList(fieldValues))
                 .build();
     }
 
@@ -329,6 +418,14 @@ public class DbChangeDtoRenderComparatorTest {
         return DbPatchDto.DbChangeDto.builder()
                 .forTopic(topic)
                 .withType(changeType)
+                .build();
+    }
+
+    private static DbPatchDto.DbChangeDto createChangeObjectWithEntryValues(DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, DbDto.Topic topic, String... entryValues) {
+        return DbPatchDto.DbChangeDto.builder()
+                .forTopic(topic)
+                .withType(changeType)
+                .withEntryValues(asList(entryValues))
                 .build();
     }
 }
