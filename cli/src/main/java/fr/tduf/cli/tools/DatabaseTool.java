@@ -46,6 +46,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
+import static com.google.common.io.Files.getFileExtension;
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
@@ -328,7 +329,7 @@ public class DatabaseTool extends GenericTool {
     }
 
     private Map<String, ?> convertPatch(String sourcePatchFile) throws IOException, SAXException, ParserConfigurationException, URISyntaxException, TransformerException {
-        boolean tdufSource = EXTENSION_JSON.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(sourcePatchFile));
+        boolean tdufSource = EXTENSION_JSON.equalsIgnoreCase(getFileExtension(sourcePatchFile));
 
         Path patchPath = Paths.get(sourcePatchFile);
 
@@ -456,26 +457,40 @@ public class DatabaseTool extends GenericTool {
         FilesHelper.createDirectoryIfNotExists(targetDatabaseDirectory);
 
         outLine("-> Source database directory: " + sourceJsonDirectory);
-//        outLine("-> Mini patch file: " + sourcePatchFile);
-//
-//        PatchProperties patchProperties = readPatchProperties(sourcePatchFile);
-//
-//        outLine("Patching TDU database, please wait...");
-//
-//        DbPatchDto patchObject = jsonMapper.readValue(new File(sourcePatchFile), DbPatchDto.class);
-//
-//        List<DbDto> allTopicObjects = loadDatabaseFromJsonFiles(sourceJsonDirectory);
-//        final PatchProperties effectivePatchProperties = AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).applyWithProperties(patchObject, patchProperties);
-//
-//        outLine("Writing patched database to " + targetDatabaseDirectory + ", please wait...");
-//
-//        List<String> writtenFileNames = DatabaseReadWriteHelper.writeDatabaseTopicsToJson(allTopicObjects, targetDatabaseDirectory);
-//
-//        String writtenPropertyFile = writePatchProperties(effectivePatchProperties, sourcePatchFile);
+        outLine("-> Mini patches directory: " + sourcePatchesDirectory);
+
+        outLine("Patching TDU database, please wait...");
+
+        List<DbDto> allTopicObjects = loadDatabaseFromJsonFiles(sourceJsonDirectory);
+
+        final List<DbPatchDto> patchObjects = Files.walk(Paths.get(sourcePatchesDirectory))
+
+                .filter((path) -> Files.isRegularFile(path))
+
+                .filter((path) -> EXTENSION_JSON.equalsIgnoreCase(getFileExtension(path.toString())))
+
+                .sorted(Path::compareTo)
+
+                .map((patchPath) -> {
+                    outLine("-> Mini patch file: " + patchPath.toString());
+
+                    try {
+                        return jsonMapper.readValue(patchPath.toFile(), DbPatchDto.class);
+                    } catch (IOException ioe) {
+                        throw new RuntimeException(ioe);
+                    }
+                })
+
+                .collect(toList());
+
+        AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).batchApply(patchObjects);
+
+        outLine("Writing patched database to " + targetDatabaseDirectory + ", please wait...");
+
+        List<String> writtenFileNames = DatabaseReadWriteHelper.writeDatabaseTopicsToJson(allTopicObjects, targetDatabaseDirectory);
 
         Map<String, Object> resultInfo = new HashMap<>();
-//        resultInfo.put("writtenFiles", writtenFileNames);
-//        resultInfo.put("effectivePatchPropertyFile", writtenPropertyFile);
+        resultInfo.put("writtenFiles", writtenFileNames);
 
         return resultInfo;
     }
