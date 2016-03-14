@@ -155,7 +155,7 @@ public class DiffPatchesGeneratorTest {
     @Test
     public void makePatches_whenNewResourceEntries_shouldAddFullResourceUpdates() throws Exception {
         // GIVEN
-        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource/TDU_HAIR.json");
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource/TDU_Hair.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
 
@@ -181,7 +181,7 @@ public class DiffPatchesGeneratorTest {
     @Test
     public void makePatches_whenNewResourceEntry_withLocalizedValues_shouldAddFullResourceUpdates() throws Exception {
         // GIVEN
-        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource-localized/TDU_HAIR.json");
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource-localized/TDU_Hair.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
 
