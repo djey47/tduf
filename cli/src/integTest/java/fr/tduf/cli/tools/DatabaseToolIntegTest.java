@@ -172,6 +172,33 @@ public class DatabaseToolIntegTest {
     }
 
     @Test
+    public void applyPatches() throws IOException {
+        // GIVEN
+        String inputPatchesDirectory = Paths.get(DIRECTORY_PATCH, "batch").toString();
+
+
+        // WHEN: applyPatches
+        System.out.println("-> ApplyPatches!");
+        OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
+        DatabaseTool.main(new String[]{"apply-patches", "-n", "-j", DIRECTORY_ERR_JSON_DATABASE, "-o", DIRECTORY_PATCHED_DATABASE, "-p", inputPatchesDirectory});
+
+
+        // THEN: Normalized output contents
+        String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
+        JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
+
+        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 1);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 18);
+
+
+        // THEN: contents must be updated
+        List<DbDto> actualDatabaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(DIRECTORY_PATCHED_DATABASE);
+        BulkDatabaseMiner miner = BulkDatabaseMiner.load(actualDatabaseObjects);
+        assertCarPhysicsEntryWithRefHasFieldValue("632098801", 103, "8900", "bitfield patched to 8900", miner);
+        assertCarPhysicsEntryWithRefHasFieldValue("70033960", 103, "8901", "bitfield patched to 8901", miner);
+    }
+
+    @Test
     public void genPatch_withPartialContents() throws IOException, JSONException {
         // GIVEN
         String outputPatchFile = Paths.get(DIRECTORY_PATCH_OUTPUT, "mini-partialUpdate-gen.json").toString();
