@@ -74,6 +74,44 @@ public class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
+    public void batchApply_whenTwoUpdateContentsPatches_shouldAddEntries() throws ReflectiveOperationException, IOException, URISyntaxException {
+        // GIVEN
+        DbPatchDto updateContentsPatch1 = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef.mini.json");
+        DbPatchDto updateContentsPatch2 = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef-2.mini.json");
+        List<DbPatchDto> updateContentsPatches = asList(updateContentsPatch1, updateContentsPatch2);
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(DbDto.Topic.BOTS).get().getData().getEntries();
+        int previousEntryCount = topicEntries.size();
+
+
+        // WHEN
+        patcher.batchApply(updateContentsPatches);
+
+
+        // THEN
+        int actualEntryCount = topicEntries.size();
+        int actualEntryIndex = actualEntryCount - 2;
+        assertThat(actualEntryCount).isEqualTo(previousEntryCount + 2);
+
+        DbDataDto.Entry actualCreatedEntry = topicEntries.get(actualEntryIndex);
+        assertThat(actualCreatedEntry.getId()).isEqualTo(actualEntryIndex);
+
+        assertThat(actualCreatedEntry.getItems()).hasSize(8);
+        assertThat(actualCreatedEntry.getItems().get(0).getRawValue()).isEqualTo("57167257");
+
+        actualEntryIndex++;
+        actualCreatedEntry = topicEntries.get(actualEntryIndex);
+        assertThat(actualCreatedEntry.getId()).isEqualTo(actualEntryIndex);
+
+        assertThat(actualCreatedEntry.getItems()).hasSize(8);
+        assertThat(actualCreatedEntry.getItems().get(0).getRawValue()).isEqualTo("57167258");
+    }
+
+    @Test
     public void apply_whenUpdateContentsPatch_forAllFields_andSameEntryExists_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef-existing.mini.json");

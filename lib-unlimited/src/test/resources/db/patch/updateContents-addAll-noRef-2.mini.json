@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "comment": "Adds a new entry without identifier (topic does not support UID).",
+      "type" : "UPDATE",
+      "topic" : "BOTS",
+      "values": [ "57167258", "56373256", "600091920", "1", "1", "551683160", "0", "0.5" ]
+    }
+  ]
+}

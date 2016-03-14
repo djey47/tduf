@@ -34,6 +34,18 @@ public class DatabasePatcher_commonTest {
     }
 
     @Test(expected = NullPointerException.class)
+    public void batchApply_whenNullPatchList_shouldThrowException() throws ReflectiveOperationException, IOException, URISyntaxException {
+        // GIVEN
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+        // WHEN
+        patcher.batchApply(null);
+
+        // THEN: NPE
+    }
+
+    @Test(expected = NullPointerException.class)
     public void applyWithProperties_whenNullProperties_shouldThrowException() throws ReflectiveOperationException {
         // GIVEN-WHEN
         createPatcher(createDefaultDatabaseObjects()).applyWithProperties(DbPatchDto.builder().build(), null);

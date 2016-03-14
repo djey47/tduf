@@ -8,13 +8,15 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderResolver;
-import fr.tduf.libunlimited.low.files.db.dto.*;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.DirectionEnum.UP;
 import static java.util.Objects.requireNonNull;
@@ -35,6 +37,15 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
      */
     public PatchProperties apply(DbPatchDto patchObject) {
         return applyWithProperties(patchObject, new PatchProperties());
+    }
+
+    /**
+     * Execute provided patches onto current database
+     */
+    public void batchApply(List<DbPatchDto> patchObjects) {
+        requireNonNull(patchObjects, "A list of patch objects is required.").stream()
+
+                .forEach(this::apply);
     }
 
     /**
