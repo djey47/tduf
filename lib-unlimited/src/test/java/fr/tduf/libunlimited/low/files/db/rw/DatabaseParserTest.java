@@ -101,7 +101,7 @@ public class DatabaseParserTest {
         assertThat(actualDb).isNotNull();
         assertThat(databaseParser.getIntegrityErrors()).hasSize(2);
         /** {@link fr.tduf.libunlimited.low.files.db.domain.IntegrityError#getError()} */
-        assertThat(databaseParser.getIntegrityErrors()).extracting("error").containsOnly("RESOURCE_ITEMS_COUNT_MISMATCH");
+        assertThat(databaseParser.getIntegrityErrors()).extracting("error").containsOnly("RESOURCE_REFERENCE_NOT_FOUND");
         assertThat(databaseParser.getIntegrityErrors().get(0).getInformation().get(SOURCE_TOPIC)).isEqualTo(ACHIEVEMENTS);
     }
 

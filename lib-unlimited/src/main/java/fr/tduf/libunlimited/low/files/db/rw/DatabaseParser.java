@@ -11,7 +11,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
@@ -336,7 +335,7 @@ public class DatabaseParser {
                         info.put(REFERENCE, entry.getReference());
                         info.put(MISSING_LOCALES, entry.getMissingLocales());
 
-                        addIntegrityError(RESOURCE_ITEMS_COUNT_MISMATCH, info);
+                        addIntegrityError(RESOURCE_REFERENCE_NOT_FOUND, info);
                     }
                 });
     }

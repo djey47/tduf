@@ -1,14 +1,16 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
-import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum;
-import fr.tduf.libunlimited.low.files.db.dto.*;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
@@ -28,7 +30,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
     private Set<IntegrityError> integrityErrors;
 
     // Following errors are auto-handled: CONTENT_ITEMS_COUNT_MISMATCH, STRUCTURE_FIELDS_COUNT_MISMATCH
-    private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_NOT_FOUND, RESOURCE_ITEMS_COUNT_MISMATCH, RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND, CONTENTS_FIELDS_COUNT_MISMATCH, RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES));
+    private static final Set<IntegrityError.ErrorTypeEnum> FIXABLE_ERRORS = new HashSet<>(asList(RESOURCE_NOT_FOUND, RESOURCE_REFERENCE_NOT_FOUND, CONTENTS_REFERENCE_NOT_FOUND, CONTENTS_FIELDS_COUNT_MISMATCH, RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES));
     private static final Set<IntegrityError.ErrorTypeEnum> UNFIXABLE_ERRORS = new HashSet<>(asList(INCOMPLETE_DATABASE, CONTENTS_NOT_FOUND, CONTENTS_ENCRYPTION_NOT_SUPPORTED));
 
     private DatabaseGenHelper genHelper;
@@ -92,29 +94,27 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
         try {
             Map<ErrorInfoEnum, Object> information = integrityError.getInformation();
+
             DbDto.Topic sourceTopic = (DbDto.Topic) information.get(SOURCE_TOPIC);
-            DbDto.Topic remoteTopic = (DbDto.Topic) information.get(REMOTE_TOPIC);
+            Optional<DbDto.Topic> remoteTopic = Optional.ofNullable((DbDto.Topic) information.get(REMOTE_TOPIC));
             String reference = (String) information.get(REFERENCE);
             Long entryIdentifier = (Long) information.get(ENTRY_ID);
             DbResourceEnhancedDto.Locale locale = (DbResourceEnhancedDto.Locale) information.get(ErrorInfoEnum.LOCALE);
-            Set<DbResourceEnhancedDto.Locale> missingLocales = (Set<DbResourceEnhancedDto.Locale>) information.get(MISSING_LOCALES);
+            Optional<Set<DbResourceEnhancedDto.Locale>> missingLocales = Optional.ofNullable ((Set<DbResourceEnhancedDto.Locale>) information.get(MISSING_LOCALES));
             Map<String, Integer> perValueCount = (Map<String, Integer>) information.get(PER_VALUE_COUNT);
 
             switch (integrityError.getErrorTypeEnum()) {
                 case RESOURCE_REFERENCE_NOT_FOUND:
-                    addResourceValueFromValidLocale(reference, remoteTopic, locale);
+                    addResourceValueFromValidLocale(reference, remoteTopic.orElse(sourceTopic), missingLocales);
                     break;
                 case CONTENTS_REFERENCE_NOT_FOUND:
-                    addContentsEntryWithDefaultItems(Optional.of(reference), remoteTopic);
+                    addContentsEntryWithDefaultItems(Optional.of(reference), remoteTopic.get());
                     break;
                 case CONTENTS_FIELDS_COUNT_MISMATCH:
                     addMissingContentsFields(entryIdentifier, sourceTopic);
                     break;
                 case RESOURCE_NOT_FOUND:
                     addResourceLocaleFromValidResource(locale, sourceTopic);
-                    break;
-                case RESOURCE_ITEMS_COUNT_MISMATCH:
-                    addAllMissingResourceEntryValues(reference, missingLocales, sourceTopic);
                     break;
                 case RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES:
                     fixAllResourceEntryValues(reference, perValueCount, sourceTopic);
@@ -130,21 +130,6 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         }
 
         return true;
-    }
-
-    private void addAllMissingResourceEntryValues(String reference, Set<DbResourceEnhancedDto.Locale> missingLocales, DbDto.Topic topic) {
-        DbResourceEnhancedDto.Entry resourceEntry = databaseMiner.getResourceEnhancedFromTopic(topic).get()
-                .getEntryByReference(reference).get();
-
-        resourceEntry.getPresentLocales().stream()
-
-                .findAny()
-
-                .flatMap(resourceEntry::getValueForLocale)
-
-                .ifPresent((referenceValue) -> missingLocales
-
-                        .forEach((missingLocale) -> resourceEntry.setValueForLocale(referenceValue, missingLocale)));
     }
 
     private void addResourceLocaleFromValidResource(DbResourceEnhancedDto.Locale missingLocale, DbDto.Topic topic) throws Exception {
@@ -202,21 +187,25 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         invalidEntry.addItemAtRank(newFieldRank, newItem);
     }
 
-    private void addResourceValueFromValidLocale(String reference, DbDto.Topic topic, DbResourceEnhancedDto.Locale missingLocale) throws Exception {
+    private void addResourceValueFromValidLocale(String reference, DbDto.Topic topic, Optional<Set<DbResourceEnhancedDto.Locale>> missingLocales) throws Exception {
         Set<DbResourceEnhancedDto.Locale> validResourceLocales = findValidResourceLocales();
         if (validResourceLocales.isEmpty()) {
-            throw new Exception("Unable to add value for locale " + missingLocale + ": no valid resource locale exists.");
+            throw new Exception("Unable to add value for locales " + missingLocales + ": no valid resource locale exists.");
         }
 
         DbResourceEnhancedDto.Locale referenceLocale = pickAvailableLocaleOrElseWhatever(UNITED_STATES, validResourceLocales);
         DbResourceEnhancedDto resourceObject = databaseMiner.getResourceEnhancedFromTopic(topic).get();
         DbResourceEnhancedDto.Entry entry = resourceObject
                 .getEntryByReference(reference)
-                .orElse(resourceObject.addEntryByReference(reference));
+                // Use supplier to only invoke addEntry when result is absent
+                .orElseGet(() -> resourceObject.addEntryByReference(reference));
 
-        String referenceValue = entry.getValueForLocale(referenceLocale)
-                .orElse(RESOURCE_VALUE_DEFAULT);
-        entry.setValueForLocale(referenceValue, missingLocale);
+        missingLocales.orElse(DbResourceEnhancedDto.Locale.valuesAsStream().collect(toSet())).stream()
+                .forEach((missingLocale) -> {
+                    String referenceValue = entry.getValueForLocale(referenceLocale)
+                            .orElse(RESOURCE_VALUE_DEFAULT);
+                    entry.setValueForLocale(referenceValue, missingLocale);
+        });
     }
 
     private void addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {

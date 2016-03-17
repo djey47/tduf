@@ -128,11 +128,6 @@ public class IntegrityError {
         CONTENTS_ENCRYPTION_NOT_SUPPORTED("Contents file could not be unencrypted for current topic: %s"),
 
         /**
-         * Read resource items count not same over all language files
-         */
-        RESOURCE_ITEMS_COUNT_MISMATCH("Resource items count is not the same over all language files: %s"),
-
-        /**
          * Per-locale values for a globalized resource reference are not the same
          */
         RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES("Resource values for globalized resource are not the same through all locales: %s");

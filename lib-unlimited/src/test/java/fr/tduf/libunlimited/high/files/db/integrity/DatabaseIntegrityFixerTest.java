@@ -298,7 +298,7 @@ public class DatabaseIntegrityFixerTest {
     public void fixAllContentsObjects_whenOneError_asResourceItemCountMismatch_shouldCompleteMissingLocale() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDatabaseObjectsWithUnconsistentResourceEntryCount();
-        Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(createIntegrityError_ResourceItemsCountMismatch()));
+        Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(createIntegrityError_ResourceReferenceMissingForOneLocale()));
 
 
         // WHEN
@@ -344,7 +344,7 @@ public class DatabaseIntegrityFixerTest {
         Set<IntegrityError> integrityErrors = new HashSet<>(asList(
                 createIntegrityError_AutoFixed(),
                 createIntegrityError_NotHandled(),
-                createIntegrityError_ResourceItemsCountMismatch()));
+                createIntegrityError_ResourceReferenceMissingForOneLocale()));
 
 
         // WHEN
@@ -543,13 +543,13 @@ public class DatabaseIntegrityFixerTest {
         return IntegrityError.builder().ofType(CONTENTS_NOT_FOUND).addInformations(new HashMap<>()).build();
     }
 
-    private IntegrityError createIntegrityError_ResourceItemsCountMismatch() {
+    private IntegrityError createIntegrityError_ResourceReferenceMissingForOneLocale() {
         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
         info.put(SOURCE_TOPIC, AFTER_MARKET_PACKS);
         info.put(REFERENCE, "000");
         info.put(MISSING_LOCALES, new HashSet<>(singletonList(CHINA)));
 
-        return IntegrityError.builder().ofType(RESOURCE_ITEMS_COUNT_MISMATCH).addInformations(info).build();
+        return IntegrityError.builder().ofType(RESOURCE_REFERENCE_NOT_FOUND).addInformations(info).build();
     }
 
     private IntegrityError createIntegrityError_ResourceValuesDifferentGlobalized() {
