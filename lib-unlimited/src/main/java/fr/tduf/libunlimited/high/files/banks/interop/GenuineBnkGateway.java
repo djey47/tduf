@@ -36,8 +36,6 @@ public class GenuineBnkGateway implements BankSupport {
 
     static final String EXE_TDUMT_CLI = Paths.get(".", "tools", "tdumt-cli", "tdumt-cli.exe").toString();
     static final String CLI_COMMAND_BANK_INFO = "BANK-I";
-    static final String CLI_COMMAND_BANK_UNPACK = "BANK-U";
-    static final String CLI_COMMAND_BANK_REPLACE = "BANK-R";
     static final String CLI_COMMAND_BANK_BATCH_UNPACK = "BANK-UX";
     static final String CLI_COMMAND_BANK_BATCH_REPLACE = "BANK-RX";
 
@@ -195,21 +193,6 @@ public class GenuineBnkGateway implements BankSupport {
         } catch (IOException e) {
             // Do not fail here.
             e.printStackTrace();
-        }
-    }
-
-    private void repackFileWithFullPath(String packedFilePath, String outputBankFile, Path basePath) {
-        try {
-            Path filePath = getRealFilePathFromInternalPath(packedFilePath, basePath);
-
-            Log.debug(THIS_CLASS_NAME, "packedFilePath: " + packedFilePath);
-            Log.debug(THIS_CLASS_NAME, "filePath: " + filePath.toString());
-            Log.debug(THIS_CLASS_NAME, "basePath: " + basePath.toString());
-
-            ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_REPLACE, outputBankFile, packedFilePath, filePath.toString());
-            handleCommandLineErrors(processResult);
-        } catch (IOException ioe) {
-            throw new RuntimeException("Error while repacking file: " + packedFilePath, ioe);
         }
     }
 
