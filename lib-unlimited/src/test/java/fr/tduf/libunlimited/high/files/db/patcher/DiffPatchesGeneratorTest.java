@@ -201,7 +201,7 @@ public class DiffPatchesGeneratorTest {
                 .extracting("type").containsOnly(UPDATE_RES);
         assertThat(actualChanges).extracting("ref").containsOnly("54713528");
         assertThat(actualChanges).extracting("topic").containsOnly(HAIR);
-        assertThat(actualChanges).extracting("locale").containsOnly(DbResourceEnhancedDto.Locale.values());
+        assertThat(actualChanges).extracting("locale").containsOnly((Object[])DbResourceEnhancedDto.Locale.values());
         assertThat(actualChanges).extracting("value").contains("StringPanthere01-FR", "StringPanthere01-CH", "StringPanthere01-US");
     }
 
