@@ -112,29 +112,16 @@ public class GenuineBnkGatewayTest {
         Path targetParentPath = Paths.get(tempDirectory, "4Build", "PC", "EURO", "Vehicules", "Cars", "Mercedes", "CLK_55");
         assertThat(targetParentPath).exists();
 
-        String packedFilePathPrefix = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\";
-        verify(commandLineHelperMock, times(28)).runCliCommand(anyString(), anyString(), anyString(), anyString(), commandArgumentsCaptor.capture());
-        for (int argIndex = 0 ; argIndex < commandArgumentsCaptor.getAllValues().size() ; argIndex++) {
+        verify(commandLineHelperMock, times(1)).runCliCommand(anyString(), anyString(), anyString(), commandArgumentsCaptor.capture());
 
-            String argValue = commandArgumentsCaptor.getAllValues().get(argIndex);
+        final List<String> capturedValues = commandArgumentsCaptor.getAllValues();
+        assertThat(capturedValues.get(0)).isEqualTo(CLI_COMMAND_BANK_BATCH_UNPACK);
+        assertThat(capturedValues.get(1)).isEqualTo(bankFileName);
 
-            switch (argIndex % 4) {
-                case 0: // Command
-                    assertThat(argValue).isEqualTo(CLI_COMMAND_BANK_UNPACK);
-                    break;
-                case 1: // Bank file name
-                    assertThat(argValue).isEqualTo(bankFileName);
-                    break;
-                case 2: // Full packed file name
-                    assertThat(argValue).startsWith(packedFilePathPrefix);
-                    break;
-                case 3: // Target directory
-                    assertThat(argValue).startsWith(targetParentPath.toString());
-                    break;
-            }
-        }
+        String batchInputFileName = capturedValues.get(2);
+        assertThat(Paths.get(batchInputFileName)).exists();
 
-        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), eq(packedFilePathPrefix + ".3DD\\CLK_55"), anyString());
+        Log.info("Batch input file name: " + batchInputFileName);
     }
 
     @Test
@@ -267,8 +254,8 @@ public class GenuineBnkGatewayTest {
     }
 
     private void mockCommandLineHelperToReturnExtractionSuccess(String bankFileName) throws IOException {
-        ProcessResult processResult = new ProcessResult(CLI_COMMAND_BANK_UNPACK, 0, "{}", "");
-        when(commandLineHelperMock.runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_UNPACK), eq(bankFileName), anyString(), anyString())).thenReturn(processResult);
+        ProcessResult processResult = new ProcessResult(CLI_COMMAND_BANK_BATCH_UNPACK, 0, "{}", "");
+        when(commandLineHelperMock.runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_BATCH_UNPACK), eq(bankFileName), anyString())).thenReturn(processResult);
     }
 
     private void mockCommandLineHelperToReturnReplaceSuccess(String bankFileName) throws IOException {

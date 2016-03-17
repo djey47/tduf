@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.common.domain.ProcessResult;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBankInfoOutputDto;
+import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBatchInputDto;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -17,9 +18,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Set;
 
 import static fr.tduf.libunlimited.common.helper.CommandLineHelper.EXIT_CODE_SUCCESS;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Bnk support, implementation relying on TDUMT-cli application.
@@ -27,6 +30,8 @@ import static java.util.stream.Collectors.toList;
 public class GenuineBnkGateway implements BankSupport {
 
     private static final Class<GenuineBnkGateway> thisClass = GenuineBnkGateway.class;
+    // TODO use this constant instead
+    private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
     public static final String EXTENSION_BANKS = "bnk";
     public static final String PREFIX_ORIGINAL_BANK_FILE = "original-";
@@ -35,6 +40,8 @@ public class GenuineBnkGateway implements BankSupport {
     static final String CLI_COMMAND_BANK_INFO = "BANK-I";
     static final String CLI_COMMAND_BANK_UNPACK = "BANK-U";
     static final String CLI_COMMAND_BANK_REPLACE = "BANK-R";
+    static final String CLI_COMMAND_BANK_BATCH_UNPACK = "BANK-UX";
+    static final String CLI_COMMAND_BANK_BATCH_REPLACE = "BANK-RX";
 
     private static final String PREFIX_PACKED_FILE_PATH = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\";
 
@@ -59,7 +66,7 @@ public class GenuineBnkGateway implements BankSupport {
     }
 
     /**
-     * tdumt-cli syntax: BANK-U <bankFileName> <packedFilePath> <outputDirectory>
+     * tdumt-cli syntax: BANK-UX <bankFileName> <batchInputPath>
      */
     @Override
     public void extractAll(String bankFileName, String outputDirectory) throws IOException {
@@ -67,9 +74,12 @@ public class GenuineBnkGateway implements BankSupport {
         Path bankFilePath = Paths.get(bankFileName);
         Files.copy(bankFilePath, Paths.get(outputDirectory, PREFIX_ORIGINAL_BANK_FILE + bankFilePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
 
-        getBankInfo(bankFileName).getPackedFiles()
+        Set<GenuineBatchInputDto.Item> batchItems = createBatchItemsToExtract(bankFileName, outputDirectory);
+        GenuineBatchInputDto batchInputObject = GenuineBatchInputDto.builder()
+                .addItems(batchItems)
+                .build();
 
-                .forEach((infoObject) -> extractPackedFileWithFullPath(bankFileName, infoObject.getFullName(), outputDirectory));
+        batchExtractPackedFilesWithFullPath(bankFileName, batchInputObject);
     }
 
     /**
@@ -143,17 +153,42 @@ public class GenuineBnkGateway implements BankSupport {
         }
     }
 
-    private void extractPackedFileWithFullPath(String bankFile, String packedFileFullName, String outputDirectory) {
+    private Set<GenuineBatchInputDto.Item> createBatchItemsToExtract(String bankFileName, String outputDirectory) throws IOException {
+        return getBankInfo(bankFileName).getPackedFiles().stream()
+                .map(PackedFileInfoDto::getFullName)
+                .map((packedPath) -> {
+                    String externalFile = getRealFilePathFromInternalPath(packedPath, Paths.get(outputDirectory)).toString();
+
+                    return GenuineBatchInputDto.Item.builder()
+                            .forPackedPath(packedPath)
+                            .withExternalFileName(externalFile)
+                            .build();
+                })
+                .collect(toSet());
+    }
+
+    private void batchExtractPackedFilesWithFullPath(String bankFile, GenuineBatchInputDto batchInputObject) {
         try {
-            Path targetParentPath = getRealFilePathFromInternalPath(packedFileFullName, Paths.get(outputDirectory)).getParent();
+            Log.debug(thisClass.getSimpleName(), "bankFile: " + bankFile);
+            Log.debug(thisClass.getSimpleName(), "batchInputObject: " + batchInputObject);
 
-            Log.debug(thisClass.getSimpleName(), "packedFileFullName: " + packedFileFullName);
-            Log.debug(thisClass.getSimpleName(), "outputDirectory: " + outputDirectory);
-            Log.debug(thisClass.getSimpleName(), "targetParentPath: " + targetParentPath);
+            batchInputObject.getItems()
+                    .forEach((item) -> {
+                        try {
+                            Files.createDirectories(Paths.get(item.getExternalFile()).getParent());
+                        } catch (IOException e) {
+                            // Do not fail here.
+                            e.printStackTrace();
+                        }
+                    });
 
-            Files.createDirectories(targetParentPath);
+            File batchInputFile = Files.createTempDirectory("libUnlimited-banks").resolve("BatchUnpackInput.json").toFile();
+            new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(batchInputFile, batchInputObject);
 
-            ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_UNPACK, bankFile, packedFileFullName, targetParentPath.toString());
+            String batchInputFileName = batchInputFile.getAbsolutePath();
+            Log.debug(thisClass.getSimpleName(), "batchInputFileName: " + batchInputFileName);
+
+            ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_BATCH_UNPACK, bankFile, batchInputFileName);
             handleCommandLineErrors(processResult);
         } catch (IOException e) {
             // Do not fail here.
