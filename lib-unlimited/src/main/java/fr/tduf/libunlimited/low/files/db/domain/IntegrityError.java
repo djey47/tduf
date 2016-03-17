@@ -135,7 +135,7 @@ public class IntegrityError {
         /**
          * Per-locale values for a globalized resource reference are not the same
          */
-        RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES("Resource values for gloablized resource are not the same through all locales: %s");
+        RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES("Resource values for globalized resource are not the same through all locales: %s");
 
         private final String errorMessageFormat;
 
