@@ -74,7 +74,7 @@ public class GenuineBnkGateway implements BankSupport {
         Path bankFilePath = Paths.get(bankFileName);
         Files.copy(bankFilePath, Paths.get(outputDirectory, PREFIX_ORIGINAL_BANK_FILE + bankFilePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
 
-        Set<GenuineBatchInputDto.Item> batchItems = createBatchItemsToExtract(bankFileName, outputDirectory);
+        Set<GenuineBatchInputDto.Item> batchItems = createBatchItems(bankFileName, outputDirectory);
         GenuineBatchInputDto batchInputObject = GenuineBatchInputDto.builder()
                 .addItems(batchItems)
                 .build();
@@ -83,7 +83,7 @@ public class GenuineBnkGateway implements BankSupport {
     }
 
     /**
-     * tdumt-cli syntax: BANK-R <bankFileName> <packedFilePath> <sourceFilePath>
+     * tdumt-cli syntax: BANK-RX <bankFileName> <batchInputPath>
      */
     @Override
     public void packAll(String inputDirectory, String outputBankFileName) throws IOException {
@@ -96,9 +96,13 @@ public class GenuineBnkGateway implements BankSupport {
 
         Log.debug(thisClass.getSimpleName(), "originalBankFilePath: " + originalBankFilePath);
 
-        getBankInfo(originalBankFilePath.toString()).getPackedFiles()
+        // TODO extract to method
+        Set<GenuineBatchInputDto.Item> batchItems = createBatchItems(originalBankFilePath.toString(), inputDirectory);
+        GenuineBatchInputDto batchInputObject = GenuineBatchInputDto.builder()
+                .addItems(batchItems)
+                .build();
 
-                .forEach((infoObject) -> repackFileWithFullPath(infoObject.getFullName(), outputBankFileName, Paths.get(inputDirectory)));
+        batchRepackFilesWithFullPath(outputBankFileName, batchInputObject);
     }
 
     static Path searchOriginalBankPath(String inputDirectory) throws IOException {
@@ -153,11 +157,11 @@ public class GenuineBnkGateway implements BankSupport {
         }
     }
 
-    private Set<GenuineBatchInputDto.Item> createBatchItemsToExtract(String bankFileName, String outputDirectory) throws IOException {
+    private Set<GenuineBatchInputDto.Item> createBatchItems(String bankFileName, String externalDirectory) throws IOException {
         return getBankInfo(bankFileName).getPackedFiles().stream()
                 .map(PackedFileInfoDto::getFullName)
                 .map((packedPath) -> {
-                    String externalFile = getRealFilePathFromInternalPath(packedPath, Paths.get(outputDirectory)).toString();
+                    String externalFile = getRealFilePathFromInternalPath(packedPath, Paths.get(externalDirectory)).toString();
 
                     return GenuineBatchInputDto.Item.builder()
                             .forPackedPath(packedPath)
@@ -208,6 +212,24 @@ public class GenuineBnkGateway implements BankSupport {
             handleCommandLineErrors(processResult);
         } catch (IOException ioe) {
             throw new RuntimeException("Error while repacking file: " + packedFilePath, ioe);
+        }
+    }
+
+    private void batchRepackFilesWithFullPath(String outputBankFile, GenuineBatchInputDto batchInputObject) {
+        try {
+            Log.debug(thisClass.getSimpleName(), "outputBankFile: " + outputBankFile);
+            Log.debug(thisClass.getSimpleName(), "batchInputObject: " + batchInputObject);
+
+            File batchInputFile = Files.createTempDirectory("libUnlimited-banks").resolve("BatchUnpackInput.json").toFile();
+            new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(batchInputFile, batchInputObject);
+
+            String batchInputFileName = batchInputFile.getAbsolutePath();
+            Log.debug(thisClass.getSimpleName(), "batchInputFileName: " + batchInputFileName);
+
+            ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_BATCH_REPLACE, outputBankFile, batchInputFileName);
+            handleCommandLineErrors(processResult);
+        } catch (IOException ioe) {
+            throw new RuntimeException("Error while repacking to file: " + outputBankFile, ioe);
         }
     }
 
