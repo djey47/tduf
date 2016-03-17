@@ -56,6 +56,8 @@ public class GenuineBnkGatewayTest {
         tempDirectory = createTempDirectory();
 
         bankFileName = FilesHelper.getFileNameFromResourcePath("/banks/Vehicules/A3_V6.bnk");
+
+//        Log.set(Log.LEVEL_DEBUG);
     }
 
     @Test

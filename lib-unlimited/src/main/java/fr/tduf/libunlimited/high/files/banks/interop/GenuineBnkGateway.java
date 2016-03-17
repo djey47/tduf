@@ -175,11 +175,7 @@ public class GenuineBnkGateway implements BankSupport {
 
             createExtractTargetDirectories(batchInputObject);
 
-            File batchInputFile = Files.createTempDirectory("libUnlimited-banks").resolve("BatchUnpackInput.json").toFile();
-            new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(batchInputFile, batchInputObject);
-
-            String batchInputFileName = batchInputFile.getAbsolutePath();
-            Log.debug(THIS_CLASS_NAME, "batchInputFileName: " + batchInputFileName);
+            String batchInputFileName = createBatchInputFile(batchInputObject);
 
             ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_BATCH_UNPACK, bankFile, batchInputFileName);
             handleCommandLineErrors(processResult);
@@ -194,11 +190,7 @@ public class GenuineBnkGateway implements BankSupport {
             Log.debug(THIS_CLASS_NAME, "outputBankFile: " + outputBankFile);
             Log.debug(THIS_CLASS_NAME, "batchInputObject: " + batchInputObject);
 
-            File batchInputFile = Files.createTempDirectory("libUnlimited-banks").resolve("BatchUnpackInput.json").toFile();
-            new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(batchInputFile, batchInputObject);
-
-            String batchInputFileName = batchInputFile.getAbsolutePath();
-            Log.debug(THIS_CLASS_NAME, "batchInputFileName: " + batchInputFileName);
+            String batchInputFileName = createBatchInputFile(batchInputObject);
 
             ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_BATCH_REPLACE, outputBankFile, batchInputFileName);
             handleCommandLineErrors(processResult);
@@ -244,5 +236,14 @@ public class GenuineBnkGateway implements BankSupport {
                         e.printStackTrace();
                     }
                 });
+    }
+
+    private static String createBatchInputFile(GenuineBatchInputDto batchInputObject) throws IOException {
+        File batchInputFile = Files.createTempDirectory("libUnlimited-banks").resolve("BatchInput.json").toFile();
+        new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(batchInputFile, batchInputObject);
+
+        String batchInputFileName = batchInputFile.getAbsolutePath();
+        Log.debug(THIS_CLASS_NAME, "batchInputFileName: " + batchInputFileName);
+        return batchInputFileName;
     }
 }
