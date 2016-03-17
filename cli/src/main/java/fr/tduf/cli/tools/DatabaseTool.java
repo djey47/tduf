@@ -299,17 +299,23 @@ public class DatabaseTool extends GenericTool {
         if(extensiveCheck) {
             outLine("Now checking database...");
             databaseObjects = loadAndCheckDatabase(extractedDatabaseDirectory, integrityErrors);
-            outLine("Done checking.");
+
+            outLine("  .Database check just ended: " + integrityErrors.size() + " error(s).");
         } else {
             outLine("Now loading database...");
             try {
                 databaseObjects = loadDatabaseFromJsonFiles(jsonDatabaseDirectory);
             } catch (IllegalArgumentException ignored) {}
-            outLine("Done loading.");
+
+            outLine("  .Database loading just ended: " + integrityErrors.size() + " error(s).");
         }
 
+        outLine();
+        printIntegrityErrors(integrityErrors);
+
         Map<String, Object> resultInfo = new HashMap<>();
-        if (fixErrors) {
+        if (fixErrors
+                && !integrityErrors.isEmpty()) {
             outLine("-> JSON database directory: " + jsonDatabaseDirectory);
             outLine("Now fixing database...");
             Set<IntegrityError> remainingIntegrityErrors = fixIntegrityErrorsAndSaveDatabaseFiles(databaseObjects, integrityErrors, jsonDatabaseDirectory);
@@ -317,6 +323,7 @@ public class DatabaseTool extends GenericTool {
 
             resultInfo.put("remainingIntegrityErrors", toDatabaseIntegrityErrors(remainingIntegrityErrors));
         }
+        outLine();
 
         resultInfo.put("sourceDatabaseDirectory", sourceDirectory);
         resultInfo.put("temporaryDirectory", extractedDatabaseDirectory);
@@ -623,14 +630,14 @@ public class DatabaseTool extends GenericTool {
     }
 
     private List<DbDto> loadAndCheckDatabase(String sourceDatabaseDirectory, Set<IntegrityError> integrityErrors) throws IOException, ReflectiveOperationException {
-        requireNonNull(integrityErrors, "A list is required");
+        requireNonNull(integrityErrors, "An empty set of integrity errors is required");
 
-        Set<IntegrityError> integrityErrorsWhileReading = synchronizedSet(integrityErrors);
+        Set<IntegrityError> integrityErrorsWhileLoading = synchronizedSet(integrityErrors);
         final List<DbDto> readObjects = DbDto.Topic.valuesAsStream()
 
                 .parallel()
 
-                .map((currentTopic) -> loadAndCheckSingleTopic(currentTopic, sourceDatabaseDirectory, integrityErrorsWhileReading))
+                .map((currentTopic) -> loadSingleTopicWithBasicChecking(currentTopic, sourceDatabaseDirectory, integrityErrorsWhileLoading))
 
                 .filter(Optional::isPresent)
 
@@ -638,16 +645,17 @@ public class DatabaseTool extends GenericTool {
 
                 .collect(toList());
 
+        outLine("  -> Now performing extensive check...");
         Set<IntegrityError> integrityErrorsWhileExtensiveChecking = DatabaseIntegrityChecker.prepare(DatabaseIntegrityChecker.class, readObjects).checkAllContentsObjects();
 
-        integrityErrors.addAll(integrityErrorsWhileReading);
+        integrityErrors.addAll(integrityErrorsWhileLoading);
         integrityErrors.addAll(integrityErrorsWhileExtensiveChecking);
 
         return readObjects;
     }
 
-    private Optional<DbDto> loadAndCheckSingleTopic(DbDto.Topic currentTopic, String sourceDatabaseDirectory, Set<IntegrityError> integrityErrorsWhileProcessing) {
-        outLine("  -> Now processing topic: " + currentTopic + "...");
+    private Optional<DbDto> loadSingleTopicWithBasicChecking(DbDto.Topic currentTopic, String sourceDatabaseDirectory, Set<IntegrityError> integrityErrorsWhileProcessing) {
+        outLine("  -> Now loading topic: " + currentTopic + "...");
 
         int initialErrorCount = integrityErrorsWhileProcessing.size();
 
@@ -662,7 +670,7 @@ public class DatabaseTool extends GenericTool {
 
         if (potentialDbDto.isPresent()) {
             DbDto dbDto = potentialDbDto.get();
-            outLine("  .Found topic: " + currentTopic + ", " + (integrityErrorsWhileProcessing.size() - initialErrorCount) + " error(s).");
+            outLine("  .Read topic with basic checking: " + currentTopic + ", " + (integrityErrorsWhileProcessing.size() - initialErrorCount) + " error(s).");
             outLine("  .Content line count: " + dbDto.getData().getEntries().size());
             outLine("  .Resource entry count: " + dbDto.getResource().getEntries().size());
             outLine();
