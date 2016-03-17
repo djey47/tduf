@@ -67,14 +67,13 @@ public class GenuineBnkGateway implements BankSupport {
     @Override
     public void extractAll(String bankFileName, String outputDirectory) throws IOException {
 
+        Log.debug(THIS_CLASS_NAME, "bankFileName: " + bankFileName);
+        Log.debug(THIS_CLASS_NAME, "outputDirectory: " + outputDirectory);
+
         Path bankFilePath = Paths.get(bankFileName);
         Files.copy(bankFilePath, Paths.get(outputDirectory, PREFIX_ORIGINAL_BANK_FILE + bankFilePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
 
-        Set<GenuineBatchInputDto.Item> batchItems = createBatchItems(bankFileName, outputDirectory);
-        GenuineBatchInputDto batchInputObject = GenuineBatchInputDto.builder()
-                .addItems(batchItems)
-                .build();
-
+        GenuineBatchInputDto batchInputObject = createBatchInput(bankFileName, outputDirectory);
         batchExtractPackedFilesWithFullPath(bankFileName, batchInputObject);
     }
 
@@ -92,12 +91,7 @@ public class GenuineBnkGateway implements BankSupport {
 
         Log.debug(THIS_CLASS_NAME, "originalBankFilePath: " + originalBankFilePath);
 
-        // TODO extract to method
-        Set<GenuineBatchInputDto.Item> batchItems = createBatchItems(originalBankFilePath.toString(), inputDirectory);
-        GenuineBatchInputDto batchInputObject = GenuineBatchInputDto.builder()
-                .addItems(batchItems)
-                .build();
-
+        GenuineBatchInputDto batchInputObject = createBatchInput(originalBankFilePath.toString(), inputDirectory);
         batchRepackFilesWithFullPath(outputBankFileName, batchInputObject);
     }
 
@@ -153,9 +147,11 @@ public class GenuineBnkGateway implements BankSupport {
         }
     }
 
-    private Set<GenuineBatchInputDto.Item> createBatchItems(String bankFileName, String externalDirectory) throws IOException {
-        return getBankInfo(bankFileName).getPackedFiles().stream()
+    private GenuineBatchInputDto createBatchInput(String bankFileName, String externalDirectory) throws IOException {
+        Set<GenuineBatchInputDto.Item> batchItems = getBankInfo(bankFileName).getPackedFiles().stream()
+
                 .map(PackedFileInfoDto::getFullName)
+
                 .map((packedPath) -> {
                     String externalFile = getRealFilePathFromInternalPath(packedPath, Paths.get(externalDirectory)).toString();
 
@@ -164,7 +160,12 @@ public class GenuineBnkGateway implements BankSupport {
                             .withExternalFileName(externalFile)
                             .build();
                 })
+
                 .collect(toSet());
+
+        return GenuineBatchInputDto.builder()
+                .addItems(batchItems)
+                .build();
     }
 
     private void batchExtractPackedFilesWithFullPath(String bankFile, GenuineBatchInputDto batchInputObject) {
@@ -172,15 +173,7 @@ public class GenuineBnkGateway implements BankSupport {
             Log.debug(THIS_CLASS_NAME, "bankFile: " + bankFile);
             Log.debug(THIS_CLASS_NAME, "batchInputObject: " + batchInputObject);
 
-            batchInputObject.getItems()
-                    .forEach((item) -> {
-                        try {
-                            Files.createDirectories(Paths.get(item.getExternalFile()).getParent());
-                        } catch (IOException e) {
-                            // Do not fail here.
-                            e.printStackTrace();
-                        }
-                    });
+            createExtractTargetDirectories(batchInputObject);
 
             File batchInputFile = Files.createTempDirectory("libUnlimited-banks").resolve("BatchUnpackInput.json").toFile();
             new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(batchInputFile, batchInputObject);
@@ -239,5 +232,17 @@ public class GenuineBnkGateway implements BankSupport {
                 .withFileSize(outputObject.getFileSize())
                 .addPackedFiles(packedFilesInfos)
                 .build();
+    }
+
+    private static void createExtractTargetDirectories(GenuineBatchInputDto batchInputObject) {
+        batchInputObject.getItems()
+                .forEach((item) -> {
+                    try {
+                        Files.createDirectories(Paths.get(item.getExternalFile()).getParent());
+                    } catch (IOException e) {
+                        // Do not fail here.
+                        e.printStackTrace();
+                    }
+                });
     }
 }
