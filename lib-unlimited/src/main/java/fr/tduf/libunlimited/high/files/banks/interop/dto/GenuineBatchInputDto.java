@@ -1,6 +1,5 @@
 package fr.tduf.libunlimited.high.files.banks.interop.dto;
 
-import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
@@ -89,6 +88,10 @@ public class GenuineBatchInputDto {
 
         public String getExternalFile() {
             return externalFile;
+        }
+
+        public String getInternalPath() {
+            return internalPath;
         }
     }
 

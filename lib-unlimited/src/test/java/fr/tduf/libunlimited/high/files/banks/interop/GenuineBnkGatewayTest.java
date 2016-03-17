@@ -4,7 +4,9 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.domain.ProcessResult;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBatchInputDto;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -236,11 +238,25 @@ public class GenuineBnkGatewayTest {
         when(commandLineHelperMock.runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_BATCH_REPLACE), eq(bankFileName), anyString())).thenReturn(processResult);
     }
 
-    // TODO check contents
-    private void assertBatchInputFileExists() {
+    private void assertBatchInputFileExists() throws IOException {
         String batchInputFileName = commandArgumentsCaptor.getAllValues().get(2);
-        assertThat(Paths.get(batchInputFileName)).exists();
+        final Path batchInputPath = Paths.get(batchInputFileName);
+        assertThat(batchInputPath).exists();
 
         Log.info("Batch input file name: " + batchInputFileName);
+
+        final GenuineBatchInputDto actualBatchInput = new ObjectMapper().readValue(batchInputPath.toFile(), GenuineBatchInputDto.class);
+        assertThat(actualBatchInput.getItems()).hasSize(28);
+
+        actualBatchInput.getItems()
+                .forEach((item) -> {
+                    assertThat(item.getExternalFile())
+                            .isNotNull()
+                            .isNotEmpty();
+                    assertThat(item.getInternalPath())
+                            .isNotNull()
+                            .isNotEmpty();
+                });
+
     }
 }
