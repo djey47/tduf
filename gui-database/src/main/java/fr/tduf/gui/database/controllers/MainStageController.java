@@ -20,6 +20,7 @@ import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.gui.database.factory.EntryCellFactory;
 import fr.tduf.gui.database.services.DatabaseLoader;
+import fr.tduf.gui.database.services.DatabaseSaver;
 import fr.tduf.gui.database.stages.EntriesDesigner;
 import fr.tduf.gui.database.stages.FieldsBrowserDesigner;
 import fr.tduf.gui.database.stages.ResourcesDesigner;
@@ -31,7 +32,6 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
@@ -55,8 +55,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -96,6 +94,7 @@ public class MainStageController extends AbstractGuiController {
     ObservableList<ContentEntryDataItem> browsableEntries;
 
     private DatabaseLoader databaseLoader = new DatabaseLoader();
+    private DatabaseSaver databaseSaver = new DatabaseSaver();
 
     @FXML
     private Label creditsLabel;
@@ -534,6 +533,12 @@ public class MainStageController extends AbstractGuiController {
                 }
             }
         });
+
+        databaseSaver.stateProperty().addListener((observableValue, oldState, newState) -> {
+            if (SUCCEEDED == newState) {
+                CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseSaver.getValue());
+            }
+        });
     }
 
     @FXML
@@ -666,43 +671,32 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void loadDatabaseFromDirectory(String databaseLocation) throws IOException {
-
-        if (!databaseLoader.isRunning()) {
-            statusLabel.textProperty().bind(databaseLoader.messageProperty());
-
-            databaseLoader.bankSupportProperty().setValue(bankSupport);
-            databaseLoader.databaseLocationProperty().setValue(databaseLocation);
-
-            databaseLoader.restart();
+        // TODO implement service lock via property
+        if (databaseLoader.isRunning()) {
+            return;
         }
-//
-//
-//
-//        String jsonDatabaseLocation = resolveJsonDatabaseLocationAndUnpack(databaseLocation, bankSupport);
-//        Log.debug(THIS_CLASS_NAME, "jsonDatabaseLocation=" + jsonDatabaseLocation);
-//
-//        databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseLocation);
-//        if (!databaseObjects.isEmpty()) {
-//            databaseMiner = BulkDatabaseMiner.load(databaseObjects);
-//
-//            profilesChoiceBox.getSelectionModel().clearSelection(); // ensures event will be fired even though 1st item is selected
-//            profilesChoiceBox.getSelectionModel().selectFirst();
-//
-//            navigationHistory.clear();
-//        }
+
+        statusLabel.textProperty().bind(databaseLoader.messageProperty());
+
+        databaseLoader.bankSupportProperty().setValue(bankSupport);
+        databaseLoader.databaseLocationProperty().setValue(databaseLocation);
+
+        databaseLoader.restart();
     }
 
     private void saveDatabaseToDirectory(String databaseLocation) throws IOException {
-        String jsonDatabaseLocation = resolveJsonDatabaseLocation(databaseLocation);
-        Log.debug(THIS_CLASS_NAME, "jsonDatabaseLocation=" + jsonDatabaseLocation);
-
-        DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects, jsonDatabaseLocation);
-
-        if(!Paths.get(databaseLocation).toAbsolutePath().equals(Paths.get(jsonDatabaseLocation).toAbsolutePath())) {
-            DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(Paths.get(databaseLocation), bankSupport);
+        // TODO implement service lock via property
+        if (databaseSaver.isRunning()) {
+            return;
         }
 
-        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseLocation);
+        statusLabel.textProperty().bind(databaseSaver.messageProperty());
+
+        databaseSaver.bankSupportProperty().setValue(bankSupport);
+        databaseSaver.databaseLocationProperty().setValue(databaseLocation);
+        databaseSaver.databaseObjectsProperty().setValue(databaseObjects);
+
+        databaseSaver.restart();
     }
 
     private void addEntryAndUpdateStage() {
@@ -835,7 +829,7 @@ public class MainStageController extends AbstractGuiController {
 
             String writtenPropertiesPath = "";
             if (potentialPropertiesFile.isPresent()) {
-                writtenPropertiesPath += ("Written properties file: " +  System.lineSeparator() + potentialPropertiesFile.get());
+                writtenPropertiesPath += ("Written properties file: " + System.lineSeparator() + potentialPropertiesFile.get());
             }
 
             CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED, writtenPropertiesPath);
@@ -879,25 +873,6 @@ public class MainStageController extends AbstractGuiController {
         DatabaseBanksCacheHelper.clearCache(Paths.get(databaseDirectory));
 
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE, DisplayConstants.MESSAGE_DELETED_CACHE, databaseDirectory);
-    }
-
-    private static String resolveJsonDatabaseLocationAndUnpack(String realDatabaseLocation, BankSupport bankSupport) throws IOException {
-        final Path realDatabasePath = Paths.get(realDatabaseLocation);
-        return isPackedDatabase(realDatabasePath) ?
-                DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(realDatabasePath, bankSupport) :
-                realDatabaseLocation;
-    }
-
-    private static String resolveJsonDatabaseLocation(String realDatabaseLocation) throws IOException {
-        final Path realDatabasePath = Paths.get(realDatabaseLocation);
-        return isPackedDatabase(realDatabasePath) ?
-                DatabaseBanksCacheHelper.resolveCachePath(realDatabasePath).toString() :
-                realDatabaseLocation;
-    }
-
-    private static boolean isPackedDatabase(Path realDatabasePath) {
-        return Files.exists(realDatabasePath.resolve("DB.bnk"))
-                && Files.exists(realDatabasePath.resolve("DB_US.bnk"));
     }
 
     public DbDto getCurrentTopicObject() {
