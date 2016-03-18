@@ -40,6 +40,12 @@
                                     <Font name="System Bold" size="13.0" />
                                  </font></Label>
                                       <ChoiceBox fx:id="localesChoiceBox" prefWidth="175.0" />
+                              <Separator orientation="VERTICAL" />
+                              <MenuButton mnemonicParsing="false" text="Advanced...">
+                                <items>
+                                    <MenuItem mnemonicParsing="false" onAction="#handleResetDatabaseCacheMenuItemAction" text="Reset database cache" />
+                                </items>
+                              </MenuButton>
                                   </items>
                               </ToolBar>
                           </children>
@@ -52,7 +58,7 @@
       
               <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
                   <items>
-                  <Button mnemonicParsing="false" onAction="#handleBackButtonMouseClick" prefWidth="34.0" text="&#x25C0;"><tooltip><Tooltip text="Goes back to previous topic location." /></tooltip></Button>
+                  <Button mnemonicParsing="false" onAction="#handleBackButtonMouseClick" prefWidth="34.0" text="◀"><tooltip><Tooltip text="Goes back to previous topic location." /></tooltip></Button>
                   <Label fx:id="currentTopicLabel" alignment="TOP_CENTER" prefWidth="175.0" text="&lt;TOPIC&gt;">
                      <font>
                         <Font name="System Bold Italic" size="13.0" />
@@ -116,14 +122,14 @@
                <items>
                   <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="80.0" text="REF..."><tooltip><Tooltip text="Searches entry with REF." /></tooltip></Button>
                   <Separator orientation="VERTICAL" />
-                  <Button mnemonicParsing="false" onAction="#handleFirstButtonMouseClick" prefWidth="40.0" text="|&#x25C0;"><tooltip><Tooltip text="Goes to first entry." /></tooltip></Button>
-                  <Button mnemonicParsing="false" onAction="#handleFastPreviousButtonMouseClick" prefWidth="40.0" text="&#x25C0;&#x25C0;"><tooltip><Tooltip text="Goes back up to 10 entries." /></tooltip></Button>
-                  <Button mnemonicParsing="false" onAction="#handlePreviousButtonMouseClick" prefWidth="40.0" text="&#x25C0;"><tooltip><Tooltip text="Goes to previous entry." /></tooltip></Button>
+                  <Button mnemonicParsing="false" onAction="#handleFirstButtonMouseClick" prefWidth="40.0" text="|◀"><tooltip><Tooltip text="Goes to first entry." /></tooltip></Button>
+                  <Button mnemonicParsing="false" onAction="#handleFastPreviousButtonMouseClick" prefWidth="40.0" text="◀◀"><tooltip><Tooltip text="Goes back up to 10 entries." /></tooltip></Button>
+                  <Button mnemonicParsing="false" onAction="#handlePreviousButtonMouseClick" prefWidth="40.0" text="◀"><tooltip><Tooltip text="Goes to previous entry." /></tooltip></Button>
                   <TextField fx:id="entryNumberTextField" alignment="CENTER" onKeyPressed="#handleEntryNumberTextFieldKeyPressed" prefWidth="50.0" />
                   <Label fx:id="entryItemsCountLabel" prefWidth="50.0" />
-                  <Button mnemonicParsing="false" onAction="#handleNextButtonMouseClick" prefWidth="40.0" text="&#x25B6;"><tooltip><Tooltip text="Goes to next entry." /></tooltip></Button>
-                  <Button mnemonicParsing="false" onAction="#handleFastNextButtonMouseClick" prefWidth="40.0" text="&#x25B6;&#x25B6;"><tooltip><Tooltip text="Goes forward up to 10 entries." /></tooltip></Button>
-                  <Button mnemonicParsing="false" onAction="#handleLastButtonMouseClick" prefWidth="40.0" text="&#x25B6;|"><tooltip><Tooltip text="Goes to very last entry." /></tooltip></Button>
+                  <Button mnemonicParsing="false" onAction="#handleNextButtonMouseClick" prefWidth="40.0" text="▶"><tooltip><Tooltip text="Goes to next entry." /></tooltip></Button>
+                  <Button mnemonicParsing="false" onAction="#handleFastNextButtonMouseClick" prefWidth="40.0" text="▶▶"><tooltip><Tooltip text="Goes forward up to 10 entries." /></tooltip></Button>
+                  <Button mnemonicParsing="false" onAction="#handleLastButtonMouseClick" prefWidth="40.0" text="▶|"><tooltip><Tooltip text="Goes to very last entry." /></tooltip></Button>
                   <Separator layoutX="382.0" layoutY="10.0" orientation="VERTICAL" />
                   <Label fx:id="statusLabel">
                      <font>

@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
+import com.google.common.base.Strings;
 import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
 import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
@@ -206,6 +207,18 @@ public class MainStageController extends AbstractGuiController {
         }
 
         saveDatabaseToDirectory(databaseLocation);
+    }
+
+    @FXML
+    public void handleResetDatabaseCacheMenuItemAction() throws IOException, ReflectiveOperationException {
+        Log.trace(THIS_CLASS_NAME, "->handleResetDatabaseCacheMenuItemAction");
+
+        String databaseLocation = databaseLocationTextField.getText();
+        if (Strings.isNullOrEmpty(databaseLocation)) {
+            return;
+        }
+
+        resetDatabaseCache(databaseLocation);
     }
 
     @FXML
@@ -824,6 +837,12 @@ public class MainStageController extends AbstractGuiController {
                 DisplayConstants.LABEL_SEARCH_ENTRY)
 
                 .ifPresent((entryReference) -> viewDataController.switchToEntryWithReference(entryReference, currentTopicProperty.getValue()));
+    }
+
+    private void resetDatabaseCache(String databaseDirectory) throws IOException, ReflectiveOperationException {
+        DatabaseBanksCacheHelper.clearCache(Paths.get(databaseDirectory));
+
+        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE, DisplayConstants.MESSAGE_DELETED_CACHE, databaseDirectory);
     }
 
     private static String resolveJsonDatabaseLocationAndUnpack(String realDatabaseLocation, BankSupport bankSupport) throws IOException {
