@@ -212,7 +212,14 @@ project(':gui-installer') {
         mustRunAfter ':cleanPackDir'
 
         from 'patchTemplates/'
-        into '../pack/patchTemplates/'
+        into '../pack/tools/patchTemplates/'
+    }
+
+    task copyIKJar(type: Copy) {
+        description 'Copies jar file to release directory.'
+
+        from fatJar
+        into '../pack/tools/lib/'
     }
 }
 
@@ -233,8 +240,8 @@ task packTDUF(dependsOn: ['cleanPackDir', 'copyDoc', 'createLogsDirectory', 'cop
     from  'pack/'
 }
 
-task packInstallerKit(dependsOn: ['cleanPackDir', 'createLogsDirectory', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
-                                  ':gui-installer:copyDoc', ':gui-installer:copyAssets', ':gui-installer:copyTemplates', ':gui-installer:copyMainScripts',  ':gui-installer:copyJar'], type: Zip) {
+task packInstallerKit(dependsOn: ['cleanPackDir', 'copyExternalTools', 'copyUtilScriptsForInstallerKit', 'copyIKVersionInfo',
+                                  ':gui-installer:copyDoc', ':gui-installer:copyAssets', ':gui-installer:copyTemplates', ':gui-installer:copyMainScripts',  ':gui-installer:copyIKJar'], type: Zip) {
     description 'Zips only IK, LIB files from pack folder.'
 
     archiveName "tduf-IK-" + project.version + ".zip"
@@ -274,6 +281,15 @@ task copyUtilScripts(type: Copy) {
     into 'pack/cli'
 }
 
+task copyUtilScriptsForInstallerKit(type: Copy) {
+    description 'Copies CLI utility scripts to release directory.'
+    mustRunAfter 'cleanPackDir'
+
+    from 'src/main/shell/cli-util/'
+    include '*.cmd'
+    into 'pack/tools/cli'
+}
+
 task copyExternalTools(type: Copy) {
     description 'Copies all external tools to release directory.'
     mustRunAfter 'cleanPackDir'
@@ -290,6 +306,17 @@ task copyVersionInfo(type: Copy) {
     include 'version.info'
     into 'pack/lib/'
 }
+
+task copyIKVersionInfo(type: Copy) {
+    description 'Copies version.info file to release libs directory.'
+    mustRunAfter 'cleanPackDir'
+
+    from 'dist/'
+    include 'version.info'
+    into 'pack/tools/lib/'
+}
+
+
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.11'

@@ -28,10 +28,10 @@ setlocal & pushd .
 CD /D %START_DIR%
 
 MKDIR logs 2>NUL
-CD cli 2>NUL
 
+PUSHD tools\cli 2>NUL
 CALL .\CheckJava.cmd
 CALL .\SetVersion.cmd
+POPD 2>NUL
 
-CD..
-java -cp .\lib\tduf-gui-installer-all-%TDUF_VERSION%.jar fr.tduf.gui.installer.Installer %* >> .\logs\TDUF-Installer.log 2>>&1
+java -cp .\tools\lib\tduf-gui-installer-all-%TDUF_VERSION%.jar fr.tduf.gui.installer.Installer %* >> .\logs\TDUF-Installer.log 2>>&1

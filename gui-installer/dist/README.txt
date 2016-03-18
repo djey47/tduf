@@ -51,7 +51,7 @@ CUSTOMIZATION
 
 - Edit assets\README\README.txt file and put all important information
 
-- Copy files: patchTemplates\xxxxx.mini.json and xxxxx.mini.json.properties matching mod type
+- Copy files: tools\patchTemplates\xxxxx.mini.json and xxxxx.mini.json.properties matching mod type
 to:  assets\DATABASE\
 
 - Edit assets\DATABASE\xxxxx.mini.json.properties for wanted values:
@@ -85,21 +85,18 @@ FINAL
 
 (1) Before packing, you can remove:
 
-- patchTemplates (directory)
-- README.txt in root directory
-- WTF.txt (files)
+- this README.txt from root directory
+- all WTF.txt files
+- logs directory
 
 (2) Make sure directories are present:
 
 - assets
-- cli
-- lib
-- logs
 - tools
 
 (3) Rename TDUF-installer.cmd to Name of your choice, BUT keep .cmd extension !
 
-(4) Compress project directory and distribute.
+(4) Zip project directory and distribute.
 
 
 ### Using JAR library and/or CLI Tools in your projects
