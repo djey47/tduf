@@ -96,6 +96,9 @@ public class MainStageController extends AbstractGuiController {
     ObservableList<ContentEntryDataItem> browsableEntries;
 
     @FXML
+    private Label creditsLabel;
+
+    @FXML
     private TitledPane settingsPane;
 
     @FXML
@@ -158,6 +161,9 @@ public class MainStageController extends AbstractGuiController {
             initialDatabaseDirectory = appParameters.get(0);
             databaseAutoLoad = true;
         }
+
+        creditsLabel.setText(DisplayConstants.LABEL_STATUS_VERSION);
+
         initSettingsPane(initialDatabaseDirectory);
 
         initResourcesStageController();
@@ -554,8 +560,6 @@ public class MainStageController extends AbstractGuiController {
 
         entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new CurrentEntryIndexToStringConverter());
         entryItemsCountLabel.textProperty().bind(size(browsableEntries).asString(DisplayConstants.LABEL_ITEM_ENTRY_COUNT));
-
-        statusLabel.setText(DisplayConstants.LABEL_STATUS_VERSION);
     }
 
     private void initTopicEntryHeaderPane() {
