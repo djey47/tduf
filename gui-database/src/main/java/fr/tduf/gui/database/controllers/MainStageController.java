@@ -34,6 +34,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -43,11 +44,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -95,6 +98,10 @@ public class MainStageController extends AbstractGuiController {
 
     private DatabaseLoader databaseLoader = new DatabaseLoader();
     private DatabaseSaver databaseSaver = new DatabaseSaver();
+
+
+    @FXML
+    private AnchorPane root;
 
     @FXML
     private Label creditsLabel;
@@ -520,6 +527,21 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void initServiceListeners() {
+        // FIXME does support only one binding ...
+        root.cursorProperty().bind(
+                Bindings
+                        .when(databaseLoader.runningProperty())
+                        .then(Cursor.WAIT)
+                        .otherwise(Cursor.DEFAULT)
+        );
+
+        root.cursorProperty().bind(
+                Bindings
+                        .when(databaseSaver.runningProperty())
+                        .then(Cursor.WAIT)
+                        .otherwise(Cursor.DEFAULT)
+        );
+
         databaseLoader.stateProperty().addListener((observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
                 databaseObjects = databaseLoader.getValue();
