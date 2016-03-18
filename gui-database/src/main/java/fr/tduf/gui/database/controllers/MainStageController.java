@@ -19,6 +19,7 @@ import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.gui.database.factory.EntryCellFactory;
+import fr.tduf.gui.database.services.DatabaseLoader;
 import fr.tduf.gui.database.stages.EntriesDesigner;
 import fr.tduf.gui.database.stages.FieldsBrowserDesigner;
 import fr.tduf.gui.database.stages.ResourcesDesigner;
@@ -59,10 +60,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
+import static java.util.Optional.*;
 import static javafx.beans.binding.Bindings.size;
+import static javafx.concurrent.Worker.State.SUCCEEDED;
 import static javafx.scene.control.Alert.AlertType.ERROR;
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
@@ -94,6 +94,8 @@ public class MainStageController extends AbstractGuiController {
     Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
     Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink = new HashMap<>();
     ObservableList<ContentEntryDataItem> browsableEntries;
+
+    private DatabaseLoader databaseLoader = new DatabaseLoader();
 
     @FXML
     private Label creditsLabel;
@@ -176,13 +178,14 @@ public class MainStageController extends AbstractGuiController {
 
         initStatusBar();
 
+        initServiceListeners();
+
         if (databaseAutoLoad) {
             Log.trace(THIS_CLASS_NAME, "->init: database auto load");
             loadDatabaseFromDirectory(initialDatabaseDirectory);
         }
     }
 
-    @FXML
     public void handleBrowseDirectoryButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleBrowseDirectoryButtonMouseClick");
 
@@ -517,6 +520,23 @@ public class MainStageController extends AbstractGuiController {
                 .ifPresent(viewDataController::switchToContentEntry);
     }
 
+    private void initServiceListeners() {
+        databaseLoader.stateProperty().addListener((observableValue, oldState, newState) -> {
+            if (SUCCEEDED == newState) {
+                databaseObjects = databaseLoader.getValue();
+                if (!databaseObjects.isEmpty()) {
+                    databaseMiner = BulkDatabaseMiner.load(databaseObjects);
+
+                    profilesChoiceBox.getSelectionModel().clearSelection(); // ensures event will be fired even though 1st item is selected
+                    profilesChoiceBox.getSelectionModel().selectFirst();
+
+                    navigationHistory.clear();
+                }
+            }
+        });
+    }
+
+    @FXML
     private void initResourcesStageController() throws IOException {
         Stage resourcesStage = new Stage();
         Platform.runLater(() -> resourcesStage.initOwner(getWindow())); // runLater() ensures main stage will be initialized first.
@@ -646,18 +666,30 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void loadDatabaseFromDirectory(String databaseLocation) throws IOException {
-        String jsonDatabaseLocation = resolveJsonDatabaseLocationAndUnpack(databaseLocation, bankSupport);
-        Log.debug(THIS_CLASS_NAME, "jsonDatabaseLocation=" + jsonDatabaseLocation);
 
-        databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseLocation);
-        if (!databaseObjects.isEmpty()) {
-            databaseMiner = BulkDatabaseMiner.load(databaseObjects);
+        if (!databaseLoader.isRunning()) {
+            statusLabel.textProperty().bind(databaseLoader.messageProperty());
 
-            profilesChoiceBox.getSelectionModel().clearSelection(); // ensures event will be fired even though 1st item is selected
-            profilesChoiceBox.getSelectionModel().selectFirst();
+            databaseLoader.bankSupportProperty().setValue(bankSupport);
+            databaseLoader.databaseLocationProperty().setValue(databaseLocation);
 
-            navigationHistory.clear();
+            databaseLoader.restart();
         }
+//
+//
+//
+//        String jsonDatabaseLocation = resolveJsonDatabaseLocationAndUnpack(databaseLocation, bankSupport);
+//        Log.debug(THIS_CLASS_NAME, "jsonDatabaseLocation=" + jsonDatabaseLocation);
+//
+//        databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseLocation);
+//        if (!databaseObjects.isEmpty()) {
+//            databaseMiner = BulkDatabaseMiner.load(databaseObjects);
+//
+//            profilesChoiceBox.getSelectionModel().clearSelection(); // ensures event will be fired even though 1st item is selected
+//            profilesChoiceBox.getSelectionModel().selectFirst();
+//
+//            navigationHistory.clear();
+//        }
     }
 
     private void saveDatabaseToDirectory(String databaseLocation) throws IOException {
