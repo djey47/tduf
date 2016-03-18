@@ -12,6 +12,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -22,7 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,61 +42,66 @@ public class UpdateDatabaseStep extends GenericStep {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
 
-        applyPatches();
+        applyPatch();
 
         DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(Paths.get(getInstallerConfiguration().resolveDatabaseDirectory()), getInstallerConfiguration().getBankSupport());
 
         // TODO check if all files have been written
     }
 
-    List<String> applyPatches() throws IOException, ReflectiveOperationException {
-        Log.info(THIS_CLASS_NAME, "->Loading JSON database: " + getDatabaseContext().getJsonDatabaseDirectory());
+    List<String> applyPatch() throws IOException, ReflectiveOperationException {
+        final String jsonDatabaseDirectory = getDatabaseContext().getJsonDatabaseDirectory();
+
+        Log.info(THIS_CLASS_NAME, "->Loading JSON database: " + jsonDatabaseDirectory);
 
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
 
-        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseContext().getTopicObjects());
+        final List<DbDto> topicObjects = getDatabaseContext().getTopicObjects();
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, topicObjects);
 
+        List<String> writtenFiles = new ArrayList<>();
         Path patchPath = Paths.get(getInstallerConfiguration().getAssetsDirectory(), InstallerConstants.DIRECTORY_DATABASE);
-
         Files.walk(patchPath, 1)
 
                 .filter((path) -> Files.isRegularFile(path))
 
                 .filter((path) -> EXTENSION_JSON.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
 
-                .sorted(Comparator.<Path>naturalOrder())
+                .findAny()
 
-                .forEach((patch) -> {
-                    try {
-                        applyPatch(patch, patcher);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                .ifPresent((patch) -> {
+                    applyPatch(patch, patcher);
+                    Log.info(THIS_CLASS_NAME, "->Saving JSON database: " + jsonDatabaseDirectory);
+
+                    writtenFiles.addAll(
+                            DatabaseReadWriteHelper.writeDatabaseTopicsToJson(topicObjects, jsonDatabaseDirectory));
                 });
 
-        Log.info(THIS_CLASS_NAME, "->Saving JSON database: " + getDatabaseContext().getJsonDatabaseDirectory());
-
-        return DatabaseReadWriteHelper.writeDatabaseTopicsToJson(getDatabaseContext().getTopicObjects(), getDatabaseContext().getJsonDatabaseDirectory());
+        return writtenFiles;
     }
 
-    private void applyPatch(Path patchPath, DatabasePatcher patcher) throws IOException {
+    private void applyPatch(Path patchPath, DatabasePatcher patcher) {
         Log.info(THIS_CLASS_NAME, "*> Now applying patch: " + patchPath);
 
         final File patchFile = patchPath.toFile();
-        DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
+        try {
+            DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
 
-        PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
+            PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
 
-        selectAndDefineVehicleSlot(patchProperties);
+            selectAndDefineVehicleSlot(patchProperties);
 
-        // TODO handle placeholder resolver errors
-        PatchProperties effectivePatchProperties = patcher.applyWithProperties(patchObject, patchProperties);
+            // TODO handle placeholder resolver errors
+            PatchProperties effectivePatchProperties = patcher.applyWithProperties(patchObject, patchProperties);
 
-        PatchPropertiesReadWriteHelper.writePatchProperties(effectivePatchProperties, patchFile.getAbsolutePath());
+            PatchPropertiesReadWriteHelper.writePatchProperties(effectivePatchProperties, patchFile.getAbsolutePath());
 
-        // TODO handle no patch or many patches (NPE risk or properties erasure)
-        setPatchProperties(effectivePatchProperties);
+            // TODO handle no patch or many patches (NPE risk or properties erasure)
+            setPatchProperties(effectivePatchProperties);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
 
     private void selectAndDefineVehicleSlot(PatchProperties patchProperties) throws IOException {
@@ -103,7 +109,7 @@ public class UpdateDatabaseStep extends GenericStep {
 
         Optional<String> forcedVehicleSlotRef = patchProperties.getVehicleSlotReference();
         if (forcedVehicleSlotRef.isPresent()) {
-            Log.info(THIS_CLASS_NAME, "->Forced using vehicle slot: " +  forcedVehicleSlotRef.get());
+            Log.info(THIS_CLASS_NAME, "->Forced using vehicle slot: " + forcedVehicleSlotRef.get());
             return;
         }
 
@@ -111,7 +117,7 @@ public class UpdateDatabaseStep extends GenericStep {
 
         SlotsBrowserStageController slotsBrowserController = initSlotsBrowserController(getInstallerConfiguration().getMainWindow());
         Optional<VehicleSlotDataItem> selectedItem = slotsBrowserController.initAndShowModalDialog(Optional.empty(), getDatabaseContext().getMiner());
-        if(selectedItem == null) {
+        if (selectedItem == null) {
             throw new IOException("Aborted by user");
         }
 

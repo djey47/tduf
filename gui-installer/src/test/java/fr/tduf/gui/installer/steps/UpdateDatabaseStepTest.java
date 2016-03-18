@@ -39,7 +39,7 @@ public class UpdateDatabaseStepTest {
     }
 
     @Test
-    public void applyPatches_whenForcedVehicleSlot_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException {
+    public void applyPatch_whenForcedVehicleSlot_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException {
         // GIVEN
         String assetsDirectory = new File(thisClass.getResource("/assets-patch-only").toURI()).getAbsolutePath();
         InstallerConfiguration configuration = InstallerConfiguration.builder()
@@ -51,7 +51,7 @@ public class UpdateDatabaseStepTest {
         final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
                 GenericStep.starterStep(configuration, databaseContext, null)
                         .nextStep(UPDATE_DATABASE));
-        updateDatabaseStep.applyPatches();
+        updateDatabaseStep.applyPatch();
 
         // THEN
     }
