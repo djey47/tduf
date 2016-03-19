@@ -5,7 +5,7 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
@@ -86,7 +86,7 @@ public class DiffPatchesGenerator {
                 });
     }
 
-    private Set<DbPatchDto.DbChangeDto> seekForResourcesChanges(DbResourceEnhancedDto resourceObject, DbDto.Topic currentTopic) {
+    private Set<DbPatchDto.DbChangeDto> seekForResourcesChanges(DbResourceDto resourceObject, DbDto.Topic currentTopic) {
         return resourceObject.getEntries().stream()
 
                 .flatMap((resourceEntry) -> {
@@ -192,8 +192,8 @@ public class DiffPatchesGenerator {
                 .build();
     }
 
-    private Stream<? extends DbPatchDto.DbChangeDto> createLocalizedResourceUpdates(DbDto.Topic currentTopic, DbResourceEnhancedDto.Entry resourceEntry) {
-        return DbResourceEnhancedDto.Locale.valuesAsStream()
+    private Stream<? extends DbPatchDto.DbChangeDto> createLocalizedResourceUpdates(DbDto.Topic currentTopic, DbResourceDto.Entry resourceEntry) {
+        return DbResourceDto.Locale.valuesAsStream()
                 .map((locale) -> DbPatchDto.DbChangeDto.builder()
                         .withType(UPDATE_RES)
                         .asReference(resourceEntry.getReference())
@@ -203,7 +203,7 @@ public class DiffPatchesGenerator {
                         .build());
     }
 
-    private Stream<? extends DbPatchDto.DbChangeDto> createGlobalizedResourceUpdate(DbDto.Topic currentTopic, DbResourceEnhancedDto.Entry resourceEntry) {
+    private Stream<? extends DbPatchDto.DbChangeDto> createGlobalizedResourceUpdate(DbDto.Topic currentTopic, DbResourceDto.Entry resourceEntry) {
         return Stream.of(DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE_RES)
                 .asReference(resourceEntry.getReference())
@@ -224,7 +224,7 @@ public class DiffPatchesGenerator {
                 .build();
     }
 
-    private static boolean isGlobalizedResource(DbResourceEnhancedDto.Entry resourceEntry) {
+    private static boolean isGlobalizedResource(DbResourceDto.Entry resourceEntry) {
         return 1 == resourceEntry.getPresentLocales().stream()
 
                 .map(resourceEntry::getValueForLocale)

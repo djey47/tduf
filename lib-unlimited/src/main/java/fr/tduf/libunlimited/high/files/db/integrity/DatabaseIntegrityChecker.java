@@ -119,9 +119,9 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         Set<IntegrityError> integrityErrors = new HashSet<>();
 
         DbDto.Topic currentTopic = topicObject.getTopic();
-        final Optional<DbResourceEnhancedDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(currentTopic, reference);
+        final Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(currentTopic, reference);
         if (potentialResourceEntry.isPresent()) {
-            final DbResourceEnhancedDto.Entry resourceEntry = potentialResourceEntry.get();
+            final DbResourceDto.Entry resourceEntry = potentialResourceEntry.get();
 
             checkForMissingLocalizedValues(resourceEntry, sourceTopic, currentTopic, integrityErrors);
 
@@ -205,8 +205,8 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
                 .collect(toMap(DbStructureDto.Field::getRank, (field) -> field));
     }
 
-    private static void checkForMissingLocalizedValues(DbResourceEnhancedDto.Entry resourceEntry, DbDto.Topic sourceTopic, DbDto.Topic remoteTopic, Set<IntegrityError> integrityErrors) {
-        final Set<DbResourceEnhancedDto.Locale> missingLocales = resourceEntry.getMissingLocales();
+    private static void checkForMissingLocalizedValues(DbResourceDto.Entry resourceEntry, DbDto.Topic sourceTopic, DbDto.Topic remoteTopic, Set<IntegrityError> integrityErrors) {
+        final Set<DbResourceDto.Locale> missingLocales = resourceEntry.getMissingLocales();
         if (missingLocales.isEmpty()) {
             return;
         }
@@ -234,7 +234,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         resourceValueCounter.put(resourceValue, ++valueCount);
     }
 
-    private static void checkResourceValuesForReference(DbResourceEnhancedDto.Entry resourceEntry, DbDto.Topic sourceTopic, Set<IntegrityError> integrityErrors) {
+    private static void checkResourceValuesForReference(DbResourceDto.Entry resourceEntry, DbDto.Topic sourceTopic, Set<IntegrityError> integrityErrors) {
         Map<String, Integer> resourceValueCounter = new HashMap<>();
         resourceEntry.getPresentLocales()
                 .forEach((presentLocale) -> {

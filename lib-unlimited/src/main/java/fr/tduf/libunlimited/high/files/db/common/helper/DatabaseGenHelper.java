@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -174,13 +173,13 @@ public class DatabaseGenHelper {
     String generateDefaultResourceReference(DbDto topicObject) {
         return findDefaultResourceEntry(topicObject)
 
-                .map(DbResourceEnhancedDto.Entry::getReference)
+                .map(DbResourceDto.Entry::getReference)
 
                 .orElseGet(() -> {
                     String newResourceReference = generateUniqueResourceEntryIdentifier(topicObject);
-                    final DbResourceEnhancedDto.Entry newEntry = topicObject.getResource().addEntryByReference(newResourceReference);
+                    final DbResourceDto.Entry newEntry = topicObject.getResource().addEntryByReference(newResourceReference);
 
-                    DbResourceEnhancedDto.Locale.valuesAsStream().forEach((locale) -> newEntry.setValueForLocale(RESOURCE_VALUE_DEFAULT, locale));
+                    DbResourceDto.Locale.valuesAsStream().forEach((locale) -> newEntry.setValueForLocale(RESOURCE_VALUE_DEFAULT, locale));
 
                     return newResourceReference;
                 });
@@ -205,14 +204,14 @@ public class DatabaseGenHelper {
     }
 
     private static Set<String> extractResourceEntryReferences(DbDto topicObject) {
-        final Set<DbResourceEnhancedDto.Entry> entries = topicObject.getResource().getEntries();
+        final Set<DbResourceDto.Entry> entries = topicObject.getResource().getEntries();
         if(entries == null) {
             return new HashSet<>();
         }
 
         return entries.stream()
 
-                .map(DbResourceEnhancedDto.Entry::getReference)
+                .map(DbResourceDto.Entry::getReference)
 
                 .collect(toSet());
     }
@@ -221,8 +220,8 @@ public class DatabaseGenHelper {
         return Integer.valueOf((int) (Math.random() * (range.getMaximum() - range.getMinimum()) + range.getMinimum())).toString();
     }
 
-    private static Optional<DbResourceEnhancedDto.Entry> findDefaultResourceEntry(DbDto topicObject) {
-        final Set<DbResourceEnhancedDto.Entry> entries = topicObject.getResource().getEntries();
+    private static Optional<DbResourceDto.Entry> findDefaultResourceEntry(DbDto topicObject) {
+        final Set<DbResourceDto.Entry> entries = topicObject.getResource().getEntries();
         if (entries == null) {
             return Optional.empty();
         }

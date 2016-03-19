@@ -30,7 +30,7 @@ import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.application.Platform;
@@ -85,7 +85,7 @@ public class MainStageController extends AbstractGuiController {
     private FieldsBrowserStageController fieldsBrowserStageController;
 
     Property<DbDto.Topic> currentTopicProperty;
-    Property<DbResourceEnhancedDto.Locale> currentLocaleProperty;
+    Property<DbResourceDto.Locale> currentLocaleProperty;
     Property<Long> currentEntryIndexProperty;
     SimpleStringProperty currentEntryLabelProperty;
     Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
@@ -114,7 +114,7 @@ public class MainStageController extends AbstractGuiController {
     private Label currentEntryLabel;
 
     @FXML
-    ChoiceBox<DbResourceEnhancedDto.Locale> localesChoiceBox;
+    ChoiceBox<DbResourceDto.Locale> localesChoiceBox;
 
     @FXML
     ChoiceBox<String> profilesChoiceBox;
@@ -514,7 +514,7 @@ public class MainStageController extends AbstractGuiController {
         applyProfile(newProfileName);
     }
 
-    private void handleLocaleChoiceChanged(DbResourceEnhancedDto.Locale newLocale) {
+    private void handleLocaleChoiceChanged(DbResourceDto.Locale newLocale) {
         Log.trace(THIS_CLASS_NAME, "->handleLocaleChoiceChanged: " + newLocale.name());
 
         if (databaseObjects.isEmpty()) {

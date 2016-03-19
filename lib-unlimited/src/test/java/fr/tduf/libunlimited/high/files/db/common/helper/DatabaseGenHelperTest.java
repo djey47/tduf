@@ -44,7 +44,7 @@ public class DatabaseGenHelperTest {
     public void generateUniqueResourceEntryIdentifier_shouldReturnCorrectIdentifier() throws Exception {
         // GIVEN
         DbDto topicObject = DbDto.builder()
-                .withResource(DbResourceEnhancedDto.builder()
+                .withResource(DbResourceDto.builder()
                         .withCategoryCount(1)
                         .atVersion("1,0")
                         .build())
@@ -287,7 +287,7 @@ public class DatabaseGenHelperTest {
         // THEN
         assertThat(actualItem).isNotNull();
 
-        verify(changeHelperMock, never()).addResourceValueWithReference(eq(BRANDS), any(DbResourceEnhancedDto.Locale.class), anyString(), eq("??"));
+        verify(changeHelperMock, never()).addResourceValueWithReference(eq(BRANDS), any(DbResourceDto.Locale.class), anyString(), eq("??"));
     }
 
     @Test
@@ -398,7 +398,7 @@ public class DatabaseGenHelperTest {
                                 .build())
                         .build())
                 .withData(DbDataDto.builder().build())
-                .withResource(DbResourceEnhancedDto.builder().atVersion("1,0").withCategoryCount(1).build())
+                .withResource(DbResourceDto.builder().atVersion("1,0").withCategoryCount(1).build())
                 .build();
     }
 
@@ -412,14 +412,14 @@ public class DatabaseGenHelperTest {
                                 .build())
                         .build())
                 .withData(DbDataDto.builder().build())
-                .withResource(DbResourceEnhancedDto.builder().atVersion("1,0").withCategoryCount(1).build())
+                .withResource(DbResourceDto.builder().atVersion("1,0").withCategoryCount(1).build())
                 .build();
     }
 
     private static void assertResourceExistsWithDefaultItem(DbDto topicObject) {
-        final Set<DbResourceEnhancedDto.Entry> actualEntries = topicObject.getResource().getEntries();
+        final Set<DbResourceDto.Entry> actualEntries = topicObject.getResource().getEntries();
         assertThat(actualEntries).hasSize(1);
-        final DbResourceEnhancedDto.Entry uniqueEntry = actualEntries.stream().findAny().get();
+        final DbResourceDto.Entry uniqueEntry = actualEntries.stream().findAny().get();
         assertThat(uniqueEntry.getItemCount()).isEqualTo(8);
         assertThat(uniqueEntry.pickValue()).contains("??");
     }

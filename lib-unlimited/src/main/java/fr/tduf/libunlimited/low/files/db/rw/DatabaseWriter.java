@@ -3,7 +3,7 @@ package fr.tduf.libunlimited.low.files.db.rw;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.io.BufferedWriter;
@@ -152,14 +152,14 @@ public class DatabaseWriter {
 
     private List<String> writeResourcesEnhanced(String directoryPath) throws IOException {
         List<String> writtenPaths = new ArrayList<>();
-        DbResourceEnhancedDto dbResourceEnhancedDto = databaseDto.getResource();
+        DbResourceDto dbResourceDto = databaseDto.getResource();
 
         String topicLabel = databaseDto.getTopic().getLabel();
-        DbResourceEnhancedDto.Locale.valuesAsStream()
+        DbResourceDto.Locale.valuesAsStream()
 
                 .forEach((locale) -> {
 
-                    String resourceFilePath = writeResourcesForLocale(locale, topicLabel, dbResourceEnhancedDto, directoryPath);
+                    String resourceFilePath = writeResourcesForLocale(locale, topicLabel, dbResourceDto, directoryPath);
                     writtenPaths.add(resourceFilePath);
 
                 });
@@ -173,7 +173,7 @@ public class DatabaseWriter {
         requireNonNull(dbDto.getData(), "Database contents are required");
     }
 
-    private static String writeResourcesForLocale(DbResourceEnhancedDto.Locale locale, String topicLabel, DbResourceEnhancedDto resourceObject, String directoryPath) {
+    private static String writeResourcesForLocale(DbResourceDto.Locale locale, String topicLabel, DbResourceDto resourceObject, String directoryPath) {
         String localeCode = locale.getCode();
         String resourceFileName = format("%s.%s", topicLabel, localeCode);
         File resourceFile = new File(directoryPath, resourceFileName);
@@ -207,7 +207,7 @@ public class DatabaseWriter {
         return text.length() + 2;
     }
 
-    private static void writeResourceLines(DbResourceEnhancedDto.Locale locale, DbResourceEnhancedDto resourceObject, BufferedWriter bufferedWriter) {
+    private static void writeResourceLines(DbResourceDto.Locale locale, DbResourceDto resourceObject, BufferedWriter bufferedWriter) {
         resourceObject.getEntries().stream()
 
                 .forEach((entry) -> entry.getItemForLocale(locale)

@@ -13,7 +13,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
@@ -157,7 +156,7 @@ public class DatabaseWriterTest {
 
     private static void assertFilesMatchReferenceObject(DbDto referenceDto, String contentsFileName, String... resourceFileNames) throws FileNotFoundException {
         List<String> dbContents = DbHelper.readContentsFromRealFile(contentsFileName, "UTF-8");
-        Map<DbResourceEnhancedDto.Locale, List<String>> dbResources = DbHelper.readResourcesFromRealFiles(resourceFileNames);
+        Map<DbResourceDto.Locale, List<String>> dbResources = DbHelper.readResourcesFromRealFiles(resourceFileNames);
         DbDto finalDbDto = DatabaseParser.load(dbContents, dbResources).parseAll();
         assertThat(finalDbDto).isEqualTo(referenceDto);
     }

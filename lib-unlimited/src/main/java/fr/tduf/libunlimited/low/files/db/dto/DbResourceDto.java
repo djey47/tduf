@@ -20,8 +20,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 /**
  * Represents contents of TDU database resources (multilingual)
  */
-// TODO rename to DbResourceDto when no more V1 files exist
-public class DbResourceEnhancedDto {
+public class DbResourceDto {
     @JsonProperty("version")
     private String version;
 
@@ -31,14 +30,14 @@ public class DbResourceEnhancedDto {
     @JsonProperty("entries")
     private LinkedHashSet<Entry> entries;
 
-    private DbResourceEnhancedDto() {
+    private DbResourceDto() {
     }
 
-    public static DbResourceEnhancedDto.DbResourceEnhancedDtoBuilder builder() {
-        return new DbResourceEnhancedDto.DbResourceEnhancedDtoBuilder();
+    public static DbResourceDto.DbResourceEnhancedDtoBuilder builder() {
+        return new DbResourceDto.DbResourceEnhancedDtoBuilder();
     }
 
-    public Optional<DbResourceEnhancedDto.Entry> getEntryByReference(String reference) {
+    public Optional<DbResourceDto.Entry> getEntryByReference(String reference) {
         return entries.stream()
 
                 .filter((entry -> entry.getReference().equals(reference)))
@@ -52,7 +51,7 @@ public class DbResourceEnhancedDto {
                     throw new IllegalArgumentException("An entry with given reference already exists: " + reference);
                 });
 
-        DbResourceEnhancedDto.Entry newEntry = DbResourceEnhancedDto.Entry.builder()
+        DbResourceDto.Entry newEntry = DbResourceDto.Entry.builder()
                 .forReference(reference)
                 .build();
 
@@ -113,8 +112,8 @@ public class DbResourceEnhancedDto {
             return this;
         }
 
-        public DbResourceEnhancedDto build() {
-            DbResourceEnhancedDto dbResourceDto = new DbResourceEnhancedDto();
+        public DbResourceDto build() {
+            DbResourceDto dbResourceDto = new DbResourceDto();
 
             dbResourceDto.categoryCount = requireNonNull(categoryCount, "Category count is required.");
             dbResourceDto.version = requireNonNull(version, "Version is required.");
@@ -273,7 +272,7 @@ public class DbResourceEnhancedDto {
 
         @JsonIgnore
         public Set<Locale> getMissingLocales() {
-            Set<DbResourceEnhancedDto.Locale> missingLocales = new HashSet<>(asList(DbResourceEnhancedDto.Locale.values()));
+            Set<DbResourceDto.Locale> missingLocales = new HashSet<>(asList(DbResourceDto.Locale.values()));
             missingLocales.removeAll(getPresentLocales());
             return missingLocales;
         }

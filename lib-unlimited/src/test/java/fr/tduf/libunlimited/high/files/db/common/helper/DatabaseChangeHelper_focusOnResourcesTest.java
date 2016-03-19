@@ -2,7 +2,7 @@ package fr.tduf.libunlimited.high.files.db.common.helper;
 
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
@@ -31,7 +31,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     private static final String RESOURCE_REFERENCE = "000000";
     private static final String RESOURCE_VALUE = "TEST";
     private static final DbDto.Topic TOPIC = CAR_PHYSICS_DATA;
-    private static final DbResourceEnhancedDto.Locale LOCALE = DbResourceEnhancedDto.Locale.CHINA;
+    private static final DbResourceDto.Locale LOCALE = DbResourceDto.Locale.CHINA;
 
     @Mock
     DatabaseGenHelper genHelperMock;
@@ -50,7 +50,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     @Test
     public void addResourceWithReference_andNonExistingEntry_shouldCreateNewResourceEntry() throws Exception {
         // GIVEN
-        DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+        DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
 
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
         when(minerMock.getResourceEnhancedFromTopic(TOPIC)).thenReturn(of(resourceObject));
@@ -68,7 +68,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     @Test
     public void addResourceWithReference_andExistingEntry_shouldCreateNewResourceItem() throws Exception {
         // GIVEN
-        DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+        DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
         resourceObject.addEntryByReference(RESOURCE_REFERENCE)
                 .setValueForLocale("", FRANCE);
 
@@ -83,7 +83,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
         // THEN
         assertThat(resourceObject.getEntries()).hasSize(1);
         assertThat(resourceObject.getEntries()).extracting("reference").containsExactly(RESOURCE_REFERENCE);
-        final DbResourceEnhancedDto.Entry actualEntry = resourceObject.getEntryByReference(RESOURCE_REFERENCE).get();
+        final DbResourceDto.Entry actualEntry = resourceObject.getEntryByReference(RESOURCE_REFERENCE).get();
         assertThat(actualEntry.getItemCount()).isEqualTo(2);
         assertThat(actualEntry.getValueForLocale(LOCALE)).contains(RESOURCE_VALUE);
         assertThat(actualEntry.getValueForLocale(FRANCE)).contains("");
@@ -119,8 +119,8 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
         // GIVEN
         String initialReference = "0";
         String initialValue = "";
-        DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
-        DbResourceEnhancedDto.Entry resourceEntry = createDefaultResourceEntryEnhanced(initialReference);
+        DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
+        DbResourceDto.Entry resourceEntry = createDefaultResourceEntryEnhanced(initialReference);
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, initialReference)).thenReturn(of(resourceEntry));
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(empty());
@@ -135,7 +135,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
 
         // THEN
         assertThat(resourceObject.getEntryByReference(initialReference)).isEmpty();
-        final Optional<DbResourceEnhancedDto.Entry> potentialEntry = resourceObject.getEntryByReference(RESOURCE_REFERENCE);
+        final Optional<DbResourceDto.Entry> potentialEntry = resourceObject.getEntryByReference(RESOURCE_REFERENCE);
         assertThat(potentialEntry).isPresent();
         assertThat(potentialEntry.get().getValueForLocale(LOCALE)).contains(RESOURCE_VALUE);
     }
@@ -158,8 +158,8 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
         String initialReference = "0";
         String existingValue = "e";
 
-        DbResourceEnhancedDto.Entry existingEntry = createDefaultResourceEntryEnhanced(initialReference);
-        DbResourceEnhancedDto.Entry existingEntry2 = createDefaultResourceEntryEnhanced(initialReference);
+        DbResourceDto.Entry existingEntry = createDefaultResourceEntryEnhanced(initialReference);
+        DbResourceDto.Entry existingEntry2 = createDefaultResourceEntryEnhanced(initialReference);
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, initialReference)).thenReturn(of(existingEntry));
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(existingEntry2));
@@ -177,7 +177,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     @Test
     public void removeResourceWithReference_whenResourceEntryExists_shouldDeleteIt() {
         // GIVEN
-        DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+        DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
         resourceObject.addEntryByReference(RESOURCE_REFERENCE);
 
         when(minerMock.getResourceEnhancedFromTopic(TOPIC)).thenReturn(of(resourceObject));
@@ -194,7 +194,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     @Test
     public void removeResourceValuesWithReference_whenResourceEntryExists_andSameLocaleAffected_shouldDeleteLocalizedValue() {
         // GIVEN
-        DbResourceEnhancedDto.Entry resourceEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
+        DbResourceDto.Entry resourceEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
         resourceEntry.setValue(RESOURCE_VALUE);
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
@@ -212,7 +212,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     @Test
     public void removeResourceValuesWithReference_whenResourceEntryExists_andTwoLocalesAffected_shouldDeleteThem() {
         // GIVEN
-        DbResourceEnhancedDto.Entry resourceEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
+        DbResourceDto.Entry resourceEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
         resourceEntry.setValue(RESOURCE_VALUE);
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
@@ -231,8 +231,8 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     @Test
     public void removeResourceValuesWithReference_whenResourceEntryExists_andAllLocalesAffected_shouldDeleteEntry() {
         // GIVEN
-        DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
-        DbResourceEnhancedDto.Entry resourceEntry = resourceObject.addEntryByReference(RESOURCE_REFERENCE)
+        DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
+        DbResourceDto.Entry resourceEntry = resourceObject.addEntryByReference(RESOURCE_REFERENCE)
                 .setValue(RESOURCE_VALUE);
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
@@ -240,7 +240,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
 
 
         // WHEN
-        changeHelper.removeResourceValuesWithReference(TOPIC, RESOURCE_REFERENCE, DbResourceEnhancedDto.Locale.valuesAsStream().collect(toList()));
+        changeHelper.removeResourceValuesWithReference(TOPIC, RESOURCE_REFERENCE, DbResourceDto.Locale.valuesAsStream().collect(toList()));
 
 
         // THEN
@@ -258,15 +258,15 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
         // THEN: no exception
     }
 
-    private DbResourceEnhancedDto createDefaultResourceObjectEnhanced() {
-        return DbResourceEnhancedDto.builder()
+    private DbResourceDto createDefaultResourceObjectEnhanced() {
+        return DbResourceDto.builder()
                 .atVersion("1,0")
                 .withCategoryCount(1)
                 .build();
     }
 
-    private static DbResourceEnhancedDto.Entry createDefaultResourceEntryEnhanced(String reference) {
-        return DbResourceEnhancedDto.Entry.builder()
+    private static DbResourceDto.Entry createDefaultResourceEntryEnhanced(String reference) {
+        return DbResourceDto.Entry.builder()
                 .forReference(reference)
                 .build()
                 .setValueForLocale("", LOCALE);

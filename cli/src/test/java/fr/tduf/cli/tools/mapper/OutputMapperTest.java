@@ -4,7 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.cli.tools.dto.DatabaseIntegrityErrorDto;
 import fr.tduf.cli.tools.dto.ErrorOutputDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectReader;
@@ -82,7 +82,7 @@ public class OutputMapperTest {
         // GIVEN
         IntegrityError integrityError = IntegrityError.builder()
                 .ofType(IntegrityError.ErrorTypeEnum.CONTENT_ITEMS_COUNT_MISMATCH)
-                .addInformation(IntegrityError.ErrorInfoEnum.LOCALE, DbResourceEnhancedDto.Locale.FRANCE)
+                .addInformation(IntegrityError.ErrorInfoEnum.LOCALE, DbResourceDto.Locale.FRANCE)
                 .build();
 
         // WHEN
@@ -91,7 +91,7 @@ public class OutputMapperTest {
         // THEN
         assertThat(actualIntegrityErrorObject.getErrorType()).isEqualTo("CONTENT_ITEMS_COUNT_MISMATCH");
         assertThat(actualIntegrityErrorObject.getInformation()).containsKey("locale");
-        assertThat(actualIntegrityErrorObject.getInformation().get("locale")).isEqualTo(DbResourceEnhancedDto.Locale.FRANCE);
+        assertThat(actualIntegrityErrorObject.getInformation().get("locale")).isEqualTo(DbResourceDto.Locale.FRANCE);
     }
 
     private static Exception createNestedExceptions() {

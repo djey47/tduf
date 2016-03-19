@@ -6,7 +6,7 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.*;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +20,7 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoE
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.AFTER_MARKET_PACKS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.*;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -426,8 +426,8 @@ public class DatabaseIntegrityFixerTest {
                 .build();
     }
 
-    private static DbResourceEnhancedDto createDefaultResourceObjectEnhanced() {
-        return DbResourceEnhancedDto.builder()
+    private static DbResourceDto createDefaultResourceObjectEnhanced() {
+        return DbResourceDto.builder()
                 .atVersion("1,0")
                 .withCategoryCount(1)
                 .build();
@@ -441,8 +441,8 @@ public class DatabaseIntegrityFixerTest {
                 .build();
     }
 
-    private static DbResourceEnhancedDto createResourceObjectEnhancedWithOneEntryOneItem() {
-        DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+    private static DbResourceDto createResourceObjectEnhancedWithOneEntryOneItem() {
+        DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
 
         resourceObject.addEntryByReference("000")
                 .setValueForLocale("TDUF TEST", FRANCE);
@@ -450,8 +450,8 @@ public class DatabaseIntegrityFixerTest {
         return resourceObject;
     }
 
-    private static DbResourceEnhancedDto createResourceObjectEnhancedWithOneEntry() {
-        DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+    private static DbResourceDto createResourceObjectEnhancedWithOneEntry() {
+        DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
 
         resourceObject
                 .addEntryByReference("000")
@@ -460,8 +460,8 @@ public class DatabaseIntegrityFixerTest {
         return resourceObject;
     }
 
-    private static DbResourceEnhancedDto createResourceObjectEnhancedWithOneEntryOneMissingValueForLocale() {
-        DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+    private static DbResourceDto createResourceObjectEnhancedWithOneEntryOneMissingValueForLocale() {
+        DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
 
         resourceObject
                 .addEntryByReference("000")
@@ -471,8 +471,8 @@ public class DatabaseIntegrityFixerTest {
         return resourceObject;
     }
 
-    private static DbResourceEnhancedDto createResourceObjectEnhancedWithOneEntryOneDifferentValueForLocale() {
-        DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+    private static DbResourceDto createResourceObjectEnhancedWithOneEntryOneDifferentValueForLocale() {
+        DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
 
         resourceObject
                 .addEntryByReference("000")

@@ -3,7 +3,7 @@ package fr.tduf.libunlimited.low.files.db.rw.helper;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseWriter;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -12,7 +12,6 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static java.util.Objects.requireNonNull;
@@ -56,7 +55,7 @@ public class DatabaseReadWriteHelper {
         if(contentLines.isEmpty()) {
             return Optional.empty();
         }
-        Map<DbResourceEnhancedDto.Locale, List<String>> resourcesLines = parseTopicResourcesFromDirectoryAndCheck(topic, databaseDirectory, integrityErrors);
+        Map<DbResourceDto.Locale, List<String>> resourcesLines = parseTopicResourcesFromDirectoryAndCheck(topic, databaseDirectory, integrityErrors);
 
         DatabaseParser databaseParser = DatabaseParser.load(contentLines, resourcesLines);
         DbDto dbDto = databaseParser.parseAll();
@@ -177,9 +176,9 @@ public class DatabaseReadWriteHelper {
         return parseLinesInFile(contentsFileName, ENCODING_UTF_8);
     }
 
-    static Map<DbResourceEnhancedDto.Locale, List<String>> parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic topic, String databaseDirectory, Set<IntegrityError> integrityErrors) throws FileNotFoundException {
+    static Map<DbResourceDto.Locale, List<String>> parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic topic, String databaseDirectory, Set<IntegrityError> integrityErrors) throws FileNotFoundException {
 
-        Map<DbResourceEnhancedDto.Locale, List<String>> resourcesLinesByLocale = readLinesFromResourceFiles(databaseDirectory, topic);
+        Map<DbResourceDto.Locale, List<String>> resourcesLinesByLocale = readLinesFromResourceFiles(databaseDirectory, topic);
 
         checkResourcesLines(resourcesLinesByLocale, topic, integrityErrors);
 
@@ -191,9 +190,9 @@ public class DatabaseReadWriteHelper {
         return new File(jsonFileName);
     }
 
-    private static Map<DbResourceEnhancedDto.Locale, List<String>> readLinesFromResourceFiles(String databaseDirectory, DbDto.Topic topic) throws FileNotFoundException {
-        Map<DbResourceEnhancedDto.Locale, List<String>> resourcesLinesByLocale = new ConcurrentHashMap<>();
-        DbResourceEnhancedDto.Locale.valuesAsStream()
+    private static Map<DbResourceDto.Locale, List<String>> readLinesFromResourceFiles(String databaseDirectory, DbDto.Topic topic) throws FileNotFoundException {
+        Map<DbResourceDto.Locale, List<String>> resourcesLinesByLocale = new ConcurrentHashMap<>();
+        DbResourceDto.Locale.valuesAsStream()
                 .forEach((currentLocale) -> {
                     String resourceFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, currentLocale.getCode());
 
@@ -210,7 +209,7 @@ public class DatabaseReadWriteHelper {
         return resourcesLinesByLocale;
     }
 
-    private static void checkResourcesLines(Map<DbResourceEnhancedDto.Locale, List<String>> resourcesLinesByLocale, DbDto.Topic topic, Set<IntegrityError> integrityErrors) {
+    private static void checkResourcesLines(Map<DbResourceDto.Locale, List<String>> resourcesLinesByLocale, DbDto.Topic topic, Set<IntegrityError> integrityErrors) {
         requireNonNull(integrityErrors, "A list of integrity errors (even empty) is required.");
 
         integrityErrors.addAll(resourcesLinesByLocale.entrySet().stream()
@@ -218,7 +217,7 @@ public class DatabaseReadWriteHelper {
                 .filter((entry) -> entry.getValue().isEmpty())
 
                 .map((entry) -> {
-                    DbResourceEnhancedDto.Locale locale = entry.getKey();
+                    DbResourceDto.Locale locale = entry.getKey();
                     Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
                     info.put(SOURCE_TOPIC, topic);
                     info.put(FILE, String.format("%s.%s", topic.getLabel(), locale.getCode()));

@@ -3,7 +3,7 @@ package fr.tduf.libunlimited.low.files.db.rw;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.*;
@@ -39,11 +39,11 @@ public class DatabaseParser {
     private static final Pattern RES_ENTRY_PATTERN = compile("^\\{(.*(\\n?.*)*)\\} (\\d+)$");           //e.g {??} 53410835
 
     private final List<String> contentLines;
-    private final Map<DbResourceEnhancedDto.Locale, List<String>> resources;
+    private final Map<DbResourceDto.Locale, List<String>> resources;
 
     private final List<IntegrityError> integrityErrors = new ArrayList<>();
 
-    private DatabaseParser(List<String> contentlines, Map<DbResourceEnhancedDto.Locale, List<String>> resources) {
+    private DatabaseParser(List<String> contentlines, Map<DbResourceDto.Locale, List<String>> resources) {
         this.contentLines = contentlines;
         this.resources = resources;
     }
@@ -55,7 +55,7 @@ public class DatabaseParser {
      * @param resources    list of contentLines from per-language resource files
      * @return a {@link DatabaseParser} instance.
      */
-    public static DatabaseParser load(List<String> contentLines, Map<DbResourceEnhancedDto.Locale, List<String>> resources) {
+    public static DatabaseParser load(List<String> contentLines, Map<DbResourceDto.Locale, List<String>> resources) {
         checkPrerequisites(contentLines, resources);
 
         return new DatabaseParser(contentLines, resources);
@@ -71,7 +71,7 @@ public class DatabaseParser {
 
         DbStructureDto structure = parseStructure();
         DbDataDto data = parseContents(structure);
-        DbResourceEnhancedDto resource = parseAllResourcesEnhancedFromTopic(structure.getTopic());
+        DbResourceDto resource = parseAllResourcesEnhancedFromTopic(structure.getTopic());
 
         return DbDto.builder()
                 .withData(data)
@@ -80,17 +80,17 @@ public class DatabaseParser {
                 .build();
     }
 
-    private static void checkPrerequisites(List<String> contentLines, Map<DbResourceEnhancedDto.Locale, List<String>> resources) {
+    private static void checkPrerequisites(List<String> contentLines, Map<DbResourceDto.Locale, List<String>> resources) {
         requireNonNull(contentLines, "Contents are required");
         requireNonNull(resources, "Resources are required");
     }
 
-    private DbResourceEnhancedDto parseAllResourcesEnhancedFromTopic(DbDto.Topic topic) {
-        Set<DbResourceEnhancedDto.Entry> entries = new LinkedHashSet<>();
+    private DbResourceDto parseAllResourcesEnhancedFromTopic(DbDto.Topic topic) {
+        Set<DbResourceDto.Entry> entries = new LinkedHashSet<>();
         AtomicInteger categoryCount = new AtomicInteger();
         AtomicReference<String> version = new AtomicReference<>();
 
-        DbResourceEnhancedDto.Locale.valuesAsStream()
+        DbResourceDto.Locale.valuesAsStream()
 
                 .filter(resources::containsKey)
 
@@ -104,14 +104,14 @@ public class DatabaseParser {
 
         checkItemCountBetweenResourcesEnhanced(topic, entries);
 
-        return  DbResourceEnhancedDto.builder()
+        return  DbResourceDto.builder()
                 .atVersion(version.get())
                 .withCategoryCount(categoryCount.get())
                 .containingEntries(entries)
                 .build();
     }
 
-    private void parseResourcesEnhancedForLocale(DbResourceEnhancedDto.Locale locale, Set<DbResourceEnhancedDto.Entry> entries, AtomicInteger categoryCount, AtomicReference<String> version) {
+    private void parseResourcesEnhancedForLocale(DbResourceDto.Locale locale, Set<DbResourceDto.Entry> entries, AtomicInteger categoryCount, AtomicReference<String> version) {
         requireNonNull(entries, "A set of entries (even empty) is required.");
 
         for (String line : resources.get(locale)) {
@@ -134,14 +134,14 @@ public class DatabaseParser {
             matcher = RES_ENTRY_PATTERN.matcher(line);
             if (matcher.matches()) {
                 final String ref = matcher.group(3);
-                final DbResourceEnhancedDto tempResource = DbResourceEnhancedDto.builder()
+                final DbResourceDto tempResource = DbResourceDto.builder()
                         .atVersion("")
                         .withCategoryCount(0)
                         .containingEntries(entries)
                         .build();
-                DbResourceEnhancedDto.Entry entry =  tempResource.getEntryByReference(matcher.group(3))
+                DbResourceDto.Entry entry =  tempResource.getEntryByReference(matcher.group(3))
                         .orElseGet(() -> {
-                            final DbResourceEnhancedDto.Entry newEntry = DbResourceEnhancedDto.Entry.builder()
+                            final DbResourceDto.Entry newEntry = DbResourceDto.Entry.builder()
                                     .forReference(ref)
                                     .build();
                             entries.add(newEntry);
@@ -324,12 +324,12 @@ public class DatabaseParser {
         }
     }
 
-    private void checkItemCountBetweenResourcesEnhanced(DbDto.Topic topic, Set<DbResourceEnhancedDto.Entry> entries) {
+    private void checkItemCountBetweenResourcesEnhanced(DbDto.Topic topic, Set<DbResourceDto.Entry> entries) {
         entries.stream()
 
                 .forEach((entry) -> {
 
-                    if (entry.getItemCount() != DbResourceEnhancedDto.Locale.values().length) {
+                    if (entry.getItemCount() != DbResourceDto.Locale.values().length) {
                         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
                         info.put(SOURCE_TOPIC, topic);
                         info.put(REFERENCE, entry.getReference());

@@ -5,7 +5,7 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.assertj.core.data.MapEntry;
 import org.junit.Before;
@@ -19,7 +19,7 @@ import java.util.Set;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.PER_VALUE_COUNT;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.CHINA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.CHINA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -167,7 +167,7 @@ public class DatabaseIntegrityCheckerTest {
     private List<DbDto> createAllDtosWithoutErrors() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
-        DbResourceEnhancedDto resourceDto = createResourceEnhancedNoEntryMissing();
+        DbResourceDto resourceDto = createResourceEnhancedNoEntryMissing();
 
         return createDtosForAllTopics(dataDto, resourceDto);
     }
@@ -175,7 +175,7 @@ public class DatabaseIntegrityCheckerTest {
     private List<DbDto> createAllDtosWithMissingLocalResource() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
-        DbResourceEnhancedDto resourceDto = createResourceEnhancedOneLocalEntryMissing();
+        DbResourceDto resourceDto = createResourceEnhancedOneLocalEntryMissing();
 
         return createDtosForAllTopics(dataDto, resourceDto);
     }
@@ -183,7 +183,7 @@ public class DatabaseIntegrityCheckerTest {
     private List<DbDto> createAllDtosWithMissingLocalAndForeignResource() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
-        DbResourceEnhancedDto resourceDto = createResourceEnhancedOneLocalAndOneForeignEntryMissing();
+        DbResourceDto resourceDto = createResourceEnhancedOneLocalAndOneForeignEntryMissing();
 
         return createDtosForAllTopics(dataDto, resourceDto);
     }
@@ -191,7 +191,7 @@ public class DatabaseIntegrityCheckerTest {
     private List<DbDto> createAllDtosWithMissingLocalResourceTypeH() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
-        DbResourceEnhancedDto resourceDto = createResourceAnotherLocalEntryMissing();
+        DbResourceDto resourceDto = createResourceAnotherLocalEntryMissing();
 
         return createDtosForAllTopics(dataDto, resourceDto);
     }
@@ -199,7 +199,7 @@ public class DatabaseIntegrityCheckerTest {
     private List<DbDto> createAllDtosWithMissingForeignResource() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
-        DbResourceEnhancedDto resourceDto = createResourceOneForeignEntryMissing();
+        DbResourceDto resourceDto = createResourceOneForeignEntryMissing();
 
         return createDtosForAllTopics(dataDto, resourceDto);
     }
@@ -207,7 +207,7 @@ public class DatabaseIntegrityCheckerTest {
     private List<DbDto> createAllDtosWithMissingForeignEntry() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_NON_EXISTING);
 
-        DbResourceEnhancedDto resourceDto = createResourceEnhancedNoEntryMissing();
+        DbResourceDto resourceDto = createResourceEnhancedNoEntryMissing();
 
         return createDtosForAllTopics(dataDto, resourceDto);
     }
@@ -215,13 +215,13 @@ public class DatabaseIntegrityCheckerTest {
     private List<DbDto> createAllDtosWithDifferentGlobalResourceValueForLocaleCH() {
         DbDataDto dataDto = createContentsOneEntryEightItems(UID_EXISTING);
 
-        DbResourceEnhancedDto resourceDto = createResourceEnhancedNoEntryMissing();
+        DbResourceDto resourceDto = createResourceEnhancedNoEntryMissing();
         resourceDto.getEntryByReference("100").get().setValueForLocale("CENT_ALTERED", CHINA);
 
         return createDtosForAllTopics(dataDto, resourceDto);
     }
 
-    private List<DbDto> createDtosForAllTopics(DbDataDto dataDto, DbResourceEnhancedDto resourceDto) {
+    private List<DbDto> createDtosForAllTopics(DbDataDto dataDto, DbResourceDto resourceDto) {
         return DbDto.Topic.valuesAsStream()
 
                 .map((topicEnum) -> {
@@ -237,8 +237,8 @@ public class DatabaseIntegrityCheckerTest {
                 .collect(toList());
     }
 
-    private DbResourceEnhancedDto createResourceEnhancedNoEntryMissing() {
-        final DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+    private DbResourceDto createResourceEnhancedNoEntryMissing() {
+        final DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
         resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
         resourceObject.addEntryByReference("200").setValue("DEUX CENTS");      //Local 2
         resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 3
@@ -247,8 +247,8 @@ public class DatabaseIntegrityCheckerTest {
         return resourceObject;
     }
 
-    private DbResourceEnhancedDto createResourceEnhancedOneLocalEntryMissing() {
-        final DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+    private DbResourceDto createResourceEnhancedOneLocalEntryMissing() {
+        final DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
         resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
         resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 2
         resourceObject.addEntryByReference("300").setValue("TROIS CENTS");     //Remote
@@ -256,16 +256,16 @@ public class DatabaseIntegrityCheckerTest {
         return resourceObject;
     }
 
-    private DbResourceEnhancedDto createResourceEnhancedOneLocalAndOneForeignEntryMissing() {
-        final DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+    private DbResourceDto createResourceEnhancedOneLocalAndOneForeignEntryMissing() {
+        final DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
         resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
         resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 2
 
         return resourceObject;
     }
 
-    private DbResourceEnhancedDto createResourceOneForeignEntryMissing() {
-        final DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+    private DbResourceDto createResourceOneForeignEntryMissing() {
+        final DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
         resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
         resourceObject.addEntryByReference("200").setValue("DEUX CENTS");      //Local 2
         resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 3
@@ -273,8 +273,8 @@ public class DatabaseIntegrityCheckerTest {
         return resourceObject;
     }
 
-    private DbResourceEnhancedDto createResourceAnotherLocalEntryMissing() {
-        final DbResourceEnhancedDto resourceObject = createDefaultResourceObjectEnhanced();
+    private DbResourceDto createResourceAnotherLocalEntryMissing() {
+        final DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
         resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
         resourceObject.addEntryByReference("200").setValue("DEUX CENTS");      //Local 2
         resourceObject.addEntryByReference("300").setValue("TROIS CENTS");      //Remote
@@ -282,8 +282,8 @@ public class DatabaseIntegrityCheckerTest {
         return resourceObject;
     }
 
-    private DbResourceEnhancedDto createDefaultResourceObjectEnhanced() {
-        return DbResourceEnhancedDto.builder()
+    private DbResourceDto createDefaultResourceObjectEnhanced() {
+        return DbResourceDto.builder()
                     .withCategoryCount(1)
                     .atVersion("1,0")
                     .build();

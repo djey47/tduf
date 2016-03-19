@@ -4,7 +4,7 @@ import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -201,7 +201,7 @@ public class DiffPatchesGeneratorTest {
                 .extracting("type").containsOnly(UPDATE_RES);
         assertThat(actualChanges).extracting("ref").containsOnly("54713528");
         assertThat(actualChanges).extracting("topic").containsOnly(HAIR);
-        assertThat(actualChanges).extracting("locale").containsOnly((Object[])DbResourceEnhancedDto.Locale.values());
+        assertThat(actualChanges).extracting("locale").containsOnly((Object[]) DbResourceDto.Locale.values());
         assertThat(actualChanges).extracting("value").contains("StringPanthere01-FR", "StringPanthere01-CH", "StringPanthere01-US");
     }
 

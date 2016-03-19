@@ -258,7 +258,7 @@ public class BulkDatabaseMiner {
      * @param topic  : topic in TDU Database to search resources from
      * @return an optional value: either such a resource object if it exists, else empty.
      */
-    public Optional<DbResourceEnhancedDto> getResourceEnhancedFromTopic(DbDto.Topic topic) {
+    public Optional<DbResourceDto> getResourceEnhancedFromTopic(DbDto.Topic topic) {
         return topicObjects.stream()
 
                 .filter((databaseObject) -> databaseObject.getTopic() == topic)
@@ -271,12 +271,12 @@ public class BulkDatabaseMiner {
     /**
      * @return localized value if it exists, empty otherwise
      */
-    public Optional<String> getLocalizedResourceValueFromTopicAndReference(String reference, DbDto.Topic topic, DbResourceEnhancedDto.Locale locale) {
+    public Optional<String> getLocalizedResourceValueFromTopicAndReference(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
         return getResourceEntryFromTopicAndReference(topic, reference)
 
                 .flatMap((entry) -> entry.getItemForLocale(locale))
 
-                .map((DbResourceEnhancedDto.Item::getValue));
+                .map((DbResourceDto.Item::getValue));
     }
 
     /**
@@ -286,7 +286,7 @@ public class BulkDatabaseMiner {
      * @param locale           : language to be used when resolving resource
      * @return resource value targeted by specified entry field if it exists, empty otherwise
      */
-    public Optional<String> getLocalizedResourceValueFromContentEntry(long sourceEntryIndex, int sourceFieldRank, DbDto.Topic sourceTopic, DbResourceEnhancedDto.Locale locale) {
+    public Optional<String> getLocalizedResourceValueFromContentEntry(long sourceEntryIndex, int sourceFieldRank, DbDto.Topic sourceTopic, DbResourceDto.Locale locale) {
         List<DbStructureDto.Field> sourceTopicStructureFields = getDatabaseTopic(sourceTopic).get().getStructure().getFields();
         return getContentEntryFromTopicWithInternalIdentifier(sourceEntryIndex, sourceTopic)
 
@@ -308,7 +308,7 @@ public class BulkDatabaseMiner {
     /**
      * @return entry having given reference for specified topic, empty otherwise
      */
-    public Optional<DbResourceEnhancedDto.Entry> getResourceEntryFromTopicAndReference(DbDto.Topic topic, String reference) {
+    public Optional<DbResourceDto.Entry> getResourceEntryFromTopicAndReference(DbDto.Topic topic, String reference) {
         return getResourceEnhancedFromTopic(topic)
 
                 .flatMap((resource) -> resource.getEntryByReference(reference));
@@ -317,7 +317,7 @@ public class BulkDatabaseMiner {
     /**
      * @return a set of corresponding values for exsiting entry
      */
-    public static Set<String> getAllResourceValuesForReference(String reference, DbResourceEnhancedDto resourceObject) {
+    public static Set<String> getAllResourceValuesForReference(String reference, DbResourceDto resourceObject) {
         return resourceObject.getEntryByReference(reference)
 
                 .map((entry) -> entry.getPresentLocales().stream()

@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
@@ -41,7 +41,7 @@ public class ResourcesV1ToV2Converter {
                         AtomicReference<String> version = new AtomicReference<>();
                         AtomicInteger categoryCount = new AtomicInteger();
 
-                        DbResourceEnhancedDto tempObjectV2 = DbResourceEnhancedDto.builder()
+                        DbResourceDto tempObjectV2 = DbResourceDto.builder()
                                 .atVersion("")
                                 .withCategoryCount(0)
                                 .build();
@@ -64,7 +64,7 @@ public class ResourcesV1ToV2Converter {
 //
 //                        });
 
-                        DbResourceEnhancedDto resourceObjectV2 = DbResourceEnhancedDto.builder()
+                        DbResourceDto resourceObjectV2 = DbResourceDto.builder()
                                 .atVersion(version.get())
                                 .withCategoryCount(categoryCount.get())
                                 .containingEntries(tempObjectV2.getEntries())

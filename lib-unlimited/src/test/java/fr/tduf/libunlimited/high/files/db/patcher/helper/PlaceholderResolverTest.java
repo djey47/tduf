@@ -4,7 +4,7 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public class PlaceholderResolverTest {
                                 .fromType(INTEGER)
                                 .build())
                         .build())
-                .withResource(DbResourceEnhancedDto.builder()
+                .withResource(DbResourceDto.builder()
                         .withCategoryCount(1)
                         .atVersion("1,0")
                         .build())

@@ -4,7 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -95,7 +95,7 @@ public class DatabaseBankHelper {
 
     static List<String> getDatabaseBankFileNames() {
 
-        List<String> resourceBankFileNames = DbResourceEnhancedDto.Locale.valuesAsStream()
+        List<String> resourceBankFileNames = DbResourceDto.Locale.valuesAsStream()
 
                 .map((locale) -> "DB_" + locale.getCode().toUpperCase() + "." + EXTENSION_BANKS)
 

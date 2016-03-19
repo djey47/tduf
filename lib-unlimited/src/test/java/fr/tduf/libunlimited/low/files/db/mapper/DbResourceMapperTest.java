@@ -2,7 +2,7 @@ package fr.tduf.libunlimited.low.files.db.mapper;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.json.JSONException;
@@ -13,8 +13,8 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.FRANCE;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.ITALY;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.ITALY;
 import static java.util.Arrays.asList;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
@@ -32,31 +32,31 @@ public class DbResourceMapperTest {
     @Test
     public void serialize_shouldWriteProperJson() throws IOException, JSONException, URISyntaxException {
         //GIVEN
-        DbResourceEnhancedDto.Item item1 = DbResourceEnhancedDto.Item.builder()
+        DbResourceDto.Item item1 = DbResourceDto.Item.builder()
                 .withLocale(FRANCE)
                 .withValue("VAL1_FR")
                 .build();
-        DbResourceEnhancedDto.Item item2 = DbResourceEnhancedDto.Item.builder()
+        DbResourceDto.Item item2 = DbResourceDto.Item.builder()
                 .withLocale(ITALY)
                 .withValue("VAL1_IT")
                 .build();
-        DbResourceEnhancedDto.Entry entry1 = DbResourceEnhancedDto.Entry.builder()
+        DbResourceDto.Entry entry1 = DbResourceDto.Entry.builder()
                 .forReference("53410835")
                 .withItems(asList(item1, item2))
                 .build();
-        DbResourceEnhancedDto.Item item3 = DbResourceEnhancedDto.Item.builder()
+        DbResourceDto.Item item3 = DbResourceDto.Item.builder()
                 .withLocale(FRANCE)
                 .withValue("VAL2_FR")
                 .build();
-        DbResourceEnhancedDto.Item item4 = DbResourceEnhancedDto.Item.builder()
+        DbResourceDto.Item item4 = DbResourceDto.Item.builder()
                 .withLocale(ITALY)
                 .withValue("VAL2_IT")
                 .build();
-        DbResourceEnhancedDto.Entry entry2 = DbResourceEnhancedDto.Entry.builder()
+        DbResourceDto.Entry entry2 = DbResourceDto.Entry.builder()
                 .forReference("54410835")
                 .withItems(asList(item3, item4))
                 .build();
-        DbResourceEnhancedDto dbResourceEnhancedDto = DbResourceEnhancedDto.builder()
+        DbResourceDto dbResourceDto = DbResourceDto.builder()
                 .withCategoryCount(1)
                 .atVersion("1,0")
                 .containingEntries(asList(entry1, entry2))
@@ -66,7 +66,7 @@ public class DbResourceMapperTest {
 
 
         //WHEN
-        String jsonResult = objectWriter.writeValueAsString(dbResourceEnhancedDto);
+        String jsonResult = objectWriter.writeValueAsString(dbResourceDto);
         Log.debug(thisClass.getSimpleName(), "Actual JSON:" + jsonResult);
 
 

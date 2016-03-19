@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.common.helper;
 
 import com.google.common.io.Files;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -58,7 +58,7 @@ public class DbHelper {
      * Reads provided text files and return contents as lists of lines.
      * @param fileNames : names of files to be processed
      */
-    public static Map<DbResourceEnhancedDto.Locale, List<String>> readResourcesFromRealFiles(String... fileNames) throws FileNotFoundException {
+    public static Map<DbResourceDto.Locale, List<String>> readResourcesFromRealFiles(String... fileNames) throws FileNotFoundException {
 
         return Stream.of(fileNames)
 
@@ -85,9 +85,9 @@ public class DbHelper {
         return readContentsFromStream(inputStream, encoding);
     }
 
-    private static DbResourceEnhancedDto.Locale getLocaleFromFileName(String fileName) {
+    private static DbResourceDto.Locale getLocaleFromFileName(String fileName) {
         String fileExtension = Files.getFileExtension(fileName).toLowerCase();
-        return DbResourceEnhancedDto.Locale.fromCode(fileExtension);
+        return DbResourceDto.Locale.fromCode(fileExtension);
     }
 
     private static List<String> readContentsFromStream(InputStream inputStream, String encoding) {

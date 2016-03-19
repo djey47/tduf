@@ -2,7 +2,7 @@ package fr.tduf.libunlimited.high.files.db.miner;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Test;
 
@@ -13,8 +13,8 @@ import java.util.Set;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.PNJ;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.FRANCE;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.UNITED_STATES;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BulkDatabaseMiner_focusOnResourcesTest {
 
     private static final DbDto.Topic TOPIC = CAR_PHYSICS_DATA;
-    private static final DbResourceEnhancedDto.Locale LOCALE = UNITED_STATES;
+    private static final DbResourceDto.Locale LOCALE = UNITED_STATES;
     private static final String RESOURCE_REF = "00000000";
     private static final String RESOURCE_VALUE = "VALUE";
     private static final String TOPIC_REF = "11111111";
@@ -37,7 +37,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
         List<DbDto> topicObjects = asList(topicObject1, topicObject2);
 
         //WHEN
-        final Optional<DbResourceEnhancedDto> potentialResource = BulkDatabaseMiner.load(topicObjects).getResourceEnhancedFromTopic(TOPIC);
+        final Optional<DbResourceDto> potentialResource = BulkDatabaseMiner.load(topicObjects).getResourceEnhancedFromTopic(TOPIC);
 
         //THEN
         assertThat(potentialResource)
@@ -51,7 +51,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
         List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
 
         //WHEN
-        final Optional<DbResourceEnhancedDto> potentialResource = BulkDatabaseMiner.load(topicObjects).getResourceEnhancedFromTopic(PNJ);
+        final Optional<DbResourceDto> potentialResource = BulkDatabaseMiner.load(topicObjects).getResourceEnhancedFromTopic(PNJ);
 
         //THEN
         assertThat(potentialResource).isEmpty();
@@ -63,7 +63,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
         List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
 
         //WHEN
-        final Optional<DbResourceEnhancedDto.Entry> potentialEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndReference(PNJ, RESOURCE_REF);
+        final Optional<DbResourceDto.Entry> potentialEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndReference(PNJ, RESOURCE_REF);
 
         //THEN
         assertThat(potentialEntry).isEmpty();
@@ -75,7 +75,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
         List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
 
         //WHEN
-        final Optional<DbResourceEnhancedDto.Entry> potentialEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REF);
+        final Optional<DbResourceDto.Entry> potentialEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REF);
 
         //THEN
         assertThat(potentialEntry).isEmpty();
@@ -85,11 +85,11 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     public void getResourceEntryFromTopicAndReference_whenEntryExists_shouldReturnIt() {
         //GIVEN
         final DbDto topicObject = createDefaultTopicObject(TOPIC);
-        final DbResourceEnhancedDto.Entry entry = topicObject.getResource().addEntryByReference(RESOURCE_REF);
+        final DbResourceDto.Entry entry = topicObject.getResource().addEntryByReference(RESOURCE_REF);
         List<DbDto> topicObjects = singletonList(topicObject);
 
         //WHEN
-        final Optional<DbResourceEnhancedDto.Entry> potentialEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REF);
+        final Optional<DbResourceDto.Entry> potentialEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REF);
 
         //THEN
         assertThat(potentialEntry)
@@ -268,7 +268,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     @Test
     public void getAllResourceValuesForReference_whenEntryDoesNotExist_shouldReturnEmptySet() {
         //GIVEN
-        DbResourceEnhancedDto resourceObject = createDefaultResourceObject();
+        DbResourceDto resourceObject = createDefaultResourceObject();
 
         //WHEN
         final Set<String> actualValues = BulkDatabaseMiner.getAllResourceValuesForReference(RESOURCE_REF, resourceObject);
@@ -280,7 +280,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     @Test
     public void getAllResourceValuesForReference_whenEntryExists_withSameValueForItems_shouldReturnValueOnce() {
         //GIVEN
-        DbResourceEnhancedDto resourceObject = createDefaultResourceObject();
+        DbResourceDto resourceObject = createDefaultResourceObject();
         resourceObject.addEntryByReference(RESOURCE_REF).setValue(RESOURCE_VALUE);
 
         //WHEN
@@ -295,7 +295,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     @Test
     public void getAllResourceValuesForReference_whenEntryExists_withDifferentValuesForItems_shouldReturnValues() {
         //GIVEN
-        DbResourceEnhancedDto resourceObject = createDefaultResourceObject();
+        DbResourceDto resourceObject = createDefaultResourceObject();
         resourceObject.addEntryByReference(RESOURCE_REF)
                 .setValue(RESOURCE_VALUE)
                 .setValueForLocale("VALUE2", FRANCE)
@@ -311,7 +311,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     private static DbDto createDefaultTopicObject(DbDto.Topic topic) {
-        DbResourceEnhancedDto resourceObject = createDefaultResourceObject();
+        DbResourceDto resourceObject = createDefaultResourceObject();
         DbStructureDto structureObject = DbStructureDto.builder()
                 .forTopic(topic)
                 .forReference(TOPIC_REF)
@@ -368,8 +368,8 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
                 .build();
     }
 
-    private static DbResourceEnhancedDto createDefaultResourceObject() {
-        return DbResourceEnhancedDto.builder()
+    private static DbResourceDto createDefaultResourceObject() {
+        return DbResourceDto.builder()
                     .withCategoryCount(1)
                     .atVersion("1,0")
                     .build();

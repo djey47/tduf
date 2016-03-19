@@ -3,7 +3,7 @@ package fr.tduf.libunlimited.high.files.db.patcher.dto.comparator;
 import com.google.common.collect.ComparisonChain;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.util.Comparator;
 import java.util.List;
@@ -87,7 +87,7 @@ public class DbChangeDtoRenderComparator implements Comparator<DbPatchDto.DbChan
         };
     }
 
-    private static Comparator<DbResourceEnhancedDto.Locale> getLocalesComparator() {
+    private static Comparator<DbResourceDto.Locale> getLocalesComparator() {
         return (locale1, locale2) -> {
             if (locale1 == null && locale2 == null) {
                 return 0;

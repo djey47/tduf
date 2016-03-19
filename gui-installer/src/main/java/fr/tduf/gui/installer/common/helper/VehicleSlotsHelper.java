@@ -7,7 +7,7 @@ import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +16,7 @@ import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileTyp
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.REAR_RIM;
 import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.EXTENSION_BANKS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.UNITED_STATES;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -27,7 +27,7 @@ import static java.util.stream.Collectors.toList;
 // TODO Provide single method to load vehicle data into a domain object (VehicleSlot) and use it
 public class VehicleSlotsHelper {
 
-    private static final DbResourceEnhancedDto.Locale DEFAULT_LOCALE = UNITED_STATES;
+    private static final DbResourceDto.Locale DEFAULT_LOCALE = UNITED_STATES;
 
     private final BulkDatabaseMiner miner;
 
@@ -319,13 +319,13 @@ public class VehicleSlotsHelper {
     }
 
     // TODO move these methods to library when needed
-    private String getNameFromRemoteEntryResources(long entryInternalIdentifier, DbDto.Topic localTopic, DbDto.Topic remoteTopic, int localFieldRank, int remoteFieldRank, DbResourceEnhancedDto.Locale locale, String defaultValue) {
+    private String getNameFromRemoteEntryResources(long entryInternalIdentifier, DbDto.Topic localTopic, DbDto.Topic remoteTopic, int localFieldRank, int remoteFieldRank, DbResourceDto.Locale locale, String defaultValue) {
         final Optional<String> remoteResourceEntry = miner.getRemoteContentEntryWithInternalIdentifier(localTopic, localFieldRank, entryInternalIdentifier, remoteTopic)
                 .flatMap((remoteEntry) -> miner.getLocalizedResourceValueFromContentEntry(remoteEntry.getId(), remoteFieldRank, remoteTopic, locale));
         return getNameFromLocalResourceValue(remoteResourceEntry, defaultValue);
     }
 
-    private String getNameFromLocalResources(long entryInternalIdentifier, DbDto.Topic topic, int fieldRank, DbResourceEnhancedDto.Locale locale, String defaultValue) {
+    private String getNameFromLocalResources(long entryInternalIdentifier, DbDto.Topic topic, int fieldRank, DbResourceDto.Locale locale, String defaultValue) {
         Optional<String> resourceValue = miner.getLocalizedResourceValueFromContentEntry(entryInternalIdentifier, fieldRank, topic, locale);
         return getNameFromLocalResourceValue(resourceValue, defaultValue);
     }

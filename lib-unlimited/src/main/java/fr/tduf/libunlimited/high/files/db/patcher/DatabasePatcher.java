@@ -10,7 +10,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderResolver;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
@@ -228,7 +228,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         final DbDto.Topic topic = changeObject.getTopic();
         databaseMiner.getResourceEntryFromTopicAndReference(topic, ref)
                 .ifPresent((entry) -> {
-                    Optional<DbResourceEnhancedDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
+                    Optional<DbResourceDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
 
                     if (potentialLocale.isPresent()) {
 
@@ -246,9 +246,9 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         String ref = changeObject.getRef();
         DbDto.Topic topic = changeObject.getTopic();
         String value = changeObject.getValue();
-        Optional<DbResourceEnhancedDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
+        Optional<DbResourceDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
 
-        DbResourceEnhancedDto.Entry resourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(topic, ref)
+        DbResourceDto.Entry resourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(topic, ref)
                 .orElseGet(() -> databaseMiner.getResourceEnhancedFromTopic(topic).get().addEntryByReference(ref));
 
         if (potentialLocale.isPresent()) {
@@ -257,7 +257,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
         } else {
 
-            DbResourceEnhancedDto.Locale.valuesAsStream()
+            DbResourceDto.Locale.valuesAsStream()
 
                     .forEach((currentLocale) -> resourceEntry.setValueForLocale(value, currentLocale));
 

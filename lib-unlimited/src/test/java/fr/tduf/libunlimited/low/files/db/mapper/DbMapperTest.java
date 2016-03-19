@@ -4,7 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
@@ -43,13 +43,13 @@ public class DbMapperTest {
         DbDto dbTopicDto = DbDto.builder()
                 .withStructure(dbStructureDto)
                 .withData(DbDataDto.builder().build())
-                .withResource(DbResourceEnhancedDto.builder()
+                .withResource(DbResourceDto.builder()
                         .atVersion("1,2")
                         .withCategoryCount(6)
-                        .containingEntries(singletonList(DbResourceEnhancedDto.Entry.builder()
+                        .containingEntries(singletonList(DbResourceDto.Entry.builder()
                                 .forReference("REF")
-                                .withItems(singletonList(DbResourceEnhancedDto.Item.builder()
-                                        .withLocale(DbResourceEnhancedDto.Locale.FRANCE)
+                                .withItems(singletonList(DbResourceDto.Item.builder()
+                                        .withLocale(DbResourceDto.Locale.FRANCE)
                                         .withValue("VAL")
                                         .build()))
                                 .build()))

@@ -107,21 +107,21 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     }
 
     private Stream<DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesInTopic(DbDto.Topic topic, Set<String> resources) {
-        DbResourceEnhancedDto resourceFromTopic = databaseMiner.getResourceEnhancedFromTopic(topic).get();
+        DbResourceDto resourceFromTopic = databaseMiner.getResourceEnhancedFromTopic(topic).get();
 
         Set<String> globalizedResourceRefs = new HashSet<>();
         Set<String> localizedResourceRefs = new HashSet<>();
         identifyGlobalizedAndLocalizedResourceReferences(resources, resourceFromTopic, globalizedResourceRefs, localizedResourceRefs);
 
-        Stream<DbPatchDto.DbChangeDto> changesObjectsForGlobalizedResources = makeChangesObjectsForResourcesWithLocale(topic, Optional.<DbResourceEnhancedDto.Locale>empty(), globalizedResourceRefs);
-        Stream<DbPatchDto.DbChangeDto> changesObjectsForLocalizedResources = DbResourceEnhancedDto.Locale.valuesAsStream()
+        Stream<DbPatchDto.DbChangeDto> changesObjectsForGlobalizedResources = makeChangesObjectsForResourcesWithLocale(topic, Optional.<DbResourceDto.Locale>empty(), globalizedResourceRefs);
+        Stream<DbPatchDto.DbChangeDto> changesObjectsForLocalizedResources = DbResourceDto.Locale.valuesAsStream()
 
                 .flatMap((locale) -> makeChangesObjectsForResourcesWithLocale(topic, Optional.of(locale), localizedResourceRefs));
 
         return Stream.concat(changesObjectsForGlobalizedResources, changesObjectsForLocalizedResources);
     }
 
-    private Stream<DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesWithLocale(DbDto.Topic topic, Optional<DbResourceEnhancedDto.Locale> potentialLocale, Set<String> topicResources) {
+    private Stream<DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesWithLocale(DbDto.Topic topic, Optional<DbResourceDto.Locale> potentialLocale, Set<String> topicResources) {
         return topicResources.stream()
 
                 .map((resourceRef) -> makeChangeObjectForResource(topic, potentialLocale, resourceRef));
@@ -137,8 +137,8 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         return potentialTopicObject.get();
     }
 
-    private DbPatchDto.DbChangeDto makeChangeObjectForResource(DbDto.Topic topic, Optional<DbResourceEnhancedDto.Locale> potentialLocale, String resourceRef) {
-        String resourceValue = databaseMiner.getLocalizedResourceValueFromTopicAndReference(resourceRef, topic, potentialLocale.orElse(DbResourceEnhancedDto.Locale.FRANCE))
+    private DbPatchDto.DbChangeDto makeChangeObjectForResource(DbDto.Topic topic, Optional<DbResourceDto.Locale> potentialLocale, String resourceRef) {
+        String resourceValue = databaseMiner.getLocalizedResourceValueFromTopicAndReference(resourceRef, topic, potentialLocale.orElse(DbResourceDto.Locale.FRANCE))
                 .orElse(DatabaseGenHelper.RESOURCE_VALUE_DEFAULT);
 
         return DbPatchDto.DbChangeDto.builder()
@@ -259,7 +259,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         return range.accepts(entryRef);
     }
 
-    private static void identifyGlobalizedAndLocalizedResourceReferences(Set<String> resourceReferences, DbResourceEnhancedDto resourceObject, Set<String> globalizedResourceRefs, Set<String> localizedResourceRefs) {
+    private static void identifyGlobalizedAndLocalizedResourceReferences(Set<String> resourceReferences, DbResourceDto resourceObject, Set<String> globalizedResourceRefs, Set<String> localizedResourceRefs) {
         resourceReferences.stream()
 
                 .forEach((resourceReference) -> {

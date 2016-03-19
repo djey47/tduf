@@ -6,7 +6,6 @@ import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
@@ -25,7 +24,7 @@ public class DbDto implements Serializable {
     private DbDataDto data;
 
     @JsonProperty("resource")
-    private DbResourceEnhancedDto resource;
+    private DbResourceDto resource;
 
     /**
      * All TDU database topics
@@ -90,7 +89,7 @@ public class DbDto implements Serializable {
         return new DbDtoBuilder() {
             private DbDataDto data;
             private DbStructureDto structure;
-            private DbResourceEnhancedDto resource;
+            private DbResourceDto resource;
 
             @Override
             public DbDtoBuilder withStructure(DbStructureDto dbStructureDto) {
@@ -105,8 +104,8 @@ public class DbDto implements Serializable {
             }
 
             @Override
-            public DbDtoBuilder withResource(DbResourceEnhancedDto dbResourceEnhancedDto) {
-                this.resource = dbResourceEnhancedDto;
+            public DbDtoBuilder withResource(DbResourceDto dbResourceDto) {
+                this.resource = dbResourceDto;
                 return this;
             }
 
@@ -142,7 +141,7 @@ public class DbDto implements Serializable {
         return data;
     }
 
-    public DbResourceEnhancedDto getResource() {
+    public DbResourceDto getResource() {
         return resource;
     }
 
@@ -166,7 +165,7 @@ public class DbDto implements Serializable {
 
         DbDtoBuilder withData(DbDataDto dbDataDto);
 
-        DbDtoBuilder withResource(DbResourceEnhancedDto dbResourceEnhancedDto);
+        DbDtoBuilder withResource(DbResourceDto dbResourceDto);
 
         DbDto build();
     }

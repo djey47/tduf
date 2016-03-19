@@ -5,7 +5,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import static fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto.fromCouple;
 import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.createPatcher;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
 import static java.util.Arrays.asList;
@@ -45,7 +45,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
                                 .fromType(RESOURCE_CURRENT_LOCALIZED)
                                 .build())
                         .build())
-                .withResource(DbResourceEnhancedDto.builder()
+                .withResource(DbResourceDto.builder()
                         .atVersion("1,0")
                         .withCategoryCount(1).build())
                 .build();
@@ -195,7 +195,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
         databasePatcher.applyWithProperties(patchObject, patchProperties);
 
         // THEN
-        Optional<DbResourceEnhancedDto.Entry> potentialEntry = databaseObject.getResource().getEntryByReference("000000");
+        Optional<DbResourceDto.Entry> potentialEntry = databaseObject.getResource().getEntryByReference("000000");
         assertThat(potentialEntry).isPresent();
         assertThat(potentialEntry.get().getItemCount()).isEqualTo(1);
         assertThat(potentialEntry.get().getItemForLocale(FRANCE).get().getValue()).isEqualTo("Text");
@@ -227,7 +227,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
         assertThat(databaseObject.getResource().getEntries()).hasSize(1);
 
         final String generatedValue = actualProperties.getProperty("MYRESREF");
-        final DbResourceEnhancedDto.Entry resourceEntry = databaseObject.getResource().getEntryByReference(generatedValue).get();
+        final DbResourceDto.Entry resourceEntry = databaseObject.getResource().getEntryByReference(generatedValue).get();
         assertThat(resourceEntry.getValueForLocale(FRANCE)).contains("Text");
     }
 
