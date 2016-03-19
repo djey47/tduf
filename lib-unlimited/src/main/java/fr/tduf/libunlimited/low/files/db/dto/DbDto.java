@@ -27,11 +27,6 @@ public class DbDto implements Serializable {
     @JsonProperty("resource")
     private DbResourceEnhancedDto resource;
 
-    @Deprecated
-    @JsonProperty("resources")
-    // TODO delete when no more V1 files exist
-    private List<DbResourceDto> resources;
-
     /**
      * All TDU database topics
      */
@@ -149,10 +144,6 @@ public class DbDto implements Serializable {
 
     public DbResourceEnhancedDto getResource() {
         return resource;
-    }
-
-    public List<DbResourceDto> getResources() {
-        return resources;
     }
 
     @Override

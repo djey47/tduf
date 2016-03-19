@@ -45,24 +45,24 @@ public class ResourcesV1ToV2Converter {
                                 .atVersion("")
                                 .withCategoryCount(0)
                                 .build();
-                        dbDto.getResources().forEach(resourceObjectV1 -> {
-
-                            DbResourceEnhancedDto.Locale currentLocale = resourceObjectV1.getLocale();
-
-                            version.set(resourceObjectV1.getVersion());
-                            categoryCount.set(resourceObjectV1.getCategoryCount());
-
-                            resourceObjectV1.getEntries().forEach(entry -> {
-
-                                String reference = entry.getReference();
-                                DbResourceEnhancedDto.Entry entryV2 = tempObjectV2.getEntryByReference(reference)
-                                        .orElseGet(() -> tempObjectV2.addEntryByReference(reference));
-
-                                entryV2.setValueForLocale(entry.getValue(), currentLocale);
-
-                            });
-
-                        });
+//                        dbDto.getResources().forEach(resourceObjectV1 -> {
+//
+//                            DbResourceEnhancedDto.Locale currentLocale = resourceObjectV1.getLocale();
+//
+//                            version.set(resourceObjectV1.getVersion());
+//                            categoryCount.set(resourceObjectV1.getCategoryCount());
+//
+//                            resourceObjectV1.getEntries().forEach(entry -> {
+//
+//                                String reference = entry.getReference();
+//                                DbResourceEnhancedDto.Entry entryV2 = tempObjectV2.getEntryByReference(reference)
+//                                        .orElseGet(() -> tempObjectV2.addEntryByReference(reference));
+//
+//                                entryV2.setValueForLocale(entry.getValue(), currentLocale);
+//
+//                            });
+//
+//                        });
 
                         DbResourceEnhancedDto resourceObjectV2 = DbResourceEnhancedDto.builder()
                                 .atVersion(version.get())
