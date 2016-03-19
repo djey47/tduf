@@ -34,10 +34,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceEnhancedDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -63,6 +60,7 @@ import java.util.*;
 
 import static java.util.Optional.*;
 import static javafx.beans.binding.Bindings.size;
+import static javafx.beans.binding.Bindings.when;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
 import static javafx.scene.control.Alert.AlertType.ERROR;
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
@@ -162,6 +160,12 @@ public class MainStageController extends AbstractGuiController {
         dynamicLinkControlsHelper = new DynamicLinkControlsHelper(this);
         dialogsHelper = new DialogsHelper();
 
+        root.cursorProperty().bind(
+                when(databaseLoader.runningProperty().or(databaseSaver.runningProperty()))
+                        .then(Cursor.WAIT)
+                        .otherwise(Cursor.DEFAULT)
+        );
+
         String initialDatabaseDirectory = SettingsConstants.DATABASE_DIRECTORY_DEFAULT;
         boolean databaseAutoLoad = false;
         List<String> appParameters = DatabaseEditor.getCommandLineParameters();
@@ -170,7 +174,7 @@ public class MainStageController extends AbstractGuiController {
             databaseAutoLoad = true;
         }
 
-        creditsLabel.setText(DisplayConstants.LABEL_STATUS_VERSION);
+        initTopToolbar();
 
         initSettingsPane(initialDatabaseDirectory);
 
@@ -192,6 +196,7 @@ public class MainStageController extends AbstractGuiController {
         }
     }
 
+    @FXML
     public void handleBrowseDirectoryButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleBrowseDirectoryButtonMouseClick");
 
@@ -527,21 +532,6 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void initServiceListeners() {
-        // FIXME does support only one binding ...
-        root.cursorProperty().bind(
-                Bindings
-                        .when(databaseLoader.runningProperty())
-                        .then(Cursor.WAIT)
-                        .otherwise(Cursor.DEFAULT)
-        );
-
-        root.cursorProperty().bind(
-                Bindings
-                        .when(databaseSaver.runningProperty())
-                        .then(Cursor.WAIT)
-                        .otherwise(Cursor.DEFAULT)
-        );
-
         databaseLoader.stateProperty().addListener((observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
                 databaseObjects = databaseLoader.getValue();
@@ -586,6 +576,10 @@ public class MainStageController extends AbstractGuiController {
 
         fieldsBrowserStageController = FieldsBrowserDesigner.init(entriesStage);
         fieldsBrowserStageController.setMainStageController(this);
+    }
+
+    private void initTopToolbar() {
+        creditsLabel.setText(DisplayConstants.LABEL_STATUS_VERSION);
     }
 
     private void initSettingsPane(String databaseDirectory) throws IOException {
