@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.services;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.database.common.helper.BankHelper;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -13,7 +14,6 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -54,15 +54,9 @@ public class DatabaseSaver extends Service<String> {
 
     private static String resolveJsonDatabaseLocation(String realDatabaseLocation) throws IOException {
         final Path realDatabasePath = Paths.get(realDatabaseLocation);
-        return isPackedDatabase(realDatabasePath) ?
+        return BankHelper.isPackedDatabase(realDatabasePath) ?
                 DatabaseBanksCacheHelper.resolveCachePath(realDatabasePath).toString() :
                 realDatabaseLocation;
-    }
-
-    // TODO move to helper class
-    private static boolean isPackedDatabase(Path realDatabasePath) {
-        return Files.exists(realDatabasePath.resolve("DB.bnk"))
-                && Files.exists(realDatabasePath.resolve("DB_US.bnk"));
     }
 
     public StringProperty databaseLocationProperty() {
