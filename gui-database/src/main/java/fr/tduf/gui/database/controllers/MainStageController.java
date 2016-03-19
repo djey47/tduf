@@ -79,10 +79,9 @@ public class MainStageController extends AbstractGuiController {
 
     private MainStageViewDataController viewDataController;
     private MainStageChangeDataController changeDataController;
+
     private ResourcesStageController resourcesStageController;
-
     private EntriesStageController entriesStageController;
-
     private FieldsBrowserStageController fieldsBrowserStageController;
 
     Property<DbDto.Topic> currentTopicProperty;
@@ -94,6 +93,7 @@ public class MainStageController extends AbstractGuiController {
     Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink = new HashMap<>();
     ObservableList<ContentEntryDataItem> browsableEntries;
 
+    private BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
     private DatabaseLoader databaseLoader = new DatabaseLoader();
     private DatabaseSaver databaseSaver = new DatabaseSaver();
 
@@ -160,8 +160,9 @@ public class MainStageController extends AbstractGuiController {
         dynamicLinkControlsHelper = new DynamicLinkControlsHelper(this);
         dialogsHelper = new DialogsHelper();
 
+        runningServiceProperty.bind(databaseLoader.runningProperty().or(databaseSaver.runningProperty()));
         root.cursorProperty().bind(
-                when(databaseLoader.runningProperty().or(databaseSaver.runningProperty()))
+                when(runningServiceProperty)
                         .then(Cursor.WAIT)
                         .otherwise(Cursor.DEFAULT)
         );
@@ -553,7 +554,6 @@ public class MainStageController extends AbstractGuiController {
         });
     }
 
-    @FXML
     private void initResourcesStageController() throws IOException {
         Stage resourcesStage = new Stage();
         Platform.runLater(() -> resourcesStage.initOwner(getWindow())); // runLater() ensures main stage will be initialized first.
@@ -687,8 +687,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void loadDatabaseFromDirectory(String databaseLocation) throws IOException {
-        // TODO implement service lock via property
-        if (databaseLoader.isRunning()) {
+        if (runningServiceProperty.get()) {
             return;
         }
 
@@ -701,8 +700,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void saveDatabaseToDirectory(String databaseLocation) throws IOException {
-        // TODO implement service lock via property
-        if (databaseSaver.isRunning()) {
+        if (runningServiceProperty.get()) {
             return;
         }
 
