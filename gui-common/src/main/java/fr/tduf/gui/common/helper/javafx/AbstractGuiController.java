@@ -1,7 +1,9 @@
 package fr.tduf.gui.common.helper.javafx;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -63,4 +65,6 @@ public abstract class AbstractGuiController implements Initializable {
     protected void showModalWindow() {
         ((Stage) getWindow()).showAndWait();
     }
+
+    protected ObjectProperty<Cursor> mouseCursorProperty() { return root.cursorProperty(); }
 }
