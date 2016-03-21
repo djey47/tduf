@@ -1,22 +1,19 @@
 package fr.tduf.gui.installer.controllers;
 
 import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
-import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
-import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import javafx.beans.property.Property;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Orientation;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 
-import java.util.Optional;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -27,16 +24,6 @@ public class DatabaseCheckStageController extends AbstractGuiController {
 
     private Set<IntegrityError> integrityErrors;
 
-    private VehicleSlotsHelper vehicleSlotsHelper;
-
-    private BulkDatabaseMiner miner;
-
-    private ObservableList<VehicleSlotDataItem> slotsData = FXCollections.observableArrayList();
-
-    private Property<DbDto.Topic> currentTopicProperty;
-
-    private Property<Optional<VehicleSlotDataItem>> selectedSlotProperty;
-
     @Override
     public void init() {
         initHeaderPane();
@@ -46,19 +33,7 @@ public class DatabaseCheckStageController extends AbstractGuiController {
      * Creates and display dialog.
      */
     public void initAndShowModalDialog(Set<IntegrityError> integrityErrors) {
-
         this.integrityErrors = requireNonNull(integrityErrors, "A list of integrity errors is required.");
-//        this.miner = requireNonNull(miner, "Database miner instance is required.");
-
-//        vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
-//
-//        selectedSlotProperty.setValue(empty());
-//
-//        currentTopicProperty.setValue(CAR_PHYSICS_DATA);
-//
-//        updateSlotsStageData();
-//
-//        potentialSlotReference.ifPresent(this::selectEntryInTableAndScroll);
 
         initErrorDetails();
 
@@ -70,13 +45,42 @@ public class DatabaseCheckStageController extends AbstractGuiController {
 
     private void initErrorDetails() {
 
-        integrityErrors
-                .forEach((error) -> {
+        Map<IntegrityError.ErrorTypeEnum, Set<IntegrityError>> errorsByType = integrityErrors.stream()
 
-                    TextField textField = new TextField(error.getError());
+                .collect(Collectors.toMap(
+                        IntegrityError::getErrorTypeEnum,
+                        (ie) -> {
+                            Set<IntegrityError> errorSet = new HashSet<>();
+                            errorSet.add(ie);
+                            return errorSet;
+                        },
+                        (hs1, hs2) -> {
+                            hs1.addAll(hs2);
+                            return hs1;
+                        }));
 
-                    errorPanel.getChildren().add(textField);
+        errorsByType
+                .forEach((errorType, errors) -> {
 
+                    Map<IntegrityError.ErrorInfoEnum, Object> information = errors.stream().findAny().get().getInformation();
+
+
+                    String format = "%s (%d)";
+
+                    String errorMessage = String.format(errorType.getErrorMessageFormat(), "");
+                    Label errorLabel = new Label(String.format(format, errorMessage, errors.size()));
+
+                    TableView<IntegrityError> tableView = new TableView<>();
+
+                    information.keySet().forEach((name) -> tableView.getColumns().add(new TableColumn<>(name.toString())));
+
+
+
+
+
+                    VBox flowPane = new VBox(errorLabel, tableView);
+
+                    errorPanel.getChildren().add(flowPane);
                 });
     }
 }
