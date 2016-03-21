@@ -47,7 +47,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -96,10 +95,6 @@ public class MainStageController extends AbstractGuiController {
     private BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
     private DatabaseLoader databaseLoader = new DatabaseLoader();
     private DatabaseSaver databaseSaver = new DatabaseSaver();
-
-
-    @FXML
-    private AnchorPane root;
 
     @FXML
     private Label creditsLabel;
@@ -161,7 +156,7 @@ public class MainStageController extends AbstractGuiController {
         dialogsHelper = new DialogsHelper();
 
         runningServiceProperty.bind(databaseLoader.runningProperty().or(databaseSaver.runningProperty()));
-        root.cursorProperty().bind(
+        mouseCursorProperty().bind(
                 when(runningServiceProperty)
                         .then(Cursor.WAIT)
                         .otherwise(Cursor.DEFAULT)
