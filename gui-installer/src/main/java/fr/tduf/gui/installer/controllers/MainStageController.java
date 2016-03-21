@@ -72,6 +72,11 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
+    public void handleCheckDatabaseMenuItemAction(ActionEvent actionEvent) throws IOException, ReflectiveOperationException {
+        Log.trace(THIS_CLASS_NAME, "->handleCheckDatabaseMenuItemAction");
+    }
+
+    @FXML
     public void handleBrowseTduLocationButtonAction(ActionEvent actionEvent) {
         Log.trace(THIS_CLASS_NAME, "->handleBrowseTduLocationButtonAction");
 
