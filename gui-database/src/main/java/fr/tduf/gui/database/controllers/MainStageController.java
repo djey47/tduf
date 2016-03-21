@@ -668,6 +668,10 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void browseForDatabaseDirectory() {
+        if (runningServiceProperty.get()) {
+            return;
+        }
+
         DirectoryChooser directoryChooser = new DirectoryChooser();
 
         File directory = new File(this.databaseLocationTextField.getText());
