@@ -1,6 +1,6 @@
 package fr.tduf.gui.common.helper.javafx;
 
-import fr.tduf.gui.common.rule.JavaFXThreadingRule;
+import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventTarget;

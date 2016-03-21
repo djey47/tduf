@@ -1,7 +1,7 @@
 package fr.tduf.gui.installer.controllers;
 
-import fr.tduf.gui.common.rule.JavaFXThreadingRule;
 import fr.tduf.gui.installer.stages.DatabaseCheckStageDesigner;
+import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import javafx.stage.Stage;
 import javafx.stage.Window;

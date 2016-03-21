@@ -1,6 +1,6 @@
 package fr.tduf.gui.common.helper.javafx;
 
-import fr.tduf.gui.common.rule.JavaFXThreadingRule;
+import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import javafx.scene.control.Button;
 import org.junit.Rule;
 import org.junit.Test;
