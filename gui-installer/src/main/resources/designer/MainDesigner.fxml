@@ -47,6 +47,8 @@
                         <Font name="System Italic" size="13.0" />
                      </font>
                   </Label>
+                  <Separator orientation="VERTICAL" />
+                  <Label fx:id="statusLabel" />
                </items>
             </ToolBar>
          </children>

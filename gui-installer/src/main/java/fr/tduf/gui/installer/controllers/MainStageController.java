@@ -8,12 +8,15 @@ import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.gui.installer.services.DatabaseChecker;
 import fr.tduf.gui.installer.steps.GenericStep;
 import fr.tduf.gui.installer.steps.StepsCoordinator;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
@@ -26,6 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static javafx.beans.binding.Bindings.when;
+import static javafx.concurrent.Worker.State.SUCCEEDED;
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
 /**
@@ -36,14 +41,26 @@ public class MainStageController extends AbstractGuiController {
 
     private SimpleStringProperty tduDirectoryProperty;
 
+    private DatabaseChecker databaseChecker = new DatabaseChecker();
+
     @FXML
     private TextArea readmeTextArea;
 
     @FXML
     private TextField tduLocationTextField;
 
+    @FXML
+    private Label statusLabel;
+
     @Override
     public void init() throws IOException {
+        mouseCursorProperty().bind(
+                when(databaseChecker.runningProperty())
+                        .then(Cursor.WAIT)
+                        .otherwise(Cursor.DEFAULT));
+
+        initServiceListeners();
+
         initReadme();
 
         initActionToolbar();
@@ -74,6 +91,12 @@ public class MainStageController extends AbstractGuiController {
     @FXML
     public void handleCheckDatabaseMenuItemAction(ActionEvent actionEvent) throws IOException, ReflectiveOperationException {
         Log.trace(THIS_CLASS_NAME, "->handleCheckDatabaseMenuItemAction");
+
+        if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
+            return;
+        }
+
+        checkDatabase();
     }
 
     @FXML
@@ -108,6 +131,14 @@ public class MainStageController extends AbstractGuiController {
 
         tduLocationTextField.setPromptText(DisplayConstants.PROMPT_TEXT_TDU_LOCATION);
         tduLocationTextField.textProperty().bindBidirectional(tduDirectoryProperty);
+    }
+
+    private void initServiceListeners() {
+        databaseChecker.stateProperty().addListener((observableValue, oldState, newState) -> {
+            if (SUCCEEDED == newState) {
+                CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION, "", databaseChecker.getValue().toString());
+            }
+        });
     }
 
     private void browseForTduDirectory() {
@@ -149,6 +180,20 @@ public class MainStageController extends AbstractGuiController {
         DatabaseBanksCacheHelper.clearCache(databasePath);
 
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE, DisplayConstants.MESSAGE_DELETED_CACHE, databasePath.toString());
+    }
+
+    private void checkDatabase() {
+        statusLabel.textProperty().bind(databaseChecker.messageProperty());
+
+        InstallerConfiguration configuration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
+                .withMainWindow(getWindow())
+                .build();
+
+        databaseChecker.databaseLocationProperty().setValue(configuration.resolveDatabaseDirectory());
+        databaseChecker.bankSupportProperty().setValue(configuration.getBankSupport());
+
+        databaseChecker.restart();
     }
 
     private void install() throws IOException, ReflectiveOperationException {
