@@ -137,6 +137,8 @@ public class IntegrityError {
         ErrorTypeEnum(String errorMessageFormat) {
             this.errorMessageFormat = errorMessageFormat;
         }
+
+        public String getErrorMessageFormat() { return errorMessageFormat; }
     }
 
     /**
