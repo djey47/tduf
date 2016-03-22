@@ -18,7 +18,7 @@ import java.util.ResourceBundle;
  */
 public abstract class AbstractGuiController implements Initializable {
     @FXML
-    private Parent root;
+    protected Parent root;
 
     /**
      * Generic init code.
