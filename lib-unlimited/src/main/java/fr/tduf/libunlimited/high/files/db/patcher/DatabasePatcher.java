@@ -43,8 +43,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
      * Execute provided patches onto current database
      */
     public void batchApply(List<DbPatchDto> patchObjects) {
-        requireNonNull(patchObjects, "A list of patch objects is required.").stream()
-
+        requireNonNull(patchObjects, "A list of patch objects is required.")
                 .forEach(this::apply);
     }
 
