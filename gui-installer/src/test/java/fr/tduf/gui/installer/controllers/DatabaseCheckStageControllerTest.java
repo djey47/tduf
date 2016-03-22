@@ -5,21 +5,22 @@ import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.HashSet;
 
+/**
+ * To display stage without running whole application.
+ */
 public class DatabaseCheckStageControllerTest {
 
     @Rule
     public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
 
     @Test
-    @Ignore
-    public void display() throws IOException {
+    public void display_whenManyErrors() throws IOException {
         // GIVEN
         final HashSet<IntegrityError> integrityErrors = new HashSet<>();
         integrityErrors.add(IntegrityError.builder().ofType(IntegrityError.ErrorTypeEnum.RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES).build());

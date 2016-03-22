@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.installer.controllers.DatabaseCheckStageController">
+<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.72" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.installer.controllers.DatabaseCheckStageController">
    <children>
       <VBox id="mainVbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <ToolBar prefHeight="40.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
                <items>
-                  <Label fx:id="instructionsLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0" text="Detected integrity errors:" />
+                  <Label alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0" text="Detected integrity errors:" />
+                  <Label fx:id="errorCountLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0" styleClass="error-label" />
                </items>
             </ToolBar>
-            <ScrollPane VBox.vgrow="ALWAYS">
+            <ScrollPane id="mainScrollPane" VBox.vgrow="ALWAYS">
                <content>
-                  <VBox fx:id="errorPanel" />
+                  <VBox fx:id="errorPanel" spacing="35.0" />
                </content>
             </ScrollPane>
-            <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar" />
          </children></VBox>
    </children>
 </AnchorPane>
