@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.controllers;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import javafx.beans.property.IntegerProperty;
@@ -9,6 +10,7 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Label;
@@ -27,11 +29,11 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 public class DatabaseCheckStageController extends AbstractGuiController {
+    private static final String THIS_CLASS_NAME = DatabaseCheckStageController.class.getSimpleName();
 
     private Set<IntegrityError> integrityErrors;
 
     private IntegerProperty totalErrorCountProperty = new SimpleIntegerProperty(0);
-
 
     @FXML
     private Label errorCountLabel;
@@ -39,6 +41,10 @@ public class DatabaseCheckStageController extends AbstractGuiController {
     @FXML
     private VBox errorPanel;
 
+    @FXML
+    public void handleTryFixButtonAction(ActionEvent actionEvent) {
+        Log.trace(THIS_CLASS_NAME, "->handleUpdateMagicMapMenuItemAction");
+    }
 
     @Override
     public void init() {
