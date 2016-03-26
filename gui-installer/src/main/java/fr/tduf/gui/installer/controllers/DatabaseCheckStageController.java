@@ -99,7 +99,7 @@ public class DatabaseCheckStageController extends AbstractGuiController {
         final ObservableList<IntegrityError> integrityErrors = FXCollections.observableArrayList();
 
         TableView<IntegrityError> tableView = new TableView<>();
-        tableView.setPrefHeight(38 * errors.size());
+        tableView.setPrefSize(700, 38 * (errors.size()+1));
 
         // TODO order columns
         information.entrySet().forEach((entry) -> {
