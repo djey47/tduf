@@ -9,11 +9,14 @@ import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.services.DatabaseChecker;
+import fr.tduf.gui.installer.services.DatabaseFixer;
 import fr.tduf.gui.installer.stages.DatabaseCheckStageDesigner;
 import fr.tduf.gui.installer.steps.GenericStep;
 import fr.tduf.gui.installer.steps.StepsCoordinator;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -37,6 +40,7 @@ import java.util.Set;
 import static javafx.beans.binding.Bindings.when;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
+import static javafx.scene.control.Alert.AlertType.WARNING;
 
 /**
  * Makes it a possible to intercept all GUI events.
@@ -46,7 +50,9 @@ public class MainStageController extends AbstractGuiController {
 
     private SimpleStringProperty tduDirectoryProperty;
 
+    private BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
     private DatabaseChecker databaseChecker = new DatabaseChecker();
+    private DatabaseFixer databaseFixer = new DatabaseFixer();
 
     @FXML
     private TextArea readmeTextArea;
@@ -59,10 +65,12 @@ public class MainStageController extends AbstractGuiController {
 
     @Override
     public void init() throws IOException {
+        runningServiceProperty.bind(databaseChecker.runningProperty().or(databaseFixer.runningProperty()));
         mouseCursorProperty().bind(
-                when(databaseChecker.runningProperty())
+                when(runningServiceProperty)
                         .then(Cursor.WAIT)
-                        .otherwise(Cursor.DEFAULT));
+                        .otherwise(Cursor.DEFAULT)
+        );
 
         initServiceListeners();
 
@@ -143,21 +151,37 @@ public class MainStageController extends AbstractGuiController {
             if (SUCCEEDED == newState) {
                 final Set<IntegrityError> integrityErrors = databaseChecker.getValue();
                 if (integrityErrors.isEmpty()) {
-                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_CHECK_DB, DisplayConstants.MESSAGE_DB_CHECK_OK, DisplayConstants.MESSAGE_DB_ZERO_ERROR_OK);
+                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_CHECK_DB, DisplayConstants.MESSAGE_DB_CHECK_OK, DisplayConstants.MESSAGE_DB_ZERO_ERROR);
                 } else {
                     try {
                         DatabaseCheckStageController databaseCheckStageController = initDatabaseCheckStageController(getWindow());
-                        databaseCheckStageController.initAndShowModalDialog(integrityErrors);
+                        boolean shouldFixDatabase = databaseCheckStageController.initAndShowModalDialog(integrityErrors);
+
+                        if (shouldFixDatabase) {
+                            fixDatabase(integrityErrors);
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
         });
+        databaseFixer.stateProperty().addListener((observableValue, oldState, newState) -> {
+            if (SUCCEEDED == newState) {
+                final Set<IntegrityError> remainingErrors = databaseChecker.getValue();
+                if (remainingErrors.isEmpty()) {
+                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIX_DB, DisplayConstants.MESSAGE_DB_FIX_OK, DisplayConstants.MESSAGE_DB_ZERO_ERROR);
+                } else {
+                    CommonDialogsHelper.showDialog(WARNING, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIX_DB, DisplayConstants.MESSAGE_DB_FIX_KO, DisplayConstants.MESSAGE_DB_REMAINING_ERRORS);
+                }
+            }
+        });
     }
 
     private void browseForTduDirectory() {
-        // TODO Block if check database service is already running
+        if (runningServiceProperty.get()) {
+            return;
+        }
 
         DirectoryChooser directoryChooser = new DirectoryChooser();
 
@@ -175,7 +199,9 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void updateMagicMap() throws IOException, ReflectiveOperationException {
-        // TODO Block if check database service is already running
+        if (runningServiceProperty.get()) {
+            return;
+        }
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
@@ -190,7 +216,9 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void resetDatabaseCache() throws IOException, ReflectiveOperationException {
-        // TODO Block if check database service is already running
+        if (runningServiceProperty.get()) {
+            return;
+        }
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
@@ -204,7 +232,9 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void checkDatabase() {
-        // TODO Block if check database service is already running
+        if (runningServiceProperty.get()) {
+            return;
+        }
 
         statusLabel.textProperty().bind(databaseChecker.messageProperty());
 
@@ -219,8 +249,29 @@ public class MainStageController extends AbstractGuiController {
         databaseChecker.restart();
     }
 
+    private void fixDatabase(Set<IntegrityError> integrityErrors) {
+        if (runningServiceProperty.get()) {
+            return;
+        }
+
+        statusLabel.textProperty().bind(databaseFixer.messageProperty());
+
+        InstallerConfiguration configuration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
+                .withMainWindow(getWindow())
+                .build();
+
+        databaseFixer.databaseLocationProperty().setValue(configuration.resolveDatabaseDirectory());
+        databaseFixer.bankSupportProperty().setValue(configuration.getBankSupport());
+        databaseFixer.integrityErrorsProperty().setValue(integrityErrors);
+
+        databaseFixer.restart();
+    }
+
     private void install() throws IOException, ReflectiveOperationException {
-        // TODO Block if check database service is running
+        if (runningServiceProperty.get()) {
+            return;
+        }
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
