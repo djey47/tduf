@@ -8,6 +8,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.JsonGateway;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -22,7 +23,7 @@ import java.util.*;
  */
 public class DatabaseChecker extends Service<Set<IntegrityError>> {
     private StringProperty databaseLocation = new SimpleStringProperty();
-    private SimpleObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
+    private ObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
 
     @Override
     protected Task<Set<IntegrityError>> createTask() {
@@ -61,7 +62,7 @@ public class DatabaseChecker extends Service<Set<IntegrityError>> {
         return databaseLocation;
     }
 
-    public SimpleObjectProperty<BankSupport> bankSupportProperty() {
+    public ObjectProperty<BankSupport> bankSupportProperty() {
         return bankSupport;
     }
 }
