@@ -32,6 +32,7 @@ public class DatabaseFixer extends Service<Set<IntegrityError>> {
             @Override
             protected Set<IntegrityError> call() throws Exception {
 
+                // TODO externalize steps 1-3 to common module
                 updateMessage("Performing database fix 1/7, please wait...");
 
                 String unpackedDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseLocation.get(), Optional.empty(), bankSupport.get());

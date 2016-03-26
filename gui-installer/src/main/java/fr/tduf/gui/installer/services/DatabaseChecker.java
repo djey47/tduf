@@ -31,6 +31,7 @@ public class DatabaseChecker extends Service<Set<IntegrityError>> {
             @Override
             protected Set<IntegrityError> call() throws Exception {
 
+                // TODO externalize steps 1-3 to common module
                 updateMessage("Performing database check 1/4, please wait...");
 
                 String unpackedDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseLocation.get(), Optional.empty(), bankSupport.get());
