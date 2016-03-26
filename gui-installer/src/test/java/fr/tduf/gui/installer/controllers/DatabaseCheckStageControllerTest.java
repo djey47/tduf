@@ -28,7 +28,7 @@ public class DatabaseCheckStageControllerTest {
     }
 
     @Test
-//    @Ignore
+    @Ignore
     public void display_whenManyErrors() throws IOException {
         // GIVEN
         final HashSet<IntegrityError> integrityErrors = new HashSet<>();
