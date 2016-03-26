@@ -35,6 +35,8 @@ public class DatabaseCheckStageController extends AbstractGuiController {
 
     private IntegerProperty totalErrorCountProperty = new SimpleIntegerProperty(0);
 
+    private boolean shouldFixDatabase = false;
+
     @FXML
     private Label errorCountLabel;
 
@@ -43,7 +45,11 @@ public class DatabaseCheckStageController extends AbstractGuiController {
 
     @FXML
     public void handleTryFixButtonAction(ActionEvent actionEvent) {
-        Log.trace(THIS_CLASS_NAME, "->handleUpdateMagicMapMenuItemAction");
+        Log.trace(THIS_CLASS_NAME, "->handleTryFixButtonAction");
+
+        shouldFixDatabase = true;
+
+        closeWindow();
     }
 
     @Override
@@ -53,8 +59,9 @@ public class DatabaseCheckStageController extends AbstractGuiController {
 
     /**
      * Creates and display dialog.
+     * @return true if fix must be performed, false otherwise
      */
-    public void initAndShowModalDialog(Set<IntegrityError> integrityErrors) {
+    public boolean initAndShowModalDialog(Set<IntegrityError> integrityErrors) {
         this.integrityErrors = requireNonNull(integrityErrors, "A list of integrity errors is required.");
 
         totalErrorCountProperty.set(integrityErrors.size());
@@ -62,6 +69,8 @@ public class DatabaseCheckStageController extends AbstractGuiController {
         initErrorDetails();
 
         showModalWindow();
+
+        return shouldFixDatabase;
     }
 
     private void initHeaderPane() {
