@@ -85,60 +85,66 @@ public class IntegrityError {
         /**
          * An incomplete list of topic objects has been provided to database checker
          */
-        INCOMPLETE_DATABASE("One or more database topics are missing: %s"),
+        INCOMPLETE_DATABASE("One or more database topics are missing: %s", 0),
 
         /**
          * Read Item count not same as displayed one
          */
-        CONTENT_ITEMS_COUNT_MISMATCH("Item count information is not same as actual item count: %s"),
+        CONTENT_ITEMS_COUNT_MISMATCH("Item count information is not same as actual item count: %s", 5),
 
         /**
          * Read Field count in structure not same as displayed one
          */
-        STRUCTURE_FIELDS_COUNT_MISMATCH("Field count information in structure is not same as actual field count: %s"),
+        STRUCTURE_FIELDS_COUNT_MISMATCH("Field count information in structure is not same as actual field count: %s", 3),
 
         /**
          * Read Field count in contents not same as displayed one
          */
-        CONTENTS_FIELDS_COUNT_MISMATCH("Field count information in structure is not same as actual field count: %s"),
+        CONTENTS_FIELDS_COUNT_MISMATCH("Field count in contents is not same as actual field count: %s", 4),
 
         /**
          * For a topic, could not access to corresponding resource.
          */
-        RESOURCE_NOT_FOUND("Resource file was not found for current topic: %s"),
+        RESOURCE_NOT_FOUND("Resource file was not found for current topic: %s", 6),
 
         /**
          * For a reference value, could not access to corresponding value in resource.
          */
-        RESOURCE_REFERENCE_NOT_FOUND("A reference to resource in topic was not found: %s"),
+        RESOURCE_REFERENCE_NOT_FOUND("A reference to resource in topic was not found: %s", 7),
 
         /**
          * For a topic, could not access to corresponding contents.
          */
-        CONTENTS_NOT_FOUND("Contents file was not found for current topic: %s"),
+        CONTENTS_NOT_FOUND("Contents file was not found for current topic: %s", 1),
 
         /**
          * For a reference value, could not access to corresponding entry in other topic contents.
          */
-        CONTENTS_REFERENCE_NOT_FOUND("A reference to contents in topic was not found: %s"),
+        CONTENTS_REFERENCE_NOT_FOUND("A reference to contents in topic was not found: %s", 9),
 
         /**
          * For a topic, contents file exist but could not be unencrypted
          */
-        CONTENTS_ENCRYPTION_NOT_SUPPORTED("Contents file could not be unencrypted for current topic: %s"),
+        CONTENTS_ENCRYPTION_NOT_SUPPORTED("Contents file could not be unencrypted for current topic: %s", 2),
 
         /**
          * Per-locale values for a globalized resource reference are not the same
          */
-        RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES("Resource values for globalized resource are not the same through all locales: %s");
+        RESOURCE_VALUES_DIFFERENT_BETWEEN_LOCALES("Resource values for globalized resource are not the same through all locales: %s", 8);
 
         private final String errorMessageFormat;
+        private final int renderOrder;
 
-        ErrorTypeEnum(String errorMessageFormat) {
+        ErrorTypeEnum(String errorMessageFormat, int renderOrder) {
             this.errorMessageFormat = errorMessageFormat;
+            this.renderOrder = renderOrder;
         }
 
         public String getErrorMessageFormat() { return errorMessageFormat; }
+
+        public int getRenderOrder() {
+            return renderOrder;
+        }
     }
 
     /**
@@ -146,22 +152,24 @@ public class IntegrityError {
      */
     public enum ErrorInfoEnum {
 
-        SOURCE_TOPIC("Source Topic"),
-        REMOTE_TOPIC("Remote Topic"),
-        MISSING_TOPICS("Missing topics"),
-        LOCALE("Locale"),
-        REFERENCE("Reference"),
-        PER_VALUE_COUNT("Per-Value Count"),
-        EXPECTED_COUNT("Expected Count"),
-        ACTUAL_COUNT("Actual Count"),
-        FILE("File Name"),
-        ENTRY_ID("Data Entry Identifier"),
-        MISSING_LOCALES("Missing values for locales");
+        ENTRY_ID("Data Entry Identifier", 0),
+        SOURCE_TOPIC("Source Topic", 1),
+        REMOTE_TOPIC("Remote Topic", 2),
+        MISSING_TOPICS("Missing topics", 3),
+        LOCALE("Locale", 4),
+        MISSING_LOCALES("Missing values for locales", 5),
+        REFERENCE("Reference", 6),
+        PER_VALUE_COUNT("Per-Value Count", 7),
+        EXPECTED_COUNT("Expected Count", 8),
+        ACTUAL_COUNT("Actual Count", 9),
+        FILE("File Name", 10);
 
         private final String infoLabel;
+        private final int renderOrder;
 
-        ErrorInfoEnum(String infoLabel) {
+        ErrorInfoEnum(String infoLabel, int renderOrder) {
             this.infoLabel = infoLabel;
+            this.renderOrder = renderOrder;
         }
 
         @Override
@@ -171,6 +179,10 @@ public class IntegrityError {
 
         public String getInfoLabel() {
             return infoLabel;
+        }
+
+        public int getRenderOrder() {
+            return renderOrder;
         }
     }
 

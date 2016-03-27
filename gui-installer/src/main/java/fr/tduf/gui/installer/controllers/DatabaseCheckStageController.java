@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.lang.Integer.compare;
 import static java.util.Objects.requireNonNull;
 
 public class DatabaseCheckStageController extends AbstractGuiController {
@@ -59,6 +60,7 @@ public class DatabaseCheckStageController extends AbstractGuiController {
 
     /**
      * Creates and display dialog.
+     *
      * @return true if fix must be performed, false otherwise
      */
     public boolean initAndShowModalDialog(Set<IntegrityError> integrityErrors) {
@@ -81,12 +83,16 @@ public class DatabaseCheckStageController extends AbstractGuiController {
 
         Map<IntegrityError.ErrorTypeEnum, Set<IntegrityError>> errorsByType = groupErrorsByType(integrityErrors);
 
-        errorsByType
-                .forEach((errorType, errors) -> {
+        errorsByType.entrySet().stream()
+
+                .sorted((entry1, entry2) -> compare(entry1.getKey().getRenderOrder(), entry2.getKey().getRenderOrder()))
+
+                .forEach((entry) -> {
+                    IntegrityError.ErrorTypeEnum errorType = entry.getKey();
+                    Set<IntegrityError> errors = entry.getValue();
                     Label errorLabel = createErrorLabel(errorType, errors);
                     TableView<IntegrityError> tableView = createErrorsTableView(errors);
 
-                    // TODO anchor Vbox to parent pane ...
                     VBox vbox = new VBox();
                     vbox.getChildren().addAll(new Separator(Orientation.HORIZONTAL), errorLabel, tableView);
                     vbox.setPrefWidth(((AnchorPane) root).getPrefWidth());
@@ -105,43 +111,49 @@ public class DatabaseCheckStageController extends AbstractGuiController {
 
     private static TableView<IntegrityError> createErrorsTableView(Set<IntegrityError> errors) {
         Map<IntegrityError.ErrorInfoEnum, Object> information = errors.stream().findAny().get().getInformation();
-        final ObservableList<IntegrityError> integrityErrors = FXCollections.observableArrayList();
+        final ObservableList<IntegrityError> integrityErrors = FXCollections.observableArrayList(errors);
 
         TableView<IntegrityError> tableView = new TableView<>();
-        tableView.setPrefSize(700, 38 * (errors.size()+1));
+        tableView.setPrefSize(700, 38 * (errors.size() + 1));
 
-        // TODO order columns
-        information.entrySet().forEach((entry) -> {
-            final IntegrityError.ErrorInfoEnum itemName = entry.getKey();
-            final TableColumn<IntegrityError, ?> column = new TableColumn<>(itemName.toString());
+        addInformationColumns(information, tableView);
 
-            column.setCellValueFactory((cellData) -> {
-                StringProperty prop = new SimpleStringProperty(cellData.getValue().getInformation().get(itemName).toString());
-                return (ObservableValue) prop;
-            });
-
-            tableView.getColumns().add(column);
-        });
-
-        // TODO order errors
-        integrityErrors.addAll(errors);
         tableView.setItems(integrityErrors);
+
         return tableView;
     }
 
+    private static void addInformationColumns(Map<IntegrityError.ErrorInfoEnum, Object> information, TableView<IntegrityError> tableView) {
+        information.entrySet().stream()
+
+                .sorted((entry1, entry2) -> compare(entry1.getKey().getRenderOrder(), entry2.getKey().getRenderOrder()))
+
+                .forEach((entry) -> {
+                    final IntegrityError.ErrorInfoEnum itemName = entry.getKey();
+                    final TableColumn<IntegrityError, ?> column = new TableColumn<>(itemName.toString());
+
+                    column.setCellValueFactory((cellData) -> {
+                        StringProperty prop = new SimpleStringProperty(cellData.getValue().getInformation().get(itemName).toString());
+                        return (ObservableValue) prop;
+                    });
+
+                    tableView.getColumns().add(column);
+                });
+    }
+
     private static Map<IntegrityError.ErrorTypeEnum, Set<IntegrityError>> groupErrorsByType(Set<IntegrityError> integrityErrors) {
-        // TODO order by type
         return integrityErrors.stream()
-                    .collect(Collectors.toMap(
-                            IntegrityError::getErrorTypeEnum,
-                            (ie) -> {
-                                Set<IntegrityError> errorSet = new HashSet<>();
-                                errorSet.add(ie);
-                                return errorSet;
-                            },
-                            (hs1, hs2) -> {
-                                hs1.addAll(hs2);
-                                return hs1;
-                            }));
+
+                .collect(Collectors.toMap(
+                        IntegrityError::getErrorTypeEnum,
+                        (ie) -> {
+                            Set<IntegrityError> errorSet = new HashSet<>();
+                            errorSet.add(ie);
+                            return errorSet;
+                        },
+                        (hs1, hs2) -> {
+                            hs1.addAll(hs2);
+                            return hs1;
+                        }));
     }
 }
