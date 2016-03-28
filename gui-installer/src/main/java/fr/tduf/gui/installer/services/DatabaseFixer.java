@@ -1,12 +1,11 @@
 package fr.tduf.gui.installer.services;
 
+import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.rw.JsonGateway;
-import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseBankHelper;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -15,8 +14,10 @@ import javafx.beans.property.StringProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
-import java.nio.file.Files;
-import java.util.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Background service to fix and save TDU database from banks directory.
@@ -32,36 +33,19 @@ public class DatabaseFixer extends Service<Set<IntegrityError>> {
             @Override
             protected Set<IntegrityError> call() throws Exception {
 
-                // TODO externalize steps 1-3 to common module
-                updateMessage("Performing database fix 1/7, please wait...");
+                updateMessage("Performing database fix 1/4, please wait...");
+                Path realDatabasePath = Paths.get(databaseLocation.get());
+                final String jsonDirectory =  DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(realDatabasePath, bankSupport.get());
 
-                String unpackedDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseLocation.get(), Optional.empty(), bankSupport.get());
-
-                updateMessage("Performing database fix 2/7, please wait...");
-
-                final String jsonDirectory = Files.createTempDirectory("guiInstaller-databaseFix").toString();
-                JsonGateway.dump(unpackedDirectory, jsonDirectory, new ArrayList<>(), new HashSet<>());
-
-                updateMessage("Performing database fix 3/7, please wait...");
-
+                updateMessage("Performing database fix 2/4, please wait...");
                 final List<DbDto> databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
 
-                updateMessage("Performing database fix 4/7, please wait...");
-
+                updateMessage("Performing database fix 3/4, please wait...");
                 final DatabaseIntegrityFixer fixerComponent = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
                 Set<IntegrityError> remainingErrors = fixerComponent.fixAllContentsObjects(integrityErrors.get());
 
-                updateMessage("Performing database fix 5/7, please wait...");
-
-                DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects, jsonDirectory);
-
-                updateMessage("Performing database fix 6/7, please wait...");
-
-                JsonGateway.gen(jsonDirectory, unpackedDirectory, new ArrayList<>());
-
-                updateMessage("Performing database fix 7/7, please wait...");
-
-                DatabaseBankHelper.repackDatabaseFromDirectory(unpackedDirectory, databaseLocation.get(), Optional.empty(), bankSupport.get());
+                updateMessage("Performing database fix 4/4, please wait...");
+                DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(realDatabasePath, bankSupport.get());
 
                 updateMessage("Done fixing database, " + remainingErrors.size() + " error(s) remaining.");
 
