@@ -59,7 +59,7 @@ public class DiffPatchesGeneratorTest {
     }
 
     @Test
-    public void makePatches_whenNewContentsEntry_andREF_shouldAddFullUpdate() throws Exception {
+    public void makePatches_whenNewContentsEntry_andREF_shouldAddFullUpdate_andStrictMode() throws Exception {
         // GIVEN
         List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-newEntry/TDU_CarPhysicsData.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
@@ -78,6 +78,7 @@ public class DiffPatchesGeneratorTest {
 
         DbPatchDto.DbChangeDto actualChangeObject = actualPatchObject.getChanges().get(0);
         assertThat(actualChangeObject.getType()).isEqualTo(UPDATE);
+        assertThat(actualChangeObject.isStrictMode()).isTrue();
         assertThat(actualChangeObject.getRef()).isEqualTo("99999999");
         assertThat(actualChangeObject.getPartialValues()).isNull();
         assertThat(actualChangeObject.getTopic()).isEqualTo(CAR_PHYSICS_DATA);
@@ -153,7 +154,7 @@ public class DiffPatchesGeneratorTest {
     }
 
     @Test
-    public void makePatches_whenNewResourceEntries_shouldAddFullResourceUpdates() throws Exception {
+    public void makePatches_whenNewResourceEntries_shouldAddFullResourceUpdates_andStrictMode() throws Exception {
         // GIVEN
         List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource/TDU_Hair.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
@@ -173,13 +174,14 @@ public class DiffPatchesGeneratorTest {
         assertThat(actualChanges)
                 .hasSize(2)
                 .extracting("type").containsOnly(UPDATE_RES);
+        assertThat(actualChanges).extracting("strictMode").containsOnly(true);
         assertThat(actualChanges).extracting("ref").containsOnly("54713528", "54713529");
         assertThat(actualChanges).extracting("topic").containsOnly(HAIR);
         assertThat(actualChanges).extracting("value").containsOnly("StringPanthere01", "CulottePetitBateau01");
     }
 
     @Test
-    public void makePatches_whenNewResourceEntry_withLocalizedValues_shouldAddFullResourceUpdates() throws Exception {
+    public void makePatches_whenNewResourceEntry_withLocalizedValues_shouldAddFullResourceUpdates_andStrictMode() throws Exception {
         // GIVEN
         List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource-localized/TDU_Hair.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
@@ -199,6 +201,7 @@ public class DiffPatchesGeneratorTest {
         assertThat(actualChanges)
                 .hasSize(8)
                 .extracting("type").containsOnly(UPDATE_RES);
+        assertThat(actualChanges).extracting("strictMode").containsOnly(true);
         assertThat(actualChanges).extracting("ref").containsOnly("54713528");
         assertThat(actualChanges).extracting("topic").containsOnly(HAIR);
         assertThat(actualChanges).extracting("locale").containsOnly((Object[]) DbResourceDto.Locale.values());

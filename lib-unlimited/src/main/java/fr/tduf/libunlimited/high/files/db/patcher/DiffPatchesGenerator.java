@@ -187,6 +187,7 @@ public class DiffPatchesGenerator {
         return DbPatchDto.DbChangeDto.builder()
                 .forTopic(currentTopic)
                 .withType(UPDATE)
+                .enableStrictMode(true)
                 .asReference(entryRef)
                 .withEntryValues(entryValues)
                 .build();
@@ -196,6 +197,7 @@ public class DiffPatchesGenerator {
         return DbResourceDto.Locale.valuesAsStream()
                 .map((locale) -> DbPatchDto.DbChangeDto.builder()
                         .withType(UPDATE_RES)
+                        .enableStrictMode(true)
                         .asReference(resourceEntry.getReference())
                         .forLocale(locale)
                         .withValue(resourceEntry.getValueForLocale(locale).orElse("??"))
@@ -206,6 +208,7 @@ public class DiffPatchesGenerator {
     private Stream<? extends DbPatchDto.DbChangeDto> createGlobalizedResourceUpdate(DbDto.Topic currentTopic, DbResourceDto.Entry resourceEntry) {
         return Stream.of(DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE_RES)
+                .enableStrictMode(true)
                 .asReference(resourceEntry.getReference())
                 .withValue(resourceEntry.pickValue().get())
                 .forTopic(currentTopic)
