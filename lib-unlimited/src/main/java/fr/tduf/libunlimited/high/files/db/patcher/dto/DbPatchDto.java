@@ -250,7 +250,7 @@ public class DbPatchDto {
 
                 @Override
                 public DbChangeDtoBuilder enableStrictMode(boolean strictMode) {
-                    this.strictMode = strictMode;
+                    this.strictMode = strictMode ? true : null;
                     return this;
                 }
 
