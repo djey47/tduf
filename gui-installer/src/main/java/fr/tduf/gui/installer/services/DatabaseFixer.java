@@ -33,18 +33,21 @@ public class DatabaseFixer extends Service<Set<IntegrityError>> {
             @Override
             protected Set<IntegrityError> call() throws Exception {
 
-                updateMessage("Performing database fix 1/4, please wait...");
+                updateMessage("Performing database fix 1/5, please wait...");
                 Path realDatabasePath = Paths.get(databaseLocation.get());
                 final String jsonDirectory =  DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(realDatabasePath, bankSupport.get());
 
-                updateMessage("Performing database fix 2/4, please wait...");
+                updateMessage("Performing database fix 2/5, please wait...");
                 final List<DbDto> databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
 
-                updateMessage("Performing database fix 3/4, please wait...");
+                updateMessage("Performing database fix 3/5, please wait...");
                 final DatabaseIntegrityFixer fixerComponent = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
                 Set<IntegrityError> remainingErrors = fixerComponent.fixAllContentsObjects(integrityErrors.get());
 
-                updateMessage("Performing database fix 4/4, please wait...");
+                updateMessage("Performing database fix 4/5, please wait...");
+                DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects, jsonDirectory);
+
+                updateMessage("Performing database fix 5/5, please wait...");
                 DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(realDatabasePath, bankSupport.get());
 
                 updateMessage("Done fixing database, " + remainingErrors.size() + " error(s) remaining.");

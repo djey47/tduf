@@ -168,7 +168,7 @@ public class MainStageController extends AbstractGuiController {
         });
         databaseFixer.stateProperty().addListener((observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
-                final Set<IntegrityError> remainingErrors = databaseChecker.getValue();
+                final Set<IntegrityError> remainingErrors = databaseFixer.getValue();
                 if (remainingErrors.isEmpty()) {
                     CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIX_DB, DisplayConstants.MESSAGE_DB_FIX_OK, DisplayConstants.MESSAGE_DB_ZERO_ERROR);
                 } else {
@@ -250,10 +250,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void fixDatabase(Set<IntegrityError> integrityErrors) {
-        if (runningServiceProperty.get()) {
-            return;
-        }
-
+        // Do not check for service here, as checker may still be in running state.
         statusLabel.textProperty().bind(databaseFixer.messageProperty());
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
