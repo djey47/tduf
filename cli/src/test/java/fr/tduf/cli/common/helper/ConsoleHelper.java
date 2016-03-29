@@ -32,12 +32,11 @@ public class ConsoleHelper {
     /**
      * Redirects standard and error outputs to System.out or System.err file descriptors
      */
-    // TODO rename
-    public static void restoreStandardOutput() {
+    public static void restoreOutput() {
         PrintStream standardSystemOutput = new PrintStream(new FileOutputStream(FileDescriptor.out));
         System.setOut(standardSystemOutput);
-        PrintStream errordSystemOutput = new PrintStream(new FileOutputStream(FileDescriptor.err));
-        System.setOut(errordSystemOutput);
+        PrintStream errorSystemOutput = new PrintStream(new FileOutputStream(FileDescriptor.err));
+        System.setErr(errorSystemOutput);
 
         System.out.println("All cleared! System output is redirected to console again :)");
     }

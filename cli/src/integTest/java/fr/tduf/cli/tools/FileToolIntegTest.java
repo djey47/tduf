@@ -71,7 +71,7 @@ public class FileToolIntegTest {
 
     @After
     public void tearDown() {
-        ConsoleHelper.restoreStandardOutput();
+        ConsoleHelper.restoreOutput();
     }
 
     @Test

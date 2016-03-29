@@ -23,7 +23,7 @@ public class GenericToolTest {
 
     @After
     public void tearDown() {
-        ConsoleHelper.restoreStandardOutput();
+        ConsoleHelper.restoreOutput();
     }
 
     @Test

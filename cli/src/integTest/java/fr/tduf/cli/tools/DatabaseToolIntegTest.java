@@ -90,7 +90,7 @@ public class DatabaseToolIntegTest {
     public void tearDown() {
         BulkDatabaseMiner.clearAllCaches();
 
-        ConsoleHelper.restoreStandardOutput();
+        ConsoleHelper.restoreOutput();
     }
 
     @Test
