@@ -33,6 +33,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
     /**
      * Execute provided patch onto current database
+     *
      * @return effective properties.
      */
     public PatchProperties apply(DbPatchDto patchObject) {
@@ -49,6 +50,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
     /**
      * Execute provided patch onto current database, taking properties into account.
+     *
      * @return effective properties.
      */
     public PatchProperties applyWithProperties(DbPatchDto patchObject, PatchProperties patchProperties) {
@@ -180,7 +182,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         AtomicInteger fieldRank = new AtomicInteger(1);
         List<DbFieldValueDto> fullCriteria = changeObject.getValues().stream()
 
-                .map( (rawValue) -> DbFieldValueDto.fromCouple(fieldRank.getAndIncrement(), rawValue))
+                .map((rawValue) -> DbFieldValueDto.fromCouple(fieldRank.getAndIncrement(), rawValue))
 
                 .collect(toList());
 
@@ -188,13 +190,14 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     }
 
     private void addOrUpdateEntryWithFullChanges(Optional<DbDataDto.Entry> existingEntry, DbDto topicObject, DbPatchDto.DbChangeDto changeObject) {
-        List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject, changeObject.getValues());
+        if (existingEntry.isPresent() && changeObject.isStrictMode()) {
+            return;
+        }
 
+        List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject, changeObject.getValues());
         if (existingEntry.isPresent()) {
 
-            if (!changeObject.isStrictMode()) {
-                existingEntry.get().replaceItems(modifiedItems);
-            }
+            existingEntry.get().replaceItems(modifiedItems);
 
         } else {
 
@@ -291,7 +294,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     private static List<DbDataDto.Item> createEntryItemsWithPartialValues(DbStructureDto structureObject, DbDataDto.Entry existingEntry, List<DbFieldValueDto> partialValues) {
         return existingEntry.getItems().stream()
 
-                .map( (item) -> {
+                .map((item) -> {
 
                     Optional<DbFieldValueDto> partialValue = partialValues.stream()
 
