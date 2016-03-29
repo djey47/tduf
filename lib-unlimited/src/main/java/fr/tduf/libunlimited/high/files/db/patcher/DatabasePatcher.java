@@ -16,7 +16,6 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.DirectionEnum.UP;
@@ -250,20 +249,16 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     private void addOrUpdateResources(DbPatchDto.DbChangeDto changeObject) {
         String ref = changeObject.getRef();
         DbDto.Topic topic = changeObject.getTopic();
-        String value = changeObject.getValue();
-        Optional<DbResourceDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
 
-        AtomicBoolean existingResource = new AtomicBoolean(true);
-        DbResourceDto.Entry resourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(topic, ref)
-                .orElseGet(() -> {
-                    existingResource.set(false);
-                    return databaseMiner.getResourceEnhancedFromTopic(topic).get().addEntryByReference(ref);
-                });
-
-        if(existingResource.get() && changeObject.isStrictMode()) {
+        final Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(topic, ref);
+        if (potentialResourceEntry.isPresent() && changeObject.isStrictMode()) {
             return;
         }
 
+        DbResourceDto.Entry resourceEntry = potentialResourceEntry
+                .orElseGet(() -> databaseMiner.getResourceEnhancedFromTopic(topic).get().addEntryByReference(ref));
+        String value = changeObject.getValue();
+        Optional<DbResourceDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
         if (potentialLocale.isPresent()) {
 
             resourceEntry.setValueForLocale(value, potentialLocale.get());
