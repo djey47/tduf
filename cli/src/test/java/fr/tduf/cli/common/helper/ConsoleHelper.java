@@ -19,13 +19,27 @@ public class ConsoleHelper {
     }
 
     /**
-     * Redirects standard output to System.out file descriptor
+     * Redirects error output to an output stream for use of printed data
      */
+    public static OutputStream hijackErrorOutput() {
+        System.out.println("WARNING! System error output is redirected to print stream for testing's sake :)");
+
+        OutputStream errContents = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(errContents));
+        return errContents;
+    }
+
+    /**
+     * Redirects standard and error outputs to System.out or System.err file descriptors
+     */
+    // TODO rename
     public static void restoreStandardOutput() {
         PrintStream standardSystemOutput = new PrintStream(new FileOutputStream(FileDescriptor.out));
         System.setOut(standardSystemOutput);
+        PrintStream errordSystemOutput = new PrintStream(new FileOutputStream(FileDescriptor.err));
+        System.setOut(errordSystemOutput);
 
-        System.out.println("All cleared! System standard output is redirected to console again :)");
+        System.out.println("All cleared! System output is redirected to console again :)");
     }
 
     /**
