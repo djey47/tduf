@@ -113,9 +113,9 @@ public class GenericToolTest {
     @Test
     public void doMain_whenFailCommand_andNormalizedOutputMode_shouldWriteProperErrorJsonToConsole() throws IOException {
         // GIVEN
-        final OutputStream outContents = ConsoleHelper.hijackStandardOutput();
+        final OutputStream errContents = ConsoleHelper.hijackErrorOutput();
         exitRule.expectSystemExitWithStatus(1);
-        exitRule.checkAssertionAfterwards(() -> AssertionsHelper.assertOutputStreamContainsSequence(outContents, "{", "errorMessage", "Exception", "stackTrace", "}"));
+        exitRule.checkAssertionAfterwards(() -> AssertionsHelper.assertOutputStreamContainsSequence(errContents, "{", "errorMessage", "Exception", "stackTrace", "}"));
 
         // WHEN-THEN
         testingTool.doMain(new String[]{"test_fail", "-n", "-p", ""});

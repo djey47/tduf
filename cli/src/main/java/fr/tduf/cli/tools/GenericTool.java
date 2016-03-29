@@ -55,6 +55,7 @@ public abstract class GenericTool {
             errLine(ExceptionUtils.getStackTrace(e));
 
             processNormalizedErrorOutput(e);
+            processNormalizedOutput();
 
             System.exit(1);
         }
@@ -194,7 +195,7 @@ public abstract class GenericTool {
         }
 
         ErrorOutputDto errorOutputObject = ErrorOutputDto.fromException(exception);
-        System.out.println(jsonWriter.writeValueAsString(errorOutputObject));
+        System.err.println(jsonWriter.writeValueAsString(errorOutputObject));
     }
 
     private void processNormalizedOutput() throws IOException {
