@@ -16,6 +16,7 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.DirectionEnum.UP;
@@ -252,8 +253,16 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         String value = changeObject.getValue();
         Optional<DbResourceDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
 
+        AtomicBoolean existingResource = new AtomicBoolean(true);
         DbResourceDto.Entry resourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(topic, ref)
-                .orElseGet(() -> databaseMiner.getResourceEnhancedFromTopic(topic).get().addEntryByReference(ref));
+                .orElseGet(() -> {
+                    existingResource.set(false);
+                    return databaseMiner.getResourceEnhancedFromTopic(topic).get().addEntryByReference(ref);
+                });
+
+        if(existingResource.get() && changeObject.isStrictMode()) {
+            return;
+        }
 
         if (potentialLocale.isPresent()) {
 

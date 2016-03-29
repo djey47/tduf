@@ -1,0 +1,20 @@
+{
+  "changes": [
+    {
+      "comment": "Replaces Brian -> Brian Molko, thus will do nothing",
+      "type" : "UPDATE_RES",
+      "onlyAdd" : true,
+      "topic" : "BOTS",
+      "ref": "54367256",
+      "value": "Brian Molko"
+    },
+    {
+      "comment": "Adds Cindy for ref 33333333",
+      "type" : "UPDATE_RES",
+      "onlyAdd" : true,
+      "topic" : "BOTS",
+      "ref": "33333333",
+      "value": "Cindy"
+    }
+  ]
+}

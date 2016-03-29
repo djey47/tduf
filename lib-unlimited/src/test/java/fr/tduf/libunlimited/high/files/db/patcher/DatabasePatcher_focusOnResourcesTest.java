@@ -63,6 +63,27 @@ public class DatabasePatcher_focusOnResourcesTest {
     }
 
     @Test
+    public void apply_whenUpdateResourcesPatch_forAllLocales_andStrictMode_shouldOnlyAddEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto updateResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateResources-all-strict.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+
+        // WHEN
+        patcher.apply(updateResourcesPatch);
+
+
+        // THEN
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("54367256", DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE)).contains("Brian");
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", DbDto.Topic.BOTS, DbResourceDto.Locale.FRANCE)).contains("Cindy");
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("54367256", DbDto.Topic.BOTS, DbResourceDto.Locale.ITALY)).contains("Brian");
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", DbDto.Topic.BOTS, DbResourceDto.Locale.ITALY)).contains("Cindy");
+    }
+
+    @Test
     public void apply_whenDeleteResourcesPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteResources.mini.json");
