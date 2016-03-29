@@ -111,6 +111,7 @@ public class DiffPatchesGeneratorTest {
 
         DbPatchDto.DbChangeDto actualChangeObject = actualPatchObject.getChanges().get(0);
         assertThat(actualChangeObject.getType()).isEqualTo(UPDATE);
+        assertThat(actualChangeObject.isStrictMode()).isFalse();
         assertThat(actualChangeObject.getRef()).isEqualTo("1210773243");
         assertThat(actualChangeObject.getValues()).isNull();
         assertThat(actualChangeObject.getTopic()).isEqualTo(CAR_PHYSICS_DATA);
@@ -143,6 +144,7 @@ public class DiffPatchesGeneratorTest {
 
         DbPatchDto.DbChangeDto actualChangeObject = actualPatchObject.getChanges().get(0);
         assertThat(actualChangeObject.getType()).isEqualTo(UPDATE);
+        assertThat(actualChangeObject.isStrictMode()).isFalse();
         assertThat(actualChangeObject.getRef()).isNull();
         assertThat(actualChangeObject.getPartialValues()).isNull();
         assertThat(actualChangeObject.getTopic()).isEqualTo(CAR_RIMS);

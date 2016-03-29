@@ -187,7 +187,7 @@ public class DiffPatchesGenerator {
         return DbPatchDto.DbChangeDto.builder()
                 .forTopic(currentTopic)
                 .withType(UPDATE)
-                .enableStrictMode(true)
+                .enableStrictMode(entryRef != null)
                 .asReference(entryRef)
                 .withEntryValues(entryValues)
                 .build();
