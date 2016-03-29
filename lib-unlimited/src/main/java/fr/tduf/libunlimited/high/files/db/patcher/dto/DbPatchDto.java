@@ -113,6 +113,9 @@ public class DbPatchDto {
         @JsonProperty("type")
         private ChangeTypeEnum type;
 
+        @JsonProperty("onlyAdd")
+        private Boolean strictMode;
+
         @JsonProperty("topic")
         private DbDto.Topic topic;
 
@@ -220,6 +223,11 @@ public class DbPatchDto {
             return partialValues != null;
         }
 
+        @JsonIgnore
+        public boolean isStrictMode() {
+            return (strictMode != null && strictMode);
+        }
+
         public static DbChangeDtoBuilder builder() {
             return new DbChangeDtoBuilder() {
                 private DbResourceDto.Locale locale;
@@ -232,10 +240,17 @@ public class DbPatchDto {
                 private ChangeTypeEnum type;
                 private DirectionEnum moveDirection;
                 private Integer moveSteps;
+                private Boolean strictMode;
 
                 @Override
                 public DbChangeDtoBuilder withType(ChangeTypeEnum type) {
                     this.type = type;
+                    return this;
+                }
+
+                @Override
+                public DbChangeDtoBuilder enableStrictMode(boolean strictMode) {
+                    this.strictMode = strictMode;
                     return this;
                 }
 
@@ -318,6 +333,7 @@ public class DbPatchDto {
                     changeObject.locale = locale;
                     changeObject.direction = moveDirection;
                     changeObject.steps = moveSteps;
+                    changeObject.strictMode = strictMode;
 
                     return changeObject;
                 }
@@ -335,6 +351,8 @@ public class DbPatchDto {
             DbChangeDto build();
 
             DbChangeDtoBuilder withType(ChangeTypeEnum update);
+
+            DbChangeDtoBuilder enableStrictMode(boolean strictMode);
 
             DbChangeDtoBuilder forTopic(DbDto.Topic topic);
 
