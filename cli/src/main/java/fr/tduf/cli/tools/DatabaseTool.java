@@ -281,7 +281,7 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
-    private Map<String, ?> unpackAll(String sourceDatabaseDirectory, String jsonDatabaseDirectory, boolean fixErrors, boolean extensiveCheck) throws IOException, ReflectiveOperationException {
+    private Map<String, ?> unpackAll(String sourceDatabaseDirectory, String jsonDatabaseDirectory, boolean fixErrors, boolean extensiveCheck) throws Exception {
         String sourceDirectory = Paths.get(sourceDatabaseDirectory).toAbsolutePath().toString();
         outLine("-> TDU database directory: " + sourceDirectory);
         outLine("Unpacking TDU database to " + jsonDatabaseDirectory + ", please wait...");
@@ -331,6 +331,11 @@ public class DatabaseTool extends GenericTool {
         resultInfo.put("writtenFiles", writtenFileNames);
         resultInfo.put("missingTopicContents", missingTopicContents);
         resultInfo.put("integrityErrors", integrityErrors);
+
+        if (!integrityErrors.isEmpty()) {
+            commandResult = resultInfo;
+            throw new Exception("Integrity check found errors!");
+        }
 
         return resultInfo;
     }
