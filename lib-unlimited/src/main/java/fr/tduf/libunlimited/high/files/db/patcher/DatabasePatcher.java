@@ -160,7 +160,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
                     } else {
 
-                        addOrUpdateEntryWithFullChanges(potentialEntry, topicObject, changeObject.getValues());
+                        addOrUpdateEntryWithFullChanges(potentialEntry, topicObject, changeObject);
 
                     }
                 });
@@ -187,12 +187,14 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         return databaseMiner.getContentEntriesMatchingCriteria(fullCriteria, changedTopic).stream().findAny();
     }
 
-    private void addOrUpdateEntryWithFullChanges(Optional<DbDataDto.Entry> existingEntry, DbDto topicObject, List<String> allValues) {
-        List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject, allValues);
+    private void addOrUpdateEntryWithFullChanges(Optional<DbDataDto.Entry> existingEntry, DbDto topicObject, DbPatchDto.DbChangeDto changeObject) {
+        List<DbDataDto.Item> modifiedItems = createEntryItemsWithValues(topicObject, changeObject.getValues());
 
         if (existingEntry.isPresent()) {
 
-            existingEntry.get().replaceItems(modifiedItems);
+            if (!changeObject.isStrictMode()) {
+                existingEntry.get().replaceItems(modifiedItems);
+            }
 
         } else {
 

@@ -170,6 +170,41 @@ public class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
+    public void apply_whenUpdateContentsPatch_forAllFields_withRefSupport_andStrictMode_shouldOnlyAddNewEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-ref-strict.mini.json");
+        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
+        int previousEntryCount = topicEntries.size();
+
+
+        // WHEN
+        patcher.apply(updateContentsPatch);
+
+
+        // THEN
+        int actualEntryCount = topicEntries.size();
+        int actualEntryIndex = actualEntryCount - 1;
+        assertThat(actualEntryCount).isEqualTo(previousEntryCount + 1);
+
+        DbDataDto.Entry actualCreatedEntry = topicEntries.get(actualEntryIndex);
+        assertThat(actualCreatedEntry.getId()).isEqualTo(actualEntryIndex);
+
+        assertThat(actualCreatedEntry.getItems()).hasSize(103);
+        assertThat(actualCreatedEntry.getItems().get(0).getRawValue()).isEqualTo("1221657049");
+
+        DbDataDto.Entry actualUpdatedEntry = databaseMiner.getContentEntryFromTopicWithReference("606298799", CAR_PHYSICS_DATA).get();
+        assertThat(actualUpdatedEntry.getId()).isEqualTo(0);
+
+        assertThat(actualUpdatedEntry.getItems()).hasSize(103);
+        assertThat(actualUpdatedEntry.getItems().get(1).getRawValue()).isEqualTo("735");
+    }
+
+    @Test
     public void apply_whenUpdateContentsPatch_withAssociationEntries_shouldCreateThem() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-assoc.mini.json");
