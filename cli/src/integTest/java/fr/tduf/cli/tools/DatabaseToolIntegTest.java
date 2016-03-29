@@ -37,9 +37,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.GERMANY;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.util.Collections.singletonList;
@@ -113,6 +115,11 @@ public class DatabaseToolIntegTest {
         BulkDatabaseMiner miner = BulkDatabaseMiner.load(actualDatabaseObjects);
         assertCarPhysicsEntryWithRefHasFieldValue("632098801", 103, "8900", "bitfield patched to 8900", miner);
         assertCarPhysicsEntryWithRefHasFieldValue("70033960", 103, "8901", "bitfield patched to 8901", miner);
+        assertResourceWithRefHasValue(BOTS, "33333333", FRANCE, "Cindy", "new resource created", miner);
+        assertResourceWithRefHasValue(BOTS, "58867256", GERMANY, "Gordon Freeman", "existing resource updated", miner);
+
+        // THEN: resource must not be updated in strict mode
+        assertResourceWithRefHasValue(BOTS, "54367256", FRANCE, "Brian", "existing resource not updated in strict mode", miner);
 
         // WHEN: genPatch from patched database
         System.out.println("-> GenPatch!");
@@ -152,8 +159,8 @@ public class DatabaseToolIntegTest {
         assertCarPhysicsEntryWithRefHasFieldValue("000003000", 9, "3000567", "File name set to 3000567 at #9", miner);
         assertCarPhysicsEntryWithRefHasFieldValue("000003000", 10, "000030001", "Default rim set to 000030001 at #10", miner);
         assertCarPhysicsEntryWithRefHasFieldValue("000003000", 102, "3000", "Id car set to 3000 at #102", miner);
-        assertCarPhysicsResourceWithRefHasValue("3000567", UNITED_STATES, "TDUCP_3000", "Created resource value #3000567: TDUCP_3000", miner);
-        assertCarPhysicsResourceWithRefHasValue("3000567", FRANCE, "TDUCP_3000", "Created resource value #3000567: TDUCP_3000", miner);
+        assertResourceWithRefHasValue(CAR_PHYSICS_DATA, "3000567", UNITED_STATES, "TDUCP_3000", "Created resource value #3000567: TDUCP_3000", miner);
+        assertResourceWithRefHasValue(CAR_PHYSICS_DATA, "3000567", FRANCE, "TDUCP_3000", "Created resource value #3000567: TDUCP_3000", miner);
         assertCarPhysicsEntryWithRefHasFieldValue("63518960", 103, "8900", "bitfield patched to 8900", miner);
 
 
@@ -495,8 +502,8 @@ public class DatabaseToolIntegTest {
                         label));
     }
 
-    private static void assertCarPhysicsResourceWithRefHasValue(String ref, DbResourceDto.Locale locale, String expectedValue, String label, BulkDatabaseMiner miner) {
-        Optional<String> potentialValue = miner.getLocalizedResourceValueFromTopicAndReference(ref, CAR_PHYSICS_DATA, locale);
+    private static void assertResourceWithRefHasValue(DbDto.Topic topic, String ref, DbResourceDto.Locale locale, String expectedValue, String label, BulkDatabaseMiner miner) {
+        Optional<String> potentialValue = miner.getLocalizedResourceValueFromTopicAndReference(ref, topic, locale);
 
         assertThat(potentialValue)
                 .contains(expectedValue)

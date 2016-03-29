@@ -56,6 +56,7 @@
     {
       "comment": "Replaces Brian -> Brian Molko",
       "type" : "UPDATE_RES",
+      "onlyAdd" : true,
       "topic" : "BOTS",
       "locale" : "FRANCE",
       "ref": "54367256",
@@ -72,9 +73,17 @@
     {
       "comment": "Replaces Brian -> Brian Molko",
       "type" : "UPDATE_RES",
+      "onlyAdd" : true,
       "topic" : "BOTS",
       "ref": "54367256",
       "value": "Brian Molko"
+    },
+    {
+      "comment": "Replaces Gordon -> Gordon Freeman",
+      "type" : "UPDATE_RES",
+      "topic" : "BOTS",
+      "ref": "58867256",
+      "value": "Gordon Freeman"
     },
     {
       "comment": "Adds Cindy for ref 33333333",
