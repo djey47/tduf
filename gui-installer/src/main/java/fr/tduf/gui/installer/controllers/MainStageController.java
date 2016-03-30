@@ -215,7 +215,6 @@ public class MainStageController extends AbstractGuiController {
                 }
             }
         });
-
     }
 
     private void browseForTduDirectory() {
@@ -248,7 +247,7 @@ public class MainStageController extends AbstractGuiController {
                 .withMainWindow(getWindow())
                 .build();
 
-        GenericStep.starterStep(configuration, null, null)
+        GenericStep.starterStep(configuration, null)
                 .nextStep(GenericStep.StepType.UPDATE_MAGIC_MAP).start();
 
         String magicMapFile = configuration.resolveMagicMapFile();
@@ -349,6 +348,7 @@ public class MainStageController extends AbstractGuiController {
 
         final File patchFile = patchFilePath.toFile();
         DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
+        // TODO check patch properties are present and inform user
         PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
         context.setPatch(patchObject, patchProperties);
 

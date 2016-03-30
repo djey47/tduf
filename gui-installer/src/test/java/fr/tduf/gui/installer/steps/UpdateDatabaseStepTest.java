@@ -52,7 +52,7 @@ public class UpdateDatabaseStepTest {
 
         // WHEN
         final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
-                GenericStep.starterStep(configuration, databaseContext, null)
+                GenericStep.starterStep(configuration, databaseContext)
                         .nextStep(UPDATE_DATABASE));
         updateDatabaseStep.perform();
 

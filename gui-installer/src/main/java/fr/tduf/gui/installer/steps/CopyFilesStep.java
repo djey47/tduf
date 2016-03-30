@@ -30,8 +30,7 @@ public class CopyFilesStep extends GenericStep {
     protected void perform() throws IOException, ReflectiveOperationException {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
-        // TODO check patch properties are present and inform user
-        requireNonNull(getPatchProperties(), "Patch properties are required.");
+        requireNonNull(getDatabaseContext().getPatchProperties(), "Patch properties are required.");
 
         asList(DIRECTORY_3D, DIRECTORY_SOUND, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH, DIRECTORY_RIMS)
                 .forEach((assetsDirectory) -> {
@@ -95,7 +94,7 @@ public class CopyFilesStep extends GenericStep {
 
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(getDatabaseContext().getMiner());
         String assetFileName = assetPath.getFileName().toString();
-        String slotReference = getPatchProperties().getVehicleSlotReference().get();
+        String slotReference = getDatabaseContext().getPatchProperties().getVehicleSlotReference().get();
 
         String targetFileName = null;
         if (DIRECTORY_3D.equals(assetDirectoryName)) {

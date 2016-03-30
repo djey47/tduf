@@ -28,7 +28,7 @@ public class StepsCoordinator extends Service<String> {
                 Log.trace(THIS_CLASS_NAME, "->Starting full install");
 
                 // TODO create database backup to perform rollback is anything fails ?
-                GenericStep.starterStep(configuration.get(), context.get(), null)
+                GenericStep.starterStep(configuration.get(), context.get())
                         .nextStep(UPDATE_DATABASE).start()
                         .nextStep(SAVE_DATABASE).start()
                         .nextStep(COPY_FILES).start()

@@ -45,7 +45,7 @@ public class CopyFilesStepTest {
 
 
         // WHEN
-        GenericStep.starterStep(configuration, databaseContext, patchProperties)
+        GenericStep.starterStep(configuration, databaseContext)
                 .nextStep(COPY_FILES).start();
 
 
@@ -100,7 +100,7 @@ public class CopyFilesStepTest {
 
 
         // WHEN
-        GenericStep.starterStep(configuration, databaseContext, patchProperties)
+        GenericStep.starterStep(configuration, databaseContext)
                 .nextStep(COPY_FILES).start();
 
 

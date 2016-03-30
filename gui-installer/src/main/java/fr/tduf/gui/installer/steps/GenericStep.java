@@ -3,7 +3,6 @@ package fr.tduf.gui.installer.steps;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 
 import java.io.IOException;
 
@@ -21,24 +20,20 @@ public abstract class GenericStep {
 
     private DatabaseContext databaseContext;
 
-    private PatchProperties patchProperties;
-
     protected GenericStep() { }
 
-    private GenericStep(InstallerConfiguration installerConfiguration, DatabaseContext databaseContext, PatchProperties patchProperties) {
+    private GenericStep(InstallerConfiguration installerConfiguration, DatabaseContext databaseContext) {
         this.installerConfiguration = installerConfiguration;
         this.databaseContext = databaseContext;
-        this.patchProperties = patchProperties;
     }
 
     /**
      * @param installerConfiguration    : optional configuration
      * @param databaseContext           : optional context
-     * @param patchProperties           : optional patch properties
      * @return a reference of step to begin process
      */
-    public static GenericStep starterStep(InstallerConfiguration installerConfiguration, DatabaseContext databaseContext, PatchProperties patchProperties) {
-        return new GenericStep(installerConfiguration, databaseContext, patchProperties ) {
+    public static GenericStep starterStep(InstallerConfiguration installerConfiguration, DatabaseContext databaseContext) {
+        return new GenericStep(installerConfiguration, databaseContext) {
             @Override
             protected void perform() throws IOException, ReflectiveOperationException {}
         };
@@ -102,7 +97,6 @@ public abstract class GenericStep {
 
         newStep.setDatabaseContext(databaseContext);
         newStep.setInstallerConfiguration(installerConfiguration);
-        newStep.setPatchProperties(patchProperties);
     }
 
     protected DatabaseContext getDatabaseContext() {
@@ -119,14 +113,6 @@ public abstract class GenericStep {
 
     protected void setInstallerConfiguration(InstallerConfiguration installerConfiguration) {
         this.installerConfiguration = installerConfiguration;
-    }
-
-    protected PatchProperties getPatchProperties() {
-        return patchProperties;
-    }
-
-    protected void setPatchProperties(PatchProperties patchProperties) {
-        this.patchProperties = patchProperties;
     }
 
     private String getClassName() {
