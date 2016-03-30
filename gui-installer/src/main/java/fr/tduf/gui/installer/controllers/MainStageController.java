@@ -10,14 +10,15 @@ import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.services.DatabaseChecker;
 import fr.tduf.gui.installer.services.DatabaseFixer;
+import fr.tduf.gui.installer.services.StepsCoordinator;
 import fr.tduf.gui.installer.stages.DatabaseCheckStageDesigner;
 import fr.tduf.gui.installer.steps.GenericStep;
-import fr.tduf.gui.installer.steps.StepsCoordinator;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.concurrent.Service;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -39,8 +40,7 @@ import java.util.Set;
 
 import static javafx.beans.binding.Bindings.when;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
-import static javafx.scene.control.Alert.AlertType.INFORMATION;
-import static javafx.scene.control.Alert.AlertType.WARNING;
+import static javafx.scene.control.Alert.AlertType.*;
 
 /**
  * Makes it a possible to intercept all GUI events.
@@ -53,6 +53,7 @@ public class MainStageController extends AbstractGuiController {
     private BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
     private DatabaseChecker databaseChecker = new DatabaseChecker();
     private DatabaseFixer databaseFixer = new DatabaseFixer();
+    private StepsCoordinator stepsCoordinator = new StepsCoordinator();
 
     @FXML
     private TextArea readmeTextArea;
@@ -65,7 +66,10 @@ public class MainStageController extends AbstractGuiController {
 
     @Override
     public void init() throws IOException {
-        runningServiceProperty.bind(databaseChecker.runningProperty().or(databaseFixer.runningProperty()));
+        runningServiceProperty.bind(
+                databaseChecker.runningProperty()
+                .or(databaseFixer.runningProperty())
+                .or(stepsCoordinator.runningProperty()));
         mouseCursorProperty().bind(
                 when(runningServiceProperty)
                         .then(Cursor.WAIT)
@@ -176,6 +180,14 @@ public class MainStageController extends AbstractGuiController {
                 }
             }
         });
+        stepsCoordinator.stateProperty().addListener((observable, oldValue, newValue) -> {
+            // TODO handle Cancelled state ?
+            if (SUCCEEDED == newValue) {
+                CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "");
+            } else if (Service.State.FAILED == newValue) {
+                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED, "");
+            }
+        });
     }
 
     private void browseForTduDirectory() {
@@ -276,8 +288,9 @@ public class MainStageController extends AbstractGuiController {
                 .withMainWindow(getWindow())
                 .build();
 
-        StepsCoordinator.install(configuration);
-        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "");
+        stepsCoordinator.configurationProperty().setValue(configuration);
+
+        stepsCoordinator.restart();
     }
 
     private static DatabaseCheckStageController initDatabaseCheckStageController(Window mainWindow) throws IOException {

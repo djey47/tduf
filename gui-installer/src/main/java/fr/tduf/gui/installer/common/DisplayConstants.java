@@ -17,6 +17,7 @@ public class DisplayConstants {
     public static final String LABEL_SEARCH_SLOT = "With REF?";
 
     public static final String MESSAGE_INSTALLED = "All install tasks went succesfully!";
+    public static final String MESSAGE_NOT_INSTALLED = "An issue occured while installing!";
     public static final String MESSAGE_UPDATED_MAP = "Magic map was updated to take new files into account:";
     public static final String MESSAGE_DELETED_CACHE = "Database cache directory was deleted succesfully:";
     public static final String MESSAGE_DB_CHECK_OK = "Database was checked succesfully.";
