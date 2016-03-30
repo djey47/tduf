@@ -8,5 +8,6 @@ public class FxConstants {
     public static final String PATH_RESOURCE_BROWSE_SLOTS_STAGE_DESIGNER = "/designer/BrowseSlotsDesigner.fxml";
     public static final String PATH_RESOURCE_DB_CHECK_STAGE_DESIGNER = "/designer/DatabaseCheckDesigner.fxml";
 
-    public static final String PATH_RESOURCE_CSS_PANES = "/css/DatabaseCheck.css";
+    public static final String PATH_RESOURCE_CSS_CHECK = "/css/DatabaseCheck.css";
+    public static final String PATH_RESOURCE_CSS_MAIN = "/css/Main.css";
 }

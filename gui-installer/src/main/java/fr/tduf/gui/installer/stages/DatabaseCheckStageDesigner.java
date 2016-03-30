@@ -26,8 +26,7 @@ public class DatabaseCheckStageDesigner {
         FXMLLoader loader = new FXMLLoader(thisClass.getResource(FxConstants.PATH_RESOURCE_DB_CHECK_STAGE_DESIGNER));
         Parent root = loader.load();
 
-        String styledPanesCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_PANES).toExternalForm();
-
+        String styledPanesCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_CHECK).toExternalForm();
 
         stage.setScene(new Scene(root, 700, 700));
         stage.setTitle(DisplayConstants.TITLE_APPLICATION);

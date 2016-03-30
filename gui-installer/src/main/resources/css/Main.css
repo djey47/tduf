@@ -1,0 +1,7 @@
+.mainToolBar {
+    -fx-base: dodgerBlue;
+}
+
+.statusBar {
+    -fx-base: black;
+}
