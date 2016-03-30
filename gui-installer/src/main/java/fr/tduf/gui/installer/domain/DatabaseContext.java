@@ -50,7 +50,7 @@ public class DatabaseContext {
     }
 
     public void setPatch(DbPatchDto patchObject, PatchProperties patchProperties) {
-        this.patchObject = patchObject;
-        this.patchProperties = patchProperties;
+        this.patchObject = requireNonNull(patchObject, "A patch object is required.");
+        this.patchProperties = requireNonNull(patchProperties, "Patch properties are required");
     }
 }

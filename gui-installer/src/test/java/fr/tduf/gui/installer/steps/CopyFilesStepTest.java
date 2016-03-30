@@ -5,6 +5,7 @@ import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,6 +43,7 @@ public class CopyFilesStepTest {
         DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("606298799"); // AC427 (car)
+        databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
 
 
         // WHEN
@@ -97,6 +99,7 @@ public class CopyFilesStepTest {
         DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("1208897332"); // Triumph Daytona (bike)
+        databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
 
 
         // WHEN
