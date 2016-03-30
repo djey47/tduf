@@ -34,6 +34,7 @@ import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 public class SlotsBrowserStageController extends AbstractGuiController {
+    // TODO Close button should cancel process
 
     private static final String THIS_CLASS_NAME = SlotsBrowserStageController.class.getSimpleName();
 
