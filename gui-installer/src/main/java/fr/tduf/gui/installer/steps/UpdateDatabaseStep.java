@@ -41,22 +41,23 @@ public class UpdateDatabaseStep extends GenericStep {
 
     private void applyPerformancePackage(List<DbDto> topicObjects, String slotRef) throws ReflectiveOperationException, IOException {
         Path assetPath = Paths.get(getInstallerConfiguration().getAssetsDirectory(), InstallerConstants.DIRECTORY_DATABASE);
-        final Optional<Path> patchFilePath = Files.walk(assetPath, 1)
+        final Optional<Path> ppFilePath = Files.walk(assetPath, 1)
 
                 .filter((path) -> isRegularFile(path))
 
+                // TODO create extension constant
                 .filter((path) -> "tdupk".equalsIgnoreCase(getFileExtension(path.toString())))
 
                 .findFirst();
-        if (!patchFilePath.isPresent()) {
 
+        if (!ppFilePath.isPresent()) {
+            Log.info(THIS_CLASS_NAME, "->No TDUF performance package to apply");
+            return;
         }
 
         final TdupeGateway tdupeGateway = AbstractDatabaseHolder.prepare(TdupeGateway.class, topicObjects);
 
-        Log.info(THIS_CLASS_NAME, "->Applying TDUF performance package...");
-        String performancePackFile = "";
-        tdupeGateway.applyPerformancePackToEntryWithReference(Optional.of(slotRef), performancePackFile);
-
+        Log.info(THIS_CLASS_NAME, "->Applying TDUPE Performance pack: " + ppFilePath + "...");
+        tdupeGateway.applyPerformancePackToEntryWithReference(Optional.of(slotRef), ppFilePath.toString());
     }
 }

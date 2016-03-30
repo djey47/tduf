@@ -36,13 +36,15 @@ public class UpdateDatabaseStepTest {
         Log.set(Log.LEVEL_DEBUG);
 
         databaseContext = InstallerTestsHelper.createJsonDatabase();
-        databaseContext.setPatch(DbPatchDto.builder().build(), new PatchProperties());
+        PatchProperties patchProperties = new PatchProperties();
+        patchProperties.setVehicleSlotReferenceIfNotExists("REF");
+        databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
 
         tempDirectory = InstallerTestsHelper.createTempDirectory();
     }
 
     @Test
-    public void perform_whenForcedVehicleSlot_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException {
+    public void perform_withourPerformancePack_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException {
         // GIVEN
         String assetsDirectory = new File(thisClass.getResource("/assets-patch-only").toURI()).getAbsolutePath();
         InstallerConfiguration configuration = InstallerConfiguration.builder()
