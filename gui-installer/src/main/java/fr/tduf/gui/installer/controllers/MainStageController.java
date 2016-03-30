@@ -206,8 +206,9 @@ public class MainStageController extends AbstractGuiController {
             if (SUCCEEDED == newState) {
                 try {
                     install(databaseLoader.getValue());
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                    CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED, e.getMessage());
                 }
             }
         });
@@ -351,12 +352,16 @@ public class MainStageController extends AbstractGuiController {
 
                 .findFirst()
 
-                .orElseThrow(() -> new RuntimeException("Patch file not found in " + DIRECTORY_DATABASE + " subdirectory."));
+                .orElseThrow(() -> new IOException("Patch file not found in " + DIRECTORY_DATABASE + " subdirectory."));
 
         final File patchFile = patchFilePath.toFile();
         DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
-        // TODO check patch properties are present and inform user
+
         PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
+        if (patchProperties.isEmpty()) {
+            throw new IOException("Invalid patch properties.");
+        }
+
         context.setPatch(patchObject, patchProperties);
     }
 
