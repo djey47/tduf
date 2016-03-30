@@ -24,7 +24,7 @@ public class TdupePerformancePackConverter {
 
     private static final String REGEX_SEPARATOR_ITEMS = ";";
 
-    private static final Set<Integer> FIELD_RANKS_NON_PHYSICAL = new HashSet<>(asList(1, 3, 4, 9, 10, 12, 100, 101));
+    private static final Set<Integer> FIELD_RANKS_NON_PHYSICAL = new HashSet<>(asList(1, 2, 3, 4, 9, 10, 11, 12, 13, 14, 100, 101, 102, 103));
 
     /**
      * Converts a performance pack line (aka. CarPhysics entry)
@@ -64,6 +64,7 @@ public class TdupePerformancePackConverter {
     }
 
     private static List<String> applyPhysicalChangesToPotentialEntry(List<String> packValues, Optional<DbDataDto.Entry> carPhysicsEntry) {
+        // TODO if entry exists generate partial patch
         if (carPhysicsEntry.isPresent()) {
             return carPhysicsEntry.get().getItems().stream()
 
