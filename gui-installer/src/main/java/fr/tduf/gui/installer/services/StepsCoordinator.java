@@ -27,6 +27,8 @@ public class StepsCoordinator extends Service<String> {
             protected String call() throws Exception {
                 Log.trace(THIS_CLASS_NAME, "->Starting full install");
 
+                updateMessage("Performing install, please wait...");
+
                 // TODO create database backup to perform rollback is anything fails ?
                 GenericStep.starterStep(configuration.get(), context.get())
                         .nextStep(UPDATE_DATABASE).start()
@@ -34,11 +36,14 @@ public class StepsCoordinator extends Service<String> {
                         .nextStep(COPY_FILES).start()
                         .nextStep(UPDATE_MAGIC_MAP).start();
 
+                updateMessage("Done installing.");
+
                 return "";
             }
         };
     }
 
     public ObjectProperty<InstallerConfiguration> configurationProperty() { return configuration; }
+
     public ObjectProperty<DatabaseContext> contextProperty() { return context; }
 }

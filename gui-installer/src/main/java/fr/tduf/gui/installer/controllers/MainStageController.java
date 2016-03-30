@@ -354,6 +354,8 @@ public class MainStageController extends AbstractGuiController {
 
         selectAndDefineVehicleSlot(context);
 
+        statusLabel.textProperty().bind(stepsCoordinator.messageProperty());
+
         stepsCoordinator.configurationProperty().setValue(configuration);
         stepsCoordinator.contextProperty().setValue(context);
 
