@@ -29,7 +29,6 @@ public class StepsCoordinator extends Service<String> {
 
                 // TODO create database backup to perform rollback is anything fails ?
                 GenericStep.starterStep(configuration.get(), context.get(), null)
-//                        .nextStep(LOAD_DATABASE).start()
                         .nextStep(UPDATE_DATABASE).start()
                         .nextStep(SAVE_DATABASE).start()
                         .nextStep(COPY_FILES).start()

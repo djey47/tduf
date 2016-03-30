@@ -14,7 +14,8 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class GenericStep {
 
-    public enum StepType { LOAD_DATABASE, UPDATE_DATABASE, SAVE_DATABASE, UPDATE_MAGIC_MAP, COPY_FILES}
+    // LOAD_DATABASE step is required by interactive processing and as such can't be dealt with orchestrator
+    public enum StepType { UPDATE_DATABASE, SAVE_DATABASE, UPDATE_MAGIC_MAP, COPY_FILES}
 
     private InstallerConfiguration installerConfiguration;
 
@@ -57,9 +58,6 @@ public abstract class GenericStep {
     public GenericStep nextStep(StepType stepType) {
         final GenericStep currentStep;
         switch(stepType) {
-            case LOAD_DATABASE:
-                currentStep = new LoadDatabaseStep();
-                break;
             case UPDATE_DATABASE:
                 currentStep = new UpdateDatabaseStep();
                 break;
