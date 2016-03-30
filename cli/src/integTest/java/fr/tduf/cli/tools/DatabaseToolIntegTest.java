@@ -415,7 +415,7 @@ public class DatabaseToolIntegTest {
         // THEN
         List<DbDto> actualDatabaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(DIRECTORY_JSON_DATABASE);
         BulkDatabaseMiner miner = BulkDatabaseMiner.load(actualDatabaseObjects);
-        assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 2, "77061", "physical contents patched at field rank 2", miner);
+        assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 2, "735", "non-physical contents NOT patched at field rank 2", miner);
         assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 5, "78900265", "physical contents patched at field rank 5", miner);
         assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 6, "1", "physical contents patched at field rank 6", miner);
         assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 7, "43055", "physical contents patched at field rank 7", miner);
