@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.services;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.steps.GenericStep;
 import javafx.beans.property.ObjectProperty;
@@ -17,6 +18,7 @@ public class StepsCoordinator extends Service<String> {
     private static final String THIS_CLASS_NAME = StepsCoordinator.class.getSimpleName();
 
     private ObjectProperty<InstallerConfiguration> configuration = new SimpleObjectProperty<>();
+    private ObjectProperty<DatabaseContext> context = new SimpleObjectProperty<>();
 
     @Override
     protected Task<String> createTask() {
@@ -26,9 +28,10 @@ public class StepsCoordinator extends Service<String> {
                 Log.trace(THIS_CLASS_NAME, "->Starting full install");
 
                 // TODO create database backup to perform rollback is anything fails ?
-                GenericStep.starterStep(configuration.get(), null, null)
-                        .nextStep(LOAD_DATABASE).start()
+                GenericStep.starterStep(configuration.get(), context.get(), null)
+//                        .nextStep(LOAD_DATABASE).start()
                         .nextStep(UPDATE_DATABASE).start()
+                        .nextStep(SAVE_DATABASE).start()
                         .nextStep(COPY_FILES).start()
                         .nextStep(UPDATE_MAGIC_MAP).start();
 
@@ -38,4 +41,5 @@ public class StepsCoordinator extends Service<String> {
     }
 
     public ObjectProperty<InstallerConfiguration> configurationProperty() { return configuration; }
+    public ObjectProperty<DatabaseContext> contextProperty() { return context; }
 }

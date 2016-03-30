@@ -1,6 +1,8 @@
 package fr.tduf.gui.installer.domain;
 
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 
 import java.util.List;
@@ -16,6 +18,10 @@ public class DatabaseContext {
     private final String jsonDatabaseDirectory;
 
     private final BulkDatabaseMiner miner;
+
+    private DbPatchDto patchObject;
+
+    private PatchProperties patchProperties;
 
     public DatabaseContext(List<DbDto> topicObjects, String jsonDatabaseDirectory) {
         this.topicObjects = requireNonNull(topicObjects, "A list of database objects is required.");
@@ -33,5 +39,18 @@ public class DatabaseContext {
 
     public BulkDatabaseMiner getMiner() {
         return miner;
+    }
+
+    public DbPatchDto getPatchObject() {
+        return patchObject;
+    }
+
+    public PatchProperties getPatchProperties() {
+        return patchProperties;
+    }
+
+    public void setPatch(DbPatchDto patchObject, PatchProperties patchProperties) {
+        this.patchObject = patchObject;
+        this.patchProperties = patchProperties;
     }
 }

@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.services;
 
+import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -17,15 +18,15 @@ import java.util.List;
 /**
  * Background service to load TDU database from banks directory.
  */
-public class DatabaseLoader extends Service<List<DbDto>> {
+public class DatabaseLoader extends Service<DatabaseContext> {
     private StringProperty databaseLocation = new SimpleStringProperty();
     private ObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
 
     @Override
-    protected Task<List<DbDto>> createTask() {
-        return new Task<List<DbDto>>() {
+    protected Task<DatabaseContext> createTask() {
+        return new Task<DatabaseContext>() {
             @Override
-            protected List<DbDto> call() throws Exception {
+            protected DatabaseContext call() throws Exception {
 
                 updateMessage("Performing database load 1/2, please wait...");
                 String jsonDirectory = DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(Paths.get(databaseLocation.get()), bankSupport.get());
@@ -35,7 +36,7 @@ public class DatabaseLoader extends Service<List<DbDto>> {
 
                 updateMessage("Done loading database.");
 
-                return databaseObjects;
+                return new DatabaseContext(databaseObjects, jsonDirectory);
             }
         };
     }
