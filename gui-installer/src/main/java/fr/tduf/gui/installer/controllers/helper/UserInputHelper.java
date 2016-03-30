@@ -25,7 +25,7 @@ public class UserInputHelper {
     /**
      * Invokes slot dialog to select one to perform install. Updates provided context with selection.
      */
-    public static void selectAndDefineVehicleSlot(DatabaseContext context, Window parentWindow) throws IOException {
+    public static void selectAndDefineVehicleSlot(DatabaseContext context, Window parentWindow) throws Exception {
         requireNonNull(context, "Database context is required.");
         requireNonNull(context.getPatchProperties(), "Patch properties are required.");
 
@@ -39,9 +39,6 @@ public class UserInputHelper {
 
         SlotsBrowserStageController slotsBrowserController = initSlotsBrowserController(parentWindow);
         Optional<VehicleSlotDataItem> selectedItem = slotsBrowserController.initAndShowModalDialog(Optional.empty(), context.getMiner());
-        if (selectedItem == null) {
-            throw new IOException("Aborted by user");
-        }
 
         Log.info(THIS_CLASS_NAME, "->Using vehicle slot: " + selectedItem);
 

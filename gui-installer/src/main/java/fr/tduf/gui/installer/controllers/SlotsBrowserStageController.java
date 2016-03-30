@@ -34,8 +34,6 @@ import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 public class SlotsBrowserStageController extends AbstractGuiController {
-    // TODO Close button should cancel process
-
     private static final String THIS_CLASS_NAME = SlotsBrowserStageController.class.getSimpleName();
 
     @FXML
@@ -57,6 +55,8 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
     private Property<Optional<VehicleSlotDataItem>> selectedSlotProperty;
 
+    private Optional<VehicleSlotDataItem> returnedSlot;
+
     @Override
     public void init() {
         initHeaderPane();
@@ -68,7 +68,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
     private void handleCreateNewSlotHyperlinkAction(ActionEvent actionEvent) {
         Log.trace(THIS_CLASS_NAME, "->handleCreateNewSlotHyperlinkAction");
 
-        selectedSlotProperty.setValue(empty());
+        returnedSlot = empty();
 
         closeWindow();
     }
@@ -94,13 +94,10 @@ public class SlotsBrowserStageController extends AbstractGuiController {
     private void handleOkButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleOkButtonAction");
 
-        if (slotRefTextField.textProperty().getValue().isEmpty()) {
-            return;
-        }
+        returnedSlot = selectedSlotProperty.getValue();
 
         closeWindow();
     }
-
 
     /**
      * Creates and display dialog.
@@ -109,7 +106,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
      * @param miner                  : instance of database miner to parse contents
      * @return selected item, if any.
      */
-    public Optional<VehicleSlotDataItem> initAndShowModalDialog(Optional<String> potentialSlotReference, BulkDatabaseMiner miner) {
+    public Optional<VehicleSlotDataItem> initAndShowModalDialog(Optional<String> potentialSlotReference, BulkDatabaseMiner miner) throws Exception {
         this.miner = requireNonNull(miner, "Database miner instance is required.");
 
         vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
@@ -124,7 +121,11 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
         showModalWindow();
 
-        return selectedSlotProperty.getValue();
+        if (returnedSlot == null) {
+            throw new Exception("Aborted by user.");
+        }
+
+        return returnedSlot;
     }
 
     private void initHeaderPane() {

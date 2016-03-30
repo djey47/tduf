@@ -322,7 +322,7 @@ public class MainStageController extends AbstractGuiController {
         databaseLoader.restart();
     }
 
-    private void install(DatabaseContext context) throws IOException {
+    private void install(DatabaseContext context) throws Exception {
         // Do not check for service here, as loader may still be in running state.
         requireNonNull(context, "Database context is required. Please load database first.");
 
