@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class GenericStep {
 
-    public enum StepType { LOAD_DATABASE, UPDATE_DATABASE, UPDATE_MAGIC_MAP, COPY_FILES}
+    public enum StepType { LOAD_DATABASE, UPDATE_DATABASE, SAVE_DATABASE, UPDATE_MAGIC_MAP, COPY_FILES}
 
     private InstallerConfiguration installerConfiguration;
 
@@ -62,6 +62,9 @@ public abstract class GenericStep {
                 break;
             case UPDATE_DATABASE:
                 currentStep = new UpdateDatabaseStep();
+                break;
+            case SAVE_DATABASE:
+                currentStep = new SaveDatabaseStep();
                 break;
             case COPY_FILES:
                 currentStep = new CopyFilesStep();
