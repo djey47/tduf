@@ -12,8 +12,6 @@ public class InstallerConstants {
     public static final String DIRECTORY_DATABASE = "DATABASE";
     public static final String DIRECTORY_GAUGES_LOW = "GAUGES/LOW";
     public static final String DIRECTORY_GAUGES_HIGH = "GAUGES/HI";
-    public static final String DIRECTORY_HIRES = "HI";
-    public static final String DIRECTORY_LOWRES = "LOW";
     public static final String DIRECTORY_RIMS = "3D/RIMS";
     public static final String DIRECTORY_SOUND = "SOUND";
 
