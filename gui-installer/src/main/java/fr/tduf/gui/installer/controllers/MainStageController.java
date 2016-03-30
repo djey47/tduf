@@ -99,7 +99,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleUpdateMagicMapMenuItemAction(ActionEvent actionEvent) throws IOException, ReflectiveOperationException {
+    public void handleUpdateMagicMapMenuItemAction(ActionEvent actionEvent) throws Exception {
         Log.trace(THIS_CLASS_NAME, "->handleUpdateMagicMapMenuItemAction");
 
         if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
@@ -165,6 +165,7 @@ public class MainStageController extends AbstractGuiController {
 
     private void initServiceListeners() {
         databaseChecker.stateProperty().addListener((observableValue, oldState, newState) -> {
+            // TODO Handle FAILED state
             if (SUCCEEDED == newState) {
                 final Set<IntegrityError> integrityErrors = databaseChecker.getValue();
                 if (integrityErrors.isEmpty()) {
@@ -184,6 +185,7 @@ public class MainStageController extends AbstractGuiController {
             }
         });
         databaseFixer.stateProperty().addListener((observableValue, oldState, newState) -> {
+            // TODO Handle FAILED state
             if (SUCCEEDED == newState) {
                 final Set<IntegrityError> remainingErrors = databaseFixer.getValue();
                 if (remainingErrors.isEmpty()) {
@@ -234,7 +236,7 @@ public class MainStageController extends AbstractGuiController {
         }
     }
 
-    private void updateMagicMap() throws IOException, ReflectiveOperationException {
+    private void updateMagicMap() throws Exception {
         if (runningServiceProperty.get()) {
             return;
         }

@@ -27,7 +27,7 @@ public class UpdateMagicMapStepTest {
     }
 
     @Test
-    public void updateMagicMapStep_whenMapFilesExists_andNewFiles_shouldUpdateMap() throws IOException, ReflectiveOperationException {
+    public void updateMagicMapStep_whenMapFilesExists_andNewFiles_shouldUpdateMap() throws Exception {
         // GIVEN
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)

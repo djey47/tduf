@@ -77,14 +77,14 @@ public abstract class GenericStep {
     /**
      * Triggers current step.
      */
-    public GenericStep start() {
+    public GenericStep start() throws Exception {
         Log.trace(getClassName(), "->Entering step");
 
-        // TODO handle exceptions
         try {
             perform();
         } catch (IOException | ReflectiveOperationException e) {
             e.printStackTrace();
+            throw new Exception("Current step could not be performed.", e);
         }
 
         Log.trace(getClassName(), "->Exiting step");
