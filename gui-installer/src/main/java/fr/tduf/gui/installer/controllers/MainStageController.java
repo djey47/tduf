@@ -150,7 +150,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        loadDatabase();
+        loadDatabaseAndStartInstall();
     }
 
     private void initReadme() throws IOException {
@@ -304,7 +304,7 @@ public class MainStageController extends AbstractGuiController {
         databaseFixer.restart();
     }
 
-    private void loadDatabase() throws IOException, ReflectiveOperationException {
+    private void loadDatabaseAndStartInstall() throws IOException, ReflectiveOperationException {
         if (runningServiceProperty.get()) {
             return;
         }
@@ -325,7 +325,6 @@ public class MainStageController extends AbstractGuiController {
 
     private void install(DatabaseContext context) throws IOException {
         // Do not check for service here, as loader may still be in running state.
-
         requireNonNull(context, "Database context is required. Please load database first.");
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
@@ -334,7 +333,19 @@ public class MainStageController extends AbstractGuiController {
                 .withMainWindow(getWindow())
                 .build();
 
-        // Load current patch with properties
+        loadCurrentPatch(configuration, context);
+
+        selectAndDefineVehicleSlot(context);
+
+        statusLabel.textProperty().bind(stepsCoordinator.messageProperty());
+
+        stepsCoordinator.configurationProperty().setValue(configuration);
+        stepsCoordinator.contextProperty().setValue(context);
+
+        stepsCoordinator.restart();
+    }
+
+    private void loadCurrentPatch(InstallerConfiguration configuration, DatabaseContext context) throws IOException {
         Path patchPath = Paths.get(configuration.getAssetsDirectory(), DIRECTORY_DATABASE);
         final Path patchFilePath = Files.walk(patchPath, 1)
 
@@ -351,15 +362,6 @@ public class MainStageController extends AbstractGuiController {
         // TODO check patch properties are present and inform user
         PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
         context.setPatch(patchObject, patchProperties);
-
-        selectAndDefineVehicleSlot(context);
-
-        statusLabel.textProperty().bind(stepsCoordinator.messageProperty());
-
-        stepsCoordinator.configurationProperty().setValue(configuration);
-        stepsCoordinator.contextProperty().setValue(context);
-
-        stepsCoordinator.restart();
     }
 
     private void selectAndDefineVehicleSlot(DatabaseContext context) throws IOException {
