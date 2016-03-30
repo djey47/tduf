@@ -24,7 +24,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class CopyFilesStep extends GenericStep {
 
-    private static final String THIS_CLASS_NAME = UpdateMagicMapStep.class.getSimpleName();
+    private static final String THIS_CLASS_NAME = CopyFilesStep.class.getSimpleName();
 
     @Override
     protected void perform() throws IOException, ReflectiveOperationException {
