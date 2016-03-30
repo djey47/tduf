@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.interop.tdupe;
 
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -9,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -52,39 +54,33 @@ public class TdupePerformancePackConverter {
         Optional<DbDataDto.Entry> carPhysicsEntry = BulkDatabaseMiner.load(singletonList(carPhysicsTopicObject))
                 .getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA);
 
-        List<String> itemValues = applyPhysicalChangesToPotentialEntry(packValues, carPhysicsEntry);
-        itemValues.set(0, slotReference);
+        if (carPhysicsEntry.isPresent()) {
+            List<DbFieldValueDto> physicsValues = getPartialChangesFromPack(packValues);
+            return DbPatchDto.DbChangeDto.builder()
+                    .withType(UPDATE)
+                    .forTopic(CAR_PHYSICS_DATA)
+                    .asReference(slotReference)
+                    .withPartialEntryValues(physicsValues)
+                    .build();
+        }
 
+        packValues.set(0, slotReference);
         return DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE)
                 .forTopic(CAR_PHYSICS_DATA)
                 .asReference(slotReference)
-                .withEntryValues(itemValues)
+                .withEntryValues(packValues)
                 .build();
     }
 
-    private static List<String> applyPhysicalChangesToPotentialEntry(List<String> packValues, Optional<DbDataDto.Entry> carPhysicsEntry) {
-        // TODO if entry exists generate partial patch
-        if (carPhysicsEntry.isPresent()) {
-            return carPhysicsEntry.get().getItems().stream()
+    private static List<DbFieldValueDto> getPartialChangesFromPack(List<String> packValues) {
+        AtomicInteger rank = new AtomicInteger(0);
+        return packValues.stream()
 
-                    .map((item) -> getProperRawValue(packValues, item))
+                .filter((packValue) -> !FIELD_RANKS_NON_PHYSICAL.contains(rank.incrementAndGet()))
 
-                    .collect(toList());
-        }
+                .map((physicsValue) -> DbFieldValueDto.fromCouple(rank.get(), physicsValue))
 
-        return packValues;
-    }
-
-    private static String getProperRawValue(List<String> packValues, DbDataDto.Item item) {
-
-        int fieldRank = item.getFieldRank();
-        String rawValue = packValues.get(fieldRank - 1);
-
-        if (FIELD_RANKS_NON_PHYSICAL.contains(fieldRank)) {
-            rawValue = item.getRawValue();
-        }
-
-        return rawValue;
+                .collect(toList());
     }
 }
