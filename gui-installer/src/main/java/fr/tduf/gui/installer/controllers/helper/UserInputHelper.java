@@ -14,6 +14,8 @@ import javafx.stage.Window;
 import java.io.IOException;
 import java.util.Optional;
 
+import static com.google.common.io.Files.getNameWithoutExtension;
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.EXTERIOR_MODEL;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -53,9 +55,13 @@ public class UserInputHelper {
     static void createPatchPropertiesForVehicleSlot(String slotReference, PatchProperties patchProperties, BulkDatabaseMiner miner) {
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
         int selectedCarIdentifier = vehicleSlotsHelper.getVehicleIdentifier(slotReference);
+        String selectedBankName = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, EXTERIOR_MODEL));
+        String selectedResourceBankName = vehicleSlotsHelper.getCarFileNameReference(slotReference);
 
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
         patchProperties.setCarIdentifierIfNotExists(Integer.valueOf(selectedCarIdentifier).toString());
+        patchProperties.setBankNameIfNotExists(selectedBankName);
+        patchProperties.setResourceBankNameIfNotExists(selectedResourceBankName);
     }
 
     private static SlotsBrowserStageController initSlotsBrowserController(Window mainWindow) throws IOException {
