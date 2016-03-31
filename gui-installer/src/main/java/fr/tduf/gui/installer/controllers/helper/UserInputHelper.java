@@ -59,6 +59,7 @@ public class UserInputHelper {
         int selectedCarIdentifier = vehicleSlotsHelper.getVehicleIdentifier(slotReference);
         String selectedBankName = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, EXTERIOR_MODEL));
         String selectedResourceBankName = vehicleSlotsHelper.getCarFileNameReference(slotReference);
+        String selectedRimReference = vehicleSlotsHelper.getDefaultRimIdentifier(slotReference);
         String selectedFrontRimBank = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, FRONT_RIM));
         String selectedResourceFrontRimBankName = vehicleSlotsHelper.getDefaultRimFileNameReference(slotReference, FRONT_RIM);
         String selectedRearRimBank = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, REAR_RIM));
@@ -69,12 +70,11 @@ public class UserInputHelper {
         patchProperties.setBankNameIfNotExists(selectedBankName);
         patchProperties.setResourceBankNameIfNotExists(selectedResourceBankName);
 
+        patchProperties.setRimsSlotReferenceIfNotExists(selectedRimReference, 1);
         patchProperties.setFrontRimBankNameIfNotExists(selectedFrontRimBank, 1);
         patchProperties.setResourceFrontRimBankIfNotExists(selectedResourceFrontRimBankName, 1);
         patchProperties.setRearRimBankNameIfNotExists(selectedRearRimBank, 1);
         patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, 1);
-
-        // TODO Use TDUCP rim ref
     }
 
     private static SlotsBrowserStageController initSlotsBrowserController(Window mainWindow) throws IOException {
