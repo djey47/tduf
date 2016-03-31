@@ -27,6 +27,8 @@ import static java.util.stream.Collectors.toList;
 // TODO Provide single method to load vehicle data into a domain object (VehicleSlot) and use it
 public class VehicleSlotsHelper {
 
+    public static final int DEFAULT_VEHICLE_ID = 0;
+
     private static final DbResourceDto.Locale DEFAULT_LOCALE = UNITED_STATES;
 
     private final BulkDatabaseMiner miner;
@@ -138,7 +140,7 @@ public class VehicleSlotsHelper {
 
                 .map(Integer::valueOf)
 
-                .orElse(0);
+                .orElse(DEFAULT_VEHICLE_ID);
     }
 
     /**
