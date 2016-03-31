@@ -65,6 +65,7 @@ public class UserInputHelper {
         String selectedBankName = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, EXTERIOR_MODEL));
         String selectedResourceBankName = vehicleSlotsHelper.getCarFileNameReference(slotReference);
         String selectedRimReference = vehicleSlotsHelper.getDefaultRimIdentifier(slotReference);
+        String selectedResourceRimBrandReference = vehicleSlotsHelper.getDefaultRimDirectoryResource(slotReference);
         String selectedFrontRimBank = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, FRONT_RIM));
         String selectedResourceFrontRimBankName = vehicleSlotsHelper.getDefaultRimFileNameReference(slotReference, FRONT_RIM);
         String selectedRearRimBank = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, REAR_RIM));
@@ -82,12 +83,11 @@ public class UserInputHelper {
         patchProperties.setResourceBankNameIfNotExists(selectedResourceBankName);
 
         patchProperties.setRimsSlotReferenceIfNotExists(selectedRimReference, 1);
+        patchProperties.setResourceRimsBrandIfNotExists(selectedResourceRimBrandReference, 1);
         patchProperties.setFrontRimBankNameIfNotExists(selectedFrontRimBank, 1);
         patchProperties.setResourceFrontRimBankIfNotExists(selectedResourceFrontRimBankName, 1);
         patchProperties.setRearRimBankNameIfNotExists(selectedRearRimBank, 1);
         patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, 1);
-
-        // TODO handle rim directory
     }
 
     private static SlotsBrowserStageController initSlotsBrowserController(Window mainWindow) throws IOException {

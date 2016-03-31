@@ -33,6 +33,7 @@ public class UserInputHelperTest {
     private static final String RES_BANKNAME_FR_1 = "3000000010";
     private static final String RES_BANKNAME_RR_1 = "3000000011";
     private static final String RIMREF_1 = "3000000001";
+    private static final String RES_RIMBRAND_1 = "654857";
 
     @Mock
     private BulkDatabaseMiner minerMock;
@@ -75,6 +76,7 @@ public class UserInputHelperTest {
         assertThat(patchProperties.getBankFileName()).contains(BANKNAME);
         assertThat(patchProperties.getBankFileNameResource()).contains(RES_BANKNAME);
         assertThat(patchProperties.getRimSlotReference(1)).contains(RIMREF_1);
+        assertThat(patchProperties.getRimBrandNameResource(1)).contains(RES_RIMBRAND_1);
         assertThat(patchProperties.getFrontRimBankFileName(1)).contains(BANKNAME_FR_1);
         assertThat(patchProperties.getRearRimBankFileName(1)).contains(BANKNAME_RR_1);
         assertThat(patchProperties.getFrontRimBankFileNameResource(1)).contains(RES_BANKNAME_FR_1);
@@ -93,11 +95,13 @@ public class UserInputHelperTest {
         final String rearRimBankName = "A3_V6_R_01";
         final String frontRimResource = "12345568";
         final String rearRimResource = "12345569";
+        final String rimBrandReference = "664857";
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
         patchProperties.setCarIdentifierIfNotExists(carIdentifier);
         patchProperties.setBankNameIfNotExists(bankName);
         patchProperties.setRimsSlotReferenceIfNotExists(rimSlotReference, 1);
+        patchProperties.setResourceRimsBrandIfNotExists(rimBrandReference, 1);
         patchProperties.setResourceBankNameIfNotExists(bankResource);
         patchProperties.setFrontRimBankNameIfNotExists(frontRimBankName, 1);
         patchProperties.setResourceFrontRimBankIfNotExists(frontRimResource, 1);
@@ -113,6 +117,7 @@ public class UserInputHelperTest {
         assertThat(patchProperties.getBankFileName()).contains(bankName);
         assertThat(patchProperties.getBankFileNameResource()).contains(bankResource);
         assertThat(patchProperties.getRimSlotReference(1)).contains(rimSlotReference);
+        assertThat(patchProperties.getRimBrandNameResource(1)).contains(rimBrandReference);
         assertThat(patchProperties.getFrontRimBankFileName(1)).contains(frontRimBankName);
         assertThat(patchProperties.getRearRimBankFileName(1)).contains(rearRimBankName);
         assertThat(patchProperties.getFrontRimBankFileNameResource(1)).contains(frontRimResource);
@@ -132,6 +137,7 @@ public class UserInputHelperTest {
         return DbDataDto.Entry.builder()
                 .forId(0)
                 .addItem(DbDataDto.Item.builder().withRawValue(RIMREF_1).ofFieldRank(1).build())
+                .addItem(DbDataDto.Item.builder().withRawValue(RES_RIMBRAND_1).ofFieldRank(13).build())
                 .addItem(DbDataDto.Item.builder().withRawValue(RES_BANKNAME_FR_1).ofFieldRank(14).build())
                 .addItem(DbDataDto.Item.builder().withRawValue(RES_BANKNAME_RR_1).ofFieldRank(15).build())
                 .build();

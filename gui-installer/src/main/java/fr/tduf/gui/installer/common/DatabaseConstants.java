@@ -34,7 +34,7 @@ public class DatabaseConstants {
 
     public static final String RESOURCE_REF_NONE_INTERIOR_NAME = "53365512";        // INTERIOR
 
-    public static final String RESOURCE_VALUE_DEFAULT = "Default";  // RIMS
+    public static final String RESOURCE_REF_DEFAULT_RIM_BRAND = "55765512";         // RIMS
+    public static final String RESOURCE_VALUE_DEFAULT = "Default";
     public static final String RESOURCE_VALUE_NONE = "??";
-
 }
