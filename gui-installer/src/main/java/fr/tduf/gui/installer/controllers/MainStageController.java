@@ -23,7 +23,6 @@ import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.concurrent.Service;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -51,6 +50,7 @@ import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelpe
 import static java.nio.file.Files.isRegularFile;
 import static java.util.Objects.requireNonNull;
 import static javafx.beans.binding.Bindings.when;
+import static javafx.concurrent.Worker.State.FAILED;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
 import static javafx.scene.control.Alert.AlertType.*;
 
@@ -199,8 +199,9 @@ public class MainStageController extends AbstractGuiController {
             // TODO handle Cancelled state ?
             if (SUCCEEDED == newState) {
                 CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "");
-            } else if (Service.State.FAILED == newState) {
-                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED, "");
+            } else if (FAILED == newState) {
+                final String errorMessage = stepsCoordinator.exceptionProperty().get().getMessage();
+                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED, errorMessage);
             }
             statusLabel.textProperty().unbind();
             statusLabel.textProperty().setValue("");

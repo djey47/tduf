@@ -82,7 +82,7 @@ public abstract class GenericStep {
 
         try {
             perform();
-        } catch (IOException | ReflectiveOperationException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("Current step could not be performed.", e);
         }
