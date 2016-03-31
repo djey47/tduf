@@ -45,8 +45,7 @@ public class UpdateDatabaseStep extends GenericStep {
 
                 .filter((path) -> isRegularFile(path))
 
-                // TODO create extension constant
-                .filter((path) -> "tdupk".equalsIgnoreCase(getFileExtension(path.toString())))
+                .filter((path) -> TdupeGateway.EXTENSION_PERFORMANCE_PACK.equalsIgnoreCase(getFileExtension(path.toString())))
 
                 .findFirst();
 

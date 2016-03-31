@@ -19,6 +19,8 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA
  */
 public class TdupeGateway extends AbstractDatabaseHolder {
 
+    public static final String EXTENSION_PERFORMANCE_PACK = "tdupk";
+
     private DatabasePatcher databasePatcher;
 
     /**
