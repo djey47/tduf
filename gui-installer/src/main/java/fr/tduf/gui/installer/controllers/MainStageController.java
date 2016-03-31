@@ -202,6 +202,8 @@ public class MainStageController extends AbstractGuiController {
             } else if (Service.State.FAILED == newState) {
                 CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED, "");
             }
+            statusLabel.textProperty().unbind();
+            statusLabel.textProperty().setValue("");
         });
         databaseLoader.stateProperty().addListener((observable, oldValue, newState) -> {
             // TODO handle FAILED and Cancelled states ?
@@ -212,6 +214,8 @@ public class MainStageController extends AbstractGuiController {
                     e.printStackTrace();
                     CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED, e.getMessage());
                 }
+                statusLabel.textProperty().unbind();
+                statusLabel.textProperty().setValue("");
             }
         });
     }
