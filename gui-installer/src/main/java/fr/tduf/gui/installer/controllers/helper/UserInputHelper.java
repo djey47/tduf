@@ -50,7 +50,7 @@ public class UserInputHelper {
         }
     }
 
-    private static void createPatchPropertiesForVehicleSlot(String slotReference, PatchProperties patchProperties, BulkDatabaseMiner miner) {
+    static void createPatchPropertiesForVehicleSlot(String slotReference, PatchProperties patchProperties, BulkDatabaseMiner miner) {
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
         int selectedCarIdentifier = vehicleSlotsHelper.getVehicleIdentifier(slotReference);
 
