@@ -17,6 +17,7 @@ public class PatchProperties extends Properties {
     private static final String PLACEHOLDER_NAME_RESOURCE_MODEL = "RES_MODELNAME";
     private static final String PLACEHOLDER_NAME_RESOURCE_VERSION = "RES_VERSIONNAME";
     private static final String PLACEHOLDER_NAME_FMT_RIMS_REFERENCE = "RIMREF.%d";
+    private static final String PLACEHOLDER_NAME_FMT_RESOURCE_RIMS_BRAND = "RIMBRANDREF.%d";
     private static final String PLACEHOLDER_NAME_FMT_INTERIOR_REFERENCE = "INTREF.%d";
     private static final String PLACEHOLDER_NAME_FMT_RIMS_BANK = "BANKNAME.%s.%d";
     private static final String PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK = "RES_BANKNAME.%s.%d";
@@ -89,6 +90,10 @@ public class PatchProperties extends Properties {
         registerIfNotExists(placeholderName, rimsSlotReference);
     }
 
+    public void setResourceRimsBrandIfNotExists(String rimBrandReference, int rimSet) {
+        registerIfNotExists(String.format(PLACEHOLDER_NAME_FMT_RESOURCE_RIMS_BRAND, rimSet), rimBrandReference);
+    }
+
     public void setInteriorReferenceIfNotExists(String interiorReference, int interiorSet) {
         String placeholderName = String.format(PLACEHOLDER_NAME_FMT_INTERIOR_REFERENCE, interiorSet);
         registerIfNotExists(placeholderName, interiorReference);
@@ -131,14 +136,6 @@ public class PatchProperties extends Properties {
         registerIfNotExists(placeholderName, colorNameReference);
     }
 
-    private void registerIfNotExists(String placeholderName, String value) {
-        if (retrieve(placeholderName).isPresent()) {
-            return;
-        }
-
-        register(placeholderName, value);
-    }
-
     public Optional<String> getVehicleSlotReference() {
         return retrieve(PLACEHOLDER_NAME_SLOT_REFERENCE);
     }
@@ -175,4 +172,15 @@ public class PatchProperties extends Properties {
         return retrieve(String.format(PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK, SUFFIX_REAR_RIMS, rimSet));
     }
 
+    public Optional<String> getRimBrandNameResource(int rimSet) {
+        return retrieve(String.format(PLACEHOLDER_NAME_FMT_RESOURCE_RIMS_BRAND, rimSet));
+    }
+
+    private void registerIfNotExists(String placeholderName, String value) {
+        if (retrieve(placeholderName).isPresent()) {
+            return;
+        }
+
+        register(placeholderName, value);
+    }
 }
