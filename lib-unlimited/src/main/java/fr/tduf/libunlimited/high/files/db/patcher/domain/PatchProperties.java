@@ -126,4 +126,8 @@ public class PatchProperties extends Properties {
     public Optional<String> getVehicleSlotReference() {
         return retrieve(PLACEHOLDER_NAME_SLOT_REFERENCE);
     }
+
+    public Optional<String> getCarIdentifier() {
+        return retrieve(PLACEHOLDER_NAME_ID_CAR);
+    }
 }
