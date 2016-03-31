@@ -52,12 +52,25 @@ public class VehicleSlotsHelper {
      * @return first brand directory found for a vehicle rim
      */
     public String getDefaultRimDirectoryForVehicle(String slotReference) {
-
         return getDefaultRimEntryForVehicle(slotReference)
 
                 .map((rimEntry) -> getNameFromLocalResources(rimEntry.getId(), RIMS, DatabaseConstants.FIELD_RANK_RSC_PATH, DEFAULT_LOCALE, ""))
 
                 .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
+    }
+
+    /**
+     * @param slotReference : vehicle slot reference
+     * @return first brand directory resource reference for a vehicle rim
+     */
+    public String getDefaultRimDirectoryResource(String slotReference) {
+        return getDefaultRimEntryForVehicle(slotReference)
+
+                .flatMap((rimEntry) -> rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RSC_PATH))
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .orElse(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND);
     }
 
     /**
