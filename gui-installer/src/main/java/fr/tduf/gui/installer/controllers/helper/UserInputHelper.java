@@ -16,6 +16,8 @@ import java.util.Optional;
 
 import static com.google.common.io.Files.getNameWithoutExtension;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.EXTERIOR_MODEL;
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.FRONT_RIM;
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.REAR_RIM;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -57,11 +59,22 @@ public class UserInputHelper {
         int selectedCarIdentifier = vehicleSlotsHelper.getVehicleIdentifier(slotReference);
         String selectedBankName = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, EXTERIOR_MODEL));
         String selectedResourceBankName = vehicleSlotsHelper.getCarFileNameReference(slotReference);
+        String selectedFrontRimBank = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, FRONT_RIM));
+        String selectedResourceFrontRimBankName = vehicleSlotsHelper.getDefaultRimFileNameReference(slotReference, FRONT_RIM);
+        String selectedRearRimBank = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, REAR_RIM));
+        String selectedResourceRearRimBankName = vehicleSlotsHelper.getDefaultRimFileNameReference(slotReference, REAR_RIM);
 
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
         patchProperties.setCarIdentifierIfNotExists(Integer.valueOf(selectedCarIdentifier).toString());
         patchProperties.setBankNameIfNotExists(selectedBankName);
         patchProperties.setResourceBankNameIfNotExists(selectedResourceBankName);
+
+        patchProperties.setFrontRimBankNameIfNotExists(selectedFrontRimBank, 1);
+        patchProperties.setResourceFrontRimBankIfNotExists(selectedResourceFrontRimBankName, 1);
+        patchProperties.setRearRimBankNameIfNotExists(selectedRearRimBank, 1);
+        patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, 1);
+
+        // TODO Use TDUCP rim ref
     }
 
     private static SlotsBrowserStageController initSlotsBrowserController(Window mainWindow) throws IOException {
