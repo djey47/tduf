@@ -159,6 +159,10 @@ public class PatchProperties extends Properties {
         return retrieve(String.format(PLACEHOLDER_NAME_FMT_RIMS_BANK, SUFFIX_FRONT_RIMS, rimSet));
     }
 
+    public Optional<String> getRimSlotReference(int rimSet) {
+        return retrieve(String.format(PLACEHOLDER_NAME_FMT_RIMS_REFERENCE, rimSet));
+    }
+
     public Optional<String> getRearRimBankFileName(int rimSet) {
         return retrieve(String.format(PLACEHOLDER_NAME_FMT_RIMS_BANK, SUFFIX_REAR_RIMS, rimSet));
     }
@@ -170,4 +174,5 @@ public class PatchProperties extends Properties {
     public Optional<String> getRearRimBankFileNameResource(int rimSet) {
         return retrieve(String.format(PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK, SUFFIX_REAR_RIMS, rimSet));
     }
+
 }
