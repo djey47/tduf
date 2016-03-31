@@ -12,6 +12,7 @@ public class PatchProperties extends Properties {
 
     private static final String PLACEHOLDER_NAME_SLOT_REFERENCE = "SLOTREF";
     private static final String PLACEHOLDER_NAME_ID_CAR = "CARID";
+    private static final String PLACEHOLDER_NAME_BANK = "BANKNAME";
     private static final String PLACEHOLDER_NAME_RESOURCE_BANK = "RES_BANKNAME";
     private static final String PLACEHOLDER_NAME_RESOURCE_MODEL = "RES_MODELNAME";
     private static final String PLACEHOLDER_NAME_RESOURCE_VERSION = "RES_VERSIONNAME";
@@ -73,6 +74,15 @@ public class PatchProperties extends Properties {
         registerIfNotExists(PLACEHOLDER_NAME_SLOT_REFERENCE, slotReference);
     }
 
+    public void setBankNameIfNotExists(String bankName) {
+        registerIfNotExists(PLACEHOLDER_NAME_BANK, bankName);
+    }
+
+
+    public void setResourceBankNameIfNotExists(String modelBankReference) {
+        registerIfNotExists(PLACEHOLDER_NAME_RESOURCE_BANK, modelBankReference);
+    }
+
     public void setRimsSlotReferenceIfNotExists(String rimsSlotReference, int rimSet) {
         String placeholderName = String.format(PLACEHOLDER_NAME_FMT_RIMS_REFERENCE, rimSet);
         registerIfNotExists(placeholderName, rimsSlotReference);
@@ -81,10 +91,6 @@ public class PatchProperties extends Properties {
     public void setInteriorReferenceIfNotExists(String interiorReference, int interiorSet) {
         String placeholderName = String.format(PLACEHOLDER_NAME_FMT_INTERIOR_REFERENCE, interiorSet);
         registerIfNotExists(placeholderName, interiorReference);
-    }
-
-    public void setResourceModelBankIfNotExists(String modelBankReference) {
-        registerIfNotExists(PLACEHOLDER_NAME_RESOURCE_BANK, modelBankReference);
     }
 
     public void setResourceFrontRimBankIfNotExists(String rimBankReference, int rimSet) {
@@ -130,4 +136,13 @@ public class PatchProperties extends Properties {
     public Optional<String> getCarIdentifier() {
         return retrieve(PLACEHOLDER_NAME_ID_CAR);
     }
+
+    public Optional<String> getBankFileName() {
+        return retrieve(PLACEHOLDER_NAME_BANK);
+    }
+
+    public Optional<String> getBankFileNameResource() {
+        return retrieve(PLACEHOLDER_NAME_RESOURCE_BANK);
+    }
+
 }
