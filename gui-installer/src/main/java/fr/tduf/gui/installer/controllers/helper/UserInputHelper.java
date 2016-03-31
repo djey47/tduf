@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.controllers.helper;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.controllers.SlotsBrowserStageController;
 import fr.tduf.gui.installer.domain.DatabaseContext;
@@ -12,12 +13,14 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.io.Files.getNameWithoutExtension;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.EXTERIOR_MODEL;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.FRONT_RIM;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.REAR_RIM;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -55,6 +58,8 @@ public class UserInputHelper {
     }
 
     static void createPatchPropertiesForVehicleSlot(String slotReference, PatchProperties patchProperties, BulkDatabaseMiner miner) {
+        Log.info(THIS_CLASS_NAME, "->Resolving missing properties with slot information");
+
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
         int selectedCarIdentifier = vehicleSlotsHelper.getVehicleIdentifier(slotReference);
         String selectedBankName = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, EXTERIOR_MODEL));
@@ -64,6 +69,12 @@ public class UserInputHelper {
         String selectedResourceFrontRimBankName = vehicleSlotsHelper.getDefaultRimFileNameReference(slotReference, FRONT_RIM);
         String selectedRearRimBank = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, REAR_RIM));
         String selectedResourceRearRimBankName = vehicleSlotsHelper.getDefaultRimFileNameReference(slotReference, REAR_RIM);
+
+        List<String> values = asList(selectedBankName, selectedResourceBankName, selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);
+        if (selectedCarIdentifier == VehicleSlotsHelper.DEFAULT_VEHICLE_ID
+                || values.contains(DisplayConstants.ITEM_UNAVAILABLE)) {
+            throw new IllegalArgumentException("Unable to get valid information for vehicle slot: " + slotReference);
+        }
 
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
         patchProperties.setCarIdentifierIfNotExists(Integer.valueOf(selectedCarIdentifier).toString());
@@ -75,6 +86,8 @@ public class UserInputHelper {
         patchProperties.setResourceFrontRimBankIfNotExists(selectedResourceFrontRimBankName, 1);
         patchProperties.setRearRimBankNameIfNotExists(selectedRearRimBank, 1);
         patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, 1);
+
+        // TODO handle rim directory
     }
 
     private static SlotsBrowserStageController initSlotsBrowserController(Window mainWindow) throws IOException {

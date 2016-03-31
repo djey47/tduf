@@ -13,6 +13,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.RIMS;
+import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -23,6 +24,7 @@ import static org.mockito.Mockito.when;
 public class UserInputHelperTest {
 
     private static final String SLOTREF = "30000000";
+    private static final String SLOTREF_INV = "40000000";
     private static final String CARID = "3000";
     private static final String BANKNAME = "TDUCP_3000";
     private static final String RES_BANKNAME = "30000567";
@@ -37,11 +39,26 @@ public class UserInputHelperTest {
 
     @Before
     public void setup() {
+        // Valid slot
         when(minerMock.getContentEntryFromTopicWithReference(SLOTREF, CAR_PHYSICS_DATA)).thenReturn(of(createCarPhysicsContentEntry()));
         when(minerMock.getContentEntryFromTopicWithReference(RIMREF_1, RIMS)).thenReturn(of(createRimsContentEntry()));
         when(minerMock.getLocalizedResourceValueFromContentEntry(eq(0L), eq(9), eq(CAR_PHYSICS_DATA), any(DbResourceDto.Locale.class))).thenReturn(of(BANKNAME));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(eq(RES_BANKNAME_FR_1), eq(RIMS), any(DbResourceDto.Locale.class))).thenReturn(of(BANKNAME_FR_1));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(eq(RES_BANKNAME_RR_1), eq(RIMS), any(DbResourceDto.Locale.class))).thenReturn(of(BANKNAME_RR_1));
+
+        // Invalid slot
+        when(minerMock.getContentEntryFromTopicWithReference(SLOTREF_INV, CAR_PHYSICS_DATA)).thenReturn(empty());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void createPatchPropertiesForVehicleSlot_whenNoProperty_andInvalidSlotRef_shouldThrowException() {
+        // GIVEN
+        PatchProperties patchProperties = new PatchProperties();
+
+        // WHEN
+        UserInputHelper.createPatchPropertiesForVehicleSlot(SLOTREF_INV, patchProperties, minerMock);
+
+        // THEN: IAE
     }
 
     @Test
