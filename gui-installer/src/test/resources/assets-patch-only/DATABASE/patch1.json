@@ -221,6 +221,22 @@
         "1011",
         "93"
       ]
+    },
+    {
+      "comment": "Replaces Brian -> Brian Molko",
+      "type" : "UPDATE_RES",
+      "topic" : "BOTS",
+      "locale" : "FRANCE",
+      "ref": "54367256",
+      "value": "{NAME1}"
+    },
+    {
+      "comment": "Adds Cindy for ref 33333333",
+      "type" : "UPDATE_RES",
+      "topic" : "BOTS",
+      "locale" : "FRANCE",
+      "ref": "33333333",
+      "value": "{NAME2}"
     }
   ]
 }

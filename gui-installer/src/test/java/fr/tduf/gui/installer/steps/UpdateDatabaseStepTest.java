@@ -31,13 +31,15 @@ public class UpdateDatabaseStepTest {
 
     private String tempDirectory;
 
+    private PatchProperties patchProperties;
+
     @Before
     public void setUp() throws IOException {
         Log.set(Log.LEVEL_DEBUG);
 
+        patchProperties = new PatchProperties();
+
         databaseContext = InstallerTestsHelper.createJsonDatabase();
-        PatchProperties patchProperties = new PatchProperties();
-        patchProperties.setVehicleSlotReferenceIfNotExists("REF");
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
 
         tempDirectory = InstallerTestsHelper.createTempDirectory();
@@ -46,6 +48,7 @@ public class UpdateDatabaseStepTest {
     @Test
     public void perform_withourPerformancePack_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException {
         // GIVEN
+        patchProperties.setVehicleSlotReferenceIfNotExists("30000000");
         String assetsDirectory = new File(thisClass.getResource("/assets-patch-only").toURI()).getAbsolutePath();
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)
