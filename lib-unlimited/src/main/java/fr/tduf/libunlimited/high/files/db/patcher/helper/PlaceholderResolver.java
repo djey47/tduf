@@ -9,6 +9,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import org.apache.commons.lang3.Range;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,6 +32,7 @@ public class PlaceholderResolver {
     private final DbPatchDto patchObject;
     private final PatchProperties patchProperties;
     private final BulkDatabaseMiner databaseMiner;
+    private final Set<String> generatedIdentifiers = new HashSet<>();
 
     /**
      * @param patchObject         : patch to be processed
@@ -55,6 +57,7 @@ public class PlaceholderResolver {
      *
      */
     public void resolveAllPlaceholders() {
+        generatedIdentifiers.clear();
 
         resolveContentsReferencePlaceholders();
 
@@ -76,7 +79,7 @@ public class PlaceholderResolver {
 
                 .forEach((changeObject) -> {
                     DbDto topicObject = databaseMiner.getDatabaseTopic(changeObject.getTopic()).get();
-                    String effectiveReference = resolveReferencePlaceholder(true, changeObject.getRef(), patchProperties, topicObject);
+                    String effectiveReference = resolveReferencePlaceholder(true, changeObject.getRef(), patchProperties, topicObject, generatedIdentifiers);
                     changeObject.setRef(effectiveReference);
                 });
     }
@@ -92,7 +95,7 @@ public class PlaceholderResolver {
 
                 .forEach((changeObject) -> {
                     DbDto topicObject = databaseMiner.getDatabaseTopic(changeObject.getTopic()).get();
-                    String effectiveReference = resolveReferencePlaceholder(false, changeObject.getRef(), patchProperties, topicObject);
+                    String effectiveReference = resolveReferencePlaceholder(false, changeObject.getRef(), patchProperties, topicObject, generatedIdentifiers);
                     changeObject.setRef(effectiveReference);
                 });
     }
@@ -166,19 +169,16 @@ public class PlaceholderResolver {
                 .collect(toList());
     }
 
-    static String resolveReferencePlaceholder(boolean forContents, String value, PatchProperties patchProperties, DbDto topicObject) {
+    static String resolveReferencePlaceholder(boolean forContents, String value, PatchProperties patchProperties, DbDto topicObject, Set<String> generatedIdentifiers) {
         final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
 
         if (matcher.matches()) {
             final String placeholderName = matcher.group(1);
             return patchProperties.retrieve(placeholderName)
                     .orElseGet(() -> {
-                        // TODO Enhancement: take generated values into account for unicity
-                        final String generatedValue = forContents ?
-                                DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject) :
-                                DatabaseGenHelper.generateUniqueResourceEntryIdentifier(topicObject);
-                        patchProperties.register(placeholderName, generatedValue);
-                        return generatedValue;
+                        String uniqueValue = generateUniqueIdentifier(forContents, topicObject, generatedIdentifiers);
+                        patchProperties.register(placeholderName, uniqueValue);
+                        return uniqueValue;
                     });
         }
 
@@ -204,6 +204,22 @@ public class PlaceholderResolver {
         }
 
         return value;
+    }
+
+    private static String generateUniqueIdentifier(boolean forContents, DbDto topicObject, Set<String> generatedIdentifiers) {
+        String uniqueValue = null;
+        while (uniqueValue == null) {
+            String generatedValue = forContents ?
+                    DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject) :
+                    DatabaseGenHelper.generateUniqueResourceEntryIdentifier(topicObject);
+
+            if (!generatedIdentifiers.contains(generatedValue)) {
+                uniqueValue = generatedValue;
+            }
+        }
+
+        generatedIdentifiers.add(uniqueValue);
+        return uniqueValue;
     }
 
     private static String generateValueForCARIDPlaceholder(BulkDatabaseMiner miner) {
