@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -35,11 +36,7 @@ public class CopyFilesStepTest {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
-        String assetsDirectory = new File(thisClass.getResource("/assets-all/car").toURI()).getAbsolutePath();
-        InstallerConfiguration configuration = InstallerConfiguration.builder()
-                .withTestDriveUnlimitedDirectory(tempDirectory)
-                .withAssetsDirectory(assetsDirectory)
-                .build();
+        InstallerConfiguration configuration = createConfigurationForCar();
         DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("606298799"); // AC427 (car)
@@ -59,7 +56,7 @@ public class CopyFilesStepTest {
         Path lowHudBanksPath = banksPath.resolve("FrontEnd").resolve("LowRes").resolve("Gauges");
         Path rimBanksPath = vehicleBanksPath.resolve("Rim").resolve("AC");
 
-        Path vehicleModelAssetsPath = Paths.get(assetsDirectory, "3D");
+        Path vehicleModelAssetsPath = Paths.get(configuration.getAssetsDirectory(), "3D");
         assertThat(vehicleBanksPath.resolve("AC_427.bnk").toFile())
                 .exists()
                 .hasSameContentAs(vehicleModelAssetsPath.resolve("AC_289.bnk").toFile());
@@ -67,12 +64,12 @@ public class CopyFilesStepTest {
                 .exists()
                 .hasSameContentAs(vehicleModelAssetsPath.resolve("AC_289_I.bnk").toFile());
 
-        Path soundAssetsPath = Paths.get(assetsDirectory, "SOUND");
+        Path soundAssetsPath = Paths.get(configuration.getAssetsDirectory(), "SOUND");
         assertThat(soundBanksPath.resolve("AC_427_audio.bnk").toFile())
                 .exists()
                 .hasSameContentAs(soundAssetsPath.resolve("AC_289_audio.bnk").toFile());
 
-        Path hudAssetsPath = Paths.get(assetsDirectory, "GAUGES");
+        Path hudAssetsPath = Paths.get(configuration.getAssetsDirectory(), "GAUGES");
         assertThat(highHudBanksPath.resolve("AC_427.bnk").toFile())
                 .exists()
                 .hasSameContentAs(hudAssetsPath.resolve("HI").resolve("AC_289.bnk").toFile());
@@ -91,11 +88,7 @@ public class CopyFilesStepTest {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
-        String assetsDirectory = new File(thisClass.getResource("/assets-all/bike").toURI()).getAbsolutePath();
-        InstallerConfiguration configuration = InstallerConfiguration.builder()
-                .withTestDriveUnlimitedDirectory(tempDirectory)
-                .withAssetsDirectory(assetsDirectory)
-                .build();
+        InstallerConfiguration configuration = createConfigurationForBike();
         DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("1208897332"); // Triumph Daytona (bike)
@@ -110,12 +103,83 @@ public class CopyFilesStepTest {
         // THEN
         Path rimBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules", "Rim", "Triumph");
 
-        Path rimAssetsPath = Paths.get(assetsDirectory, "3D", "RIMS");
+        Path rimAssetsPath = Paths.get(configuration.getAssetsDirectory(), "3D", "RIMS");
         assertThat(rimBanksPath.resolve("DAYTONA_955I_F.bnk").toFile())
                 .exists()
                 .hasSameContentAs(rimAssetsPath.resolve("BIKE_F_01.bnk").toFile());
         assertThat(rimBanksPath.resolve("DAYTONA_955I_R.bnk").toFile())
                 .exists()
                 .hasSameContentAs(rimAssetsPath.resolve("BIKE_R_01.bnk").toFile());
+    }
+
+    @Test
+    public void copyFilesStep_withDifferentRimsFrontRear_andSlotHasSameFileNameForFrontAndRear_shouldOnlyCopyFrontRim() throws Exception {
+        // GIVEN
+        System.out.println("Testing TDU directory: " + tempDirectory);
+
+        InstallerConfiguration configuration = createConfigurationForBike();
+        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        PatchProperties patchProperties = new PatchProperties();
+        patchProperties.setVehicleSlotReferenceIfNotExists("606298799"); // AC427 (car)
+        databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
+
+
+        // WHEN
+        GenericStep.starterStep(configuration, databaseContext)
+                .nextStep(COPY_FILES).start();
+
+
+        // THEN
+        Path rimBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules", "Rim", "AC");
+
+        Path rimAssetsPath = Paths.get(configuration.getAssetsDirectory(), "3D", "RIMS");
+        assertThat(rimBanksPath.resolve("AC_427_F_01.bnk").toFile())
+                .exists()
+                .hasSameContentAs(rimAssetsPath.resolve("BIKE_F_01.bnk").toFile());
+    }
+
+    @Test
+    public void copyFilesStep_withSameRimsFrontRear_andSlotHasDifferentFileNameForFrontAndRear_shouldCopyFrontRimTwice() throws Exception {
+        // GIVEN
+        System.out.println("Testing TDU directory: " + tempDirectory);
+
+        InstallerConfiguration configuration = createConfigurationForCar();
+        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        PatchProperties patchProperties = new PatchProperties();
+        patchProperties.setVehicleSlotReferenceIfNotExists("1208897332"); // Triumph Daytona (bike)
+        databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
+
+
+        // WHEN
+        GenericStep.starterStep(configuration, databaseContext)
+                .nextStep(COPY_FILES).start();
+
+
+        // THEN
+        Path rimBanksPath = Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules", "Rim", "Triumph");
+
+        Path rimAssetsPath = Paths.get(configuration.getAssetsDirectory(), "3D", "RIMS");
+        assertThat(rimBanksPath.resolve("DAYTONA_955I_F.bnk").toFile())
+                .exists()
+                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
+        assertThat(rimBanksPath.resolve("DAYTONA_955I_R.bnk").toFile())
+                .exists()
+                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
+    }
+
+    private InstallerConfiguration createConfigurationForCar() throws URISyntaxException {
+        String assetsDirectory = new File(thisClass.getResource("/assets-all/car").toURI()).getAbsolutePath();
+        return InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tempDirectory)
+                .withAssetsDirectory(assetsDirectory)
+                .build();
+    }
+
+    private InstallerConfiguration createConfigurationForBike() throws URISyntaxException {
+        String assetsDirectory = new File(thisClass.getResource("/assets-all/bike").toURI()).getAbsolutePath();
+        return InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tempDirectory)
+                .withAssetsDirectory(assetsDirectory)
+                .build();
     }
 }
