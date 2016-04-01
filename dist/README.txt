@@ -28,8 +28,23 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 ### What's in this version ? (1.3.0)
 
+* DatabaseEditor: inform user when long operations in progress
+
+* DatabaseTool: (diff-patches) new operation to create a patch with differences between 2 JSON databases
+* DatabaseTool: (unpack-all) return EXIT CODE 1 when database check fails
+
+* (lib/database): import from TDUPK only takes pure physics changes
+* (lib/database): able to apply many mini-patches at once
+* (lib/database): supports new 'onlyAdd' switch for UPDATE/UPDATE_RES changes
+* (lib/banks): improves performance by using batch unpack/repack feature from tdumt-cli application
+* (lib): misc. enhancements and fixes
+
+* (tdumt-cli): provides batch unpack/repack operations.
+
 
 ### Fixed issues
+
+* (lib/database) Correctly detects integrity error: missing resource at locale for given REFs.
 
 
 ### Known bugs
