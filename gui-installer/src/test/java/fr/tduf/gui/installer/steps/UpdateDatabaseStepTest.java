@@ -24,6 +24,8 @@ public class UpdateDatabaseStepTest {
 
     private static final Class<UpdateDatabaseStepTest> thisClass = UpdateDatabaseStepTest.class;
 
+    private static final String SLOT_REFERENCE = "30000000";
+
     @Mock
     private BankSupport bankSupportMock;
 
@@ -38,6 +40,7 @@ public class UpdateDatabaseStepTest {
         Log.set(Log.LEVEL_DEBUG);
 
         patchProperties = new PatchProperties();
+        patchProperties.setVehicleSlotReferenceIfNotExists(SLOT_REFERENCE);
 
         databaseContext = InstallerTestsHelper.createJsonDatabase();
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
@@ -46,10 +49,27 @@ public class UpdateDatabaseStepTest {
     }
 
     @Test
-    public void perform_withourPerformancePack_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException {
+    public void perform_withoutPerformancePack_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException {
         // GIVEN
-        patchProperties.setVehicleSlotReferenceIfNotExists("30000000");
         String assetsDirectory = new File(thisClass.getResource("/assets-patch-only").toURI()).getAbsolutePath();
+        InstallerConfiguration configuration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tempDirectory)
+                .withAssetsDirectory(assetsDirectory)
+                .build();
+
+        // WHEN
+        final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
+                GenericStep.starterStep(configuration, databaseContext)
+                        .nextStep(UPDATE_DATABASE));
+        updateDatabaseStep.perform();
+
+        // THEN
+    }
+
+    @Test
+    public void perform_withPerformancePack_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException {
+        // GIVEN
+        String assetsDirectory = new File(thisClass.getResource("/assets-patch-tdupk-only").toURI()).getAbsolutePath();
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)
                 .withAssetsDirectory(assetsDirectory)
