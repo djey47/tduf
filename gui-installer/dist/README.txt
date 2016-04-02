@@ -8,16 +8,17 @@ Here is a new vehicle mod installer:
 
 ### What's in this version ?
 
-* Initial ALPHA release
+* ALPHA-5 release
 
 
 ### Main features
 
 * Install only
-* Ability to only update Magic Map (Advanced feature)
+* Ability to update Magic Map (Advanced feature)
+* Ability to check and fix database (Advanced feature)
 
 
-### What you will need to run TDUF
+### What you will need to run Installer
 
 * Please uninstall any Java Runtime < 8
 * [Update / Install Java 8 Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
@@ -36,8 +37,7 @@ PUT MODDED FILES UNDER assets directories:
 
 - 3D: exterior and interior MOD.BNK, MOD_I.BNK
 
-- 3D\RIMS: Single rim set for front/rear: MOD_F_01.BNK, MOD_R_01.BNK
-(if same rims for front and rear, create copy for rear)
+- 3D\RIMS: Single rim set for front/rear: MOD_F_01.BNK, MOD_R_01.BNK (optional)
 
 - GAUGES\HIGH: MOD.BNK (high-res hud)
 
@@ -55,12 +55,12 @@ CUSTOMIZATION
 to:  assets\DATABASE\
 
 - Edit assets\DATABASE\xxxxx.mini.json.properties for wanted values:
-    - BRANDREF: choose a BRANDS slots
-    - RIMBRANDREF: choose a RIMS resource
-    - COLORID.M.x/COLORID.S.x/CALLIPERSID.x: choose CAR_COLORS resources (M=Main, S=Secondary)
-    - INTCOLORID.M.x/INTCOLORID.S.x/INTMATERIALID.x: choose INTERIOR resources
-    - SLOTREF: choose a CAR_PHYSICS slot. If enabled, Installer will not ask for vehicle slot.
+    - BRANDREF: enter a brand identifier
+    - COLORID.M.x/COLORID.S.x/CALLIPERSID.x: update CAR_COLORS resources (M=Main, S=Secondary)
+    - INTCOLORID.M.x/INTCOLORID.S.x/INTMATERIALID.x: update INTERIOR resources (M=Main, S=Secondary)
+    - SLOTREF: fore to use a CAR_PHYSICS slot. If enabled, Installer will not ask for vehicle slot.
 
+- (Optional) Copy TDUPE Pack to assets\DATABASE directory.
 
 
 TESTING
@@ -74,6 +74,8 @@ TESTING
 - Select target car slot or create new slot for it
 
 - Installer will look unresponsive for a few seconds
+
+- TDUPK file (if provided) will be applied after JSON mini patch
 
 - Check install events in logs\TDUF-Installer.log file
 
