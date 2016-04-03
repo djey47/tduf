@@ -1,4 +1,4 @@
-package fr.tduf.gui.common.helper.javafx;
+package fr.tduf.gui.common.javafx.application;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;

@@ -2,7 +2,7 @@ package fr.tduf.gui.installer.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import com.google.common.base.Strings;
-import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
+import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;

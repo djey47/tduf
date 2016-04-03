@@ -3,7 +3,7 @@ package fr.tduf.gui.database.controllers;
 import com.esotericsoftware.minlog.Log;
 import com.google.common.base.Strings;
 import fr.tduf.gui.common.AppConstants;
-import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
+import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
 import fr.tduf.gui.database.DatabaseEditor;

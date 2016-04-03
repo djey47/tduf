@@ -1,7 +1,7 @@
 package fr.tduf.gui.installer.controllers;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
+import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;

@@ -1,7 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
+import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.javafx.ContentFieldDataItem;
