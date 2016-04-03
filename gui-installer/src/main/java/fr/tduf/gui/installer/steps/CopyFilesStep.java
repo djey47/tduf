@@ -113,7 +113,7 @@ public class CopyFilesStep extends GenericStep {
         }
 
         if (targetFileName != null) {
-            copySingleAsset(assetPath, targetPath, targetFileName, true);
+            copySingleAsset(assetPath, targetPath, targetFileName);
         }
     }
 
@@ -151,23 +151,21 @@ public class CopyFilesStep extends GenericStep {
                     targetFileName = targetFileNameForRearRim;
                 } else {
                     // Case of single rim file but slot requires 2 different file names => front file copied to rear if not existing already
-                    copySingleAsset(assetPath, targetPath, targetFileNameForRearRim, false);
+                    copySingleAsset(assetPath, targetPath, targetFileNameForRearRim);
                 }
             }
         }
         return targetFileName;
     }
 
-    private static void copySingleAsset(Path assetPath, Path targetPath, String targetFileName, boolean overwrite) {
+    private static void copySingleAsset(Path assetPath, Path targetPath, String targetFileName) {
         try {
             FilesHelper.createDirectoryIfNotExists(targetPath.toString());
 
             Path finalPath = targetPath.resolve(targetFileName);
 
-            if (overwrite || !Files.exists(finalPath)) {
-                Log.info(THIS_CLASS_NAME, "*> " + assetPath + " to " + finalPath);
-                Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
-            }
+            Log.info(THIS_CLASS_NAME, "*> " + assetPath + " to " + finalPath);
+            Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
