@@ -1,6 +1,6 @@
 package fr.tduf.gui.database.controllers.helper;
 
-import fr.tduf.gui.common.helper.javafx.ControlHelper;
+import fr.tduf.gui.common.javafx.helper.ControlHelper;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
 import javafx.event.ActionEvent;

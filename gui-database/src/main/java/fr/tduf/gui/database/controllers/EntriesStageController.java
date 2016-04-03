@@ -2,8 +2,8 @@ package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
-import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
-import fr.tduf.gui.common.helper.javafx.TableViewHelper;
+import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
+import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;

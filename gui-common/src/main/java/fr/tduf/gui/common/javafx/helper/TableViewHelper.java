@@ -1,4 +1,4 @@
-package fr.tduf.gui.common.helper.javafx;
+package fr.tduf.gui.common.javafx.helper;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;

@@ -1,4 +1,4 @@
-package fr.tduf.gui.common.helper.javafx;
+package fr.tduf.gui.common.javafx.helper;
 
 import javafx.scene.control.Control;
 import javafx.scene.control.Tooltip;

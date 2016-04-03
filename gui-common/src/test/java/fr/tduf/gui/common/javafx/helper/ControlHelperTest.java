@@ -1,4 +1,4 @@
-package fr.tduf.gui.common.helper.javafx;
+package fr.tduf.gui.common.javafx.helper;
 
 import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import javafx.scene.control.Button;
