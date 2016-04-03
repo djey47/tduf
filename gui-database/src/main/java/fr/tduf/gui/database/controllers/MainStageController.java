@@ -2,6 +2,7 @@ package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import com.google.common.base.Strings;
+import fr.tduf.gui.common.AppConstants;
 import fr.tduf.gui.common.helper.javafx.AbstractGuiController;
 import fr.tduf.gui.common.helper.javafx.CommonDialogsHelper;
 import fr.tduf.gui.common.helper.javafx.TableViewHelper;
@@ -56,6 +57,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Optional.*;
 import static javafx.beans.binding.Bindings.size;
@@ -162,15 +164,20 @@ public class MainStageController extends AbstractGuiController {
                         .otherwise(Cursor.DEFAULT)
         );
 
-        String initialDatabaseDirectory = SettingsConstants.DATABASE_DIRECTORY_DEFAULT;
-        boolean databaseAutoLoad = false;
-        List<String> appParameters = DatabaseEditor.getCommandLineParameters();
-        if (!appParameters.isEmpty()) {
-            initialDatabaseDirectory = appParameters.get(0);
-            databaseAutoLoad = true;
-        }
-
         initTopToolbar();
+
+        AtomicBoolean databaseAutoLoad = new AtomicBoolean(false);
+        String initialDatabaseDirectory = DatabaseEditor.getCommandLineParameters().stream()
+                .filter((p) -> !p.startsWith(AppConstants.SWITCH_PREFIX))
+
+                .findAny()
+
+                .map((p) -> {
+                    databaseAutoLoad.set(true);
+                    return p;
+                })
+
+                .orElseGet(() -> SettingsConstants.DATABASE_DIRECTORY_DEFAULT);
 
         initSettingsPane(initialDatabaseDirectory);
 
@@ -186,7 +193,7 @@ public class MainStageController extends AbstractGuiController {
 
         initServiceListeners();
 
-        if (databaseAutoLoad) {
+        if (databaseAutoLoad.get()) {
             Log.trace(THIS_CLASS_NAME, "->init: database auto load");
             loadDatabaseFromDirectory(initialDatabaseDirectory);
         }

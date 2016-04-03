@@ -1,27 +1,16 @@
 package fr.tduf.gui.database;
 
-import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.common.javafx.application.AbstractGuiApp;
 import fr.tduf.gui.database.stages.MainStageDesigner;
-import javafx.application.Application;
 import javafx.stage.Stage;
-
-import java.util.List;
-
-import static com.esotericsoftware.minlog.Log.LEVEL_INFO;
 
 /**
  * DatabaseEditor Java FX Application.
  */
-public class DatabaseEditor extends Application {
-
-    private static List<String> parameters;
+public class DatabaseEditor extends AbstractGuiApp {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        parameters = getParameters().getUnnamed();
-
-        Log.set(LEVEL_INFO);
-
+    public void startApp(Stage primaryStage) throws Exception {
         MainStageDesigner.init(primaryStage);
         primaryStage.show();
     }
@@ -32,12 +21,5 @@ public class DatabaseEditor extends Application {
      */
     public static void main(String[] args) {
         launch(args);
-    }
-
-    /**
-     * @return All arguments passed with command line, if any.
-     */
-    public static List<String> getCommandLineParameters() {
-        return parameters;
     }
 }
