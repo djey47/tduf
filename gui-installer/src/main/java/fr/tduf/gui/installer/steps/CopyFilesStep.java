@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.steps;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
+import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 
@@ -92,6 +93,8 @@ public class CopyFilesStep extends GenericStep {
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(getDatabaseContext().getMiner());
         String slotReference = getDatabaseContext().getPatchProperties().getVehicleSlotReference().get();
 
+        VehicleSlot vehicleSlot = vehicleSlotsHelper.getVehicleSlotFromReference(slotReference).get();
+
         String targetFileName;
         switch (assetDirectoryName) {
             case DIRECTORY_3D:
@@ -105,7 +108,7 @@ public class CopyFilesStep extends GenericStep {
                 targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, HUD);
                 break;
             case DIRECTORY_RIMS:
-                targetPath = getTargetRimParentDirectory(slotReference, targetPath, vehicleSlotsHelper);
+                targetPath = targetPath.resolve(vehicleSlot.getDefaultRims().getParentDirectoryName().getValue());
                 targetFileName = getTargetFileNameForRims(slotReference, assetPath, targetPath, vehicleSlotsHelper);
                 break;
             default:
@@ -115,11 +118,6 @@ public class CopyFilesStep extends GenericStep {
         if (targetFileName != null) {
             copySingleAsset(assetPath, targetPath, targetFileName);
         }
-    }
-
-    private static Path getTargetRimParentDirectory(String slotReference, Path targetPath, VehicleSlotsHelper vehicleSlotsHelper) throws IOException {
-        String rimBrandName = vehicleSlotsHelper.getDefaultRimDirectoryForVehicle(slotReference);
-        return targetPath.resolve(rimBrandName);
     }
 
     private static String getTargetFileNameForExteriorAndInterior(String slotReference, String assetFileName, VehicleSlotsHelper vehicleSlotsHelper) {

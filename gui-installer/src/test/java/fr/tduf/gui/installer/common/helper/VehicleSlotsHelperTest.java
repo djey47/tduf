@@ -1,6 +1,5 @@
 package fr.tduf.gui.installer.common.helper;
 
-import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.domain.Resource;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -281,54 +280,6 @@ public class VehicleSlotsHelperTest {
         // THEN
         assertThat(actualEntries).hasSize(1);
         assertThat(actualEntries.get(0).getItemAtRank(1).get().getRawValue()).isEqualTo(drivableRef);
-    }
-
-    @Test
-    public void getDefaultRimDirectoryForVehicle_whenSlotExists() {
-        // GIVEN
-        String slotReference = "11111111";
-        String rimRef = "22222222";
-        long entryId = 1;
-        DbDataDto.Item physicsItem = DbDataDto.Item.builder()
-                .ofFieldRank(10)
-                .withRawValue(rimRef)
-                .build();
-        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
-                .forId(entryId)
-                .addItem(physicsItem)
-                .build();
-        DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
-                .forId(entryId)
-                .build();
-        String resourceValue = "Toyota";
-
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimRef, RIMS)).thenReturn(of(rimsEntry));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(entryId, 13, RIMS, UNITED_STATES)).thenReturn(of(resourceValue));
-
-
-        // WHEN
-        String actualRimDirectory = vehicleSlotsHelper.getDefaultRimDirectoryForVehicle(slotReference);
-
-
-        // THEN
-        assertThat(actualRimDirectory).isEqualTo("Toyota");
-    }
-
-    @Test
-    public void getDefaultRimDirectoryForVehicle_whenSlotDoesNotExist_shouldReturnDefault() {
-        // GIVEN
-        String slotReference = "11111111";
-
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(empty());
-
-
-        // WHEN
-        String actualRimDirectory = vehicleSlotsHelper.getDefaultRimDirectoryForVehicle(slotReference);
-
-
-        // THEN
-        assertThat(actualRimDirectory).isEqualTo(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
     }
 
     @Test
