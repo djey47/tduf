@@ -268,19 +268,6 @@ public class VehicleSlotsHelper {
     }
 
     /**
-     * @return value of REF data (RIMS) for default rims for specified slot reference
-     */
-    public String getDefaultRimIdentifier(String slotReference) {
-        return getDefaultRimEntryForVehicle(slotReference)
-
-                .flatMap((rimEntry) -> rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RIM_REF))
-
-                .map(DbDataDto.Item::getRawValue)
-
-                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
-    }
-
-    /**
      * @return value of Rsc_File_Name_Front or Rsc_File_Name_Rear
      */
     public String getDefaultRimFileNameReference(String slotReference, BankFileType rimBankFileType) {
