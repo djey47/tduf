@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.common.helper;
 
 import fr.tduf.gui.installer.common.DatabaseConstants;
+import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -32,6 +33,18 @@ public class VehicleSlotsHelperTest {
 
     @InjectMocks
     private VehicleSlotsHelper vehicleSlotsHelper;
+
+    @Test
+    public void loadVehicleSlotFromReference() {
+        // GIVEN
+        String slotReference = "REF";
+
+        // WHEN
+        final Optional<VehicleSlot> actualSlot = VehicleSlotsHelper.loadVehicleSlotFromReference(slotReference, bulkDatabaseMinerMock);
+
+        // THEN
+        assertThat(actualSlot).isPresent();
+    }
 
     @Test
     public void getVehicleName_whenInformationUnavailable() throws Exception {

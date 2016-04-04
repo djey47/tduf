@@ -3,6 +3,9 @@ package fr.tduf.gui.installer.common.helper;
 import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.FileConstants;
+import fr.tduf.gui.installer.domain.Resource;
+import fr.tduf.gui.installer.domain.RimSlot;
+import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -19,6 +22,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -38,6 +42,26 @@ public class VehicleSlotsHelper {
     }
 
     public enum BankFileType { EXTERIOR_MODEL, INTERIOR_MODEL, HUD, SOUND, FRONT_RIM, REAR_RIM}
+
+    /**
+     * @param miner : component to parse database
+     * @return a new slot instance if it exists with given REF, or empty otherwise.
+     */
+    public static Optional<VehicleSlot> loadVehicleSlotFromReference(String slotReference, BulkDatabaseMiner miner) {
+        String defaultRimsReference = "";
+        Resource defaulRimsParentDirectory = Resource.from("", "");
+
+        RimSlot defaultRims = RimSlot
+                .builder()
+                .withRef(defaultRimsReference)
+                .withParentDirectoryName(defaulRimsParentDirectory)
+                .build();
+
+        return of(VehicleSlot.builder()
+                .withRef(slotReference)
+                .withDefaultRims(defaultRims)
+                .build());
+    }
 
     /**
      * @param miner : component to parse database
