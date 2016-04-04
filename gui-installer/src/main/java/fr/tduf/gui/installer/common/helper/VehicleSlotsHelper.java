@@ -44,9 +44,16 @@ public class VehicleSlotsHelper {
 
     /**
      * @param miner : component to parse database
+     * @return a new helper instance.
+     */
+    public static VehicleSlotsHelper load(BulkDatabaseMiner miner) {
+        return new VehicleSlotsHelper(requireNonNull(miner, "Database miner instance is required."));
+    }
+
+    /**
      * @return a new slot instance if it exists with given REF, or empty otherwise.
      */
-    public static Optional<VehicleSlot> loadVehicleSlotFromReference(String slotReference, BulkDatabaseMiner miner) {
+    public Optional<VehicleSlot> getVehicleSlotFromReference(String slotReference) {
         requireNonNull(slotReference, "Slot reference is required.");
         requireNonNull(miner, "Database miner instance is required.");
 
@@ -164,14 +171,6 @@ public class VehicleSlotsHelper {
                 .withDefaultRims(defaultRims)
                 .withBrandName(brandName)
                 .build());
-    }
-
-    /**
-     * @param miner : component to parse database
-     * @return a new helper instance.
-     */
-    public static VehicleSlotsHelper load(BulkDatabaseMiner miner) {
-        return new VehicleSlotsHelper(requireNonNull(miner, "Database miner instance is required."));
     }
 
     /**

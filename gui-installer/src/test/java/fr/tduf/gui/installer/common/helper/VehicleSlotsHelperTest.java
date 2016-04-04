@@ -36,20 +36,22 @@ public class VehicleSlotsHelperTest {
     private VehicleSlotsHelper vehicleSlotsHelper;
 
     @Test
-    public void loadVehicleSlotFromReference_whenSlotNotAvailable_shouldReturnEmpty() {
+    public void getVehicleSlotFromReference_whenSlotNotAvailable_shouldReturnEmpty() {
         // GIVEN
         String slotReference = "REF";
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(empty());
 
         // WHEN
-        final Optional<VehicleSlot> actualSlot = VehicleSlotsHelper.loadVehicleSlotFromReference(slotReference, bulkDatabaseMinerMock);
+        final Optional<VehicleSlot> actualSlot = VehicleSlotsHelper
+                .load(bulkDatabaseMinerMock)
+                .getVehicleSlotFromReference(slotReference);
 
         // THEN
         assertThat(actualSlot).isEmpty();
     }
 
     @Test
-    public void loadVehicleSlotFromReference() {
+    public void getVehicleSlotFromReference() {
         // GIVEN
         String slotRef = "REF";
         String rimSlotRef = "RIMREF";
@@ -107,7 +109,9 @@ public class VehicleSlotsHelperTest {
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 15, RIMS, UNITED_STATES)).thenReturn(of(rearRimFileName));
 
         // WHEN
-        final Optional<VehicleSlot> actualSlot = VehicleSlotsHelper.loadVehicleSlotFromReference(slotRef, bulkDatabaseMinerMock);
+        final Optional<VehicleSlot> actualSlot = VehicleSlotsHelper
+                .load(bulkDatabaseMinerMock)
+                .getVehicleSlotFromReference(slotRef);
 
         // THEN
         assertThat(actualSlot).isPresent();
