@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.common.helper;
 
 import fr.tduf.gui.installer.common.DatabaseConstants;
+import fr.tduf.gui.installer.domain.Resource;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -35,15 +36,46 @@ public class VehicleSlotsHelperTest {
     private VehicleSlotsHelper vehicleSlotsHelper;
 
     @Test
-    public void loadVehicleSlotFromReference() {
+    public void loadVehicleSlotFromReference_whenSlotNotAvailable_shouldReturnEmpty() {
         // GIVEN
         String slotReference = "REF";
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(empty());
 
         // WHEN
         final Optional<VehicleSlot> actualSlot = VehicleSlotsHelper.loadVehicleSlotFromReference(slotReference, bulkDatabaseMinerMock);
 
         // THEN
+        assertThat(actualSlot).isEmpty();
+    }
+
+    @Test
+    public void loadVehicleSlotFromReference() {
+        // GIVEN
+        String slotRef = "REF";
+        String rimSlotRef = "RIMREF";
+        String directoryRef = "0000";
+        String directory = "DIR";
+        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
+                .forId(0)
+                .addItem(DbDataDto.Item.builder().ofFieldRank(10).withRawValue(rimSlotRef).build())
+                .build();
+        DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
+                .forId(0)
+                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(rimSlotRef).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(13).withRawValue(directoryRef).build())
+                .build();
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotRef, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef, RIMS)).thenReturn(of(rimsEntry));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 13, RIMS, UNITED_STATES)).thenReturn(of(directory));
+
+        // WHEN
+        final Optional<VehicleSlot> actualSlot = VehicleSlotsHelper.loadVehicleSlotFromReference(slotRef, bulkDatabaseMinerMock);
+
+        // THEN
         assertThat(actualSlot).isPresent();
+        assertThat(actualSlot.get().getRef()).isEqualTo(slotRef);
+        assertThat(actualSlot.get().getDefaultRims().getRef()).isEqualTo(rimSlotRef);
+        assertThat(actualSlot.get().getDefaultRims().getParentDirectoryName()).isEqualTo(Resource.from(directoryRef, directory));
     }
 
     @Test

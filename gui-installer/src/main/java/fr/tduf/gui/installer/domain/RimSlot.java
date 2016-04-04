@@ -34,6 +34,10 @@ public class RimSlot {
         return reflectionToString(this);
     }
 
+    public String getRef() {
+        return ref;
+    }
+
     public Resource getParentDirectoryName() {
         return parentDirectoryName;
     }

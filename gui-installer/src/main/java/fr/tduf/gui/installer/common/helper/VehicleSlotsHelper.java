@@ -22,6 +22,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
@@ -48,14 +49,34 @@ public class VehicleSlotsHelper {
      * @return a new slot instance if it exists with given REF, or empty otherwise.
      */
     public static Optional<VehicleSlot> loadVehicleSlotFromReference(String slotReference, BulkDatabaseMiner miner) {
-        String defaultRimsReference = "";
-        Resource defaulRimsParentDirectory = Resource.from("", "");
+        final VehicleSlotsHelper helperInstance = new VehicleSlotsHelper(requireNonNull(miner, "Database miner instance is required."));
 
-        RimSlot defaultRims = RimSlot
-                .builder()
-                .withRef(defaultRimsReference)
-                .withParentDirectoryName(defaulRimsParentDirectory)
-                .build();
+        final Optional<DbDataDto.Entry> defaultRimEntry = helperInstance.getDefaultRimEntryForVehicle(slotReference);
+        if (!defaultRimEntry.isPresent()) {
+            return empty();
+        }
+
+        Optional<String> defaultRimsReference = defaultRimEntry
+                .flatMap((rimEntry) -> rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RIM_REF))
+                .map(DbDataDto.Item::getRawValue);
+
+        RimSlot defaultRims = null;
+        if (defaultRimsReference.isPresent()) {
+            Resource defaulRimsParentDirectory = defaultRimEntry
+                    .flatMap((rimEntry) -> rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RSC_PATH))
+                    .map((item) -> {
+                        String defaultValue = miner.getLocalizedResourceValueFromContentEntry(defaultRimEntry.get().getId(), DatabaseConstants.FIELD_RANK_RSC_PATH, RIMS, DEFAULT_LOCALE)
+                                .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
+                        return Resource.from(item.getRawValue(), defaultValue);
+                    })
+                    .orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT));
+
+            defaultRims = RimSlot
+                    .builder()
+                    .withRef(defaultRimsReference.get())
+                    .withParentDirectoryName(defaulRimsParentDirectory)
+                    .build();
+        }
 
         return of(VehicleSlot.builder()
                 .withRef(slotReference)
