@@ -98,18 +98,18 @@ public class CopyFilesStep extends GenericStep {
         String targetFileName;
         switch (assetDirectoryName) {
             case DIRECTORY_3D:
-                targetFileName = getTargetFileNameForExteriorAndInterior(slotReference, assetPath.getFileName().toString(), vehicleSlotsHelper);
+                targetFileName = getTargetFileNameForExteriorAndInterior(vehicleSlot, assetPath.getFileName().toString());
                 break;
             case DIRECTORY_SOUND:
-                targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, SOUND);
+                targetFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, SOUND, true);
                 break;
             case DIRECTORY_GAUGES_LOW:
             case DIRECTORY_GAUGES_HIGH:
-                targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, HUD);
+                targetFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, HUD, true);
                 break;
             case DIRECTORY_RIMS:
                 targetPath = targetPath.resolve(vehicleSlot.getDefaultRims().getParentDirectoryName().getValue());
-                targetFileName = getTargetFileNameForRims(slotReference, assetPath, targetPath, vehicleSlotsHelper);
+                targetFileName = getTargetFileNameForRims(vehicleSlot, assetPath, targetPath);
                 break;
             default:
                 targetFileName = null;
@@ -120,17 +120,17 @@ public class CopyFilesStep extends GenericStep {
         }
     }
 
-    private static String getTargetFileNameForExteriorAndInterior(String slotReference, String assetFileName, VehicleSlotsHelper vehicleSlotsHelper) {
+    private static String getTargetFileNameForExteriorAndInterior(VehicleSlot vehicleSlot, String assetFileName) {
         String targetFileName;
         if (FileConstants.PATTERN_INTERIOR_MODEL_BANK_FILE_NAME.matcher(assetFileName).matches()) {
-            targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, INTERIOR_MODEL);
+            targetFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, INTERIOR_MODEL, true);
         } else {
-            targetFileName = vehicleSlotsHelper.getBankFileName(slotReference, EXTERIOR_MODEL);
+            targetFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, EXTERIOR_MODEL, true);
         }
         return targetFileName;
     }
 
-    private static String getTargetFileNameForRims(String slotReference, Path assetPath, Path targetPath, VehicleSlotsHelper vehicleSlotsHelper) {
+    private static String getTargetFileNameForRims(VehicleSlot vehicleSlot, Path assetPath, Path targetPath) {
         String targetFileName = null;
 
         Matcher matcher = FileConstants.PATTERN_RIM_BANK_FILE_NAME.matcher(assetPath.getFileName().toString());
@@ -138,8 +138,8 @@ public class CopyFilesStep extends GenericStep {
             String typeGroupValue = matcher.group(1);
 
             VehicleSlotsHelper.BankFileType rimBankFileType = FileConstants.INDICATOR_FRONT_RIMS.equalsIgnoreCase(typeGroupValue) ? FRONT_RIM : REAR_RIM;
-            String targetFileNameForFrontRim = vehicleSlotsHelper.getBankFileName(slotReference, FRONT_RIM);
-            String targetFileNameForRearRim = vehicleSlotsHelper.getBankFileName(slotReference, REAR_RIM);
+            String targetFileNameForFrontRim = VehicleSlotsHelper.getBankFileName(vehicleSlot, FRONT_RIM, true);
+            String targetFileNameForRearRim = VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIM, true);
             if (FRONT_RIM == rimBankFileType) {
                 targetFileName = targetFileNameForFrontRim;
             }

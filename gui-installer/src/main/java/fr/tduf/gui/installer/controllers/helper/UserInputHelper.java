@@ -17,10 +17,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.google.common.io.Files.getNameWithoutExtension;
-import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.EXTERIOR_MODEL;
-import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.FRONT_RIM;
-import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.REAR_RIM;
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -70,13 +67,13 @@ public class UserInputHelper {
         VehicleSlot vehicleSlot = potentialVehicleSlot.get();
 
         int selectedCarIdentifier = vehicleSlotsHelper.getVehicleIdentifier(slotReference);
-        String selectedBankName = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, EXTERIOR_MODEL));
+        String selectedBankName = VehicleSlotsHelper.getBankFileName(vehicleSlot, EXTERIOR_MODEL, false);
         String selectedResourceBankName = vehicleSlotsHelper.getCarFileNameReference(slotReference);
         String selectedRimReference = vehicleSlotsHelper.getDefaultRimIdentifier(slotReference);
         String selectedResourceRimBrandReference = vehicleSlot.getDefaultRims().getParentDirectoryName().getRef();
-        String selectedFrontRimBank = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, FRONT_RIM));
+        String selectedFrontRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, FRONT_RIM, false);
         String selectedResourceFrontRimBankName = vehicleSlotsHelper.getDefaultRimFileNameReference(slotReference, FRONT_RIM);
-        String selectedRearRimBank = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, REAR_RIM));
+        String selectedRearRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIM, false);
         String selectedResourceRearRimBankName = vehicleSlotsHelper.getDefaultRimFileNameReference(slotReference, REAR_RIM);
 
         List<String> values = asList(selectedBankName, selectedResourceBankName, selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);

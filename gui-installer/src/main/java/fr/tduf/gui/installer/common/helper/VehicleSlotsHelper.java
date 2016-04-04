@@ -17,7 +17,6 @@ import java.util.Optional;
 
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.FRONT_RIM;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.REAR_RIM;
-import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.EXTENSION_BANKS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Objects.requireNonNull;
@@ -177,11 +176,13 @@ public class VehicleSlotsHelper {
      * @param bankFileType  : type of bank file to be resolved
      * @return simple file name
      */
-    public static String getBankFileName(VehicleSlot vehicleSlot, BankFileType bankFileType) {
+    public static String getBankFileName(VehicleSlot vehicleSlot, BankFileType bankFileType, boolean withExtension) {
+
+        final String extension = withExtension ? "." + GenuineBnkGateway.EXTENSION_BANKS : "";
 
         if (FRONT_RIM == bankFileType ||
                 REAR_RIM == bankFileType) {
-            return getDefaultRimBankFileName(vehicleSlot, bankFileType);
+            return getDefaultRimBankFileName(vehicleSlot, bankFileType, extension);
         }
 
         String suffix;
@@ -203,7 +204,7 @@ public class VehicleSlotsHelper {
                 throw new IllegalArgumentException("Bank file type not handled: " + bankFileType);
         }
 
-        return String.format("%s%s.%s", vehicleSlot.getFileName(), suffix, GenuineBnkGateway.EXTENSION_BANKS);
+        return String.format("%s%s%s", vehicleSlot.getFileName().getValue(), suffix, extension);
     }
 
     /**
@@ -249,7 +250,7 @@ public class VehicleSlotsHelper {
                 .flatMap((rimSlotReference) -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS));
     }
 
-    private static String getDefaultRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType) {
+    private static String getDefaultRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType, String extension) {
         RimSlot.RimInfo rimInfo;
         if (FRONT_RIM == rimBankFileType) {
             rimInfo = vehicleSlot.getDefaultRims().getFrontRimInfo();
@@ -260,49 +261,7 @@ public class VehicleSlotsHelper {
         }
 
         return of(rimInfo.getFileName().getValue())
-                .map((rimBankSimpleName) -> String.format("%s.%s", rimBankSimpleName, EXTENSION_BANKS))
-                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
-    }
-
-    /**
-     * @param slotReference : vehicle slot reference
-     * @param bankFileType  : type of bank file to be resolved
-     * @return simple file name
-     */
-    public String getBankFileName(String slotReference, BankFileType bankFileType) {
-
-        if (FRONT_RIM == bankFileType ||
-                REAR_RIM == bankFileType) {
-            return getDefaultRimBankFileName(slotReference, bankFileType);
-        }
-
-        String suffix;
-        switch (bankFileType) {
-            case HUD:
-            case EXTERIOR_MODEL:
-                suffix = "";
-                break;
-
-            case INTERIOR_MODEL:
-                suffix = FileConstants.SUFFIX_INTERIOR_BANK_FILE;
-                break;
-
-            case SOUND:
-                suffix = FileConstants.SUFFIX_AUDIO_BANK_FILE;
-                break;
-
-            default:
-                throw new IllegalArgumentException("Bank file type not handled: " + bankFileType);
-        }
-
-        return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
-
-                .map(DbDataDto.Entry::getId)
-
-                .map((entryInternalIdentifier) -> getNameFromLocalResources(entryInternalIdentifier, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_FILE_NAME, DEFAULT_LOCALE, ""))
-
-                .map((simpleName) -> String.format("%s%s.%s", simpleName, suffix, EXTENSION_BANKS))
-
+                .map((rimBankSimpleName) -> String.format("%s%s", rimBankSimpleName, extension))
                 .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 
@@ -394,32 +353,6 @@ public class VehicleSlotsHelper {
                 })
 
                 .map(DbDataDto.Item::getRawValue)
-
-                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
-    }
-
-    private String getDefaultRimBankFileName(String slotReference, BankFileType rimBankFileType) {
-
-        return getDefaultRimEntryForVehicle(slotReference)
-
-                .flatMap((rimEntry) -> {
-                    int fieldRank;
-                    if (FRONT_RIM == rimBankFileType) {
-                        fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT;
-                    } else if (REAR_RIM == rimBankFileType) {
-                        fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR;
-                    } else {
-                        throw new IllegalArgumentException("Invalid bank file type: " + rimBankFileType);
-                    }
-
-                    return rimEntry.getItemAtRank(fieldRank);
-                })
-
-                .map(DbDataDto.Item::getRawValue)
-
-                .flatMap((resourceRef) -> miner.getLocalizedResourceValueFromTopicAndReference(resourceRef, RIMS, DEFAULT_LOCALE))
-
-                .map((rimBankSimpleName) -> String.format("%s.%s", rimBankSimpleName, EXTENSION_BANKS))
 
                 .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
