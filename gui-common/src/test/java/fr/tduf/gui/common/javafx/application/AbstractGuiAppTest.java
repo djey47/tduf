@@ -1,11 +1,12 @@
 package fr.tduf.gui.common.javafx.application;
 
 import com.esotericsoftware.minlog.Log;
-import com.sun.deploy.uitoolkit.ui.ConsoleHelper;
 import com.sun.javafx.application.ParametersImpl;
+import fr.tduf.libtesting.common.helper.ConsoleHelper;
 import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,20 +39,29 @@ public class AbstractGuiAppTest {
     @InjectMocks
     private TestApp testApp;
 
+    private OutputStream consoleOutputStream;
+
     @Before
     public void setUp() {
+        consoleOutputStream = ConsoleHelper.hijackStandardOutput();
+    }
+
+    @After
+    public void tearDown() {
+        ConsoleHelper.restoreOutput();
     }
 
     @Test
     public void start_withArgs_should_invokeStartApp_andGetArgs() throws Exception {
         // GIVEN
         ParametersImpl.registerParameters(testApp, createParams(ARGS));
+        final Stage primaryStage = new Stage();
 
         // WHEN
-        testApp.start(new Stage());
+        testApp.start(primaryStage);
 
         // THEN
-        verify(spy).invoke();
+        verify(spy).invoke(primaryStage);
 
         assertThat(TestApp.getCommandLineParameters()).containsExactly(ARGS);
     }
@@ -66,11 +77,14 @@ public class AbstractGuiAppTest {
         Log.info("info");
 
         // THEN
-        // TODO Use ConsoleHelper from CLI
+        final String consoleContents = ConsoleHelper.finalizeAndGetContents(consoleOutputStream);
+        assertThat(consoleContents)
+                .contains("trace")
+                .contains("info");
     }
 
     @Test
-    public void start_withoutVerboseSwitch_should_setLogLevelToTrace() throws Exception {
+    public void start_withoutVerboseSwitch_should_setLogLevelToInfo() throws Exception {
         // GIVEN
         ParametersImpl.registerParameters(testApp, createParams(ARGS));
 
@@ -80,7 +94,10 @@ public class AbstractGuiAppTest {
         Log.info("info");
 
         // THEN
-        // TODO Use ConsoleHelper from CLI
+        final String consoleContents = ConsoleHelper.finalizeAndGetContents(consoleOutputStream);
+        assertThat(consoleContents)
+                .doesNotContain("trace")
+                .contains("info");
     }
 
     private static class TestApp extends AbstractGuiApp {
@@ -93,12 +110,12 @@ public class AbstractGuiAppTest {
 
         @Override
         protected void startApp(Stage primaryStage) throws Exception {
-            spy.invoke();
+            spy.invoke(primaryStage);
         }
     }
 
     private interface MiniSpy {
-        void invoke();
+        void invoke(Stage stage);
     }
 
     private static Application.Parameters createParams(String... args ) {
@@ -120,5 +137,4 @@ public class AbstractGuiAppTest {
             }
         };
     }
-
 }
