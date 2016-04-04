@@ -90,8 +90,15 @@ public class VehicleSlotsHelper {
                 })
                 .orElse(null);
 
+        int carIdentifier = physicsEntry
+                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_ID_CAR))
+                .map(DbDataDto.Item::getRawValue)
+                .map(Integer::valueOf)
+                .orElse(DEFAULT_VEHICLE_ID);
+
         return of(VehicleSlot.builder()
                 .withRef(slotReference)
+                .withCarIdentifier(carIdentifier)
                 .withFileName(fileName)
                 .withDefaultRims(defaultRims)
                 .build());

@@ -15,6 +15,8 @@ public class VehicleSlot {
 
     private RimSlot defaultRims;
 
+    private int carIdentifier;
+
     private VehicleSlot(String ref) {
         this.ref = requireNonNull(ref, "Slot reference is required.");
     }
@@ -48,6 +50,10 @@ public class VehicleSlot {
         return defaultRims;
     }
 
+    public int getCarIdentifier() {
+        return carIdentifier;
+    }
+
     /**
      * Creates custom VehicleSlot instances.
      */
@@ -55,6 +61,7 @@ public class VehicleSlot {
         private String ref;
         private Resource fileName;
         private RimSlot defaultRims;
+        private int carIdentifier;
 
         public VehicleSlotBuilder withRef(String ref) {
             this.ref = ref;
@@ -71,11 +78,17 @@ public class VehicleSlot {
             return this;
         }
 
+        public VehicleSlotBuilder withCarIdentifier(int id) {
+            this.carIdentifier = id;
+            return this;
+        }
+
         public VehicleSlot build() {
             final VehicleSlot vehicleSlot = new VehicleSlot(this.ref);
 
             vehicleSlot.defaultRims = defaultRims;
             vehicleSlot.fileName = fileName;
+            vehicleSlot.carIdentifier = carIdentifier;
 
             return vehicleSlot;
         }

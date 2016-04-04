@@ -57,10 +57,12 @@ public class VehicleSlotsHelperTest {
         String directory = "DIR";
         String fileNameRef = "1111";
         String fileName = "FILE";
+        int idCar = 222;
         DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
                 .forId(0)
                 .addItem(DbDataDto.Item.builder().ofFieldRank(9).withRawValue(fileNameRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(10).withRawValue(rimSlotRef).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(102).withRawValue(Integer.valueOf(idCar).toString()).build())
                 .build();
         DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
                 .forId(0)
@@ -78,6 +80,7 @@ public class VehicleSlotsHelperTest {
         // THEN
         assertThat(actualSlot).isPresent();
         assertThat(actualSlot.get().getRef()).isEqualTo(slotRef);
+        assertThat(actualSlot.get().getCarIdentifier()).isEqualTo(idCar);
         assertThat(actualSlot.get().getFileName()).isEqualTo(Resource.from(fileNameRef, fileName));
         assertThat(actualSlot.get().getDefaultRims().getRef()).isEqualTo(rimSlotRef);
         assertThat(actualSlot.get().getDefaultRims().getParentDirectoryName()).isEqualTo(Resource.from(directoryRef, directory));
