@@ -7,7 +7,6 @@ import fr.tduf.gui.installer.domain.Resource;
 import fr.tduf.gui.installer.domain.RimSlot;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
-import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -21,11 +20,8 @@ import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileTyp
 import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.EXTENSION_BANKS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
+import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -389,80 +385,6 @@ public class VehicleSlotsHelper {
                 .map(DbDataDto.Item::getRawValue)
 
                 .orElse(DisplayConstants.ITEM_UNAVAILABLE);
-    }
-
-    /**
-     * @return value of Car_Model data for specified slot reference.
-     */
-    public String getModelNameReference(String slotReference) {
-        return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
-
-                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_MODEL_NAME))
-
-                .map(DbDataDto.Item::getRawValue)
-
-                .orElse(DatabaseConstants.RESOURCE_REF_UNKNOWN_VEHICLE_NAME);
-    }
-
-    /**
-     * @return value of Car_Version data for specified slot reference.
-     */
-    public String getVersionNameReference(String slotReference) {
-        return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
-
-                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_VERSION_NAME))
-
-                .map(DbDataDto.Item::getRawValue)
-
-                .orElse(DatabaseConstants.RESOURCE_REF_UNKNOWN_VEHICLE_NAME);
-    }
-
-    /**
-     * @return value of Color_Name data (CAR_COLORS) at exteriorIndex for specified slot reference
-     */
-    public String getColorNameReference(String slotReference, int exteriorIndex) {
-        List<DbFieldValueDto> criteria = singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference));
-        final List<DbDataDto.Entry> exteriorEntries = miner.getContentEntriesMatchingCriteria(criteria, CAR_COLORS);
-
-        if (exteriorEntries.size() >= exteriorIndex) {
-            int exteriorFieldRank = exteriorIndex - 1;
-            return exteriorEntries.get(exteriorFieldRank)
-                    .getItemAtRank(DatabaseConstants.FIELD_RANK_COLOR_NAME).get()
-                    .getRawValue();
-        }
-
-        return DatabaseConstants.RESOURCE_REF_UNKNOWN_COLOR_NAME;
-    }
-
-    /**
-     * @return value of Interior_ data (CAR_COLORS) at exteriorIndex and interiorIndex for specified slot reference
-     */
-    public String getInteriorReference(String slotReference, int exteriorIndex, int interiorIndex) {
-        List<DbFieldValueDto> criteria = singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference));
-        final List<DbDataDto.Entry> exteriorEntries = miner.getContentEntriesMatchingCriteria(criteria, CAR_COLORS);
-
-        if (exteriorEntries.size() >= exteriorIndex) {
-            int interiorFieldRank = DatabaseConstants.FIELD_RANK_INTERIOR_1 + interiorIndex - 1;
-            return exteriorEntries.get(exteriorIndex - 1)
-                    .getItemAtRank(interiorFieldRank).get()
-                    .getRawValue();
-        }
-
-        return DisplayConstants.ITEM_UNAVAILABLE;
-    }
-
-    /**
-     * @return value of REF data (INTERIOR) at exteriorIndex and interiorIndex for specified slot reference
-     */
-    public String getInteriorNameReference(String slotReference, int exteriorIndex, int interiorIndex) {
-        String interiorReference = getInteriorReference(slotReference, exteriorIndex, interiorIndex);
-        return miner.getContentEntryFromTopicWithReference(interiorReference, INTERIOR)
-
-                .flatMap((interiorEntry) -> interiorEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_INTERIOR_NAME))
-
-                .map(DbDataDto.Item::getRawValue)
-
-                .orElse(DatabaseConstants.RESOURCE_REF_NONE_INTERIOR_NAME);
     }
 
     /**
