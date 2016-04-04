@@ -25,6 +25,7 @@ allprojects {
     ext.assertjVersion = '3.1.0'
     ext.jsonassertVersion = '1.2.3'
     ext.mockitoVersion = '2.0.31-beta'
+    ext.minlogVersion = '1.2'
 }
 
 subprojects {
@@ -42,8 +43,7 @@ subprojects {
         compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
         compile group: 'com.google.guava', name: 'guava', version: '18.0'
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3.2'
-        compile group: 'com.esotericsoftware.minlog', name: 'minlog', version: '1.2'
-
+        compile group: 'com.esotericsoftware.minlog', name: 'minlog', version: "$minlogVersion"
 
         testCompile project(':lib-testing')
         testCompile group: 'junit', name: 'junit', version: '4.11'
@@ -166,7 +166,11 @@ project('lib-unlimited') {
     }
 }
 
-project(':gui-common') {}
+project(':gui-common') {
+    dependencies {
+        testCompile group: 'com.esotericsoftware.minlog', name: 'minlog', version: "$minlogVersion"
+    }
+}
 
 project(':gui-database') {
     dependencies {
