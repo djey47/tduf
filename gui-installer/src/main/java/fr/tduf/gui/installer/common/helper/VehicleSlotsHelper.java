@@ -58,7 +58,7 @@ public class VehicleSlotsHelper {
         requireNonNull(miner, "Database miner instance is required.");
 
         // TODO extract methods
-        final Optional<DbDataDto.Entry> defaultRimEntry = getDefaultRimEntryForVehicle(slotReference, miner);
+        final Optional<DbDataDto.Entry> defaultRimEntry = getDefaultRimEntryForVehicle(slotReference);
         if (!defaultRimEntry.isPresent()) {
             return empty();
         }
@@ -239,7 +239,7 @@ public class VehicleSlotsHelper {
                 .collect(toList());
     }
 
-    private static Optional<DbDataDto.Entry> getDefaultRimEntryForVehicle(String slotReference, BulkDatabaseMiner miner) {
+    private Optional<DbDataDto.Entry> getDefaultRimEntryForVehicle(String slotReference) {
         return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
 
                 .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEFAULT_RIMS))
@@ -396,16 +396,6 @@ public class VehicleSlotsHelper {
                 .map(DbDataDto.Item::getRawValue)
 
                 .orElse(DisplayConstants.ITEM_UNAVAILABLE);
-    }
-
-    private Optional<DbDataDto.Entry> getDefaultRimEntryForVehicle(String slotReference) {
-        return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
-
-                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEFAULT_RIMS))
-
-                .map(DbDataDto.Item::getRawValue)
-
-                .flatMap((rimSlotReference) -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS));
     }
 
     private String getDefaultRimBankFileName(String slotReference, BankFileType rimBankFileType) {
