@@ -1,4 +1,4 @@
-package fr.tduf.cli.common.helper;
+package fr.tduf.libtesting.common.helper;
 
 import java.io.*;
 

@@ -1,7 +1,7 @@
 package fr.tduf.cli.tools;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.cli.common.helper.ConsoleHelper;
+import fr.tduf.libtesting.common.helper.ConsoleHelper;
 import fr.tduf.libtesting.common.helper.AssertionsHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
