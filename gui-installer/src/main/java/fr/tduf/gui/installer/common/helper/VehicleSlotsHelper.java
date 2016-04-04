@@ -101,7 +101,7 @@ public class VehicleSlotsHelper {
      * @param bankFileType  : type of bank file to be resolved
      * @return simple file name
      */
-    public String getBankFileName(VehicleSlot vehicleSlot, BankFileType bankFileType) {
+    public static String getBankFileName(VehicleSlot vehicleSlot, BankFileType bankFileType) {
 
         if (FRONT_RIM == bankFileType ||
                 REAR_RIM == bankFileType) {
@@ -138,6 +138,21 @@ public class VehicleSlotsHelper {
                 .map(DbDataDto.Item::getRawValue)
 
                 .flatMap((rimSlotReference) -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS));
+    }
+
+    private static String getDefaultRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType) {
+        RimSlot.RimInfo rimInfo;
+        if (FRONT_RIM == rimBankFileType) {
+            rimInfo = vehicleSlot.getDefaultRims().getFrontRimInfo();
+        } else if (REAR_RIM == rimBankFileType) {
+            rimInfo = vehicleSlot.getDefaultRims().getRearRimInfo();
+        } else {
+            throw new IllegalArgumentException("Invalid bank file type: " + rimBankFileType);
+        }
+
+        return of(rimInfo.getFileName().getValue())
+                .map((rimBankSimpleName) -> String.format("%s.%s", rimBankSimpleName, EXTENSION_BANKS))
+                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 
     /**
@@ -406,33 +421,6 @@ public class VehicleSlotsHelper {
                 .map(DbDataDto.Item::getRawValue)
 
                 .flatMap((rimSlotReference) -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS));
-    }
-
-    // TODO use info from domain object
-    private String getDefaultRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType) {
-
-        return getDefaultRimEntryForVehicle(vehicleSlot.getRef())
-
-                .flatMap((rimEntry) -> {
-                    int fieldRank;
-                    if (FRONT_RIM == rimBankFileType) {
-                        fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT;
-                    } else if (REAR_RIM == rimBankFileType) {
-                        fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR;
-                    } else {
-                        throw new IllegalArgumentException("Invalid bank file type: " + rimBankFileType);
-                    }
-
-                    return rimEntry.getItemAtRank(fieldRank);
-                })
-
-                .map(DbDataDto.Item::getRawValue)
-
-                .flatMap((resourceRef) -> miner.getLocalizedResourceValueFromTopicAndReference(resourceRef, RIMS, DEFAULT_LOCALE))
-
-                .map((rimBankSimpleName) -> String.format("%s.%s", rimBankSimpleName, EXTENSION_BANKS))
-
-                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 
     private String getDefaultRimBankFileName(String slotReference, BankFileType rimBankFileType) {
