@@ -72,9 +72,9 @@ public class UserInputHelper {
         String selectedRimReference = vehicleSlot.getDefaultRims().getRef();
         String selectedResourceRimBrandReference = vehicleSlot.getDefaultRims().getParentDirectoryName().getRef();
         String selectedFrontRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, FRONT_RIM, false);
-        String selectedResourceFrontRimBankName = vehicleSlotsHelper.getDefaultRimFileNameReference(slotReference, FRONT_RIM);
+        String selectedResourceFrontRimBankName = vehicleSlot.getDefaultRims().getFrontRimInfo().getFileName().getRef();
         String selectedRearRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIM, false);
-        String selectedResourceRearRimBankName = vehicleSlotsHelper.getDefaultRimFileNameReference(slotReference, REAR_RIM);
+        String selectedResourceRearRimBankName = vehicleSlot.getDefaultRims().getRearRimInfo().getFileName().getRef();
 
         List<String> values = asList(selectedBankName, selectedResourceBankName, selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);
         if (VehicleSlotsHelper.DEFAULT_VEHICLE_ID == selectedCarIdentifier

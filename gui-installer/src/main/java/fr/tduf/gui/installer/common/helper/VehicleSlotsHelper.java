@@ -267,31 +267,6 @@ public class VehicleSlotsHelper {
                 .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 
-    /**
-     * @return value of Rsc_File_Name_Front or Rsc_File_Name_Rear
-     */
-    public String getDefaultRimFileNameReference(String slotReference, BankFileType rimBankFileType) {
-
-        return getDefaultRimEntryForVehicle(slotReference)
-
-                .flatMap((rimEntry) -> {
-                    int fieldRank;
-                    if (FRONT_RIM == rimBankFileType) {
-                        fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT;
-                    } else if (REAR_RIM == rimBankFileType) {
-                        fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR;
-                    } else {
-                        throw new IllegalArgumentException("Invalid bank file type: " + rimBankFileType);
-                    }
-
-                    return rimEntry.getItemAtRank(fieldRank);
-                })
-
-                .map(DbDataDto.Item::getRawValue)
-
-                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
-    }
-
     // TODO move these methods to library when needed
     private String getNameFromRemoteEntryResources(long entryInternalIdentifier, DbDto.Topic localTopic, DbDto.Topic remoteTopic, int localFieldRank, int remoteFieldRank, DbResourceDto.Locale locale, String defaultValue) {
         final Optional<String> remoteResourceEntry = miner.getRemoteContentEntryWithInternalIdentifier(localTopic, localFieldRank, entryInternalIdentifier, remoteTopic)
