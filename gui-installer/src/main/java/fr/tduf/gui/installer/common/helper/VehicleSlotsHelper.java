@@ -50,10 +50,10 @@ public class VehicleSlotsHelper {
      * @return a new slot instance if it exists with given REF, or empty otherwise.
      */
     public static Optional<VehicleSlot> loadVehicleSlotFromReference(String slotReference, BulkDatabaseMiner miner) {
-        final VehicleSlotsHelper helperInstance = new VehicleSlotsHelper(requireNonNull(miner, "Database miner instance is required."));
+        requireNonNull(slotReference, "Slot reference is required.");
+        requireNonNull(miner, "Database miner instance is required.");
 
-        // TODO convert to static
-        final Optional<DbDataDto.Entry> defaultRimEntry = helperInstance.getDefaultRimEntryForVehicle(slotReference);
+        final Optional<DbDataDto.Entry> defaultRimEntry = getDefaultRimEntryForVehicle(slotReference, miner);
         if (!defaultRimEntry.isPresent()) {
             return empty();
         }
@@ -128,6 +128,16 @@ public class VehicleSlotsHelper {
         }
 
         return String.format("%s%s.%s", vehicleSlot.getFileName(), suffix, GenuineBnkGateway.EXTENSION_BANKS);
+    }
+
+    private static Optional<DbDataDto.Entry> getDefaultRimEntryForVehicle(String slotReference, BulkDatabaseMiner miner) {
+        return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
+
+                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEFAULT_RIMS))
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .flatMap((rimSlotReference) -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS));
     }
 
     /**
