@@ -103,9 +103,9 @@ public class VehicleSlotsHelperTest {
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(realName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 13, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 14, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(versionName));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 13, RIMS, UNITED_STATES)).thenReturn(of(directory));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 14, RIMS, UNITED_STATES)).thenReturn(of(frontRimFileName));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 15, RIMS, UNITED_STATES)).thenReturn(of(rearRimFileName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(directoryRef, RIMS, UNITED_STATES)).thenReturn(of(directory));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(frontRimFileNameRef, RIMS, UNITED_STATES)).thenReturn(of(frontRimFileName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(rearRimFileNameRef, RIMS, UNITED_STATES)).thenReturn(of(rearRimFileName));
 
         // WHEN
         final Optional<VehicleSlot> actualSlot = VehicleSlotsHelper

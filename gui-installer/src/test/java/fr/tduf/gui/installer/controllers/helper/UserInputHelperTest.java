@@ -34,6 +34,7 @@ public class UserInputHelperTest {
     private static final String RES_BANKNAME_RR_1 = "3000000011";
     private static final String RIMREF_1 = "3000000001";
     private static final String RES_RIMBRAND_1 = "654857";
+    private static final String RIMBRAND_1 = "Default";
 
     @Mock
     private BulkDatabaseMiner minerMock;
@@ -46,6 +47,7 @@ public class UserInputHelperTest {
         when(minerMock.getLocalizedResourceValueFromContentEntry(eq(0L), eq(9), eq(CAR_PHYSICS_DATA), any(DbResourceDto.Locale.class))).thenReturn(of(BANKNAME));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(eq(RES_BANKNAME_FR_1), eq(RIMS), any(DbResourceDto.Locale.class))).thenReturn(of(BANKNAME_FR_1));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(eq(RES_BANKNAME_RR_1), eq(RIMS), any(DbResourceDto.Locale.class))).thenReturn(of(BANKNAME_RR_1));
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(eq(RES_RIMBRAND_1), eq(RIMS), any(DbResourceDto.Locale.class))).thenReturn(of(RIMBRAND_1));
 
         // Invalid slot
         when(minerMock.getContentEntryFromTopicWithReference(SLOTREF_INV, CAR_PHYSICS_DATA)).thenReturn(empty());

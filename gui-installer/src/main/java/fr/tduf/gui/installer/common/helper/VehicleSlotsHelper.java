@@ -72,7 +72,7 @@ public class VehicleSlotsHelper {
             Resource defaulRimsParentDirectory = defaultRimEntry
                     .flatMap((rimEntry) -> rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RSC_PATH))
                     .map((item) -> {
-                        String defaultValue = miner.getLocalizedResourceValueFromContentEntry(defaultRimEntry.get().getId(), DatabaseConstants.FIELD_RANK_RSC_PATH, RIMS, DEFAULT_LOCALE)
+                        String defaultValue = miner.getLocalizedResourceValueFromTopicAndReference(item.getRawValue(), RIMS, DEFAULT_LOCALE)
                                 .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
                         return Resource.from(item.getRawValue(), defaultValue);
                     })
@@ -81,7 +81,7 @@ public class VehicleSlotsHelper {
             Resource frontFileName = defaultRimEntry
                     .flatMap((rimEntry) -> rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT))
                     .map((item) -> {
-                        String defaultValue = miner.getLocalizedResourceValueFromContentEntry(defaultRimEntry.get().getId(), DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT, RIMS, DEFAULT_LOCALE)
+                        String defaultValue = miner.getLocalizedResourceValueFromTopicAndReference(item.getRawValue(), RIMS, DEFAULT_LOCALE)
                                 .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
                         return Resource.from(item.getRawValue(), defaultValue);
                     })
@@ -89,7 +89,7 @@ public class VehicleSlotsHelper {
             Resource rearFileName = defaultRimEntry
                     .flatMap((rimEntry) -> rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR))
                     .map((item) -> {
-                        String defaultValue = miner.getLocalizedResourceValueFromContentEntry(defaultRimEntry.get().getId(), DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR, RIMS, DEFAULT_LOCALE)
+                        String defaultValue = miner.getLocalizedResourceValueFromTopicAndReference(item.getRawValue(), RIMS, DEFAULT_LOCALE)
                                 .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
                         return Resource.from(item.getRawValue(), defaultValue);
                     })
@@ -262,20 +262,6 @@ public class VehicleSlotsHelper {
         return of(rimInfo.getFileName().getValue())
                 .map((rimBankSimpleName) -> String.format("%s.%s", rimBankSimpleName, EXTENSION_BANKS))
                 .orElse(DisplayConstants.ITEM_UNAVAILABLE);
-    }
-
-    /**
-     * @param slotReference : vehicle slot reference
-     * @return first brand directory resource reference for a vehicle rim
-     */
-    public String getDefaultRimDirectoryResource(String slotReference) {
-        return getDefaultRimEntryForVehicle(slotReference)
-
-                .flatMap((rimEntry) -> rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RSC_PATH))
-
-                .map(DbDataDto.Item::getRawValue)
-
-                .orElse(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND);
     }
 
     /**

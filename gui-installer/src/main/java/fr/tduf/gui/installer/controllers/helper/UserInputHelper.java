@@ -5,6 +5,7 @@ import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.controllers.SlotsBrowserStageController;
 import fr.tduf.gui.installer.domain.DatabaseContext;
+import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
 import fr.tduf.gui.installer.stages.SlotsBrowserStageDesigner;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -61,18 +62,25 @@ public class UserInputHelper {
         Log.info(THIS_CLASS_NAME, "->Resolving missing properties with slot information");
 
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
+        Optional<VehicleSlot> potentialVehicleSlot = vehicleSlotsHelper.getVehicleSlotFromReference(slotReference);
+        if (!potentialVehicleSlot.isPresent()) {
+            throw new IllegalArgumentException("Unable to get valid information for vehicle slot, as it does not exist: " + slotReference);
+        }
+
+        VehicleSlot vehicleSlot = potentialVehicleSlot.get();
+
         int selectedCarIdentifier = vehicleSlotsHelper.getVehicleIdentifier(slotReference);
         String selectedBankName = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, EXTERIOR_MODEL));
         String selectedResourceBankName = vehicleSlotsHelper.getCarFileNameReference(slotReference);
         String selectedRimReference = vehicleSlotsHelper.getDefaultRimIdentifier(slotReference);
-        String selectedResourceRimBrandReference = vehicleSlotsHelper.getDefaultRimDirectoryResource(slotReference);
+        String selectedResourceRimBrandReference = vehicleSlot.getDefaultRims().getParentDirectoryName().getRef();
         String selectedFrontRimBank = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, FRONT_RIM));
         String selectedResourceFrontRimBankName = vehicleSlotsHelper.getDefaultRimFileNameReference(slotReference, FRONT_RIM);
         String selectedRearRimBank = getNameWithoutExtension(vehicleSlotsHelper.getBankFileName(slotReference, REAR_RIM));
         String selectedResourceRearRimBankName = vehicleSlotsHelper.getDefaultRimFileNameReference(slotReference, REAR_RIM);
 
         List<String> values = asList(selectedBankName, selectedResourceBankName, selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);
-        if (selectedCarIdentifier == VehicleSlotsHelper.DEFAULT_VEHICLE_ID
+        if (VehicleSlotsHelper.DEFAULT_VEHICLE_ID == selectedCarIdentifier
                 || values.contains(DisplayConstants.ITEM_UNAVAILABLE)) {
             throw new IllegalArgumentException("Unable to get valid information for vehicle slot: " + slotReference);
         }
