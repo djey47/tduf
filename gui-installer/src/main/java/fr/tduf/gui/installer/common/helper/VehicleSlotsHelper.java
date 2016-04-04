@@ -213,7 +213,7 @@ public class VehicleSlotsHelper {
     public static String getVehicleName(VehicleSlot vehicleSlot) {
 
         final Resource realName = vehicleSlot.getRealName();
-        if (realName != null) {
+        if (realName != null && !realName.getRef().equals(DatabaseConstants.RESOURCE_REF_UNKNOWN_VEHICLE_NAME)) {
             return realName.getValue();
         }
 
@@ -262,32 +262,6 @@ public class VehicleSlotsHelper {
 
         return of(rimInfo.getFileName().getValue())
                 .map((rimBankSimpleName) -> String.format("%s%s", rimBankSimpleName, extension))
-                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
-    }
-
-    /**
-     * @param slotReference : reference (REF value) of entry
-     * @return in-game vehicle name, or N/A if unavailable.
-     */
-    public String getVehicleName(String slotReference) {
-
-        return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
-
-                .map(DbDataDto.Entry::getId)
-
-                .map((entryInternalIdentifier) -> {
-                    final String realName = getNameFromLocalResources(entryInternalIdentifier, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_REAL_NAME, DEFAULT_LOCALE, "");
-                    if (!"".equals(realName)) {
-                        return realName;
-                    }
-
-                    final String brandName = getNameFromRemoteEntryResources(entryInternalIdentifier, CAR_PHYSICS_DATA, BRANDS, DatabaseConstants.FIELD_RANK_CAR_BRAND, DatabaseConstants.FIELD_RANK_MANUFACTURER_NAME, DEFAULT_LOCALE, "");
-                    final String modelName = getNameFromLocalResources(entryInternalIdentifier, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_MODEL_NAME, DEFAULT_LOCALE, "");
-                    final String versionName = getNameFromLocalResources(entryInternalIdentifier, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_VERSION_NAME, DEFAULT_LOCALE, "");
-
-                    return String.format("%s %s %s", brandName, modelName, versionName).trim();
-                })
-
                 .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 

@@ -6,6 +6,7 @@ import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
+import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -197,7 +198,9 @@ public class SlotsBrowserStageController extends AbstractGuiController {
                     String slotReference = miner.getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, CAR_PHYSICS_DATA).get();
                     dataItem.setReference(slotReference);
 
-                    String slotName = vehicleSlotsHelper.getVehicleName(slotReference);
+                    VehicleSlot vehicleSlot = vehicleSlotsHelper.getVehicleSlotFromReference(slotReference).get();
+
+                    String slotName = VehicleSlotsHelper.getVehicleName(vehicleSlot);
                     dataItem.setName(slotName);
 
                     int carId = vehicleSlotsHelper.getVehicleIdentifier(slotReference);

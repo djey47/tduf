@@ -127,134 +127,118 @@ public class VehicleSlotsHelperTest {
         assertThat(actualSlot.get().getDefaultRims().getRearRimInfo().getFileName()).isEqualTo(Resource.from(rearRimFileNameRef, rearRimFileName));
     }
 
-    @Test
-    public void getVehicleName_whenInformationUnavailable() throws Exception {
-        // GIVEN
-        String slotReference = "REF";
-
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(Optional.empty());
-
-
-        // WHEN
-        final String actualName = vehicleSlotsHelper.getVehicleName(slotReference);
-
-
-        // THEN
-        assertThat(actualName).isEqualTo("N/A");
-    }
-
-    @Test
-    public void getVehicleName_whenRealNameAvailable() throws Exception {
-        // GIVEN
-        String slotReference = "REF";
-        String realName = "realName";
-
-        DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
-                .forId(1)
-                .build();
-
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(realName));
-
-
-        // WHEN
-        final String actualName = vehicleSlotsHelper.getVehicleName(slotReference);
-
-
-        // THEN
-        assertThat(actualName).isEqualTo(realName);
-    }
-
-    @Test
-    public void getVehicleName_whenRealNameUnavailable() throws Exception {
-        // GIVEN
-        String slotReference = "REF";
-        String brandName = "Alfa-Romeo";
-        String modelName = "Brera";
-        String versionName = "2.0 SkyView";
-
-        DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
-                .forId(1)
-                .build();
-        DbDataDto.Entry remoteContentEntry = DbDataDto.Entry.builder()
-                .forId(1)
-                .build();
-
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
-        when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(of(remoteContentEntry));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 13, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 14, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(versionName));
-
-
-        // WHEN
-        final String actualName = vehicleSlotsHelper.getVehicleName(slotReference);
-
-
-        // THEN
-        assertThat(actualName).isEqualTo("Alfa-Romeo Brera 2.0 SkyView");
-    }
-
-    @Test
-    public void getVehicleName_whenBrandNameUnavailable() throws Exception {
-        // GIVEN
-        String slotReference = "REF";
-        String modelName = "Brera";
-
-        DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
-                .forId(1)
-                .build();
-        DbDataDto.Entry remoteContentEntry = DbDataDto.Entry.builder()
-                .forId(1)
-                .build();
-
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
-        when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(of(remoteContentEntry));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 3, BRANDS, UNITED_STATES)).thenReturn(empty());
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 13, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 14, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(empty());
-
-
-        // WHEN
-        final String actualName = vehicleSlotsHelper.getVehicleName(slotReference);
-
-
-        // THEN
-        assertThat(actualName).isEqualTo("Brera");
-    }
-
-    @Test
-    public void getVehicleName_whenVersionNameUnavailable() throws Exception {
-        // GIVEN
-        String slotReference = "REF";
-        String brandName = "Alfa-Romeo";
-        String modelName = "Brera";
-
-        DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
-                .forId(1)
-                .build();
-        DbDataDto.Entry remoteContentEntry = DbDataDto.Entry.builder()
-                .forId(1)
-                .build();
-
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
-        when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(of(remoteContentEntry));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 13, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 14, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
-
-
-        // WHEN
-        final String actualName = vehicleSlotsHelper.getVehicleName(slotReference);
-
-
-        // THEN
-        assertThat(actualName).isEqualTo("Alfa-Romeo Brera");
-    }
-
+//    @Test
+//    public void getVehicleName_whenRealNameAvailable() throws Exception {
+//        // GIVEN
+//        String slotReference = "REF";
+//        String realName = "realName";
+//
+//        DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
+//                .forId(1)
+//                .build();
+//
+//        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
+//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(realName));
+//
+//
+//        // WHEN
+//        final String actualName = vehicleSlotsHelper.getVehicleName(slotReference);
+//
+//
+//        // THEN
+//        assertThat(actualName).isEqualTo(realName);
+//    }
+//
+//    @Test
+//    public void getVehicleName_whenRealNameUnavailable() throws Exception {
+//        // GIVEN
+//        String slotReference = "REF";
+//        String brandName = "Alfa-Romeo";
+//        String modelName = "Brera";
+//        String versionName = "2.0 SkyView";
+//
+//        DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
+//                .forId(1)
+//                .build();
+//        DbDataDto.Entry remoteContentEntry = DbDataDto.Entry.builder()
+//                .forId(1)
+//                .build();
+//
+//        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
+//        when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(of(remoteContentEntry));
+//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
+//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
+//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 13, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
+//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 14, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(versionName));
+//
+//
+//        // WHEN
+//        final String actualName = vehicleSlotsHelper.getVehicleName(slotReference);
+//
+//
+//        // THEN
+//        assertThat(actualName).isEqualTo("Alfa-Romeo Brera 2.0 SkyView");
+//    }
+//
+//    @Test
+//    public void getVehicleName_whenBrandNameUnavailable() throws Exception {
+//        // GIVEN
+//        String slotReference = "REF";
+//        String modelName = "Brera";
+//
+//        DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
+//                .forId(1)
+//                .build();
+//        DbDataDto.Entry remoteContentEntry = DbDataDto.Entry.builder()
+//                .forId(1)
+//                .build();
+//
+//        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
+//        when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(of(remoteContentEntry));
+//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 3, BRANDS, UNITED_STATES)).thenReturn(empty());
+//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
+//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 13, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
+//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 14, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(empty());
+//
+//
+//        // WHEN
+//        final String actualName = vehicleSlotsHelper.getVehicleName(slotReference);
+//
+//
+//        // THEN
+//        assertThat(actualName).isEqualTo("Brera");
+//    }
+//
+//    @Test
+//    public void getVehicleName_whenVersionNameUnavailable() throws Exception {
+//        // GIVEN
+//        String slotReference = "REF";
+//        String brandName = "Alfa-Romeo";
+//        String modelName = "Brera";
+//
+//        DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
+//                .forId(1)
+//                .build();
+//        DbDataDto.Entry remoteContentEntry = DbDataDto.Entry.builder()
+//                .forId(1)
+//                .build();
+//
+//        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
+//        when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(of(remoteContentEntry));
+//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
+//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
+//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 13, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
+//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 14, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
+//
+//
+//        // WHEN
+//        final String actualName = vehicleSlotsHelper.getVehicleName(slotReference);
+//
+//
+//        // THEN
+//        assertThat(actualName).isEqualTo("Alfa-Romeo Brera");
+//    }
+//
     @Test
     public void getDrivableVehicleSlotEntries_when1DrivableVehicle_shouldReturnIt() {
         // GIVEN
