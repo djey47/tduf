@@ -9,7 +9,6 @@ import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.util.List;
@@ -26,7 +25,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Component to get advanced information on vehicle slots.
  */
-// TODO Provide single method to load vehicle data into a domain object (VehicleSlot) and use it
 public class VehicleSlotsHelper {
 
     public static final int DEFAULT_VEHICLE_ID = 0;
@@ -268,17 +266,6 @@ public class VehicleSlotsHelper {
     }
 
     // TODO move these methods to library when needed
-    private String getNameFromRemoteEntryResources(long entryInternalIdentifier, DbDto.Topic localTopic, DbDto.Topic remoteTopic, int localFieldRank, int remoteFieldRank, DbResourceDto.Locale locale, String defaultValue) {
-        final Optional<String> remoteResourceEntry = miner.getRemoteContentEntryWithInternalIdentifier(localTopic, localFieldRank, entryInternalIdentifier, remoteTopic)
-                .flatMap((remoteEntry) -> miner.getLocalizedResourceValueFromContentEntry(remoteEntry.getId(), remoteFieldRank, remoteTopic, locale));
-        return getNameFromLocalResourceValue(remoteResourceEntry, defaultValue);
-    }
-
-    private String getNameFromLocalResources(long entryInternalIdentifier, DbDto.Topic topic, int fieldRank, DbResourceDto.Locale locale, String defaultValue) {
-        Optional<String> resourceValue = miner.getLocalizedResourceValueFromContentEntry(entryInternalIdentifier, fieldRank, topic, locale);
-        return getNameFromLocalResourceValue(resourceValue, defaultValue);
-    }
-
     private static String getNameFromLocalResourceValue(Optional<String> potentialValue, String defaultValue) {
         return potentialValue
 
