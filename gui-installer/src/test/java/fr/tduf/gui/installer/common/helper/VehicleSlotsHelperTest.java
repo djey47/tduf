@@ -60,6 +60,8 @@ public class VehicleSlotsHelperTest {
         String fileName = "FILE";
         String brandNameRef = "3333";
         String brandName = "BRAND";
+        String realNameRef = "4444";
+        String realName = "REALNAME";
         String frontRimFileNameRef = "1111";
         String frontRimFileName = "FILE_F";
         String rearRimFileNameRef = "2222";
@@ -76,6 +78,7 @@ public class VehicleSlotsHelperTest {
                 .addItem(DbDataDto.Item.builder().ofFieldRank(2).withRawValue(brandSlotRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(9).withRawValue(fileNameRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(10).withRawValue(rimSlotRef).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(12).withRawValue(realNameRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(102).withRawValue(Integer.valueOf(idCar).toString()).build())
                 .build();
         DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
@@ -90,6 +93,7 @@ public class VehicleSlotsHelperTest {
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef, RIMS)).thenReturn(of(rimsEntry));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 9, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(fileName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(realName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 13, RIMS, UNITED_STATES)).thenReturn(of(directory));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 14, RIMS, UNITED_STATES)).thenReturn(of(frontRimFileName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 15, RIMS, UNITED_STATES)).thenReturn(of(rearRimFileName));
@@ -103,6 +107,7 @@ public class VehicleSlotsHelperTest {
         assertThat(actualSlot.get().getCarIdentifier()).isEqualTo(idCar);
         assertThat(actualSlot.get().getFileName()).isEqualTo(Resource.from(fileNameRef, fileName));
         assertThat(actualSlot.get().getBrandName()).isEqualTo(Resource.from("", brandName));
+        assertThat(actualSlot.get().getRealName()).isEqualTo(Resource.from(realNameRef, realName));
         assertThat(actualSlot.get().getDefaultRims().getRef()).isEqualTo(rimSlotRef);
         assertThat(actualSlot.get().getDefaultRims().getParentDirectoryName()).isEqualTo(Resource.from(directoryRef, directory));
         assertThat(actualSlot.get().getDefaultRims().getFrontRimInfo().getFileName()).isEqualTo(Resource.from(frontRimFileNameRef, frontRimFileName));

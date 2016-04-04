@@ -118,6 +118,15 @@ public class VehicleSlotsHelper {
                 })
                 .orElse(null);
 
+        Resource realName = physicsEntry
+                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REAL_NAME))
+                .map((item) -> {
+                    String nameValue = miner.getLocalizedResourceValueFromContentEntry(physicsEntry.get().getId(), DatabaseConstants.FIELD_RANK_CAR_REAL_NAME, CAR_PHYSICS_DATA, DEFAULT_LOCALE)
+                            .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
+                    return Resource.from(item.getRawValue(), nameValue);
+                })
+                .orElse(null);
+
         int carIdentifier = physicsEntry
                 .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_ID_CAR))
                 .map(DbDataDto.Item::getRawValue)
@@ -135,6 +144,7 @@ public class VehicleSlotsHelper {
                 .withRef(slotReference)
                 .withCarIdentifier(carIdentifier)
                 .withFileName(fileName)
+                .withRealName(realName)
                 .withDefaultRims(defaultRims)
                 .withBrandName(brandName)
                 .build());
