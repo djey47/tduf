@@ -66,7 +66,7 @@ public class UserInputHelper {
 
         VehicleSlot vehicleSlot = potentialVehicleSlot.get();
 
-        int selectedCarIdentifier = vehicleSlotsHelper.getVehicleIdentifier(slotReference);
+        int selectedCarIdentifier = vehicleSlot.getCarIdentifier();
         String selectedBankName = VehicleSlotsHelper.getBankFileName(vehicleSlot, EXTERIOR_MODEL, false);
         String selectedResourceBankName = vehicleSlotsHelper.getCarFileNameReference(slotReference);
         String selectedRimReference = vehicleSlotsHelper.getDefaultRimIdentifier(slotReference);

@@ -202,9 +202,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
                     String slotName = VehicleSlotsHelper.getVehicleName(vehicleSlot);
                     dataItem.setName(slotName);
-
-                    int carId = vehicleSlotsHelper.getVehicleIdentifier(slotReference);
-                    dataItem.setCarId(carId);
+                    dataItem.setCarId(vehicleSlot.getCarIdentifier());
 
                     return dataItem;
                 })

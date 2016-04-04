@@ -268,21 +268,6 @@ public class VehicleSlotsHelper {
     }
 
     /**
-     * @return value of ID_Car data for specified slot reference.
-     */
-    public int getVehicleIdentifier(String slotRerence) {
-        return miner.getContentEntryFromTopicWithReference(slotRerence, CAR_PHYSICS_DATA)
-
-                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_ID_CAR))
-
-                .map(DbDataDto.Item::getRawValue)
-
-                .map(Integer::valueOf)
-
-                .orElse(DEFAULT_VEHICLE_ID);
-    }
-
-    /**
      * @return value of Car_FileName data for specified slot reference.
      */
     public String getCarFileNameReference(String slotReference) {

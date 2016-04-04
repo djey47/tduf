@@ -21,8 +21,6 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 
@@ -345,42 +343,4 @@ public class VehicleSlotsHelperTest {
 //        // THEN
 //        assertThat(actualBankFileName).isEqualTo("RX8_R_01.bnk");
 //    }
-
-    @Test
-    public void getVehicleIdentifier_whenSlotExists() {
-        // GIVEN
-        String slotReference = "11111111";
-        DbDataDto.Item physicsItem = DbDataDto.Item.builder()
-                .ofFieldRank(102)
-                .withRawValue("1000")
-                .build();
-        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
-                .forId(1)
-                .addItem(physicsItem)
-                .build();
-
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
-
-
-        // WHEN
-        final Integer vehicleIdentifier = vehicleSlotsHelper.getVehicleIdentifier(slotReference);
-
-
-        // THEN
-        assertThat(vehicleIdentifier).isEqualTo(1000);
-    }
-
-    @Test
-    public void getVehicleIdentifier_whenSlotDoesNotExist_shouldReturn0() {
-        // GIVEN
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(anyString(), eq(CAR_PHYSICS_DATA))).thenReturn(empty());
-
-
-        // WHEN
-        final Integer vehicleIdentifier = vehicleSlotsHelper.getVehicleIdentifier("11111111");
-
-
-        // THEN
-        assertThat(vehicleIdentifier).isZero();
-    }
 }
