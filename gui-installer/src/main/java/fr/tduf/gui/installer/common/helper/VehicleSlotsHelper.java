@@ -6,6 +6,7 @@ import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.domain.Resource;
 import fr.tduf.gui.installer.domain.RimSlot;
 import fr.tduf.gui.installer.domain.VehicleSlot;
+import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -51,6 +52,7 @@ public class VehicleSlotsHelper {
     public static Optional<VehicleSlot> loadVehicleSlotFromReference(String slotReference, BulkDatabaseMiner miner) {
         final VehicleSlotsHelper helperInstance = new VehicleSlotsHelper(requireNonNull(miner, "Database miner instance is required."));
 
+        // TODO convert to static
         final Optional<DbDataDto.Entry> defaultRimEntry = helperInstance.getDefaultRimEntryForVehicle(slotReference);
         if (!defaultRimEntry.isPresent()) {
             return empty();
@@ -78,10 +80,54 @@ public class VehicleSlotsHelper {
                     .build();
         }
 
+        final Optional<DbDataDto.Entry> physicsEntry = miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA);
+        Resource fileName = physicsEntry
+                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_FILE_NAME))
+                .map((item) -> {
+                    String nameValue = miner.getLocalizedResourceValueFromContentEntry(physicsEntry.get().getId(), DatabaseConstants.FIELD_RANK_CAR_FILE_NAME, CAR_PHYSICS_DATA, DEFAULT_LOCALE)
+                            .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
+                    return Resource.from(item.getRawValue(), nameValue);
+                })
+                .orElse(null);
+
         return of(VehicleSlot.builder()
                 .withRef(slotReference)
+                .withFileName(fileName)
                 .withDefaultRims(defaultRims)
                 .build());
+    }
+
+    /**
+     * @param bankFileType  : type of bank file to be resolved
+     * @return simple file name
+     */
+    public String getBankFileName(VehicleSlot vehicleSlot, BankFileType bankFileType) {
+
+        if (FRONT_RIM == bankFileType ||
+                REAR_RIM == bankFileType) {
+            return getDefaultRimBankFileName(vehicleSlot, bankFileType);
+        }
+
+        String suffix;
+        switch (bankFileType) {
+            case HUD:
+            case EXTERIOR_MODEL:
+                suffix = "";
+                break;
+
+            case INTERIOR_MODEL:
+                suffix = FileConstants.SUFFIX_INTERIOR_BANK_FILE;
+                break;
+
+            case SOUND:
+                suffix = FileConstants.SUFFIX_AUDIO_BANK_FILE;
+                break;
+
+            default:
+                throw new IllegalArgumentException("Bank file type not handled: " + bankFileType);
+        }
+
+        return String.format("%s%s.%s", vehicleSlot.getFileName(), suffix, GenuineBnkGateway.EXTENSION_BANKS);
     }
 
     /**
@@ -350,6 +396,33 @@ public class VehicleSlotsHelper {
                 .map(DbDataDto.Item::getRawValue)
 
                 .flatMap((rimSlotReference) -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS));
+    }
+
+    // TODO use info from domain object
+    private String getDefaultRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType) {
+
+        return getDefaultRimEntryForVehicle(vehicleSlot.getRef())
+
+                .flatMap((rimEntry) -> {
+                    int fieldRank;
+                    if (FRONT_RIM == rimBankFileType) {
+                        fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT;
+                    } else if (REAR_RIM == rimBankFileType) {
+                        fieldRank = DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR;
+                    } else {
+                        throw new IllegalArgumentException("Invalid bank file type: " + rimBankFileType);
+                    }
+
+                    return rimEntry.getItemAtRank(fieldRank);
+                })
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .flatMap((resourceRef) -> miner.getLocalizedResourceValueFromTopicAndReference(resourceRef, RIMS, DEFAULT_LOCALE))
+
+                .map((rimBankSimpleName) -> String.format("%s.%s", rimBankSimpleName, EXTENSION_BANKS))
+
+                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 
     private String getDefaultRimBankFileName(String slotReference, BankFileType rimBankFileType) {

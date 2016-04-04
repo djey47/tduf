@@ -55,8 +55,11 @@ public class VehicleSlotsHelperTest {
         String rimSlotRef = "RIMREF";
         String directoryRef = "0000";
         String directory = "DIR";
+        String fileNameRef = "1111";
+        String fileName = "FILE";
         DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
                 .forId(0)
+                .addItem(DbDataDto.Item.builder().ofFieldRank(9).withRawValue(fileNameRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(10).withRawValue(rimSlotRef).build())
                 .build();
         DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
@@ -66,6 +69,7 @@ public class VehicleSlotsHelperTest {
                 .build();
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotRef, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef, RIMS)).thenReturn(of(rimsEntry));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 9, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(fileName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 13, RIMS, UNITED_STATES)).thenReturn(of(directory));
 
         // WHEN
@@ -74,6 +78,7 @@ public class VehicleSlotsHelperTest {
         // THEN
         assertThat(actualSlot).isPresent();
         assertThat(actualSlot.get().getRef()).isEqualTo(slotRef);
+        assertThat(actualSlot.get().getFileName()).isEqualTo(Resource.from(fileNameRef, fileName));
         assertThat(actualSlot.get().getDefaultRims().getRef()).isEqualTo(rimSlotRef);
         assertThat(actualSlot.get().getDefaultRims().getParentDirectoryName()).isEqualTo(Resource.from(directoryRef, directory));
     }

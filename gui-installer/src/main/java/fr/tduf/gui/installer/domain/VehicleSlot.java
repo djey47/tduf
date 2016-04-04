@@ -11,6 +11,8 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 public class VehicleSlot {
     private String ref;
 
+    private Resource fileName;
+
     private RimSlot defaultRims;
 
     private VehicleSlot(String ref) {
@@ -38,6 +40,10 @@ public class VehicleSlot {
         return ref;
     }
 
+    public Resource getFileName() {
+        return fileName;
+    }
+
     public RimSlot getDefaultRims() {
         return defaultRims;
     }
@@ -46,15 +52,25 @@ public class VehicleSlot {
         this.defaultRims = defaultRims;
     }
 
+    void setFileName(Resource fileName) {
+        this.fileName = fileName;
+    }
+
     /**
      * Creates custom VehicleSlot instances.
      */
     public static class VehicleSlotBuilder {
         private String ref;
+        private Resource fileName;
         private RimSlot defaultRims;
 
         public VehicleSlotBuilder withRef(String ref) {
             this.ref = ref;
+            return this;
+        }
+
+        public VehicleSlotBuilder withFileName(Resource fileName) {
+            this.fileName = fileName;
             return this;
         }
 
@@ -67,6 +83,7 @@ public class VehicleSlot {
             final VehicleSlot vehicleSlot = new VehicleSlot(this.ref);
 
             vehicleSlot.setDefaultRims(defaultRims);
+            vehicleSlot.setFileName(fileName);
 
             return vehicleSlot;
         }
