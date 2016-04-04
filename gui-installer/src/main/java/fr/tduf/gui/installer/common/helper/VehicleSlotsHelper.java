@@ -73,10 +73,36 @@ public class VehicleSlotsHelper {
                     })
                     .orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT));
 
+            Resource frontFileName = defaultRimEntry
+                    .flatMap((rimEntry) -> rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT))
+                    .map((item) -> {
+                        String defaultValue = miner.getLocalizedResourceValueFromContentEntry(defaultRimEntry.get().getId(), DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT, RIMS, DEFAULT_LOCALE)
+                                .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
+                        return Resource.from(item.getRawValue(), defaultValue);
+                    })
+                    .orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT));
+            Resource rearFileName = defaultRimEntry
+                    .flatMap((rimEntry) -> rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR))
+                    .map((item) -> {
+                        String defaultValue = miner.getLocalizedResourceValueFromContentEntry(defaultRimEntry.get().getId(), DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR, RIMS, DEFAULT_LOCALE)
+                                .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
+                        return Resource.from(item.getRawValue(), defaultValue);
+                    })
+                    .orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT));
+            RimSlot.RimInfo frontInfo = RimSlot.RimInfo
+                    .builder()
+                    .withFileName(frontFileName)
+                    .build();
+            RimSlot.RimInfo rearInfo = RimSlot.RimInfo
+                    .builder()
+                    .withFileName(rearFileName)
+                    .build();
+
             defaultRims = RimSlot
                     .builder()
                     .withRef(defaultRimsReference.get())
                     .withParentDirectoryName(defaulRimsParentDirectory)
+                    .withRimsInformation(frontInfo, rearInfo)
                     .build();
         }
 

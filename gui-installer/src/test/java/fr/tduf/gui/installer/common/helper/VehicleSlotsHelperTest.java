@@ -57,6 +57,10 @@ public class VehicleSlotsHelperTest {
         String directory = "DIR";
         String fileNameRef = "1111";
         String fileName = "FILE";
+        String frontRimFileNameRef = "1111";
+        String frontRimFileName = "FILE_F";
+        String rearRimFileNameRef = "2222";
+        String rearRimFileName = "FILE_R";
         int idCar = 222;
         DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
                 .forId(0)
@@ -68,11 +72,15 @@ public class VehicleSlotsHelperTest {
                 .forId(0)
                 .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(rimSlotRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(13).withRawValue(directoryRef).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(14).withRawValue(frontRimFileNameRef).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(15).withRawValue(rearRimFileNameRef).build())
                 .build();
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotRef, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef, RIMS)).thenReturn(of(rimsEntry));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 9, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(fileName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 13, RIMS, UNITED_STATES)).thenReturn(of(directory));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 14, RIMS, UNITED_STATES)).thenReturn(of(frontRimFileName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 15, RIMS, UNITED_STATES)).thenReturn(of(rearRimFileName));
 
         // WHEN
         final Optional<VehicleSlot> actualSlot = VehicleSlotsHelper.loadVehicleSlotFromReference(slotRef, bulkDatabaseMinerMock);
@@ -84,6 +92,8 @@ public class VehicleSlotsHelperTest {
         assertThat(actualSlot.get().getFileName()).isEqualTo(Resource.from(fileNameRef, fileName));
         assertThat(actualSlot.get().getDefaultRims().getRef()).isEqualTo(rimSlotRef);
         assertThat(actualSlot.get().getDefaultRims().getParentDirectoryName()).isEqualTo(Resource.from(directoryRef, directory));
+        assertThat(actualSlot.get().getDefaultRims().getFrontRimInfo().getFileName()).isEqualTo(Resource.from(frontRimFileNameRef, frontRimFileName));
+        assertThat(actualSlot.get().getDefaultRims().getRearRimInfo().getFileName()).isEqualTo(Resource.from(rearRimFileNameRef, rearRimFileName));
     }
 
     @Test
