@@ -11,6 +11,8 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 public class RimSlot {
     private String ref;
 
+    private Resource parentDirectoryName;
+
     private RimSlot(String ref) {
         this.ref = requireNonNull(ref, "Slot reference is required.");
     }
@@ -32,19 +34,37 @@ public class RimSlot {
         return reflectionToString(this);
     }
 
+    public Resource getParentDirectoryName() {
+        return parentDirectoryName;
+    }
+
+    void setParentDirectoryName(Resource parentDirectoryName) {
+        this.parentDirectoryName = parentDirectoryName;
+    }
+
     /**
      * Creates custom RimSlot instances.
      */
     public static class RimSlotBuilder {
         private String ref;
+        private Resource parentDirectoryName;
 
         public RimSlotBuilder withRef(String ref) {
             this.ref = ref;
             return this;
         }
 
+        public RimSlotBuilder withParentDirectoryName(Resource resource) {
+            this.parentDirectoryName = resource;
+            return this;
+        }
+
         public RimSlot build() {
-            return new RimSlot(this.ref);
+            final RimSlot rimSlot = new RimSlot(ref);
+
+            rimSlot.setParentDirectoryName(parentDirectoryName);
+
+            return rimSlot;
         }
     }
 }

@@ -11,6 +11,8 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 public class VehicleSlot {
     private String ref;
 
+    private RimSlot defaultRims;
+
     private VehicleSlot(String ref) {
         this.ref = requireNonNull(ref, "Slot reference is required.");
     }
@@ -36,19 +38,36 @@ public class VehicleSlot {
         return ref;
     }
 
+    public RimSlot getDefaultRims() {
+        return defaultRims;
+    }
+
+    void setDefaultRims(RimSlot defaultRims) {
+        this.defaultRims = defaultRims;
+    }
+
     /**
      * Creates custom VehicleSlot instances.
      */
     public static class VehicleSlotBuilder {
         private String ref;
+        private RimSlot defaultRims;
 
         public VehicleSlotBuilder withRef(String ref) {
             this.ref = ref;
             return this;
         }
 
+        public VehicleSlotBuilder withDefaultRims(RimSlot rims) {
+            this.defaultRims = rims;
+            return this;
+        }
+
         public VehicleSlot build() {
             final VehicleSlot vehicleSlot = new VehicleSlot(this.ref);
+
+            vehicleSlot.setDefaultRims(defaultRims);
+
             return vehicleSlot;
         }
     }
