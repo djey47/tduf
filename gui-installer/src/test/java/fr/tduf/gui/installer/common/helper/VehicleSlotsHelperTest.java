@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.common.helper;
 
+import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.domain.Resource;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -127,119 +128,65 @@ public class VehicleSlotsHelperTest {
         assertThat(actualSlot.get().getDefaultRims().getRearRimInfo().getFileName()).isEqualTo(Resource.from(rearRimFileNameRef, rearRimFileName));
     }
 
-//    @Test
-//    public void getVehicleName_whenRealNameAvailable() throws Exception {
-//        // GIVEN
-//        String slotReference = "REF";
-//        String realName = "realName";
-//
-//        DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
-//                .forId(1)
-//                .build();
-//
-//        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
-//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(realName));
-//
-//
-//        // WHEN
-//        final String actualName = vehicleSlotsHelper.getVehicleName(slotReference);
-//
-//
-//        // THEN
-//        assertThat(actualName).isEqualTo(realName);
-//    }
-//
-//    @Test
-//    public void getVehicleName_whenRealNameUnavailable() throws Exception {
-//        // GIVEN
-//        String slotReference = "REF";
-//        String brandName = "Alfa-Romeo";
-//        String modelName = "Brera";
-//        String versionName = "2.0 SkyView";
-//
-//        DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
-//                .forId(1)
-//                .build();
-//        DbDataDto.Entry remoteContentEntry = DbDataDto.Entry.builder()
-//                .forId(1)
-//                .build();
-//
-//        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
-//        when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(of(remoteContentEntry));
-//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
-//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
-//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 13, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
-//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 14, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(versionName));
-//
-//
-//        // WHEN
-//        final String actualName = vehicleSlotsHelper.getVehicleName(slotReference);
-//
-//
-//        // THEN
-//        assertThat(actualName).isEqualTo("Alfa-Romeo Brera 2.0 SkyView");
-//    }
-//
-//    @Test
-//    public void getVehicleName_whenBrandNameUnavailable() throws Exception {
-//        // GIVEN
-//        String slotReference = "REF";
-//        String modelName = "Brera";
-//
-//        DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
-//                .forId(1)
-//                .build();
-//        DbDataDto.Entry remoteContentEntry = DbDataDto.Entry.builder()
-//                .forId(1)
-//                .build();
-//
-//        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
-//        when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(of(remoteContentEntry));
-//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 3, BRANDS, UNITED_STATES)).thenReturn(empty());
-//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
-//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 13, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
-//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 14, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(empty());
-//
-//
-//        // WHEN
-//        final String actualName = vehicleSlotsHelper.getVehicleName(slotReference);
-//
-//
-//        // THEN
-//        assertThat(actualName).isEqualTo("Brera");
-//    }
-//
-//    @Test
-//    public void getVehicleName_whenVersionNameUnavailable() throws Exception {
-//        // GIVEN
-//        String slotReference = "REF";
-//        String brandName = "Alfa-Romeo";
-//        String modelName = "Brera";
-//
-//        DbDataDto.Entry contentEntry = DbDataDto.Entry.builder()
-//                .forId(1)
-//                .build();
-//        DbDataDto.Entry remoteContentEntry = DbDataDto.Entry.builder()
-//                .forId(1)
-//                .build();
-//
-//        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(of(contentEntry));
-//        when(bulkDatabaseMinerMock.getRemoteContentEntryWithInternalIdentifier(CAR_PHYSICS_DATA, 2, 1, BRANDS)).thenReturn(of(remoteContentEntry));
-//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
-//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
-//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 13, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
-//        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(1, 14, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of("??"));
-//
-//
-//        // WHEN
-//        final String actualName = vehicleSlotsHelper.getVehicleName(slotReference);
-//
-//
-//        // THEN
-//        assertThat(actualName).isEqualTo("Alfa-Romeo Brera");
-//    }
-//
     @Test
+    public void getVehicleName_whenRealNameAvailable() throws Exception {
+        // GIVEN
+        String slotReference = "REF";
+        String realName = "realName";
+        VehicleSlot vehicleSlot = VehicleSlot.builder()
+                .withRef(slotReference)
+                .withRealName(Resource.from("", realName))
+                .withModelName(Resource.from(DatabaseConstants.RESOURCE_REF_UNKNOWN_VEHICLE_NAME, DatabaseConstants.RESOURCE_VALUE_NONE))
+                .withVersionName(Resource.from(DatabaseConstants.RESOURCE_REF_UNKNOWN_VEHICLE_NAME, DatabaseConstants.RESOURCE_VALUE_NONE))
+                .build();
+
+        // WHEN
+        final String actualName = VehicleSlotsHelper.getVehicleName(vehicleSlot);
+
+        // THEN
+        assertThat(actualName).isEqualTo(realName);
+    }
+
+    @Test
+    public void getVehicleName_whenRealNameUnavailable() throws Exception {
+        // GIVEN
+        String slotReference = "REF";
+        String brandName = "Alfa-Romeo";
+        String modelName = "Brera";
+        String versionName = "2.0 SkyView";
+        VehicleSlot vehicleSlot = VehicleSlot.builder()
+                .withRef(slotReference)
+                .withBrandName(Resource.from("", brandName))
+                .withModelName(Resource.from("", modelName))
+                .withVersionName(Resource.from("", versionName))
+                .build();
+
+        // WHEN
+        final String actualName = VehicleSlotsHelper.getVehicleName(vehicleSlot);
+
+        // THEN
+        assertThat(actualName).isEqualTo("Alfa-Romeo Brera 2.0 SkyView");
+    }
+
+    @Test
+    public void getVehicleName_whenBrandNameUnavailable() throws Exception {
+        // GIVEN
+        String slotReference = "REF";
+        String modelName = "Brera";
+        VehicleSlot vehicleSlot = VehicleSlot.builder()
+                .withRef(slotReference)
+                .withModelName(Resource.from("", modelName))
+                .withVersionName(Resource.from(DatabaseConstants.RESOURCE_REF_UNKNOWN_VEHICLE_NAME, DatabaseConstants.RESOURCE_VALUE_NONE))
+                .build();
+
+        // WHEN
+        final String actualName = VehicleSlotsHelper.getVehicleName(vehicleSlot);
+
+        // THEN
+        assertThat(actualName).isEqualTo("Brera");
+    }
+
+   @Test
     public void getDrivableVehicleSlotEntries_when1DrivableVehicle_shouldReturnIt() {
         // GIVEN
         String undrivableRef = "00000000";

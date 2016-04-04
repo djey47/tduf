@@ -208,7 +208,7 @@ public class VehicleSlotsHelper {
     }
 
     /**
-     * @return in-game vehicle name, or N/A if unavailable.
+     * @return in-game vehicle name.
      */
     public static String getVehicleName(VehicleSlot vehicleSlot) {
 
@@ -217,7 +217,9 @@ public class VehicleSlotsHelper {
             return realName.getValue();
         }
 
-        final String brandName = vehicleSlot.getBrandName().getValue();
+        final String brandName = ofNullable(vehicleSlot.getBrandName())
+                .map(Resource::getValue)
+                .orElse("");
         final String modelName = getNameFromLocalResourceValue(ofNullable(vehicleSlot.getModelName().getValue()), "");
         final String versionName = getNameFromLocalResourceValue(ofNullable(vehicleSlot.getVersionName().getValue()), "");
 
