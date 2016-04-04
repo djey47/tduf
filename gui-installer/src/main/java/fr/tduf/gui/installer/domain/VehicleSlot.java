@@ -48,14 +48,6 @@ public class VehicleSlot {
         return defaultRims;
     }
 
-    void setDefaultRims(RimSlot defaultRims) {
-        this.defaultRims = defaultRims;
-    }
-
-    void setFileName(Resource fileName) {
-        this.fileName = fileName;
-    }
-
     /**
      * Creates custom VehicleSlot instances.
      */
@@ -82,8 +74,8 @@ public class VehicleSlot {
         public VehicleSlot build() {
             final VehicleSlot vehicleSlot = new VehicleSlot(this.ref);
 
-            vehicleSlot.setDefaultRims(defaultRims);
-            vehicleSlot.setFileName(fileName);
+            vehicleSlot.defaultRims = defaultRims;
+            vehicleSlot.fileName = fileName;
 
             return vehicleSlot;
         }
