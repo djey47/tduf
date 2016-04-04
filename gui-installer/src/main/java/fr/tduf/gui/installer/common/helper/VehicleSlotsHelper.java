@@ -25,6 +25,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -53,6 +54,7 @@ public class VehicleSlotsHelper {
         requireNonNull(slotReference, "Slot reference is required.");
         requireNonNull(miner, "Database miner instance is required.");
 
+        // TODO extract methods
         final Optional<DbDataDto.Entry> defaultRimEntry = getDefaultRimEntryForVehicle(slotReference, miner);
         if (!defaultRimEntry.isPresent()) {
             return empty();
@@ -122,12 +124,28 @@ public class VehicleSlotsHelper {
                 .map(Integer::valueOf)
                 .orElse(DEFAULT_VEHICLE_ID);
 
+        Resource brandName = physicsEntry
+                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_BRAND))
+                .flatMap((item) -> miner.getContentEntryFromTopicWithReference(item.getRawValue(), BRANDS))
+                .flatMap((brandsEntry) ->  miner.getLocalizedResourceValueFromContentEntry(brandsEntry.getId(), DatabaseConstants.FIELD_RANK_MANUFACTURER_NAME, BRANDS, DEFAULT_LOCALE))
+                .map((value) -> Resource.from("", value))
+                .orElse(Resource.from("", DatabaseConstants.RESOURCE_VALUE_DEFAULT));
+
         return of(VehicleSlot.builder()
                 .withRef(slotReference)
                 .withCarIdentifier(carIdentifier)
                 .withFileName(fileName)
                 .withDefaultRims(defaultRims)
+                .withBrandName(brandName)
                 .build());
+    }
+
+    /**
+     * @param miner : component to parse database
+     * @return a new helper instance.
+     */
+    public static VehicleSlotsHelper load(BulkDatabaseMiner miner) {
+        return new VehicleSlotsHelper(requireNonNull(miner, "Database miner instance is required."));
     }
 
     /**
@@ -163,6 +181,39 @@ public class VehicleSlotsHelper {
         return String.format("%s%s.%s", vehicleSlot.getFileName(), suffix, GenuineBnkGateway.EXTENSION_BANKS);
     }
 
+    /**
+     * @return in-game vehicle name, or N/A if unavailable.
+     */
+    public static String getVehicleName(VehicleSlot vehicleSlot) {
+
+        final Resource realName = vehicleSlot.getRealName();
+        if (realName != null) {
+            return realName.getValue();
+        }
+
+        final String brandName = vehicleSlot.getBrandName().getValue();
+        final String modelName = getNameFromLocalResourceValue(ofNullable(vehicleSlot.getModelName().getValue()), "");
+        final String versionName = getNameFromLocalResourceValue(ofNullable(vehicleSlot.getVersionName().getValue()), "");
+
+        return String.format("%s %s %s", brandName, modelName, versionName).trim();
+    }
+
+    /**
+     * @return list of car physics entries concerning only drivable vehicles
+     */
+    public List<DbDataDto.Entry> getDrivableVehicleSlotEntries() {
+
+        // TODO enhance criteria to express NOT condition and simplify call
+        return miner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries().stream()
+
+                .filter((slotEntry) -> {
+                    final String groupRawValue = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_GROUP).get().getRawValue();
+                    return !DatabaseConstants.RESOURCE_REF_GROUP_Z.equals(groupRawValue);
+                })
+
+                .collect(toList());
+    }
+
     private static Optional<DbDataDto.Entry> getDefaultRimEntryForVehicle(String slotReference, BulkDatabaseMiner miner) {
         return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
 
@@ -186,14 +237,6 @@ public class VehicleSlotsHelper {
         return of(rimInfo.getFileName().getValue())
                 .map((rimBankSimpleName) -> String.format("%s.%s", rimBankSimpleName, EXTENSION_BANKS))
                 .orElse(DisplayConstants.ITEM_UNAVAILABLE);
-    }
-
-    /**
-     * @param miner : component to parse database
-     * @return a new helper instance.
-     */
-    public static VehicleSlotsHelper load(BulkDatabaseMiner miner) {
-        return new VehicleSlotsHelper(requireNonNull(miner, "Database miner instance is required."));
     }
 
     /**
@@ -393,22 +436,6 @@ public class VehicleSlotsHelper {
     }
 
     /**
-     * @return list of car physics entries concerning only drivable vehicles
-     */
-    public List<DbDataDto.Entry> getDrivableVehicleSlotEntries() {
-
-        // TODO enhance criteria to express NOT condition and simplify call
-        return miner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries().stream()
-
-                .filter((slotEntry) -> {
-                    final String groupRawValue = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_GROUP).get().getRawValue();
-                    return !DatabaseConstants.RESOURCE_REF_GROUP_Z.equals(groupRawValue);
-                })
-
-                .collect(toList());
-    }
-
-    /**
      * @return value of REF data (RIMS) for default rims for specified slot reference
      */
     public String getDefaultRimIdentifier(String slotReference) {
@@ -494,7 +521,7 @@ public class VehicleSlotsHelper {
         return getNameFromLocalResourceValue(resourceValue, defaultValue);
     }
 
-    private String getNameFromLocalResourceValue(Optional<String> potentialValue, String defaultValue) {
+    private static String getNameFromLocalResourceValue(Optional<String> potentialValue, String defaultValue) {
         return potentialValue
 
                 .map((resourceValue) -> DatabaseConstants.RESOURCE_VALUE_NONE.equals(resourceValue) ? null : resourceValue)

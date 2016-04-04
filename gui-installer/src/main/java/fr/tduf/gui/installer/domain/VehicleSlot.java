@@ -12,10 +12,12 @@ public class VehicleSlot {
     private String ref;
 
     private Resource fileName;
-
     private RimSlot defaultRims;
-
     private int carIdentifier;
+    private Resource brandName;
+    private Resource realName;
+    private Resource modelName;
+    private Resource versionName;
 
     private VehicleSlot(String ref) {
         this.ref = requireNonNull(ref, "Slot reference is required.");
@@ -54,6 +56,22 @@ public class VehicleSlot {
         return carIdentifier;
     }
 
+    public Resource getRealName() {
+        return realName;
+    }
+
+    public Resource getBrandName() {
+        return brandName;
+    }
+
+    public Resource getModelName() {
+        return modelName;
+    }
+
+    public Resource getVersionName() {
+        return versionName;
+    }
+
     /**
      * Creates custom VehicleSlot instances.
      */
@@ -62,6 +80,10 @@ public class VehicleSlot {
         private Resource fileName;
         private RimSlot defaultRims;
         private int carIdentifier;
+        private Resource realName;
+        private Resource brandName;
+        private Resource modelName;
+        private Resource versionName;
 
         public VehicleSlotBuilder withRef(String ref) {
             this.ref = ref;
@@ -70,6 +92,24 @@ public class VehicleSlot {
 
         public VehicleSlotBuilder withFileName(Resource fileName) {
             this.fileName = fileName;
+            return this;
+        }
+
+        public VehicleSlotBuilder withRealName(Resource realName) {
+            this.realName = realName;
+            return this;
+        }
+
+        public VehicleSlotBuilder withBrandName(Resource brandName) {
+            this.brandName = brandName;
+            return this;
+        }
+        public VehicleSlotBuilder withModelName(Resource modelName) {
+            this.modelName = modelName;
+            return this;
+        }
+        public VehicleSlotBuilder withVersionName(Resource versionName) {
+            this.versionName = versionName;
             return this;
         }
 
@@ -89,6 +129,10 @@ public class VehicleSlot {
             vehicleSlot.defaultRims = defaultRims;
             vehicleSlot.fileName = fileName;
             vehicleSlot.carIdentifier = carIdentifier;
+            vehicleSlot.realName = realName;
+            vehicleSlot.brandName = brandName;
+            vehicleSlot.modelName = modelName;
+            vehicleSlot.versionName = versionName;
 
             return vehicleSlot;
         }
