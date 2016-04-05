@@ -92,5 +92,12 @@ public enum CacheManager {
 
             Log.debug(LOG_CATEGORY, "Cleared store! {" + storeName + "}");
         }
+
+        /**
+         * @return true if caching feature is enabled.
+         */
+        public boolean isEnabled() {
+            return enabled;
+        }
     }
 }

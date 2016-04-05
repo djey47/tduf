@@ -76,6 +76,10 @@ public class CacheManagerTest {
 
     @Test
     public void getValueFromKey_whenStoreExists_andKeyAsWell_shouldRetrieveValueFromCache_andNotCallRealMethod(){
+        if (!cacheManagerInstance.isEnabled()) {
+            return;
+        }
+
         // GIVEN
         cacheManagerInstance.getValueFromKey("store", "key", () -> Optional.of("result"));
 
@@ -101,6 +105,10 @@ public class CacheManagerTest {
 
     @Test
     public void clearStoreByName_whenStoreExists_shouldForceCallRealMethod() {
+        if (!cacheManagerInstance.isEnabled()) {
+            return;
+        }
+
         // GIVEN
         cacheManagerInstance.getValueFromKey("store1", "key", () -> Optional.of("result to be cached in store 1"));
         cacheManagerInstance.getValueFromKey("store2", "key", () -> Optional.of("result to be cached in store 2"));
@@ -117,6 +125,10 @@ public class CacheManagerTest {
 
     @Test
     public void clearStoreByName_whenStoreDoesNotExist_shouldRetrieveValueFromCache() {
+        if (!cacheManagerInstance.isEnabled()) {
+            return;
+        }
+
         // GIVEN
         cacheManagerInstance.getValueFromKey("store", "key", () -> Optional.of("result to be cached"));
 
@@ -130,6 +142,10 @@ public class CacheManagerTest {
 
     @Test
     public void clearStoreByName_whenStoreExists_shouldNotAffectOtherStore() {
+        if (!cacheManagerInstance.isEnabled()) {
+            return;
+        }
+
         // GIVEN
         cacheManagerInstance.getValueFromKey("store1", "key1", () -> Optional.of("result1 to be cached"));
         cacheManagerInstance.getValueFromKey("store2", "key2", () -> Optional.of("result2 to be cached"));
