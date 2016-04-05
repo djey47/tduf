@@ -33,7 +33,6 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
-// TODO add Controller test
 public class SlotsBrowserStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = SlotsBrowserStageController.class.getSimpleName();
 
