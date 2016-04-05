@@ -18,6 +18,7 @@ import java.util.HashSet;
 /**
  * To display stage without running whole application.
  */
+@Ignore
 public class DatabaseCheckStageControllerTest {
 
     @Rule
@@ -29,7 +30,6 @@ public class DatabaseCheckStageControllerTest {
     }
 
     @Test
-    @Ignore
     public void display_whenManyErrors() throws IOException {
         // GIVEN
         final HashSet<IntegrityError> integrityErrors = new HashSet<>();
