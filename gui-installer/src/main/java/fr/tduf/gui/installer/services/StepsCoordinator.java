@@ -27,6 +27,7 @@ public class StepsCoordinator extends Service<String> {
             protected String call() throws Exception {
                 Log.trace(THIS_CLASS_NAME, "->Starting full install");
 
+                // FIXME messages not appearing...
                 updateMessage("Performing install, please wait...");
 
                 // TODO create database backup to perform rollback is anything fails ?
@@ -36,6 +37,7 @@ public class StepsCoordinator extends Service<String> {
                         .nextStep(COPY_FILES).start()
                         .nextStep(UPDATE_MAGIC_MAP).start();
 
+                // FIXME messages not appearing...
                 updateMessage("Done installing.");
 
                 return "";
