@@ -33,6 +33,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
+// TODO add Controller test
 public class SlotsBrowserStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = SlotsBrowserStageController.class.getSimpleName();
 
@@ -46,9 +47,6 @@ public class SlotsBrowserStageController extends AbstractGuiController {
     TableView<VehicleSlotDataItem> slotsTableView;
 
     private VehicleSlotsHelper vehicleSlotsHelper;
-
-    // TODO remove unused miner
-    private BulkDatabaseMiner miner;
 
     private ObservableList<VehicleSlotDataItem> slotsData = FXCollections.observableArrayList();
 
@@ -108,7 +106,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
      * @return selected item, if any.
      */
     public Optional<VehicleSlotDataItem> initAndShowModalDialog(Optional<String> potentialSlotReference, BulkDatabaseMiner miner) throws Exception {
-        this.miner = requireNonNull(miner, "Database miner instance is required.");
+        requireNonNull(miner, "Database miner instance is required.");
 
         vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
 
