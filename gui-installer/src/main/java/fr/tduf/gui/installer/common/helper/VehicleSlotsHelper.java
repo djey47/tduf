@@ -143,8 +143,7 @@ public class VehicleSlotsHelper {
     /**
      * @return list of car physics entries concerning only drivable vehicles
      */
-    // TODO return list of Vehicle slots ??
-    public List<DbDataDto.Entry> getDrivableVehicleSlotEntries() {
+    public List<VehicleSlot> getDrivableVehicleSlots() {
 
         // TODO enhance criteria to express NOT condition and simplify call
         return miner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries().stream()
@@ -153,6 +152,14 @@ public class VehicleSlotsHelper {
                     final String groupRawValue = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_GROUP).get().getRawValue();
                     return !DatabaseConstants.RESOURCE_REF_GROUP_Z.equals(groupRawValue);
                 })
+
+                .map((drivableSlotEntry) -> drivableSlotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REF).get())
+
+                .map((drivableSlotItem) -> getVehicleSlotFromReference(drivableSlotItem.getRawValue()))
+
+                .filter(Optional::isPresent)
+
+                .map(Optional::get)
 
                 .collect(toList());
     }

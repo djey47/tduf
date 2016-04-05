@@ -185,31 +185,54 @@ public class VehicleSlotsHelperTest {
         assertThat(actualName).isEqualTo("Brera");
     }
 
-   @Test
+    @Test
+    public void getDrivableVehicleSlotEntries_whenNoDrivableVehicle_shouldReturnEmptyList() {
+        // GIVEN
+        String undrivableRef = "00000000";
+        DbDataDto.Item refItem = DbDataDto.Item.builder().ofFieldRank(1).withRawValue(undrivableRef).build();
+        DbDataDto.Item groupItem = DbDataDto.Item.builder().ofFieldRank(5).withRawValue("92900264").build();
+        DbDataDto.Entry undrivableEntry = DbDataDto.Entry.builder().addItem(refItem, groupItem).build();
+        DbDataDto dataObject = DbDataDto.builder().addEntry(undrivableEntry).build();
+        DbDto topicObject = DbDto.builder().withData(dataObject).build();
+
+        when(bulkDatabaseMinerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(of(topicObject));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(undrivableRef, CAR_PHYSICS_DATA)).thenReturn(of(undrivableEntry));
+
+
+        // WHEN
+        final List<VehicleSlot> actualSlots = vehicleSlotsHelper.getDrivableVehicleSlots();
+
+
+        // THEN
+        assertThat(actualSlots).isEmpty();
+    }
+
+    @Test
     public void getDrivableVehicleSlotEntries_when1DrivableVehicle_shouldReturnIt() {
         // GIVEN
         String undrivableRef = "00000000";
         String drivableRef = "11111111";
-        DbDataDto.Item blankItem = DbDataDto.Item.builder().ofFieldRank(2).build();
         DbDataDto.Item refItem1 = DbDataDto.Item.builder().ofFieldRank(1).withRawValue(undrivableRef).build();
         DbDataDto.Item groupItem1 = DbDataDto.Item.builder().ofFieldRank(5).withRawValue("92900264").build();
         DbDataDto.Item refItem2 = DbDataDto.Item.builder().ofFieldRank(1).withRawValue(drivableRef).build();
         DbDataDto.Item groupItem2 = DbDataDto.Item.builder().ofFieldRank(5).withRawValue("77800264").build();
-        DbDataDto.Entry undrivableEntry = DbDataDto.Entry.builder().addItem(refItem1, blankItem, blankItem, blankItem, groupItem1).build();
-        DbDataDto.Entry drivableEntry = DbDataDto.Entry.builder().addItem(refItem2, blankItem, blankItem, blankItem, groupItem2).build();
+        DbDataDto.Entry undrivableEntry = DbDataDto.Entry.builder().addItem(refItem1, groupItem1).build();
+        DbDataDto.Entry drivableEntry = DbDataDto.Entry.builder().addItem(refItem2, groupItem2).build();
         DbDataDto dataObject = DbDataDto.builder().addEntry(undrivableEntry, drivableEntry).build();
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
         when(bulkDatabaseMinerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(of(topicObject));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(undrivableRef, CAR_PHYSICS_DATA)).thenReturn(of(undrivableEntry));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(drivableRef, CAR_PHYSICS_DATA)).thenReturn(of(drivableEntry));
 
 
         // WHEN
-        final List<DbDataDto.Entry> actualEntries = vehicleSlotsHelper.getDrivableVehicleSlotEntries();
+        final List<VehicleSlot> actualSlots = vehicleSlotsHelper.getDrivableVehicleSlots();
 
 
         // THEN
-        assertThat(actualEntries).hasSize(1);
-        assertThat(actualEntries.get(0).getItemAtRank(1).get().getRawValue()).isEqualTo(drivableRef);
+        assertThat(actualSlots).hasSize(1);
+        assertThat(actualSlots.get(0).getRef()).isEqualTo(drivableRef);
     }
 
     @Test
