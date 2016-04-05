@@ -44,12 +44,13 @@ public class PatchProperties extends Properties {
     }
 
     /**
-     * @return value associated tyo requested placeholder if it exists, empty otherwise.
+     * @return value associated to requested placeholder if it exists, empty otherwise.
      */
     public Optional<String> retrieve(String placeholder) {
         requireNonNull(placeholder, "Placeholder is required.");
 
-        return Optional.ofNullable(getProperty(placeholder));
+        return Optional.ofNullable(getProperty(placeholder))
+                .map(String::trim);
     }
 
     /**
