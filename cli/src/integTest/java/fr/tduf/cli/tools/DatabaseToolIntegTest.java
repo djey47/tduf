@@ -172,11 +172,11 @@ public class DatabaseToolIntegTest {
 
 
         // THEN: effective property file must exist with right contents
-        final PatchProperties actualProperties = new PatchProperties();
+        final PatchProperties effectiveProperties = new PatchProperties();
         final File handle = new File(effectivePatchPropertyFile);
         assertThat(handle).exists();
-        actualProperties.load(new FileInputStream(handle));
-        assertThat(actualProperties.size()).isEqualTo(26);
+        effectiveProperties.load(new FileInputStream(handle));
+        assertThat(effectiveProperties.size()).isEqualTo(24);
     }
 
     @Test

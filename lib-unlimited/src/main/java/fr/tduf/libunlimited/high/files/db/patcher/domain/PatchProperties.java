@@ -21,7 +21,6 @@ public class PatchProperties extends Properties {
     private static final String PLACEHOLDER_NAME_FMT_INTERIOR_REFERENCE = "INTREF.%d";
     private static final String PLACEHOLDER_NAME_FMT_RIMS_BANK = "BANKNAME.%s.%d";
     private static final String PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK = "RES_BANKNAME.%s.%d";
-    private static final String PLACEHOLDER_NAME_FMT_RESOURCE_INTERIOR = "RES_INTNAME.%d";
     private static final String PLACEHOLDER_NAME_FMT_RESOURCE_COLOR = "RES_COLORNAME.%d";
     private static final String SUFFIX_FRONT_RIMS = "FR";
     private static final String SUFFIX_REAR_RIMS = "RR";
@@ -125,11 +124,6 @@ public class PatchProperties extends Properties {
 
     public void setResourceVersionNameIfNotExists(String versionNameReference) {
         registerIfNotExists(PLACEHOLDER_NAME_RESOURCE_VERSION, versionNameReference);
-    }
-
-    public void setResourceInteriorNameIfNotExists(String interiorNameReference, int interiorSet) {
-        String placeholderName = String.format(PLACEHOLDER_NAME_FMT_RESOURCE_INTERIOR, interiorSet);
-        registerIfNotExists(placeholderName, interiorNameReference);
     }
 
     public void setResourceColorNameIfNotExists(String colorNameReference, int exteriorSet) {
