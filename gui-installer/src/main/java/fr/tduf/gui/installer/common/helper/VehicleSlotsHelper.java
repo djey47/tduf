@@ -9,6 +9,7 @@ import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.util.List;
@@ -54,42 +55,33 @@ public class VehicleSlotsHelper {
         requireNonNull(slotReference, "Slot reference is required.");
         requireNonNull(miner, "Database miner instance is required.");
 
-        final Optional<DbDataDto.Entry> physicsEntry = miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA);
-        if (!physicsEntry.isPresent()) {
+        final Optional<DbDataDto.Entry> potentialPhysicsEntry = miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA);
+        if (!potentialPhysicsEntry.isPresent()) {
             return empty();
         }
 
-        Optional<Resource> fileName = getResourceFromDatabaseEntry(physicsEntry.get(), DatabaseConstants.FIELD_RANK_CAR_FILE_NAME);
-        Optional<Resource> realName = getResourceFromDatabaseEntry(physicsEntry.get(), DatabaseConstants.FIELD_RANK_CAR_REAL_NAME);
-        Optional<Resource> modelName = getResourceFromDatabaseEntry(physicsEntry.get(), DatabaseConstants.FIELD_RANK_CAR_MODEL_NAME);
-        Optional<Resource> versionName = getResourceFromDatabaseEntry(physicsEntry.get(), DatabaseConstants.FIELD_RANK_CAR_VERSION_NAME);
+        final DbDataDto.Entry physicsEntry = potentialPhysicsEntry.get();
 
-        int carIdentifier = physicsEntry
-                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_ID_CAR))
-                .map(DbDataDto.Item::getRawValue)
-                .map(Integer::valueOf)
-                .orElse(DEFAULT_VEHICLE_ID);
+        Optional<Resource> brandName = getResourceFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_CAR_BRAND, BRANDS, DatabaseConstants.FIELD_RANK_MANUFACTURER_NAME);
 
-        Resource brandName = physicsEntry
-                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_BRAND))
-                .flatMap((item) -> miner.getContentEntryFromTopicWithReference(item.getRawValue(), BRANDS))
-                .flatMap((brandsEntry) -> miner.getLocalizedResourceValueFromContentEntry(brandsEntry.getId(), DatabaseConstants.FIELD_RANK_MANUFACTURER_NAME, BRANDS, DEFAULT_LOCALE))
-                .map((value) -> Resource.from("", value))
-                .orElse(Resource.from("", DatabaseConstants.RESOURCE_VALUE_DEFAULT));
+        Optional<Resource> fileName = getResourceFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_CAR_FILE_NAME);
+        Optional<Resource> realName = getResourceFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_CAR_REAL_NAME);
+        Optional<Resource> modelName = getResourceFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_CAR_MODEL_NAME);
+        Optional<Resource> versionName = getResourceFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_CAR_VERSION_NAME);
 
-        // TODO merge methods?
-        final Optional<RimSlot> defaultRims = getDefaultRimEntryForVehicle(slotReference)
-                .map(this::getRimSlotFromDatabaseEntry);
+        Optional<Integer> carIdentifier = getIntValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_ID_CAR);
+
+        final Optional<RimSlot> defaultRims = getDefaultRimEntryForVehicle(slotReference);
 
         return of(VehicleSlot.builder()
                 .withRef(slotReference)
-                .withCarIdentifier(carIdentifier)
+                .withCarIdentifier(carIdentifier.orElse(DEFAULT_VEHICLE_ID))
                 .withFileName(fileName.orElse(null))
                 .withRealName(realName.orElse(null))
                 .withModelName(modelName.orElse(null))
                 .withVersionName(versionName.orElse(null))
                 .withDefaultRims(defaultRims.orElse(null))
-                .withBrandName(brandName)
+                .withBrandName(brandName.orElse(Resource.from("", DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
                 .build());
     }
 
@@ -165,14 +157,16 @@ public class VehicleSlotsHelper {
                 .collect(toList());
     }
 
-    private Optional<DbDataDto.Entry> getDefaultRimEntryForVehicle(String slotReference) {
+    private Optional<RimSlot> getDefaultRimEntryForVehicle(String slotReference) {
         return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
 
                 .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEFAULT_RIMS))
 
                 .map(DbDataDto.Item::getRawValue)
 
-                .flatMap((rimSlotReference) -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS));
+                .flatMap((rimSlotReference) -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS))
+
+                .map(this::getRimSlotFromDatabaseEntry);
     }
 
     private RimSlot getRimSlotFromDatabaseEntry(DbDataDto.Entry rimEntry) {
@@ -230,6 +224,13 @@ public class VehicleSlotsHelper {
                 });
     }
 
+    private Optional<Resource> getResourceFromDatabaseEntry(DbDataDto.Entry entry, int sourceFieldRank, DbDto.Topic targetTopic, int targetFieldRank) {
+        return entry.getItemAtRank(sourceFieldRank)
+                .flatMap((sourceItem) -> miner.getContentEntryFromTopicWithReference(sourceItem.getRawValue(), targetTopic))
+                .flatMap((targetEntry) -> miner.getLocalizedResourceValueFromContentEntry(targetEntry.getId(), targetFieldRank, targetTopic, DEFAULT_LOCALE))
+                .map((value) -> Resource.from("", value));
+    }
+
     private static String getDefaultRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType, String extension) {
         RimSlot.RimInfo rimInfo;
         if (FRONT_RIM == rimBankFileType) {
@@ -252,5 +253,11 @@ public class VehicleSlotsHelper {
                 .map((resourceValue) -> DatabaseConstants.RESOURCE_VALUE_NONE.equals(resourceValue) ? null : resourceValue)
 
                 .orElse(defaultValue);
+    }
+
+    private static Optional<Integer> getIntValueFromDatabaseEntry(DbDataDto.Entry entry, int fieldRank) {
+        return entry.getItemAtRank(fieldRank)
+                .map(DbDataDto.Item::getRawValue)
+                .map(Integer::valueOf);
     }
 }
