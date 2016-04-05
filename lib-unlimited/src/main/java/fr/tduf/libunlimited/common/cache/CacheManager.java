@@ -17,7 +17,7 @@ public enum CacheManager {
     /**
      * Describes unique instance
      */
-    it(new CacheManagerInstance(true));
+    it(new CacheManagerInstance(false));
 
     private static final String LOG_CATEGORY = CacheManager.class.getSimpleName();
 
@@ -72,8 +72,8 @@ public enum CacheManager {
                 }
                 return storeMap.get(key);
             }
-
-            Log.debug(LOG_CATEGORY, "Caching feature disabled!");
+//
+//            Log.debug(LOG_CATEGORY, "Caching feature disabled!");
 
             return supplier.get();
         }
