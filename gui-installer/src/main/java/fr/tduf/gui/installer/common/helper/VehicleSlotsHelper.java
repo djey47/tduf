@@ -54,47 +54,15 @@ public class VehicleSlotsHelper {
         requireNonNull(slotReference, "Slot reference is required.");
         requireNonNull(miner, "Database miner instance is required.");
 
-        // TODO extract methods
         final Optional<DbDataDto.Entry> physicsEntry = miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA);
         if (!physicsEntry.isPresent()) {
             return empty();
         }
 
-        Resource fileName = physicsEntry
-                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_FILE_NAME))
-                .map((item) -> {
-                    String nameValue = miner.getLocalizedResourceValueFromContentEntry(physicsEntry.get().getId(), DatabaseConstants.FIELD_RANK_CAR_FILE_NAME, CAR_PHYSICS_DATA, DEFAULT_LOCALE)
-                            .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
-                    return Resource.from(item.getRawValue(), nameValue);
-                })
-                .orElse(null);
-
-        Resource realName = physicsEntry
-                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REAL_NAME))
-                .map((item) -> {
-                    String nameValue = miner.getLocalizedResourceValueFromContentEntry(physicsEntry.get().getId(), DatabaseConstants.FIELD_RANK_CAR_REAL_NAME, CAR_PHYSICS_DATA, DEFAULT_LOCALE)
-                            .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
-                    return Resource.from(item.getRawValue(), nameValue);
-                })
-                .orElse(null);
-
-        Resource modelName = physicsEntry
-                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_MODEL_NAME))
-                .map((item) -> {
-                    String nameValue = miner.getLocalizedResourceValueFromContentEntry(physicsEntry.get().getId(), DatabaseConstants.FIELD_RANK_CAR_MODEL_NAME, CAR_PHYSICS_DATA, DEFAULT_LOCALE)
-                            .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
-                    return Resource.from(item.getRawValue(), nameValue);
-                })
-                .orElse(null);
-
-        Resource versionName = physicsEntry
-                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_VERSION_NAME))
-                .map((item) -> {
-                    String nameValue = miner.getLocalizedResourceValueFromContentEntry(physicsEntry.get().getId(), DatabaseConstants.FIELD_RANK_CAR_VERSION_NAME, CAR_PHYSICS_DATA, DEFAULT_LOCALE)
-                            .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
-                    return Resource.from(item.getRawValue(), nameValue);
-                })
-                .orElse(null);
+        Optional<Resource> fileName = getResourceFromDatabaseEntry(physicsEntry.get(), DatabaseConstants.FIELD_RANK_CAR_FILE_NAME);
+        Optional<Resource> realName = getResourceFromDatabaseEntry(physicsEntry.get(), DatabaseConstants.FIELD_RANK_CAR_REAL_NAME);
+        Optional<Resource> modelName = getResourceFromDatabaseEntry(physicsEntry.get(), DatabaseConstants.FIELD_RANK_CAR_MODEL_NAME);
+        Optional<Resource> versionName = getResourceFromDatabaseEntry(physicsEntry.get(), DatabaseConstants.FIELD_RANK_CAR_VERSION_NAME);
 
         int carIdentifier = physicsEntry
                 .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_ID_CAR))
@@ -116,10 +84,10 @@ public class VehicleSlotsHelper {
         return of(VehicleSlot.builder()
                 .withRef(slotReference)
                 .withCarIdentifier(carIdentifier)
-                .withFileName(fileName)
-                .withRealName(realName)
-                .withModelName(modelName)
-                .withVersionName(versionName)
+                .withFileName(fileName.orElse(null))
+                .withRealName(realName.orElse(null))
+                .withModelName(modelName.orElse(null))
+                .withVersionName(versionName.orElse(null))
                 .withDefaultRims(defaultRims.orElse(null))
                 .withBrandName(brandName)
                 .build());
@@ -208,6 +176,7 @@ public class VehicleSlotsHelper {
     }
 
     private RimSlot getRimSlotFromDatabaseEntry(DbDataDto.Entry rimEntry) {
+        // TODO extract methods
         String defaultRimsReference = rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RIM_REF)
                 .map(DbDataDto.Item::getRawValue).get();
 
@@ -250,6 +219,15 @@ public class VehicleSlotsHelper {
                 .withParentDirectoryName(defaulRimsParentDirectory)
                 .withRimsInformation(frontInfo, rearInfo)
                 .build();
+    }
+
+    private Optional<Resource> getResourceFromDatabaseEntry(DbDataDto.Entry entry, int fieldRank) {
+        return entry.getItemAtRank(fieldRank)
+                .map((item) -> {
+                    String value = miner.getLocalizedResourceValueFromContentEntry(entry.getId(), fieldRank, CAR_PHYSICS_DATA, DEFAULT_LOCALE)
+                            .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
+                    return Resource.from(item.getRawValue(), value);
+                });
     }
 
     private static String getDefaultRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType, String extension) {
