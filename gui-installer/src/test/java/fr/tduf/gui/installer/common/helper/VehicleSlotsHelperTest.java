@@ -99,10 +99,10 @@ public class VehicleSlotsHelperTest {
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotRef, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef, RIMS)).thenReturn(of(rimsEntry));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 9, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(fileName));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 12, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(realName));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 13, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 14, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(versionName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(fileNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(fileName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(realNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(realName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(modelNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(versionNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(versionName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(directoryRef, RIMS, UNITED_STATES)).thenReturn(of(directory));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(frontRimFileNameRef, RIMS, UNITED_STATES)).thenReturn(of(frontRimFileName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(rearRimFileNameRef, RIMS, UNITED_STATES)).thenReturn(of(rearRimFileName));

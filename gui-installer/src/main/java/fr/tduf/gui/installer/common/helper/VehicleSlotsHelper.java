@@ -64,10 +64,10 @@ public class VehicleSlotsHelper {
 
         Optional<Resource> brandName = getResourceFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_CAR_BRAND, BRANDS, DatabaseConstants.FIELD_RANK_MANUFACTURER_NAME);
 
-        Optional<Resource> fileName = getResourceFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_CAR_FILE_NAME);
-        Optional<Resource> realName = getResourceFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_CAR_REAL_NAME);
-        Optional<Resource> modelName = getResourceFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_CAR_MODEL_NAME);
-        Optional<Resource> versionName = getResourceFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_CAR_VERSION_NAME);
+        Optional<Resource> fileName = getResourceFromDatabaseEntry(physicsEntry, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_FILE_NAME);
+        Optional<Resource> realName = getResourceFromDatabaseEntry(physicsEntry, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_REAL_NAME);
+        Optional<Resource> modelName = getResourceFromDatabaseEntry(physicsEntry, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_MODEL_NAME);
+        Optional<Resource> versionName = getResourceFromDatabaseEntry(physicsEntry, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_VERSION_NAME);
 
         Optional<Integer> carIdentifier = getIntValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_ID_CAR);
 
@@ -177,55 +177,33 @@ public class VehicleSlotsHelper {
     }
 
     private RimSlot getRimSlotFromDatabaseEntry(DbDataDto.Entry rimEntry) {
-        // TODO extract methods
-        String defaultRimsReference = rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RIM_REF)
-                .map(DbDataDto.Item::getRawValue).get();
-
-        Resource defaulRimsParentDirectory = rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RSC_PATH)
-                .map((item) -> {
-                    String defaultValue = miner.getLocalizedResourceValueFromTopicAndReference(item.getRawValue(), RIMS, DEFAULT_LOCALE)
-                            .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
-                    return Resource.from(item.getRawValue(), defaultValue);
-                })
-                .orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT));
-
-        Resource frontFileName = rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT)
-                .map((item) -> {
-                    String defaultValue = miner.getLocalizedResourceValueFromTopicAndReference(item.getRawValue(), RIMS, DEFAULT_LOCALE)
-                            .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
-                    return Resource.from(item.getRawValue(), defaultValue);
-                })
-                .orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT));
-
-        Resource rearFileName = rimEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR)
-                .map((item) -> {
-                    String defaultValue = miner.getLocalizedResourceValueFromTopicAndReference(item.getRawValue(), RIMS, DEFAULT_LOCALE)
-                            .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
-                    return Resource.from(item.getRawValue(), defaultValue);
-                })
-                .orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT));
+        String defaultRimsReference = getStringValueFromDatabaseEntry(rimEntry, DatabaseConstants.FIELD_RANK_RIM_REF).get();
+        Optional<Resource> defaulRimsParentDirectory = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_PATH);
+        Optional<Resource> frontFileName = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT);
+        Optional<Resource> rearFileName = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR);
 
         RimSlot.RimInfo frontInfo = RimSlot.RimInfo
                 .builder()
-                .withFileName(frontFileName)
+                .withFileName(frontFileName.orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
                 .build();
         RimSlot.RimInfo rearInfo = RimSlot.RimInfo
                 .builder()
-                .withFileName(rearFileName)
+                .withFileName(rearFileName.orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
                 .build();
 
         return RimSlot
                 .builder()
                 .withRef(defaultRimsReference)
-                .withParentDirectoryName(defaulRimsParentDirectory)
+                .withParentDirectoryName(defaulRimsParentDirectory.orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
                 .withRimsInformation(frontInfo, rearInfo)
                 .build();
     }
 
-    private Optional<Resource> getResourceFromDatabaseEntry(DbDataDto.Entry entry, int fieldRank) {
+    // TODO move these methods to library when needed
+    private Optional<Resource> getResourceFromDatabaseEntry(DbDataDto.Entry entry, DbDto.Topic topic, int fieldRank) {
         return entry.getItemAtRank(fieldRank)
                 .map((item) -> {
-                    String value = miner.getLocalizedResourceValueFromContentEntry(entry.getId(), fieldRank, CAR_PHYSICS_DATA, DEFAULT_LOCALE)
+                    String value = miner.getLocalizedResourceValueFromTopicAndReference(item.getRawValue(), topic, DEFAULT_LOCALE)
                             .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
                     return Resource.from(item.getRawValue(), value);
                 });
@@ -253,7 +231,6 @@ public class VehicleSlotsHelper {
                 .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 
-    // TODO move these methods to library when needed
     private static String getNameFromLocalResourceValue(Optional<String> potentialValue, String defaultValue) {
         return potentialValue
 
@@ -266,5 +243,10 @@ public class VehicleSlotsHelper {
         return entry.getItemAtRank(fieldRank)
                 .map(DbDataDto.Item::getRawValue)
                 .map(Integer::valueOf);
+    }
+
+    private static Optional<String> getStringValueFromDatabaseEntry(DbDataDto.Entry entry, int fieldRank) {
+        return entry.getItemAtRank(fieldRank)
+                .map(DbDataDto.Item::getRawValue);
     }
 }

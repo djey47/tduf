@@ -44,7 +44,7 @@ public class UserInputHelperTest {
         // Valid slot
         when(minerMock.getContentEntryFromTopicWithReference(SLOTREF, CAR_PHYSICS_DATA)).thenReturn(of(createCarPhysicsContentEntry()));
         when(minerMock.getContentEntryFromTopicWithReference(RIMREF_1, RIMS)).thenReturn(of(createRimsContentEntry()));
-        when(minerMock.getLocalizedResourceValueFromContentEntry(eq(0L), eq(9), eq(CAR_PHYSICS_DATA), any(DbResourceDto.Locale.class))).thenReturn(of(BANKNAME));
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(eq(RES_BANKNAME), eq(CAR_PHYSICS_DATA), any(DbResourceDto.Locale.class))).thenReturn(of(BANKNAME));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(eq(RES_BANKNAME_FR_1), eq(RIMS), any(DbResourceDto.Locale.class))).thenReturn(of(BANKNAME_FR_1));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(eq(RES_BANKNAME_RR_1), eq(RIMS), any(DbResourceDto.Locale.class))).thenReturn(of(BANKNAME_RR_1));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(eq(RES_RIMBRAND_1), eq(RIMS), any(DbResourceDto.Locale.class))).thenReturn(of(RIMBRAND_1));
