@@ -1,12 +1,9 @@
 package fr.tduf.libunlimited.high.files.db.common.helper;
 
 import com.google.common.base.Strings;
-import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,20 +15,10 @@ import static java.util.stream.Collectors.toCollection;
 /**
  * Helper class to access bitfield information and bring bitfield reference.
  */
-public class BitfieldHelper {
+public class BitfieldHelper extends MetaDataHelper {
 
     private static final char BINARY_ZERO = '0';
     private static final char BINARY_ONE = '1';
-
-    private DbMetadataDto databaseMetadataObject;
-
-    public BitfieldHelper() {
-        try {
-            loadDatabaseReference();
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * @param topic : database topic to get bitfield reference from
@@ -103,13 +90,5 @@ public class BitfieldHelper {
                 .forEachRemaining(switches::add);
 
         return switches;
-    }
-
-    private void loadDatabaseReference() throws IOException, URISyntaxException {
-        databaseMetadataObject = FilesHelper.readObjectFromJsonResourceFile(DbMetadataDto.class, "/files/db/databaseMetadata.json");
-    }
-
-    DbMetadataDto getDatabaseMetadataObject() {
-        return databaseMetadataObject;
     }
 }

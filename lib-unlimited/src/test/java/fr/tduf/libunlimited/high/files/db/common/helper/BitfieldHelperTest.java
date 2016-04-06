@@ -22,12 +22,6 @@ public class BitfieldHelperTest {
     }
 
     @Test
-    public void newBitFieldHelper_shouldLoadDatabaseMetadata() throws IOException, URISyntaxException {
-        // GIVEN-WHEN-THEN
-        assertThat(bitfieldHelper.getDatabaseMetadataObject()).isNotNull();
-    }
-
-    @Test
     public void getBitfieldReferenceForTopic_whenUnavailable_shouldReturnEmpty() throws Exception {
         // GIVEN-WHEN
         Optional<List<DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto>> bitfieldReferenceForTopic = bitfieldHelper.getBitfieldReferenceForTopic(DbDto.Topic.TUTORIALS);
