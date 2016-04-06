@@ -55,6 +55,36 @@ public class UserInputHelper {
         }
     }
 
+    /**
+     * Invokes dealer slot dialog to select one to perform install. Updates provided context with selection.
+     */
+    public static void selectAndDefineDealerSlot(DatabaseContext context, Window window) {
+        requireNonNull(context, "Database context is required.");
+        requireNonNull(context.getPatchProperties(), "Patch properties are required.");
+
+        Optional<String> forcedDealerRef = context.getPatchProperties().getDealerReference();
+        Optional<Integer> forcedDealerSlot = context.getPatchProperties().getDealerSlot();
+
+        if (forcedDealerRef.isPresent() && forcedDealerSlot.isPresent()) {
+            Log.info(THIS_CLASS_NAME, "->Forced using dealer " + forcedDealerRef.get() + " at slot " + forcedDealerSlot.get());
+            return;
+        }
+
+        Log.info(THIS_CLASS_NAME, "->Selecting dealer slot");
+
+//        SlotsBrowserStageController slotsBrowserController = initSlotsBrowserController(parentWindow);
+//        Optional<VehicleSlotDataItem> selectedItem = slotsBrowserController.initAndShowModalDialog(Optional.empty(), context.getMiner());
+//
+//        Log.info(THIS_CLASS_NAME, "->Using dealer slot: " + selectedItem);
+//
+//        Optional<String> potentialVehicleSlot = selectedItem
+//                .map((item) -> item.referenceProperty().get());
+//        potentialVehicleSlot.ifPresent((slotRef) -> createPatchPropertiesForVehicleSlot(slotRef, context.getPatchProperties(), context.getMiner()));
+//        if (!potentialVehicleSlot.isPresent()) {
+//            Log.info(THIS_CLASS_NAME, "->No vehicle slot selected, will be creating a new one.");
+//        }
+    }
+
     static void createPatchPropertiesForVehicleSlot(String slotReference, PatchProperties patchProperties, BulkDatabaseMiner miner) {
         Log.info(THIS_CLASS_NAME, "->Resolving missing properties with slot information");
 
