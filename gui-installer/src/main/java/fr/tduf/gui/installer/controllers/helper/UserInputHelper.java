@@ -3,10 +3,12 @@ package fr.tduf.gui.installer.controllers.helper;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
+import fr.tduf.gui.installer.controllers.DealerSlotsStageController;
 import fr.tduf.gui.installer.controllers.SlotsBrowserStageController;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
+import fr.tduf.gui.installer.stages.DealerSlotsStageDesigner;
 import fr.tduf.gui.installer.stages.SlotsBrowserStageDesigner;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
@@ -58,7 +60,7 @@ public class UserInputHelper {
     /**
      * Invokes dealer slot dialog to select one to perform install. Updates provided context with selection.
      */
-    public static void selectAndDefineDealerSlot(DatabaseContext context, Window window) {
+    public static void selectAndDefineDealerSlot(DatabaseContext context, Window parentWindow) throws Exception {
         requireNonNull(context, "Database context is required.");
         requireNonNull(context.getPatchProperties(), "Patch properties are required.");
 
@@ -72,8 +74,8 @@ public class UserInputHelper {
 
         Log.info(THIS_CLASS_NAME, "->Selecting dealer slot");
 
-//        SlotsBrowserStageController slotsBrowserController = initSlotsBrowserController(parentWindow);
-//        Optional<VehicleSlotDataItem> selectedItem = slotsBrowserController.initAndShowModalDialog(Optional.empty(), context.getMiner());
+        DealerSlotsStageController dealerSlotsController = initDealerSlotsController(parentWindow);
+        dealerSlotsController.initAndShowModalDialog();
 //
 //        Log.info(THIS_CLASS_NAME, "->Using dealer slot: " + selectedItem);
 //
@@ -130,5 +132,12 @@ public class UserInputHelper {
         stage.initOwner(mainWindow);
 
         return SlotsBrowserStageDesigner.init(stage);
+    }
+
+    private static DealerSlotsStageController initDealerSlotsController(Window mainWindow) throws IOException {
+        Stage stage = new Stage();
+        stage.initOwner(mainWindow);
+
+        return DealerSlotsStageDesigner.init(stage);
     }
 }

@@ -17,7 +17,7 @@ public class DealerSlotsStageController extends AbstractGuiController {
     }
 
     @Override
-    protected void init() throws IOException {
+    public void init() throws IOException {
 
     }
 
@@ -27,5 +27,7 @@ public class DealerSlotsStageController extends AbstractGuiController {
      */
     public void initAndShowModalDialog() throws Exception {
         showModalWindow();
+
+        throw new Exception("Aborted by user.");
     }
 }
