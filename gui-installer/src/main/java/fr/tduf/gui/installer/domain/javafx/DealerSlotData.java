@@ -6,13 +6,13 @@ import static java.util.Objects.requireNonNull;
  * Represents data to be displayed in TableView.
  * Only applies to a vehicle dealers and slot.
  */
-public class DealerSlotDataItem {
+public class DealerSlotData {
 
     private DealerDataItem dealerDataItem;
     private SlotDataItem slotDataItem;
 
-    public static DealerSlotDataItem from(DealerDataItem dealerDataItem, SlotDataItem slotDataItem) {
-        DealerSlotDataItem dataItem = new DealerSlotDataItem();
+    public static DealerSlotData from(DealerDataItem dealerDataItem, SlotDataItem slotDataItem) {
+        DealerSlotData dataItem = new DealerSlotData();
 
         dataItem.dealerDataItem = requireNonNull(dealerDataItem, "Dealer data is required.");
         dataItem.slotDataItem = requireNonNull(slotDataItem, "Slot data is required.");

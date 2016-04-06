@@ -7,7 +7,7 @@ import fr.tduf.gui.installer.controllers.DealerSlotsStageController;
 import fr.tduf.gui.installer.controllers.SlotsBrowserStageController;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.VehicleSlot;
-import fr.tduf.gui.installer.domain.javafx.DealerSlotDataItem;
+import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
 import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
 import fr.tduf.gui.installer.stages.DealerSlotsStageDesigner;
 import fr.tduf.gui.installer.stages.SlotsBrowserStageDesigner;
@@ -76,7 +76,7 @@ public class UserInputHelper {
         Log.info(THIS_CLASS_NAME, "->Selecting dealer slot");
 
         DealerSlotsStageController dealerSlotsController = initDealerSlotsController(parentWindow);
-        Optional<DealerSlotDataItem> selectedItem = dealerSlotsController.initAndShowModalDialog();
+        Optional<DealerSlotData> selectedItem = dealerSlotsController.initAndShowModalDialog();
 //
 //        Log.info(THIS_CLASS_NAME, "->Using dealer slot: " + selectedItem);
 //
