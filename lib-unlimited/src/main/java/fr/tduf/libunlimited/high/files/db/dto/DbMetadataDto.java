@@ -15,6 +15,9 @@ public class DbMetadataDto {
     @JsonProperty("topics")
     private List<TopicMetadataDto> topics;
 
+    @JsonProperty("dealers")
+    private List<DealerMetadataDto> dealers;
+
     public DbMetadataDto() {}
 
     public List<TopicMetadataDto> getTopics() {
@@ -65,6 +68,40 @@ public class DbMetadataDto {
             public String getComment() {
                 return comment;
             }
+        }
+    }
+
+    @JsonTypeName("dealerMetadata")
+    public static class DealerMetadataDto {
+
+        @JsonProperty("ref")
+        private String reference;
+
+        @JsonProperty("availableSlots")
+        private List<Integer> availableSlots;
+
+        @JsonProperty("slotCount")
+        private int slotCount;
+
+        @JsonProperty("location")
+        private String location;
+
+        public DealerMetadataDto() {}
+
+        public List<Integer> getAvailableSlots() {
+            return availableSlots;
+        }
+
+        public int getSlotCount() {
+            return slotCount;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public String getReference() {
+            return reference;
         }
     }
 }
