@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.72" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.installer.controllers.DealerSlotsStageController">
@@ -15,16 +18,38 @@
             <ToolBar prefHeight="40.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
                <items>
                   <Label fx:id="instructionsLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0" text="Select dealer slot to put vehicle on it:" />
-                  <TextField fx:id="slotRefTextField" prefWidth="100.0" />
+                  <TextField fx:id="dealerRefTextField" prefWidth="100.0" />
+                  <TextField fx:id="slotTextField" prefWidth="30.0" />
                   <Button mnemonicParsing="false" onAction="#handleOkButtonAction" text="OK" />
                </items>
             </ToolBar>
-            <AnchorPane VBox.vgrow="ALWAYS" />
-            <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
-               <items>
-                  <Separator orientation="VERTICAL" />
-               </items>
-            </ToolBar>
+            <AnchorPane VBox.vgrow="ALWAYS">
+               <children>
+                  <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <TableView fx:id="dealersTableView" maxWidth="1.7976931348623157E308" prefWidth="290.0" HBox.hgrow="ALWAYS">
+                           <columns>
+                              <TableColumn editable="false" prefWidth="96.0" text="REF" />
+                              <TableColumn editable="false" prefWidth="100.0" text="Name" />
+                              <TableColumn editable="false" prefWidth="200.0" text="Location" />
+                              <TableColumn editable="false" prefWidth="200.0" text="Slots" />
+                           </columns>
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </TableView>
+                        <TableView fx:id="slotsTableView" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" prefWidth="350.0" HBox.hgrow="ALWAYS">
+                           <columns>
+                              <TableColumn editable="false" prefWidth="30.0" text="#" />
+                              <TableColumn editable="false" prefWidth="350.0" text="Vehicle name" />
+                           </columns>
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </TableView>
+                     </children>
+                  </HBox>
+               </children></AnchorPane>
          </children></VBox>
    </children>
 </AnchorPane>

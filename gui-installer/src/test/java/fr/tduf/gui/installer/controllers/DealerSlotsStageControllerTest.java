@@ -39,5 +39,4 @@ public class DealerSlotsStageControllerTest {
 
         return DealerSlotsStageDesigner.init(stage);
     }
-
 }
