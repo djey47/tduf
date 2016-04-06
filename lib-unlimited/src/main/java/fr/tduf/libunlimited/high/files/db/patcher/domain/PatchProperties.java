@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.high.files.db.patcher.domain;
 import java.util.Optional;
 import java.util.Properties;
 
+import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -16,12 +17,16 @@ public class PatchProperties extends Properties {
     private static final String PLACEHOLDER_NAME_RESOURCE_BANK = "RES_BANKNAME";
     private static final String PLACEHOLDER_NAME_RESOURCE_MODEL = "RES_MODELNAME";
     private static final String PLACEHOLDER_NAME_RESOURCE_VERSION = "RES_VERSIONNAME";
+    private static final String PLACEHOLDER_NAME_DEALER_REFERENCE = "DEALERREF";
+    private static final String PLACEHOLDER_NAME_DEALER_SLOT = "DEALERSLOT";
+
     private static final String PLACEHOLDER_NAME_FMT_RIMS_REFERENCE = "RIMREF.%d";
     private static final String PLACEHOLDER_NAME_FMT_RESOURCE_RIMS_BRAND = "RIMBRANDREF.%d";
     private static final String PLACEHOLDER_NAME_FMT_INTERIOR_REFERENCE = "INTREF.%d";
     private static final String PLACEHOLDER_NAME_FMT_RIMS_BANK = "BANKNAME.%s.%d";
     private static final String PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK = "RES_BANKNAME.%s.%d";
     private static final String PLACEHOLDER_NAME_FMT_RESOURCE_COLOR = "RES_COLORNAME.%d";
+
     private static final String SUFFIX_FRONT_RIMS = "FR";
     private static final String SUFFIX_REAR_RIMS = "RR";
 
@@ -86,35 +91,35 @@ public class PatchProperties extends Properties {
     }
 
     public void setRimsSlotReferenceIfNotExists(String rimsSlotReference, int rimSet) {
-        String placeholderName = String.format(PLACEHOLDER_NAME_FMT_RIMS_REFERENCE, rimSet);
+        String placeholderName = format(PLACEHOLDER_NAME_FMT_RIMS_REFERENCE, rimSet);
         registerIfNotExists(placeholderName, rimsSlotReference);
     }
 
     public void setResourceRimsBrandIfNotExists(String rimBrandReference, int rimSet) {
-        registerIfNotExists(String.format(PLACEHOLDER_NAME_FMT_RESOURCE_RIMS_BRAND, rimSet), rimBrandReference);
+        registerIfNotExists(format(PLACEHOLDER_NAME_FMT_RESOURCE_RIMS_BRAND, rimSet), rimBrandReference);
     }
 
     public void setInteriorReferenceIfNotExists(String interiorReference, int interiorSet) {
-        String placeholderName = String.format(PLACEHOLDER_NAME_FMT_INTERIOR_REFERENCE, interiorSet);
+        String placeholderName = format(PLACEHOLDER_NAME_FMT_INTERIOR_REFERENCE, interiorSet);
         registerIfNotExists(placeholderName, interiorReference);
     }
 
     public void setFrontRimBankNameIfNotExists(String rimBankName, int rimSet) {
-        String placeholderName = String.format(PLACEHOLDER_NAME_FMT_RIMS_BANK, SUFFIX_FRONT_RIMS, rimSet);
+        String placeholderName = format(PLACEHOLDER_NAME_FMT_RIMS_BANK, SUFFIX_FRONT_RIMS, rimSet);
         registerIfNotExists(placeholderName, rimBankName);
     }
     public void setResourceFrontRimBankIfNotExists(String rimBankReference, int rimSet) {
-        String placeholderName = String.format(PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK, SUFFIX_FRONT_RIMS, rimSet);
+        String placeholderName = format(PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK, SUFFIX_FRONT_RIMS, rimSet);
         registerIfNotExists(placeholderName, rimBankReference);
     }
 
     public void setRearRimBankNameIfNotExists(String rimBankName, int rimSet) {
-        String placeholderName = String.format(PLACEHOLDER_NAME_FMT_RIMS_BANK, SUFFIX_REAR_RIMS, rimSet);
+        String placeholderName = format(PLACEHOLDER_NAME_FMT_RIMS_BANK, SUFFIX_REAR_RIMS, rimSet);
         registerIfNotExists(placeholderName, rimBankName);
     }
 
     public void setResourceRearRimBankIfNotExists(String rimBankReference, int rimSet) {
-        String placeholderName = String.format(PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK, SUFFIX_REAR_RIMS, rimSet);
+        String placeholderName = format(PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK, SUFFIX_REAR_RIMS, rimSet);
         registerIfNotExists(placeholderName, rimBankReference);
     }
 
@@ -127,7 +132,7 @@ public class PatchProperties extends Properties {
     }
 
     public void setResourceColorNameIfNotExists(String colorNameReference, int exteriorSet) {
-        String placeholderName = String.format(PLACEHOLDER_NAME_FMT_RESOURCE_COLOR, exteriorSet);
+        String placeholderName = format(PLACEHOLDER_NAME_FMT_RESOURCE_COLOR, exteriorSet);
         registerIfNotExists(placeholderName, colorNameReference);
     }
 
@@ -148,27 +153,35 @@ public class PatchProperties extends Properties {
     }
 
     public Optional<String> getFrontRimBankFileName(int rimSet) {
-        return retrieve(String.format(PLACEHOLDER_NAME_FMT_RIMS_BANK, SUFFIX_FRONT_RIMS, rimSet));
+        return retrieve(format(PLACEHOLDER_NAME_FMT_RIMS_BANK, SUFFIX_FRONT_RIMS, rimSet));
     }
 
     public Optional<String> getRimSlotReference(int rimSet) {
-        return retrieve(String.format(PLACEHOLDER_NAME_FMT_RIMS_REFERENCE, rimSet));
+        return retrieve(format(PLACEHOLDER_NAME_FMT_RIMS_REFERENCE, rimSet));
     }
 
     public Optional<String> getRearRimBankFileName(int rimSet) {
-        return retrieve(String.format(PLACEHOLDER_NAME_FMT_RIMS_BANK, SUFFIX_REAR_RIMS, rimSet));
+        return retrieve(format(PLACEHOLDER_NAME_FMT_RIMS_BANK, SUFFIX_REAR_RIMS, rimSet));
     }
 
     public Optional<String> getFrontRimBankFileNameResource(int rimSet) {
-        return retrieve(String.format(PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK, SUFFIX_FRONT_RIMS, rimSet));
+        return retrieve(format(PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK, SUFFIX_FRONT_RIMS, rimSet));
     }
 
     public Optional<String> getRearRimBankFileNameResource(int rimSet) {
-        return retrieve(String.format(PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK, SUFFIX_REAR_RIMS, rimSet));
+        return retrieve(format(PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK, SUFFIX_REAR_RIMS, rimSet));
+    }
+
+    public Optional<String> getDealerReference() {
+        return retrieve(PLACEHOLDER_NAME_DEALER_REFERENCE);
+    }
+
+    public Optional<Integer> getDealerSlot() {
+        return retrieve(PLACEHOLDER_NAME_DEALER_SLOT).map(Integer::valueOf);
     }
 
     public Optional<String> getRimBrandNameResource(int rimSet) {
-        return retrieve(String.format(PLACEHOLDER_NAME_FMT_RESOURCE_RIMS_BRAND, rimSet));
+        return retrieve(format(PLACEHOLDER_NAME_FMT_RESOURCE_RIMS_BRAND, rimSet));
     }
 
     private void registerIfNotExists(String placeholderName, String value) {
