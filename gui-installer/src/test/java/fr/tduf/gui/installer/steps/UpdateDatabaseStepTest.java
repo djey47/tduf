@@ -5,6 +5,7 @@ import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import org.junit.Before;
@@ -18,6 +19,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.UPDATE_DATABASE;
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UpdateDatabaseStepTest {
@@ -64,6 +69,35 @@ public class UpdateDatabaseStepTest {
         updateDatabaseStep.perform();
 
         // THEN
+    }
+
+    @Test
+    public void perform_withDealerProperties_shouldAddUpdateInstruction() throws URISyntaxException, IOException, ReflectiveOperationException {
+        // GIVEN
+        String dealerRef = "0000";
+        patchProperties.setDealerReferenceIfNotExists(dealerRef);
+        patchProperties.setDealerSlotIfNotExists(10);
+
+        String assetsDirectory = new File(thisClass.getResource("/assets-patch-only").toURI()).getAbsolutePath();
+        InstallerConfiguration configuration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tempDirectory)
+                .withAssetsDirectory(assetsDirectory)
+                .build();
+
+
+        // WHEN
+        final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
+                GenericStep.starterStep(configuration, databaseContext)
+                        .nextStep(UPDATE_DATABASE));
+        updateDatabaseStep.perform();
+
+
+        // THEN
+        DbPatchDto patchObject = databaseContext.getPatchObject();
+        assertThat(patchObject.getChanges()).extracting("type").containsOnly(UPDATE);
+        assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_SHOPS);
+        assertThat(patchObject.getChanges()).extracting("ref").containsOnly(dealerRef);
+        assertThat(patchObject.getChanges()).extracting("partialValues").containsOnly(singletonList(DbFieldValueDto.fromCouple(13, SLOT_REFERENCE)));
     }
 
     @Test
