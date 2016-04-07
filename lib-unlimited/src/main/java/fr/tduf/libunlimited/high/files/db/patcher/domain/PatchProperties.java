@@ -136,6 +136,14 @@ public class PatchProperties extends Properties {
         registerIfNotExists(placeholderName, colorNameReference);
     }
 
+    public void setDealerReferenceIfNotExists(String dealerReference) {
+        registerIfNotExists(PLACEHOLDER_NAME_DEALER_REFERENCE, dealerReference);
+    }
+
+    public void setDealerSlotIfNotExists(int slotRank) {
+        registerIfNotExists(PLACEHOLDER_NAME_DEALER_SLOT, Integer.valueOf(slotRank).toString());
+    }
+
     public Optional<String> getVehicleSlotReference() {
         return retrieve(PLACEHOLDER_NAME_SLOT_REFERENCE);
     }
