@@ -49,6 +49,9 @@ public class DealerSlotsStageController extends AbstractGuiController {
     private TableView<DealerSlotData.DealerDataItem> dealersTableView;
 
     @FXML
+    private TableView<DealerSlotData.SlotDataItem> slotsTableView;
+
+    @FXML
     private void handleOkButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleOkButtonAction");
 
@@ -128,7 +131,7 @@ public class DealerSlotsStageController extends AbstractGuiController {
                     return null;
                 }
 
-                return DealerSlotData.SlotDataItem.fromDealerSlot(Dealer.builder().withRef("").build(), Integer.valueOf(rank));
+                return DealerSlotData.SlotDataItem.fromDealerSlot(Dealer.Slot.builder().withRank(Integer.valueOf(rank)).build());
             }
         });
     }
@@ -146,6 +149,16 @@ public class DealerSlotsStageController extends AbstractGuiController {
         dealersData.addAll(dealerHelper.getDealers().stream()
 
                 .map(DealerSlotData.DealerDataItem::fromDealer)
+
+                .collect(toList()));
+    }
+
+    private void updateSlotsData(DealerSlotData.DealerDataItem dealerDataItem) {
+        slotsData.clear();
+
+        slotsData.addAll(dealerDataItem.slotsProperty().get().stream()
+
+                .map(DealerSlotData.SlotDataItem::fromDealerSlot)
 
                 .collect(toList()));
     }

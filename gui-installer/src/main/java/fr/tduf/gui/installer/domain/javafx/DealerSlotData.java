@@ -1,10 +1,9 @@
 package fr.tduf.gui.installer.domain.javafx;
 
 import fr.tduf.gui.installer.domain.Dealer;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -26,9 +25,18 @@ public class DealerSlotData {
         return dataItem;
     }
 
+    public DealerDataItem getDealerDataItem() {
+        return dealerDataItem;
+    }
+
+    public SlotDataItem getSlotDataItem() {
+        return slotDataItem;
+    }
+
     public static class DealerDataItem {
 
         private StringProperty reference = new SimpleStringProperty();
+        private ObjectProperty<List<Dealer.Slot>> slots = new SimpleObjectProperty<>();
 
         public static DealerDataItem fromDealer(Dealer dealer) {
             DealerDataItem item = new DealerDataItem();
@@ -41,16 +49,20 @@ public class DealerSlotData {
         public StringProperty referenceProperty() {
             return reference;
         }
+
+        public ObjectProperty<List<Dealer.Slot>> slotsProperty() {
+            return slots;
+        }
     }
 
     public static class SlotDataItem {
 
         private IntegerProperty rank = new SimpleIntegerProperty();
 
-        public static SlotDataItem fromDealerSlot(Dealer dealer, int rank) {
+        public static SlotDataItem fromDealerSlot(Dealer.Slot slot) {
             SlotDataItem item = new SlotDataItem();
 
-            item.rank.setValue(rank);
+            item.rank.setValue(slot.getRank());
 
             return item;
         }
