@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.domain.javafx;
 
+import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.domain.Dealer;
 import javafx.beans.property.*;
 
@@ -42,6 +43,7 @@ public class DealerSlotData {
         private StringProperty reference = new SimpleStringProperty();
         private ObjectProperty<List<Dealer.Slot>> slots = new SimpleObjectProperty<>();
         private StringProperty name = new SimpleStringProperty();
+        private StringProperty freeSlots = new SimpleStringProperty();
 
         public static DealerDataItem fromDealer(Dealer dealer) {
             DealerDataItem item = new DealerDataItem();
@@ -49,6 +51,7 @@ public class DealerSlotData {
             item.reference.setValue(dealer.getRef());
             item.slots.setValue(dealer.getSlots());
             item.name.setValue(dealer.getDisplayedName().getValue());
+            item.freeSlots.setValue(String.format(DisplayConstants.LABEL_FMT_FREE_SLOTS, dealer.computeFreeSlotCount(), dealer.getSlots().size()));
 
             return item;
         }
@@ -63,6 +66,10 @@ public class DealerSlotData {
 
         public StringProperty nameProperty() {
             return name;
+        }
+
+        public StringProperty freeSlotsProperty() {
+            return freeSlots;
         }
 
         @Override

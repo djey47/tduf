@@ -158,10 +158,13 @@ public class DealerSlotsStageController extends AbstractGuiController {
     }
 
     private void initTablePane() {
+        // TODO sort by name by default
         TableColumn<DealerSlotData.DealerDataItem, ?> refColumn = dealersTableView.getColumns().get(0);
         refColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().referenceProperty());
         TableColumn<DealerSlotData.DealerDataItem, ?> nameColumn = dealersTableView.getColumns().get(1);
         nameColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().nameProperty());
+        TableColumn<DealerSlotData.DealerDataItem, ?> freeSlotsColumn = dealersTableView.getColumns().get(3);
+        freeSlotsColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().freeSlotsProperty());
 
         dealersTableView.setItems(dealersData);
 

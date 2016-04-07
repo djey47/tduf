@@ -34,6 +34,12 @@ public class Dealer {
         return displayedName;
     }
 
+    public int computeFreeSlotCount() {
+        // TODO filter by vehicle slot REF
+        return (int) slots.stream()
+                .count();
+    }
+
     @Override
     public String toString() { return reflectionToString(this); }
 

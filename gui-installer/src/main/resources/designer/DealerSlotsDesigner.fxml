@@ -32,7 +32,7 @@
                               <TableColumn editable="false" prefWidth="96.0" text="REF" />
                               <TableColumn editable="false" prefWidth="100.0" text="Name" />
                               <TableColumn editable="false" prefWidth="200.0" text="Location" />
-                              <TableColumn editable="false" prefWidth="200.0" text="Slots" />
+                              <TableColumn editable="false" prefWidth="200.0" text="Free slots" />
                            </columns>
                            <HBox.margin>
                               <Insets right="5.0" />
