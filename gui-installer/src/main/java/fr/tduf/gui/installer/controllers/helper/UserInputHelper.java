@@ -79,13 +79,11 @@ public class UserInputHelper {
         Optional<DealerSlotData> selectedItem = dealerSlotsController.initAndShowModalDialog(context.getMiner());
 
         Log.info(THIS_CLASS_NAME, "->Using dealer slot: " + selectedItem);
-//
-//        Optional<String> potentialVehicleSlot = selectedItem
-//                .map((item) -> item.referenceProperty().get());
-//        potentialVehicleSlot.ifPresent((slotRef) -> createPatchPropertiesForVehicleSlot(slotRef, context.getPatchProperties(), context.getMiner()));
-//        if (!potentialVehicleSlot.isPresent()) {
-//            Log.info(THIS_CLASS_NAME, "->No vehicle slot selected, will be creating a new one.");
-//        }
+
+        selectedItem.ifPresent((slotData) -> createPatchPropertiesForDealerSlot(slotData, context.getPatchProperties()));
+        if (!selectedItem.isPresent()) {
+            Log.info(THIS_CLASS_NAME, "->No dealer slot selected, will not locate vehicle.");
+        }
     }
 
     static void createPatchPropertiesForVehicleSlot(String slotReference, PatchProperties patchProperties, BulkDatabaseMiner miner) {
@@ -126,6 +124,13 @@ public class UserInputHelper {
         patchProperties.setResourceFrontRimBankIfNotExists(selectedResourceFrontRimBankName, 1);
         patchProperties.setRearRimBankNameIfNotExists(selectedRearRimBank, 1);
         patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, 1);
+    }
+
+    static void createPatchPropertiesForDealerSlot(DealerSlotData dealerSlotData, PatchProperties patchProperties) {
+        Log.info(THIS_CLASS_NAME, "->Resolving missing properties with dealer slot information");
+
+        patchProperties.setDealerReferenceIfNotExists(dealerSlotData.getDealerDataItem().referenceProperty().get());
+        patchProperties.setDealerSlotIfNotExists(dealerSlotData.getSlotDataItem().rankProperty().get());
     }
 
     private static SlotsBrowserStageController initSlotsBrowserController(Window mainWindow) throws IOException {

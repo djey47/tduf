@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.controllers.helper;
 
 
+import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -124,6 +125,54 @@ public class UserInputHelperTest {
         assertThat(patchProperties.getRearRimBankFileName(1)).contains(rearRimBankName);
         assertThat(patchProperties.getFrontRimBankFileNameResource(1)).contains(frontRimResource);
         assertThat(patchProperties.getRearRimBankFileNameResource(1)).contains(rearRimResource);
+    }
+
+    @Test
+    public void createPatchPropertiesForDealerSlot_whenNoProperty_shouldSetValuesFromSelectedSlot() {
+        // GIVEN
+        String dealerRef = "1111";
+        int slotRank = 2;
+
+        PatchProperties patchProperties = new PatchProperties();
+        DealerSlotData.DealerDataItem dealerItem = new DealerSlotData.DealerDataItem();
+        dealerItem.referenceProperty().setValue(dealerRef);
+        DealerSlotData.SlotDataItem slotItem = new DealerSlotData.SlotDataItem();
+        slotItem.rankProperty().setValue(slotRank);
+        DealerSlotData dealerSlotData = DealerSlotData.from(dealerItem, slotItem);
+
+
+        // WHEN
+        UserInputHelper.createPatchPropertiesForDealerSlot(dealerSlotData, patchProperties);
+
+
+        // THEN
+        assertThat(patchProperties.getDealerReference()).contains(dealerRef);
+        assertThat(patchProperties.getDealerSlot()).contains(slotRank);
+    }
+
+    @Test
+    public void createPatchPropertiesForDealerSlot_whenPropertiesExist_shouldKeepCurrentValues() {
+        // GIVEN
+        String dealerRef = "1111";
+        int slotRank = 2;
+
+        PatchProperties patchProperties = new PatchProperties();
+        patchProperties.setDealerReferenceIfNotExists(dealerRef);
+        patchProperties.setDealerSlotIfNotExists(slotRank);
+        DealerSlotData.DealerDataItem dealerItem = new DealerSlotData.DealerDataItem();
+        dealerItem.referenceProperty().setValue("2222");
+        DealerSlotData.SlotDataItem slotItem = new DealerSlotData.SlotDataItem();
+        slotItem.rankProperty().setValue(4);
+        DealerSlotData dealerSlotData = DealerSlotData.from(dealerItem, slotItem);
+
+
+        // WHEN
+        UserInputHelper.createPatchPropertiesForDealerSlot(dealerSlotData, patchProperties);
+
+
+        // THEN
+        assertThat(patchProperties.getDealerReference()).contains(dealerRef);
+        assertThat(patchProperties.getDealerSlot()).contains(slotRank);
     }
 
     private static DbDataDto.Entry createCarPhysicsContentEntry() {
