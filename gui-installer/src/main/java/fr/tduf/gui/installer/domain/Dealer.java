@@ -1,5 +1,7 @@
 package fr.tduf.gui.installer.domain;
 
+import fr.tduf.gui.installer.common.DatabaseConstants;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -38,8 +40,8 @@ public class Dealer {
     }
 
     public int computeFreeSlotCount() {
-        // TODO filter by vehicle slot REF
         return (int) slots.stream()
+                .filter((slot) -> DatabaseConstants.REF_FREE_DEALER_SLOT.equals(slot.getVehicleSlot().map(VehicleSlot::getRef).orElse(DatabaseConstants.REF_FREE_DEALER_SLOT)))
                 .count();
     }
 

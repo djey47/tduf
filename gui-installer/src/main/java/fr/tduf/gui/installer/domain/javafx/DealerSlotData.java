@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.domain.javafx;
 
+import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.Dealer;
@@ -91,8 +92,12 @@ public class DealerSlotData {
         public static SlotDataItem fromDealerSlot(Dealer.Slot slot) {
             SlotDataItem item = new SlotDataItem();
 
+            final String vehicleName = slot.getVehicleSlot()
+                    .filter((vehicleSlot) -> !DatabaseConstants.REF_FREE_DEALER_SLOT.equals(vehicleSlot.getRef()))
+                    .map(VehicleSlotsHelper::getVehicleName).orElse("");
+
             item.rank.setValue(slot.getRank());
-            item.vehicleNameProperty().setValue(slot.getVehicleSlot().map(VehicleSlotsHelper::getVehicleName).orElse(""));
+            item.vehicleNameProperty().setValue(vehicleName);
 
             return item;
         }

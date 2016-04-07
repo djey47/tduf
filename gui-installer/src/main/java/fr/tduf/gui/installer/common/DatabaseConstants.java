@@ -37,6 +37,8 @@ public class DatabaseConstants {
     public static final String RESOURCE_REF_UNKNOWN_VEHICLE_NAME = "53338427";      // CAR PHYSICS
     public static final String RESOURCE_REF_GROUP_Z = "92900264";
 
+    public static final String REF_FREE_DEALER_SLOT = "61085282";               // CAR SHOPS
+
     public static final String RESOURCE_REF_NONE_INTERIOR_NAME = "53365512";        // INTERIOR
 
     public static final String RESOURCE_REF_DEFAULT_RIM_BRAND = "55765512";         // RIMS
