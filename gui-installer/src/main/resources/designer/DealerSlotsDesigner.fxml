@@ -25,30 +25,27 @@
             </ToolBar>
             <AnchorPane VBox.vgrow="ALWAYS">
                <children>
-                  <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <TableView fx:id="dealersTableView" maxWidth="1.7976931348623157E308" onMouseClicked="#handleDealersTableMouseClick" prefWidth="290.0" HBox.hgrow="ALWAYS">
                            <columns>
                               <TableColumn editable="false" prefWidth="96.0" text="REF" />
-                              <TableColumn editable="false" prefWidth="100.0" text="Name" />
-                              <TableColumn editable="false" prefWidth="200.0" text="Location" />
-                              <TableColumn editable="false" prefWidth="200.0" text="Free slots" />
+                              <TableColumn editable="false" prefWidth="225.0" text="Name" />
+                              <TableColumn editable="false" prefWidth="225.0" text="Location" />
+                              <TableColumn editable="false" prefWidth="100.0" text="Free slots" />
                            </columns>
-                           <HBox.margin>
-                              <Insets right="5.0" />
-                           </HBox.margin>
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
                         </TableView>
                         <TableView fx:id="slotsTableView" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" onMouseClicked="#handleSlotsTableMouseClick" prefWidth="350.0" HBox.hgrow="ALWAYS">
                            <columns>
                               <TableColumn editable="false" prefWidth="30.0" text="#" />
-                              <TableColumn editable="false" prefWidth="350.0" text="Vehicle name" />
+                              <TableColumn editable="false" prefWidth="400.0" text="Vehicle name" />
                            </columns>
-                           <HBox.margin>
-                              <Insets left="5.0" />
-                           </HBox.margin>
                         </TableView>
                      </children>
-                  </HBox>
+                  </VBox>
                </children></AnchorPane>
          </children></VBox>
    </children>
