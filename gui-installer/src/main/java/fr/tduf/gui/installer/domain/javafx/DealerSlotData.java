@@ -6,6 +6,7 @@ import javafx.beans.property.*;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
+import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * Represents data to be displayed in TableView.
@@ -33,6 +34,9 @@ public class DealerSlotData {
         return slotDataItem;
     }
 
+    @Override
+    public String toString() { return reflectionToString(this); }
+
     public static class DealerDataItem {
 
         private StringProperty reference = new SimpleStringProperty();
@@ -54,6 +58,9 @@ public class DealerSlotData {
         public ObjectProperty<List<Dealer.Slot>> slotsProperty() {
             return slots;
         }
+
+        @Override
+        public String toString() { return reflectionToString(this); }
     }
 
     public static class SlotDataItem {
@@ -71,5 +78,8 @@ public class DealerSlotData {
         public IntegerProperty rankProperty() {
             return rank;
         }
+
+        @Override
+        public String toString() { return reflectionToString(this); }
     }
 }

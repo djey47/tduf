@@ -5,7 +5,6 @@ import fr.tduf.gui.installer.domain.Dealer;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
