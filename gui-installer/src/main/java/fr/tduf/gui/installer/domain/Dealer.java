@@ -3,13 +3,16 @@ package fr.tduf.gui.installer.domain;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
+import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * Domain object representing dealer information.
  */
 public class Dealer {
     private final String ref;
+
     private List<Slot> slots;
+    private Resource displayedName;
 
     private Dealer(String ref) {
         this.ref = requireNonNull(ref, "A dealer reference is required.");
@@ -27,9 +30,17 @@ public class Dealer {
         return slots;
     }
 
+    public Resource getDisplayedName() {
+        return displayedName;
+    }
+
+    @Override
+    public String toString() { return reflectionToString(this); }
+
     public static class DealerBuilder {
         private String ref;
         private List<Slot> slots;
+        private Resource displayedName;
 
         public DealerBuilder withRef(String ref) {
             this.ref = ref;
@@ -41,10 +52,16 @@ public class Dealer {
             return this;
         }
 
+        public DealerBuilder withDisplayedName(Resource name) {
+            this.displayedName = name;
+            return this;
+        }
+
         public Dealer build() {
             final Dealer dealer = new Dealer(ref);
 
             dealer.slots = requireNonNull(slots, "A list of dealer slots is required.");
+            dealer.displayedName = displayedName;
 
             return dealer;
         }
@@ -60,13 +77,16 @@ public class Dealer {
             this.rank = rank;
         }
 
+        public static SlotBuilder builder() {
+            return new SlotBuilder();
+        }
+
         public int getRank() {
             return rank;
         }
 
-        public static SlotBuilder builder() {
-            return new SlotBuilder();
-        }
+        @Override
+        public String toString() { return reflectionToString(this); }
 
         public static class SlotBuilder {
             private Integer rank;
