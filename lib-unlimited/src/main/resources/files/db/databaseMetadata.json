@@ -247,10 +247,28 @@
   ],
   "dealers": [
     {
-      "ref": "",
-      "location": "",
-      "slotCount": 10,
-      "availableSlots": [1,2,3,4,5,6,7,8,9,10]
+      "ref": "541293706",
+      "location": "Honolulu Downtown",
+      "slotCount": 8,
+      "availableSlots": [1,2,3,4,5,6,7,8]
+    },
+    {
+      "ref": "611093710",
+      "location": "Honolulu Airport",
+      "slotCount": 8,
+      "availableSlots": [1,2,3,4,5,6,7,8]
+    },
+    {
+      "ref": "591093708",
+      "location": "Honolulu Airport/Circuit",
+      "slotCount": 8,
+      "availableSlots": [1,2,3,4,5,6,7,8]
+    },
+    {
+      "ref": "540993705",
+      "location": "SW, Barber's point Golf",
+      "slotCount": 8,
+      "availableSlots": [1,2,3,4,5,6,7,8]
     }
   ]
 }
