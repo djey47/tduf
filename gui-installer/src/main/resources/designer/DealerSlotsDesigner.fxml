@@ -27,7 +27,7 @@
                <children>
                   <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <TableView fx:id="dealersTableView" maxWidth="1.7976931348623157E308" prefWidth="290.0" HBox.hgrow="ALWAYS">
+                        <TableView fx:id="dealersTableView" maxWidth="1.7976931348623157E308" onMouseClicked="#handleDealersTableMouseClick" prefWidth="290.0" HBox.hgrow="ALWAYS">
                            <columns>
                               <TableColumn editable="false" prefWidth="96.0" text="REF" />
                               <TableColumn editable="false" prefWidth="100.0" text="Name" />

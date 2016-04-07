@@ -2,6 +2,7 @@ package fr.tduf.gui.installer.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
+import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.installer.common.helper.DealerHelper;
 import fr.tduf.gui.installer.domain.Dealer;
 import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
@@ -15,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -63,6 +65,14 @@ public class DealerSlotsStageController extends AbstractGuiController {
         returnedSlot = Optional.of(DealerSlotData.from(selectedDealerProperty.getValue(), selectedSlotProperty.getValue()));
 
         closeWindow();
+    }
+
+    @FXML
+    private void handleDealersTableMouseClick(MouseEvent event) {
+        Log.trace(THIS_CLASS_NAME, "->handleDealersTableMouseClick");
+
+        TableViewHelper.getMouseSelectedItem(event, DealerSlotData.DealerDataItem.class)
+                .ifPresent((item) -> selectedDealerProperty.setValue(item));
     }
 
     @Override
