@@ -16,6 +16,10 @@ public class Dealer {
         return new DealerBuilder();
     }
 
+    public String getRef() {
+        return ref;
+    }
+
     public static class DealerBuilder {
         private String ref;
 

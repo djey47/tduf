@@ -17,7 +17,7 @@
          <children>
             <ToolBar prefHeight="40.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
                <items>
-                  <Label fx:id="instructionsLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0" text="Select dealer slot to put vehicle on it:" />
+                  <Label alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0" text="Select dealer slot to put vehicle on it:" />
                   <TextField fx:id="dealerRefTextField" prefWidth="100.0" />
                   <TextField fx:id="slotTextField" prefWidth="30.0" />
                   <Button mnemonicParsing="false" onAction="#handleOkButtonAction" text="OK" />

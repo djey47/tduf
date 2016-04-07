@@ -1,5 +1,11 @@
 package fr.tduf.gui.installer.domain.javafx;
 
+import fr.tduf.gui.installer.domain.Dealer;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -22,9 +28,35 @@ public class DealerSlotData {
 
     public static class DealerDataItem {
 
+        private StringProperty reference = new SimpleStringProperty();
+
+        public static DealerDataItem fromDealer(Dealer dealer) {
+            DealerDataItem item = new DealerDataItem();
+
+            item.reference.setValue(dealer.getRef());
+
+            return item;
+        }
+
+        public StringProperty referenceProperty() {
+            return reference;
+        }
     }
 
     public static class SlotDataItem {
 
+        private IntegerProperty rank = new SimpleIntegerProperty();
+
+        public static SlotDataItem fromDealerSlot(Dealer dealer, int rank) {
+            SlotDataItem item = new SlotDataItem();
+
+            item.rank.setValue(rank);
+
+            return item;
+        }
+
+        public IntegerProperty rankProperty() {
+            return rank;
+        }
     }
 }
