@@ -9,8 +9,6 @@ import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +16,6 @@ import java.util.Optional;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.FRONT_RIM;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.REAR_RIM;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;
@@ -26,16 +23,12 @@ import static java.util.stream.Collectors.toList;
 /**
  * Component to get advanced information on vehicle slots.
  */
-public class VehicleSlotsHelper {
+public class VehicleSlotsHelper extends CommonHelper {
 
     public static final int DEFAULT_VEHICLE_ID = 0;
 
-    private static final DbResourceDto.Locale DEFAULT_LOCALE = UNITED_STATES;
-
-    private final BulkDatabaseMiner miner;
-
     private VehicleSlotsHelper(BulkDatabaseMiner miner) {
-        this.miner = miner;
+        super(miner);
     }
 
     public enum BankFileType {EXTERIOR_MODEL, INTERIOR_MODEL, HUD, SOUND, FRONT_RIM, REAR_RIM}
@@ -199,23 +192,6 @@ public class VehicleSlotsHelper {
                 .build();
     }
 
-    // TODO move these methods to library when needed
-    private Optional<Resource> getResourceFromDatabaseEntry(DbDataDto.Entry entry, DbDto.Topic topic, int fieldRank) {
-        return entry.getItemAtRank(fieldRank)
-                .map((item) -> {
-                    String value = miner.getLocalizedResourceValueFromTopicAndReference(item.getRawValue(), topic, DEFAULT_LOCALE)
-                            .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
-                    return Resource.from(item.getRawValue(), value);
-                });
-    }
-
-    private Optional<Resource> getResourceFromDatabaseEntry(DbDataDto.Entry entry, int sourceFieldRank, DbDto.Topic targetTopic, int targetFieldRank) {
-        return entry.getItemAtRank(sourceFieldRank)
-                .flatMap((sourceItem) -> miner.getContentEntryFromTopicWithReference(sourceItem.getRawValue(), targetTopic))
-                .flatMap((targetEntry) -> miner.getLocalizedResourceValueFromContentEntry(targetEntry.getId(), targetFieldRank, targetTopic, DEFAULT_LOCALE))
-                .map((value) -> Resource.from("", value));
-    }
-
     private static String getDefaultRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType, String extension) {
         RimSlot.RimInfo rimInfo;
         if (FRONT_RIM == rimBankFileType) {
@@ -237,16 +213,5 @@ public class VehicleSlotsHelper {
                 .map((resourceValue) -> DatabaseConstants.RESOURCE_VALUE_NONE.equals(resourceValue) ? null : resourceValue)
 
                 .orElse(defaultValue);
-    }
-
-    private static Optional<Integer> getIntValueFromDatabaseEntry(DbDataDto.Entry entry, int fieldRank) {
-        return entry.getItemAtRank(fieldRank)
-                .map(DbDataDto.Item::getRawValue)
-                .map(Integer::valueOf);
-    }
-
-    private static Optional<String> getStringValueFromDatabaseEntry(DbDataDto.Entry entry, int fieldRank) {
-        return entry.getItemAtRank(fieldRank)
-                .map(DbDataDto.Item::getRawValue);
     }
 }
