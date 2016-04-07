@@ -567,6 +567,16 @@
           "label": "(REF) Shop #"
         },
         {
+          "rank": 2,
+          "name": "Spot_Name",
+          "label": "Bank file name"
+        },
+        {
+          "rank": 3,
+          "name": "Libelle",
+          "label": "Displayed name"
+        },
+        {
           "rank": 4,
           "name": "SLOT_1",
           "group": "Slots",
