@@ -1,8 +1,11 @@
 package fr.tduf.gui.installer.common.helper;
 
 import fr.tduf.gui.installer.common.DatabaseConstants;
+import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.domain.Dealer;
 import fr.tduf.gui.installer.domain.Resource;
+import fr.tduf.libunlimited.high.files.db.common.helper.CarShopsHelper;
+import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -23,11 +26,13 @@ public class DealerHelper {
     private static final DbResourceDto.Locale DEFAULT_LOCALE = UNITED_STATES;
 
     private final BulkDatabaseMiner miner;
-    private VehicleSlotsHelper vehicleSlotsHelper;
+    private final VehicleSlotsHelper vehicleSlotsHelper;
+    private final CarShopsHelper carShopsMetaDataHelper;
 
     private DealerHelper(BulkDatabaseMiner miner) {
         this.miner = miner;
         this.vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
+        carShopsMetaDataHelper = new CarShopsHelper();
     }
 
     /**
@@ -47,13 +52,17 @@ public class DealerHelper {
         return miner.getDatabaseTopic(CAR_SHOPS).get().getData().getEntries().stream()
 
                 .map((carShopsEntry) -> {
+                    String dealerReference = carShopsEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEALER_REF).get().getRawValue();
+
                     Optional<Resource> displayedName = getResourceFromDatabaseEntry(carShopsEntry, CAR_SHOPS, DatabaseConstants.FIELD_RANK_DEALER_LIBELLE);
 
-                    // TODO resolve location with reference
+                    Optional<String> location = carShopsMetaDataHelper.getCarShopsReferenceForDealerReference(dealerReference)
+                            .map(DbMetadataDto.DealerMetadataDto::getLocation);
+
                     return Dealer.builder()
-                            .withRef(carShopsEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEALER_REF).get().getRawValue())
+                            .withRef(dealerReference)
                             .withDisplayedName(displayedName.orElse(null))
-                            .withLocation("???")
+                            .withLocation(location.orElse(DisplayConstants.LABEL_UNKNOWN))
                             .withSlots(getActualSlots(carShopsEntry))
                             .build();
                 })

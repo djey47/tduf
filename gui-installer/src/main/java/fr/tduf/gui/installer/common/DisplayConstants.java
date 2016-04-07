@@ -15,6 +15,7 @@ public class DisplayConstants {
     public static final String TITLE_SUB_SEARCH_SLOT = " : Search for vehicle slot";
 
     public static final String LABEL_SEARCH_SLOT = "With REF?";
+    public static final String LABEL_UNKNOWN = "???";
 
     public static final String LABEL_FMT_FREE_SLOTS = "%d / %d";
 
