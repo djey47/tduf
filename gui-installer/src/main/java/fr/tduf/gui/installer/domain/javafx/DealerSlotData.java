@@ -41,12 +41,14 @@ public class DealerSlotData {
 
         private StringProperty reference = new SimpleStringProperty();
         private ObjectProperty<List<Dealer.Slot>> slots = new SimpleObjectProperty<>();
+        private StringProperty name = new SimpleStringProperty();
 
         public static DealerDataItem fromDealer(Dealer dealer) {
             DealerDataItem item = new DealerDataItem();
 
             item.reference.setValue(dealer.getRef());
             item.slots.setValue(dealer.getSlots());
+            item.name.setValue(dealer.getDisplayedName().getValue());
 
             return item;
         }
@@ -57,6 +59,10 @@ public class DealerSlotData {
 
         public ObjectProperty<List<Dealer.Slot>> slotsProperty() {
             return slots;
+        }
+
+        public StringProperty nameProperty() {
+            return name;
         }
 
         @Override

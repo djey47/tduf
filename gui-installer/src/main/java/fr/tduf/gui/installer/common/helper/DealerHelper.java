@@ -11,7 +11,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import java.util.List;
 import java.util.Optional;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Objects.requireNonNull;
