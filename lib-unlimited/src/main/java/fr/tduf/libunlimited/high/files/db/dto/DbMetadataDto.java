@@ -24,6 +24,10 @@ public class DbMetadataDto {
         return topics;
     }
 
+    public List<DealerMetadataDto> getDealers() {
+        return dealers;
+    }
+
     @JsonTypeName("topicMetadata")
     public static class TopicMetadataDto {
 
