@@ -44,6 +44,7 @@ public class DealerSlotData {
         private ObjectProperty<List<Dealer.Slot>> slots = new SimpleObjectProperty<>();
         private StringProperty name = new SimpleStringProperty();
         private StringProperty freeSlots = new SimpleStringProperty();
+        private StringProperty location = new SimpleStringProperty();
 
         public static DealerDataItem fromDealer(Dealer dealer) {
             DealerDataItem item = new DealerDataItem();
@@ -52,6 +53,7 @@ public class DealerSlotData {
             item.slots.setValue(dealer.getSlots());
             item.name.setValue(dealer.getDisplayedName().getValue());
             item.freeSlots.setValue(String.format(DisplayConstants.LABEL_FMT_FREE_SLOTS, dealer.computeFreeSlotCount(), dealer.getSlots().size()));
+            item.location.setValue(dealer.getLocation());
 
             return item;
         }
@@ -70,6 +72,10 @@ public class DealerSlotData {
 
         public StringProperty freeSlotsProperty() {
             return freeSlots;
+        }
+
+        public StringProperty locationProperty() {
+            return location;
         }
 
         @Override

@@ -13,6 +13,7 @@ public class Dealer {
 
     private List<Slot> slots;
     private Resource displayedName;
+    private String location;
 
     private Dealer(String ref) {
         this.ref = requireNonNull(ref, "A dealer reference is required.");
@@ -43,10 +44,15 @@ public class Dealer {
     @Override
     public String toString() { return reflectionToString(this); }
 
+    public String getLocation() {
+        return location;
+    }
+
     public static class DealerBuilder {
         private String ref;
         private List<Slot> slots;
         private Resource displayedName;
+        private String location;
 
         public DealerBuilder withRef(String ref) {
             this.ref = ref;
@@ -63,11 +69,17 @@ public class Dealer {
             return this;
         }
 
+        public DealerBuilder withLocation(String location) {
+            this.location = location;
+            return this;
+        }
+
         public Dealer build() {
             final Dealer dealer = new Dealer(ref);
 
             dealer.slots = requireNonNull(slots, "A list of dealer slots is required.");
             dealer.displayedName = displayedName;
+            dealer.location = location;
 
             return dealer;
         }

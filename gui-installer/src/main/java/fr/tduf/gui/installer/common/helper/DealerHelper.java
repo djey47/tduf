@@ -46,9 +46,11 @@ public class DealerHelper {
                 .map((carShopsEntry) -> {
                     Optional<Resource> displayedName = getResourceFromDatabaseEntry(carShopsEntry, CAR_SHOPS, DatabaseConstants.FIELD_RANK_DEALER_LIBELLE);
 
+                    // TODO resolve location with reference
                     return Dealer.builder()
                             .withRef(carShopsEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEALER_REF).get().getRawValue())
                             .withDisplayedName(displayedName.orElse(null))
+                            .withLocation("???")
                             .withSlots(getActualSlots(carShopsEntry))
                             .build();
                 })
