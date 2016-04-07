@@ -1,5 +1,7 @@
 package fr.tduf.gui.installer.domain;
 
+import java.util.List;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -7,6 +9,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class Dealer {
     private final String ref;
+    private List<Slot> slots;
 
     private Dealer(String ref) {
         this.ref = requireNonNull(ref, "A dealer reference is required.");
@@ -20,16 +23,30 @@ public class Dealer {
         return ref;
     }
 
+    public List<Slot> getSlots() {
+        return slots;
+    }
+
     public static class DealerBuilder {
         private String ref;
+        private List<Slot> slots;
 
         public DealerBuilder withRef(String ref) {
             this.ref = ref;
             return this;
         }
 
+        public DealerBuilder withSlots(List<Slot> slots) {
+            this.slots = slots;
+            return this;
+        }
+
         public Dealer build() {
-            return new Dealer(ref);
+            final Dealer dealer = new Dealer(ref);
+
+            dealer.slots = requireNonNull(slots, "A list of dealer slots is required.");
+
+            return dealer;
         }
     }
 

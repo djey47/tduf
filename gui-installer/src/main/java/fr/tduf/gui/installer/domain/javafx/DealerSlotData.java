@@ -42,6 +42,7 @@ public class DealerSlotData {
             DealerDataItem item = new DealerDataItem();
 
             item.reference.setValue(dealer.getRef());
+            item.slots.setValue(dealer.getSlots());
 
             return item;
         }

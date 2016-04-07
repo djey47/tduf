@@ -72,7 +72,18 @@ public class DealerSlotsStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleDealersTableMouseClick");
 
         TableViewHelper.getMouseSelectedItem(event, DealerSlotData.DealerDataItem.class)
-                .ifPresent((item) -> selectedDealerProperty.setValue(item));
+                .ifPresent((item) -> {
+                    selectedDealerProperty.setValue(item);
+                    updateSlotsData(item);
+                });
+    }
+
+    @FXML
+    private void handleSlotsTableMouseClick(MouseEvent event) {
+        Log.trace(THIS_CLASS_NAME, "->handleSlotsTableMouseClick");
+
+        TableViewHelper.getMouseSelectedItem(event, DealerSlotData.SlotDataItem.class)
+                .ifPresent((item) -> selectedSlotProperty.setValue(item));
     }
 
     @Override
@@ -151,6 +162,11 @@ public class DealerSlotsStageController extends AbstractGuiController {
         refColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().referenceProperty());
 
         dealersTableView.setItems(dealersData);
+
+        TableColumn<DealerSlotData.SlotDataItem, ?> rankColumn = slotsTableView.getColumns().get(0);
+        rankColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().rankProperty());
+
+        slotsTableView.setItems(slotsData);
     }
 
     private void updateDealersData() {

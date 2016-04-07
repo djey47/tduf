@@ -19,7 +19,7 @@
                <items>
                   <Label alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0" text="Select dealer slot to put vehicle on it:" />
                   <TextField fx:id="dealerRefTextField" prefWidth="100.0" />
-                  <TextField fx:id="slotTextField" prefWidth="30.0" />
+                  <TextField fx:id="slotTextField" prefWidth="35.0" />
                   <Button mnemonicParsing="false" onAction="#handleOkButtonAction" text="OK" />
                </items>
             </ToolBar>
@@ -38,7 +38,7 @@
                               <Insets right="5.0" />
                            </HBox.margin>
                         </TableView>
-                        <TableView fx:id="slotsTableView" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" prefWidth="350.0" HBox.hgrow="ALWAYS">
+                        <TableView fx:id="slotsTableView" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" onMouseClicked="#handleSlotsTableMouseClick" prefWidth="350.0" HBox.hgrow="ALWAYS">
                            <columns>
                               <TableColumn editable="false" prefWidth="30.0" text="#" />
                               <TableColumn editable="false" prefWidth="350.0" text="Vehicle name" />
