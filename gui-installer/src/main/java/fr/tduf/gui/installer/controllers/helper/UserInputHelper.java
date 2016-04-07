@@ -76,7 +76,7 @@ public class UserInputHelper {
         Log.info(THIS_CLASS_NAME, "->Selecting dealer slot");
 
         DealerSlotsStageController dealerSlotsController = initDealerSlotsController(parentWindow);
-        Optional<DealerSlotData> selectedItem = dealerSlotsController.initAndShowModalDialog();
+        Optional<DealerSlotData> selectedItem = dealerSlotsController.initAndShowModalDialog(context.getMiner());
 //
 //        Log.info(THIS_CLASS_NAME, "->Using dealer slot: " + selectedItem);
 //

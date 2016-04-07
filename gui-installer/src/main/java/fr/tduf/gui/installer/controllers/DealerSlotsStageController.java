@@ -2,11 +2,18 @@ package fr.tduf.gui.installer.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
+import fr.tduf.gui.installer.common.helper.DealerHelper;
 import fr.tduf.gui.installer.domain.Dealer;
 import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +21,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 public class DealerSlotsStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = SlotsBrowserStageController.class.getSimpleName();
@@ -24,11 +33,20 @@ public class DealerSlotsStageController extends AbstractGuiController {
 
     private Optional<DealerSlotData> returnedSlot;
 
+    private ObservableList<DealerSlotData.DealerDataItem> dealersData = FXCollections.observableArrayList();
+    private ObservableList<DealerSlotData.SlotDataItem> slotsData = FXCollections.observableArrayList();
+
+    private DealerHelper dealerHelper;
+
+
     @FXML
     private TextField dealerRefTextField;
 
     @FXML
     private TextField slotTextField;
+
+    @FXML
+    private TableView<DealerSlotData.DealerDataItem> dealersTableView;
 
     @FXML
     private void handleOkButtonAction() {
@@ -54,8 +72,15 @@ public class DealerSlotsStageController extends AbstractGuiController {
     /**
      *
      * @throws Exception
+     * @param miner
      */
-    public Optional<DealerSlotData> initAndShowModalDialog() throws Exception {
+    public Optional<DealerSlotData> initAndShowModalDialog(BulkDatabaseMiner miner) throws Exception {
+        requireNonNull(miner, "Database miner instance is required.");
+
+        dealerHelper = DealerHelper.load(miner);
+
+        updateDealersData();
+
         showModalWindow();
 
         if (returnedSlot == null) {
@@ -109,6 +134,19 @@ public class DealerSlotsStageController extends AbstractGuiController {
     }
 
     private void initTablePane() {
+        TableColumn<DealerSlotData.DealerDataItem, ?> refColumn = dealersTableView.getColumns().get(0);
+        refColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().referenceProperty());
 
+        dealersTableView.setItems(dealersData);
+    }
+
+    private void updateDealersData() {
+        dealersData.clear();
+
+        dealersData.addAll(dealerHelper.getDealers().stream()
+
+                .map(DealerSlotData.DealerDataItem::fromDealer)
+
+                .collect(toList()));
     }
 }
