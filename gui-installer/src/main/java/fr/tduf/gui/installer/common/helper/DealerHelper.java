@@ -56,30 +56,33 @@ public class DealerHelper {
 
                     Optional<Resource> displayedName = getResourceFromDatabaseEntry(carShopsEntry, CAR_SHOPS, DatabaseConstants.FIELD_RANK_DEALER_LIBELLE);
 
-                    Optional<String> location = carShopsMetaDataHelper.getCarShopsReferenceForDealerReference(dealerReference)
+                    Optional<DbMetadataDto.DealerMetadataDto> carShopsReference = carShopsMetaDataHelper.getCarShopsReferenceForDealerReference(dealerReference);
+                    Optional<String> location = carShopsReference
                             .map(DbMetadataDto.DealerMetadataDto::getLocation);
 
                     return Dealer.builder()
                             .withRef(dealerReference)
                             .withDisplayedName(displayedName.orElse(null))
                             .withLocation(location.orElse(DisplayConstants.LABEL_UNKNOWN))
-                            .withSlots(getActualSlots(carShopsEntry))
+                            .withSlots(getActualSlots(carShopsEntry, carShopsReference))
                             .build();
                 })
 
                 .collect(toList());
     }
 
-    // TODO filter slots with reference if available
-    private List<Dealer.Slot> getActualSlots(DbDataDto.Entry carShopsEntry) {
+    private List<Dealer.Slot> getActualSlots(DbDataDto.Entry carShopsEntry, Optional<DbMetadataDto.DealerMetadataDto> carShopsReference) {
 
         return carShopsEntry.getItems().stream()
 
                 .filter((item) -> item.getFieldRank() >= DatabaseConstants.FIELD_RANK_DEALER_SLOT_1
                         && item.getFieldRank() <= DatabaseConstants.FIELD_RANK_DEALER_SLOT_15)
 
+                .filter((slotItem) -> ! carShopsReference.isPresent()
+                        || carShopsReference.get().getAvailableSlots().contains(getSlotRankFromFieldRank(slotItem)))
+
                 .map((slotItem) -> Dealer.Slot.builder()
-                        .withRank(slotItem.getFieldRank() - DatabaseConstants.FIELD_RANK_DEALER_SLOT_1 + 1)
+                        .withRank(getSlotRankFromFieldRank(slotItem))
                         .havingVehicle(vehicleSlotsHelper.getVehicleSlotFromReference(slotItem.getRawValue()).orElse(null))
                         .build())
 
@@ -94,5 +97,9 @@ public class DealerHelper {
                             .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
                     return Resource.from(item.getRawValue(), value);
                 });
+    }
+
+    private static int getSlotRankFromFieldRank(DbDataDto.Item slotItem) {
+        return slotItem.getFieldRank() - DatabaseConstants.FIELD_RANK_DEALER_SLOT_1 + 1;
     }
 }
