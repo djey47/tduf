@@ -42,7 +42,8 @@ public class DealerHelper {
      * @return all dealers
      */
     public List<Dealer> getDealers() {
-
+        // TODO filter: avoid vrent, clothes dealers, car paint, tire rack ...
+        // TODO filter: do not display bikes shops for cars and vice versa
         return miner.getDatabaseTopic(CAR_SHOPS).get().getData().getEntries().stream()
 
                 .map((carShopsEntry) -> {
