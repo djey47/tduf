@@ -21,6 +21,7 @@ public class DatabaseConstants {
     public static final int FIELD_RANK_ID_CAR = 102;
 
     public static final int FIELD_RANK_DEALER_REF = 1;            // CAR SHOPS
+    public static final int FIELD_RANK_DEALER_NAME = 2;
     public static final int FIELD_RANK_DEALER_LIBELLE = 3;
     public static final int FIELD_RANK_DEALER_SLOT_1 = 4;
     public static final int FIELD_RANK_DEALER_SLOT_15 = 18;
@@ -38,6 +39,8 @@ public class DatabaseConstants {
     public static final String RESOURCE_REF_GROUP_Z = "92900264";
 
     public static final String REF_FREE_DEALER_SLOT = "61085282";               // CAR SHOPS
+    public static final String RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER = "ECD_";
+    public static final String RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER = "EBD_";
 
     public static final String RESOURCE_REF_NONE_INTERIOR_NAME = "53365512";        // INTERIOR
 

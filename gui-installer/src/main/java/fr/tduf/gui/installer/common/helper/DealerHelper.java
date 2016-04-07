@@ -47,14 +47,21 @@ public class DealerHelper {
      * @return all dealers
      */
     public List<Dealer> getDealers() {
-        // TODO filter: avoid vrent, clothes dealers, car paint, tire rack ...
-        // TODO filter: do not display bikes shops for cars and vice versa
+        // TODO filter: add vehicle type filter (ALL, CARS, BIKES)
         return miner.getDatabaseTopic(CAR_SHOPS).get().getData().getEntries().stream()
 
-                .map((carShopsEntry) -> {
-                    String dealerReference = carShopsEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEALER_REF).get().getRawValue();
+                .filter((carShopsEntry) -> {
+                    Optional<Resource> fileName = getResourceFromDatabaseEntry(carShopsEntry, CAR_SHOPS, DatabaseConstants.FIELD_RANK_DEALER_NAME);
 
-                    Optional<Resource> displayedName = getResourceFromDatabaseEntry(carShopsEntry, CAR_SHOPS, DatabaseConstants.FIELD_RANK_DEALER_LIBELLE);
+                    return !fileName.isPresent()
+                            || fileName.get().getValue().startsWith(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER)
+                            || fileName.get().getValue().startsWith(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER);
+                })
+
+                .map((dealerEntry) -> {
+                    String dealerReference = dealerEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEALER_REF).get().getRawValue();
+
+                    Optional<Resource> displayedName = getResourceFromDatabaseEntry(dealerEntry, CAR_SHOPS, DatabaseConstants.FIELD_RANK_DEALER_LIBELLE);
 
                     Optional<DbMetadataDto.DealerMetadataDto> carShopsReference = carShopsMetaDataHelper.getCarShopsReferenceForDealerReference(dealerReference);
                     Optional<String> location = carShopsReference
@@ -64,7 +71,7 @@ public class DealerHelper {
                             .withRef(dealerReference)
                             .withDisplayedName(displayedName.orElse(null))
                             .withLocation(location.orElse(DisplayConstants.LABEL_UNKNOWN))
-                            .withSlots(getActualSlots(carShopsEntry, carShopsReference))
+                            .withSlots(getActualSlots(dealerEntry, carShopsReference))
                             .build();
                 })
 

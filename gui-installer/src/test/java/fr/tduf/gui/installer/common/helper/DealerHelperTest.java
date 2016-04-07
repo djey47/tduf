@@ -17,6 +17,7 @@ import java.util.Optional;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -34,13 +35,18 @@ public class DealerHelperTest {
         final String dealerReference = "REF1";
         final String nameResourceReference = "0000";
         final String nameResourceValue = "DEALER";
+        final String fileNameResourceReference = "1111";
+        final String fileNameResourceValue = "ECD_B028";
 
         DbResourceDto.Entry dealerNameResourceEntry = DbResourceDto.Entry.builder().forReference(nameResourceReference).build();
         dealerNameResourceEntry.setValue(nameResourceValue);
+        DbResourceDto.Entry dealerFileNameResourceEntry = DbResourceDto.Entry.builder().forReference(fileNameResourceReference).build();
+        dealerFileNameResourceEntry.setValue(fileNameResourceValue);
         DbDto carShopsTopicObject = DbDto.builder()
                 .withData(DbDataDto.builder()
                         .addEntry(DbDataDto.Entry.builder()
                                 .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(dealerReference).build())
+                                .addItem(DbDataDto.Item.builder().ofFieldRank(2).withRawValue(fileNameResourceReference).build())
                                 .addItem(DbDataDto.Item.builder().ofFieldRank(3).withRawValue(nameResourceReference).build())
                                 .addItem(DbDataDto.Item.builder().ofFieldRank(4).withRawValue("SLOTREF1").build())
                                 .addItem(DbDataDto.Item.builder().ofFieldRank(5).withRawValue("SLOTREF2").build())
@@ -48,7 +54,7 @@ public class DealerHelperTest {
                         .build())
                 .withResource(DbResourceDto.builder()
                         .atVersion("1.0")
-                        .containingEntries(singletonList(dealerNameResourceEntry))
+                        .containingEntries(asList(dealerNameResourceEntry, dealerFileNameResourceEntry))
                         .build()
                 )
                 .build();
@@ -62,6 +68,7 @@ public class DealerHelperTest {
         when(minerMock.getContentEntryFromTopicWithReference("SLOTREF1", CAR_PHYSICS_DATA)).thenReturn(Optional.of(carSlotEntry1));
         when(minerMock.getContentEntryFromTopicWithReference("SLOTREF2", CAR_PHYSICS_DATA)).thenReturn(Optional.of(carSlotEntry2));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(nameResourceReference, CAR_SHOPS, UNITED_STATES)).thenReturn(Optional.of(nameResourceValue));
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(fileNameResourceReference, CAR_SHOPS, UNITED_STATES)).thenReturn(Optional.of(fileNameResourceValue));
 
 
         // WHEN
