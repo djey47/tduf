@@ -23,9 +23,11 @@ public class DealerHelper {
     private static final DbResourceDto.Locale DEFAULT_LOCALE = UNITED_STATES;
 
     private final BulkDatabaseMiner miner;
+    private VehicleSlotsHelper vehicleSlotsHelper;
 
     private DealerHelper(BulkDatabaseMiner miner) {
         this.miner = miner;
+        this.vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
     }
 
     /**
@@ -66,7 +68,10 @@ public class DealerHelper {
                 .filter((item) -> item.getFieldRank() >= DatabaseConstants.FIELD_RANK_DEALER_SLOT_1
                         && item.getFieldRank() <= DatabaseConstants.FIELD_RANK_DEALER_SLOT_15)
 
-                .map((slotItem) -> Dealer.Slot.builder().withRank(slotItem.getFieldRank() - DatabaseConstants.FIELD_RANK_DEALER_SLOT_1 + 1).build())
+                .map((slotItem) -> Dealer.Slot.builder()
+                        .withRank(slotItem.getFieldRank() - DatabaseConstants.FIELD_RANK_DEALER_SLOT_1 + 1)
+                        .havingVehicle(vehicleSlotsHelper.getVehicleSlotFromReference(slotItem.getRawValue()).orElse(null))
+                        .build())
 
                 .collect(toList());
     }

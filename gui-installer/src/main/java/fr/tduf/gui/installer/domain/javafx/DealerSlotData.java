@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.domain.javafx;
 
 import fr.tduf.gui.installer.common.DisplayConstants;
+import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.Dealer;
 import javafx.beans.property.*;
 
@@ -85,17 +86,23 @@ public class DealerSlotData {
     public static class SlotDataItem {
 
         private IntegerProperty rank = new SimpleIntegerProperty();
+        private StringProperty vehicleName = new SimpleStringProperty();
 
         public static SlotDataItem fromDealerSlot(Dealer.Slot slot) {
             SlotDataItem item = new SlotDataItem();
 
             item.rank.setValue(slot.getRank());
+            item.vehicleNameProperty().setValue(slot.getVehicleSlot().map(VehicleSlotsHelper::getVehicleName).orElse(""));
 
             return item;
         }
 
         public IntegerProperty rankProperty() {
             return rank;
+        }
+
+        public StringProperty vehicleNameProperty() {
+            return vehicleName;
         }
 
         @Override

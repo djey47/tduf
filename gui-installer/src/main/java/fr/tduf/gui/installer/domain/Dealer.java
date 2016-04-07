@@ -1,8 +1,10 @@
 package fr.tduf.gui.installer.domain;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
@@ -90,6 +92,7 @@ public class Dealer {
      */
     public static class Slot {
         private final int rank;
+        private Optional<VehicleSlot> vehicleSlot;
 
         public Slot(int rank) {
             this.rank = rank;
@@ -103,19 +106,33 @@ public class Dealer {
             return rank;
         }
 
+        public Optional<VehicleSlot> getVehicleSlot() {
+            return vehicleSlot;
+        }
+
         @Override
         public String toString() { return reflectionToString(this); }
 
         public static class SlotBuilder {
             private Integer rank;
+            private VehicleSlot vehicleSlot;
 
             public SlotBuilder withRank(int rank) {
                 this.rank = rank;
                 return this;
             }
 
+            public SlotBuilder havingVehicle(VehicleSlot vehicleSlot) {
+                this.vehicleSlot = vehicleSlot;
+                return this;
+            }
+
             public Slot build() {
-                return new Slot(rank);
+                final Slot slot = new Slot(rank);
+
+                slot.vehicleSlot = ofNullable(vehicleSlot);
+
+                return slot;
             }
         }
     }

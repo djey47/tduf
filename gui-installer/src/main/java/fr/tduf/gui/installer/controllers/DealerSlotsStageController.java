@@ -94,9 +94,8 @@ public class DealerSlotsStageController extends AbstractGuiController {
     }
 
     /**
-     *
-     * @throws Exception
      * @param miner
+     * @throws Exception
      */
     public Optional<DealerSlotData> initAndShowModalDialog(BulkDatabaseMiner miner) throws Exception {
         requireNonNull(miner, "Database miner instance is required.");
@@ -172,6 +171,8 @@ public class DealerSlotsStageController extends AbstractGuiController {
 
         TableColumn<DealerSlotData.SlotDataItem, ?> rankColumn = slotsTableView.getColumns().get(0);
         rankColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().rankProperty());
+        TableColumn<DealerSlotData.SlotDataItem, ?> vehicleNameColumn = slotsTableView.getColumns().get(1);
+        vehicleNameColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().vehicleNameProperty());
 
         slotsTableView.setItems(slotsData);
     }

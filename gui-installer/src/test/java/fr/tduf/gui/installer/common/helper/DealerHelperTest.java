@@ -14,6 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Collections.singletonList;
@@ -52,6 +53,14 @@ public class DealerHelperTest {
                 )
                 .build();
         when(minerMock.getDatabaseTopic(CAR_SHOPS)).thenReturn(Optional.of(carShopsTopicObject));
+        DbDataDto.Entry carSlotEntry1 = DbDataDto.Entry.builder()
+                .forId(1)
+                .build();
+        DbDataDto.Entry carSlotEntry2 = DbDataDto.Entry.builder()
+                .forId(1)
+                .build();
+        when(minerMock.getContentEntryFromTopicWithReference("SLOTREF1", CAR_PHYSICS_DATA)).thenReturn(Optional.of(carSlotEntry1));
+        when(minerMock.getContentEntryFromTopicWithReference("SLOTREF2", CAR_PHYSICS_DATA)).thenReturn(Optional.of(carSlotEntry2));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(nameResourceReference, CAR_SHOPS, UNITED_STATES)).thenReturn(Optional.of(nameResourceValue));
 
 
@@ -63,5 +72,8 @@ public class DealerHelperTest {
         assertThat(dealers).extracting("ref").containsExactly(dealerReference);
         assertThat(dealers).extracting("displayedName").containsExactly(Resource.from(nameResourceReference, nameResourceValue));
         assertThat(dealers.get(0).getSlots()).hasSize(2);
+        assertThat(dealers.get(0).getSlots()).extracting("rank").containsExactly(1,2);
+        assertThat(dealers.get(0).getSlots().get(0).getVehicleSlot()).isPresent();
+        assertThat(dealers.get(0).getSlots().get(1).getVehicleSlot()).isPresent();
     }
 }
