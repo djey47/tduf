@@ -230,10 +230,38 @@ project(':gui-installer') {
 
 
 // Main tasks
-task packAll(dependsOn: ['packTDUF', 'packInstallerKit']) {
-    description 'Create single release Zip with ALL components in releases directory.'
+// Create a list of subprojects to include in the full jar.
+def fullProjects = [':cli',':gui-database',':gui-installer']
+def tempJarDirectory = './tmp-jarContents'
+
+task gatherAllContentsForJar(type: Copy, dependsOn: fullProjects.collect{ it+":compileJava"}) {
+    description 'Copies contents to temp directory.'
+
+    from files(fullProjects.collect{ project(it).sourceSets.main.output })
+    from files(fullProjects.collect{ project(it).configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } } )
+    into tempJarDirectory
 }
 
+task fullJar( type: Jar , dependsOn: 'gatherAllContentsForJar' ) {
+    description 'Creates jar with all contents from temp directory.'
+
+    destinationDir = file('./pack/lib/')
+    baseName = 'tduf-' + project.version
+    from tempJarDirectory
+}
+
+task packFull(dependsOn: [  'cleanTempJarDir', 'cleanPackDir',
+                            'copyDoc', 'createLogsDirectory', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
+                            ':cli:copyMainScripts',
+                            ':lib-unlimited:copyStructures',
+                            'fullJar'], type: Zip) {
+    description 'Create single release Zip with ALL components except InstallerKit in releases directory.'
+
+    archiveName  "tduf-" + project.version + ".zip"
+    destinationDir new File('releases/')
+    from  'pack/'}
+
+// TODO remove obsolete task
 task packTDUF(dependsOn: ['cleanPackDir', 'copyDoc', 'createLogsDirectory', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
                           ':cli:copyMainScripts', ':cli:copyJar',
                           ':lib-unlimited:copyStructures',
@@ -259,6 +287,11 @@ task cleanPackDir(type: Delete) {
     delete 'pack/'
 }
 
+task cleanTempJarDir(type: Delete) {
+    description 'Prepares new package by removing all files in tmp-jarContents directory.'
+    delete tempJarDirectory
+}
+
 task copyDoc(type: Copy) {
     description 'Copies README to release directory.'
     mustRunAfter 'cleanPackDir'
@@ -268,6 +301,7 @@ task copyDoc(type: Copy) {
     into 'pack/'
 }
 
+// TODO remove logs dir
 task createLogsDirectory(type: Copy) {
     description 'Copies logs directory to release.'
     mustRunAfter 'cleanPackDir'
@@ -320,8 +354,6 @@ task copyIKVersionInfo(type: Copy) {
     include 'version.info'
     into 'pack/tools/lib/'
 }
-
-
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.11'

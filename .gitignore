@@ -22,6 +22,7 @@ cli/perfs/
 gui-installer/tools/
 lib-unlimited/perfs/
 pack/
+tmp-jarContents/
 releases/
 tests/
 *.iml
