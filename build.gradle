@@ -245,7 +245,7 @@ task gatherAllContentsForJar(type: Copy, dependsOn: fullProjects.collect{ it+":c
 task fullJar( type: Jar , dependsOn: 'gatherAllContentsForJar' ) {
     description 'Creates jar with all contents from temp directory.'
 
-    destinationDir = file('./pack/lib/')
+    destinationDir = file('./pack/tools/lib/')
     baseName = 'tduf-' + project.version
     from tempJarDirectory
 }
@@ -273,7 +273,7 @@ task packTDUF(dependsOn: ['cleanPackDir', 'copyDoc', 'createLogsDirectory', 'cop
     from  'pack/'
 }
 
-task packInstallerKit(dependsOn: ['cleanPackDir', 'copyExternalTools', 'copyUtilScriptsForInstallerKit', 'copyIKVersionInfo',
+task packInstallerKit(dependsOn: ['cleanPackDir', 'copyExternalTools', 'copyUtilScripts', 'copyIKVersionInfo',
                                   ':gui-installer:copyDoc', ':gui-installer:copyAssets', ':gui-installer:copyTemplates', ':gui-installer:copyMainScripts',  ':gui-installer:copyIKJar'], type: Zip) {
     description 'Zips only IK, LIB files from pack folder.'
 
@@ -317,15 +317,6 @@ task copyUtilScripts(type: Copy) {
 
     from 'src/main/shell/cli-util/'
     include '*.cmd'
-    into 'pack/cli'
-}
-
-task copyUtilScriptsForInstallerKit(type: Copy) {
-    description 'Copies CLI utility scripts to release directory.'
-    mustRunAfter 'cleanPackDir'
-
-    from 'src/main/shell/cli-util/'
-    include '*.cmd'
     into 'pack/tools/cli'
 }
 
@@ -343,7 +334,7 @@ task copyVersionInfo(type: Copy) {
 
     from 'dist/'
     include 'version.info'
-    into 'pack/lib/'
+    into 'pack/tools/lib/'
 }
 
 task copyIKVersionInfo(type: Copy) {
