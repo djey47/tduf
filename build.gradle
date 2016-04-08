@@ -252,7 +252,7 @@ task fullJar( type: Jar , dependsOn: 'gatherAllContentsForJar' ) {
 
 task packFull(dependsOn: [  'cleanTempJarDir', 'cleanPackDir',
                             'copyMainScripts',
-                            'copyDoc', 'createLogsDirectory', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
+                            'copyDoc', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
                             ':lib-unlimited:copyStructures',
                             'fullJar'], type: Zip) {
     description 'Create single release Zip with ALL components except InstallerKit in releases directory.'
@@ -262,7 +262,7 @@ task packFull(dependsOn: [  'cleanTempJarDir', 'cleanPackDir',
     from  'pack/'}
 
 // TODO remove obsolete task
-task packTDUF(dependsOn: ['cleanPackDir', 'copyDoc', 'createLogsDirectory', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
+task packTDUF(dependsOn: ['cleanPackDir', 'copyDoc', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
                           'copyMainScripts', ':cli:copyJar',
                           ':lib-unlimited:copyStructures',
                           ':gui-database:copyJar'], type: Zip) {
@@ -300,17 +300,6 @@ task copyDoc(type: Copy) {
     include 'README.txt'
     into 'pack/'
 }
-
-// TODO remove logs dir
-task createLogsDirectory(type: Copy) {
-    description 'Copies logs directory to release.'
-    mustRunAfter 'cleanPackDir'
-
-    from 'logs/'
-    include '*'
-    into 'pack/logs/'
-}
-
 
 task copyMainScripts(type: Copy) {
     description 'Copies CLI main scripts to release directory.'
