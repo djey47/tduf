@@ -4,14 +4,10 @@ build/
 cli/integ-tests/applied/
 cli/integ-tests/banks/db/out/
 cli/integ-tests/cameras/out/
-cli/integ-tests/db-fixed/
-cli/integ-tests/db-generated/
-cli/integ-tests/db-generated-errors/
 cli/integ-tests/db-json/
 cli/integ-tests/db-patched/
 cli/integ-tests/encrypted/
 cli/integ-tests/mapping/
-cli/integ-tests/perfs/
 cli/integ-tests/repacked/
 cli/integ-tests/unpacked/
 cli/integ-tests/unencrypted/

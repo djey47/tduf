@@ -59,12 +59,9 @@ public class DatabaseToolIntegTest {
     private static final String DIRECTORY_PATCH = PATH_PATCHER.toString();
     private static final String DIRECTORY_PATCH_OUTPUT = PATH_PATCHER.resolve("out").toString();
     private static final String DIRECTORY_PATCHED_DATABASE = PATH_INTEG_TESTS.resolve("db-patched").toString();
-    private static final String DIRECTORY_FIXED_DATABASE = PATH_INTEG_TESTS.resolve("db-fixed").toString();
     private static final String DIRECTORY_JSON_DATABASE = PATH_INTEG_TESTS.resolve("db-json").toString();
     private static final String DIRECTORY_ERR_JSON_DATABASE = PATH_INTEG_TESTS.resolve("db-json-errors").toString();
     private static final String DIRECTORY_DIFF_JSON_DATABASE = PATH_INTEG_TESTS.resolve("db-json-diff").toString();
-    private static final String DIRECTORY_GENERATED_DATABASE = PATH_INTEG_TESTS.resolve("db-generated").toString();
-    private static final String DIRECTORY_ERR_GENERATED_DATABASE = PATH_INTEG_TESTS.resolve("db-generated-errors").toString();
 
     @Rule
     public final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
@@ -81,9 +78,6 @@ public class DatabaseToolIntegTest {
 
         FileUtils.deleteDirectory(new File(DIRECTORY_PATCH_OUTPUT));
         FileUtils.deleteDirectory(new File(DIRECTORY_JSON_DATABASE));
-        FileUtils.deleteDirectory(new File(DIRECTORY_FIXED_DATABASE));
-        FileUtils.deleteDirectory(new File(DIRECTORY_ERR_GENERATED_DATABASE));
-        FileUtils.deleteDirectory(new File(DIRECTORY_GENERATED_DATABASE));
     }
 
     @After
