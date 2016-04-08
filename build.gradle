@@ -72,15 +72,6 @@ subprojects {
         from fatJar
         into '../pack/lib/'
     }
-
-    task copyMainScripts(type: Copy) {
-        description 'Copies CLI main scripts to release directory.'
-        mustRunAfter ':cleanPackDir'
-
-        from 'src/main/shell/'
-        include '*.cmd'
-        into '../pack'
-    }
 }
 
 project(':cli') {
@@ -226,6 +217,15 @@ project(':gui-installer') {
         from fatJar
         into '../pack/tools/lib/'
     }
+
+    task copyMainScripts(type: Copy) {
+        description 'Copies CLI main scripts to release directory.'
+        mustRunAfter ':cleanPackDir'
+
+        from 'src/main/shell/'
+        include '*.cmd'
+        into '../pack/'
+    }
 }
 
 
@@ -251,8 +251,8 @@ task fullJar( type: Jar , dependsOn: 'gatherAllContentsForJar' ) {
 }
 
 task packFull(dependsOn: [  'cleanTempJarDir', 'cleanPackDir',
+                            'copyMainScripts',
                             'copyDoc', 'createLogsDirectory', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
-                            ':cli:copyMainScripts',
                             ':lib-unlimited:copyStructures',
                             'fullJar'], type: Zip) {
     description 'Create single release Zip with ALL components except InstallerKit in releases directory.'
@@ -263,7 +263,7 @@ task packFull(dependsOn: [  'cleanTempJarDir', 'cleanPackDir',
 
 // TODO remove obsolete task
 task packTDUF(dependsOn: ['cleanPackDir', 'copyDoc', 'createLogsDirectory', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
-                          ':cli:copyMainScripts', ':cli:copyJar',
+                          'copyMainScripts', ':cli:copyJar',
                           ':lib-unlimited:copyStructures',
                           ':gui-database:copyJar'], type: Zip) {
     description 'Zips only TDUF CLI, GUI-Database, LIB files from pack folder.'
@@ -311,8 +311,18 @@ task createLogsDirectory(type: Copy) {
     into 'pack/logs/'
 }
 
+
+task copyMainScripts(type: Copy) {
+    description 'Copies CLI main scripts to release directory.'
+    mustRunAfter ':cleanPackDir'
+
+    from 'src/main/shell/'
+    include '*.cmd'
+    into 'pack/'
+}
+
 task copyUtilScripts(type: Copy) {
-    description 'Copies CLI utility scripts to release directory.'
+    description 'Copies CLI utility scripts to release/tools/cli directory.'
     mustRunAfter 'cleanPackDir'
 
     from 'src/main/shell/cli-util/'
