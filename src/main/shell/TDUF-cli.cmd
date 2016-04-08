@@ -26,4 +26,8 @@ REM Running Admin shell
 setlocal & pushd .
 
 CD /D %START_DIR%
-START "TDUF Command Line Interface" .\cli\Intro.cmd
+
+MKDIR logs 2>NUL
+CD tools\cli
+
+START "TDUF Command Line Interface" .\Intro.cmd

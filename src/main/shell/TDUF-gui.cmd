@@ -28,7 +28,7 @@ setlocal & pushd .
 CD /D %START_DIR%
 
 MKDIR logs 2>NUL
-CD cli 2>NUL
+CD tools\cli
 
 CALL .\CheckJava.cmd
 CALL .\SetVersion.cmd

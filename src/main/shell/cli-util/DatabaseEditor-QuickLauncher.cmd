@@ -1,6 +1,6 @@
 @ECHO OFF
 ECHO ...Starting Database Editor...
-CALL DatabaseEditor %1 >> ..\logs\DatabaseEditor.log 2>>&1
+CALL DatabaseEditor %1 >> ..\..\logs\DatabaseEditor.log 2>>&1
 if ERRORLEVEL 1 GOTO handleEditorError
 
 ECHO.
