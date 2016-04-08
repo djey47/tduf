@@ -2,6 +2,8 @@ package fr.tduf.gui.installer.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
+import fr.tduf.gui.installer.common.DisplayConstants;
+import fr.tduf.gui.installer.common.FxConstants;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -101,11 +103,11 @@ public class DatabaseCheckStageController extends AbstractGuiController {
     }
 
     private static Label createErrorLabel(IntegrityError.ErrorTypeEnum errorType, Set<IntegrityError> errors) {
-        String complementFormat = "(%d)";
+        String complementFormat = DisplayConstants.LABEL_FMT_ERROR_CPL;
         String complement = String.format(complementFormat, errors.size());
         String errorMessage = String.format(errorType.getErrorMessageFormat(), complement);
         Label errorLabel = new Label(errorMessage);
-        errorLabel.getStyleClass().add("error-label");
+        errorLabel.getStyleClass().add(FxConstants.CSS_CLASS_ERROR_LABEL);
         return errorLabel;
     }
 

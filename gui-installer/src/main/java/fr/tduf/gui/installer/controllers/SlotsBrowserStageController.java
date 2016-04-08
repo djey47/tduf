@@ -120,7 +120,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
         showModalWindow();
 
         if (returnedSlot == null) {
-            throw new Exception("Aborted by user.");
+            throw new Exception(DisplayConstants.MESSAGE_ABORTED_USER);
         }
 
         return returnedSlot;

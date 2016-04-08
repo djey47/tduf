@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.services;
 
+import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
@@ -28,13 +29,13 @@ public class DatabaseLoader extends Service<DatabaseContext> {
             @Override
             protected DatabaseContext call() throws Exception {
 
-                updateMessage("Performing database load 1/2, please wait...");
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_LOAD_IN_PROGRESS, "1/2"));
                 String jsonDirectory = DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(Paths.get(databaseLocation.get()), bankSupport.get());
 
-                updateMessage("Performing database load 2/2, please wait...");
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_LOAD_IN_PROGRESS, "2/2"));
                 final List<DbDto> databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
 
-                updateMessage("Done loading database.");
+                updateMessage(DisplayConstants.STATUS_LOAD_DONE);
 
                 return new DatabaseContext(databaseObjects, jsonDirectory);
             }

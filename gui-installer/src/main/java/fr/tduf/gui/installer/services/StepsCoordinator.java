@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.services;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.steps.GenericStep;
@@ -28,7 +29,7 @@ public class StepsCoordinator extends Service<String> {
                 Log.trace(THIS_CLASS_NAME, "->Starting full install");
 
                 // FIXME messages not appearing...
-                updateMessage("Performing install, please wait...");
+                updateMessage(DisplayConstants.STATUS_INSTALL_IN_PROGRESS);
 
                 // TODO create database backup to perform rollback is anything fails ?
                 GenericStep.starterStep(configuration.get(), context.get())
@@ -38,7 +39,7 @@ public class StepsCoordinator extends Service<String> {
                         .nextStep(UPDATE_MAGIC_MAP).start();
 
                 // FIXME messages not appearing...
-                updateMessage("Done installing.");
+                updateMessage(DisplayConstants.STATUS_INSTALL_DONE);
 
                 return "";
             }

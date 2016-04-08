@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.services;
 
+import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
@@ -33,24 +34,24 @@ public class DatabaseFixer extends Service<Set<IntegrityError>> {
             @Override
             protected Set<IntegrityError> call() throws Exception {
 
-                updateMessage("Performing database fix 1/5, please wait...");
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "1/5"));
                 Path realDatabasePath = Paths.get(databaseLocation.get());
                 final String jsonDirectory =  DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(realDatabasePath, bankSupport.get());
 
-                updateMessage("Performing database fix 2/5, please wait...");
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "2/5"));
                 final List<DbDto> databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
 
-                updateMessage("Performing database fix 3/5, please wait...");
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "3/5"));
                 final DatabaseIntegrityFixer fixerComponent = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
                 Set<IntegrityError> remainingErrors = fixerComponent.fixAllContentsObjects(integrityErrors.get());
 
-                updateMessage("Performing database fix 4/5, please wait...");
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "4/5"));
                 DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects, jsonDirectory);
 
-                updateMessage("Performing database fix 5/5, please wait...");
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "5/5"));
                 DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(realDatabasePath, bankSupport.get());
 
-                updateMessage("Done fixing database, " + remainingErrors.size() + " error(s) remaining.");
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_DONE, remainingErrors.size()));
 
                 return remainingErrors;
             }

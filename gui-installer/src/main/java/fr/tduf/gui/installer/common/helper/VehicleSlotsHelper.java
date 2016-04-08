@@ -74,7 +74,7 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .withModelName(modelName.orElse(null))
                 .withVersionName(versionName.orElse(null))
                 .withDefaultRims(defaultRims.orElse(null))
-                .withBrandName(brandName.orElse(Resource.from("", DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
+                .withBrandName(brandName.orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
                 .build());
     }
 
@@ -124,9 +124,7 @@ public class VehicleSlotsHelper extends CommonHelper {
             return realName.getValue();
         }
 
-        final String brandName = ofNullable(vehicleSlot.getBrandName())
-                .map(Resource::getValue)
-                .orElse("");
+        final String brandName = getNameFromLocalResourceValue(ofNullable(vehicleSlot.getBrandName().getValue()), "");
         final String modelName = getNameFromLocalResourceValue(ofNullable(vehicleSlot.getModelName().getValue()), "");
         final String versionName = getNameFromLocalResourceValue(ofNullable(vehicleSlot.getVersionName().getValue()), "");
 

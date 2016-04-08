@@ -168,24 +168,6 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
-    public void getVehicleName_whenBrandNameUnavailable() throws Exception {
-        // GIVEN
-        String slotReference = "REF";
-        String modelName = "Brera";
-        VehicleSlot vehicleSlot = VehicleSlot.builder()
-                .withRef(slotReference)
-                .withModelName(Resource.from("", modelName))
-                .withVersionName(Resource.from(DatabaseConstants.RESOURCE_REF_UNKNOWN_VEHICLE_NAME, DatabaseConstants.RESOURCE_VALUE_NONE))
-                .build();
-
-        // WHEN
-        final String actualName = VehicleSlotsHelper.getVehicleName(vehicleSlot);
-
-        // THEN
-        assertThat(actualName).isEqualTo("Brera");
-    }
-
-    @Test
     public void getDrivableVehicleSlotEntries_whenNoDrivableVehicle_shouldReturnEmptyList() {
         // GIVEN
         String undrivableRef = "00000000";

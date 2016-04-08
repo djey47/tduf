@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.services;
 
+import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
@@ -31,17 +32,17 @@ public class DatabaseChecker extends Service<Set<IntegrityError>> {
             @Override
             protected Set<IntegrityError> call() throws Exception {
 
-                updateMessage("Performing database check 1/3, please wait...");
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "1/3"));
                 String jsonDirectory = DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(Paths.get(databaseLocation.get()), bankSupport.get());
 
-                updateMessage("Performing database check 2/3, please wait...");
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "2/3"));
                 final List<DbDto> databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
 
-                updateMessage("Performing database check 3/3, please wait...");
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "3/3"));
                 final DatabaseIntegrityChecker checkerComponent = AbstractDatabaseHolder.prepare(DatabaseIntegrityChecker.class, databaseObjects);
                 final Set<IntegrityError> integrityErrorsFromExtensiveCheck = checkerComponent.checkAllContentsObjects();
 
-                updateMessage("Done checking database, " + integrityErrorsFromExtensiveCheck.size() + " error(s).");
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_DONE, integrityErrorsFromExtensiveCheck.size()));
 
                 return integrityErrorsFromExtensiveCheck;
             }

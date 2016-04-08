@@ -361,14 +361,14 @@ public class MainStageController extends AbstractGuiController {
 
                 .findFirst()
 
-                .orElseThrow(() -> new IOException("Patch file not found in " + DIRECTORY_DATABASE + " subdirectory."));
+                .orElseThrow(() -> new IOException(String.format(DisplayConstants.MESSAGE_FMT_PATCH_NOT_FOUND, DIRECTORY_DATABASE)));
 
         final File patchFile = patchFilePath.toFile();
         DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
 
         PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
         if (patchProperties.isEmpty()) {
-            throw new IOException("Invalid patch properties.");
+            throw new IOException(DisplayConstants.MESSAGE_INVALID_PROPERTIES);
         }
 
         context.setPatch(patchObject, patchProperties);

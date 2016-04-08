@@ -35,7 +35,7 @@ public abstract class CommonHelper {
         return entry.getItemAtRank(sourceFieldRank)
                 .flatMap((sourceItem) -> miner.getContentEntryFromTopicWithReference(sourceItem.getRawValue(), targetTopic))
                 .flatMap((targetEntry) -> miner.getLocalizedResourceValueFromContentEntry(targetEntry.getId(), targetFieldRank, targetTopic, DEFAULT_LOCALE))
-                .map((value) -> Resource.from("", value));
+                .map((value) -> Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT, value));
     }
 
     protected static Optional<Integer> getIntValueFromDatabaseEntry(DbDataDto.Entry entry, int fieldRank) {

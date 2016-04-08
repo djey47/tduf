@@ -92,7 +92,7 @@ public class UserInputHelper {
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
         Optional<VehicleSlot> potentialVehicleSlot = vehicleSlotsHelper.getVehicleSlotFromReference(slotReference);
         if (!potentialVehicleSlot.isPresent()) {
-            throw new IllegalArgumentException("Unable to get valid information for vehicle slot, as it does not exist: " + slotReference);
+            throw new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, slotReference));
         }
 
         VehicleSlot vehicleSlot = potentialVehicleSlot.get();
@@ -110,7 +110,7 @@ public class UserInputHelper {
         List<String> values = asList(selectedBankName, selectedResourceBankName, selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);
         if (VehicleSlotsHelper.DEFAULT_VEHICLE_ID == selectedCarIdentifier
                 || values.contains(DisplayConstants.ITEM_UNAVAILABLE)) {
-            throw new IllegalArgumentException("Unable to get valid information for vehicle slot: " + slotReference);
+            throw new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, slotReference));
         }
 
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
