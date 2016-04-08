@@ -226,6 +226,13 @@ project(':gui-installer') {
         include '*.cmd'
         into '../pack/'
     }
+
+    task updateExternalTools(type: Copy) {
+        description 'Copies external tools to installer development tree to ensure proper functioning.'
+
+        from '../tools/'
+        into 'tools/'
+    }
 }
 
 
