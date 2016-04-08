@@ -48,7 +48,7 @@ public class DealerHelper extends CommonHelper {
 
                     return !fileName.isPresent()
                             || fileName.get().getValue().startsWith(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER)
-                            || fileName.get().getValue().startsWith(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER);
+                            || fileName.get().getValue().startsWith(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER);
                 })
 
                 .map((dealerEntry) -> {
