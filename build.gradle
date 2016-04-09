@@ -65,13 +65,6 @@ subprojects {
         from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
         with jar
     }
-
-    task copyJar(type: Copy) {
-        description 'Copies jar file to release directory.'
-
-        from fatJar
-        into '../pack/lib/'
-    }
 }
 
 project(':cli') {
@@ -211,13 +204,6 @@ project(':gui-installer') {
         into '../pack/tools/patchTemplates/'
     }
 
-    task copyIKJar(type: Copy) {
-        description 'Copies jar file to release directory.'
-
-        from fatJar
-        into '../pack/tools/lib/'
-    }
-
     task copyMainScripts(type: Copy) {
         description 'Copies CLI main scripts to release directory.'
         mustRunAfter ':cleanPackDir'
@@ -227,6 +213,23 @@ project(':gui-installer') {
         into '../pack/'
     }
 
+    task copyUtilScripts(type: Copy) {
+        description 'Copies CLI utility scripts to pack/tools/cli directory.'
+        mustRunAfter ':cleanPackDir'
+
+        from '../src/main/shell/cli-util/'
+        include 'CheckJava.cmd'
+        include 'SetVersion.cmd'
+        into '../pack/tools/cli'
+    }
+
+    task copyJar(type: Copy) {
+        description 'Copies jar file to release directory.'
+
+        from fatJar
+        into '../pack/tools/lib/'
+    }
+
     task updateExternalTools(type: Copy) {
         description 'Copies external tools to installer development tree to ensure proper functioning.'
 
@@ -234,7 +237,6 @@ project(':gui-installer') {
         into 'tools/'
     }
 }
-
 
 // Main tasks
 // Create a list of subprojects to include in the full jar.
@@ -268,20 +270,11 @@ task packFull(dependsOn: [  'cleanTempJarDir', 'cleanPackDir',
     destinationDir new File('releases/')
     from  'pack/'}
 
-// TODO remove obsolete task
-task packTDUF(dependsOn: ['cleanPackDir', 'copyDoc', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
-                          'copyMainScripts', ':cli:copyJar',
-                          ':lib-unlimited:copyStructures',
-                          ':gui-database:copyJar'], type: Zip) {
-    description 'Zips only TDUF CLI, GUI-Database, LIB files from pack folder.'
-
-    archiveName  "tduf-" + project.version + ".zip"
-    destinationDir new File('releases/')
-    from  'pack/'
-}
-
-task packInstallerKit(dependsOn: ['cleanPackDir', 'copyExternalTools', 'copyUtilScripts', 'copyIKVersionInfo',
-                                  ':gui-installer:copyDoc', ':gui-installer:copyAssets', ':gui-installer:copyTemplates', ':gui-installer:copyMainScripts',  ':gui-installer:copyIKJar'], type: Zip) {
+task packInstallerKit(dependsOn: [  'cleanPackDir',
+                                    ':gui-installer:copyMainScripts',
+                                    ':gui-installer:copyDoc', 'copyExternalTools', ':gui-installer:copyUtilScripts', 'copyVersionInfo',
+                                    ':gui-installer:copyAssets', ':gui-installer:copyTemplates',
+                                    ':gui-installer:copyJar'], type: Zip) {
     description 'Zips only IK, LIB files from pack folder.'
 
     archiveName "tduf-IK-" + project.version + ".zip"
@@ -303,7 +296,7 @@ task copyDoc(type: Copy) {
     description 'Copies README to release directory.'
     mustRunAfter 'cleanPackDir'
 
-    from 'dist/'
+    from "dist"
     include 'README.txt'
     into 'pack/'
 }
@@ -335,15 +328,6 @@ task copyExternalTools(type: Copy) {
 }
 
 task copyVersionInfo(type: Copy) {
-    description 'Copies version.info file to release libs directory.'
-    mustRunAfter 'cleanPackDir'
-
-    from 'dist/'
-    include 'version.info'
-    into 'pack/tools/lib/'
-}
-
-task copyIKVersionInfo(type: Copy) {
     description 'Copies version.info file to release libs directory.'
     mustRunAfter 'cleanPackDir'
 
