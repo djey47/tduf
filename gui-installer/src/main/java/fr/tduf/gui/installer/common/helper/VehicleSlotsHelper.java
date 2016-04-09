@@ -135,8 +135,6 @@ public class VehicleSlotsHelper extends CommonHelper {
      * @return list of car physics entries concerning only drivable vehicles
      */
     public List<VehicleSlot> getDrivableVehicleSlots() {
-
-        // TODO enhance criteria to express NOT condition and simplify call
         return miner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries().stream()
 
                 .filter((slotEntry) -> {
