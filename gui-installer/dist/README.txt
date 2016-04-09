@@ -3,37 +3,40 @@
 Here is a new vehicle mod installer:
 * Adds new vehicle to the game
 * Displays list of current slots to install onto one
+* Displays current vehicle dealers to install onto one (optionally)
 * Makes new files to be accepted by updating Magic Map.
 
+Use with TDUCP 2.00A is strongly recommended.
 
-### What's in this version ?
 
-* ALPHA-5 release
-
+### What's in this version ? (ALPHA-6)
 
 ### Main features
 
-* Install only
-* Ability to update Magic Map (Advanced feature)
-* Ability to check and fix database (Advanced feature)
+* Install only - uninstall will come later
+* Select existing vehicle slot (use of TDUCP 2.00A recommended)
+* Create new vehicle slot (experimental feature!)
+* For now, handles one single set of: RIMS, EXTERIOR COLORS, INTERIOR (more will come later)
+* Select location in car dealers (use of TDUCP 2.00A recommended)
+* Update Magic Map (Advanced feature)
+* Check and fix database (Advanced feature)
 
 
-### What you will need to run Installer
+### What you will need to run Installer Kit
 
-* Please uninstall any Java Runtime < 8
+* TDUMT/TDUPE must be running fine
 * [Update / Install Java 8 Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
 
 
-### Performing your install!
+###  Modders, perform your own install!
 
 PREPARING
 
 - Extract InstallerKit to project Dir: e.g Desktop\F250TR
 
 
-
 PUT MODDED FILES UNDER assets directories:
-(MOD can be name of your choice)
+(MOD is just an example, can be name of your choice)
 
 - 3D: exterior and interior MOD.BNK, MOD_I.BNK
 
@@ -46,7 +49,6 @@ PUT MODDED FILES UNDER assets directories:
 - SOUND: MOD_audio.BNK
 
 
-
 CUSTOMIZATION
 
 - Edit assets\README\README.txt file and put all important information
@@ -56,9 +58,14 @@ to:  assets\DATABASE\
 
 - Edit assets\DATABASE\xxxxx.mini.json.properties for wanted values:
     - BRANDREF: enter a brand identifier
+    - MODELNAME, VERSION NAME: displayed names
     - COLORID.M.x/COLORID.S.x/CALLIPERSID.x: update CAR_COLORS resources (M=Main, S=Secondary)
     - INTCOLORID.M.x/INTCOLORID.S.x/INTMATERIALID.x: update INTERIOR resources (M=Main, S=Secondary)
-    - SLOTREF: fore to use a CAR_PHYSICS slot. If enabled, Installer will not ask for vehicle slot.
+    - RIMNAME.1/RIMBRANDREF.1: main RIMS information
+    - RIMWIDTH.FR.1/RIMHEIGHT.FR.1/RIMDIAM.FR.1: data for front RIMS
+      RIMWIDTH.RR.1/RIMHEIGHT.RR.1/RIMDIAM.RR.1: data for rear RIMS
+    - SLOTREF: (optional) force to use a CAR_PHYSICS slot. If enabled, Installer will not ask for vehicle slot
+    - ... see explanation in properties file.
 
 - (Optional) Copy TDUPE Pack to assets\DATABASE directory.
 
@@ -69,34 +76,35 @@ TESTING
 
 - Enter or browse TDU location
 
-- Click Install. Installer will look unresponsive for a few seconds
+- Click Install.
 
-- Select target car slot or create new slot for it
+- Select target car slot
 
-- Installer will look unresponsive for a few seconds
+- Select dealer slot to locate freshly installed vehicle
 
 - TDUPK file (if provided) will be applied after JSON mini patch
+
+- Installer will look unresponsive for a few seconds
 
 - Check install events in logs\TDUF-Installer.log file
 
 - Check for generated values in effective properties file: assets\DATABASE\effective-xxxxx.mini.json.properties
 
 
+FINAL STEP: release your mod!
 
-FINAL
-
-(1) Before packing, you can remove:
+(1) Before packing into a zip file, you may remove:
 
 - this README.txt from root directory
 - all WTF.txt files
 - logs directory
 
-(2) Make sure directories are present:
+(2) Make sure following directories are present:
 
 - assets
 - tools
 
-(3) Rename TDUF-installer.cmd to Name of your choice, BUT keep .cmd extension !
+(3) Rename TDUF-installer.cmd to name of your choice, BUT keep .cmd extension !
 
 (4) Zip project directory and distribute.
 
