@@ -1,4 +1,5 @@
 Place all your patches here:
-- xxxxxxx.json (TDUF/DatabaseEditor patch)
-- xxxxxxx.json.properties (corresponding properties when needed)
+- single xxxxxxx.json (TDUF/DatabaseEditor patch, to select in tools/patchTemplates directory)
+- single xxxxxxx.json.properties (associated properties)
+- (optional) single yyyyyyy.tdupk (TDUPE Performance Pack).
 

@@ -1,3 +1,3 @@
 Place all your 3D rim BNK here:
 - xxxxxxx_F_yy.BNK (front rims)
-- xxxxxxx_R_yy.BNK (rear rims)
+- (optional) xxxxxxx_R_yy.BNK (rear rims)
