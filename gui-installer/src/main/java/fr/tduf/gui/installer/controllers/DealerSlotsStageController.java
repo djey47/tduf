@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
@@ -69,6 +70,15 @@ public class DealerSlotsStageController extends AbstractGuiController {
     }
 
     @FXML
+    private void handleNoSlotButtonAction() {
+        Log.trace(THIS_CLASS_NAME, "->handleNoSlotButtonAction");
+
+        returnedSlot = empty();
+
+        closeWindow();
+    }
+
+    @FXML
     private void handleDealersTableMouseClick(MouseEvent event) {
         Log.trace(THIS_CLASS_NAME, "->handleDealersTableMouseClick");
 
@@ -104,6 +114,8 @@ public class DealerSlotsStageController extends AbstractGuiController {
         dealerHelper = DealerHelper.load(miner);
 
         updateDealersData();
+
+        returnedSlot = null;
 
         showModalWindow();
 
