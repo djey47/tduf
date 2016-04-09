@@ -18,6 +18,7 @@ public class DisplayConstants {
     public static final String LABEL_UNKNOWN = "???";
     public static final String LABEL_FMT_ERROR_CPL = "(%d)";
     public static final String LABEL_FMT_FREE_SLOTS = "%d / %d";
+    public static final String LABEL_FREE_DEALER_SLOT = "<available>";
 
     public static final String MESSAGE_INSTALLED = "All install tasks went succesfully!";
     public static final String MESSAGE_NOT_INSTALLED = "An issue occured while installing!";

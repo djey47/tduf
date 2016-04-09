@@ -94,7 +94,8 @@ public class DealerSlotData {
 
             final String vehicleName = slot.getVehicleSlot()
                     .filter((vehicleSlot) -> !DatabaseConstants.REF_FREE_DEALER_SLOT.equals(vehicleSlot.getRef()))
-                    .map(VehicleSlotsHelper::getVehicleName).orElse(DisplayConstants.LABEL_UNKNOWN);
+                    .map(VehicleSlotsHelper::getVehicleName)
+                    .orElse(DisplayConstants.LABEL_FREE_DEALER_SLOT);
 
             item.rank.setValue(slot.getRank());
             item.vehicleNameProperty().setValue(vehicleName);
