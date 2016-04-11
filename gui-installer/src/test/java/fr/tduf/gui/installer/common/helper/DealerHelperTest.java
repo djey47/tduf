@@ -121,6 +121,6 @@ public class DealerHelperTest {
 
 
         // THEN
-        assertThat(dealers).extracting("location").containsExactly("Honolulu Downtown");
+        assertThat(dealers).extracting("location").containsExactly("Honolulu Downtown: Kapalama");
     }
 }
