@@ -112,7 +112,8 @@ public class MainStageChangeDataController {
     String exportCurrentEntryAsLine() {
         List<String> values = getRawValuesFromCurrentEntry();
 
-        return String.join(DatabaseParser.VALUE_DELIMITER, values);
+        final String line = String.join(DatabaseParser.VALUE_DELIMITER, values);
+        return line.endsWith(DatabaseParser.VALUE_DELIMITER) ? line : line + DatabaseParser.VALUE_DELIMITER;
     }
 
     String exportCurrentEntryToPchValue() {
@@ -159,8 +160,8 @@ public class MainStageChangeDataController {
 
     private List<String> getRawValuesFromCurrentEntry() {
         DbDataDto.Entry currentEntry = getMiner().getContentEntryFromTopicWithInternalIdentifier(
-                mainStageController.currentEntryIndexProperty.getValue(),
-                mainStageController.currentTopicProperty.getValue()).get();
+                mainStageController.getCurrentEntryIndex(),
+                mainStageController.getCurrentTopic()).get();
         return currentEntry.getItems().stream()
 
                 .map(DbDataDto.Item::getRawValue)

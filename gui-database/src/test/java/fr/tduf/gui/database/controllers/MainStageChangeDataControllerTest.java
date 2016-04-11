@@ -2,7 +2,9 @@ package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -15,11 +17,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -31,6 +33,9 @@ import static org.mockito.Mockito.when;
 public class MainStageChangeDataControllerTest {
 
     private static final Class<MainStageChangeDataControllerTest> thisClass = MainStageChangeDataControllerTest.class;
+
+    @Mock
+    private BulkDatabaseMiner minerMock;
 
     @Mock
     MainStageController mainStageController;
@@ -139,6 +144,27 @@ public class MainStageChangeDataControllerTest {
 
                 .forEach((updateObject) -> assertThat(updateObject.getPartialValues()).hasSize(3));
     }
+
+    @Test
+    public void exportCurrentEntryAsLine_should_generate_line_with_trailing_semicolon() {
+        // GIVEN
+        DbDataDto.Entry entry = DbDataDto.Entry.builder()
+                .forId(1)
+                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue("25").build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(2).withRawValue("36").build())
+                .build();
+        when(mainStageController.getCurrentEntryIndex()).thenReturn(1L);
+        when(mainStageController.getCurrentTopic()).thenReturn(CAR_PHYSICS_DATA);
+        when(mainStageController.getMiner()).thenReturn(minerMock);
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(1L, CAR_PHYSICS_DATA)).thenReturn(Optional.of(entry));
+
+        // WHEN
+        final String actualEntry = controller.exportCurrentEntryAsLine();
+
+        // THEN
+        assertThat(actualEntry).isEqualTo("25;36;");
+    }
+
 
     private static String createTempDirectory() throws IOException {
         return FilesHelper.createTempDirectoryForDatabaseEditor();

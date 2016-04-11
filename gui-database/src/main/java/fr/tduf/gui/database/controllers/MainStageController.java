@@ -958,4 +958,12 @@ public class MainStageController extends AbstractGuiController {
     List<DbDto> getDatabaseObjects() {
         return databaseObjects;
     }
+
+    long getCurrentEntryIndex() {
+        return currentEntryIndexProperty.getValue();
+    }
+
+    DbDto.Topic getCurrentTopic() {
+        return currentTopicProperty.getValue();
+    }
 }
