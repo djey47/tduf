@@ -23,6 +23,7 @@ public class DisplayConstants {
     public static final String LABEL_BUTTON_OK = "OK";
     public static final String LABEL_BUTTON_PLUS = "+";
     public static final String LABEL_BUTTON_CLOSE = "Close";
+    public static final String LABEL_BUTTON_SAVE = "Save...";
     public static final String LABEL_CHOICEBOX_LOCALE = "Locale:";
     public static final String LABEL_ITEM_DATABASE_ENTRY = "%s : %s";
     public static final String LABEL_ITEM_ENTRY_COUNT = "/ %d";
@@ -60,6 +61,7 @@ public class DisplayConstants {
     public static final String TITLE_SUB_FIELDS = " : Content fields";
     public static final String TITLE_SUB_RESOURCES = " : Resources";
     public static final String TITLE_SUB_EXPORT = " : Export entry";
+    public static final String TITLE_SUB_EXPORT_FILE = " : Export contents to file";
     public static final String TITLE_SUB_IMPORT = " : Import entry";
     public static final String TITLE_SUB_IMPORT_PERFORMANCE_PACK = " : Import TDUPE Performance Pack";
     public static final String TITLE_SUB_SEARCH_ENTRY = " : Search for entry";
@@ -81,6 +83,8 @@ public class DisplayConstants {
     public static final String MESSAGE_UNABLE_IMPORT_PATCH = "Unable to import TDUF patch.";
     public static final String MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK = "Unable to import TDUPE Performance Pack.";
     public static final String MESSAGE_DELETED_CACHE = "Database cache directory was deleted succesfully:";
+    public static final String MESSAGE_FILE_EXPORT_OK = "Contents were exported to file.";
+    public static final String MESSAGE_FILE_EXPORT_KO = "Contents could not be exported to file.";
 
     public static final String QUESTION_AFFECTED_LOCALES = "Which locales should be affected?";
 

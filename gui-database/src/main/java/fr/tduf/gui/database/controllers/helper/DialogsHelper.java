@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers.helper;
 
+import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.gui.database.domain.javafx.ResourceEntryDataItem;
@@ -15,11 +16,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static javafx.scene.control.Alert.AlertType.CONFIRMATION;
+import static javafx.scene.control.Alert.AlertType.ERROR;
+import static javafx.scene.control.Alert.AlertType.INFORMATION;
 import static javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE;
+import static javafx.scene.control.ButtonBar.ButtonData.OTHER;
 
 /**
  * Helper class to build and display dialog boxes.
@@ -116,10 +123,10 @@ public class DialogsHelper {
 
     /**
      * Displays a dialog box with results of export, allowing to copy them to clipboard.
-     * @param result    : exported data to be displayed.
+     * @param result    : exported data to be displayed
      */
     public void showExportResultDialog(String result) {
-        Dialog resultDialog = new Dialog();
+        Dialog<Boolean> resultDialog = new Dialog<>();
         resultDialog.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT);
 
         TextArea textArea = new TextArea(result);
@@ -137,13 +144,36 @@ public class DialogsHelper {
         anchorPane.getChildren().add(textArea);
         resultDialog.getDialogPane().setContent(anchorPane);
 
+        ButtonType fileExportButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_SAVE, OTHER);
         ButtonType closeButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_CLOSE, CANCEL_CLOSE);
-        resultDialog.getDialogPane().getButtonTypes().setAll(closeButtonType);
+        resultDialog.getDialogPane().getButtonTypes().setAll(fileExportButtonType, closeButtonType);
 
-        resultDialog.show();
+        resultDialog.resultConverterProperty().setValue(fileExportButtonType::equals);
+
+        final Optional<Boolean> potentialResult = resultDialog.showAndWait();
+
+        if (potentialResult.orElse(false)) {
+            askForLocationThenExportToFile(result);
+        }
     }
 
-    private ChoiceBox<String> createLocaleChoiceBox(DbResourceDto.Locale currentLocale) {
+    private static void askForLocationThenExportToFile(String contents) {
+        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(false, null);
+        if (!potentialFile.isPresent()) {
+            return;
+        }
+
+        String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT_FILE;
+        String fileLocation = potentialFile.get().getPath();
+        try (FileWriter fileWriter = new FileWriter(fileLocation)) {
+            fileWriter.write(contents);
+            CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_FILE_EXPORT_OK, fileLocation);
+        } catch (IOException ioe) {
+            CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_FILE_EXPORT_KO, DisplayConstants.MESSAGE_SEE_LOGS);
+        }
+    }
+
+    private static ChoiceBox<String> createLocaleChoiceBox(DbResourceDto.Locale currentLocale) {
         ObservableList<String> localeItems = FXCollections.observableArrayList();
 
         int localeIndex = 0 ;
