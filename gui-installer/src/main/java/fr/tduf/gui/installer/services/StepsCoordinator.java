@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.gui.installer.steps.GenericStep;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -25,7 +26,7 @@ public class StepsCoordinator extends Service<String> {
     protected Task<String> createTask() {
         return new Task<String>() {
             @Override
-            protected String call() throws Exception {
+            protected String call() throws StepException {
                 Log.trace(THIS_CLASS_NAME, "->Starting full install");
 
                 // FIXME messages not appearing...

@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
@@ -54,7 +55,7 @@ public class UpdateDatabaseStepTest {
     }
 
     @Test
-    public void perform_withoutPerformancePack_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException {
+    public void perform_withoutPerformancePack_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
         String assetsDirectory = new File(thisClass.getResource("/assets-patch-only").toURI()).getAbsolutePath();
         InstallerConfiguration configuration = InstallerConfiguration.builder()
@@ -72,7 +73,7 @@ public class UpdateDatabaseStepTest {
     }
 
     @Test
-    public void perform_withDealerProperties_shouldAddUpdateInstruction() throws URISyntaxException, IOException, ReflectiveOperationException {
+    public void perform_withDealerProperties_shouldAddUpdateInstruction() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
         String dealerRef = "0000";
         patchProperties.setDealerReferenceIfNotExists(dealerRef);
@@ -101,7 +102,7 @@ public class UpdateDatabaseStepTest {
     }
 
     @Test
-    public void perform_withPerformancePack_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException {
+    public void perform_withPerformancePack_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
         String assetsDirectory = new File(thisClass.getResource("/assets-patch-tdupk-only").toURI()).getAbsolutePath();
         InstallerConfiguration configuration = InstallerConfiguration.builder()

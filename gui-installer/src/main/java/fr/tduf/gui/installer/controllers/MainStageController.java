@@ -9,6 +9,7 @@ import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.controllers.helper.UserInputHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.gui.installer.services.DatabaseChecker;
 import fr.tduf.gui.installer.services.DatabaseFixer;
 import fr.tduf.gui.installer.services.DatabaseLoader;
@@ -196,22 +197,30 @@ public class MainStageController extends AbstractGuiController {
             }
         });
         stepsCoordinator.stateProperty().addListener((observable, oldValue, newState) -> {
-            // TODO handle Cancelled state ?
             if (SUCCEEDED == newState) {
                 CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "");
             } else if (FAILED == newState) {
-                final String errorMessage = stepsCoordinator.exceptionProperty().get().getMessage();
+                final Throwable throwable = stepsCoordinator.exceptionProperty().get();
+                throwable.printStackTrace();
+
+                String stepName = DisplayConstants.LABEL_STEP_UNKNOWN;
+                if (throwable instanceof StepException) {
+                    stepName = ((StepException) throwable).getStepName();
+                }
+
+                final String errorMessage = String.format(DisplayConstants.MESSAGE_FMT_ERROR, throwable.getMessage(), stepName, throwable.getCause().getMessage());
                 CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED, errorMessage);
             }
             statusLabel.textProperty().unbind();
             statusLabel.textProperty().setValue("");
         });
         databaseLoader.stateProperty().addListener((observable, oldValue, newState) -> {
-            // TODO handle FAILED and Cancelled states ?
+            // TODO handle FAILED state
             if (SUCCEEDED == newState) {
                 try {
                     install(databaseLoader.getValue());
                 } catch (Exception e) {
+                    // TODO factorize exception handling with coordinator
                     e.printStackTrace();
                     CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED, e.getMessage());
                 }

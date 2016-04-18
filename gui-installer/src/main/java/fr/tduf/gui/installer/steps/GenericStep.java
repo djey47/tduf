@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.steps;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.gui.installer.domain.exceptions.StepException;
 
 import java.io.IOException;
 
@@ -32,7 +33,7 @@ public abstract class GenericStep {
      * @param databaseContext           : optional context
      * @return a reference of step to begin process
      */
-    public static GenericStep starterStep(InstallerConfiguration installerConfiguration, DatabaseContext databaseContext) {
+    public static GenericStep starterStep(InstallerConfiguration installerConfiguration, DatabaseContext databaseContext) throws StepException {
         return new GenericStep(installerConfiguration, databaseContext) {
             @Override
             protected void perform() throws IOException, ReflectiveOperationException {}
@@ -77,14 +78,14 @@ public abstract class GenericStep {
     /**
      * Triggers current step.
      */
-    public GenericStep start() throws Exception {
+    public GenericStep start() throws StepException {
         Log.trace(getClassName(), "->Entering step");
 
         try {
             perform();
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception("Current step could not be performed.", e);
+//            e.printStackTrace();
+            throw new StepException(getClassName(), "Current step could not be performed.", e);
         }
 
         Log.trace(getClassName(), "->Exiting step");
