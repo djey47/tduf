@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
@@ -51,6 +52,12 @@ public class CommonDialogsHelper {
         alert.setTitle(title);
         alert.setHeaderText(message);
         alert.setContentText(description);
+        alert.setResizable(true);
+
+        alert.getDialogPane().getChildren().stream()
+                .filter(node -> node instanceof Label)
+                .map(node -> ((Label) node))
+                .forEach(label -> label.setMinHeight(Region.USE_PREF_SIZE));
 
         alert.showAndWait();
     }
@@ -64,6 +71,7 @@ public class CommonDialogsHelper {
     public static Optional<String> showInputValueDialog(String title, String label) {
         Dialog<String> inputValueDialog = new Dialog<>();
         inputValueDialog.setTitle(title);
+        inputValueDialog.setResizable(true);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
