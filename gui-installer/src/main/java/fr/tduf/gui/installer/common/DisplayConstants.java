@@ -26,8 +26,10 @@ public class DisplayConstants {
     public static final String MESSAGE_UPDATED_MAP = "Magic map was updated to take new files into account:";
     public static final String MESSAGE_DELETED_CACHE = "Database cache directory was deleted succesfully:";
     public static final String MESSAGE_DB_CHECK_OK = "Database was checked succesfully.";
+    public static final String MESSAGE_DB_CHECK_KO = "Database could not be checked.";
     public static final String MESSAGE_DB_FIX_OK = "Database was fixed succesfully.";
-    public static final String MESSAGE_DB_FIX_KO = "Database could not be fixed succesfully.";
+    public static final String MESSAGE_DB_FIX_KO = "Database could not be fixed.";
+    public static final String MESSAGE_DB_LOAD_KO = "Database could not be losded.";
     public static final String MESSAGE_DB_ZERO_ERROR = "No integrity error was found.";
     public static final String MESSAGE_DB_REMAINING_ERRORS = "Integrity error(s) do remain.\nGame might be playable, though.";
     public static final String MESSAGE_ABORTED_USER = "Aborted by user.";

@@ -166,29 +166,27 @@ public class MainStageController extends AbstractGuiController {
 
     private void initServiceListeners() {
         databaseChecker.stateProperty().addListener((observableValue, oldState, newState) -> {
-            // TODO Handle FAILED state
             if (SUCCEEDED == newState) {
                 final Set<IntegrityError> integrityErrors = databaseChecker.getValue();
                 if (integrityErrors.isEmpty()) {
                     CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_CHECK_DB, DisplayConstants.MESSAGE_DB_CHECK_OK, DisplayConstants.MESSAGE_DB_ZERO_ERROR);
                 } else {
-                    DatabaseCheckStageController databaseCheckStageController = null;
                     try {
-                        databaseCheckStageController = initDatabaseCheckStageController(getWindow());
+                        DatabaseCheckStageController databaseCheckStageController = initDatabaseCheckStageController(getWindow());
+                        boolean shouldFixDatabase = databaseCheckStageController.initAndShowModalDialog(integrityErrors);
+                        if (shouldFixDatabase) {
+                            fixDatabase(integrityErrors);
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
-                        return;
-                    }
-
-                    boolean shouldFixDatabase = databaseCheckStageController.initAndShowModalDialog(integrityErrors);
-                    if (shouldFixDatabase) {
-                        fixDatabase(integrityErrors);
                     }
                 }
+            } else if (FAILED == newState) {
+                handleServiceFailure(databaseChecker.exceptionProperty().get(), DisplayConstants.MESSAGE_DB_CHECK_KO);
             }
         });
+
         databaseFixer.stateProperty().addListener((observableValue, oldState, newState) -> {
-            // TODO Handle FAILED state
             if (SUCCEEDED == newState) {
                 final Set<IntegrityError> remainingErrors = databaseFixer.getValue();
                 if (remainingErrors.isEmpty()) {
@@ -196,30 +194,35 @@ public class MainStageController extends AbstractGuiController {
                 } else {
                     CommonDialogsHelper.showDialog(WARNING, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIX_DB, DisplayConstants.MESSAGE_DB_FIX_KO, DisplayConstants.MESSAGE_DB_REMAINING_ERRORS);
                 }
+            } else if (FAILED == newState) {
+                handleServiceFailure(databaseFixer.exceptionProperty().get(), DisplayConstants.MESSAGE_DB_FIX_KO);
             }
         });
+
         stepsCoordinator.stateProperty().addListener((observable, oldValue, newState) -> {
             if (SUCCEEDED == newState) {
                 CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "");
             } else if (FAILED == newState) {
-                handleServiceFailure(stepsCoordinator.exceptionProperty().get());
+                handleServiceFailure(stepsCoordinator.exceptionProperty().get(), DisplayConstants.MESSAGE_NOT_INSTALLED);
             }
             statusLabel.textProperty().unbind();
             statusLabel.textProperty().setValue("");
         });
+
         databaseLoader.stateProperty().addListener((observable, oldValue, newState) -> {
-            // TODO handle FAILED state
             if (SUCCEEDED == newState) {
                 try {
                     install(databaseLoader.getValue());
                 } catch (Exception e) {
-                    handleServiceFailure(e);
+                    handleServiceFailure(e, DisplayConstants.MESSAGE_NOT_INSTALLED);
                 }
+            } else if (FAILED == newState) {
+                handleServiceFailure(databaseLoader.exceptionProperty().get(), DisplayConstants.MESSAGE_DB_LOAD_KO);
             }
         });
     }
 
-    private void handleServiceFailure(Throwable throwable) {
+    private void handleServiceFailure(Throwable throwable, String mainMessage) {
         throwable.printStackTrace();
 
         String stepName = DisplayConstants.LABEL_STEP_UNKNOWN;
@@ -233,7 +236,7 @@ public class MainStageController extends AbstractGuiController {
         }
 
         final String errorMessage = String.format(DisplayConstants.MESSAGE_FMT_ERROR, throwable.getMessage(), stepName, causeMessage);
-        CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED, errorMessage);
+        CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, mainMessage, errorMessage);
     }
 
     private void browseForTduDirectory() {
