@@ -172,15 +172,17 @@ public class MainStageController extends AbstractGuiController {
                 if (integrityErrors.isEmpty()) {
                     CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_CHECK_DB, DisplayConstants.MESSAGE_DB_CHECK_OK, DisplayConstants.MESSAGE_DB_ZERO_ERROR);
                 } else {
+                    DatabaseCheckStageController databaseCheckStageController = null;
                     try {
-                        DatabaseCheckStageController databaseCheckStageController = initDatabaseCheckStageController(getWindow());
-                        boolean shouldFixDatabase = databaseCheckStageController.initAndShowModalDialog(integrityErrors);
-
-                        if (shouldFixDatabase) {
-                            fixDatabase(integrityErrors);
-                        }
+                        databaseCheckStageController = initDatabaseCheckStageController(getWindow());
                     } catch (IOException e) {
                         e.printStackTrace();
+                        return;
+                    }
+
+                    boolean shouldFixDatabase = databaseCheckStageController.initAndShowModalDialog(integrityErrors);
+                    if (shouldFixDatabase) {
+                        fixDatabase(integrityErrors);
                     }
                 }
             }
@@ -200,16 +202,7 @@ public class MainStageController extends AbstractGuiController {
             if (SUCCEEDED == newState) {
                 CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "");
             } else if (FAILED == newState) {
-                final Throwable throwable = stepsCoordinator.exceptionProperty().get();
-                throwable.printStackTrace();
-
-                String stepName = DisplayConstants.LABEL_STEP_UNKNOWN;
-                if (throwable instanceof StepException) {
-                    stepName = ((StepException) throwable).getStepName();
-                }
-
-                final String errorMessage = String.format(DisplayConstants.MESSAGE_FMT_ERROR, throwable.getMessage(), stepName, throwable.getCause().getMessage());
-                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED, errorMessage);
+                handleServiceFailure(stepsCoordinator.exceptionProperty().get());
             }
             statusLabel.textProperty().unbind();
             statusLabel.textProperty().setValue("");
@@ -220,14 +213,27 @@ public class MainStageController extends AbstractGuiController {
                 try {
                     install(databaseLoader.getValue());
                 } catch (Exception e) {
-                    // TODO factorize exception handling with coordinator
-                    e.printStackTrace();
-                    CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED, e.getMessage());
+                    handleServiceFailure(e);
                 }
-                statusLabel.textProperty().unbind();
-                statusLabel.textProperty().setValue("");
             }
         });
+    }
+
+    private void handleServiceFailure(Throwable throwable) {
+        throwable.printStackTrace();
+
+        String stepName = DisplayConstants.LABEL_STEP_UNKNOWN;
+        if (throwable instanceof StepException) {
+            stepName = ((StepException) throwable).getStepName();
+        }
+
+        String causeMessage = "";
+        if (throwable.getCause() != throwable) {
+            causeMessage = throwable.getCause().getMessage();
+        }
+
+        final String errorMessage = String.format(DisplayConstants.MESSAGE_FMT_ERROR, throwable.getMessage(), stepName, causeMessage);
+        CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED, errorMessage);
     }
 
     private void browseForTduDirectory() {
