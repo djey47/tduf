@@ -147,7 +147,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        loadDatabaseAndStartInstall();
+        loadDatabase();
     }
 
     private void initReadme() throws IOException {
@@ -170,16 +170,10 @@ public class MainStageController extends AbstractGuiController {
                 final Set<IntegrityError> integrityErrors = databaseChecker.getValue();
                 if (integrityErrors.isEmpty()) {
                     CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_CHECK_DB, DisplayConstants.MESSAGE_DB_CHECK_OK, DisplayConstants.MESSAGE_DB_ZERO_ERROR);
-                } else {
-                    try {
-                        DatabaseCheckStageController databaseCheckStageController = initDatabaseCheckStageController(getWindow());
-                        boolean shouldFixDatabase = databaseCheckStageController.initAndShowModalDialog(integrityErrors);
-                        if (shouldFixDatabase) {
-                            fixDatabase(integrityErrors);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    return;
+                }
+                if (displayCheckResultDialog(integrityErrors)) {
+                    fixDatabase(integrityErrors);
                 }
             } else if (FAILED == newState) {
                 handleServiceFailure(databaseChecker.exceptionProperty().get(), DisplayConstants.MESSAGE_DB_CHECK_KO);
@@ -205,38 +199,17 @@ public class MainStageController extends AbstractGuiController {
             } else if (FAILED == newState) {
                 handleServiceFailure(stepsCoordinator.exceptionProperty().get(), DisplayConstants.MESSAGE_NOT_INSTALLED);
             }
-            statusLabel.textProperty().unbind();
-            statusLabel.textProperty().setValue("");
+//            statusLabel.textProperty().unbind();
+//            statusLabel.textProperty().setValue("");
         });
 
         databaseLoader.stateProperty().addListener((observable, oldValue, newState) -> {
             if (SUCCEEDED == newState) {
-                try {
-                    install(databaseLoader.getValue());
-                } catch (Exception e) {
-                    handleServiceFailure(e, DisplayConstants.MESSAGE_NOT_INSTALLED);
-                }
+                install(databaseLoader.getValue());
             } else if (FAILED == newState) {
                 handleServiceFailure(databaseLoader.exceptionProperty().get(), DisplayConstants.MESSAGE_DB_LOAD_KO);
             }
         });
-    }
-
-    private void handleServiceFailure(Throwable throwable, String mainMessage) {
-        throwable.printStackTrace();
-
-        String stepName = DisplayConstants.LABEL_STEP_UNKNOWN;
-        if (throwable instanceof StepException) {
-            stepName = ((StepException) throwable).getStepName();
-        }
-
-        String causeMessage = "";
-        if (throwable.getCause() != throwable) {
-            causeMessage = throwable.getCause().getMessage();
-        }
-
-        final String errorMessage = String.format(DisplayConstants.MESSAGE_FMT_ERROR, throwable.getMessage(), stepName, causeMessage);
-        CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, mainMessage, errorMessage);
     }
 
     private void browseForTduDirectory() {
@@ -326,7 +299,7 @@ public class MainStageController extends AbstractGuiController {
         databaseFixer.restart();
     }
 
-    private void loadDatabaseAndStartInstall() throws IOException, ReflectiveOperationException {
+    private void loadDatabase() throws IOException, ReflectiveOperationException {
         if (runningServiceProperty.get()) {
             return;
         }
@@ -345,7 +318,7 @@ public class MainStageController extends AbstractGuiController {
         databaseLoader.restart();
     }
 
-    private void install(DatabaseContext context) throws Exception {
+    private void install(DatabaseContext context) {
         // Do not check for service here, as loader may still be in running state.
         requireNonNull(context, "Database context is required. Please load database first.");
 
@@ -355,21 +328,35 @@ public class MainStageController extends AbstractGuiController {
                 .withMainWindow(getWindow())
                 .build();
 
-        loadCurrentPatch(configuration, context);
+        try {
+            loadCurrentPatch(configuration, context);
 
-        UserInputHelper.selectAndDefineVehicleSlot(context, getWindow());
+            UserInputHelper.selectAndDefineVehicleSlot(context, getWindow());
 
-        UserInputHelper.selectAndDefineDealerSlot(context, getWindow());
+            UserInputHelper.selectAndDefineDealerSlot(context, getWindow());
 
-        statusLabel.textProperty().bind(stepsCoordinator.messageProperty());
+            statusLabel.textProperty().bind(stepsCoordinator.messageProperty());
 
-        stepsCoordinator.configurationProperty().setValue(configuration);
-        stepsCoordinator.contextProperty().setValue(context);
+            stepsCoordinator.configurationProperty().setValue(configuration);
+            stepsCoordinator.contextProperty().setValue(context);
 
-        stepsCoordinator.restart();
+            stepsCoordinator.restart();
+        } catch (Exception e) {
+            handleServiceFailure(e, DisplayConstants.MESSAGE_NOT_INSTALLED);
+        }
     }
 
-    private void loadCurrentPatch(InstallerConfiguration configuration, DatabaseContext context) throws IOException {
+    private boolean displayCheckResultDialog(Set<IntegrityError> integrityErrors) {
+        try {
+            DatabaseCheckStageController databaseCheckStageController = initDatabaseCheckStageController(getWindow());
+            return databaseCheckStageController.initAndShowModalDialog(integrityErrors);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private static void loadCurrentPatch(InstallerConfiguration configuration, DatabaseContext context) throws IOException {
         Path patchPath = Paths.get(configuration.getAssetsDirectory(), DIRECTORY_DATABASE);
         final Path patchFilePath = Files.walk(patchPath, 1)
 
@@ -397,5 +384,22 @@ public class MainStageController extends AbstractGuiController {
         stage.initOwner(mainWindow);
 
         return DatabaseCheckStageDesigner.init(stage);
+    }
+
+    private static void handleServiceFailure(Throwable throwable, String mainMessage) {
+        throwable.printStackTrace();
+
+        String stepName = DisplayConstants.LABEL_STEP_UNKNOWN;
+        if (throwable instanceof StepException) {
+            stepName = ((StepException) throwable).getStepName();
+        }
+
+        String causeMessage = "";
+        if (throwable.getCause() != throwable) {
+            causeMessage = throwable.getCause().getMessage();
+        }
+
+        final String errorMessage = String.format(DisplayConstants.MESSAGE_FMT_ERROR, throwable.getMessage(), stepName, causeMessage);
+        CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, mainMessage, errorMessage);
     }
 }
