@@ -27,7 +27,7 @@ public class StepsCoordinator extends Service<String> {
         return new Task<String>() {
             @Override
             protected String call() throws StepException {
-                Log.trace(THIS_CLASS_NAME, "->Starting full install");
+                Log.info(THIS_CLASS_NAME, "->Starting full install");
 
                 // FIXME messages not appearing...
                 updateMessage(DisplayConstants.STATUS_INSTALL_IN_PROGRESS);
@@ -41,6 +41,8 @@ public class StepsCoordinator extends Service<String> {
 
                 // FIXME messages not appearing...
                 updateMessage(DisplayConstants.STATUS_INSTALL_DONE);
+
+                Log.info(THIS_CLASS_NAME, "->Done installing");
 
                 return "";
             }
