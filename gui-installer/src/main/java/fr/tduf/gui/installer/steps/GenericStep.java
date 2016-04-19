@@ -84,7 +84,7 @@ public abstract class GenericStep {
         try {
             perform();
         } catch (Exception e) {
-//            e.printStackTrace();
+            Log.trace(getClassName(), "->Abnormally exiting step");
             throw new StepException(getClassName(), "Current step could not be performed.", e);
         }
 

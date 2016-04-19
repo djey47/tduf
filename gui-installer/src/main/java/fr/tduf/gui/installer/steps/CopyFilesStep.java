@@ -34,20 +34,20 @@ public class CopyFilesStep extends GenericStep {
         requireNonNull(getDatabaseContext().getPatchProperties(), "Patch properties are required.");
 
         asList(DIRECTORY_3D, DIRECTORY_SOUND, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH, DIRECTORY_RIMS)
-                .forEach((assetsDirectory) -> {
+                .forEach((assetsDirectoryTag) -> {
                     try {
-                        parseAssetsDirectory(assetsDirectory);
+                        parseAssetsDirectory(assetsDirectoryTag);
                     } catch (IOException ioe) {
-                        throw new RuntimeException("Unable to perform copy step", ioe);
+                        throw new RuntimeException("Unable to process " + assetsDirectoryTag + " assets: " + ioe.getMessage(), ioe);
                     }
                 });
     }
 
-    private void parseAssetsDirectory(String assetDirectoryName) throws IOException {
-        Log.info(THIS_CLASS_NAME, "->Copying assets: " + assetDirectoryName);
+    private void parseAssetsDirectory(String assetDirectoryTag) throws IOException {
+        Log.info(THIS_CLASS_NAME, "->Copying assets: " + assetDirectoryTag);
 
-        Path assetPath = Paths.get(getInstallerConfiguration().getAssetsDirectory(), assetDirectoryName);
-        Path targetPath = getTargetPath(assetDirectoryName);
+        Path assetPath = Paths.get(getInstallerConfiguration().getAssetsDirectory(), assetDirectoryTag);
+        Path targetPath = getTargetPath(assetDirectoryTag);
 
         Files.walk(assetPath, 1)
 
@@ -57,9 +57,9 @@ public class CopyFilesStep extends GenericStep {
 
                 .forEach((path) -> {
                     try {
-                        copyAsset(path, targetPath, assetDirectoryName);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        copyAsset(path, targetPath, assetDirectoryTag);
+                    } catch (IOException ioe) {
+                        throw new RuntimeException("Unable to copy " + path.getFileName() + ": " + ioe.getMessage(), ioe);
                     }
                 });
     }
@@ -112,12 +112,10 @@ public class CopyFilesStep extends GenericStep {
                 targetFileName = getTargetFileNameForRims(vehicleSlot, assetPath, targetPath);
                 break;
             default:
-                targetFileName = null;
+                throw new IllegalArgumentException("Unhandled asset type: " + assetDirectoryName);
         }
 
-        if (targetFileName != null) {
-            copySingleAsset(assetPath, targetPath, targetFileName);
-        }
+        copySingleAsset(assetPath, targetPath, targetFileName);
     }
 
     private static String getTargetFileNameForExteriorAndInterior(VehicleSlot vehicleSlot, String assetFileName) {
@@ -130,7 +128,7 @@ public class CopyFilesStep extends GenericStep {
         return targetFileName;
     }
 
-    private static String getTargetFileNameForRims(VehicleSlot vehicleSlot, Path assetPath, Path targetPath) {
+    private static String getTargetFileNameForRims(VehicleSlot vehicleSlot, Path assetPath, Path targetPath) throws IOException {
         String targetFileName = null;
 
         Matcher matcher = FileConstants.PATTERN_RIM_BANK_FILE_NAME.matcher(assetPath.getFileName().toString());
@@ -156,16 +154,12 @@ public class CopyFilesStep extends GenericStep {
         return targetFileName;
     }
 
-    private static void copySingleAsset(Path assetPath, Path targetPath, String targetFileName) {
-        try {
-            FilesHelper.createDirectoryIfNotExists(targetPath.toString());
+    private static void copySingleAsset(Path assetPath, Path targetPath, String targetFileName) throws IOException {
+        FilesHelper.createDirectoryIfNotExists(targetPath.toString());
 
-            Path finalPath = targetPath.resolve(targetFileName);
+        Path finalPath = targetPath.resolve(targetFileName);
 
-            Log.info(THIS_CLASS_NAME, "*> " + assetPath + " to " + finalPath);
-            Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Log.info(THIS_CLASS_NAME, "*> " + assetPath + " to " + finalPath);
+        Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
     }
 }
