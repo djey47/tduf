@@ -395,7 +395,8 @@ public class MainStageController extends AbstractGuiController {
         }
 
         String causeMessage = "";
-        if (throwable.getCause() != throwable) {
+        if (throwable.getCause() != null
+                && throwable.getCause() != throwable) {
             causeMessage = throwable.getCause().getMessage();
         }
 
