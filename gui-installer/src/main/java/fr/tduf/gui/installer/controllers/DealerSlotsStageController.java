@@ -193,7 +193,7 @@ public class DealerSlotsStageController extends AbstractGuiController {
     private void updateDealersData() {
         dealersData.clear();
 
-        dealersData.addAll(dealerHelper.getDealers().stream()
+        dealersData.addAll(dealerHelper.getDealers(DealerHelper.DealerKind.SELLABLE).stream()
 
                 .map(DealerSlotData.DealerDataItem::fromDealer)
 

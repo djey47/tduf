@@ -11,14 +11,32 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 /**
  * Component to get advanced information on vehicle dealers.
  */
 public class DealerHelper extends CommonHelper {
+    /**
+     * Criteria for dealer lookups
+     */
+    public enum DealerKind {
+        ALL(),
+        SELL_CARS(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER),
+        SELL_BIKES(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER),
+        SELLABLE(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER, DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER);
+
+        private final List<String> fileNamePrefixes;
+
+        DealerKind(String... fileNamePrefixes) {
+            this.fileNamePrefixes = asList(fileNamePrefixes);
+        }
+    }
+
     private final VehicleSlotsHelper vehicleSlotsHelper;
     private final CarShopsHelper carShopsMetaDataHelper;
 
@@ -37,38 +55,55 @@ public class DealerHelper extends CommonHelper {
     }
 
     /**
-     * @return all dealers
+     * @return all dealers mathcing dealerKind criteria.
      */
-    public List<Dealer> getDealers() {
-        // TODO filter: add vehicle type filter (ALL, CARS, BIKES)
+    public List<Dealer> getDealers(DealerKind dealerKind) {
         return miner.getDatabaseTopic(CAR_SHOPS).get().getData().getEntries().stream()
 
-                .filter((carShopsEntry) -> {
-                    Optional<Resource> fileName = getResourceFromDatabaseEntry(carShopsEntry, CAR_SHOPS, DatabaseConstants.FIELD_RANK_DEALER_NAME);
+                .filter((carShopsEntry) -> entryMatchesDealerKind(carShopsEntry, dealerKind))
 
-                    return !fileName.isPresent()
-                            || fileName.get().getValue().startsWith(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER)
-                            || fileName.get().getValue().startsWith(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER);
-                })
-
-                .map((dealerEntry) -> {
-                    String dealerReference = dealerEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEALER_REF).get().getRawValue();
-
-                    Optional<Resource> displayedName = getResourceFromDatabaseEntry(dealerEntry, CAR_SHOPS, DatabaseConstants.FIELD_RANK_DEALER_LIBELLE);
-
-                    Optional<DbMetadataDto.DealerMetadataDto> carShopsReference = carShopsMetaDataHelper.getCarShopsReferenceForDealerReference(dealerReference);
-                    Optional<String> location = carShopsReference
-                            .map(DbMetadataDto.DealerMetadataDto::getLocation);
-
-                    return Dealer.builder()
-                            .withRef(dealerReference)
-                            .withDisplayedName(displayedName.orElse(null))
-                            .withLocation(location.orElse(DisplayConstants.LABEL_UNKNOWN))
-                            .withSlots(getActualSlots(dealerEntry, carShopsReference))
-                            .build();
-                })
+                .map(this::dealerEntryToDomainObject)
 
                 .collect(toList());
+    }
+
+    private boolean entryMatchesDealerKind(DbDataDto.Entry carShopsEntry, DealerKind dealerkind) {
+        if (DealerKind.ALL == dealerkind) {
+            return true;
+        }
+
+        Optional<Resource> potentialFileName = getResourceFromDatabaseEntry(carShopsEntry, CAR_SHOPS, DatabaseConstants.FIELD_RANK_DEALER_NAME);
+        if (!potentialFileName.isPresent()) {
+            return false;
+        }
+
+        final String fileName = potentialFileName.get().getValue();
+        AtomicBoolean matches = new AtomicBoolean(false);
+        dealerkind.fileNamePrefixes
+                .forEach((prefix) -> {
+                    if (fileName.startsWith(prefix)) {
+                        matches.set(true);
+                    }
+                });
+
+        return matches.get();
+    }
+
+    private Dealer dealerEntryToDomainObject(DbDataDto.Entry dealerEntry) {
+        String dealerReference = dealerEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEALER_REF).get().getRawValue();
+
+        Optional<Resource> displayedName = getResourceFromDatabaseEntry(dealerEntry, CAR_SHOPS, DatabaseConstants.FIELD_RANK_DEALER_LIBELLE);
+
+        Optional<DbMetadataDto.DealerMetadataDto> carShopsReference = carShopsMetaDataHelper.getCarShopsReferenceForDealerReference(dealerReference);
+        Optional<String> location = carShopsReference
+                .map(DbMetadataDto.DealerMetadataDto::getLocation);
+
+        return Dealer.builder()
+                .withRef(dealerReference)
+                .withDisplayedName(displayedName.orElse(null))
+                .withLocation(location.orElse(DisplayConstants.LABEL_UNKNOWN))
+                .withSlots(getActualSlots(dealerEntry, carShopsReference))
+                .build();
     }
 
     private List<Dealer.Slot> getActualSlots(DbDataDto.Entry carShopsEntry, Optional<DbMetadataDto.DealerMetadataDto> carShopsReference) {

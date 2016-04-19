@@ -72,7 +72,7 @@ public class DealerHelperTest {
 
 
         // WHEN
-        List<Dealer> dealers = DealerHelper.load(minerMock).getDealers();
+        List<Dealer> dealers = DealerHelper.load(minerMock).getDealers(DealerHelper.DealerKind.ALL);
 
 
         // THEN
@@ -117,7 +117,7 @@ public class DealerHelperTest {
 
 
         // WHEN
-        List<Dealer> dealers = DealerHelper.load(minerMock).getDealers();
+        List<Dealer> dealers = DealerHelper.load(minerMock).getDealers(DealerHelper.DealerKind.ALL);
 
 
         // THEN
