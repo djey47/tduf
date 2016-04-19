@@ -110,6 +110,9 @@ public class CopyFilesStep extends GenericStep {
             case DIRECTORY_RIMS:
                 targetPath = targetPath.resolve(vehicleSlot.getDefaultRims().getParentDirectoryName().getValue());
                 targetFileName = getTargetFileNameForRims(vehicleSlot, assetPath, targetPath);
+                if (targetFileName == null) {
+                    return;
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Unhandled asset type: " + assetDirectoryName);
