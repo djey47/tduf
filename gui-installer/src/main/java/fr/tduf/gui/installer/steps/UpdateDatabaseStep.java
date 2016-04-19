@@ -79,7 +79,7 @@ public class UpdateDatabaseStep extends GenericStep {
                 .findFirst();
 
         if (!potentialPPFilePath.isPresent()) {
-            Log.info(THIS_CLASS_NAME, "->No TDUF performance package to apply");
+            Log.info(THIS_CLASS_NAME, "->No TDUPE performance package to apply");
             return;
         }
 
