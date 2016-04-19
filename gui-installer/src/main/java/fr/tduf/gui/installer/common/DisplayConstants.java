@@ -34,6 +34,7 @@ public class DisplayConstants {
     public static final String MESSAGE_DB_REMAINING_ERRORS = "Integrity error(s) do remain.\nGame might be playable, though.";
     public static final String MESSAGE_ABORTED_USER = "Aborted by user.";
     public static final String MESSAGE_INVALID_PROPERTIES = "Invalid patch properties.";
+    public static final String MESSAGE_STEP_KO = "Current step could not be performed.";
     public static final String MESSAGE_FMT_ERROR = "%s\nWhere: %s\n%s";
     public static final String MESSAGE_FMT_INVALID_SLOT_INFO = "Unable to get valid information for vehicle slot, as it does not exist: %s";
     public static final String MESSAGE_FMT_PATCH_NOT_FOUND = "Patch file not found in %s subdirectory.";

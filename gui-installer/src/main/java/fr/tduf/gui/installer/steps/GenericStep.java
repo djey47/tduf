@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
@@ -85,7 +86,7 @@ public abstract class GenericStep {
             perform();
         } catch (Exception e) {
             Log.trace(getClassName(), "->Abnormally exiting step");
-            throw new StepException(getClassName(), "Current step could not be performed.", e);
+            throw new StepException(getClassName(), DisplayConstants.MESSAGE_STEP_KO, e);
         }
 
         Log.trace(getClassName(), "->Exiting step");
