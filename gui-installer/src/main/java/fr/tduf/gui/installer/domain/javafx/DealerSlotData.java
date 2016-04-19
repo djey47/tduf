@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.domain.javafx;
 
+import com.google.common.base.MoreObjects;
 import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
@@ -38,7 +39,12 @@ public class DealerSlotData {
     }
 
     @Override
-    public String toString() { return reflectionToString(this); }
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("dealerDataItem", dealerDataItem)
+                .add("slotDataItem", slotDataItem)
+                .toString();
+    }
 
     public static class DealerDataItem {
 
@@ -81,7 +87,14 @@ public class DealerSlotData {
         }
 
         @Override
-        public String toString() { return reflectionToString(this); }
+        public String toString() {
+            return MoreObjects.toStringHelper(this)
+                    .add("reference", reference)
+                    .add("name", name)
+                    .add("freeSlots", freeSlots)
+                    .add("location", location)
+                    .toString();
+        }
     }
 
     public static class SlotDataItem {
