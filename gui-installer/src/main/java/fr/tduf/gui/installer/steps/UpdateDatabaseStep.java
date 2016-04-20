@@ -38,7 +38,7 @@ public class UpdateDatabaseStep extends GenericStep {
         PatchProperties patchProperties = getDatabaseContext().getPatchProperties();
 
         if(patchProperties.getDealerReference().isPresent()
-                && patchProperties.getVehicleSlotReference().isPresent()) {
+                && patchProperties.getDealerSlot().isPresent()) {
             enhancePatchObjectWithLocationChange();
         }
 
