@@ -14,17 +14,21 @@ import static java.util.Objects.requireNonNull;
  * Parent of all install steps
  */
 public abstract class GenericStep {
+    public enum StepType { UNDEFINED, LOAD_DATABASE, UPDATE_DATABASE, SAVE_DATABASE, UPDATE_MAGIC_MAP, COPY_FILES }
 
-    // LOAD_DATABASE step is required by interactive processing and as such can't be dealt with orchestrator
-    public enum StepType { UPDATE_DATABASE, SAVE_DATABASE, UPDATE_MAGIC_MAP, COPY_FILES}
+    private StepType type;
 
     private InstallerConfiguration installerConfiguration;
 
     private DatabaseContext databaseContext;
 
-    protected GenericStep() { }
+    protected GenericStep() {
+        type = StepType.UNDEFINED;
+    }
 
     private GenericStep(InstallerConfiguration installerConfiguration, DatabaseContext databaseContext) {
+        this();
+
         this.installerConfiguration = installerConfiguration;
         this.databaseContext = databaseContext;
     }
@@ -54,7 +58,7 @@ public abstract class GenericStep {
      */
     public GenericStep nextStep(StepType stepType) {
         final GenericStep currentStep;
-        switch(stepType) {
+        switch (stepType) {
             case UPDATE_DATABASE:
                 currentStep = new UpdateDatabaseStep();
                 break;
@@ -67,9 +71,13 @@ public abstract class GenericStep {
             case UPDATE_MAGIC_MAP:
                 currentStep = new UpdateMagicMapStep();
                 break;
+            case LOAD_DATABASE:
+                throw new IllegalArgumentException("Step type requires interactive processing and as such can't be dealt with orchestrator: " + stepType);
             default:
-                throw new IllegalArgumentException("Step type not handled yet: " + stepType.name());
+                throw new IllegalArgumentException("Step type not handled yet: " + stepType);
         }
+
+        currentStep.setType(stepType);
 
         shareContext(currentStep);
 
@@ -80,16 +88,16 @@ public abstract class GenericStep {
      * Triggers current step.
      */
     public GenericStep start() throws StepException {
-        Log.trace(getClassName(), "->Entering step");
+        Log.trace(getClassName(), "->Entering step: " + type);
 
         try {
             perform();
         } catch (Exception e) {
-            Log.trace(getClassName(), "->Abnormally exiting step");
-            throw new StepException(getClassName(), DisplayConstants.MESSAGE_STEP_KO, e);
+            Log.trace(getClassName(), "->Abnormally exiting step: " + type);
+            throw new StepException(type, DisplayConstants.MESSAGE_STEP_KO, e);
         }
 
-        Log.trace(getClassName(), "->Exiting step");
+        Log.trace(getClassName(), "->Exiting step: " + type);
 
         return this;
     }
@@ -115,6 +123,14 @@ public abstract class GenericStep {
 
     protected void setInstallerConfiguration(InstallerConfiguration installerConfiguration) {
         this.installerConfiguration = installerConfiguration;
+    }
+
+    protected void setType(StepType type) {
+        this.type = type;
+    }
+
+    protected StepType getType() {
+        return type;
     }
 
     private String getClassName() {
