@@ -72,13 +72,18 @@ public enum CacheManager {
                 }
                 return storeMap.get(key);
             }
-//
-//            Log.debug(LOG_CATEGORY, "Caching feature disabled!");
 
             return supplier.get();
         }
 
+        /**
+         * Removes all cached information.
+         */
         public void clearAllStores() {
+            if (!enabled) {
+                return;
+            }
+
             stores.clear();
 
             Log.debug(LOG_CATEGORY, "All stores were cleared!");
@@ -88,6 +93,10 @@ public enum CacheManager {
          * @param storeName : name of store in which all keys will be removed.
          */
         public void clearStoreByName(String storeName) {
+            if (!enabled) {
+                return;
+            }
+
             stores.getOrDefault(storeName, new HashMap<>()).clear();
 
             Log.debug(LOG_CATEGORY, "Cleared store! {" + storeName + "}");
