@@ -199,8 +199,6 @@ public class MainStageController extends AbstractGuiController {
             } else if (FAILED == newState) {
                 handleServiceFailure(stepsCoordinator.exceptionProperty().get(), DisplayConstants.MESSAGE_NOT_INSTALLED);
             }
-//            statusLabel.textProperty().unbind();
-//            statusLabel.textProperty().setValue("");
         });
 
         databaseLoader.stateProperty().addListener((observable, oldValue, newState) -> {
@@ -330,20 +328,28 @@ public class MainStageController extends AbstractGuiController {
 
         try {
             loadCurrentPatch(configuration, context);
+        } catch (IOException ioe) {
+            StepException se = new StepException(GenericStep.StepType.LOAD_PATCH, DisplayConstants.MESSAGE_PATCH_LOAD_KO, ioe);
+            handleServiceFailure(se, DisplayConstants.MESSAGE_NOT_INSTALLED);
+            return;
+        }
 
+        try {
             UserInputHelper.selectAndDefineVehicleSlot(context, getWindow());
 
             UserInputHelper.selectAndDefineDealerSlot(context, getWindow());
-
-            statusLabel.textProperty().bind(stepsCoordinator.messageProperty());
-
-            stepsCoordinator.configurationProperty().setValue(configuration);
-            stepsCoordinator.contextProperty().setValue(context);
-
-            stepsCoordinator.restart();
         } catch (Exception e) {
-            handleServiceFailure(e, DisplayConstants.MESSAGE_NOT_INSTALLED);
+            StepException se = new StepException(GenericStep.StepType.SELECT_SLOTS, DisplayConstants.MESSAGE_INSTALL_ABORTED, e);
+            handleServiceFailure(se, DisplayConstants.MESSAGE_NOT_INSTALLED);
+            return;
         }
+
+        statusLabel.textProperty().bind(stepsCoordinator.messageProperty());
+
+        stepsCoordinator.configurationProperty().setValue(configuration);
+        stepsCoordinator.contextProperty().setValue(context);
+
+        stepsCoordinator.restart();
     }
 
     private boolean displayCheckResultDialog(Set<IntegrityError> integrityErrors) {
@@ -400,7 +406,7 @@ public class MainStageController extends AbstractGuiController {
             causeMessage = throwable.getCause().getMessage();
         }
 
-        final String errorMessage = String.format(DisplayConstants.MESSAGE_FMT_ERROR, throwable.getMessage(), stepName, causeMessage);
+        final String errorMessage = String.format(DisplayConstants.MESSAGE_FMT_ERROR, throwable.getMessage(), causeMessage, stepName);
         CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, mainMessage, errorMessage);
     }
 }
