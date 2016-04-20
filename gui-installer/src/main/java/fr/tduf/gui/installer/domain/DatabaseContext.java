@@ -23,6 +23,8 @@ public class DatabaseContext {
 
     private PatchProperties patchProperties;
 
+    private String backupDatabaseDirectory;
+
     public DatabaseContext(List<DbDto> topicObjects, String jsonDatabaseDirectory) {
         this.topicObjects = requireNonNull(topicObjects, "A list of database objects is required.");
         this.jsonDatabaseDirectory = requireNonNull(jsonDatabaseDirectory, "A directory in which JSON database exists is required.");
@@ -52,5 +54,13 @@ public class DatabaseContext {
     public void setPatch(DbPatchDto patchObject, PatchProperties patchProperties) {
         this.patchObject = requireNonNull(patchObject, "A patch object is required.");
         this.patchProperties = requireNonNull(patchProperties, "Patch properties are required");
+    }
+
+    public String getBackupDatabaseDirectory() {
+        return backupDatabaseDirectory;
+    }
+
+    public void setBackupDatabaseDirectory(String backupDatabaseDirectory) {
+        this.backupDatabaseDirectory = backupDatabaseDirectory;
     }
 }
