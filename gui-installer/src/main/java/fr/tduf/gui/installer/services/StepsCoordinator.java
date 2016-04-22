@@ -43,7 +43,6 @@ public class StepsCoordinator extends Service<String> {
         protected String call() throws StepException {
             Log.info(THIS_CLASS_NAME, "->Starting full install");
 
-            // FIXME messages not appearing...
             updateMessage(DisplayConstants.STATUS_INSTALL_IN_PROGRESS);
 
             try {
@@ -57,7 +56,6 @@ public class StepsCoordinator extends Service<String> {
                 handleStepException(se);
             }
 
-            // FIXME messages not appearing...
             updateMessage(DisplayConstants.STATUS_INSTALL_DONE);
 
             Log.info(THIS_CLASS_NAME, "->Done installing");
@@ -77,7 +75,6 @@ public class StepsCoordinator extends Service<String> {
                 default:
             }
 
-            // FIXME messages not appearing...
             updateMessage(DisplayConstants.STATUS_INSTALL_KO);
 
             Log.error(THIS_CLASS_NAME, "->Done installing with error(s)");
