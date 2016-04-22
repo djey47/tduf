@@ -27,7 +27,7 @@ public class GenericStepTest {
             // THEN
             assertThat(se)
                     .hasCauseExactlyInstanceOf(IllegalAccessException.class)
-                    .hasMessage("Current step could not be performed.");
+                    .hasMessage("Current step could not be performed");
             assertThat(se.getStepName()).isEqualTo("UNDEFINED");
 
             throw se;
