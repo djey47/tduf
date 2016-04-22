@@ -11,26 +11,29 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
+import java.util.List;
+
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.*;
+import static java.util.Arrays.asList;
 
 /**
  * Background service to orchestrate all operations to install vehicle mod.
  */
-public class StepsCoordinator extends Service<String> {
+public class StepsCoordinator extends Service<Void> {
     private static final String THIS_CLASS_NAME = StepsCoordinator.class.getSimpleName();
 
     private ObjectProperty<InstallerConfiguration> configuration = new SimpleObjectProperty<>();
     private ObjectProperty<DatabaseContext> context = new SimpleObjectProperty<>();
 
     @Override
-    protected Task<String> createTask() {
+    protected Task<Void> createTask() {
         return new InstallTask(configuration, context);
     }
 
     /**
      * Orchestrates all steps for install and handles errors
      */
-    static class InstallTask extends Task<String> {
+    static class InstallTask extends Task<Void> {
         private final ObjectProperty<InstallerConfiguration> configuration;
         private final ObjectProperty<DatabaseContext> context;
 
@@ -40,27 +43,35 @@ public class StepsCoordinator extends Service<String> {
         }
 
         @Override
-        protected String call() throws StepException {
+        protected Void call() throws StepException {
             Log.info(THIS_CLASS_NAME, "->Starting full install");
 
             updateMessage(DisplayConstants.STATUS_INSTALL_IN_PROGRESS);
 
-            try {
-                GenericStep.starterStep(configuration.get(), context.get())
-                        .nextStep(BACKUP_DATABASE).start()
-                        .nextStep(UPDATE_DATABASE).start()
-                        .nextStep(SAVE_DATABASE).start()
-                        .nextStep(COPY_FILES).start()
-                        .nextStep(UPDATE_MAGIC_MAP).start();
-            } catch (StepException se) {
-                handleStepException(se);
-            }
+            callStepChain(
+                    BACKUP_DATABASE,
+                    UPDATE_DATABASE,
+                    SAVE_DATABASE,
+                    COPY_FILES,
+                    UPDATE_MAGIC_MAP);
 
             updateMessage(DisplayConstants.STATUS_INSTALL_DONE);
 
             Log.info(THIS_CLASS_NAME, "->Done installing");
 
-            return "";
+            return null;
+        }
+
+        void callStepChain(GenericStep.StepType... steps) throws StepException {
+            List<GenericStep.StepType> stepTypes = asList(steps);
+            try {
+                GenericStep currentStep = GenericStep.starterStep(configuration.get(), context.get());
+                for (GenericStep.StepType stepType : stepTypes) {
+                    currentStep = currentStep.nextStep(stepType).start();
+                }
+            } catch (StepException se) {
+                handleStepException(se);
+            }
         }
 
         void handleStepException(StepException se) throws StepException {
@@ -83,7 +94,11 @@ public class StepsCoordinator extends Service<String> {
         }
     }
 
-    public ObjectProperty<InstallerConfiguration> configurationProperty() { return configuration; }
+    public ObjectProperty<InstallerConfiguration> configurationProperty() {
+        return configuration;
+    }
 
-    public ObjectProperty<DatabaseContext> contextProperty() { return context; }
+    public ObjectProperty<DatabaseContext> contextProperty() {
+        return context;
+    }
 }
