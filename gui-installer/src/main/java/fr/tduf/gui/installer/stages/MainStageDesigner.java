@@ -30,7 +30,7 @@ public class MainStageDesigner {
     private static void initMainWindow(Stage primaryStage, Parent mainRoot) {
         String currentStylesheet = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_MAIN).toExternalForm();
 
-        primaryStage.setScene(new Scene(mainRoot, 750, 750));
+        primaryStage.setScene(new Scene(mainRoot, 750, 700));
         primaryStage.setTitle(DisplayConstants.TITLE_APPLICATION);
         primaryStage.getScene().getStylesheets().add(currentStylesheet);
     }
