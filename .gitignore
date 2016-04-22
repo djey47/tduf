@@ -14,10 +14,11 @@ cli/integ-tests/unpacked/
 cli/integ-tests/unencrypted/
 cli/integ-tests/jsonified/
 cli/integ-tests/patcher/out/
+cli/integ-tests/patcher/effective-mini-template.json.properties
 cli/integ-tests/patcher/tdumt/out*/
 cli/perfs/
+gui-installer/assets/DATABASE/hidden
 lib-unlimited/perfs/
 pack/
 tmp-jarContents/
 releases/
-/cli/integ-tests/patcher/effective-mini-template.json.properties
