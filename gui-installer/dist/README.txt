@@ -4,20 +4,25 @@ Here is a new vehicle mod installer:
 * Adds new vehicle to the game
 * Displays list of current slots to install onto one
 * Displays current vehicle dealers to install onto one (optionally)
-* Makes new files to be accepted by updating Magic Map.
+* Makes new files to be accepted by updating Magic Map
+* and more!
 
 Use with TDUCP 2.00A is strongly recommended.
 
 
-### What's in this version ? (ALPHA-6)
+### What's in this version ? (ALPHA-7)
+
+* New features and bug fixes
 
 ### Main features
 
 * Install only - uninstall will come later
-* Select existing vehicle slot (use of TDUCP 2.00A recommended)
+* Patch template provided to install bike mod
+* Optionally select vehicle slot (use of TDUCP 2.00A recommended)
 * Create new vehicle slot (experimental feature!)
+* Optionally select location in car dealers (use of TDUCP 2.00A recommended)
+* Backup and rollback of database if error occurs while installing
 * For now, handles one single set of: RIMS, EXTERIOR COLORS, INTERIOR (more will come later)
-* Select location in car dealers (use of TDUCP 2.00A recommended)
 * Update Magic Map (Advanced feature)
 * Check and fix database (Advanced feature)
 
