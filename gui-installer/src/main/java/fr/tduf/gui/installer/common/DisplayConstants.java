@@ -50,6 +50,7 @@ public class DisplayConstants {
     public static final String STATUS_LOAD_DONE = "Done loading database.";
     public static final String STATUS_INSTALL_IN_PROGRESS = "Performing install, please wait...";
     public static final String STATUS_INSTALL_DONE = "Done installing.";
+    public static final String STATUS_INSTALL_KO = "Done installing with error(s).";
 
     public static final String ITEM_UNAVAILABLE = "N/A";
 }

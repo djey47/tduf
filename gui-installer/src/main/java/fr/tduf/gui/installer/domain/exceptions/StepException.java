@@ -16,4 +16,8 @@ public class StepException extends Exception {
     public String getStepName() {
         return stepType.name();
     }
+
+    public GenericStep.StepType getStepType() {
+        return stepType;
+    }
 }

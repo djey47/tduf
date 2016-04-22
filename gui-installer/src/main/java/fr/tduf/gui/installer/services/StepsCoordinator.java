@@ -32,12 +32,15 @@ public class StepsCoordinator extends Service<String> {
                 // FIXME messages not appearing...
                 updateMessage(DisplayConstants.STATUS_INSTALL_IN_PROGRESS);
 
-                // TODO create database backup to perform rollback is anything fails ?
-                GenericStep.starterStep(configuration.get(), context.get())
-                        .nextStep(UPDATE_DATABASE).start()
-                        .nextStep(SAVE_DATABASE).start()
-                        .nextStep(COPY_FILES).start()
-                        .nextStep(UPDATE_MAGIC_MAP).start();
+                try {
+                    GenericStep.starterStep(configuration.get(), context.get())
+                            .nextStep(UPDATE_DATABASE).start()
+                            .nextStep(SAVE_DATABASE).start()
+                            .nextStep(COPY_FILES).start()
+                            .nextStep(UPDATE_MAGIC_MAP).start();
+                } catch (StepException se) {
+                    handleStepException(se);
+                }
 
                 // FIXME messages not appearing...
                 updateMessage(DisplayConstants.STATUS_INSTALL_DONE);
@@ -45,6 +48,26 @@ public class StepsCoordinator extends Service<String> {
                 Log.info(THIS_CLASS_NAME, "->Done installing");
 
                 return "";
+            }
+
+            private void handleStepException(StepException se) throws StepException {
+                switch (se.getStepType()) {
+                    case UPDATE_DATABASE:
+                    case SAVE_DATABASE:
+                    case COPY_FILES:
+                        Log.error(THIS_CLASS_NAME, "->Critical failure detected, rollbacking database...");
+                        GenericStep.starterStep(configuration.get(), context.get())
+                                .nextStep(RESTORE_DATABASE).start();
+                        break;
+                    default:
+                }
+
+                // FIXME messages not appearing...
+                updateMessage(DisplayConstants.STATUS_INSTALL_KO);
+
+                Log.error(THIS_CLASS_NAME, "->Done installing with error(s)");
+
+                throw se;
             }
         };
     }
