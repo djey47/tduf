@@ -65,7 +65,7 @@ public class StepsCoordinator extends Service<String> {
             return "";
         }
 
-        private void handleStepException(StepException se) throws StepException {
+        void handleStepException(StepException se) throws StepException {
             switch (se.getStepType()) {
                 case UPDATE_DATABASE:
                 case SAVE_DATABASE:
