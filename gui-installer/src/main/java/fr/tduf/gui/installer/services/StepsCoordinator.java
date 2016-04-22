@@ -24,52 +24,66 @@ public class StepsCoordinator extends Service<String> {
 
     @Override
     protected Task<String> createTask() {
-        return new Task<String>() {
-            @Override
-            protected String call() throws StepException {
-                Log.info(THIS_CLASS_NAME, "->Starting full install");
+        return new InstallTask(configuration, context);
+    }
 
-                // FIXME messages not appearing...
-                updateMessage(DisplayConstants.STATUS_INSTALL_IN_PROGRESS);
+    /**
+     * Orchestrates all steps for install and handles errors
+     */
+    static class InstallTask extends Task<String> {
+        private final ObjectProperty<InstallerConfiguration> configuration;
+        private final ObjectProperty<DatabaseContext> context;
 
-                try {
+        InstallTask(ObjectProperty<InstallerConfiguration> configuration, ObjectProperty<DatabaseContext> context) {
+            this.configuration = configuration;
+            this.context = context;
+        }
+
+        @Override
+        protected String call() throws StepException {
+            Log.info(THIS_CLASS_NAME, "->Starting full install");
+
+            // FIXME messages not appearing...
+            updateMessage(DisplayConstants.STATUS_INSTALL_IN_PROGRESS);
+
+            try {
+                GenericStep.starterStep(configuration.get(), context.get())
+                        .nextStep(BACKUP_DATABASE).start()
+                        .nextStep(UPDATE_DATABASE).start()
+                        .nextStep(SAVE_DATABASE).start()
+                        .nextStep(COPY_FILES).start()
+                        .nextStep(UPDATE_MAGIC_MAP).start();
+            } catch (StepException se) {
+                handleStepException(se);
+            }
+
+            // FIXME messages not appearing...
+            updateMessage(DisplayConstants.STATUS_INSTALL_DONE);
+
+            Log.info(THIS_CLASS_NAME, "->Done installing");
+
+            return "";
+        }
+
+        private void handleStepException(StepException se) throws StepException {
+            switch (se.getStepType()) {
+                case UPDATE_DATABASE:
+                case SAVE_DATABASE:
+                case COPY_FILES:
+                    Log.error(THIS_CLASS_NAME, "->Critical failure detected, rollbacking database...");
                     GenericStep.starterStep(configuration.get(), context.get())
-                            .nextStep(UPDATE_DATABASE).start()
-                            .nextStep(SAVE_DATABASE).start()
-                            .nextStep(COPY_FILES).start()
-                            .nextStep(UPDATE_MAGIC_MAP).start();
-                } catch (StepException se) {
-                    handleStepException(se);
-                }
-
-                // FIXME messages not appearing...
-                updateMessage(DisplayConstants.STATUS_INSTALL_DONE);
-
-                Log.info(THIS_CLASS_NAME, "->Done installing");
-
-                return "";
+                            .nextStep(RESTORE_DATABASE).start();
+                    break;
+                default:
             }
 
-            private void handleStepException(StepException se) throws StepException {
-                switch (se.getStepType()) {
-                    case UPDATE_DATABASE:
-                    case SAVE_DATABASE:
-                    case COPY_FILES:
-                        Log.error(THIS_CLASS_NAME, "->Critical failure detected, rollbacking database...");
-                        GenericStep.starterStep(configuration.get(), context.get())
-                                .nextStep(RESTORE_DATABASE).start();
-                        break;
-                    default:
-                }
+            // FIXME messages not appearing...
+            updateMessage(DisplayConstants.STATUS_INSTALL_KO);
 
-                // FIXME messages not appearing...
-                updateMessage(DisplayConstants.STATUS_INSTALL_KO);
+            Log.error(THIS_CLASS_NAME, "->Done installing with error(s)");
 
-                Log.error(THIS_CLASS_NAME, "->Done installing with error(s)");
-
-                throw se;
-            }
-        };
+            throw se;
+        }
     }
 
     public ObjectProperty<InstallerConfiguration> configurationProperty() { return configuration; }
