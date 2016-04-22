@@ -63,11 +63,17 @@ public class StepsCoordinator extends Service<Void> {
         }
 
         void callStepChain(GenericStep.StepType... steps) throws StepException {
+            updateProgress(0, steps.length );
+
             List<GenericStep.StepType> stepTypes = asList(steps);
             try {
+                long stepCount = 0;
                 GenericStep currentStep = GenericStep.starterStep(configuration.get(), context.get());
                 for (GenericStep.StepType stepType : stepTypes) {
                     currentStep = currentStep.nextStep(stepType).start();
+
+                    // FIXME progress does not update until last step performs
+                    updateProgress(++stepCount, stepTypes.size());
                 }
             } catch (StepException se) {
                 handleStepException(se);

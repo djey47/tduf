@@ -5,3 +5,10 @@
 .statusBar {
     -fx-base: black;
 }
+
+.progress-bar > .bar {
+    -fx-background-insets: 1 1 2 1;
+    -fx-padding: 0.20em;
+    -fx-box-border: goldenrod;
+    -fx-accent: red;
+}

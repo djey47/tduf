@@ -21,13 +21,12 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
@@ -63,6 +62,7 @@ public class MainStageController extends AbstractGuiController {
 
     private SimpleStringProperty tduDirectoryProperty;
 
+    private LongProperty installProgressProperty = new SimpleLongProperty();
     private BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
     private DatabaseLoader databaseLoader = new DatabaseLoader();
     private DatabaseChecker databaseChecker = new DatabaseChecker();
@@ -78,6 +78,12 @@ public class MainStageController extends AbstractGuiController {
     @FXML
     private Label statusLabel;
 
+    @FXML
+    private ProgressBar uProgressBar;
+
+    @FXML
+    private ProgressBar lProgressBar;
+
     @Override
     public void init() throws IOException {
         runningServiceProperty.bind(
@@ -91,6 +97,8 @@ public class MainStageController extends AbstractGuiController {
                         .then(Cursor.WAIT)
                         .otherwise(Cursor.DEFAULT)
         );
+        uProgressBar.progressProperty().bind(installProgressProperty);
+        lProgressBar.progressProperty().bind(installProgressProperty);
 
         initServiceListeners();
 
@@ -199,6 +207,13 @@ public class MainStageController extends AbstractGuiController {
             } else if (FAILED == newState) {
                 handleServiceFailure(stepsCoordinator.exceptionProperty().get(), DisplayConstants.MESSAGE_NOT_INSTALLED);
             }
+
+            if (SUCCEEDED == newState || FAILED == newState) {
+                installProgressProperty.unbind();
+                installProgressProperty.setValue(0);
+                statusLabel.textProperty().unbind();
+            }
+
         });
 
         databaseLoader.stateProperty().addListener((observable, oldValue, newState) -> {
@@ -320,6 +335,8 @@ public class MainStageController extends AbstractGuiController {
         // Do not check for service here, as loader may still be in running state.
         requireNonNull(context, "Database context is required. Please load database first.");
 
+        installProgressProperty.setValue(-1);
+
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
                 .withAssetsDirectory(InstallerConstants.DIRECTORY_ASSETS)
@@ -331,6 +348,8 @@ public class MainStageController extends AbstractGuiController {
         } catch (IOException ioe) {
             StepException se = new StepException(GenericStep.StepType.LOAD_PATCH, DisplayConstants.MESSAGE_PATCH_LOAD_KO, ioe);
             handleServiceFailure(se, DisplayConstants.MESSAGE_NOT_INSTALLED);
+
+            installProgressProperty.setValue(0);
             return;
         }
 
@@ -341,10 +360,13 @@ public class MainStageController extends AbstractGuiController {
         } catch (Exception e) {
             StepException se = new StepException(GenericStep.StepType.SELECT_SLOTS, DisplayConstants.MESSAGE_INSTALL_ABORTED, e);
             handleServiceFailure(se, DisplayConstants.MESSAGE_NOT_INSTALLED);
+
+            installProgressProperty.setValue(0);
             return;
         }
 
         statusLabel.textProperty().bind(stepsCoordinator.messageProperty());
+        installProgressProperty.bind(stepsCoordinator.progressProperty());
 
         stepsCoordinator.configurationProperty().setValue(configuration);
         stepsCoordinator.contextProperty().setValue(context);
