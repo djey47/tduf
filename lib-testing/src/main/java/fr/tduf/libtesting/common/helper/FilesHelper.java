@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 public class FilesHelper {
     private static final Class<FilesHelper> thisClass = FilesHelper.class;
+
+    public static final String[] DATABASE_BANK_FILES = {"DB.bnk", "DB_CH.bnk", "DB_FR.bnk", "DB_GE.bnk", "DB_KO.bnk", "DB_US.bnk", "DB_JA.bnk", "DB_SP.bnk", "DB_IT.bnk"};
 
     public static String createTempDirectoryForInstaller() throws IOException {
         return Files.createTempDirectory("guiInstaller-tests").toString();
@@ -50,15 +53,14 @@ public class FilesHelper {
         Path databaseBanksPath = Paths.get(databaseDirectory);
         Files.createDirectories(databaseBanksPath);
 
-        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB.bnk"));
-        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_CH.bnk"));
-        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_FR.bnk"));
-        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_GE.bnk"));
-        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_KO.bnk"));
-        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_IT.bnk"));
-        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_JA.bnk"));
-        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_SP.bnk"));
-        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + "DB_US.bnk"));
+        Stream.of(DATABASE_BANK_FILES)
+                .forEach((fileName) -> {
+                    try {
+                        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + fileName));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
     public static Path getTduDatabasePath(String tempDirectory) {

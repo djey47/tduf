@@ -38,7 +38,8 @@ public class BackupDatabaseStep extends GenericStep {
 
                 .forEach((databaseBankFilePath) -> {
                     try {
-                        Files.copy(databaseBankFilePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                        Path targetFilePath = targetPath.resolve(databaseBankFilePath.getFileName());
+                        Files.copy(databaseBankFilePath, targetFilePath, StandardCopyOption.REPLACE_EXISTING);
                     } catch (IOException ioe) {
                         throw new RuntimeException("Unable to copy " + databaseBankFilePath.getFileName() + ": " + ioe.getMessage(), ioe);
                     }

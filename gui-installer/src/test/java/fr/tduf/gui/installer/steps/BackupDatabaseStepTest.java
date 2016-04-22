@@ -7,7 +7,9 @@ import org.junit.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,7 +33,9 @@ public class BackupDatabaseStepTest {
         step.start();
 
         // THEN
-        assertThat(databaseContext.getBackupDatabaseDirectory()).isNotNull();
-        // TODO assert backup files present
+        final String actualBackupDir = databaseContext.getBackupDatabaseDirectory();
+        assertThat(actualBackupDir).isNotNull();
+        Stream.of(FilesHelper.DATABASE_BANK_FILES)
+                .forEach((fileName) -> assertThat(Paths.get(actualBackupDir, fileName)).exists());
     }
 }
