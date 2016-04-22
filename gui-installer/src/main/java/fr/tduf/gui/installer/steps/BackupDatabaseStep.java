@@ -24,7 +24,7 @@ public class BackupDatabaseStep extends GenericStep {
         requireNonNull(getDatabaseContext(), "Database context is required.");
 
         String backupDirectory = Files.createTempDirectory("guiInstaller-databaseBackup").toString();
-        Log.info(THIS_CLASS_NAME, "->Copying current database to " + backupDirectory + "...");
+        Log.info(THIS_CLASS_NAME, "->Backuping current database to " + backupDirectory + "...");
 
         Path targetPath = Paths.get(backupDirectory);
         Path databasePath = Paths.get(getInstallerConfiguration().resolveDatabaseDirectory());
