@@ -118,7 +118,7 @@ public class CopyFilesStep extends GenericStep {
                 throw new IllegalArgumentException("Unhandled asset type: " + assetDirectoryName);
         }
 
-        copySingleAsset(assetPath, targetPath, targetFileName);
+        copySingleAssetWithBackup(assetPath, targetPath, targetFileName);
     }
 
     private static String getTargetFileNameForExteriorAndInterior(VehicleSlot vehicleSlot, String assetFileName) {
@@ -131,7 +131,7 @@ public class CopyFilesStep extends GenericStep {
         return targetFileName;
     }
 
-    private static String getTargetFileNameForRims(VehicleSlot vehicleSlot, Path assetPath, Path targetPath) throws IOException {
+    private String getTargetFileNameForRims(VehicleSlot vehicleSlot, Path assetPath, Path targetPath) throws IOException {
         String targetFileName = null;
 
         Matcher matcher = FileConstants.PATTERN_RIM_BANK_FILE_NAME.matcher(assetPath.getFileName().toString());
@@ -150,19 +150,28 @@ public class CopyFilesStep extends GenericStep {
                     targetFileName = targetFileNameForRearRim;
                 } else {
                     // Case of single rim file but slot requires 2 different file names => front file copied to rear if not existing already
-                    copySingleAsset(assetPath, targetPath, targetFileNameForRearRim);
+                    copySingleAssetWithBackup(assetPath, targetPath, targetFileNameForRearRim);
                 }
             }
         }
         return targetFileName;
     }
 
-    private static void copySingleAsset(Path assetPath, Path targetPath, String targetFileName) throws IOException {
+    private void copySingleAssetWithBackup(Path assetPath, Path targetPath, String targetFileName) throws IOException {
         FilesHelper.createDirectoryIfNotExists(targetPath.toString());
 
-        Path finalPath = targetPath.resolve(targetFileName);
 
-        Log.info(THIS_CLASS_NAME, "*> " + assetPath + " to " + finalPath);
+        Path finalPath = targetPath.resolve(targetFileName);
+        if (Files.exists(finalPath)) {
+            final Path subTree = Paths.get(getInstallerConfiguration().resolveBanksDirectory()).relativize(finalPath);
+            final Path backupFinalPath = Paths.get(getInstallerConfiguration().resolveFilesBackupDirectory()).resolve(subTree);
+
+            Log.info(THIS_CLASS_NAME, "*> BACKUP " + finalPath + " to " + backupFinalPath);
+            Files.createDirectories(backupFinalPath.getParent());
+            Files.copy(finalPath, backupFinalPath);
+        }
+
+        Log.info(THIS_CLASS_NAME, "*> INSTALL " + assetPath + " to " + finalPath);
         Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
     }
 }

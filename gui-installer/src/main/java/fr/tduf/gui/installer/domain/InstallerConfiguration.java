@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.domain;
 
+import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
@@ -40,8 +41,8 @@ public class InstallerConfiguration {
         return Paths.get(resolveBanksDirectory()).resolve("Database").toString();
     }
 
-    public String getTestDriveUnlimitedDirectory() {
-        return testDriveUnlimitedDirectory;
+    public String resolveFilesBackupDirectory() {
+        return Paths.get(backupDirectory, InstallerConstants.DIRECTORY_SUB_BACKUP_FILES).toString();
     }
 
     public String getAssetsDirectory() {

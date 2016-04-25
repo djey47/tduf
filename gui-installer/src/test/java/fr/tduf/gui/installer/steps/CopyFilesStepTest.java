@@ -17,7 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.COPY_FILES;
-import static org.assertj.core.api.StrictAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CopyFilesStepTest {
 
@@ -25,23 +25,38 @@ public class CopyFilesStepTest {
 
     private String tempDirectory;
 
+    private Path backupPath;
+
     @Before
     public void setUp() throws IOException {
         tempDirectory = InstallerTestsHelper.createTempDirectory();
 
         FilesHelper.prepareTduDirectoryLayout(tempDirectory);
+
+        backupPath = Paths.get(tempDirectory, "backup");
+        Files.createDirectories(backupPath);
     }
 
     @Test
-    public void copyFilesStep_withFakeFilesAllPresent_shouldCopyThemToCorrectLocation_withRightNames() throws Exception {
+    public void copyFilesStep_withFakeFilesAllPresent_shouldCopyThemToCorrectLocation_withRightNames_andBackupExisting() throws Exception {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
+        Path banksPath = Paths.get(tempDirectory, "Euro", "Bnk");
+        Path vehicleBanksPath = banksPath.resolve("Vehicules");
+        Path soundBanksPath = banksPath.resolve("Sound").resolve("Vehicules");
+        Path highHudBanksPath = banksPath.resolve("FrontEnd").resolve("HiRes").resolve("Gauges");
+        Path lowHudBanksPath = banksPath.resolve("FrontEnd").resolve("LowRes").resolve("Gauges");
+        Path rimBanksPath = vehicleBanksPath.resolve("Rim").resolve("AC");
+
         InstallerConfiguration configuration = createConfigurationForCar();
+
         DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("606298799"); // AC427 (car)
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
+
+        Files.createFile(vehicleBanksPath.resolve("AC_427.bnk"));
 
 
         // WHEN
@@ -50,13 +65,6 @@ public class CopyFilesStepTest {
 
 
         // THEN
-        Path banksPath = Paths.get(tempDirectory, "Euro", "Bnk");
-        Path vehicleBanksPath = banksPath.resolve("Vehicules");
-        Path soundBanksPath = banksPath.resolve("Sound").resolve("Vehicules");
-        Path highHudBanksPath = banksPath.resolve("FrontEnd").resolve("HiRes").resolve("Gauges");
-        Path lowHudBanksPath = banksPath.resolve("FrontEnd").resolve("LowRes").resolve("Gauges");
-        Path rimBanksPath = vehicleBanksPath.resolve("Rim").resolve("AC");
-
         Path vehicleModelAssetsPath = Paths.get(configuration.getAssetsDirectory(), "3D");
         assertThat(vehicleBanksPath.resolve("AC_427.bnk").toFile())
                 .exists()
@@ -82,6 +90,11 @@ public class CopyFilesStepTest {
         assertThat(rimBanksPath.resolve("AC_427_F_01.bnk").toFile())
                 .exists()
                 .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
+
+        Path backupVehicleBanksPath = Paths.get(configuration.resolveFilesBackupDirectory(), "Vehicules");
+        assertThat(backupVehicleBanksPath.resolve("AC_427.bnk"))
+                .exists()
+                .hasContent("");
     }
 
     @Test
@@ -211,17 +224,21 @@ public class CopyFilesStepTest {
 
     private InstallerConfiguration createConfigurationForCar() throws URISyntaxException {
         String assetsDirectory = new File(thisClass.getResource("/assets-all/car").toURI()).getAbsolutePath();
-        return InstallerConfiguration.builder()
+        final InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)
                 .withAssetsDirectory(assetsDirectory)
                 .build();
+        installerConfiguration.setBackupDirectory(backupPath.toString());
+        return installerConfiguration;
     }
 
     private InstallerConfiguration createConfigurationForBike() throws URISyntaxException {
         String assetsDirectory = new File(thisClass.getResource("/assets-all/bike").toURI()).getAbsolutePath();
-        return InstallerConfiguration.builder()
+        final InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)
                 .withAssetsDirectory(assetsDirectory)
                 .build();
+        installerConfiguration.setBackupDirectory(backupPath.toString());
+        return installerConfiguration;
     }
 }
