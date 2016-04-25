@@ -19,6 +19,8 @@ public class InstallerConfiguration {
 
     private String assetsDirectory;
 
+    private String backupDirectory;
+
     private BankSupport bankSupport;
 
     private Window mainWindow;
@@ -44,6 +46,18 @@ public class InstallerConfiguration {
 
     public String getAssetsDirectory() {
         return assetsDirectory;
+    }
+
+    public Window getMainWindow() {
+        return mainWindow;
+    }
+
+    public String getBackupDirectory() {
+        return backupDirectory;
+    }
+
+    public void setBackupDirectory(String backupDirectory) {
+        this.backupDirectory = backupDirectory;
     }
 
     public BankSupport getBankSupport() {
@@ -103,10 +117,6 @@ public class InstallerConfiguration {
                 return installerConfiguration;
             }
         };
-    }
-
-    public Window getMainWindow() {
-        return mainWindow;
     }
 
     public interface InstallerConfigurationBuilder {
