@@ -58,6 +58,7 @@ public abstract class GenericStep {
      */
     public GenericStep nextStep(StepType stepType) {
         final GenericStep currentStep;
+        // TODO Refactor: see to associate a Step instance (or delegate producer) to enum member
         switch (stepType) {
             case INIT_BACKUP:
                 currentStep = new InitBackupStep();
@@ -78,12 +79,7 @@ public abstract class GenericStep {
                 currentStep = new CopyFilesStep();
                 break;
             case RESTORE_FILES:
-                currentStep = new GenericStep() {
-                    @Override
-                    protected void perform() throws IOException, ReflectiveOperationException {
-
-                    }
-                };
+                currentStep = new RestoreFilesStep();
                 break;
             case UPDATE_MAGIC_MAP:
                 currentStep = new UpdateMagicMapStep();
