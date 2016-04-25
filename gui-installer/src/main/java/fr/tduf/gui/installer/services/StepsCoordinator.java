@@ -85,12 +85,19 @@ public class StepsCoordinator extends Service<Void> {
             switch (se.getStepType()) {
                 case UPDATE_DATABASE:
                 case SAVE_DATABASE:
-                case COPY_FILES:
                     Log.error(THIS_CLASS_NAME, "->Critical failure detected, rollbacking database...");
                     GenericStep.starterStep(configuration.get(), context.get())
                             .nextStep(RESTORE_DATABASE).start();
                     break;
+                case COPY_FILES:
+                case UPDATE_MAGIC_MAP:
+                    Log.error(THIS_CLASS_NAME, "->Critical failure detected, rollbacking database and restoring backup files...");
+                    GenericStep.starterStep(configuration.get(), context.get())
+                            .nextStep(RESTORE_DATABASE).start()
+                            .nextStep(RESTORE_FILES).start();
+                    break;
                 default:
+                    Log.error(THIS_CLASS_NAME, "->Critical failure detected, no action will be intended yet.");
             }
 
             updateMessage(DisplayConstants.STATUS_INSTALL_KO);

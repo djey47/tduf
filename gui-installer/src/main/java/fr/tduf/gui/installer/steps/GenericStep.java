@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
  * Parent of all install steps
  */
 public abstract class GenericStep {
-    public enum StepType { UNDEFINED, LOAD_DATABASE, UPDATE_DATABASE, SAVE_DATABASE, BACKUP_DATABASE, RESTORE_DATABASE, UPDATE_MAGIC_MAP, LOAD_PATCH, SELECT_SLOTS, INIT_BACKUP, COPY_FILES }
+    public enum StepType { UNDEFINED, LOAD_DATABASE, UPDATE_DATABASE, SAVE_DATABASE, BACKUP_DATABASE, RESTORE_DATABASE, UPDATE_MAGIC_MAP, LOAD_PATCH, SELECT_SLOTS, INIT_BACKUP, RESTORE_FILES, COPY_FILES }
 
     private StepType type;
 
@@ -76,6 +76,14 @@ public abstract class GenericStep {
                 break;
             case COPY_FILES:
                 currentStep = new CopyFilesStep();
+                break;
+            case RESTORE_FILES:
+                currentStep = new GenericStep() {
+                    @Override
+                    protected void perform() throws IOException, ReflectiveOperationException {
+
+                    }
+                };
                 break;
             case UPDATE_MAGIC_MAP:
                 currentStep = new UpdateMagicMapStep();
