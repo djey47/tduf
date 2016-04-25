@@ -49,6 +49,7 @@ public class StepsCoordinator extends Service<Void> {
             updateMessage(DisplayConstants.STATUS_INSTALL_IN_PROGRESS);
 
             callStepChain(
+                    INIT_BACKUP,
                     BACKUP_DATABASE,
                     UPDATE_DATABASE,
                     SAVE_DATABASE,
