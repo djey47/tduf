@@ -5,7 +5,6 @@ import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
-import javafx.stage.Window;
 
 import java.nio.file.Paths;
 
@@ -23,8 +22,6 @@ public class InstallerConfiguration {
     private String backupDirectory;
 
     private BankSupport bankSupport;
-
-    private Window mainWindow;
 
     private InstallerConfiguration() {}
 
@@ -49,10 +46,6 @@ public class InstallerConfiguration {
         return assetsDirectory;
     }
 
-    public Window getMainWindow() {
-        return mainWindow;
-    }
-
     public String getBackupDirectory() {
         return backupDirectory;
     }
@@ -70,13 +63,8 @@ public class InstallerConfiguration {
      */
     public static InstallerConfigurationBuilder builder() {
         return new InstallerConfigurationBuilder() {
-
-            private Window mainWindow;
-
             private String testDriveUnlimitedDirectory;
-
             private String assetsDirectory = ".";
-
             private BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
 
             @Override
@@ -92,14 +80,8 @@ public class InstallerConfiguration {
             }
 
             @Override
-            public InstallerConfigurationBuilder usingBankSupport(BankSupport bankSupport) {
+            public InstallerConfigurationBuilder overridingBankSupport(BankSupport bankSupport) {
                 this.bankSupport = bankSupport;
-                return this;
-            }
-
-            @Override
-            public InstallerConfigurationBuilder withMainWindow(Window window) {
-                this.mainWindow = window;
                 return this;
             }
 
@@ -113,7 +95,6 @@ public class InstallerConfiguration {
                 installerConfiguration.testDriveUnlimitedDirectory = testDriveUnlimitedDirectory;
                 installerConfiguration.assetsDirectory = assetsDirectory;
                 installerConfiguration.bankSupport = bankSupport;
-                installerConfiguration.mainWindow = mainWindow;
 
                 return installerConfiguration;
             }
@@ -125,9 +106,7 @@ public class InstallerConfiguration {
 
         InstallerConfigurationBuilder withAssetsDirectory(String testDriveUnlimitedDirectory);
 
-        InstallerConfigurationBuilder usingBankSupport(BankSupport bankSupport);
-
-        InstallerConfigurationBuilder withMainWindow(Window window);
+        InstallerConfigurationBuilder overridingBankSupport(BankSupport bankSupport);
 
         InstallerConfiguration build();
     }

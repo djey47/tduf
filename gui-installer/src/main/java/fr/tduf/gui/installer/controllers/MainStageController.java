@@ -252,7 +252,6 @@ public class MainStageController extends AbstractGuiController {
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
-                .withMainWindow(getWindow())
                 .build();
 
         GenericStep.starterStep(configuration, null)
@@ -269,7 +268,6 @@ public class MainStageController extends AbstractGuiController {
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
-                .withMainWindow(getWindow())
                 .build();
 
         Path databasePath = Paths.get(configuration.resolveDatabaseDirectory());
@@ -287,7 +285,6 @@ public class MainStageController extends AbstractGuiController {
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
-                .withMainWindow(getWindow())
                 .build();
 
         databaseChecker.databaseLocationProperty().setValue(configuration.resolveDatabaseDirectory());
@@ -302,7 +299,6 @@ public class MainStageController extends AbstractGuiController {
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
-                .withMainWindow(getWindow())
                 .build();
 
         databaseFixer.databaseLocationProperty().setValue(configuration.resolveDatabaseDirectory());
@@ -320,7 +316,6 @@ public class MainStageController extends AbstractGuiController {
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
                 .withAssetsDirectory(InstallerConstants.DIRECTORY_ASSETS)
-                .withMainWindow(getWindow())
                 .build();
 
         statusLabel.textProperty().bind(databaseLoader.messageProperty());
@@ -340,7 +335,6 @@ public class MainStageController extends AbstractGuiController {
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
                 .withAssetsDirectory(InstallerConstants.DIRECTORY_ASSETS)
-                .withMainWindow(getWindow())
                 .build();
 
         try {
