@@ -11,8 +11,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
-import java.util.List;
-
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.*;
 import static java.util.Arrays.asList;
 
@@ -64,17 +62,10 @@ public class StepsCoordinator extends Service<Void> {
         }
 
         void callStepChain(GenericStep.StepType... steps) throws StepException {
-            updateProgress(0, steps.length );
-
-            List<GenericStep.StepType> stepTypes = asList(steps);
             try {
-                long stepCount = 0;
                 GenericStep currentStep = GenericStep.starterStep(configuration.get(), context.get());
-                for (GenericStep.StepType stepType : stepTypes) {
+                for (GenericStep.StepType stepType : asList(steps)) {
                     currentStep = currentStep.nextStep(stepType).start();
-
-                    // FIXME progress does not update until last step performs
-                    updateProgress(++stepCount, stepTypes.size());
                 }
             } catch (StepException se) {
                 handleStepException(se);
