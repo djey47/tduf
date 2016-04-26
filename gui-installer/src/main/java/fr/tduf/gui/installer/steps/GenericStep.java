@@ -14,7 +14,31 @@ import static java.util.Objects.requireNonNull;
  * Parent of all install steps
  */
 public abstract class GenericStep {
-    public enum StepType { UNDEFINED, LOAD_DATABASE, UPDATE_DATABASE, SAVE_DATABASE, BACKUP_DATABASE, RESTORE_DATABASE, UPDATE_MAGIC_MAP, LOAD_PATCH, SELECT_SLOTS, INIT_BACKUP, RESTORE_FILES, REMOVE_BACKUP, COPY_FILES }
+    public enum StepType {
+        UNDEFINED,
+        LOAD_DATABASE,
+        LOAD_PATCH,
+        SELECT_SLOTS,
+        INIT_BACKUP(new InitBackupStep()),
+        BACKUP_DATABASE(new BackupDatabaseStep()),
+        UPDATE_DATABASE(new UpdateDatabaseStep()),
+        SAVE_DATABASE(new SaveDatabaseStep()),
+        RESTORE_DATABASE(new RestoreDatabaseStep()),
+        COPY_FILES(new CopyFilesStep()),
+        RESTORE_FILES(new RestoreFilesStep()),
+        UPDATE_MAGIC_MAP(new UpdateMagicMapStep()),
+        REMOVE_BACKUP(new RemoveBackupStep());
+
+        private final GenericStep stepInstance;
+
+        StepType(GenericStep stepInstance) {
+            this.stepInstance = stepInstance;
+        }
+
+        StepType() {
+            this.stepInstance = null;
+        }
+    }
 
     private StepType type;
 
@@ -34,20 +58,22 @@ public abstract class GenericStep {
     }
 
     /**
-     * @param installerConfiguration    : optional configuration
-     * @param databaseContext           : optional context
+     * @param installerConfiguration : optional configuration
+     * @param databaseContext        : optional context
      * @return a reference of step to begin process
      */
     public static GenericStep starterStep(InstallerConfiguration installerConfiguration, DatabaseContext databaseContext) throws StepException {
         return new GenericStep(installerConfiguration, databaseContext) {
             @Override
-            protected void perform() throws IOException, ReflectiveOperationException {}
+            protected void perform() throws IOException, ReflectiveOperationException {
+            }
         };
     }
 
     /**
      * What a particular step should do.
      * Do not call it directly, use {@link GenericStep#start()} method instead
+     *
      * @throws IOException
      * @throws ReflectiveOperationException
      */
@@ -57,49 +83,22 @@ public abstract class GenericStep {
      * @return a reference of step to continue process
      */
     public GenericStep nextStep(StepType stepType) {
-        final GenericStep currentStep;
-        // TODO Refactor: see to associate a Step instance (or delegate producer) to enum member
-        switch (stepType) {
-            case INIT_BACKUP:
-                currentStep = new InitBackupStep();
-                break;
-            case REMOVE_BACKUP:
-                currentStep = new RemoveBackupStep();
-                break;
-            case BACKUP_DATABASE:
-                currentStep = new BackupDatabaseStep();
-                break;
-            case RESTORE_DATABASE:
-                currentStep = new RestoreDatabaseStep();
-                break;
-            case UPDATE_DATABASE:
-                currentStep = new UpdateDatabaseStep();
-                break;
-            case SAVE_DATABASE:
-                currentStep = new SaveDatabaseStep();
-                break;
-            case COPY_FILES:
-                currentStep = new CopyFilesStep();
-                break;
-            case RESTORE_FILES:
-                currentStep = new RestoreFilesStep();
-                break;
-            case UPDATE_MAGIC_MAP:
-                currentStep = new UpdateMagicMapStep();
-                break;
-            case LOAD_DATABASE:
-            case LOAD_PATCH:
-            case SELECT_SLOTS:
-                throw new IllegalArgumentException("Step type requires interactive processing and as such can't be dealt with orchestrator: " + stepType);
-            default:
-                throw new IllegalArgumentException("Step type not handled yet: " + stepType);
+        if (stepType == null
+                || stepType.stepInstance == null) {
+            throw new IllegalArgumentException("Step type not handled yet: " + stepType);
         }
 
-        currentStep.setType(stepType);
+        if (StepType.LOAD_DATABASE == stepType
+                || StepType.LOAD_PATCH == stepType
+                || StepType.SELECT_SLOTS == stepType) {
+            throw new IllegalArgumentException("Step type requires interactive processing and as such can't be dealt with orchestrator: " + stepType);
+        }
 
-        shareContext(currentStep);
+        stepType.stepInstance.setType(stepType);
 
-        return currentStep;
+        shareContext(stepType.stepInstance);
+
+        return stepType.stepInstance;
     }
 
     /**
@@ -143,12 +142,8 @@ public abstract class GenericStep {
         this.installerConfiguration = installerConfiguration;
     }
 
-    protected void setType(StepType type) {
+    private void setType(StepType type) {
         this.type = type;
-    }
-
-    protected StepType getType() {
-        return type;
     }
 
     private String getClassName() {
