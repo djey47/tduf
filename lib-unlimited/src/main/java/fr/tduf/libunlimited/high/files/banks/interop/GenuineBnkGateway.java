@@ -27,6 +27,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Bnk support, implementation relying on TDUMT-cli application.
  */
+// TODO create common gateway component
 public class GenuineBnkGateway implements BankSupport {
 
     private static final String THIS_CLASS_NAME = GenuineBnkGateway.class.getSimpleName();
@@ -35,6 +36,7 @@ public class GenuineBnkGateway implements BankSupport {
     public static final String PREFIX_ORIGINAL_BANK_FILE = "original-";
 
     static final String EXE_TDUMT_CLI = Paths.get(".", "tools", "tdumt-cli", "tdumt-cli.exe").toString();
+    // TODO replace with enum
     static final String CLI_COMMAND_BANK_INFO = "BANK-I";
     static final String CLI_COMMAND_BANK_BATCH_UNPACK = "BANK-UX";
     static final String CLI_COMMAND_BANK_BATCH_REPLACE = "BANK-RX";
