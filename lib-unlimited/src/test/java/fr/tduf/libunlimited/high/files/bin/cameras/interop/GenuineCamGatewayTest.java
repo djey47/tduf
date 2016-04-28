@@ -64,7 +64,7 @@ public class GenuineCamGatewayTest {
         // GIVEN
         String camFileName = "cameras.bin";
         int camId = 326;
-        GenuineCamViewsDto customizeInput = new GenuineCamViewsDto();
+        GenuineCamViewsDto customizeInput = FilesHelper.readObjectFromJsonResourceFile(GenuineCamViewsDto.class, "/files/interop/tdumt-cli/CAM-C.input.json");
         mockCommandLineHelperToReturnCameraCustomizeSuccess(camFileName, camId);
 
         // WHEN
