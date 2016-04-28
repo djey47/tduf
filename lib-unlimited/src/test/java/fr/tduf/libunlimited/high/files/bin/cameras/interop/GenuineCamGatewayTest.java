@@ -79,6 +79,20 @@ public class GenuineCamGatewayTest {
                 .hasContent(expectedInputContents);
     }
 
+    @Test
+    public void resetCamera_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
+        // GIVEN
+        String camFileName = "cameras.bin";
+        int camId = 326;
+        mockCommandLineHelperToReturnCameraResetSuccess(camFileName, camId);
+
+        // WHEN
+        genuineCamGateway.resetCamera(camFileName, camId);
+
+        // THEN
+        verify(commandLineHelperMock).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_CAM_RESET), eq(camFileName), eq(Integer.valueOf(camId).toString()));
+    }
+
     private void mockCommandLineHelperToReturnCameraViewsSuccess(String bankFileName, int camId) throws IOException, URISyntaxException {
         String jsonOutput = FilesHelper.readTextFromResourceFile("/files/interop/tdumt-cli/CAM-L.output.json");
         ProcessResult processResult = new ProcessResult(CLI_COMMAND_CAM_LIST, 0, jsonOutput, "");
@@ -88,5 +102,10 @@ public class GenuineCamGatewayTest {
     private void mockCommandLineHelperToReturnCameraCustomizeSuccess(String bankFileName, int camId) throws IOException, URISyntaxException {
         ProcessResult processResult = new ProcessResult(CLI_COMMAND_CAM_CUSTOMIZE, 0, "{}", "");
         when(commandLineHelperMock.runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_CAM_CUSTOMIZE), eq(bankFileName), eq(Integer.valueOf(camId).toString()), anyString())).thenReturn(processResult);
+    }
+
+    private void mockCommandLineHelperToReturnCameraResetSuccess(String bankFileName, int camId) throws IOException, URISyntaxException {
+        ProcessResult processResult = new ProcessResult(CLI_COMMAND_CAM_RESET, 0, "{}", "");
+        when(commandLineHelperMock.runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_CAM_RESET), eq(bankFileName), eq(Integer.valueOf(camId).toString()))).thenReturn(processResult);
     }
 }

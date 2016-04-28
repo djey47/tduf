@@ -25,6 +25,7 @@ public class GenuineCamGateway {
     // TODO replace with enum
     static final String CLI_COMMAND_CAM_LIST = "CAM-L";
     static final String CLI_COMMAND_CAM_CUSTOMIZE = "CAM-C";
+    static final String CLI_COMMAND_CAM_RESET = "CAM-R";
 
     private CommandLineHelper commandLineHelper;
 
@@ -50,6 +51,14 @@ public class GenuineCamGateway {
     public void customizeCamera(String camFileName, int camId, GenuineCamViewsDto customizeInput) throws IOException {
         String customizeInputFileName = createCamCustomizeInputFile(customizeInput);
         ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_CAM_CUSTOMIZE, camFileName, Integer.valueOf(camId).toString(), customizeInputFileName);
+        handleCommandLineErrors(processResult);
+    }
+
+    /**
+     * tdumt-cli syntax: CAM-R <camFileName> <camId>
+     */
+    public void resetCamera(String camFileName, int camId) throws IOException {
+        ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_CAM_RESET, camFileName, Integer.valueOf(camId).toString());
         handleCommandLineErrors(processResult);
     }
 
