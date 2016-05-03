@@ -26,17 +26,24 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * Exports current entry to following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch
 * Exports all entries for topics not supporting REF.
 
+
 ### What's in this version ? (1.4.0)
 
+- (Database Editor) added verbose mode to help with debugging (use -v switch at command line)
+- (Database Editor) added feature: export current entry to TDUPK format (TDUPE Performance Pack)
+
+- Reduced package footprint by removing library duplicates and grouping files
+- Misc. improvements and fixes.
 
 
 ### Fixed issues
 
+- Incorrectly resolved values when using placeholders in mini patch instructions.
 
 
 ### Known bugs
 
-* You tell me!
+* Camera tools still not working properly.
 
 
 ### What you will need to run TDUF
