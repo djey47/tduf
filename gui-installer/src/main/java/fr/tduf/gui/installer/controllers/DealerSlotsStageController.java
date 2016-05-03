@@ -29,6 +29,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
+
 public class DealerSlotsStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = SlotsBrowserStageController.class.getSimpleName();
 
@@ -104,10 +105,6 @@ public class DealerSlotsStageController extends AbstractGuiController {
         initTablePane();
     }
 
-    /**
-     * @param miner
-     * @throws Exception
-     */
     public Optional<DealerSlotData> initAndShowModalDialog(BulkDatabaseMiner miner) throws Exception {
         requireNonNull(miner, "Database miner instance is required.");
 
