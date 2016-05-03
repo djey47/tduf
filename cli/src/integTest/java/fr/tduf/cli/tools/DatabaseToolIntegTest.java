@@ -45,7 +45,6 @@ import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelpe
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)

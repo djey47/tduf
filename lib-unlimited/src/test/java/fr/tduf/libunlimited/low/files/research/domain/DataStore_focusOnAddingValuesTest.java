@@ -10,8 +10,6 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.*;
-import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.GAP;
-import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.UNKNOWN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DataStore_focusOnAddingValuesTest {

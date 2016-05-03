@@ -20,8 +20,6 @@ import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelpe
 import static java.lang.Long.valueOf;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)

@@ -3,8 +3,6 @@ package fr.tduf.libunlimited.low.files.banks.mapping.rw;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
-import fr.tduf.libunlimited.low.files.research.domain.DataStore;
-import fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -2,7 +2,6 @@ package fr.tduf.gui.database.stages;
 
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
-import fr.tduf.gui.database.controllers.EntriesStageController;
 import fr.tduf.gui.database.controllers.FieldsBrowserStageController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

@@ -6,8 +6,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import java.util.OptionalLong;
-
 /**
  * Represents a key-value pair to be displayed in a TableView.
  * Only applies to a content entry.
