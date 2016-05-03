@@ -25,7 +25,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.*;
+import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.EXE_TDUMT_CLI;
+import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.PREFIX_ORIGINAL_BANK_FILE;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -76,7 +77,7 @@ public class GenuineBnkGatewayTest {
     @Test(expected = IOException.class)
     public void getBankInfo_whenSystemFailure_shouldInvokeCommandLineCorrectly_andThrowException() throws IOException, URISyntaxException {
         // GIVEN
-        when(commandLineHelperMock.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_INFO, bankFileName)).thenThrow(new IOException());
+        when(commandLineHelperMock.runCliCommand(EXE_TDUMT_CLI, "BANK-I", bankFileName)).thenThrow(new IOException());
 
         // WHEN
         genuineBnkGateway.getBankInfo(bankFileName);
@@ -114,7 +115,7 @@ public class GenuineBnkGatewayTest {
         Path targetParentPath = Paths.get(tempDirectory, "4Build", "PC", "EURO", "Vehicules", "Cars", "Mercedes", "CLK_55");
         assertThat(targetParentPath).exists();
 
-        verify(commandLineHelperMock, times(1)).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_BATCH_UNPACK), eq(bankFileName), commandArgumentsCaptor.capture());
+        verify(commandLineHelperMock, times(1)).runCliCommand(eq(EXE_TDUMT_CLI), eq("BANK-UX"), eq(bankFileName), commandArgumentsCaptor.capture());
 
         assertBatchInputFileExists();
     }
@@ -140,7 +141,7 @@ public class GenuineBnkGatewayTest {
 
         assertThat(new File(outputBankFileName)).exists();
 
-        verify(commandLineHelperMock, times(1)).runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_BATCH_REPLACE), eq(outputBankFileName),  commandArgumentsCaptor.capture());
+        verify(commandLineHelperMock, times(1)).runCliCommand(eq(EXE_TDUMT_CLI), eq("BANK-RX"), eq(outputBankFileName),  commandArgumentsCaptor.capture());
 
         assertBatchInputFileExists();
     }
@@ -219,23 +220,23 @@ public class GenuineBnkGatewayTest {
 
     private void mockCommandLineHelperToReturnBankInformationSuccess(String bankFileName) throws URISyntaxException, IOException {
         String jsonOutput = FilesHelper.readTextFromResourceFile("/files/interop/tdumt-cli/BANK-I.output.json");
-        ProcessResult processResult = new ProcessResult(CLI_COMMAND_BANK_INFO, 0, jsonOutput, "");
-        when(commandLineHelperMock.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_INFO, bankFileName)).thenReturn(processResult);
+        ProcessResult processResult = new ProcessResult("BANK-I", 0, jsonOutput, "");
+        when(commandLineHelperMock.runCliCommand(EXE_TDUMT_CLI, "BANK-I", bankFileName)).thenReturn(processResult);
     }
 
     private void mockCommandLineHelperToReturnBankInformationFailure(String bankFileName) throws IOException {
-        ProcessResult processResult = new ProcessResult(CLI_COMMAND_BANK_INFO, 1, "", "Failure!");
-        when(commandLineHelperMock.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_INFO, bankFileName)).thenReturn(processResult);
+        ProcessResult processResult = new ProcessResult("BANK-I", 1, "", "Failure!");
+        when(commandLineHelperMock.runCliCommand(EXE_TDUMT_CLI, "BANK-I", bankFileName)).thenReturn(processResult);
     }
 
     private void mockCommandLineHelperToReturnExtractionSuccess(String bankFileName) throws IOException {
-        ProcessResult processResult = new ProcessResult(CLI_COMMAND_BANK_BATCH_UNPACK, 0, "{}", "");
-        when(commandLineHelperMock.runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_BATCH_UNPACK), eq(bankFileName), anyString())).thenReturn(processResult);
+        ProcessResult processResult = new ProcessResult("BANK-UX", 0, "{}", "");
+        when(commandLineHelperMock.runCliCommand(eq(EXE_TDUMT_CLI), eq("BANK-UX"), eq(bankFileName), anyString())).thenReturn(processResult);
     }
 
     private void mockCommandLineHelperToReturnReplaceSuccess(String bankFileName) throws IOException {
-        ProcessResult processResult = new ProcessResult(CLI_COMMAND_BANK_BATCH_REPLACE, 0, "{}", "");
-        when(commandLineHelperMock.runCliCommand(eq(EXE_TDUMT_CLI), eq(CLI_COMMAND_BANK_BATCH_REPLACE), eq(bankFileName), anyString())).thenReturn(processResult);
+        ProcessResult processResult = new ProcessResult("BANK-RX", 0, "{}", "");
+        when(commandLineHelperMock.runCliCommand(eq(EXE_TDUMT_CLI), eq("BANK-RX"), eq(bankFileName), anyString())).thenReturn(processResult);
     }
 
     private void assertBatchInputFileExists() throws IOException {
@@ -257,6 +258,5 @@ public class GenuineBnkGatewayTest {
                             .isNotNull()
                             .isNotEmpty();
                 });
-
     }
 }

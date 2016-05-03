@@ -2,11 +2,11 @@ package fr.tduf.libunlimited.high.files.banks.interop;
 
 import com.esotericsoftware.minlog.Log;
 import com.google.common.base.Joiner;
-import fr.tduf.libunlimited.common.domain.ProcessResult;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBankInfoOutputDto;
 import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBatchInputDto;
+import fr.tduf.libunlimited.high.files.common.interop.GenuineGateway;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -20,33 +20,23 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Set;
 
-import static fr.tduf.libunlimited.common.helper.CommandLineHelper.EXIT_CODE_SUCCESS;
+import static fr.tduf.libunlimited.high.files.common.interop.GenuineGateway.CommandLineOperation.BANK_INFO;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 /**
  * Bnk support, implementation relying on TDUMT-cli application.
  */
-// TODO create common gateway component
-public class GenuineBnkGateway implements BankSupport {
-
+public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
     private static final String THIS_CLASS_NAME = GenuineBnkGateway.class.getSimpleName();
 
     public static final String EXTENSION_BANKS = "bnk";
     public static final String PREFIX_ORIGINAL_BANK_FILE = "original-";
 
-    static final String EXE_TDUMT_CLI = Paths.get(".", "tools", "tdumt-cli", "tdumt-cli.exe").toString();
-    // TODO replace with enum
-    static final String CLI_COMMAND_BANK_INFO = "BANK-I";
-    static final String CLI_COMMAND_BANK_BATCH_UNPACK = "BANK-UX";
-    static final String CLI_COMMAND_BANK_BATCH_REPLACE = "BANK-RX";
-
     private static final String PREFIX_PACKED_FILE_PATH = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\";
 
-    private CommandLineHelper commandLineHelper;
-
     public GenuineBnkGateway(CommandLineHelper commandLineHelper) {
-        this.commandLineHelper = commandLineHelper;
+        super(commandLineHelper);
     }
 
     /**
@@ -54,12 +44,9 @@ public class GenuineBnkGateway implements BankSupport {
      */
     @Override
     public BankInfoDto getBankInfo(String bankFileName) throws IOException {
+        String result = callCommandLineInterface(BANK_INFO, bankFileName);
 
-        ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_INFO, bankFileName);
-        handleCommandLineErrors(processResult);
-
-        GenuineBankInfoOutputDto outputObject = new ObjectMapper().readValue(processResult.getOut(), GenuineBankInfoOutputDto.class);
-
+        GenuineBankInfoOutputDto outputObject = new ObjectMapper().readValue(result, GenuineBankInfoOutputDto.class);
         return mapGenuineBankInfoToBankInfoObject(outputObject);
     }
 
@@ -68,7 +55,6 @@ public class GenuineBnkGateway implements BankSupport {
      */
     @Override
     public void extractAll(String bankFileName, String outputDirectory) throws IOException {
-
         Log.debug(THIS_CLASS_NAME, "bankFileName: " + bankFileName);
         Log.debug(THIS_CLASS_NAME, "outputDirectory: " + outputDirectory);
 
@@ -84,7 +70,6 @@ public class GenuineBnkGateway implements BankSupport {
      */
     @Override
     public void packAll(String inputDirectory, String outputBankFileName) throws IOException {
-
         Log.debug(THIS_CLASS_NAME, "inputDirectory: " + inputDirectory);
         Log.debug(THIS_CLASS_NAME, "outputBankFileName: " + outputBankFileName);
 
@@ -179,8 +164,7 @@ public class GenuineBnkGateway implements BankSupport {
 
             String batchInputFileName = createBatchInputFile(batchInputObject);
 
-            ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_BATCH_UNPACK, bankFile, batchInputFileName);
-            handleCommandLineErrors(processResult);
+            callCommandLineInterface(CommandLineOperation.BANK_BATCH_UNPACK, bankFile, batchInputFileName);
         } catch (IOException e) {
             // Do not fail here.
             e.printStackTrace();
@@ -194,17 +178,9 @@ public class GenuineBnkGateway implements BankSupport {
 
             String batchInputFileName = createBatchInputFile(batchInputObject);
 
-            ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, CLI_COMMAND_BANK_BATCH_REPLACE, outputBankFile, batchInputFileName);
-            handleCommandLineErrors(processResult);
+            callCommandLineInterface(CommandLineOperation.BANK_BATCH_REPLACE, outputBankFile, batchInputFileName);
         } catch (IOException ioe) {
             throw new RuntimeException("Error while repacking to file: " + outputBankFile, ioe);
-        }
-    }
-
-    private static void handleCommandLineErrors(ProcessResult processResult) throws IOException {
-        if (processResult.getReturnCode() != EXIT_CODE_SUCCESS) {
-            Exception parentException = new Exception(processResult.getErr());
-            throw new IOException("Unable to execute genuine CLI command: " + processResult.getCommandName(), parentException);
         }
     }
 

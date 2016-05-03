@@ -21,6 +21,11 @@ public abstract class GenuineGateway {
      * Describes all available operations.
      */
     public enum CommandLineOperation {
+        BANK_INFO("BANK-I"),
+        BANK_UNPACK("BANK-U"),
+        BANK_REPACK("BANK-R"),
+        BANK_BATCH_UNPACK("BANK-UX"),
+        BANK_BATCH_REPLACE("BANK-RX"),
         CAM_LIST("CAM-L"),
         CAM_CUSTOMIZE("CAM-C"),
         CAM_RESET("CAM-R");
