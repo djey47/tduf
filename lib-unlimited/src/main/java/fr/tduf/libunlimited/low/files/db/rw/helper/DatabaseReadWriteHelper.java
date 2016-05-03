@@ -23,8 +23,8 @@ import static java.util.stream.Collectors.toSet;
  */
 public class DatabaseReadWriteHelper {
 
-    public static final String EXTENSION_DB_CONTENTS = "db";
     public static final String EXTENSION_JSON = "json";
+    static final String EXTENSION_DB_CONTENTS = "db";
 
     private static final String ENCODING_UTF_8 = "UTF-8";
     private static final String ENCODING_UTF_16 = "UTF-16";
@@ -74,7 +74,7 @@ public class DatabaseReadWriteHelper {
 
         File jsonFile = getJsonFileFromDirectory(topic, jsonDirectory);
         if (!jsonFile.exists()) {
-            return Optional.<DbDto>empty();
+            return Optional.empty();
         }
 
         return Optional.of(objectMapper.readValue(jsonFile, DbDto.class));
@@ -159,7 +159,7 @@ public class DatabaseReadWriteHelper {
             );
         } catch (IOException e) {
             e.printStackTrace();
-            return Optional.<String>empty();
+            return Optional.empty();
         }
     }
 

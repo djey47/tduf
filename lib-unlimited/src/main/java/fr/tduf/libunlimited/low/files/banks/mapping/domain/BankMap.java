@@ -118,18 +118,18 @@ public class BankMap {
         }
 
         /**
-         * Disables size control onto this entry.
-         * Will set sizes to 0.
-         */
-        public void magify() {
-            size1 = size2 = 0;
-        }
-
-        /**
          * @return true if current entry is magic
          */
         public boolean isMagic() {
             return size1 == 0 && size2 == 0;
+        }
+
+        /**
+         * Disables size control onto this entry.
+         * Will set sizes to 0.
+         */
+        void magify() {
+            size1 = size2 = 0;
         }
 
         @Override

@@ -112,7 +112,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                     break;
 
                 case REPEATER:
-                    dumpRepeater(key, Optional.<ReadResult>empty());
+                    dumpRepeater(key, Optional.empty());
 
                     readResult = readRepeatedValues(field, length);
 
@@ -268,12 +268,12 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         private final byte[] readValueAsBytes;
         private final long parsedCount;
 
-        public ReadResult(long parsedCount, byte[] readValueAsBytes) {
+        ReadResult(long parsedCount, byte[] readValueAsBytes) {
             this.readValueAsBytes = readValueAsBytes;
             this.parsedCount = parsedCount;
         }
 
-        public ReadResult(long parsedCount) {
+        ReadResult(long parsedCount) {
             this(parsedCount, new byte[0]);
         }
     }

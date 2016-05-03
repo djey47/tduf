@@ -96,7 +96,7 @@ public class ItemRange {
     }
 
     private static ItemRange global() {
-        return new ItemRange(Optional.<Long>empty(), Optional.<Long>empty());
+        return new ItemRange(Optional.empty(), Optional.empty());
     }
 
     private static ItemRange fromEnumerated(String enumeratedRange) {
