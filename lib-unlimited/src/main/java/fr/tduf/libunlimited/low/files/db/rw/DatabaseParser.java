@@ -289,24 +289,21 @@ public class DatabaseParser {
     }
 
     private void checkContentItemsCount(DbDto.Topic topic, long expectedItemCount, List<DbDataDto.Entry> actualEntries) {
-        if (expectedItemCount != actualEntries.size()) {
-            Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
-            info.put(SOURCE_TOPIC, topic);
-            info.put(EXPECTED_COUNT, expectedItemCount);
-            info.put(ACTUAL_COUNT, actualEntries.size());
-
-            addIntegrityError(CONTENT_ITEMS_COUNT_MISMATCH, info);
-        }
+        checkCount(CONTENT_ITEMS_COUNT_MISMATCH, topic, expectedItemCount, actualEntries.size());
     }
 
     private void checkFieldCountInStructure(DbDto.Topic topic, int expectedFieldCount, List<DbStructureDto.Field> fields) {
-        if (expectedFieldCount != fields.size()) {
+        checkCount(STRUCTURE_FIELDS_COUNT_MISMATCH, topic, expectedFieldCount, fields.size());
+    }
+
+    private void checkCount(IntegrityError.ErrorTypeEnum errorType, DbDto.Topic topic, long expectedCount, long actualCount) {
+        if (expectedCount != actualCount) {
             Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
             info.put(SOURCE_TOPIC, topic);
-            info.put(EXPECTED_COUNT, expectedFieldCount);
-            info.put(ACTUAL_COUNT, fields.size());
+            info.put(EXPECTED_COUNT, expectedCount);
+            info.put(ACTUAL_COUNT, actualCount);
 
-            addIntegrityError(STRUCTURE_FIELDS_COUNT_MISMATCH, info);
+            addIntegrityError(errorType, info);
         }
     }
 
@@ -348,19 +345,19 @@ public class DatabaseParser {
         integrityErrors.add(integrityError);
     }
 
-    public long getContentLineCount() {
+    public List<IntegrityError> getIntegrityErrors() {
+        return integrityErrors;
+    }
+
+    long getContentLineCount() {
         checkPrerequisites(contentLines, resources);
 
         return contentLines.size();
     }
 
-    public long getResourceCount() {
+    long getResourceCount() {
         checkPrerequisites(contentLines, resources);
 
         return resources.size();
-    }
-
-    public List<IntegrityError> getIntegrityErrors() {
-        return integrityErrors;
     }
 }
