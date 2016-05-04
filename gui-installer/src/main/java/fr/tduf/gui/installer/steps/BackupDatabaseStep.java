@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.stream.Stream;
 
 import static com.google.common.io.Files.getFileExtension;
 import static java.util.Objects.requireNonNull;
@@ -28,21 +29,22 @@ class BackupDatabaseStep extends GenericStep {
         Log.info(THIS_CLASS_NAME, "->Backuping current database to " + targetPath + "...");
 
         Path databasePath = Paths.get(getInstallerConfiguration().resolveDatabaseDirectory());
-        Files.walk(databasePath, 1)
+        try (Stream<Path> databaseStream = Files.walk(databasePath, 1)) {
 
-                .filter(Files::isRegularFile)
+            databaseStream.filter(Files::isRegularFile)
 
-                .filter(filePath -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(getFileExtension(filePath.toString())))
+                    .filter(filePath -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(getFileExtension(filePath.toString())))
 
-                .filter(bankFilePath -> bankFilePath.getFileName().toString().startsWith("DB"))
+                    .filter(bankFilePath -> bankFilePath.getFileName().toString().startsWith("DB"))
 
-                .forEach(databaseBankFilePath -> {
-                    try {
-                        Path targetFilePath = targetPath.resolve(databaseBankFilePath.getFileName());
-                        Files.copy(databaseBankFilePath, targetFilePath, StandardCopyOption.REPLACE_EXISTING);
-                    } catch (IOException ioe) {
-                        throw new RuntimeException("Unable to copy " + databaseBankFilePath.getFileName() + ": " + ioe.getMessage(), ioe);
-                    }
-                });
+                    .forEach(databaseBankFilePath -> {
+                        try {
+                            Path targetFilePath = targetPath.resolve(databaseBankFilePath.getFileName());
+                            Files.copy(databaseBankFilePath, targetFilePath, StandardCopyOption.REPLACE_EXISTING);
+                        } catch (IOException ioe) {
+                            throw new RuntimeException("Unable to copy " + databaseBankFilePath.getFileName() + ": " + ioe.getMessage(), ioe);
+                        }
+                    });
+        }
     }
 }
