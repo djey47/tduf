@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Copy safe banks files to game directory back.
  */
-public class RestoreFilesStep extends GenericStep {
+class RestoreFilesStep extends GenericStep {
     private static final String THIS_CLASS_NAME = RestoreFilesStep.class.getSimpleName();
 
     @Override
@@ -27,7 +27,7 @@ public class RestoreFilesStep extends GenericStep {
 
         Files.walk(backupPath)
                 .filter(Files::isRegularFile)
-                .forEach((bankFilePath) -> {
+                .forEach(bankFilePath -> {
                     final Path subTree = backupPath.relativize(bankFilePath);
                     final Path originalFilePath = banksPath.resolve(subTree);
                     try {

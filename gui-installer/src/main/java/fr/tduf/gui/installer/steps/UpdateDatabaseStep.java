@@ -21,13 +21,12 @@ import java.util.Optional;
 import static com.google.common.io.Files.getFileExtension;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
-import static java.nio.file.Files.isRegularFile;
 import static java.util.Objects.requireNonNull;
 
 /**
  * Applies available patch onto loaded database then convert it to TDU format back
  */
-public class UpdateDatabaseStep extends GenericStep {
+class UpdateDatabaseStep extends GenericStep {
     private static final String THIS_CLASS_NAME = UpdateDatabaseStep.class.getSimpleName();
 
     @Override
@@ -72,9 +71,9 @@ public class UpdateDatabaseStep extends GenericStep {
         Path assetPath = Paths.get(getInstallerConfiguration().getAssetsDirectory(), InstallerConstants.DIRECTORY_DATABASE);
         final Optional<Path> potentialPPFilePath = Files.walk(assetPath, 1)
 
-                .filter((path) -> isRegularFile(path))
+                .filter(Files::isRegularFile)
 
-                .filter((path) -> TdupeGateway.EXTENSION_PERFORMANCE_PACK.equalsIgnoreCase(getFileExtension(path.toString())))
+                .filter(path -> TdupeGateway.EXTENSION_PERFORMANCE_PACK.equalsIgnoreCase(getFileExtension(path.toString())))
 
                 .findFirst();
 

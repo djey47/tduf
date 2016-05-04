@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Only updates TDU mapping system to accept new files.
  */
-public class UpdateMagicMapStep extends GenericStep {
+class UpdateMagicMapStep extends GenericStep {
 
     private static final String THIS_CLASS_NAME = UpdateMagicMapStep.class.getSimpleName();
 
@@ -27,6 +27,6 @@ public class UpdateMagicMapStep extends GenericStep {
 
         MagicMapHelper.fixMagicMap(bankDirectory)
 
-                .forEach((fileName) -> Log.info(THIS_CLASS_NAME, "*> added checksum of " + fileName));
+                .forEach(fileName -> Log.info(THIS_CLASS_NAME, "*> added checksum of " + fileName));
     }
 }

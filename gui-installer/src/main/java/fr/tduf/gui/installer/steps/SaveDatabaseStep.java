@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 
 import static java.util.Objects.requireNonNull;
 
-public class SaveDatabaseStep extends GenericStep {
+class SaveDatabaseStep extends GenericStep {
     private static final String THIS_CLASS_NAME = SaveDatabaseStep.class.getSimpleName();
 
     @Override

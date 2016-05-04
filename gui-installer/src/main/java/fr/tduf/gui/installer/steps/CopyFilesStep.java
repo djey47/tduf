@@ -23,7 +23,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Only copies files in assets subfolders to correct TDU locations.
  */
-public class CopyFilesStep extends GenericStep {
+class CopyFilesStep extends GenericStep {
 
     private static final String THIS_CLASS_NAME = CopyFilesStep.class.getSimpleName();
 
@@ -34,7 +34,7 @@ public class CopyFilesStep extends GenericStep {
         requireNonNull(getDatabaseContext().getPatchProperties(), "Patch properties are required.");
 
         asList(DIRECTORY_3D, DIRECTORY_SOUND, DIRECTORY_GAUGES_LOW, DIRECTORY_GAUGES_HIGH, DIRECTORY_RIMS)
-                .forEach((assetsDirectoryTag) -> {
+                .forEach(assetsDirectoryTag -> {
                     try {
                         parseAssetsDirectory(assetsDirectoryTag);
                     } catch (IOException ioe) {
@@ -51,11 +51,11 @@ public class CopyFilesStep extends GenericStep {
 
         Files.walk(assetPath, 1)
 
-                .filter((path) -> Files.isRegularFile(path))
+                .filter(Files::isRegularFile)
 
-                .filter((path) -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(getFileExtension(path.toString())))
+                .filter(path -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(getFileExtension(path.toString())))
 
-                .forEach((path) -> {
+                .forEach(path -> {
                     try {
                         copyAsset(path, targetPath, assetDirectoryTag);
                     } catch (IOException ioe) {

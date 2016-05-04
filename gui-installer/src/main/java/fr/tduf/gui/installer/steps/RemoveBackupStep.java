@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Deletes current backup directory.
  */
-public class RemoveBackupStep extends GenericStep {
+class RemoveBackupStep extends GenericStep {
     private static final String THIS_CLASS_NAME = RemoveBackupStep.class.getSimpleName();
 
     @Override

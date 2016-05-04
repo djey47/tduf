@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Creates backup directory and update all contexts with right paths.
  */
-public class InitBackupStep extends GenericStep {
+class InitBackupStep extends GenericStep {
     private static final String THIS_CLASS_NAME = InitBackupStep.class.getSimpleName();
 
     @Override

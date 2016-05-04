@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Copy database banks files to safe location.
  */
-public class BackupDatabaseStep extends GenericStep {
+class BackupDatabaseStep extends GenericStep {
     private static final String THIS_CLASS_NAME = BackupDatabaseStep.class.getSimpleName();
 
     @Override
@@ -30,13 +30,13 @@ public class BackupDatabaseStep extends GenericStep {
         Path databasePath = Paths.get(getInstallerConfiguration().resolveDatabaseDirectory());
         Files.walk(databasePath, 1)
 
-                .filter((path) -> Files.isRegularFile(path))
+                .filter(Files::isRegularFile)
 
-                .filter((filePath) -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(getFileExtension(filePath.toString())))
+                .filter(filePath -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(getFileExtension(filePath.toString())))
 
-                .filter((bankFilePath) -> bankFilePath.getFileName().toString().startsWith("DB"))
+                .filter(bankFilePath -> bankFilePath.getFileName().toString().startsWith("DB"))
 
-                .forEach((databaseBankFilePath) -> {
+                .forEach(databaseBankFilePath -> {
                     try {
                         Path targetFilePath = targetPath.resolve(databaseBankFilePath.getFileName());
                         Files.copy(databaseBankFilePath, targetFilePath, StandardCopyOption.REPLACE_EXISTING);
