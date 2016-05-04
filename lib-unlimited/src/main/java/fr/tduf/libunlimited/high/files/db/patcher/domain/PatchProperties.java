@@ -19,6 +19,7 @@ public class PatchProperties extends Properties {
     private static final String PLACEHOLDER_NAME_RESOURCE_VERSION = "RES_VERSIONNAME";
     private static final String PLACEHOLDER_NAME_DEALER_REFERENCE = "DEALERREF";
     private static final String PLACEHOLDER_NAME_DEALER_SLOT = "DEALERSLOT";
+    private static final String PLACEHOLDER_NAME_CAMERA = "CAMERA";
 
     private static final String PLACEHOLDER_NAME_FMT_RIMS_REFERENCE = "RIMREF.%d";
     private static final String PLACEHOLDER_NAME_FMT_RESOURCE_RIMS_BRAND = "RIMBRANDREF.%d";
@@ -208,6 +209,10 @@ public class PatchProperties extends Properties {
 
     public Optional<String> getCustomizedCameraView(CustomizableCameraView cameraView) {
         return retrieve(format(PLACEHOLDER_NAME_FMT_CUSTOM_CAM, cameraView.propertySuffix));
+    }
+
+    public Optional<Integer> getCameraIdentifier() {
+        return retrieve(PLACEHOLDER_NAME_CAMERA).map(Integer::valueOf);
     }
 
     private void registerIfNotExists(String placeholderName, String value) {
