@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static com.google.common.io.Files.getFileExtension;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
@@ -69,13 +70,16 @@ class UpdateDatabaseStep extends GenericStep {
 
     private void applyPerformancePackage(List<DbDto> topicObjects, String slotRef) throws ReflectiveOperationException, IOException {
         Path assetPath = Paths.get(getInstallerConfiguration().getAssetsDirectory(), InstallerConstants.DIRECTORY_DATABASE);
-        final Optional<Path> potentialPPFilePath = Files.walk(assetPath, 1)
+        Optional<Path> potentialPPFilePath;
+        try (Stream<Path> assetStream = Files.walk(assetPath, 1)) {
+            potentialPPFilePath = assetStream
 
-                .filter(Files::isRegularFile)
+                    .filter(Files::isRegularFile)
 
-                .filter(path -> TdupeGateway.EXTENSION_PERFORMANCE_PACK.equalsIgnoreCase(getFileExtension(path.toString())))
+                    .filter(path -> TdupeGateway.EXTENSION_PERFORMANCE_PACK.equalsIgnoreCase(getFileExtension(path.toString())))
 
-                .findFirst();
+                    .findFirst();
+        }
 
         if (!potentialPPFilePath.isPresent()) {
             Log.info(THIS_CLASS_NAME, "->No TDUPE performance package to apply");
