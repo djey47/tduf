@@ -77,7 +77,7 @@ public class PatchProperties extends Properties {
     public PatchProperties makeCopy() {
         final PatchProperties patchProperties = new PatchProperties();
 
-        entrySet().forEach((property) -> {
+        entrySet().forEach(property -> {
             final String placeholder = (String) property.getKey();
             final String value = (String) property.getValue();
 
@@ -155,7 +155,7 @@ public class PatchProperties extends Properties {
     }
 
     public void setDealerSlotIfNotExists(int slotRank) {
-        registerIfNotExists(PLACEHOLDER_NAME_DEALER_SLOT, Integer.valueOf(slotRank).toString());
+        registerIfNotExists(PLACEHOLDER_NAME_DEALER_SLOT, Integer.toString(slotRank));
     }
 
     public Optional<String> getVehicleSlotReference() {
