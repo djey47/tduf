@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ import java.util.List;
 public class GenuineCamViewsDto {
 
     @JsonProperty("views")
-    private List<GenuineCamViewDto> views;
+    private List<GenuineCamViewDto> views = new ArrayList<>();
 
     public List<GenuineCamViewDto> getViews() {
         return views;
@@ -60,6 +61,18 @@ public class GenuineCamViewsDto {
 
         public boolean isCustomized() {
             return customized;
+        }
+
+        public void setViewType(Type viewType) {
+            this.viewType = viewType;
+        }
+
+        public void setCameraId(int cameraId) {
+            this.cameraId = cameraId;
+        }
+
+        public void setViewId(int viewId) {
+            this.viewId = viewId;
         }
     }
 }
