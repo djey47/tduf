@@ -26,9 +26,23 @@ public class PatchProperties extends Properties {
     private static final String PLACEHOLDER_NAME_FMT_RIMS_BANK = "BANKNAME.%s.%d";
     private static final String PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK = "RES_BANKNAME.%s.%d";
     private static final String PLACEHOLDER_NAME_FMT_RESOURCE_COLOR = "RES_COLORNAME.%d";
+    private static final String PLACEHOLDER_NAME_FMT_CUSTOM_CAM = "CAMERA.%s";
 
     private static final String SUFFIX_FRONT_RIMS = "FR";
     private static final String SUFFIX_REAR_RIMS = "RR";
+
+    public enum CustomizableCameraView {
+        HOOD("HOOD"),
+        HOOD_BACK("HOODBACK"),
+        COCKPIT("COCKPIT"),
+        COCKPIT_BACK("COCKPIT_BACK");
+
+        private final String propertySuffix;
+
+        CustomizableCameraView(String propertySuffix) {
+            this.propertySuffix = propertySuffix;
+        }
+    }
 
     /**
      * @return true if provided placeholder matches one used for ID_CAR
@@ -190,6 +204,10 @@ public class PatchProperties extends Properties {
 
     public Optional<String> getRimBrandNameResource(int rimSet) {
         return retrieve(format(PLACEHOLDER_NAME_FMT_RESOURCE_RIMS_BRAND, rimSet));
+    }
+
+    public Optional<String> getCustomizedCameraView(CustomizableCameraView cameraView) {
+        return retrieve(format(PLACEHOLDER_NAME_FMT_CUSTOM_CAM, cameraView.propertySuffix));
     }
 
     private void registerIfNotExists(String placeholderName, String value) {
