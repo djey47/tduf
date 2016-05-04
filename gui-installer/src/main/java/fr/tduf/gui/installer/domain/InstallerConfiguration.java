@@ -89,12 +89,6 @@ public class InstallerConfiguration {
             }
 
             @Override
-            public InstallerConfigurationBuilder overridingBankSupport(BankSupport bankSupport) {
-                this.bankSupport = bankSupport;
-                return this;
-            }
-
-            @Override
             public InstallerConfiguration build() {
                 InstallerConfiguration installerConfiguration = new InstallerConfiguration();
                 installerConfiguration.testDriveUnlimitedDirectory = requireNonNull(testDriveUnlimitedDirectory, "TDU directory is required.");
@@ -107,12 +101,10 @@ public class InstallerConfiguration {
         };
     }
 
-    public interface InstallerConfigurationBuilder {
+    private interface InstallerConfigurationBuilder {
         InstallerConfigurationBuilder withTestDriveUnlimitedDirectory(String testDriveUnlimitedDirectory);
 
         InstallerConfigurationBuilder withAssetsDirectory(String testDriveUnlimitedDirectory);
-
-        InstallerConfigurationBuilder overridingBankSupport(BankSupport bankSupport);
 
         InstallerConfiguration build();
     }
