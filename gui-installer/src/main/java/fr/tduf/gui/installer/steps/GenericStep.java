@@ -24,6 +24,7 @@ public abstract class GenericStep {
         UPDATE_DATABASE(new UpdateDatabaseStep()),
         SAVE_DATABASE(new SaveDatabaseStep()),
         RESTORE_DATABASE(new RestoreDatabaseStep()),
+        ADJUST_CAMERA(new AdjustCameraStep()),
         COPY_FILES(new CopyFilesStep()),
         RESTORE_FILES(new RestoreFilesStep()),
         UPDATE_MAGIC_MAP(new UpdateMagicMapStep()),
@@ -66,6 +67,7 @@ public abstract class GenericStep {
         return new GenericStep(installerConfiguration, databaseContext) {
             @Override
             protected void perform() throws IOException, ReflectiveOperationException {
+                // Nothing to do for now...
             }
         };
     }
@@ -122,24 +124,16 @@ public abstract class GenericStep {
     private void shareContext(GenericStep newStep) {
         requireNonNull(newStep, "New step is required.");
 
-        newStep.setDatabaseContext(databaseContext);
-        newStep.setInstallerConfiguration(installerConfiguration);
+        newStep.databaseContext = databaseContext;
+        newStep.installerConfiguration = installerConfiguration;
     }
 
-    protected DatabaseContext getDatabaseContext() {
+    DatabaseContext getDatabaseContext() {
         return databaseContext;
     }
 
-    protected void setDatabaseContext(DatabaseContext databaseContext) {
-        this.databaseContext = databaseContext;
-    }
-
-    protected InstallerConfiguration getInstallerConfiguration() {
+    InstallerConfiguration getInstallerConfiguration() {
         return installerConfiguration;
-    }
-
-    protected void setInstallerConfiguration(InstallerConfiguration installerConfiguration) {
-        this.installerConfiguration = installerConfiguration;
     }
 
     private void setType(StepType type) {
