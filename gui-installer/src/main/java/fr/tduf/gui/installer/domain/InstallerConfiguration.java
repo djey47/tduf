@@ -101,7 +101,7 @@ public class InstallerConfiguration {
         };
     }
 
-    private interface InstallerConfigurationBuilder {
+    public interface InstallerConfigurationBuilder {
         InstallerConfigurationBuilder withTestDriveUnlimitedDirectory(String testDriveUnlimitedDirectory);
 
         InstallerConfigurationBuilder withAssetsDirectory(String testDriveUnlimitedDirectory);
