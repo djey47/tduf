@@ -1068,7 +1068,7 @@
     {
       "name": "Bots",
       "topic": "BOTS",
-      "entryLabelFieldRanks": [1],
+      "entryLabelFieldRanks": [1, 2, 6],
       "fieldSettings": [
         {
           "name": "PNJ",
