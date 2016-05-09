@@ -18,6 +18,8 @@ import static java.util.stream.Collectors.toCollection;
 class AdjustCameraStep extends GenericStep {
     private static final String THIS_CLASS_NAME = AdjustCameraStep.class.getSimpleName();
 
+    private static final String REGEX_SEPARATOR_CAM_VIEW = "\\|";
+
     @Override
     protected void perform() throws IOException, ReflectiveOperationException {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
@@ -27,8 +29,12 @@ class AdjustCameraStep extends GenericStep {
         String cameraFileName = Paths.get(getInstallerConfiguration().resolveDatabaseDirectory(), "Cameras.bin").toString();
         GenuineCamViewsDto customViewsObject = buildCustomViewsFromProperties();
 
-        Log.info(THIS_CLASS_NAME, "->Adjusting camera id " + cameraId + ": " + cameraFileName);
-        getInstallerConfiguration().getCameraSupport().customizeCamera(cameraFileName, cameraId, customViewsObject);
+        if(customViewsObject.getViews().isEmpty()) {
+            Log.info(THIS_CLASS_NAME, "->No customization for camera id " + cameraId);
+        } else {
+            Log.info(THIS_CLASS_NAME, "->Adjusting camera id " + cameraId + ": " + cameraFileName);
+            getInstallerConfiguration().getCameraSupport().customizeCamera(cameraFileName, cameraId, customViewsObject);
+        }
     }
 
     private GenuineCamViewsDto buildCustomViewsFromProperties() {
@@ -52,12 +58,16 @@ class AdjustCameraStep extends GenericStep {
         return getDatabaseContext().getPatchProperties().getCustomizedCameraView(cameraView)
 
                 .map(prop -> {
+                    final String[] camCompounds = prop.split(REGEX_SEPARATOR_CAM_VIEW);
+                    if (camCompounds.length != 2) {
+                        throw new IllegalArgumentException("Camera view format is not valid: " + prop);
+                    }
+
                     final GenuineCamViewsDto.GenuineCamViewDto genuineCamViewDto = new GenuineCamViewsDto.GenuineCamViewDto();
 
-                    // TODO
-//                    genuineCamViewDto.setViewType(cameraView.);
-//                    genuineCamViewDto.setCameraId(cameraId);
-//                    genuineCamViewDto.setViewId();
+                    genuineCamViewDto.setViewType(cameraView.getGenuineViewType());
+                    genuineCamViewDto.setCameraId(Integer.parseInt(camCompounds[0]));
+                    genuineCamViewDto.setViewId(Integer.parseInt(camCompounds[1]));
 
                     return genuineCamViewDto;
                 });

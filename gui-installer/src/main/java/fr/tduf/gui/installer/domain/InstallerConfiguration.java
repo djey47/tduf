@@ -89,6 +89,12 @@ public class InstallerConfiguration {
             }
 
             @Override
+            public InstallerConfigurationBuilder overridingCameraSupport(GenuineCamGateway cameraSupport) {
+                this.cameraSupport = cameraSupport;
+                return this;
+            }
+
+            @Override
             public InstallerConfiguration build() {
                 InstallerConfiguration installerConfiguration = new InstallerConfiguration();
                 installerConfiguration.testDriveUnlimitedDirectory = requireNonNull(testDriveUnlimitedDirectory, "TDU directory is required.");
@@ -105,6 +111,8 @@ public class InstallerConfiguration {
         InstallerConfigurationBuilder withTestDriveUnlimitedDirectory(String testDriveUnlimitedDirectory);
 
         InstallerConfigurationBuilder withAssetsDirectory(String testDriveUnlimitedDirectory);
+
+        InstallerConfigurationBuilder overridingCameraSupport(GenuineCamGateway cameraSupport);
 
         InstallerConfiguration build();
     }

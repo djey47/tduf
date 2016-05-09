@@ -51,6 +51,7 @@ public class StepsCoordinator extends Service<Void> {
                     BACKUP_DATABASE,
                     UPDATE_DATABASE,
                     SAVE_DATABASE,
+                    ADJUST_CAMERA,
                     COPY_FILES,
                     UPDATE_MAGIC_MAP);
 
@@ -81,6 +82,7 @@ public class StepsCoordinator extends Service<Void> {
                             .nextStep(RESTORE_DATABASE).start()
                             .nextStep(REMOVE_BACKUP).start();
                     break;
+                case ADJUST_CAMERA:
                 case COPY_FILES:
                 case UPDATE_MAGIC_MAP:
                     Log.error(THIS_CLASS_NAME, "->Critical failure detected, rollbacking database and restoring backup files...");

@@ -1,8 +1,11 @@
 package fr.tduf.libunlimited.high.files.db.patcher.domain;
 
+import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
+
 import java.util.Optional;
 import java.util.Properties;
 
+import static fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto.GenuineCamViewDto.Type.*;
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
@@ -33,15 +36,21 @@ public class PatchProperties extends Properties {
     private static final String SUFFIX_REAR_RIMS = "RR";
 
     public enum CustomizableCameraView {
-        HOOD("HOOD"),
-        HOOD_BACK("HOODBACK"),
-        COCKPIT("COCKPIT"),
-        COCKPIT_BACK("COCKPIT_BACK");
+        HOOD("HOOD", Hood),
+        HOOD_BACK("HOODBACK", Hood_Back),
+        COCKPIT("COCKPIT", Cockpit),
+        COCKPIT_BACK("COCKPIT_BACK", Cockpit_Back);
 
         private final String propertySuffix;
+        private final GenuineCamViewsDto.GenuineCamViewDto.Type genuineViewType;
 
-        CustomizableCameraView(String propertySuffix) {
+        CustomizableCameraView(String propertySuffix, GenuineCamViewsDto.GenuineCamViewDto.Type genuineViewType) {
             this.propertySuffix = propertySuffix;
+            this.genuineViewType = genuineViewType;
+        }
+
+        public GenuineCamViewsDto.GenuineCamViewDto.Type getGenuineViewType() {
+            return genuineViewType;
         }
     }
 
