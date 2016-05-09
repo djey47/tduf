@@ -33,7 +33,7 @@
                       </Label>
                       <TextField fx:id="databaseLocationTextField" />
                       <Button mnemonicParsing="false" onAction="#handleBrowseDirectoryButtonMouseClick" prefWidth="34.0" text="..."><tooltip><Tooltip text="Selects a directory for JSON/BNK database files." /></tooltip></Button>
-                      <Button mnemonicParsing="false" onAction="#handleLoadButtonMouseClick" prefWidth="60.0" text="Load"><tooltip><Tooltip text="Opens database files from selected directory." /></tooltip></Button>
+                      <Button fx:id="loadDatabaseButton" mnemonicParsing="false" onAction="#handleLoadButtonMouseClick" prefWidth="60.0" text="Load"><tooltip><Tooltip text="Opens database files from selected directory." /></tooltip></Button>
                       <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleSaveButtonMouseClick" prefWidth="60.0" text="Save"><tooltip><Tooltip text="Saves current database to selected directory." /></tooltip></Button>
                   <Separator orientation="VERTICAL" />
                   <Label fx:id="creditsLabel">

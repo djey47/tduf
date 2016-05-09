@@ -99,6 +99,9 @@ public class MainStageController extends AbstractGuiController {
     private DatabaseSaver databaseSaver = new DatabaseSaver();
 
     @FXML
+    private Button loadDatabaseButton;
+
+    @FXML
     private Label creditsLabel;
 
     @FXML
@@ -545,15 +548,7 @@ public class MainStageController extends AbstractGuiController {
     private void initServiceListeners() {
         databaseLoader.stateProperty().addListener((observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
-                databaseObjects = databaseLoader.getValue();
-                if (!databaseObjects.isEmpty()) {
-                    databaseMiner = BulkDatabaseMiner.load(databaseObjects);
-
-                    profilesChoiceBox.getSelectionModel().clearSelection(); // ensures event will be fired even though 1st item is selected
-                    profilesChoiceBox.getSelectionModel().selectFirst();
-
-                    navigationHistory.clear();
-                }
+                loadDatabaseObjects(databaseLoader.getValue());
             }
         });
 
@@ -711,6 +706,20 @@ public class MainStageController extends AbstractGuiController {
         databaseLoader.databaseLocationProperty().setValue(databaseLocation);
 
         databaseLoader.restart();
+    }
+
+    private void loadDatabaseObjects(List<DbDto> loadedDatabaseObjects) {
+        this.databaseObjects = loadedDatabaseObjects;
+        if (!loadedDatabaseObjects.isEmpty()) {
+            databaseMiner = BulkDatabaseMiner.load(loadedDatabaseObjects);
+
+            profilesChoiceBox.getSelectionModel().clearSelection(); // ensures event will be fired even though 1st item is selected
+            profilesChoiceBox.getSelectionModel().selectFirst();
+
+            navigationHistory.clear();
+
+            loadDatabaseButton.disableProperty().setValue(true);
+        }
     }
 
     private void saveDatabaseToDirectory(String databaseLocation) throws IOException {
