@@ -146,7 +146,7 @@ public class MainStageController extends AbstractGuiController {
     private EditorLayoutDto.EditorProfileDto profileObject;
     private BulkDatabaseMiner databaseMiner;
 
-    private Stack<EditorLocation> navigationHistory = new Stack<>();
+    private Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
 
     @Override
     protected void init() throws IOException {
@@ -168,11 +168,11 @@ public class MainStageController extends AbstractGuiController {
 
         AtomicBoolean databaseAutoLoad = new AtomicBoolean(false);
         String initialDatabaseDirectory = DatabaseEditor.getCommandLineParameters().stream()
-                .filter((p) -> !p.startsWith(AppConstants.SWITCH_PREFIX))
+                .filter(p -> !p.startsWith(AppConstants.SWITCH_PREFIX))
 
                 .findAny()
 
-                .map((p) -> {
+                .map(p -> {
                     databaseAutoLoad.set(true);
                     return p;
                 })
@@ -233,7 +233,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleResetDatabaseCacheMenuItemAction() throws IOException, ReflectiveOperationException {
+    public void handleResetDatabaseCacheMenuItemAction() throws IOException {
         Log.trace(THIS_CLASS_NAME, "->handleResetDatabaseCacheMenuItemAction");
 
         String databaseLocation = databaseLocationTextField.getText();
@@ -249,7 +249,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleSearchEntryButtonAction");
 
         ofNullable(currentTopicObject)
-                .ifPresent((topicObject) -> askForReferenceAndSwitchToEntry());
+                .ifPresent(topicObject -> askForReferenceAndSwitchToEntry());
     }
 
     @FXML
@@ -257,7 +257,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleNextButtonMouseClick");
 
         ofNullable(currentTopicObject)
-                .ifPresent((topicObject) -> viewDataController.switchToNextEntry());
+                .ifPresent(topicObject -> viewDataController.switchToNextEntry());
     }
 
     @FXML
@@ -265,7 +265,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleFastNextButtonMouseClick");
 
         ofNullable(currentTopicObject)
-                .ifPresent((topicObject) -> viewDataController.switchToNext10Entry());
+                .ifPresent(topicObject -> viewDataController.switchToNext10Entry());
     }
 
     @FXML
@@ -273,7 +273,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handlePreviousButtonMouseClick");
 
         ofNullable(currentTopicObject)
-                .ifPresent((topicObject) -> viewDataController.switchToPreviousEntry());
+                .ifPresent(topicObject -> viewDataController.switchToPreviousEntry());
     }
 
     @FXML
@@ -281,7 +281,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleFastPreviousButtonMouseClick");
 
         ofNullable(currentTopicObject)
-                .ifPresent((topicObject) -> viewDataController.switchToPrevious10Entry());
+                .ifPresent(topicObject -> viewDataController.switchToPrevious10Entry());
     }
 
     @FXML
@@ -289,7 +289,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleFirstButtonMouseClick");
 
         ofNullable(currentTopicObject)
-                .ifPresent((topicObject) -> viewDataController.switchToFirstEntry());
+                .ifPresent(topicObject -> viewDataController.switchToFirstEntry());
     }
 
     @FXML
@@ -297,7 +297,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleLastButtonMouseClick");
 
         ofNullable(currentTopicObject)
-                .ifPresent((topicObject) -> viewDataController.switchToLastEntry());
+                .ifPresent(topicObject -> viewDataController.switchToLastEntry());
     }
 
     @FXML
@@ -305,7 +305,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleEntryNumberTextFieldKeyPressed");
 
         ofNullable(currentTopicObject)
-                .ifPresent((topicObject) -> {
+                .ifPresent(topicObject -> {
                     if (KeyCode.ENTER == keyEvent.getCode()
                             || KeyCode.TAB == keyEvent.getCode()) {
                         viewDataController.switchToContentEntry(currentEntryIndexProperty.getValue());
@@ -318,7 +318,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleLastButtonMouseClick");
 
         ofNullable(currentTopicObject)
-                .ifPresent((topicObject) -> viewDataController.switchToPreviousLocation());
+                .ifPresent(topicObject -> viewDataController.switchToPreviousLocation());
     }
 
     @FXML
@@ -326,7 +326,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleAddEntryButtonAction");
 
         ofNullable(currentTopicObject)
-                .ifPresent((topicObject) -> addEntryAndUpdateStage());
+                .ifPresent(topicObject -> addEntryAndUpdateStage());
     }
 
     @FXML
@@ -334,7 +334,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleDuplicateEntryButtonAction");
 
         ofNullable(currentTopicObject)
-                .ifPresent((topicObject) -> duplicateEntryAndUpdateStage());
+                .ifPresent(topicObject -> duplicateEntryAndUpdateStage());
     }
 
     @FXML
@@ -342,7 +342,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleRemoveEntryButtonAction");
 
         ofNullable(currentTopicObject)
-                .ifPresent((topicObject) -> removeCurrentEntryAndUpdateStage());
+                .ifPresent(topicObject -> removeCurrentEntryAndUpdateStage());
     }
 
     @FXML
@@ -384,7 +384,7 @@ public class MainStageController extends AbstractGuiController {
 
         ofNullable(currentTopicObject)
 
-                .ifPresent((topicObject) -> askForPatchLocationAndImportDataFromFile());
+                .ifPresent(topicObject -> askForPatchLocationAndImportDataFromFile());
     }
 
     @FXML
@@ -400,7 +400,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
-        return (actionEvent) -> {
+        return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->browseResourcesButton clicked");
 
             resourcesStageController.initAndShowDialog(targetReferenceProperty, fieldRank, localesChoiceBox.getValue(), targetTopic);
@@ -408,7 +408,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     public EventHandler<ActionEvent> handleBrowseEntriesButtonMouseClick(DbDto.Topic targetTopic, List<Integer> labelFieldRanks, SimpleStringProperty targetEntryReferenceProperty, int fieldRank) {
-        return (actionEvent) -> {
+        return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->browseEntriesButton clicked");
 
             entriesStageController.initAndShowDialog(targetEntryReferenceProperty.get(), fieldRank, targetTopic, labelFieldRanks);
@@ -416,16 +416,16 @@ public class MainStageController extends AbstractGuiController {
     }
 
     public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(DbDto.Topic targetTopic, int fieldRank, String targetProfileName) {
-        return (actionEvent) -> {
+        return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->gotoReferenceButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
             databaseMiner.getRemoteContentEntryWithInternalIdentifier(currentTopicObject.getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic)
-                    .ifPresent((remoteContentEntry) -> viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId(), true));
+                    .ifPresent(remoteContentEntry -> viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId(), true));
         };
     }
 
     public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName) {
-        return (actionEvent) -> {
+        return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->gotoReferenceButtonForLinkedTopic clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
             viewDataController.switchToSelectedResourceForLinkedTopic(tableViewSelectionModel.getSelectedItem(), targetTopic, targetProfileName);
@@ -433,55 +433,55 @@ public class MainStageController extends AbstractGuiController {
     }
 
     public EventHandler<ActionEvent> handleAddLinkedEntryButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName, TopicLinkDto topicLinkObject) {
-        return (actionEvent) -> {
+        return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->handleAddLinkedEntryButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
             List<DbStructureDto.Field> structureFields = databaseMiner.getDatabaseTopic(targetTopic).get().getStructure().getFields();
             if (DatabaseStructureQueryHelper.getUidFieldRank(structureFields).isPresent()) {
                 // Association topic -> browse remote entries in target topic
                 entriesStageController.initAndShowModalDialog(empty(), targetTopic, targetProfileName)
-                        .ifPresent((selectedEntry) -> addLinkedEntryAndUpdateStage(tableViewSelectionModel, topicLinkObject.getTopic(), of(selectedEntry), topicLinkObject));
+                        .ifPresent(selectedEntry -> addLinkedEntryWithTargetRef(tableViewSelectionModel, topicLinkObject.getTopic(), selectedEntry, topicLinkObject));
             } else {
                 // Direct topic link -> add default entry in target topic
-                addLinkedEntryAndUpdateStage(tableViewSelectionModel, targetTopic, Optional.empty(), topicLinkObject);
+                addLinkedEntryWithoutTargetRef(tableViewSelectionModel, targetTopic, topicLinkObject);
             }
         };
     }
 
     public EventHandler<ActionEvent> handleRemoveLinkedEntryButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
-        return (actionEvent) -> {
+        return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->handleRemoveLinkedEntryButton clicked");
 
             ofNullable(tableViewSelectionModel.getSelectedItem())
-                    .ifPresent((selectedItem) -> removeLinkedEntryAndUpdateStage(tableViewSelectionModel, topicLinkObject));
+                    .ifPresent(selectedItem -> removeLinkedEntryAndUpdateStage(tableViewSelectionModel, topicLinkObject));
         };
     }
 
     public EventHandler<ActionEvent> handleMoveLinkedEntryUpButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
-        return (actionEvent) -> {
+        return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->handleMoveLinkedEntryUpButton clicked");
 
             ofNullable(tableViewSelectionModel.getSelectedItem())
-                    .ifPresent((selectedItem) -> moveLinkedEntryUpAndUpdateStage(tableViewSelectionModel, topicLinkObject));
+                    .ifPresent(selectedItem -> moveLinkedEntryUpAndUpdateStage(tableViewSelectionModel, topicLinkObject));
         };
     }
 
     public EventHandler<ActionEvent> handleMoveLinkedEntryDownButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
-        return (actionEvent) -> {
+        return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->handleMoveLinkedEntryDownButton clicked");
 
             ofNullable(tableViewSelectionModel.getSelectedItem())
-                    .ifPresent((selectedItem) -> moveLinkedEntryDownAndUpdateStage(tableViewSelectionModel, topicLinkObject));
+                    .ifPresent(selectedItem -> moveLinkedEntryDownAndUpdateStage(tableViewSelectionModel, topicLinkObject));
         };
     }
 
     public EventHandler<MouseEvent> handleLinkTableMouseClick(String targetProfileName, DbDto.Topic targetTopic) {
-        return (mouseEvent) -> {
+        return mouseEvent -> {
             Log.trace(THIS_CLASS_NAME, "->handleLinkTableMouseClick, targetProfileName:" + targetProfileName + ", targetTopic:" + targetTopic);
 
             if (MouseButton.PRIMARY == mouseEvent.getButton() && mouseEvent.getClickCount() == 2) {
                 TableViewHelper.getMouseSelectedItem(mouseEvent, ContentEntryDataItem.class)
-                        .ifPresent((selectedResource) -> viewDataController.switchToSelectedResourceForLinkedTopic(selectedResource, targetTopic, targetProfileName));
+                        .ifPresent(selectedResource -> viewDataController.switchToSelectedResourceForLinkedTopic(selectedResource, targetTopic, targetProfileName));
             }
         };
     }
@@ -505,13 +505,13 @@ public class MainStageController extends AbstractGuiController {
     }
 
     public ChangeListener<Boolean> handleBitfieldCheckboxSelectionChange(int fieldRank, SimpleStringProperty textFieldValueProperty) {
-        return ((observable, oldCheckedState, newCheckedState) -> {
+        return (observable, oldCheckedState, newCheckedState) -> {
             Log.trace(THIS_CLASS_NAME, "->handleBitfieldCheckboxSelectionChange, checked=" + newCheckedState + ", fieldRank=" + fieldRank);
 
             if (newCheckedState != oldCheckedState) {
                 changeDataController.updateContentItem(currentTopicObject.getTopic(), fieldRank, textFieldValueProperty.get());
             }
-        });
+        };
     }
 
     private void handleProfileChoiceChanged(String newProfileName) {
@@ -597,7 +597,7 @@ public class MainStageController extends AbstractGuiController {
 
         viewDataController.fillLocales();
         localesChoiceBox.getSelectionModel().selectedItemProperty()
-                .addListener(((observable, oldValue, newValue) -> handleLocaleChoiceChanged(newValue)));
+                .addListener((observable, oldValue, newValue) -> handleLocaleChoiceChanged(newValue));
 
         viewDataController.loadAndFillProfiles();
         profilesChoiceBox.getSelectionModel().selectedItemProperty()
@@ -642,7 +642,7 @@ public class MainStageController extends AbstractGuiController {
         tabContentByName.clear();
 
         if (profileObject.getGroups() != null) {
-            profileObject.getGroups().forEach((groupName) -> {
+            profileObject.getGroups().forEach(groupName -> {
                 VBox vbox = new VBox();
                 Tab groupTab = new Tab(groupName, new ScrollPane(vbox));
 
@@ -739,17 +739,19 @@ public class MainStageController extends AbstractGuiController {
         viewDataController.updateEntriesAndSwitchTo(newEntryIndex);
     }
 
-    private void addLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, Optional<ContentEntryDataItem> potentialLinkedEntry, TopicLinkDto topicLinkObject) {
+    private void addLinkedEntryWithTargetRef(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, ContentEntryDataItem linkedEntry, TopicLinkDto topicLinkObject) {
         String sourceEntryRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicProperty.getValue()).get();
-        Optional<String> targetEntryRef = Optional.empty();
-        if (potentialLinkedEntry.isPresent()) {
-            targetEntryRef = of(potentialLinkedEntry.get().referenceProperty().get());
-        }
-        changeDataController.addLinkedEntry(sourceEntryRef, targetEntryRef, targetTopic);
+        String targetEntryRef = linkedEntry.referenceProperty().get();
+
+        changeDataController.addLinkedEntry(sourceEntryRef, ofNullable(targetEntryRef), targetTopic);
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
         TableViewHelper.selectLastRowAndScroll(tableViewSelectionModel.getTableView());
+    }
+
+    private void addLinkedEntryWithoutTargetRef(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, TopicLinkDto topicLinkObject) {
+        addLinkedEntryWithTargetRef(tableViewSelectionModel, targetTopic, null, topicLinkObject);
     }
 
     private void removeCurrentEntryAndUpdateStage() {
@@ -862,8 +864,7 @@ public class MainStageController extends AbstractGuiController {
 
             CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED, writtenPropertiesPath);
         } catch (Exception e) {
-            e.printStackTrace();
-
+            Log.error(THIS_CLASS_NAME, e);
             CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS);
         }
     }
@@ -883,8 +884,7 @@ public class MainStageController extends AbstractGuiController {
 
             CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_PERFORMANCE_PACK, packFilePath);
         } catch (Exception e) {
-            e.printStackTrace();
-
+            Log.error(THIS_CLASS_NAME, e);
             CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK, DisplayConstants.MESSAGE_SEE_LOGS);
         }
     }
@@ -894,10 +894,10 @@ public class MainStageController extends AbstractGuiController {
                 DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SEARCH_ENTRY,
                 DisplayConstants.LABEL_SEARCH_ENTRY)
 
-                .ifPresent((entryReference) -> viewDataController.switchToEntryWithReference(entryReference, currentTopicProperty.getValue()));
+                .ifPresent(entryReference -> viewDataController.switchToEntryWithReference(entryReference, currentTopicProperty.getValue()));
     }
 
-    private void resetDatabaseCache(String databaseDirectory) throws IOException, ReflectiveOperationException {
+    private void resetDatabaseCache(String databaseDirectory) throws IOException {
         DatabaseBanksCacheHelper.clearCache(Paths.get(databaseDirectory));
 
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE, DisplayConstants.MESSAGE_DELETED_CACHE, databaseDirectory);
@@ -943,7 +943,7 @@ public class MainStageController extends AbstractGuiController {
         this.layoutObject = layoutObject;
     }
 
-    Stack<EditorLocation> getNavigationHistory() {
+    Deque<EditorLocation> getNavigationHistory() {
         return navigationHistory;
     }
 

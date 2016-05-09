@@ -30,7 +30,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Specialized controller to display database contents.
  */
-public class MainStageViewDataController {
+class MainStageViewDataController {
 
     private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
 
@@ -64,11 +64,11 @@ public class MainStageViewDataController {
     void updateBrowsableEntryLabel(long internalEntryId) {
         mainStageController.browsableEntries.stream()
 
-                .filter((entry) -> entry.getInternalEntryId() == internalEntryId)
+                .filter(entry -> entry.getInternalEntryId() == internalEntryId)
 
                 .findAny()
 
-                .ifPresent((entry) -> {
+                .ifPresent(entry -> {
                     final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
                             mainStageController.getCurrentProfileObject().getName(),
                             mainStageController.getLayoutObject());
@@ -81,7 +81,7 @@ public class MainStageViewDataController {
 
     void fillLocales() {
         DbResourceDto.Locale.valuesAsStream()
-                .forEach((locale) -> mainStageController.localesChoiceBox.getItems().add(locale));
+                .forEach(locale -> mainStageController.localesChoiceBox.getItems().add(locale));
 
         mainStageController.currentLocaleProperty = new SimpleObjectProperty<>(UNITED_STATES);
         mainStageController.localesChoiceBox.valueProperty().bindBidirectional(mainStageController.currentLocaleProperty);
@@ -90,7 +90,7 @@ public class MainStageViewDataController {
     void loadAndFillProfiles() throws IOException {
         mainStageController.setLayoutObject(new ObjectMapper().readValue(thisClass.getResource(SettingsConstants.PATH_RESOURCE_PROFILES), EditorLayoutDto.class));
         mainStageController.getLayoutObject().getProfiles()
-                .forEach((profileObject) -> mainStageController.profilesChoiceBox.getItems().add(profileObject.getName()));
+                .forEach(profileObject -> mainStageController.profilesChoiceBox.getItems().add(profileObject.getName()));
     }
 
     void updateAllPropertiesWithItemValues() {
@@ -99,7 +99,7 @@ public class MainStageViewDataController {
         long entryIndex = mainStageController.currentEntryIndexProperty.getValue();
         DbDto.Topic currentTopic = mainStageController.currentTopicProperty.getValue();
         getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopic)
-                .ifPresent((entry) -> entry.getItems().forEach(this::updateItemProperties));
+                .ifPresent(entry -> entry.getItems().forEach(this::updateItemProperties));
 
         mainStageController.getResourceListByTopicLink().entrySet().forEach(this::updateLinkProperties);
     }
@@ -123,7 +123,7 @@ public class MainStageViewDataController {
     void updateLinkProperties(TopicLinkDto topicLinkObject) {
         mainStageController.resourceListByTopicLink.entrySet().stream()
 
-                .filter((mapEntry) -> mapEntry.getKey().equals(topicLinkObject))
+                .filter(mapEntry -> mapEntry.getKey().equals(topicLinkObject))
 
                 .findAny()
 
@@ -137,7 +137,7 @@ public class MainStageViewDataController {
 
     void switchToSelectedResourceForLinkedTopic(ContentEntryDataItem selectedResource, DbDto.Topic targetTopic, String targetProfileName) {
         ofNullable(selectedResource)
-                .ifPresent((resource) -> {
+                .ifPresent(resource -> {
                     String entryReference = selectedResource.referenceProperty().get();
                     long remoteContentEntryId;
                     OptionalLong potentialEntryId = getMiner().getContentEntryInternalIdentifierWithReference(entryReference, targetTopic);
@@ -184,7 +184,7 @@ public class MainStageViewDataController {
 
     void switchToNext10Entry() {
         long currentEntryIndex = mainStageController.currentEntryIndexProperty.getValue();
-        long lastEntryIndex = mainStageController.getCurrentTopicObject().getData().getEntries().size() - 1;
+        long lastEntryIndex = mainStageController.getCurrentTopicObject().getData().getEntries().size() - 1L;
         if (currentEntryIndex + 10 >= lastEntryIndex) {
             currentEntryIndex = lastEntryIndex;
         } else {
@@ -219,7 +219,7 @@ public class MainStageViewDataController {
     }
 
     void switchToLastEntry() {
-        switchToContentEntry(mainStageController.getCurrentTopicObject().getData().getEntries().size() - 1);
+        switchToContentEntry(mainStageController.getCurrentTopicObject().getData().getEntries().size() - 1L);
     }
 
     void switchToEntryWithReference(String entryReference, DbDto.Topic topic) {
@@ -228,18 +228,14 @@ public class MainStageViewDataController {
     }
 
     void switchToPreviousLocation() {
-        Stack<EditorLocation> navigationHistory = mainStageController.getNavigationHistory();
+        Deque<EditorLocation> navigationHistory = mainStageController.getNavigationHistory();
         if (navigationHistory.isEmpty()) {
             return;
         }
 
         EditorLocation previousLocation = navigationHistory.pop();
         switchToProfileAndEntry(previousLocation.getProfileName(), previousLocation.getEntryId(), false);
-        switchToTabWithId(previousLocation.getTabId());
-    }
-
-    void switchToTabWithId(int tabId) {
-        mainStageController.tabPane.selectionModelProperty().get().select(tabId);
+        mainStageController.tabPane.selectionModelProperty().get().select(previousLocation.getTabId());
     }
 
     List<String> selectEntriesFromTopic(DbDto.Topic topic, String profileName) {
@@ -252,7 +248,7 @@ public class MainStageViewDataController {
 
             return selectedItems.stream()
 
-                    .map((item) -> item.referenceProperty().get())
+                    .map(item -> item.referenceProperty().get())
 
                     .collect(toList());
         }
@@ -263,7 +259,7 @@ public class MainStageViewDataController {
     List<String> selectFieldsFromTopic(DbDto.Topic topic) {
         return mainStageController.getFieldsBrowserStageController().initAndShowModalDialog(topic).stream()
 
-                .map((item) -> Integer.valueOf(item.rankProperty().get()).toString())
+                .map(item -> Integer.valueOf(item.rankProperty().get()).toString())
 
                 .collect(toList());
     }
@@ -290,7 +286,7 @@ public class MainStageViewDataController {
         String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
         contentEntryDataItem.setValue(entryValue);
 
-        String entryReference = Long.valueOf(entryInternalIdentifier).toString();
+        String entryReference = Long.toString(entryInternalIdentifier);
         Optional<String> potentialEntryReference = getMiner().getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, topic);
         if (potentialEntryReference.isPresent()) {
             entryReference = potentialEntryReference.get();
@@ -314,6 +310,7 @@ public class MainStageViewDataController {
         mainStageController.resolvedValuePropertyByFieldRank.get(resourceItem.getFieldRank()).set(resourceValue);
     }
 
+    // Ignore this warning (usage as method reference)
     private void updateLinkProperties(Map.Entry<TopicLinkDto, ObservableList<ContentEntryDataItem>> remoteEntry) {
         TopicLinkDto linkObject = remoteEntry.getKey();
         ObservableList<ContentEntryDataItem> values = remoteEntry.getValue();
@@ -323,9 +320,9 @@ public class MainStageViewDataController {
         DbDto linkedTopicObject = getMiner().getDatabaseTopic(linkObject.getTopic()).get();
         linkedTopicObject.getData().getEntries().stream()
 
-                .filter((contentEntry) -> currentEntryRef.equals(contentEntry.getItems().get(0).getRawValue()))
+                .filter(contentEntry -> currentEntryRef.equals(contentEntry.getItems().get(0).getRawValue()))
 
-                .map((contentEntry) -> fetchLinkResourceFromContentEntry(linkedTopicObject, contentEntry, linkObject))
+                .map(contentEntry -> fetchLinkResourceFromContentEntry(linkedTopicObject, contentEntry, linkObject))
 
                 .forEach(values::add);
     }
@@ -361,7 +358,7 @@ public class MainStageViewDataController {
             databaseEntry.setValue(fetchRemoteContentsWithEntryRef(remoteTopic, remoteEntryReference, remoteFieldRanks));
         } else {
             // Classic topic (e.g. Car_Colors)
-            databaseEntry.setReference(Long.valueOf(entryId).toString());
+            databaseEntry.setReference(Long.toString(entryId));
             databaseEntry.setValue(DatabaseQueryHelper.fetchResourceValuesWithEntryId(
                     entryId, linkObject.getTopic(),
                     mainStageController.currentLocaleProperty.getValue(),
