@@ -25,10 +25,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto.GenuineCamViewDto.Type.Hood;
+import static fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto.GenuineCamViewDto.Type.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -116,6 +117,28 @@ public class AdjustCameraStepTest {
         assertThat(actualViews).extracting("viewType").containsOnly(Hood);
         assertThat(actualViews).extracting("cameraId").containsOnly(201);
         assertThat(actualViews).extracting("viewId").containsOnly(25);
+    }
+
+    @Test
+    public void perform_whenCameraIdInProperties_andMultipleCustomization_shouldCallBankSupportComponent() throws StepException, IOException {
+        // GIVEN
+        databaseContext.getPatchProperties().register("CAMERA", "200");
+        databaseContext.getPatchProperties().register("CAMERA.HOOD", "201|25");
+        databaseContext.getPatchProperties().register("CAMERA.HOODBACK", "202|26");
+        databaseContext.getPatchProperties().register("CAMERA.COCKPIT", "203|45");
+        databaseContext.getPatchProperties().register("CAMERA.COCKPITBACK", "204|46");
+        final GenericStep step = GenericStep.starterStep(installerConfiguration, databaseContext)
+                .nextStep(GenericStep.StepType.ADJUST_CAMERA);
+
+        // WHEN
+        step.start();
+
+        // THEN
+        verify(cameraSupportMock).customizeCamera(anyString(), eq(200), customizeCamCaptor.capture());
+        List<GenuineCamViewsDto.GenuineCamViewDto> actualViews = customizeCamCaptor.getValue().getViews();
+        assertThat(actualViews).extracting("viewType").containsExactly(Hood, Hood_Back, Cockpit, Cockpit_Back);
+        assertThat(actualViews).extracting("cameraId").containsExactly(201, 202, 203, 204);
+        assertThat(actualViews).extracting("viewId").containsExactly(25, 26, 45, 46);
     }
 
     @Test(expected = StepException.class)
