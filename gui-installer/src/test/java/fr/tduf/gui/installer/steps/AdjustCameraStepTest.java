@@ -103,7 +103,7 @@ public class AdjustCameraStepTest {
     public void perform_whenCameraIdInProperties_andSingleCustomization_shouldCallBankSupportComponent() throws StepException, IOException {
         // GIVEN
         databaseContext.getPatchProperties().register("CAMERA", "200");
-        databaseContext.getPatchProperties().register("CAMERA.HOOD", "201|25");
+        databaseContext.getPatchProperties().register("CAMERA.HOOD", "201|HOOD");
         final GenericStep step = GenericStep.starterStep(installerConfiguration, databaseContext)
                 .nextStep(GenericStep.StepType.ADJUST_CAMERA);
 
@@ -116,17 +116,17 @@ public class AdjustCameraStepTest {
         List<GenuineCamViewsDto.GenuineCamViewDto> actualViews = customizeCamCaptor.getValue().getViews();
         assertThat(actualViews).extracting("viewType").containsOnly(Hood);
         assertThat(actualViews).extracting("cameraId").containsOnly(201);
-        assertThat(actualViews).extracting("viewId").containsOnly(25);
+        assertThat(actualViews).extracting("viewId").containsOnly(24);
     }
 
     @Test
     public void perform_whenCameraIdInProperties_andMultipleCustomization_shouldCallBankSupportComponent() throws StepException, IOException {
         // GIVEN
         databaseContext.getPatchProperties().register("CAMERA", "200");
-        databaseContext.getPatchProperties().register("CAMERA.HOOD", "201|25");
-        databaseContext.getPatchProperties().register("CAMERA.HOODBACK", "202|26");
-        databaseContext.getPatchProperties().register("CAMERA.COCKPIT", "203|45");
-        databaseContext.getPatchProperties().register("CAMERA.COCKPITBACK", "204|46");
+        databaseContext.getPatchProperties().register("CAMERA.HOOD", "201|HOOD");
+        databaseContext.getPatchProperties().register("CAMERA.HOODBACK", "202|HOODBACK");
+        databaseContext.getPatchProperties().register("CAMERA.COCKPIT", "203|COCKPIT");
+        databaseContext.getPatchProperties().register("CAMERA.COCKPITBACK", "204|COCKPITBACK");
         final GenericStep step = GenericStep.starterStep(installerConfiguration, databaseContext)
                 .nextStep(GenericStep.StepType.ADJUST_CAMERA);
 
@@ -138,7 +138,7 @@ public class AdjustCameraStepTest {
         List<GenuineCamViewsDto.GenuineCamViewDto> actualViews = customizeCamCaptor.getValue().getViews();
         assertThat(actualViews).extracting("viewType").containsExactly(Hood, Hood_Back, Cockpit, Cockpit_Back);
         assertThat(actualViews).extracting("cameraId").containsExactly(201, 202, 203, 204);
-        assertThat(actualViews).extracting("viewId").containsExactly(25, 26, 45, 46);
+        assertThat(actualViews).extracting("viewId").containsExactly(24, 44, 23, 43);
     }
 
     @Test(expected = StepException.class)
@@ -176,7 +176,7 @@ public class AdjustCameraStepTest {
     public void perform_whenCameraIdNotInProperties_andSingleCustomization_shouldFetchFromDatabase_andCallBankSupportComponent() throws StepException, IOException {
         // GIVEN
         databaseContext.getPatchProperties().register("SLOTREF", "999999");
-        databaseContext.getPatchProperties().register("CAMERA.HOOD", "201|25");
+        databaseContext.getPatchProperties().register("CAMERA.HOOD", "201|HOOD");
         final GenericStep step = GenericStep.starterStep(installerConfiguration, databaseContext)
                 .nextStep(GenericStep.StepType.ADJUST_CAMERA);
 
@@ -189,7 +189,7 @@ public class AdjustCameraStepTest {
         List<GenuineCamViewsDto.GenuineCamViewDto> actualViews = customizeCamCaptor.getValue().getViews();
         assertThat(actualViews).extracting("viewType").containsOnly(Hood);
         assertThat(actualViews).extracting("cameraId").containsOnly(201);
-        assertThat(actualViews).extracting("viewId").containsOnly(25);
+        assertThat(actualViews).extracting("viewId").containsOnly(24);
     }
 
     private static DbDto createCarPhysicsObject(String slotReference) {

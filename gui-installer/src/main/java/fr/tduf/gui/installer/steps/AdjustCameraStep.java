@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties.CustomizableCameraView.fromSuffix;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toCollection;
 
@@ -69,7 +70,8 @@ class AdjustCameraStep extends GenericStep {
 
                     genuineCamViewDto.setViewType(cameraView.getGenuineViewType());
                     genuineCamViewDto.setCameraId(Integer.parseInt(camCompounds[0]));
-                    genuineCamViewDto.setViewId(Integer.parseInt(camCompounds[1]));
+                    GenuineCamViewsDto.GenuineCamViewDto.Type genuineViewType = fromSuffix(camCompounds[1]).getGenuineViewType();
+                    genuineCamViewDto.setViewId(genuineViewType.getInternalId());
 
                     return genuineCamViewDto;
                 });

@@ -26,13 +26,23 @@ public class GenuineCamViewsDto {
     public static class  GenuineCamViewDto {
         /** All handled view kinds **/
         public enum Type {
-            Bumper, Bumper_Back,
-            Cockpit, Cockpit_Back,
-            Follow_Far, Follow_Far_Back,
-            Follow_Large, Follow_Large_Back,
-            Follow_Near, Follow_Near_Back,
-            Hood, Hood_Back,
-            Unknown
+            Follow_Near(20), Follow_Near_Back(40),
+            Follow_Far(21), Follow_Far_Back(41),
+            Bumper(22), Bumper_Back(42),
+            Cockpit(23), Cockpit_Back(43),
+            Hood(24), Hood_Back(44),
+            Follow_Large(25), Follow_Large_Back(45),
+            Unknown(0);
+
+            private int internalId;
+
+            Type(int internalId) {
+                this.internalId = internalId;
+            }
+
+            public int getInternalId() {
+                return internalId;
+            }
         }
 
         @JsonProperty("type")
