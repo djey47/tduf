@@ -1,6 +1,8 @@
 package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
+import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 
@@ -74,7 +76,11 @@ class AdjustCameraStep extends GenericStep {
     }
 
     private int getCameraIdentifierFromDatabase() {
-        // TODO
-        return 0;
+        String slotReference = getDatabaseContext().getPatchProperties().getVehicleSlotReference().orElseThrow(() -> new IllegalStateException("Slot reference is unknown at this point. Cannot continue."));
+
+        return VehicleSlotsHelper.load(getDatabaseContext().getMiner())
+                .getVehicleSlotFromReference(slotReference)
+                .map (VehicleSlot::getCameraIdentifier)
+                .orElseThrow(() -> new IllegalStateException("Vehicle slot should exist in database at this point. Cannot continue."));
     }
 }

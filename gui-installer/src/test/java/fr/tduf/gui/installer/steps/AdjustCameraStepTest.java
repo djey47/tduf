@@ -8,6 +8,9 @@ import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,10 +23,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import static fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto.GenuineCamViewDto.Type.Hood;
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -57,8 +61,9 @@ public class AdjustCameraStepTest {
                 .overridingCameraSupport(cameraSupportMock)
                 .build();
 
+        DbDto carPhysicsObject = createCarPhysicsObject("999999");
         PatchProperties patchProperties = new PatchProperties();
-        databaseContext = new DatabaseContext(new ArrayList<>(), "");
+        databaseContext = new DatabaseContext(singletonList(carPhysicsObject), "");
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
     }
 
@@ -76,7 +81,7 @@ public class AdjustCameraStepTest {
         verifyZeroInteractions(cameraSupportMock);
     }
 
-    @Test(expected=StepException.class)
+    @Test(expected = StepException.class)
     public void perform_whenCameraIdInProperties_andInvalidCustomization_shouldThrowException() throws StepException, IOException {
         // GIVEN
         databaseContext.getPatchProperties().register("CAMERA", "200");
@@ -112,5 +117,73 @@ public class AdjustCameraStepTest {
         assertThat(actualViews).extracting("cameraId").containsOnly(201);
         assertThat(actualViews).extracting("viewId").containsOnly(25);
     }
-    // TODO test with camera id from database
+
+    @Test(expected = StepException.class)
+    public void perform_whenCameraIdNotInProperties_andSlotNotInDatabase_shouldThrowException() throws StepException, IOException {
+        // GIVEN
+        databaseContext.getPatchProperties().register("SLOTREF", "999998");
+        final GenericStep step = GenericStep.starterStep(installerConfiguration, databaseContext)
+                .nextStep(GenericStep.StepType.ADJUST_CAMERA);
+
+        // WHEN-THEN
+        try {
+            step.start();
+        } catch (StepException se) {
+            assertThat(se).hasCauseExactlyInstanceOf(IllegalStateException.class);
+            throw se;
+        }
+    }
+
+    @Test(expected = StepException.class)
+    public void perform_whenCameraIdAndSlotNotInProperties_shouldThrowException() throws StepException, IOException {
+        // GIVEN
+        final GenericStep step = GenericStep.starterStep(installerConfiguration, databaseContext)
+                .nextStep(GenericStep.StepType.ADJUST_CAMERA);
+
+        // WHEN-THEN
+        try {
+            step.start();
+        } catch (StepException se) {
+            assertThat(se).hasCauseExactlyInstanceOf(IllegalStateException.class);
+            throw se;
+        }
+    }
+
+    @Test
+    public void perform_whenCameraIdNotInProperties_andSingleCustomization_shouldFetchFromDatabase_andCallBankSupportComponent() throws StepException, IOException {
+        // GIVEN
+        databaseContext.getPatchProperties().register("SLOTREF", "999999");
+        databaseContext.getPatchProperties().register("CAMERA.HOOD", "201|25");
+        final GenericStep step = GenericStep.starterStep(installerConfiguration, databaseContext)
+                .nextStep(GenericStep.StepType.ADJUST_CAMERA);
+
+        // WHEN
+        step.start();
+
+        // THEN
+        verify(cameraSupportMock).customizeCamera(camFileCaptor.capture(), eq(200), customizeCamCaptor.capture());
+        assertThat(Paths.get(camFileCaptor.getValue()).toString()).endsWith(Paths.get("Euro", "Bnk", "Database", "Cameras.bin").toString());
+        List<GenuineCamViewsDto.GenuineCamViewDto> actualViews = customizeCamCaptor.getValue().getViews();
+        assertThat(actualViews).extracting("viewType").containsOnly(Hood);
+        assertThat(actualViews).extracting("cameraId").containsOnly(201);
+        assertThat(actualViews).extracting("viewId").containsOnly(25);
+    }
+
+    private static DbDto createCarPhysicsObject(String slotReference) {
+        return DbDto.builder()
+                .withStructure(DbStructureDto.builder()
+                        .forTopic(DbDto.Topic.CAR_PHYSICS_DATA)
+                        .addItem(DbStructureDto.Field.builder()
+                                .ofRank(1)
+                                .fromType(UID)
+                                .build())
+                        .build())
+                .withData(DbDataDto.builder()
+                        .addEntry(DbDataDto.Entry.builder()
+                                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(slotReference).build())
+                                .addItem(DbDataDto.Item.builder().ofFieldRank(98).withRawValue("200").build())
+                                .build())
+                        .build())
+                .build();
+    }
 }
