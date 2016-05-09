@@ -39,7 +39,7 @@ public class PatchProperties extends Properties {
         HOOD("HOOD", Hood),
         HOOD_BACK("HOODBACK", Hood_Back),
         COCKPIT("COCKPIT", Cockpit),
-        COCKPIT_BACK("COCKPIT_BACK", Cockpit_Back);
+        COCKPIT_BACK("COCKPITBACK", Cockpit_Back);
 
         private final String propertySuffix;
         private final GenuineCamViewsDto.GenuineCamViewDto.Type genuineViewType;
