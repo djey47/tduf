@@ -11,15 +11,21 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
-import static org.mockito.Matchers.*;
+import static fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto.GenuineCamViewDto.Type.Hood;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
@@ -28,6 +34,12 @@ public class AdjustCameraStepTest {
 
     @Mock
     private GenuineCamGateway cameraSupportMock;
+
+    @Captor
+    private ArgumentCaptor<String> camFileCaptor;
+
+    @Captor
+    private ArgumentCaptor<GenuineCamViewsDto> customizeCamCaptor;
 
     private InstallerConfiguration installerConfiguration;
     private DatabaseContext databaseContext;
@@ -64,6 +76,23 @@ public class AdjustCameraStepTest {
         verifyZeroInteractions(cameraSupportMock);
     }
 
+    @Test(expected=StepException.class)
+    public void perform_whenCameraIdInProperties_andInvalidCustomization_shouldThrowException() throws StepException, IOException {
+        // GIVEN
+        databaseContext.getPatchProperties().register("CAMERA", "200");
+        databaseContext.getPatchProperties().register("CAMERA.HOOD", "201^25");
+        final GenericStep step = GenericStep.starterStep(installerConfiguration, databaseContext)
+                .nextStep(GenericStep.StepType.ADJUST_CAMERA);
+
+        // WHEN-THEN
+        try {
+            step.start();
+        } catch (StepException se) {
+            assertThat(se).hasCauseExactlyInstanceOf(IllegalArgumentException.class);
+            throw se;
+        }
+    }
+
     @Test
     public void perform_whenCameraIdInProperties_andSingleCustomization_shouldCallBankSupportComponent() throws StepException, IOException {
         // GIVEN
@@ -76,11 +105,12 @@ public class AdjustCameraStepTest {
         step.start();
 
         // THEN
-        verify(cameraSupportMock).customizeCamera(anyString(), eq(200), any(GenuineCamViewsDto.class));
-        // TODO use captors to perform stronger assertions
+        verify(cameraSupportMock).customizeCamera(camFileCaptor.capture(), eq(200), customizeCamCaptor.capture());
+        assertThat(Paths.get(camFileCaptor.getValue()).toString()).endsWith(Paths.get("Euro", "Bnk", "Database", "Cameras.bin").toString());
+        List<GenuineCamViewsDto.GenuineCamViewDto> actualViews = customizeCamCaptor.getValue().getViews();
+        assertThat(actualViews).extracting("viewType").containsOnly(Hood);
+        assertThat(actualViews).extracting("cameraId").containsOnly(201);
+        assertThat(actualViews).extracting("viewId").containsOnly(25);
     }
-
-    // TODO test with invalid cam|view
-
     // TODO test with camera id from database
 }
