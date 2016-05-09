@@ -48,7 +48,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                         EditorLayoutHelper.getFieldPrioritySettingByRank(structureField2.getRank(), profileName, layoutObject),
                         EditorLayoutHelper.getFieldPrioritySettingByRank(structureField1.getRank(), profileName, layoutObject)))
 
-                .forEach((structureField) -> addFieldControls(
+                .forEach(structureField -> addFieldControls(
                         controller.getDefaultTab(),
                         structureField,
                         topic
@@ -109,13 +109,15 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(valueTextField);
 
         valueTextField.textProperty().bindBidirectional(property);
-        valueTextField.focusedProperty().addListener(controller.handleTextFieldFocusChange(field.getRank(), property));
+        if (!valueTextFieldReadOnly) {
+            valueTextField.focusedProperty().addListener(controller.handleTextFieldFocusChange(field.getRank(), property));
+        }
     }
 
     private void addCustomControls(HBox fieldBox, DbStructureDto.Field field, boolean fieldReadOnly, DbDto.Topic currentTopic, SimpleStringProperty property) {
         switch (field.getFieldType()) {
             case PERCENT:
-                addPercentValueControls(fieldBox, fieldReadOnly, property);
+                addPercentValueControls(fieldBox, field.getRank(), fieldReadOnly, property);
                 break;
             case BITFIELD:
                 addBitfieldValueControls(fieldBox, field.getRank(), fieldReadOnly, property, currentTopic);
@@ -131,7 +133,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
-    private void addPercentValueControls(HBox fieldBox, boolean fieldReadOnly, SimpleStringProperty rawValueProperty) {
+    private void addPercentValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, SimpleStringProperty rawValueProperty) {
         Slider slider = new Slider(0.0, 100.0, 0.0);
         slider.setShowTickLabels(true);
         slider.setShowTickMarks(true);
@@ -142,6 +144,9 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         slider.setDisable(fieldReadOnly);
 
         Bindings.bindBidirectional(rawValueProperty, slider.valueProperty(), new PercentNumberToStringConverter());
+        if (!fieldReadOnly) {
+            slider.valueChangingProperty().addListener(controller.handleSliderValueChange(fieldRank, rawValueProperty));
+        }
 
         fieldBox.getChildren().add(slider);
         fieldBox.getChildren().add(new Separator(VERTICAL));
@@ -188,9 +193,8 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
     private void addResourceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field, SimpleStringProperty rawValueProperty, DbDto.Topic topic) {
         String fieldTargetRef = field.getTargetRef();
-        if (fieldTargetRef != null) {
-            topic = getMiner().getDatabaseTopicFromReference(fieldTargetRef).getTopic();
-        }
+        DbDto.Topic effectiveTopic = fieldTargetRef == null ?
+                topic : getMiner().getDatabaseTopicFromReference(fieldTargetRef).getTopic();
 
         int fieldRank = field.getRank();
         SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.VALUE_RESOURCE_DEFAULT);
@@ -200,7 +204,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
-        addCustomLabel(fieldBox, fieldReadOnly, topic.name());
+        addCustomLabel(fieldBox, fieldReadOnly, effectiveTopic.name());
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
@@ -209,7 +213,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                     fieldBox,
                     DisplayConstants.LABEL_BUTTON_BROWSE,
                     DisplayConstants.TOOLTIP_BUTTON_BROWSE_RESOURCES,
-                    controller.handleBrowseResourcesButtonMouseClick(topic, rawValueProperty, fieldRank)
+                    controller.handleBrowseResourcesButtonMouseClick(effectiveTopic, rawValueProperty, fieldRank)
             );
         }
     }
@@ -219,15 +223,15 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         BitfieldHelper bitfieldHelper = new BitfieldHelper();
         bitfieldHelper.getBitfieldReferenceForTopic(currentTopic)
-                .ifPresent((refs) -> refs
-                        .forEach((ref) -> addBitValueCheckbox(vbox, fieldRank, ref, fieldReadOnly, rawValueProperty, currentTopic, bitfieldHelper)));
+                .ifPresent(refs -> refs
+                        .forEach(ref -> addBitValueCheckbox(vbox, fieldRank, ref, fieldReadOnly, rawValueProperty, currentTopic, bitfieldHelper)));
 
         fieldBox.getChildren().add(vbox);
     }
 
     private void addBitValueCheckbox(VBox vbox, int fieldRank, DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto ref, boolean fieldReadOnly, SimpleStringProperty rawValueProperty, DbDto.Topic currentTopic, BitfieldHelper bitfieldHelper) {
         int bitIndex = ref.getIndex();
-        String displayedIndex = Strings.padStart(Integer.valueOf(bitIndex).toString(), 2, '0');
+        String displayedIndex = Strings.padStart(Integer.toString(bitIndex), 2, '0');
         String label = String.format("%s: %s", displayedIndex, ref.getLabel());
         CheckBox checkBox = new CheckBox(label);
 
@@ -239,7 +243,9 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
 
         Bindings.bindBidirectional(rawValueProperty, checkBox.selectedProperty(), new BitfieldToStringConverter(currentTopic, bitIndex, rawValueProperty, bitfieldHelper));
-        checkBox.selectedProperty().addListener(controller.handleBitfieldCheckboxSelectionChange(fieldRank, rawValueProperty));
+        if (!fieldReadOnly) {
+            checkBox.selectedProperty().addListener(controller.handleBitfieldCheckboxSelectionChange(fieldRank, rawValueProperty));
+        }
 
         vbox.getChildren().add(checkBox);
     }

@@ -496,6 +496,14 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
+    public ChangeListener<Boolean> handleSliderValueChange(int fieldRank, SimpleStringProperty rawValueProperty) {
+        return (observable, oldState, newState) -> {
+            Log.trace(THIS_CLASS_NAME, "->handleSliderValueChange, fieldRank=" + fieldRank + ", rawValue=" + rawValueProperty.get());
+
+            changeDataController.updateContentItem(currentTopicObject.getTopic(), fieldRank, rawValueProperty.get());
+        };
+    }
+
     public ChangeListener<Boolean> handleBitfieldCheckboxSelectionChange(int fieldRank, SimpleStringProperty textFieldValueProperty) {
         return ((observable, oldCheckedState, newCheckedState) -> {
             Log.trace(THIS_CLASS_NAME, "->handleBitfieldCheckboxSelectionChange, checked=" + newCheckedState + ", fieldRank=" + fieldRank);
