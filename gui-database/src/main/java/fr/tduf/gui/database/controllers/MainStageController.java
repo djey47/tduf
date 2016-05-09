@@ -731,7 +731,6 @@ public class MainStageController extends AbstractGuiController {
         long newEntryIndex = changeDataController.addEntryForCurrentTopic();
 
         viewDataController.updateEntriesAndSwitchTo(newEntryIndex);
-        viewDataController.fillBrowsableEntries();
     }
 
     private void duplicateEntryAndUpdateStage() {
@@ -853,6 +852,7 @@ public class MainStageController extends AbstractGuiController {
             File patchFile = potentialFile.get();
             final Optional<String> potentialPropertiesFile = changeDataController.importPatch(patchFile);
 
+            viewDataController.updateEntriesAndSwitchTo(0);
             viewDataController.updateAllPropertiesWithItemValues();
 
             String writtenPropertiesPath = "";

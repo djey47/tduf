@@ -51,9 +51,9 @@ public class MainStageViewDataController {
         mainStageController.browsableEntries.setAll(
                 getMiner().getDatabaseTopic(currentTopic)
 
-                .map((topicObject) -> topicObject.getData().getEntries().stream()
+                .map(topicObject -> topicObject.getData().getEntries().stream()
 
-                        .map((topicEntry) -> getDisplayableEntryForCurrentLocale(topicEntry, labelFieldRanks, currentTopic))
+                        .map(topicEntry -> getDisplayableEntryForCurrentLocale(topicEntry, labelFieldRanks, currentTopic))
 
                         .collect(toList()))
 
