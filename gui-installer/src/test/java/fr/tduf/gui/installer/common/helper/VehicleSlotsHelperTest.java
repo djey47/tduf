@@ -72,6 +72,7 @@ public class VehicleSlotsHelperTest {
         String rearRimFileNameRef = "2222";
         String rearRimFileName = "FILE_R";
         int idCar = 222;
+        int idCam = 200;
         DbDataDto.Entry brandsEntry = DbDataDto.Entry.builder()
                 .forId(0)
                 .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(brandSlotRef).build())
@@ -86,7 +87,8 @@ public class VehicleSlotsHelperTest {
                 .addItem(DbDataDto.Item.builder().ofFieldRank(12).withRawValue(realNameRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(13).withRawValue(modelNameRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(14).withRawValue(versionNameRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(102).withRawValue(Integer.valueOf(idCar).toString()).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(98).withRawValue(Integer.toString(idCam)).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(102).withRawValue(Integer.toString(idCar)).build())
                 .build();
         DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
                 .forId(0)
@@ -107,24 +109,31 @@ public class VehicleSlotsHelperTest {
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(frontRimFileNameRef, RIMS, UNITED_STATES)).thenReturn(of(frontRimFileName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(rearRimFileNameRef, RIMS, UNITED_STATES)).thenReturn(of(rearRimFileName));
 
+
         // WHEN
         final Optional<VehicleSlot> actualSlot = VehicleSlotsHelper
                 .load(bulkDatabaseMinerMock)
                 .getVehicleSlotFromReference(slotRef);
 
+
         // THEN
         assertThat(actualSlot).isPresent();
-        assertThat(actualSlot.get().getRef()).isEqualTo(slotRef);
-        assertThat(actualSlot.get().getCarIdentifier()).isEqualTo(idCar);
-        assertThat(actualSlot.get().getFileName()).isEqualTo(Resource.from(fileNameRef, fileName));
-        assertThat(actualSlot.get().getBrandName()).isEqualTo(Resource.from("", brandName));
-        assertThat(actualSlot.get().getRealName()).isEqualTo(Resource.from(realNameRef, realName));
-        assertThat(actualSlot.get().getModelName()).isEqualTo(Resource.from(modelNameRef, modelName));
-        assertThat(actualSlot.get().getVersionName()).isEqualTo(Resource.from(versionNameRef, versionName));
-        assertThat(actualSlot.get().getDefaultRims().getRef()).isEqualTo(rimSlotRef);
-        assertThat(actualSlot.get().getDefaultRims().getParentDirectoryName()).isEqualTo(Resource.from(directoryRef, directory));
-        assertThat(actualSlot.get().getDefaultRims().getFrontRimInfo().getFileName()).isEqualTo(Resource.from(frontRimFileNameRef, frontRimFileName));
-        assertThat(actualSlot.get().getDefaultRims().getRearRimInfo().getFileName()).isEqualTo(Resource.from(rearRimFileNameRef, rearRimFileName));
+
+        VehicleSlot vehicleSlot = actualSlot.get();
+        assertThat(vehicleSlot.getRef()).isEqualTo(slotRef);
+        assertThat(vehicleSlot.getCarIdentifier()).isEqualTo(idCar);
+        assertThat(vehicleSlot.getFileName()).isEqualTo(Resource.from(fileNameRef, fileName));
+        assertThat(vehicleSlot.getBrandName()).isEqualTo(Resource.from("", brandName));
+        assertThat(vehicleSlot.getRealName()).isEqualTo(Resource.from(realNameRef, realName));
+        assertThat(vehicleSlot.getModelName()).isEqualTo(Resource.from(modelNameRef, modelName));
+        assertThat(vehicleSlot.getVersionName()).isEqualTo(Resource.from(versionNameRef, versionName));
+        assertThat(vehicleSlot.getCameraIdentifier()).isEqualTo(idCam);
+
+        RimSlot actualDefaultRims = vehicleSlot.getDefaultRims();
+        assertThat(actualDefaultRims.getRef()).isEqualTo(rimSlotRef);
+        assertThat(actualDefaultRims.getParentDirectoryName()).isEqualTo(Resource.from(directoryRef, directory));
+        assertThat(actualDefaultRims.getFrontRimInfo().getFileName()).isEqualTo(Resource.from(frontRimFileNameRef, frontRimFileName));
+        assertThat(actualDefaultRims.getRearRimInfo().getFileName()).isEqualTo(Resource.from(rearRimFileNameRef, rearRimFileName));
     }
 
     @Test

@@ -18,6 +18,7 @@ public class DatabaseConstants {
     public static final int FIELD_RANK_CAR_REAL_NAME = 12;
     public static final int FIELD_RANK_CAR_MODEL_NAME = 13;
     public static final int FIELD_RANK_CAR_VERSION_NAME = 14;
+    public static final int FIELD_RANK_ID_CAM = 98;
     public static final int FIELD_RANK_ID_CAR = 102;
 
     public static final int FIELD_RANK_DEALER_REF = 1;            // CAR SHOPS

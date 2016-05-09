@@ -27,6 +27,8 @@ public class VehicleSlotsHelper extends CommonHelper {
 
     public static final int DEFAULT_VEHICLE_ID = 0;
 
+    private static final int DEFAULT_CAM_ID = 0;
+
     private VehicleSlotsHelper(BulkDatabaseMiner miner) {
         super(miner);
     }
@@ -63,6 +65,7 @@ public class VehicleSlotsHelper extends CommonHelper {
         Optional<Resource> versionName = getResourceFromDatabaseEntry(physicsEntry, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_VERSION_NAME);
 
         Optional<Integer> carIdentifier = getIntValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_ID_CAR);
+        Optional<Integer> cameraIdentifier = getIntValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_ID_CAM);
 
         final Optional<RimSlot> defaultRims = getDefaultRimEntryForVehicle(slotReference);
 
@@ -75,6 +78,7 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .withVersionName(versionName.orElse(null))
                 .withDefaultRims(defaultRims.orElse(null))
                 .withBrandName(brandName.orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
+                .withCameraIdentifier(cameraIdentifier.orElse(DEFAULT_CAM_ID))
                 .build());
     }
 

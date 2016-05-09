@@ -18,6 +18,7 @@ public class VehicleSlot {
     private Resource realName;
     private Resource modelName;
     private Resource versionName;
+    private int cameraIdentifier;
 
     private VehicleSlot(String ref) {
         this.ref = requireNonNull(ref, "Slot reference is required.");
@@ -72,6 +73,10 @@ public class VehicleSlot {
         return versionName;
     }
 
+    public int getCameraIdentifier() {
+        return cameraIdentifier;
+    }
+
     /**
      * Creates custom VehicleSlot instances.
      */
@@ -84,6 +89,7 @@ public class VehicleSlot {
         private Resource brandName;
         private Resource modelName;
         private Resource versionName;
+        private int cameraIdentifier;
 
         public VehicleSlotBuilder withRef(String ref) {
             this.ref = ref;
@@ -123,6 +129,11 @@ public class VehicleSlot {
             return this;
         }
 
+        public VehicleSlotBuilder withCameraIdentifier(int id) {
+            this.cameraIdentifier = id;
+            return this;
+        }
+
         public VehicleSlot build() {
             final VehicleSlot vehicleSlot = new VehicleSlot(this.ref);
 
@@ -133,6 +144,7 @@ public class VehicleSlot {
             vehicleSlot.brandName = brandName;
             vehicleSlot.modelName = modelName;
             vehicleSlot.versionName = versionName;
+            vehicleSlot.cameraIdentifier = cameraIdentifier;
 
             return vehicleSlot;
         }
