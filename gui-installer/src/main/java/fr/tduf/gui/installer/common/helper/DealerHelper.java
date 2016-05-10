@@ -26,9 +26,10 @@ public class DealerHelper extends CommonHelper {
      */
     public enum DealerKind {
         ALL(),
-        SELL_CARS(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER),
-        SELL_BIKES(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER),
-        SELLABLE(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER, DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER);
+        CAR_DEALER(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER),
+        BIKE_DEALER(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER),
+        DEALER(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER, DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER),
+        RENTAL(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_RENTAL);
 
         private final List<String> fileNamePrefixes;
 

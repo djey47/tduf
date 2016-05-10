@@ -42,6 +42,7 @@ public class DatabaseConstants {
     public static final String REF_FREE_DEALER_SLOT = "61085282";               // CAR SHOPS
     public static final String RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER = "ECD_";
     public static final String RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER = "EBD_";
+    public static final String RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_RENTAL = "ECR_";
 
     public static final String RESOURCE_REF_NONE_INTERIOR_NAME = "53365512";        // INTERIOR
 
