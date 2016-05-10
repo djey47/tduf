@@ -84,7 +84,7 @@ public class DealerSlotsStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleDealersTableMouseClick");
 
         TableViewHelper.getMouseSelectedItem(event, DealerSlotData.DealerDataItem.class)
-                .ifPresent((item) -> {
+                .ifPresent(item -> {
                     selectedDealerProperty.setValue(item);
                     updateSlotsData(item);
                 });
@@ -95,7 +95,7 @@ public class DealerSlotsStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleSlotsTableMouseClick");
 
         TableViewHelper.getMouseSelectedItem(event, DealerSlotData.SlotDataItem.class)
-                .ifPresent((item) -> selectedSlotProperty.setValue(item));
+                .ifPresent(selectedSlotProperty::setValue);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class DealerSlotsStageController extends AbstractGuiController {
             @Override
             public String toString(DealerSlotData.DealerDataItem dealerItem) {
                 return ofNullable(dealerItem)
-                        .map((item) -> item.referenceProperty().get())
+                        .map(item -> item.referenceProperty().get())
                         .orElse("");
             }
 
@@ -149,7 +149,7 @@ public class DealerSlotsStageController extends AbstractGuiController {
             @Override
             public String toString(DealerSlotData.SlotDataItem slotItem) {
                 return ofNullable(slotItem)
-                        .map((item) -> item.rankProperty().get())
+                        .map(item -> item.rankProperty().get())
                         .map(Integer::valueOf)
                         .map(Object::toString)
                         .orElse("");
@@ -169,20 +169,20 @@ public class DealerSlotsStageController extends AbstractGuiController {
     private void initTablePane() {
         // TODO sort by name by default
         TableColumn<DealerSlotData.DealerDataItem, ?> refColumn = dealersTableView.getColumns().get(0);
-        refColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().referenceProperty());
+        refColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().referenceProperty());
         TableColumn<DealerSlotData.DealerDataItem, ?> nameColumn = dealersTableView.getColumns().get(1);
-        nameColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().nameProperty());
+        nameColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().nameProperty());
         TableColumn<DealerSlotData.DealerDataItem, ?> locationColumn = dealersTableView.getColumns().get(2);
-        locationColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().locationProperty());
+        locationColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().locationProperty());
         TableColumn<DealerSlotData.DealerDataItem, ?> freeSlotsColumn = dealersTableView.getColumns().get(3);
-        freeSlotsColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().freeSlotsProperty());
+        freeSlotsColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().freeSlotsProperty());
 
         dealersTableView.setItems(dealersData);
 
         TableColumn<DealerSlotData.SlotDataItem, ?> rankColumn = slotsTableView.getColumns().get(0);
-        rankColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().rankProperty());
+        rankColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().rankProperty());
         TableColumn<DealerSlotData.SlotDataItem, ?> vehicleNameColumn = slotsTableView.getColumns().get(1);
-        vehicleNameColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().vehicleNameProperty());
+        vehicleNameColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().vehicleNameProperty());
 
         slotsTableView.setItems(slotsData);
     }
