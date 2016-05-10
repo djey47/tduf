@@ -12,6 +12,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static fr.tduf.gui.installer.common.DatabaseConstants.*;
 import static fr.tduf.gui.installer.common.DisplayConstants.*;
@@ -32,8 +33,12 @@ public class VehicleSlotsHelper extends CommonHelper {
 
     private static final int DEFAULT_CAM_ID = 0;
 
+    private static final Pattern PATTERN_TDUCP_CAR_SLOT = Pattern.compile("3\\d{3}0{5}");
+    private static final Pattern PATTERN_TDUCP_BIKE_SLOT = Pattern.compile("4\\d{3}0{5}");
+
     private static final List<String> RESOURCE_REFS_CAR_GROUPS = asList(RESOURCE_REF_GROUP_A, RESOURCE_REF_GROUP_B, RESOURCE_REF_GROUP_C, RESOURCE_REF_GROUP_D, RESOURCE_REF_GROUP_E, RESOURCE_REF_GROUP_F, RESOURCE_REF_GROUP_G);
     private static final List<String> RESOURCE_REFS_BIKE_GROUPS = asList(RESOURCE_REF_GROUP_MA, RESOURCE_REF_GROUP_MB);
+    private static final List<String> SLOT_REFS_TDUCP_UNLOCKED = asList("", "");
 
 
     private VehicleSlotsHelper(BulkDatabaseMiner miner) {
@@ -265,7 +270,6 @@ public class VehicleSlotsHelper extends CommonHelper {
 
     private static boolean byVehicleKind(DbDataDto.Entry slotEntry, VehicleKind vehicleKind) {
         final String groupRawValue = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_GROUP).get().getRawValue();
-
         switch(vehicleKind) {
             case ALL:
                 return !DatabaseConstants.RESOURCE_REF_GROUP_Z.equals(groupRawValue);
@@ -279,6 +283,22 @@ public class VehicleSlotsHelper extends CommonHelper {
     }
 
     private static boolean bySlotKind(DbDataDto.Entry slotEntry, SlotKind slotKind) {
-        return true;
+        final String slotReference = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REF).get().getRawValue();
+        switch(slotKind) {
+            case DRIVABLE:
+                return true;
+            case GENUINE:
+                return !isTDUCPVehicleSlot(slotReference);
+            case TDUCP:
+                return isTDUCPVehicleSlot(slotReference);
+            default:
+                return false;
+        }
+    }
+
+    private static boolean isTDUCPVehicleSlot(String slotReference) {
+        return  PATTERN_TDUCP_CAR_SLOT.matcher(slotReference).matches()
+                || PATTERN_TDUCP_BIKE_SLOT.matcher(slotReference).matches()
+                || SLOT_REFS_TDUCP_UNLOCKED.contains(slotReference);
     }
 }
