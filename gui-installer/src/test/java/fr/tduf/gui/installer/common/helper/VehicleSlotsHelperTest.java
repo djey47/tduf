@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
-import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.SlotKind.DRIVABLE;
-import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.VehicleKind.ALL;
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.SlotKind.ALL;
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.VehicleKind.DRIVABLE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Optional.empty;
@@ -193,7 +193,7 @@ public class VehicleSlotsHelperTest {
 
 
         // WHEN
-        final List<VehicleSlot> actualSlots = vehicleSlotsHelper.getVehicleSlots(DRIVABLE, ALL);
+        final List<VehicleSlot> actualSlots = vehicleSlotsHelper.getVehicleSlots(ALL, DRIVABLE);
 
 
         // THEN
@@ -220,7 +220,7 @@ public class VehicleSlotsHelperTest {
 
 
         // WHEN
-        final List<VehicleSlot> actualSlots = vehicleSlotsHelper.getVehicleSlots(DRIVABLE, ALL);
+        final List<VehicleSlot> actualSlots = vehicleSlotsHelper.getVehicleSlots(ALL, DRIVABLE);
 
 
         // THEN

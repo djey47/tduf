@@ -54,7 +54,7 @@ public class VehicleSlotsHelper extends CommonHelper {
      * Criteria for slot lookups by vehicle type
      */
     public enum VehicleKind {
-        ALL(ITEM_VEHICLE_KIND_ALL),
+        DRIVABLE(ITEM_VEHICLE_KIND_DRIVABLE),
         CAR(ITEM_VEHICLE_KIND_CAR),
         BIKE(ITEM_VEHICLE_KIND_BIKE);
 
@@ -73,7 +73,7 @@ public class VehicleSlotsHelper extends CommonHelper {
      * Criteria for slot lookups by slot type
      */
     public enum SlotKind {
-        DRIVABLE(ITEM_SLOT_KIND_DRIVABLE),
+        ALL(ITEM_SLOT_KIND_ALL),
         GENUINE(ITEM_SLOT_KIND_GENUINE),
         TDUCP(ITEM_SLOT_KIND_TDUCP);
 
@@ -271,7 +271,7 @@ public class VehicleSlotsHelper extends CommonHelper {
     private static boolean byVehicleKind(DbDataDto.Entry slotEntry, VehicleKind vehicleKind) {
         final String groupRawValue = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_GROUP).get().getRawValue();
         switch(vehicleKind) {
-            case ALL:
+            case DRIVABLE:
                 return !DatabaseConstants.RESOURCE_REF_GROUP_Z.equals(groupRawValue);
             case CAR:
                 return RESOURCE_REFS_CAR_GROUPS.contains(groupRawValue);
@@ -285,7 +285,7 @@ public class VehicleSlotsHelper extends CommonHelper {
     private static boolean bySlotKind(DbDataDto.Entry slotEntry, SlotKind slotKind) {
         final String slotReference = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REF).get().getRawValue();
         switch(slotKind) {
-            case DRIVABLE:
+            case ALL:
                 return true;
             case GENUINE:
                 return !isTDUCPVehicleSlot(slotReference);
