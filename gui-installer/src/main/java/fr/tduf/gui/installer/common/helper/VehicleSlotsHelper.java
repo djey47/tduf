@@ -38,7 +38,13 @@ public class VehicleSlotsHelper extends CommonHelper {
 
     private static final List<String> RESOURCE_REFS_CAR_GROUPS = asList(RESOURCE_REF_GROUP_A, RESOURCE_REF_GROUP_B, RESOURCE_REF_GROUP_C, RESOURCE_REF_GROUP_D, RESOURCE_REF_GROUP_E, RESOURCE_REF_GROUP_F, RESOURCE_REF_GROUP_G);
     private static final List<String> RESOURCE_REFS_BIKE_GROUPS = asList(RESOURCE_REF_GROUP_MA, RESOURCE_REF_GROUP_MB);
-    private static final List<String> SLOT_REFS_TDUCP_UNLOCKED = asList("", "");
+    // TODO see to externalize
+    private static final List<String> SLOT_REFS_TDUCP_UNLOCKED = asList(
+            "606298799", "734237852", "1202238231", "843182934", "1289993715", "604354597", "12778906",
+            "1190174404", "1197985552", "619586695", "1204318124", "1244127953", "1193140602", "698399392",
+            "1108350118", "1108350119", "1108350120", "1186047058", "921827346", "705918591", "699572006",
+            "1238267235", "1237390819", "932820187", "1244034708", "1208897332", "1291823209"
+    );
 
 
     private VehicleSlotsHelper(BulkDatabaseMiner miner) {
