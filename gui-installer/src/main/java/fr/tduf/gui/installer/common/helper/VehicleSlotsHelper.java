@@ -178,9 +178,9 @@ public class VehicleSlotsHelper extends CommonHelper {
     }
 
     /**
-     * @return list of car physics entries concerning only drivable vehicles
+     * @return list of car physics entries following criteria:
      */
-    public List<VehicleSlot> getDrivableVehicleSlots() {
+    public List<VehicleSlot> getVehicleSlots(SlotKind slotKind, VehicleKind vehicleKind) {
         return miner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries().stream()
 
                 .filter(slotEntry -> {

@@ -27,6 +27,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
 
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.SlotKind.DRIVABLE;
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.VehicleKind.ALL;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
@@ -184,7 +186,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
     private void updateSlotsStageData() {
         slotsData.clear();
 
-        slotsData.addAll(vehicleSlotsHelper.getDrivableVehicleSlots().stream()
+        slotsData.addAll(vehicleSlotsHelper.getVehicleSlots(DRIVABLE, ALL).stream()
 
                 .map((vehicleSlot) -> {
                     VehicleSlotDataItem dataItem = new VehicleSlotDataItem();

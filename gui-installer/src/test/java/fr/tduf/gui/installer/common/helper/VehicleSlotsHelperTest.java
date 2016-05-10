@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.SlotKind.DRIVABLE;
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.VehicleKind.ALL;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Optional.empty;
@@ -177,7 +179,7 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
-    public void getDrivableVehicleSlotEntries_whenNoDrivableVehicle_shouldReturnEmptyList() {
+    public void getVehicleSlots_whenNoDrivableVehicle_shouldReturnEmptyList() {
         // GIVEN
         String undrivableRef = "00000000";
         DbDataDto.Item refItem = DbDataDto.Item.builder().ofFieldRank(1).withRawValue(undrivableRef).build();
@@ -191,7 +193,7 @@ public class VehicleSlotsHelperTest {
 
 
         // WHEN
-        final List<VehicleSlot> actualSlots = vehicleSlotsHelper.getDrivableVehicleSlots();
+        final List<VehicleSlot> actualSlots = vehicleSlotsHelper.getVehicleSlots(DRIVABLE, ALL);
 
 
         // THEN
@@ -199,7 +201,7 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
-    public void getDrivableVehicleSlotEntries_when1DrivableVehicle_shouldReturnIt() {
+    public void getVehicleSlots_when1DrivableVehicle_shouldReturnIt() {
         // GIVEN
         String undrivableRef = "00000000";
         String drivableRef = "11111111";
@@ -218,7 +220,7 @@ public class VehicleSlotsHelperTest {
 
 
         // WHEN
-        final List<VehicleSlot> actualSlots = vehicleSlotsHelper.getDrivableVehicleSlots();
+        final List<VehicleSlot> actualSlots = vehicleSlotsHelper.getVehicleSlots(DRIVABLE, ALL);
 
 
         // THEN
