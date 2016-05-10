@@ -141,14 +141,14 @@ public class VehicleSlotsHelper extends CommonHelper {
     public List<VehicleSlot> getDrivableVehicleSlots() {
         return miner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries().stream()
 
-                .filter((slotEntry) -> {
+                .filter(slotEntry -> {
                     final String groupRawValue = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_GROUP).get().getRawValue();
                     return !DatabaseConstants.RESOURCE_REF_GROUP_Z.equals(groupRawValue);
                 })
 
-                .map((drivableSlotEntry) -> drivableSlotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REF).get())
+                .map(drivableSlotEntry -> drivableSlotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REF).get())
 
-                .map((drivableSlotItem) -> getVehicleSlotFromReference(drivableSlotItem.getRawValue()))
+                .map(drivableSlotItem -> getVehicleSlotFromReference(drivableSlotItem.getRawValue()))
 
                 .filter(Optional::isPresent)
 
@@ -160,15 +160,16 @@ public class VehicleSlotsHelper extends CommonHelper {
     private Optional<RimSlot> getDefaultRimEntryForVehicle(String slotReference) {
         return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
 
-                .flatMap((entry) -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEFAULT_RIMS))
+                .flatMap(entry -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEFAULT_RIMS))
 
                 .map(DbDataDto.Item::getRawValue)
 
-                .flatMap((rimSlotReference) -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS))
+                .flatMap(rimSlotReference -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS))
 
                 .map(this::getRimSlotFromDatabaseEntry);
     }
 
+    // Ignore warning (method reference)
     private RimSlot getRimSlotFromDatabaseEntry(DbDataDto.Entry rimEntry) {
         String defaultRimsReference = getStringValueFromDatabaseEntry(rimEntry, DatabaseConstants.FIELD_RANK_RIM_REF).get();
         Optional<Resource> defaulRimsParentDirectory = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_PATH);
@@ -203,14 +204,14 @@ public class VehicleSlotsHelper extends CommonHelper {
         }
 
         return of(rimInfo.getFileName().getValue())
-                .map((rimBankSimpleName) -> String.format("%s%s", rimBankSimpleName, extension))
+                .map(rimBankSimpleName -> String.format("%s%s", rimBankSimpleName, extension))
                 .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 
     private static String getNameFromLocalResourceValue(Optional<String> potentialValue, String defaultValue) {
         return potentialValue
 
-                .map((resourceValue) -> DatabaseConstants.RESOURCE_VALUE_NONE.equals(resourceValue) ? null : resourceValue)
+                .map(resourceValue -> DatabaseConstants.RESOURCE_VALUE_NONE.equals(resourceValue) ? null : resourceValue)
 
                 .orElse(defaultValue);
     }

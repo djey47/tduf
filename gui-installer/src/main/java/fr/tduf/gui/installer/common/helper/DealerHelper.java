@@ -61,7 +61,7 @@ public class DealerHelper extends CommonHelper {
     public List<Dealer> getDealers(DealerKind dealerKind) {
         return miner.getDatabaseTopic(CAR_SHOPS).get().getData().getEntries().stream()
 
-                .filter((carShopsEntry) -> entryMatchesDealerKind(carShopsEntry, dealerKind))
+                .filter(carShopsEntry -> entryMatchesDealerKind(carShopsEntry, dealerKind))
 
                 .map(this::dealerEntryToDomainObject)
 
@@ -81,7 +81,7 @@ public class DealerHelper extends CommonHelper {
         final String fileName = potentialFileName.get().getValue();
         AtomicBoolean matches = new AtomicBoolean(false);
         dealerkind.fileNamePrefixes
-                .forEach((prefix) -> {
+                .forEach(prefix -> {
                     if (fileName.startsWith(prefix)) {
                         matches.set(true);
                     }
@@ -90,6 +90,7 @@ public class DealerHelper extends CommonHelper {
         return matches.get();
     }
 
+    // Ignore warning: method reference
     private Dealer dealerEntryToDomainObject(DbDataDto.Entry dealerEntry) {
         String dealerReference = dealerEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEALER_REF).get().getRawValue();
 
@@ -111,13 +112,13 @@ public class DealerHelper extends CommonHelper {
 
         return carShopsEntry.getItems().stream()
 
-                .filter((item) -> item.getFieldRank() >= DatabaseConstants.FIELD_RANK_DEALER_SLOT_1
+                .filter(item -> item.getFieldRank() >= DatabaseConstants.FIELD_RANK_DEALER_SLOT_1
                         && item.getFieldRank() <= DatabaseConstants.FIELD_RANK_DEALER_SLOT_15)
 
-                .filter((slotItem) -> ! carShopsReference.isPresent()
+                .filter(slotItem -> ! carShopsReference.isPresent()
                         || carShopsReference.get().getAvailableSlots().contains(getSlotRankFromFieldRank(slotItem)))
 
-                .map((slotItem) -> Dealer.Slot.builder()
+                .map(slotItem -> Dealer.Slot.builder()
                         .withRank(getSlotRankFromFieldRank(slotItem))
                         .havingVehicle(vehicleSlotsHelper.getVehicleSlotFromReference(slotItem.getRawValue()).orElse(null))
                         .build())

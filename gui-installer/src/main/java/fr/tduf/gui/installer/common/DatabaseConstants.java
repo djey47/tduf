@@ -52,4 +52,6 @@ public class DatabaseConstants {
     public static final String RESOURCE_VALUE_DEFAULT = "Default";
     public static final String RESOURCE_REF_DEFAULT = "";
     public static final String RESOURCE_VALUE_NONE = "??";
+
+    private DatabaseConstants() {}
 }
