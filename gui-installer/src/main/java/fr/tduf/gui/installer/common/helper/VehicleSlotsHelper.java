@@ -13,6 +13,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.gui.installer.common.DisplayConstants.*;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.FRONT_RIM;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.REAR_RIM;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
@@ -33,7 +34,48 @@ public class VehicleSlotsHelper extends CommonHelper {
         super(miner);
     }
 
+    /**
+     * All handled bank file types
+     */
     public enum BankFileType {EXTERIOR_MODEL, INTERIOR_MODEL, HUD, SOUND, FRONT_RIM, REAR_RIM}
+
+    /**
+     * Criteria for slot lookups by vehicle type
+     */
+    public enum VehicleKind {
+        ALL(ITEM_VEHICLE_KIND_ALL),
+        CAR(ITEM_VEHICLE_KIND_CAR),
+        BIKE(ITEM_VEHICLE_KIND_BIKE);
+
+        private final String label;
+
+        VehicleKind(String label) {
+            this.label = label;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+    }
+
+    /**
+     * Criteria for slot lookups by slot type
+     */
+    public enum SlotKind {
+        DRIVABLE(ITEM_SLOT_KIND_DRIVABLE),
+        GENUINE(ITEM_SLOT_KIND_GENUINE),
+        TDUCP(ITEM_SLOT_KIND_TDUCP);
+
+        private final String label;
+
+        SlotKind(String label) {
+            this.label = label;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+    }
 
     /**
      * @param miner : component to parse database
