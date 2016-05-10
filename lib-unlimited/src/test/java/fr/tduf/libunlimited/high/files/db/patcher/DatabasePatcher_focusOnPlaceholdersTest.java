@@ -30,8 +30,6 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
 
     @Before
     public void setUp() throws ReflectiveOperationException {
-        BulkDatabaseMiner.clearAllCaches();
-
         databaseObject = DbDto.builder()
                 .withData(DbDataDto.builder().build())
                 .withStructure(DbStructureDto.builder()

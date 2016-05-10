@@ -1,7 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -30,9 +29,7 @@ public class DatabaseIntegrityCheckerTest {
     private static final String UID_EXISTING = "001";
 
     @Before
-    public void setUp() {
-        BulkDatabaseMiner.clearAllCaches();
-    }
+    public void setUp() {}
 
     @Test
     public void checkAll_whenEmptyDatabaseObjects_shouldReturnSingleIntegrityError() throws ReflectiveOperationException {

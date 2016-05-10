@@ -4,7 +4,6 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderResolver;
@@ -96,8 +95,6 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 moveContents(changeObject);
                 break;
         }
-
-        BulkDatabaseMiner.clearAllCaches();
     }
 
     private void moveContents(DbPatchDto.DbChangeDto changeObject) {

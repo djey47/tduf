@@ -49,9 +49,7 @@ public class DatabaseChangeHelperTest {
     DatabaseChangeHelper changeHelper;
 
     @After
-    public void tearDown() {
-        BulkDatabaseMiner.clearAllCaches();
-    }
+    public void tearDown() {}
 
     @Test
     public void addContentsEntryWithDefaultItems_whenTopicObjectAvailable_shouldCreateAndReturnIt() {

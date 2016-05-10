@@ -33,9 +33,7 @@ public class DatabaseIntegrityFixerTest {
     private static DatabaseGenHelper genHelperMock;
 
     @Before
-    public void setUp() {
-        BulkDatabaseMiner.clearAllCaches();
-    }
+    public void setUp() {}
 
     @Test(expected = NullPointerException.class)
     public void fixAllContentsObjects_whenNullErrors_shouldThrowNPE() throws Exception {

@@ -18,9 +18,7 @@ import static org.assertj.core.api.StrictAssertions.assertThat;
 public class DatabasePatcher_focusOnResourcesTest {
 
     @Before
-    public void setUp() throws ReflectiveOperationException {
-        BulkDatabaseMiner.clearAllCaches();
-    }
+    public void setUp() {}
 
     @Test
     public void apply_whenUpdateResourcesPatch_shouldAddAndUpdateEntries() throws IOException, URISyntaxException, ReflectiveOperationException {

@@ -25,8 +25,6 @@ public class BulkDatabaseMiner_focusOnContentsTest {
         // Set level to TRACE to get performance information
 //        Log.set(LEVEL_DEBUG);
 //        Log.setLogger(new PerformanceLogger(Paths.get("perfs").toAbsolutePath()));
-
-        BulkDatabaseMiner.clearAllCaches();
     }
 
     @Test(expected = NoSuchElementException.class)

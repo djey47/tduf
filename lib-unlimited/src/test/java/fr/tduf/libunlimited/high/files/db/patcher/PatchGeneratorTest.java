@@ -3,7 +3,6 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -37,9 +36,7 @@ public class PatchGeneratorTest {
     }
 
     @After
-    public void tearDown() {
-        BulkDatabaseMiner.clearAllCaches();
-    }
+    public void tearDown() {}
 
     @Test(expected = NullPointerException.class)
     public void makePatch_whenNullArguments_shouldThrowException() throws ReflectiveOperationException {

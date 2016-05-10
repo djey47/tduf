@@ -51,8 +51,6 @@ public class DatabaseChangeHelper {
         resourceEnhancedFromTopic.getEntryByReference(resourceReference)
                 .orElseGet(() -> resourceEnhancedFromTopic.addEntryByReference(resourceReference))
                 .setValueForLocale(resourceValue, locale);
-
-        BulkDatabaseMiner.clearAllCaches();
     }
 
     /**
@@ -74,8 +72,6 @@ public class DatabaseChangeHelper {
 
         dataDto.addEntry(newEntry);
 
-        BulkDatabaseMiner.clearAllCaches();
-
         return newEntry;
     }
 
@@ -94,7 +90,6 @@ public class DatabaseChangeHelper {
         }
 
         contentItem.setRawValue(newRawValue);
-        BulkDatabaseMiner.clearAllCaches();
 
         return Optional.of(contentItem);
     }
@@ -118,8 +113,6 @@ public class DatabaseChangeHelper {
 
         existingEntry.removeValueForLocale(locale);
         addResourceValueWithReference(topic, locale, newResourceReference, newResourceValue);
-
-        BulkDatabaseMiner.clearAllCaches();
     }
 
     /**
@@ -140,10 +133,7 @@ public class DatabaseChangeHelper {
 
                 .findAny()
 
-                .ifPresent((entryToDelete) -> {
-                    topicDataObject.removeEntry(entryToDelete);
-                    BulkDatabaseMiner.clearAllCaches();
-                });
+                .ifPresent((entryToDelete) -> topicDataObject.removeEntry(entryToDelete));
     }
 
     /**
@@ -156,7 +146,7 @@ public class DatabaseChangeHelper {
     public void removeEntryWithReference(String entryRef, DbDto.Topic topic) {
         databaseMiner.getContentEntryFromTopicWithReference(entryRef, topic)
 
-                .ifPresent((entry) -> removeEntryWithIdentifier(entry.getId(), topic));
+                .ifPresent(entry -> removeEntryWithIdentifier(entry.getId(), topic));
     }
 
     /**
@@ -201,8 +191,6 @@ public class DatabaseChangeHelper {
 
         topicDataObject.addEntry(newEntry);
 
-        BulkDatabaseMiner.clearAllCaches();
-
         return newEntry;
     }
 
@@ -231,8 +219,6 @@ public class DatabaseChangeHelper {
                 dataObject.moveEntryDown(entry);
             }
         }
-
-        BulkDatabaseMiner.clearAllCaches();
     }
 
     /**
@@ -245,15 +231,13 @@ public class DatabaseChangeHelper {
      */
     public void removeResourceValuesWithReference(DbDto.Topic topic, String resourceReference, List<DbResourceDto.Locale> affectedLocales) {
         databaseMiner.getResourceEntryFromTopicAndReference(topic, resourceReference)
-                .ifPresent((entry) -> {
+                .ifPresent(entry -> {
                     affectedLocales.forEach(entry::removeValueForLocale);
 
                     if (entry.getItemCount() == 0) {
                         databaseMiner.getResourceEnhancedFromTopic(topic).get().removeEntryByReference(resourceReference);
                     }
                 });
-
-        BulkDatabaseMiner.clearAllCaches();
     }
 
     /**
@@ -264,9 +248,7 @@ public class DatabaseChangeHelper {
      */
     public void removeResourceWithReference(DbDto.Topic topic, String resourceReference) {
         databaseMiner.getResourceEnhancedFromTopic(topic)
-                .ifPresent((resource) -> resource.removeEntryByReference(resourceReference));
-
-        BulkDatabaseMiner.clearAllCaches();
+                .ifPresent(resource -> resource.removeEntryByReference(resourceReference));
     }
 
     /**
@@ -282,9 +264,7 @@ public class DatabaseChangeHelper {
         // We assume source reference is first field ... target reference (if any) is second field  ...
         entryItems.get(0).setRawValue(sourceEntryRef);
         potentialTargetEntryRef
-                .ifPresent((ref) -> entryItems.get(1).setRawValue(ref));
-
-        BulkDatabaseMiner.clearAllCaches();
+                .ifPresent(ref -> entryItems.get(1).setRawValue(ref));
     }
 
     private void checkResourceValueDoesNotExistWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference) {

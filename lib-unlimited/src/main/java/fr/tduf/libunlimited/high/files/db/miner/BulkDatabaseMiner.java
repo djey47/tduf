@@ -48,13 +48,6 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     * Clears only variant caches.
-     */
-    public static void clearAllCaches() {
-        cacheManager.clearAllStores();
-    }
-
-    /**
      * @param topic : topic in TDU Database to search
      * @return database object related to this topic.
      */

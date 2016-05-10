@@ -81,8 +81,6 @@ public class DatabaseToolIntegTest {
 
     @After
     public void tearDown() {
-        BulkDatabaseMiner.clearAllCaches();
-
         ConsoleHelper.restoreOutput();
     }
 

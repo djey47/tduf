@@ -122,8 +122,6 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                 default:
                     throw new IllegalArgumentException("Kind of integrity error not handled yet: " + integrityError.getErrorTypeEnum());
             }
-
-            BulkDatabaseMiner.clearAllCaches();
         } catch (Exception e) {
             e.printStackTrace();
             return false;

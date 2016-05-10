@@ -43,9 +43,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     DatabaseChangeHelper changeHelper;
 
     @After
-    public void tearDown() {
-        BulkDatabaseMiner.clearAllCaches();
-    }
+    public void tearDown() {}
 
     @Test
     public void addResourceWithReference_andNonExistingEntry_shouldCreateNewResourceEntry() throws Exception {

@@ -24,9 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DatabasePatcher_focusOnContentsTest {
 
     @Before
-    public void setUp() throws ReflectiveOperationException {
-        BulkDatabaseMiner.clearAllCaches();
-    }
+    public void setUp() {}
 
     @Test(expected = IllegalArgumentException.class)
     public void apply_whenUpdateContentsPatch_forAllFields_andIncorrectValueCount_shouldThrowException() throws IOException, URISyntaxException, ReflectiveOperationException {
