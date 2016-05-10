@@ -16,10 +16,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
@@ -27,9 +24,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
 
-import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.SlotKind.ALL;
-import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.VehicleKind.DRIVABLE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -43,6 +39,12 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
     @FXML
     private TextField slotRefTextField;
+
+    @FXML
+    private ChoiceBox<VehicleSlotsHelper.VehicleKind> vehicleKindFilterChoiceBox;
+
+    @FXML
+    private ChoiceBox<VehicleSlotsHelper.SlotKind> slotKindFilterChoiceBox;
 
     @FXML
     TableView<VehicleSlotDataItem> slotsTableView;
@@ -115,7 +117,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
         currentTopicProperty.setValue(CAR_PHYSICS_DATA);
 
-        updateSlotsStageData();
+        updateSlotsStageData(VehicleSlotsHelper.SlotKind.TDUCP, VehicleSlotsHelper.VehicleKind.DRIVABLE);
 
         potentialSlotReference.ifPresent(this::selectEntryInTableAndScroll);
 
@@ -155,6 +157,46 @@ public class SlotsBrowserStageController extends AbstractGuiController {
                 return of(vehicleSlotDataItem);
             }
         });
+
+        vehicleKindFilterChoiceBox.setConverter(new StringConverter<VehicleSlotsHelper.VehicleKind>() {
+            @Override
+            public String toString(VehicleSlotsHelper.VehicleKind vehicleKind) {
+                return vehicleKind.getLabel();
+            }
+
+            @Override
+            public VehicleSlotsHelper.VehicleKind fromString(String label) {
+                return null;
+            }
+        });
+        vehicleKindFilterChoiceBox.getItems().addAll(asList(VehicleSlotsHelper.VehicleKind.values()));
+        vehicleKindFilterChoiceBox.setValue(VehicleSlotsHelper.VehicleKind.DRIVABLE);
+        vehicleKindFilterChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals(oldValue)) {
+                return;
+            }
+            updateSlotsStageData(slotKindFilterChoiceBox.getSelectionModel().getSelectedItem(), newValue);
+        });
+
+        slotKindFilterChoiceBox.setConverter(new StringConverter<VehicleSlotsHelper.SlotKind>() {
+            @Override
+            public String toString(VehicleSlotsHelper.SlotKind slotKind) {
+                return slotKind.getLabel();
+            }
+
+            @Override
+            public VehicleSlotsHelper.SlotKind fromString(String label) {
+                return null;
+            }
+        });
+        slotKindFilterChoiceBox.getItems().addAll(asList(VehicleSlotsHelper.SlotKind.values()));
+        slotKindFilterChoiceBox.setValue(VehicleSlotsHelper.SlotKind.TDUCP);
+        slotKindFilterChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals(oldValue)) {
+                return;
+            }
+            updateSlotsStageData(newValue, vehicleKindFilterChoiceBox.getSelectionModel().getSelectedItem());
+        });
     }
 
     private void initTablePane() {
@@ -184,10 +226,10 @@ public class SlotsBrowserStageController extends AbstractGuiController {
                 });
     }
 
-    private void updateSlotsStageData() {
+    private void updateSlotsStageData(VehicleSlotsHelper.SlotKind slotKind, VehicleSlotsHelper.VehicleKind vehicleKind) {
         slotsData.clear();
 
-        slotsData.addAll(vehicleSlotsHelper.getVehicleSlots(ALL, DRIVABLE).stream()
+        slotsData.addAll(vehicleSlotsHelper.getVehicleSlots(slotKind, vehicleKind).stream()
 
                 .map(vehicleSlot -> {
                     VehicleSlotDataItem dataItem = new VehicleSlotDataItem();
