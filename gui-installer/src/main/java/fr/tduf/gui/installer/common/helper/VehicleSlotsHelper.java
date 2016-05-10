@@ -13,10 +13,12 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.gui.installer.common.DatabaseConstants.*;
 import static fr.tduf.gui.installer.common.DisplayConstants.*;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.FRONT_RIM;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.REAR_RIM;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;
@@ -29,6 +31,10 @@ public class VehicleSlotsHelper extends CommonHelper {
     public static final int DEFAULT_VEHICLE_ID = 0;
 
     private static final int DEFAULT_CAM_ID = 0;
+
+    private static final List<String> RESOURCE_REFS_CAR_GROUPS = asList(RESOURCE_REF_GROUP_A, RESOURCE_REF_GROUP_B, RESOURCE_REF_GROUP_C, RESOURCE_REF_GROUP_D, RESOURCE_REF_GROUP_E, RESOURCE_REF_GROUP_F, RESOURCE_REF_GROUP_G);
+    private static final List<String> RESOURCE_REFS_BIKE_GROUPS = asList(RESOURCE_REF_GROUP_MA, RESOURCE_REF_GROUP_MB);
+
 
     private VehicleSlotsHelper(BulkDatabaseMiner miner) {
         super(miner);
@@ -178,15 +184,14 @@ public class VehicleSlotsHelper extends CommonHelper {
     }
 
     /**
-     * @return list of car physics entries following criteria:
+     * @return list of car physics entries following criteria
      */
     public List<VehicleSlot> getVehicleSlots(SlotKind slotKind, VehicleKind vehicleKind) {
         return miner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries().stream()
 
-                .filter(slotEntry -> {
-                    final String groupRawValue = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_GROUP).get().getRawValue();
-                    return !DatabaseConstants.RESOURCE_REF_GROUP_Z.equals(groupRawValue);
-                })
+                .filter(slotEntry -> byVehicleKind(slotEntry, vehicleKind))
+
+                .filter(slotEntry -> bySlotKind(slotEntry, slotKind))
 
                 .map(drivableSlotEntry -> drivableSlotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REF).get())
 
@@ -256,5 +261,24 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .map(resourceValue -> DatabaseConstants.RESOURCE_VALUE_NONE.equals(resourceValue) ? null : resourceValue)
 
                 .orElse(defaultValue);
+    }
+
+    private static boolean byVehicleKind(DbDataDto.Entry slotEntry, VehicleKind vehicleKind) {
+        final String groupRawValue = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_GROUP).get().getRawValue();
+
+        switch(vehicleKind) {
+            case ALL:
+                return !DatabaseConstants.RESOURCE_REF_GROUP_Z.equals(groupRawValue);
+            case CAR:
+                return RESOURCE_REFS_CAR_GROUPS.contains(groupRawValue);
+            case BIKE:
+                return RESOURCE_REFS_BIKE_GROUPS.contains(groupRawValue);
+            default:
+                return false;
+        }
+    }
+
+    private static boolean bySlotKind(DbDataDto.Entry slotEntry, SlotKind slotKind) {
+        return true;
     }
 }

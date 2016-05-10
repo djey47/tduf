@@ -1,5 +1,9 @@
 package fr.tduf.gui.installer.common;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
+
 /**
  * Gives all constants to access particular information in TDU database.
  */
@@ -37,6 +41,15 @@ public class DatabaseConstants {
     public static final String RESOURCE_REF_UNKNOWN_COLOR_NAME = "53366457";        // CAR COLORS
 
     public static final String RESOURCE_REF_UNKNOWN_VEHICLE_NAME = "53338427";      // CAR PHYSICS
+    public static final String RESOURCE_REF_GROUP_A = "73900264";
+    public static final String RESOURCE_REF_GROUP_B = "74900264";
+    public static final String RESOURCE_REF_GROUP_C = "75900264";
+    public static final String RESOURCE_REF_GROUP_D = "76900264";
+    public static final String RESOURCE_REF_GROUP_E = "77900264";
+    public static final String RESOURCE_REF_GROUP_F = "78900264";
+    public static final String RESOURCE_REF_GROUP_G = "79900264";
+    public static final String RESOURCE_REF_GROUP_MA = "76800264";
+    public static final String RESOURCE_REF_GROUP_MB = "77800264";
     public static final String RESOURCE_REF_GROUP_Z = "92900264";
 
     public static final String REF_FREE_DEALER_SLOT = "61085282";               // CAR SHOPS
