@@ -14,6 +14,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.util.Optional;
 
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
@@ -43,6 +45,9 @@ public class DealerSlotsStageController extends AbstractGuiController {
 
     private DealerHelper dealerHelper;
 
+
+    @FXML
+    private ChoiceBox<DealerHelper.DealerKind> dealerKindFilterChoiceBox;
 
     @FXML
     private TextField dealerRefTextField;
@@ -110,7 +115,7 @@ public class DealerSlotsStageController extends AbstractGuiController {
 
         dealerHelper = DealerHelper.load(miner);
 
-        updateDealersData();
+        updateDealersData(DealerHelper.DealerKind.ALL);
 
         returnedSlot = null;
 
@@ -164,6 +169,26 @@ public class DealerSlotsStageController extends AbstractGuiController {
                 return DealerSlotData.SlotDataItem.fromDealerSlot(Dealer.Slot.builder().withRank(Integer.valueOf(rank)).build());
             }
         });
+
+        dealerKindFilterChoiceBox.setConverter(new StringConverter<DealerHelper.DealerKind>() {
+            @Override
+            public String toString(DealerHelper.DealerKind dealerKind) {
+                return dealerKind.getLabel();
+            }
+
+            @Override
+            public DealerHelper.DealerKind fromString(String label) {
+                return null;
+            }
+        });
+        dealerKindFilterChoiceBox.getItems().addAll(asList(DealerHelper.DealerKind.values()));
+        dealerKindFilterChoiceBox.setValue(DealerHelper.DealerKind.ALL);
+        dealerKindFilterChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals(oldValue)) {
+                return;
+            }
+            updateDealersData(newValue);
+        });
     }
 
     private void initTablePane() {
@@ -187,10 +212,10 @@ public class DealerSlotsStageController extends AbstractGuiController {
         slotsTableView.setItems(slotsData);
     }
 
-    private void updateDealersData() {
+    private void updateDealersData(DealerHelper.DealerKind selectedDealerKind) {
         dealersData.clear();
 
-        dealersData.addAll(dealerHelper.getDealers(DealerHelper.DealerKind.DEALER).stream()
+        dealersData.addAll(dealerHelper.getDealers(selectedDealerKind).stream()
 
                 .map(DealerSlotData.DealerDataItem::fromDealer)
 

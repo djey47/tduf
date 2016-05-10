@@ -53,4 +53,9 @@ public class DisplayConstants {
     public static final String STATUS_INSTALL_KO = "Done installing with error(s).";
 
     public static final String ITEM_UNAVAILABLE = "N/A";
+    public static final String ITEM_DEALER_KIND_ALL = "All";
+    public static final String ITEM_DEALER_KIND_CAR_DEALER = "Car dealer";
+    public static final String ITEM_DEALER_KIND_BIKE_DEALER = "Bike dealer";
+    public static final String ITEM_DEALER_KIND_ALL_DEALERS = "All dealers";
+    public static final String ITEM_DEALER_KIND_RENTAL = "V-Rent";
 }

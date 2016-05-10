@@ -9,12 +9,19 @@ import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static fr.tduf.gui.installer.common.DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER;
+import static fr.tduf.gui.installer.common.DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER;
+import static fr.tduf.gui.installer.common.DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_RENTAL;
+import static fr.tduf.gui.installer.common.DisplayConstants.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -25,16 +32,26 @@ public class DealerHelper extends CommonHelper {
      * Criteria for dealer lookups
      */
     public enum DealerKind {
-        ALL(),
-        CAR_DEALER(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER),
-        BIKE_DEALER(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER),
-        DEALER(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER, DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER),
-        RENTAL(DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_RENTAL);
+        ALL(ITEM_DEALER_KIND_ALL),
+        CAR_DEALER(singletonList(RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER), ITEM_DEALER_KIND_CAR_DEALER),
+        BIKE_DEALER(singletonList(RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER), ITEM_DEALER_KIND_BIKE_DEALER),
+        DEALER(asList(RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER, RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER), ITEM_DEALER_KIND_ALL_DEALERS),
+        RENTAL(singletonList(RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_RENTAL), ITEM_DEALER_KIND_RENTAL);
 
         private final List<String> fileNamePrefixes;
+        private final String label;
 
-        DealerKind(String... fileNamePrefixes) {
-            this.fileNamePrefixes = asList(fileNamePrefixes);
+        DealerKind(String label) {
+            this(null, label);
+        }
+
+        DealerKind(List<String> fileNamePrefixes, String label) {
+            this.fileNamePrefixes = fileNamePrefixes;
+            this.label = label;
+        }
+
+        public String getLabel() {
+            return label;
         }
     }
 
