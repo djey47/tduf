@@ -136,11 +136,11 @@ public class SlotsBrowserStageController extends AbstractGuiController {
             @Override
             public String toString(Optional<VehicleSlotDataItem> slotItem) {
                 if (slotItem == null) {
-                    slotItem = empty();
+                    return "";
                 }
 
                 return slotItem
-                        .map((item) -> item.referenceProperty().get())
+                        .map(item -> item.referenceProperty().get())
                         .orElse("");
             }
 
@@ -159,25 +159,26 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
     private void initTablePane() {
         TableColumn<VehicleSlotDataItem, ?> refColumn = slotsTableView.getColumns().get(0);
-        refColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().referenceProperty());
+        refColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().referenceProperty());
 
         TableColumn<VehicleSlotDataItem, ?> nameColumn = slotsTableView.getColumns().get(1);
-        nameColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().nameProperty());
+        nameColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().nameProperty());
 
         TableColumn<VehicleSlotDataItem, ?> carIdColumn = slotsTableView.getColumns().get(2);
-        carIdColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().carIdProperty());
+        carIdColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().carIdProperty());
 
         slotsTableView.setItems(slotsData);
     }
 
+    // Ignore warning
     private void selectEntryInTableAndScroll(String entryReference) {
         slotsData.stream()
 
-                .filter((resource) -> resource.referenceProperty().get().equals(entryReference))
+                .filter(resource -> resource.referenceProperty().get().equals(entryReference))
 
                 .findAny()
 
-                .ifPresent((browsedResource) -> {
+                .ifPresent(browsedResource -> {
                     slotsTableView.getSelectionModel().select(browsedResource);
                     slotsTableView.scrollTo(browsedResource);
                 });
@@ -188,7 +189,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
 
         slotsData.addAll(vehicleSlotsHelper.getVehicleSlots(ALL, DRIVABLE).stream()
 
-                .map((vehicleSlot) -> {
+                .map(vehicleSlot -> {
                     VehicleSlotDataItem dataItem = new VehicleSlotDataItem();
 
                     dataItem.setReference(vehicleSlot.getRef());
@@ -206,7 +207,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
                 DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SEARCH_SLOT,
                 DisplayConstants.LABEL_SEARCH_SLOT)
 
-                .ifPresent((entryReference) -> TableViewHelper.selectItemAndScroll(
+                .ifPresent(entryReference -> TableViewHelper.selectItemAndScroll(
                         oneItem -> oneItem.referenceProperty().getValue().equals(entryReference),
                         slotsTableView));
     }
