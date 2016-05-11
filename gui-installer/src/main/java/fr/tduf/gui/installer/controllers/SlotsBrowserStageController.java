@@ -47,7 +47,10 @@ public class SlotsBrowserStageController extends AbstractGuiController {
     private ChoiceBox<VehicleSlotsHelper.SlotKind> slotKindFilterChoiceBox;
 
     @FXML
-    TableView<VehicleSlotDataItem> slotsTableView;
+    private TableView<VehicleSlotDataItem> slotsTableView;
+
+    @FXML
+    private TableColumn<VehicleSlotDataItem, Boolean> installedSlotTableColumn;
 
     private VehicleSlotsHelper vehicleSlotsHelper;
 
@@ -200,13 +203,41 @@ public class SlotsBrowserStageController extends AbstractGuiController {
     }
 
     private void initTablePane() {
-        TableColumn<VehicleSlotDataItem, ?> refColumn = slotsTableView.getColumns().get(0);
+        installedSlotTableColumn.setCellValueFactory(cellData -> cellData.getValue().moddedProperty());
+        installedSlotTableColumn.setCellFactory(column -> new TableCell<VehicleSlotDataItem, Boolean>() {
+
+            private final CheckBox checkbox = createCheckBox();
+
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    checkbox.setSelected(item);
+                    setGraphic(checkbox);
+                }
+            }
+
+            // TODO create readOnly CheckBox component in commons
+            private CheckBox createCheckBox() {
+                final CheckBox checkBox = new CheckBox();
+
+                checkBox.setDisable(true);
+                checkBox.setStyle("-fx-opacity: 1");
+
+                return checkBox;
+            }
+        });
+
+        TableColumn<VehicleSlotDataItem, ?> refColumn = slotsTableView.getColumns().get(1);
         refColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().referenceProperty());
 
-        TableColumn<VehicleSlotDataItem, ?> nameColumn = slotsTableView.getColumns().get(1);
+        TableColumn<VehicleSlotDataItem, ?> nameColumn = slotsTableView.getColumns().get(2);
         nameColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().nameProperty());
 
-        TableColumn<VehicleSlotDataItem, ?> carIdColumn = slotsTableView.getColumns().get(2);
+        TableColumn<VehicleSlotDataItem, ?> carIdColumn = slotsTableView.getColumns().get(3);
         carIdColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().carIdProperty());
 
         slotsTableView.setItems(slotsData);

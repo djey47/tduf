@@ -35,9 +35,10 @@
             </ToolBar>
             <AnchorPane VBox.vgrow="ALWAYS">
                <children>
-                  <TableView fx:id="slotsTableView" onMouseClicked="#handleSlotsTableMouseClick" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TableView fx:id="slotsTableView" editable="true" onMouseClicked="#handleSlotsTableMouseClick" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
-                      <TableColumn editable="false" prefWidth="96.0" text="REF" />
+                        <TableColumn fx:id="installedSlotTableColumn" prefWidth="89.0" text="Installed?" />
+                      <TableColumn editable="false" prefWidth="100.0" text="REF" />
                       <TableColumn editable="false" prefWidth="510.0" text="Vehicle name" />
                         <TableColumn editable="false" prefWidth="60.0" text="Car ID" />
                     </columns>

@@ -1,10 +1,7 @@
 package fr.tduf.gui.installer.domain.javafx;
 
 import com.google.common.base.MoreObjects;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 import java.util.OptionalLong;
 
@@ -14,6 +11,7 @@ import java.util.OptionalLong;
  * Also includes database entry identifier (optional).
  */
 public class VehicleSlotDataItem {
+    // TODO remove
     private OptionalLong internalEntryId;
 
     private StringProperty reference = new SimpleStringProperty();
@@ -21,6 +19,8 @@ public class VehicleSlotDataItem {
     private StringProperty name = new SimpleStringProperty();
 
     private IntegerProperty carId = new SimpleIntegerProperty();
+
+    private BooleanProperty modded = new SimpleBooleanProperty();
 
     public StringProperty referenceProperty() {
         return reference;
@@ -33,6 +33,8 @@ public class VehicleSlotDataItem {
     public IntegerProperty carIdProperty() {
         return carId;
     }
+
+    public BooleanProperty moddedProperty() { return modded; }
 
     public void setReference(String reference) {
         this.reference.set(reference);
@@ -59,6 +61,7 @@ public class VehicleSlotDataItem {
                 .add("carId", carId)
                 .add("reference", reference)
                 .add("name", name)
+                .add("modded", modded)
                 .toString();
     }
 }

@@ -26,7 +26,7 @@ public class SlotsBrowserStageDesigner {
         FXMLLoader loader = new FXMLLoader(thisClass.getResource(FxConstants.PATH_RESOURCE_BROWSE_SLOTS_STAGE_DESIGNER));
         Parent root = loader.load();
 
-        stage.setScene(new Scene(root, 700, 700));
+        stage.setScene(new Scene(root, 775, 700));
         stage.setTitle(DisplayConstants.TITLE_APPLICATION);
         stage.initModality(Modality.APPLICATION_MODAL);
 
