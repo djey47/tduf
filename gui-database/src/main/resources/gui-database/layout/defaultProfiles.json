@@ -50,7 +50,8 @@
           "name": "Car_Brand",
           "rank": 2,
           "group": "Datasheet",
-          "remoteReferenceProfile": "Brands"
+          "remoteReferenceProfile": "Brands",
+          "label": "Brand"
         },
         {
           "name": "Car_Model",
@@ -72,11 +73,13 @@
         {
           "name": "Price_dollar",
           "rank": 7,
+          "label": "Price ($)",
           "group": "Datasheet"
         },
         {
           "name": "TestDrive_Cat",
-          "rank": 8
+          "rank": 8,
+          "label": "Category"
         },
         {
           "name": "Car_File_Name",
@@ -122,12 +125,14 @@
         {
           "name": "Displacement",
           "rank": 17,
-          "group": "Datasheet"
+          "group": "Datasheet",
+          "label": "Displacement (cc)"
         },
         {
           "name": "Power_bhp",
           "rank": 18,
-          "group": "Datasheet"
+          "group": "Datasheet",
+          "label": "Power (BHP)"
         },
         {
           "name": "Power_RPM",
@@ -152,7 +157,8 @@
         {
           "name": "Drive",
           "rank": 23,
-          "group": "Transmission"
+          "group": "Transmission",
+          "priority": 10000
         },
         {
           "name": "GearBox",
@@ -162,52 +168,62 @@
         {
           "name": "Nb_Gears",
           "rank": 25,
-          "group": "Transmission"
+          "group": "Transmission",
+          "label": "Gears"
         },
         {
           "name": "Final_Drive_Ratio",
           "rank": 26,
-          "group": "Transmission"
+          "group": "Transmission",
+          "label": "Final ratio"
         },
         {
           "name": "Gear_ratio_1",
           "rank": 27,
-          "group": "Transmission"
+          "group": "Transmission",
+          "label": "1st ratio"
         },
         {
           "name": "Gear_ratio_2",
           "rank": 28,
-          "group": "Transmission"
+          "group": "Transmission",
+          "label": "2nd ratio"
         },
         {
           "name": "Gear_ratio_3",
           "rank": 29,
-          "group": "Transmission"
+          "group": "Transmission",
+          "label": "3rd ratio"
         },
         {
           "name": "Gear_ratio_4",
           "rank": 30,
-          "group": "Transmission"
+          "group": "Transmission",
+          "label": "4th ratio"
         },
         {
           "name": "Gear_ratio_5",
           "rank": 31,
-          "group": "Transmission"
+          "group": "Transmission",
+          "label": "5th ratio"
         },
         {
           "name": "Gear_ratio_6",
           "rank": 32,
-          "group": "Transmission"
+          "group": "Transmission",
+          "label": "6th ratio"
         },
         {
           "name": "Gear_ratio_7",
           "rank": 33,
-          "group": "Transmission"
+          "group": "Transmission",
+          "label": "7th ratio"
         },
         {
           "name": "Nb_Doors",
           "rank": 34,
-          "group": "Exterior"
+          "group": "Exterior",
+          "label": "Doors"
         },
         {
           "name": "Brakes_Characteristics_Front",
@@ -373,7 +389,9 @@
         {
           "name": "Transmission_Primacy",
           "rank": 67,
-          "group": "Transmission"
+          "group": "Transmission",
+          "label": "Front/rear ratio",
+          "priority": 9990
         },
         {
           "name": "Brake_Balance",
@@ -531,20 +549,24 @@
         },
         {
           "name": "Same_IK",
-          "rank": 99
+          "rank": 99,
+          "label": "IK"
         },
         {
           "name": "Secu1",
-          "rank": 100
+          "rank": 100,
+          "label": "Security option 1"
         },
         {
           "name": "Secu2",
-          "rank": 101
+          "rank": 101,
+          "label": "Security option 2"
         },
         {
           "name": "ID_Car",
           "priority": 9900,
-          "rank": 102
+          "rank": 102,
+          "label": "Car ID"
         },
         {
           "name": "BitField",
