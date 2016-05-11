@@ -54,6 +54,10 @@ public class VehicleSlotDataItem {
         this.internalEntryId = OptionalLong.of(internalEntryId);
     }
 
+    public void setModded(boolean modded) {
+        this.modded.set(modded);
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)

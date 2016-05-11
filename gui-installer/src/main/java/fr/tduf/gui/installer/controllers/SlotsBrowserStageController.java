@@ -6,6 +6,7 @@ import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
+import fr.tduf.gui.installer.domain.SecurityOptions;
 import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -268,6 +269,7 @@ public class SlotsBrowserStageController extends AbstractGuiController {
                     dataItem.setReference(vehicleSlot.getRef());
                     dataItem.setName(VehicleSlotsHelper.getVehicleName(vehicleSlot));
                     dataItem.setCarId(vehicleSlot.getCarIdentifier());
+                    dataItem.setModded(SecurityOptions.INSTALLED == vehicleSlot.getSecurityOptions().getOptionOne());
 
                     return dataItem;
                 })
