@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.common.helper;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.FileConstants;
@@ -10,8 +11,12 @@ import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 import static fr.tduf.gui.installer.common.DatabaseConstants.*;
@@ -28,6 +33,8 @@ import static java.util.stream.Collectors.toList;
  * Component to get advanced information on vehicle slots.
  */
 public class VehicleSlotsHelper extends CommonHelper {
+    private static final String THIS_CLASS_NAME = VehicleSlotsHelper.class.getSimpleName();
+    private static final Class<VehicleSlotsHelper> thisClass = VehicleSlotsHelper.class;
 
     public static final int DEFAULT_VEHICLE_ID = 0;
 
@@ -38,14 +45,12 @@ public class VehicleSlotsHelper extends CommonHelper {
 
     private static final List<String> RESOURCE_REFS_CAR_GROUPS = asList(RESOURCE_REF_GROUP_A, RESOURCE_REF_GROUP_B, RESOURCE_REF_GROUP_C, RESOURCE_REF_GROUP_D, RESOURCE_REF_GROUP_E, RESOURCE_REF_GROUP_F, RESOURCE_REF_GROUP_G);
     private static final List<String> RESOURCE_REFS_BIKE_GROUPS = asList(RESOURCE_REF_GROUP_MA, RESOURCE_REF_GROUP_MB);
-    // TODO see to externalize
-    private static final List<String> SLOT_REFS_TDUCP_UNLOCKED = asList(
-            "606298799", "734237852", "1202238231", "843182934", "1289993715", "604354597", "12778906",
-            "1190174404", "1197985552", "619586695", "1204318124", "1244127953", "1193140602", "698399392",
-            "1108350118", "1108350119", "1108350120", "1186047058", "921827346", "705918591", "699572006",
-            "1238267235", "1237390819", "932820187", "1244034708", "1208897332", "1291823209"
-    );
 
+    private static List<String> tducpUnlockedSlotRefs;
+
+    static {
+        loadProperties();
+    }
 
     private VehicleSlotsHelper(BulkDatabaseMiner miner) {
         super(miner);
@@ -54,7 +59,9 @@ public class VehicleSlotsHelper extends CommonHelper {
     /**
      * All handled bank file types
      */
-    public enum BankFileType {EXTERIOR_MODEL, INTERIOR_MODEL, HUD, SOUND, FRONT_RIM, REAR_RIM}
+    public enum BankFileType {
+        EXTERIOR_MODEL, INTERIOR_MODEL, HUD, SOUND, FRONT_RIM, REAR_RIM
+    }
 
     /**
      * Criteria for slot lookups by vehicle type
@@ -63,7 +70,6 @@ public class VehicleSlotsHelper extends CommonHelper {
         DRIVABLE(ITEM_VEHICLE_KIND_DRIVABLE),
         CAR(ITEM_VEHICLE_KIND_CAR),
         BIKE(ITEM_VEHICLE_KIND_BIKE);
-
         private final String label;
 
         VehicleKind(String label) {
@@ -73,6 +79,7 @@ public class VehicleSlotsHelper extends CommonHelper {
         public String getLabel() {
             return label;
         }
+
     }
 
     /**
@@ -82,7 +89,6 @@ public class VehicleSlotsHelper extends CommonHelper {
         ALL(ITEM_SLOT_KIND_ALL),
         GENUINE(ITEM_SLOT_KIND_GENUINE),
         TDUCP(ITEM_SLOT_KIND_TDUCP);
-
         private final String label;
 
         SlotKind(String label) {
@@ -92,6 +98,7 @@ public class VehicleSlotsHelper extends CommonHelper {
         public String getLabel() {
             return label;
         }
+
     }
 
     /**
@@ -276,7 +283,7 @@ public class VehicleSlotsHelper extends CommonHelper {
 
     private static boolean byVehicleKind(DbDataDto.Entry slotEntry, VehicleKind vehicleKind) {
         final String groupRawValue = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_GROUP).get().getRawValue();
-        switch(vehicleKind) {
+        switch (vehicleKind) {
             case DRIVABLE:
                 return !DatabaseConstants.RESOURCE_REF_GROUP_Z.equals(groupRawValue);
             case CAR:
@@ -290,7 +297,7 @@ public class VehicleSlotsHelper extends CommonHelper {
 
     private static boolean bySlotKind(DbDataDto.Entry slotEntry, SlotKind slotKind) {
         final String slotReference = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REF).get().getRawValue();
-        switch(slotKind) {
+        switch (slotKind) {
             case ALL:
                 return true;
             case GENUINE:
@@ -303,8 +310,28 @@ public class VehicleSlotsHelper extends CommonHelper {
     }
 
     private static boolean isTDUCPVehicleSlot(String slotReference) {
-        return  PATTERN_TDUCP_CAR_SLOT.matcher(slotReference).matches()
+        return PATTERN_TDUCP_CAR_SLOT.matcher(slotReference).matches()
                 || PATTERN_TDUCP_BIKE_SLOT.matcher(slotReference).matches()
-                || SLOT_REFS_TDUCP_UNLOCKED.contains(slotReference);
+                || tducpUnlockedSlotRefs.contains(slotReference);
+    }
+
+    private static void loadProperties() {
+        Properties vehicleSlotsProperties = new Properties();
+
+        String[] refs = new String[0];
+        try (InputStream resourceAsStream = thisClass.getResourceAsStream("/gui-installer/conf/vehicleSlots.properties")) {
+            vehicleSlotsProperties.load(resourceAsStream);
+
+            final String property = vehicleSlotsProperties.getProperty("tducp.slots.unlocked.refs", "");
+            refs = property.split(",");
+        } catch (IOException e) {
+            Log.error(THIS_CLASS_NAME, e);
+        }
+
+        tducpUnlockedSlotRefs = Collections.unmodifiableList(asList(refs));
+    }
+
+    static List<String> getTducpUnlockedSlotRefs() {
+        return tducpUnlockedSlotRefs;
     }
 }

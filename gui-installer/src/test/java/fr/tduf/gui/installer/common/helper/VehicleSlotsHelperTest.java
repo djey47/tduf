@@ -37,6 +37,12 @@ public class VehicleSlotsHelperTest {
     private VehicleSlotsHelper vehicleSlotsHelper;
 
     @Test
+    public void classInitializer_shouldPopulateDataFromProps() {
+        // GIVEN-WHEN-THEN
+        assertThat(VehicleSlotsHelper.getTducpUnlockedSlotRefs()).hasSize(27);
+    }
+
+    @Test
     public void getVehicleSlotFromReference_whenSlotNotAvailable_shouldReturnEmpty() {
         // GIVEN
         String slotReference = "REF";
