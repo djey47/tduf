@@ -37,7 +37,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
                 .sorted((topicLinkObject1, topicLinkObject2) -> Integer.compare(topicLinkObject2.getPriority(), topicLinkObject1.getPriority()))
 
-                .forEach((topicLinkObject) -> addLinkControls(controller.getDefaultTab(), topicLinkObject, controller.getResourceListByTopicLink()));
+                .forEach(topicLinkObject -> addLinkControls(controller.getDefaultTab(), topicLinkObject, controller.getResourceListByTopicLink()));
     }
 
     private void addLinkControls(VBox defaultTab, TopicLinkDto topicLinkObject, Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLinkIndex) {
@@ -69,11 +69,11 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         tableView.setTooltip(new Tooltip(toolTipText));
 
         TableColumn<ContentEntryDataItem, String> refColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_REF);
-        refColumn.setCellValueFactory((cellData) -> cellData.getValue().referenceProperty());
+        refColumn.setCellValueFactory(cellData -> cellData.getValue().referenceProperty());
         refColumn.setPrefWidth(100);
 
         TableColumn<ContentEntryDataItem, String> valueColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_DATA);
-        valueColumn.setCellValueFactory((cellData) -> cellData.getValue().valueProperty());
+        valueColumn.setCellValueFactory(cellData -> cellData.getValue().valueProperty());
         valueColumn.setPrefWidth(455);
 
         tableView.getColumns().add(refColumn);
@@ -82,7 +82,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         tableView.setItems(resourceData);
 
         ofNullable(topicLinkObject.getRemoteReferenceProfile())
-                .ifPresent((targetProfileName) -> tableView.setOnMousePressed(controller.handleLinkTableMouseClick(targetProfileName, targetTopic)));
+                .ifPresent(targetProfileName -> tableView.setOnMousePressed(controller.handleLinkTableMouseClick(targetProfileName, targetTopic)));
 
         fieldBox.getChildren().add(tableView);
 
@@ -93,37 +93,39 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         VBox buttonsBox = new VBox(5);
 
         ofNullable(targetProfileName)
-                .ifPresent((profileName) -> {
-                    addContextualButton(
-                            buttonsBox,
-                            DisplayConstants.LABEL_BUTTON_GOTO,
-                            DisplayConstants.TOOLTIP_BUTTON_GOTO_SELECTED_ENTRY,
-                            controller.handleGotoReferenceButtonMouseClick(tableSelectionModel, targetTopic, profileName));
-                    if (!topicLinkObject.isReadOnly()) {
-                        addContextualButton(
-                                buttonsBox,
-                                DisplayConstants.LABEL_BUTTON_PLUS,
-                                DisplayConstants.TOOLTIP_BUTTON_ADD_LINKED_ENTRY,
-                                controller.handleAddLinkedEntryButtonMouseClick(tableSelectionModel, targetTopic, profileName, topicLinkObject));
-                        addContextualButton(
-                                buttonsBox,
-                                DisplayConstants.LABEL_BUTTON_MINUS,
-                                DisplayConstants.TOOLTIP_BUTTON_DELETE_LINKED_ENTRY,
-                                controller.handleRemoveLinkedEntryButtonMouseClick(tableSelectionModel, topicLinkObject));
-                        addContextualButton(
-                                buttonsBox,
-                                DisplayConstants.LABEL_BUTTON_UP,
-                                DisplayConstants.TOOLTIP_BUTTON_MOVE_LINKED_ENTRY_UP,
-                                controller.handleMoveLinkedEntryUpButtonMouseClick(tableSelectionModel, topicLinkObject));
-                        addContextualButton(
-                                buttonsBox,
-                                DisplayConstants.LABEL_BUTTON_DOWN,
-                                DisplayConstants.TOOLTIP_BUTTON_MOVE_LINKED_ENTRY_DOWN,
-                                controller.handleMoveLinkedEntryDownButtonMouseClick(tableSelectionModel, topicLinkObject));
-                    }
-                });
+                .ifPresent(profileName -> buildButtonsForLinkedTopic(targetTopic, tableSelectionModel, topicLinkObject, buttonsBox, profileName));
 
         fieldBox.getChildren().add(buttonsBox);
+    }
+
+    private void buildButtonsForLinkedTopic(DbDto.Topic targetTopic, TableView.TableViewSelectionModel<ContentEntryDataItem> tableSelectionModel, TopicLinkDto topicLinkObject, VBox buttonsBox, String profileName) {
+        addContextualButton(
+                buttonsBox,
+                DisplayConstants.LABEL_BUTTON_GOTO,
+                DisplayConstants.TOOLTIP_BUTTON_GOTO_SELECTED_ENTRY,
+                controller.handleGotoReferenceButtonMouseClick(tableSelectionModel, targetTopic, profileName));
+        if (!topicLinkObject.isReadOnly()) {
+            addContextualButton(
+                    buttonsBox,
+                    DisplayConstants.LABEL_BUTTON_PLUS,
+                    DisplayConstants.TOOLTIP_BUTTON_ADD_LINKED_ENTRY,
+                    controller.handleAddLinkedEntryButtonMouseClick(tableSelectionModel, targetTopic, profileName, topicLinkObject));
+            addContextualButton(
+                    buttonsBox,
+                    DisplayConstants.LABEL_BUTTON_MINUS,
+                    DisplayConstants.TOOLTIP_BUTTON_DELETE_LINKED_ENTRY,
+                    controller.handleRemoveLinkedEntryButtonMouseClick(tableSelectionModel, topicLinkObject));
+            addContextualButton(
+                    buttonsBox,
+                    DisplayConstants.LABEL_BUTTON_UP,
+                    DisplayConstants.TOOLTIP_BUTTON_MOVE_LINKED_ENTRY_UP,
+                    controller.handleMoveLinkedEntryUpButtonMouseClick(tableSelectionModel, topicLinkObject));
+            addContextualButton(
+                    buttonsBox,
+                    DisplayConstants.LABEL_BUTTON_DOWN,
+                    DisplayConstants.TOOLTIP_BUTTON_MOVE_LINKED_ENTRY_DOWN,
+                    controller.handleMoveLinkedEntryDownButtonMouseClick(tableSelectionModel, topicLinkObject));
+        }
     }
 
     private DbDto.Topic retrieveTargetTopicForLink(TopicLinkDto topicLinkObject) {
