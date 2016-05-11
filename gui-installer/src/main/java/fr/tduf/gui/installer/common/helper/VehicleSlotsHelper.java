@@ -40,13 +40,12 @@ public class VehicleSlotsHelper extends CommonHelper {
 
     private static final int DEFAULT_CAM_ID = 0;
 
-    private static final Pattern PATTERN_TDUCP_CAR_SLOT = Pattern.compile("3\\d{3}0{5}");
-    private static final Pattern PATTERN_TDUCP_BIKE_SLOT = Pattern.compile("4\\d{3}0{5}");
-
     private static final List<String> RESOURCE_REFS_CAR_GROUPS = asList(RESOURCE_REF_GROUP_A, RESOURCE_REF_GROUP_B, RESOURCE_REF_GROUP_C, RESOURCE_REF_GROUP_D, RESOURCE_REF_GROUP_E, RESOURCE_REF_GROUP_F, RESOURCE_REF_GROUP_G);
     private static final List<String> RESOURCE_REFS_BIKE_GROUPS = asList(RESOURCE_REF_GROUP_MA, RESOURCE_REF_GROUP_MB);
 
     private static List<String> tducpUnlockedSlotRefs;
+    private static Pattern tducpCarSlotPattern;
+    private static Pattern tducpBikeSlotPattern;
 
     static {
         loadProperties();
@@ -310,8 +309,8 @@ public class VehicleSlotsHelper extends CommonHelper {
     }
 
     private static boolean isTDUCPVehicleSlot(String slotReference) {
-        return PATTERN_TDUCP_CAR_SLOT.matcher(slotReference).matches()
-                || PATTERN_TDUCP_BIKE_SLOT.matcher(slotReference).matches()
+        return tducpCarSlotPattern.matcher(slotReference).matches()
+                || tducpBikeSlotPattern.matcher(slotReference).matches()
                 || tducpUnlockedSlotRefs.contains(slotReference);
     }
 
@@ -319,19 +318,32 @@ public class VehicleSlotsHelper extends CommonHelper {
         Properties vehicleSlotsProperties = new Properties();
 
         String[] refs = new String[0];
+        String tducpBikeSlotRegex = "";
+        String tducpCarSlotRegex = "";
         try (InputStream resourceAsStream = thisClass.getResourceAsStream("/gui-installer/conf/vehicleSlots.properties")) {
             vehicleSlotsProperties.load(resourceAsStream);
 
-            final String property = vehicleSlotsProperties.getProperty("tducp.slots.unlocked.refs", "");
-            refs = property.split(",");
+            refs = vehicleSlotsProperties.getProperty("tducp.slots.unlocked.refs", "").split(",");
+            tducpBikeSlotRegex = vehicleSlotsProperties.getProperty("tducp.slots.new.bikes.pattern", "");
+            tducpCarSlotRegex = vehicleSlotsProperties.getProperty("tducp.slots.new.cars.pattern", "");
         } catch (IOException e) {
             Log.error(THIS_CLASS_NAME, e);
         }
 
         tducpUnlockedSlotRefs = Collections.unmodifiableList(asList(refs));
+        tducpBikeSlotPattern = Pattern.compile(tducpBikeSlotRegex);
+        tducpCarSlotPattern = Pattern.compile(tducpCarSlotRegex);
     }
 
     static List<String> getTducpUnlockedSlotRefs() {
         return tducpUnlockedSlotRefs;
+    }
+
+    static Pattern getTducpCarSlotPattern() {
+        return tducpCarSlotPattern;
+    }
+
+    static Pattern getTducpBikeSlotPattern() {
+        return tducpBikeSlotPattern;
     }
 }

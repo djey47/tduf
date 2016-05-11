@@ -40,6 +40,11 @@ public class VehicleSlotsHelperTest {
     public void classInitializer_shouldPopulateDataFromProps() {
         // GIVEN-WHEN-THEN
         assertThat(VehicleSlotsHelper.getTducpUnlockedSlotRefs()).hasSize(27);
+
+        assertThat(VehicleSlotsHelper.getTducpBikeSlotPattern().matcher("300000000").matches()).isFalse();
+        assertThat(VehicleSlotsHelper.getTducpBikeSlotPattern().matcher("400000000").matches()).isTrue();
+        assertThat(VehicleSlotsHelper.getTducpCarSlotPattern().matcher("300000000").matches()).isTrue();
+        assertThat(VehicleSlotsHelper.getTducpCarSlotPattern().matcher("400000000").matches()).isFalse();
     }
 
     @Test
