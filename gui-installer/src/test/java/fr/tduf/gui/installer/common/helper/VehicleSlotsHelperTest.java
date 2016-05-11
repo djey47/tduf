@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.common.helper;
 import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.domain.Resource;
 import fr.tduf.gui.installer.domain.RimSlot;
+import fr.tduf.gui.installer.domain.SecurityOptions;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -86,6 +87,8 @@ public class VehicleSlotsHelperTest {
         String rearRimFileName = "FILE_R";
         int idCar = 222;
         int idCam = 200;
+        float secuOne = 100;
+        int secuTwo = 101;
         DbDataDto.Entry brandsEntry = DbDataDto.Entry.builder()
                 .forId(0)
                 .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(brandSlotRef).build())
@@ -101,6 +104,8 @@ public class VehicleSlotsHelperTest {
                 .addItem(DbDataDto.Item.builder().ofFieldRank(13).withRawValue(modelNameRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(14).withRawValue(versionNameRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(98).withRawValue(Integer.toString(idCam)).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(100).withRawValue(Float.toString(secuOne)).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(101).withRawValue(Integer.toString(secuTwo)).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(102).withRawValue(Integer.toString(idCar)).build())
                 .build();
         DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
@@ -141,6 +146,7 @@ public class VehicleSlotsHelperTest {
         assertThat(vehicleSlot.getModelName()).isEqualTo(Resource.from(modelNameRef, modelName));
         assertThat(vehicleSlot.getVersionName()).isEqualTo(Resource.from(versionNameRef, versionName));
         assertThat(vehicleSlot.getCameraIdentifier()).isEqualTo(idCam);
+        assertThat(vehicleSlot.getSecurityOptions()).isEqualTo(SecurityOptions.fromValues(secuOne, secuTwo));
 
         RimSlot actualDefaultRims = vehicleSlot.getDefaultRims();
         assertThat(actualDefaultRims.getRef()).isEqualTo(rimSlotRef);

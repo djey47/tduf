@@ -1,9 +1,5 @@
 package fr.tduf.gui.installer.common;
 
-import java.util.List;
-
-import static java.util.Arrays.asList;
-
 /**
  * Gives all constants to access particular information in TDU database.
  */
@@ -23,6 +19,8 @@ public class DatabaseConstants {
     public static final int FIELD_RANK_CAR_MODEL_NAME = 13;
     public static final int FIELD_RANK_CAR_VERSION_NAME = 14;
     public static final int FIELD_RANK_ID_CAM = 98;
+    public static final int FIELD_RANK_SECU1 = 100;
+    public static final int FIELD_RANK_SECU2 = 101;
     public static final int FIELD_RANK_ID_CAR = 102;
 
     public static final int FIELD_RANK_DEALER_REF = 1;            // CAR SHOPS

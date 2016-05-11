@@ -6,6 +6,7 @@ import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.domain.Resource;
 import fr.tduf.gui.installer.domain.RimSlot;
+import fr.tduf.gui.installer.domain.SecurityOptions;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -134,6 +135,9 @@ public class VehicleSlotsHelper extends CommonHelper {
 
         final Optional<RimSlot> defaultRims = getDefaultRimEntryForVehicle(slotReference);
 
+        Optional<Float> secuOptionOne = getFloatValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_SECU1);
+        Optional<Integer> secuOptionTwo = getIntValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_SECU2);
+
         return of(VehicleSlot.builder()
                 .withRef(slotReference)
                 .withCarIdentifier(carIdentifier.orElse(DEFAULT_VEHICLE_ID))
@@ -144,6 +148,7 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .withDefaultRims(defaultRims.orElse(null))
                 .withBrandName(brandName.orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
                 .withCameraIdentifier(cameraIdentifier.orElse(DEFAULT_CAM_ID))
+                .withSecurityOptions(secuOptionOne.orElse(SecurityOptions.ONE_DEFAULT), secuOptionTwo.orElse(SecurityOptions.TWO_DEFAULT))
                 .build());
     }
 

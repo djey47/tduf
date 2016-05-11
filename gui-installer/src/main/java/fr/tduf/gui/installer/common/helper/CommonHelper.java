@@ -44,6 +44,12 @@ public abstract class CommonHelper {
                 .map(Integer::valueOf);
     }
 
+    protected static Optional<Float> getFloatValueFromDatabaseEntry(DbDataDto.Entry entry, int fieldRank) {
+        return entry.getItemAtRank(fieldRank)
+                .map(DbDataDto.Item::getRawValue)
+                .map(Float::valueOf);
+    }
+
     protected static Optional<String> getStringValueFromDatabaseEntry(DbDataDto.Entry entry, int fieldRank) {
         return entry.getItemAtRank(fieldRank)
                 .map(DbDataDto.Item::getRawValue);
