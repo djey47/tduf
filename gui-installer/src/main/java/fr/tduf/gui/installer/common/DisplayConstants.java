@@ -56,7 +56,6 @@ public class DisplayConstants {
     public static final String ITEM_DEALER_KIND_ALL = "All";
     public static final String ITEM_DEALER_KIND_CAR_DEALER = "Car dealer";
     public static final String ITEM_DEALER_KIND_BIKE_DEALER = "Bike dealer";
-    public static final String ITEM_DEALER_KIND_ALL_DEALERS = "All dealers";
     public static final String ITEM_DEALER_KIND_RENTAL = "V-Rent";
     public static final String ITEM_VEHICLE_KIND_DRIVABLE = "Drivable";
     public static final String ITEM_VEHICLE_KIND_CAR = "Car";
@@ -64,4 +63,6 @@ public class DisplayConstants {
     public static final String ITEM_SLOT_KIND_ALL = "All";
     public static final String ITEM_SLOT_KIND_GENUINE = "Genuine";
     public static final String ITEM_SLOT_KIND_TDUCP = "TDUCP";
+
+    private DisplayConstants() {}
 }
