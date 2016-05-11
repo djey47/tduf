@@ -19,6 +19,7 @@ public class VehicleSlot {
     private Resource modelName;
     private Resource versionName;
     private int cameraIdentifier;
+    private SecurityOptions securityOptions;
 
     private VehicleSlot(String ref) {
         this.ref = requireNonNull(ref, "Slot reference is required.");
@@ -77,6 +78,10 @@ public class VehicleSlot {
         return cameraIdentifier;
     }
 
+    public SecurityOptions getSecurityOptions() {
+        return securityOptions;
+    }
+
     /**
      * Creates custom VehicleSlot instances.
      */
@@ -90,6 +95,7 @@ public class VehicleSlot {
         private Resource modelName;
         private Resource versionName;
         private int cameraIdentifier;
+        private SecurityOptions securityOptions;
 
         public VehicleSlotBuilder withRef(String ref) {
             this.ref = ref;
@@ -134,6 +140,11 @@ public class VehicleSlot {
             return this;
         }
 
+        public VehicleSlotBuilder withSecurityOptions(float one, int two) {
+            this.securityOptions = SecurityOptions.fromValues(one, two);
+            return this;
+        }
+
         public VehicleSlot build() {
             final VehicleSlot vehicleSlot = new VehicleSlot(this.ref);
 
@@ -145,6 +156,7 @@ public class VehicleSlot {
             vehicleSlot.modelName = modelName;
             vehicleSlot.versionName = versionName;
             vehicleSlot.cameraIdentifier = cameraIdentifier;
+            vehicleSlot.securityOptions = securityOptions;
 
             return vehicleSlot;
         }
