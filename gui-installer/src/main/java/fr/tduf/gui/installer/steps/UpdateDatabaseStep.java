@@ -1,7 +1,9 @@
 package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
+import fr.tduf.gui.installer.domain.SecurityOptions;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
@@ -14,14 +16,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.google.common.io.Files.getFileExtension;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -41,6 +44,8 @@ class UpdateDatabaseStep extends GenericStep {
                 && patchProperties.getDealerSlot().isPresent()) {
             enhancePatchObjectWithLocationChange();
         }
+
+        enhancePatchObjectWithInstallFlag();
 
         final List<DbDto> topicObjects = getDatabaseContext().getTopicObjects();
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, topicObjects);
@@ -62,7 +67,20 @@ class UpdateDatabaseStep extends GenericStep {
                 .forTopic(CAR_SHOPS)
                 .withType(UPDATE)
                 .asReference(patchProperties.getDealerReference().get())
-                .withPartialEntryValues(Collections.singletonList(DbFieldValueDto.fromCouple(effectiveFieldRank, patchProperties.getVehicleSlotReference().get())))
+                .withPartialEntryValues(singletonList(DbFieldValueDto.fromCouple(effectiveFieldRank, patchProperties.getVehicleSlotReference().get())))
+                .build();
+
+        getDatabaseContext().getPatchObject().getChanges().add(changeObject);
+    }
+
+    private void enhancePatchObjectWithInstallFlag() {
+        Log.info(THIS_CLASS_NAME, "->Adding install flag change to initial patch");
+
+        DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
+                .forTopic(CAR_PHYSICS_DATA)
+                .withType(UPDATE)
+                .asReference(getDatabaseContext().getPatchProperties().getVehicleSlotReference().get())
+                .withPartialEntryValues(singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_SECU1, SecurityOptions.INSTALLED.toString())))
                 .build();
 
         getDatabaseContext().getPatchObject().getChanges().add(changeObject);
