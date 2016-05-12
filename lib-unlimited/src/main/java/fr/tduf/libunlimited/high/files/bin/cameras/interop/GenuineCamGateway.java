@@ -27,7 +27,7 @@ public class GenuineCamGateway extends GenuineGateway {
      * tdumt-cli syntax: CAM-L <camFileName> <camId>
      */
     public CameraInfo getCameraInfo(String camFileName, int camId) throws IOException {
-        String result = callCommandLineInterface(CAM_LIST, camFileName, Integer.valueOf(camId).toString());
+        String result = callCommandLineInterface(CAM_LIST, camFileName, Integer.toString(camId));
 
         GenuineCamViewsDto outputObject = new ObjectMapper().readValue(result, GenuineCamViewsDto.class);
         return mapGenuineCamViewsToCameraInfo(outputObject, camId);
@@ -39,14 +39,14 @@ public class GenuineCamGateway extends GenuineGateway {
     public void customizeCamera(String camFileName, int camId, GenuineCamViewsDto customizeInput) throws IOException {
         String customizeInputFileName = createCamCustomizeInputFile(customizeInput);
 
-        callCommandLineInterface(CAM_CUSTOMIZE, camFileName, Integer.valueOf(camId).toString(), customizeInputFileName);
+        callCommandLineInterface(CAM_CUSTOMIZE, camFileName, Integer.toString(camId), customizeInputFileName);
     }
 
     /**
      * tdumt-cli syntax: CAM-R <camFileName> <camId>
      */
     public void resetCamera(String camFileName, int camId) throws IOException {
-        callCommandLineInterface(CAM_RESET, camFileName, Integer.valueOf(camId).toString());
+        callCommandLineInterface(CAM_RESET, camFileName, Integer.toString(camId));
     }
 
     private static CameraInfo mapGenuineCamViewsToCameraInfo(GenuineCamViewsDto genuineCamViews, int camId) {
