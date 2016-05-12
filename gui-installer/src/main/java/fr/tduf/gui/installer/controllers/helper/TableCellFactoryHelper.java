@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.controllers.helper;
 
+import fr.tduf.gui.common.javafx.scene.control.ReadOnlyCheckBox;
 import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
@@ -37,22 +38,12 @@ public class TableCellFactoryHelper {
             private HBox createHBox() {
                 final HBox b = new HBox();
 
-                checkBox = createCheckBox();
+                checkBox = new ReadOnlyCheckBox();
 
                 b.setAlignment(Pos.CENTER);
                 b.getChildren().add(checkBox);
 
                 return b;
-            }
-
-            // TODO create readOnly CheckBox component in commons
-            private CheckBox createCheckBox() {
-                final CheckBox cb = new CheckBox();
-
-                cb.setDisable(true);
-                cb.setStyle("-fx-opacity: 1");
-
-                return cb;
             }
         };
     }
