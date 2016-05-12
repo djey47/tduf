@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Ignore
 public class DealerSlotsStageControllerTest {
-    private static final Class<SlotsBrowserStageControllerTest> thisClass = SlotsBrowserStageControllerTest.class;
+    private static final Class<VehicleSlotsStageControllerTest> thisClass = VehicleSlotsStageControllerTest.class;
 
     @Rule
     public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();

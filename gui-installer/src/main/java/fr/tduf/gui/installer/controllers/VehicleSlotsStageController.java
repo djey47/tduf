@@ -34,8 +34,8 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
-public class SlotsBrowserStageController extends AbstractGuiController {
-    private static final String THIS_CLASS_NAME = SlotsBrowserStageController.class.getSimpleName();
+public class VehicleSlotsStageController extends AbstractGuiController {
+    private static final String THIS_CLASS_NAME = VehicleSlotsStageController.class.getSimpleName();
 
     @FXML
     private Label instructionsLabel;

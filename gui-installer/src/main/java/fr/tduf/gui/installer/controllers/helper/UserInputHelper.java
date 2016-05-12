@@ -4,13 +4,13 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.controllers.DealerSlotsStageController;
-import fr.tduf.gui.installer.controllers.SlotsBrowserStageController;
+import fr.tduf.gui.installer.controllers.VehicleSlotsStageController;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
 import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
 import fr.tduf.gui.installer.stages.DealerSlotsStageDesigner;
-import fr.tduf.gui.installer.stages.SlotsBrowserStageDesigner;
+import fr.tduf.gui.installer.stages.VehicleSlotsStageDesigner;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import javafx.stage.Stage;
@@ -45,7 +45,7 @@ public class UserInputHelper {
 
         Log.info(THIS_CLASS_NAME, "->Selecting vehicle slot");
 
-        SlotsBrowserStageController slotsBrowserController = initSlotsBrowserController(parentWindow);
+        VehicleSlotsStageController slotsBrowserController = initSlotsBrowserController(parentWindow);
         Optional<VehicleSlotDataItem> selectedItem = slotsBrowserController.initAndShowModalDialog(Optional.empty(), context.getMiner());
 
         Log.info(THIS_CLASS_NAME, "->Using vehicle slot: " + selectedItem);
@@ -133,11 +133,11 @@ public class UserInputHelper {
         patchProperties.setDealerSlotIfNotExists(dealerSlotData.getSlotDataItem().rankProperty().get());
     }
 
-    private static SlotsBrowserStageController initSlotsBrowserController(Window mainWindow) throws IOException {
+    private static VehicleSlotsStageController initSlotsBrowserController(Window mainWindow) throws IOException {
         Stage stage = new Stage();
         stage.initOwner(mainWindow);
 
-        return SlotsBrowserStageDesigner.init(stage);
+        return VehicleSlotsStageDesigner.init(stage);
     }
 
     private static DealerSlotsStageController initDealerSlotsController(Window mainWindow) throws IOException {

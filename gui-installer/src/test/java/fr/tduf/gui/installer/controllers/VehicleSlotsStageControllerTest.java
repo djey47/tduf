@@ -2,7 +2,7 @@ package fr.tduf.gui.installer.controllers;
 
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.installer.stages.SlotsBrowserStageDesigner;
+import fr.tduf.gui.installer.stages.VehicleSlotsStageDesigner;
 import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -26,9 +26,9 @@ import static java.util.Optional.empty;
  * To display stage without running whole application.
  */
 @Ignore
-public class SlotsBrowserStageControllerTest {
+public class VehicleSlotsStageControllerTest {
 
-    private static final Class<SlotsBrowserStageControllerTest> thisClass = SlotsBrowserStageControllerTest.class;
+    private static final Class<VehicleSlotsStageControllerTest> thisClass = VehicleSlotsStageControllerTest.class;
 
     @Rule
     public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
@@ -55,10 +55,10 @@ public class SlotsBrowserStageControllerTest {
         initSlotsBrowserStageController(null).initAndShowModalDialog(Optional.of("698882776"), BulkDatabaseMiner.load(databaseObjects));
     }
 
-    private static SlotsBrowserStageController initSlotsBrowserStageController(Window mainWindow) throws IOException {
+    private static VehicleSlotsStageController initSlotsBrowserStageController(Window mainWindow) throws IOException {
         Stage stage = new Stage();
         stage.initOwner(mainWindow);
 
-        return SlotsBrowserStageDesigner.init(stage);
+        return VehicleSlotsStageDesigner.init(stage);
     }
 }

@@ -33,7 +33,7 @@ import static java.util.stream.Collectors.toList;
 
 
 public class DealerSlotsStageController extends AbstractGuiController {
-    private static final String THIS_CLASS_NAME = SlotsBrowserStageController.class.getSimpleName();
+    private static final String THIS_CLASS_NAME = VehicleSlotsStageController.class.getSimpleName();
 
     private Property<DealerSlotData.DealerDataItem> selectedDealerProperty;
     private Property<DealerSlotData.SlotDataItem> selectedSlotProperty;
