@@ -1,8 +1,6 @@
 package fr.tduf.gui.installer.domain;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import java.math.BigDecimal;
 
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -15,8 +13,8 @@ public class SecurityOptions {
     public static final float ONE_DEFAULT = 1;
     public static final int TWO_DEFAULT = 100;
 
-    public static final float NOT_INSTALLED = 1;
-    public static final float INSTALLED = 100;
+    public static final BigDecimal NOT_INSTALLED = BigDecimal.ONE;
+    public static final BigDecimal INSTALLED = new BigDecimal(100);
 
     private final float optionOne;
     private int optionTwo;
@@ -30,8 +28,8 @@ public class SecurityOptions {
         return new SecurityOptions(one, two);
     }
 
-    public float getOptionOne() {
-        return optionOne;
+    public BigDecimal getOptionOne() {
+        return BigDecimal.valueOf(optionOne);
     }
 
     public int getOptionTwo() {
