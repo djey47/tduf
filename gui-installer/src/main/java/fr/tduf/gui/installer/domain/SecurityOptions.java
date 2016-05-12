@@ -13,8 +13,8 @@ public class SecurityOptions {
     public static final float ONE_DEFAULT = 1;
     public static final int TWO_DEFAULT = 100;
 
-    public static final BigDecimal NOT_INSTALLED = BigDecimal.ONE;
-    public static final BigDecimal INSTALLED = new BigDecimal(100);
+    public static final BigDecimal NOT_INSTALLED = BigDecimal.valueOf(1.0);
+    public static final BigDecimal INSTALLED = BigDecimal.valueOf(100.0);
 
     private final float optionOne;
     private int optionTwo;
