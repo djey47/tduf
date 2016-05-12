@@ -17,9 +17,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -207,7 +209,8 @@ public class SlotsBrowserStageController extends AbstractGuiController {
         installedSlotTableColumn.setCellValueFactory(cellData -> cellData.getValue().moddedProperty());
         installedSlotTableColumn.setCellFactory(column -> new TableCell<VehicleSlotDataItem, Boolean>() {
 
-            private final CheckBox checkbox = createCheckBox();
+            private final HBox hBox = createHBox();
+            private CheckBox checkBox;
 
             @Override
             protected void updateItem(Boolean item, boolean empty) {
@@ -216,9 +219,20 @@ public class SlotsBrowserStageController extends AbstractGuiController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    checkbox.setSelected(item);
-                    setGraphic(checkbox);
+                    checkBox.setSelected(item);
+                    setGraphic(hBox);
                 }
+            }
+
+            private HBox createHBox() {
+                final HBox hBox = new HBox();
+
+                checkBox = createCheckBox();
+
+                hBox.setAlignment(Pos.CENTER);
+                hBox.getChildren().add(checkBox);
+
+                return hBox;
             }
 
             // TODO create readOnly CheckBox component in commons
