@@ -2,6 +2,7 @@
 .gradle/
 .idea/
 build/
+classes/
 cli/integ-tests/applied/
 cli/integ-tests/banks/db/out/
 cli/integ-tests/cameras/out/
