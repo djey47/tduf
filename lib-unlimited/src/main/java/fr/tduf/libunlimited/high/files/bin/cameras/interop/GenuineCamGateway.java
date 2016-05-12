@@ -30,7 +30,7 @@ public class GenuineCamGateway extends GenuineGateway {
         String result = callCommandLineInterface(CAM_LIST, camFileName, Integer.valueOf(camId).toString());
 
         GenuineCamViewsDto outputObject = new ObjectMapper().readValue(result, GenuineCamViewsDto.class);
-        return mapGenuineCamViewsToCameraInfo(outputObject);
+        return mapGenuineCamViewsToCameraInfo(outputObject, camId);
     }
 
     /**
@@ -49,9 +49,19 @@ public class GenuineCamGateway extends GenuineGateway {
         callCommandLineInterface(CAM_RESET, camFileName, Integer.valueOf(camId).toString());
     }
 
-    private static CameraInfo mapGenuineCamViewsToCameraInfo(GenuineCamViewsDto outputObject) {
-        // TODO mapping
-        return new CameraInfo();
+    private static CameraInfo mapGenuineCamViewsToCameraInfo(GenuineCamViewsDto genuineCamViews, int camId) {
+        final CameraInfo.CameraInfoBuilder cameraInfoBuilder = CameraInfo.builder()
+                .forIdentifier(camId);
+
+        genuineCamViews.getViews()
+                .forEach(genuineView -> cameraInfoBuilder.addView(mapGenuineCamViewToCameraView(genuineView)));
+
+        return cameraInfoBuilder.build();
+    }
+
+    private static CameraInfo.CameraView mapGenuineCamViewToCameraView(GenuineCamViewsDto.GenuineCamViewDto genuineView) {
+        GenuineCamViewsDto.GenuineCamViewDto.Type sourceType = GenuineCamViewsDto.GenuineCamViewDto.Type.fromInternalId(genuineView.getViewId());
+        return CameraInfo.CameraView.from(genuineView.getViewType(), genuineView.getCameraId(), sourceType);
     }
 
     private static String createCamCustomizeInputFile(GenuineCamViewsDto customizeInput) throws IOException {

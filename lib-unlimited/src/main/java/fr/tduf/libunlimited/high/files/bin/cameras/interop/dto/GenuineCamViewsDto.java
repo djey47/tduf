@@ -6,6 +6,7 @@ import org.codehaus.jackson.annotate.JsonTypeName;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * In/out object from .net cli, CAM-I and CAM-C commands.
@@ -38,6 +39,13 @@ public class GenuineCamViewsDto {
 
             Type(int internalId) {
                 this.internalId = internalId;
+            }
+
+            public static Type fromInternalId(int internalId) {
+                return Stream.of(values())
+                        .filter(type -> type.internalId == internalId)
+                        .findAny()
+                        .orElseThrow(() -> new IllegalArgumentException("Unknown view type identifier: " + internalId));
             }
 
             public int getInternalId() {
