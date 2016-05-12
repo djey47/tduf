@@ -13,6 +13,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -76,11 +77,12 @@ class UpdateDatabaseStep extends GenericStep {
     private void enhancePatchObjectWithInstallFlag() {
         Log.info(THIS_CLASS_NAME, "->Adding install flag change to initial patch");
 
+        final String secuOneRawValue = SecurityOptions.INSTALLED.setScale(0, RoundingMode.UNNECESSARY).toString();
         DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
                 .forTopic(CAR_PHYSICS_DATA)
                 .withType(UPDATE)
                 .asReference(getDatabaseContext().getPatchProperties().getVehicleSlotReference().get())
-                .withPartialEntryValues(singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_SECU1, SecurityOptions.INSTALLED.toString())))
+                .withPartialEntryValues(singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_SECU1, secuOneRawValue)))
                 .build();
 
         getDatabaseContext().getPatchObject().getChanges().add(changeObject);
