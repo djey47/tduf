@@ -1,7 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -17,28 +16,35 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 
 public class DatabasePatcher_commonTest {
-
     private static final Class<DatabasePatcher_commonTest> thisClass = DatabasePatcher_commonTest.class;
 
+    private DatabasePatcher patcher;
+    
     @Before
-    public void setUp() {}
+    public void setUp() throws ReflectiveOperationException {
+        patcher = createPatcher(createDatabaseObjects());
+    }
 
     @Test(expected = NullPointerException.class)
     public void apply_whenNullPatchObject_shouldThrowException() throws ReflectiveOperationException {
         // GIVEN-WHEN
-        createPatcher(createDefaultDatabaseObjects()).apply(null);
+        patcher.apply(null);
 
         // THEN: NPE
     }
 
     @Test(expected = NullPointerException.class)
     public void batchApply_whenNullPatchList_shouldThrowException() throws ReflectiveOperationException, IOException, URISyntaxException {
-        // GIVEN
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
-        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
-
-        // WHEN
+        // GIVEN-WHEN
         patcher.batchApply(null);
+
+        // THEN: NPE
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void batchApplyWithProperties_whenNullPatchMap_shouldThrowException() throws ReflectiveOperationException, IOException, URISyntaxException {
+        // GIVEN-WHEN
+        patcher.batchApplyWithProperties(null);
 
         // THEN: NPE
     }
@@ -46,7 +52,7 @@ public class DatabasePatcher_commonTest {
     @Test(expected = NullPointerException.class)
     public void applyWithProperties_whenNullProperties_shouldThrowException() throws ReflectiveOperationException {
         // GIVEN-WHEN
-        createPatcher(createDefaultDatabaseObjects()).applyWithProperties(DbPatchDto.builder().build(), null);
+        patcher.applyWithProperties(DbPatchDto.builder().build(), null);
 
         // THEN: NPE
     }
@@ -60,7 +66,7 @@ public class DatabasePatcher_commonTest {
         return new ObjectMapper().readValue(new File(resourceURI), objectClass);
     }
 
-    private static List<DbDto> createDefaultDatabaseObjects() {
+    private static List<DbDto> createDatabaseObjects() {
         return singletonList(DbDto.builder().build());
     }
 }

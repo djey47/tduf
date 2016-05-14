@@ -14,6 +14,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -67,6 +68,15 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .forEach(this::applyChange);
 
         return effectiveProperties;
+    }
+
+    /**
+     * Execute provided patches onto current database, taking properties into account.
+     */
+    public void batchApplyWithProperties(Map<DbPatchDto, PatchProperties> patchObjectsAndProperties) {
+        requireNonNull(patchObjectsAndProperties, "A list of patch objects and associated properties are required.")
+                .forEach(this::applyWithProperties);
+
     }
 
     @Override
