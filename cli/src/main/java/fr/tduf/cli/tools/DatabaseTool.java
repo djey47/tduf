@@ -1,6 +1,5 @@
 package fr.tduf.cli.tools;
 
-import com.google.common.annotations.VisibleForTesting;
 import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.cli.tools.dto.DatabaseIntegrityErrorDto;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
@@ -106,7 +105,7 @@ public class DatabaseTool extends GenericTool {
      */
     enum Command implements CommandHelper.CommandEnum {
         APPLY_PATCH("apply-patch", "Modifies database contents and resources as described in a JSON mini patch file."),
-        APPLY_PATCHES("apply-patches", "Modifies database contents and resources as described in JSON mini patch files form a directory."),
+        APPLY_PATCHES("apply-patches", "Modifies database contents and resources as described in JSON mini patch files from a directory."),
         APPLY_TDUPK("apply-tdupk", "Modifies vehicle physics as described in a performance pack file from TDUPE."),
         GEN_PATCH("gen-patch", "Creates mini-patch file from selected database contents."),
         DIFF_PATCHES("diff-patches", "Creates mini-patch files with differences from JSON database against reference one."),
@@ -145,7 +144,7 @@ public class DatabaseTool extends GenericTool {
         new DatabaseTool().doMain(args);
     }
 
-    public DatabaseTool() {
+    DatabaseTool() {
         bankSupport = new GenuineBnkGateway(new CommandLineHelper());
     }
 
@@ -739,8 +738,7 @@ public class DatabaseTool extends GenericTool {
     /**
      * Used by integ tests.
      */
-    @VisibleForTesting
-    public void setBankSupport(BankSupport bankSupport) {
+    void setBankSupport(BankSupport bankSupport) {
         this.bankSupport = bankSupport;
     }
 }
