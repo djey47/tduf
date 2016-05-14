@@ -29,14 +29,23 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 ### What's in this version ? (1.5.0)
 
+* Database Tool: now handle patches in batch mode with associated properties
+
+* Database Editor: do not allow to load database more than once (for reliability reasons). To reload, exit then restart application.
+
+* Library: give access to camera customization features from TDUMT-CLI.
 
 
 ### Fixed issues
 
+* Database Editor: various concerns, not applying changes just made
+
+* Library: disabled some abusive caching.
 
 
 ### Known bugs
 
+* Camera Tool use is at your own risks still, as it may corrupt cameras.bin file.
 
 
 ### What you will need to run TDUF
