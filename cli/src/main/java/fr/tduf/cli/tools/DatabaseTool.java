@@ -55,6 +55,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -295,7 +296,7 @@ public class DatabaseTool extends GenericTool {
 
         List<DbDto> databaseObjects = new ArrayList<>();
         outLine("-> JSON database directory: " + jsonDatabaseDirectory);
-        if(extensiveCheck) {
+        if (extensiveCheck) {
             outLine("Now checking database...");
             databaseObjects = loadAndCheckDatabase(extractedDatabaseDirectory, integrityErrors);
 
@@ -304,7 +305,8 @@ public class DatabaseTool extends GenericTool {
             outLine("Now loading database...");
             try {
                 databaseObjects = loadDatabaseFromJsonFiles(jsonDatabaseDirectory);
-            } catch (IllegalArgumentException ignored) {}
+            } catch (IllegalArgumentException ignored) {
+            }
 
             outLine("  .Database loading just ended: " + integrityErrors.size() + " error(s).");
         }
@@ -474,7 +476,7 @@ public class DatabaseTool extends GenericTool {
 
         List<DbDto> allTopicObjects = loadDatabaseFromJsonFiles(sourceJsonDirectory);
 
-        final List<DbPatchDto> patchObjects = Files.walk(Paths.get(sourcePatchesDirectory))
+        final Map<DbPatchDto, PatchProperties> patchObjectsAndProps = Files.walk(Paths.get(sourcePatchesDirectory))
 
                 .filter((path) -> Files.isRegularFile(path))
 
@@ -482,19 +484,29 @@ public class DatabaseTool extends GenericTool {
 
                 .sorted(Path::compareTo)
 
-                .map((patchPath) -> {
-                    outLine("-> Mini patch file: " + patchPath.toString());
+                .collect(toMap(patchPath -> {
+                            outLine("-> Mini patch file: " + patchPath.toString());
 
-                    try {
-                        return jsonMapper.readValue(patchPath.toFile(), DbPatchDto.class);
-                    } catch (IOException ioe) {
-                        throw new RuntimeException(ioe);
-                    }
-                })
+                            try {
+                                return jsonMapper.readValue(patchPath.toFile(), DbPatchDto.class);
+                            } catch (IOException ioe) {
+                                throw new RuntimeException(ioe);
+                            }
+                        },
+                        patchPath -> {
+                            outLine("-> Reading patch properties if any...");
 
-                .collect(toList());
+                            try {
+                                return readPatchProperties(patchPath.toString());
+                            } catch (IOException ioe) {
+                                throw new RuntimeException(ioe);
+                            }
+                        }
+                ));
 
-        AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).batchApply(patchObjects);
+        AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).batchApplyWithProperties(patchObjectsAndProps);
+
+        // Effective properties are not handled for now
 
         outLine("Writing patched database to " + targetDatabaseDirectory + ", please wait...");
 
@@ -511,7 +523,7 @@ public class DatabaseTool extends GenericTool {
 
         final PatchProperties patchProperties = new PatchProperties();
         final File propertyFileHandle = new File(propertyFile);
-        if(propertyFileHandle.exists()) {
+        if (propertyFileHandle.exists()) {
 
             outLine("-> Patch properties: " + propertyFile);
 
