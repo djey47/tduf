@@ -7,12 +7,17 @@ Here is a new vehicle mod installer:
 * Makes new files to be accepted by updating Magic Map
 * and more!
 
-Use with TDUCP 2.00A is strongly recommended.
+Using this with TDUCP 2.00A is strongly recommended.
 
 
 ### What's in this version ? (ALPHA-7)
 
-* New features and bug fixes
+* Advanced dealer slot selector
+* Advanced vehicle slot selector
+* Makes backup of database and replaced files by install
+* Restores files if critical error occurs while installing
+* Allows to customize each camera view by using ones from different cameras.
+
 
 ### Main features
 
@@ -70,9 +75,9 @@ to:  assets\DATABASE\
     - RIMWIDTH.FR.1/RIMHEIGHT.FR.1/RIMDIAM.FR.1: data for front RIMS
       RIMWIDTH.RR.1/RIMHEIGHT.RR.1/RIMDIAM.RR.1: data for rear RIMS
     - SLOTREF: (optional) force to use a CAR_PHYSICS slot. If enabled, Installer will not ask for vehicle slot
-    - ... see explanation in properties file.
+    - other items ... see explanation in properties file.
 
-- (Optional) Copy TDUPE Pack to assets\DATABASE directory.
+- (Optional) Copy a TDUPE Pack to assets\DATABASE directory.
 
 
 TESTING
@@ -83,7 +88,7 @@ TESTING
 
 - Click Install.
 
-- Select target car slot
+- Select target vehicle slot
 
 - Select dealer slot to locate freshly installed vehicle
 
