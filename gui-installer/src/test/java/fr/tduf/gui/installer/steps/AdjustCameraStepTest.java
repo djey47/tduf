@@ -26,8 +26,10 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto.GenuineCamViewDto.Type.*;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_COLORS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
-import static java.util.Collections.singletonList;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -63,10 +65,13 @@ public class AdjustCameraStepTest {
                 .build();
 
         DbDto carPhysicsObject = createCarPhysicsObject("999999");
+        DbDto carColorsObject = createDefaultTopicObject(CAR_COLORS);
         PatchProperties patchProperties = new PatchProperties();
-        databaseContext = new DatabaseContext(singletonList(carPhysicsObject), "");
+        databaseContext = new DatabaseContext(asList(carPhysicsObject, carColorsObject), "");
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
     }
+
+
 
     @Test
     public void perform_whenCameraIdInProperties_andNoCustomization_shouldNotCallBankSupportComponent() throws StepException, IOException {
@@ -195,7 +200,7 @@ public class AdjustCameraStepTest {
     private static DbDto createCarPhysicsObject(String slotReference) {
         return DbDto.builder()
                 .withStructure(DbStructureDto.builder()
-                        .forTopic(DbDto.Topic.CAR_PHYSICS_DATA)
+                        .forTopic(CAR_PHYSICS_DATA)
                         .addItem(DbStructureDto.Field.builder()
                                 .ofRank(1)
                                 .fromType(UID)
@@ -207,6 +212,15 @@ public class AdjustCameraStepTest {
                                 .addItem(DbDataDto.Item.builder().ofFieldRank(98).withRawValue("200").build())
                                 .build())
                         .build())
+                .build();
+    }
+
+    private static DbDto createDefaultTopicObject(DbDto.Topic topic) {
+        return DbDto.builder()
+                .withStructure(DbStructureDto.builder()
+                        .forTopic(topic)
+                        .build())
+                .withData(DbDataDto.builder().build())
                 .build();
     }
 }
