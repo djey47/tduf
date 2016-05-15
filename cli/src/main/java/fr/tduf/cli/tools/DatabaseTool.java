@@ -494,8 +494,6 @@ public class DatabaseTool extends GenericTool {
                             }
                         },
                         patchPath -> {
-                            outLine("-> Reading patch properties if any...");
-
                             try {
                                 return readPatchProperties(patchPath.toString());
                             } catch (IOException ioe) {
