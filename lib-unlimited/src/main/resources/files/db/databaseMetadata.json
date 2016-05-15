@@ -248,33 +248,45 @@
   "dealers": [
     {
       "ref": "541293706",
+      "name": "OAHU CARS",
       "location": "Honolulu Downtown: Kapalama",
       "slotCount": 8,
       "availableSlots": [1,2,3,4,5,6,7,8]
     },
     {
       "ref": "611093710",
+      "name": "OAHU CARS",
       "location": "Honolulu Airport",
       "slotCount": 8,
       "availableSlots": [1,2,3,4,5,6,7,8]
     },
     {
       "ref": "591093708",
+      "name": "OAHU CARS",
       "location": "Honolulu Airport/Circuit",
       "slotCount": 8,
       "availableSlots": [1,2,3,4,5,6,7,8]
     },
     {
       "ref": "540993705",
+      "name": "OAHU CARS",
       "location": "SW, Barber's point Golf",
       "slotCount": 8,
       "availableSlots": [1,2,3,4,5,6,7,8]
     },
     {
       "ref": "592253709",
+      "name": "NISSAN",
       "location": "Honolulu Downtown",
       "slotCount": 15,
       "availableSlots": [1,2,3,4,5,7,8,9,10,11,12,13,14,15]
+    },
+    {
+      "ref": "589863713",
+      "name": "ALFA ROMEO",
+      "location": "SW, Kapolei",
+      "slotCount": 15,
+      "availableSlots": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
     }
   ]
 }

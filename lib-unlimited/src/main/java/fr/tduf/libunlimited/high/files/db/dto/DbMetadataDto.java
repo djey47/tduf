@@ -78,6 +78,9 @@ public class DbMetadataDto {
     @JsonTypeName("dealerMetadata")
     public static class DealerMetadataDto {
 
+        @JsonProperty("name")
+        private String name;
+
         @JsonProperty("ref")
         private String reference;
 
@@ -106,6 +109,10 @@ public class DbMetadataDto {
 
         public String getReference() {
             return reference;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 }
