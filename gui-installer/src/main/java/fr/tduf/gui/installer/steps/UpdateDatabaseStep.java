@@ -54,6 +54,8 @@ class UpdateDatabaseStep extends GenericStep {
         Log.info(THIS_CLASS_NAME, "->Applying TDUF mini patch...");
         patcher.applyWithProperties(getDatabaseContext().getPatchObject(), patchProperties);
 
+        // TODO write effective properties
+
         String slotRef = patchProperties.getVehicleSlotReference().get();
         applyPerformancePackage(topicObjects, slotRef);
     }
