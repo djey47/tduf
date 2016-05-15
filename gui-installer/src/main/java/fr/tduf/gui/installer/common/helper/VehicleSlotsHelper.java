@@ -4,11 +4,9 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.FileConstants;
-import fr.tduf.gui.installer.domain.Resource;
-import fr.tduf.gui.installer.domain.RimSlot;
-import fr.tduf.gui.installer.domain.SecurityOptions;
-import fr.tduf.gui.installer.domain.VehicleSlot;
+import fr.tduf.gui.installer.domain.*;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 
@@ -26,6 +24,7 @@ import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileTyp
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.REAR_RIM;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;
@@ -138,6 +137,8 @@ public class VehicleSlotsHelper extends CommonHelper {
         Optional<Float> secuOptionOne = getFloatValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_SECU1);
         Optional<Integer> secuOptionTwo = getIntValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_SECU2);
 
+        List<PaintJob> paintJobs = getPaintJobsForVehicle(slotReference);
+
         return of(VehicleSlot.builder()
                 .withRef(slotReference)
                 .withCarIdentifier(carIdentifier.orElse(DEFAULT_VEHICLE_ID))
@@ -149,6 +150,7 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .withBrandName(brandName.orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
                 .withCameraIdentifier(cameraIdentifier.orElse(DEFAULT_CAM_ID))
                 .withSecurityOptions(secuOptionOne.orElse(SecurityOptions.ONE_DEFAULT), secuOptionTwo.orElse(SecurityOptions.TWO_DEFAULT))
+                .addPaintJobs(paintJobs)
                 .build());
     }
 
@@ -222,6 +224,17 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .filter(Optional::isPresent)
 
                 .map(Optional::get)
+
+                .collect(toList());
+    }
+
+    private List<PaintJob> getPaintJobsForVehicle(String slotReference) {
+        return miner.getContentEntriesMatchingCriteria(singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference)), CAR_COLORS).stream()
+
+                .map(entry -> {
+                    String interiorPatternRef = entry.getItemAtRank(DatabaseConstants.FIELD_RANK_INTERIOR_1).get().getRawValue();
+                    return PaintJob.builder().addInteriorPattern(interiorPatternRef).build();
+                })
 
                 .collect(toList());
     }

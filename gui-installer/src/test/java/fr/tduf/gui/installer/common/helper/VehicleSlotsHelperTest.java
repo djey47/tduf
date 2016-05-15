@@ -5,6 +5,7 @@ import fr.tduf.gui.installer.domain.Resource;
 import fr.tduf.gui.installer.domain.RimSlot;
 import fr.tduf.gui.installer.domain.SecurityOptions;
 import fr.tduf.gui.installer.domain.VehicleSlot;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -22,9 +23,12 @@ import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.SlotKind.AL
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.VehicleKind.DRIVABLE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 
@@ -85,6 +89,7 @@ public class VehicleSlotsHelperTest {
         String frontRimFileName = "FILE_F";
         String rearRimFileNameRef = "2222";
         String rearRimFileName = "FILE_R";
+        String interiorRef = "7777";
         int idCar = 222;
         int idCam = 200;
         float secuOne = 100;
@@ -115,9 +120,15 @@ public class VehicleSlotsHelperTest {
                 .addItem(DbDataDto.Item.builder().ofFieldRank(14).withRawValue(frontRimFileNameRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(15).withRawValue(rearRimFileNameRef).build())
                 .build();
+        DbDataDto.Entry carColorsEntry = DbDataDto.Entry.builder()
+                .forId(0)
+                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(8).withRawValue(interiorRef).build())
+                .build();
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(brandSlotRef, BRANDS)).thenReturn(of(brandsEntry));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotRef, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef, RIMS)).thenReturn(of(rimsEntry));
+        when(bulkDatabaseMinerMock.getContentEntriesMatchingCriteria(anyListOf(DbFieldValueDto.class), eq(CAR_COLORS))).thenReturn(singletonList(carColorsEntry));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(fileNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(fileName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(realNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(realName));
@@ -153,6 +164,8 @@ public class VehicleSlotsHelperTest {
         assertThat(actualDefaultRims.getParentDirectoryName()).isEqualTo(Resource.from(directoryRef, directory));
         assertThat(actualDefaultRims.getFrontRimInfo().getFileName()).isEqualTo(Resource.from(frontRimFileNameRef, frontRimFileName));
         assertThat(actualDefaultRims.getRearRimInfo().getFileName()).isEqualTo(Resource.from(rearRimFileNameRef, rearRimFileName));
+
+        assertThat(vehicleSlot.getPaintJobs()).extracting("interiorPatternRefs").containsExactly(singletonList(interiorRef));
     }
 
     @Test
