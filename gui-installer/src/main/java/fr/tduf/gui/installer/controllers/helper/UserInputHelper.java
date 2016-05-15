@@ -6,6 +6,7 @@ import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.controllers.DealerSlotsStageController;
 import fr.tduf.gui.installer.controllers.VehicleSlotsStageController;
 import fr.tduf.gui.installer.domain.DatabaseContext;
+import fr.tduf.gui.installer.domain.PaintJob;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
 import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 
 /**
  * Provides methods to request input from user
@@ -46,7 +48,7 @@ public class UserInputHelper {
         Log.info(THIS_CLASS_NAME, "->Selecting vehicle slot");
 
         VehicleSlotsStageController slotsBrowserController = initSlotsBrowserController(parentWindow);
-        Optional<VehicleSlotDataItem> selectedItem = slotsBrowserController.initAndShowModalDialog(Optional.empty(), context.getMiner());
+        Optional<VehicleSlotDataItem> selectedItem = slotsBrowserController.initAndShowModalDialog(empty(), context.getMiner());
 
         Log.info(THIS_CLASS_NAME, "->Using vehicle slot: " + selectedItem);
 
@@ -106,6 +108,7 @@ public class UserInputHelper {
         String selectedResourceFrontRimBankName = vehicleSlot.getDefaultRims().getFrontRimInfo().getFileName().getRef();
         String selectedRearRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIM, false);
         String selectedResourceRearRimBankName = vehicleSlot.getDefaultRims().getRearRimInfo().getFileName().getRef();
+        Optional<String> selectedInteriorReference = searchFirstInteriorPatternReference(vehicleSlot);
 
         List<String> values = asList(selectedBankName, selectedResourceBankName, selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);
         if (VehicleSlotsHelper.DEFAULT_VEHICLE_ID == selectedCarIdentifier
@@ -124,6 +127,8 @@ public class UserInputHelper {
         patchProperties.setResourceFrontRimBankIfNotExists(selectedResourceFrontRimBankName, 1);
         patchProperties.setRearRimBankNameIfNotExists(selectedRearRimBank, 1);
         patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, 1);
+
+        selectedInteriorReference.ifPresent(ref -> patchProperties.setInteriorReferenceIfNotExists(ref, 1));
     }
 
     static void createPatchPropertiesForDealerSlot(DealerSlotData dealerSlotData, PatchProperties patchProperties) {
@@ -131,6 +136,16 @@ public class UserInputHelper {
 
         patchProperties.setDealerReferenceIfNotExists(dealerSlotData.getDealerDataItem().referenceProperty().get());
         patchProperties.setDealerSlotIfNotExists(dealerSlotData.getSlotDataItem().rankProperty().get());
+    }
+
+    private static Optional<String> searchFirstInteriorPatternReference(VehicleSlot vehicleSlot) {
+        List<PaintJob> paintJobs = vehicleSlot.getPaintJobs();
+        if (paintJobs.isEmpty()) {
+            return empty();
+        }
+
+        return paintJobs.get(0).getInteriorPatternRefs().stream()
+                .findFirst();
     }
 
     private static VehicleSlotsStageController initSlotsBrowserController(Window mainWindow) throws IOException {
