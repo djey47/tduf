@@ -1,5 +1,8 @@
 package fr.tduf.gui.installer.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -20,6 +23,7 @@ public class VehicleSlot {
     private Resource versionName;
     private int cameraIdentifier;
     private SecurityOptions securityOptions;
+    private List<PaintJob> paintJobs;
 
     private VehicleSlot(String ref) {
         this.ref = requireNonNull(ref, "Slot reference is required.");
@@ -82,6 +86,10 @@ public class VehicleSlot {
         return securityOptions;
     }
 
+    public List<PaintJob> getPaintJobs() {
+        return paintJobs;
+    }
+
     /**
      * Creates custom VehicleSlot instances.
      */
@@ -96,6 +104,7 @@ public class VehicleSlot {
         private Resource versionName;
         private int cameraIdentifier;
         private SecurityOptions securityOptions;
+        private List<PaintJob> paintJobs = new ArrayList<>(20);
 
         public VehicleSlotBuilder withRef(String ref) {
             this.ref = ref;
@@ -145,6 +154,16 @@ public class VehicleSlot {
             return this;
         }
 
+        public VehicleSlotBuilder addPaintJob(PaintJob paintJob) {
+            this.paintJobs.add(paintJob);
+            return this;
+        }
+
+        public VehicleSlotBuilder addPaintJobs(List<PaintJob> paintJobs) {
+            this.paintJobs.addAll(paintJobs);
+            return this;
+        }
+
         public VehicleSlot build() {
             final VehicleSlot vehicleSlot = new VehicleSlot(this.ref);
 
@@ -157,6 +176,7 @@ public class VehicleSlot {
             vehicleSlot.versionName = versionName;
             vehicleSlot.cameraIdentifier = cameraIdentifier;
             vehicleSlot.securityOptions = securityOptions;
+            vehicleSlot.paintJobs = paintJobs;
 
             return vehicleSlot;
         }
