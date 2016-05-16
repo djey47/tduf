@@ -62,6 +62,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static java.util.Optional.*;
 import static javafx.beans.binding.Bindings.size;
 import static javafx.beans.binding.Bindings.when;
+import static javafx.concurrent.Worker.State.FAILED;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
 import static javafx.scene.control.Alert.AlertType.ERROR;
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
@@ -549,12 +550,16 @@ public class MainStageController extends AbstractGuiController {
         databaseLoader.stateProperty().addListener((observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
                 loadDatabaseObjects(databaseLoader.getValue());
+            } else if (FAILED == newState) {
+                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_LOAD, DisplayConstants.MESSAGE_DATABASE_LOAD_KO, databaseLoader.getException().getMessage());
             }
         });
 
         databaseSaver.stateProperty().addListener((observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
-                CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseSaver.getValue());
+                CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseSaver.getValue());
+            } else if (FAILED == newState) {
+                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVE_KO, databaseSaver.getException().getMessage());
             }
         });
     }

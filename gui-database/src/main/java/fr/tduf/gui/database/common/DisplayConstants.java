@@ -60,6 +60,8 @@ public class DisplayConstants {
     public static final String TITLE_SUB_ENTRIES = " : Content entries";
     public static final String TITLE_SUB_FIELDS = " : Content fields";
     public static final String TITLE_SUB_RESOURCES = " : Resources";
+    public static final String TITLE_SUB_SAVE = " : Save database";
+    public static final String TITLE_SUB_LOAD = " : Load database";
     public static final String TITLE_SUB_EXPORT = " : Export entry";
     public static final String TITLE_SUB_EXPORT_FILE = " : Export contents to file";
     public static final String TITLE_SUB_IMPORT = " : Import entry";
@@ -70,6 +72,8 @@ public class DisplayConstants {
 
     public static final String MESSAGE_ADDED_RESOURCE = "Add resource in topic: ";
     public static final String MESSAGE_DATABASE_SAVED = "Current database was saved.";
+    public static final String MESSAGE_DATABASE_LOAD_KO = "Database could not be loaded.";
+    public static final String MESSAGE_DATABASE_SAVE_KO = "Current database could not be saved.";
     public static final String MESSAGE_DELETED_RESOURCE = "Delete: %s - %s";
     public static final String MESSAGE_DIFFERENT_RESOURCE = "Please try again with a different resource reference.";
     public static final String MESSAGE_EDITED_RESOURCE = "Edit: %s - %s";

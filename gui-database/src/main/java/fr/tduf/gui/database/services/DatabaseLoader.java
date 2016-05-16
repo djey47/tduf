@@ -40,6 +40,10 @@ public class DatabaseLoader extends Service<List<DbDto>> {
 
                 List<DbDto> databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseLocation);
 
+                if (databaseObjects.isEmpty()) {
+                    throw new IllegalArgumentException("Invalid database location: " + databaseLocation.get());
+                }
+
                 updateMessage("Loaded database: " + databaseLocation.get());
 
                 return databaseObjects;
