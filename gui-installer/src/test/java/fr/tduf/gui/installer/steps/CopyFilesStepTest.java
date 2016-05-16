@@ -1,6 +1,5 @@
 package fr.tduf.gui.installer.steps;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
