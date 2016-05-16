@@ -34,4 +34,5 @@ CALL .\CheckJava.cmd
 CALL .\SetVersion.cmd
 POPD 2>NUL
 
+ECHO ...Starting Vehicle Installer...
 java -cp .\tools\lib\tduf-gui-installer-all-%TDUF_VERSION%.jar fr.tduf.gui.installer.Installer %* >> .\logs\TDUF-Installer.log 2>>&1
