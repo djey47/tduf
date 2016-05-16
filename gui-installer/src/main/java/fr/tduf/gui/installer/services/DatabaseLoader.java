@@ -2,6 +2,8 @@ package fr.tduf.gui.installer.services;
 
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.domain.DatabaseContext;
+import fr.tduf.gui.installer.domain.exceptions.StepException;
+import fr.tduf.gui.installer.steps.GenericStep;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -34,6 +36,10 @@ public class DatabaseLoader extends Service<DatabaseContext> {
 
                 updateMessage(String.format(DisplayConstants.STATUS_FMT_LOAD_IN_PROGRESS, "2/2"));
                 final List<DbDto> databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
+
+                if (databaseObjects.isEmpty()) {
+                    throw new StepException(GenericStep.StepType.LOAD_DATABASE, "Database could not be read", new IllegalArgumentException("Invalid location: " + databaseLocation.get()));
+                }
 
                 updateMessage(DisplayConstants.STATUS_LOAD_DONE);
 
