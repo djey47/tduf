@@ -750,9 +750,10 @@ public class MainStageController extends AbstractGuiController {
 
     private void addLinkedEntryWithTargetRef(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, ContentEntryDataItem linkedEntry, TopicLinkDto topicLinkObject) {
         String sourceEntryRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicProperty.getValue()).get();
-        String targetEntryRef = linkedEntry.referenceProperty().get();
+        Optional<String> targetEntryRef = ofNullable(linkedEntry)
+                .map(entry -> entry.referenceProperty().get());
 
-        changeDataController.addLinkedEntry(sourceEntryRef, ofNullable(targetEntryRef), targetTopic);
+        changeDataController.addLinkedEntry(sourceEntryRef, targetEntryRef, targetTopic);
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
