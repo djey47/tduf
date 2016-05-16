@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -36,5 +37,8 @@ class RestoreDatabaseStep extends GenericStep {
                         throw new RuntimeException("Unable to restore backup: " + bankFilePath, ioe);
                     }
                 });
+
+        Log.info(THIS_CLASS_NAME, "->Clearing database cache from " + databasePath + "...");
+        DatabaseBanksCacheHelper.clearCache(databasePath);
     }
 }

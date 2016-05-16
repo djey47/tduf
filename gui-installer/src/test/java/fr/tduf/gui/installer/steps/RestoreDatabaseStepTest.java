@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.steps;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import org.junit.Test;
 
 import java.nio.file.Files;
@@ -16,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RestoreDatabaseStepTest {
 
     @Test
-    public void perform_shouldRestoreDatabaseFiles() throws Exception {
+    public void perform_shouldRestoreDatabaseFiles_andClearCache() throws Exception {
         // GIVEN
         final String tduTempDirectory = FilesHelper.createTempDirectoryForInstaller();
         final Path tduDatabasePath = FilesHelper.getTduDatabasePath(tduTempDirectory);
@@ -26,6 +27,9 @@ public class RestoreDatabaseStepTest {
         Path databaseBackupFile = backupDatabasePath.resolve("DB.BNK");
         Files.createDirectories(backupDatabasePath);
         Files.createFile(databaseBackupFile);
+
+        Path jsonCachePath = DatabaseBanksCacheHelper.resolveCachePath(tduDatabasePath);
+        Files.createDirectories(jsonCachePath);
 
         InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduTempDirectory)
@@ -42,5 +46,6 @@ public class RestoreDatabaseStepTest {
 
         // THEN
         assertThat(tduDatabasePath.resolve("DB.BNK")).exists();
+        assertThat(jsonCachePath).doesNotExist();
     }
 }
