@@ -1,8 +1,10 @@
 package fr.tduf.gui.installer.steps;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -126,8 +128,8 @@ public class CopyFilesStepTest {
                 .hasSameContentAs(rimAssetsPath.resolve("BIKE_R_01.bnk").toFile());
     }
 
-    @Test
-    public void copyFilesStep_withDifferentRimsFrontRear_andSlotHasSameFileNameForFrontAndRear_shouldOnlyCopyFrontRim() throws Exception {
+    @Test(expected = StepException.class)
+    public void copyFilesStep_withDifferentRimsFrontRear_andSlotHasSameFileNameForFrontAndRear_shouldThrowException() throws Exception {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
@@ -138,22 +140,18 @@ public class CopyFilesStepTest {
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
 
 
-        // WHEN
-        GenericStep.starterStep(configuration, databaseContext)
-                .nextStep(COPY_FILES).start();
-
-
-        // THEN
-        Path rimBanksPath = getTargetCarRimPath();
-
-        Path rimAssetsPath = Paths.get(configuration.getAssetsDirectory(), "3D", "RIMS");
-        assertThat(rimBanksPath.resolve("AC_427_F_01.bnk").toFile())
-                .exists()
-                .hasSameContentAs(rimAssetsPath.resolve("BIKE_F_01.bnk").toFile());
+        // WHEN-THEN
+        try {
+            GenericStep.starterStep(configuration, databaseContext)
+                    .nextStep(COPY_FILES).start();
+        } catch (StepException se) {
+            assertThat(se).hasCauseInstanceOf(IllegalArgumentException.class);
+            throw se;
+        }
     }
 
     @Test
-    public void copyFilesStep_withSameRimsFrontRear_andSlotHasDifferentFileNameForFrontAndRear_shouldCopyFrontRimTwice() throws Exception {
+    public void copyFilesStep_withSameRimsFrontRear_andSlotHasDifferentFileNameForFrontAndRear_shouldCopyOnlyFrontRim() throws Exception {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
@@ -177,12 +175,11 @@ public class CopyFilesStepTest {
                 .exists()
                 .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
         assertThat(rimBanksPath.resolve("DAYTONA_955I_R.bnk").toFile())
-                .exists()
-                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
+                .doesNotExist();
     }
 
     @Test
-    public void copyFilesStep_withSameRimsFrontRear_andSlotHasDifferentFileNameForFrontAndRear_andTargetFilesAlreadyExist_shouldCopyFrontRimTwice() throws Exception {
+    public void copyFilesStep_withSameRimsFrontRear_andSlotHasDifferentFileNameForFrontAndRear_andTargetFilesAlreadyExist_shouldCopyOnlyFrontRim() throws Exception {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
@@ -211,11 +208,7 @@ public class CopyFilesStepTest {
                 .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
         assertThat(rimBanksPath.resolve("DAYTONA_955I_R.bnk").toFile())
                 .exists()
-                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
-    }
-
-    private Path getTargetCarRimPath() {
-        return Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules", "Rim", "AC");
+                .hasContent("");
     }
 
     private Path getTargetBikeRimPath() {

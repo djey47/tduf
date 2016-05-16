@@ -50,7 +50,7 @@ PUT MODDED FILES UNDER assets directories:
 
 - 3D: exterior and interior MOD.BNK, MOD_I.BNK
 
-- 3D\RIMS: Single rim set for front/rear: MOD_F_01.BNK, MOD_R_01.BNK (optional)
+- 3D\RIMS: Single rim set for front/rear: MOD_F_01.BNK, MOD_R_01.BNK (optional, if target slot needs it)
 
 - GAUGES\HIGH: MOD.BNK (high-res hud)
 

@@ -109,7 +109,7 @@ class CopyFilesStep extends GenericStep {
                 break;
             case DIRECTORY_RIMS:
                 targetPath = targetPath.resolve(vehicleSlot.getDefaultRims().getParentDirectoryName().getValue());
-                targetFileName = getTargetFileNameForRims(vehicleSlot, assetPath, targetPath);
+                targetFileName = getTargetFileNameForRims(vehicleSlot, assetPath);
                 if (targetFileName == null) {
                     return;
                 }
@@ -131,7 +131,7 @@ class CopyFilesStep extends GenericStep {
         return targetFileName;
     }
 
-    private String getTargetFileNameForRims(VehicleSlot vehicleSlot, Path assetPath, Path targetPath) throws IOException {
+    private String getTargetFileNameForRims(VehicleSlot vehicleSlot, Path assetPath) throws IOException {
         String targetFileName = null;
 
         Matcher matcher = FileConstants.PATTERN_RIM_BANK_FILE_NAME.matcher(assetPath.getFileName().toString());
@@ -141,16 +141,17 @@ class CopyFilesStep extends GenericStep {
             VehicleSlotsHelper.BankFileType rimBankFileType = FileConstants.INDICATOR_FRONT_RIMS.equalsIgnoreCase(typeGroupValue) ? FRONT_RIM : REAR_RIM;
             String targetFileNameForFrontRim = VehicleSlotsHelper.getBankFileName(vehicleSlot, FRONT_RIM, true);
             String targetFileNameForRearRim = VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIM, true);
-            if (FRONT_RIM == rimBankFileType) {
-                targetFileName = targetFileNameForFrontRim;
-            }
 
-            if (!targetFileNameForFrontRim.equals(targetFileNameForRearRim)) {
+            if (targetFileNameForFrontRim.equals(targetFileNameForRearRim)) {
                 if (REAR_RIM == rimBankFileType) {
-                    targetFileName = targetFileNameForRearRim;
+                    throw new IllegalArgumentException("Target slot does only accept single rim model for front/rear. Please remove rear rims file from assets.");
+                }
+                targetFileName = targetFileNameForFrontRim;
+            } else {
+                if (FRONT_RIM == rimBankFileType) {
+                    targetFileName = targetFileNameForFrontRim;
                 } else {
-                    // Case of single rim file but slot requires 2 different file names => front file copied to rear if not existing already
-                    copySingleAssetWithBackup(assetPath, targetPath, targetFileNameForRearRim);
+                    targetFileName = targetFileNameForRearRim;
                 }
             }
         }
