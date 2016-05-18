@@ -15,4 +15,6 @@ public class FileConstants {
     public static final String SUFFIX_AUDIO_BANK_FILE = "_audio";
 
     public static final String INDICATOR_FRONT_RIMS = "F";
+
+    public static final String FILE_NAME_EFFECTIVE_PROPERTIES = "installed.properties";
 }

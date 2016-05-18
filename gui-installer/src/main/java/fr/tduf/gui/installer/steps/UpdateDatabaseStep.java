@@ -2,6 +2,7 @@ package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DatabaseConstants;
+import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.SecurityOptions;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
@@ -12,7 +13,9 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,12 +55,21 @@ class UpdateDatabaseStep extends GenericStep {
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, topicObjects);
 
         Log.info(THIS_CLASS_NAME, "->Applying TDUF mini patch...");
-        patcher.applyWithProperties(getDatabaseContext().getPatchObject(), patchProperties);
-
-        // TODO write effective properties
+        PatchProperties effectiveProperties = patcher.applyWithProperties(getDatabaseContext().getPatchObject(), patchProperties);
+        writeEffectiveProperties(effectiveProperties);
 
         String slotRef = patchProperties.getVehicleSlotReference().get();
         applyPerformancePackage(topicObjects, slotRef);
+    }
+
+    private void writeEffectiveProperties(PatchProperties patchProperties) throws IOException {
+        Path backupPath = Paths.get(getInstallerConfiguration().getBackupDirectory());
+        String targetPropertyFile = backupPath.resolve(FileConstants.FILE_NAME_EFFECTIVE_PROPERTIES).toString();
+
+        Log.info("->Writing effective properties to " + targetPropertyFile + "...");
+
+        final OutputStream outputStream = new FileOutputStream(targetPropertyFile);
+        patchProperties.store(outputStream, null);
     }
 
     private void enhancePatchObjectWithLocationChange() {

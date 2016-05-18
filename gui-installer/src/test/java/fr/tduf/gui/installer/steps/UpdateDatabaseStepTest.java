@@ -18,6 +18,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Paths;
 
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.UPDATE_DATABASE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
@@ -37,10 +38,10 @@ public class UpdateDatabaseStepTest {
 
     private DatabaseContext databaseContext;
 
-    private String tempDirectory;
     private String assetsDirectory;
 
     private PatchProperties patchProperties;
+    private InstallerConfiguration installerConfiguration;
 
     @Before
     public void setUp() throws IOException, URISyntaxException {
@@ -52,21 +53,35 @@ public class UpdateDatabaseStepTest {
         databaseContext = InstallerTestsHelper.createJsonDatabase();
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
 
-        tempDirectory = InstallerTestsHelper.createTempDirectory();
+        String tempDirectory = InstallerTestsHelper.createTempDirectory();
         assetsDirectory = new File(thisClass.getResource("/assets-patch-only").toURI()).getAbsolutePath();
+
+        installerConfiguration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tempDirectory)
+                .withAssetsDirectory(assetsDirectory)
+                .build();
+        installerConfiguration.setBackupDirectory(tempDirectory);
+    }
+
+    @Test
+    public void perform_shouldCreateEffectivePropertiesFile() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
+        // GIVEN-WHEN
+        final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
+                GenericStep.starterStep(installerConfiguration, databaseContext)
+                        .nextStep(UPDATE_DATABASE));
+        updateDatabaseStep.perform();
+
+        // THEN
+        assertThat(Paths.get(installerConfiguration.getBackupDirectory(), "installed.properties")).exists();
     }
 
     @Test
     public void perform_withoutPerformancePack_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
-        InstallerConfiguration configuration = InstallerConfiguration.builder()
-                .withTestDriveUnlimitedDirectory(tempDirectory)
-                .withAssetsDirectory(assetsDirectory)
-                .build();
 
         // WHEN
         final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
-                GenericStep.starterStep(configuration, databaseContext)
+                GenericStep.starterStep(installerConfiguration, databaseContext)
                         .nextStep(UPDATE_DATABASE));
         updateDatabaseStep.perform();
 
@@ -80,15 +95,10 @@ public class UpdateDatabaseStepTest {
         patchProperties.setDealerReferenceIfNotExists(dealerRef);
         patchProperties.setDealerSlotIfNotExists(10);
 
-        InstallerConfiguration configuration = InstallerConfiguration.builder()
-                .withTestDriveUnlimitedDirectory(tempDirectory)
-                .withAssetsDirectory(assetsDirectory)
-                .build();
-
 
         // WHEN
         final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
-                GenericStep.starterStep(configuration, databaseContext)
+                GenericStep.starterStep(installerConfiguration, databaseContext)
                         .nextStep(UPDATE_DATABASE));
         updateDatabaseStep.perform();
 
@@ -105,16 +115,9 @@ public class UpdateDatabaseStepTest {
 
     @Test
     public void perform_withoutDealerProperties_shouldAddCarPhysicsUpdateInstruction() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
-        // GIVEN
-        InstallerConfiguration configuration = InstallerConfiguration.builder()
-                .withTestDriveUnlimitedDirectory(tempDirectory)
-                .withAssetsDirectory(assetsDirectory)
-                .build();
-
-
-        // WHEN
+        // GIVEN-WHEN
         final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
-                GenericStep.starterStep(configuration, databaseContext)
+                GenericStep.starterStep(installerConfiguration, databaseContext)
                         .nextStep(UPDATE_DATABASE));
         updateDatabaseStep.perform();
 
@@ -131,14 +134,10 @@ public class UpdateDatabaseStepTest {
     public void perform_withPerformancePack_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
         assetsDirectory = new File(thisClass.getResource("/assets-patch-tdupk-only").toURI()).getAbsolutePath();
-        InstallerConfiguration configuration = InstallerConfiguration.builder()
-                .withTestDriveUnlimitedDirectory(tempDirectory)
-                .withAssetsDirectory(assetsDirectory)
-                .build();
 
         // WHEN
         final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
-                GenericStep.starterStep(configuration, databaseContext)
+                GenericStep.starterStep(installerConfiguration, databaseContext)
                         .nextStep(UPDATE_DATABASE));
         updateDatabaseStep.perform();
 
