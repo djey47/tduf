@@ -16,21 +16,19 @@ import static java.util.Objects.requireNonNull;
  * Minlog logger implementation for asynchronous performance tracing into a file.
  * Messages are appended to file contents.
  */
-// FIXME does not write all messages when messageQueue has too much usage... (see unit tests)
 public class PerformanceLogger extends Log.Logger {
 
+    static final int MAX_QUEUED_MESSAGE_COUNT = 1024;
     private static final String PERF_LOG_FILE_NAME = "tduf-perfs.log";
-    private static final int MAX_QUEUED_MESSAGE_COUNT = 1024;
 
     private final long firstLogTime = new Date().getTime();
-
-    private final Path logFilePath;
 
     private BlockingQueue<String> messageQueue = new LinkedBlockingQueue<>(MAX_QUEUED_MESSAGE_COUNT);
 
     /**
      * Unique constructor
-     * @param parentPath    : path to contain a perf.log file.
+     *
+     * @param parentPath : path to contain a .log file.
      */
     public PerformanceLogger(Path parentPath) {
         requireNonNull(parentPath);
@@ -41,10 +39,8 @@ public class PerformanceLogger extends Log.Logger {
             e.printStackTrace();
         }
 
-        logFilePath = parentPath.resolve(PERF_LOG_FILE_NAME);
-
-        Runnable runnableLogger = new LoggingThread(messageQueue);
-        new Thread(runnableLogger).start();
+        new Thread(new LoggingThread(messageQueue, parentPath.resolve(PERF_LOG_FILE_NAME)))
+                .start();
     }
 
     @Override
@@ -117,20 +113,28 @@ public class PerformanceLogger extends Log.Logger {
 
         private final BlockingQueue<String> messageQueue;
 
-        private LoggingThread(BlockingQueue<String> messageQueue) {
+        private final Path logFilePath;
+
+        private LoggingThread(BlockingQueue<String> messageQueue, Path logFilePath) {
             this.messageQueue = messageQueue;
+            this.logFilePath = logFilePath;
         }
 
         @Override
         public void run() {
-            boolean isThreadTerminated = false;
-            while(!isThreadTerminated) {
-                try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logFilePath.toFile(), true)))) {
+            try (PrintWriter out = new PrintWriter(
+                    new BufferedWriter(
+                            new FileWriter(
+                                    logFilePath.toFile(), true
+                            )
+                    ), true)) {
+
+                while (!Thread.currentThread().isInterrupted()) {
                     out.println(messageQueue.take());
-                } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
-                    isThreadTerminated = true;
                 }
+
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }

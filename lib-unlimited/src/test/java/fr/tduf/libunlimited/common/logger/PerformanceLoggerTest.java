@@ -53,12 +53,11 @@ public class PerformanceLoggerTest {
     }
 
     @Test
-    public void info_whenInfoLevel_andManyMessages_shouldWriteMessagesInFile() throws IOException, InterruptedException {
+    public void info_whenInfoLevel_andMaxMessages_shouldWriteAllMessagesToFile() throws IOException, InterruptedException {
         // GIVEN-WHEN
         Log.set(Log.LEVEL_INFO);
-        int messageCount = 600; // FIXME messages may be lost
 
-        for (int i = 0 ; i < messageCount ; i++) {
+        for (int i = 1 ; i <= PerformanceLogger.MAX_QUEUED_MESSAGE_COUNT ; i++) {
             Log.info(thisClass.getSimpleName(), "here is a logged line! Iteration " + i);
         }
 
@@ -66,13 +65,11 @@ public class PerformanceLoggerTest {
         System.out.println("Perf log file:" + perfLogPath);
 
         List<String> loggedMessages = getLoggedMessages();
-        assertThat(loggedMessages).hasSize(messageCount);
+        assertThat(loggedMessages).hasSize(PerformanceLogger.MAX_QUEUED_MESSAGE_COUNT);
         assertThat(loggedMessages.get(0))
-                .endsWith("  INFO: [PerformanceLoggerTest] here is a logged line! Iteration 0");
-        assertThat(loggedMessages.get(49))
-                .endsWith("  INFO: [PerformanceLoggerTest] here is a logged line! Iteration 49");
-        assertThat(loggedMessages.get(99))
-                .endsWith("  INFO: [PerformanceLoggerTest] here is a logged line! Iteration 99");
+                .endsWith("  INFO: [PerformanceLoggerTest] here is a logged line! Iteration 1");
+        assertThat(loggedMessages.get(1023))
+                .endsWith("  INFO: [PerformanceLoggerTest] here is a logged line! Iteration 1024");
     }
 
     @Test
