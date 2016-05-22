@@ -177,6 +177,8 @@ project(':gui-database') {
 }
 
 project(':gui-installer') {
+    apply plugin: 'org.kordamp.markdown.convert'
+
     dependencies {
         compile project(':lib-unlimited')
         compile project(':gui-common')
@@ -188,12 +190,13 @@ project(':gui-installer') {
     }
 
     task copyDoc(type: Copy) {
-        description 'Copies README to release directory.'
-        mustRunAfter ':cleanPackDir'
+        description 'Copies formatted README to release directory.'
+        mustRunAfter 'markdownToHtml'
 
-        from 'dist/'
-        include 'README.txt'
+        from "$buildDir/gen-html"
+        include '*.html'
         into '../pack/'
+
     }
 
     task copyAssets(type: Copy) {
@@ -282,6 +285,7 @@ task packFull(dependsOn: [  'cleanTempJarDir', 'cleanPackDir',
 
 task packInstallerKit(dependsOn: [  'cleanPackDir',
                                     ':gui-installer:copyMainScripts',
+                                    ':gui-installer:markdownToHtml',
                                     ':gui-installer:copyDoc', 'copyExternalTools', ':gui-installer:copyUtilScripts', 'copyVersionInfo',
                                     ':gui-installer:copyAssets', ':gui-installer:copyTemplates',
                                     ':gui-installer:copyJar'], type: Zip) {
