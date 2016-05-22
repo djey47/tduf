@@ -29,6 +29,8 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 ### What's in this version ? (1.5.0)
 
+* As you've noticed for sure, README now appears in your favourite web browser!
+
 * Database Tool: now handle patches in batch mode with associated properties
 
 * Database Editor: do not allow to load database more than once (for reliability reasons). To reload, exit then restart application.
