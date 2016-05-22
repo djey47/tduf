@@ -1,10 +1,18 @@
 import java.awt.Desktop
 
-buildscript {}
+buildscript {
+    repositories {
+        maven { url 'http://dl.bintray.com/content/aalmiray/kordamp' }
+    }
+    dependencies {
+        classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
+    }
+}
 
 plugins {
     id 'pl.allegro.tech.build.axion-release' version '1.2.3'
 }
+apply plugin: 'org.kordamp.markdown.convert'
 
 
 // configure version
@@ -261,6 +269,7 @@ task fullJar( type: Jar , dependsOn: 'gatherAllContentsForJar' ) {
 
 task packFull(dependsOn: [  'cleanTempJarDir', 'cleanPackDir',
                             'copyMainScripts',
+                            'markdownToHtml',
                             'copyDoc', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
                             ':lib-unlimited:copyStructures',
                             'fullJar'], type: Zip) {
@@ -268,7 +277,8 @@ task packFull(dependsOn: [  'cleanTempJarDir', 'cleanPackDir',
 
     archiveName  "tduf-" + project.version + ".zip"
     destinationDir new File('releases/')
-    from  'pack/'}
+    from  'pack/'
+}
 
 task packInstallerKit(dependsOn: [  'cleanPackDir',
                                     ':gui-installer:copyMainScripts',
@@ -293,11 +303,11 @@ task cleanTempJarDir(type: Delete) {
 }
 
 task copyDoc(type: Copy) {
-    description 'Copies README to release directory.'
-    mustRunAfter 'cleanPackDir'
+    description 'Copies formatted README to release directory.'
+    mustRunAfter 'markdownToHtml'
 
-    from "dist"
-    include 'README.txt'
+    from "$buildDir/gen-html"
+    include '*.html'
     into 'pack/'
 }
 
