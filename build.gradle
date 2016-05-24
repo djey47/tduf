@@ -160,6 +160,8 @@ project('lib-unlimited') {
 
 project(':gui-common') {
     dependencies {
+        compile project(':lib-unlimited')
+
         testCompile group: 'com.esotericsoftware.minlog', name: 'minlog', version: "$minlogVersion"
     }
 }
