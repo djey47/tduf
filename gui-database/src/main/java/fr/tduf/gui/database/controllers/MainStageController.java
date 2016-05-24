@@ -6,6 +6,7 @@ import fr.tduf.gui.common.AppConstants;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
+import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.database.DatabaseEditor;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.SettingsConstants;
@@ -98,6 +99,7 @@ public class MainStageController extends AbstractGuiController {
     private BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
     private DatabaseLoader databaseLoader = new DatabaseLoader();
     private DatabaseSaver databaseSaver = new DatabaseSaver();
+    private DatabaseChecker databaseChecker = new DatabaseChecker();
 
     @FXML
     private Button loadDatabaseButton;
@@ -161,7 +163,9 @@ public class MainStageController extends AbstractGuiController {
         dynamicLinkControlsHelper = new DynamicLinkControlsHelper(this);
         dialogsHelper = new DialogsHelper();
 
-        runningServiceProperty.bind(databaseLoader.runningProperty().or(databaseSaver.runningProperty()));
+        runningServiceProperty.bind(databaseLoader.runningProperty()
+                        .or(databaseSaver.runningProperty()
+                        .or(databaseChecker.runningProperty())));
         mouseCursorProperty().bind(
                 when(runningServiceProperty)
                         .then(Cursor.WAIT)
@@ -247,6 +251,19 @@ public class MainStageController extends AbstractGuiController {
 
         resetDatabaseCache(databaseLocation);
     }
+
+    @FXML
+    public void handleCheckDatabaseMenuItemAction() {
+        Log.trace(THIS_CLASS_NAME, "->handleResetDatabaseCacheMenuItemAction");
+
+        String databaseLocation = databaseLocationTextField.getText();
+        if (Strings.isNullOrEmpty(databaseLocation)) {
+            return;
+        }
+
+        checkDatabase(databaseLocation);
+    }
+
 
     @FXML
     public void handleSearchEntryButtonAction() {
@@ -562,6 +579,8 @@ public class MainStageController extends AbstractGuiController {
                 CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVE_KO, databaseSaver.getException().getMessage());
             }
         });
+
+        // TODO Checker handling
     }
 
     private void initResourcesStageController() throws IOException {
@@ -916,6 +935,20 @@ public class MainStageController extends AbstractGuiController {
         DatabaseBanksCacheHelper.clearCache(Paths.get(databaseDirectory));
 
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE, DisplayConstants.MESSAGE_DELETED_CACHE, databaseDirectory);
+    }
+
+    private void checkDatabase(String databaseLocation) {
+        // TODO handle both JSON et BANK forms. Do not require loading database
+        if (runningServiceProperty.get()) {
+            return;
+        }
+
+        statusLabel.textProperty().bind(databaseChecker.messageProperty());
+
+        databaseChecker.databaseLocationProperty().setValue(databaseLocation);
+        databaseChecker.bankSupportProperty().setValue(bankSupport);
+
+        databaseChecker.restart();
     }
 
     public DbDto getCurrentTopicObject() {
