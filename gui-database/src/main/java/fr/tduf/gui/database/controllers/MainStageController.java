@@ -257,8 +257,8 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleCheckDatabaseMenuItemAction() {
-        Log.trace(THIS_CLASS_NAME, "->handleResetDatabaseCacheMenuItemAction");
+    public void handleCheckButtonAction() {
+        Log.trace(THIS_CLASS_NAME, "->handleCheckButtonAction");
 
         String databaseLocation = databaseLocationTextField.getText();
         if (Strings.isNullOrEmpty(databaseLocation)) {

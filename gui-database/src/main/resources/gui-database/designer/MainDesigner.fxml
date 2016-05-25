@@ -24,7 +24,7 @@
    <children>
       <VBox id="mainVbox" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
           <children>
-              <ToolBar prefHeight="40.0" prefWidth="1280.0" styleClass="locationToolbar" VBox.vgrow="NEVER">
+              <ToolBar fx:id="checkDatabaseButton" prefHeight="40.0" prefWidth="1280.0" styleClass="locationToolbar" VBox.vgrow="NEVER">
                   <items>
                       <Label text="TDU database:">
                           <font>
@@ -35,7 +35,12 @@
                       <Button mnemonicParsing="false" onAction="#handleBrowseDirectoryButtonMouseClick" prefWidth="34.0" text="..."><tooltip><Tooltip text="Selects a directory for JSON/BNK database files." /></tooltip></Button>
                       <Button fx:id="loadDatabaseButton" mnemonicParsing="false" onAction="#handleLoadButtonMouseClick" prefWidth="60.0" text="Load"><tooltip><Tooltip text="Opens database files from selected directory." /></tooltip></Button>
                       <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleSaveButtonMouseClick" prefWidth="60.0" text="Save"><tooltip><Tooltip text="Saves current database to selected directory." /></tooltip></Button>
-                  <Separator orientation="VERTICAL" />
+                  <Button layoutX="399.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleCheckButtonAction" text="Check...">
+                     <tooltip>
+                        <Tooltip text="Saves current database to selected directory." />
+                     </tooltip>
+                  </Button>
+                  <Separator layoutX="463.0" layoutY="10.0" orientation="VERTICAL" />
                   <Label fx:id="creditsLabel">
                      <font>
                         <Font name="System Italic" size="13.0" />
