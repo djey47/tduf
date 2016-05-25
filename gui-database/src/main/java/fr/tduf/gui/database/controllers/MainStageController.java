@@ -969,7 +969,6 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void checkDatabase(String databaseLocation) {
-        // TODO handle both JSON et BANK forms. Do not require loading database
         if (runningServiceProperty.get()) {
             return;
         }
@@ -983,7 +982,6 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void fixDatabase(Set<IntegrityError> integrityErrors, String databaseLocation) {
-        // TODO handle both JSON et BANK forms.
         // Do not check for service here, as checker may still be in running state.
         statusLabel.textProperty().bind(databaseFixer.messageProperty());
 

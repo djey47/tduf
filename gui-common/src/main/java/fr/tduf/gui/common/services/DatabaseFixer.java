@@ -4,6 +4,7 @@ import fr.tduf.gui.common.DisplayConstants;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.common.helper.BankHelper;
 import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -15,6 +16,7 @@ import javafx.beans.property.StringProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -34,9 +36,10 @@ public class DatabaseFixer extends Service<Set<IntegrityError>> {
             @Override
             protected Set<IntegrityError> call() throws Exception {
 
+                // TODO get loaded database objects from check service instead of reloading all
                 updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "1/5"));
                 Path realDatabasePath = Paths.get(databaseLocation.get());
-                final String jsonDirectory =  DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(realDatabasePath, bankSupport.get());
+                final String jsonDirectory = resolveJsonDatabaseLocationAndUnpack(realDatabasePath.toString(), bankSupport.get());
 
                 updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "2/5"));
                 final List<DbDto> databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
@@ -49,7 +52,7 @@ public class DatabaseFixer extends Service<Set<IntegrityError>> {
                 DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects, jsonDirectory);
 
                 updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "5/5"));
-                DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(realDatabasePath, bankSupport.get());
+                repackIfNecessary(realDatabasePath.toString(), bankSupport.get());
 
                 updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_DONE, remainingErrors.size()));
 
@@ -57,6 +60,23 @@ public class DatabaseFixer extends Service<Set<IntegrityError>> {
             }
         };
     }
+
+    private static String resolveJsonDatabaseLocationAndUnpack(String realDatabaseLocation, BankSupport bankSupport) throws
+            IOException {
+        final Path realDatabasePath = Paths.get(realDatabaseLocation);
+        return BankHelper.isPackedDatabase(realDatabasePath) ?
+                DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(realDatabasePath, bankSupport) :
+                realDatabaseLocation;
+    }
+
+    private static void repackIfNecessary(String realDatabaseLocation, BankSupport bankSupport) throws
+            IOException {
+        final Path realDatabasePath = Paths.get(realDatabaseLocation);
+        if (BankHelper.isPackedDatabase(realDatabasePath)) {
+            DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(realDatabasePath, bankSupport);
+        }
+    }
+
     public StringProperty databaseLocationProperty() {
         return databaseLocation;
     }
