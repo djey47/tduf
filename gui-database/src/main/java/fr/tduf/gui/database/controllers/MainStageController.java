@@ -593,7 +593,7 @@ public class MainStageController extends AbstractGuiController {
                     return;
                 }
                 if (DatabaseOpsHelper.displayCheckResultDialog(integrityErrors, getWindow(), DisplayConstants.TITLE_APPLICATION)) {
-                    fixDatabase(integrityErrors, databaseChecker.databaseLocationProperty().get());
+                    fixDatabase(integrityErrors);
                 }
             } else if (FAILED == newState) {
                 CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_KO, databaseChecker.getException().getMessage());
@@ -981,13 +981,16 @@ public class MainStageController extends AbstractGuiController {
         databaseChecker.restart();
     }
 
-    private void fixDatabase(Set<IntegrityError> integrityErrors, String databaseLocation) {
+    private void fixDatabase(Set<IntegrityError> integrityErrors) {
         // Do not check for service here, as checker may still be in running state.
         statusLabel.textProperty().bind(databaseFixer.messageProperty());
 
-        databaseFixer.databaseLocationProperty().setValue(databaseLocation);
+        databaseFixer.jsonDatabaseLocationProperty().setValue(databaseChecker.jsonDatabaseLocationProperty().getValue());
+        databaseFixer.databaseLocationProperty().setValue(databaseChecker.databaseLocationProperty().getValue());
         databaseFixer.bankSupportProperty().setValue(bankSupport);
         databaseFixer.integrityErrorsProperty().setValue(integrityErrors);
+        databaseFixer.loadedDatabaseObjectsProperty().setValue(databaseChecker.loadedDatabaseObjectsProperty().getValue());
+
 
         databaseFixer.restart();
     }

@@ -26,8 +26,12 @@ import java.util.Set;
  * Background service to load and check TDU database from banks directory.
  */
 public class DatabaseChecker extends Service<Set<IntegrityError>> {
+    // TODO Inherit AbstractDatabseService
+    private StringProperty jsonDatabaseLocation = new SimpleStringProperty();
     private StringProperty databaseLocation = new SimpleStringProperty();
     private ObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
+    private ObjectProperty<List<DbDto>> loadedDatabaseObjects = new SimpleObjectProperty<>();
+
 
     @Override
     protected Task<Set<IntegrityError>> createTask() {
@@ -47,6 +51,9 @@ public class DatabaseChecker extends Service<Set<IntegrityError>> {
 
                 updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_DONE, integrityErrorsFromExtensiveCheck.size()));
 
+                loadedDatabaseObjects.setValue(databaseObjects);
+                jsonDatabaseLocation.setValue(jsonDirectory);
+
                 return integrityErrorsFromExtensiveCheck;
             }
         };
@@ -60,11 +67,19 @@ public class DatabaseChecker extends Service<Set<IntegrityError>> {
                 realDatabaseLocation;
     }
 
+    public StringProperty jsonDatabaseLocationProperty() {
+        return jsonDatabaseLocation;
+    }
+
     public StringProperty databaseLocationProperty() {
         return databaseLocation;
     }
 
     public ObjectProperty<BankSupport> bankSupportProperty() {
         return bankSupport;
+    }
+
+    public ObjectProperty<List<DbDto>> loadedDatabaseObjectsProperty() {
+        return loadedDatabaseObjects;
     }
 }

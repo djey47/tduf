@@ -300,8 +300,10 @@ public class MainStageController extends AbstractGuiController {
                 .build();
 
         databaseFixer.databaseLocationProperty().setValue(configuration.resolveDatabaseDirectory());
+        databaseFixer.jsonDatabaseLocationProperty().setValue(databaseChecker.jsonDatabaseLocationProperty().get());
         databaseFixer.bankSupportProperty().setValue(configuration.getBankSupport());
         databaseFixer.integrityErrorsProperty().setValue(integrityErrors);
+        databaseFixer.loadedDatabaseObjectsProperty().setValue(databaseChecker.loadedDatabaseObjectsProperty().get());
 
         databaseFixer.restart();
     }

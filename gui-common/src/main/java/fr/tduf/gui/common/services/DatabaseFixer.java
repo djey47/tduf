@@ -22,36 +22,36 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Background service to fix and save TDU database from banks directory.
  */
 public class DatabaseFixer extends Service<Set<IntegrityError>> {
+    // TODO Inherit AbstractDatabseService
+    private StringProperty jsonDatabaseLocation = new SimpleStringProperty();
     private StringProperty databaseLocation = new SimpleStringProperty();
     private ObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
     private ObjectProperty<Set<IntegrityError>> integrityErrors = new SimpleObjectProperty<>();
+    private ObjectProperty<List<DbDto>> loadedDatabaseObjects = new SimpleObjectProperty<>();
 
     @Override
     protected Task<Set<IntegrityError>> createTask() {
         return new Task<Set<IntegrityError>>() {
             @Override
             protected Set<IntegrityError> call() throws Exception {
+                final Path realDatabasePath = Paths.get(requireNonNull(databaseLocation.get(), "Database location is required."));
+                final List<DbDto> databaseObjects = requireNonNull(loadedDatabaseObjects.get(), "Loaded database objects are required.");
+                final String jsonDirectory = requireNonNull(jsonDatabaseLocation.get(), "JSON database location is required.");
 
-                // TODO get loaded database objects from check service instead of reloading all
-                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "1/5"));
-                Path realDatabasePath = Paths.get(databaseLocation.get());
-                final String jsonDirectory = resolveJsonDatabaseLocationAndUnpack(realDatabasePath.toString(), bankSupport.get());
-
-                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "2/5"));
-                final List<DbDto> databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
-
-                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "3/5"));
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "1/3"));
                 final DatabaseIntegrityFixer fixerComponent = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
                 Set<IntegrityError> remainingErrors = fixerComponent.fixAllContentsObjects(integrityErrors.get());
 
-                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "4/5"));
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "2/3"));
                 DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects, jsonDirectory);
 
-                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "5/5"));
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "3/3"));
                 repackIfNecessary(realDatabasePath.toString(), bankSupport.get());
 
                 updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_DONE, remainingErrors.size()));
@@ -61,20 +61,16 @@ public class DatabaseFixer extends Service<Set<IntegrityError>> {
         };
     }
 
-    private static String resolveJsonDatabaseLocationAndUnpack(String realDatabaseLocation, BankSupport bankSupport) throws
-            IOException {
-        final Path realDatabasePath = Paths.get(realDatabaseLocation);
-        return BankHelper.isPackedDatabase(realDatabasePath) ?
-                DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(realDatabasePath, bankSupport) :
-                realDatabaseLocation;
-    }
-
     private static void repackIfNecessary(String realDatabaseLocation, BankSupport bankSupport) throws
             IOException {
         final Path realDatabasePath = Paths.get(realDatabaseLocation);
         if (BankHelper.isPackedDatabase(realDatabasePath)) {
             DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(realDatabasePath, bankSupport);
         }
+    }
+
+    public StringProperty jsonDatabaseLocationProperty() {
+        return jsonDatabaseLocation;
     }
 
     public StringProperty databaseLocationProperty() {
@@ -87,5 +83,9 @@ public class DatabaseFixer extends Service<Set<IntegrityError>> {
 
     public ObjectProperty<Set<IntegrityError>> integrityErrorsProperty() {
         return integrityErrors;
+    }
+
+    public ObjectProperty<List<DbDto>> loadedDatabaseObjectsProperty() {
+        return loadedDatabaseObjects;
     }
 }
