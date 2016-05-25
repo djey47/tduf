@@ -1,4 +1,4 @@
-package fr.tduf.gui.database.common.helper;
+package fr.tduf.libunlimited.high.files.db.common.helper;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
