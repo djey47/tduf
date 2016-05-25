@@ -3,10 +3,12 @@ package fr.tduf.gui.database.controllers;
 import com.esotericsoftware.minlog.Log;
 import com.google.common.base.Strings;
 import fr.tduf.gui.common.AppConstants;
+import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.common.services.DatabaseChecker;
+import fr.tduf.gui.common.services.DatabaseFixer;
 import fr.tduf.gui.database.DatabaseEditor;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.SettingsConstants;
@@ -31,6 +33,7 @@ import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
@@ -100,6 +103,7 @@ public class MainStageController extends AbstractGuiController {
     private DatabaseLoader databaseLoader = new DatabaseLoader();
     private DatabaseSaver databaseSaver = new DatabaseSaver();
     private DatabaseChecker databaseChecker = new DatabaseChecker();
+    private DatabaseFixer databaseFixer = new DatabaseFixer();
 
     @FXML
     private Button loadDatabaseButton;
@@ -580,6 +584,22 @@ public class MainStageController extends AbstractGuiController {
             }
         });
 
+        databaseChecker.stateProperty().addListener((observableValue, oldState, newState) -> {
+            if (SUCCEEDED == newState) {
+                final Set<IntegrityError> integrityErrors = databaseChecker.getValue();
+                if (integrityErrors.isEmpty()) {
+                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_OK, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR);
+                    return;
+                }
+                if (DatabaseOpsHelper.displayCheckResultDialog(integrityErrors, getWindow(), DisplayConstants.TITLE_APPLICATION)) {
+                    fixDatabase(integrityErrors, databaseChecker.databaseLocationProperty().get());
+                }
+            } else if (FAILED == newState) {
+                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_KO, databaseChecker.getException().getMessage());
+            }
+        });
+
+
         // TODO Checker handling
     }
 
@@ -949,6 +969,18 @@ public class MainStageController extends AbstractGuiController {
         databaseChecker.bankSupportProperty().setValue(bankSupport);
 
         databaseChecker.restart();
+    }
+
+    private void fixDatabase(Set<IntegrityError> integrityErrors, String databaseLocation) {
+        // TODO handle both JSON et BANK forms.
+        // Do not check for service here, as checker may still be in running state.
+        statusLabel.textProperty().bind(databaseFixer.messageProperty());
+
+        databaseFixer.databaseLocationProperty().setValue(databaseLocation);
+        databaseFixer.bankSupportProperty().setValue(bankSupport);
+        databaseFixer.integrityErrorsProperty().setValue(integrityErrors);
+
+        databaseFixer.restart();
     }
 
     public DbDto getCurrentTopicObject() {

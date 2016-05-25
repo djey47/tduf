@@ -1,0 +1,8 @@
+#mainVbox .tool-bar .label {
+    -fx-font-weight: bold;
+}
+
+.error-label {
+    -fx-text-fill: orangered ;
+    -fx-font-weight: bold;
+}
