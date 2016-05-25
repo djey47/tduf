@@ -70,6 +70,7 @@ import static javafx.concurrent.Worker.State.FAILED;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
 import static javafx.scene.control.Alert.AlertType.ERROR;
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
+import static javafx.scene.control.Alert.AlertType.WARNING;
 
 /**
  * Makes it a possible to intercept all GUI events.
@@ -599,8 +600,18 @@ public class MainStageController extends AbstractGuiController {
             }
         });
 
-
-        // TODO Checker handling
+        databaseFixer.stateProperty().addListener((observableValue, oldState, newState) -> {
+            if (SUCCEEDED == newState) {
+                final Set<IntegrityError> remainingErrors = databaseFixer.getValue();
+                if (remainingErrors.isEmpty()) {
+                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_OK, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR);
+                } else {
+                    CommonDialogsHelper.showDialog(WARNING, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_REMAINING_ERRORS);
+                }
+            } else if (FAILED == newState) {
+                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, databaseFixer.getException().getMessage());
+            }
+        });
     }
 
     private void initResourcesStageController() throws IOException {
