@@ -2,19 +2,19 @@ package fr.tduf.gui.installer.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import com.google.common.base.Strings;
+import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
+import fr.tduf.gui.common.services.DatabaseChecker;
+import fr.tduf.gui.common.services.DatabaseFixer;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.controllers.helper.UserInputHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
-import fr.tduf.gui.installer.services.DatabaseChecker;
-import fr.tduf.gui.installer.services.DatabaseFixer;
 import fr.tduf.gui.installer.services.DatabaseLoader;
 import fr.tduf.gui.installer.services.StepsCoordinator;
-import fr.tduf.gui.installer.stages.DatabaseCheckStageDesigner;
 import fr.tduf.gui.installer.steps.GenericStep;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
@@ -30,8 +30,6 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -180,7 +178,7 @@ public class MainStageController extends AbstractGuiController {
                     CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_CHECK_DB, DisplayConstants.MESSAGE_DB_CHECK_OK, DisplayConstants.MESSAGE_DB_ZERO_ERROR);
                     return;
                 }
-                if (displayCheckResultDialog(integrityErrors)) {
+                if (DatabaseOpsHelper.displayCheckResultDialog(integrityErrors, getWindow(), DisplayConstants.TITLE_APPLICATION)) {
                     fixDatabase(integrityErrors);
                 }
             } else if (FAILED == newState) {
@@ -368,16 +366,6 @@ public class MainStageController extends AbstractGuiController {
         stepsCoordinator.restart();
     }
 
-    private boolean displayCheckResultDialog(Set<IntegrityError> integrityErrors) {
-        try {
-            DatabaseCheckStageController databaseCheckStageController = initDatabaseCheckStageController(getWindow());
-            return databaseCheckStageController.initAndShowModalDialog(integrityErrors);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     private static void loadCurrentPatch(InstallerConfiguration configuration, DatabaseContext context) throws IOException {
         Path patchPath = Paths.get(configuration.getAssetsDirectory(), DIRECTORY_DATABASE);
         final Path patchFilePath = Files.walk(patchPath, 1)
@@ -399,13 +387,6 @@ public class MainStageController extends AbstractGuiController {
         }
 
         context.setPatch(patchObject, patchProperties);
-    }
-
-    private static DatabaseCheckStageController initDatabaseCheckStageController(Window mainWindow) throws IOException {
-        Stage stage = new Stage();
-        stage.initOwner(mainWindow);
-
-        return DatabaseCheckStageDesigner.init(stage);
     }
 
     private static void handleServiceFailure(Throwable throwable, String mainMessage) {

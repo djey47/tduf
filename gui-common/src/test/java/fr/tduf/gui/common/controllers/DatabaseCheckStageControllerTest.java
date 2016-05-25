@@ -1,7 +1,7 @@
-package fr.tduf.gui.installer.controllers;
+package fr.tduf.gui.common.controllers;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.installer.stages.DatabaseCheckStageDesigner;
+import fr.tduf.gui.common.stages.DatabaseCheckStageDesigner;
 import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -55,6 +55,6 @@ public class DatabaseCheckStageControllerTest {
         Stage stage = new Stage();
         stage.initOwner(mainWindow);
 
-        return DatabaseCheckStageDesigner.init(stage);
+        return DatabaseCheckStageDesigner.init(stage, "Testing DatabaseCheckStageController...");
     }
 }

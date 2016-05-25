@@ -16,7 +16,6 @@ public class DisplayConstants {
 
     public static final String LABEL_SEARCH_SLOT = "With REF?";
     public static final String LABEL_UNKNOWN = "???";
-    public static final String LABEL_FMT_ERROR_CPL = "(%d)";
     public static final String LABEL_FMT_FREE_SLOTS = "%d / %d";
     public static final String LABEL_FREE_DEALER_SLOT = "<available>";
     public static final String LABEL_STEP_UNKNOWN = "<Uncategorized>";
@@ -42,10 +41,6 @@ public class DisplayConstants {
     public static final String MESSAGE_FMT_INVALID_SLOT_INFO = "Unable to get valid information for vehicle slot, as it does not exist: %s";
     public static final String MESSAGE_FMT_PATCH_NOT_FOUND = "Patch file not found in %s subdirectory.";
 
-    public static final String STATUS_FMT_CHECK_IN_PROGRESS = "Performing database check %s, please wait...";
-    public static final String STATUS_FMT_CHECK_DONE = "Done checking database, %d error(s).";
-    public static final String STATUS_FMT_FIX_IN_PROGRESS = "Performing database fix %s, please wait...";
-    public static final String STATUS_FMT_FIX_DONE = "Done fixing database, %d error(s) remaining.";
     public static final String STATUS_FMT_LOAD_IN_PROGRESS = "Performing database load %s, please wait...";
     public static final String STATUS_LOAD_DONE = "Done loading database.";
     public static final String STATUS_INSTALL_IN_PROGRESS = "Performing install, please wait...";
