@@ -9,11 +9,6 @@ import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityChecker;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 import java.io.IOException;
@@ -25,19 +20,13 @@ import java.util.Set;
 /**
  * Background service to load and check TDU database from banks directory.
  */
-public class DatabaseChecker extends Service<Set<IntegrityError>> {
-    // TODO Inherit AbstractDatabseService
-    private StringProperty jsonDatabaseLocation = new SimpleStringProperty();
-    private StringProperty databaseLocation = new SimpleStringProperty();
-    private ObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
-    private ObjectProperty<List<DbDto>> loadedDatabaseObjects = new SimpleObjectProperty<>();
-
+public class DatabaseChecker extends AbstractDatabaseService {
 
     @Override
-    protected Task<Set<IntegrityError>> createTask() {
-        return new Task<Set<IntegrityError>>() {
+    protected Task<Void> createTask() {
+        return new Task<Void>() {
             @Override
-            protected Set<IntegrityError> call() throws Exception {
+            protected Void call() throws Exception {
 
                 updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "1/3"));
                 String jsonDirectory = resolveJsonDatabaseLocationAndUnpack(databaseLocation.get(), bankSupport.get());
@@ -49,12 +38,13 @@ public class DatabaseChecker extends Service<Set<IntegrityError>> {
                 final DatabaseIntegrityChecker checkerComponent = AbstractDatabaseHolder.prepare(DatabaseIntegrityChecker.class, databaseObjects);
                 final Set<IntegrityError> integrityErrorsFromExtensiveCheck = checkerComponent.checkAllContentsObjects();
 
-                updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_DONE, integrityErrorsFromExtensiveCheck.size()));
-
                 loadedDatabaseObjects.setValue(databaseObjects);
                 jsonDatabaseLocation.setValue(jsonDirectory);
+                integrityErrors.setValue(integrityErrorsFromExtensiveCheck);
 
-                return integrityErrorsFromExtensiveCheck;
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_DONE, integrityErrorsFromExtensiveCheck.size()));
+
+                return null;
             }
         };
     }
@@ -65,21 +55,5 @@ public class DatabaseChecker extends Service<Set<IntegrityError>> {
         return BankHelper.isPackedDatabase(realDatabasePath) ?
                 DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(realDatabasePath, bankSupport) :
                 realDatabaseLocation;
-    }
-
-    public StringProperty jsonDatabaseLocationProperty() {
-        return jsonDatabaseLocation;
-    }
-
-    public StringProperty databaseLocationProperty() {
-        return databaseLocation;
-    }
-
-    public ObjectProperty<BankSupport> bankSupportProperty() {
-        return bankSupport;
-    }
-
-    public ObjectProperty<List<DbDto>> loadedDatabaseObjectsProperty() {
-        return loadedDatabaseObjects;
     }
 }

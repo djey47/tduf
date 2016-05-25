@@ -9,11 +9,6 @@ import fr.tduf.libunlimited.high.files.db.integrity.DatabaseIntegrityFixer;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 import java.io.IOException;
@@ -27,19 +22,13 @@ import static java.util.Objects.requireNonNull;
 /**
  * Background service to fix and save TDU database from banks directory.
  */
-public class DatabaseFixer extends Service<Set<IntegrityError>> {
-    // TODO Inherit AbstractDatabseService
-    private StringProperty jsonDatabaseLocation = new SimpleStringProperty();
-    private StringProperty databaseLocation = new SimpleStringProperty();
-    private ObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
-    private ObjectProperty<Set<IntegrityError>> integrityErrors = new SimpleObjectProperty<>();
-    private ObjectProperty<List<DbDto>> loadedDatabaseObjects = new SimpleObjectProperty<>();
+public class DatabaseFixer extends AbstractDatabaseService {
 
     @Override
-    protected Task<Set<IntegrityError>> createTask() {
-        return new Task<Set<IntegrityError>>() {
+    protected Task<Void> createTask() {
+        return new Task<Void>() {
             @Override
-            protected Set<IntegrityError> call() throws Exception {
+            protected Void call() throws Exception {
                 final Path realDatabasePath = Paths.get(requireNonNull(databaseLocation.get(), "Database location is required."));
                 final List<DbDto> databaseObjects = requireNonNull(loadedDatabaseObjects.get(), "Loaded database objects are required.");
                 final String jsonDirectory = requireNonNull(jsonDatabaseLocation.get(), "JSON database location is required.");
@@ -54,9 +43,11 @@ public class DatabaseFixer extends Service<Set<IntegrityError>> {
                 updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "3/3"));
                 repackIfNecessary(realDatabasePath.toString(), bankSupport.get());
 
+                integrityErrors.setValue(remainingErrors);
+
                 updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_DONE, remainingErrors.size()));
 
-                return remainingErrors;
+                return null;
             }
         };
     }
@@ -67,25 +58,5 @@ public class DatabaseFixer extends Service<Set<IntegrityError>> {
         if (BankHelper.isPackedDatabase(realDatabasePath)) {
             DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(realDatabasePath, bankSupport);
         }
-    }
-
-    public StringProperty jsonDatabaseLocationProperty() {
-        return jsonDatabaseLocation;
-    }
-
-    public StringProperty databaseLocationProperty() {
-        return databaseLocation;
-    }
-
-    public ObjectProperty<BankSupport> bankSupportProperty() {
-        return bankSupport;
-    }
-
-    public ObjectProperty<Set<IntegrityError>> integrityErrorsProperty() {
-        return integrityErrors;
-    }
-
-    public ObjectProperty<List<DbDto>> loadedDatabaseObjectsProperty() {
-        return loadedDatabaseObjects;
     }
 }

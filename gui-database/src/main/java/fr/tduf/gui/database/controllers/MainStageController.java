@@ -587,13 +587,13 @@ public class MainStageController extends AbstractGuiController {
 
         databaseChecker.stateProperty().addListener((observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
-                final Set<IntegrityError> integrityErrors = databaseChecker.getValue();
+                final Set<IntegrityError> integrityErrors = databaseChecker.integrityErrorsProperty().get();
                 if (integrityErrors.isEmpty()) {
                     CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_OK, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR);
                     return;
                 }
                 if (DatabaseOpsHelper.displayCheckResultDialog(integrityErrors, getWindow(), DisplayConstants.TITLE_APPLICATION)) {
-                    fixDatabase(integrityErrors);
+                    fixDatabase();
                 }
             } else if (FAILED == newState) {
                 CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_KO, databaseChecker.getException().getMessage());
@@ -602,7 +602,7 @@ public class MainStageController extends AbstractGuiController {
 
         databaseFixer.stateProperty().addListener((observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
-                final Set<IntegrityError> remainingErrors = databaseFixer.getValue();
+                final Set<IntegrityError> remainingErrors = databaseFixer.integrityErrorsProperty().get();
                 if (remainingErrors.isEmpty()) {
                     CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_OK, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR);
                 } else {
@@ -981,16 +981,11 @@ public class MainStageController extends AbstractGuiController {
         databaseChecker.restart();
     }
 
-    private void fixDatabase(Set<IntegrityError> integrityErrors) {
+    private void fixDatabase() {
         // Do not check for service here, as checker may still be in running state.
         statusLabel.textProperty().bind(databaseFixer.messageProperty());
 
-        databaseFixer.jsonDatabaseLocationProperty().setValue(databaseChecker.jsonDatabaseLocationProperty().getValue());
-        databaseFixer.databaseLocationProperty().setValue(databaseChecker.databaseLocationProperty().getValue());
-        databaseFixer.bankSupportProperty().setValue(bankSupport);
-        databaseFixer.integrityErrorsProperty().setValue(integrityErrors);
-        databaseFixer.loadedDatabaseObjectsProperty().setValue(databaseChecker.loadedDatabaseObjectsProperty().getValue());
-
+        databaseFixer.fromService(databaseChecker);
 
         databaseFixer.restart();
     }
