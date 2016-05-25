@@ -22,7 +22,6 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import javafx.beans.property.*;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
@@ -31,6 +30,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
@@ -41,11 +41,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static com.google.common.io.Files.getFileExtension;
 import static fr.tduf.gui.installer.common.InstallerConstants.DIRECTORY_DATABASE;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
-import static java.nio.file.Files.isRegularFile;
 import static java.util.Objects.requireNonNull;
 import static javafx.beans.binding.Bindings.when;
 import static javafx.concurrent.Worker.State.FAILED;
@@ -106,7 +106,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleUpdateMagicMapMenuItemAction(ActionEvent actionEvent) throws Exception {
+    public void handleUpdateMagicMapMenuItemAction() throws StepException {
         Log.trace(THIS_CLASS_NAME, "->handleUpdateMagicMapMenuItemAction");
 
         if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
@@ -117,7 +117,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleResetDatabaseCacheMenuItemAction(ActionEvent actionEvent) throws IOException, ReflectiveOperationException {
+    public void handleResetDatabaseCacheMenuItemAction() throws Exception {
         Log.trace(THIS_CLASS_NAME, "->handleResetDatabaseCacheMenuItemAction");
 
         if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
@@ -128,7 +128,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleCheckDatabaseMenuItemAction(ActionEvent actionEvent) throws IOException, ReflectiveOperationException {
+    public void handleCheckDatabaseMenuItemAction() throws Exception {
         Log.trace(THIS_CLASS_NAME, "->handleCheckDatabaseMenuItemAction");
 
         if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
@@ -139,14 +139,14 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleBrowseTduLocationButtonAction(ActionEvent actionEvent) {
+    public void handleBrowseTduLocationButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleBrowseTduLocationButtonAction");
 
         browseForTduDirectory();
     }
 
     @FXML
-    public void handleInstallButtonAction(ActionEvent actionEvent) throws IOException, ReflectiveOperationException {
+    public void handleInstallButtonAction() throws Exception {
         Log.trace(THIS_CLASS_NAME, "->handleInstallButtonAction");
 
         if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
@@ -243,7 +243,7 @@ public class MainStageController extends AbstractGuiController {
         }
     }
 
-    private void updateMagicMap() throws Exception {
+    private void updateMagicMap() throws StepException {
         if (runningServiceProperty.get()) {
             return;
         }
@@ -368,17 +368,22 @@ public class MainStageController extends AbstractGuiController {
 
     private static void loadCurrentPatch(InstallerConfiguration configuration, DatabaseContext context) throws IOException {
         Path patchPath = Paths.get(configuration.getAssetsDirectory(), DIRECTORY_DATABASE);
-        final Path patchFilePath = Files.walk(patchPath, 1)
 
-                .filter((path) -> isRegularFile(path))
+        File patchFile;
+        try (Stream<Path> pathStream = Files.walk(patchPath, 1)) {
+            patchFile = pathStream
 
-                .filter((path) -> EXTENSION_JSON.equalsIgnoreCase(getFileExtension(path.toString())))
+                    .filter(Files::isRegularFile)
 
-                .findFirst()
+                    .filter(path -> EXTENSION_JSON.equalsIgnoreCase(getFileExtension(path.toString())))
 
-                .orElseThrow(() -> new IOException(String.format(DisplayConstants.MESSAGE_FMT_PATCH_NOT_FOUND, DIRECTORY_DATABASE)));
+                    .findFirst()
 
-        final File patchFile = patchFilePath.toFile();
+                    .orElseThrow(() -> new IOException(String.format(DisplayConstants.MESSAGE_FMT_PATCH_NOT_FOUND, DIRECTORY_DATABASE)))
+
+                    .toFile();
+        }
+
         DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
 
         PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
@@ -390,7 +395,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private static void handleServiceFailure(Throwable throwable, String mainMessage) {
-        throwable.printStackTrace();
+        Log.error(THIS_CLASS_NAME, ExceptionUtils.getStackTrace(throwable));
 
         String stepName = DisplayConstants.LABEL_STEP_UNKNOWN;
         if (throwable instanceof StepException) {

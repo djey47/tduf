@@ -17,4 +17,6 @@ public class FileConstants {
     public static final String INDICATOR_FRONT_RIMS = "F";
 
     public static final String FILE_NAME_EFFECTIVE_PROPERTIES = "installed.properties";
+
+    private FileConstants() {}
 }
