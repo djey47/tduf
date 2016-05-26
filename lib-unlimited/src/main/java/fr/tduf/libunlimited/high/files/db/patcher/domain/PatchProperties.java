@@ -60,10 +60,12 @@ public class PatchProperties extends Properties {
         }
 
         public static CustomizableCameraView fromSuffix(String code) {
-            return Stream.of(CustomizableCameraView.values())
-                    .filter(view -> view.propertySuffix.equalsIgnoreCase(code))
-                    .findAny()
-                    .orElseThrow(() -> new IllegalArgumentException("Unknown view code: " + code));
+            try ( Stream<CustomizableCameraView> customizableViewStream = Stream.of(CustomizableCameraView.values()) ) {
+                return customizableViewStream
+                        .filter(view -> view.propertySuffix.equalsIgnoreCase(code))
+                        .findAny()
+                        .orElseThrow(() -> new IllegalArgumentException("Unknown view code: " + code));
+            }
         }
 
         public GenuineCamViewsDto.GenuineCamViewDto.Type getGenuineViewType() {
