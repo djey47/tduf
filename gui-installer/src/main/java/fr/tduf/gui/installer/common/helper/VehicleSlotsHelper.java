@@ -233,7 +233,12 @@ public class VehicleSlotsHelper extends CommonHelper {
 
                 .map(entry -> {
                     String interiorPatternRef = entry.getItemAtRank(DatabaseConstants.FIELD_RANK_INTERIOR_1).get().getRawValue();
-                    return PaintJob.builder().addInteriorPattern(interiorPatternRef).build();
+                    Optional<Resource> nameResource = getResourceFromDatabaseEntry(entry, CAR_COLORS, DatabaseConstants.FIELD_RANK_COLOR_NAME);
+
+                    return PaintJob.builder()
+                            .withName(nameResource.orElse(null))
+                            .addInteriorPattern(interiorPatternRef)
+                            .build();
                 })
 
                 .collect(toList());

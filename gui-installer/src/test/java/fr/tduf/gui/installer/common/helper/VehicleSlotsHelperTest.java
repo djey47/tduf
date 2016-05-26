@@ -90,6 +90,8 @@ public class VehicleSlotsHelperTest {
         String rearRimFileNameRef = "2222";
         String rearRimFileName = "FILE_R";
         String interiorRef = "7777";
+        String colorNameRef = "8888";
+        String colorName = "Azzuro";
         int idCar = 222;
         int idCam = 200;
         float secuOne = 100;
@@ -123,6 +125,7 @@ public class VehicleSlotsHelperTest {
         DbDataDto.Entry carColorsEntry = DbDataDto.Entry.builder()
                 .forId(0)
                 .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(3).withRawValue(colorNameRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(8).withRawValue(interiorRef).build())
                 .build();
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(brandSlotRef, BRANDS)).thenReturn(of(brandsEntry));
@@ -130,6 +133,7 @@ public class VehicleSlotsHelperTest {
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef, RIMS)).thenReturn(of(rimsEntry));
         when(bulkDatabaseMinerMock.getContentEntriesMatchingCriteria(anyListOf(DbFieldValueDto.class), eq(CAR_COLORS))).thenReturn(singletonList(carColorsEntry));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(colorNameRef, CAR_COLORS, UNITED_STATES)).thenReturn(of(colorName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(fileNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(fileName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(realNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(realName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(modelNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
@@ -165,6 +169,7 @@ public class VehicleSlotsHelperTest {
         assertThat(actualDefaultRims.getFrontRimInfo().getFileName()).isEqualTo(Resource.from(frontRimFileNameRef, frontRimFileName));
         assertThat(actualDefaultRims.getRearRimInfo().getFileName()).isEqualTo(Resource.from(rearRimFileNameRef, rearRimFileName));
 
+        assertThat(vehicleSlot.getPaintJobs()).extracting("name").containsExactly(Resource.from(colorNameRef, colorName));
         assertThat(vehicleSlot.getPaintJobs()).extracting("interiorPatternRefs").containsExactly(singletonList(interiorRef));
     }
 
