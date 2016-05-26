@@ -33,6 +33,8 @@ import static java.util.Optional.empty;
 public class UserInputHelper {
     private static final String THIS_CLASS_NAME = UserInputHelper.class.getSimpleName();
 
+    private UserInputHelper() {}
+
     /**
      * Invokes slot dialog to select one to perform install. Updates provided context with selection.
      */
@@ -54,8 +56,8 @@ public class UserInputHelper {
         Log.info(THIS_CLASS_NAME, "->Using vehicle slot: " + selectedItem);
 
         Optional<String> potentialVehicleSlot = selectedItem
-                .map((item) -> item.referenceProperty().get());
-        potentialVehicleSlot.ifPresent((slotRef) -> createPatchPropertiesForVehicleSlot(slotRef, context.getPatchProperties(), context.getMiner()));
+                .map(item -> item.referenceProperty().get());
+        potentialVehicleSlot.ifPresent(slotRef -> createPatchPropertiesForVehicleSlot(slotRef, context.getPatchProperties(), context.getMiner()));
         if (!potentialVehicleSlot.isPresent()) {
             Log.info(THIS_CLASS_NAME, "->No vehicle slot selected, will be creating a new one.");
         }
@@ -83,7 +85,7 @@ public class UserInputHelper {
 
         Log.info(THIS_CLASS_NAME, "->Using dealer slot: " + selectedItem);
 
-        selectedItem.ifPresent((slotData) -> createPatchPropertiesForDealerSlot(slotData, context.getPatchProperties()));
+        selectedItem.ifPresent(slotData -> createPatchPropertiesForDealerSlot(slotData, context.getPatchProperties()));
         if (!selectedItem.isPresent()) {
             Log.info(THIS_CLASS_NAME, "->No dealer slot selected, will not locate vehicle.");
         }
@@ -117,7 +119,7 @@ public class UserInputHelper {
         }
 
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
-        patchProperties.setCarIdentifierIfNotExists(Integer.valueOf(selectedCarIdentifier).toString());
+        patchProperties.setCarIdentifierIfNotExists(Integer.toString(selectedCarIdentifier));
         patchProperties.setBankNameIfNotExists(selectedBankName);
         patchProperties.setResourceBankNameIfNotExists(selectedResourceBankName);
 

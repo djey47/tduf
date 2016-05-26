@@ -18,7 +18,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
@@ -73,7 +72,7 @@ public class VehicleSlotsStageController extends AbstractGuiController {
     }
 
     @FXML
-    private void handleCreateNewSlotHyperlinkAction(ActionEvent actionEvent) {
+    private void handleCreateNewSlotHyperlinkAction() {
         Log.trace(THIS_CLASS_NAME, "->handleCreateNewSlotHyperlinkAction");
 
         returnedSlot = empty();

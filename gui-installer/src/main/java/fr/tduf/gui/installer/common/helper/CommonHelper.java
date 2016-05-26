@@ -12,7 +12,7 @@ import java.util.Optional;
 import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
 import static java.util.Objects.requireNonNull;
 
-public abstract class CommonHelper {
+abstract class CommonHelper {
 
     private static final DbResourceDto.Locale DEFAULT_LOCALE = UNITED_STATES;
 
