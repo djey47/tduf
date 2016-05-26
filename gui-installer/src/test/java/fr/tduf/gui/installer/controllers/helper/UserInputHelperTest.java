@@ -1,7 +1,9 @@
 package fr.tduf.gui.installer.controllers.helper;
 
 
+import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -12,8 +14,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.List;
+
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_COLORS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.RIMS;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,6 +43,11 @@ public class UserInputHelperTest {
     private static final String RIMREF_1 = "3000000001";
     private static final String RES_RIMBRAND_1 = "654857";
     private static final String RIMBRAND_1 = "Default";
+    private static final String RES_COLORNAME_1 = "4607167";
+    private static final String COLORNAME_1 = "Nero";
+    private static final String RES_COLORNAME_2 = "4607267";
+    private static final String COLORNAME_2 = "Blau";
+    private static final String INTREF_1 = "5000000001";
 
     @Mock
     private BulkDatabaseMiner minerMock;
@@ -45,10 +57,14 @@ public class UserInputHelperTest {
         // Valid slot
         when(minerMock.getContentEntryFromTopicWithReference(SLOTREF, CAR_PHYSICS_DATA)).thenReturn(of(createCarPhysicsContentEntry()));
         when(minerMock.getContentEntryFromTopicWithReference(RIMREF_1, RIMS)).thenReturn(of(createRimsContentEntry()));
+        when(minerMock.getContentEntriesMatchingCriteria(singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, SLOTREF)), CAR_COLORS)).thenReturn(createCarColorsContentEntries());
+
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(eq(RES_BANKNAME), eq(CAR_PHYSICS_DATA), any(DbResourceDto.Locale.class))).thenReturn(of(BANKNAME));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(eq(RES_BANKNAME_FR_1), eq(RIMS), any(DbResourceDto.Locale.class))).thenReturn(of(BANKNAME_FR_1));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(eq(RES_BANKNAME_RR_1), eq(RIMS), any(DbResourceDto.Locale.class))).thenReturn(of(BANKNAME_RR_1));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(eq(RES_RIMBRAND_1), eq(RIMS), any(DbResourceDto.Locale.class))).thenReturn(of(RIMBRAND_1));
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(eq(RES_COLORNAME_1), eq(CAR_COLORS), any(DbResourceDto.Locale.class))).thenReturn(of(COLORNAME_1));
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(eq(RES_COLORNAME_2), eq(CAR_COLORS), any(DbResourceDto.Locale.class))).thenReturn(of(COLORNAME_2));
 
         // Invalid slot
         when(minerMock.getContentEntryFromTopicWithReference(SLOTREF_INV, CAR_PHYSICS_DATA)).thenReturn(empty());
@@ -84,6 +100,8 @@ public class UserInputHelperTest {
         assertThat(patchProperties.getRearRimBankFileName(1)).contains(BANKNAME_RR_1);
         assertThat(patchProperties.getFrontRimBankFileNameResource(1)).contains(RES_BANKNAME_FR_1);
         assertThat(patchProperties.getRearRimBankFileNameResource(1)).contains(RES_BANKNAME_RR_1);
+        assertThat(patchProperties.getExteriorColorNameResource(1)).contains(RES_COLORNAME_1);
+        assertThat(patchProperties.getExteriorColorNameResource(2)).contains(RES_COLORNAME_2);
     }
 
     @Test
@@ -173,6 +191,22 @@ public class UserInputHelperTest {
         // THEN
         assertThat(patchProperties.getDealerReference()).contains(dealerRef);
         assertThat(patchProperties.getDealerSlot()).contains(slotRank);
+    }
+
+    private static List<DbDataDto.Entry> createCarColorsContentEntries() {
+        return asList(
+                DbDataDto.Entry.builder()
+                        .forId(0)
+                        .addItem(DbDataDto.Item.builder().withRawValue(SLOTREF).ofFieldRank(1).build())
+                        .addItem(DbDataDto.Item.builder().withRawValue(RES_COLORNAME_1).ofFieldRank(3).build())
+                        .addItem(DbDataDto.Item.builder().withRawValue(INTREF_1).ofFieldRank(8).build())
+                        .build(),
+                DbDataDto.Entry.builder()
+                        .forId(1)
+                        .addItem(DbDataDto.Item.builder().withRawValue(SLOTREF).ofFieldRank(1).build())
+                        .addItem(DbDataDto.Item.builder().withRawValue(RES_COLORNAME_2).ofFieldRank(3).build())
+                        .addItem(DbDataDto.Item.builder().withRawValue(INTREF_1).ofFieldRank(8).build())
+                        .build());
     }
 
     private static DbDataDto.Entry createCarPhysicsContentEntry() {

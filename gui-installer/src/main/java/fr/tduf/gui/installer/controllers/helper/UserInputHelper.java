@@ -20,6 +20,7 @@ import javafx.stage.Window;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
 import static java.util.Arrays.asList;
@@ -108,7 +109,6 @@ public class UserInputHelper {
         String selectedResourceFrontRimBankName = vehicleSlot.getDefaultRims().getFrontRimInfo().getFileName().getRef();
         String selectedRearRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIM, false);
         String selectedResourceRearRimBankName = vehicleSlot.getDefaultRims().getRearRimInfo().getFileName().getRef();
-        Optional<String> selectedInteriorReference = searchFirstInteriorPatternReference(vehicleSlot);
 
         List<String> values = asList(selectedBankName, selectedResourceBankName, selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);
         if (VehicleSlotsHelper.DEFAULT_VEHICLE_ID == selectedCarIdentifier
@@ -121,6 +121,7 @@ public class UserInputHelper {
         patchProperties.setBankNameIfNotExists(selectedBankName);
         patchProperties.setResourceBankNameIfNotExists(selectedResourceBankName);
 
+        // Extract method
         patchProperties.setRimsSlotReferenceIfNotExists(selectedRimReference, 1);
         patchProperties.setResourceRimsBrandIfNotExists(selectedResourceRimBrandReference, 1);
         patchProperties.setFrontRimBankNameIfNotExists(selectedFrontRimBank, 1);
@@ -128,7 +129,18 @@ public class UserInputHelper {
         patchProperties.setRearRimBankNameIfNotExists(selectedRearRimBank, 1);
         patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, 1);
 
-        selectedInteriorReference.ifPresent(ref -> patchProperties.setInteriorReferenceIfNotExists(ref, 1));
+        createPatchPropertiesForPaintJobs(vehicleSlot, patchProperties);
+    }
+
+    private static void createPatchPropertiesForPaintJobs(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
+        AtomicInteger paintJobIndex = new AtomicInteger(1);
+        vehicleSlot.getPaintJobs()
+                .forEach(paintJob -> {
+                    String nameRef = paintJob.getName().getRef();
+                    patchProperties.setExteriorColorNameResourceIfNotExists(nameRef, paintJobIndex.getAndIncrement());
+                });
+
+        searchFirstInteriorPatternReference(vehicleSlot).ifPresent(ref -> patchProperties.setInteriorReferenceIfNotExists(ref, 1));
     }
 
     static void createPatchPropertiesForDealerSlot(DealerSlotData dealerSlotData, PatchProperties patchProperties) {
