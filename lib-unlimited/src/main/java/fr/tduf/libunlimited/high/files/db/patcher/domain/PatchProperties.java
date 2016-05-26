@@ -126,7 +126,6 @@ public class PatchProperties extends Properties {
         registerIfNotExists(PLACEHOLDER_NAME_BANK, bankName);
     }
 
-
     public void setResourceBankNameIfNotExists(String modelBankReference) {
         registerIfNotExists(PLACEHOLDER_NAME_RESOURCE_BANK, modelBankReference);
     }
@@ -172,7 +171,7 @@ public class PatchProperties extends Properties {
         registerIfNotExists(PLACEHOLDER_NAME_RESOURCE_VERSION, versionNameReference);
     }
 
-    public void setResourceColorNameIfNotExists(String colorNameReference, int exteriorSet) {
+    public void setExteriorColorNameResourceIfNotExists(String colorNameReference, int exteriorSet) {
         String placeholderName = format(PLACEHOLDER_NAME_FMT_RESOURCE_COLOR, exteriorSet);
         registerIfNotExists(placeholderName, colorNameReference);
     }
@@ -239,6 +238,10 @@ public class PatchProperties extends Properties {
 
     public Optional<Integer> getCameraIdentifier() {
         return retrieve(PLACEHOLDER_NAME_CAMERA).map(Integer::valueOf);
+    }
+
+    public Optional<String> getExteriorColorNameResource(int exteriorSet) {
+        return retrieve(format(PLACEHOLDER_NAME_FMT_RESOURCE_COLOR, exteriorSet));
     }
 
     private void registerIfNotExists(String placeholderName, String value) {
