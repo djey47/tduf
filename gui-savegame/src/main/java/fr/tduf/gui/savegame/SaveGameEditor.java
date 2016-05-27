@@ -1,6 +1,7 @@
 package fr.tduf.gui.savegame;
 
 import fr.tduf.gui.common.javafx.application.AbstractGuiApp;
+import fr.tduf.gui.savegame.stages.MainStageDesigner;
 import javafx.stage.Stage;
 
 /**
@@ -10,7 +11,7 @@ public class SaveGameEditor extends AbstractGuiApp {
 
     @Override
     public void startApp(Stage primaryStage) throws Exception {
-//        MainStageDesigner.init(primaryStage);
+        MainStageDesigner.init(primaryStage);
         primaryStage.show();
     }
 
