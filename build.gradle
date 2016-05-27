@@ -265,7 +265,7 @@ project(':gui-installer') {
 
 // Main tasks
 // Create a list of subprojects to include in the full jar.
-def fullProjects = [':cli',':gui-database']
+def fullProjects = [':cli',':gui-database',':gui-savegame']
 def tempJarDirectory = './tmp-jarContents'
 
 task gatherAllContentsForJar(type: Copy, dependsOn: fullProjects.collect{ it+":compileJava"}) {
