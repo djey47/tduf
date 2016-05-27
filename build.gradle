@@ -178,6 +178,18 @@ project(':gui-database') {
     }
 }
 
+project(':gui-savegame') {
+    dependencies {
+        compile project(':lib-unlimited')
+        compile project(':gui-common')
+    }
+
+    task execute(type:JavaExec) {
+        main 'fr.tduf.gui.savegame.SaveGameEditor'
+        classpath sourceSets.main.runtimeClasspath
+    }
+}
+
 project(':gui-installer') {
     apply plugin: 'org.kordamp.markdown.convert'
 
