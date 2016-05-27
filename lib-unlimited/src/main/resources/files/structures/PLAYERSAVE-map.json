@@ -1,0 +1,15 @@
+{
+  "name" : "TDU Savegame",
+  "littleEndian" : false,
+  "fields" : [
+    {
+      "name": "onlineOfflineHeader",
+      "type": "UNKNOWN",
+      "size": 50
+    },
+    {
+      "name": "playerData",
+      "type": "UNKNOWN"
+    }
+  ]
+}
