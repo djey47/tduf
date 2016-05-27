@@ -2,7 +2,6 @@ package fr.tduf.libunlimited.common.helper;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,10 +25,11 @@ public class FilesHelper {
     public static final Charset CHARSET_DEFAULT = Charset.defaultCharset();
     public static final Charset CHARSET_UNICODE_8 = Charset.forName("UTF-8");
 
-    private static Class<FilesHelper> thisClass = FilesHelper.class;
+    private static final Class<FilesHelper> thisClass = FilesHelper.class;
 
     private static final ObjectMapper jsonMapper = new ObjectMapper();
-    private static final ObjectWriter jsonWriter = jsonMapper.writerWithDefaultPrettyPrinter();
+
+    private FilesHelper() {}
 
     /**
      * Reads text file at provided resource location. Used charset is the default one.
@@ -116,7 +116,7 @@ public class FilesHelper {
         Path patchFilePath = Paths.get(fileName);
         Files.createDirectories(patchFilePath.getParent());
         try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(patchFilePath, StandardCharsets.UTF_8)) {
-            jsonWriter.writeValue(bufferedWriter, object);
+            jsonMapper.writerWithDefaultPrettyPrinter().writeValue(bufferedWriter, object);
         }
     }
 
