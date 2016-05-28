@@ -1,14 +1,20 @@
 {
   "name" : "TDU Savegame",
   "littleEndian" : false,
+  "cryptoMode": 0,
   "fields" : [
     {
-      "name": "onlineOfflineHeader",
+      "name": "UNK1",
       "type": "UNKNOWN",
-      "size": 50
+      "size": 26
     },
     {
-      "name": "playerData",
+      "name": "profileName",
+      "type": "TEXT",
+      "size": 32
+    },
+    {
+      "name": "remainingData",
       "type": "UNKNOWN"
     }
   ]
