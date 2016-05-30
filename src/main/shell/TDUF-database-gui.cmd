@@ -34,7 +34,7 @@ CALL .\CheckJava.cmd
 CALL .\SetVersion.cmd
 
 ECHO ...Starting Database Editor...
-CALL DatabaseEditor %1 >> ..\..\logs\DatabaseEditor.log 2>>&1
+CALL DatabaseEditor >> ..\..\logs\DatabaseEditor.log 2>>&1
 if ERRORLEVEL 1 GOTO handleEditorError
 
 ECHO.

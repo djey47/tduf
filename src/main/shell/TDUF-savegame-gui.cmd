@@ -34,7 +34,7 @@ CALL .\CheckJava.cmd
 CALL .\SetVersion.cmd
 
 ECHO ...Starting SaveGame Editor...
-CALL SaveGameEditor %1 >> ..\..\logs\SaveGameEditor.log 2>>&1
+CALL SaveGameEditor >> ..\..\logs\SaveGameEditor.log 2>>&1
 if ERRORLEVEL 1 GOTO handleEditorError
 
 ECHO.
