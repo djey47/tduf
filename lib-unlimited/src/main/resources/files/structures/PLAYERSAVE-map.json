@@ -1,8 +1,8 @@
 {
-  "name" : "TDU Savegame",
-  "littleEndian" : false,
+  "name": "TDU Savegame",
+  "littleEndian": false,
   "cryptoMode": 0,
-  "fields" : [
+  "fields": [
     {
       "name": "UNK1",
       "type": "UNKNOWN",
@@ -12,6 +12,16 @@
       "name": "profileName",
       "type": "TEXT",
       "size": 32
+    },
+    {
+      "name": "UNK2",
+      "type": "UNKNOWN",
+      "size": 56
+    },
+    {
+      "name": "clubName",
+      "type": "TEXT",
+      "size": 16
     },
     {
       "name": "remainingData",

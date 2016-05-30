@@ -1,10 +1,112 @@
 {
-  "name" : "TDU Savegame - Common data",
-  "littleEndian" : false,
+  "name": "TDU Savegame - Common data",
+  "littleEndian": false,
   "cryptoMode": 0,
-  "fields" : [
+  "fields": [
     {
-      "name": "UNK1",
+      "name": "UNK1.0",
+      "type": "UNKNOWN",
+      "size": 6
+    },
+    {
+      "name": "language",
+      "type": "TEXT",
+      "size": 2
+    },
+    {
+      "name": "UNK1.1",
+      "type": "UNKNOWN",
+      "size": 144
+    },
+    {
+      "name": "profileName",
+      "type": "TEXT",
+      "size": 32
+    },
+    {
+      "name": "UNK1.2",
+      "type": "INTEGER",
+      "size": 2
+    },
+    {
+      "name": "emailAddress",
+      "type": "TEXT",
+      "size": 53
+    },
+    {
+      "name": "SPC1",
+      "type": "TEXT",
+      "size": 1
+    },
+    {
+      "name": "password",
+      "type": "TEXT",
+      "size": 32
+    },
+    {
+      "name": "TAG1",
+      "type": "TEXT",
+      "size": 6
+    },
+    {
+      "name": "keyMappingSize",
+      "type": "INTEGER",
+      "size": 2
+    },
+    {
+      "name": "keyMapping",
+      "type": "REPEATER",
+      "size": "?keyMappingSize?",
+      "subFields": [
+        {
+          "name": "featureCodeSize",
+          "type": "INTEGER",
+          "size": 2
+        },
+        {
+          "name": "featureCode",
+          "type": "TEXT",
+          "size": "?featureCodeSize?"
+        },
+        {
+          "name": "keyCodeSize",
+          "type": "INTEGER",
+          "size": 2
+        },
+        {
+          "name": "keyCode",
+          "type": "TEXT",
+          "size": "?keyCodeSize?"
+        },
+        {
+          "name": "keyLabelSize",
+          "type": "INTEGER",
+          "size": 2
+        },
+        {
+          "name": "keyLabel",
+          "type": "TEXT",
+          "size": "?keyLabelSize?"
+        },
+        {
+          "name": "UNK3",
+          "type": "UNKNOWN",
+          "size": 13
+        },
+        {
+          "name": "TAG2",
+          "type": "TEXT",
+          "size": 4
+        },
+        {
+          "name": "UNK4",
+          "type": "UNKNOWN",
+          "size": 4
+        }
+      ]
+    },
+    {
+      "name": "REST",
       "type": "UNKNOWN"
     }
   ]
