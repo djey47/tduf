@@ -252,10 +252,13 @@ public class TypeHelperTest {
         assertThat(TypeHelper.byteArrayToHexRepresentation(null)).isNull();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void byteArrayToHexRepresentation_whenEmptyArray_shouldThrowIllegalArgumentException(){
-        // GIVEN-WHEN-THEN
-        TypeHelper.byteArrayToHexRepresentation(new byte[0]);
+    @Test
+    public void byteArrayToHexRepresentation_whenEmptyArray_shouldReturnString(){
+        // GIVEN
+        byte[] byteArray = new byte[0];
+
+        // WHEN-THEN
+        assertThat(TypeHelper.byteArrayToHexRepresentation(byteArray)).isEqualTo("0x[]");
     }
 
     @Test

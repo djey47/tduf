@@ -193,10 +193,6 @@ public class TypeHelper {
             return null;
         }
 
-        if (valueBytes.length == 0) {
-            throw new IllegalArgumentException("Provided byte array should not be empty.");
-        }
-
         String hexBytesWithSpaceSeparator = DatatypeConverter.printHexBinary(valueBytes)
                 .replaceAll(".{2}", "$0 ")
                 .trim();
