@@ -1,0 +1,43 @@
+{
+  "name" : "File format for datastore testing",
+  "littleEndian" : false,
+  "fields" : [
+    {
+      "name": "gap",
+      "type": "GAP",
+      "size": 2
+    },
+    {
+      "name": "entry_list",
+      "type": "REPEATER",
+      "size": 3,
+      "subFields": [
+        {
+          "name": "my_gap",
+          "type": "GAP",
+          "size": 3
+        },
+        {
+          "name": "my_field",
+          "type": "INTEGER",
+          "size": 4
+        },
+        {
+          "name": "my_fp_field",
+          "type": "FPOINT",
+          "size": 4
+        },
+        {
+          "name": "a_field",
+          "type": "TEXT",
+          "size": "?my_field?"
+        },
+        {
+          "name": "another_field",
+          "type": "UNKNOWN",
+          "size": 4
+        }
+      ]
+   }
+  ]
+}

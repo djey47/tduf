@@ -523,8 +523,7 @@ public class DataStore {
 
         switch (fieldType) {
             case TEXT:
-                int length = computeValueLength(currentField.getSizeFormula(), Optional.empty());
-                currentObjectNode.put(fieldName, rawToText(rawValue, length));
+                currentObjectNode.put(fieldName, rawToText(rawValue, rawValue.length));
                 break;
             case FPOINT:
                 currentObjectNode.put(fieldName, rawToFloatingPoint(rawValue));

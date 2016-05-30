@@ -19,7 +19,7 @@ import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 public class DataStoreTest {
 
-    private static  Class<DataStoreTest> thisClass = DataStoreTest.class;
+    private static Class<DataStoreTest> thisClass = DataStoreTest.class;
 
     private DataStore dataStore;
 
@@ -83,6 +83,21 @@ public class DataStoreTest {
         // WHEN
         String actualJson = dataStore.toJsonString();
         Log.debug(thisClass.getSimpleName(), actualJson);
+
+        // THEN
+        assertThat(actualJson).isNotNull();
+        assertEquals(expectedJson, actualJson, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void toJsonString_whenProvidedStore_andSizeAsReference_shouldReturnJsonRepresentation() throws IOException, URISyntaxException, JSONException {
+        // GIVEN
+        DataStore specialDataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastoreAndFormula-map.json"));
+        String expectedJson = getStoreContentsAsJson("/files/json/store_formula.json");
+        DataStoreFixture.createStoreEntriesForSizeFormula(specialDataStore);
+
+        // WHEN
+        String actualJson = specialDataStore.toJsonString();
 
         // THEN
         assertThat(actualJson).isNotNull();

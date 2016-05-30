@@ -32,6 +32,15 @@ public class DataStoreFixture {
         putRawValueInStore("entry_list[2].another_field", new byte [] {0x9, 0xA, 0xB, 0xC}, dataStore);
     }
 
+    public static void createStoreEntriesForSizeFormula(DataStore dataStore) {
+        dataStore.clearAll();
+
+        putLongInStore("entry_list[0].my_field", 2L, false, dataStore);
+        putFloatInStore("entry_list[0].my_fp_field", 0.0f, dataStore);
+        putStringInStore("entry_list[0].a_field", "az", dataStore);
+        putRawValueInStore("entry_list[0].another_field", new byte[0], dataStore);
+    }
+
     public static void putRawValueInStore(String key, byte[] bytes, DataStore dataStore) {
         dataStore.addValue(key, UNKNOWN, bytes);
     }
