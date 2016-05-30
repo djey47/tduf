@@ -24,7 +24,94 @@
       "size": 16
     },
     {
-      "name": "remainingData",
+      "name": "UNK3",
+      "type": "UNKNOWN",
+      "size": 75202
+    },
+    {
+      "name": "messages",
+      "type": "REPEATER",
+      "size": "64",
+      "subFields": [
+        {
+          "name": "beginMessageTag",
+          "type": "UNKNOWN",
+          "size": 2
+        },
+        {
+          "name": "messageTitleSize",
+          "type": "INTEGER",
+          "size": 2
+        },
+        {
+          "name": "messageTitle",
+          "type": "TEXT",
+          "size": "?messageTitleSize?"
+        },
+        {
+          "name": "messageSize",
+          "type": "INTEGER",
+          "size": 2
+        },
+        {
+          "name": "message",
+          "type": "TEXT",
+          "size": "?messageSize?"
+        },
+        {
+          "name": "unusedTextSize",
+          "type": "INTEGER",
+          "size": 2
+        },
+        {
+          "name": "unusedText",
+          "type": "TEXT",
+          "size": "?unusedTextSize?"
+        },
+        {
+          "name": "endMessageUnknown1",
+          "type": "UNKNOWN",
+          "size": 26
+        },
+        {
+          "name": "clubNameSize",
+          "type": "INTEGER",
+          "size": 2
+        },
+        {
+          "name": "clubName",
+          "type": "TEXT",
+          "size": "?clubNameSize?"
+        },
+        {
+          "name": "clubSignatureSize",
+          "type": "INTEGER",
+          "size": 2
+        },
+        {
+          "name": "clubSignature",
+          "type": "TEXT",
+          "size": "?clubSignatureSize?"
+        },
+        {
+          "name": "endMessageUnknown2",
+          "type": "UNKNOWN",
+          "size": 4
+        },
+        {
+          "name": "language",
+          "type": "TEXT",
+          "size": 4
+        },
+        {
+          "name": "endMessageUnknown3",
+          "type": "UNKNOWN",
+          "size": 2
+        }
+      ]
+    },
+    {
+      "name": "REST",
       "type": "UNKNOWN"
     }
   ]
