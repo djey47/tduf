@@ -4,7 +4,6 @@ import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,10 +68,8 @@ public class FormulaHelper {
             storedValue = dataStore.getInteger(pointerReference);
         }
 
-        try {
-            return storedValue.get().toString();
-        } catch (NoSuchElementException nse) {
-            throw new IllegalArgumentException("Such an item does not exist in store: " + pointerReference, nse);
-        }
+        return storedValue
+                .map(Object::toString)
+                .orElseThrow(() -> new IllegalArgumentException("Such an item does not exist in store: " + pointerReference));
     }
 }
