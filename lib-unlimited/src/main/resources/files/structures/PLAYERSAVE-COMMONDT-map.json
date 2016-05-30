@@ -1,0 +1,11 @@
+{
+  "name" : "TDU Savegame - Common data",
+  "littleEndian" : false,
+  "cryptoMode": 0,
+  "fields" : [
+    {
+      "name": "UNK1",
+      "type": "UNKNOWN"
+    }
+  ]
+}
