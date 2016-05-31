@@ -126,6 +126,7 @@ public class DbResourceDto {
     /**
      * All culture variants for game files
      */
+    // TODO move to common package
     public enum Locale {
         FRANCE("fr"),
         GERMANY("ge"),
