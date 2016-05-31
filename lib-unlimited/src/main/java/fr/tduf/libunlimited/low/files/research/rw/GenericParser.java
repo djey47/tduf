@@ -124,8 +124,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
             }
 
             // Check
-            long parsedCount = readResult.parsedCount;
-            assert (parsedCount == Optional.ofNullable(length).orElse((int)parsedCount));
+            assert length == null || readResult.parsedCount == length;
 
             this.dataStore.addValue(key, type, signedValue, readResult.readValueAsBytes);
         }
