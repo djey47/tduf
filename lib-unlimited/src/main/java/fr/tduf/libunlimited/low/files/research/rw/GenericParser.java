@@ -73,61 +73,56 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         for(FileStructureDto.Field field : fields) {
 
             String key = repeaterKey + field.getName();
-            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), Optional.of(repeaterKey), this.dataStore);
-            boolean signedValue = field.isSigned();
-
-            ReadResult readResult;
-            FileStructureDto.Type type = field.getType();
-            switch(type) {
-
-                case GAP:
-                    readResult = jumpGap(length);
-
-                    dumpGap(length, key);
-                    break;
-
-                case INTEGER:
-                    readResult = readIntegerValue(length);
-
-                    dumpIntegerValue(readResult.readValueAsBytes, length, signedValue, key);
-                    break;
-
-                case FPOINT:
-                    readResult = readFloatingPointValue(length);
-
-                    dumpFloatingPointValue(readResult.readValueAsBytes, length, key);
-                    break;
-
-                case DELIMITER:
-                case TEXT:
-                    readResult = readDelimiterOrTextValue(length);
-
-                    dumpDelimiterOrTextValue(readResult.readValueAsBytes, length, key, type);
-                    break;
-
-                case UNKNOWN:
-                    readResult = readRawValue(length);
-
-                    dumpRawValue(readResult.readValueAsBytes, length, key);
-                    break;
-
-                case REPEATER:
-                    dumpRepeater(key, Optional.empty());
-
-                    readResult = readRepeatedValues(field, length);
-
-                    dumpRepeater(key, Optional.of(readResult));
-                    break;
-
-                default:
-                    throw new IllegalArgumentException("Unknown field type: " + type);
-            }
+            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), Optional.of(repeaterKey), dataStore);
+            ReadResult readResult = readAndDumpValue(key, field, length);
 
             // Check
             assert length == null || readResult.parsedCount == length;
 
-            this.dataStore.addValue(key, type, signedValue, readResult.readValueAsBytes);
+            this.dataStore.addValue(key, field.getType(), field.isSigned(), readResult.readValueAsBytes);
         }
+    }
+
+    private ReadResult readAndDumpValue(String key, FileStructureDto.Field field, Integer length) {
+        ReadResult readResult;
+        FileStructureDto.Type type = field.getType();
+        switch(type) {
+            case GAP:
+                readResult = jumpGap(length);
+                dumpGap(length, key);
+                break;
+
+            case INTEGER:
+                readResult = readIntegerValue(length);
+                dumpIntegerValue(readResult.readValueAsBytes, length, field.isSigned(), key);
+                break;
+
+            case FPOINT:
+                readResult = readFloatingPointValue(length);
+                dumpFloatingPointValue(readResult.readValueAsBytes, length, key);
+                break;
+
+            case DELIMITER:
+            case TEXT:
+                readResult = readDelimiterOrTextValue(length);
+                dumpDelimiterOrTextValue(readResult.readValueAsBytes, length, key, type);
+                break;
+
+            case UNKNOWN:
+                readResult = readRawValue(length);
+                dumpRawValue(readResult.readValueAsBytes, length, key);
+                break;
+
+            case REPEATER:
+                dumpRepeater(key, Optional.empty());
+                readResult = readRepeatedValues(field, length);
+                dumpRepeater(key, Optional.of(readResult));
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unknown field type: " + type);
+        }
+        return readResult;
     }
 
     private ReadResult readRepeatedValues(FileStructureDto.Field repeaterField, Integer length) {
