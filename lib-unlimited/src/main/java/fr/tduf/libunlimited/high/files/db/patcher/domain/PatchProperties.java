@@ -30,11 +30,13 @@ public class PatchProperties extends Properties {
     private static final String PLACEHOLDER_NAME_FMT_INTERIOR_REFERENCE = "INTREF.%d";
     private static final String PLACEHOLDER_NAME_FMT_RIMS_BANK = "BANKNAME.%s.%d";
     private static final String PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK = "RES_BANKNAME.%s.%d";
+    private static final String PLACEHOLDER_NAME_FMT_ID_COLOR = "COLORID.%s.%d";
     private static final String PLACEHOLDER_NAME_FMT_RESOURCE_COLOR = "RES_COLORNAME.%d";
     private static final String PLACEHOLDER_NAME_FMT_CUSTOM_CAM = "CAMERA.%s";
 
     private static final String SUFFIX_FRONT_RIMS = "FR";
     private static final String SUFFIX_REAR_RIMS = "RR";
+    private static final String SUFFIX_MAIN_COLOR = "M";
 
     /** All customizable view kinds **/
     public enum CustomizableCameraView {
@@ -240,6 +242,10 @@ public class PatchProperties extends Properties {
 
     public Optional<Integer> getCameraIdentifier() {
         return retrieve(PLACEHOLDER_NAME_CAMERA).map(Integer::valueOf);
+    }
+
+    public Optional<String> getExteriorMainColorId(int exteriorSet) {
+        return retrieve(format(PLACEHOLDER_NAME_FMT_ID_COLOR, SUFFIX_MAIN_COLOR, exteriorSet));
     }
 
     public Optional<String> getExteriorColorNameResource(int exteriorSet) {
