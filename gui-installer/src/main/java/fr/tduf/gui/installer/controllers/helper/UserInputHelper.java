@@ -103,18 +103,14 @@ public class UserInputHelper {
         VehicleSlot vehicleSlot = potentialVehicleSlot.get();
 
         int selectedCarIdentifier = vehicleSlot.getCarIdentifier();
+        if (VehicleSlotsHelper.DEFAULT_VEHICLE_ID == selectedCarIdentifier) {
+            throw new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, slotReference));
+        }
+
         String selectedBankName = VehicleSlotsHelper.getBankFileName(vehicleSlot, EXTERIOR_MODEL, false);
         String selectedResourceBankName = vehicleSlot.getFileName().getRef();
-        String selectedRimReference = vehicleSlot.getDefaultRims().getRef();
-        String selectedResourceRimBrandReference = vehicleSlot.getDefaultRims().getParentDirectoryName().getRef();
-        String selectedFrontRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, FRONT_RIM, false);
-        String selectedResourceFrontRimBankName = vehicleSlot.getDefaultRims().getFrontRimInfo().getFileName().getRef();
-        String selectedRearRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIM, false);
-        String selectedResourceRearRimBankName = vehicleSlot.getDefaultRims().getRearRimInfo().getFileName().getRef();
-
-        List<String> values = asList(selectedBankName, selectedResourceBankName, selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);
-        if (VehicleSlotsHelper.DEFAULT_VEHICLE_ID == selectedCarIdentifier
-                || values.contains(DisplayConstants.ITEM_UNAVAILABLE)) {
+        List<String> values = asList(selectedBankName, selectedResourceBankName);
+        if (values.contains(DisplayConstants.ITEM_UNAVAILABLE)) {
             throw new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, slotReference));
         }
 
@@ -123,15 +119,30 @@ public class UserInputHelper {
         patchProperties.setBankNameIfNotExists(selectedBankName);
         patchProperties.setResourceBankNameIfNotExists(selectedResourceBankName);
 
-        // Extract method
+        createPatchPropertiesForRims(vehicleSlot, patchProperties);
+
+        createPatchPropertiesForPaintJobs(vehicleSlot, patchProperties);
+    }
+
+    private static void createPatchPropertiesForRims(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
+        String selectedRimReference = vehicleSlot.getDefaultRims().getRef();
+        String selectedResourceRimBrandReference = vehicleSlot.getDefaultRims().getParentDirectoryName().getRef();
+        String selectedFrontRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, FRONT_RIM, false);
+        String selectedResourceFrontRimBankName = vehicleSlot.getDefaultRims().getFrontRimInfo().getFileName().getRef();
+        String selectedRearRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIM, false);
+        String selectedResourceRearRimBankName = vehicleSlot.getDefaultRims().getRearRimInfo().getFileName().getRef();
+
+        List<String> values = asList(selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);
+        if (values.contains(DisplayConstants.ITEM_UNAVAILABLE)) {
+            throw new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, vehicleSlot.getRef()));
+        }
+
         patchProperties.setRimsSlotReferenceIfNotExists(selectedRimReference, 1);
         patchProperties.setResourceRimsBrandIfNotExists(selectedResourceRimBrandReference, 1);
         patchProperties.setFrontRimBankNameIfNotExists(selectedFrontRimBank, 1);
         patchProperties.setResourceFrontRimBankIfNotExists(selectedResourceFrontRimBankName, 1);
         patchProperties.setRearRimBankNameIfNotExists(selectedRearRimBank, 1);
         patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, 1);
-
-        createPatchPropertiesForPaintJobs(vehicleSlot, patchProperties);
     }
 
     private static void createPatchPropertiesForPaintJobs(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
