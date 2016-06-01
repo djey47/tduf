@@ -25,10 +25,13 @@ public class DatabaseContext {
 
     private String backupDatabaseDirectory;
 
+    private final UserSelection userSelection;
+
     public DatabaseContext(List<DbDto> topicObjects, String jsonDatabaseDirectory) {
         this.topicObjects = requireNonNull(topicObjects, "A list of database objects is required.");
         this.jsonDatabaseDirectory = requireNonNull(jsonDatabaseDirectory, "A directory in which JSON database exists is required.");
         this.miner = BulkDatabaseMiner.load(topicObjects);
+        this.userSelection = UserSelection.none();
     }
 
     public List<DbDto> getTopicObjects() {
@@ -62,5 +65,9 @@ public class DatabaseContext {
 
     public void setBackupDatabaseDirectory(String backupDatabaseDirectory) {
         this.backupDatabaseDirectory = backupDatabaseDirectory;
+    }
+
+    public UserSelection getUserSelection() {
+        return userSelection;
     }
 }
