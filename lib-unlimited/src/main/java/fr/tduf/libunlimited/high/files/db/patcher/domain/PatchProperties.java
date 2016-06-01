@@ -37,6 +37,7 @@ public class PatchProperties extends Properties {
     private static final String SUFFIX_FRONT_RIMS = "FR";
     private static final String SUFFIX_REAR_RIMS = "RR";
     private static final String SUFFIX_MAIN_COLOR = "M";
+    private static final String SUFFIX_SECONDARY_COLOR = "S";
 
     /** All customizable view kinds **/
     public enum CustomizableCameraView {
@@ -178,6 +179,16 @@ public class PatchProperties extends Properties {
     public void setExteriorColorNameResourceIfNotExists(String colorNameReference, int exteriorSet) {
         String placeholderName = format(PLACEHOLDER_NAME_FMT_RESOURCE_COLOR, exteriorSet);
         registerIfNotExists(placeholderName, colorNameReference);
+    }
+
+    public void setExteriorMainColorIdIfNotExists(String mainColorId, int exteriorSet) {
+        String placeholderName = format(PLACEHOLDER_NAME_FMT_ID_COLOR, SUFFIX_MAIN_COLOR, exteriorSet);
+        registerIfNotExists(placeholderName, mainColorId);
+    }
+
+    public void setExteriorSecondaryColorIdIfNotExists(String secColorId, int exteriorSet) {
+        String placeholderName = format(PLACEHOLDER_NAME_FMT_ID_COLOR, SUFFIX_SECONDARY_COLOR, exteriorSet);
+        registerIfNotExists(placeholderName, secColorId);
     }
 
     public void setDealerReferenceIfNotExists(String dealerReference) {
