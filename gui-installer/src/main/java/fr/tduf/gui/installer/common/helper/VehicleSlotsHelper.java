@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 import static fr.tduf.gui.installer.common.DatabaseConstants.*;
@@ -229,6 +230,7 @@ public class VehicleSlotsHelper extends CommonHelper {
     }
 
     private List<PaintJob> getPaintJobsForVehicle(String slotReference) {
+        AtomicInteger paintJobIndex = new AtomicInteger(1);
         return miner.getContentEntriesMatchingCriteria(singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference)), CAR_COLORS).stream()
 
                 .map(entry -> {
@@ -236,6 +238,7 @@ public class VehicleSlotsHelper extends CommonHelper {
                     Optional<Resource> nameResource = getResourceFromDatabaseEntry(entry, CAR_COLORS, DatabaseConstants.FIELD_RANK_COLOR_NAME);
 
                     return PaintJob.builder()
+                            .atRank(paintJobIndex.getAndIncrement())
                             .withName(nameResource.orElse(null))
                             .addInteriorPattern(interiorPatternRef)
                             .build();

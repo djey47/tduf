@@ -169,6 +169,7 @@ public class VehicleSlotsHelperTest {
         assertThat(actualDefaultRims.getFrontRimInfo().getFileName()).isEqualTo(Resource.from(frontRimFileNameRef, frontRimFileName));
         assertThat(actualDefaultRims.getRearRimInfo().getFileName()).isEqualTo(Resource.from(rearRimFileNameRef, rearRimFileName));
 
+        assertThat(vehicleSlot.getPaintJobs()).extracting("rank").containsExactly(1);
         assertThat(vehicleSlot.getPaintJobs()).extracting("name").containsExactly(Resource.from(colorNameRef, colorName));
         assertThat(vehicleSlot.getPaintJobs()).extracting("interiorPatternRefs").containsExactly(singletonList(interiorRef));
     }
