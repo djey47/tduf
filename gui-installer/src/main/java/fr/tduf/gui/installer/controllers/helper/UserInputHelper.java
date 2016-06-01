@@ -61,6 +61,8 @@ public class UserInputHelper {
                     .orElseThrow(() -> new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, slotRef)));
 
             createPatchPropertiesForVehicleSlot(vehicleSlot, context.getPatchProperties());
+
+            context.getUserSelection().selectVehicleSlot(vehicleSlot);
         });
         if (!potentialVehicleSlot.isPresent()) {
             Log.info(THIS_CLASS_NAME, "->No vehicle slot selected, will be creating a new one.");
@@ -89,7 +91,11 @@ public class UserInputHelper {
 
         Log.info(THIS_CLASS_NAME, "->Using dealer slot: " + selectedItem);
 
-        selectedItem.ifPresent(slotData -> createPatchPropertiesForDealerSlot(slotData, context.getPatchProperties()));
+        selectedItem.ifPresent(slotData -> {
+            createPatchPropertiesForDealerSlot(slotData, context.getPatchProperties());
+
+            context.getUserSelection().selectDealerSlot(slotData);
+        });
         if (!selectedItem.isPresent()) {
             Log.info(THIS_CLASS_NAME, "->No dealer slot selected, will not locate vehicle.");
         }
