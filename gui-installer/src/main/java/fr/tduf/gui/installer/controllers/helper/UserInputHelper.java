@@ -12,7 +12,6 @@ import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
 import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
 import fr.tduf.gui.installer.stages.DealerSlotsStageDesigner;
 import fr.tduf.gui.installer.stages.VehicleSlotsStageDesigner;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -57,7 +56,12 @@ public class UserInputHelper {
 
         Optional<String> potentialVehicleSlot = selectedItem
                 .map(item -> item.referenceProperty().get());
-        potentialVehicleSlot.ifPresent(slotRef -> createPatchPropertiesForVehicleSlot(slotRef, context.getPatchProperties(), context.getMiner()));
+        potentialVehicleSlot.ifPresent(slotRef -> {
+            VehicleSlot vehicleSlot = VehicleSlotsHelper.load(context.getMiner()).getVehicleSlotFromReference(slotRef)
+                    .orElseThrow(() -> new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, slotRef)));
+
+            createPatchPropertiesForVehicleSlot(vehicleSlot, context.getPatchProperties());
+        });
         if (!potentialVehicleSlot.isPresent()) {
             Log.info(THIS_CLASS_NAME, "->No vehicle slot selected, will be creating a new one.");
         }
@@ -91,17 +95,10 @@ public class UserInputHelper {
         }
     }
 
-    static void createPatchPropertiesForVehicleSlot(String slotReference, PatchProperties patchProperties, BulkDatabaseMiner miner) {
+    static void createPatchPropertiesForVehicleSlot(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
         Log.info(THIS_CLASS_NAME, "->Resolving missing properties with slot information");
 
-        VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
-        Optional<VehicleSlot> potentialVehicleSlot = vehicleSlotsHelper.getVehicleSlotFromReference(slotReference);
-        if (!potentialVehicleSlot.isPresent()) {
-            throw new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, slotReference));
-        }
-
-        VehicleSlot vehicleSlot = potentialVehicleSlot.get();
-
+        String slotReference = vehicleSlot.getRef();
         int selectedCarIdentifier = vehicleSlot.getCarIdentifier();
         if (VehicleSlotsHelper.DEFAULT_VEHICLE_ID == selectedCarIdentifier) {
             throw new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, slotReference));
@@ -122,6 +119,13 @@ public class UserInputHelper {
         createPatchPropertiesForRims(vehicleSlot, patchProperties);
 
         createPatchPropertiesForPaintJobs(vehicleSlot, patchProperties);
+    }
+
+    static void createPatchPropertiesForDealerSlot(DealerSlotData dealerSlotData, PatchProperties patchProperties) {
+        Log.info(THIS_CLASS_NAME, "->Resolving missing properties with dealer slot information");
+
+        patchProperties.setDealerReferenceIfNotExists(dealerSlotData.getDealerDataItem().referenceProperty().get());
+        patchProperties.setDealerSlotIfNotExists(dealerSlotData.getSlotDataItem().rankProperty().get());
     }
 
     private static void createPatchPropertiesForRims(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
@@ -154,13 +158,6 @@ public class UserInputHelper {
                 });
 
         searchFirstInteriorPatternReference(vehicleSlot).ifPresent(ref -> patchProperties.setInteriorReferenceIfNotExists(ref, 1));
-    }
-
-    static void createPatchPropertiesForDealerSlot(DealerSlotData dealerSlotData, PatchProperties patchProperties) {
-        Log.info(THIS_CLASS_NAME, "->Resolving missing properties with dealer slot information");
-
-        patchProperties.setDealerReferenceIfNotExists(dealerSlotData.getDealerDataItem().referenceProperty().get());
-        patchProperties.setDealerSlotIfNotExists(dealerSlotData.getSlotDataItem().rankProperty().get());
     }
 
     private static Optional<String> searchFirstInteriorPatternReference(VehicleSlot vehicleSlot) {
