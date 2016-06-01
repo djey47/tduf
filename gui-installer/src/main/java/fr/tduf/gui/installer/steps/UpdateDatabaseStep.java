@@ -5,6 +5,7 @@ import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.SecurityOptions;
+import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
@@ -20,6 +21,7 @@ import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -30,6 +32,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Applies available patch onto loaded database then convert it to TDU format back
@@ -50,6 +53,9 @@ class UpdateDatabaseStep extends GenericStep {
         }
 
         enhancePatchObjectWithInstallFlag();
+
+        getDatabaseContext().getUserSelection().getVehicleSlot()
+                .ifPresent(this::enhancePatchObjectWithPaintJobs);
 
         final List<DbDto> topicObjects = getDatabaseContext().getTopicObjects();
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, topicObjects);
@@ -100,6 +106,38 @@ class UpdateDatabaseStep extends GenericStep {
                 .build();
 
         getDatabaseContext().getPatchObject().getChanges().add(changeObject);
+    }
+
+    private void enhancePatchObjectWithPaintJobs(VehicleSlot vehicleSlot) {
+        Log.info(THIS_CLASS_NAME, "->Adding paint jobs changes to initial patch");
+
+        List<DbPatchDto.DbChangeDto> changeObjectsForPaintJobs = vehicleSlot.getPaintJobs().stream()
+
+                .flatMap(paintJob -> {
+                    final Optional<String> exteriorColorId = getDatabaseContext().getPatchProperties().getExteriorMainColorId(paintJob.getRank());
+                    if (!exteriorColorId.isPresent()) {
+                        return Stream.of((DbPatchDto.DbChangeDto)null);
+                    }
+
+                    List<DbPatchDto.DbChangeDto> changes = new ArrayList<>();
+                    // Ext
+                    changes.add(DbPatchDto.DbChangeDto.builder()
+                            .build());
+                    // Ext resources
+                    changes.add(DbPatchDto.DbChangeDto.builder()
+                            .build());
+                    return changes.stream();
+                })
+
+                .filter(changeObject -> changeObject != null)
+
+                .collect(toList());
+
+        getDatabaseContext().getPatchObject().getChanges().addAll(changeObjectsForPaintJobs);
+
+
+        List<DbPatchDto.DbChangeDto> changeObjectsForInteriors = new ArrayList<>();
+        getDatabaseContext().getPatchObject().getChanges().addAll(changeObjectsForInteriors);
     }
 
     private void applyPerformancePackage(List<DbDto> topicObjects, String slotRef) throws ReflectiveOperationException, IOException {
