@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.libunlimited.common.domain.ProcessResult;
+import fr.tduf.libunlimited.common.system.domain.ProcessResult;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBatchInputDto;

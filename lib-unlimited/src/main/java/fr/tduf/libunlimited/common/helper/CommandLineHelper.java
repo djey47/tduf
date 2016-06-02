@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.common.helper;
 
-import fr.tduf.libunlimited.common.domain.ProcessResult;
+import fr.tduf.libunlimited.common.system.domain.ProcessResult;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;

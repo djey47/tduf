@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.high.files.common.interop;
 
-import fr.tduf.libunlimited.common.domain.ProcessResult;
+import fr.tduf.libunlimited.common.system.domain.ProcessResult;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.common.domain;
+package fr.tduf.libunlimited.common.system.domain;
 
 /**
  * Object to be returned after a process exits normally. Bring all details about execution result.
