@@ -31,24 +31,15 @@ TDUF aims at making Test Drive Unlmited modding easier:
 
 
 
-### What's in this version ? (1.5.0)
+### What's in this version ? (1.6.0)
 
-* As you've noticed for sure, this README now appears in your favourite web browser!
-
-* Database Tool: in batch mode, now handles patches with associated properties
-
-* Database Editor: new database checking feature!
-* Database Editor: do not allows to load database more than once (for reliability reasons). To reload, exit then restart application.
-
-* Library: give access to some camera customization features from TDUMT, via TDUMT-CLI project.
+* 
 
 
 
 ### Fixed issues
 
-* Database Editor: various concerns (not applying changes just made etc...)
-
-* Library: disabled some abusive caching.
+* 
 
 
 
@@ -70,7 +61,7 @@ TDUF aims at making Test Drive Unlmited modding easier:
 
 ### Running Database Editor!
 
-    - Launch TDUF-gui.cmd from Windows explorer
+    - Launch TDUF-database-gui.cmd from Windows explorer
     - In DatabaseEditor, browse location of TDU database BNK or JSON files. Load (may take a while)
     - Make your changes. Save (may take a while)
     - Database is repacked automatically.
