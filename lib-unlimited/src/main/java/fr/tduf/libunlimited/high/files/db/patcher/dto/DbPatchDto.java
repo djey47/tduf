@@ -1,9 +1,9 @@
 package fr.tduf.libunlimited.high.files.db.patcher.dto;
 
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.comparator.DbChangeDtoRenderComparator;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -120,7 +120,7 @@ public class DbPatchDto {
         private DbDto.Topic topic;
 
         @JsonProperty("locale")
-        private DbResourceDto.Locale locale;
+        private Locale locale;
 
         @JsonProperty("ref")
         private String ref;
@@ -158,7 +158,7 @@ public class DbPatchDto {
             return reflectionToString(this);
         }
 
-        public DbResourceDto.Locale getLocale() {
+        public Locale getLocale() {
             return locale;
         }
 
@@ -230,7 +230,7 @@ public class DbPatchDto {
 
         public static DbChangeDtoBuilder builder() {
             return new DbChangeDtoBuilder() {
-                private DbResourceDto.Locale locale;
+                private Locale locale;
                 private String value;
                 private List<String> entryValues;
                 private List<DbFieldValueDto> filterCompounds;
@@ -303,7 +303,7 @@ public class DbPatchDto {
                 }
 
                 @Override
-                public DbChangeDtoBuilder forLocale(DbResourceDto.Locale locale) {
+                public DbChangeDtoBuilder forLocale(Locale locale) {
                     this.locale = locale;
                     return this;
                 }
@@ -370,7 +370,7 @@ public class DbPatchDto {
 
             DbChangeDtoBuilder withValuePlaceholder(String name);
 
-            DbChangeDtoBuilder forLocale(DbResourceDto.Locale locale);
+            DbChangeDtoBuilder forLocale(Locale locale);
 
             DbChangeDtoBuilder moveForDirection(DirectionEnum direction, OptionalInt steps);
         }

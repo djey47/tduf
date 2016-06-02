@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
@@ -15,7 +16,6 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -58,7 +58,7 @@ public class MainStageChangeDataController {
                 });
     }
 
-    void updateResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
+    void updateResourceWithReference(DbDto.Topic topic, Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
         requireNonNull(getChangeHelper());
         getChangeHelper().updateResourceItemWithReference(topic, locale, oldResourceReference, newResourceReference, newResourceValue);
     }
@@ -73,10 +73,10 @@ public class MainStageChangeDataController {
         getChangeHelper().moveEntryWithIdentifier(step, internalEntryId, topic);
     }
 
-    void removeResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, boolean forAllLocales) {
-        List<DbResourceDto.Locale> affectedLocales = singletonList(locale);
+    void removeResourceWithReference(DbDto.Topic topic, Locale locale, String resourceReference, boolean forAllLocales) {
+        List<Locale> affectedLocales = singletonList(locale);
         if (forAllLocales) {
-            affectedLocales = DbResourceDto.Locale.valuesAsStream().collect(toList());
+            affectedLocales = Locale.valuesAsStream().collect(toList());
         }
 
         getChangeHelper().removeResourceValuesWithReference(topic, resourceReference, affectedLocales);
@@ -104,7 +104,7 @@ public class MainStageChangeDataController {
         DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
     }
 
-    void addResourceWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String newResourceReference, String newResourceValue) {
+    void addResourceWithReference(DbDto.Topic topic, Locale locale, String newResourceReference, String newResourceValue) {
         requireNonNull(getGenHelper());
         getChangeHelper().addResourceValueWithReference(topic, locale, newResourceReference, newResourceValue);
     }

@@ -3,8 +3,8 @@ package fr.tduf.gui.common.controllers;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.stages.DatabaseCheckStageDesigner;
 import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.junit.Before;
@@ -40,11 +40,11 @@ public class DatabaseCheckStageControllerTest {
         integrityErrors.add(IntegrityError.builder().ofType(IntegrityError.ErrorTypeEnum.CONTENT_ITEMS_COUNT_MISMATCH).build());
         integrityErrors.add(IntegrityError.builder().ofType(IntegrityError.ErrorTypeEnum.CONTENTS_ENCRYPTION_NOT_SUPPORTED)
                 .addInformation(IntegrityError.ErrorInfoEnum.FILE, "File1")
-                .addInformation(IntegrityError.ErrorInfoEnum.LOCALE, DbResourceDto.Locale.FRANCE)
+                .addInformation(IntegrityError.ErrorInfoEnum.LOCALE, Locale.FRANCE)
                 .build());
         integrityErrors.add(IntegrityError.builder().ofType(IntegrityError.ErrorTypeEnum.CONTENTS_ENCRYPTION_NOT_SUPPORTED)
                 .addInformation(IntegrityError.ErrorInfoEnum.FILE, "File2")
-                .addInformation(IntegrityError.ErrorInfoEnum.LOCALE, DbResourceDto.Locale.UNITED_STATES)
+                .addInformation(IntegrityError.ErrorInfoEnum.LOCALE, Locale.UNITED_STATES)
                 .build());
 
         // WHEN

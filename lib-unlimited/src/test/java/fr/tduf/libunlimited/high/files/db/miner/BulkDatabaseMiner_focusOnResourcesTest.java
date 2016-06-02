@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.miner;
 
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -13,8 +14,8 @@ import java.util.Set;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.PNJ;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
+import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
+import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -23,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BulkDatabaseMiner_focusOnResourcesTest {
 
     private static final DbDto.Topic TOPIC = CAR_PHYSICS_DATA;
-    private static final DbResourceDto.Locale LOCALE = UNITED_STATES;
+    private static final Locale LOCALE = UNITED_STATES;
     private static final String RESOURCE_REF = "00000000";
     private static final String RESOURCE_VALUE = "VALUE";
     private static final String TOPIC_REF = "11111111";

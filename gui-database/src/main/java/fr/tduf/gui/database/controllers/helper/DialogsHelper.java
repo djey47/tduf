@@ -4,9 +4,9 @@ import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.gui.database.domain.javafx.ResourceEntryDataItem;
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,7 +41,7 @@ public class DialogsHelper {
         alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
         alert.setHeaderText(String.format(DisplayConstants.MESSAGE_DELETED_RESOURCE,
                 topic.getLabel(),
-                resource.toDisplayableValueForLocale(DbResourceDto.Locale.UNITED_STATES))); // Use current locale
+                resource.toDisplayableValueForLocale(Locale.UNITED_STATES))); // Use current locale
         alert.setContentText(String.format("%s\n%s", DisplayConstants.WARNING_DELETED_RESOURCE, DisplayConstants.QUESTION_AFFECTED_LOCALES));
 
         ButtonType currentLocaleButtonType = new ButtonType(String.format(DisplayConstants.LABEL_BUTTON_CURRENT_LOCALE, localeCode));
@@ -64,7 +64,7 @@ public class DialogsHelper {
      * @param updatedResource   : resource to apply, or absent to create a new one
      * @return resulting resource, or absent if dialog was dismissed.
      */
-    public Optional<LocalizedResource> showEditResourceDialog(DbDto topicObject, Optional<ResourceEntryDataItem> updatedResource, DbResourceDto.Locale currentLocale) {
+    public Optional<LocalizedResource> showEditResourceDialog(DbDto topicObject, Optional<ResourceEntryDataItem> updatedResource, Locale currentLocale) {
         Dialog<LocalizedResource> editResourceDialog = new Dialog<>();
         editResourceDialog.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
 
@@ -108,10 +108,10 @@ public class DialogsHelper {
 
         editResourceDialog.setResultConverter(dialogButton -> {
             if (dialogButton == okButtonType) {
-                Optional<DbResourceDto.Locale> affectedLocale = Optional.empty();
+                Optional<Locale> affectedLocale = Optional.empty();
                 int selectedLocaleIndex = localeChoiceBox.getSelectionModel().getSelectedIndex();
                 if (selectedLocaleIndex != 0) {
-                    affectedLocale = Optional.of(DbResourceDto.Locale.values()[selectedLocaleIndex - 1]);
+                    affectedLocale = Optional.of(Locale.values()[selectedLocaleIndex - 1]);
                 }
                 return new LocalizedResource( new Pair<>(referenceTextField.getText(), valueTextField.getText()), affectedLocale);
             }
@@ -173,13 +173,13 @@ public class DialogsHelper {
         }
     }
 
-    private static ChoiceBox<String> createLocaleChoiceBox(DbResourceDto.Locale currentLocale) {
+    private static ChoiceBox<String> createLocaleChoiceBox(Locale currentLocale) {
         ObservableList<String> localeItems = FXCollections.observableArrayList();
 
         int localeIndex = 0 ;
         int currentLocaleIndex = 0;
         localeItems.add(DisplayConstants.LABEL_ITEM_LOCALE_ALL);
-        for (DbResourceDto.Locale locale : asList(DbResourceDto.Locale.values())) {
+        for (Locale locale : asList(Locale.values())) {
             if (locale == currentLocale) {
                 localeItems.add(String.format(DisplayConstants.LABEL_ITEM_LOCALE_CURRENT, locale.getCode()));
                 currentLocaleIndex = localeIndex;

@@ -283,7 +283,7 @@ public class DatabaseGenHelperTest {
         // THEN
         assertThat(actualItem).isNotNull();
 
-        verify(changeHelperMock, never()).addResourceValueWithReference(eq(BRANDS), any(DbResourceDto.Locale.class), anyString(), eq("??"));
+        verify(changeHelperMock, never()).addResourceValueWithReference(eq(BRANDS), any(fr.tduf.libunlimited.common.game.domain.Locale.class), anyString(), eq("??"));
     }
 
     @Test

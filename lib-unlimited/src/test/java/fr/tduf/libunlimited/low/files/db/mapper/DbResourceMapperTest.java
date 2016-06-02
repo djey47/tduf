@@ -13,8 +13,8 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.ITALY;
+import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
+import static fr.tduf.libunlimited.common.game.domain.Locale.ITALY;
 import static java.util.Arrays.asList;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 

@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -39,11 +40,11 @@ public class DatabaseParser {
     private static final Pattern RES_ENTRY_PATTERN = compile("^\\{(.*(\\n?.*)*)\\} (\\d+)$");           //e.g {??} 53410835
 
     private final List<String> contentLines;
-    private final Map<DbResourceDto.Locale, List<String>> resources;
+    private final Map<fr.tduf.libunlimited.common.game.domain.Locale, List<String>> resources;
 
     private final List<IntegrityError> integrityErrors = new ArrayList<>();
 
-    private DatabaseParser(List<String> contentlines, Map<DbResourceDto.Locale, List<String>> resources) {
+    private DatabaseParser(List<String> contentlines, Map<Locale, List<String>> resources) {
         this.contentLines = contentlines;
         this.resources = resources;
     }
@@ -55,7 +56,7 @@ public class DatabaseParser {
      * @param resources    list of contentLines from per-language resource files
      * @return a {@link DatabaseParser} instance.
      */
-    public static DatabaseParser load(List<String> contentLines, Map<DbResourceDto.Locale, List<String>> resources) {
+    public static DatabaseParser load(List<String> contentLines, Map<Locale, List<String>> resources) {
         checkPrerequisites(contentLines, resources);
 
         return new DatabaseParser(contentLines, resources);
@@ -80,7 +81,7 @@ public class DatabaseParser {
                 .build();
     }
 
-    private static void checkPrerequisites(List<String> contentLines, Map<DbResourceDto.Locale, List<String>> resources) {
+    private static void checkPrerequisites(List<String> contentLines, Map<Locale, List<String>> resources) {
         requireNonNull(contentLines, "Contents are required");
         requireNonNull(resources, "Resources are required");
     }
@@ -90,7 +91,7 @@ public class DatabaseParser {
         AtomicInteger categoryCount = new AtomicInteger();
         AtomicReference<String> version = new AtomicReference<>();
 
-        DbResourceDto.Locale.valuesAsStream()
+        Locale.valuesAsStream()
 
                 .filter(resources::containsKey)
 
@@ -111,7 +112,7 @@ public class DatabaseParser {
                 .build();
     }
 
-    private void parseResourcesEnhancedForLocale(DbResourceDto.Locale locale, Set<DbResourceDto.Entry> entries, AtomicInteger categoryCount, AtomicReference<String> version) {
+    private void parseResourcesEnhancedForLocale(Locale locale, Set<DbResourceDto.Entry> entries, AtomicInteger categoryCount, AtomicReference<String> version) {
         requireNonNull(entries, "A set of entries (even empty) is required.");
 
         for (String line : resources.get(locale)) {
@@ -326,7 +327,7 @@ public class DatabaseParser {
 
                 .forEach((entry) -> {
 
-                    if (entry.getItemCount() != DbResourceDto.Locale.values().length) {
+                    if (entry.getItemCount() != Locale.values().length) {
                         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
                         info.put(SOURCE_TOPIC, topic);
                         info.put(REFERENCE, entry.getReference());

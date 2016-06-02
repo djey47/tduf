@@ -1,16 +1,16 @@
 package fr.tduf.libunlimited.high.files.db.patcher.dto.comparator;
 
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import org.junit.Test;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.TUTORIALS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.*;
+import static fr.tduf.libunlimited.common.game.domain.Locale.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -382,7 +382,7 @@ public class DbChangeDtoRenderComparatorTest {
         assertThat(compareResult).isPositive();
     }
 
-    private static DbPatchDto.DbChangeDto createChangeObjectForCarPhysicsWithRefForLocale(DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, String ref, DbResourceDto.Locale locale) {
+    private static DbPatchDto.DbChangeDto createChangeObjectForCarPhysicsWithRefForLocale(DbPatchDto.DbChangeDto.ChangeTypeEnum changeType, String ref, Locale locale) {
         return DbPatchDto.DbChangeDto.builder()
                 .forTopic(CAR_PHYSICS_DATA)
                 .withType(changeType)

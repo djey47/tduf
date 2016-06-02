@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -155,7 +156,7 @@ public class DatabaseWriter {
         DbResourceDto dbResourceDto = databaseDto.getResource();
 
         String topicLabel = databaseDto.getTopic().getLabel();
-        DbResourceDto.Locale.valuesAsStream()
+        Locale.valuesAsStream()
 
                 .forEach((locale) -> {
 
@@ -173,7 +174,7 @@ public class DatabaseWriter {
         requireNonNull(dbDto.getData(), "Database contents are required");
     }
 
-    private static String writeResourcesForLocale(DbResourceDto.Locale locale, String topicLabel, DbResourceDto resourceObject, String directoryPath) {
+    private static String writeResourcesForLocale(Locale locale, String topicLabel, DbResourceDto resourceObject, String directoryPath) {
         String localeCode = locale.getCode();
         String resourceFileName = format("%s.%s", topicLabel, localeCode);
         File resourceFile = new File(directoryPath, resourceFileName);
@@ -207,7 +208,7 @@ public class DatabaseWriter {
         return text.length() + 2;
     }
 
-    private static void writeResourceLines(DbResourceDto.Locale locale, DbResourceDto resourceObject, BufferedWriter bufferedWriter) {
+    private static void writeResourceLines(Locale locale, DbResourceDto resourceObject, BufferedWriter bufferedWriter) {
         resourceObject.getEntries().stream()
 
                 .forEach((entry) -> entry.getItemForLocale(locale)

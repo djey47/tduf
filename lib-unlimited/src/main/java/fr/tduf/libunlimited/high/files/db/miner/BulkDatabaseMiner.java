@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.miner;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -246,7 +247,7 @@ public class BulkDatabaseMiner {
     /**
      * @return localized value if it exists, empty otherwise
      */
-    public Optional<String> getLocalizedResourceValueFromTopicAndReference(String reference, DbDto.Topic topic, DbResourceDto.Locale locale) {
+    public Optional<String> getLocalizedResourceValueFromTopicAndReference(String reference, DbDto.Topic topic, fr.tduf.libunlimited.common.game.domain.Locale locale) {
         return getResourceEntryFromTopicAndReference(topic, reference)
 
                 .flatMap(entry -> entry.getItemForLocale(locale))
@@ -261,7 +262,7 @@ public class BulkDatabaseMiner {
      * @param locale           : language to be used when resolving resource
      * @return resource value targeted by specified entry field if it exists, empty otherwise
      */
-    public Optional<String> getLocalizedResourceValueFromContentEntry(long sourceEntryIndex, int sourceFieldRank, DbDto.Topic sourceTopic, DbResourceDto.Locale locale) {
+    public Optional<String> getLocalizedResourceValueFromContentEntry(long sourceEntryIndex, int sourceFieldRank, DbDto.Topic sourceTopic, Locale locale) {
         List<DbStructureDto.Field> sourceTopicStructureFields = getDatabaseTopic(sourceTopic).get().getStructure().getFields();
         return getContentEntryFromTopicWithInternalIdentifier(sourceEntryIndex, sourceTopic)
 

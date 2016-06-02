@@ -2,19 +2,19 @@ package fr.tduf.gui.installer.common.helper;
 
 import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.domain.Resource;
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 
 import java.util.Optional;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
+import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static java.util.Objects.requireNonNull;
 
 abstract class CommonHelper {
 
-    private static final DbResourceDto.Locale DEFAULT_LOCALE = UNITED_STATES;
+    private static final Locale DEFAULT_LOCALE = UNITED_STATES;
 
     protected final BulkDatabaseMiner miner;
 

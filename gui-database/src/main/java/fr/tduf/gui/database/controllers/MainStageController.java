@@ -29,13 +29,13 @@ import fr.tduf.gui.database.stages.EntriesDesigner;
 import fr.tduf.gui.database.stages.FieldsBrowserDesigner;
 import fr.tduf.gui.database.stages.ResourcesDesigner;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.application.Platform;
@@ -92,7 +92,7 @@ public class MainStageController extends AbstractGuiController {
     private FieldsBrowserStageController fieldsBrowserStageController;
 
     Property<DbDto.Topic> currentTopicProperty;
-    Property<DbResourceDto.Locale> currentLocaleProperty;
+    Property<fr.tduf.libunlimited.common.game.domain.Locale> currentLocaleProperty;
     Property<Long> currentEntryIndexProperty;
     SimpleStringProperty currentEntryLabelProperty;
     Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
@@ -122,7 +122,7 @@ public class MainStageController extends AbstractGuiController {
     private Label currentEntryLabel;
 
     @FXML
-    ChoiceBox<DbResourceDto.Locale> localesChoiceBox;
+    ChoiceBox<Locale> localesChoiceBox;
 
     @FXML
     ChoiceBox<String> profilesChoiceBox;
@@ -550,7 +550,7 @@ public class MainStageController extends AbstractGuiController {
         applyProfile(newProfileName);
     }
 
-    private void handleLocaleChoiceChanged(DbResourceDto.Locale newLocale) {
+    private void handleLocaleChoiceChanged(Locale newLocale) {
         Log.trace(THIS_CLASS_NAME, "->handleLocaleChoiceChanged: " + newLocale.name());
 
         if (databaseObjects.isEmpty()) {

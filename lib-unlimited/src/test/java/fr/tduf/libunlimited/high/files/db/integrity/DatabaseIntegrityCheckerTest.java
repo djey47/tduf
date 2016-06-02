@@ -18,7 +18,7 @@ import java.util.Set;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.PER_VALUE_COUNT;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.CHINA;
+import static fr.tduf.libunlimited.common.game.domain.Locale.CHINA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;

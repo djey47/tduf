@@ -206,7 +206,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
     }
 
     private static void checkForMissingLocalizedValues(DbResourceDto.Entry resourceEntry, DbDto.Topic sourceTopic, DbDto.Topic remoteTopic, Set<IntegrityError> integrityErrors) {
-        final Set<DbResourceDto.Locale> missingLocales = resourceEntry.getMissingLocales();
+        final Set<fr.tduf.libunlimited.common.game.domain.Locale> missingLocales = resourceEntry.getMissingLocales();
         if (missingLocales.isEmpty()) {
             return;
         }

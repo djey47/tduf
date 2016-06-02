@@ -1,8 +1,8 @@
 package fr.tduf.gui.database.domain;
 
 import com.google.common.base.MoreObjects;
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import javafx.util.Pair;
 
 import java.util.Optional;
@@ -14,11 +14,11 @@ public class LocalizedResource {
 
     private Pair<String, String> referenceValuePair;
 
-    private Optional<DbResourceDto.Locale> locale;
+    private Optional<Locale> locale;
 
     private Optional<DbDto.Topic> topic;
 
-    public LocalizedResource(Pair<String, String> referenceValuePair, Optional<DbResourceDto.Locale> locale) {
+    public LocalizedResource(Pair<String, String> referenceValuePair, Optional<Locale> locale) {
         this.referenceValuePair = referenceValuePair;
         this.locale = locale;
     }
@@ -45,7 +45,7 @@ public class LocalizedResource {
         return referenceValuePair.getKey();
     }
 
-    public Optional<DbResourceDto.Locale> getLocale() {
+    public Optional<Locale> getLocale() {
         return locale;
     }
 

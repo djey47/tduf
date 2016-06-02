@@ -9,10 +9,10 @@ import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.beans.property.SimpleObjectProperty;
@@ -22,7 +22,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.io.IOException;
 import java.util.*;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
+import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -80,7 +80,7 @@ class MainStageViewDataController {
     }
 
     void fillLocales() {
-        DbResourceDto.Locale.valuesAsStream()
+        fr.tduf.libunlimited.common.game.domain.Locale.valuesAsStream()
                 .forEach(locale -> mainStageController.localesChoiceBox.getItems().add(locale));
 
         mainStageController.currentLocaleProperty = new SimpleObjectProperty<>(UNITED_STATES);
@@ -297,7 +297,7 @@ class MainStageViewDataController {
     }
 
     private void updateResourceProperties(DbDataDto.Item resourceItem, DbStructureDto.Field structureField) {
-        DbResourceDto.Locale locale = mainStageController.currentLocaleProperty.getValue();
+        Locale locale = mainStageController.currentLocaleProperty.getValue();
         DbDto.Topic resourceTopic = mainStageController.getCurrentTopicObject().getTopic();
         if (structureField.getTargetRef() != null) {
             resourceTopic = getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();

@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
@@ -113,15 +114,15 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         Set<String> localizedResourceRefs = new HashSet<>();
         identifyGlobalizedAndLocalizedResourceReferences(resources, resourceFromTopic, globalizedResourceRefs, localizedResourceRefs);
 
-        Stream<DbPatchDto.DbChangeDto> changesObjectsForGlobalizedResources = makeChangesObjectsForResourcesWithLocale(topic, Optional.<DbResourceDto.Locale>empty(), globalizedResourceRefs);
-        Stream<DbPatchDto.DbChangeDto> changesObjectsForLocalizedResources = DbResourceDto.Locale.valuesAsStream()
+        Stream<DbPatchDto.DbChangeDto> changesObjectsForGlobalizedResources = makeChangesObjectsForResourcesWithLocale(topic, Optional.<fr.tduf.libunlimited.common.game.domain.Locale>empty(), globalizedResourceRefs);
+        Stream<DbPatchDto.DbChangeDto> changesObjectsForLocalizedResources = Locale.valuesAsStream()
 
                 .flatMap((locale) -> makeChangesObjectsForResourcesWithLocale(topic, Optional.of(locale), localizedResourceRefs));
 
         return Stream.concat(changesObjectsForGlobalizedResources, changesObjectsForLocalizedResources);
     }
 
-    private Stream<DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesWithLocale(DbDto.Topic topic, Optional<DbResourceDto.Locale> potentialLocale, Set<String> topicResources) {
+    private Stream<DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesWithLocale(DbDto.Topic topic, Optional<Locale> potentialLocale, Set<String> topicResources) {
         return topicResources.stream()
 
                 .map((resourceRef) -> makeChangeObjectForResource(topic, potentialLocale, resourceRef));
@@ -137,8 +138,8 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         return potentialTopicObject.get();
     }
 
-    private DbPatchDto.DbChangeDto makeChangeObjectForResource(DbDto.Topic topic, Optional<DbResourceDto.Locale> potentialLocale, String resourceRef) {
-        String resourceValue = databaseMiner.getLocalizedResourceValueFromTopicAndReference(resourceRef, topic, potentialLocale.orElse(DbResourceDto.Locale.FRANCE))
+    private DbPatchDto.DbChangeDto makeChangeObjectForResource(DbDto.Topic topic, Optional<Locale> potentialLocale, String resourceRef) {
+        String resourceValue = databaseMiner.getLocalizedResourceValueFromTopicAndReference(resourceRef, topic, potentialLocale.orElse(Locale.FRANCE))
                 .orElse(DatabaseGenHelper.RESOURCE_VALUE_DEFAULT);
 
         return DbPatchDto.DbChangeDto.builder()

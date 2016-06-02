@@ -7,7 +7,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.hash;
@@ -30,8 +29,7 @@ public class DbResourceDto {
     @JsonProperty("entries")
     private LinkedHashSet<Entry> entries;
 
-    private DbResourceDto() {
-    }
+    private DbResourceDto() {}
 
     public static DbResourceDto.DbResourceEnhancedDtoBuilder builder() {
         return new DbResourceDto.DbResourceEnhancedDtoBuilder();
@@ -123,52 +121,6 @@ public class DbResourceDto {
         }
     }
 
-    /**
-     * All culture variants for game files
-     */
-    // TODO move to common package
-    public enum Locale {
-        FRANCE("fr"),
-        GERMANY("ge"),
-        UNITED_STATES("us"),
-        KOREA("ko"),
-        CHINA("ch"),
-        JAPAN("ja"),
-        ITALY("it"),
-        SPAIN("sp");
-
-        private final String code;
-
-        Locale(String code) {
-            this.code = code;
-        }
-
-        /**
-         * Retrieves a locale value from its code.
-         */
-        public static Locale fromCode(String code) {
-            for (Locale locale : values()) {
-                if (locale.code.equals(code)) {
-                    return locale;
-                }
-            }
-            throw new IllegalArgumentException("Unknown Locale code: " + code);
-        }
-
-        public String getCode() {
-            return code;
-        }
-
-        public static Stream<Locale> valuesAsStream() {
-            return Stream.of(values());
-        }
-
-        @Override
-        public String toString() {
-            return super.toString();
-        }
-    }
-
     @JsonTypeName("dbResourceEnhancedEntry")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class Entry implements Serializable {
@@ -188,7 +140,7 @@ public class DbResourceDto {
         /**
          * @return available item for specified locale, empty otherwise.
          */
-        public Optional<Item> getItemForLocale(Locale locale) {
+        public Optional<Item> getItemForLocale(fr.tduf.libunlimited.common.game.domain.Locale locale) {
             return items.stream()
 
                     .filter((item) -> item.locale == locale)
@@ -208,7 +160,7 @@ public class DbResourceDto {
         /**
          * @return available value for specified locale, empty otherwise.
          */
-        public Optional<String> getValueForLocale(Locale locale) {
+        public Optional<String> getValueForLocale(fr.tduf.libunlimited.common.game.domain.Locale locale) {
             return getItemForLocale(locale)
                     .map((item) -> item.value);
         }
@@ -218,7 +170,7 @@ public class DbResourceDto {
          * @return current entry
          */
         public Entry setValue(String value) {
-            Locale.valuesAsStream()
+            fr.tduf.libunlimited.common.game.domain.Locale.valuesAsStream()
                     .forEach((locale) -> setValueForLocale(value, locale));
 
             return this;
@@ -228,7 +180,7 @@ public class DbResourceDto {
          * defines given value for specified locale
          * @return current entry
          */
-        public Entry setValueForLocale(String value, Locale locale) {
+        public Entry setValueForLocale(String value, fr.tduf.libunlimited.common.game.domain.Locale locale) {
             Optional<Item> potentialItem = getItemForLocale(locale);
 
             if (potentialItem.isPresent()) {
@@ -251,7 +203,7 @@ public class DbResourceDto {
          * does nothing if value does not exist for given locale
          * @return current entry
          */
-        public Entry removeValueForLocale(Locale locale) {
+        public Entry removeValueForLocale(fr.tduf.libunlimited.common.game.domain.Locale locale) {
             items.removeIf((item) -> item.locale == locale);
 
             return this;
@@ -263,7 +215,7 @@ public class DbResourceDto {
         }
 
         @JsonIgnore
-        public Set<Locale> getPresentLocales() {
+        public Set<fr.tduf.libunlimited.common.game.domain.Locale> getPresentLocales() {
             return items.stream()
 
                     .map((item) -> item.locale)
@@ -272,8 +224,8 @@ public class DbResourceDto {
         }
 
         @JsonIgnore
-        public Set<Locale> getMissingLocales() {
-            Set<DbResourceDto.Locale> missingLocales = new HashSet<>(asList(DbResourceDto.Locale.values()));
+        public Set<fr.tduf.libunlimited.common.game.domain.Locale> getMissingLocales() {
+            Set<fr.tduf.libunlimited.common.game.domain.Locale> missingLocales = new HashSet<>(asList(fr.tduf.libunlimited.common.game.domain.Locale.values()));
             missingLocales.removeAll(getPresentLocales());
             return missingLocales;
         }
@@ -329,13 +281,12 @@ public class DbResourceDto {
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class Item implements Serializable {
         @JsonProperty("locale")
-        private Locale locale;
+        private fr.tduf.libunlimited.common.game.domain.Locale locale;
 
         @JsonProperty("value")
         private String value;
 
-        private Item() {
-        }
+        private Item() {}
 
         public static ItemBuilder builder() {
             return new ItemBuilder();
@@ -362,10 +313,10 @@ public class DbResourceDto {
         }
 
         public static class ItemBuilder {
-            private Locale locale;
+            private fr.tduf.libunlimited.common.game.domain.Locale locale;
             private String value;
 
-            public ItemBuilder withLocale(Locale locale) {
+            public ItemBuilder withLocale(fr.tduf.libunlimited.common.game.domain.Locale locale) {
                 this.locale = locale;
                 return this;
             }

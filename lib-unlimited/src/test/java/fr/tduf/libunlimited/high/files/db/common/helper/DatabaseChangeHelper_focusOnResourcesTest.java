@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.common.helper;
 
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
@@ -14,7 +15,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.FRANCE;
+import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
@@ -31,7 +32,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     private static final String RESOURCE_REFERENCE = "000000";
     private static final String RESOURCE_VALUE = "TEST";
     private static final DbDto.Topic TOPIC = CAR_PHYSICS_DATA;
-    private static final DbResourceDto.Locale LOCALE = DbResourceDto.Locale.CHINA;
+    private static final Locale LOCALE = Locale.CHINA;
 
     @Mock
     DatabaseGenHelper genHelperMock;
@@ -238,7 +239,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
 
 
         // WHEN
-        changeHelper.removeResourceValuesWithReference(TOPIC, RESOURCE_REFERENCE, DbResourceDto.Locale.valuesAsStream().collect(toList()));
+        changeHelper.removeResourceValuesWithReference(TOPIC, RESOURCE_REFERENCE, Locale.valuesAsStream().collect(toList()));
 
 
         // THEN

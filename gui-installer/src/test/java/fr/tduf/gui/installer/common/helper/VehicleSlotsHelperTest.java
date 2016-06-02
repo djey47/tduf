@@ -22,7 +22,7 @@ import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileTyp
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.SlotKind.ALL;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.VehicleKind.DRIVABLE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.UNITED_STATES;
+import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;

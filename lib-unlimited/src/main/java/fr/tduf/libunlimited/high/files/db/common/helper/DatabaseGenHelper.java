@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.common.helper;
 
 import com.google.common.annotations.VisibleForTesting;
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.*;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
@@ -179,7 +180,7 @@ public class DatabaseGenHelper {
                     String newResourceReference = generateUniqueResourceEntryIdentifier(topicObject);
                     final DbResourceDto.Entry newEntry = topicObject.getResource().addEntryByReference(newResourceReference);
 
-                    DbResourceDto.Locale.valuesAsStream().forEach((locale) -> newEntry.setValueForLocale(RESOURCE_VALUE_DEFAULT, locale));
+                    Locale.valuesAsStream().forEach((locale) -> newEntry.setValueForLocale(RESOURCE_VALUE_DEFAULT, locale));
 
                     return newResourceReference;
                 });

@@ -1,9 +1,9 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseWriter;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -55,7 +55,7 @@ public class DatabaseReadWriteHelper {
         if(contentLines.isEmpty()) {
             return Optional.empty();
         }
-        Map<DbResourceDto.Locale, List<String>> resourcesLines = parseTopicResourcesFromDirectoryAndCheck(topic, databaseDirectory, integrityErrors);
+        Map<fr.tduf.libunlimited.common.game.domain.Locale, List<String>> resourcesLines = parseTopicResourcesFromDirectoryAndCheck(topic, databaseDirectory, integrityErrors);
 
         DatabaseParser databaseParser = DatabaseParser.load(contentLines, resourcesLines);
         DbDto dbDto = databaseParser.parseAll();
@@ -176,9 +176,9 @@ public class DatabaseReadWriteHelper {
         return parseLinesInFile(contentsFileName, ENCODING_UTF_8);
     }
 
-    static Map<DbResourceDto.Locale, List<String>> parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic topic, String databaseDirectory, Set<IntegrityError> integrityErrors) throws FileNotFoundException {
+    static Map<Locale, List<String>> parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic topic, String databaseDirectory, Set<IntegrityError> integrityErrors) throws FileNotFoundException {
 
-        Map<DbResourceDto.Locale, List<String>> resourcesLinesByLocale = readLinesFromResourceFiles(databaseDirectory, topic);
+        Map<Locale, List<String>> resourcesLinesByLocale = readLinesFromResourceFiles(databaseDirectory, topic);
 
         checkResourcesLines(resourcesLinesByLocale, topic, integrityErrors);
 
@@ -190,9 +190,9 @@ public class DatabaseReadWriteHelper {
         return new File(jsonFileName);
     }
 
-    private static Map<DbResourceDto.Locale, List<String>> readLinesFromResourceFiles(String databaseDirectory, DbDto.Topic topic) throws FileNotFoundException {
-        Map<DbResourceDto.Locale, List<String>> resourcesLinesByLocale = new ConcurrentHashMap<>();
-        DbResourceDto.Locale.valuesAsStream()
+    private static Map<Locale, List<String>> readLinesFromResourceFiles(String databaseDirectory, DbDto.Topic topic) throws FileNotFoundException {
+        Map<Locale, List<String>> resourcesLinesByLocale = new ConcurrentHashMap<>();
+        Locale.valuesAsStream()
                 .forEach((currentLocale) -> {
                     String resourceFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, currentLocale.getCode());
 
@@ -209,7 +209,7 @@ public class DatabaseReadWriteHelper {
         return resourcesLinesByLocale;
     }
 
-    private static void checkResourcesLines(Map<DbResourceDto.Locale, List<String>> resourcesLinesByLocale, DbDto.Topic topic, Set<IntegrityError> integrityErrors) {
+    private static void checkResourcesLines(Map<Locale, List<String>> resourcesLinesByLocale, DbDto.Topic topic, Set<IntegrityError> integrityErrors) {
         requireNonNull(integrityErrors, "A list of integrity errors (even empty) is required.");
 
         integrityErrors.addAll(resourcesLinesByLocale.entrySet().stream()
@@ -217,7 +217,7 @@ public class DatabaseReadWriteHelper {
                 .filter((entry) -> entry.getValue().isEmpty())
 
                 .map((entry) -> {
-                    DbResourceDto.Locale locale = entry.getKey();
+                    Locale locale = entry.getKey();
                     Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
                     info.put(SOURCE_TOPIC, topic);
                     info.put(FILE, String.format("%s.%s", topic.getLabel(), locale.getCode()));

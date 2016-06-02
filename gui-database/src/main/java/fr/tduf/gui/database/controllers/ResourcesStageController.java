@@ -8,9 +8,9 @@ import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.gui.database.domain.javafx.ResourceEntryDataItem;
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -53,7 +53,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
     private int fieldRank;
 
-    private DbResourceDto.Locale currentLocale;
+    private Locale currentLocale;
 
     @Override
     public void init() {
@@ -148,7 +148,7 @@ public class ResourcesStageController extends AbstractGuiController {
         selectResourceInTableAndScroll(newResource.getReference());
     }
 
-    void initAndShowDialog(SimpleStringProperty referenceProperty, int entryFieldRank, DbResourceDto.Locale locale, DbDto.Topic targetTopic) {
+    void initAndShowDialog(SimpleStringProperty referenceProperty, int entryFieldRank, Locale locale, DbDto.Topic targetTopic) {
         resourceReferenceProperty = referenceProperty;
         fieldRank = entryFieldRank;
         currentLocale = locale;
@@ -172,7 +172,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
         for (int columnIndex = 1; columnIndex < resourcesTableView.getColumns().size(); columnIndex++) {
             TableColumn<ResourceEntryDataItem, ?> valueColumn = resourcesTableView.getColumns().get(columnIndex);
-            DbResourceDto.Locale locale = DbResourceDto.Locale.values()[columnIndex - 1];
+            Locale locale = Locale.values()[columnIndex - 1];
             valueColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().valuePropertyForLocale(locale));
         }
 
@@ -206,7 +206,7 @@ public class ResourcesStageController extends AbstractGuiController {
         closeWindow();
     }
 
-    private void removeResourceAndUpdateMainStage(DbDto.Topic topic, ResourceEntryDataItem selectedResource, DbResourceDto.Locale locale, boolean forAllLocales, int selectedRowIndex) {
+    private void removeResourceAndUpdateMainStage(DbDto.Topic topic, ResourceEntryDataItem selectedResource, Locale locale, boolean forAllLocales, int selectedRowIndex) {
         mainStageController.getChangeDataController().removeResourceWithReference(topic, locale, selectedResource.referenceProperty().getValue(), forAllLocales);
 
         updateAllStages(Optional.<String>empty());
@@ -220,11 +220,11 @@ public class ResourcesStageController extends AbstractGuiController {
                             boolean updateResourceMode = currentResourceReference.isPresent();
                             String newResourceReference = newLocalizedResource.getReferenceValuePair().getKey();
                             String newResourceValue = newLocalizedResource.getReferenceValuePair().getValue();
-                            Optional<DbResourceDto.Locale> potentialAffectedLocale = newLocalizedResource.getLocale();
+                            Optional<Locale> potentialAffectedLocale = newLocalizedResource.getLocale();
 
                             try {
                                 if (potentialAffectedLocale.isPresent()) {
-                                    DbResourceDto.Locale affectedLocale = potentialAffectedLocale.get();
+                                    Locale affectedLocale = potentialAffectedLocale.get();
                                     editResourceForLocale(topic, affectedLocale, currentResourceReference, newResourceReference, newResourceValue, updateResourceMode);
                                 } else {
                                     editResourceForAllLocales(topic, currentResourceReference, newResourceReference, newResourceValue, updateResourceMode);
@@ -239,7 +239,7 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     private void editResourceForAllLocales(DbDto.Topic topic, Optional<String> currentResourceReference, String newResourceReference, String newResourceValue, boolean updateResourceMode) {
-        DbResourceDto.Locale.valuesAsStream()
+        Locale.valuesAsStream()
 
                 .forEach((affectedLocale) -> {
                     if (updateResourceMode) {
@@ -250,7 +250,7 @@ public class ResourcesStageController extends AbstractGuiController {
                 });
     }
 
-    private void editResourceForLocale(DbDto.Topic topic, DbResourceDto.Locale affectedLocale, Optional<String> currentResourceReference, String newResourceReference, String newResourceValue, boolean updateResourceMode) {
+    private void editResourceForLocale(DbDto.Topic topic, Locale affectedLocale, Optional<String> currentResourceReference, String newResourceReference, String newResourceValue, boolean updateResourceMode) {
         if (updateResourceMode) {
             mainStageController.getChangeDataController().updateResourceWithReference(topic, affectedLocale, currentResourceReference.get(), newResourceReference, newResourceValue);
         } else {
@@ -279,7 +279,7 @@ public class ResourcesStageController extends AbstractGuiController {
                             String resourceRef = entry.getReference();
                             tableResource.setReference(resourceRef);
 
-                            DbResourceDto.Locale.valuesAsStream()
+                            Locale.valuesAsStream()
 
                                     .forEach((locale) -> {
 

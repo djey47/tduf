@@ -6,7 +6,7 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.*;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale;
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +20,7 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoE
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.AFTER_MARKET_PACKS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbResourceDto.Locale.*;
+import static fr.tduf.libunlimited.common.game.domain.Locale.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;

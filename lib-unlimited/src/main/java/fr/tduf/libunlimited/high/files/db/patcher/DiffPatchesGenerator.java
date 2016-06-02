@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -194,7 +195,7 @@ public class DiffPatchesGenerator {
     }
 
     private Stream<? extends DbPatchDto.DbChangeDto> createLocalizedResourceUpdates(DbDto.Topic currentTopic, DbResourceDto.Entry resourceEntry) {
-        return DbResourceDto.Locale.valuesAsStream()
+        return Locale.valuesAsStream()
                 .map((locale) -> DbPatchDto.DbChangeDto.builder()
                         .withType(UPDATE_RES)
                         .enableStrictMode(true)

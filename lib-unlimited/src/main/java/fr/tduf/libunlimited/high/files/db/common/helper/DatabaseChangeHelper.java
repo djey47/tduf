@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.common.helper;
 
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
@@ -44,7 +45,7 @@ public class DatabaseChangeHelper {
      * @param resourceValue     : value of new resurce
      * @throws IllegalArgumentException when a resource entry with same reference already exists for topic and locale.
      */
-    public void addResourceValueWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference, String resourceValue) {
+    public void addResourceValueWithReference(DbDto.Topic topic, Locale locale, String resourceReference, String resourceValue) {
         checkResourceValueDoesNotExistWithReference(topic, locale, resourceReference);
 
         final DbResourceDto resourceEnhancedFromTopic = databaseMiner.getResourceEnhancedFromTopic(topic).get();
@@ -104,7 +105,7 @@ public class DatabaseChangeHelper {
      * @param newResourceValue     : new value of resource
      * @throws IllegalArgumentException when source entry does not exist or target reference belongs to an already existing entry.
      */
-    public void updateResourceItemWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
+    public void updateResourceItemWithReference(DbDto.Topic topic, Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
         DbResourceDto.Entry existingEntry = checkResourceEntryExistsWithReference(topic, oldResourceReference);
 
         if (!oldResourceReference.equals(newResourceReference)) {
@@ -229,7 +230,7 @@ public class DatabaseChangeHelper {
      * @param affectedLocales   : list of locales to be affected by deletion
      * @throws java.util.NoSuchElementException when such a resource entry does not exist in any of affected locales.
      */
-    public void removeResourceValuesWithReference(DbDto.Topic topic, String resourceReference, List<DbResourceDto.Locale> affectedLocales) {
+    public void removeResourceValuesWithReference(DbDto.Topic topic, String resourceReference, List<Locale> affectedLocales) {
         databaseMiner.getResourceEntryFromTopicAndReference(topic, resourceReference)
                 .ifPresent(entry -> {
                     affectedLocales.forEach(entry::removeValueForLocale);
@@ -267,7 +268,7 @@ public class DatabaseChangeHelper {
                 .ifPresent(ref -> entryItems.get(1).setRawValue(ref));
     }
 
-    private void checkResourceValueDoesNotExistWithReference(DbDto.Topic topic, DbResourceDto.Locale locale, String resourceReference) {
+    private void checkResourceValueDoesNotExistWithReference(DbDto.Topic topic, Locale locale, String resourceReference) {
         databaseMiner.getLocalizedResourceValueFromTopicAndReference(resourceReference, topic, locale)
                 .ifPresent((value) -> {
                     throw new IllegalArgumentException("Resource value already exists with reference: " + resourceReference + ", for locale: " + locale);

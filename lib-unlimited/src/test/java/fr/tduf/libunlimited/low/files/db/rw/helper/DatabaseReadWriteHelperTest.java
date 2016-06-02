@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 
 import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.*;
 import org.assertj.core.api.Condition;
@@ -174,7 +175,7 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        Map<DbResourceDto.Locale, List<String>> allResources = DatabaseReadWriteHelper.parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
+        Map<fr.tduf.libunlimited.common.game.domain.Locale, List<String>> allResources = DatabaseReadWriteHelper.parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
 
 
         // THEN
@@ -184,8 +185,8 @@ public class DatabaseReadWriteHelperTest {
         assertThat(allResources).hasSize(8);
 
         Condition<List<? extends String>> lineCountEqualTo253 = new Condition<>( (list) -> list.size() == 253, "253 lines" );
-        assertThat(allResources.get(DbResourceDto.Locale.FRANCE)).has(lineCountEqualTo253);
-        assertThat(allResources.get(DbResourceDto.Locale.ITALY)).has(lineCountEqualTo253);
+        assertThat(allResources.get(Locale.FRANCE)).has(lineCountEqualTo253);
+        assertThat(allResources.get(Locale.ITALY)).has(lineCountEqualTo253);
     }
 
     @Test

@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
@@ -239,7 +240,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         final DbDto.Topic topic = changeObject.getTopic();
         databaseMiner.getResourceEntryFromTopicAndReference(topic, ref)
                 .ifPresent((entry) -> {
-                    Optional<DbResourceDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
+                    Optional<Locale> potentialLocale = ofNullable(changeObject.getLocale());
 
                     if (potentialLocale.isPresent()) {
 
@@ -265,14 +266,14 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         DbResourceDto.Entry resourceEntry = potentialResourceEntry
                 .orElseGet(() -> databaseMiner.getResourceEnhancedFromTopic(topic).get().addEntryByReference(ref));
         String value = changeObject.getValue();
-        Optional<DbResourceDto.Locale> potentialLocale = ofNullable(changeObject.getLocale());
+        Optional<Locale> potentialLocale = ofNullable(changeObject.getLocale());
         if (potentialLocale.isPresent()) {
 
             resourceEntry.setValueForLocale(value, potentialLocale.get());
 
         } else {
 
-            DbResourceDto.Locale.valuesAsStream()
+            Locale.valuesAsStream()
 
                     .forEach((currentLocale) -> resourceEntry.setValueForLocale(value, currentLocale));
 

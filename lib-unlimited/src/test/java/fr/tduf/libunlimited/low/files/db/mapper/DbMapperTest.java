@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.mapper;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -49,7 +50,7 @@ public class DbMapperTest {
                         .containingEntries(singletonList(DbResourceDto.Entry.builder()
                                 .forReference("REF")
                                 .withItems(singletonList(DbResourceDto.Item.builder()
-                                        .withLocale(DbResourceDto.Locale.FRANCE)
+                                        .withLocale(Locale.FRANCE)
                                         .withValue("VAL")
                                         .build()))
                                 .build()))
