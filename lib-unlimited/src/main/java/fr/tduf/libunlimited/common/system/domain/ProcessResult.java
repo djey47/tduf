@@ -1,9 +1,13 @@
 package fr.tduf.libunlimited.common.system.domain;
 
+import com.esotericsoftware.minlog.Log;
+
 /**
  * Object to be returned after a process exits normally. Bring all details about execution result.
  */
 public class ProcessResult {
+    private static final String THIS_CLASS_NAME = ProcessResult.class.getSimpleName();
+
     private int returnCode = -1;
 
     private String out = "";
@@ -30,7 +34,7 @@ public class ProcessResult {
      * Terminates with a new line.
      */
     public void printOut() {
-        printReturnCode();
+        Log.info(THIS_CLASS_NAME, "Process finished with return code: " + returnCode);
         System.out.println(this.out);
     }
 
@@ -40,10 +44,6 @@ public class ProcessResult {
      */
     public void printErr() {
         System.err.println(this.err);
-    }
-
-    private void printReturnCode() {
-        System.out.println("Process finished with return code: " + returnCode);
     }
 
     public int getReturnCode() {
