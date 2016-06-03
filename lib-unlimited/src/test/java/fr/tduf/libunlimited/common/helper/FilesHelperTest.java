@@ -164,4 +164,30 @@ public class FilesHelperTest {
         DbDto actualObject = new ObjectMapper().readValue(outputFilePath.toFile(), DbDto.class);
         assertThat(actualObject).isEqualTo(sourceObject);
     }
+
+    @Test
+    public void getExtension_whenNoExtension_shouldReturnEmptyString() {
+        // GIVEN-WHEN
+        final String actualExtension = FilesHelper.getExtension("/etc/default/docker");
+
+        // THEN
+        assertThat(actualExtension).isEmpty();
+    }
+
+    @Test
+    public void getExtension_whenExtension_shouldReturnIt() {
+        // GIVEN-WHEN
+        final String actualExtension = FilesHelper.getExtension("/etc/default/docker.conf");
+
+        // THEN
+        assertThat(actualExtension).isEqualTo("conf");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void getExtension_whenNullFileName_shouldThrowException() {
+        // GIVEN-WHEN
+        FilesHelper.getExtension(null);
+
+        // THEN: NPE
+    }
 }

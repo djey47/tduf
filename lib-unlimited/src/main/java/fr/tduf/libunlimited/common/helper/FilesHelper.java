@@ -120,6 +120,18 @@ public class FilesHelper {
         }
     }
 
+    /**
+     * @return Returns the file extension for the given file name, or the empty string if the file has
+     * no extension.  The result does not include the '{@code .}'.
+     */
+    public static String getExtension(String fullName) {
+        requireNonNull(fullName, "Full name is required.");
+
+        String fileName = Paths.get(fullName).getFileName().toString();
+        int dotIndex = fileName.lastIndexOf('.');
+        return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
+    }
+
     /* Only applies to extracted files (test via ide) - not valid if inside a jar. */
     private static URI getUriFromResourcePath(String resourcePath) throws URISyntaxException {
         return thisClass.getResource(resourcePath).toURI();
