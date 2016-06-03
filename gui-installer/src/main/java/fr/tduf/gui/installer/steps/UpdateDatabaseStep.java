@@ -28,6 +28,8 @@ import java.util.stream.Stream;
 
 import static com.google.common.io.Files.getFileExtension;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_COLORS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
 import static java.util.Collections.singletonList;
@@ -122,9 +124,16 @@ class UpdateDatabaseStep extends GenericStep {
                     List<DbPatchDto.DbChangeDto> changes = new ArrayList<>();
                     // Ext
                     changes.add(DbPatchDto.DbChangeDto.builder()
+                            .withType(UPDATE)
+                            .forTopic(CAR_COLORS)
+                            .withEntryValues(new ArrayList<>())
                             .build());
                     // Ext resources
                     changes.add(DbPatchDto.DbChangeDto.builder()
+                            .withType(UPDATE_RES)
+                            .forTopic(CAR_COLORS)
+                            .asReference("")
+                            .withValue("")
                             .build());
                     return changes.stream();
                 })

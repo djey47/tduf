@@ -4,12 +4,15 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.gui.installer.domain.PaintJob;
+import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -22,6 +25,8 @@ import java.nio.file.Paths;
 
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.UPDATE_DATABASE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_COLORS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
 import static java.util.Collections.singletonList;
@@ -114,6 +119,7 @@ public class UpdateDatabaseStepTest {
     }
 
     @Test
+    @Ignore
     public void perform_withPaintJobProperties_shouldAddCarColors_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
         String dealerRef = "0000";
@@ -122,6 +128,10 @@ public class UpdateDatabaseStepTest {
         String calColorId = "3333";
         patchProperties.setExteriorMainColorIdIfNotExists(mainColorId, 1);
         patchProperties.setExteriorSecondaryColorIdIfNotExists(secColorId, 1);
+        databaseContext.getUserSelection().selectVehicleSlot(VehicleSlot.builder()
+                .withRef(SLOT_REFERENCE)
+                .addPaintJob(PaintJob.builder().build())
+                .build());
 
 
         // WHEN
@@ -133,9 +143,9 @@ public class UpdateDatabaseStepTest {
 
         // THEN
         // TODO
-//        DbPatchDto patchObject = databaseContext.getPatchObject();
-//        assertThat(patchObject.getChanges()).extracting("type").containsOnly(UPDATE, UPDATE_RES);
-//        assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_COLORS);
+        DbPatchDto patchObject = databaseContext.getPatchObject();
+        assertThat(patchObject.getChanges()).extracting("type").containsOnly(UPDATE, UPDATE_RES);
+        assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_COLORS);
 //        assertThat(patchObject.getChanges()).extracting("ref").containsOnly(null, SLOT_REFERENCE);
 //        assertThat(patchObject.getChanges()).extracting("values").containsOnly(
 //                null,
