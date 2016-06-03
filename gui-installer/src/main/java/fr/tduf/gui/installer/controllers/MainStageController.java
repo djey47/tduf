@@ -158,6 +158,7 @@ public class MainStageController extends AbstractGuiController {
 
     private void initReadme() throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(InstallerConstants.FILE_README), Charset.defaultCharset());
+        // TODO replace with String.join
         String readmeText = StringUtils.join(lines, System.lineSeparator());
 
         readmeTextArea.setText(readmeText);
