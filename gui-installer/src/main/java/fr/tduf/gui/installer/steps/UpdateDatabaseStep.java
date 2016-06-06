@@ -13,6 +13,7 @@ import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderConstants;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 
 import java.io.FileNotFoundException;
@@ -156,10 +157,10 @@ class UpdateDatabaseStep extends GenericStep {
                             .forTopic(CAR_COLORS)
                             .withEntryValues(asList(
                                     vehicleSlot.getRef(),
-                                    PatchProperties.getPlaceHolderForExteriorMainColor(index),
-                                    PatchProperties.getPlaceHolderForExteriorName(index),
-                                    PatchProperties.getPlaceHolderForExteriorSecondaryColor(index),
-                                    PatchProperties.getPlaceHolderForExteriorCalipersColor(index),
+                                    PlaceholderConstants.getPlaceHolderForExteriorMainColor(index),
+                                    PlaceholderConstants.getPlaceHolderForExteriorName(index),
+                                    PlaceholderConstants.getPlaceHolderForExteriorSecondaryColor(index),
+                                    PlaceholderConstants.getPlaceHolderForExteriorCalipersColor(index),
                                     "0",
                                     "0",
                                     interiorRefs.get(0),
@@ -210,9 +211,9 @@ class UpdateDatabaseStep extends GenericStep {
                                     intRef,
                                     DatabaseConstants.REF_DEFAULT_BRAND,
                                     DatabaseConstants.RESOURCE_REF_NONE_INTERIOR_NAME,
-                                    PatchProperties.getPlaceHolderForInteriorMainColor(index),
-                                    PatchProperties.getPlaceHolderForInteriorSecondaryColor(index),
-                                    PatchProperties.getPlaceHolderForInteriorMaterial(index),
+                                    PlaceholderConstants.getPlaceHolderForInteriorMainColor(index),
+                                    PlaceholderConstants.getPlaceHolderForInteriorSecondaryColor(index),
+                                    PlaceholderConstants.getPlaceHolderForInteriorMaterial(index),
                                     "0"
                             ))
                             .build();
