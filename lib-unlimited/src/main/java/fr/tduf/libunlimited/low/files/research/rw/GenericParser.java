@@ -198,7 +198,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                 ""));
     }
 
-    private void dumpIntegerValue(byte[] readValueAsBytes, Integer length, boolean signedValue, String key) {
+    private void dumpIntegerValue(byte[] readValueAsBytes, int length, boolean signedValue, String key) {
         byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 8 - length, 8);
         dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
                 key,
@@ -210,7 +210,13 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
     }
 
     private void dumpFloatingPointValue(byte[] readValueAsBytes, Integer length,  String key) {
-        dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT, key, "", FPOINT.name(), length, TypeHelper.byteArrayToHexRepresentation(readValueAsBytes), TypeHelper.rawToFloatingPoint(readValueAsBytes)));
+        dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
+                key,
+                "",
+                FPOINT.name(),
+                length,
+                TypeHelper.byteArrayToHexRepresentation(readValueAsBytes),
+                TypeHelper.rawToFloatingPoint(readValueAsBytes)));
     }
 
     private void dumpDelimiterOrTextValue(byte[] readValueAsBytes, Integer length, String key, FileStructureDto.Type type) {
@@ -218,7 +224,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                 key,
                 "",
                 type.name(),
-                length,
+                length == null ? readValueAsBytes.length : length,
                 TypeHelper.byteArrayToHexRepresentation(readValueAsBytes),
                 "\"" + TypeHelper.rawToText(readValueAsBytes, length) + "\""));
     }
@@ -228,7 +234,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                 key,
                 "",
                 UNKNOWN.name(),
-                length,
+                length == null ? readValueAsBytes.length : length,
                 TypeHelper.byteArrayToHexRepresentation(readValueAsBytes),
                 ""));
     }
