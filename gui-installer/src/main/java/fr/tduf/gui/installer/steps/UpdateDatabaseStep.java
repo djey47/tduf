@@ -175,7 +175,7 @@ class UpdateDatabaseStep extends GenericStep {
                 .withEntryValues(asList(
                         vehicleSlot.getRef(),
                         PlaceholderConstants.getPlaceHolderForExteriorMainColor(index),
-                        PlaceholderConstants.getPlaceHolderForExteriorName(index),
+                        PlaceholderConstants.getPlaceHolderForExteriorNameResource(index),
                         PlaceholderConstants.getPlaceHolderForExteriorSecondaryColor(index),
                         PlaceholderConstants.getPlaceHolderForExteriorCalipersColor(index),
                         "0",
