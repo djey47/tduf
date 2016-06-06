@@ -64,7 +64,7 @@ public class UpdateDatabaseStepTest {
     }
 
     @Test
-    public void perform_shouldCreateEffectivePropertiesFile() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
+    public void perform_shouldCreate_effectivePropertiesFile_andEffectivePatchFile() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN-WHEN
         final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
                 GenericStep.starterStep(installerConfiguration, databaseContext)
@@ -73,6 +73,7 @@ public class UpdateDatabaseStepTest {
 
         // THEN
         assertThat(Paths.get(installerConfiguration.getBackupDirectory(), "installed.properties")).exists();
+        assertThat(Paths.get(installerConfiguration.getBackupDirectory(), "installed.mini.json")).exists();
     }
 
     @Test
