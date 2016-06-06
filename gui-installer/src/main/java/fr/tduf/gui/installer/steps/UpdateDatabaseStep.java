@@ -24,14 +24,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import static com.google.common.io.Files.getFileExtension;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_COLORS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -116,10 +115,13 @@ class UpdateDatabaseStep extends GenericStep {
 
         enhancePatchObjectWithExteriors(vehicleSlot);
 
-        enhancePatchObjectWithInteriors();
+        if (!vehicleSlot.getPaintJobs().isEmpty()) {
+            enhancePatchObjectWithInteriors(vehicleSlot.getPaintJobs().get(0).getInteriorPatternRefs());
+        }
     }
 
     private void enhancePatchObjectWithExteriors(VehicleSlot vehicleSlot) {
+        AtomicInteger exteriorIndex = new AtomicInteger(1);
         List<DbPatchDto.DbChangeDto> changeObjectsForPaintJobs = vehicleSlot.getPaintJobs().stream()
 
                 .flatMap(paintJob -> {
@@ -130,32 +132,39 @@ class UpdateDatabaseStep extends GenericStep {
 
                     List<DbPatchDto.DbChangeDto> changes = new ArrayList<>();
                     // Ext
+                    List<String> interiorRefs = new ArrayList<>(paintJob.getInteriorPatternRefs());
+                    int remainingCount = 15 - interiorRefs.size();
+                    for (int i = 0 ; i < remainingCount ; i++) {
+                        interiorRefs.add(DatabaseConstants.REF_NO_INTERIOR);
+                    }
+
+                    int index = exteriorIndex.getAndIncrement();
                     changes.add(DbPatchDto.DbChangeDto.builder()
                             .withType(UPDATE)
                             .forTopic(CAR_COLORS)
                             .withEntryValues(asList(
                                     vehicleSlot.getRef(),
-                                    paintJob.getMainColor().getRef(),
-                                    paintJob.getName().getRef(),
-                                    paintJob.getSecondaryColor().getRef(),
-                                    paintJob.getCalipersColor().getRef(),
-                                    Long.toString(paintJob.getPriceDollar()),
+                                    PatchProperties.getPlaceHolderForExteriorMainColor(index),
+                                    PatchProperties.getPlaceHolderForExteriorName(index),
+                                    PatchProperties.getPlaceHolderForExteriorSecondaryColor(index),
+                                    PatchProperties.getPlaceHolderForExteriorCalipersColor(index),
                                     "0",
-                                    paintJob.getInteriorPatternRefs().get(0),
-                                    paintJob.getInteriorPatternRefs().get(1),
-                                    paintJob.getInteriorPatternRefs().get(2),
-                                    paintJob.getInteriorPatternRefs().get(3),
-                                    paintJob.getInteriorPatternRefs().get(4),
-                                    paintJob.getInteriorPatternRefs().get(5),
-                                    paintJob.getInteriorPatternRefs().get(6),
-                                    paintJob.getInteriorPatternRefs().get(7),
-                                    paintJob.getInteriorPatternRefs().get(8),
-                                    paintJob.getInteriorPatternRefs().get(9),
-                                    paintJob.getInteriorPatternRefs().get(10),
-                                    paintJob.getInteriorPatternRefs().get(11),
-                                    paintJob.getInteriorPatternRefs().get(12),
-                                    paintJob.getInteriorPatternRefs().get(13),
-                                    paintJob.getInteriorPatternRefs().get(14)
+                                    "0",
+                                    interiorRefs.get(0),
+                                    interiorRefs.get(1),
+                                    interiorRefs.get(2),
+                                    interiorRefs.get(3),
+                                    interiorRefs.get(4),
+                                    interiorRefs.get(5),
+                                    interiorRefs.get(6),
+                                    interiorRefs.get(7),
+                                    interiorRefs.get(8),
+                                    interiorRefs.get(9),
+                                    interiorRefs.get(10),
+                                    interiorRefs.get(11),
+                                    interiorRefs.get(12),
+                                    interiorRefs.get(13),
+                                    interiorRefs.get(14)
                             ))
                             .build());
                     // Ext resources
@@ -175,8 +184,29 @@ class UpdateDatabaseStep extends GenericStep {
         getDatabaseContext().getPatchObject().getChanges().addAll(changeObjectsForPaintJobs);
     }
 
-    private void enhancePatchObjectWithInteriors() {
-        List<DbPatchDto.DbChangeDto> changeObjectsForInteriors = new ArrayList<>();
+    private void enhancePatchObjectWithInteriors(List<String> interiorPatternRefs) {
+        AtomicInteger interiorIndex = new AtomicInteger(1);
+        List<DbPatchDto.DbChangeDto> changeObjectsForInteriors = interiorPatternRefs.stream()
+                .filter(intRef -> !DatabaseConstants.REF_NO_INTERIOR.equals(intRef))
+                .map(intRef -> {
+                    int index = interiorIndex.getAndIncrement();
+                    return DbPatchDto.DbChangeDto.builder()
+                            .withType(UPDATE)
+                            .forTopic(INTERIOR)
+                            .asReference(intRef)
+                            .withEntryValues(asList(
+                                    intRef,
+                                    DatabaseConstants.REF_DEFAULT_BRAND,
+                                    DatabaseConstants.RESOURCE_REF_NONE_INTERIOR_NAME,
+                                    PatchProperties.getPlaceHolderForInteriorMainColor(index),
+                                    PatchProperties.getPlaceHolderForInteriorSecondaryColor(index),
+                                    PatchProperties.getPlaceHolderForInteriorMaterial(index),
+                                    "0"
+                            ))
+                            .build();
+                })
+                .collect(toList());
+
         getDatabaseContext().getPatchObject().getChanges().addAll(changeObjectsForInteriors);
     }
 
