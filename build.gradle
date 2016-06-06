@@ -243,6 +243,7 @@ project(':gui-installer') {
         mustRunAfter ':cleanPackDir'
 
         from '../src/main/shell/cli-util/'
+        include 'AdminRun.cmd'
         include 'CheckJava.cmd'
         include 'SetVersion.cmd'
         into '../pack/tools/cli'
