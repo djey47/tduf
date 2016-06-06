@@ -15,6 +15,9 @@ import static java.util.Objects.requireNonNull;
  */
 public class PatchProperties extends Properties {
 
+    // TODO move to PlaceHolderConstants
+    private static final String FULL_PLACEHOLDER_FMT = "{%s}";
+
     private static final String PLACEHOLDER_NAME_SLOT_REFERENCE = "SLOTREF";
     private static final String PLACEHOLDER_NAME_ID_CAR = "CARID";
     private static final String PLACEHOLDER_NAME_BANK = "BANKNAME";
@@ -27,11 +30,19 @@ public class PatchProperties extends Properties {
 
     private static final String PLACEHOLDER_NAME_FMT_RIMS_REFERENCE = "RIMREF.%d";
     private static final String PLACEHOLDER_NAME_FMT_RESOURCE_RIMS_BRAND = "RIMBRANDREF.%d";
+    private static final String PLACEHOLDER_NAME_FMT_EXTERIOR_MAIN_COLOR = "COLORID.M.%d";
+    private static final String PLACEHOLDER_NAME_FMT_EXTERIOR_SECONDARY_COLOR = "COLORID.S.%d";
+    private static final String PLACEHOLDER_NAME_FMT_EXTERIOR_CALIPERS_COLOR = "CALLIPERSID.%d";
+    private static final String PLACEHOLDER_NAME_FMT_EXTERIOR_NAME = "COLORNAME.%d";
     private static final String PLACEHOLDER_NAME_FMT_INTERIOR_REFERENCE = "INTREF.%d";
+    private static final String PLACEHOLDER_NAME_FMT_INTERIOR_ID_COLOR = "INTCOLORID.%s.%d";
+    private static final String PLACEHOLDER_NAME_FMT_INTERIOR_MATERIAL = "INTMATERIALID.%d";
     private static final String PLACEHOLDER_NAME_FMT_RIMS_BANK = "BANKNAME.%s.%d";
     private static final String PLACEHOLDER_NAME_FMT_RESOURCE_RIM_BANK = "RES_BANKNAME.%s.%d";
     private static final String PLACEHOLDER_NAME_FMT_ID_COLOR = "COLORID.%s.%d";
+    private static final String PLACEHOLDER_NAME_FMT_ID_CALIPERS_COLOR = "CALLIPERSID.%d";
     private static final String PLACEHOLDER_NAME_FMT_RESOURCE_COLOR = "RES_COLORNAME.%d";
+    private static final String PLACEHOLDER_NAME_FMT_COLOR = "COLORNAME.%d";
     private static final String PLACEHOLDER_NAME_FMT_CUSTOM_CAM = "CAMERA.%s";
 
     private static final String SUFFIX_FRONT_RIMS = "FR";
@@ -181,6 +192,11 @@ public class PatchProperties extends Properties {
         registerIfNotExists(placeholderName, colorNameReference);
     }
 
+    public void setExteriorColorNameIfNotExists(String colorName, int exteriorSet) {
+        String placeholderName = format(PLACEHOLDER_NAME_FMT_COLOR, exteriorSet);
+        registerIfNotExists(placeholderName, colorName);
+    }
+
     public void setExteriorMainColorIdIfNotExists(String mainColorId, int exteriorSet) {
         String placeholderName = format(PLACEHOLDER_NAME_FMT_ID_COLOR, SUFFIX_MAIN_COLOR, exteriorSet);
         registerIfNotExists(placeholderName, mainColorId);
@@ -189,6 +205,26 @@ public class PatchProperties extends Properties {
     public void setExteriorSecondaryColorIdIfNotExists(String secColorId, int exteriorSet) {
         String placeholderName = format(PLACEHOLDER_NAME_FMT_ID_COLOR, SUFFIX_SECONDARY_COLOR, exteriorSet);
         registerIfNotExists(placeholderName, secColorId);
+    }
+
+    public void setCalipersColorIdIfNotExists(String calipersId, int exteriorSet) {
+        String placeholderName = format(PLACEHOLDER_NAME_FMT_ID_CALIPERS_COLOR, exteriorSet);
+        registerIfNotExists(placeholderName, calipersId);
+    }
+
+    public void setInteriorMainColorIdIfNotExists(String mainColorId, int interiorSet) {
+        String placeholderName = format(PLACEHOLDER_NAME_FMT_INTERIOR_ID_COLOR, SUFFIX_MAIN_COLOR, interiorSet);
+        registerIfNotExists(placeholderName, mainColorId);
+    }
+
+    public void setInteriorSecondaryColorIdIfNotExists(String secColorId, int interiorSet) {
+        String placeholderName = format(PLACEHOLDER_NAME_FMT_INTERIOR_ID_COLOR, SUFFIX_SECONDARY_COLOR, interiorSet);
+        registerIfNotExists(placeholderName, secColorId);
+    }
+
+    public void setInteriorMaterialIdIfNotExists(String materialId, int interiorSet) {
+        String placeholderName = format(PLACEHOLDER_NAME_FMT_INTERIOR_MATERIAL, interiorSet);
+        registerIfNotExists(placeholderName, materialId);
     }
 
     public void setDealerReferenceIfNotExists(String dealerReference) {
@@ -261,6 +297,39 @@ public class PatchProperties extends Properties {
 
     public Optional<String> getExteriorColorNameResource(int exteriorSet) {
         return retrieve(format(PLACEHOLDER_NAME_FMT_RESOURCE_COLOR, exteriorSet));
+    }
+
+    // TODO move to Placeholder helper
+    public static String getPlaceHolderForExteriorMainColor(int exteriorIndex) {
+        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_EXTERIOR_MAIN_COLOR, exteriorIndex));
+    }
+
+    public static String getPlaceHolderForExteriorSecondaryColor(int exteriorIndex) {
+        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_EXTERIOR_SECONDARY_COLOR, exteriorIndex));
+    }
+
+    public static String getPlaceHolderForExteriorCalipersColor(int exteriorIndex) {
+        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_EXTERIOR_CALIPERS_COLOR, exteriorIndex));
+    }
+
+    public static String getPlaceHolderForExteriorName(int exteriorIndex) {
+        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_EXTERIOR_NAME, exteriorIndex));
+    }
+
+    public static String getPlaceHolderForInteriorMainColor(int interiorIndex) {
+        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_INTERIOR_ID_COLOR, SUFFIX_MAIN_COLOR, interiorIndex));
+    }
+
+    public static String getPlaceHolderForInteriorSecondaryColor(int interiorIndex) {
+        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_INTERIOR_ID_COLOR, SUFFIX_SECONDARY_COLOR, interiorIndex));
+    }
+
+    public static String getPlaceHolderForInteriorMaterial(int interiorIndex) {
+        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_INTERIOR_MATERIAL, interiorIndex));
+    }
+
+    private static String toFormattedPlaceHolder(String placeHolder) {
+        return format(FULL_PLACEHOLDER_FMT, placeHolder);
     }
 
     private void registerIfNotExists(String placeholderName, String value) {
