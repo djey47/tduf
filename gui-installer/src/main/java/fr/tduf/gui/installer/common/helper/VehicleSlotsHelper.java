@@ -234,6 +234,7 @@ public class VehicleSlotsHelper extends CommonHelper {
         return miner.getContentEntriesMatchingCriteria(singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference)), CAR_COLORS).stream()
 
                 .map(entry -> {
+                    // TODO get all interior refs which are not equal to 11319636
                     String interiorPatternRef = entry.getItemAtRank(DatabaseConstants.FIELD_RANK_INTERIOR_1).get().getRawValue();
                     Optional<Resource> nameResource = getResourceFromDatabaseEntry(entry, CAR_COLORS, DatabaseConstants.FIELD_RANK_COLOR_NAME);
 
