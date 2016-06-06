@@ -12,14 +12,6 @@ import static java.util.Objects.requireNonNull;
  */
 public class PatchProperties extends Properties {
 
-    // TODO move to PlaceholderConsts
-    /**
-     * @return true if provided placeholder matches one used for ID_CAR
-     */
-    public static boolean isPlaceholderForCarIdentifier(String placeholderName) {
-        return PLACEHOLDER_NAME_ID_CAR.equals(placeholderName);
-    }
-
     /**
      * Stores value associated to a placeholder.
      */

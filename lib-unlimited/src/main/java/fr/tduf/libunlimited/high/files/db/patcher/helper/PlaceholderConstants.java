@@ -39,7 +39,13 @@ public class PlaceholderConstants {
     public static final String SUFFIX_MAIN_COLOR = "M";
     public static final String SUFFIX_SECONDARY_COLOR = "S";
 
-    private PlaceholderConstants() {
+    private PlaceholderConstants() {}
+
+    /**
+     * @return true if provided placeholder matches one used for ID_CAR
+     */
+    public static boolean isPlaceholderForCarIdentifier(String placeholderName) {
+        return PLACEHOLDER_NAME_ID_CAR.equals(placeholderName);
     }
 
     public static String getPlaceHolderForExteriorMainColor(int exteriorIndex) {

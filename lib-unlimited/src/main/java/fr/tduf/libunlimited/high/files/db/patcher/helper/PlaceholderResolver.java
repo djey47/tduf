@@ -196,7 +196,7 @@ public class PlaceholderResolver {
                 return potentialValue.get();
             }
 
-            if (PatchProperties.isPlaceholderForCarIdentifier(placeholderName)) {
+            if (PlaceholderConstants.isPlaceholderForCarIdentifier(placeholderName)) {
                 return generateValueForCARIDPlaceholder(miner);
             }
 
