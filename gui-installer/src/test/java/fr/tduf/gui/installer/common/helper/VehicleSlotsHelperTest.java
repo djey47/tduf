@@ -127,6 +127,20 @@ public class VehicleSlotsHelperTest {
                 .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(slotRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(3).withRawValue(colorNameRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(8).withRawValue(interiorRef).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(9).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(10).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(11).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(12).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(13).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(14).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(15).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(16).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(17).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(18).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(19).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(20).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(21).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(22).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
                 .build();
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(brandSlotRef, BRANDS)).thenReturn(of(brandsEntry));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotRef, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
