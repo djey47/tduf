@@ -6,6 +6,7 @@ import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.SecurityOptions;
 import fr.tduf.gui.installer.domain.VehicleSlot;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
@@ -14,6 +15,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -64,20 +66,30 @@ class UpdateDatabaseStep extends GenericStep {
 
         Log.info(THIS_CLASS_NAME, "->Applying TDUF mini patch...");
         PatchProperties effectiveProperties = patcher.applyWithProperties(getDatabaseContext().getPatchObject(), patchProperties);
-        writeEffectiveProperties(effectiveProperties);
+
+        Path backupPath = Paths.get(getInstallerConfiguration().getBackupDirectory());
+        writeEffectiveProperties(backupPath, effectiveProperties);
+        writeEffectivePatch(backupPath, getDatabaseContext().getPatchObject());
 
         String slotRef = patchProperties.getVehicleSlotReference().get();
         applyPerformancePackage(topicObjects, slotRef);
     }
 
-    private void writeEffectiveProperties(PatchProperties patchProperties) throws IOException {
-        Path backupPath = Paths.get(getInstallerConfiguration().getBackupDirectory());
+    private void writeEffectiveProperties(Path backupPath, PatchProperties patchProperties) throws IOException {
         String targetPropertyFile = backupPath.resolve(FileConstants.FILE_NAME_EFFECTIVE_PROPERTIES).toString();
 
         Log.info(THIS_CLASS_NAME, "->Writing effective properties to " + targetPropertyFile + "...");
 
         final OutputStream outputStream = new FileOutputStream(targetPropertyFile);
         patchProperties.store(outputStream, null);
+    }
+
+    private void writeEffectivePatch(Path backupPath, DbPatchDto patchObject) throws IOException {
+        String targetPatchFile = backupPath.resolve(FileConstants.FILE_NAME_EFFECTIVE_PATCH).toString();
+
+        Log.info(THIS_CLASS_NAME, "->Writing effective patch to " + targetPatchFile + "...");
+
+        FilesHelper.writeJsonObjectToFile(patchObject, targetPatchFile);
     }
 
     private void enhancePatchObjectWithLocationChange() {
