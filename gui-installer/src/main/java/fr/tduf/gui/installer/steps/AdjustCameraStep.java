@@ -4,14 +4,13 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.CustomizableCameraView;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties.CustomizableCameraView.fromSuffix;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toCollection;
 
@@ -43,7 +42,7 @@ class AdjustCameraStep extends GenericStep {
     private GenuineCamViewsDto buildCustomViewsFromProperties() {
         final GenuineCamViewsDto genuineCamViewsDto = new GenuineCamViewsDto();
 
-        Stream.of(PatchProperties.CustomizableCameraView.values())
+        Stream.of(CustomizableCameraView.values())
 
                 .map(this::buildCustomViewFromProperties)
 
@@ -56,7 +55,7 @@ class AdjustCameraStep extends GenericStep {
         return genuineCamViewsDto;
     }
 
-    private Optional<GenuineCamViewsDto.GenuineCamViewDto> buildCustomViewFromProperties(PatchProperties.CustomizableCameraView cameraView) {
+    private Optional<GenuineCamViewsDto.GenuineCamViewDto> buildCustomViewFromProperties(CustomizableCameraView cameraView) {
 
         return getDatabaseContext().getPatchProperties().getCustomizedCameraView(cameraView)
 
@@ -70,7 +69,7 @@ class AdjustCameraStep extends GenericStep {
 
                     genuineCamViewDto.setViewType(cameraView.getGenuineViewType());
                     genuineCamViewDto.setCameraId(Integer.parseInt(camCompounds[0]));
-                    GenuineCamViewsDto.GenuineCamViewDto.Type genuineViewType = fromSuffix(camCompounds[1]).getGenuineViewType();
+                    GenuineCamViewsDto.GenuineCamViewDto.Type genuineViewType = CustomizableCameraView.fromSuffix(camCompounds[1]).getGenuineViewType();
                     genuineCamViewDto.setViewId(genuineViewType.getInternalId());
 
                     return genuineCamViewDto;
