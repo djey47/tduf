@@ -32,6 +32,7 @@ import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChange
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_COLORS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -74,7 +75,7 @@ class UpdateDatabaseStep extends GenericStep {
         Path backupPath = Paths.get(getInstallerConfiguration().getBackupDirectory());
         String targetPropertyFile = backupPath.resolve(FileConstants.FILE_NAME_EFFECTIVE_PROPERTIES).toString();
 
-        Log.info("->Writing effective properties to " + targetPropertyFile + "...");
+        Log.info(THIS_CLASS_NAME, "->Writing effective properties to " + targetPropertyFile + "...");
 
         final OutputStream outputStream = new FileOutputStream(targetPropertyFile);
         patchProperties.store(outputStream, null);
@@ -113,6 +114,12 @@ class UpdateDatabaseStep extends GenericStep {
     private void enhancePatchObjectWithPaintJobs(VehicleSlot vehicleSlot) {
         Log.info(THIS_CLASS_NAME, "->Adding paint jobs changes to initial patch");
 
+        enhancePatchObjectWithExteriors(vehicleSlot);
+
+        enhancePatchObjectWithInteriors();
+    }
+
+    private void enhancePatchObjectWithExteriors(VehicleSlot vehicleSlot) {
         List<DbPatchDto.DbChangeDto> changeObjectsForPaintJobs = vehicleSlot.getPaintJobs().stream()
 
                 .flatMap(paintJob -> {
@@ -126,14 +133,37 @@ class UpdateDatabaseStep extends GenericStep {
                     changes.add(DbPatchDto.DbChangeDto.builder()
                             .withType(UPDATE)
                             .forTopic(CAR_COLORS)
-                            .withEntryValues(new ArrayList<>())
+                            .withEntryValues(asList(
+                                    vehicleSlot.getRef(),
+                                    paintJob.getMainColor().getRef(),
+                                    paintJob.getName().getRef(),
+                                    paintJob.getSecondaryColor().getRef(),
+                                    paintJob.getCalipersColor().getRef(),
+                                    Long.toString(paintJob.getPriceDollar()),
+                                    "0",
+                                    paintJob.getInteriorPatternRefs().get(0),
+                                    paintJob.getInteriorPatternRefs().get(1),
+                                    paintJob.getInteriorPatternRefs().get(2),
+                                    paintJob.getInteriorPatternRefs().get(3),
+                                    paintJob.getInteriorPatternRefs().get(4),
+                                    paintJob.getInteriorPatternRefs().get(5),
+                                    paintJob.getInteriorPatternRefs().get(6),
+                                    paintJob.getInteriorPatternRefs().get(7),
+                                    paintJob.getInteriorPatternRefs().get(8),
+                                    paintJob.getInteriorPatternRefs().get(9),
+                                    paintJob.getInteriorPatternRefs().get(10),
+                                    paintJob.getInteriorPatternRefs().get(11),
+                                    paintJob.getInteriorPatternRefs().get(12),
+                                    paintJob.getInteriorPatternRefs().get(13),
+                                    paintJob.getInteriorPatternRefs().get(14)
+                            ))
                             .build());
                     // Ext resources
                     changes.add(DbPatchDto.DbChangeDto.builder()
                             .withType(UPDATE_RES)
                             .forTopic(CAR_COLORS)
-                            .asReference("")
-                            .withValue("")
+                            .asReference(paintJob.getName().getRef())
+                            .withValue(paintJob.getName().getValue())
                             .build());
                     return changes.stream();
                 })
@@ -143,8 +173,9 @@ class UpdateDatabaseStep extends GenericStep {
                 .collect(toList());
 
         getDatabaseContext().getPatchObject().getChanges().addAll(changeObjectsForPaintJobs);
+    }
 
-
+    private void enhancePatchObjectWithInteriors() {
         List<DbPatchDto.DbChangeDto> changeObjectsForInteriors = new ArrayList<>();
         getDatabaseContext().getPatchObject().getChanges().addAll(changeObjectsForInteriors);
     }
