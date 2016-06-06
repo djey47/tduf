@@ -4,29 +4,73 @@
   "cryptoMode": 0,
   "fields": [
     {
+      "name": "TAG",
+      "type": "INTEGER",
+      "size": 4
+    },
+    {
       "name": "UNK1",
       "type": "UNKNOWN",
-      "size": 26
+      "size": 20
+    },
+    {
+      "name": "profileNameSize",
+      "type": "INTEGER",
+      "size": 2
     },
     {
       "name": "profileName",
       "type": "TEXT",
-      "size": 32
+      "size": "?profileNameSize?"
     },
     {
       "name": "UNK2",
       "type": "UNKNOWN",
-      "size": 56
+      "size": 54
+    },
+    {
+      "name": "clubNameSize",
+      "type": "INTEGER",
+      "size": 2
     },
     {
       "name": "clubName",
       "type": "TEXT",
-      "size": 16
+      "size": "?clubNameSize?"
     },
     {
       "name": "UNK3",
+      "type": "REPEATER",
+      "size": 640,
+      "subFields": [
+        {
+          "name": "UNK3.1",
+          "type": "UNKNOWN",
+          "size": 80
+        }
+      ]
+    },
+    {
+      "name": "UNK4",
+      "type": "REPEATER",
+      "size": 500,
+      "subFields": [
+        {
+          "name": "UNK4.1",
+          "type": "UNKNOWN",
+          "size": 24
+        }
+      ]
+    },
+    {
+      "name": "UNK5",
       "type": "UNKNOWN",
-      "size": 75202
+      "size": 1380
+    },
+    {
+      "name": "ZERO1",
+      "type": "GAP",
+      "size": 10624
     },
     {
       "name": "messages",
@@ -109,6 +153,73 @@
           "size": 2
         }
       ]
+    },
+    {
+      "name": "UNK6",
+      "type": "UNKNOWN",
+      "size": 4851
+    },
+    {
+      "name": "ZERO2",
+      "type": "GAP",
+      "size": 1778
+    },
+    {
+      "name": "UNK7",
+      "type": "REPEATER",
+      "size": 2701,
+      "subFields": [
+        {
+          "name": "UNK7.1",
+          "type": "UNKNOWN",
+          "size": 8
+        }
+      ]
+    },
+    {
+      "name": "weirdTextSize1",
+      "type": "INTEGER",
+      "size": 2
+    },
+    {
+      "name": "weirdText1",
+      "type": "TEXT",
+      "size": "?weirdTextSize1?"
+    },
+    {
+      "name": "weirdTextSize2",
+      "type": "INTEGER",
+      "size": 2
+    },
+    {
+      "name": "weirdText2",
+      "type": "TEXT",
+      "size": "?weirdTextSize2?"
+    },
+    {
+      "name": "weirdTextSize3",
+      "type": "INTEGER",
+      "size": 2
+    },
+    {
+      "name": "weirdText3",
+      "type": "TEXT",
+      "size": "?weirdTextSize3?"
+    },
+    {
+      "name": "weirdTextSize4",
+      "type": "INTEGER",
+      "size": 2
+    },
+    {
+      "name": "weirdText4",
+      "type": "TEXT",
+      "size": "?weirdTextSize4?"
+    },
+    {
+      "name": "ZERO3",
+      "type": "GAP",
+      "size": 506
     },
     {
       "name": "REST",
