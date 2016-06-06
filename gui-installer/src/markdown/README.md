@@ -40,47 +40,58 @@ Using this with TDUCP 2.00A is strongly recommended.
 
 ###  Modders, perform your own install!
 
-PREPARING
+#### PREPARING
 
 - Extract InstallerKit to project Dir: e.g Desktop\F250TR
 
 
-PUT MODDED FILES UNDER assets directories:
+#### PUT MODDED FILES UNDER assets directories
 (MOD is just an example, can be name of your choice)
 
-- 3D: exterior and interior MOD.BNK, MOD_I.BNK
+- **3D**: exterior and interior MOD.BNK, MOD_I.BNK
 
-- 3D\RIMS: Single rim set for front/rear: MOD_F_01.BNK, MOD_R_01.BNK (optional, if target slot needs it)
+- **3D\RIMS**: Single rim set for front/rear: MOD_F_01.BNK, MOD_R_01.BNK (optional, if target slot needs it)
 
-- GAUGES\HIGH: MOD.BNK (high-res hud)
+- **GAUGES\HIGH**: MOD.BNK (high-res hud)
 
-- GAUGES\LOW: MOD.BNK (low-res hud)
+- **GAUGES\LOW**: MOD.BNK (low-res hud)
 
-- SOUND: MOD_audio.BNK
-
-
-CUSTOMIZATION
-
-- Edit assets\README\README.txt file and put all important information
-
-- Copy files: tools\patchTemplates\xxxxx.mini.json and xxxxx.mini.json.properties matching mod type
-to:  assets\DATABASE\
-
-- Edit assets\DATABASE\xxxxx.mini.json.properties for wanted values:
-    - BRANDREF: enter a brand identifier
-    - MODELNAME, VERSION NAME: displayed names
-    - COLORID.M.x/COLORID.S.x/CALLIPERSID.x: update CAR_COLORS resources (M=Main, S=Secondary)
-    - INTCOLORID.M.x/INTCOLORID.S.x/INTMATERIALID.x: update INTERIOR resources (M=Main, S=Secondary)
-    - RIMNAME.1/RIMBRANDREF.1: main RIMS information
-    - RIMWIDTH.FR.1/RIMHEIGHT.FR.1/RIMDIAM.FR.1: data for front RIMS
-      RIMWIDTH.RR.1/RIMHEIGHT.RR.1/RIMDIAM.RR.1: data for rear RIMS
-    - SLOTREF: (optional) force to use a CAR_PHYSICS slot. If enabled, Installer will not ask for vehicle slot
-    - other items ... see explanation in properties file.
-
-- (Optional) Copy a TDUPE Pack to assets\DATABASE directory.
+- **SOUND**: MOD_audio.BNK
 
 
-TESTING
+#### CUSTOMIZATION
+
+- Edit assets\README\README.txt file and put all important information (with a proper text editor)
+
+- Copy files: *tools\patchTemplates\xxx-default.mini.json* and *xxxx-default.mini.json.properties* matching mod type
+to:  *assets\DATABASE*
+
+- Edit *assets\DATABASE\xxx-default.mini.json.properties* for wanted values (with a proper text editor):
+    - General information:
+        - **BRANDREF**: brand identifier (lookup in BRANDS)
+        - **MODELNAME**, VERSION NAME: displayed names
+        - **PRICE/CAMERA/IK**: useful when TDUPE Pack is not used (see next step)
+    - Paintjobs:
+        - **COLORID.M.x/COLORID.S.x/CALLIPERSID.x**: to update CAR_COLORS (M=Main, S=Secondary)
+        - **INTCOLORID.M.x/INTCOLORID.S.x/INTMATERIALID.x**: to update INTERIOR (M=Main, S=Secondary)
+    - Rims:
+        - **RIMNAME.x**: displayed name
+        - **RIMBRANDREF.x**: rim manufacturer (lookup in BRANDS)
+        - **RIMWIDTH.FR.x/RIMHEIGHT.FR.x/RIMDIAM.FR.x**: data for front RIMS
+        - **RIMWIDTH.RR.x/RIMHEIGHT.RR.x/RIMDIAM.RR.x**: data for rear RIMS
+    - Location (optional):
+        - **DEALERREF**: force using a CAR_SHOPS. If enabled, Installer will not ask
+        - **DEALERSLOT**: force using a slot in a shop. If enabled, Installer will not ask
+    - Advanced (optional):
+        - **SLOTREF**: force using a CAR_PHYSICS slot. If enabled, Installer will not ask
+        - **RIMBRANDREF.x**: force using a particular brand for rims
+        - **FILENAME/BANKNAME.FR.x/BANKNAME.RR.x**: force using a particular bank file
+        - **CAMERA.COCKPIT/COCKPITBACK/HOOD/HOODBACK**: force using customized camera settings.
+
+- (Optional) Copy a TDUPE Pack to *assets\DATABASE* directory.
+
+
+#### TESTING
 
 - Launch TDUF-installer.cmd
 
@@ -101,7 +112,7 @@ TESTING
 - Check for generated values in effective properties file: assets\DATABASE\effective-xxxxx.mini.json.properties
 
 
-FINAL STEP: release your mod!
+#### FINAL STEP: release your mod!
 
 (1) Before packing into a zip file, you may remove:
 
