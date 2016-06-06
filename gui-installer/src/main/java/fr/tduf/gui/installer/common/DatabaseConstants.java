@@ -36,6 +36,8 @@ public class DatabaseConstants {
     public static final int FIELD_RANK_RSC_FILE_NAME_FRONT = 14;
     public static final int FIELD_RANK_RSC_FILE_NAME_REAR = 15;
 
+    public static final String REF_DEFAULT_BRAND = "62938337";                      // BRANDS
+
     public static final String RESOURCE_REF_UNKNOWN_COLOR_NAME = "53366457";        // CAR COLORS
 
     public static final String RESOURCE_REF_UNKNOWN_VEHICLE_NAME = "53338427";      // CAR PHYSICS
@@ -55,7 +57,8 @@ public class DatabaseConstants {
     public static final String RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER = "EBD_";
     public static final String RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_RENTAL = "ECR_";
 
-    public static final String RESOURCE_REF_NONE_INTERIOR_NAME = "53365512";        // INTERIOR
+    public static final String REF_NO_INTERIOR = "11319636";        // INTERIOR
+    public static final String RESOURCE_REF_NONE_INTERIOR_NAME = "53365512";
 
     public static final String RESOURCE_REF_DEFAULT_RIM_BRAND = "55765512";         // RIMS
 

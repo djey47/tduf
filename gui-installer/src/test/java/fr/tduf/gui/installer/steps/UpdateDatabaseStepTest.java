@@ -9,7 +9,6 @@ import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -23,9 +22,7 @@ import java.nio.file.Paths;
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.UPDATE_DATABASE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_COLORS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -126,31 +123,26 @@ public class UpdateDatabaseStepTest {
         String name = "PJ name";
         String intId = "5555";
         String intIdNone = "11319636";
-        int priceDollar = 1000;
+        String intManufacturerId = "62938337";
+        String intNameId = "53365512";
+        String intMainColorId = "6666";
+        String intSecondaryColorId = "7777";
+        String intMaterialId = "8888";
 
+        patchProperties.setExteriorColorNameIfNotExists(name, 1);
         patchProperties.setExteriorMainColorIdIfNotExists(mainColorId, 1);
         patchProperties.setExteriorSecondaryColorIdIfNotExists(secColorId, 1);
+        patchProperties.setCalipersColorIdIfNotExists(calColorId, 1);
+        patchProperties.setInteriorMainColorIdIfNotExists(intMainColorId, 1);
+        patchProperties.setInteriorSecondaryColorIdIfNotExists(intSecondaryColorId, 1);
+        patchProperties.setInteriorMaterialIdIfNotExists(intMaterialId, 1);
+
         databaseContext.getUserSelection().selectVehicleSlot(VehicleSlot.builder()
                 .withRef(SLOT_REFERENCE)
                 .addPaintJob(PaintJob.builder()
                         .withName(Resource.from(nameId, name))
                         .withColors(Resource.from(mainColorId, ""), Resource.from(secColorId, ""), Resource.from(calColorId, ""))
-                        .withPrice(priceDollar)
                         .addInteriorPattern(intId)
-                        .addInteriorPattern(intIdNone)
-                        .addInteriorPattern(intIdNone)
-                        .addInteriorPattern(intIdNone)
-                        .addInteriorPattern(intIdNone)
-                        .addInteriorPattern(intIdNone)
-                        .addInteriorPattern(intIdNone)
-                        .addInteriorPattern(intIdNone)
-                        .addInteriorPattern(intIdNone)
-                        .addInteriorPattern(intIdNone)
-                        .addInteriorPattern(intIdNone)
-                        .addInteriorPattern(intIdNone)
-                        .addInteriorPattern(intIdNone)
-                        .addInteriorPattern(intIdNone)
-                        .addInteriorPattern(intIdNone)
                         .build())
                 .build());
 
@@ -163,20 +155,20 @@ public class UpdateDatabaseStepTest {
 
 
         // THEN
-        // TODO
         DbPatchDto patchObject = databaseContext.getPatchObject();
+        assertThat(patchObject.getChanges()).hasSize(4);
         assertThat(patchObject.getChanges()).extracting("type").containsOnly(UPDATE, UPDATE_RES);
-        assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_PHYSICS_DATA, CAR_COLORS);
-        assertThat(patchObject.getChanges()).extracting("ref").containsOnly(SLOT_REFERENCE, null, nameId);
+        assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_PHYSICS_DATA, CAR_COLORS, INTERIOR);
+        assertThat(patchObject.getChanges()).extracting("ref").containsOnly(SLOT_REFERENCE, null, nameId, intId);
         assertThat(patchObject.getChanges()).extracting("values").containsOnly(
                 null,
                 asList(
                         SLOT_REFERENCE,
                         mainColorId,
-                        nameId,
+                        name,
                         secColorId,
                         calColorId,
-                        Long.toString(priceDollar),
+                        "0",
                         "0",
                         intId,
                         intIdNone,
@@ -194,7 +186,16 @@ public class UpdateDatabaseStepTest {
                         intIdNone,
                         intIdNone
                 ),
-                null);
+                null,
+                asList(
+                        intId,
+                        intManufacturerId,
+                        intNameId,
+                        intMainColorId,
+                        intSecondaryColorId,
+                        intMaterialId,
+                        "0"
+                ));
         assertThat(patchObject.getChanges()).extracting("value").containsOnly(
                 null,
                 null,
