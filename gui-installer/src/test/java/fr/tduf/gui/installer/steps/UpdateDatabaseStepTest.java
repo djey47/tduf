@@ -130,6 +130,7 @@ public class UpdateDatabaseStepTest {
         String intSecondaryColorId = "7777";
         String intMaterialId = "8888";
 
+        patchProperties.setExteriorColorNameResourceIfNotExists(nameId, 1);
         patchProperties.setExteriorColorNameIfNotExists(name, 1);
         patchProperties.setExteriorMainColorIdIfNotExists(mainColorId, 1);
         patchProperties.setExteriorSecondaryColorIdIfNotExists(secColorId, 1);
@@ -166,7 +167,7 @@ public class UpdateDatabaseStepTest {
                 asList(
                         SLOT_REFERENCE,
                         mainColorId,
-                        name,
+                        nameId,
                         secColorId,
                         calColorId,
                         "0",

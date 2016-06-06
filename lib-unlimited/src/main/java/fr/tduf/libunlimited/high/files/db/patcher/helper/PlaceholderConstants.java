@@ -8,10 +8,6 @@ import static java.lang.String.format;
 public class PlaceholderConstants {
     private static final String FULL_PLACEHOLDER_FMT = "{%s}";
 
-    private static final String PLACEHOLDER_NAME_FMT_EXTERIOR_SECONDARY_COLOR = "COLORID.S.%d";
-    private static final String PLACEHOLDER_NAME_FMT_EXTERIOR_CALIPERS_COLOR = "CALLIPERSID.%d";
-    private static final String PLACEHOLDER_NAME_FMT_EXTERIOR_NAME = "COLORNAME.%d";
-
     public static final String PLACEHOLDER_NAME_SLOT_REFERENCE = "SLOTREF";
     public static final String PLACEHOLDER_NAME_ID_CAR = "CARID";
     public static final String PLACEHOLDER_NAME_BANK = "BANKNAME";
@@ -22,7 +18,6 @@ public class PlaceholderConstants {
 
     public static final String PLACEHOLDER_NAME_FMT_RIMS_REFERENCE = "RIMREF.%d";
     public static final String PLACEHOLDER_NAME_FMT_RESOURCE_RIMS_BRAND = "RIMBRANDREF.%d";
-    private static final String PLACEHOLDER_NAME_FMT_EXTERIOR_MAIN_COLOR = "COLORID.M.%d";
     public static final String PLACEHOLDER_NAME_FMT_INTERIOR_REFERENCE = "INTREF.%d";
     public static final String PLACEHOLDER_NAME_FMT_INTERIOR_ID_COLOR = "INTCOLORID.%s.%d";
     public static final String PLACEHOLDER_NAME_FMT_INTERIOR_MATERIAL = "INTMATERIALID.%d";
@@ -49,19 +44,19 @@ public class PlaceholderConstants {
     }
 
     public static String getPlaceHolderForExteriorMainColor(int exteriorIndex) {
-        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_EXTERIOR_MAIN_COLOR, exteriorIndex));
+        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_ID_COLOR, SUFFIX_MAIN_COLOR, exteriorIndex));
     }
 
     public static String getPlaceHolderForExteriorSecondaryColor(int exteriorIndex) {
-        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_EXTERIOR_SECONDARY_COLOR, exteriorIndex));
+        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_ID_COLOR, SUFFIX_SECONDARY_COLOR, exteriorIndex));
     }
 
     public static String getPlaceHolderForExteriorCalipersColor(int exteriorIndex) {
-        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_EXTERIOR_CALIPERS_COLOR, exteriorIndex));
+        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_ID_CALIPERS_COLOR, exteriorIndex));
     }
 
-    public static String getPlaceHolderForExteriorName(int exteriorIndex) {
-        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_EXTERIOR_NAME, exteriorIndex));
+    public static String getPlaceHolderForExteriorNameResource(int exteriorIndex) {
+        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_RESOURCE_COLOR, exteriorIndex));
     }
 
     public static String getPlaceHolderForInteriorMainColor(int interiorIndex) {
