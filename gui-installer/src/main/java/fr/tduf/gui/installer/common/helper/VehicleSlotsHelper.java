@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 import static fr.tduf.gui.installer.common.DatabaseConstants.*;
 import static fr.tduf.gui.installer.common.DisplayConstants.*;
@@ -234,15 +235,17 @@ public class VehicleSlotsHelper extends CommonHelper {
         return miner.getContentEntriesMatchingCriteria(singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference)), CAR_COLORS).stream()
 
                 .map(entry -> {
-                    // TODO get all interior refs which are not equal to 11319636
-                    String interiorPatternRef = entry.getItemAtRank(DatabaseConstants.FIELD_RANK_INTERIOR_1).get().getRawValue();
-                    Optional<Resource> nameResource = getResourceFromDatabaseEntry(entry, CAR_COLORS, DatabaseConstants.FIELD_RANK_COLOR_NAME);
-
-                    return PaintJob.builder()
+                    final Optional<Resource> nameResource = getResourceFromDatabaseEntry(entry, CAR_COLORS, DatabaseConstants.FIELD_RANK_COLOR_NAME);
+                    final PaintJob.PaintJobBuilder paintJobBuilder = PaintJob.builder()
                             .atRank(paintJobIndex.getAndIncrement())
-                            .withName(nameResource.orElse(null))
-                            .addInteriorPattern(interiorPatternRef)
-                            .build();
+                            .withName(nameResource.orElse(null));
+
+                    IntStream.rangeClosed(DatabaseConstants.FIELD_RANK_INTERIOR_1, DatabaseConstants.FIELD_RANK_INTERIOR_15)
+                            .mapToObj(rank -> entry.getItemAtRank(rank).get().getRawValue())
+                            .filter(interiorPatternRef -> !DatabaseConstants.REF_NO_INTERIOR.equals(interiorPatternRef))
+                            .forEach(paintJobBuilder::addInteriorPattern);
+
+                    return paintJobBuilder.build();
                 })
 
                 .collect(toList());
