@@ -62,7 +62,10 @@ class UpdateDatabaseStep extends GenericStep {
         enhancePatchObjectWithInstallFlag();
 
         getDatabaseContext().getUserSelection().getVehicleSlot()
-                .ifPresent(this::enhancePatchObjectWithPaintJobs);
+                .ifPresent(vehicleSlot -> {
+                    enhancePatchObjectWithPaintJobs(vehicleSlot);
+                    enhancePatchObjectWithRims(vehicleSlot);
+                });
 
         final List<DbDto> topicObjects = getDatabaseContext().getTopicObjects();
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, topicObjects);
@@ -125,8 +128,7 @@ class UpdateDatabaseStep extends GenericStep {
         getDatabaseContext().getPatchObject().getChanges().add(changeObject);
     }
 
-    // Ignore warning (method ref)
-    private void enhancePatchObjectWithPaintJobs(VehicleSlot vehicleSlot) {
+    void enhancePatchObjectWithPaintJobs(VehicleSlot vehicleSlot) {
         Log.info(THIS_CLASS_NAME, "->Adding paint jobs changes to initial patch");
 
         enhancePatchObjectWithExteriors(vehicleSlot);
@@ -226,6 +228,11 @@ class UpdateDatabaseStep extends GenericStep {
                         "0"
                 ))
                 .build();
+    }
+
+    void enhancePatchObjectWithRims(VehicleSlot vehicleSlot) {
+        Log.info(THIS_CLASS_NAME, "->Adding rim changes to initial patch");
+
     }
 
     private void applyPerformancePackage(List<DbDto> topicObjects, String slotRef) throws ReflectiveOperationException, IOException {
