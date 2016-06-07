@@ -39,6 +39,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.IntStream.rangeClosed;
 
 /**
  * Applies available patch onto loaded database then convert it to TDU format back
@@ -124,6 +125,7 @@ class UpdateDatabaseStep extends GenericStep {
         getDatabaseContext().getPatchObject().getChanges().add(changeObject);
     }
 
+    // Ignore warning (method ref)
     private void enhancePatchObjectWithPaintJobs(VehicleSlot vehicleSlot) {
         Log.info(THIS_CLASS_NAME, "->Adding paint jobs changes to initial patch");
 
@@ -159,14 +161,14 @@ class UpdateDatabaseStep extends GenericStep {
     }
 
     private Stream<? extends DbPatchDto.DbChangeDto> createChangeObjectsForExterior(VehicleSlot vehicleSlot, PaintJob paintJob, AtomicInteger exteriorIndex) {
-        final Optional<String> exteriorColorId = getDatabaseContext().getPatchProperties().getExteriorMainColorId(paintJob.getRank());
-        if (!exteriorColorId.isPresent()) {
+        if (!getDatabaseContext().getPatchProperties().getExteriorMainColorId(paintJob.getRank()).isPresent()) {
             return Stream.empty();
         }
 
         List<String> interiorRefs = new ArrayList<>(paintJob.getInteriorPatternRefs());
-        IntStream.rangeClosed(interiorRefs.size(), 15)
-                .forEach(index -> interiorRefs.add(DatabaseConstants.REF_NO_INTERIOR));
+        try (IntStream stream = rangeClosed(interiorRefs.size(), 15)) {
+            stream.forEach(index -> interiorRefs.add(DatabaseConstants.REF_NO_INTERIOR));
+        }
 
         int index = exteriorIndex.getAndIncrement();
         DbPatchDto.DbChangeDto entryUpdateChange = DbPatchDto.DbChangeDto.builder()
@@ -205,7 +207,7 @@ class UpdateDatabaseStep extends GenericStep {
                 .withValue(paintJob.getName().getValue())
                 .build();
 
-        return asList(entryUpdateChange, resourceUpdateChange).stream();
+        return Stream.of(entryUpdateChange, resourceUpdateChange);
     }
 
     private DbPatchDto.DbChangeDto createChangeObjectsForInterior(String intRef, AtomicInteger interiorIndex) {
