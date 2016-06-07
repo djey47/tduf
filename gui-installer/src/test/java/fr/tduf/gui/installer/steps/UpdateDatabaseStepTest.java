@@ -115,7 +115,7 @@ public class UpdateDatabaseStepTest {
     }
 
     @Test
-    public void perform_withPaintJobProperties_shouldAddCarColors_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
+    public void enhancePatchObjectWithPaintJobs_withPaintJobProperties_shouldAddCarColors_andInterior_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
         String mainColorId = "1111";
         String secColorId = "2222";
@@ -126,50 +126,39 @@ public class UpdateDatabaseStepTest {
         String intIdNone = "11319636";
         String intManufacturerId = "62938337";
         String intNameId = "53365512";
-        String intMainColorId = "6666";
-        String intSecondaryColorId = "7777";
-        String intMaterialId = "8888";
 
-        patchProperties.setExteriorColorNameResourceIfNotExists(nameId, 1);
-        patchProperties.setExteriorColorNameIfNotExists(name, 1);
         patchProperties.setExteriorMainColorIdIfNotExists(mainColorId, 1);
-        patchProperties.setExteriorSecondaryColorIdIfNotExists(secColorId, 1);
-        patchProperties.setCalipersColorIdIfNotExists(calColorId, 1);
-        patchProperties.setInteriorMainColorIdIfNotExists(intMainColorId, 1);
-        patchProperties.setInteriorSecondaryColorIdIfNotExists(intSecondaryColorId, 1);
-        patchProperties.setInteriorMaterialIdIfNotExists(intMaterialId, 1);
 
-        databaseContext.getUserSelection().selectVehicleSlot(VehicleSlot.builder()
+        final VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef(SLOT_REFERENCE)
                 .addPaintJob(PaintJob.builder()
                         .withName(Resource.from(nameId, name))
                         .withColors(Resource.from(mainColorId, ""), Resource.from(secColorId, ""), Resource.from(calColorId, ""))
                         .addInteriorPattern(intId)
                         .build())
-                .build());
+                .build();
 
 
         // WHEN
         final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
                 GenericStep.starterStep(installerConfiguration, databaseContext)
                         .nextStep(UPDATE_DATABASE));
-        updateDatabaseStep.perform();
+        updateDatabaseStep.enhancePatchObjectWithPaintJobs(vehicleSlot);
 
 
         // THEN
         DbPatchDto patchObject = databaseContext.getPatchObject();
-        assertThat(patchObject.getChanges()).hasSize(4);
+        assertThat(patchObject.getChanges()).hasSize(3);
         assertThat(patchObject.getChanges()).extracting("type").containsOnly(UPDATE, UPDATE_RES);
-        assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_PHYSICS_DATA, CAR_COLORS, INTERIOR);
-        assertThat(patchObject.getChanges()).extracting("ref").containsOnly(SLOT_REFERENCE, null, nameId, intId);
+        assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_COLORS, INTERIOR);
+        assertThat(patchObject.getChanges()).extracting("ref").containsOnly(null, nameId, intId);
         assertThat(patchObject.getChanges()).extracting("values").containsOnly(
-                null,
                 asList(
                         SLOT_REFERENCE,
-                        mainColorId,
-                        nameId,
-                        secColorId,
-                        calColorId,
+                        "{COLORID.M.1}",
+                        "{RES_COLORNAME.1}",
+                        "{COLORID.S.1}",
+                        "{CALLIPERSID.1}",
                         "0",
                         "0",
                         intId,
@@ -193,9 +182,9 @@ public class UpdateDatabaseStepTest {
                         intId,
                         intManufacturerId,
                         intNameId,
-                        intMainColorId,
-                        intSecondaryColorId,
-                        intMaterialId,
+                        "{INTCOLORID.M.1}",
+                        "{INTCOLORID.S.1}",
+                        "{INTMATERIALID.1}",
                         "0"
                 ));
         assertThat(patchObject.getChanges()).extracting("value").containsOnly(
