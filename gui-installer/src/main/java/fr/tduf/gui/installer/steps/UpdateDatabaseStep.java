@@ -5,6 +5,7 @@ import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.PaintJob;
+import fr.tduf.gui.installer.domain.RimSlot;
 import fr.tduf.gui.installer.domain.SecurityOptions;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
@@ -230,9 +231,79 @@ class UpdateDatabaseStep extends GenericStep {
                 .build();
     }
 
+    // TODO see if bikes support more than 1 rim set
     void enhancePatchObjectWithRims(VehicleSlot vehicleSlot) {
         Log.info(THIS_CLASS_NAME, "->Adding rim changes to initial patch");
 
+        AtomicInteger rimIndex = new AtomicInteger(1);
+        List<DbPatchDto.DbChangeDto> changeObjectsForRims = vehicleSlot.getRims().stream()
+                .flatMap(rimSlot -> createChangeObjectsForRims(vehicleSlot, rimSlot, rimIndex))
+                .collect(toList());
+
+        getDatabaseContext().getPatchObject().getChanges().addAll(changeObjectsForRims);
+    }
+
+    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsForRims(VehicleSlot vehicleSlot, RimSlot rimSlot, AtomicInteger rimIndex) {
+        int index = rimIndex.getAndIncrement();
+        if (!getDatabaseContext().getPatchProperties().getRimSlotReference(index).isPresent()) {
+            return Stream.empty();
+        }
+
+        DbPatchDto.DbChangeDto associationEntryUpdate = DbPatchDto.DbChangeDto.builder()
+                .withType(UPDATE)
+                .forTopic(CAR_RIMS)
+                .withEntryValues( asList(
+                        vehicleSlot.getRef(),
+                        getDatabaseContext().getPatchProperties().getRimSlotReference(index).get()
+                ))
+                .build();
+
+        DbPatchDto.DbChangeDto slotEntryUpdate = DbPatchDto.DbChangeDto.builder()
+                .withType(UPDATE)
+                .forTopic(RIMS)
+                .asReference(rimSlot.getRef())
+                .withEntryValues( asList(
+                        rimSlot.getRef(),
+                        PlaceholderConstants.getPlaceHolderForRimBrand(index),
+                        DatabaseConstants.RESOURCE_REF_NO_RIM_NAME,
+                        PlaceholderConstants.getPlaceHolderForRimNameResource(index),
+                        PlaceholderConstants.getPlaceHolderForFrontRimWidth(index),
+                        PlaceholderConstants.getPlaceHolderForFrontRimHeight(index),
+                        PlaceholderConstants.getPlaceHolderForFrontRimDiameter(index),
+                        PlaceholderConstants.getPlaceHolderForRearRimWidth(index),
+                        PlaceholderConstants.getPlaceHolderForRearRimHeight(index),
+                        PlaceholderConstants.getPlaceHolderForRearRimDiameter(index),
+                        "0",
+                        "0",
+                        PlaceholderConstants.getPlaceHolderForRimBrand(index),
+                        PlaceholderConstants.getPlaceHolderForFrontRimFileName(index),
+                        PlaceholderConstants.getPlaceHolderForRearRimFileName(index),
+                        "0"
+                ))
+                .build();
+
+        DbPatchDto.DbChangeDto slotNameResourceUpdate = DbPatchDto.DbChangeDto.builder()
+                .withType(UPDATE_RES)
+                .forTopic(RIMS)
+                .asReference(PlaceholderConstants.getPlaceHolderForRimNameResource(index))
+                .withValue(PlaceholderConstants.getPlaceHolderForRimName(index))
+                .build();
+
+        DbPatchDto.DbChangeDto slotFrontFileNameResourceUpdate = DbPatchDto.DbChangeDto.builder()
+                .withType(UPDATE_RES)
+                .forTopic(RIMS)
+                .asReference(PlaceholderConstants.getPlaceHolderForFrontRimFileNameResource(index))
+                .withValue(PlaceholderConstants.getPlaceHolderForFrontRimFileName(index))
+                .build();
+
+        DbPatchDto.DbChangeDto slotRearNameResourceUpdate = DbPatchDto.DbChangeDto.builder()
+                .withType(UPDATE_RES)
+                .forTopic(RIMS)
+                .asReference(PlaceholderConstants.getPlaceHolderForRearRimFileNameResource(index))
+                .withValue(PlaceholderConstants.getPlaceHolderForRearRimFileName(index))
+                .build();
+
+        return Stream.of(associationEntryUpdate, slotEntryUpdate, slotNameResourceUpdate, slotFrontFileNameResourceUpdate, slotRearNameResourceUpdate);
     }
 
     private void applyPerformancePackage(List<DbDto> topicObjects, String slotRef) throws ReflectiveOperationException, IOException {
