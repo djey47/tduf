@@ -1,8 +1,8 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
 import com.esotericsoftware.minlog.Log;
-import com.google.common.base.Joiner;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBankInfoOutputDto;
 import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBatchInputDto;
@@ -90,7 +90,7 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
 
                 .filter((path) -> Files.isRegularFile(path))
 
-                .filter((path) -> EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+                .filter((path) -> EXTENSION_BANKS.equalsIgnoreCase(FilesHelper.getExtension(path.toString())))
 
                 .findAny().get();
     }

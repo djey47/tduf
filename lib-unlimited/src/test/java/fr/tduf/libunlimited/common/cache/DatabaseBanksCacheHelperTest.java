@@ -284,7 +284,7 @@ public class DatabaseBanksCacheHelperTest {
 
                 .filter((path) -> Files.isRegularFile(path))
 
-                .filter((path) -> EXTENSION_JSON.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+                .filter((path) -> EXTENSION_JSON.equalsIgnoreCase(fr.tduf.libunlimited.common.helper.FilesHelper.getExtension(path.toString())))
 
                 .forEach((path) -> {
                     try {

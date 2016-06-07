@@ -14,7 +14,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.regex.Matcher;
 
-import static com.google.common.io.Files.getFileExtension;
 import static fr.tduf.gui.installer.common.InstallerConstants.*;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
 import static java.util.Arrays.asList;
@@ -53,7 +52,7 @@ class CopyFilesStep extends GenericStep {
 
                 .filter(Files::isRegularFile)
 
-                .filter(path -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(getFileExtension(path.toString())))
+                .filter(path -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(FilesHelper.getExtension(path.toString())))
 
                 .forEach(path -> {
                     try {

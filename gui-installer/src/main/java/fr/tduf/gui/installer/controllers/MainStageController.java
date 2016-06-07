@@ -17,6 +17,7 @@ import fr.tduf.gui.installer.services.DatabaseLoader;
 import fr.tduf.gui.installer.services.StepsCoordinator;
 import fr.tduf.gui.installer.steps.GenericStep;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
@@ -43,7 +44,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static com.google.common.io.Files.getFileExtension;
 import static fr.tduf.gui.installer.common.InstallerConstants.DIRECTORY_DATABASE;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.util.Objects.requireNonNull;
@@ -370,7 +370,7 @@ public class MainStageController extends AbstractGuiController {
 
                     .filter(Files::isRegularFile)
 
-                    .filter(path -> EXTENSION_JSON.equalsIgnoreCase(getFileExtension(path.toString())))
+                    .filter(path -> EXTENSION_JSON.equalsIgnoreCase(FilesHelper.getExtension(path.toString())))
 
                     .findFirst()
 

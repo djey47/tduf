@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.common.helper;
 
 import fr.tduf.gui.installer.domain.DatabaseContext;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 
@@ -31,7 +32,7 @@ public class InstallerTestsHelper {
 
                 .filter((path) -> Files.isRegularFile(path))
 
-                .filter((path) -> EXTENSION_JSON.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+                .filter((path) -> EXTENSION_JSON.equalsIgnoreCase(FilesHelper.getExtension(path.toString())))
 
                 .forEach((path) -> {
                     try {

@@ -45,7 +45,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
-import static com.google.common.io.Files.getFileExtension;
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
@@ -342,7 +341,7 @@ public class DatabaseTool extends GenericTool {
     }
 
     private Map<String, ?> convertPatch(String sourcePatchFile) throws IOException, SAXException, ParserConfigurationException, URISyntaxException, TransformerException {
-        boolean tdufSource = EXTENSION_JSON.equalsIgnoreCase(getFileExtension(sourcePatchFile));
+        boolean tdufSource = EXTENSION_JSON.equalsIgnoreCase(FilesHelper.getExtension(sourcePatchFile));
 
         Path patchPath = Paths.get(sourcePatchFile);
 
@@ -480,7 +479,7 @@ public class DatabaseTool extends GenericTool {
 
                 .filter((path) -> Files.isRegularFile(path))
 
-                .filter((path) -> EXTENSION_JSON.equalsIgnoreCase(getFileExtension(path.toString())))
+                .filter((path) -> EXTENSION_JSON.equalsIgnoreCase(FilesHelper.getExtension(path.toString())))
 
                 .sorted(Path::compareTo)
 
