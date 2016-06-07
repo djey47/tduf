@@ -16,7 +16,6 @@ import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderConstants;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -53,7 +52,37 @@ class UpdateDatabaseStep extends GenericStep {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
 
-        PatchProperties patchProperties = getDatabaseContext().getPatchProperties();
+        enhancePatchObject();
+
+        applyMiniPatch();
+
+        applyPerformancePackage(getDatabaseContext().getPatchProperties().getVehicleSlotReference().get());
+    }
+
+    void enhancePatchObjectWithPaintJobs(VehicleSlot vehicleSlot) {
+        Log.info(THIS_CLASS_NAME, "->Adding paint jobs changes to initial patch");
+
+        enhancePatchObjectWithExteriors(vehicleSlot);
+
+        if (!vehicleSlot.getPaintJobs().isEmpty()) {
+            enhancePatchObjectWithInteriors(vehicleSlot.getPaintJobs().get(0).getInteriorPatternRefs());
+        }
+    }
+
+    // TODO see if bikes support more than 1 rim set
+    void enhancePatchObjectWithRims(VehicleSlot vehicleSlot) {
+        Log.info(THIS_CLASS_NAME, "->Adding rim changes to initial patch");
+
+        AtomicInteger rimIndex = new AtomicInteger(1);
+        List<DbPatchDto.DbChangeDto> changeObjectsForRims = vehicleSlot.getRims().stream()
+                .flatMap(rimSlot -> createChangeObjectsForRims(vehicleSlot, rimSlot, rimIndex))
+                .collect(toList());
+
+        getDatabaseContext().getPatchObject().getChanges().addAll(changeObjectsForRims);
+    }
+
+    private void enhancePatchObject() {
+        PatchProperties patchProperties = getDatabaseContext().getPatchProperties() ;
 
         if(patchProperties.getDealerReference().isPresent()
                 && patchProperties.getDealerSlot().isPresent()) {
@@ -67,36 +96,6 @@ class UpdateDatabaseStep extends GenericStep {
                     enhancePatchObjectWithPaintJobs(vehicleSlot);
                     enhancePatchObjectWithRims(vehicleSlot);
                 });
-
-        final List<DbDto> topicObjects = getDatabaseContext().getTopicObjects();
-        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, topicObjects);
-
-        Log.info(THIS_CLASS_NAME, "->Applying TDUF mini patch...");
-        PatchProperties effectiveProperties = patcher.applyWithProperties(getDatabaseContext().getPatchObject(), patchProperties);
-
-        Path backupPath = Paths.get(getInstallerConfiguration().getBackupDirectory());
-        writeEffectiveProperties(backupPath, effectiveProperties);
-        writeEffectivePatch(backupPath, getDatabaseContext().getPatchObject());
-
-        String slotRef = patchProperties.getVehicleSlotReference().get();
-        applyPerformancePackage(topicObjects, slotRef);
-    }
-
-    private void writeEffectiveProperties(Path backupPath, PatchProperties patchProperties) throws IOException {
-        String targetPropertyFile = backupPath.resolve(FileConstants.FILE_NAME_EFFECTIVE_PROPERTIES).toString();
-
-        Log.info(THIS_CLASS_NAME, "->Writing effective properties to " + targetPropertyFile + "...");
-
-        final OutputStream outputStream = new FileOutputStream(targetPropertyFile);
-        patchProperties.store(outputStream, null);
-    }
-
-    private void writeEffectivePatch(Path backupPath, DbPatchDto patchObject) throws IOException {
-        String targetPatchFile = backupPath.resolve(FileConstants.FILE_NAME_EFFECTIVE_PATCH).toString();
-
-        Log.info(THIS_CLASS_NAME, "->Writing effective patch to " + targetPatchFile + "...");
-
-        FilesHelper.writeJsonObjectToFile(patchObject, targetPatchFile);
     }
 
     private void enhancePatchObjectWithLocationChange() {
@@ -129,16 +128,6 @@ class UpdateDatabaseStep extends GenericStep {
         getDatabaseContext().getPatchObject().getChanges().add(changeObject);
     }
 
-    void enhancePatchObjectWithPaintJobs(VehicleSlot vehicleSlot) {
-        Log.info(THIS_CLASS_NAME, "->Adding paint jobs changes to initial patch");
-
-        enhancePatchObjectWithExteriors(vehicleSlot);
-
-        if (!vehicleSlot.getPaintJobs().isEmpty()) {
-            enhancePatchObjectWithInteriors(vehicleSlot.getPaintJobs().get(0).getInteriorPatternRefs());
-        }
-    }
-
     private void enhancePatchObjectWithExteriors(VehicleSlot vehicleSlot) {
         AtomicInteger exteriorIndex = new AtomicInteger(1);
         List<DbPatchDto.DbChangeDto> changeObjectsForPaintJobs = vehicleSlot.getPaintJobs().stream()
@@ -156,14 +145,14 @@ class UpdateDatabaseStep extends GenericStep {
 
                 .filter(intRef -> !DatabaseConstants.REF_NO_INTERIOR.equals(intRef))
 
-                .map(intRef -> createChangeObjectsForInterior(intRef, interiorIndex))
+                .map(intRef -> createChangeObjectForInterior(intRef, interiorIndex))
 
                 .collect(toList());
 
         getDatabaseContext().getPatchObject().getChanges().addAll(changeObjectsForInteriors);
     }
 
-    private Stream<? extends DbPatchDto.DbChangeDto> createChangeObjectsForExterior(VehicleSlot vehicleSlot, PaintJob paintJob, AtomicInteger exteriorIndex) {
+    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsForExterior(VehicleSlot vehicleSlot, PaintJob paintJob, AtomicInteger exteriorIndex) {
         if (!getDatabaseContext().getPatchProperties().getExteriorMainColorId(paintJob.getRank()).isPresent()) {
             return Stream.empty();
         }
@@ -213,7 +202,7 @@ class UpdateDatabaseStep extends GenericStep {
         return Stream.of(entryUpdateChange, resourceUpdateChange);
     }
 
-    private DbPatchDto.DbChangeDto createChangeObjectsForInterior(String intRef, AtomicInteger interiorIndex) {
+    private DbPatchDto.DbChangeDto createChangeObjectForInterior(String intRef, AtomicInteger interiorIndex) {
         int index = interiorIndex.getAndIncrement();
         return DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE)
@@ -229,18 +218,6 @@ class UpdateDatabaseStep extends GenericStep {
                         "0"
                 ))
                 .build();
-    }
-
-    // TODO see if bikes support more than 1 rim set
-    void enhancePatchObjectWithRims(VehicleSlot vehicleSlot) {
-        Log.info(THIS_CLASS_NAME, "->Adding rim changes to initial patch");
-
-        AtomicInteger rimIndex = new AtomicInteger(1);
-        List<DbPatchDto.DbChangeDto> changeObjectsForRims = vehicleSlot.getRims().stream()
-                .flatMap(rimSlot -> createChangeObjectsForRims(vehicleSlot, rimSlot, rimIndex))
-                .collect(toList());
-
-        getDatabaseContext().getPatchObject().getChanges().addAll(changeObjectsForRims);
     }
 
     private Stream<DbPatchDto.DbChangeDto> createChangeObjectsForRims(VehicleSlot vehicleSlot, RimSlot rimSlot, AtomicInteger rimIndex) {
@@ -306,7 +283,19 @@ class UpdateDatabaseStep extends GenericStep {
         return Stream.of(associationEntryUpdate, slotEntryUpdate, slotNameResourceUpdate, slotFrontFileNameResourceUpdate, slotRearNameResourceUpdate);
     }
 
-    private void applyPerformancePackage(List<DbDto> topicObjects, String slotRef) throws ReflectiveOperationException, IOException {
+    private void applyMiniPatch() throws ReflectiveOperationException, IOException {
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseContext().getTopicObjects());
+
+        Log.info(THIS_CLASS_NAME, "->Applying TDUF mini patch...");
+        Path backupPath = Paths.get(getInstallerConfiguration().getBackupDirectory());
+        writeEffectivePatch(backupPath, getDatabaseContext().getPatchObject());
+
+        PatchProperties effectiveProperties = patcher.applyWithProperties(getDatabaseContext().getPatchObject(), getDatabaseContext().getPatchProperties());
+
+        writeEffectiveProperties(backupPath, effectiveProperties);
+    }
+
+    private void applyPerformancePackage(String slotRef) throws ReflectiveOperationException, IOException {
         Path assetPath = Paths.get(getInstallerConfiguration().getAssetsDirectory(), InstallerConstants.DIRECTORY_DATABASE);
         Optional<Path> potentialPPFilePath;
         try (Stream<Path> assetStream = Files.walk(assetPath, 1)) {
@@ -324,10 +313,27 @@ class UpdateDatabaseStep extends GenericStep {
             return;
         }
 
-        final TdupeGateway tdupeGateway = AbstractDatabaseHolder.prepare(TdupeGateway.class, topicObjects);
+        final TdupeGateway tdupeGateway = AbstractDatabaseHolder.prepare(TdupeGateway.class, getDatabaseContext().getTopicObjects());
 
         String ppFilePath = potentialPPFilePath.get().toString();
         Log.info(THIS_CLASS_NAME, "->Applying TDUPE Performance pack: " + ppFilePath + "...");
         tdupeGateway.applyPerformancePackToEntryWithReference(Optional.of(slotRef), ppFilePath);
+    }
+
+    private void writeEffectivePatch(Path backupPath, DbPatchDto patchObject) throws IOException {
+        String targetPatchFile = backupPath.resolve(FileConstants.FILE_NAME_EFFECTIVE_PATCH).toString();
+
+        Log.info(THIS_CLASS_NAME, "->Writing effective patch to " + targetPatchFile + "...");
+
+        FilesHelper.writeJsonObjectToFile(patchObject, targetPatchFile);
+    }
+
+    private void writeEffectiveProperties(Path backupPath, PatchProperties patchProperties) throws IOException {
+        String targetPropertyFile = backupPath.resolve(FileConstants.FILE_NAME_EFFECTIVE_PROPERTIES).toString();
+
+        Log.info(THIS_CLASS_NAME, "->Writing effective properties to " + targetPropertyFile + "...");
+
+        final OutputStream outputStream = new FileOutputStream(targetPropertyFile);
+        patchProperties.store(outputStream, null);
     }
 }
