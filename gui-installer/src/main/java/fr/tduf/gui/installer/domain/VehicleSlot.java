@@ -15,7 +15,10 @@ public class VehicleSlot {
     private String ref;
 
     private Resource fileName;
+
     private RimSlot defaultRims;
+    private List<RimSlot> rims;
+
     private int carIdentifier;
     private Resource brandName;
     private Resource realName;
@@ -90,6 +93,10 @@ public class VehicleSlot {
         return paintJobs;
     }
 
+    public List<RimSlot> getRims() {
+        return rims;
+    }
+
     /**
      * Creates custom VehicleSlot instances.
      */
@@ -97,6 +104,7 @@ public class VehicleSlot {
         private String ref;
         private Resource fileName;
         private RimSlot defaultRims;
+        private List<RimSlot> rims = new ArrayList<>();
         private int carIdentifier;
         private Resource realName;
         private Resource brandName;
@@ -134,8 +142,11 @@ public class VehicleSlot {
             return this;
         }
 
-        public VehicleSlotBuilder withDefaultRims(RimSlot rims) {
-            this.defaultRims = rims;
+        public VehicleSlotBuilder withDefaultRims(RimSlot rim) {
+            this.defaultRims = rim;
+            if (!rims.contains(rim)) {
+                rims.add(rim);
+            }
             return this;
         }
 
@@ -164,10 +175,21 @@ public class VehicleSlot {
             return this;
         }
 
+        public VehicleSlotBuilder addRim(RimSlot rimSlot) {
+            this.rims.add(rimSlot);
+            return this;
+        }
+
+        public VehicleSlotBuilder addRims(List<RimSlot> rimSlots) {
+            this.rims.addAll(rimSlots);
+            return this;
+        }
+
         public VehicleSlot build() {
             final VehicleSlot vehicleSlot = new VehicleSlot(this.ref);
 
             vehicleSlot.defaultRims = defaultRims;
+            vehicleSlot.rims = rims;
             vehicleSlot.fileName = fileName;
             vehicleSlot.carIdentifier = carIdentifier;
             vehicleSlot.realName = realName;
