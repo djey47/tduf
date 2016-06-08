@@ -346,7 +346,7 @@ public class DatabaseTool extends GenericTool {
         Path patchPath = Paths.get(sourcePatchFile);
 
         String outputExtension = tdufSource ? "pch" : EXTENSION_JSON;
-        String outputPatchFile = Paths.get(patchPath.getParent().toString(), com.google.common.io.Files.getNameWithoutExtension(sourcePatchFile) + "." + outputExtension).toString();
+        String outputPatchFile = Paths.get(patchPath.getParent().toString(), FilesHelper.getNameWithoutExtension(sourcePatchFile) + "." + outputExtension).toString();
 
         outLine("-> Source patch file: " + sourcePatchFile);
         outLine("Converting patch, please wait...");
