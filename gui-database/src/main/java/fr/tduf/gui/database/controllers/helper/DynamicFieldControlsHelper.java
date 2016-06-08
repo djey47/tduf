@@ -20,6 +20,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -238,7 +239,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         checkBox.setPadding(new Insets(0, 5, 0, 5));
         checkBox.setDisable(fieldReadOnly);
 
-        if (!Strings.isNullOrEmpty(ref.getComment())) {
+        if (StringUtils.isNotEmpty(ref.getComment())) {
             checkBox.setTooltip(new Tooltip(ref.getComment()));
         }
 

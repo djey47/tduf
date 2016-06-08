@@ -1,8 +1,8 @@
 package fr.tduf.gui.database.converter;
 
-import com.google.common.base.Strings;
 import fr.tduf.gui.database.common.DisplayConstants;
 import javafx.util.converter.NumberStringConverter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Converts a percent number ranging from 0 to 100 from/to a raw value in range [0..1].
@@ -22,7 +22,7 @@ public class PercentNumberToStringConverter extends NumberStringConverter {
 
     @Override
     public Number fromString(String percentRawValue) {
-        if (Strings.isNullOrEmpty(percentRawValue)) {
+        if (StringUtils.isEmpty(percentRawValue)) {
             return null;
         }
 

@@ -1,7 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
-import com.google.common.base.Strings;
 import fr.tduf.gui.common.AppConstants;
 import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
@@ -63,14 +62,13 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static java.util.Optional.*;
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.size;
 import static javafx.beans.binding.Bindings.when;
 import static javafx.concurrent.Worker.State.FAILED;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
-import static javafx.scene.control.Alert.AlertType.ERROR;
-import static javafx.scene.control.Alert.AlertType.INFORMATION;
-import static javafx.scene.control.Alert.AlertType.WARNING;
+import static javafx.scene.control.Alert.AlertType.*;
 
 /**
  * Makes it a possible to intercept all GUI events.
@@ -250,7 +248,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleResetDatabaseCacheMenuItemAction");
 
         String databaseLocation = databaseLocationTextField.getText();
-        if (Strings.isNullOrEmpty(databaseLocation)) {
+        if (StringUtils.isEmpty(databaseLocation)) {
             return;
         }
 
@@ -262,7 +260,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleCheckButtonAction");
 
         String databaseLocation = databaseLocationTextField.getText();
-        if (Strings.isNullOrEmpty(databaseLocation)) {
+        if (StringUtils.isEmpty(databaseLocation)) {
             return;
         }
 

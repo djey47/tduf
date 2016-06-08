@@ -1,7 +1,6 @@
 package fr.tduf.gui.installer.controllers;
 
 import com.esotericsoftware.minlog.Log;
-import com.google.common.base.Strings;
 import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
@@ -109,7 +108,7 @@ public class MainStageController extends AbstractGuiController {
     public void handleUpdateMagicMapMenuItemAction() throws StepException {
         Log.trace(THIS_CLASS_NAME, "->handleUpdateMagicMapMenuItemAction");
 
-        if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
+        if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
             return;
         }
 
@@ -120,7 +119,7 @@ public class MainStageController extends AbstractGuiController {
     public void handleResetDatabaseCacheMenuItemAction() throws Exception {
         Log.trace(THIS_CLASS_NAME, "->handleResetDatabaseCacheMenuItemAction");
 
-        if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
+        if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
             return;
         }
 
@@ -131,7 +130,7 @@ public class MainStageController extends AbstractGuiController {
     public void handleCheckDatabaseMenuItemAction() throws Exception {
         Log.trace(THIS_CLASS_NAME, "->handleCheckDatabaseMenuItemAction");
 
-        if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
+        if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
             return;
         }
 
@@ -149,7 +148,7 @@ public class MainStageController extends AbstractGuiController {
     public void handleInstallButtonAction() throws Exception {
         Log.trace(THIS_CLASS_NAME, "->handleInstallButtonAction");
 
-        if (Strings.isNullOrEmpty(tduDirectoryProperty.getValue())) {
+        if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
             return;
         }
 
