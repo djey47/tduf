@@ -132,6 +132,17 @@ public class FilesHelper {
         return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
     }
 
+    /**
+     * @return The file name without its path or extension.
+     */
+    public static String getNameWithoutExtension(String fullName) {
+        requireNonNull(fullName, "Full name is required.");
+
+        String fileName = new File(fullName).getName();
+        int dotIndex = fileName.lastIndexOf('.');
+        return (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
+    }
+
     /* Only applies to extracted files (test via ide) - not valid if inside a jar. */
     private static URI getUriFromResourcePath(String resourcePath) throws URISyntaxException {
         return thisClass.getResource(resourcePath).toURI();

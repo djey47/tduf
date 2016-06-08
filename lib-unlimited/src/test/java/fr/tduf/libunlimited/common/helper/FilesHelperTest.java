@@ -190,4 +190,39 @@ public class FilesHelperTest {
 
         // THEN: NPE
     }
+
+    @Test
+    public void getNameWithoutExtension_whenNoExtension_shouldReturnSameName() {
+        // GIVEN-WHEN
+        final String actualName = FilesHelper.getNameWithoutExtension("docker");
+
+        // THEN
+        assertThat(actualName).isEqualTo("docker");
+    }
+
+    @Test
+    public void getNameWithoutExtension_whenExtension() {
+        // GIVEN-WHEN
+        final String actualName = FilesHelper.getNameWithoutExtension("docker.conf");
+
+        // THEN
+        assertThat(actualName).isEqualTo("docker");
+    }
+
+    @Test
+    public void getNameWithoutExtension_whenExtension_andPath_shouldReturnWithoutPath() {
+        // GIVEN-WHEN
+        final String actualName = FilesHelper.getNameWithoutExtension("/etc/docker.conf");
+
+        // THEN
+        assertThat(actualName).isEqualTo("docker");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void getNameWithoutExtension_whenNullFileName_shouldThrowException() {
+        // GIVEN-WHEN
+        FilesHelper.getNameWithoutExtension(null);
+
+        // THEN: NPE
+    }
 }
