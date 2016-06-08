@@ -1,7 +1,8 @@
 package fr.tduf.gui.installer.domain.javafx;
 
-import com.google.common.base.MoreObjects;
 import javafx.beans.property.*;
+
+import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * Represents data to be displayed in a TableView.
@@ -47,11 +48,6 @@ public class VehicleSlotDataItem {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("carId", carId)
-                .add("reference", reference)
-                .add("name", name)
-                .add("modded", modded)
-                .toString();
+        return reflectionToString(this);
     }
 }

@@ -1,11 +1,12 @@
 package fr.tduf.gui.database.domain;
 
-import com.google.common.base.MoreObjects;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.util.Pair;
 
 import java.util.Optional;
+
+import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * Represents a browsed/selected resource with optional localization and topic information.
@@ -30,11 +31,7 @@ public class LocalizedResource {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("topic", topic)
-                .add("locale", locale)
-                .add("referenceValuePair", referenceValuePair)
-                .toString();
+        return reflectionToString(this);
     }
 
     public Pair<String, String> getReferenceValuePair() {
