@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.common.helper;
 
-import com.google.common.base.Strings;
+import fr.tduf.libunlimited.framework.base.Strings;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 
@@ -27,7 +27,7 @@ public class BitfieldHelper extends MetaDataHelper {
     public Optional<List<DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto>> getBitfieldReferenceForTopic(DbDto.Topic topic) {
         return databaseMetadataObject.getTopics().stream()
 
-                .filter((topicMetaData) -> topicMetaData.getTopic() == topic)
+                .filter(topicMetaData -> topicMetaData.getTopic() == topic)
 
                 .findAny()
 
@@ -44,7 +44,7 @@ public class BitfieldHelper extends MetaDataHelper {
 
         return getBitfieldReferenceForTopic(topic)
 
-                .map((reference) -> resolveWithReference(reference, bitfieldRawValue));
+                .map(reference -> resolveWithReference(reference, bitfieldRawValue));
     }
 
     /**
@@ -58,7 +58,7 @@ public class BitfieldHelper extends MetaDataHelper {
 
         return getBitfieldReferenceForTopic(topic)
 
-                .map((reference) -> {
+                .map(reference -> {
                     int bitCount = reference.size();
                     if (bitIndex < 1 || bitIndex > bitCount) {
                         return bitfieldRawValue;
@@ -70,7 +70,7 @@ public class BitfieldHelper extends MetaDataHelper {
                     char[] chars = binaryString.toCharArray();
                     chars[binaryString.length() - bitIndex] = switchState ? BINARY_ONE : BINARY_ZERO;
 
-                    return Integer.valueOf(Integer.parseInt(new String(chars), 2)).toString();
+                    return Integer.toString(Integer.parseInt(new String(chars), 2));
                 });
     }
 
@@ -81,7 +81,7 @@ public class BitfieldHelper extends MetaDataHelper {
         List<Boolean> switches = new ArrayList<>();
         paddedBinaryValue.chars()
 
-                .mapToObj((bit) -> BINARY_ONE == (char) bit)
+                .mapToObj(bit -> BINARY_ONE == (char) bit)
 
                 .collect(toCollection(LinkedList::new))
 
