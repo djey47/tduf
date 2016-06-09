@@ -1,6 +1,5 @@
 package fr.tduf.libunlimited.high.files.db.common.helper;
 
-import com.google.common.annotations.VisibleForTesting;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.*;
@@ -37,9 +36,8 @@ public class DatabaseGenHelper {
     }
 
     /**
-     * Only exists for injecting mocks in tests
+     * Only exists for injecting mocks in tests. Do not remove!
      **/
-    @VisibleForTesting
     private DatabaseGenHelper(BulkDatabaseMiner databaseMiner, DatabaseChangeHelper changeHelper) {
         this.databaseMiner = databaseMiner;
         this.changeHelper = changeHelper;

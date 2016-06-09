@@ -1,8 +1,8 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
 import com.esotericsoftware.minlog.Log;
-import com.google.common.base.Joiner;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBankInfoOutputDto;
 import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBatchInputDto;
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import static fr.tduf.libunlimited.high.files.common.interop.GenuineGateway.CommandLineOperation.BANK_INFO;
+import static java.lang.String.join;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -33,7 +34,8 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
     public static final String EXTENSION_BANKS = "bnk";
     public static final String PREFIX_ORIGINAL_BANK_FILE = "original-";
 
-    private static final String PREFIX_PACKED_FILE_PATH = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\";
+    private static final String SEPARATOR_PACKED_PATH = "\\";
+    private static final String PREFIX_PACKED_FILE_PATH = join(SEPARATOR_PACKED_PATH, "D:", "Eden-Prog", "Games", "TestDrive", "Resources", "");
 
     public GenuineBnkGateway(CommandLineHelper commandLineHelper) {
         super(commandLineHelper);
@@ -83,11 +85,12 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
     }
 
     static Path searchOriginalBankPath(String inputDirectory) throws IOException {
+        // FIXME close Stream
         return Files.walk(Paths.get(inputDirectory), 1)
 
                 .filter((path) -> Files.isRegularFile(path))
 
-                .filter((path) -> EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+                .filter((path) -> EXTENSION_BANKS.equalsIgnoreCase(FilesHelper.getExtension(path.toString())))
 
                 .findAny().get();
     }
@@ -105,14 +108,14 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
         pathElements[pathElements.length - 2] = extension;
         pathElements[pathElements.length - 1] = name;
 
-        return PREFIX_PACKED_FILE_PATH + Joiner.on('\\').join(pathElements);
+        return PREFIX_PACKED_FILE_PATH + join(SEPARATOR_PACKED_PATH, (CharSequence[]) pathElements);
     }
 
     static Path getRealFilePathFromInternalPath(String internalPath, Path basePath) {
 
         Path filePath = Paths.get(internalPath
                 .replace(PREFIX_PACKED_FILE_PATH, "")
-                .replace("\\", File.separator));
+                .replace(SEPARATOR_PACKED_PATH, File.separator));
 
         int shortNameComponentIndex = filePath.getNameCount() - 1;
         int extensionComponentIndex = filePath.getNameCount() - 2;

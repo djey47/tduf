@@ -135,7 +135,7 @@ public class DatabaseBankHelper {
 
                 .forEach((filePath) -> {
 
-                    String fileExtension = com.google.common.io.Files.getFileExtension(filePath.toString());
+                    String fileExtension = FilesHelper.getExtension(filePath.toString());
                     String hierarchy = null;
                     if (targetBankFileName.equalsIgnoreCase(DATABASE_BANK_FILE_NAME)
                             && EXTENSION_DB_CONTENTS.equalsIgnoreCase(fileExtension)) {
@@ -211,7 +211,7 @@ public class DatabaseBankHelper {
 
                 .filter((filePath) -> filePath.getFileName().toString().startsWith(GenuineBnkGateway.PREFIX_ORIGINAL_BANK_FILE))
 
-                .filter((filePath) -> EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(filePath.toString())))
+                .filter((filePath) -> EXTENSION_BANKS.equalsIgnoreCase(FilesHelper.getExtension(filePath.toString())))
 
                 .forEach((filePath) -> {
                     Path shortFileName = filePath.getFileName();

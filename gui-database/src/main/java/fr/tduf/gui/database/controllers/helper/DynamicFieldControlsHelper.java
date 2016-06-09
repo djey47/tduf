@@ -1,6 +1,5 @@
 package fr.tduf.gui.database.controllers.helper;
 
-import com.google.common.base.Strings;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
@@ -9,6 +8,7 @@ import fr.tduf.gui.database.converter.BitfieldToStringConverter;
 import fr.tduf.gui.database.converter.PercentNumberToStringConverter;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
+import fr.tduf.libunlimited.framework.base.Strings;
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -20,6 +20,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -238,7 +239,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         checkBox.setPadding(new Insets(0, 5, 0, 5));
         checkBox.setDisable(fieldReadOnly);
 
-        if (!Strings.isNullOrEmpty(ref.getComment())) {
+        if (StringUtils.isNotEmpty(ref.getComment())) {
             checkBox.setTooltip(new Tooltip(ref.getComment()));
         }
 

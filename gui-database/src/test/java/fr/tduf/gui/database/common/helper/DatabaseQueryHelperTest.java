@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.google.common.primitives.Ints.asList;
+import static fr.tduf.libunlimited.framework.primitives.Ints.asList;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static java.util.Collections.singletonList;

@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.common.helper;
 
-import com.google.common.io.Files;
 import fr.tduf.libunlimited.common.game.domain.Locale;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -86,7 +86,7 @@ public class DbHelper {
     }
 
     private static Locale getLocaleFromFileName(String fileName) {
-        String fileExtension = Files.getFileExtension(fileName).toLowerCase();
+        String fileExtension = FilesHelper.getExtension(fileName).toLowerCase();
         return Locale.fromCode(fileExtension);
     }
 

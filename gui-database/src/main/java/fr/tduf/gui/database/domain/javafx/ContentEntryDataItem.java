@@ -1,10 +1,11 @@
 package fr.tduf.gui.database.domain.javafx;
 
-import com.google.common.base.MoreObjects;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.util.OptionalLong;
+
+import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * Represents a key-value pair to be displayed in a TableView.
@@ -44,10 +45,6 @@ public class ContentEntryDataItem {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("internalEntryId", internalEntryId)
-                .add("reference", reference)
-                .add("value", value)
-                .toString();
+        return reflectionToString(this);
     }
 }

@@ -1,10 +1,10 @@
 package fr.tduf.gui.database.converter;
 
-import com.google.common.base.Strings;
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.util.StringConverter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +35,7 @@ public class BitfieldToStringConverter extends StringConverter<Boolean>{
     @Override
     public String toString(Boolean switchState) {
         String rawValue = rawValueProperty.getValue();
-        if (Strings.isNullOrEmpty(rawValue)) {
+        if (StringUtils.isEmpty(rawValue)) {
             rawValue = String.valueOf(BINARY_ZERO);
         }
 
@@ -44,11 +44,12 @@ public class BitfieldToStringConverter extends StringConverter<Boolean>{
 
     @Override
     public Boolean fromString(String bitfieldRawValue) {
-        if (Strings.isNullOrEmpty(bitfieldRawValue)) {
-            bitfieldRawValue = String.valueOf(BINARY_ZERO);
+        String rawValue = bitfieldRawValue;
+        if (StringUtils.isEmpty(bitfieldRawValue)) {
+            rawValue = String.valueOf(BINARY_ZERO);
         }
 
-        Optional<List<Boolean>> resolvedValues = bitfieldHelper.resolve(currentTopic, bitfieldRawValue);
+        Optional<List<Boolean>> resolvedValues = bitfieldHelper.resolve(currentTopic, rawValue);
         if (resolvedValues.isPresent() && bitIndex <= resolvedValues.get().size()) {
             return resolvedValues.get().get(bitIndex - 1);
         }

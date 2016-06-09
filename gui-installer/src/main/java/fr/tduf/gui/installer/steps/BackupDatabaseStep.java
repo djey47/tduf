@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 
 import java.io.IOException;
@@ -10,7 +11,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
-import static com.google.common.io.Files.getFileExtension;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -33,7 +33,7 @@ class BackupDatabaseStep extends GenericStep {
 
             databaseStream.filter(Files::isRegularFile)
 
-                    .filter(filePath -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(getFileExtension(filePath.toString())))
+                    .filter(filePath -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(FilesHelper.getExtension(filePath.toString())))
 
                     .filter(bankFilePath -> bankFilePath.getFileName().toString().startsWith("DB"))
 

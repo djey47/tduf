@@ -51,7 +51,7 @@ public class DatabaseBankHelperTest {
 
 
         // WHEN
-        String actualDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseDirectory, Optional.<String>empty(), bankSupportMock);
+        String actualDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseDirectory, Optional.empty(), bankSupportMock);
 
 
         // THEN
@@ -96,7 +96,7 @@ public class DatabaseBankHelperTest {
     @Test(expected = NullPointerException.class)
     public void unpackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() throws IOException {
         // GIVEN-WHEN
-        DatabaseBankHelper.unpackDatabaseFromDirectory(null, Optional.<String>empty(), null);
+        DatabaseBankHelper.unpackDatabaseFromDirectory(null, Optional.empty(), null);
 
         // THEN: NPE
     }
@@ -137,7 +137,7 @@ public class DatabaseBankHelperTest {
     @Test(expected = NullPointerException.class)
     public void repackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() throws IOException {
         // GIVEN-WHEN
-        DatabaseBankHelper.repackDatabaseFromDirectory(null, null, Optional.<String>empty(), null);
+        DatabaseBankHelper.repackDatabaseFromDirectory(null, null, Optional.empty(), null);
 
         // THEN: NPE
     }
@@ -187,7 +187,7 @@ public class DatabaseBankHelperTest {
 
                 .filter(Files::isRegularFile)
 
-                .filter((path) -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(com.google.common.io.Files.getFileExtension(path.toString())))
+                .filter((path) -> GenuineBnkGateway.EXTENSION_BANKS.equalsIgnoreCase(fr.tduf.libunlimited.common.helper.FilesHelper.getExtension(path.toString())))
 
                 .forEach((path) -> {
                     try {

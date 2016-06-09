@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.patcher.dto.comparator;
 
-import com.google.common.collect.ComparisonChain;
 import fr.tduf.libunlimited.common.game.domain.Locale;
+import fr.tduf.libunlimited.framework.collect.ComparisonChain;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 
