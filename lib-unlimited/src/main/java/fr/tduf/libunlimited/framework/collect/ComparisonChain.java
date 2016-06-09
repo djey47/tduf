@@ -23,36 +23,11 @@ import fr.tduf.libunlimited.framework.primitives.Longs;
 import java.util.Comparator;
 
 /**
- * A utility for performing a chained comparison statement. For example:
- * <pre>   {@code
- *
- *   public int compareTo(Foo that) {
- *     return ComparisonChain.start()
- *         .compare(this.aString, that.aString)
- *         .compare(this.anInt, that.anInt)
- *         .compare(this.anEnum, that.anEnum, Ordering.natural().nullsLast())
- *         .result();
- *   }}</pre>
- *
- * <p>The value of this expression will have the same sign as the <i>first
- * nonzero</i> comparison result in the chain, or will be zero if every
- * comparison result was zero.
- *
- * <p>Performance note: Even though the {@code ComparisonChain} caller always
- * invokes its {@code compare} methods unconditionally, the {@code
- * ComparisonChain} implementation stops calling its inputs' {@link
- * Comparable#compareTo compareTo} and {@link Comparator#compare compare}
- * methods as soon as one of them returns a nonzero result. This optimization is
- * typically important only in the presence of expensive {@code compareTo} and
- * {@code compare} implementations.
- *
- * <p>See the Guava User Guide article on <a href=
- * "http://code.google.com/p/guava-libraries/wiki/CommonObjectUtilitiesExplained#compare/compareTo">
- * {@code ComparisonChain}</a>.
+ * A utility for performing a chained comparison statement.
  *
  * @author Mark Davis
  * @author Kevin Bourrillion
- * @since 2.0
+ * @author Jerome Canler
  */
 public abstract class ComparisonChain {
     private ComparisonChain() {}

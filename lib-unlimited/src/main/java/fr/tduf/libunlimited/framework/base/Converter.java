@@ -27,64 +27,10 @@ import static java.util.Objects.requireNonNull;
  * to {@code A}; used for converting back and forth between <i>different representations of the same
  * information</i>.
  *
- * <h3>Invertibility</h3>
- *
- * <p>The reverse operation <b>may</b> be a strict <i>inverse</i> (meaning that {@code
- * converter.reverse().convert(converter.convert(a)).equals(a)} is always true). However, it is
- * very common (perhaps <i>more</i> common) for round-trip conversion to be <i>lossy</i>. Consider
- * an example round-trip using {@link com.google.common.primitives.Doubles#stringConverter}:
- *
- * <ol>
- * <li>{@code stringConverter().convert("1.00")} returns the {@code Double} value {@code 1.0}
- * <li>{@code stringConverter().reverse().convert(1.0)} returns the string {@code "1.0"} --
- *     <i>not</i> the same string ({@code "1.00"}) we started with
- * </ol>
- *
- * <p>Note that it should still be the case that the round-tripped and original objects are
- * <i>similar</i>.
- *
- * <h3>Nullability</h3>
- *
- * <p>A converter always converts {@code null} to {@code null} and non-null references to non-null
- * references. It would not make sense to consider {@code null} and a non-null reference to be
- * "different representations of the same information", since one is distinguishable from
- * <i>missing</i> information and the other is not. The {@link #convert} method handles this null
- * behavior for all converters; implementations of {@link #doForward} and {@link #doBackward} are
- * guaranteed to never be passed {@code null}, and must never return {@code null}.
- *
-
- * <h3>Common ways to use</h3>
- *
- * <p>Getting a converter:
- *
- * <ul>
- * <li>Use a provided converter implementation, such as {@link Enums#stringConverter}, {@link
- *     com.google.common.primitives.Ints#stringConverter Ints.stringConverter} or the {@linkplain
- *     #reverse reverse} views of these.
- * <li>Convert between specific preset values using {@link
- *     com.google.common.collect.Maps#asConverter Maps.asConverter}. For example, use this to create
- *     a "fake" converter for a unit test. It is unnecessary (and confusing) to <i>mock</i> the
- *     {@code Converter} type using a mocking framework.
- * <li>Otherwise, extend this class and implement its {@link #doForward} and {@link #doBackward}
- *     methods.
- * </ul>
- *
- * <p>Using a converter:
- *
- * <ul>
- * <li>Convert one instance in the "forward" direction using {@code converter.convert(a)}.
- * <li>Convert multiple instances "forward" using {@code converter.convertAll(as)}.
- * <li>Convert in the "backward" direction using {@code converter.reverse().convert(b)} or {@code
- *     converter.reverse().convertAll(bs)}.
- * <li>Use {@code converter} or {@code converter.reverse()} anywhere a {@link Function} is accepted
- * <li><b>Do not</b> call {@link #doForward} or {@link #doBackward} directly; these exist only to be
- *     overridden.
- * </ul>
- *
  * @author Mike Ward
  * @author Kurt Alfred Kluever
  * @author Gregory Kick
- * @since 16.0
+ * @author Jerome Canler
  */
 public abstract class Converter<A, B> implements Function<A, B> {
     private final boolean handleNullAutomatically;

@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
  * instances.
  *
  * @author Kevin Bourrillion
- * @since 3.0
+ * @author Jerome Canler
  */
 public final class Strings {
     private Strings() {}

@@ -34,12 +34,8 @@ import static java.util.Objects.requireNonNull;
  * Static utility methods pertaining to {@code int} primitives, that are not
  * already found in either {@link Integer} or {@link Arrays}.
  *
- * <p>See the Guava User Guide article on <a href=
- * "http://code.google.com/p/guava-libraries/wiki/PrimitivesExplained">
- * primitive utilities</a>.
- *
  * @author Kevin Bourrillion
- * @since 1.0
+ * @author Jerome Canler
  */
 public final class Ints {
     private Ints() {}
