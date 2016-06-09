@@ -1227,66 +1227,6 @@
       "topic": "TUTORIALS",
       "entryLabelFieldRanks": [3,1,2],
       "fieldSettings": []
-    },
-    {
-      "name": "TEST-Remote resource",
-      "topic": "HAIR",
-      "fieldSettings": [
-        {
-          "rank": 1,
-          "name": "REF",
-          "readOnly": "true",
-          "label": "(REF) Haircut #"
-        }
-      ]
-    },
-    {
-      "name": "TEST-Hidden fields",
-      "topic": "BOTS",
-      "fieldSettings": [
-        {
-          "name": "PNJ",
-          "rank": 3,
-          "hidden": false
-        },
-        {
-          "name": "Difficulty",
-          "rank": 4,
-          "hidden": true
-        },
-        {
-          "name": "ZoneIndex",
-          "rank": 5,
-          "hidden": true
-        },
-        {
-          "name": "BotCar",
-          "rank": 6,
-          "hidden": true
-        },
-        {
-          "name": "ColorIndex",
-          "rank": 7,
-          "hidden": true
-        },
-        {
-          "name": "Rarety",
-          "rank": 8,
-          "hidden": true
-        }
-      ]
-    },
-    {
-      "name": "TEST-Readonly link",
-      "topic": "CAR_PHYSICS_DATA",
-      "topicLinks": [
-        {
-          "topic": "CAR_RIMS",
-          "remoteReferenceProfile": "Rims",
-          "readOnly": true
-        }
-      ],
-      "fieldSettings": []
     }
   ]
 }
