@@ -50,7 +50,7 @@ public class UserInputHelper {
         Log.info(THIS_CLASS_NAME, "->Selecting vehicle slot");
 
         VehicleSlotsStageController slotsBrowserController = initSlotsBrowserController(parentWindow);
-        VehicleSlotDataItem selectedItem = slotsBrowserController.initAndShowModalDialog(empty(), context.getMiner());
+        VehicleSlotDataItem selectedItem = slotsBrowserController.initAndShowModalDialog(context.getMiner());
 
         Log.info(THIS_CLASS_NAME, "->Using vehicle slot: " + selectedItem);
 

@@ -24,13 +24,14 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
 
-import java.util.Optional;
-
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
+/**
+ * FX Controller for vehicle slot selector
+ */
 public class VehicleSlotsStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = VehicleSlotsStageController.class.getSimpleName();
 
@@ -98,12 +99,10 @@ public class VehicleSlotsStageController extends AbstractGuiController {
     /**
      * Creates and display dialog.
      *
-     * @param potentialSlotReference : slot reference to be selected (optional)
      * @param miner                  : instance of database miner to parse contents
      * @return selected item, if any.
      */
-    // TODO remove unused first argument
-    public VehicleSlotDataItem initAndShowModalDialog(Optional<String> potentialSlotReference, BulkDatabaseMiner miner) throws Exception {
+    public VehicleSlotDataItem initAndShowModalDialog(BulkDatabaseMiner miner) throws Exception {
         requireNonNull(miner, "Database miner instance is required.");
 
         vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
@@ -113,8 +112,6 @@ public class VehicleSlotsStageController extends AbstractGuiController {
         currentTopicProperty.setValue(CAR_PHYSICS_DATA);
 
         updateSlotsStageData(VehicleSlotsHelper.SlotKind.TDUCP, VehicleSlotsHelper.VehicleKind.DRIVABLE);
-
-        potentialSlotReference.ifPresent(this::selectEntryInTableAndScroll);
 
         showModalWindow();
 
@@ -176,20 +173,6 @@ public class VehicleSlotsStageController extends AbstractGuiController {
         carIdColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().carIdProperty());
 
         slotsTableView.setItems(slotsData);
-    }
-
-    // Ignore warning
-    private void selectEntryInTableAndScroll(String entryReference) {
-        slotsData.stream()
-
-                .filter(resource -> resource.referenceProperty().get().equals(entryReference))
-
-                .findAny()
-
-                .ifPresent(browsedResource -> {
-                    slotsTableView.getSelectionModel().select(browsedResource);
-                    slotsTableView.scrollTo(browsedResource);
-                });
     }
 
     private void updateSlotsStageData(VehicleSlotsHelper.SlotKind slotKind, VehicleSlotsHelper.VehicleKind vehicleKind) {

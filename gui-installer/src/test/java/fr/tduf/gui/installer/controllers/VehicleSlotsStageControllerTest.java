@@ -18,9 +18,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
-
-import static java.util.Optional.empty;
 
 /**
  * To display stage without running whole application.
@@ -44,15 +41,9 @@ public class VehicleSlotsStageControllerTest {
     }
 
     @Test
-    public void display_whenEmptySlotRef() throws Exception {
+    public void display() throws Exception {
         // GIVEN-WHEN
-        initSlotsBrowserStageController(null).initAndShowModalDialog(empty(), BulkDatabaseMiner.load(databaseObjects));
-    }
-
-    @Test
-    public void display_whenProvidedSlotRef() throws Exception {
-        // GIVEN-WHEN
-        initSlotsBrowserStageController(null).initAndShowModalDialog(Optional.of("698882776"), BulkDatabaseMiner.load(databaseObjects));
+        initSlotsBrowserStageController(null).initAndShowModalDialog(BulkDatabaseMiner.load(databaseObjects));
     }
 
     private static VehicleSlotsStageController initSlotsBrowserStageController(Window mainWindow) throws IOException {

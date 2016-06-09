@@ -5,7 +5,7 @@ import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- *
+ * Converts table items to String representation and vice-versa
  */
 public class VehicleSlotDataItemToStringConverter extends StringConverter<VehicleSlotDataItem> {
     @Override
