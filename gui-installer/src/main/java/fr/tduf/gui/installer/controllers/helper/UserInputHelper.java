@@ -50,23 +50,17 @@ public class UserInputHelper {
         Log.info(THIS_CLASS_NAME, "->Selecting vehicle slot");
 
         VehicleSlotsStageController slotsBrowserController = initSlotsBrowserController(parentWindow);
-        Optional<VehicleSlotDataItem> selectedItem = slotsBrowserController.initAndShowModalDialog(empty(), context.getMiner());
+        VehicleSlotDataItem selectedItem = slotsBrowserController.initAndShowModalDialog(empty(), context.getMiner());
 
         Log.info(THIS_CLASS_NAME, "->Using vehicle slot: " + selectedItem);
 
-        Optional<String> potentialVehicleSlot = selectedItem
-                .map(item -> item.referenceProperty().get());
-        potentialVehicleSlot.ifPresent(slotRef -> {
-            VehicleSlot vehicleSlot = VehicleSlotsHelper.load(context.getMiner()).getVehicleSlotFromReference(slotRef)
-                    .orElseThrow(() -> new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, slotRef)));
+        String slotRef = selectedItem.referenceProperty().get();
+        VehicleSlot vehicleSlot = VehicleSlotsHelper.load(context.getMiner()).getVehicleSlotFromReference(slotRef)
+                .orElseThrow(() -> new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, slotRef)));
 
-            createPatchPropertiesForVehicleSlot(vehicleSlot, context.getPatchProperties());
+        createPatchPropertiesForVehicleSlot(vehicleSlot, context.getPatchProperties());
 
-            context.getUserSelection().selectVehicleSlot(vehicleSlot);
-        });
-        if (!potentialVehicleSlot.isPresent()) {
-            Log.info(THIS_CLASS_NAME, "->No vehicle slot selected, will be creating a new one.");
-        }
+        context.getUserSelection().selectVehicleSlot(vehicleSlot);
     }
 
     /**

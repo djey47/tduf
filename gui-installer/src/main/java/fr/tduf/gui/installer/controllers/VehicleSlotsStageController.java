@@ -29,8 +29,6 @@ import java.util.Optional;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 public class VehicleSlotsStageController extends AbstractGuiController {
@@ -60,9 +58,9 @@ public class VehicleSlotsStageController extends AbstractGuiController {
 
     private Property<DbDto.Topic> currentTopicProperty;
 
-    private Property<Optional<VehicleSlotDataItem>> selectedSlotProperty;
+    private Property<VehicleSlotDataItem> selectedSlotProperty;
 
-    private Optional<VehicleSlotDataItem> returnedSlot;
+    private VehicleSlotDataItem returnedSlot;
 
     @Override
     public void init() {
@@ -72,21 +70,12 @@ public class VehicleSlotsStageController extends AbstractGuiController {
     }
 
     @FXML
-    private void handleCreateNewSlotHyperlinkAction() {
-        Log.trace(THIS_CLASS_NAME, "->handleCreateNewSlotHyperlinkAction");
-
-        returnedSlot = empty();
-
-        closeWindow();
-    }
-
-    @FXML
     private void handleSlotsTableMouseClick(MouseEvent mouseEvent) {
         Log.trace(THIS_CLASS_NAME, "->handleSlotsTableMouseClick");
 
         if (MouseButton.PRIMARY == mouseEvent.getButton()) {
             TableViewHelper.getMouseSelectedItem(mouseEvent, VehicleSlotDataItem.class)
-                    .ifPresent((item) -> selectedSlotProperty.setValue(of(item)));
+                    .ifPresent((item) -> selectedSlotProperty.setValue(item));
         }
     }
 
@@ -113,12 +102,13 @@ public class VehicleSlotsStageController extends AbstractGuiController {
      * @param miner                  : instance of database miner to parse contents
      * @return selected item, if any.
      */
-    public Optional<VehicleSlotDataItem> initAndShowModalDialog(Optional<String> potentialSlotReference, BulkDatabaseMiner miner) throws Exception {
+    // TODO remove unused first argument
+    public VehicleSlotDataItem initAndShowModalDialog(Optional<String> potentialSlotReference, BulkDatabaseMiner miner) throws Exception {
         requireNonNull(miner, "Database miner instance is required.");
 
         vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
 
-        selectedSlotProperty.setValue(empty());
+        selectedSlotProperty.setValue(null);
 
         currentTopicProperty.setValue(CAR_PHYSICS_DATA);
 
