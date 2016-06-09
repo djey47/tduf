@@ -9,6 +9,7 @@ import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBatchInputDto;
 import fr.tduf.libunlimited.high.files.common.interop.GenuineGateway;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
@@ -19,6 +20,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.high.files.common.interop.GenuineGateway.CommandLineOperation.BANK_INFO;
 import static java.lang.String.join;
@@ -37,6 +39,9 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
     private static final String SEPARATOR_PACKED_PATH = "\\";
     private static final String PREFIX_PACKED_FILE_PATH = join(SEPARATOR_PACKED_PATH, "D:", "Eden-Prog", "Games", "TestDrive", "Resources", "");
 
+    /**
+     * Main Constructor with mandatory command-line helper.
+     */
     public GenuineBnkGateway(CommandLineHelper commandLineHelper) {
         super(commandLineHelper);
     }
@@ -85,14 +90,13 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
     }
 
     static Path searchOriginalBankPath(String inputDirectory) throws IOException {
-        // FIXME close Stream
-        return Files.walk(Paths.get(inputDirectory), 1)
-
-                .filter((path) -> Files.isRegularFile(path))
-
-                .filter((path) -> EXTENSION_BANKS.equalsIgnoreCase(FilesHelper.getExtension(path.toString())))
-
-                .findAny().get();
+        try (Stream<Path> stream =  Files.walk(Paths.get(inputDirectory))) {
+            return stream
+                    .filter(Files::isRegularFile)
+                    .filter(path -> EXTENSION_BANKS.equalsIgnoreCase(FilesHelper.getExtension(path.toString())))
+                    .findAny()
+                    .orElseThrow(() -> new IOException("No original bank has been found in this directory: " + inputDirectory));
+        }
     }
 
     static String getInternalPathFromRealPath(Path realPath, Path basePath) {
@@ -131,9 +135,9 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
         long hash = fileName.hashCode();
 
         if (hash >= 0) {
-            return Long.valueOf(hash).toString();
+            return Long.toString(hash);
         } else {
-            return Long.valueOf(Integer.MAX_VALUE + Math.abs(hash)).toString();
+            return Long.toString(Integer.MAX_VALUE + Math.abs(hash));
         }
     }
 
@@ -142,7 +146,7 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
 
                 .map(PackedFileInfoDto::getFullName)
 
-                .map((packedPath) -> {
+                .map(packedPath -> {
                     String externalFile = getRealFilePathFromInternalPath(packedPath, Paths.get(externalDirectory)).toString();
 
                     return GenuineBatchInputDto.Item.builder()
@@ -169,8 +173,7 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
 
             callCommandLineInterface(CommandLineOperation.BANK_BATCH_UNPACK, bankFile, batchInputFileName);
         } catch (IOException e) {
-            // Do not fail here.
-            e.printStackTrace();
+            Log.error(ExceptionUtils.getStackTrace(e));
         }
     }
 
@@ -190,7 +193,7 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
     private static BankInfoDto mapGenuineBankInfoToBankInfoObject(GenuineBankInfoOutputDto outputObject) {
         List<PackedFileInfoDto> packedFilesInfos = outputObject.getPackedFiles().stream()
 
-                .map((packedFileInfo) -> PackedFileInfoDto.builder()
+                .map(packedFileInfo -> PackedFileInfoDto.builder()
                         .forReference(generatePackedFileReference(packedFileInfo.getName()))
                         .withSize(packedFileInfo.getFileSize())
                         .withFullName(packedFileInfo.getName())
@@ -209,12 +212,11 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
 
     private static void createExtractTargetDirectories(GenuineBatchInputDto batchInputObject) {
         batchInputObject.getItems()
-                .forEach((item) -> {
+                .forEach(item -> {
                     try {
                         Files.createDirectories(Paths.get(item.getExternalFile()).getParent());
                     } catch (IOException e) {
-                        // Do not fail here.
-                        e.printStackTrace();
+                        Log.error(ExceptionUtils.getStackTrace(e));
                     }
                 });
     }

@@ -1,9 +1,9 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.libunlimited.common.system.domain.ProcessResult;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.common.system.domain.ProcessResult;
 import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBatchInputDto;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -23,7 +23,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.EXE_TDUMT_CLI;
 import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.PREFIX_ORIGINAL_BANK_FILE;
@@ -180,12 +179,12 @@ public class GenuineBnkGatewayTest {
         assertThat(actualReference).isEqualTo("3367621430");
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IOException.class)
     public void searchOriginalBankFilePath_whenNoFilePresent_shouldThrowException() throws IOException {
         // GIVEN-WHEN
         GenuineBnkGateway.searchOriginalBankPath(tempDirectory);
 
-        // THEN: exception
+        // THEN: IOE
     }
 
     @Test
