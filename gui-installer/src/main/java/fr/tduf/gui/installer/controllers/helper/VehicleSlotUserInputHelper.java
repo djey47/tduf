@@ -87,6 +87,7 @@ public class VehicleSlotUserInputHelper {
         createPatchPropertiesForPaintJobs(vehicleSlot, patchProperties);
     }
 
+    // TODO should be handled by UpdateDatabase step
     private static void createPatchPropertiesForRims(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
         String selectedRimReference = vehicleSlot.getDefaultRims().getRef();
         String selectedResourceRimBrandReference = vehicleSlot.getDefaultRims().getParentDirectoryName().getRef();
@@ -108,6 +109,7 @@ public class VehicleSlotUserInputHelper {
         patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, 1);
     }
 
+    // TODO should be handled by UpdateDatabase step
     private static void createPatchPropertiesForPaintJobs(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
         AtomicInteger paintJobIndex = new AtomicInteger(1);
         vehicleSlot.getPaintJobs()
@@ -119,6 +121,7 @@ public class VehicleSlotUserInputHelper {
         searchFirstInteriorPatternReference(vehicleSlot).ifPresent(ref -> patchProperties.setInteriorReferenceIfNotExists(ref, 1));
     }
 
+    // TODO should be handled by UpdateDatabase step
     private static Optional<String> searchFirstInteriorPatternReference(VehicleSlot vehicleSlot) {
         List<PaintJob> paintJobs = vehicleSlot.getPaintJobs();
         if (paintJobs.isEmpty()) {
