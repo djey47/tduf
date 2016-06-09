@@ -9,9 +9,14 @@
       "size": 4
     },
     {
+      "name": "savedCount",
+      "type": "INTEGER",
+      "size": 4
+    },
+    {
       "name": "UNK1",
       "type": "UNKNOWN",
-      "size": 20
+      "size": 16
     },
     {
       "name": "profileNameSize",
@@ -24,9 +29,19 @@
       "size": "?profileNameSize?"
     },
     {
-      "name": "UNK2",
+      "name": "UNK2.1",
       "type": "UNKNOWN",
-      "size": 54
+      "size": 24
+    },
+    {
+      "name": "playerLocation",
+      "type": "UNKNOWN",
+      "size": 16
+    },
+    {
+      "name": "UNK2.2",
+      "type": "UNKNOWN",
+      "size": 14
     },
     {
       "name": "clubNameSize",
