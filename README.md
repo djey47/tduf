@@ -16,6 +16,7 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * **gui-common** : Components to be used with any graphical user interface
 * **gui-database** : Database Editor module
 * **gui-installer** : Mod installer
+* **gui-savegame** : Savegame Editor
 * **lib-testing** : Components to help with unit testing in any module
 * **lib-unlimited** : Stand-alone component providing API for building TDU modding applications.
 
@@ -43,14 +44,14 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 ### Preparing next development version ###
 
-No particular action required.
+* Execute *markNextVersionTask -Prelease.forceVersion=[version]* task from Gradle to specify next dev version.
 
 ### Packaging ###
 
 This needs a release tag to be set, see *Releasing* section above.
 
 * Checkout project from target release tag *tduf-[version]*
-* Execute either *packTDUF* or *packInstallerKit* tasks from Gradle.
+* Execute either *packFull* or *packInstallerKit* tasks from Gradle.
 
 ...it will:
 
@@ -59,6 +60,11 @@ This needs a release tag to be set, see *Releasing* section above.
 ### Contributing to project ###
 
 * Later!
+
+### Licensing
+
+* Portions of code (framework) are derivative work from [Guava library](https://github.com/google/guava) under Apache License version 2.0
+* See LICENSE.md license into this directory.
 
 ### Contact & useful links ###
 
