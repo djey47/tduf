@@ -5,7 +5,6 @@ import fr.tduf.gui.installer.domain.PaintJob;
 import fr.tduf.gui.installer.domain.Resource;
 import fr.tduf.gui.installer.domain.RimSlot;
 import fr.tduf.gui.installer.domain.VehicleSlot;
-import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import org.junit.Before;
@@ -17,7 +16,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UserInputHelperTest {
+public class VehicleSlotUserInputHelperTest {
 
     private static final String SLOTREF = "30000000";
     private static final String SLOTREF_INV = "40000000";
@@ -50,7 +49,7 @@ public class UserInputHelperTest {
         PatchProperties patchProperties = new PatchProperties();
 
         // WHEN
-        UserInputHelper.createPatchPropertiesForVehicleSlot(vehicleSlot, patchProperties);
+        VehicleSlotUserInputHelper.createPatchPropertiesForVehicleSlot(vehicleSlot, patchProperties);
 
         // THEN: IAE
     }
@@ -62,7 +61,7 @@ public class UserInputHelperTest {
         PatchProperties patchProperties = new PatchProperties();
 
         // WHEN
-        UserInputHelper.createPatchPropertiesForVehicleSlot(vehicleSlot, patchProperties);
+        VehicleSlotUserInputHelper.createPatchPropertiesForVehicleSlot(vehicleSlot, patchProperties);
 
         // THEN
         assertThat(patchProperties.getVehicleSlotReference()).contains(SLOTREF);
@@ -106,7 +105,7 @@ public class UserInputHelperTest {
         patchProperties.setResourceRearRimBankIfNotExists(rearRimResource, 1);
 
         // WHEN
-        UserInputHelper.createPatchPropertiesForVehicleSlot(vehicleSlot, patchProperties);
+        VehicleSlotUserInputHelper.createPatchPropertiesForVehicleSlot(vehicleSlot, patchProperties);
 
         // THEN
         assertThat(patchProperties.getVehicleSlotReference()).contains(slotReference);
@@ -119,54 +118,6 @@ public class UserInputHelperTest {
         assertThat(patchProperties.getRearRimBankFileName(1)).contains(rearRimBankName);
         assertThat(patchProperties.getFrontRimBankFileNameResource(1)).contains(frontRimResource);
         assertThat(patchProperties.getRearRimBankFileNameResource(1)).contains(rearRimResource);
-    }
-
-    @Test
-    public void createPatchPropertiesForDealerSlot_whenNoProperty_shouldSetValuesFromSelectedSlot() {
-        // GIVEN
-        String dealerRef = "1111";
-        int slotRank = 2;
-
-        PatchProperties patchProperties = new PatchProperties();
-        DealerSlotData.DealerDataItem dealerItem = new DealerSlotData.DealerDataItem();
-        dealerItem.referenceProperty().setValue(dealerRef);
-        DealerSlotData.SlotDataItem slotItem = new DealerSlotData.SlotDataItem();
-        slotItem.rankProperty().setValue(slotRank);
-        DealerSlotData dealerSlotData = DealerSlotData.from(dealerItem, slotItem);
-
-
-        // WHEN
-        UserInputHelper.createPatchPropertiesForDealerSlot(dealerSlotData, patchProperties);
-
-
-        // THEN
-        assertThat(patchProperties.getDealerReference()).contains(dealerRef);
-        assertThat(patchProperties.getDealerSlot()).contains(slotRank);
-    }
-
-    @Test
-    public void createPatchPropertiesForDealerSlot_whenPropertiesExist_shouldKeepCurrentValues() {
-        // GIVEN
-        String dealerRef = "1111";
-        int slotRank = 2;
-
-        PatchProperties patchProperties = new PatchProperties();
-        patchProperties.setDealerReferenceIfNotExists(dealerRef);
-        patchProperties.setDealerSlotIfNotExists(slotRank);
-        DealerSlotData.DealerDataItem dealerItem = new DealerSlotData.DealerDataItem();
-        dealerItem.referenceProperty().setValue("2222");
-        DealerSlotData.SlotDataItem slotItem = new DealerSlotData.SlotDataItem();
-        slotItem.rankProperty().setValue(4);
-        DealerSlotData dealerSlotData = DealerSlotData.from(dealerItem, slotItem);
-
-
-        // WHEN
-        UserInputHelper.createPatchPropertiesForDealerSlot(dealerSlotData, patchProperties);
-
-
-        // THEN
-        assertThat(patchProperties.getDealerReference()).contains(dealerRef);
-        assertThat(patchProperties.getDealerSlot()).contains(slotRank);
     }
 
     private static VehicleSlot createVehicleSlot() {

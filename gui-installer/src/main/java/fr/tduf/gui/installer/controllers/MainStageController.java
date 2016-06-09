@@ -8,7 +8,8 @@ import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.common.services.DatabaseFixer;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
-import fr.tduf.gui.installer.controllers.helper.UserInputHelper;
+import fr.tduf.gui.installer.controllers.helper.DealerSlotUserInputHelper;
+import fr.tduf.gui.installer.controllers.helper.VehicleSlotUserInputHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
@@ -339,9 +340,9 @@ public class MainStageController extends AbstractGuiController {
         }
 
         try {
-            UserInputHelper.selectAndDefineVehicleSlot(context, getWindow());
+            VehicleSlotUserInputHelper.selectAndDefineVehicleSlot(context, getWindow());
 
-            UserInputHelper.selectAndDefineDealerSlot(context, getWindow());
+            DealerSlotUserInputHelper.selectAndDefineDealerSlot(context, getWindow());
         } catch (Exception e) {
             StepException se = new StepException(GenericStep.StepType.SELECT_SLOTS, DisplayConstants.MESSAGE_INSTALL_ABORTED, e);
             handleServiceFailure(se, DisplayConstants.MESSAGE_NOT_INSTALLED);
