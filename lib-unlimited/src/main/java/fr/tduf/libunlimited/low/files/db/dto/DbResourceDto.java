@@ -1,8 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
+import fr.tduf.libunlimited.common.game.domain.Locale;
+import org.codehaus.jackson.annotate.*;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
@@ -140,7 +139,7 @@ public class DbResourceDto {
         /**
          * @return available item for specified locale, empty otherwise.
          */
-        public Optional<Item> getItemForLocale(fr.tduf.libunlimited.common.game.domain.Locale locale) {
+        public Optional<Item> getItemForLocale(Locale locale) {
             return items.stream()
 
                     .filter((item) -> item.locale == locale)
@@ -215,7 +214,7 @@ public class DbResourceDto {
         }
 
         @JsonIgnore
-        public Set<fr.tduf.libunlimited.common.game.domain.Locale> getPresentLocales() {
+        public Set<Locale> getPresentLocales() {
             return items.stream()
 
                     .map((item) -> item.locale)
@@ -225,7 +224,7 @@ public class DbResourceDto {
 
         @JsonIgnore
         public Set<fr.tduf.libunlimited.common.game.domain.Locale> getMissingLocales() {
-            Set<fr.tduf.libunlimited.common.game.domain.Locale> missingLocales = new HashSet<>(asList(fr.tduf.libunlimited.common.game.domain.Locale.values()));
+            Set<fr.tduf.libunlimited.common.game.domain.Locale> missingLocales = new HashSet<>(asList(Locale.values()));
             missingLocales.removeAll(getPresentLocales());
             return missingLocales;
         }
@@ -280,8 +279,7 @@ public class DbResourceDto {
     @JsonTypeName("dbResourceEnhancedEntryItem")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class Item implements Serializable {
-        @JsonProperty("locale")
-        private fr.tduf.libunlimited.common.game.domain.Locale locale;
+        private Locale locale;
 
         @JsonProperty("value")
         private String value;
@@ -310,6 +308,16 @@ public class DbResourceDto {
 
         public String getValue() {
             return value;
+        }
+
+        @JsonProperty("locale")
+        public String getLocaleCode() {
+            return locale.getCode();
+        }
+
+        @JsonSetter("locale")
+        public void setLocaleFromCode(String localeCode) {
+            locale = Locale.fromCode(localeCode);
         }
 
         public static class ItemBuilder {
