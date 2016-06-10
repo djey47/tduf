@@ -26,15 +26,17 @@ import static java.util.Objects.requireNonNull;
  */
 public class DatabaseWriter {
 
+    // TODO Move to RW Helper
+    public static final String FMT_JSON_DATA_FILE_NAME = "%s.data.json";
+    public static final String FMT_JSON_STRUCTURE_FILE_NAME = "%s.structure.json";
+    public static final String FMT_JSON_RESOURCES_FILE_NAME = "%s.resources.json";
+
     private static final String COMMENT_PATTERN = "// %s";
     private static final String COMMENT_INFO_PATTERN = "// %s: %s";
     private static final String ENTRY_PATTERN = "{%s} %s";
     private static final String ENTRY_REF_PATTERN = "{%s} %s %s";
     private static final String RESOURCE_ENTRY_PATTERN = "{%s} %s";
 
-    private static final String FMT_JSON_DATA_FILE_NAME = "%s.data.json";
-    private static final String FMT_JSON_STRUCTURE_FILE_NAME = "%s.structure.json";
-    private static final String FMT_JSON_RESOURCES_FILE_NAME = "%s.resources.json";
 
     private final DbDto databaseDto;
 

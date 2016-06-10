@@ -135,7 +135,8 @@ public class DatabaseReadWriteHelperTest {
 
         // THEN
         assertThat(actualTopicObjects).isNotNull();
-        assertThat(actualTopicObjects).hasSize(14);
+        // TODO Adapt expected count once files split
+        assertThat(actualTopicObjects).hasSize(1);
 
         actualTopicObjects.forEach(DatabaseReadWriteHelperTest::assertTopicObject);
     }
@@ -260,7 +261,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     private String getJsonDirectoryFromResourceFile() throws URISyntaxException {
-        File jsonFile = new File(thisClass.getResource("/db/json/TDU_Achievements.json").toURI());
+        File jsonFile = new File(thisClass.getResource("/db/json/TDU_Achievements.data.json").toURI());
         return jsonFile.getParent();
     }
 

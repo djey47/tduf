@@ -53,7 +53,7 @@ public class MainStageChangeDataControllerTest {
 
         objectMapper = new ObjectMapper();
 
-        final String jsonFilePath = thisClass.getResource("/database/TDU_CarPhysicsData.json").toURI().getPath();
+        final String jsonFilePath = thisClass.getResource("/database/TDU_CarPhysicsData.data.json").toURI().getPath();
         databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(Paths.get(jsonFilePath).getParent().toString());
     }
 

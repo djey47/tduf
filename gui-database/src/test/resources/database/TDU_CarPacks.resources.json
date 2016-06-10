@@ -1,0 +1,86 @@
+{
+  "version" : "1,2",
+  "categoryCount" : 2,
+  "entries" : [ {
+    "items" : [ {
+      "locale" : "GERMANY",
+      "value" : "ERROR"
+    }, {
+      "locale" : "UNITED_STATES",
+      "value" : "ERROR"
+    }, {
+      "locale" : "FRANCE",
+      "value" : "ERREUR!!"
+    }, {
+      "locale" : "SPAIN",
+      "value" : "ERROR"
+    }, {
+      "locale" : "ITALY",
+      "value" : "ERROR"
+    }, {
+      "locale" : "JAPAN",
+      "value" : "ERROR"
+    }, {
+      "locale" : "KOREA",
+      "value" : "ERROR"
+    }, {
+      "locale" : "CHINA",
+      "value" : "ERROR"
+    } ],
+    "ref" : "88926089"
+  }, {
+    "items" : [ {
+      "locale" : "GERMANY",
+      "value" : "??"
+    }, {
+      "locale" : "UNITED_STATES",
+      "value" : "??"
+    }, {
+      "locale" : "FRANCE",
+      "value" : "??"
+    }, {
+      "locale" : "SPAIN",
+      "value" : "??"
+    }, {
+      "locale" : "ITALY",
+      "value" : "??"
+    }, {
+      "locale" : "JAPAN",
+      "value" : "??"
+    }, {
+      "locale" : "KOREA",
+      "value" : "??"
+    }, {
+      "locale" : "CHINA",
+      "value" : "??"
+    } ],
+    "ref" : "53357653"
+  }, {
+    "items" : [ {
+      "locale" : "GERMANY",
+      "value" : "nismo_350"
+    }, {
+      "locale" : "UNITED_STATES",
+      "value" : "nismo_350"
+    }, {
+      "locale" : "FRANCE",
+      "value" : "nismo_350"
+    }, {
+      "locale" : "SPAIN",
+      "value" : "nismo_350"
+    }, {
+      "locale" : "ITALY",
+      "value" : "nismo_350"
+    }, {
+      "locale" : "JAPAN",
+      "value" : "nismo_350"
+    }, {
+      "locale" : "KOREA",
+      "value" : "nismo_350"
+    }, {
+      "locale" : "CHINA",
+      "value" : "nismo_350"
+    } ],
+    "ref" : "54357653"
+  } ]
+}

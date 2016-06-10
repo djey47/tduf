@@ -212,7 +212,7 @@ public class DiffPatchesGeneratorTest {
 
     private static List<DbDto> readReferenceDatabase() {
         try {
-            return readDatabase("/db/json/diff/TDU_CarPhysicsData.json");
+            return readDatabase("/db/json/diff/TDU_CarPhysicsData.data.json");
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return new ArrayList<>();

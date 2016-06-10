@@ -74,7 +74,7 @@ public class JsonGateway {
 
                 .parallel()
 
-                .forEach((topic -> {
+                .forEach(topic -> {
                     try {
                         Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(topic, sourceJsonDirectory);
                         if (potentialDbDto.isPresent()) {
@@ -83,10 +83,11 @@ public class JsonGateway {
                             missingTopicContentsWhileProcessing.add(topic);
                         }
                     } catch (IOException e) {
+                        // TODO use logging
                         e.printStackTrace();
 //                        throw new RuntimeException("Unable to generate database topic: " + topic);
                     }
-                }));
+                });
 
         missingTopicContents.addAll(missingTopicContentsWhileProcessing);
 

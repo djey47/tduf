@@ -3,7 +3,10 @@ package fr.tduf.libunlimited.low.files.db.rw.helper;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseWriter;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -73,6 +76,26 @@ public class DatabaseReadWriteHelper {
      */
     public static Optional<DbDto> readDatabaseTopicFromJson(DbDto.Topic topic, String jsonDirectory) throws IOException {
 
+        File jsonDataFile = getJsonDataFileFromDirectory(topic, jsonDirectory);
+        File jsonStructureFile = getJsonStructureFileFromDirectory(topic, jsonDirectory);
+        File jsonResourceFile = getJsonResourceFileFromDirectory(topic, jsonDirectory);
+
+        if (!jsonDataFile.exists() || !jsonStructureFile.exists() || !jsonResourceFile.exists()) {
+            return Optional.empty();
+        }
+
+        DbDto topicObject = DbDto.builder()
+                .withData(objectMapper.readValue(jsonDataFile, DbDataDto.class))
+                .withStructure(objectMapper.readValue(jsonStructureFile, DbStructureDto.class))
+                .withResource(objectMapper.readValue(jsonResourceFile, DbResourceDto.class))
+                .build();
+
+        return Optional.of(topicObject);
+    }
+
+    // TODO Kept for migration purpose
+    public static Optional<DbDto> readGenuineDatabaseTopicFromJson(DbDto.Topic topic, String jsonDirectory) throws IOException {
+
         File jsonFile = getJsonFileFromDirectory(topic, jsonDirectory);
         if (!jsonFile.exists()) {
             return Optional.empty();
@@ -92,7 +115,7 @@ public class DatabaseReadWriteHelper {
 
                 .parallel()
 
-                .map((topic) -> {
+                .map(topic -> {
                     try {
                         return readDatabaseTopicFromJson(topic, jsonDirectory);
                     } catch (IOException e) {
@@ -186,6 +209,21 @@ public class DatabaseReadWriteHelper {
 
     private static File getJsonFileFromDirectory(DbDto.Topic topic, String jsonDirectory) {
         String jsonFileName = getDatabaseFileName(topic.getLabel(), jsonDirectory, EXTENSION_JSON);
+        return new File(jsonFileName);
+    }
+
+    private static File getJsonDataFileFromDirectory(DbDto.Topic topic, String jsonDirectory) {
+        String jsonFileName = Paths.get(jsonDirectory, String.format(DatabaseWriter.FMT_JSON_DATA_FILE_NAME, topic.getLabel())).toAbsolutePath().toString();
+        return new File(jsonFileName);
+    }
+
+    private static File getJsonStructureFileFromDirectory(DbDto.Topic topic, String jsonDirectory) {
+        String jsonFileName = Paths.get(jsonDirectory, String.format(DatabaseWriter.FMT_JSON_STRUCTURE_FILE_NAME, topic.getLabel())).toAbsolutePath().toString();
+        return new File(jsonFileName);
+    }
+
+    private static File getJsonResourceFileFromDirectory(DbDto.Topic topic, String jsonDirectory) {
+        String jsonFileName = Paths.get(jsonDirectory, String.format(DatabaseWriter.FMT_JSON_RESOURCES_FILE_NAME, topic.getLabel())).toAbsolutePath().toString();
         return new File(jsonFileName);
     }
 

@@ -1,0 +1,2219 @@
+{
+  "version" : "1,2",
+  "categoryCount" : 6,
+  "entries" : [ {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "??"
+    }, {
+      "locale" : "ITALY",
+      "value" : "??"
+    } ],
+    "ref" : "53410835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Bravo ! Vous recevez §NB_PTS§ points."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Ottima prestazione! Ottieni §NB_PTS§ punti."
+    } ],
+    "ref" : "70410835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Bravo ! Vous avez remporté §NB_REQ§ coupes en OR sur les §NB_TOTAL§ possibles."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Bravo! Hai vinto §NB_REQ§ coppe d'oro su §NB_TOTAL§."
+    } ],
+    "ref" : "54410835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Félicitations ! Vous avez remporté §NB_REQ§ coupes en OR sur les §NB_TOTAL§ possibles."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Complimenti! Hai vinto §NB_REQ§ coppe d'oro su §NB_TOTAL§."
+    } ],
+    "ref" : "55410835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Remarquable ! Vous avez remporté §NB_REQ§ coupes en OR sur les §NB_TOTAL§ possibles."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Straordinario! Hai vinto §NB_REQ§ coppe d'oro su §NB_TOTAL§."
+    } ],
+    "ref" : "56410835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Incroyable ! Vous avez réussi une performance exceptionnelle en remportant TOUTES les coupes en OR."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Incredibile! Vincendo TUTTE le coppe d'ORO hai ottenuto una prestazione eccezionale."
+    } ],
+    "ref" : "57410835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous avez bien fait de persévérer ! Vos efforts vous ont permis de terminer toutes les épreuves de TEMPS solo. "
+    }, {
+      "locale" : "ITALY",
+      "value" : "La tua perseveranza ti ha ripagato! Grazie ai tuoi sforzi hai completato tutte le sfide della categoria TEMPO a giocatore singolo."
+    } ],
+    "ref" : "58410835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous vous êtes acharné avec succès sur les épreuves VITESSE Solo. Bravo, vous avez remporté toutes les coupes en OR."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai proprio un debole per le sfide della categoria VELOCITÀ a giocatore singolo! Ben fatto! Hai vinto tutte le coppe d'ORO."
+    } ],
+    "ref" : "59410835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Votre persévérance a payé. Vous avez remporté toutes les coupes en OR des COURSES solo."
+    }, {
+      "locale" : "ITALY",
+      "value" : "La tua perseveranza ti ha ripagato! Hai vinto tutte le coppe d'oro nella categoria GARE a giocatore singolo."
+    } ],
+    "ref" : "60410835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous avez réussi « Le Tour de l'île », l'épreuve mythique de TEST DRIVE !  "
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai completato con successo il \"Giro dell'isola\", la leggendaria sfida di TEST DRIVE!"
+    } ],
+    "ref" : "61410835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous avez remporté §NB_REQ§ courses multijoueurs."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai vinto §NB_REQ§ gare multigiocatore."
+    } ],
+    "ref" : "62410835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous devenez un redoutable compétiteur. Vous avez déjà remporté §NB_REQ§ courses multijoueurs."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Stai diventando un pilota temuto. Hai già vinto §NB_REQ§ gare multigiocatore."
+    } ],
+    "ref" : "53510835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Votre nom en affole plus d'un maintenant ! Vous totalisez dorénavant §NB_REQ§ victoires en course multijoueur."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Ti stai facendo una bella reputazione! Hai raggranellato §NB_REQ§ vittorie nelle gare multigiocatore."
+    } ],
+    "ref" : "54510835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Bravo, déjà §NB_REQ§ missions réussies sur les §NB_TOTAL§ possibles ! "
+    }, {
+      "locale" : "ITALY",
+      "value" : "Fantastico! Hai già completato con successo §NB_REQ§ missioni su §NB_TOTAL§!"
+    } ],
+    "ref" : "55510835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Un belle étape de plus dans votre progression. Vous avez réussi §NB_REQ§ missions sur les §NB_TOTAL§ possibles."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Un'altra tappa fondamentale nella tua carriera. Hai completato con successo §NB_REQ§ missioni su §NB_TOTAL§."
+    } ],
+    "ref" : "56510835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Votre efficacité est redoutable. Vous totalisez §NB_REQ§ missions réussies sur les §NB_TOTAL§ possibles."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Sei davvero una macchina implacabile. Hai completato con successo §NB_REQ§ missioni su §NB_TOTAL§."
+    } ],
+    "ref" : "57510835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Votre palmarès s'étoffe d'un nouvel exploit. Vous avez réussi TOUTES les missions."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Un'altra vittoria aggiunta al tuo record. Hai completato con successo TUTTE le missioni.\nOttieni §NB_REQ§ punti."
+    } ],
+    "ref" : "58510835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Déjà §NB_REQ§ victoires en DÉFIS IMMÉDIATS. "
+    }, {
+      "locale" : "ITALY",
+      "value" : "§NB_REQ§ vittorie nelle SFIDE IMMEDIATE."
+    } ],
+    "ref" : "59510835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Les DÉFIS IMMÉDIATS n'ont plus de secret pour vous. Vous totalisez §NB_REQ§ victoires."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Con §NB_REQ§ vittorie in tasca, sei ormai un vero maestro delle SFIDE IMMEDIATE."
+    } ],
+    "ref" : "60510835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Les DÉFIS IMMÉDIATS sont maintenant votre spécialité ! Déjà §NB_REQ§ victoires."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Le SFIDE IMMEDIATE sono diventate la tua specialità! Hai già collezionato §NB_REQ§ vittorie!"
+    } ],
+    "ref" : "61510835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous avez partagé §NB_REQ§ Défi(s) Perso avec le reste de la communauté."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai condiviso §NB_REQ§ sfida/e personalizzata/e con il resto della comunità."
+    } ],
+    "ref" : "62510835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "§NB_REQ§ victoires sur les Défis Perso !"
+    }, {
+      "locale" : "ITALY",
+      "value" : "§NB_REQ§ vittorie nelle sfide personalizzate!"
+    } ],
+    "ref" : "53610835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous êtes membre d'un Club. "
+    }, {
+      "locale" : "ITALY",
+      "value" : "Sei membro di un club."
+    } ],
+    "ref" : "54610835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Votre Club a remporté §NB_REQ§ victoires inter-club."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Il tuo club si è aggiudicato §NB_REQ§ competizioni per club."
+    } ],
+    "ref" : "55610835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous avez acheté ou vendu §NB_REQ§ véhicule(s) à d'autres membres de la communauté."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai comprato o venduto §NB_REQ§ veicolo/i da/ad altri membri della comunità."
+    } ],
+    "ref" : "56610835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous êtes décidément un fan de FERRARI ! Votre garage en compte §NB_REQ§."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Sei un vero appassionato di FERRARI! Ne hai §NB_REQ§ in garage."
+    } ],
+    "ref" : "57610835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous êtes un vrai fana des LAMBORGHINI ! Déjà §NB_REQ§  !"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Sei veramente un amante della LAMBORGHINI! Ne possiedi già §NB_REQ§!"
+    } ],
+    "ref" : "58610835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous avez un fort penchant pour les MERCEDES-BENZ, vous en possédez déjà §NB_REQ§ !"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai un debole per le MERCEDES-BENZ visto che ne possiedi già §NB_REQ§!"
+    } ],
+    "ref" : "59610835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous êtes un grand amateur de CHEVROLET, vous en totalisez §NB_REQ§ dans votre garage !"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Sei proprio un fan della CHEVROLET.\nNel tuo garage ce ne sono §NB_REQ§! "
+    } ],
+    "ref" : "60610835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous êtes un véritable amoureux des ASTON MARTIN. \\nVous en possédez §NB_REQ§ !"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Sei un vero appassionato di ASTON MARTIN. \\nNe possiedi §NB_REQ§!"
+    } ],
+    "ref" : "61610835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous possédez une superbe collection de §NB_REQ§ FORD ! Tout le monde ne peut pas s'en vanter."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Sei un vero appassionato della FORD. Ne possiedi §NB_REQ§! Non è certo una cosa da tutti."
+    } ],
+    "ref" : "62610835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "On ne peut pas encore parler de collection, mais §NB_REQ§ voitures, c'est déjà un bon début."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Anche se non si può ancora parlare di vera e propria collezione, §NB_REQ§ auto rappresentano un buon punto di partenza."
+    } ],
+    "ref" : "53710835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Bien peu de joueurs en sont capables, vous l'avez fait !\nVous possédez §NB_REQ§ modèles de voitures différents !"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Non molti giocatori sono riusciti a fare lo stesso!\nPossiedi §NB_REQ§ auto diverse!"
+    } ],
+    "ref" : "54710835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "On en est sûrs maintenant, vous êtes un vrai motard ! Pas moins de §NB_REQ§ motos dans votre garage."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Ora sappiamo che sei un vero centauro! In garage hai ben §NB_REQ§ moto."
+    } ],
+    "ref" : "55710835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous avez décidément du goût en matière de vêtements. On compte §NB_REQ§ articles de la marque Ben Sherman dans votre dressing."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai davvero buon gusto in fatto di abbigliamento. Nel tuo guardaroba vanti §NB_REQ§ capo/i firmato/i Ben Sherman."
+    } ],
+    "ref" : "56710835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous adorez visiblement les vêtements *ecko unltd. Vous avez acheté §NB_REQ§ articles de cette marque."
+    }, {
+      "locale" : "ITALY",
+      "value" : "È chiaro che hai un debole per *ecko unltd. Hai comprato §NB_REQ§ capi con questa griffe."
+    } ],
+    "ref" : "57710835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous avez effectué des modifications sur §NB_REQ§ de vos véhicules. "
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai fatto la messa a punto a §NB_REQ§ auto."
+    } ],
+    "ref" : "58710835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "BRAVO ! Vous connaissez les moindres recoins de l'île. Vous avez parcouru chaque portion de route."
+    }, {
+      "locale" : "ITALY",
+      "value" : "FANTASTICO! Conosci ogni centimetro dell'isola. Hai guidato su ogni singola strada."
+    } ],
+    "ref" : "59710835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "C'est un bon début. Vous avez déjà parcouru §NB_REQ§ miles."
+    }, {
+      "locale" : "ITALY",
+      "value" : "È un buon inizio. Hai già percorso §NB_REQ§ miglia."
+    } ],
+    "ref" : "60710835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous commencez à totaliser un nombre important de kilomètres. A l'heure actuelle, vous avez parcouru §NB_REQ§ miles."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Inizi ad accumulare un numero considerevole di miglia. Finora ne hai coperte §NB_REQ§."
+    } ],
+    "ref" : "61710835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "§NB_REQ§ miles parcourus ! Vous pourrez bientôt devenir guide !"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai percorso §NB_REQ§ miglia! Prenderai presto il patentino di guida!"
+    } ],
+    "ref" : "62710835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Tenez-vous bien... vous avez parcouru l'équivalent de la distance New York - Sydney !"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Mettiti seduto e senti qua: hai coperto una distanza equivalente a quella tra New York e Sydney!"
+    } ],
+    "ref" : "53810835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous êtes maintenant l'heureux propriétaire de §NB_REQ§ demeures de luxe."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Sei arrivato a possedere §NB_REQ§ residenze di lusso."
+    } ],
+    "ref" : "54810835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous possédez toutes les demeures de luxe de l'île ! Toute l'équipe de TEST DRIVE s'agenouille devant vous !"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi tutte le residenze di lusso dell'isola! Il team di TEST DRIVE si inchina al tuo cospetto!"
+    } ],
+    "ref" : "55810835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Les plus beaux points de vue de l'île n'ont plus de secret pour vous. Ils figurent tous dans votre album photo."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai scoperto gli angoli più incantevoli dell'isola. Li trovi tutti nel tuo album fotografico."
+    } ],
+    "ref" : "56810835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Déjà §NB_REQ§ véhicules. On dirait bien le début d'une collection."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai già §NB_REQ§ veicoli. Comincia ad assomigliare a una collezione."
+    } ],
+    "ref" : "57810835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous possédez §NB_REQ§ véhicules. Une très belle collection qui va rendre tout le monde vert de jalousie !"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi §NB_REQ§ veicoli. Una bella collezione che farà ingelosire tutti!"
+    } ],
+    "ref" : "58810835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Votre garage abrite désormais une superbe collection. Vous possédez déjà §NB_REQ§ véhicules."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai una bella gamma di auto nel tuo garage. Hai già §NB_REQ§ veicoli nella tua collezione."
+    } ],
+    "ref" : "59810835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Quelle superbe performance ! Vous avez parcouru §NB_REQ§ miles !"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Prestazione incredibile! Hai viaggiato per §NB_REQ§ miglia!"
+    } ],
+    "ref" : "60810835"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Bravo ! Vous avez terminé avec succès toutes les épreuves TOP-MODÈLES.\nVous avez déverrouillé la §CARNAME§. Elle est disponible chez §SHOPNAME§\n"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Ben fatto! Hai completato con successo tutte le sfide della categoria TOP MODEL. \nHai sbloccato la §CARNAME§. Puoi ritirarla da §SHOPNAME§"
+    } ],
+    "ref" : "547472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Bravo ! Vous avez terminé avec succès toutes les épreuves AUTO-STOPPEUR.\nVous avez déverrouillé la §CARNAME§. Elle est disponible chez §SHOPNAME§\n"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Ben fatto! Hai completato con successo tutte le sfide della categoria AUTOSTOPPISTA.\nHai sbloccato la §CARNAME§. Puoi ritirarla da §SHOPNAME§"
+    } ],
+    "ref" : "557472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Bravo ! Vous avez terminé avec succès toutes les épreuves CONVOYEUR.\nVous avez déverrouillé la §CARNAME§. Elle est disponible chez §SHOPNAME§\n"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Ben fatto! Hai completato con successo tutte le sfide della categoria TRASPORTO VEICOLI.\nHai sbloccato la §CARNAME§. Puoi ritirarla da §SHOPNAME§"
+    } ],
+    "ref" : "567472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Félicitations ! Vous avez terminé avec succès toutes les épreuves COURSIER.\nVous avez déverrouillé la §CARNAME§. Elle est disponible chez §SHOPNAME§\n"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Bella guida! Hai completato con successo tutte le sfide della categoria CORRIERE.\nHai sbloccato la §CARNAME§. Puoi ritirarla da §SHOPNAME§"
+    } ],
+    "ref" : "577472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Félicitations ! Vous avez remporté toutes les épreuves de type TEMPS Solo.\nVous avez déverrouillé la §CARNAME§. Elle est disponible chez §SHOPNAME§\n"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Compimenti! Hai vinto tutte le sfide della categoria TEMPO singolo giocatore. Hai sbloccato la §CARNAME§. Puoi ritirarla da §SHOPNAME§"
+    } ],
+    "ref" : "587472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Félicitations ! Vous avez remporté toutes les épreuves de type COURSE Solo.\nVous avez déverrouillé la §CARNAME§. Elle est disponible chez §SHOPNAME§\n"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Compimenti! Hai vinto tutte le sfide della categoria GARA a giocatore singolo.\nHai sbloccato la §CARNAME§. Puoi ritirarla da §SHOPNAME§"
+    } ],
+    "ref" : "597472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Félicitations ! Vous avez remporté toutes les épreuves de type VITESSE Solo.\nVous avez déverrouillé la §CARNAME§. Elle est disponible chez §SHOPNAME§\n"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Compimenti! Hai vinto tutte le sfide della categoria VELOCITÀ a giocatore singolo.\nHai sbloccato la §CARNAME§. Puoi ritirarla da §SHOPNAME§"
+    } ],
+    "ref" : "607472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous possédez deux voitures. Grâce au CHRONOPACK vous pouvez comparer leurs performances. Ce gadget est maintenant accessible via les menus auxiliaires en appuyant sur le bouton multidirectionnel gauche."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi due auto. Usando il\nCHRONOPACK, puoi confrontare le rispettive prestazioni. Questo dispositivo è ora disponibile attraverso i menu ausiliari premendo sinistra sul tasto direzionale"
+    } ],
+    "ref" : "617472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Félicitations ! Vous venez d'atteindre le niveau Amateur, vous avez maintenant accès au mode PHOTOS."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Congratulazioni! Hai raggiunto il livello Dilettante. Hai ora accesso alla modalità FOTOGRAFIE."
+    } ],
+    "ref" : "627472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous devenez Pro ! Dans le menu Pause, vous avez dorénavant accès au mode ÉDITEUR qui vous permet de créer vos\nchallenges perso. "
+    }, {
+      "locale" : "ITALY",
+      "value" : "Ora sei un Professionista! Dal menu di pausa, puoi accedere ora alla modalità EDITOR, che ti permette di creare sfide personalizzate."
+    } ],
+    "ref" : "538472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous avez atteint le niveau Expert. Cette performance vous donne maintenant accès au circuit de Ford Island."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai raggiunto il livello Esperto. Con questa prestazione hai guadagnato l'accesso al circuito di Ford Island. "
+    } ],
+    "ref" : "548472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Pour fêter votre niveau Champion, vous avez maintenant un libre accès au circuit de vitesse."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Per celebrare il raggiungimento del livello Campione, hai ora accesso illimitato al circuito velocità."
+    } ],
+    "ref" : "558472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous avez découvert les moindres portions de routes de l'île. Vous méritez un cadeau hors du commun : la maison la plus haute de toutes !"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai scoperto tutte le strade dell'isola. Ti meriti un premio speciale: la casa più alta di tutte!"
+    } ],
+    "ref" : "568472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous avez découvert tous les concessionnaires automobiles de l'île. Félicitations ! Vous avez maintenant accès aux concessionnaires moto."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai scoperto tutti i concessionari d'auto dell'isola. Complimenti! Puoi ora visitare i concessionari di moto."
+    } ],
+    "ref" : "578472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous venez de réussir le défi le plus difficile. Vous avez débloqué la §CARNAME§. Vous pouvez la prendre à §SHOPNAME§."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai completato con successo la sfida più difficile. Hai sbloccato la §CARNAME§. Puoi ritirarla presso §SHOPNAME§. "
+    } ],
+    "ref" : "588472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous avez réussi l'une des plus belles courses de l'île. Vous avez maintenant accès à l'atelier de peinture de luxe."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Hai completato con successo una delle gare più dure dell'isola. Hai ora accesso al negozio di vernici di lusso."
+    } ],
+    "ref" : "598472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous possédez deux voitures. Grâce au CHRONOPACK, vous allez pouvoir comparer leurs performances. Ce gadget est maintenant accessible via la touche K."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi due auto. Utilizzando il CHRONOPACK, potrai confrontare le loro rispettive prestazioni. Puoi ora accedere a questo kit premendo il tasto K."
+    } ],
+    "ref" : "608472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Pour fêter votre niveau Champion, vous avez maintenant un libre accès au circuit de vitesse. Le mode HARDCORE sera également disponible dans le menu de démarrage la prochaine fois que vous lancerez le jeu."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Per celebrare la tua conquista del livello Campione, puoi ora accedere liberamente alla pista di velocità. La modalità HARDCORE sarà anche disponibile nel menu ogni volta che avvii il gioco."
+    } ],
+    "ref" : "618472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "??"
+    }, {
+      "locale" : "ITALY",
+      "value" : "??"
+    } ],
+    "ref" : "551129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous ne pouvez pas encore y accéder."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Non puoi ancora fare questo"
+    } ],
+    "ref" : "561129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous devez réussir toutes les épreuves TEMPS solo pour déverrouiller cette voitures."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Devi completare tutte le sfide a TEMPO a un giocatore per sbloccare quest'auto."
+    } ],
+    "ref" : "571129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous devez réussir toutes les COURSES solo pour débloquer cette voiture."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Devi completare tutte le sfide GARA a un giocatore per sbloccare quest'auto."
+    } ],
+    "ref" : "581129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous devez réussir tous les défis de VITESSE solo pour débloquer cette voiture."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Devi completare tutte le sfide VELOCITÀ a un giocatore per sbloccare quest'auto."
+    } ],
+    "ref" : "591129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous devez réussir tous les défis TOP-MODÈLES pour débloquer cette voiture."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Devi completare tutte le sfide TOP MODEL per sbloccare quest'auto."
+    } ],
+    "ref" : "601129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous devez réussir tous les défis AUTO-STOPPEUR pour débloquer cette voiture."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Devi completare tutte le sfide AUTOSTOP per sbloccare quest'auto."
+    } ],
+    "ref" : "611129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous devez réussir tous les défis CONVOYEUR pour débloquer cette voiture."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Devi completare tutte le sfide TRASPORTO VEICOLI per sbloccare quest'auto."
+    } ],
+    "ref" : "621129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous devez réussir tous les défis COURSIER pour débloquer cette voiture."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Devi completare tutte le sfide CORRIERE per sbloccare quest'auto."
+    } ],
+    "ref" : "631129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous pourrez prendre des photos dès que vous aurez atteint le niveau Amateur."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Quando raggiungerai il livello Dilettante, potrai scattare delle fotografie."
+    } ],
+    "ref" : "542129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous pourrez accéder à l'éditeur de défi perso en devenant PRO."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Quando diventerai un Professionista, potrai accedere all'editor per personalizzare le sfide."
+    } ],
+    "ref" : "552129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Pour accéder à cette île, vous devez atteindre le niveau EXPERT."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Per guadagnarti l'accesso a quest'isola, devi raggiungere il livello ESPERTO."
+    } ],
+    "ref" : "562129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Pour accéder à ce circuit, vous devez atteindre le niveau CHAMPION."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Per guadagnarti l'accesso a questo circuito, devi raggiungere il livello CAMPIONE."
+    } ],
+    "ref" : "572129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Cette maison vous sera offerte lorsque vous aurez découvert TOUTES les routes de l'île."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Questa casa sarà tua quando avrai scoperto TUTTE le strade dell'isola."
+    } ],
+    "ref" : "582129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Pour y accéder, vous devez d'abord découvrir tous les concessionnaires autos."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Per accedere a questo concessionario, devi prima scoprire tutti i concessionari auto."
+    } ],
+    "ref" : "592129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Vous devez réussir le défi \" Tour de l'île \" pour déverrouiller cette auto."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Devi completare con successo la sfida \"Giro dell'isola\" per sbloccare questa macchina."
+    } ],
+    "ref" : "602129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Pour accéder à ce spot, vous devez réussir la course §RACE_LUX§"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Per avere accesso a questa zona, devi vincere la Corsa §RACE_LUX§."
+    } ],
+    "ref" : "612129540"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "??"
+    }, {
+      "locale" : "ITALY",
+      "value" : "??"
+    } ],
+    "ref" : "53400734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "VICTOIRES EN SOLO - NIVEAU 1"
+    }, {
+      "locale" : "ITALY",
+      "value" : "VITT. GIOC. SINGOLO - LIV. 1"
+    } ],
+    "ref" : "54400734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "VICTOIRES EN SOLO - NIVEAU 2"
+    }, {
+      "locale" : "ITALY",
+      "value" : "VITT. GIOC. SINGOLO - LIV. 2"
+    } ],
+    "ref" : "55400734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "VICTOIRES EN SOLO - NIVEAU 3"
+    }, {
+      "locale" : "ITALY",
+      "value" : "VITT. GIOC. SINGOLO - LIV. 3"
+    } ],
+    "ref" : "56400734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "VICTOIRES EN SOLO - NIVEAU 4"
+    }, {
+      "locale" : "ITALY",
+      "value" : "VITT. GIOC. SINGOLO - LIV. 4"
+    } ],
+    "ref" : "57400734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "VICTOIRES EN SOLO - NIVEAU 5"
+    }, {
+      "locale" : "ITALY",
+      "value" : "VITT. GIOC. SINGOLO - LIV. 5"
+    } ],
+    "ref" : "58400734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "CHALLENGES TEMPS SOLO"
+    }, {
+      "locale" : "ITALY",
+      "value" : "SFIDE A TEMPO GIOC. SINGOLO "
+    } ],
+    "ref" : "59400734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "CHALLENGES COURSES SOLO"
+    }, {
+      "locale" : "ITALY",
+      "value" : "SFIDE GARA GIOC. SINGOLO "
+    } ],
+    "ref" : "60400734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "CHALLENGES VITESSES SOLO"
+    }, {
+      "locale" : "ITALY",
+      "value" : "SFIDE VEL. GIOC. SINGOLO "
+    } ],
+    "ref" : "61400734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "TOUR DE L'ÎLE"
+    }, {
+      "locale" : "ITALY",
+      "value" : "GIRO DELL'ISOLA"
+    } ],
+    "ref" : "62400734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "VICTOIRES EN MULTI - NIVEAU 1"
+    }, {
+      "locale" : "ITALY",
+      "value" : "VITTORIE MULTI - LIVELLO 1"
+    } ],
+    "ref" : "53500734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "VICTOIRES EN MULTI - NIVEAU 2"
+    }, {
+      "locale" : "ITALY",
+      "value" : "VITTORIE MULTI - LIVELLO 2"
+    } ],
+    "ref" : "54500734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "VICTOIRES EN MULTI - NIVEAU 3"
+    }, {
+      "locale" : "ITALY",
+      "value" : "VITTORIE MULTI - LIVELLO 3"
+    } ],
+    "ref" : "55500734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "MISSIONS RÉUSSIES - NIVEAU 1"
+    }, {
+      "locale" : "ITALY",
+      "value" : "MISSIONI COMPLETATE - LIV. 1"
+    } ],
+    "ref" : "56500734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "MISSIONS RÉUSSIES - NIVEAU 2"
+    }, {
+      "locale" : "ITALY",
+      "value" : "MISSIONI COMPLETATE - LIV. 2"
+    } ],
+    "ref" : "57500734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "MISSIONS RÉUSSIES - NIVEAU 3"
+    }, {
+      "locale" : "ITALY",
+      "value" : "MISSIONI COMPLETATE - LIV. 3"
+    } ],
+    "ref" : "58500734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "MISSIONS RÉUSSIES - NIVEAU 4"
+    }, {
+      "locale" : "ITALY",
+      "value" : "MISSIONI COMPLETATE - LIV. 4"
+    } ],
+    "ref" : "59500734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "VICTOIRES EN DÉFIS IMMÉDIATS"
+    }, {
+      "locale" : "ITALY",
+      "value" : "VITTORIE IN SFIDE IMMEDIATE"
+    } ],
+    "ref" : "60500734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "PARTAGE DE CHALLENGES PERSO"
+    }, {
+      "locale" : "ITALY",
+      "value" : "CONDIVISIONE SFIDE PERSON."
+    } ],
+    "ref" : "61500734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "VICTOIRES CHALLENGES PERSO"
+    }, {
+      "locale" : "ITALY",
+      "value" : "VITTORIE SFIDE PERSON."
+    } ],
+    "ref" : "62500734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "MEMBRE D'UN CLUB"
+    }, {
+      "locale" : "ITALY",
+      "value" : "MEMBRO DEL CLUB"
+    } ],
+    "ref" : "53600734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "VICT. COURSES DE CLUB"
+    }, {
+      "locale" : "ITALY",
+      "value" : "VITTORIE IN GARE PER CLUB"
+    } ],
+    "ref" : "54600734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "E-ACHAT"
+    }, {
+      "locale" : "ITALY",
+      "value" : "TRADE"
+    } ],
+    "ref" : "55600734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "COLLECTIONNEUR FERRARI"
+    }, {
+      "locale" : "ITALY",
+      "value" : "COLLEZIONISTA DI FERRARI"
+    } ],
+    "ref" : "56600734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "COLLECTIONNEUR LAMBORGHINI"
+    }, {
+      "locale" : "ITALY",
+      "value" : "COLLEZIONISTA DI LAMBORGHINI"
+    } ],
+    "ref" : "57600734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "COLLECTIONNEUR MERCEDES-BENZ"
+    }, {
+      "locale" : "ITALY",
+      "value" : "COLLEZIONISTA MERCEDES-BENZ"
+    } ],
+    "ref" : "58600734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "COLLECTIONNEUR CHEVROLET"
+    }, {
+      "locale" : "ITALY",
+      "value" : "COLLEZIONISTA DI CHEVROLET"
+    } ],
+    "ref" : "59600734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "COLLECTIONNEUR ASTON MARTIN"
+    }, {
+      "locale" : "ITALY",
+      "value" : "COLLEZIONISTA ASTON MARTIN"
+    } ],
+    "ref" : "60600734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "COLLECTIONNEUR FORD"
+    }, {
+      "locale" : "ITALY",
+      "value" : "COLLEZIONISTA DI FORD"
+    } ],
+    "ref" : "61600734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "GRAND COLLECTIONNEUR"
+    }, {
+      "locale" : "ITALY",
+      "value" : "COLLEZIONISTA GENERICO"
+    } ],
+    "ref" : "62600734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "COLLECTIONNEUR MOTOS"
+    }, {
+      "locale" : "ITALY",
+      "value" : "COLLEZIONISTA DI MOTO"
+    } ],
+    "ref" : "53700734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "COLLECTIONNEUR BEN SHERMAN"
+    }, {
+      "locale" : "ITALY",
+      "value" : "COLLEZIONISTA BEN SHERMAN"
+    } ],
+    "ref" : "54700734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "COLLECTIONNEUR *ecko unltd."
+    }, {
+      "locale" : "ITALY",
+      "value" : "COLLEZIONISTA *ecko unltd."
+    } ],
+    "ref" : "55700734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "TUNING"
+    }, {
+      "locale" : "ITALY",
+      "value" : "MECCANICO"
+    } ],
+    "ref" : "56700734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "EXPLORATEUR"
+    }, {
+      "locale" : "ITALY",
+      "value" : "ESPLORATORE"
+    } ],
+    "ref" : "57700734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "PHOTOGRAPHE"
+    }, {
+      "locale" : "ITALY",
+      "value" : "FOTOGRAFO"
+    } ],
+    "ref" : "58700734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "TOURISTE TRANQUILLE"
+    }, {
+      "locale" : "ITALY",
+      "value" : "TURISTA OCCASIONALE"
+    } ],
+    "ref" : "59700734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "TOURISTE ASSIDU"
+    }, {
+      "locale" : "ITALY",
+      "value" : "TURISTA HABITUÉ"
+    } ],
+    "ref" : "60700734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "VOYAGEUR"
+    }, {
+      "locale" : "ITALY",
+      "value" : "VIAGGIATORE"
+    } ],
+    "ref" : "61700734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "GRAND VOYAGEUR"
+    }, {
+      "locale" : "ITALY",
+      "value" : "GRANDE VIAGGIATORE"
+    } ],
+    "ref" : "62700734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "AIGLE DE LA ROUTE !"
+    }, {
+      "locale" : "ITALY",
+      "value" : "FALCO DELLA STRADA!"
+    } ],
+    "ref" : "53800734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "PROPRIÉTAIRE"
+    }, {
+      "locale" : "ITALY",
+      "value" : "PROPRIETARIO"
+    } ],
+    "ref" : "54800734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "GÉANT DE L'IMMOBILIER"
+    }, {
+      "locale" : "ITALY",
+      "value" : "MAGNATE IMMOBILIARE"
+    } ],
+    "ref" : "55800734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "PETIT COLLECTIONNEUR"
+    }, {
+      "locale" : "ITALY",
+      "value" : "PICCOLO COLLEZIONISTA"
+    } ],
+    "ref" : "56800734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "VICTOIRE EN SOLO - NIVEAU 6"
+    }, {
+      "locale" : "ITALY",
+      "value" : "VITTORIA SINGOLO GIOCATORE - LIVELLO 6"
+    } ],
+    "ref" : "57800734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "COLLECTIONNEUR AMATEUR"
+    }, {
+      "locale" : "ITALY",
+      "value" : "COLLEZIONISTA DILETTANTE"
+    } ],
+    "ref" : "58800734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "COLLECTIONNEUR CONFIRMÉ"
+    }, {
+      "locale" : "ITALY",
+      "value" : "COLLEZIONISTA INCALLITO"
+    } ],
+    "ref" : "59800734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "COLLECTIONNEUR EXTRÊME"
+    }, {
+      "locale" : "ITALY",
+      "value" : "COLLEZIONISTA ESTREMO"
+    } ],
+    "ref" : "60800734"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "??"
+    }, {
+      "locale" : "ITALY",
+      "value" : "??"
+    } ],
+    "ref" : "53359455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Gagner la coupe en or sur 5 challenges solo."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Vinci la coppa d'oro in 5 sfide a giocatore singolo."
+    } ],
+    "ref" : "54359455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Gagner la coupe en or sur 10 défis solo."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Vinci la coppa d'oro in 10 sfide a giocatore singolo."
+    } ],
+    "ref" : "55359455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Gagner la coupe en or sur 20 défis solo."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Vinci la coppa d'oro in 20 sfide a giocatore singolo."
+    } ],
+    "ref" : "56359455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Gagner la coupe en or sur 40 défis solo."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Vinci la coppa d'oro in 40 sfide a giocatore singolo."
+    } ],
+    "ref" : "57359455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Gagner la coupe en or sur tous les challenges solo"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Vinci la coppa d'oro in TUTTE le sfide a giocatore singolo."
+    } ],
+    "ref" : "58359455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Gagner la coupe en or sur tous les challenges de type TEMPS solo."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Vinci la coppa d'oro in TUTTE le sfide della categoria TEMPO a giocatore singolo."
+    } ],
+    "ref" : "59359455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Gagner la coupe en or sur tous les challenges de type COURSE solo."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Vinci la coppa d'oro in TUTTE le sfide della categoria GARA a giocatore singolo."
+    } ],
+    "ref" : "60359455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Gagner la coupe en or sur tous les challenges de type VITESSE solo."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Vinci la coppa d'oro in TUTTE le sfide della categoria VELOCITÀ a giocatore singolo."
+    } ],
+    "ref" : "61359455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Gagner la coupe en or sur le défi \\n\"Tour de l'île\"."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Vinci la coppa d'oro nella sfida \"Giro dell'isola\"."
+    } ],
+    "ref" : "62359455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Remporter 3 victoires en courses MULTIJOUEUR."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Vinci 3 gare MULTIGIOCATORE."
+    } ],
+    "ref" : "53459455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Remporter 15 victoires en courses multijoueurs."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Consegui 15 vittorie nelle gare multigiocatore."
+    } ],
+    "ref" : "54459455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Remporter 30 victoires en courses multijoueurs."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Consegui 30 vittorie nelle gare multigiocatore."
+    } ],
+    "ref" : "55459455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Réussir 3 missions de types Top-Modèle, Auto-Stoppeur, Convoyeur et Coursier."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Completa con successo 3 missioni fra le categorie Top Model, Autostoppista, Trasporto veicoli e Corriere."
+    } ],
+    "ref" : "56459455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Réussir 15 missions de types Top-Modèle, Auto-Stoppeur, Convoyeur et Coursier."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Completa con successo 15 missioni fra le categorie Top Model, Autostoppista, Trasporto veicoli e Corriere."
+    } ],
+    "ref" : "57459455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Réussir 40 missions de types Top-Modèle, Auto-Stoppeur, Convoyeur et Coursier."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Completa con successo 40 missioni fra le categorie Top Model, Autostoppista, Trasporto veicoli e Corriere."
+    } ],
+    "ref" : "58459455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Réussir toutes les missions Top-Modèle, Auto-Stoppeur, Convoyeur et Coursier."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Completa con successo TUTTE le missioni delle categorie Top Model, Autostoppista, Trasporto veicoli e Corriere."
+    } ],
+    "ref" : "59459455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Remporter 5 Défis Immédiats."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Consegui 5 vittorie nelle sfide immediate."
+    } ],
+    "ref" : "60459455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Partager 3 challenges perso dans les Drive-In."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Condividi 3 sfide personalizzate nei drive-in."
+    } ],
+    "ref" : "61459455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Remporter 2 victoires dans les défis perso des Drive-In."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Consegui 2 vittorie nelle sfide personalizzate nei drive-in."
+    } ],
+    "ref" : "62459455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Créer un Club ou devenir membre d'un club déjà existant."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Crea un club o entra in un club già esistente."
+    } ],
+    "ref" : "53559455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Remporter 3 victoires en courses inter-clubs."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Consegui 3 vittorie nelle gare inter-club."
+    } ],
+    "ref" : "54559455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Acheter ou vendre un véhicule à un autre membre sur E-ACHAT."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Compra o vendi un veicolo da/a un altro membro tramite SCAMBIA."
+    } ],
+    "ref" : "55559455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Posséder au moins 3 FERRARI différentes."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 3 FERRARI differenti."
+    } ],
+    "ref" : "56559455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Posséder au moins 3 LAMBORGHINI différentes."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 3 LAMBORGHINI differenti."
+    } ],
+    "ref" : "57559455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Posséder au moins 3 MERCEDES-BENZ différentes."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 3 MERCEDES-BENZ differenti."
+    } ],
+    "ref" : "58559455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Posséder au moins 3 CHEVROLET différentes."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 3 CHEVROLET differenti."
+    } ],
+    "ref" : "59559455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Posséder au moins 3 ASTON MARTIN différentes."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 3 ASTON MARTIN differenti."
+    } ],
+    "ref" : "60559455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Posséder au moins 3 FORD différentes."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 3 FORD differenti."
+    } ],
+    "ref" : "61559455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Posséder au moins 50 modèles de voitures différents."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 50 modelli diversi di vetture."
+    } ],
+    "ref" : "62559455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Posséder au moins 3 motos différentes."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 3 moto differenti."
+    } ],
+    "ref" : "53659455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Posséder au moins 10 articles de la marque BEN SHERMAN."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 10 articoli firmati BEN SHERMAN."
+    } ],
+    "ref" : "54659455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Posséder au moins 10 articles de la marque *ecko unltd."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 10 articoli firmati *ecko unltd."
+    } ],
+    "ref" : "55659455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Acheter un kit de performance pour l'un de vos véhicules dans un atelier de Tuning."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Acquista un kit prestazioni per uno dei tuoi veicoli presso un'officina."
+    } ],
+    "ref" : "56659455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Découvrir toutes les routes de l'île."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Scopri tutte le strade dell'isola."
+    } ],
+    "ref" : "57659455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Photographier tous les plus beaux points de vue de l'île."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Fotografa gli angoli più incantevoli dell'isola."
+    } ],
+    "ref" : "58659455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Parcourir 30 miles (48 km)."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Percorri 30 miglia (48 km)."
+    } ],
+    "ref" : "59659455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Parcourir 200 miles (320 km)."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Percorri 200 miglia (320 km)."
+    } ],
+    "ref" : "60659455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Parcourir 400 miles (640 km)."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Percorri 400 miglia (640 km)"
+    } ],
+    "ref" : "61659455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Parcourir 1000 miles (1600 km)."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Percorri 1.000 miglia (1.600 km)"
+    } ],
+    "ref" : "62659455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Parcourir 5000 miles (8000 km)."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Percorri 5.000 miglia (8.000 km)"
+    } ],
+    "ref" : "53759455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Être propriétaire d'au moins 2 maisons."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 2 case."
+    } ],
+    "ref" : "54759455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Être propriétaire de toutes les maisons de l'île."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 64 case sull'isola."
+    } ],
+    "ref" : "55759455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Posséder au moins 2 voitures différentes."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 2 auto differenti."
+    } ],
+    "ref" : "56759455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Gagner la coupe en or sur 60 défis solo."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Vinci la coppa d'oro in 60 sfide a giocatore singolo."
+    } ],
+    "ref" : "57759455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Posséder au moins 4 voitures différentes."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 4 auto differenti."
+    } ],
+    "ref" : "58759455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Posséder au moins 10 voitures différentes."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 10 auto differenti."
+    } ],
+    "ref" : "59759455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Posséder au moins 20 voitures différentes."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 20 auto differenti."
+    } ],
+    "ref" : "60759455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Obtenez 3 victoires en courses multijoueur. Seules les PARTIES AVEC CLASSEMENT sont prises en compte."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Ottieni 3 vittorie nelle gare multigiocatore. Valgono solo le PARTITE CLASSIFICATE."
+    } ],
+    "ref" : "61759455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Obtenez 15 victoires en courses multijoueur. Seules les PARTIES AVEC CLASSEMENT sont prises en compte."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Ottieni 15 vittorie nelle gare multigiocatore. Valgono solo le PARTITE CLASSIFICATE."
+    } ],
+    "ref" : "62759455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Obtenez 30 victoires en courses multijoueur. Seules les PARTIES AVEC CLASSEMENT sont prises en compte."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Ottieni 30 vittorie nelle gare multigiocatore. Valgono solo le PARTITE CLASSIFICATE."
+    } ],
+    "ref" : "53859455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Posséder au moins 15 maisons."
+    }, {
+      "locale" : "ITALY",
+      "value" : "Possiedi almeno 15 case."
+    } ],
+    "ref" : "54859455"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "MinGoldCup"
+    }, {
+      "locale" : "ITALY",
+      "value" : "MinGoldCup"
+    } ],
+    "ref" : "54736935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "MinSoloGoldCup"
+    }, {
+      "locale" : "ITALY",
+      "value" : "MinSoloGoldCup"
+    } ],
+    "ref" : "55736935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "MinMultiGoldCup"
+    }, {
+      "locale" : "ITALY",
+      "value" : "MinMultiGoldCup"
+    } ],
+    "ref" : "56736935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "MinExtraGoldCup"
+    }, {
+      "locale" : "ITALY",
+      "value" : "MinExtraGoldCup"
+    } ],
+    "ref" : "57736935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "AllGoldSolo"
+    }, {
+      "locale" : "ITALY",
+      "value" : "AllGoldSolo"
+    } ],
+    "ref" : "58736935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "AllGoldSoloTime"
+    }, {
+      "locale" : "ITALY",
+      "value" : "AllGoldSoloTime"
+    } ],
+    "ref" : "59736935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "AllGoldSoloRace"
+    }, {
+      "locale" : "ITALY",
+      "value" : "AllGoldSoloRace"
+    } ],
+    "ref" : "60736935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "AllGoldSoloSpeed"
+    }, {
+      "locale" : "ITALY",
+      "value" : "AllGoldSoloSpeed"
+    } ],
+    "ref" : "61736935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "AllGoldSoloExtra"
+    }, {
+      "locale" : "ITALY",
+      "value" : "AllGoldSoloExtra"
+    } ],
+    "ref" : "62736935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "CarsOwned"
+    }, {
+      "locale" : "ITALY",
+      "value" : "CarsOwned"
+    } ],
+    "ref" : "53836935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "CarsOwned_Ferrari"
+    }, {
+      "locale" : "ITALY",
+      "value" : "CarsOwned_Ferrari"
+    } ],
+    "ref" : "54836935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "CarsOwned_Lambo"
+    }, {
+      "locale" : "ITALY",
+      "value" : "CarsOwned_Lambo"
+    } ],
+    "ref" : "55836935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "CarsOwned_Merco"
+    }, {
+      "locale" : "ITALY",
+      "value" : "CarsOwned_Merco"
+    } ],
+    "ref" : "56836935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "CarsOwned_Chevy"
+    }, {
+      "locale" : "ITALY",
+      "value" : "CarsOwned_Chevy"
+    } ],
+    "ref" : "57836935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "CarsOwned_Aston"
+    }, {
+      "locale" : "ITALY",
+      "value" : "CarsOwned_Aston"
+    } ],
+    "ref" : "58836935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "CarsOwned_Ford"
+    }, {
+      "locale" : "ITALY",
+      "value" : "CarsOwned_Ford"
+    } ],
+    "ref" : "59836935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "CarsOwned_All"
+    }, {
+      "locale" : "ITALY",
+      "value" : "CarsOwned_All"
+    } ],
+    "ref" : "60836935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "BikesOwned"
+    }, {
+      "locale" : "ITALY",
+      "value" : "BikesOwned"
+    } ],
+    "ref" : "61836935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "AllHousesOwned"
+    }, {
+      "locale" : "ITALY",
+      "value" : "AllHousesOwned"
+    } ],
+    "ref" : "62836935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "HousesOwned"
+    }, {
+      "locale" : "ITALY",
+      "value" : "HousesOwned"
+    } ],
+    "ref" : "53936935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "RoadExplored"
+    }, {
+      "locale" : "ITALY",
+      "value" : "RoadExplored"
+    } ],
+    "ref" : "54936935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "AllRoadExplored"
+    }, {
+      "locale" : "ITALY",
+      "value" : "AllRoadExplored"
+    } ],
+    "ref" : "55936935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "MinClubGoldCup"
+    }, {
+      "locale" : "ITALY",
+      "value" : "MinClubGoldCup"
+    } ],
+    "ref" : "56936935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "IsClubMember"
+    }, {
+      "locale" : "ITALY",
+      "value" : "IsClubMember"
+    } ],
+    "ref" : "57936935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "CarTunedHistory"
+    }, {
+      "locale" : "ITALY",
+      "value" : "CarTunedHistory"
+    } ],
+    "ref" : "58936935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "GoldGeekCha"
+    }, {
+      "locale" : "ITALY",
+      "value" : "GoldGeekCha"
+    } ],
+    "ref" : "59936935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "GoldInstantCha"
+    }, {
+      "locale" : "ITALY",
+      "value" : "GoldInstantCha"
+    } ],
+    "ref" : "60936935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "GoldInstantChaOffline"
+    }, {
+      "locale" : "ITALY",
+      "value" : "GoldInstantChaOffline"
+    } ],
+    "ref" : "61936935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "GoldInstantChaOnline"
+    }, {
+      "locale" : "ITALY",
+      "value" : "GoldInstantChaOnline"
+    } ],
+    "ref" : "62936935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "GoldInstantChaAllBots"
+    }, {
+      "locale" : "ITALY",
+      "value" : "GoldInstantChaAllBots"
+    } ],
+    "ref" : "54036935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "UploadCustom"
+    }, {
+      "locale" : "ITALY",
+      "value" : "UploadCustom"
+    } ],
+    "ref" : "55036935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "MinGoldCustom"
+    }, {
+      "locale" : "ITALY",
+      "value" : "MinGoldCustom"
+    } ],
+    "ref" : "56036935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "MinETradeTransaction"
+    }, {
+      "locale" : "ITALY",
+      "value" : "MinETradeTransaction"
+    } ],
+    "ref" : "57036935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "ClothesOwned_BenSherman"
+    }, {
+      "locale" : "ITALY",
+      "value" : "ClothesOwned_BenSherman"
+    } ],
+    "ref" : "58036935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "ClothesOwned_Ecko"
+    }, {
+      "locale" : "ITALY",
+      "value" : "ClothesOwned_Ecko"
+    } ],
+    "ref" : "59036935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "MinSpecialPhotos "
+    }, {
+      "locale" : "ITALY",
+      "value" : "MinSpecialPhotos "
+    } ],
+    "ref" : "60036935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "LevelReached"
+    }, {
+      "locale" : "ITALY",
+      "value" : "LevelReached"
+    } ],
+    "ref" : "61036935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "AllGoldSoloExtraShopping"
+    }, {
+      "locale" : "ITALY",
+      "value" : "AllGoldSoloExtraShopping"
+    } ],
+    "ref" : "62036935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "AllGoldSoloExtraHitch"
+    }, {
+      "locale" : "ITALY",
+      "value" : "AllGoldSoloExtraHitch"
+    } ],
+    "ref" : "63036935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "AllGoldSoloExtraTransp"
+    }, {
+      "locale" : "ITALY",
+      "value" : "AllGoldSoloExtraTransp"
+    } ],
+    "ref" : "54136935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "AllGoldSoloExtraConvoy"
+    }, {
+      "locale" : "ITALY",
+      "value" : "AllGoldSoloExtraConvoy"
+    } ],
+    "ref" : "55136935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "GoldPaintDeluxeCha"
+    }, {
+      "locale" : "ITALY",
+      "value" : "GoldPaintDeluxeCha"
+    } ],
+    "ref" : "56136935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "AllCarDealerUnlocked"
+    }, {
+      "locale" : "ITALY",
+      "value" : "AllCarDealerUnlocked"
+    } ],
+    "ref" : "57136935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "RoadTraveled"
+    }, {
+      "locale" : "ITALY",
+      "value" : "RoadTraveled"
+    } ],
+    "ref" : "58136935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Novice_Pts"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Novice_Pts"
+    } ],
+    "ref" : "59136935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Pro_Pts"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Pro_Pts"
+    } ],
+    "ref" : "60136935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Expert_Pts"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Expert_Pts"
+    } ],
+    "ref" : "61136935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Master_Pts"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Master_Pts"
+    } ],
+    "ref" : "62136935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Ace_Pts"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Ace_Pts"
+    } ],
+    "ref" : "63136935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "CarsOwnedPC"
+    }, {
+      "locale" : "ITALY",
+      "value" : "CarsOwnedPC"
+    } ],
+    "ref" : "71366935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "LevelReachedHardcore"
+    }, {
+      "locale" : "ITALY",
+      "value" : "LevelReachedHardcore"
+    } ],
+    "ref" : "721036935"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "???"
+    }, {
+      "locale" : "ITALY",
+      "value" : "???"
+    } ],
+    "ref" : "5337472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "ChronoPack"
+    }, {
+      "locale" : "ITALY",
+      "value" : "ChronoPack"
+    } ],
+    "ref" : "5437472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Car"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Car"
+    } ],
+    "ref" : "5537472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "SnapShot"
+    }, {
+      "locale" : "ITALY",
+      "value" : "SnapShot"
+    } ],
+    "ref" : "5637472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "GameMode"
+    }, {
+      "locale" : "ITALY",
+      "value" : "GameMode"
+    } ],
+    "ref" : "5737472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "FordIsland"
+    }, {
+      "locale" : "ITALY",
+      "value" : "FordIsland"
+    } ],
+    "ref" : "5837472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "CircuitAccess"
+    }, {
+      "locale" : "ITALY",
+      "value" : "CircuitAccess"
+    } ],
+    "ref" : "5937472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "House"
+    }, {
+      "locale" : "ITALY",
+      "value" : "House"
+    } ],
+    "ref" : "6037472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "CarPaintDeluxe"
+    }, {
+      "locale" : "ITALY",
+      "value" : "CarPaintDeluxe"
+    } ],
+    "ref" : "6137472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "BikeDealer"
+    }, {
+      "locale" : "ITALY",
+      "value" : "BikeDealer"
+    } ],
+    "ref" : "6237472"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "BoatTrip"
+    }, {
+      "locale" : "ITALY",
+      "value" : "BoatTrip"
+    } ],
+    "ref" : "5347472"
+  } ]
+}

@@ -1,0 +1,1157 @@
+{
+  "version" : "1,2",
+  "categoryCount" : 3,
+  "entries" : [ {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "ERREUR!!"
+    }, {
+      "locale" : "ITALY",
+      "value" : "ERREUR!!"
+    } ],
+    "ref" : "9098256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Brian"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Brian"
+    } ],
+    "ref" : "54367256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Steven"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Steven"
+    } ],
+    "ref" : "55367256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Quentin"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Quentin"
+    } ],
+    "ref" : "56367256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Roberto"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Roberto"
+    } ],
+    "ref" : "57367256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Georges"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Georges"
+    } ],
+    "ref" : "58367256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "David"
+    }, {
+      "locale" : "ITALY",
+      "value" : "David"
+    } ],
+    "ref" : "59367256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Spike"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Spike"
+    } ],
+    "ref" : "60367256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Francis"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Francis"
+    } ],
+    "ref" : "61367256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Peter"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Peter"
+    } ],
+    "ref" : "62367256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Kirk"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Kirk"
+    } ],
+    "ref" : "53467256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Richard"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Richard"
+    } ],
+    "ref" : "54467256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Daniel"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Daniel"
+    } ],
+    "ref" : "55467256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Josh"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Josh"
+    } ],
+    "ref" : "56467256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Frank"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Frank"
+    } ],
+    "ref" : "57467256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Max"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Max"
+    } ],
+    "ref" : "58467256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Nancy"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Nancy"
+    } ],
+    "ref" : "59467256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Fred"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Fred"
+    } ],
+    "ref" : "60467256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Woody"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Woody"
+    } ],
+    "ref" : "61467256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Bill"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Bill"
+    } ],
+    "ref" : "62467256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Rodney"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Rodney"
+    } ],
+    "ref" : "53567256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Julian"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Julian"
+    } ],
+    "ref" : "54567256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Jeff"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Jeff"
+    } ],
+    "ref" : "55567256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Mary"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Mary"
+    } ],
+    "ref" : "56567256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Sylvia"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Sylvia"
+    } ],
+    "ref" : "57567256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Tony"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Tony"
+    } ],
+    "ref" : "58567256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Clark"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Clark"
+    } ],
+    "ref" : "59567256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Joel"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Joel"
+    } ],
+    "ref" : "60567256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Thomas"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Thomas"
+    } ],
+    "ref" : "61567256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Donald"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Donald"
+    } ],
+    "ref" : "62567256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Mark"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Mark"
+    } ],
+    "ref" : "53667256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Veda"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Veda"
+    } ],
+    "ref" : "54667256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Mike"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Mike"
+    } ],
+    "ref" : "55667256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Dan"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Dan"
+    } ],
+    "ref" : "56667256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Alec"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Alec"
+    } ],
+    "ref" : "57667256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Sam"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Sam"
+    } ],
+    "ref" : "58667256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "John"
+    }, {
+      "locale" : "ITALY",
+      "value" : "John"
+    } ],
+    "ref" : "59667256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Kevin"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Kevin"
+    } ],
+    "ref" : "60667256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Pattie"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Pattie"
+    } ],
+    "ref" : "61667256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Warren"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Warren"
+    } ],
+    "ref" : "62667256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Walter"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Walter"
+    } ],
+    "ref" : "53767256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Bruce"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Bruce"
+    } ],
+    "ref" : "54767256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Alfred"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Alfred"
+    } ],
+    "ref" : "55767256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Howard"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Howard"
+    } ],
+    "ref" : "56767256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Scott"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Scott"
+    } ],
+    "ref" : "57767256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Ernst"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Ernst"
+    } ],
+    "ref" : "58767256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Craig"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Craig"
+    } ],
+    "ref" : "59767256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Henry"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Henry"
+    } ],
+    "ref" : "60767256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Patrick"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Patrick"
+    } ],
+    "ref" : "61767256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Brad"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Brad"
+    } ],
+    "ref" : "62767256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Ted"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Ted"
+    } ],
+    "ref" : "53867256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Charles"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Charles"
+    } ],
+    "ref" : "54867256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Clara"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Clara"
+    } ],
+    "ref" : "55867256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Rupert"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Rupert"
+    } ],
+    "ref" : "56867256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Sean"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Sean"
+    } ],
+    "ref" : "57867256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Gordon"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Gordon"
+    } ],
+    "ref" : "58867256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Phil"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Phil"
+    } ],
+    "ref" : "59867256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Lindsay"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Lindsay"
+    } ],
+    "ref" : "60867256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Edgar"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Edgar"
+    } ],
+    "ref" : "61867256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Ivan"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Ivan"
+    } ],
+    "ref" : "62867256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Edd"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Edd"
+    } ],
+    "ref" : "53967256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Doug"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Doug"
+    } ],
+    "ref" : "54967256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Martin"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Martin"
+    } ],
+    "ref" : "55967256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Harvey"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Harvey"
+    } ],
+    "ref" : "56967256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Marvin"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Marvin"
+    } ],
+    "ref" : "57967256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Helen"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Helen"
+    } ],
+    "ref" : "58967256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Ralph"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Ralph"
+    } ],
+    "ref" : "59967256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Gary"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Gary"
+    } ],
+    "ref" : "60967256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Dudley"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Dudley"
+    } ],
+    "ref" : "61967256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Wes"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Wes"
+    } ],
+    "ref" : "62967256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Charlotte"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Charlotte"
+    } ],
+    "ref" : "54067256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Alex"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Alex"
+    } ],
+    "ref" : "55067256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Jill"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Jill"
+    } ],
+    "ref" : "56067256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Al"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Al"
+    } ],
+    "ref" : "57067256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Arthur"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Arthur"
+    } ],
+    "ref" : "58067256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Burt"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Burt"
+    } ],
+    "ref" : "59067256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Keith"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Keith"
+    } ],
+    "ref" : "60067256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Seth"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Seth"
+    } ],
+    "ref" : "61067256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Eddie"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Eddie"
+    } ],
+    "ref" : "62067256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Harold"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Harold"
+    } ],
+    "ref" : "63067256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Jimmy"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Jimmy"
+    } ],
+    "ref" : "54167256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Dennis"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Dennis"
+    } ],
+    "ref" : "55167256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Tim"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Tim"
+    } ],
+    "ref" : "56167256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Eugene"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Eugene"
+    } ],
+    "ref" : "57167256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Harry"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Harry"
+    } ],
+    "ref" : "58167256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Jason"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Jason"
+    } ],
+    "ref" : "59167256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Danny"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Danny"
+    } ],
+    "ref" : "60167256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "William"
+    }, {
+      "locale" : "ITALY",
+      "value" : "William"
+    } ],
+    "ref" : "61167256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Lise"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Lise"
+    } ],
+    "ref" : "62167256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Alan"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Alan"
+    } ],
+    "ref" : "63167256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Nick"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Nick"
+    } ],
+    "ref" : "54267256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Keira"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Keira"
+    } ],
+    "ref" : "55267256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Arnold"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Arnold"
+    } ],
+    "ref" : "56267256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Sylvester"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Sylvester"
+    } ],
+    "ref" : "57267256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Jean-Claude"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Jean-Claude"
+    } ],
+    "ref" : "58267256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Jack"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Jack"
+    } ],
+    "ref" : "59267256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Natalie"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Natalie"
+    } ],
+    "ref" : "60267256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Justin"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Justin"
+    } ],
+    "ref" : "61267256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Russell"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Russell"
+    } ],
+    "ref" : "62267256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Kathy"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Kathy"
+    } ],
+    "ref" : "63267256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Andrew"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Andrew"
+    } ],
+    "ref" : "53377256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Matt"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Matt"
+    } ],
+    "ref" : "54377256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Greg"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Greg"
+    } ],
+    "ref" : "55377256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Luke"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Luke"
+    } ],
+    "ref" : "56377256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Sharon"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Sharon"
+    } ],
+    "ref" : "57377256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Angelina"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Angelina"
+    } ],
+    "ref" : "58377256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Charlize"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Charlize"
+    } ],
+    "ref" : "59377256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Gregory"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Gregory"
+    } ],
+    "ref" : "60377256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Djibril"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Djibril"
+    } ],
+    "ref" : "61377256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Thierry"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Thierry"
+    } ],
+    "ref" : "62377256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Sylvain"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Sylvain"
+    } ],
+    "ref" : "53477256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Zinedine"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Zinedine"
+    } ],
+    "ref" : "54477256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Fabien"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Fabien"
+    } ],
+    "ref" : "55477256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Claude"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Claude"
+    } ],
+    "ref" : "56477256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Lilian"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Lilian"
+    } ],
+    "ref" : "57477256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Willy"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Willy"
+    } ],
+    "ref" : "58477256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Normal_bon"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Normal_bon"
+    } ],
+    "ref" : "54373256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Normal_normal"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Normal_normal"
+    } ],
+    "ref" : "55373256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Normal_mauvais"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Normal_mauvais"
+    } ],
+    "ref" : "56373256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Agressif_bon"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Agressif_bon"
+    } ],
+    "ref" : "57373256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Agressif_normal"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Agressif_normal"
+    } ],
+    "ref" : "58373256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Agressif_mauvais"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Agressif_mauvais"
+    } ],
+    "ref" : "59373256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Peureux_bon"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Peureux_bon"
+    } ],
+    "ref" : "60373256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Peureux_normal"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Peureux_normal"
+    } ],
+    "ref" : "61373256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Peureux_mauvais"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Peureux_mauvais"
+    } ],
+    "ref" : "62373256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Téméraire_bon"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Téméraire_bon"
+    } ],
+    "ref" : "53473256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Téméraire_normal"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Téméraire_normal"
+    } ],
+    "ref" : "54473256"
+  }, {
+    "items" : [ {
+      "locale" : "FRANCE",
+      "value" : "Téméraire_mauvais"
+    }, {
+      "locale" : "ITALY",
+      "value" : "Téméraire_mauvais"
+    } ],
+    "ref" : "55473256"
+  } ]
+}
