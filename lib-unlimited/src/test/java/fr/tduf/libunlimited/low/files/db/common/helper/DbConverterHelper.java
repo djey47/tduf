@@ -2,12 +2,14 @@ package fr.tduf.libunlimited.low.files.db.common.helper;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Ignore
 public class DbConverterHelper {
 
     @Test
