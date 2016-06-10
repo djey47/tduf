@@ -190,33 +190,33 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void writeDatabaseTopicToJson_whenProvidedContents_shouldCreateFile_andReturnAbsolutePath() throws IOException {
+    public void writeDatabaseTopicToJson_whenProvidedContents_shouldCreateFile_andReturnAbsolutePaths() throws IOException {
         // GIVEN
         DbDto dbDto = createDatabaseTopicObject();
 
 
         // WHEN
-        String actualFileName = DatabaseReadWriteHelper.writeDatabaseTopicToJson(dbDto, tempDirectory).get();
+        List<String> actualFileNames = DatabaseReadWriteHelper.writeDatabaseTopicToJson(dbDto, tempDirectory);
 
 
         // THEN
-        assertFileNameMatchesAndFileExists(actualFileName);
+        assertFileNamesMatcheAndFilesExist(actualFileNames);
     }
 
     @Test
-    public void writeDatabaseTopicToJson_whenWriterFailure_shouldReturnAbsent() throws IOException {
+    public void writeDatabaseTopicToJson_whenWriterFailure_shouldReturnEmptyNameList() throws IOException {
         // GIVEN
         DbDto dbDto = createDatabaseTopicObject();
 
         // WHEN
-        Optional<String> potentialFileName = DatabaseReadWriteHelper.writeDatabaseTopicToJson(dbDto, existingAsFile);
+        List<String> actualFileNames = DatabaseReadWriteHelper.writeDatabaseTopicToJson(dbDto, existingAsFile);
 
         // THEN
-        assertThat(potentialFileName).isEmpty();
+        assertThat(actualFileNames).isEmpty();
     }
 
     @Test
-    public void writeDatabaseTopicsToJson_whenProvidedContents_shouldCreateFile_andReturnFileName() {
+    public void writeDatabaseTopicsToJson_whenProvidedContents_shouldCreateFiles_andReturnFileNames() {
         // GIVEN
         List<DbDto> topicObjects = singletonList(createDatabaseTopicObject());
 
@@ -224,8 +224,7 @@ public class DatabaseReadWriteHelperTest {
         List<String> writtenFileNames = DatabaseReadWriteHelper.writeDatabaseTopicsToJson(topicObjects, tempDirectory);
 
         // THEN
-        assertThat(writtenFileNames).hasSize(1);
-        assertFileNameMatchesAndFileExists(writtenFileNames.get(0));
+        assertFileNamesMatcheAndFilesExist(writtenFileNames);
     }
 
     @Test
@@ -277,12 +276,21 @@ public class DatabaseReadWriteHelperTest {
                 .build();
     }
 
-    private void assertFileNameMatchesAndFileExists(String fileName) {
-        String expectedFileName = new File(tempDirectory, "TDU_Achievements.json").getAbsolutePath();
+    private void assertFileNamesMatcheAndFilesExist(List<String> fileNames) {
+        String expectedDataFileName = Paths.get(tempDirectory, "TDU_Achievements.data.json").toAbsolutePath().toString();
+        String expectedResourceFileName = Paths.get(tempDirectory, "TDU_Achievements.resources.json").toAbsolutePath().toString();
+        String expectedStructureFileName = Paths.get(tempDirectory, "TDU_Achievements.structure.json").toAbsolutePath().toString();
 
-        assertThat(fileName).isEqualTo(expectedFileName);
+        assertThat(fileNames)
+                .hasSize(3)
+                .containsOnly(
+                        expectedDataFileName,
+                        expectedStructureFileName,
+                        expectedResourceFileName);
 
-        assertThat(new File(expectedFileName)).exists();
+        assertThat(new File(expectedDataFileName)).exists();
+        assertThat(new File(expectedResourceFileName)).exists();
+        assertThat(new File(expectedStructureFileName)).exists();
     }
 
     private static void assertTopicObject(DbDto actualdbDto) {

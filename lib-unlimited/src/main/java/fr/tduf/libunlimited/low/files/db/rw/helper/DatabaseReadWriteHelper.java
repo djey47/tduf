@@ -22,7 +22,6 @@ import static java.util.stream.Collectors.toSet;
  * Class providing methods to manage Database read/write ops.
  */
 public class DatabaseReadWriteHelper {
-
     public static final String EXTENSION_JSON = "json";
     static final String EXTENSION_DB_CONTENTS = "db";
 
@@ -30,6 +29,8 @@ public class DatabaseReadWriteHelper {
     private static final String ENCODING_UTF_16 = "UTF-16";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    private DatabaseReadWriteHelper() {}
 
     /**
      * Reads all database contents (+resources) from specified topic into databaseDirectory.
@@ -135,11 +136,11 @@ public class DatabaseReadWriteHelper {
 
                 .parallel()
 
-                .map( (topicObject) -> writeDatabaseTopicToJson(topicObject, outputDirectory))
+                .map(topicObject -> writeDatabaseTopicToJson(topicObject, outputDirectory))
 
-                .filter(Optional::isPresent)
+                .filter(writtenFiles -> !writtenFiles.isEmpty())
 
-                .map(Optional::get)
+                .flatMap(Collection::stream)
 
                 .collect(toList());
     }
@@ -148,18 +149,16 @@ public class DatabaseReadWriteHelper {
      * Writes database contents (+resources) as JSON format from specified topic into outputDirectory.
      * @param dbDto             : topic contents to be written
      * @param outputDirectory   : location of generated file
-     * @return name of written JSON file if all went correctly, absent otherwise.
+     * @return names of written JSON files if all went correctly, empty otherwise.
      */
-    public static Optional<String> writeDatabaseTopicToJson(DbDto dbDto, String outputDirectory) {
+    public static List<String> writeDatabaseTopicToJson(DbDto dbDto, String outputDirectory) {
         try {
-            return Optional.ofNullable(
-                    DatabaseWriter
+            return DatabaseWriter
                             .load(dbDto)
-                            .writeAllAsJson(outputDirectory)
-            );
+                            .writeAllAsJson(outputDirectory);
         } catch (IOException e) {
             e.printStackTrace();
-            return Optional.empty();
+            return new ArrayList<>(0);
         }
     }
 
@@ -262,6 +261,7 @@ public class DatabaseReadWriteHelper {
             return resourceLines;
         }
 
+        // TODO Close scanner
         Scanner scanner = new Scanner(inputFile, encoding) ;
         scanner.useDelimiter("\r\n");
 

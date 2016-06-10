@@ -15,6 +15,7 @@ import static java.util.Objects.requireNonNull;
  * Relies on {@link DatabaseReadWriteHelper} class for lower level ops.
  */
 public class JsonGateway {
+    private JsonGateway() {}
 
     /**
      * Converts extracted TDU database to JSON files.
@@ -37,13 +38,12 @@ public class JsonGateway {
 
                 .parallel()
 
-                .forEach((topic) -> {
+                .forEach(topic -> {
                     try {
                         Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(topic, sourceDatabaseDirectory, integrityErrorsWhileProcessing);
                         if (potentialDbDto.isPresent()) {
-                            DatabaseReadWriteHelper.writeDatabaseTopicToJson(potentialDbDto.get(), targetJsonDirectory)
-
-                                    .ifPresent(writtenFileNames::add);
+                            writtenFileNames.addAll(
+                                    DatabaseReadWriteHelper.writeDatabaseTopicToJson(potentialDbDto.get(), targetJsonDirectory));
                         } else {
                             missingTopicContentsWhileProcessing.add(topic);
                         }

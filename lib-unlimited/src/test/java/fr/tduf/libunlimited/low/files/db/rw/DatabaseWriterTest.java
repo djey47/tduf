@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -145,14 +146,23 @@ public class DatabaseWriterTest {
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
-        String actualFileName = DatabaseWriter.load(initialDbDto).writeAllAsJson(tempDirectory);
+        List<String> actualFileNames = DatabaseWriter.load(initialDbDto).writeAllAsJson(tempDirectory);
 
         //THEN
-        String expectedFileName = new File(tempDirectory, "TDU_Achievements.json").getAbsolutePath();
+        final String expectedDataFileName = Paths.get(tempDirectory, "TDU_Achievements.data.json").toAbsolutePath().toString();
+        final String expectedStructureFileName = Paths.get(tempDirectory, "TDU_Achievements.structure.json").toAbsolutePath().toString();
+        final String expectedResourceFileName = Paths.get(tempDirectory, "TDU_Achievements.resources.json").toAbsolutePath().toString();
 
-        assertThat(actualFileName).isEqualTo(expectedFileName);
+        assertThat(actualFileNames)
+                .hasSize(3)
+                .containsOnly(
+                        expectedDataFileName,
+                        expectedStructureFileName,
+                        expectedResourceFileName);
 
-        assertJsonFileMatchesReference(expectedFileName, "/db/json/");
+        assertJsonFileMatchesReference(expectedDataFileName, "/db/json/");
+        assertJsonFileMatchesReference(expectedStructureFileName, "/db/json/");
+        assertJsonFileMatchesReference(expectedResourceFileName, "/db/json/");
     }
 
     private static void assertFilesMatchReferenceObject(DbDto referenceDto, String contentsFileName, String... resourceFileNames) throws FileNotFoundException {

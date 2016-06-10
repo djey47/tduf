@@ -17,8 +17,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -31,6 +31,10 @@ public class DatabaseWriter {
     private static final String ENTRY_PATTERN = "{%s} %s";
     private static final String ENTRY_REF_PATTERN = "{%s} %s %s";
     private static final String RESOURCE_ENTRY_PATTERN = "{%s} %s";
+
+    private static final String FMT_JSON_DATA_FILE_NAME = "%s.data.json";
+    private static final String FMT_JSON_STRUCTURE_FILE_NAME = "%s.structure.json";
+    private static final String FMT_JSON_RESOURCES_FILE_NAME = "%s.resources.json";
 
     private final DbDto databaseDto;
 
@@ -68,17 +72,29 @@ public class DatabaseWriter {
     /**
      * Writes all contents to given path as JSON file .
      * @param path  : location to write db files
-     * @return name of JSON file that has been written.
+     * @return names of JSON files that have been written.
      */
-    public String writeAllAsJson(String path) throws IOException {
-        checkPrerequisites(this.databaseDto);
+    public List<String> writeAllAsJson(String path) throws IOException {
+        checkPrerequisites(databaseDto);
 
-        String outputFileName = String.format("%s.%s", this.databaseDto.getTopic().getLabel(), EXTENSION_JSON);
+        final String topicLabel = databaseDto.getTopic().getLabel();
+        String dataOutputFileName = String.format(FMT_JSON_DATA_FILE_NAME, topicLabel);
+        String structureOutputFileName = String.format(FMT_JSON_STRUCTURE_FILE_NAME, topicLabel);
+        String resourceOutputFileName = String.format(FMT_JSON_RESOURCES_FILE_NAME, topicLabel);
 
-        Path outputFilePath = Paths.get(path, outputFileName);
-        FilesHelper.writeJsonObjectToFile(databaseDto, outputFilePath.toString());
+        Path dataOutputFilePath = Paths.get(path, dataOutputFileName);
+        FilesHelper.writeJsonObjectToFile(databaseDto.getData(), dataOutputFilePath.toString());
 
-        return outputFilePath.toAbsolutePath().toString();
+        Path structureOutputFilePath = Paths.get(path, structureOutputFileName);
+        FilesHelper.writeJsonObjectToFile(databaseDto.getStructure(), structureOutputFilePath.toString());
+
+        Path resourceOutputFilePath = Paths.get(path, resourceOutputFileName);
+        FilesHelper.writeJsonObjectToFile(databaseDto.getResource(), resourceOutputFilePath.toString());
+
+        return asList(
+                dataOutputFilePath.toAbsolutePath().toString(),
+                structureOutputFilePath.toAbsolutePath().toString(),
+                resourceOutputFilePath.toAbsolutePath().toString());
     }
 
     private String writeStructureAndContents(String directoryPath) throws IOException {
