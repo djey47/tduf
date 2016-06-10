@@ -31,11 +31,11 @@
       {
         "items": [
           {
-            "locale": "FRANCE",
+            "locale": "fr",
             "value": "FR"
           },
           {
-            "locale": "GERMANY",
+            "locale": "ge",
             "value": "GE"
           }
         ],
