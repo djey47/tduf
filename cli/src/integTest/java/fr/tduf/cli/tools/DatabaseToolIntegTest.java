@@ -140,7 +140,7 @@ public class DatabaseToolIntegTest {
         JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
 
         AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 2);
-        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 18);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 54);
         final String effectivePatchPropertyFile = rootJsonNode.get("effectivePatchPropertyFile").asText();
         assertThat(effectivePatchPropertyFile).isNotNull();
 
@@ -187,7 +187,7 @@ public class DatabaseToolIntegTest {
         JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
 
         AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 1);
-        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 18);
+        AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 54);
 
 
         // THEN: contents must be updated

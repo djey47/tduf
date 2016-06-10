@@ -1,0 +1,3045 @@
+{
+  "entries" : [ {
+    "id" : 0,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "590074355",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "547662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "54363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "547652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "153500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "76750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 1,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "623084363",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "624662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "54363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "624652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "2",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "6",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "225500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "112750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 2,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "623194359",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "606662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "54363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "606652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "2",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "405000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "202500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 3,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "623204357",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "618662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "54363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "618652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "4",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "2",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "10",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "1989500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "994750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 4,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "568074356",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "564662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "54363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "564652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "170000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "85000",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 5,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "557294367",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "607662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "54363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "607652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "3",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "488500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "244250",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 6,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "556404373",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "589662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "54363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "589652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "4",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "3",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "10",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "3500000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "1750000",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 7,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "622094415",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "546662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "54363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "546652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "308500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "154250",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 8,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "612174360",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "563662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "55363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "563652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "185000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "92500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 9,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "590074364",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "608662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "55363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "608652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "159000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "79500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 10,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "622084358",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "614662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "55363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "614652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "2",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "6",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "227000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "113500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 11,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "603084363",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "565662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "55363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "565652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "2",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "6",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "233000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "116500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 12,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "622294368",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "557662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "55363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "557652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "3",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "515000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "257500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 13,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "603094364",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "577662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "55363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "577652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "299500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "149750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 14,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "557074369",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "554662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "55363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "554652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "160000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "80000",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 15,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "557204367",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "549662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "55363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "549652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "4",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "2",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "10",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "2225500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "1112750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 16,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "589174355",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "594662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "56363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "594652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "201500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "100750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 17,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "612174365",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "543662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "56363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "543652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "150000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "75000",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 18,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "623074351",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "553662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "56363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "553652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "150000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "75000",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 19,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "611104371",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "538662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "56363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "538652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "4",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "10",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "990500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "495250",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 20,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "590094413",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "596662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "56363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "596652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "315000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "157500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 21,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "598294358",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "627662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "56363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "627652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "3",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "499500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "249750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 22,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "548084361",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "555662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "56363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "555652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "2",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "6",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "238700",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "119350",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 23,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "607204364",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "559662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "56363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "559652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "4",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "2",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "10",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "2145000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "1072500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 24,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "624104361",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "548662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "57363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "548652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "4",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "10",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "1110500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "555250",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 25,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "614174364",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "593662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "57363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "593652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "167500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "83750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 26,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "536294417",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "567662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "57363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "567652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "3",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "502000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "251000",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 27,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "536404424",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "569662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "57363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "569652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "4",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "3",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "10",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "2999990",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "1499995",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 28,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "594194358",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "616662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "57363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "616652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "2",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "395000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "197500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 29,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "604284359",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "536662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "57363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "536652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "2",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "3",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "6",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "251250",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "125625",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 30,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "579184369",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "615662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "57363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "615652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "2",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "2",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "6",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "221000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "110500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 31,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "568174369",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "573662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "57363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "604652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "184000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "92000",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 32,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "614174370",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "583662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "58363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "583652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "199000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "99500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 33,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "614284365",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "625662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "58363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "625652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "2",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "3",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "6",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "268500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "134250",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 34,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "612174362",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "623662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "58363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "573652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "164500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "82250",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 35,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "536094420",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "556662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "58363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "556652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "309000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "154500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 36,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "604074356",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "603662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "58363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "603652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "155000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "77500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 37,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "566294368",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "576662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "58363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "576652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "6",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "319500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "159750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 38,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "604104360",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "558662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "58363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "558652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "4",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "10",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "1005000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "502500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 39,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "604404364",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "579662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "58363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "579652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "4",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "3",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "10",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "3153250",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "1576625",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 40,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "550194371",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "566662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "59363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "566652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "316000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "158000",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 41,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "550074365",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "534662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "59363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "534652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "198000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "99000",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 42,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "550294369",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "597662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "59363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "597652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "3",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "510500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "255250",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 43,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "550104360",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "578662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "59363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "578652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "4",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "10",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "980500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "490250",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 44,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "539074364",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "544662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "59363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "544652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "172000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "86000",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 45,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "540204364",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "539662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "59363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "539652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "4",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "2",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "10",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "1999500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "999750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 46,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "539084367",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "545662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "59363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "545652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "2",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "6",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "243000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "121500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 47,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "540184357",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "585662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "59363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "585652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "2",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "2",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "6",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "228000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "114000",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 48,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "586074368",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "584662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "60363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "584652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "172500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "86250",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 49,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "586194367",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "537662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "60363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "537652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "2",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "400000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "200000",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 50,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "576094352",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "586662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "60363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "586652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "305500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "152750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 51,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "576174358",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "574662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "60363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "574652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "198000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "99000",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 52,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "596294367",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "617662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "60363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "617652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "3",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "500500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "250250",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 53,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "557184358",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "595662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "60363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "595652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "2",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "2",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "6",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "234500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "117250",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 54,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "575084364",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "605662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "60363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "605652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "2",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "2",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "6",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "229500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "114750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 55,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "566104355",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "588662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "60363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "588652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "4",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "10",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "1250000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "625000",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 56,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "622174363",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "604662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "61363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "623652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "178000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "89000",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 57,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "592184355",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "575662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "61363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "575652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "2",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "2",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "6",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "238500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "119250",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 58,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "592194363",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "626662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "61363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "626652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "2",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "401500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "200750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 59,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "592294360",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "587662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "61363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "587652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "3",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "3",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "8",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "509800",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "254900",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 60,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "581084371",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "535662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "61363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "535652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "2",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "6",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "221500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "110750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 61,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "593074359",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "613662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "61363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "613652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "1",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "4",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "159000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "79500",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 62,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "593104356",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "568662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "61363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "568652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "4",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "10",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "1180500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "590250",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 63,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "593204368",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "628662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "61363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "628652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "4",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "2",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "10",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "2305500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "1152750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 64,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "565104358",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "598662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "62363272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "598652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "4",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "1",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "10",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "1125500",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "562750",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 65,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "56123114",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "599662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "53463272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "599652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "0",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "0",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "0",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "250000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "0",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 66,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "55133114",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "609662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "53463272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "599652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "0",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "0",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "0",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "250000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "0",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 67,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "61114119",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "619662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "53463272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "599652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "0",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "0",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "0",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "350000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "0",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 68,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "54234111",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "629662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "53463272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "599652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "0",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "0",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "0",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "350000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "0",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 69,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "56017115",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "540662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "53463272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "599652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "0",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "0",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "0",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "500000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "0",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 70,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "60145119",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "550662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "53463272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "599652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "0",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "0",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "0",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "750000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "0",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 71,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "58045115",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "560662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "53463272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "599652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "0",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "0",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "0",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "750000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "0",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 72,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "56047116",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "570662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "53463272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "599652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "0",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "0",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "0",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "500000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "0",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 73,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "55727116",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "580662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "53463272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "599652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "0",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "0",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "0",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "500000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "0",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 74,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "56505110",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "590662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "53463272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "599652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "0",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "0",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "0",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "750000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "0",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 75,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "57575117",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "600662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "53463272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "599652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "0",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "0",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "0",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "750000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "0",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 76,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "59867115",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "610662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "53463272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "599652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "0",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "0",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "0",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "500000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "0",
+      "fieldRank" : 9
+    } ]
+  }, {
+    "id" : 77,
+    "items" : [ {
+      "name" : "REF_",
+      "rawValue" : "55893111",
+      "fieldRank" : 1
+    }, {
+      "name" : "Spot_Name_",
+      "rawValue" : "620662",
+      "fieldRank" : 2
+    }, {
+      "name" : "Realtor_",
+      "rawValue" : "53463272",
+      "fieldRank" : 3
+    }, {
+      "name" : "House_Name_",
+      "rawValue" : "599652",
+      "fieldRank" : 4
+    }, {
+      "name" : "Level_",
+      "rawValue" : "0",
+      "fieldRank" : 5
+    }, {
+      "name" : "Model_",
+      "rawValue" : "0",
+      "fieldRank" : 6
+    }, {
+      "name" : "Nb_CarSlots_",
+      "rawValue" : "0",
+      "fieldRank" : 7
+    }, {
+      "name" : "Buy_Price_",
+      "rawValue" : "250000",
+      "fieldRank" : 8
+    }, {
+      "name" : "Sell_Price_",
+      "rawValue" : "0",
+      "fieldRank" : 9
+    } ]
+  } ]
+}

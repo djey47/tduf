@@ -1,0 +1,22 @@
+{
+  "entries" : [ {
+    "id" : 0,
+    "items" : [ {
+      "name" : "SoundFileID_",
+      "rawValue" : "54756083",
+      "fieldRank" : 1
+    }, {
+      "name" : "SoundFileType",
+      "rawValue" : "5569823",
+      "fieldRank" : 2
+    }, {
+      "name" : "Libelle",
+      "rawValue" : "53371533",
+      "fieldRank" : 3
+    }, {
+      "name" : "BitField",
+      "rawValue" : "1",
+      "fieldRank" : 4
+    } ]
+  } ]
+}

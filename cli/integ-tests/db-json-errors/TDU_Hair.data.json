@@ -1,0 +1,34 @@
+{
+  "entries" : [ {
+    "id" : 0,
+    "items" : [ {
+      "name" : "REF",
+      "rawValue" : "54522",
+      "fieldRank" : 1
+    }, {
+      "name" : "ID_HAIR",
+      "rawValue" : "54370022",
+      "fieldRank" : 2
+    }, {
+      "name" : "HairName",
+      "rawValue" : "5436022",
+      "fieldRank" : 3
+    }, {
+      "name" : "Sex",
+      "rawValue" : "56758127",
+      "fieldRank" : 4
+    }, {
+      "name" : "File",
+      "rawValue" : "54640827",
+      "fieldRank" : 5
+    }, {
+      "name" : "Mesh",
+      "rawValue" : "54707527",
+      "fieldRank" : 6
+    }, {
+      "name" : "Material",
+      "rawValue" : "54713527",
+      "fieldRank" : 7
+    } ]
+  } ]
+}
