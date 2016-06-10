@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.createPatcher;
+import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.readBotsObject;
 import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.readObjectFromResource;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.StrictAssertions.assertThat;
@@ -24,7 +25,7 @@ public class DatabasePatcher_focusOnResourcesTest {
     public void apply_whenUpdateResourcesPatch_shouldAddAndUpdateEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateResources.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+        DbDto databaseObject = readBotsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -43,7 +44,7 @@ public class DatabasePatcher_focusOnResourcesTest {
     public void apply_whenUpdateResourcesPatch_forAllLocales_shouldAddAndUpdateEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateResources-all.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+        DbDto databaseObject = readBotsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -64,7 +65,7 @@ public class DatabasePatcher_focusOnResourcesTest {
     public void apply_whenUpdateResourcesPatch_forAllLocales_andStrictMode_shouldOnlyAddEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateResources-all-strict.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+        DbDto databaseObject = readBotsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -85,7 +86,7 @@ public class DatabasePatcher_focusOnResourcesTest {
     public void apply_whenDeleteResourcesPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteResources.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+        DbDto databaseObject = readBotsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -104,7 +105,7 @@ public class DatabasePatcher_focusOnResourcesTest {
     public void apply_whenDeleteResourcesPatch_forAllLocales_shouldRemoveExistingEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteResourcesPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteResources-all.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+        DbDto databaseObject = readBotsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 

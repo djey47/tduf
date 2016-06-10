@@ -7,6 +7,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
@@ -213,7 +214,7 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(PNJ, ItemRange.fromCliOption(Optional.<String>empty()), createDefaultRange());
+        DbPatchDto actualPatchObject = generator.makePatch(PNJ, ItemRange.fromCliOption(Optional.empty()), createDefaultRange());
 
         // THEN
         assertThat(actualPatchObject.getChanges()).hasSize(1346);
@@ -239,39 +240,136 @@ public class PatchGeneratorTest {
     }
 
     private static List<DbDto> createDatabaseObjectsWithOneTopicFromRealFile() throws IOException, URISyntaxException {
-        DbDto topicObject = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Achievements.json");
-
-        return singletonList(topicObject);
+        return singletonList(readAchievements());
     }
 
     private static  List<DbDto> createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles() throws IOException, URISyntaxException {
-        DbDto topicObject1 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
-        DbDto topicObject2 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Brands.json");
-
-        return asList(topicObject1, topicObject2);
+        return asList(readCarPhysicsData(), readBrands());
     }
 
     private static  List<DbDto> createDatabaseObjectsWithCarPhysicsAssociatedTopicsFromRealFiles() throws IOException, URISyntaxException {
-        DbDto topicObject1 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
-        DbDto topicObject2 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Brands.json");
-        DbDto topicObject3 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_CarRims.json");
-        DbDto topicObject4 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Rims.json");
-        DbDto topicObject5 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_CarColors.json");
-        DbDto topicObject6 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Interior.json");
-        DbDto topicObject7 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_CarPacks.json");
-        DbDto topicObject8 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_AfterMarketPacks.json");
-        DbDto topicObject9 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_CarShops.json");
-
-        return asList(topicObject1, topicObject2, topicObject3, topicObject4, topicObject5, topicObject6, topicObject7, topicObject8, topicObject9);
+        return asList(
+                readCarPhysicsData(),
+                readBrands(),
+                readCarRims(),
+                readRims(),
+                readCarColors(),
+                readInterior(),
+                readCarPacks(),
+                readAfterMarketPacks(),
+                readCarShops());
     }
 
     private static  List<DbDto> createDatabaseObjectsWithFourLinkedTopicsFromRealFiles() throws IOException, URISyntaxException {
-        DbDto topicObject1 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Clothes.json");
-        DbDto topicObject2 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Hair.json");
-        DbDto topicObject3 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_PNJ.json");
-        DbDto topicObject4 = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Brands.json");
+        return asList(
+                readClothes(),
+                readHair(),
+                readPNJ(),
+                readBrands());
+    }
 
-        return asList(topicObject1, topicObject2, topicObject3, topicObject4);
+    private static DbDto readClothes() throws URISyntaxException, IOException {
+        return DbDto.builder()
+                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_Clothes.data.json"))
+                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_Clothes.resources.json"))
+                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_Clothes.structure.json"))
+                .build();
+    }
+
+    private static DbDto readBrands() throws URISyntaxException, IOException {
+        return DbDto.builder()
+                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_Brands.data.json"))
+                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_Brands.resources.json"))
+                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_Brands.structure.json"))
+                .build();
+    }
+
+    private static DbDto readHair() throws URISyntaxException, IOException {
+        return DbDto.builder()
+                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_Hair.data.json"))
+                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_Hair.resources.json"))
+                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_Hair.structure.json"))
+                .build();
+    }
+
+    private static DbDto readPNJ() throws URISyntaxException, IOException {
+        return DbDto.builder()
+                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_PNJ.data.json"))
+                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_PNJ.resources.json"))
+                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_PNJ.structure.json"))
+                .build();
+    }
+
+    private static DbDto readCarPhysicsData() throws URISyntaxException, IOException {
+        return DbDto.builder()
+                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_CarPhysicsData.data.json"))
+                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_CarPhysicsData.resources.json"))
+                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_CarPhysicsData.structure.json"))
+                .build();
+    }
+
+    private static DbDto readRims() throws URISyntaxException, IOException {
+        return DbDto.builder()
+                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_Rims.data.json"))
+                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_Rims.resources.json"))
+                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_Rims.structure.json"))
+                .build();
+    }
+
+    private static DbDto readCarRims() throws URISyntaxException, IOException {
+        return DbDto.builder()
+                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_CarRims.data.json"))
+                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_CarRims.resources.json"))
+                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_CarRims.structure.json"))
+                .build();
+    }
+
+    private static DbDto readAchievements() throws URISyntaxException, IOException {
+        return DbDto.builder()
+                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_Achievements.data.json"))
+                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_Achievements.resources.json"))
+                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_Achievements.structure.json"))
+                .build();
+    }
+
+    private static DbDto readCarColors() throws URISyntaxException, IOException {
+        return DbDto.builder()
+                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_CarColors.data.json"))
+                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_CarColors.resources.json"))
+                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_CarColors.structure.json"))
+                .build();
+    }
+
+    private static DbDto readInterior() throws URISyntaxException, IOException {
+        return DbDto.builder()
+                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_Interior.data.json"))
+                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_Interior.resources.json"))
+                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_Interior.structure.json"))
+                .build();
+    }
+
+    private static DbDto readCarPacks() throws URISyntaxException, IOException {
+        return DbDto.builder()
+                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_CarPacks.data.json"))
+                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_CarPacks.resources.json"))
+                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_CarPacks.structure.json"))
+                .build();
+    }
+
+    private static DbDto readAfterMarketPacks() throws URISyntaxException, IOException {
+        return DbDto.builder()
+                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_AfterMarketPacks.data.json"))
+                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_AfterMarketPacks.resources.json"))
+                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_AfterMarketPacks.structure.json"))
+                .build();
+    }
+
+    private static DbDto readCarShops() throws URISyntaxException, IOException {
+        return DbDto.builder()
+                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_CarShops.data.json"))
+                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_CarShops.resources.json"))
+                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_CarShops.structure.json"))
+                .build();
     }
 
     private static void assertPatchGeneratedWithAllEntriesForOneTopic(DbPatchDto patchObject) {

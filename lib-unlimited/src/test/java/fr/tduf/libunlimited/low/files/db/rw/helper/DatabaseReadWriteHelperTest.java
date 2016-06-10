@@ -135,8 +135,7 @@ public class DatabaseReadWriteHelperTest {
 
         // THEN
         assertThat(actualTopicObjects).isNotNull();
-        // TODO Adapt expected count once files split
-        assertThat(actualTopicObjects).hasSize(1);
+        assertThat(actualTopicObjects).hasSize(14);
 
         actualTopicObjects.forEach(DatabaseReadWriteHelperTest::assertTopicObject);
     }

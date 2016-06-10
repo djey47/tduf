@@ -12,8 +12,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.createPatcher;
-import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.readObjectFromResource;
+import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -30,9 +29,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forAllFields_andIncorrectValueCount_shouldThrowException() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-badCount.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
-
-        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+        DatabasePatcher patcher = createPatcher(singletonList(readBotsObject()));
 
 
         // WHEN
@@ -46,7 +43,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forAllFields_shouldAddNewEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+        DbDto databaseObject = readBotsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -77,7 +74,7 @@ public class DatabasePatcher_focusOnContentsTest {
         DbPatchDto updateContentsPatch1 = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef.mini.json");
         DbPatchDto updateContentsPatch2 = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef-2.mini.json");
         List<DbPatchDto> updateContentsPatches = asList(updateContentsPatch1, updateContentsPatch2);
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+        DbDto databaseObject = readBotsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -113,7 +110,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forAllFields_andSameEntryExists_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef-existing.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Bots.json");
+        DbDto databaseObject = readBotsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -136,7 +133,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forAllFields_withRefSupport_shouldAddNewEntryAndUpdateExisting() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-ref.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+        DbDto databaseObject = readCarPhysicsDataObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -171,7 +168,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forAllFields_withRefSupport_andStrictMode_shouldOnlyAddNewEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-ref-strict.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+        DbDto databaseObject = readCarPhysicsDataObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -206,15 +203,15 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_withAssociationEntries_shouldCreateThem() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-assoc.mini.json");
-        DbDto databaseObject1 = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
-        DbDto databaseObject2 = readObjectFromResource(DbDto.class, "/db/json/TDU_CarRims.json");
-        DbDto databaseObject3 = readObjectFromResource(DbDto.class, "/db/json/TDU_CarColors.json");
-        DbDto databaseObject4 = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPacks.json");
-        DbDto databaseObject5 = readObjectFromResource(DbDto.class, "/db/json/TDU_Rims.json");
-        DbDto databaseObject6 = readObjectFromResource(DbDto.class, "/db/json/TDU_Brands.json");
-        DbDto databaseObject7 = readObjectFromResource(DbDto.class, "/db/json/TDU_CarShops.json");
 
-        List<DbDto> databaseObjects = asList(databaseObject1, databaseObject2, databaseObject3, databaseObject4, databaseObject5, databaseObject6, databaseObject7);
+        List<DbDto> databaseObjects = asList(
+                readCarPhysicsDataObject(),
+                readCarRimsObject(),
+                readCarColorsObject(),
+                readCarPacksObject(),
+                readRimsObject(),
+                readBrandsObject(),
+                readCarShopsObject());
         DatabasePatcher patcher = createPatcher(databaseObjects);
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(databaseObjects);
@@ -240,7 +237,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_andBitfield_shouldUpdateBitfield() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-mixed-bitfield.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarShops.json");
+        DbDto databaseObject = readCarShopsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -267,7 +264,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forOneItem_andREFDoesNotExist_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-newRef.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+        DbDto databaseObject = readCarPhysicsDataObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -289,7 +286,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forOneItem_andREFExists_butInvalidRank_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-badRank-existingRef.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+        DbDto databaseObject = readCarPhysicsDataObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -315,7 +312,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forNoItem_andREFExists_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-noValues-existingRef.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+        DbDto databaseObject = readCarPhysicsDataObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -342,7 +339,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forOneItem_andREFExists_shouldChangeIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-existingRef.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+        DbDto databaseObject = readCarPhysicsDataObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -376,7 +373,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forOneItem_andFilterWithOneCondition_shouldChangeThem() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-filter.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Achievements.json");
+        DbDto databaseObject = readAchievementsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -405,7 +402,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forOneItem_andFilterWithTwoConditions_shouldChangeIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-filter2.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Achievements.json");
+        DbDto databaseObject = readAchievementsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -434,7 +431,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenDeleteContentsPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteContents-ref.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarPhysicsData.json");
+        DbDto databaseObject = readCarPhysicsDataObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -452,7 +449,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenDeleteContentsPatch_andFilterWithOneCondition_shouldRemoveExistingEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteContents-filter.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Achievements.json");
+        DbDto databaseObject = readAchievementsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -470,7 +467,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenDeleteContentsPatch_andFilterWithTwoConditions_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteContents-filter2.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_Achievements.json");
+        DbDto databaseObject = readAchievementsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -496,7 +493,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenMovePatch_andUpDirection_shouldMoveExistingEntryOnePosition() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto movePatch = readObjectFromResource(DbPatchDto.class, "/db/patch/moveContents-up-default.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarColors.json");
+        DbDto databaseObject = readCarColorsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -523,7 +520,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenMovePatch_andUpDirection_andTwoSteps_shouldMoveExistingEntryTwoPositions() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto movePatch = readObjectFromResource(DbPatchDto.class, "/db/patch/moveContents-up-2steps.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarColors.json");
+        DbDto databaseObject = readCarColorsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -550,7 +547,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenMovePatch_andDownDirection_andOneStep_shouldMoveExistingEntryOnePosition() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto movePatch = readObjectFromResource(DbPatchDto.class, "/db/patch/moveContents-down-1step.mini.json");
-        DbDto databaseObject = readObjectFromResource(DbDto.class, "/db/json/TDU_CarColors.json");
+        DbDto databaseObject = readCarColorsObject();
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 

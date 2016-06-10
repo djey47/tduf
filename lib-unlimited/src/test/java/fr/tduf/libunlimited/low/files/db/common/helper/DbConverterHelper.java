@@ -13,7 +13,7 @@ public class DbConverterHelper {
     @Test
     public void splitJsonFiles() {
 
-        String dir = "/opt/workspaces/perso-git/tduf/cli/integ-tests/db-json-diff";
+        String dir = "/opt/workspaces/perso-git/tduf/lib-unlimited/src/test/resources/db/json";
 
         final List<DbDto> dbdtos = DbDto.Topic.valuesAsStream()
                 .map(topic -> {

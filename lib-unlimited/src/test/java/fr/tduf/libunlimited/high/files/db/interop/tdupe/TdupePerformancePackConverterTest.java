@@ -1,7 +1,10 @@
 package fr.tduf.libunlimited.high.files.db.interop.tdupe;
 
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 
@@ -99,8 +102,14 @@ public class TdupePerformancePackConverterTest {
     }
 
     private static DbDto loadCarPhysicsTopicFromResources() throws URISyntaxException, IOException {
-        URI topicFileURI = thisClass.getResource("/db/json/TDU_CarPhysicsData.json").toURI();
-        return new ObjectMapper().readValue(new File(topicFileURI), DbDto.class);
+        URI dataFileURI = thisClass.getResource("/db/json/TDU_CarPhysicsData.data.json").toURI();
+        URI resourceFileURI = thisClass.getResource("/db/json/TDU_CarPhysicsData.resources.json").toURI();
+        URI structureFileURI = thisClass.getResource("/db/json/TDU_CarPhysicsData.structure.json").toURI();
+        return DbDto.builder()
+                .withData(new ObjectMapper().readValue(new File(dataFileURI), DbDataDto.class))
+                .withStructure(new ObjectMapper().readValue(new File(structureFileURI), DbStructureDto.class))
+                .withResource(new ObjectMapper().readValue(new File(resourceFileURI), DbResourceDto.class))
+                .build();
     }
 
     private static DbPatchDto readPatchObjectFromResource(String resource) throws URISyntaxException, IOException {

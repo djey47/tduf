@@ -50,7 +50,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAll_whenRealContents_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException {
         //GIVEN
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/TDU_Achievements.json");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/parsing/TDU_Achievements.json");
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
 
@@ -99,7 +99,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAll_whenRealContents_withReferenceField_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException {
         //GIVEN
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/TDU_Bots.json");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/parsing/TDU_Bots.json");
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
 
@@ -126,7 +126,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAll_whenRealContents_shouldCreateContentsFile_withSizeMultipleOf8() throws IOException, URISyntaxException {
         //GIVEN
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/TDU_Achievements.json");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/parsing/TDU_Achievements.json");
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN
@@ -142,7 +142,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAllAsJson_whenRealContents_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException, JSONException {
         //GIVEN
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/TDU_Achievements.json");
+        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/parsing/TDU_Achievements.json");
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
         //WHEN

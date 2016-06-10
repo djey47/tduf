@@ -2,7 +2,10 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,6 +67,83 @@ public class DatabasePatcher_commonTest {
     static <T> T readObjectFromResource(Class<T> objectClass, String resource) throws URISyntaxException, IOException {
         URI resourceURI = thisClass.getResource(resource).toURI();
         return new ObjectMapper().readValue(new File(resourceURI), objectClass);
+    }
+
+    static DbDto readTopicObjectFromResources(String dataResource, String structureResource, String resourceResource) throws URISyntaxException, IOException {
+        URI dataResourceURI = thisClass.getResource(dataResource).toURI();
+        URI structureResourceURI = thisClass.getResource(structureResource).toURI();
+        URI resourceResourceURI = thisClass.getResource(resourceResource).toURI();
+
+        final ObjectMapper objectMapper = new ObjectMapper();
+
+        return DbDto.builder()
+                .withData(objectMapper.readValue(new File(dataResourceURI), DbDataDto.class))
+                .withResource(objectMapper.readValue(new File(resourceResourceURI), DbResourceDto.class))
+                .withStructure(objectMapper.readValue(new File(structureResourceURI), DbStructureDto.class))
+                .build();
+    }
+
+    static DbDto readBotsObject() throws URISyntaxException, IOException {
+        return readTopicObjectFromResources(
+                "/db/json/TDU_Bots.data.json",
+                "/db/json/TDU_Bots.structure.json",
+                "/db/json/TDU_Bots.resources.json");
+    }
+
+    static DbDto readAchievementsObject() throws URISyntaxException, IOException {
+        return readTopicObjectFromResources(
+                "/db/json/TDU_Achievements.data.json",
+                "/db/json/TDU_Achievements.structure.json",
+                "/db/json/TDU_Achievements.resources.json");
+    }
+
+    static DbDto readCarColorsObject() throws URISyntaxException, IOException {
+        return readTopicObjectFromResources(
+                "/db/json/TDU_CarColors.data.json",
+                "/db/json/TDU_CarColors.structure.json",
+                "/db/json/TDU_CarColors.resources.json");
+    }
+
+    static DbDto readCarPacksObject() throws URISyntaxException, IOException {
+        return readTopicObjectFromResources(
+                "/db/json/TDU_CarPacks.data.json",
+                "/db/json/TDU_CarPacks.structure.json",
+                "/db/json/TDU_CarPacks.resources.json");
+    }
+
+    static DbDto readRimsObject() throws URISyntaxException, IOException {
+        return readTopicObjectFromResources(
+                "/db/json/TDU_Rims.data.json",
+                "/db/json/TDU_Rims.structure.json",
+                "/db/json/TDU_Rims.resources.json");
+    }
+
+    static DbDto readCarRimsObject() throws URISyntaxException, IOException {
+        return readTopicObjectFromResources(
+                "/db/json/TDU_CarRims.data.json",
+                "/db/json/TDU_CarRims.structure.json",
+                "/db/json/TDU_CarRims.resources.json");
+    }
+
+    static DbDto readCarPhysicsDataObject() throws URISyntaxException, IOException {
+        return readTopicObjectFromResources(
+                "/db/json/TDU_CarPhysicsData.data.json",
+                "/db/json/TDU_CarPhysicsData.structure.json",
+                "/db/json/TDU_CarPhysicsData.resources.json");
+    }
+
+    static DbDto readCarShopsObject() throws URISyntaxException, IOException {
+        return readTopicObjectFromResources(
+                "/db/json/TDU_CarShops.data.json",
+                "/db/json/TDU_CarShops.structure.json",
+                "/db/json/TDU_CarShops.resources.json");
+    }
+
+    static DbDto readBrandsObject() throws URISyntaxException, IOException {
+        return readTopicObjectFromResources(
+                "/db/json/TDU_Brands.data.json",
+                "/db/json/TDU_Brands.structure.json",
+                "/db/json/TDU_Brands.resources.json");
     }
 
     private static List<DbDto> createDatabaseObjects() {

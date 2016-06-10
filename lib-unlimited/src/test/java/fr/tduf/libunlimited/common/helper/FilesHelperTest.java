@@ -1,6 +1,8 @@
 package fr.tduf.libunlimited.common.helper;
 
+import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -127,7 +129,7 @@ public class FilesHelperTest {
     @Test
     public void readObjectFromJsonResourceFile_whenResourceFound_shouldReturnObjectContents() throws IOException, URISyntaxException {
         // GIVEN-WHEN
-        DbDto actualObject = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Achievements.json");
+        DbStructureDto actualObject = FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_Achievements.structure.json");
 
         // THEN
         assertThat(actualObject).isNotNull();
@@ -145,23 +147,23 @@ public class FilesHelperTest {
     @Test
     public void getFileNameFromResourcePath_whenResourceFound_shouldReturnAbsoluteFilePath() throws URISyntaxException {
         // GIVEN-WHEN
-        String actualFileName = FilesHelper.getFileNameFromResourcePath("/db/json/TDU_Achievements.json");
+        String actualFileName = FilesHelper.getFileNameFromResourcePath("/db/json/TDU_Achievements.data.json");
 
         // THEN
-        assertThat(actualFileName.replace('\\', '/')).endsWith("/resources/test/db/json/TDU_Achievements.json");
+        assertThat(actualFileName.replace('\\', '/')).endsWith("/resources/test/db/json/TDU_Achievements.data.json");
     }
 
     @Test
     public void writeJsonObjectToFile_whenValidObject_shouldCreateFileWithSameContents() throws IOException, URISyntaxException {
         // GIVEN
         Path outputFilePath = Paths.get(tempDirectory, "writtenJson", "TDU_Achievements.json");
-        DbDto sourceObject = FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/TDU_Achievements.json");
+        DbDataDto sourceObject = FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_Achievements.data.json");
 
         // WHEN
         FilesHelper.writeJsonObjectToFile(sourceObject, outputFilePath.toString());
 
         // THEN
-        DbDto actualObject = new ObjectMapper().readValue(outputFilePath.toFile(), DbDto.class);
+        DbDataDto actualObject = new ObjectMapper().readValue(outputFilePath.toFile(), DbDataDto.class);
         assertThat(actualObject).isEqualTo(sourceObject);
     }
 
