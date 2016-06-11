@@ -1,8 +1,10 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -15,6 +17,8 @@ import static java.util.Objects.requireNonNull;
  * Relies on {@link DatabaseReadWriteHelper} class for lower level ops.
  */
 public class JsonGateway {
+    private static final String THIS_CLASS_NAME = JsonGateway.class.getSimpleName();
+
     private JsonGateway() {}
 
     /**
@@ -82,10 +86,8 @@ public class JsonGateway {
                         } else {
                             missingTopicContentsWhileProcessing.add(topic);
                         }
-                    } catch (IOException e) {
-                        // TODO use logging
-                        e.printStackTrace();
-//                        throw new RuntimeException("Unable to generate database topic: " + topic);
+                    } catch (IOException ioe) {
+                        Log.error(THIS_CLASS_NAME, ExceptionUtils.getStackTrace(ioe));
                     }
                 });
 
@@ -94,3 +96,4 @@ public class JsonGateway {
         return new ArrayList<>(writtenFileNames);
     }
 }
+
