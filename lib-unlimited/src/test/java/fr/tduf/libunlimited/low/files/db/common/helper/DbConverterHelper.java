@@ -9,18 +9,24 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Helps with data migration
+ */
 @Ignore
 public class DbConverterHelper {
 
+    /**
+     * Converts to 3 JSON files per topic instead of single one
+     */
     @Test
     public void splitJsonFiles() {
 
-        String dir = "/opt/workspaces/perso-git/tduf/lib-unlimited/src/test/resources/db/json";
+        String jsonDirectory = "/opt/workspaces/perso-git/tduf/lib-unlimited/src/test/resources/db/json";
 
         final List<DbDto> dbdtos = DbDto.Topic.valuesAsStream()
                 .map(topic -> {
                     try {
-                        return DatabaseReadWriteHelper.readGenuineDatabaseTopicFromJson(topic, dir)
+                        return DatabaseReadWriteHelper.readGenuineDatabaseTopicFromJson(topic, jsonDirectory)
                                 .orElse(null);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -30,6 +36,6 @@ public class DbConverterHelper {
                 .filter(o -> o != null)
                 .collect(Collectors.toList());
 
-        DatabaseReadWriteHelper.writeDatabaseTopicsToJson(dbdtos, dir);
+        DatabaseReadWriteHelper.writeDatabaseTopicsToJson(dbdtos, jsonDirectory);
     }
 }

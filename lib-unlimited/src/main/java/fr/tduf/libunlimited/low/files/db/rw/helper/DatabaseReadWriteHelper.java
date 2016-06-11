@@ -71,7 +71,7 @@ public class DatabaseReadWriteHelper {
     /**
      * Reads all database contents (+resources) in JSON format from specified topic into jsonDirectory.
      * @param topic         : topic to parse TDU contents from
-     * @param jsonDirectory : location of json files
+     * @param jsonDirectory : location of json files (3 JSON files per topic)
      * @return empty object if topic could not be read.
      */
     public static Optional<DbDto> readDatabaseTopicFromJson(DbDto.Topic topic, String jsonDirectory) throws IOException {
@@ -93,7 +93,13 @@ public class DatabaseReadWriteHelper {
         return Optional.of(topicObject);
     }
 
-    // TODO Kept for migration purpose
+    /**
+     * Kept for migration purpose (a JSON file per topic)
+     * Reads all database contents (+resources) in JSON format from specified topic into jsonDirectory.
+     * @param topic         : topic to parse TDU contents from
+     * @param jsonDirectory : location of json files (1 JSON file per topic)
+     * @return empty object if topic could not be read.
+     */
     public static Optional<DbDto> readGenuineDatabaseTopicFromJson(DbDto.Topic topic, String jsonDirectory) throws IOException {
 
         File jsonFile = getJsonFileFromDirectory(topic, jsonDirectory);
