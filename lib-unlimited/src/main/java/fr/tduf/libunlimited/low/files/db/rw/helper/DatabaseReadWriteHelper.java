@@ -28,8 +28,12 @@ public class DatabaseReadWriteHelper {
     public static final String EXTENSION_JSON = "json";
     static final String EXTENSION_DB_CONTENTS = "db";
 
+    private  static final String FMT_FILENAME_EXTENSION = "%s.%s";
+
     private static final String ENCODING_UTF_8 = "UTF-8";
     private static final String ENCODING_UTF_16 = "UTF-16";
+
+    private  static final String LINE_ENDING_WINDOWS_CRLF = "\r\n";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -263,7 +267,7 @@ public class DatabaseReadWriteHelper {
                     Locale locale = entry.getKey();
                     Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
                     info.put(SOURCE_TOPIC, topic);
-                    info.put(FILE, String.format("%s.%s", topic.getLabel(), locale.getCode()));
+                    info.put(FILE, String.format(FMT_FILENAME_EXTENSION, topic.getLabel(), locale.getCode()));
                     info.put(LOCALE, locale);
 
                     return IntegrityError.builder()
@@ -305,18 +309,19 @@ public class DatabaseReadWriteHelper {
             return resourceLines;
         }
 
-        // TODO Close scanner
-        Scanner scanner = new Scanner(inputFile, encoding) ;
-        scanner.useDelimiter("\r\n");
+        try (Scanner scanner = new Scanner(inputFile, encoding)) {
+            scanner.useDelimiter(LINE_ENDING_WINDOWS_CRLF);
 
-        while(scanner.hasNext()) {
-            resourceLines.add(scanner.next());
+            while (scanner.hasNext()) {
+                resourceLines.add(scanner.next());
+            }
+            return resourceLines;
         }
-        return resourceLines;
     }
 
-    private static String getDatabaseFileName(String topicLabel, String databaseDirectory, String extension) {
-        String fileName = String.format("%s.%s", topicLabel, extension);
+    private static String getDatabaseFileName(String
+                                                      topicLabel, String databaseDirectory, String extension) {
+        String fileName = String.format(FMT_FILENAME_EXTENSION, topicLabel, extension);
         return new File(databaseDirectory, fileName).getAbsolutePath();
     }
 
