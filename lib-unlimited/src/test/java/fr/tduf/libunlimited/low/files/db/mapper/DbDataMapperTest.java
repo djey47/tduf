@@ -32,32 +32,26 @@ public class DbDataMapperTest {
         //GIVEN
         DbDataDto.Item item11 = DbDataDto.Item.builder()
                 .ofFieldRank(1)
-                .forName("ID")
                 .withRawValue("111111")
                 .build();
         DbDataDto.Item item12 = DbDataDto.Item.builder()
                 .ofFieldRank(2)
-                .forName("Name")
                 .withRawValue("111")
                 .build();
         DbDataDto.Item item13 = DbDataDto.Item.builder()
                 .ofFieldRank(3)
-                .forName("Switchs")
                 .withRawValue("1")
                 .build();
         DbDataDto.Item item21 = DbDataDto.Item.builder()
                 .ofFieldRank(1)
-                .forName("ID")
                 .withRawValue("222222")
                 .build();
         DbDataDto.Item item22 = DbDataDto.Item.builder()
                 .ofFieldRank(2)
-                .forName("Name")
                 .withRawValue("222")
                 .build();
         DbDataDto.Item item23 = DbDataDto.Item.builder()
                 .ofFieldRank(3)
-                .forName("Switchs")
                 .withRawValue("0")
                 .build();
         DbDataDto.Entry entry1 = DbDataDto.Entry.builder()

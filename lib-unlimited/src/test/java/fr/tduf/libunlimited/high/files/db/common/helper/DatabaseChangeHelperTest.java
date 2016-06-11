@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -35,7 +34,6 @@ public class DatabaseChangeHelperTest {
     private static final String ENTRY_BITFIELD = "79";
     private static final String ENTRY_REFERENCE_BIS = "222222";
     private static final DbDto.Topic TOPIC = CAR_PHYSICS_DATA;
-    private static final String CONTENT_ENTRY_NAME = "TEST";
     private static final String CONTENT_ENTRY_REF_NAME = "REF";
     private static final String CONTENT_ENTRY_BIFIELD_NAME = "BITFIELD";
 
@@ -224,7 +222,6 @@ public class DatabaseChangeHelperTest {
         //THEN
         assertThat(dataObject.getEntries()).hasSize(4);
         assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L, 2L, 3L);
-        assertThat(dataObject.getEntries().get(3).getItems()).extracting("name").containsExactly(CONTENT_ENTRY_NAME);
         assertThat(dataObject.getEntries().get(3).getItems()).extracting("fieldRank").containsExactly(1);
     }
 
@@ -252,7 +249,6 @@ public class DatabaseChangeHelperTest {
         //THEN
         assertThat(dataObject.getEntries()).hasSize(2);
         assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L);
-        assertThat(dataObject.getEntries().get(1).getItems()).extracting("name").containsExactly(CONTENT_ENTRY_BIFIELD_NAME);
         assertThat(dataObject.getEntries().get(1).getItems()).extracting("fieldRank").containsExactly(1);
     }
 
@@ -280,11 +276,10 @@ public class DatabaseChangeHelperTest {
         //THEN
         assertThat(dataObject.getEntries()).hasSize(2);
         assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L);
-        assertThat(dataObject.getEntries().get(1).getItems()).extracting("name").containsExactly(CONTENT_ENTRY_REF_NAME);
         assertThat(dataObject.getEntries().get(1).getItems()).extracting("fieldRank").containsExactly(1);
         assertThat(dataObject.getEntries().get(1).getItems()).extracting("rawValue").doesNotContain(ENTRY_REFERENCE);
 
-        Condition<String> betweenMinAndMaxRefValues = new Condition<>((Predicate<String>) o -> {
+        Condition<String> betweenMinAndMaxRefValues = new Condition<>(o -> {
             int i = Integer.parseInt(o);
             return i >= 10000000 && i <= 99999999;
         }, "between 10000000 and 99999999 (inclusive)");
@@ -381,8 +376,8 @@ public class DatabaseChangeHelperTest {
     public void updateAssociationEntryWithSourceAndTargetReferences_whenNoTargetReference_shouldOnlyApplySourceRef() {
         // GIVEN
         DbDataDto.Entry associationEntry = createDefaultContentEntry(0);
-        associationEntry.appendItem(DbDataDto.Item.builder().forName("REF").ofFieldRank(1).build());
-        associationEntry.appendItem(DbDataDto.Item.builder().forName("Other").ofFieldRank(2).build());
+        associationEntry.appendItem(DbDataDto.Item.builder().ofFieldRank(1).build());
+        associationEntry.appendItem(DbDataDto.Item.builder().ofFieldRank(2).build());
 
         // WHEN
         DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, empty());
@@ -395,9 +390,9 @@ public class DatabaseChangeHelperTest {
     public void updateAssociationEntryWithSourceAndTargetReferences_whenTargetReference_shouldApplySourceAndTargetRefs() {
         // GIVEN
         DbDataDto.Entry associationEntry = createDefaultContentEntry(0);
-        associationEntry.appendItem(DbDataDto.Item.builder().forName("REF").ofFieldRank(1).build());
-        associationEntry.appendItem(DbDataDto.Item.builder().forName("REF2").ofFieldRank(2).build());
-        associationEntry.appendItem(DbDataDto.Item.builder().forName("Other").ofFieldRank(3).build());
+        associationEntry.appendItem(DbDataDto.Item.builder().ofFieldRank(1).build());
+        associationEntry.appendItem(DbDataDto.Item.builder().ofFieldRank(2).build());
+        associationEntry.appendItem(DbDataDto.Item.builder().ofFieldRank(3).build());
 
         // WHEN
         DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, of(ENTRY_REFERENCE_BIS));
@@ -480,14 +475,12 @@ public class DatabaseChangeHelperTest {
     private static DbDataDto.Item createDefaultEntryItem() {
         return DbDataDto.Item.builder()
                 .ofFieldRank(1)
-                .forName(CONTENT_ENTRY_NAME)
                 .build();
     }
 
     private static DbDataDto.Item createEntryItemForUidField() {
         return DbDataDto.Item.builder()
                 .ofFieldRank(1)
-                .forName(CONTENT_ENTRY_REF_NAME)
                 .withRawValue(ENTRY_REFERENCE)
                 .build();
     }
@@ -495,7 +488,6 @@ public class DatabaseChangeHelperTest {
     private static DbDataDto.Item createEntryItemForBitField() {
         return DbDataDto.Item.builder()
                 .ofFieldRank(1)
-                .forName(CONTENT_ENTRY_BIFIELD_NAME)
                 .withRawValue(ENTRY_BITFIELD)
                 .bitFieldForTopic(true, TOPIC)
                 .build();
