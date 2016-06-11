@@ -81,10 +81,12 @@ public class DbDataDto implements Serializable {
             items.add(fieldRank - 1, item);
 
             // Rank update
+            item.fieldRank = fieldRank;
             for (int i = fieldRank ; i < items.size() ; i++) {
-                items.get(i).shiftFieldRankRight();
+                if (items.get(i).fieldRank != fieldRank + 1) {
+                    items.get(i).shiftFieldRankRight();
+                }
             }
-
         }
 
         public void appendItem(Item item) {
