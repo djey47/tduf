@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.low.files.db.dto;
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -149,10 +150,8 @@ public class DbDataDto implements Serializable {
 
     @JsonTypeName("dbEntryItem")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Item {
-
-        @JsonProperty("name")
-        private String name;
 
         @JsonProperty("value")
         private String rawValue;
@@ -166,7 +165,6 @@ public class DbDataDto implements Serializable {
         public static ItemBuilder builder() {
             return new ItemBuilder() {
                 private Integer fieldRank;
-                private String name;
                 private String raw;
 
                 private boolean isBitField = false;
@@ -182,18 +180,11 @@ public class DbDataDto implements Serializable {
                 @Override
                 public ItemBuilder fromStructureFieldAndTopic(DbStructureDto.Field field, DbDto.Topic topic) {
                     this.fieldRank = field.getRank();
-                    this.name = field.getName();
 
                     boolean isBitfield = field.getFieldType() == BITFIELD;
                     this.isBitField = isBitfield;
                     this.topicForBitField = isBitfield ? topic : null;
 
-                    return this;
-                }
-
-                @Override
-                public ItemBuilder forName(String name) {
-                    this.name = name;
                     return this;
                 }
 
@@ -212,7 +203,6 @@ public class DbDataDto implements Serializable {
                 @Override
                 public ItemBuilder fromExisting(Item contentItem, DbDto.Topic topic) {
                     return DbDataDto.Item.builder()
-                            .forName(contentItem.getName())
                             .ofFieldRank(contentItem.getFieldRank())
                             .withRawValue(contentItem.getRawValue())
                             .bitFieldForTopic(contentItem.isBitfield(), topic);
@@ -225,7 +215,6 @@ public class DbDataDto implements Serializable {
                     Item item = new Item();
 
                     item.rawValue = this.raw;
-                    item.name = this.name;
                     item.fieldRank = this.fieldRank;
 
                     if (isBitField) {
@@ -257,10 +246,6 @@ public class DbDataDto implements Serializable {
                     return switchValues;
                 }
             };
-        }
-
-        public String getName() {
-            return name;
         }
 
         public String getRawValue() {
@@ -307,8 +292,6 @@ public class DbDataDto implements Serializable {
             ItemBuilder bitFieldForTopic(boolean isBitField, DbDto.Topic topic);
 
             ItemBuilder fromStructureFieldAndTopic(DbStructureDto.Field field, DbDto.Topic topic);
-
-            ItemBuilder forName(String name);
 
             ItemBuilder withRawValue(String singleValue);
 

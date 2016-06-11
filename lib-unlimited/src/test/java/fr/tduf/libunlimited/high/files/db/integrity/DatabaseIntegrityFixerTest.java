@@ -192,17 +192,14 @@ public class DatabaseIntegrityFixerTest {
         assertThat(createdEntry.getItems()).hasSize(3);
 
         DbDataDto.Item item1 = createdEntry.getItems().get(0);
-        assertThat(item1.getName()).isEqualTo("ID");
         assertThat(item1.getFieldRank()).isEqualTo(1);
         assertThat(item1.getRawValue()).isEqualTo("11111111");
 
         DbDataDto.Item item2 = createdEntry.getItems().get(1);
-        assertThat(item2.getName()).isEqualTo("Val1");
         assertThat(item2.getFieldRank()).isEqualTo(2);
         assertThat(item2.getRawValue()).isEqualTo("0");
 
         DbDataDto.Item item3 = createdEntry.getItems().get(2);
-        assertThat(item3.getName()).isEqualTo("RemoteRef");
         assertThat(item3.getFieldRank()).isEqualTo(3);
         assertThat(item3.getRawValue()).isEqualTo("REF");
     }
@@ -255,12 +252,10 @@ public class DatabaseIntegrityFixerTest {
         assertThat(createdEntry.getItems()).hasSize(3);
 
         DbDataDto.Item item1 = createdEntry.getItems().get(0);
-        assertThat(item1.getName()).isEqualTo("ID");
         assertThat(item1.getFieldRank()).isEqualTo(1);
         assertThat(item1.getRawValue()).isEqualTo("11111111");
 
         DbDataDto.Item item2 = createdEntry.getItems().get(1);
-        assertThat(item2.getName()).isEqualTo("Val1");
         assertThat(item2.getFieldRank()).isEqualTo(2);
         assertThat(item2.getRawValue()).isEqualTo("100");
     }
@@ -525,7 +520,6 @@ public class DatabaseIntegrityFixerTest {
         return DbDataDto.builder()
                 .addEntry(DbDataDto.Entry.builder()
                         .addItem(DbDataDto.Item.builder()
-                                .forName("Val1")
                                 .ofFieldRank(1)
                                 .withRawValue("100")
                                 .build())

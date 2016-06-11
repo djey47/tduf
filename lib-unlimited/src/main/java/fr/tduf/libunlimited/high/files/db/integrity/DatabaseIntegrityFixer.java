@@ -153,15 +153,15 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         // Structure is the reference
         topicObject.getStructure().getFields().stream()
 
-                .filter((field) -> invalidEntry.getItems().stream()
+                .filter(field -> invalidEntry.getItems().stream()
 
-                        .map(DbDataDto.Item::getName)
+                        .map(DbDataDto.Item::getFieldRank)
 
-                        .filter((name) -> name.equals(field.getName()))
+                        .filter(rank -> rank == field.getRank())
 
                         .count() == 0)
 
-                .forEach((missingField) -> addContentItem(missingField, invalidEntry, topicObject));
+                .forEach(missingField -> addContentItem(missingField, invalidEntry, topicObject));
     }
 
     private void fixAllResourceEntryValues(String resourceReference, Map<String, Integer> perValueCount, DbDto.Topic topic) {

@@ -200,7 +200,6 @@ public class DatabaseParser {
 
             items.add(DbDataDto.Item.builder()
                     .ofFieldRank(fieldInformation.getRank())
-                    .forName(fieldInformation.getName())
                     .withRawValue(itemValue)
                     .bitFieldForTopic(fieldInformation.getFieldType() == BITFIELD, structure.getTopic())
                     .build());

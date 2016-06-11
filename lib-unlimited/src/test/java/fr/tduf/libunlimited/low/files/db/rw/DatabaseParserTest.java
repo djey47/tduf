@@ -200,7 +200,7 @@ public class DatabaseParserTest {
         assertThat(actualDb.getData().getEntries()).hasSize(1);
         assertThat(actualDb.getData().getEntries().get(0).getItems()).hasSize(1);
         DbDataDto.Item item = actualDb.getData().getEntries().get(0).getItems().get(0);
-        assertThat(item.getName()).isEqualTo("CX");
+        assertThat(item.getFieldRank()).isEqualTo(1);
         assertThat(item.getRawValue()).isEqualTo("-33,33");
     }
 
@@ -243,7 +243,7 @@ public class DatabaseParserTest {
         assertThat(actualDb.getData().getEntries()).hasSize(1);
         assertThat(actualDb.getData().getEntries().get(0).getItems()).hasSize(3);
         DbDataDto.Item item = actualDb.getData().getEntries().get(0).getItems().get(1);
-        assertThat(item.getName()).isEqualTo("Pad2");
+        assertThat(item.getFieldRank()).isEqualTo(2);
         assertThat(item.getRawValue()).isEqualTo("");
     }
 
