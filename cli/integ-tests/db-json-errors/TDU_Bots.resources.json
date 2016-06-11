@@ -3,3457 +3,3457 @@
   "categoryCount" : 3,
   "entries" : [ {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ERROR"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ERROR"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "ERROR"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ERREUR!!"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ERROR"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "エラー"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ERROR"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ERROR"
     } ],
     "ref" : "9098256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Brian"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Brian"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Brian"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Brian"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Brian"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Brian"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Brian"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Brian"
     } ],
     "ref" : "54367256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Steven"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Steven"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Steven"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Steven"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Steven"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Steven"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Steven"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Steven"
     } ],
     "ref" : "55367256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Quentin"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Quentin"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Quentin"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Quentin"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Quentin"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Quentin"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Quentin"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Quentin"
     } ],
     "ref" : "56367256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Roberto"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Roberto"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Roberto"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Roberto"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Roberto"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Roberto"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Roberto"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Roberto"
     } ],
     "ref" : "57367256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Georges"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Georges"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Georges"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Georges"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Georges"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Georges"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Georges"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Georges"
     } ],
     "ref" : "58367256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "David"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "David"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "David"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "David"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "David"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "David"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "David"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "David"
     } ],
     "ref" : "59367256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Spike"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Spike"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Spike"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Spike"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Spike"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Spike"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Spike"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Spike"
     } ],
     "ref" : "60367256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Francis"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Francis"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Francis"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Francis"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Francis"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Francis"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Francis"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Francis"
     } ],
     "ref" : "61367256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Peter"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Peter"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Peter"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Peter"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Peter"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Peter"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Peter"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Peter"
     } ],
     "ref" : "62367256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Kirk"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Kirk"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Kirk"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Kirk"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Kirk"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Kirk"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Kirk"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Kirk"
     } ],
     "ref" : "53467256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Richard"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Richard"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Richard"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Richard"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Richard"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Richard"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Richard"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Richard"
     } ],
     "ref" : "54467256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Daniel"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Daniel"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Daniel"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Daniel"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Daniel"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Daniel"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Daniel"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Daniel"
     } ],
     "ref" : "55467256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Josh"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Josh"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Josh"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Josh"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Josh"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Josh"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Josh"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Josh"
     } ],
     "ref" : "56467256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Frank"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Frank"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Frank"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Frank"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Frank"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Frank"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Frank"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Frank"
     } ],
     "ref" : "57467256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Max"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Max"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Max"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Max"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Max"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Max"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Max"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Max"
     } ],
     "ref" : "58467256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Nancy"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Nancy"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Nancy"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Nancy"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Nancy"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Nancy"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Nancy"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Nancy"
     } ],
     "ref" : "59467256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Fred"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Fred"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Fred"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Fred"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Fred"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Fred"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Fred"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Fred"
     } ],
     "ref" : "60467256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Woody"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Woody"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Woody"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Woody"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Woody"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Woody"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Woody"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Woody"
     } ],
     "ref" : "61467256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Bill"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Bill"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Bill"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Bill"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Bill"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Bill"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Bill"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Bill"
     } ],
     "ref" : "62467256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Rodney"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Rodney"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Rodney"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Rodney"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Rodney"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Rodney"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Rodney"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Rodney"
     } ],
     "ref" : "53567256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Julian"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Julian"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Julian"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Julian"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Julian"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Julian"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Julian"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Julian"
     } ],
     "ref" : "54567256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Jeff"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Jeff"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Jeff"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Jeff"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Jeff"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Jeff"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Jeff"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Jeff"
     } ],
     "ref" : "55567256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Mary"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Mary"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Mary"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Mary"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Mary"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Mary"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Mary"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Mary"
     } ],
     "ref" : "56567256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Sylvia"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Sylvia"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Sylvia"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Sylvia"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Sylvia"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Sylvia"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Sylvia"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Sylvia"
     } ],
     "ref" : "57567256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Tony"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Tony"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Tony"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Tony"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Tony"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Tony"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Tony"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Tony"
     } ],
     "ref" : "58567256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Clark"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Clark"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Clark"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Clark"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Clark"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Clark"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Clark"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Clark"
     } ],
     "ref" : "59567256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Joel"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Joel"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Joel"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Joel"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Joel"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Joel"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Joel"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Joel"
     } ],
     "ref" : "60567256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Thomas"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Thomas"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Thomas"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Thomas"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Thomas"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Thomas"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Thomas"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Thomas"
     } ],
     "ref" : "61567256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Donald"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Donald"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Donald"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Donald"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Donald"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Donald"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Donald"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Donald"
     } ],
     "ref" : "62567256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Mark"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Mark"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Mark"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Mark"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Mark"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Mark"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Mark"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Mark"
     } ],
     "ref" : "53667256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Veda"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Veda"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Veda"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Veda"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Veda"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Veda"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Veda"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Veda"
     } ],
     "ref" : "54667256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Mike"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Mike"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Mike"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Mike"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Mike"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Mike"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Mike"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Mike"
     } ],
     "ref" : "55667256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Dan"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Dan"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Dan"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Dan"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Dan"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Dan"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Dan"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Dan"
     } ],
     "ref" : "56667256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Alec"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Alec"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Alec"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Alec"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Alec"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Alec"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Alec"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Alec"
     } ],
     "ref" : "57667256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Sam"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Sam"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Sam"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Sam"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Sam"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Sam"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Sam"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Sam"
     } ],
     "ref" : "58667256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "John"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "John"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "John"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "John"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "John"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "John"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "John"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "John"
     } ],
     "ref" : "59667256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Kevin"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Kevin"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Kevin"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Kevin"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Kevin"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Kevin"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Kevin"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Kevin"
     } ],
     "ref" : "60667256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Pattie"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Pattie"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Pattie"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Pattie"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Pattie"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Pattie"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Pattie"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Pattie"
     } ],
     "ref" : "61667256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Warren"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Warren"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Warren"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Warren"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Warren"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Warren"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Warren"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Warren"
     } ],
     "ref" : "62667256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Walter"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Walter"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Walter"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Walter"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Walter"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Walter"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Walter"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Walter"
     } ],
     "ref" : "53767256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Bruce"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Bruce"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Bruce"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Bruce"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Bruce"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Bruce"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Bruce"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Bruce"
     } ],
     "ref" : "54767256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Alfred"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Alfred"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Alfred"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Alfred"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Alfred"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Alfred"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Alfred"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Alfred"
     } ],
     "ref" : "55767256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Howard"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Howard"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Howard"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Howard"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Howard"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Howard"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Howard"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Howard"
     } ],
     "ref" : "56767256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Scott"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Scott"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Scott"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Scott"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Scott"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Scott"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Scott"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Scott"
     } ],
     "ref" : "57767256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Ernst"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Ernst"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Ernst"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Ernst"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Ernst"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Ernst"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Ernst"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Ernst"
     } ],
     "ref" : "58767256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Craig"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Craig"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Craig"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Craig"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Craig"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Craig"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Craig"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Craig"
     } ],
     "ref" : "59767256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Henry"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Henry"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Henry"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Henry"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Henry"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Henry"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Henry"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Henry"
     } ],
     "ref" : "60767256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Patrick"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Patrick"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Patrick"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Patrick"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Patrick"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Patrick"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Patrick"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Patrick"
     } ],
     "ref" : "61767256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Brad"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Brad"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Brad"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Brad"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Brad"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Brad"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Brad"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Brad"
     } ],
     "ref" : "62767256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Ted"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Ted"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Ted"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Ted"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Ted"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Ted"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Ted"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Ted"
     } ],
     "ref" : "53867256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Charles"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Charles"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Charles"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Charles"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Charles"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Charles"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Charles"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Charles"
     } ],
     "ref" : "54867256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Clara"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Clara"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Clara"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Clara"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Clara"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Clara"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Clara"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Clara"
     } ],
     "ref" : "55867256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Rupert"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Rupert"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Rupert"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Rupert"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Rupert"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Rupert"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Rupert"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Rupert"
     } ],
     "ref" : "56867256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Sean"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Sean"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Sean"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Sean"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Sean"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Sean"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Sean"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Sean"
     } ],
     "ref" : "57867256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Gordon"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Gordon"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Gordon"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Gordon"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Gordon"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Gordon"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Gordon"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Gordon"
     } ],
     "ref" : "58867256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Phil"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Phil"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Phil"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Phil"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Phil"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Phil"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Phil"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Phil"
     } ],
     "ref" : "59867256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Lindsay"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Lindsay"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Lindsay"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Lindsay"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Lindsay"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Lindsay"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Lindsay"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Lindsay"
     } ],
     "ref" : "60867256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Edgar"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Edgar"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Edgar"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Edgar"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Edgar"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Edgar"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Edgar"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Edgar"
     } ],
     "ref" : "61867256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Ivan"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Ivan"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Ivan"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Ivan"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Ivan"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Ivan"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Ivan"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Ivan"
     } ],
     "ref" : "62867256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Edd"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Edd"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Edd"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Edd"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Edd"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Edd"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Edd"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Edd"
     } ],
     "ref" : "53967256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Doug"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Doug"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Doug"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Doug"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Doug"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Doug"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Doug"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Doug"
     } ],
     "ref" : "54967256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Martin"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Martin"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Martin"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Martin"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Martin"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Martin"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Martin"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Martin"
     } ],
     "ref" : "55967256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Harvey"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Harvey"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Harvey"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Harvey"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Harvey"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Harvey"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Harvey"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Harvey"
     } ],
     "ref" : "56967256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Marvin"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Marvin"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Marvin"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Marvin"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Marvin"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Marvin"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Marvin"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Marvin"
     } ],
     "ref" : "57967256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Helen"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Helen"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Helen"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Helen"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Helen"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Helen"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Helen"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Helen"
     } ],
     "ref" : "58967256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Ralph"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Ralph"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Ralph"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Ralph"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Ralph"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Ralph"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Ralph"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Ralph"
     } ],
     "ref" : "59967256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Gary"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Gary"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Gary"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Gary"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Gary"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Gary"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Gary"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Gary"
     } ],
     "ref" : "60967256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Dudley"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Dudley"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Dudley"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Dudley"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Dudley"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Dudley"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Dudley"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Dudley"
     } ],
     "ref" : "61967256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Wes"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Wes"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Wes"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Wes"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Wes"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Wes"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Wes"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Wes"
     } ],
     "ref" : "62967256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Charlotte"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Charlotte"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Charlotte"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Charlotte"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Charlotte"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Charlotte"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Charlotte"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Charlotte"
     } ],
     "ref" : "54067256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Alex"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Alex"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Alex"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Alex"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Alex"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Alex"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Alex"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Alex"
     } ],
     "ref" : "55067256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Jill"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Jill"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Jill"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Jill"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Jill"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Jill"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Jill"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Jill"
     } ],
     "ref" : "56067256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Al"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Al"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Al"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Al"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Al"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Al"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Al"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Al"
     } ],
     "ref" : "57067256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Arthur"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Arthur"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Arthur"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Arthur"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Arthur"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Arthur"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Arthur"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Arthur"
     } ],
     "ref" : "58067256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Burt"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Burt"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Burt"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Burt"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Burt"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Burt"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Burt"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Burt"
     } ],
     "ref" : "59067256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Keith"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Keith"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Keith"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Keith"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Keith"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Keith"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Keith"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Keith"
     } ],
     "ref" : "60067256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Seth"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Seth"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Seth"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Seth"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Seth"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Seth"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Seth"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Seth"
     } ],
     "ref" : "61067256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Eddie"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Eddie"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Eddie"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Eddie"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Eddie"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Eddie"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Eddie"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Eddie"
     } ],
     "ref" : "62067256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Harold"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Harold"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Harold"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Harold"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Harold"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Harold"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Harold"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Harold"
     } ],
     "ref" : "63067256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Jimmy"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Jimmy"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Jimmy"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Jimmy"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Jimmy"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Jimmy"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Jimmy"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Jimmy"
     } ],
     "ref" : "54167256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Dennis"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Dennis"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Dennis"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Dennis"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Dennis"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Dennis"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Dennis"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Dennis"
     } ],
     "ref" : "55167256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Tim"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Tim"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Tim"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Tim"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Tim"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Tim"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Tim"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Tim"
     } ],
     "ref" : "56167256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Eugene"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Eugene"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Eugene"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Eugene"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Eugene"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Eugene"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Eugene"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Eugene"
     } ],
     "ref" : "57167256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Harry"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Harry"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Harry"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Harry"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Harry"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Harry"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Harry"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Harry"
     } ],
     "ref" : "58167256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Jason"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Jason"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Jason"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Jason"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Jason"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Jason"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Jason"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Jason"
     } ],
     "ref" : "59167256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Danny"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Danny"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Danny"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Danny"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Danny"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Danny"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Danny"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Danny"
     } ],
     "ref" : "60167256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "William"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "William"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "William"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "William"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "William"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "William"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "William"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "William"
     } ],
     "ref" : "61167256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Lise"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Lise"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Lise"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Lise"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Lise"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Lise"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Lise"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Lise"
     } ],
     "ref" : "62167256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Alan"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Alan"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Alan"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Alan"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Alan"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Alan"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Alan"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Alan"
     } ],
     "ref" : "63167256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Nick"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Nick"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Nick"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Nick"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Nick"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Nick"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Nick"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Nick"
     } ],
     "ref" : "54267256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Keira"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Keira"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Keira"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Keira"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Keira"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Keira"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Keira"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Keira"
     } ],
     "ref" : "55267256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Arnold"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Arnold"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Arnold"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Arnold"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Arnold"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Arnold"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Arnold"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Arnold"
     } ],
     "ref" : "56267256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Sylvester"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Sylvester"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Sylvester"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Sylvester"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Sylvester"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Sylvester"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Sylvester"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Sylvester"
     } ],
     "ref" : "57267256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Jean-Claude"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Jean-Claude"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Jean-Claude"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Jean-Claude"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Jean-Claude"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Jean-Claude"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Jean-Claude"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Jean-Claude"
     } ],
     "ref" : "58267256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Jack"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Jack"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Jack"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Jack"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Jack"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Jack"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Jack"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Jack"
     } ],
     "ref" : "59267256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Natalie"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Natalie"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Natalie"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Natalie"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Natalie"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Natalie"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Natalie"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Natalie"
     } ],
     "ref" : "60267256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Justin"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Justin"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Justin"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Justin"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Justin"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Justin"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Justin"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Justin"
     } ],
     "ref" : "61267256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Russell"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Russell"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Russell"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Russell"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Russell"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Russell"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Russell"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Russell"
     } ],
     "ref" : "62267256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Kathy"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Kathy"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Kathy"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Kathy"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Kathy"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Kathy"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Kathy"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Kathy"
     } ],
     "ref" : "63267256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Andrew"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Andrew"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Andrew"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Andrew"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Andrew"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Andrew"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Andrew"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Andrew"
     } ],
     "ref" : "53377256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Matt"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Matt"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Matt"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Matt"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Matt"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Matt"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Matt"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Matt"
     } ],
     "ref" : "54377256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Greg"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Greg"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Greg"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Greg"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Greg"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Greg"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Greg"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Greg"
     } ],
     "ref" : "55377256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Luke"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Luke"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Luke"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Luke"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Luke"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Luke"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Luke"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Luke"
     } ],
     "ref" : "56377256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Sharon"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Sharon"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Sharon"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Sharon"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Sharon"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Sharon"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Sharon"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Sharon"
     } ],
     "ref" : "57377256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Angelina"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Angelina"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Angelina"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Angelina"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Angelina"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Angelina"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Angelina"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Angelina"
     } ],
     "ref" : "58377256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Charlize"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Charlize"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Charlize"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Charlize"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Charlize"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Charlize"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Charlize"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Charlize"
     } ],
     "ref" : "59377256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Gregory"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Gregory"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Gregory"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Gregory"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Gregory"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Gregory"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Gregory"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Gregory"
     } ],
     "ref" : "60377256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Djibril"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Djibril"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Djibril"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Djibril"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Djibril"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Djibril"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Djibril"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Djibril"
     } ],
     "ref" : "61377256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Thierry"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Thierry"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Thierry"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Thierry"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Thierry"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Thierry"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Thierry"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Thierry"
     } ],
     "ref" : "62377256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Sylvain"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Sylvain"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Sylvain"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Sylvain"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Sylvain"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Sylvain"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Sylvain"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Sylvain"
     } ],
     "ref" : "53477256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Zinedine"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Zinedine"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Zinedine"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Zinedine"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Zinedine"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Zinedine"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Zinedine"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Zinedine"
     } ],
     "ref" : "54477256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Fabien"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Fabien"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Fabien"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Fabien"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Fabien"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Fabien"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Fabien"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Fabien"
     } ],
     "ref" : "55477256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Claude"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Claude"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Claude"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Claude"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Claude"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Claude"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Claude"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Claude"
     } ],
     "ref" : "56477256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Lilian"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Lilian"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Lilian"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Lilian"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Lilian"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Lilian"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Lilian"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Lilian"
     } ],
     "ref" : "57477256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Willy"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Willy"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Willy"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Willy"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Willy"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Willy"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Willy"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Willy"
     } ],
     "ref" : "58477256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Normal_bon"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Normal_bon"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Normal_bon"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Normal_bon"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Normal_bon"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Normal_bon"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Normal_bon"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Normal_bon"
     } ],
     "ref" : "54373256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Normal_normal"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Normal_normal"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Normal_normal"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Normal_normal"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Normal_normal"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Normal_normal"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Normal_normal"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Normal_normal"
     } ],
     "ref" : "55373256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Normal_mauvais"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Normal_mauvais"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Normal_mauvais"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Normal_mauvais"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Normal_mauvais"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Normal_mauvais"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Normal_mauvais"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Normal_mauvais"
     } ],
     "ref" : "56373256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Agressif_bon"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Agressif_bon"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Agressif_bon"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Agressif_bon"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Agressif_bon"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Agressif_bon"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Agressif_bon"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Agressif_bon"
     } ],
     "ref" : "57373256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Agressif_normal"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Agressif_normal"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Agressif_normal"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Agressif_normal"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Agressif_normal"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Agressif_normal"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Agressif_normal"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Agressif_normal"
     } ],
     "ref" : "58373256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Agressif_mauvais"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Agressif_mauvais"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Agressif_mauvais"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Agressif_mauvais"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Agressif_mauvais"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Agressif_mauvais"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Agressif_mauvais"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Agressif_mauvais"
     } ],
     "ref" : "59373256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Peureux_bon"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Peureux_bon"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Peureux_bon"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Peureux_bon"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Peureux_bon"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Peureux_bon"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Peureux_bon"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Peureux_bon"
     } ],
     "ref" : "60373256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Peureux_normal"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Peureux_normal"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Peureux_normal"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Peureux_normal"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Peureux_normal"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Peureux_normal"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Peureux_normal"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Peureux_normal"
     } ],
     "ref" : "61373256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Peureux_mauvais"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Peureux_mauvais"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Peureux_mauvais"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Peureux_mauvais"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Peureux_mauvais"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Peureux_mauvais"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Peureux_mauvais"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Peureux_mauvais"
     } ],
     "ref" : "62373256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Téméraire_bon"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Téméraire_bon"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Téméraire_bon"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Téméraire_bon"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Téméraire_bon"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Téméraire_bon"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Téméraire_bon"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Téméraire_bon"
     } ],
     "ref" : "53473256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Téméraire_normal"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Téméraire_normal"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Téméraire_normal"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Téméraire_normal"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Téméraire_normal"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Téméraire_normal"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Téméraire_normal"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Téméraire_normal"
     } ],
     "ref" : "54473256"
   }, {
     "items" : [ {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Téméraire_mauvais"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Téméraire_mauvais"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Téméraire_mauvais"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Téméraire_mauvais"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Téméraire_mauvais"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Téméraire_mauvais"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Téméraire_mauvais"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Téméraire_mauvais"
     } ],
     "ref" : "55473256"

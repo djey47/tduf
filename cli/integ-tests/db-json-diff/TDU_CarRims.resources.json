@@ -3,55 +3,55 @@
   "categoryCount" : 2,
   "entries" : [ {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ERREUR!!"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ERROR"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ERROR"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ERROR"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ERROR"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "ERROR"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ERROR"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "it",
       "value" : "ERROR"
     } ],
     "ref" : "909787"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Main"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Main"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Main"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Main"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Main"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Main"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Main"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "it",
       "value" : "Main"
     } ],
     "ref" : "86037407"

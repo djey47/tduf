@@ -3,82 +3,82 @@
   "categoryCount" : 2,
   "entries" : [ {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ERREUR!!"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ERROR"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ERROR"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ERROR"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ERROR"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "ERROR"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ERROR"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "ERROR"
     } ],
     "ref" : "88926089"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "??"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "??"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "??"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "??"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "??"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "??"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "??"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "??"
     } ],
     "ref" : "53357653"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "nismo_350"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "nismo_350"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "nismo_350"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "nismo_350"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "nismo_350"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "nismo_350"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "nismo_350"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "nismo_350"
     } ],
     "ref" : "54357653"

@@ -3,6022 +3,6022 @@
   "categoryCount" : 4,
   "entries" : [ {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Error"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Error"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Error"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Error"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Error"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Error"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Error"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Error"
     } ],
     "ref" : "895089"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "FORD"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "FORD"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "FORD"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "FORD"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "FORD"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "FORD"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "FORD"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "FORD"
     } ],
     "ref" : "54338337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "AC"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "AC"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "AC"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "AC"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "AC"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "AC"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "AC"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "AC"
     } ],
     "ref" : "55338337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ALFA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "ALFA"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ALFA"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ALFA"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ALFA"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ALFA"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ALFA"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "ALFA"
     } ],
     "ref" : "56338337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ASCA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "ASCA"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ASCA"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ASCA"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ASCA"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ASCA"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ASCA"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "ASCA"
     } ],
     "ref" : "57338337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ASTON"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "ASTON"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ASTON"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ASTON"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ASTON"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ASTON"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ASTON"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "ASTON"
     } ],
     "ref" : "58338337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "AUDI"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "AUDI"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "AUDI"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "AUDI"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "AUDI"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "AUDI"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "AUDI"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "AUDI"
     } ],
     "ref" : "59338337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BENT"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BENT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BENT"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BENT"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BENT"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BENT"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BENT"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BENT"
     } ],
     "ref" : "60338337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BMW"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BMW"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BMW"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BMW"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BMW"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BMW"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BMW"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BMW"
     } ],
     "ref" : "61338337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BUGAT"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BUGAT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BUGAT"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BUGAT"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BUGAT"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BUGAT"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BUGAT"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BUGAT"
     } ],
     "ref" : "62338337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CATER"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CATER"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CATER"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CATER"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CATER"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CATER"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CATER"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CATER"
     } ],
     "ref" : "53438337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CHEVY"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CHEVY"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CHEVY"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CHEVY"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CHEVY"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CHEVY"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CHEVY"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CHEVY"
     } ],
     "ref" : "54438337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CHRYS"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CHRYS"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CHRYS"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CHRYS"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CHRYS"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CHRYS"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CHRYS"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CHRYS"
     } ],
     "ref" : "55438337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "DODGE"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "DODGE"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "DODGE"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "DODGE"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "DODGE"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "DODGE"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "DODGE"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "DODGE"
     } ],
     "ref" : "56438337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "EDO"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "EDO"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "EDO"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "EDO"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "EDO"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "EDO"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "EDO"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "EDO"
     } ],
     "ref" : "57438337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "FARB"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "FARB"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "FARB"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "FARB"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "FARB"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "FARB"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "FARB"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "FARB"
     } ],
     "ref" : "58438337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "FERRARI"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "FERRARI"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "FERRARI"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "FERRARI"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "FERRARI"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "FERRARI"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "FERRARI"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "FERRARI"
     } ],
     "ref" : "59438337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "HONDA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "HONDA"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "HONDA"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "HONDA"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "HONDA"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "HONDA"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "HONDA"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "HONDA"
     } ],
     "ref" : "60438337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "INF"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "INF"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "INF"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "INF"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "INF"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "INF"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "INF"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "INF"
     } ],
     "ref" : "61438337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "JAG"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "JAG"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "JAG"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "JAG"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "JAG"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "JAG"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "JAG"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "JAG"
     } ],
     "ref" : "62438337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "KOEN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "KOEN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "KOEN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "KOEN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "KOEN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "KOEN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "KOEN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "KOEN"
     } ],
     "ref" : "53538337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "LAMBO"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "LAMBO"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "LAMBO"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "LAMBO"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "LAMBO"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "LAMBO"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "LAMBO"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "LAMBO"
     } ],
     "ref" : "54538337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "LARAKI"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "LARAKI"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "LARAKI"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "LARAKI"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "LARAKI"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "LARAKI"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "LARAKI"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "LARAKI"
     } ],
     "ref" : "55538337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "LEXUS"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "LEXUS"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "LEXUS"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "LEXUS"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "LEXUS"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "LEXUS"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "LEXUS"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "LEXUS"
     } ],
     "ref" : "56538337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "LOTUS"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "LOTUS"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "LOTUS"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "LOTUS"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "LOTUS"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "LOTUS"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "LOTUS"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "LOTUS"
     } ],
     "ref" : "57538337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MASER"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MASER"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MASER"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MASER"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MASER"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MASER"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MASER"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MASER"
     } ],
     "ref" : "58538337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MAZDA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MAZDA"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MAZDA"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MAZDA"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MAZDA"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MAZDA"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MAZDA"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MAZDA"
     } ],
     "ref" : "59538337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MCLAREN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MCLAREN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MCLAREN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MCLAREN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MCLAREN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MCLAREN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MCLAREN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MCLAREN"
     } ],
     "ref" : "60538337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MERCO"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MERCO"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MERCO"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MERCO"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MERCO"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MERCO"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MERCO"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MERCO"
     } ],
     "ref" : "61538337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MITSU"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MITSU"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MITSU"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MITSU"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MITSU"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MITSU"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MITSU"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MITSU"
     } ],
     "ref" : "62538337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "NISSAN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "NISSAN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "NISSAN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "NISSAN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "NISSAN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "NISSAN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "NISSAN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "NISSAN"
     } ],
     "ref" : "53638337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "NOBLE"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "NOBLE"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "NOBLE"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "NOBLE"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "NOBLE"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "NOBLE"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "NOBLE"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "NOBLE"
     } ],
     "ref" : "54638337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "PAGANI"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "PAGANI"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "PAGANI"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "PAGANI"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "PAGANI"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "PAGANI"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "PAGANI"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "PAGANI"
     } ],
     "ref" : "55638337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "PLYM"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "PLYM"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "PLYM"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "PLYM"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "PLYM"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "PLYM"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "PLYM"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "PLYM"
     } ],
     "ref" : "56638337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "PONT"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "PONT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "PONT"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "PONT"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "PONT"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "PONT"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "PONT"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "PONT"
     } ],
     "ref" : "57638337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "PORSCHE"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "PORSCHE"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "PORSCHE"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "PORSCHE"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "PORSCHE"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "PORSCHE"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "PORSCHE"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "PORSCHE"
     } ],
     "ref" : "58638337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SALEEN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SALEEN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SALEEN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SALEEN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SALEEN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SALEEN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SALEEN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SALEEN"
     } ],
     "ref" : "59638337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SHELBY"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SHELBY"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SHELBY"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SHELBY"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SHELBY"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SHELBY"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SHELBY"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SHELBY"
     } ],
     "ref" : "60638337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SPYK"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SPYK"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SPYK"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SPYK"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SPYK"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SPYK"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SPYK"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SPYK"
     } ],
     "ref" : "62638337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SUB"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SUB"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SUB"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SUB"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SUB"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SUB"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SUB"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SUB"
     } ],
     "ref" : "53738337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "TOY"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "TOY"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "TOY"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "TOY"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "TOY"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "TOY"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "TOY"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "TOY"
     } ],
     "ref" : "54738337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "TVR"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "TVR"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "TVR"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "TVR"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "TVR"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "TVR"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "TVR"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "TVR"
     } ],
     "ref" : "55738337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "APRILIA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "APRILIA"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "APRILIA"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "APRILIA"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "APRILIA"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "APRILIA"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "APRILIA"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "APRILIA"
     } ],
     "ref" : "56738337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BENELLI"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BENELLI"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BENELLI"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BENELLI"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BENELLI"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BENELLI"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BENELLI"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BENELLI"
     } ],
     "ref" : "57738337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "DUCAT"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "DUCAT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "DUCAT"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "DUCAT"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "DUCAT"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "DUCAT"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "DUCAT"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "DUCAT"
     } ],
     "ref" : "58738337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "HONDAM"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "HONDAM"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "HONDAM"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "HONDAM"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "HONDAM"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "HONDAM"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "HONDAM"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "HONDAM"
     } ],
     "ref" : "59738337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "KAWA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "KAWA"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "KAWA"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "KAWA"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "KAWA"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "KAWA"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "KAWA"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "KAWA"
     } ],
     "ref" : "60738337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MV"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MV"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MV"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MV"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MV"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MV"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MV"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MV"
     } ],
     "ref" : "61738337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SUZ"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SUZ"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SUZ"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SUZ"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SUZ"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SUZ"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SUZ"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SUZ"
     } ],
     "ref" : "62738337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "TRIUMPH"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "TRIUMPH"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "TRIUMPH"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "TRIUMPH"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "TRIUMPH"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "TRIUMPH"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "TRIUMPH"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "TRIUMPH"
     } ],
     "ref" : "53838337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "YAM"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "YAM"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "YAM"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "YAM"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "YAM"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "YAM"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "YAM"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "YAM"
     } ],
     "ref" : "54838337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "TRAFFIC"
     } ],
     "ref" : "55838337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CITR"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CITR"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CITR"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CITR"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CITR"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CITR"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CITR"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CITR"
     } ],
     "ref" : "56838337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "RUF"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "RUF"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "RUF"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "RUF"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "RUF"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "RUF"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "RUF"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "RUF"
     } ],
     "ref" : "57838337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "VAG"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "VAG"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "VAG"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "VAG"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "VAG"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "VAG"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "VAG"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "VAG"
     } ],
     "ref" : "58838337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SATURN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SATURN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SATURN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SATURN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SATURN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SATURN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SATURN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SATURN"
     } ],
     "ref" : "59838337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CADILAC"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CADILAC"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CADILAC"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CADILAC"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CADILAC"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CADILAC"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CADILAC"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CADILAC"
     } ],
     "ref" : "60838337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Brabus"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Brabus"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Brabus"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Brabus"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Brabus"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Brabus"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Brabus"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Brabus"
     } ],
     "ref" : "61838337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "EDEN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "EDEN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "EDEN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "EDEN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "EDEN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "EDEN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "EDEN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "EDEN"
     } ],
     "ref" : "62838337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Wiesmann"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Wiesmann"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Wiesmann"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Wiesmann"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Wiesmann"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Wiesmann"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Wiesmann"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Wiesmann"
     } ],
     "ref" : "53938337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ECKO"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "ECKO"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ECKO"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ECKO"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ECKO"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ECKO"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ECKO"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "ECKO"
     } ],
     "ref" : "54938337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ELLSON"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "ELLSON"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ELLSON"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ELLSON"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ELLSON"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ELLSON"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ELLSON"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "ELLSON"
     } ],
     "ref" : "55938337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "RED_RABBIT"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "RED_RABBIT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "RED_RABBIT"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "RED_RABBIT"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "RED_RABBIT"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "RED_RABBIT"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "RED_RABBIT"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "RED_RABBIT"
     } ],
     "ref" : "56938337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "FOXX"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "FOXX"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "FOXX"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "FOXX"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "FOXX"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "FOXX"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "FOXX"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "FOXX"
     } ],
     "ref" : "57938337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "HCICK"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "HCICK"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "HCICK"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "HCICK"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "HCICK"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "HCICK"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "HCICK"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "HCICK"
     } ],
     "ref" : "58938337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SHERMAN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SHERMAN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SHERMAN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SHERMAN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SHERMAN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SHERMAN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SHERMAN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SHERMAN"
     } ],
     "ref" : "59938337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SEMPORIO"
     } ],
     "ref" : "60938337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "J_GAZZARA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "J_GAZZARA"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "J_GAZZARA"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "J_GAZZARA"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "J_GAZZARA"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "J_GAZZARA"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "J_GAZZARA"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "J_GAZZARA"
     } ],
     "ref" : "61938337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "DEFAULT"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "DEFAULT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "DEFAULT"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "DEFAULT"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "DEFAULT"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "DEFAULT"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "DEFAULT"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "DEFAULT"
     } ],
     "ref" : "62938337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Hennessey"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Hennessey"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Hennessey"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Hennessey"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Hennessey"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Hennessey"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Hennessey"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Hennessey"
     } ],
     "ref" : "54038337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Nismo"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Nismo"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Nismo"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Nismo"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Nismo"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Nismo"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Nismo"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Nismo"
     } ],
     "ref" : "55038337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "AMG"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "AMG"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "AMG"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "AMG"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "AMG"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "AMG"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "AMG"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "AMG"
     } ],
     "ref" : "56038337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "YES"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "YES"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "YES"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "YES"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "YES"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "YES"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "YES"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "YES"
     } ],
     "ref" : "57038337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SALEEN TUNING"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SALEEN TUNING"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SALEEN TUNING"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SALEEN TUNING"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SALEEN TUNING"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SALEEN TUNING"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SALEEN TUNING"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SALEEN TUNING"
     } ],
     "ref" : "58038337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MarketPlaceCAr"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MarketPlaceCAr"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MarketPlaceCAr"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MarketPlaceCAr"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MarketPlaceCAr"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MarketPlaceCAr"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MarketPlaceCAr"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MarketPlaceCAr"
     } ],
     "ref" : "59038337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MarketPlaceBike"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MarketPlaceBike"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MarketPlaceBike"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MarketPlaceBike"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MarketPlaceBike"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MarketPlaceBike"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MarketPlaceBike"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MarketPlaceBike"
     } ],
     "ref" : "60038337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Holden"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Holden"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Holden"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Holden"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Holden"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Holden"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Holden"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Holden"
     } ],
     "ref" : "61038337"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Ford"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Ford"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Ford"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Ford"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Ford"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Ford"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Ford"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Ford"
     } ],
     "ref" : "5438357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "AC"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "AC"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "AC"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "AC"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "AC"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "AC"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "AC"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "AC"
     } ],
     "ref" : "5538357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Alfa Romeo"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Alfa Romeo"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Alfa Romeo"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Alfa Romeo"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Alfa Romeo"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Alfa Romeo"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Alfa Romeo"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Alfa Romeo"
     } ],
     "ref" : "5638357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Ascari"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Ascari"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Ascari"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Ascari"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Ascari"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Ascari"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Ascari"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Ascari"
     } ],
     "ref" : "5738357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Aston Martin"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Aston Martin"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Aston Martin"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Aston Martin"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Aston Martin"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Aston Martin"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Aston Martin"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Aston Martin"
     } ],
     "ref" : "5838357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Audi"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Audi"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Audi"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Audi"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Audi"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Audi"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Audi"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Audi"
     } ],
     "ref" : "5938357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Bentley"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Bentley"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Bentley"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Bentley"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Bentley"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Bentley"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Bentley"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Bentley"
     } ],
     "ref" : "6038357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BMW"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BMW"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BMW"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BMW"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BMW"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BMW"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BMW"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BMW"
     } ],
     "ref" : "6138357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Bugatti"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Bugatti"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Bugatti"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Bugatti"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Bugatti"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Bugatti"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Bugatti"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Bugatti"
     } ],
     "ref" : "6238357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Caterham"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Caterham"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Caterham"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Caterham"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Caterham"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Caterham"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Caterham"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Caterham"
     } ],
     "ref" : "5348357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Chevrolet®"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Chevrolet®"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Chevrolet®"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Chevrolet®"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Chevrolet®"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Chevrolet®"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Chevrolet®"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Chevrolet®"
     } ],
     "ref" : "5448357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Chrysler®"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Chrysler®"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Chrysler®"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Chrysler®"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Chrysler®"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Chrysler®"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Chrysler®"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Chrysler®"
     } ],
     "ref" : "5548357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Dodge"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Dodge"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Dodge"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Dodge"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Dodge"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Dodge"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Dodge"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Dodge"
     } ],
     "ref" : "5648357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Edonis"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Edonis"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Edonis"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Edonis"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Edonis"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Edonis"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Edonis"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Edonis"
     } ],
     "ref" : "5748357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Farboud"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Farboud"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Farboud"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Farboud"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Farboud"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Farboud"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Farboud"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Farboud"
     } ],
     "ref" : "5848357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Ferrari"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Ferrari"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Ferrari"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Ferrari"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Ferrari"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Ferrari"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Ferrari"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Ferrari"
     } ],
     "ref" : "5948357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Honda"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Honda"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Honda"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Honda"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Honda"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Honda"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Honda"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Honda"
     } ],
     "ref" : "6048357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Infinity"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Infinity"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Infinity"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Infinity"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Infinity"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Infinity"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Infinity"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Infinity"
     } ],
     "ref" : "6148357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Jaguar"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Jaguar"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Jaguar"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Jaguar"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Jaguar"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Jaguar"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Jaguar"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Jaguar"
     } ],
     "ref" : "6248357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Koenigsegg"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Koenigsegg"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Koenigsegg"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Koenigsegg"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Koenigsegg"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Koenigsegg"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Koenigsegg"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Koenigsegg"
     } ],
     "ref" : "5358357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Lamborghini"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Lamborghini"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Lamborghini"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Lamborghini"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Lamborghini"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Lamborghini"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Lamborghini"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Lamborghini"
     } ],
     "ref" : "5458357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Laraki"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Laraki"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Laraki"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Laraki"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Laraki"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Laraki"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Laraki"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Laraki"
     } ],
     "ref" : "5558357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Lexus"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Lexus"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Lexus"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Lexus"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Lexus"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Lexus"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Lexus"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Lexus"
     } ],
     "ref" : "5658357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Lotus"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Lotus"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Lotus"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Lotus"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Lotus"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Lotus"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Lotus"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Lotus"
     } ],
     "ref" : "5758357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Maserati"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Maserati"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Maserati"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Maserati"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Maserati"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Maserati"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Maserati"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Maserati"
     } ],
     "ref" : "5858357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Mazda"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Mazda"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Mazda"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Mazda"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Mazda"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Mazda"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Mazda"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Mazda"
     } ],
     "ref" : "5958357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "McLaren"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "McLaren"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "McLaren"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "McLaren"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "McLaren"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "McLaren"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "McLaren"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "McLaren"
     } ],
     "ref" : "6058357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Mercedes-Benz"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Mercedes-Benz"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Mercedes-Benz"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Mercedes-Benz"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Mercedes-Benz"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Mercedes-Benz"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Mercedes-Benz"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Mercedes-Benz"
     } ],
     "ref" : "6158357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Mitsubishi"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Mitsubishi"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Mitsubishi"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Mitsubishi"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Mitsubishi"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Mitsubishi"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Mitsubishi"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Mitsubishi"
     } ],
     "ref" : "6258357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Nissan"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Nissan"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Nissan"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Nissan"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Nissan"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Nissan"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Nissan"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Nissan"
     } ],
     "ref" : "5368357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Noble"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Noble"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Noble"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Noble"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Noble"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Noble"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Noble"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Noble"
     } ],
     "ref" : "5468357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Pagani"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Pagani"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Pagani"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Pagani"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Pagani"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Pagani"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Pagani"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Pagani"
     } ],
     "ref" : "5568357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Plymouth / AMC"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Plymouth / AMC"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Plymouth / AMC"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Plymouth / AMC"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Plymouth / AMC"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Plymouth / AMC"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Plymouth / AMC"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Plymouth / AMC"
     } ],
     "ref" : "5668357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Pontiac®"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Pontiac®"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Pontiac®"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Pontiac®"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Pontiac®"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Pontiac®"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Pontiac®"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Pontiac®"
     } ],
     "ref" : "5768357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Porsche"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Porsche"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Porsche"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Porsche"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Porsche"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Porsche"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Porsche"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Porsche"
     } ],
     "ref" : "5868357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Saleen"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Saleen"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Saleen"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Saleen"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Saleen"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Saleen"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Saleen"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Saleen"
     } ],
     "ref" : "5968357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Shelby"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Shelby"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Shelby"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Shelby"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Shelby"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Shelby"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Shelby"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Shelby"
     } ],
     "ref" : "6068357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Spyker"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Spyker"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Spyker"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Spyker"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Spyker"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Spyker"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Spyker"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Spyker"
     } ],
     "ref" : "6268357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Subaru"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Subaru"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Subaru"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Subaru"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Subaru"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Subaru"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Subaru"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Subaru"
     } ],
     "ref" : "5378357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Toyota"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Toyota"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Toyota"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Toyota"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Toyota"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Toyota"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Toyota"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Toyota"
     } ],
     "ref" : "5478357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "TVR"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "TVR"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "TVR"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "TVR"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "TVR"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "TVR"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "TVR"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "TVR"
     } ],
     "ref" : "5578357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Aprilia"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Aprilia"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Aprilia"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Aprilia"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Aprilia"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Aprilia"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Aprilia"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Aprilia"
     } ],
     "ref" : "5678357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Benelli"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Benelli"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Benelli"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Benelli"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Benelli"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Benelli"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Benelli"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Benelli"
     } ],
     "ref" : "5778357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Ducati"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Ducati"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Ducati"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Ducati"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Ducati"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Ducati"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Ducati"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Ducati"
     } ],
     "ref" : "5878357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Honda"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Honda"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Honda"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Honda"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Honda"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Honda"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Honda"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Honda"
     } ],
     "ref" : "5978357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Kawasaki"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Kawasaki"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Kawasaki"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Kawasaki"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Kawasaki"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Kawasaki"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Kawasaki"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Kawasaki"
     } ],
     "ref" : "6078357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MV Agusta"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MV Agusta"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MV Agusta"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MV Agusta"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MV Agusta"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MV Agusta"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MV Agusta"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MV Agusta"
     } ],
     "ref" : "6178357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Suzuki"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Suzuki"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Suzuki"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Suzuki"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Suzuki"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Suzuki"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Suzuki"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Suzuki"
     } ],
     "ref" : "6278357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Triumph"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Triumph"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Triumph"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Triumph"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Triumph"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Triumph"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Triumph"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Triumph"
     } ],
     "ref" : "5388357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Yamaha"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Yamaha"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Yamaha"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Yamaha"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Yamaha"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Yamaha"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Yamaha"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Yamaha"
     } ],
     "ref" : "5488357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "TRAFFIC"
     } ],
     "ref" : "5588357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Generic Car"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Generic Car"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Generic Car"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Generic Car"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Generic Car"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Generic Car"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Generic Car"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Generic Car"
     } ],
     "ref" : "5688357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "RUF"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "RUF"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "RUF"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "RUF"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "RUF"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "RUF"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "RUF"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "RUF"
     } ],
     "ref" : "5788357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Volkswagen"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Volkswagen"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Volkswagen"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Volkswagen"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Volkswagen"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Volkswagen"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Volkswagen"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Volkswagen"
     } ],
     "ref" : "5888357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Saturn™"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Saturn™"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Saturn™"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Saturn™"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Saturn™"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Saturn™"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Saturn™"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Saturn™"
     } ],
     "ref" : "5988357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Cadillac®"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Cadillac®"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Cadillac®"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Cadillac®"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Cadillac®"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Cadillac®"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Cadillac®"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Cadillac®"
     } ],
     "ref" : "6088357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BRABUS"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BRABUS"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BRABUS"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BRABUS"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BRABUS"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BRABUS"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BRABUS"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BRABUS"
     } ],
     "ref" : "6188357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "EDEN Motors"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "EDEN Motors"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "EDEN Motors"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "EDEN Motors"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "EDEN Motors"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "EDEN Motors"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "EDEN Motors"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "EDEN Motors"
     } ],
     "ref" : "6288357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Wiesmann"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Wiesmann"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Wiesmann"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Wiesmann"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Wiesmann"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Wiesmann"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Wiesmann"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Wiesmann"
     } ],
     "ref" : "5398357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "*ecko unltd."
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "*ecko unltd."
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "*ecko unltd."
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "*ecko unltd."
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "*ecko unltd."
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "*ecko unltd."
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "*ecko unltd."
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "*ecko unltd."
     } ],
     "ref" : "5498357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ELLSON"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "ELLSON"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ELLSON"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ELLSON"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ELLSON"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ELLSON"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ELLSON"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "ELLSON"
     } ],
     "ref" : "5598357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "RED RABBIT"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "RED RABBIT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "RED RABBIT"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "RED RABBIT"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "RED RABBIT"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "RED RABBIT"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "RED RABBIT"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "RED RABBIT"
     } ],
     "ref" : "5698357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "FOXX"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "FOXX"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "FOXX"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "FOXX"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "FOXX"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "FOXX"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "FOXX"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "FOXX"
     } ],
     "ref" : "5798357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "HCICK"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "HCICK"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "HCICK"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "HCICK"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "HCICK"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "HCICK"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "HCICK"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "HCICK"
     } ],
     "ref" : "5898357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BEN SHERMAN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BEN SHERMAN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BEN SHERMAN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BEN SHERMAN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BEN SHERMAN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BEN SHERMAN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BEN SHERMAN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BEN SHERMAN"
     } ],
     "ref" : "5998357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SEMPORIO"
     } ],
     "ref" : "6098357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "J. GAZZARA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "J. GAZZARA"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "J. GAZZARA"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "J. GAZZARA"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "J. GAZZARA"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "J. GAZZARA"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "J. GAZZARA"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "J. GAZZARA"
     } ],
     "ref" : "6198357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "DEFAULT"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "DEFAULT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "DEFAULT"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "DEFAULT"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "DEFAULT"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "DEFAULT"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "DEFAULT"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "DEFAULT"
     } ],
     "ref" : "6298357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Hennessey"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Hennessey"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Hennessey"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Hennessey"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Hennessey"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Hennessey"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Hennessey"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Hennessey"
     } ],
     "ref" : "5408357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Nismo"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Nismo"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Nismo"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Nismo"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Nismo"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Nismo"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Nismo"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Nismo"
     } ],
     "ref" : "5508357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "AMG"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "AMG"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "AMG"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "AMG"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "AMG"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "AMG"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "AMG"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "AMG"
     } ],
     "ref" : "5608357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Yes!"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Yes!"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Yes!"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Yes!"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Yes!"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Yes!"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Yes!"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Yes!"
     } ],
     "ref" : "5708357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "NISSAN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "NISSAN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "NISSAN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "NISSAN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "NISSAN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "NISSAN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "NISSAN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "NISSAN"
     } ],
     "ref" : "5808357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Car Not Downloaded"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Car Not Downloaded"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Car Not Downloaded"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Car Not Downloaded"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Car Not Downloaded"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Car Not Downloaded"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Car Not Downloaded"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Car Not Downloaded"
     } ],
     "ref" : "5908357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Bike Not Downloaded"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Bike Not Downloaded"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Bike Not Downloaded"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Bike Not Downloaded"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Bike Not Downloaded"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Bike Not Downloaded"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Bike Not Downloaded"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Bike Not Downloaded"
     } ],
     "ref" : "6008357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "??"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "??"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "??"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "??"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "??"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "??"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "??"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "??"
     } ],
     "ref" : "6108357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Holden"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Holden"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Holden"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Holden"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Holden"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Holden"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Holden"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Holden"
     } ],
     "ref" : "6208357"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "???"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "???"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "???"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "???"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "???"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "???"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "???"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "???"
     } ],
     "ref" : "5336580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "HUD01"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "HUD01"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "HUD01"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "HUD01"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "HUD01"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "HUD01"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "HUD01"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "HUD01"
     } ],
     "ref" : "5436580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "FORD"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "FORD"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "FORD"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "FORD"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "FORD"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "FORD"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "FORD"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "FORD"
     } ],
     "ref" : "5536580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "AC"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "AC"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "AC"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "AC"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "AC"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "AC"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "AC"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "AC"
     } ],
     "ref" : "5636580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ALFA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "ALFA"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ALFA"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ALFA"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ALFA"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ALFA"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ALFA"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "ALFA"
     } ],
     "ref" : "5736580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ASCA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "ASCA"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ASCA"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ASCA"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ASCA"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ASCA"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ASCA"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "ASCA"
     } ],
     "ref" : "5836580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ASTON"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "ASTON"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ASTON"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ASTON"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ASTON"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ASTON"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ASTON"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "ASTON"
     } ],
     "ref" : "5936580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "AUDI"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "AUDI"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "AUDI"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "AUDI"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "AUDI"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "AUDI"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "AUDI"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "AUDI"
     } ],
     "ref" : "6036580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BENT"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BENT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BENT"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BENT"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BENT"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BENT"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BENT"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BENT"
     } ],
     "ref" : "6136580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BMW"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BMW"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BMW"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BMW"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BMW"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BMW"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BMW"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BMW"
     } ],
     "ref" : "6236580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BUGAT"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BUGAT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BUGAT"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BUGAT"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BUGAT"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BUGAT"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BUGAT"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BUGAT"
     } ],
     "ref" : "5346580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CATER"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CATER"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CATER"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CATER"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CATER"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CATER"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CATER"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CATER"
     } ],
     "ref" : "5446580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CHEVY"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CHEVY"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CHEVY"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CHEVY"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CHEVY"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CHEVY"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CHEVY"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CHEVY"
     } ],
     "ref" : "5546580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CHRYS"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CHRYS"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CHRYS"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CHRYS"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CHRYS"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CHRYS"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CHRYS"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CHRYS"
     } ],
     "ref" : "5646580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "DODGE"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "DODGE"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "DODGE"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "DODGE"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "DODGE"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "DODGE"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "DODGE"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "DODGE"
     } ],
     "ref" : "5746580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "EDO"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "EDO"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "EDO"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "EDO"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "EDO"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "EDO"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "EDO"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "EDO"
     } ],
     "ref" : "5846580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "FARB"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "FARB"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "FARB"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "FARB"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "FARB"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "FARB"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "FARB"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "FARB"
     } ],
     "ref" : "5946580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "FERRARI"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "FERRARI"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "FERRARI"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "FERRARI"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "FERRARI"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "FERRARI"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "FERRARI"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "FERRARI"
     } ],
     "ref" : "6046580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "HONDA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "HONDA"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "HONDA"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "HONDA"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "HONDA"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "HONDA"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "HONDA"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "HONDA"
     } ],
     "ref" : "6146580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "INF"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "INF"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "INF"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "INF"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "INF"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "INF"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "INF"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "INF"
     } ],
     "ref" : "6246580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "JAG"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "JAG"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "JAG"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "JAG"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "JAG"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "JAG"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "JAG"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "JAG"
     } ],
     "ref" : "5356580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "KOEN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "KOEN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "KOEN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "KOEN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "KOEN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "KOEN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "KOEN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "KOEN"
     } ],
     "ref" : "5456580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "LAMBO"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "LAMBO"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "LAMBO"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "LAMBO"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "LAMBO"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "LAMBO"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "LAMBO"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "LAMBO"
     } ],
     "ref" : "5556580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "LARAKI"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "LARAKI"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "LARAKI"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "LARAKI"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "LARAKI"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "LARAKI"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "LARAKI"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "LARAKI"
     } ],
     "ref" : "5656580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "LEXUS"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "LEXUS"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "LEXUS"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "LEXUS"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "LEXUS"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "LEXUS"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "LEXUS"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "LEXUS"
     } ],
     "ref" : "5756580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "LOTUS"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "LOTUS"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "LOTUS"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "LOTUS"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "LOTUS"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "LOTUS"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "LOTUS"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "LOTUS"
     } ],
     "ref" : "5856580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MASER"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MASER"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MASER"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MASER"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MASER"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MASER"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MASER"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MASER"
     } ],
     "ref" : "5956580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MAZDA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MAZDA"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MAZDA"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MAZDA"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MAZDA"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MAZDA"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MAZDA"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MAZDA"
     } ],
     "ref" : "6056580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "LAREN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "LAREN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "LAREN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "LAREN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "LAREN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "LAREN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "LAREN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "LAREN"
     } ],
     "ref" : "6156580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MERCO"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MERCO"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MERCO"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MERCO"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MERCO"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MERCO"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MERCO"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MERCO"
     } ],
     "ref" : "6256580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MITSU"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MITSU"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MITSU"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MITSU"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MITSU"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MITSU"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MITSU"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MITSU"
     } ],
     "ref" : "5366580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "NISSAN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "NISSAN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "NISSAN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "NISSAN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "NISSAN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "NISSAN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "NISSAN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "NISSAN"
     } ],
     "ref" : "5466580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "NOBLE"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "NOBLE"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "NOBLE"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "NOBLE"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "NOBLE"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "NOBLE"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "NOBLE"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "NOBLE"
     } ],
     "ref" : "5566580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "PAGANI"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "PAGANI"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "PAGANI"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "PAGANI"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "PAGANI"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "PAGANI"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "PAGANI"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "PAGANI"
     } ],
     "ref" : "5666580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "PLYM"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "PLYM"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "PLYM"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "PLYM"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "PLYM"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "PLYM"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "PLYM"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "PLYM"
     } ],
     "ref" : "5766580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "PONT"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "PONT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "PONT"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "PONT"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "PONT"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "PONT"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "PONT"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "PONT"
     } ],
     "ref" : "5866580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "PORSCHE"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "PORSCHE"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "PORSCHE"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "PORSCHE"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "PORSCHE"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "PORSCHE"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "PORSCHE"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "PORSCHE"
     } ],
     "ref" : "5966580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SALEEN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SALEEN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SALEEN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SALEEN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SALEEN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SALEEN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SALEEN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SALEEN"
     } ],
     "ref" : "6066580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SHELBY"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SHELBY"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SHELBY"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SHELBY"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SHELBY"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SHELBY"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SHELBY"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SHELBY"
     } ],
     "ref" : "6166580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SPYK"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SPYK"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SPYK"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SPYK"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SPYK"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SPYK"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SPYK"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SPYK"
     } ],
     "ref" : "6266580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SUB"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SUB"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SUB"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SUB"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SUB"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SUB"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SUB"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SUB"
     } ],
     "ref" : "5376580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "TOY"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "TOY"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "TOY"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "TOY"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "TOY"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "TOY"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "TOY"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "TOY"
     } ],
     "ref" : "5476580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "TVR"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "TVR"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "TVR"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "TVR"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "TVR"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "TVR"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "TVR"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "TVR"
     } ],
     "ref" : "5576580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "APRILIA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "APRILIA"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "APRILIA"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "APRILIA"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "APRILIA"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "APRILIA"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "APRILIA"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "APRILIA"
     } ],
     "ref" : "5676580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BENELLI"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BENELLI"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BENELLI"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BENELLI"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BENELLI"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BENELLI"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BENELLI"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BENELLI"
     } ],
     "ref" : "5776580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "DUCAT"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "DUCAT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "DUCAT"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "DUCAT"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "DUCAT"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "DUCAT"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "DUCAT"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "DUCAT"
     } ],
     "ref" : "5876580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "HONDAM"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "HONDAM"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "HONDAM"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "HONDAM"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "HONDAM"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "HONDAM"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "HONDAM"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "HONDAM"
     } ],
     "ref" : "5976580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "KAWA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "KAWA"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "KAWA"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "KAWA"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "KAWA"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "KAWA"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "KAWA"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "KAWA"
     } ],
     "ref" : "6076580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MV"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MV"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MV"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MV"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MV"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MV"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MV"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MV"
     } ],
     "ref" : "6176580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SUZ"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SUZ"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SUZ"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SUZ"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SUZ"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SUZ"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SUZ"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SUZ"
     } ],
     "ref" : "6276580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "TRIUMPH"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "TRIUMPH"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "TRIUMPH"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "TRIUMPH"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "TRIUMPH"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "TRIUMPH"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "TRIUMPH"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "TRIUMPH"
     } ],
     "ref" : "5386580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "YAM"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "YAM"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "YAM"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "YAM"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "YAM"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "YAM"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "YAM"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "YAM"
     } ],
     "ref" : "5486580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "TRAFFIC"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "TRAFFIC"
     } ],
     "ref" : "5586580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CITR"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CITR"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CITR"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CITR"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CITR"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CITR"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CITR"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CITR"
     } ],
     "ref" : "5686580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "RUF"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "RUF"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "RUF"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "RUF"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "RUF"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "RUF"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "RUF"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "RUF"
     } ],
     "ref" : "5786580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "VAG"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "VAG"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "VAG"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "VAG"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "VAG"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "VAG"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "VAG"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "VAG"
     } ],
     "ref" : "5886580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CADILAC"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CADILAC"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CADILAC"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CADILAC"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CADILAC"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CADILAC"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CADILAC"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CADILAC"
     } ],
     "ref" : "5986580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MV"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MV"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MV"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MV"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MV"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MV"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MV"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MV"
     } ],
     "ref" : "6086580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SATURN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SATURN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SATURN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SATURN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SATURN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SATURN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SATURN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SATURN"
     } ],
     "ref" : "6186580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ECKO"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "ECKO"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ECKO"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ECKO"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ECKO"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ECKO"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ECKO"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "ECKO"
     } ],
     "ref" : "6286580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ELLSON"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "ELLSON"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ELLSON"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ELLSON"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ELLSON"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ELLSON"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ELLSON"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "ELLSON"
     } ],
     "ref" : "5396580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "RED_RABBIT"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "RED_RABBIT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "RED_RABBIT"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "RED_RABBIT"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "RED_RABBIT"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "RED_RABBIT"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "RED_RABBIT"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "RED_RABBIT"
     } ],
     "ref" : "5496580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "FOXX"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "FOXX"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "FOXX"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "FOXX"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "FOXX"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "FOXX"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "FOXX"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "FOXX"
     } ],
     "ref" : "5596580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "HCICK"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "HCICK"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "HCICK"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "HCICK"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "HCICK"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "HCICK"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "HCICK"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "HCICK"
     } ],
     "ref" : "5696580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SHERMAN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SHERMAN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SHERMAN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SHERMAN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SHERMAN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SHERMAN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SHERMAN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SHERMAN"
     } ],
     "ref" : "5796580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SEMPORIO"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SEMPORIO"
     } ],
     "ref" : "5896580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "J_GAZZARA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "J_GAZZARA"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "J_GAZZARA"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "J_GAZZARA"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "J_GAZZARA"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "J_GAZZARA"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "J_GAZZARA"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "J_GAZZARA"
     } ],
     "ref" : "5996580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "DEFAULT"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "DEFAULT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "DEFAULT"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "DEFAULT"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "DEFAULT"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "DEFAULT"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "DEFAULT"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "DEFAULT"
     } ],
     "ref" : "6096580"
   }, {
     "items" : [ {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "WIESMANN"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "WIESMANN"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "WIESMANN"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "WIESMANN"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "WIESMANN"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "WIESMANN"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "WIESMANN"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "WIESMANN"
     } ],
     "ref" : "6196580"

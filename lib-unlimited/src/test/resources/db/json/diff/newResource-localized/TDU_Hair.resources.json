@@ -3,352 +3,352 @@
   "categoryCount" : 5,
   "entries" : [ {
     "items" : [ {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ERROR"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ERROR"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "ERROR"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "ERROR"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ERROR"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ERROR"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ERROR"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ERREUR!!"
     } ],
     "ref" : "9097022"
   }, {
     "items" : [ {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Rasta"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Rasta"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Rasta"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Rasta"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Rasta"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Rasta"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Rasta"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Rasta"
     } ],
     "ref" : "5436022"
   }, {
     "items" : [ {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "HA01"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "HA01"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "HA01"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "HA01"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "HA01"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "HA01"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "HA01"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "HA01"
     } ],
     "ref" : "54370022"
   }, {
     "items" : [ {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "HA02"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "HA02"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "HA02"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "HA02"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "HA02"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "HA02"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "HA02"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "HA02"
     } ],
     "ref" : "55370022"
   }, {
     "items" : [ {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "HA03"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "HA03"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "HA03"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "HA03"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "HA03"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "HA03"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "HA03"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "HA03"
     } ],
     "ref" : "56370022"
   }, {
     "items" : [ {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "HA04"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "HA04"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "HA04"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "HA04"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "HA04"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "HA04"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "HA04"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "HA04"
     } ],
     "ref" : "57370022"
   }, {
     "items" : [ {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "HA05"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "HA05"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "HA05"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "HA05"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "HA05"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "HA05"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "HA05"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "HA05"
     } ],
     "ref" : "58370022"
   }, {
     "items" : [ {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "HA06"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "HA06"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "HA06"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "HA06"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "HA06"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "HA06"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "HA06"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "HA06"
     } ],
     "ref" : "59370022"
   }, {
     "items" : [ {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "HA07"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "HA07"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "HA07"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "HA07"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "HA07"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "HA07"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "HA07"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "HA07"
     } ],
     "ref" : "60370022"
   }, {
     "items" : [ {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "DEFAULT_BOTTOMS"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "DEFAULT_BOTTOMS"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "DEFAULT_BOTTOMS"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "DEFAULT_BOTTOMS"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "DEFAULT_BOTTOMS"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "DEFAULT_BOTTOMS"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "DEFAULT_BOTTOMS"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "DEFAULT_BOTTOMS"
     } ],
     "ref" : "54640827"
   }, {
     "items" : [ {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "DEFAULT_TOPS_SHIRT"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "DEFAULT_TOPS_SHIRT"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "DEFAULT_TOPS_SHIRT"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "DEFAULT_TOPS_SHIRT"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "DEFAULT_TOPS_SHIRT"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "DEFAULT_TOPS_SHIRT"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "DEFAULT_TOPS_SHIRT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "DEFAULT_TOPS_SHIRT"
     } ],
     "ref" : "54707527"
   }, {
     "items" : [ {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "ChemiseAFleurs01"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "ChemiseAFleurs01"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "ChemiseAFleurs01"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "ChemiseAFleurs01"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "ChemiseAFleurs01"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "ChemiseAFleurs01"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "ChemiseAFleurs01"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "ChemiseAFleurs01"
     } ],
     "ref" : "54713527"
   }, {
     "items" : [ {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "StringPanthere01-CH"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "StringPanthere01-KO"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "StringPanthere01-JA"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "StringPanthere01-SP"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "StringPanthere01-GE"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "StringPanthere01-US"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "StringPanthere01-IT"
     }, {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "StringPanthere01-FR"
     } ],
     "ref" : "54713528"

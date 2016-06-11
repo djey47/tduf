@@ -2988,1153 +2988,1153 @@
     "categoryCount" : 3,
     "entries" : [ {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "ERREUR!!"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "ERREUR!!"
       } ],
       "ref" : "9098256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Brian"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Brian"
       } ],
       "ref" : "54367256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Steven"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Steven"
       } ],
       "ref" : "55367256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Quentin"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Quentin"
       } ],
       "ref" : "56367256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Roberto"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Roberto"
       } ],
       "ref" : "57367256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Georges"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Georges"
       } ],
       "ref" : "58367256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "David"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "David"
       } ],
       "ref" : "59367256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Spike"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Spike"
       } ],
       "ref" : "60367256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Francis"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Francis"
       } ],
       "ref" : "61367256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Peter"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Peter"
       } ],
       "ref" : "62367256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Kirk"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Kirk"
       } ],
       "ref" : "53467256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Richard"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Richard"
       } ],
       "ref" : "54467256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Daniel"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Daniel"
       } ],
       "ref" : "55467256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Josh"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Josh"
       } ],
       "ref" : "56467256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Frank"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Frank"
       } ],
       "ref" : "57467256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Max"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Max"
       } ],
       "ref" : "58467256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Nancy"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Nancy"
       } ],
       "ref" : "59467256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Fred"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Fred"
       } ],
       "ref" : "60467256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Woody"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Woody"
       } ],
       "ref" : "61467256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Bill"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Bill"
       } ],
       "ref" : "62467256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Rodney"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Rodney"
       } ],
       "ref" : "53567256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Julian"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Julian"
       } ],
       "ref" : "54567256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Jeff"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Jeff"
       } ],
       "ref" : "55567256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Mary"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Mary"
       } ],
       "ref" : "56567256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Sylvia"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Sylvia"
       } ],
       "ref" : "57567256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Tony"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Tony"
       } ],
       "ref" : "58567256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Clark"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Clark"
       } ],
       "ref" : "59567256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Joel"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Joel"
       } ],
       "ref" : "60567256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Thomas"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Thomas"
       } ],
       "ref" : "61567256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Donald"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Donald"
       } ],
       "ref" : "62567256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Mark"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Mark"
       } ],
       "ref" : "53667256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Veda"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Veda"
       } ],
       "ref" : "54667256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Mike"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Mike"
       } ],
       "ref" : "55667256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Dan"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Dan"
       } ],
       "ref" : "56667256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Alec"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Alec"
       } ],
       "ref" : "57667256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Sam"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Sam"
       } ],
       "ref" : "58667256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "John"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "John"
       } ],
       "ref" : "59667256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Kevin"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Kevin"
       } ],
       "ref" : "60667256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Pattie"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Pattie"
       } ],
       "ref" : "61667256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Warren"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Warren"
       } ],
       "ref" : "62667256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Walter"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Walter"
       } ],
       "ref" : "53767256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Bruce"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Bruce"
       } ],
       "ref" : "54767256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Alfred"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Alfred"
       } ],
       "ref" : "55767256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Howard"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Howard"
       } ],
       "ref" : "56767256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Scott"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Scott"
       } ],
       "ref" : "57767256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Ernst"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Ernst"
       } ],
       "ref" : "58767256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Craig"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Craig"
       } ],
       "ref" : "59767256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Henry"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Henry"
       } ],
       "ref" : "60767256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Patrick"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Patrick"
       } ],
       "ref" : "61767256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Brad"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Brad"
       } ],
       "ref" : "62767256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Ted"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Ted"
       } ],
       "ref" : "53867256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Charles"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Charles"
       } ],
       "ref" : "54867256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Clara"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Clara"
       } ],
       "ref" : "55867256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Rupert"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Rupert"
       } ],
       "ref" : "56867256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Sean"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Sean"
       } ],
       "ref" : "57867256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Gordon"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Gordon"
       } ],
       "ref" : "58867256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Phil"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Phil"
       } ],
       "ref" : "59867256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Lindsay"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Lindsay"
       } ],
       "ref" : "60867256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Edgar"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Edgar"
       } ],
       "ref" : "61867256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Ivan"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Ivan"
       } ],
       "ref" : "62867256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Edd"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Edd"
       } ],
       "ref" : "53967256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Doug"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Doug"
       } ],
       "ref" : "54967256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Martin"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Martin"
       } ],
       "ref" : "55967256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Harvey"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Harvey"
       } ],
       "ref" : "56967256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Marvin"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Marvin"
       } ],
       "ref" : "57967256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Helen"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Helen"
       } ],
       "ref" : "58967256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Ralph"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Ralph"
       } ],
       "ref" : "59967256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Gary"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Gary"
       } ],
       "ref" : "60967256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Dudley"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Dudley"
       } ],
       "ref" : "61967256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Wes"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Wes"
       } ],
       "ref" : "62967256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Charlotte"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Charlotte"
       } ],
       "ref" : "54067256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Alex"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Alex"
       } ],
       "ref" : "55067256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Jill"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Jill"
       } ],
       "ref" : "56067256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Al"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Al"
       } ],
       "ref" : "57067256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Arthur"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Arthur"
       } ],
       "ref" : "58067256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Burt"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Burt"
       } ],
       "ref" : "59067256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Keith"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Keith"
       } ],
       "ref" : "60067256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Seth"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Seth"
       } ],
       "ref" : "61067256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Eddie"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Eddie"
       } ],
       "ref" : "62067256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Harold"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Harold"
       } ],
       "ref" : "63067256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Jimmy"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Jimmy"
       } ],
       "ref" : "54167256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Dennis"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Dennis"
       } ],
       "ref" : "55167256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Tim"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Tim"
       } ],
       "ref" : "56167256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Eugene"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Eugene"
       } ],
       "ref" : "57167256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Harry"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Harry"
       } ],
       "ref" : "58167256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Jason"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Jason"
       } ],
       "ref" : "59167256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Danny"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Danny"
       } ],
       "ref" : "60167256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "William"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "William"
       } ],
       "ref" : "61167256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Lise"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Lise"
       } ],
       "ref" : "62167256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Alan"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Alan"
       } ],
       "ref" : "63167256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Nick"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Nick"
       } ],
       "ref" : "54267256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Keira"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Keira"
       } ],
       "ref" : "55267256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Arnold"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Arnold"
       } ],
       "ref" : "56267256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Sylvester"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Sylvester"
       } ],
       "ref" : "57267256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Jean-Claude"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Jean-Claude"
       } ],
       "ref" : "58267256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Jack"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Jack"
       } ],
       "ref" : "59267256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Natalie"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Natalie"
       } ],
       "ref" : "60267256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Justin"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Justin"
       } ],
       "ref" : "61267256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Russell"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Russell"
       } ],
       "ref" : "62267256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Kathy"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Kathy"
       } ],
       "ref" : "63267256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Andrew"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Andrew"
       } ],
       "ref" : "53377256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Matt"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Matt"
       } ],
       "ref" : "54377256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Greg"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Greg"
       } ],
       "ref" : "55377256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Luke"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Luke"
       } ],
       "ref" : "56377256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Sharon"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Sharon"
       } ],
       "ref" : "57377256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Angelina"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Angelina"
       } ],
       "ref" : "58377256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Charlize"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Charlize"
       } ],
       "ref" : "59377256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Gregory"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Gregory"
       } ],
       "ref" : "60377256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Djibril"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Djibril"
       } ],
       "ref" : "61377256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Thierry"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Thierry"
       } ],
       "ref" : "62377256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Sylvain"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Sylvain"
       } ],
       "ref" : "53477256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Zinedine"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Zinedine"
       } ],
       "ref" : "54477256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Fabien"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Fabien"
       } ],
       "ref" : "55477256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Claude"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Claude"
       } ],
       "ref" : "56477256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Lilian"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Lilian"
       } ],
       "ref" : "57477256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Willy"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Willy"
       } ],
       "ref" : "58477256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Normal_bon"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Normal_bon"
       } ],
       "ref" : "54373256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Normal_normal"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Normal_normal"
       } ],
       "ref" : "55373256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Normal_mauvais"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Normal_mauvais"
       } ],
       "ref" : "56373256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Agressif_bon"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Agressif_bon"
       } ],
       "ref" : "57373256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Agressif_normal"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Agressif_normal"
       } ],
       "ref" : "58373256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Agressif_mauvais"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Agressif_mauvais"
       } ],
       "ref" : "59373256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Peureux_bon"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Peureux_bon"
       } ],
       "ref" : "60373256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Peureux_normal"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Peureux_normal"
       } ],
       "ref" : "61373256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Peureux_mauvais"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Peureux_mauvais"
       } ],
       "ref" : "62373256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Téméraire_bon"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Téméraire_bon"
       } ],
       "ref" : "53473256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Téméraire_normal"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Téméraire_normal"
       } ],
       "ref" : "54473256"
     }, {
       "items" : [ {
-        "locale" : "FRANCE",
+        "locale" : "fr",
         "value" : "Téméraire_mauvais"
       }, {
-        "locale" : "ITALY",
+        "locale" : "it",
         "value" : "Téméraire_mauvais"
       } ],
       "ref" : "55473256"

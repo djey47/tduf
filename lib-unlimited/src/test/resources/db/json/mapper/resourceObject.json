@@ -3,19 +3,19 @@
   "categoryCount" : 1,
   "entries" : [ {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "VAL1_FR"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "VAL1_IT"
     } ],
     "ref" : "53410835"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "VAL2_FR"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "VAL2_IT"
     } ],
     "ref" : "54410835"

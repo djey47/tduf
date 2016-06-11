@@ -25,7 +25,8 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class TdupeGatewayTest {
 
-    private static Class<TdupeGatewayTest> thisClass = TdupeGatewayTest.class;
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Class<TdupeGatewayTest> thisClass = TdupeGatewayTest.class;
 
     @Mock
     private BulkDatabaseMiner minerMock;
@@ -114,13 +115,14 @@ public class TdupeGatewayTest {
     }
 
     private static DbDto loadCarPhysicsTopicFromResources() throws URISyntaxException, IOException {
+
         URI dataFileURI = thisClass.getResource("/db/json/TDU_CarPhysicsData.data.json").toURI();
         URI resourceFileURI = thisClass.getResource("/db/json/TDU_CarPhysicsData.resources.json").toURI();
         URI structureFileURI = thisClass.getResource("/db/json/TDU_CarPhysicsData.structure.json").toURI();
         return DbDto.builder()
-                .withData(new ObjectMapper().readValue(new File(dataFileURI), DbDataDto.class))
-                .withStructure(new ObjectMapper().readValue(new File(structureFileURI), DbStructureDto.class))
-                .withResource(new ObjectMapper().readValue(new File(resourceFileURI), DbResourceDto.class))
+                .withData(objectMapper.readValue(new File(dataFileURI), DbDataDto.class))
+                .withStructure(objectMapper.readValue(new File(structureFileURI), DbStructureDto.class))
+                .withResource(objectMapper.readValue(new File(resourceFileURI), DbResourceDto.class))
                 .build();
     }
 }

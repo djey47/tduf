@@ -3,3079 +3,3079 @@
   "categoryCount" : 2,
   "entries" : [ {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Error"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Error"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Error"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Error"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Error"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Error"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Error"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Error"
     } ],
     "ref" : "8844089"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BoosterPack05"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BoosterPack05"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BoosterPack05"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BoosterPack05"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BoosterPack05"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BoosterPack05"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BoosterPack05"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BoosterPack05"
     } ],
     "ref" : "54662430"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Power Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Power Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Power Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Power Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Power Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Power Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Power Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Power Pack 1"
     } ],
     "ref" : "55662430"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Power Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Power Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Power Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Power Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Power Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Power Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Power Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Power Pack 2"
     } ],
     "ref" : "56662430"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Power Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Power Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Power Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Power Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Power Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Power Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Power Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Power Pack 3"
     } ],
     "ref" : "57662430"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "None"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "None"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "None"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "None"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "None"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "None"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "None"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "None"
     } ],
     "ref" : "53561230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "PACKNISMO-S"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "PACKNISMO-S"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "PACKNISMO-S"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "PACKNISMO-S"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "PACKNISMO-S"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "PACKNISMO-S"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "PACKNISMO-S"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "PACKNISMO-S"
     } ],
     "ref" : "54561230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "PACKNISMO-R"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "PACKNISMO-R"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "PACKNISMO-R"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "PACKNISMO-R"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "PACKNISMO-R"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "PACKNISMO-R"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "PACKNISMO-R"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "PACKNISMO-R"
     } ],
     "ref" : "55561230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "PACKNISMO-R-Max"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "PACKNISMO-R-Max"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "PACKNISMO-R-Max"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "PACKNISMO-R-Max"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "PACKNISMO-R-Max"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "PACKNISMO-R-Max"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "PACKNISMO-R-Max"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "PACKNISMO-R-Max"
     } ],
     "ref" : "56561230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Power Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Power Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Power Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Power Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Power Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Power Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Power Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Power Pack 1"
     } ],
     "ref" : "57561230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Power Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Power Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Power Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Power Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Power Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Power Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Power Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Power Pack 2"
     } ],
     "ref" : "58561230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Power Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Power Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Power Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Power Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Power Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Power Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Power Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Power Pack 3"
     } ],
     "ref" : "59561230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Performance Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Performance Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Performance Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Performance Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Performance Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Performance Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Performance Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Performance Pack 1"
     } ],
     "ref" : "60561230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Performance Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Performance Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Performance Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Performance Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Performance Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Performance Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Performance Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Performance Pack 2"
     } ],
     "ref" : "61561230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Performance Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Performance Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Performance Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Performance Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Performance Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Performance Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Performance Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Performance Pack 3"
     } ],
     "ref" : "62561230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "4WD Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "4WD Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "4WD Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "4WD Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "4WD Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "4WD Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "4WD Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "4WD Pack 1"
     } ],
     "ref" : "53661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "4WD Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "4WD Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "4WD Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "4WD Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "4WD Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "4WD Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "4WD Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "4WD Pack 2"
     } ],
     "ref" : "54661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "4WD Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "4WD Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "4WD Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "4WD Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "4WD Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "4WD Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "4WD Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "4WD Pack 3"
     } ],
     "ref" : "55661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "GALLA Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "GALLA Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "GALLA Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "GALLA Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "GALLA Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "GALLA Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "GALLA Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "GALLA Pack 1"
     } ],
     "ref" : "56661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "GALLA Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "GALLA Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "GALLA Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "GALLA Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "GALLA Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "GALLA Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "GALLA Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "GALLA Pack 2"
     } ],
     "ref" : "57661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "GALLA Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "GALLA Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "GALLA Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "GALLA Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "GALLA Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "GALLA Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "GALLA Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "GALLA Pack 3"
     } ],
     "ref" : "58661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MURC Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MURC Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MURC Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MURC Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MURC Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MURC Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MURC Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MURC Pack 1"
     } ],
     "ref" : "59661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MURC Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MURC Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MURC Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MURC Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MURC Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MURC Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MURC Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MURC Pack 2"
     } ],
     "ref" : "60661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "MURC Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "MURC Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "MURC Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "MURC Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "MURC Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "MURC Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "MURC Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "MURC Pack 3"
     } ],
     "ref" : "61661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SSR Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SSR Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SSR Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SSR Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SSR Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SSR Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SSR Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SSR Pack 1"
     } ],
     "ref" : "62661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SSR Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SSR Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SSR Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SSR Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SSR Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SSR Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SSR Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SSR Pack 2"
     } ],
     "ref" : "53761230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SSR Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SSR Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SSR Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SSR Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SSR Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SSR Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SSR Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SSR Pack 3"
     } ],
     "ref" : "54761230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "AlfaGT Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "AlfaGT Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "AlfaGT Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "AlfaGT Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "AlfaGT Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "AlfaGT Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "AlfaGT Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "AlfaGT Pack 1"
     } ],
     "ref" : "55761230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "AlfaGT Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "AlfaGT Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "AlfaGT Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "AlfaGT Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "AlfaGT Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "AlfaGT Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "AlfaGT Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "AlfaGT Pack 2"
     } ],
     "ref" : "56761230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "AlfaGT Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "AlfaGT Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "AlfaGT Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "AlfaGT Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "AlfaGT Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "AlfaGT Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "AlfaGT Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "AlfaGT Pack 3"
     } ],
     "ref" : "57761230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Z06 Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Z06 Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Z06 Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Z06 Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Z06 Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Z06 Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Z06 Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Z06 Pack 1"
     } ],
     "ref" : "58761230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Z06 Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Z06 Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Z06 Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Z06 Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Z06 Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Z06 Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Z06 Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Z06 Pack 2"
     } ],
     "ref" : "59761230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Z06 Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Z06 Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Z06 Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Z06 Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Z06 Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Z06 Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Z06 Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Z06 Pack 3"
     } ],
     "ref" : "60761230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "rs4 Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "rs4 Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "rs4 Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "rs4 Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "rs4 Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "rs4 Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "rs4 Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "rs4 Pack 1"
     } ],
     "ref" : "61761230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "rs4 Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "rs4 Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "rs4 Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "rs4 Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "rs4 Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "rs4 Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "rs4 Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "rs4 Pack 2"
     } ],
     "ref" : "62761230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "rs4 Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "rs4 Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "rs4 Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "rs4 Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "rs4 Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "rs4 Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "rs4 Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "rs4 Pack 3"
     } ],
     "ref" : "53861230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "s4 Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "s4 Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "s4 Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "s4 Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "s4 Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "s4 Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "s4 Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "s4 Pack 1"
     } ],
     "ref" : "54861230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "s4 Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "s4 Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "s4 Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "s4 Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "s4 Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "s4 Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "s4 Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "s4 Pack 2"
     } ],
     "ref" : "55861230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "s4 Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "s4 Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "s4 Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "s4 Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "s4 Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "s4 Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "s4 Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "s4 Pack 3"
     } ],
     "ref" : "56861230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Skyline Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Skyline Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Skyline Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Skyline Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Skyline Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Skyline Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Skyline Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Skyline Pack 1"
     } ],
     "ref" : "57861230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Skyline Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Skyline Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Skyline Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Skyline Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Skyline Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Skyline Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Skyline Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Skyline Pack 2"
     } ],
     "ref" : "58861230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Skyline Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Skyline Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Skyline Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Skyline Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Skyline Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Skyline Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Skyline Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Skyline Pack 3"
     } ],
     "ref" : "59861230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Enzo Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Enzo Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Enzo Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Enzo Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Enzo Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Enzo Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Enzo Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Enzo Pack 1"
     } ],
     "ref" : "60861230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Enzo Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Enzo Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Enzo Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Enzo Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Enzo Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Enzo Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Enzo Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Enzo Pack 2"
     } ],
     "ref" : "61861230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Enzo Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Enzo Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Enzo Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Enzo Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Enzo Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Enzo Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Enzo Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Enzo Pack 3"
     } ],
     "ref" : "62861230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "X150 Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "X150 Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "X150 Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "X150 Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "X150 Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "X150 Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "X150 Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "X150 Pack 1"
     } ],
     "ref" : "53961230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "X150 Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "X150 Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "X150 Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "X150 Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "X150 Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "X150 Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "X150 Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "X150 Pack 2"
     } ],
     "ref" : "54961230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "X150 Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "X150 Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "X150 Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "X150 Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "X150 Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "X150 Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "X150 Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "X150 Pack 3"
     } ],
     "ref" : "55961230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Muscles Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Muscles Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Muscles Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Muscles Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Muscles Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Muscles Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Muscles Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Muscles Pack 1"
     } ],
     "ref" : "56961230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Muscles Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Muscles Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Muscles Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Muscles Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Muscles Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Muscles Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Muscles Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Muscles Pack 2"
     } ],
     "ref" : "57961230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Muscles Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Muscles Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Muscles Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Muscles Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Muscles Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Muscles Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Muscles Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Muscles Pack 3"
     } ],
     "ref" : "58961230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "StingR Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "StingR Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "StingR Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "StingR Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "StingR Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "StingR Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "StingR Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "StingR Pack 1"
     } ],
     "ref" : "59961230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "StingR Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "StingR Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "StingR Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "StingR Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "StingR Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "StingR Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "StingR Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "StingR Pack 2"
     } ],
     "ref" : "60961230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "StingR Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "StingR Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "StingR Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "StingR Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "StingR Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "StingR Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "StingR Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "StingR Pack 3"
     } ],
     "ref" : "61961230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "db9 Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "db9 Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "db9 Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "db9 Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "db9 Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "db9 Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "db9 Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "db9 Pack 1"
     } ],
     "ref" : "62961230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "db9 Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "db9 Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "db9 Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "db9 Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "db9 Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "db9 Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "db9 Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "db9 Pack 2"
     } ],
     "ref" : "54061230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "db9 Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "db9 Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "db9 Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "db9 Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "db9 Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "db9 Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "db9 Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "db9 Pack 3"
     } ],
     "ref" : "55061230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "db7 Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "db7 Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "db7 Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "db7 Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "db7 Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "db7 Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "db7 Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "db7 Pack 1"
     } ],
     "ref" : "56061230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "db7 Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "db7 Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "db7 Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "db7 Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "db7 Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "db7 Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "db7 Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "db7 Pack 2"
     } ],
     "ref" : "57061230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "db7 Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "db7 Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "db7 Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "db7 Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "db7 Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "db7 Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "db7 Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "db7 Pack 3"
     } ],
     "ref" : "58061230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Zonda Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Zonda Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Zonda Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Zonda Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Zonda Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Zonda Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Zonda Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Zonda Pack 1"
     } ],
     "ref" : "59061230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Zonda Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Zonda Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Zonda Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Zonda Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Zonda Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Zonda Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Zonda Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Zonda Pack 2"
     } ],
     "ref" : "60061230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Zonda Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Zonda Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Zonda Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Zonda Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Zonda Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Zonda Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Zonda Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Zonda Pack 3"
     } ],
     "ref" : "61061230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "DB4 Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "DB4 Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "DB4 Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "DB4 Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "DB4 Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "DB4 Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "DB4 Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "DB4 Pack 1"
     } ],
     "ref" : "62061230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "DB4 Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "DB4 Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "DB4 Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "DB4 Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "DB4 Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "DB4 Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "DB4 Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "DB4 Pack 2"
     } ],
     "ref" : "63061230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "DB4 Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "DB4 Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "DB4 Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "DB4 Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "DB4 Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "DB4 Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "DB4 Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "DB4 Pack 3"
     } ],
     "ref" : "54161230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BikesmA Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BikesmA Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BikesmA Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BikesmA Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BikesmA Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BikesmA Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BikesmA Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BikesmA Pack 1"
     } ],
     "ref" : "55161230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BikesmA Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BikesmA Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BikesmA Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BikesmA Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BikesmA Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BikesmA Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BikesmA Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BikesmA Pack 2"
     } ],
     "ref" : "56161230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BikesmA Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BikesmA Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BikesmA Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BikesmA Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BikesmA Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BikesmA Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BikesmA Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BikesmA Pack 3"
     } ],
     "ref" : "57161230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BikesmB Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BikesmB Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BikesmB Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BikesmB Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BikesmB Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BikesmB Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BikesmB Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BikesmB Pack 1"
     } ],
     "ref" : "58161230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BikesmB Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BikesmB Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BikesmB Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BikesmB Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BikesmB Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BikesmB Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BikesmB Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BikesmB Pack 2"
     } ],
     "ref" : "59161230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BikesmB Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BikesmB Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BikesmB Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BikesmB Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BikesmB Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BikesmB Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BikesmB Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BikesmB Pack 3"
     } ],
     "ref" : "60161230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BikeS4R Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BikeS4R Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BikeS4R Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BikeS4R Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BikeS4R Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BikeS4R Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BikeS4R Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BikeS4R Pack 1"
     } ],
     "ref" : "61161230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BikeS4R Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BikeS4R Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BikeS4R Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BikeS4R Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BikeS4R Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BikeS4R Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BikeS4R Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BikeS4R Pack 2"
     } ],
     "ref" : "62161230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "BikeS4R Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "BikeS4R Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "BikeS4R Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "BikeS4R Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "BikeS4R Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "BikeS4R Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "BikeS4R Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "BikeS4R Pack 3"
     } ],
     "ref" : "63161230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Miura Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Miura Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Miura Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Miura Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Miura Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Miura Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Miura Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Miura Pack 1"
     } ],
     "ref" : "54261230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Miura Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Miura Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Miura Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Miura Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Miura Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Miura Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Miura Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Miura Pack 2"
     } ],
     "ref" : "55261230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Miura Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Miura Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Miura Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Miura Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Miura Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Miura Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Miura Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Miura Pack 3"
     } ],
     "ref" : "56261230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SaleenS7 Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SaleenS7 Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SaleenS7 Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SaleenS7 Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SaleenS7 Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SaleenS7 Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SaleenS7 Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SaleenS7 Pack 1"
     } ],
     "ref" : "57261230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SaleenS7 Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SaleenS7 Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SaleenS7 Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SaleenS7 Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SaleenS7 Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SaleenS7 Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SaleenS7 Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SaleenS7 Pack 2"
     } ],
     "ref" : "58261230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SaleenS7 Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SaleenS7 Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SaleenS7 Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SaleenS7 Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SaleenS7 Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SaleenS7 Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SaleenS7 Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SaleenS7 Pack 3"
     } ],
     "ref" : "59261230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Viper Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Viper Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Viper Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Viper Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Viper Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Viper Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Viper Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Viper Pack 1"
     } ],
     "ref" : "60261230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Viper Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Viper Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Viper Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Viper Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Viper Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Viper Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Viper Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Viper Pack 2"
     } ],
     "ref" : "61261230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Viper Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Viper Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Viper Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Viper Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Viper Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Viper Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Viper Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Viper Pack 3"
     } ],
     "ref" : "62261230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CC8S Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CC8S Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CC8S Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CC8S Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CC8S Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CC8S Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CC8S Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CC8S Pack 1"
     } ],
     "ref" : "63261230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CC8S Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CC8S Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CC8S Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CC8S Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CC8S Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CC8S Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CC8S Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CC8S Pack 2"
     } ],
     "ref" : "54361230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CC8S Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CC8S Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CC8S Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CC8S Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CC8S Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CC8S Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CC8S Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CC8S Pack 3"
     } ],
     "ref" : "55361230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CCR Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CCR Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CCR Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CCR Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CCR Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CCR Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CCR Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CCR Pack 1"
     } ],
     "ref" : "56361230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CCR Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CCR Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CCR Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CCR Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CCR Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CCR Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CCR Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CCR Pack 2"
     } ],
     "ref" : "57361230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "CCR Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "CCR Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "CCR Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "CCR Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "CCR Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "CCR Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "CCR Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "CCR Pack 3"
     } ],
     "ref" : "58361230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "GallaR Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "GallaR Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "GallaR Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "GallaR Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "GallaR Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "GallaR Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "GallaR Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "GallaR Pack 1"
     } ],
     "ref" : "59361230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "GallaR Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "GallaR Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "GallaR Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "GallaR Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "GallaR Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "GallaR Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "GallaR Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "GallaR Pack 2"
     } ],
     "ref" : "60361230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "GallaR Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "GallaR Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "GallaR Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "GallaR Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "GallaR Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "GallaR Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "GallaR Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "GallaR Pack 3"
     } ],
     "ref" : "61361230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Wiesmann Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Wiesmann Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Wiesmann Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Wiesmann Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Wiesmann Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Wiesmann Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Wiesmann Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Wiesmann Pack 1"
     } ],
     "ref" : "62361230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Wiesmann Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Wiesmann Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Wiesmann Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Wiesmann Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Wiesmann Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Wiesmann Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Wiesmann Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Wiesmann Pack 2"
     } ],
     "ref" : "63361230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Wiesmann Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Wiesmann Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Wiesmann Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Wiesmann Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Wiesmann Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Wiesmann Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Wiesmann Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Wiesmann Pack 3"
     } ],
     "ref" : "54461230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "AC Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "AC Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "AC Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "AC Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "AC Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "AC Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "AC Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "AC Pack 1"
     } ],
     "ref" : "55461230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "AC Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "AC Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "AC Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "AC Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "AC Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "AC Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "AC Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "AC Pack 2"
     } ],
     "ref" : "56461230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "AC Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "AC Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "AC Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "AC Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "AC Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "AC Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "AC Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "AC Pack 3"
     } ],
     "ref" : "57461230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Mustang Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Mustang Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Mustang Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Mustang Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Mustang Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Mustang Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Mustang Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Mustang Pack 1"
     } ],
     "ref" : "58461230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Mustang Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Mustang Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Mustang Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Mustang Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Mustang Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Mustang Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Mustang Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Mustang Pack 2"
     } ],
     "ref" : "59461230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Mustang Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Mustang Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Mustang Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Mustang Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Mustang Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Mustang Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Mustang Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Mustang Pack 3"
     } ],
     "ref" : "60461230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SL65AMG Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SL65AMG Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SL65AMG Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SL65AMG Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SL65AMG Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SL65AMG Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SL65AMG Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SL65AMG Pack 1"
     } ],
     "ref" : "61461230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SL65AMG Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SL65AMG Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SL65AMG Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SL65AMG Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SL65AMG Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SL65AMG Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SL65AMG Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SL65AMG Pack 2"
     } ],
     "ref" : "62461230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "SL65AMG Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "SL65AMG Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "SL65AMG Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "SL65AMG Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "SL65AMG Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "SL65AMG Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "SL65AMG Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "SL65AMG Pack 3"
     } ],
     "ref" : "63461230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Edonis Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Edonis Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Edonis Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Edonis Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Edonis Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Edonis Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Edonis Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Edonis Pack 1"
     } ],
     "ref" : "533661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Edonis Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Edonis Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Edonis Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Edonis Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Edonis Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Edonis Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Edonis Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Edonis Pack 2"
     } ],
     "ref" : "543661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Edonis Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Edonis Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Edonis Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Edonis Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Edonis Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Edonis Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Edonis Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Edonis Pack 3"
     } ],
     "ref" : "553661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Viper Coupe Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Viper Coupe Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Viper Coupe Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Viper Coupe Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Viper Coupe Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Viper Coupe Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Viper Coupe Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Viper Coupe Pack 1"
     } ],
     "ref" : "563661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Viper Coupe Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Viper Coupe Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Viper Coupe Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Viper Coupe Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Viper Coupe Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Viper Coupe Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Viper Coupe Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Viper Coupe Pack 2"
     } ],
     "ref" : "573661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "Viper Coupe Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "Viper Coupe Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "Viper Coupe Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "Viper Coupe Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "Viper Coupe Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "Viper Coupe Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "Viper Coupe Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "Viper Coupe Pack 3"
     } ],
     "ref" : "583661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "StingRay71 Pack 1"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "StingRay71 Pack 1"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "StingRay71 Pack 1"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "StingRay71 Pack 1"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "StingRay71 Pack 1"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "StingRay71 Pack 1"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "StingRay71 Pack 1"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "StingRay71 Pack 1"
     } ],
     "ref" : "593661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "StingRay71 Pack 2"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "StingRay71 Pack 2"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "StingRay71 Pack 2"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "StingRay71 Pack 2"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "StingRay71 Pack 2"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "StingRay71 Pack 2"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "StingRay71 Pack 2"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "StingRay71 Pack 2"
     } ],
     "ref" : "603661230"
   }, {
     "items" : [ {
-      "locale" : "FRANCE",
+      "locale" : "fr",
       "value" : "StingRay71 Pack 3"
     }, {
-      "locale" : "GERMANY",
+      "locale" : "ge",
       "value" : "StingRay71 Pack 3"
     }, {
-      "locale" : "UNITED_STATES",
+      "locale" : "us",
       "value" : "StingRay71 Pack 3"
     }, {
-      "locale" : "KOREA",
+      "locale" : "ko",
       "value" : "StingRay71 Pack 3"
     }, {
-      "locale" : "CHINA",
+      "locale" : "ch",
       "value" : "StingRay71 Pack 3"
     }, {
-      "locale" : "JAPAN",
+      "locale" : "ja",
       "value" : "StingRay71 Pack 3"
     }, {
-      "locale" : "ITALY",
+      "locale" : "it",
       "value" : "StingRay71 Pack 3"
     }, {
-      "locale" : "SPAIN",
+      "locale" : "sp",
       "value" : "StingRay71 Pack 3"
     } ],
     "ref" : "613661230"
