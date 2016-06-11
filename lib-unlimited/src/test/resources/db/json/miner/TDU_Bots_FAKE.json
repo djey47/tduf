@@ -18,8 +18,8 @@
         "items": [
           {
             "name": "REF",
-            "rawValue": "606298799",
-            "fieldRank": 1
+            "value": "606298799",
+            "rank": 1
           }
         ]
       }

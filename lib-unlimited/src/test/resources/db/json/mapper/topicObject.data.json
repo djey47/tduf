@@ -1,0 +1,44 @@
+{
+  "entries": [
+    {
+      "id": 1,
+      "items": [
+        {
+          "name": "ID",
+          "value": "111111",
+          "rank": 1
+        },
+        {
+          "name": "Name",
+          "value": "111",
+          "rank": 2
+        },
+        {
+          "name": "Switchs",
+          "value": "1",
+          "rank": 3
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "items": [
+        {
+          "name": "ID",
+          "value": "222222",
+          "rank": 1
+        },
+        {
+          "name": "Name",
+          "value": "222",
+          "rank": 2
+        },
+        {
+          "name": "Switchs",
+          "value": "0",
+          "rank": 3
+        }
+      ]
+    }
+  ]
+}

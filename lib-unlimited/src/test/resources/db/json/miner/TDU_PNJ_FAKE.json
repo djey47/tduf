@@ -25,13 +25,13 @@
         "items": [
           {
             "name": "REF",
-            "rawValue": "540091906",
-            "fieldRank": 1
+            "value": "540091906",
+            "rank": 1
           },
           {
             "name": "Clothe",
-            "rawValue": "82477895",
-            "fieldRank": 2
+            "value": "82477895",
+            "rank": 2
           }
         ]
       }

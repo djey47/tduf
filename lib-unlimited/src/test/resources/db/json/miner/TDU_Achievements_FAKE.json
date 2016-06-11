@@ -59,48 +59,48 @@
         "items": [
           {
             "name": "Achievement_Event_",
-            "rawValue": "55736935",
-            "fieldRank": 1
+            "value": "55736935",
+            "rank": 1
           },
           {
             "name": "TextIndex_",
-            "rawValue": "5",
-            "fieldRank": 2
+            "value": "5",
+            "rank": 2
           },
           {
             "name": "Nb_Achievement_Points_",
-            "rawValue": "20",
-            "fieldRank": 3
+            "value": "20",
+            "rank": 3
           },
           {
             "name": "Ach_Title_",
-            "rawValue": "54400734",
-            "fieldRank": 4
+            "value": "54400734",
+            "rank": 4
           },
           {
             "name": "Ach_Desc_",
-            "rawValue": "54359455",
-            "fieldRank": 5
+            "value": "54359455",
+            "rank": 5
           },
           {
             "name": "Explanation_",
-            "rawValue": "54410835",
-            "fieldRank": 6
+            "value": "54410835",
+            "rank": 6
           },
           {
             "name": "FailedExplain_",
-            "rawValue": "561129540",
-            "fieldRank": 7
+            "value": "561129540",
+            "rank": 7
           },
           {
             "name": "Reward_",
-            "rawValue": "5337472",
-            "fieldRank": 8
+            "value": "5337472",
+            "rank": 8
           },
           {
             "name": "Reward_Param_",
-            "rawValue": "211",
-            "fieldRank": 9
+            "value": "211",
+            "rank": 9
           }
         ]
       },
@@ -109,48 +109,48 @@
         "items": [
           {
             "name": "Achievement_Event_",
-            "rawValue": "55736935",
-            "fieldRank": 1
+            "value": "55736935",
+            "rank": 1
           },
           {
             "name": "TextIndex_",
-            "rawValue": "10",
-            "fieldRank": 2
+            "value": "10",
+            "rank": 2
           },
           {
             "name": "Nb_Achievement_Points_",
-            "rawValue": "20",
-            "fieldRank": 3
+            "value": "20",
+            "rank": 3
           },
           {
             "name": "Ach_Title_",
-            "rawValue": "55400734",
-            "fieldRank": 4
+            "value": "55400734",
+            "rank": 4
           },
           {
             "name": "Ach_Desc_",
-            "rawValue": "55359455",
-            "fieldRank": 5
+            "value": "55359455",
+            "rank": 5
           },
           {
             "name": "Explanation_",
-            "rawValue": "55410835",
-            "fieldRank": 6
+            "value": "55410835",
+            "rank": 6
           },
           {
             "name": "FailedExplain_",
-            "rawValue": "561129540",
-            "fieldRank": 7
+            "value": "561129540",
+            "rank": 7
           },
           {
             "name": "Reward_",
-            "rawValue": "5337472",
-            "fieldRank": 8
+            "value": "5337472",
+            "rank": 8
           },
           {
             "name": "Reward_Param_",
-            "rawValue": "212",
-            "fieldRank": 9
+            "value": "212",
+            "rank": 9
           }
         ]
       }

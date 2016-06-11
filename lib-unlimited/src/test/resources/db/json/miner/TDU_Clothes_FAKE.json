@@ -64,56 +64,56 @@
       "id" : 0,
       "items" : [ {
         "name" : "REF_",
-        "rawValue" : "82477895",
-        "fieldRank" : 1
+        "value" : "82477895",
+        "rank" : 1
       }, {
         "name" : "File_",
-        "rawValue" : "543640827",
-        "fieldRank" : 2
+        "value" : "543640827",
+        "rank" : 2
       }, {
         "name" : "ID_Num_",
-        "rawValue" : "0",
-        "fieldRank" : 3
+        "value" : "0",
+        "rank" : 3
       }, {
         "name" : "Price_dollar",
-        "rawValue" : "1",
-        "fieldRank" : 4
+        "value" : "1",
+        "rank" : 4
       }, {
         "name" : "Brand_",
-        "rawValue" : "87239",
-        "fieldRank" : 5
+        "value" : "87239",
+        "rank" : 5
       }, {
         "name" : "ClotheName_",
-        "rawValue" : "5566727",
-        "fieldRank" : 6
+        "value" : "5566727",
+        "rank" : 6
       }, {
         "name" : "Sex_",
-        "rawValue" : "54758127",
-        "fieldRank" : 7
+        "value" : "54758127",
+        "rank" : 7
       }, {
         "name" : "DrivingType_",
-        "rawValue" : "916999438",
-        "fieldRank" : 8
+        "value" : "916999438",
+        "rank" : 8
       }, {
         "name" : "Lenght_",
-        "rawValue" : "5857427",
-        "fieldRank" : 9
+        "value" : "5857427",
+        "rank" : 9
       }, {
         "name" : "PartType_",
-        "rawValue" : "5572827",
-        "fieldRank" : 10
+        "value" : "5572827",
+        "rank" : 10
       }, {
         "name" : "Size_",
-        "rawValue" : "545882127",
-        "fieldRank" : 11
+        "value" : "545882127",
+        "rank" : 11
       }, {
         "name" : "Nb_Colors",
-        "rawValue" : "3",
-        "fieldRank" : 12
+        "value" : "3",
+        "rank" : 12
       }, {
         "name" : "BitField",
-        "rawValue" : "1",
-        "switchValues" : [ {
+        "value" : "1",
+        "switches" : [ {
           "index" : 1,
           "name" : "?",
           "enabled" : true
@@ -146,62 +146,62 @@
           "name" : "?",
           "enabled" : false
         } ],
-        "fieldRank" : 13
+        "rank" : 13
       } ]
     }, {
       "id" : 1,
       "items" : [ {
         "name" : "REF_",
-        "rawValue" : "773236",
-        "fieldRank" : 1
+        "value" : "773236",
+        "rank" : 1
       }, {
         "name" : "File_",
-        "rawValue" : "553640828",
-        "fieldRank" : 2
+        "value" : "553640828",
+        "rank" : 2
       }, {
         "name" : "ID_Num_",
-        "rawValue" : "3",
-        "fieldRank" : 3
+        "value" : "3",
+        "rank" : 3
       }, {
         "name" : "Price_dollar",
-        "rawValue" : "1",
-        "fieldRank" : 4
+        "value" : "1",
+        "rank" : 4
       }, {
         "name" : "Brand_",
-        "rawValue" : "87239",
-        "fieldRank" : 5
+        "value" : "87239",
+        "rank" : 5
       }, {
         "name" : "ClotheName_",
-        "rawValue" : "5866727",
-        "fieldRank" : 6
+        "value" : "5866727",
+        "rank" : 6
       }, {
         "name" : "Sex_",
-        "rawValue" : "54758127",
-        "fieldRank" : 7
+        "value" : "54758127",
+        "rank" : 7
       }, {
         "name" : "DrivingType_",
-        "rawValue" : "916999438",
-        "fieldRank" : 8
+        "value" : "916999438",
+        "rank" : 8
       }, {
         "name" : "Lenght_",
-        "rawValue" : "5857427",
-        "fieldRank" : 9
+        "value" : "5857427",
+        "rank" : 9
       }, {
         "name" : "PartType_",
-        "rawValue" : "5572827",
-        "fieldRank" : 10
+        "value" : "5572827",
+        "rank" : 10
       }, {
         "name" : "Size_",
-        "rawValue" : "545882127",
-        "fieldRank" : 11
+        "value" : "545882127",
+        "rank" : 11
       }, {
         "name" : "Nb_Colors",
-        "rawValue" : "4",
-        "fieldRank" : 12
+        "value" : "4",
+        "rank" : 12
       }, {
         "name" : "BitField",
-        "rawValue" : "1",
-        "switchValues" : [ {
+        "value" : "1",
+        "switches" : [ {
           "index" : 1,
           "name" : "?",
           "enabled" : true
@@ -234,7 +234,7 @@
           "name" : "?",
           "enabled" : false
         } ],
-        "fieldRank" : 13
+        "rank" : 13
       } ]
     } ]
   },

@@ -3,2117 +3,2117 @@
     "id" : 0,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "588650",
-      "fieldRank" : 1
+      "value" : "588650",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5556234",
-      "fieldRank" : 2
+      "value" : "5556234",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5473334",
-      "fieldRank" : 3
+      "value" : "5473334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "543650",
-      "fieldRank" : 4
+      "value" : "543650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "500",
-      "fieldRank" : 5
+      "value" : "500",
+      "rank" : 5
     } ]
   }, {
     "id" : 1,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5766234",
-      "fieldRank" : 1
+      "value" : "5766234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5766234",
-      "fieldRank" : 2
+      "value" : "5766234",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5573334",
-      "fieldRank" : 3
+      "value" : "5573334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "553650",
-      "fieldRank" : 4
+      "value" : "553650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "95000",
-      "fieldRank" : 5
+      "value" : "95000",
+      "rank" : 5
     } ]
   }, {
     "id" : 2,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5756234",
-      "fieldRank" : 1
+      "value" : "5756234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "6298584",
-      "fieldRank" : 2
+      "value" : "6298584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5483334",
-      "fieldRank" : 3
+      "value" : "5483334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "563650",
-      "fieldRank" : 4
+      "value" : "563650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "12000",
-      "fieldRank" : 5
+      "value" : "12000",
+      "rank" : 5
     } ]
   }, {
     "id" : 3,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6276234",
-      "fieldRank" : 1
+      "value" : "6276234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "6208584",
-      "fieldRank" : 2
+      "value" : "6208584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5673334",
-      "fieldRank" : 3
+      "value" : "5673334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "573650",
-      "fieldRank" : 4
+      "value" : "573650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "95000",
-      "fieldRank" : 5
+      "value" : "95000",
+      "rank" : 5
     } ]
   }, {
     "id" : 4,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5386234",
-      "fieldRank" : 1
+      "value" : "5386234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "6208584",
-      "fieldRank" : 2
+      "value" : "6208584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5773334",
-      "fieldRank" : 3
+      "value" : "5773334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "583650",
-      "fieldRank" : 4
+      "value" : "583650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "95000",
-      "fieldRank" : 5
+      "value" : "95000",
+      "rank" : 5
     } ]
   }, {
     "id" : 5,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5656234",
-      "fieldRank" : 1
+      "value" : "5656234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "6198584",
-      "fieldRank" : 2
+      "value" : "6198584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5873334",
-      "fieldRank" : 3
+      "value" : "5873334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "593650",
-      "fieldRank" : 4
+      "value" : "593650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "30000",
-      "fieldRank" : 5
+      "value" : "30000",
+      "rank" : 5
     } ]
   }, {
     "id" : 6,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6076234",
-      "fieldRank" : 1
+      "value" : "6076234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6073334",
-      "fieldRank" : 3
+      "value" : "6073334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "603650",
-      "fieldRank" : 4
+      "value" : "603650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 7,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5676234",
-      "fieldRank" : 1
+      "value" : "5676234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5698584",
-      "fieldRank" : 2
+      "value" : "5698584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6173334",
-      "fieldRank" : 3
+      "value" : "6173334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "613650",
-      "fieldRank" : 4
+      "value" : "613650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 8,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5586234",
-      "fieldRank" : 1
+      "value" : "5586234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5866234",
-      "fieldRank" : 2
+      "value" : "5866234",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5973334",
-      "fieldRank" : 3
+      "value" : "5973334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "623650",
-      "fieldRank" : 4
+      "value" : "623650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "1000",
-      "fieldRank" : 5
+      "value" : "1000",
+      "rank" : 5
     } ]
   }, {
     "id" : 9,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5886234",
-      "fieldRank" : 1
+      "value" : "5886234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5998584",
-      "fieldRank" : 2
+      "value" : "5998584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5383334",
-      "fieldRank" : 3
+      "value" : "5383334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "534650",
-      "fieldRank" : 4
+      "value" : "534650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 10,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5466234",
-      "fieldRank" : 1
+      "value" : "5466234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "554650",
-      "fieldRank" : 4
+      "value" : "554650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 11,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5566234",
-      "fieldRank" : 1
+      "value" : "5566234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "564650",
-      "fieldRank" : 4
+      "value" : "564650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 12,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5666234",
-      "fieldRank" : 1
+      "value" : "5666234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "574650",
-      "fieldRank" : 4
+      "value" : "574650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 13,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5496234",
-      "fieldRank" : 1
+      "value" : "5496234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "584650",
-      "fieldRank" : 4
+      "value" : "584650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 14,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5376234",
-      "fieldRank" : 1
+      "value" : "5376234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "594650",
-      "fieldRank" : 4
+      "value" : "594650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 15,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5686234",
-      "fieldRank" : 1
+      "value" : "5686234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "604650",
-      "fieldRank" : 4
+      "value" : "604650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 16,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5786234",
-      "fieldRank" : 1
+      "value" : "5786234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "614650",
-      "fieldRank" : 4
+      "value" : "614650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 17,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5956234",
-      "fieldRank" : 1
+      "value" : "5956234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "624650",
-      "fieldRank" : 4
+      "value" : "624650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 18,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5456234",
-      "fieldRank" : 1
+      "value" : "5456234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "535650",
-      "fieldRank" : 4
+      "value" : "535650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 19,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6056234",
-      "fieldRank" : 1
+      "value" : "6056234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "545650",
-      "fieldRank" : 4
+      "value" : "545650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 20,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6266234",
-      "fieldRank" : 1
+      "value" : "6266234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "555650",
-      "fieldRank" : 4
+      "value" : "555650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 21,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5596234",
-      "fieldRank" : 1
+      "value" : "5596234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5783334",
-      "fieldRank" : 3
+      "value" : "5783334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "565650",
-      "fieldRank" : 4
+      "value" : "565650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 22,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5776234",
-      "fieldRank" : 1
+      "value" : "5776234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5783334",
-      "fieldRank" : 3
+      "value" : "5783334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "575650",
-      "fieldRank" : 4
+      "value" : "575650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 23,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6256234",
-      "fieldRank" : 1
+      "value" : "6256234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5883334",
-      "fieldRank" : 3
+      "value" : "5883334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "585650",
-      "fieldRank" : 4
+      "value" : "585650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 24,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5366234",
-      "fieldRank" : 1
+      "value" : "5366234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5883334",
-      "fieldRank" : 3
+      "value" : "5883334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "595650",
-      "fieldRank" : 4
+      "value" : "595650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 25,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5406234",
-      "fieldRank" : 1
+      "value" : "5406234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5883334",
-      "fieldRank" : 3
+      "value" : "5883334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "605650",
-      "fieldRank" : 4
+      "value" : "605650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 26,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5476234",
-      "fieldRank" : 1
+      "value" : "5476234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5898584",
-      "fieldRank" : 2
+      "value" : "5898584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5583334",
-      "fieldRank" : 3
+      "value" : "5583334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "546650",
-      "fieldRank" : 4
+      "value" : "546650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 27,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5896234",
-      "fieldRank" : 1
+      "value" : "5896234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "556650",
-      "fieldRank" : 4
+      "value" : "556650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 28,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6286234",
-      "fieldRank" : 1
+      "value" : "6286234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "566650",
-      "fieldRank" : 4
+      "value" : "566650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 29,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6196234",
-      "fieldRank" : 1
+      "value" : "6196234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "576650",
-      "fieldRank" : 4
+      "value" : "576650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 30,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6186234",
-      "fieldRank" : 1
+      "value" : "6186234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "586650",
-      "fieldRank" : 4
+      "value" : "586650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 31,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5796234",
-      "fieldRank" : 1
+      "value" : "5796234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "596650",
-      "fieldRank" : 4
+      "value" : "596650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 32,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5976234",
-      "fieldRank" : 1
+      "value" : "5976234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "606650",
-      "fieldRank" : 4
+      "value" : "606650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 33,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5576234",
-      "fieldRank" : 1
+      "value" : "5576234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6018362",
-      "fieldRank" : 3
+      "value" : "6018362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "6000",
-      "fieldRank" : 5
+      "value" : "6000",
+      "rank" : 5
     } ]
   }, {
     "id" : 34,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5876234",
-      "fieldRank" : 1
+      "value" : "5876234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5373334",
-      "fieldRank" : 3
+      "value" : "5373334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "616650",
-      "fieldRank" : 4
+      "value" : "616650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 35,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6176234",
-      "fieldRank" : 1
+      "value" : "6176234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5373334",
-      "fieldRank" : 3
+      "value" : "5373334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "626650",
-      "fieldRank" : 4
+      "value" : "626650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 36,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5486234",
-      "fieldRank" : 1
+      "value" : "5486234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5373334",
-      "fieldRank" : 3
+      "value" : "5373334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "537650",
-      "fieldRank" : 4
+      "value" : "537650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 37,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5506234",
-      "fieldRank" : 1
+      "value" : "5506234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5373334",
-      "fieldRank" : 3
+      "value" : "5373334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "539650",
-      "fieldRank" : 4
+      "value" : "539650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "95000",
-      "fieldRank" : 5
+      "value" : "95000",
+      "rank" : 5
     } ]
   }, {
     "id" : 38,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5856234",
-      "fieldRank" : 1
+      "value" : "5856234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5373334",
-      "fieldRank" : 3
+      "value" : "5373334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "549650",
-      "fieldRank" : 4
+      "value" : "549650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 39,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5986234",
-      "fieldRank" : 1
+      "value" : "5986234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5373334",
-      "fieldRank" : 3
+      "value" : "5373334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "599650",
-      "fieldRank" : 4
+      "value" : "599650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 40,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5396234",
-      "fieldRank" : 1
+      "value" : "5396234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5373334",
-      "fieldRank" : 3
+      "value" : "5373334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "609650",
-      "fieldRank" : 4
+      "value" : "609650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 41,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5996234",
-      "fieldRank" : 1
+      "value" : "5996234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5498584",
-      "fieldRank" : 2
+      "value" : "5498584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5683334",
-      "fieldRank" : 3
+      "value" : "5683334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "619650",
-      "fieldRank" : 4
+      "value" : "619650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 42,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6296234",
-      "fieldRank" : 1
+      "value" : "6296234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "6308584",
-      "fieldRank" : 2
+      "value" : "6308584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5568362",
-      "fieldRank" : 3
+      "value" : "5568362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 43,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6086234",
-      "fieldRank" : 1
+      "value" : "6086234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "6308584",
-      "fieldRank" : 2
+      "value" : "6308584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5668362",
-      "fieldRank" : 3
+      "value" : "5668362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 44,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6296234",
-      "fieldRank" : 1
+      "value" : "6296234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5418584",
-      "fieldRank" : 2
+      "value" : "5418584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5768362",
-      "fieldRank" : 3
+      "value" : "5768362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 45,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6296234",
-      "fieldRank" : 1
+      "value" : "6296234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5518584",
-      "fieldRank" : 2
+      "value" : "5518584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5868362",
-      "fieldRank" : 3
+      "value" : "5868362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 46,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6296234",
-      "fieldRank" : 1
+      "value" : "6296234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5618584",
-      "fieldRank" : 2
+      "value" : "5618584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5968362",
-      "fieldRank" : 3
+      "value" : "5968362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 47,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5696234",
-      "fieldRank" : 1
+      "value" : "5696234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "6308584",
-      "fieldRank" : 2
+      "value" : "6308584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6068362",
-      "fieldRank" : 3
+      "value" : "6068362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 48,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5696234",
-      "fieldRank" : 1
+      "value" : "5696234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "6308584",
-      "fieldRank" : 2
+      "value" : "6308584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6168362",
-      "fieldRank" : 3
+      "value" : "6168362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 49,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5696234",
-      "fieldRank" : 1
+      "value" : "5696234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "6308584",
-      "fieldRank" : 2
+      "value" : "6308584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6268362",
-      "fieldRank" : 3
+      "value" : "6268362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 50,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5946234",
-      "fieldRank" : 1
+      "value" : "5946234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "6308584",
-      "fieldRank" : 2
+      "value" : "6308584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5378362",
-      "fieldRank" : 3
+      "value" : "5378362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 51,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5946234",
-      "fieldRank" : 1
+      "value" : "5946234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5418584",
-      "fieldRank" : 2
+      "value" : "5418584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5478362",
-      "fieldRank" : 3
+      "value" : "5478362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 52,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5946234",
-      "fieldRank" : 1
+      "value" : "5946234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5518584",
-      "fieldRank" : 2
+      "value" : "5518584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5578362",
-      "fieldRank" : 3
+      "value" : "5578362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 53,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5926234",
-      "fieldRank" : 1
+      "value" : "5926234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5678362",
-      "fieldRank" : 3
+      "value" : "5678362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 54,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6026234",
-      "fieldRank" : 1
+      "value" : "6026234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5778362",
-      "fieldRank" : 3
+      "value" : "5778362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 55,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6126234",
-      "fieldRank" : 1
+      "value" : "6126234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5878362",
-      "fieldRank" : 3
+      "value" : "5878362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 56,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6226234",
-      "fieldRank" : 1
+      "value" : "6226234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5978362",
-      "fieldRank" : 3
+      "value" : "5978362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 57,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6326234",
-      "fieldRank" : 1
+      "value" : "6326234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6078362",
-      "fieldRank" : 3
+      "value" : "6078362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 58,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5836234",
-      "fieldRank" : 1
+      "value" : "5836234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6178362",
-      "fieldRank" : 3
+      "value" : "6178362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 59,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5936234",
-      "fieldRank" : 1
+      "value" : "5936234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6008362",
-      "fieldRank" : 3
+      "value" : "6008362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 60,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6036234",
-      "fieldRank" : 1
+      "value" : "6036234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6278362",
-      "fieldRank" : 3
+      "value" : "6278362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 61,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6136234",
-      "fieldRank" : 1
+      "value" : "6136234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5373334",
-      "fieldRank" : 3
+      "value" : "5373334",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 62,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6236234",
-      "fieldRank" : 1
+      "value" : "6236234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5388362",
-      "fieldRank" : 3
+      "value" : "5388362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 63,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5446234",
-      "fieldRank" : 1
+      "value" : "5446234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5488362",
-      "fieldRank" : 3
+      "value" : "5488362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "615650",
-      "fieldRank" : 4
+      "value" : "615650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 64,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5546234",
-      "fieldRank" : 1
+      "value" : "5546234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5408362",
-      "fieldRank" : 3
+      "value" : "5408362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 65,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5646234",
-      "fieldRank" : 1
+      "value" : "5646234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5508362",
-      "fieldRank" : 3
+      "value" : "5508362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 66,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5746234",
-      "fieldRank" : 1
+      "value" : "5746234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5588362",
-      "fieldRank" : 3
+      "value" : "5588362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 67,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5846234",
-      "fieldRank" : 1
+      "value" : "5846234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6308362",
-      "fieldRank" : 3
+      "value" : "6308362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 68,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6336234",
-      "fieldRank" : 1
+      "value" : "6336234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5688362",
-      "fieldRank" : 3
+      "value" : "5688362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 69,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5436234",
-      "fieldRank" : 1
+      "value" : "5436234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5608362",
-      "fieldRank" : 3
+      "value" : "5608362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 70,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5536234",
-      "fieldRank" : 1
+      "value" : "5536234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5708362",
-      "fieldRank" : 3
+      "value" : "5708362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 71,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5636234",
-      "fieldRank" : 1
+      "value" : "5636234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5808362",
-      "fieldRank" : 3
+      "value" : "5808362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 72,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5736234",
-      "fieldRank" : 1
+      "value" : "5736234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5808362",
-      "fieldRank" : 3
+      "value" : "5808362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 73,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5806234",
-      "fieldRank" : 1
+      "value" : "5806234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5572783",
-      "fieldRank" : 3
+      "value" : "5572783",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "557650",
-      "fieldRank" : 4
+      "value" : "557650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 74,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5906234",
-      "fieldRank" : 1
+      "value" : "5906234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5472783",
-      "fieldRank" : 3
+      "value" : "5472783",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "547650",
-      "fieldRank" : 4
+      "value" : "547650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 75,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6006234",
-      "fieldRank" : 1
+      "value" : "6006234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5672783",
-      "fieldRank" : 3
+      "value" : "5672783",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "567650",
-      "fieldRank" : 4
+      "value" : "567650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 76,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5516234",
-      "fieldRank" : 1
+      "value" : "5516234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5582783",
-      "fieldRank" : 3
+      "value" : "5582783",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "548650",
-      "fieldRank" : 4
+      "value" : "548650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 77,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6106234",
-      "fieldRank" : 1
+      "value" : "6106234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6208362",
-      "fieldRank" : 3
+      "value" : "6208362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "627650",
-      "fieldRank" : 4
+      "value" : "627650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 78,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6206234",
-      "fieldRank" : 1
+      "value" : "6206234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5482783",
-      "fieldRank" : 3
+      "value" : "5482783",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "538650",
-      "fieldRank" : 4
+      "value" : "538650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 79,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5616234",
-      "fieldRank" : 1
+      "value" : "5616234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6118362",
-      "fieldRank" : 3
+      "value" : "6118362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 80,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6016234",
-      "fieldRank" : 1
+      "value" : "6016234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5972783",
-      "fieldRank" : 3
+      "value" : "5972783",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "597650",
-      "fieldRank" : 4
+      "value" : "597650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 81,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5916234",
-      "fieldRank" : 1
+      "value" : "5916234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5872783",
-      "fieldRank" : 3
+      "value" : "5872783",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "587650",
-      "fieldRank" : 4
+      "value" : "587650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 82,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6116234",
-      "fieldRank" : 1
+      "value" : "6116234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5418362",
-      "fieldRank" : 3
+      "value" : "5418362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 83,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6216234",
-      "fieldRank" : 1
+      "value" : "6216234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5772783",
-      "fieldRank" : 3
+      "value" : "5772783",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "577650",
-      "fieldRank" : 4
+      "value" : "577650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 84,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6316234",
-      "fieldRank" : 1
+      "value" : "6316234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6172783",
-      "fieldRank" : 3
+      "value" : "6172783",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 85,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5426234",
-      "fieldRank" : 1
+      "value" : "5426234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5518362",
-      "fieldRank" : 3
+      "value" : "5518362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 86,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5526234",
-      "fieldRank" : 1
+      "value" : "5526234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5718362",
-      "fieldRank" : 3
+      "value" : "5718362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 87,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5626234",
-      "fieldRank" : 1
+      "value" : "5626234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5618362",
-      "fieldRank" : 3
+      "value" : "5618362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 88,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5826234",
-      "fieldRank" : 1
+      "value" : "5826234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6272783",
-      "fieldRank" : 3
+      "value" : "6272783",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "617650",
-      "fieldRank" : 4
+      "value" : "617650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 89,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "5946234",
-      "fieldRank" : 1
+      "value" : "5946234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "5618584",
-      "fieldRank" : 2
+      "value" : "5618584",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "5468362",
-      "fieldRank" : 3
+      "value" : "5468362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 90,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6146234",
-      "fieldRank" : 1
+      "value" : "6146234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6218362",
-      "fieldRank" : 3
+      "value" : "6218362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   }, {
     "id" : 91,
     "items" : [ {
       "name" : "Text_ID_",
-      "rawValue" : "6246234",
-      "fieldRank" : 1
+      "value" : "6246234",
+      "rank" : 1
     }, {
       "name" : "TextIndex_",
-      "rawValue" : "533650",
-      "fieldRank" : 2
+      "value" : "533650",
+      "rank" : 2
     }, {
       "name" : "Libelle_",
-      "rawValue" : "6318362",
-      "fieldRank" : 3
+      "value" : "6318362",
+      "rank" : 3
     }, {
       "name" : "File_",
-      "rawValue" : "533650",
-      "fieldRank" : 4
+      "value" : "533650",
+      "rank" : 4
     }, {
       "name" : "Time_cent",
-      "rawValue" : "0",
-      "fieldRank" : 5
+      "value" : "0",
+      "rank" : 5
     } ]
   } ]
 }

@@ -3,20 +3,20 @@
     "id" : 0,
     "items" : [ {
       "name" : "SoundFileID_",
-      "rawValue" : "54756083",
-      "fieldRank" : 1
+      "value" : "54756083",
+      "rank" : 1
     }, {
       "name" : "SoundFileType",
-      "rawValue" : "5569823",
-      "fieldRank" : 2
+      "value" : "5569823",
+      "rank" : 2
     }, {
       "name" : "Libelle",
-      "rawValue" : "53371533",
-      "fieldRank" : 3
+      "value" : "53371533",
+      "rank" : 3
     }, {
       "name" : "BitField",
-      "rawValue" : "1",
-      "fieldRank" : 4
+      "value" : "1",
+      "rank" : 4
     } ]
   } ]
 }
