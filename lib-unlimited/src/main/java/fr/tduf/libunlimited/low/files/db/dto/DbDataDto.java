@@ -154,13 +154,13 @@ public class DbDataDto implements Serializable {
         @JsonProperty("name")
         private String name;
 
-        @JsonProperty("rawValue")
+        @JsonProperty("value")
         private String rawValue;
 
-        @JsonProperty("switchValues")
+        @JsonProperty("switches")
         private List<SwitchValue> switchValues;
 
-        @JsonProperty("fieldRank")
+        @JsonProperty("rank")
         private int fieldRank;
 
         public static ItemBuilder builder() {
