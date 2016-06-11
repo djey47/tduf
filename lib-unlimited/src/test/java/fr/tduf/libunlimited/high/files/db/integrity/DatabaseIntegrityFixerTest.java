@@ -205,7 +205,7 @@ public class DatabaseIntegrityFixerTest {
     }
 
     @Test
-    public void fixAllContentsObjects_whenOneError_asContentsFieldsCountMismatch_shouldInsertMissingField() throws ReflectiveOperationException {
+    public void fixAllContentsObjects_whenOneError_asContentsFieldsCountMismatch_shouldInsertMissingFields() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDatabaseObjectsWithDataEntryTwoFieldsMissing();
 
@@ -225,7 +225,7 @@ public class DatabaseIntegrityFixerTest {
                 .build();
         DbDataDto.Item thirdItem = DbDataDto.Item.builder()
                 .fromStructureFieldAndTopic(thirdStructureField, AFTER_MARKET_PACKS)
-                .withRawValue("100")
+                .withRawValue("200")
                 .build();
 
         when(genHelperMock.buildDefaultContentItem(Optional.empty(), firstStructureField,  topicObject, true)).thenReturn(firstItem);
@@ -258,6 +258,10 @@ public class DatabaseIntegrityFixerTest {
         DbDataDto.Item item2 = createdEntry.getItems().get(1);
         assertThat(item2.getFieldRank()).isEqualTo(2);
         assertThat(item2.getRawValue()).isEqualTo("100");
+
+        DbDataDto.Item item3 = createdEntry.getItems().get(2);
+        assertThat(item3.getFieldRank()).isEqualTo(3);
+        assertThat(item3.getRawValue()).isEqualTo("200");
     }
 
     @Test
@@ -520,7 +524,7 @@ public class DatabaseIntegrityFixerTest {
         return DbDataDto.builder()
                 .addEntry(DbDataDto.Entry.builder()
                         .addItem(DbDataDto.Item.builder()
-                                .ofFieldRank(1)
+                                .ofFieldRank(2)
                                 .withRawValue("100")
                                 .build())
                         .build())

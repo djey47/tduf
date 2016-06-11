@@ -2,63 +2,63 @@
   "entries" : [ {
     "id" : 0,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "735",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "55338337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "55338337",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "55338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "0",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -66,63 +66,63 @@
   }, {
     "id" : 1,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "72825",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "56338337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5638357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "56338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -130,63 +130,63 @@
   }, {
     "id" : 2,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "72595",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "57338337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5738357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "57338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "2",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -194,63 +194,63 @@
   }, {
     "id" : 3,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "868295",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "58338337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5838357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "58338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -258,63 +258,63 @@
   }, {
     "id" : 4,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "80715",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "59338337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5938357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "59338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -322,63 +322,63 @@
   }, {
     "id" : 5,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "12778906",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "61838337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6108357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "0",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -386,63 +386,63 @@
   }, {
     "id" : 6,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "74340517",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "60838337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6088357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "60838337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "5",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -450,63 +450,63 @@
   }, {
     "id" : 7,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "898117",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "53438337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5348357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "53438337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "6",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -514,63 +514,63 @@
   }, {
     "id" : 8,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "983687",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "54438337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5448357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "54438337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "7",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -578,63 +578,63 @@
   }, {
     "id" : 9,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "927987",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "55438337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5548357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "55438337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "8",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -642,63 +642,63 @@
   }, {
     "id" : 10,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "91197",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "56838337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5688357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "56838337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "0",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -706,63 +706,63 @@
   }, {
     "id" : 11,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "768658",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "56438337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5648357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "56438337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "9",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -770,63 +770,63 @@
   }, {
     "id" : 12,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "912618",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "58738337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5878357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "58738337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "10",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -834,63 +834,63 @@
   }, {
     "id" : 13,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "8649",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "57438337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5748357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "57438337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "11",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -898,63 +898,63 @@
   }, {
     "id" : 14,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "74920",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "58438337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5848357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "58438337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "44",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -962,63 +962,63 @@
   }, {
     "id" : 15,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "81940960",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "59438337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5948357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "59438337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "12",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1026,63 +1026,63 @@
   }, {
     "id" : 16,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "77060",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "54338337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5438357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "54338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "13",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1090,63 +1090,63 @@
   }, {
     "id" : 17,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "7853",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "61438337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6148357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61438337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "14",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "0",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1154,63 +1154,63 @@
   }, {
     "id" : 18,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "7824",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "62438337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6248357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "62438337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "15",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1218,63 +1218,63 @@
   }, {
     "id" : 19,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "74425",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "60738337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6078357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "60738337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "16",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1282,63 +1282,63 @@
   }, {
     "id" : 20,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "85765",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "53538337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5358357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "53538337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "17",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1346,63 +1346,63 @@
   }, {
     "id" : 21,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "864426",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "54538337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5458357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "54538337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "18",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1410,63 +1410,63 @@
   }, {
     "id" : 22,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "924266",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "57538337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5758357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "57538337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "20",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1474,63 +1474,63 @@
   }, {
     "id" : 23,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "898027",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "58538337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5858357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "58538337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "21",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1538,63 +1538,63 @@
   }, {
     "id" : 24,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "727727",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "59538337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6108357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "0",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1602,63 +1602,63 @@
   }, {
     "id" : 25,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "85793347",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "60538337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6058357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "60538337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "23",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1666,63 +1666,63 @@
   }, {
     "id" : 26,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "865967",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "61538337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6158357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61538337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "24",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1730,63 +1730,63 @@
   }, {
     "id" : 27,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "937",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "61738337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6178357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61738337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "25",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1794,63 +1794,63 @@
   }, {
     "id" : 28,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "8542108",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "53638337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "53638337",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "53638337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "26",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1858,63 +1858,63 @@
   }, {
     "id" : 29,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "773468",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "54638337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5468357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "54638337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "27",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1922,63 +1922,63 @@
   }, {
     "id" : 30,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "8152830",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "55638337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5568357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "55638337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "28",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -1986,63 +1986,63 @@
   }, {
     "id" : 31,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "86740",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "56638337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5668357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "56638337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "29",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -2050,63 +2050,63 @@
   }, {
     "id" : 32,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "92670",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "57638337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5768357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "57638337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "30",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -2114,63 +2114,63 @@
   }, {
     "id" : 33,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "7932",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "57838337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "57838337",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "57838337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "32",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -2178,63 +2178,63 @@
   }, {
     "id" : 34,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "8567333",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "59638337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5968357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "59638337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "33",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -2242,63 +2242,63 @@
   }, {
     "id" : 35,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "880567803",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "58038337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5968357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "59638337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "33",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "3",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -2306,63 +2306,63 @@
   }, {
     "id" : 36,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "8714133",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "59838337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5988357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "59838337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "34",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -2370,63 +2370,63 @@
   }, {
     "id" : 37,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "9643703",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "60638337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6068357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "60638337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "35",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -2434,63 +2434,63 @@
   }, {
     "id" : 38,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "84783",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "62638337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6268357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "62638337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "36",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -2498,63 +2498,63 @@
   }, {
     "id" : 39,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "9933",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "62738337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6108357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "0",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -2562,63 +2562,63 @@
   }, {
     "id" : 40,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "75077404",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "55838337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "55838337",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "55838337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -2626,63 +2626,63 @@
   }, {
     "id" : 41,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "80863204",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "53838337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5388357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "53838337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "39",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -2690,63 +2690,63 @@
   }, {
     "id" : 42,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "9144",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "55738337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "55738337",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "55738337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "40",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -2754,63 +2754,63 @@
   }, {
     "id" : 43,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "7836",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "58838337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5888357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "58838337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "41",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -2818,63 +2818,63 @@
   }, {
     "id" : 44,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "85649",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "62838337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6288357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "2",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -2882,63 +2882,63 @@
   }, {
     "id" : 45,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "1220916237",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "53938337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "53938337",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "6196580",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "42",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -2946,63 +2946,63 @@
   }, {
     "id" : 46,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "87239",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "54938337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5498357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "54938337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "3",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3010,63 +3010,63 @@
   }, {
     "id" : 47,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "8681429",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "55938337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "55938337",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "55938337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "3",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3074,63 +3074,63 @@
   }, {
     "id" : 48,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "73339795",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "56938337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5698357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "56938337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "3",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3138,63 +3138,63 @@
   }, {
     "id" : 49,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "97660",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "57938337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "57938337",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "57938337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "3",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3202,63 +3202,63 @@
   }, {
     "id" : 50,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "825042",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "58938337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "58938337",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "58938337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "3",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3266,63 +3266,63 @@
   }, {
     "id" : 51,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "85359703",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "59938337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5998357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "59938337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "3",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3330,63 +3330,63 @@
   }, {
     "id" : 52,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "872078473",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "60938337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "60938337",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "60938337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "3",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3394,63 +3394,63 @@
   }, {
     "id" : 53,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "997586",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "61938337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6198357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61938337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "3",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3458,63 +3458,63 @@
   }, {
     "id" : 54,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "92522758",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "62938337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "62938337",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "62938337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "3",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3522,63 +3522,63 @@
   }, {
     "id" : 55,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "1137632324",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "54038337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6108357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "0",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3586,63 +3586,63 @@
   }, {
     "id" : 56,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "1231628",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "55038337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "55038337",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "0",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3650,63 +3650,63 @@
   }, {
     "id" : 57,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "7935",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "56038337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "56038337",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "3",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3714,63 +3714,63 @@
   }, {
     "id" : 58,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "9079",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "57038337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6108357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "0",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3778,63 +3778,63 @@
   }, {
     "id" : 59,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "1172730087",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "59038337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5908357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "3",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3842,63 +3842,63 @@
   }, {
     "id" : 60,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "1172730220",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "60038337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "6008357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "63",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "3",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3906,63 +3906,63 @@
   }, {
     "id" : 61,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "924566",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "56538337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "5658357",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "45",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
@@ -3970,63 +3970,63 @@
   }, {
     "id" : 62,
     "items" : [ {
-      "name" : "REF",
+
       "value" : "12121982",
       "rank" : 1
     }, {
-      "name" : "Manufacturer_ID",
+
       "value" : "61038337",
       "rank" : 2
     }, {
-      "name" : "Manufacturer_Name",
+
       "value" : "61038337",
       "rank" : 3
     }, {
-      "name" : "Logo_HUD_File",
+
       "value" : "61338337",
       "rank" : 4
     }, {
-      "name" : "Logo_Global_Index",
+
       "value" : "46",
       "rank" : 5
     }, {
-      "name" : "Brand_special_param",
+
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "BitField",
+
       "value" : "1",
       "switches" : [ {
         "index" : 1,
-        "name" : "?",
+
         "enabled" : true
       }, {
         "index" : 2,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 3,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 4,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 5,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 6,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 7,
-        "name" : "?",
+
         "enabled" : false
       }, {
         "index" : 8,
-        "name" : "?",
+
         "enabled" : false
       } ],
       "rank" : 7
