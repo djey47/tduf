@@ -41,7 +41,17 @@
     {
       "name": "UNK2.2",
       "type": "UNKNOWN",
-      "size": 14
+      "size": 6
+    },
+    {
+      "name": "rentalVehicleId",
+      "type": "INTEGER",
+      "size": 4
+    },
+    {
+      "name": "UNK2.3",
+      "type": "UNKNOWN",
+      "size": 4
     },
     {
       "name": "clubNameSize",
