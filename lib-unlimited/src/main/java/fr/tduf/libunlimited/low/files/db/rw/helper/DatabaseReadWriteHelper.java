@@ -26,6 +26,11 @@ import static java.util.stream.Collectors.toSet;
  */
 public class DatabaseReadWriteHelper {
     public static final String EXTENSION_JSON = "json";
+
+    public static final String FMT_JSON_DATA_FILE_NAME = "%s.data.json";
+    public static final String FMT_JSON_STRUCTURE_FILE_NAME = "%s.structure.json";
+    public static final String FMT_JSON_RESOURCES_FILE_NAME = "%s.resources.json";
+
     static final String EXTENSION_DB_CONTENTS = "db";
 
     private  static final String FMT_FILENAME_EXTENSION = "%s.%s";
@@ -223,17 +228,17 @@ public class DatabaseReadWriteHelper {
     }
 
     private static File getJsonDataFileFromDirectory(DbDto.Topic topic, String jsonDirectory) {
-        String jsonFileName = Paths.get(jsonDirectory, String.format(DatabaseWriter.FMT_JSON_DATA_FILE_NAME, topic.getLabel())).toAbsolutePath().toString();
+        String jsonFileName = Paths.get(jsonDirectory, String.format(FMT_JSON_DATA_FILE_NAME, topic.getLabel())).toAbsolutePath().toString();
         return new File(jsonFileName);
     }
 
     private static File getJsonStructureFileFromDirectory(DbDto.Topic topic, String jsonDirectory) {
-        String jsonFileName = Paths.get(jsonDirectory, String.format(DatabaseWriter.FMT_JSON_STRUCTURE_FILE_NAME, topic.getLabel())).toAbsolutePath().toString();
+        String jsonFileName = Paths.get(jsonDirectory, String.format(FMT_JSON_STRUCTURE_FILE_NAME, topic.getLabel())).toAbsolutePath().toString();
         return new File(jsonFileName);
     }
 
     private static File getJsonResourceFileFromDirectory(DbDto.Topic topic, String jsonDirectory) {
-        String jsonFileName = Paths.get(jsonDirectory, String.format(DatabaseWriter.FMT_JSON_RESOURCES_FILE_NAME, topic.getLabel())).toAbsolutePath().toString();
+        String jsonFileName = Paths.get(jsonDirectory, String.format(FMT_JSON_RESOURCES_FILE_NAME, topic.getLabel())).toAbsolutePath().toString();
         return new File(jsonFileName);
     }
 

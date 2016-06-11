@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -25,11 +26,6 @@ import static java.util.Objects.requireNonNull;
  * Helper class to generate db files (contents+structure) from database instances.
  */
 public class DatabaseWriter {
-
-    // TODO Move to RW Helper
-    public static final String FMT_JSON_DATA_FILE_NAME = "%s.data.json";
-    public static final String FMT_JSON_STRUCTURE_FILE_NAME = "%s.structure.json";
-    public static final String FMT_JSON_RESOURCES_FILE_NAME = "%s.resources.json";
 
     private static final String COMMENT_PATTERN = "// %s";
     private static final String COMMENT_INFO_PATTERN = "// %s: %s";
@@ -80,9 +76,9 @@ public class DatabaseWriter {
         checkPrerequisites(databaseDto);
 
         final String topicLabel = databaseDto.getTopic().getLabel();
-        String dataOutputFileName = String.format(FMT_JSON_DATA_FILE_NAME, topicLabel);
-        String structureOutputFileName = String.format(FMT_JSON_STRUCTURE_FILE_NAME, topicLabel);
-        String resourceOutputFileName = String.format(FMT_JSON_RESOURCES_FILE_NAME, topicLabel);
+        String dataOutputFileName = String.format(DatabaseReadWriteHelper.FMT_JSON_DATA_FILE_NAME, topicLabel);
+        String structureOutputFileName = String.format(DatabaseReadWriteHelper.FMT_JSON_STRUCTURE_FILE_NAME, topicLabel);
+        String resourceOutputFileName = String.format(DatabaseReadWriteHelper.FMT_JSON_RESOURCES_FILE_NAME, topicLabel);
 
         Path dataOutputFilePath = Paths.get(path, dataOutputFileName);
         FilesHelper.writeJsonObjectToFile(databaseDto.getData(), dataOutputFilePath.toString());
