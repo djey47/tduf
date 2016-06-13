@@ -94,7 +94,7 @@ public class ResourcesStageController extends AbstractGuiController {
                 .ifPresent(selectedResource -> {
                     String currentResourceReference = selectedResource.referenceProperty().get();
                     DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).orElseThrow(() -> new IllegalArgumentException("Topic not found: " + getCurrentTopic()));
-                    dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.of(selectedResource), currentLocale)
+                    dialogsHelper.showEditResourceDialog(currentTopicObject, selectedResource, currentLocale)
                             .ifPresent(localizedResource -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), localizedResource));
                 });
     }
@@ -103,9 +103,9 @@ public class ResourcesStageController extends AbstractGuiController {
     private void handleAddResourceButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleAddResourceButtonMouseClick");
 
-        DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
-        dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.empty(), currentLocale)
-                .ifPresent((newLocalizedResource) -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.empty(), newLocalizedResource));
+        DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).orElseThrow(() -> new IllegalArgumentException("Topic not found: " + getCurrentTopic()));
+        dialogsHelper.showAddResourceDialog(currentTopicObject, currentLocale)
+                .ifPresent(newLocalizedResource -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.empty(), newLocalizedResource));
     }
 
     @FXML
