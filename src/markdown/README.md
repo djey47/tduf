@@ -33,7 +33,11 @@ TDUF aims at making Test Drive Unlmited modding easier:
 
 ### What's in this version ? (1.6.0)
 
-* 
+* DatabaseTool: due to changes in library internals, please clear database cache (Advanced Settings)
+* DatabaseTool: (ResourceEditor) now proposes to affect all resource locales by default, instead of only current one
+
+* Library: major changes in database files structure to lower disk usage 
+* Library: cut dependency with Google Guava Library, some required features have been imported from it.
 
 
 
