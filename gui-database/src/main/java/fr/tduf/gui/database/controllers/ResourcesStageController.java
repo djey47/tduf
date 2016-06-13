@@ -113,10 +113,10 @@ public class ResourcesStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleRemoveResourceButtonMouseClick");
 
         ofNullable(resourcesTableView.getSelectionModel().selectedItemProperty().getValue())
-                .ifPresent((selectedResource) -> {
+                .ifPresent(selectedResource -> {
                     DbDto.Topic currentTopic = getCurrentTopic();
                     dialogsHelper.showResourceDeletionDialog(currentTopic, selectedResource, currentLocale.getCode())
-                            .ifPresent((forAllLocales) -> {
+                            .ifPresent(forAllLocales -> {
                                 int selectedRow = resourcesTableView.getSelectionModel().getSelectedIndex();
                                 removeResourceAndUpdateMainStage(currentTopic, selectedResource, currentLocale, forAllLocales, selectedRow);
                             });
