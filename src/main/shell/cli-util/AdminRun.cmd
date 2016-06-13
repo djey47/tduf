@@ -13,7 +13,7 @@ SETLOCAL DisableDelayedExpansion
 SET "batchPath=%1"
 SETLOCAL EnableDelayedExpansion
 ECHO Set UAC = CreateObject^("Shell.Application"^) > "%temp%\OEgetPrivileges.vbs"
-ECHO UAC.ShellExecute "!batchPath!", "ELEV", "", "runas", 1 >> "%temp%\OEgetPrivileges.vbs"
+ECHO UAC.ShellExecute !batchPath!, "ELEV", "", "runas", 1 >> "%temp%\OEgetPrivileges.vbs"
 CALL "%temp%\OEgetPrivileges.vbs"
 EXIT /B 1
 

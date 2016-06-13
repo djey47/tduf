@@ -2,7 +2,7 @@
 
 REM *** Admin mode ***
 CD /D %~dp0
-CALL .\tools\cli\AdminRun.cmd %~0
+CALL .\tools\cli\AdminRun.cmd %0
 IF "%ERRORLEVEL%" == "1" (EXIT /B)
 REM *** Admin mode ***
 
