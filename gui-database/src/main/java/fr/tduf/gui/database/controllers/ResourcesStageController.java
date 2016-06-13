@@ -91,11 +91,11 @@ public class ResourcesStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleEditResourceButtonMouseClick");
 
         ofNullable(resourcesTableView.getSelectionModel().selectedItemProperty().getValue())
-                .ifPresent((selectedResource) -> {
+                .ifPresent(selectedResource -> {
                     String currentResourceReference = selectedResource.referenceProperty().get();
-                    DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).get();
+                    DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).orElseThrow(() -> new IllegalArgumentException("Topic not found: " + getCurrentTopic()));
                     dialogsHelper.showEditResourceDialog(currentTopicObject, Optional.of(selectedResource), currentLocale)
-                            .ifPresent((localizedResource) -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), localizedResource));
+                            .ifPresent(localizedResource -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), localizedResource));
                 });
     }
 
@@ -216,7 +216,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
     private void editResourceAndUpdateMainStage(DbDto.Topic topic, Optional<String> currentResourceReference, LocalizedResource newLocalizedResource) {
         ofNullable(newLocalizedResource)
-                .ifPresent((localizedResource) -> {
+                .ifPresent(localizedResource -> {
                             boolean updateResourceMode = currentResourceReference.isPresent();
                             String newResourceReference = newLocalizedResource.getReferenceValuePair().getKey();
                             String newResourceValue = newLocalizedResource.getReferenceValuePair().getValue();
@@ -241,7 +241,7 @@ public class ResourcesStageController extends AbstractGuiController {
     private void editResourceForAllLocales(DbDto.Topic topic, Optional<String> currentResourceReference, String newResourceReference, String newResourceValue, boolean updateResourceMode) {
         Locale.valuesAsStream()
 
-                .forEach((affectedLocale) -> {
+                .forEach(affectedLocale -> {
                     if (updateResourceMode) {
                         mainStageController.getChangeDataController().updateResourceWithReference(topic, affectedLocale, currentResourceReference.get(), newResourceReference, newResourceValue);
                     } else {
@@ -270,30 +270,23 @@ public class ResourcesStageController extends AbstractGuiController {
 
         DbDto.Topic currentTopic = getCurrentTopic();
         List<ResourceEntryDataItem> resourceEntryDataItems = getMiner().getResourceEnhancedFromTopic(currentTopic)
-
-                .map((resourceObject) -> resourceObject.getEntries().stream()
-
-                        .map((entry) -> {
+                .map(resourceObject -> resourceObject.getEntries().stream()
+                        .map(entry -> {
                             ResourceEntryDataItem tableResource = new ResourceEntryDataItem();
 
                             String resourceRef = entry.getReference();
                             tableResource.setReference(resourceRef);
 
                             Locale.valuesAsStream()
-
-                                    .forEach((locale) -> {
-
+                                    .forEach(locale -> {
                                         String displayedValue = entry.getValueForLocale(locale)
                                                 .orElse("");
                                         tableResource.setValueForLocale(locale, displayedValue);
-
                                     });
 
                             return tableResource;
                         })
-
                         .collect(toList()))
-
                 .orElse(new ArrayList<>());
 
         resourceData.addAll(resourceEntryDataItems);

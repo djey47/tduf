@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static javafx.scene.control.Alert.AlertType.CONFIRMATION;
@@ -60,8 +61,10 @@ public class DialogsHelper {
     /**
      * Display a dialog box to add or remove a resource.
      * It enables locale selection.
-     * @param topicObject       : topic contents to be affected
-     * @param updatedResource   : resource to apply, or absent to create a new one
+     *
+     * @param topicObject     : topic contents to be affected
+     * @param updatedResource : resource to apply, or absent to create a new one
+     * @param currentLocale   : selected locale in GUI settings
      * @return resulting resource, or absent if dialog was dismissed.
      */
     public Optional<LocalizedResource> showEditResourceDialog(DbDto topicObject, Optional<ResourceEntryDataItem> updatedResource, Locale currentLocale) {
@@ -73,7 +76,8 @@ public class DialogsHelper {
         String defaultValue = DisplayConstants.VALUE_RESOURCE_DEFAULT;
         DbDto.Topic topic = topicObject.getTopic();
         if (updateResourceMode) {
-            ResourceEntryDataItem resource = updatedResource.get();
+            ResourceEntryDataItem resource = updatedResource
+                    .orElseThrow(IllegalArgumentException::new);
             editResourceDialog.setHeaderText(String.format(DisplayConstants.MESSAGE_EDITED_RESOURCE,
                     topic.getLabel(),
                     resource.toDisplayableValueForLocale(currentLocale)));
@@ -113,7 +117,7 @@ public class DialogsHelper {
                 if (selectedLocaleIndex != 0) {
                     affectedLocale = Optional.of(Locale.values()[selectedLocaleIndex - 1]);
                 }
-                return new LocalizedResource( new Pair<>(referenceTextField.getText(), valueTextField.getText()), affectedLocale);
+                return new LocalizedResource(new Pair<>(referenceTextField.getText(), valueTextField.getText()), affectedLocale);
             }
             return null;
         });
@@ -123,7 +127,8 @@ public class DialogsHelper {
 
     /**
      * Displays a dialog box with results of export, allowing to copy them to clipboard.
-     * @param result    : exported data to be displayed
+     *
+     * @param result : exported data to be displayed
      */
     public void showExportResultDialog(String result) {
         Dialog<Boolean> resultDialog = new Dialog<>();
@@ -176,21 +181,21 @@ public class DialogsHelper {
     private static ChoiceBox<String> createLocaleChoiceBox(Locale currentLocale) {
         ObservableList<String> localeItems = FXCollections.observableArrayList();
 
-        int localeIndex = 0 ;
-        int currentLocaleIndex = 0;
         localeItems.add(DisplayConstants.LABEL_ITEM_LOCALE_ALL);
-        for (Locale locale : asList(Locale.values())) {
-            if (locale == currentLocale) {
-                localeItems.add(String.format(DisplayConstants.LABEL_ITEM_LOCALE_CURRENT, locale.getCode()));
-                currentLocaleIndex = localeIndex;
-            } else {
-                localeItems.add(locale.getCode());
-                localeIndex++;
-            }
-        }
+        localeItems.addAll(
+                Locale.valuesAsStream()
+                        .map(locale -> {
+                            if (locale == currentLocale) {
+                                return String.format(DisplayConstants.LABEL_ITEM_LOCALE_CURRENT, locale.getCode());
+                            } else {
+                                return locale.getCode();
+                            }
+                        })
+                        .collect(Collectors.toList())
+        );
 
         ChoiceBox<String> localeChoiceBox = new ChoiceBox<>(localeItems);
-        localeChoiceBox.getSelectionModel().select(currentLocaleIndex + 1);
+        localeChoiceBox.getSelectionModel().select(0);
         return localeChoiceBox;
     }
 }
