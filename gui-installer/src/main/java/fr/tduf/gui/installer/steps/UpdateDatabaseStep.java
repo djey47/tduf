@@ -252,8 +252,8 @@ class UpdateDatabaseStep extends GenericStep {
                         "0",
                         "0",
                         PlaceholderConstants.getPlaceHolderForRimBrand(index),
-                        PlaceholderConstants.getPlaceHolderForFrontRimFileName(index),
-                        PlaceholderConstants.getPlaceHolderForRearRimFileName(index),
+                        PlaceholderConstants.getPlaceHolderForFrontRimFileNameResource(index),
+                        PlaceholderConstants.getPlaceHolderForRearRimFileNameResource(index),
                         "0"
                 ))
                 .build();

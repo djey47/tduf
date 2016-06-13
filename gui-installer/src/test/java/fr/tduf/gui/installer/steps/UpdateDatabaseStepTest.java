@@ -281,8 +281,8 @@ public class UpdateDatabaseStepTest {
                         "0",
                         "0",
                         "{RIMBRANDREF.1}",
-                        "{BANKNAME.FR.1}",
-                        "{BANKNAME.RR.1}",
+                        "{RES_BANKNAME.FR.1}",
+                        "{RES_BANKNAME.RR.1}",
                         "0"),
                 null,
                 asList(SLOT_REFERENCE, rimId2),
@@ -300,8 +300,8 @@ public class UpdateDatabaseStepTest {
                         "0",
                         "0",
                         "{RIMBRANDREF.2}",
-                        "{BANKNAME.FR.2}",
-                        "{BANKNAME.RR.2}",
+                        "{RES_BANKNAME.FR.2}",
+                        "{RES_BANKNAME.RR.2}",
                         "0"));
         assertThat(patchObject.getChanges()).extracting("value").containsOnly(
                 null,
