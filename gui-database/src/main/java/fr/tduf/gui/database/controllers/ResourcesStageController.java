@@ -115,7 +115,7 @@ public class ResourcesStageController extends AbstractGuiController {
         ofNullable(resourcesTableView.getSelectionModel().selectedItemProperty().getValue())
                 .ifPresent(selectedResource -> {
                     DbDto.Topic currentTopic = getCurrentTopic();
-                    dialogsHelper.showResourceDeletionDialog(currentTopic, selectedResource, currentLocale.getCode())
+                    dialogsHelper.showResourceDeletionDialog(currentTopic, selectedResource, currentLocale)
                             .ifPresent(forAllLocales -> {
                                 int selectedRow = resourcesTableView.getSelectionModel().getSelectedIndex();
                                 removeResourceAndUpdateMainStage(currentTopic, selectedResource, currentLocale, forAllLocales, selectedRow);
@@ -143,7 +143,8 @@ public class ResourcesStageController extends AbstractGuiController {
     private void handleBrowseToResource(LocalizedResource newResource) {
         Log.trace(THIS_CLASS_NAME, "->handleBrowseToResource: " + newResource);
 
-        topicsChoiceBox.setValue(newResource.getTopic().get());
+        topicsChoiceBox.setValue(newResource.getTopic()
+                .orElseThrow(IllegalArgumentException::new));
 
         selectResourceInTableAndScroll(newResource.getReference());
     }
@@ -209,7 +210,7 @@ public class ResourcesStageController extends AbstractGuiController {
     private void removeResourceAndUpdateMainStage(DbDto.Topic topic, ResourceEntryDataItem selectedResource, Locale locale, boolean forAllLocales, int selectedRowIndex) {
         mainStageController.getChangeDataController().removeResourceWithReference(topic, locale, selectedResource.referenceProperty().getValue(), forAllLocales);
 
-        updateAllStages(Optional.<String>empty());
+        updateAllStages(Optional.empty());
 
         TableViewHelper.selectRowAndScroll(selectedRowIndex, resourcesTableView);
     }

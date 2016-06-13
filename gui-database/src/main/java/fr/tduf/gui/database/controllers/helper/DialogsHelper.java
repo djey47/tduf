@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers.helper;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.domain.LocalizedResource;
@@ -15,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -32,20 +34,27 @@ import static javafx.scene.control.ButtonBar.ButtonData.OTHER;
  * Helper class to build and display dialog boxes.
  */
 public class DialogsHelper {
+    private static final String THIS_CLASS_NAME = DialogsHelper.class.getSimpleName();
 
     /**
+     * Display a dialog box to delete a resource.
+     * It enables locale selection.
+     *
+     * @param topic             : topic to be affected
+     * @param deletedResource   : resource to apply, or absent to create a new one
+     * @param currentLocale     : selected locale  in GUI settings
      * @return true if all locales should be affected, false otherwise - or absent if dialog was dismissed.
      */
-    public Optional<Boolean> showResourceDeletionDialog(DbDto.Topic topic, ResourceEntryDataItem resource, String localeCode) {
+    public Optional<Boolean> showResourceDeletionDialog(DbDto.Topic topic, ResourceEntryDataItem deletedResource, Locale currentLocale) {
         Alert alert = new Alert(CONFIRMATION);
         alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
         alert.setHeaderText(String.format(DisplayConstants.MESSAGE_DELETED_RESOURCE,
                 topic.getLabel(),
-                resource.toDisplayableValueForLocale(Locale.UNITED_STATES))); // Use current locale
-        alert.setContentText(String.format("%s%n%s", DisplayConstants.WARNING_DELETED_RESOURCE, DisplayConstants.QUESTION_AFFECTED_LOCALES));
+                deletedResource.toDisplayableValueForLocale(Locale.UNITED_STATES))); // Use current locale
+        alert.setContentText(String.join(System.lineSeparator(), DisplayConstants.WARNING_DELETED_RESOURCE, DisplayConstants.QUESTION_AFFECTED_LOCALES));
 
         ButtonType allLocalesButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_ALL);
-        ButtonType currentLocaleButtonType = new ButtonType(String.format(DisplayConstants.LABEL_BUTTON_CURRENT_LOCALE, localeCode));
+        ButtonType currentLocaleButtonType = new ButtonType(String.format(DisplayConstants.LABEL_BUTTON_CURRENT_LOCALE, currentLocale.getCode()));
         ButtonType cancelButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_CANCEL, CANCEL_CLOSE);
         alert.getButtonTypes().setAll(allLocalesButtonType, currentLocaleButtonType, cancelButtonType);
 
@@ -62,7 +71,7 @@ public class DialogsHelper {
      * It enables locale selection.
      *
      * @param topicObject     : topic contents to be affected
-     * @param updatedResource : resource to apply, or absent to create a new one
+     * @param updatedResource : resource to apply
      * @param currentLocale   : selected locale in GUI settings
      * @return resulting resource, or absent if dialog was dismissed.
      */
@@ -184,6 +193,7 @@ public class DialogsHelper {
             fileWriter.write(contents);
             CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_FILE_EXPORT_OK, fileLocation);
         } catch (IOException ioe) {
+            Log.error(THIS_CLASS_NAME, ExceptionUtils.getStackTrace(ioe));
             CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_FILE_EXPORT_KO, DisplayConstants.MESSAGE_SEE_LOGS);
         }
     }
