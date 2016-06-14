@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.VehicleSlot;
+import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 
@@ -38,7 +39,7 @@ class CopyFilesStep extends GenericStep {
                     try {
                         parseAssetsDirectory(assetsDirectoryTag);
                     } catch (IOException ioe) {
-                        throw new RuntimeException("Unable to process " + assetsDirectoryTag + " assets: " + ioe.getMessage(), ioe);
+                        throw new InternalStepException(getType(), "Unable to process " + assetsDirectoryTag + " assets: " + ioe.getMessage(), ioe);
                     }
                 });
     }
@@ -59,7 +60,7 @@ class CopyFilesStep extends GenericStep {
                     try {
                         copyAsset(path, targetPath, assetDirectoryTag);
                     } catch (IOException ioe) {
-                        throw new RuntimeException("Unable to copy " + path.getFileName() + ": " + ioe.getMessage(), ioe);
+                        throw new InternalStepException(getType(), "Unable to copy " + path.getFileName() + ": " + ioe.getMessage(), ioe);
                     }
                 });
     }
@@ -69,19 +70,19 @@ class CopyFilesStep extends GenericStep {
         Path targetPath;
         switch (assetDirectoryName) {
             case DIRECTORY_3D:
-                targetPath = banksPath.resolve("Vehicules");
+                targetPath = banksPath.resolve(FileConstants.DIRECTORY_NAME_VEHICLES);
                 break;
             case DIRECTORY_SOUND:
-                targetPath = banksPath.resolve("Sound").resolve("Vehicules");
+                targetPath = banksPath.resolve("Sound").resolve(FileConstants.DIRECTORY_NAME_VEHICLES);
                 break;
             case DIRECTORY_GAUGES_HIGH:
-                targetPath = banksPath.resolve("FrontEnd").resolve("HiRes").resolve("Gauges");
+                targetPath = banksPath.resolve(FileConstants.DIRECTORY_NAME_FRONT_END).resolve("HiRes").resolve(FileConstants.DIRECTORY_NAME_HUDS);
                 break;
             case DIRECTORY_GAUGES_LOW:
-                targetPath = banksPath.resolve("FrontEnd").resolve("LowRes").resolve("Gauges");
+                targetPath = banksPath.resolve(FileConstants.DIRECTORY_NAME_FRONT_END).resolve("LowRes").resolve(FileConstants.DIRECTORY_NAME_HUDS);
                 break;
             case DIRECTORY_RIMS:
-                targetPath = banksPath.resolve("Vehicules").resolve("Rim");
+                targetPath = banksPath.resolve(FileConstants.DIRECTORY_NAME_VEHICLES).resolve("Rim");
                 break;
             default:
                 throw new IllegalArgumentException("Unhandled asset type: " + assetDirectoryName);
@@ -91,10 +92,14 @@ class CopyFilesStep extends GenericStep {
 
     private void copyAsset(Path assetPath, Path targetPath, String assetDirectoryName) throws IOException {
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(getDatabaseContext().getMiner());
-        String slotReference = getDatabaseContext().getPatchProperties().getVehicleSlotReference().get();
 
-        VehicleSlot vehicleSlot = vehicleSlotsHelper.getVehicleSlotFromReference(slotReference).get();
+        String slotReference = getDatabaseContext().getPatchProperties().getVehicleSlotReference()
+                .orElseThrow(() -> new InternalStepException(getType(), "No slot reference provided in properties."));
 
+        VehicleSlot vehicleSlot = vehicleSlotsHelper.getVehicleSlotFromReference(slotReference)
+                .orElseThrow(() -> new InternalStepException(getType(), "No vehicle slot found for reference: " + slotReference));
+
+        Path effectiveTargetPath = targetPath;
         String targetFileName;
         switch (assetDirectoryName) {
             case DIRECTORY_3D:
@@ -108,17 +113,16 @@ class CopyFilesStep extends GenericStep {
                 targetFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, HUD, true);
                 break;
             case DIRECTORY_RIMS:
-                targetPath = targetPath.resolve(vehicleSlot.getDefaultRims().getParentDirectoryName().getValue());
+                effectiveTargetPath = targetPath.resolve(vehicleSlot.getDefaultRims().getParentDirectoryName().getValue());
                 targetFileName = getTargetFileNameForRims(vehicleSlot, assetPath);
-                if (targetFileName == null) {
-                    return;
-                }
                 break;
             default:
                 throw new IllegalArgumentException("Unhandled asset type: " + assetDirectoryName);
         }
 
-        copySingleAssetWithBackup(assetPath, targetPath, targetFileName);
+        if (targetFileName != null) {
+            copySingleAssetWithBackup(assetPath, effectiveTargetPath, targetFileName);
+        }
     }
 
     private static String getTargetFileNameForExteriorAndInterior(VehicleSlot vehicleSlot, String assetFileName) {
