@@ -99,6 +99,37 @@ public class CopyFilesStepTest {
     }
 
     @Test
+    public void copyFilesStep_withDeniedAccessToTargetFile_shouldAllowCopy() throws Exception {
+        // GIVEN
+        System.out.println("Testing TDU directory: " + tempDirectory);
+
+        Path banksPath = Paths.get(tempDirectory, "Euro", "Bnk");
+        Path vehicleBanksPath = banksPath.resolve("Vehicules");
+
+        final Path existingFilePath = vehicleBanksPath.resolve("AC_427.bnk");
+        final File existingFile = Files.createFile(existingFilePath).toFile();
+        existingFile.setWritable(false);
+        existingFile.setReadable(false);
+
+        InstallerConfiguration configuration = createConfigurationForCar();
+
+        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        PatchProperties patchProperties = new PatchProperties();
+        patchProperties.setVehicleSlotReferenceIfNotExists("606298799"); // AC427 (car)
+        databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
+
+
+        // WHEN
+        GenericStep.starterStep(configuration, databaseContext)
+                .nextStep(COPY_FILES).start();
+
+
+        // THEN
+        assertThat(vehicleBanksPath.resolve("AC_427.bnk").toFile())
+                .canWrite();
+    }
+
+    @Test
     public void copyFilesStep_withDifferentRimsFrontRear_shouldCopyThemToCorrectLocation_withRightNames() throws Exception {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);

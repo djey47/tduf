@@ -7,6 +7,7 @@ import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -160,7 +161,6 @@ class CopyFilesStep extends GenericStep {
     private void copySingleAssetWithBackup(Path assetPath, Path targetPath, String targetFileName) throws IOException {
         FilesHelper.createDirectoryIfNotExists(targetPath.toString());
 
-
         Path finalPath = targetPath.resolve(targetFileName);
         if (Files.exists(finalPath)) {
             final Path subTree = Paths.get(getInstallerConfiguration().resolveBanksDirectory()).relativize(finalPath);
@@ -168,6 +168,11 @@ class CopyFilesStep extends GenericStep {
 
             Log.info(THIS_CLASS_NAME, "*> BACKUP " + finalPath + " to " + backupFinalPath);
             Files.createDirectories(backupFinalPath.getParent());
+
+            final File finalFile = finalPath.toFile();
+            finalFile.setWritable(true);
+            finalFile.setReadable(true);
+
             Files.copy(finalPath, backupFinalPath);
         }
 
