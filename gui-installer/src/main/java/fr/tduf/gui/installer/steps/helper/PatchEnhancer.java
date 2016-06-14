@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.domain.*;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
+import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -49,6 +50,8 @@ public class PatchEnhancer {
     public void enhancePatchObject() {
         PatchProperties patchProperties = requireNonNull(databaseContext.getPatchProperties(), "Patch properties are required.");
 
+        enhancePatchProperties(patchProperties);
+
         final String vehicleSlotReference = patchProperties.getVehicleSlotReference()
                 .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected vehicle slot not found in properties"));
 
@@ -64,6 +67,11 @@ public class PatchEnhancer {
                     enhancePatchObjectWithPaintJobs(vehicleSlot);
                     enhancePatchObjectWithRims(vehicleSlot);
                 });
+    }
+
+    void enhancePatchProperties(PatchProperties patchProperties) {
+        databaseContext.getUserSelection().getDealerSlot()
+                .ifPresent(dealerSlotData -> createPatchPropertiesForDealerSlot(dealerSlotData, patchProperties));
     }
 
     void enhancePatchObjectWithPaintJobs(VehicleSlot vehicleSlot) {
@@ -86,6 +94,13 @@ public class PatchEnhancer {
                 .collect(toList());
 
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForRims);
+    }
+
+    private void createPatchPropertiesForDealerSlot(DealerSlotData dealerSlotData, PatchProperties patchProperties) {
+        Log.info(THIS_CLASS_NAME, "->Resolving missing properties with dealer slot information");
+
+        patchProperties.setDealerReferenceIfNotExists(dealerSlotData.getDealerDataItem().referenceProperty().get());
+        patchProperties.setDealerSlotIfNotExists(dealerSlotData.getSlotDataItem().rankProperty().get());
     }
 
     private void enhancePatchObjectWithLocationChange(String vehicleSlotReference) {

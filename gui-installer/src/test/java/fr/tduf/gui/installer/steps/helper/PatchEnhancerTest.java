@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.steps.helper;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.domain.*;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
+import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import org.junit.Before;
@@ -34,6 +35,37 @@ public class PatchEnhancerTest {
 
         databaseContext = new DatabaseContext(new ArrayList<>(0), "");
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
+    }
+
+    @Test
+    public void enhancePatchProperties_whenNoDealerSlotSelected_shouldNotAddProperties() {
+        // GIVEN-WHEN
+        int initialPropertyCount = patchProperties.size();
+        new PatchEnhancer(databaseContext).enhancePatchProperties(patchProperties);
+
+        // THEN
+        assertThat(patchProperties).hasSize(initialPropertyCount);
+    }
+
+    @Test
+    public void enhancePatchProperties_whenDealerSlotSelected_shouldAddProperties() {
+        // GIVEN
+        databaseContext.getUserSelection().selectDealerSlot(DealerSlotData.from(
+                DealerSlotData.DealerDataItem.fromDealer(Dealer.builder()
+                        .withRef("1111")
+                        .withDisplayedName(Resource.from("", ""))
+                        .withSlots(new ArrayList<>(0))
+                        .build()),
+                DealerSlotData.SlotDataItem.fromDealerSlot(Dealer.Slot.builder()
+                        .withRank(1)
+                        .build())));
+
+        // WHEN
+        new PatchEnhancer(databaseContext).enhancePatchProperties(patchProperties);
+
+        // THEN
+        assertThat(patchProperties.getDealerReference()).contains("1111");
+        assertThat(patchProperties.getDealerSlot()).contains(1);
     }
 
     @Test
