@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.steps.helper;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.domain.*;
+import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -15,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static fr.tduf.gui.installer.steps.GenericStep.StepType.UPDATE_DATABASE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
@@ -34,25 +36,28 @@ public class PatchEnhancer {
     private final DatabaseContext databaseContext;
 
     /**
-     *
-     * @param databaseContext
+     * Unique way to get an instance.
+     * @param databaseContext   : database information
      */
     public PatchEnhancer(DatabaseContext databaseContext) {
         this.databaseContext = requireNonNull(databaseContext, "Database context is required");
     }
 
     /**
-     *
+     * Put additional instructions to patch template.
      */
     public void enhancePatchObject() {
-        PatchProperties patchProperties = databaseContext.getPatchProperties() ;
+        PatchProperties patchProperties = requireNonNull(databaseContext.getPatchProperties(), "Patch properties are required.");
+
+        final String vehicleSlotReference = patchProperties.getVehicleSlotReference()
+                .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected vehicle slot not found in properties"));
 
         if(patchProperties.getDealerReference().isPresent()
                 && patchProperties.getDealerSlot().isPresent()) {
-            enhancePatchObjectWithLocationChange();
+            enhancePatchObjectWithLocationChange(vehicleSlotReference);
         }
 
-        enhancePatchObjectWithInstallFlag();
+        enhancePatchObjectWithInstallFlag(vehicleSlotReference);
 
         databaseContext.getUserSelection().getVehicleSlot()
                 .ifPresent(vehicleSlot -> {
@@ -83,30 +88,33 @@ public class PatchEnhancer {
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForRims);
     }
 
-    private void enhancePatchObjectWithLocationChange() {
+    private void enhancePatchObjectWithLocationChange(String vehicleSlotReference) {
         Log.info(THIS_CLASS_NAME, "->Adding dealer slot change to initial patch");
 
         PatchProperties patchProperties = databaseContext.getPatchProperties();
-        int effectiveFieldRank = patchProperties.getDealerSlot().get() + 3;
+        int effectiveFieldRank = patchProperties.getDealerSlot()
+                .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected dealer slot index not found in properties"))
+                + 3;
 
         DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
                 .forTopic(CAR_SHOPS)
                 .withType(UPDATE)
-                .asReference(patchProperties.getDealerReference().get())
-                .withPartialEntryValues(singletonList(DbFieldValueDto.fromCouple(effectiveFieldRank, patchProperties.getVehicleSlotReference().get())))
+                .asReference(patchProperties.getDealerReference()
+                        .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected dealer reference not found in properties")))
+                .withPartialEntryValues(singletonList(DbFieldValueDto.fromCouple(effectiveFieldRank, vehicleSlotReference)))
                 .build();
 
         databaseContext.getPatchObject().getChanges().add(changeObject);
     }
 
-    private void enhancePatchObjectWithInstallFlag() {
+    private void enhancePatchObjectWithInstallFlag(String vehicleSlotReference) {
         Log.info(THIS_CLASS_NAME, "->Adding install flag change to initial patch");
 
         final String secuOneRawValue = SecurityOptions.INSTALLED.setScale(0, RoundingMode.UNNECESSARY).toString();
         DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
                 .forTopic(CAR_PHYSICS_DATA)
                 .withType(UPDATE)
-                .asReference(databaseContext.getPatchProperties().getVehicleSlotReference().get())
+                .asReference(vehicleSlotReference)
                 .withPartialEntryValues(singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_SECU1, secuOneRawValue)))
                 .build();
 
@@ -217,7 +225,8 @@ public class PatchEnhancer {
                 .forTopic(CAR_RIMS)
                 .withEntryValues( asList(
                         vehicleSlot.getRef(),
-                        patchProperties.getRimSlotReference(index).get()
+                        patchProperties.getRimSlotReference(index)
+                            .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Rim slot reference not found in properties: for set " + index))
                 ))
                 .build();
 
@@ -268,5 +277,4 @@ public class PatchEnhancer {
 
         return Stream.of(associationEntryUpdate, slotEntryUpdate, slotNameResourceUpdate, slotFrontFileNameResourceUpdate, slotRearNameResourceUpdate);
     }
-
 }

@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.steps;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
+import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.gui.installer.steps.helper.PatchEnhancer;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
@@ -37,7 +38,8 @@ class UpdateDatabaseStep extends GenericStep {
 
         applyMiniPatch();
 
-        applyPerformancePackage(getDatabaseContext().getPatchProperties().getVehicleSlotReference().get());
+        applyPerformancePackage(getDatabaseContext().getPatchProperties().getVehicleSlotReference()
+                .orElseThrow(() -> new InternalStepException(getType(), "Vehicle slot reference not found in properties")));
     }
 
     private void applyMiniPatch() throws ReflectiveOperationException, IOException {
