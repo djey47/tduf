@@ -140,6 +140,10 @@ public abstract class GenericStep {
         this.type = type;
     }
 
+    protected StepType getType() {
+        return type;
+    }
+
     private String getClassName() {
         return this.getClass().getSimpleName();
     }
