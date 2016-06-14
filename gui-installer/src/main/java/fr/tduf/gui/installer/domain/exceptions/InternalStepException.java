@@ -25,7 +25,7 @@ public class InternalStepException extends RuntimeException {
      * @param message
      */
     public InternalStepException(GenericStep.StepType stepType, String message) {
-        super(message, null);
+        super(message);
         this.stepType = stepType;
     }
 
