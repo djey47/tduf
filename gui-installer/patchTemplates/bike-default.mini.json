@@ -157,55 +157,6 @@
           "value": "{SLOTREF}"
         }
       ]
-    },
-    {
-      "type": "UPDATE",
-      "topic": "CAR_RIMS",
-      "values": [
-        "{SLOTREF}",
-        "{RIMREF.1}"
-      ]
-    },
-    {
-      "type": "UPDATE",
-      "topic": "RIMS",
-      "ref": "{RIMREF.1}",
-      "values": [
-        "{RIMREF.1}",
-        "{RIMBRANDREF.1}",
-        "54276512",
-        "{RES_RIMNAME.1}",
-        "{RIMWIDTH.FR.1}",
-        "{RIMHEIGHT.FR.1}",
-        "{RIMDIAM.FR.1}",
-        "{RIMWIDTH.RR.1}",
-        "{RIMHEIGHT.RR.1}",
-        "{RIMDIAM.RR.1}",
-        "0",
-        "0",
-        "{RIMBRANDREF.1}",
-        "{RES_BANKNAME.FR.1}",
-        "{RES_BANKNAME.RR.1}",
-        "0"
-      ]
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "RIMS",
-      "ref": "{RES_RIMNAME.1}",
-      "value": "{RIMNAME.1}"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "RIMS",
-      "ref": "{RES_BANKNAME.FR.1}",
-      "value": "{BANKNAME.FR.1}"
-    },
-    {
-      "type": "UPDATE_RES",
-      "topic": "RIMS",
-      "ref": "{RES_BANKNAME.RR.1}",
-      "value": "{BANKNAME.RR.1}"
     }
   ]
 }
