@@ -9,13 +9,23 @@ public class InternalStepException extends RuntimeException {
     private final GenericStep.StepType stepType;
 
     /**
-     * Main constructore
+     * Constructor from known cause
      * @param stepType
      * @param message
      * @param cause
      */
     public InternalStepException(GenericStep.StepType stepType, String message, Throwable cause) {
         super(message, cause);
+        this.stepType = stepType;
+    }
+
+    /**
+     * Constructor from unknown cause
+     * @param stepType
+     * @param message
+     */
+    public InternalStepException(GenericStep.StepType stepType, String message) {
+        super(message, null);
         this.stepType = stepType;
     }
 
