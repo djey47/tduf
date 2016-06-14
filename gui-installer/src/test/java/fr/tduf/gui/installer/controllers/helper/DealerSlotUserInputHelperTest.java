@@ -13,16 +13,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 
-@RunWith(MockitoJUnitRunner.class)
 public class DealerSlotUserInputHelperTest {
 
     private static final String DEALERREF = "1111";
-
-    @Mock
-    private BulkDatabaseMiner minerMock;
-
-    @Before
-    public void setup() {}
 
     @Test
     public void selectAndDefineDealerSlot_whenForcedDealerSlot_shouldNotSelectIt() throws Exception {
