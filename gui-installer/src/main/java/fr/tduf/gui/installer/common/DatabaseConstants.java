@@ -29,6 +29,7 @@ public class DatabaseConstants {
     public static final int FIELD_RANK_DEALER_LIBELLE = 3;
     public static final int FIELD_RANK_DEALER_SLOT_1 = 4;
     public static final int FIELD_RANK_DEALER_SLOT_15 = 18;
+    public static final int DELTA_RANK_DEALER_SLOTS = 3;
 
     public static final int FIELD_RANK_INTERIOR_NAME = 3;                           // INTERIOR
 

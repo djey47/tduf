@@ -2,6 +2,8 @@ package fr.tduf.gui.installer.steps.helper;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DatabaseConstants;
+import fr.tduf.gui.installer.common.DisplayConstants;
+import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.*;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
@@ -13,18 +15,20 @@ import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderConstants;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.UPDATE_DATABASE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.RIMS;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.rangeClosed;
 
@@ -36,12 +40,15 @@ public class PatchEnhancer {
 
     private final DatabaseContext databaseContext;
 
+    private VehicleSlotsHelper vehicleSlotsHelper;
+
     /**
      * Unique way to get an instance.
      * @param databaseContext   : database information
      */
     public PatchEnhancer(DatabaseContext databaseContext) {
         this.databaseContext = requireNonNull(databaseContext, "Database context is required");
+        this.vehicleSlotsHelper = VehicleSlotsHelper.load(databaseContext.getMiner());
     }
 
     /**
@@ -70,6 +77,15 @@ public class PatchEnhancer {
     }
 
     void enhancePatchProperties(PatchProperties patchProperties) {
+        VehicleSlot effectiveSlot = databaseContext.getUserSelection().getVehicleSlot()
+                .orElseGet(() -> {
+                    final String forcedSlotReference = patchProperties.getVehicleSlotReference()
+                            .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected vehicle slot not found in properties"));
+                    return vehicleSlotsHelper.getVehicleSlotFromReference(forcedSlotReference)
+                            .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected vehicle slot not found in database: " + forcedSlotReference));
+                });
+        createPatchPropertiesForVehicleSlot(effectiveSlot, patchProperties);
+
         databaseContext.getUserSelection().getDealerSlot()
                 .ifPresent(dealerSlotData -> createPatchPropertiesForDealerSlot(dealerSlotData, patchProperties));
     }
@@ -96,11 +112,79 @@ public class PatchEnhancer {
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForRims);
     }
 
+    private void createPatchPropertiesForVehicleSlot(VehicleSlot effectiveSlot, PatchProperties patchProperties) {
+        Log.info(THIS_CLASS_NAME, "->Resolving missing properties with slot information");
+
+        String slotReference = effectiveSlot.getRef();
+        int selectedCarIdentifier = effectiveSlot.getCarIdentifier();
+        if (VehicleSlotsHelper.DEFAULT_VEHICLE_ID == selectedCarIdentifier) {
+            throw new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, slotReference));
+        }
+
+        String selectedBankName = VehicleSlotsHelper.getBankFileName(effectiveSlot, EXTERIOR_MODEL, false);
+        String selectedResourceBankName = effectiveSlot.getFileName().getRef();
+        List<String> values = asList(selectedBankName, selectedResourceBankName);
+        if (values.contains(DisplayConstants.ITEM_UNAVAILABLE)) {
+            throw new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, slotReference));
+        }
+
+        patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
+        patchProperties.setCarIdentifierIfNotExists(Integer.toString(selectedCarIdentifier));
+        patchProperties.setBankNameIfNotExists(selectedBankName);
+        patchProperties.setResourceBankNameIfNotExists(selectedResourceBankName);
+
+        createPatchPropertiesForRims(effectiveSlot, patchProperties);
+
+        createPatchPropertiesForPaintJobs(effectiveSlot, patchProperties);
+    }
+
+    private void createPatchPropertiesForPaintJobs(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
+        AtomicInteger paintJobIndex = new AtomicInteger(1);
+        vehicleSlot.getPaintJobs()
+                .forEach(paintJob -> {
+                    String nameRef = paintJob.getName().getRef();
+                    patchProperties.setExteriorColorNameResourceIfNotExists(nameRef, paintJobIndex.getAndIncrement());
+                });
+
+        searchFirstInteriorPatternReference(vehicleSlot).ifPresent(ref -> patchProperties.setInteriorReferenceIfNotExists(ref, 1));
+    }
+
+    private void createPatchPropertiesForRims(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
+        String selectedRimReference = vehicleSlot.getDefaultRims().getRef();
+        String selectedResourceRimBrandReference = vehicleSlot.getDefaultRims().getParentDirectoryName().getRef();
+        String selectedFrontRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, FRONT_RIM, false);
+        String selectedResourceFrontRimBankName = vehicleSlot.getDefaultRims().getFrontRimInfo().getFileName().getRef();
+        String selectedRearRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIM, false);
+        String selectedResourceRearRimBankName = vehicleSlot.getDefaultRims().getRearRimInfo().getFileName().getRef();
+
+        List<String> values = asList(selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);
+        if (values.contains(DisplayConstants.ITEM_UNAVAILABLE)) {
+            throw new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, vehicleSlot.getRef()));
+        }
+
+        patchProperties.setRimsSlotReferenceIfNotExists(selectedRimReference, 1);
+        patchProperties.setResourceRimsBrandIfNotExists(selectedResourceRimBrandReference, 1);
+        patchProperties.setFrontRimBankNameIfNotExists(selectedFrontRimBank, 1);
+        patchProperties.setResourceFrontRimBankIfNotExists(selectedResourceFrontRimBankName, 1);
+        patchProperties.setRearRimBankNameIfNotExists(selectedRearRimBank, 1);
+        patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, 1);
+    }
+
     private void createPatchPropertiesForDealerSlot(DealerSlotData dealerSlotData, PatchProperties patchProperties) {
         Log.info(THIS_CLASS_NAME, "->Resolving missing properties with dealer slot information");
 
         patchProperties.setDealerReferenceIfNotExists(dealerSlotData.getDealerDataItem().referenceProperty().get());
         patchProperties.setDealerSlotIfNotExists(dealerSlotData.getSlotDataItem().rankProperty().get());
+    }
+
+    private Optional<String> searchFirstInteriorPatternReference(VehicleSlot vehicleSlot) {
+        List<PaintJob> paintJobs = vehicleSlot.getPaintJobs();
+        if (paintJobs.isEmpty()) {
+            return empty();
+        }
+
+        return paintJobs.get(0).getInteriorPatternRefs().stream()
+                .findFirst();
     }
 
     private void enhancePatchObjectWithLocationChange(String vehicleSlotReference) {
@@ -109,7 +193,7 @@ public class PatchEnhancer {
         PatchProperties patchProperties = databaseContext.getPatchProperties();
         int effectiveFieldRank = patchProperties.getDealerSlot()
                 .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected dealer slot index not found in properties"))
-                + 3;
+                + DatabaseConstants.DELTA_RANK_DEALER_SLOTS;
 
         DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
                 .forTopic(CAR_SHOPS)
@@ -291,5 +375,10 @@ public class PatchEnhancer {
                 .build();
 
         return Stream.of(associationEntryUpdate, slotEntryUpdate, slotNameResourceUpdate, slotFrontFileNameResourceUpdate, slotRearNameResourceUpdate);
+    }
+
+    // For testing only
+    void overrideVehicleSlotsHelper(VehicleSlotsHelper vehicleSlotsHelper) {
+        this.vehicleSlotsHelper = vehicleSlotsHelper;
     }
 }
