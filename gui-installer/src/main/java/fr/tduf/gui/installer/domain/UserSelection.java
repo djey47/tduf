@@ -28,6 +28,10 @@ public class UserSelection {
         this.vehicleSlot = of(vehicleSlot);
     }
 
+    public void resetVehicleSlot() {
+        this.vehicleSlot = empty();
+    }
+
     public void selectDealerSlot(DealerSlotData dealerSlotData) {
         this.dealerSlot = of(dealerSlotData);
     }
