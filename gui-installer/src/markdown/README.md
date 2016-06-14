@@ -16,7 +16,8 @@ Using this with TDUCP 2.00A is strongly recommended.
 * Advanced vehicle slot selector
 * Makes backup of database and replaced files by install
 * Restores files if critical error occurs while installing
-* Allows to customize each camera view by using ones from different cameras.
+* Allows to customize each camera view by using ones from different cameras
+* Removes experimental features as it might break games.
 
 
 ### Main features
