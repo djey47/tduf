@@ -5,11 +5,11 @@ import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.Dealer;
 import javafx.beans.property.*;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * Represents data to be displayed in TableView.
@@ -20,6 +20,12 @@ public class DealerSlotData {
     private DealerDataItem dealerDataItem;
     private SlotDataItem slotDataItem;
 
+    /**
+     * Unique way to create an instance
+     * @param dealerDataItem
+     * @param slotDataItem
+     * @return
+     */
     public static DealerSlotData from(DealerDataItem dealerDataItem, SlotDataItem slotDataItem) {
         DealerSlotData dataItem = new DealerSlotData();
 
@@ -39,7 +45,10 @@ public class DealerSlotData {
 
     @Override
     public String toString() {
-        return reflectionToString(this);
+        return new ToStringBuilder(this)
+                .append("dealerDataItem", dealerDataItem)
+                .append("slotDataItem", slotDataItem)
+                .toString();
     }
 
     public static class DealerDataItem {
@@ -84,7 +93,11 @@ public class DealerSlotData {
 
         @Override
         public String toString() {
-            return reflectionToString(this);
+            return new ToStringBuilder(this)
+                    .append("reference", reference)
+                    .append("name", name)
+                    .append("location", location)
+                    .toString();
         }
     }
 
@@ -116,6 +129,11 @@ public class DealerSlotData {
         }
 
         @Override
-        public String toString() { return reflectionToString(this); }
+        public String toString() {
+            return new ToStringBuilder(this)
+                    .append("rank", rank)
+                    .append("vehicleName", vehicleName)
+                    .toString();
+        }
     }
 }
