@@ -5,7 +5,6 @@ import fr.tduf.gui.installer.controllers.DealerSlotsStageController;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
 import fr.tduf.gui.installer.stages.DealerSlotsStageDesigner;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -44,21 +43,10 @@ public class DealerSlotUserInputHelper {
 
         Log.info(THIS_CLASS_NAME, "->Using dealer slot: " + selectedItem);
 
-        selectedItem.ifPresent(slotData -> {
-            createPatchPropertiesForDealerSlot(slotData, context.getPatchProperties());
-
-            context.getUserSelection().selectDealerSlot(slotData);
-        });
+        selectedItem.ifPresent(context.getUserSelection()::selectDealerSlot);
         if (!selectedItem.isPresent()) {
             Log.info(THIS_CLASS_NAME, "->No dealer slot selected, will not locate vehicle.");
         }
-    }
-
-    static void createPatchPropertiesForDealerSlot(DealerSlotData dealerSlotData, PatchProperties patchProperties) {
-        Log.info(THIS_CLASS_NAME, "->Resolving missing properties with dealer slot information");
-
-        patchProperties.setDealerReferenceIfNotExists(dealerSlotData.getDealerDataItem().referenceProperty().get());
-        patchProperties.setDealerSlotIfNotExists(dealerSlotData.getSlotDataItem().rankProperty().get());
     }
 
     private static DealerSlotsStageController initDealerSlotsController(Window mainWindow) throws IOException {

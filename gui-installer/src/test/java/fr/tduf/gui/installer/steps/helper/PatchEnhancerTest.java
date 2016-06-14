@@ -69,6 +69,29 @@ public class PatchEnhancerTest {
     }
 
     @Test
+    public void enhancePatchProperties_whenDealerSlotSelected_andPropertiesAlreadyExist_shouldKeepProperties() {
+        // GIVEN
+        patchProperties.setDealerReferenceIfNotExists("1111");
+        patchProperties.setDealerSlotIfNotExists(1);
+        databaseContext.getUserSelection().selectDealerSlot(DealerSlotData.from(
+                DealerSlotData.DealerDataItem.fromDealer(Dealer.builder()
+                        .withRef("2222")
+                        .withDisplayedName(Resource.from("", ""))
+                        .withSlots(new ArrayList<>(0))
+                        .build()),
+                DealerSlotData.SlotDataItem.fromDealerSlot(Dealer.Slot.builder()
+                        .withRank(2)
+                        .build())));
+
+        // WHEN
+        new PatchEnhancer(databaseContext).enhancePatchProperties(patchProperties);
+
+        // THEN
+        assertThat(patchProperties.getDealerReference()).contains("1111");
+        assertThat(patchProperties.getDealerSlot()).contains(1);
+    }
+
+    @Test
     public void enhancePatchObjectWithPaintJobs_withPaintJobProperties_shouldAddCarColors_andInterior_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
         String mainColorId = "1111";

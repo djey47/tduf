@@ -1,16 +1,17 @@
 package fr.tduf.gui.installer.controllers.helper;
 
 
-import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
+import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.ArrayList;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DealerSlotUserInputHelperTest {
@@ -24,48 +25,17 @@ public class DealerSlotUserInputHelperTest {
     public void setup() {}
 
     @Test
-    public void createPatchPropertiesForDealerSlot_whenNoProperty_shouldSetValuesFromSelectedSlot() {
+    public void selectAndDefineDealerSlot_whenForcedDealerSlot_shouldNotSelectIt() throws Exception {
         // GIVEN
-        int slotRank = 2;
-
-        PatchProperties patchProperties = new PatchProperties();
-        DealerSlotData.DealerDataItem dealerItem = new DealerSlotData.DealerDataItem();
-        dealerItem.referenceProperty().setValue(DEALERREF);
-        DealerSlotData.SlotDataItem slotItem = new DealerSlotData.SlotDataItem();
-        slotItem.rankProperty().setValue(slotRank);
-        DealerSlotData dealerSlotData = DealerSlotData.from(dealerItem, slotItem);
-
-
-        // WHEN
-        DealerSlotUserInputHelper.createPatchPropertiesForDealerSlot(dealerSlotData, patchProperties);
-
-
-        // THEN
-        assertThat(patchProperties.getDealerReference()).contains(DEALERREF);
-        assertThat(patchProperties.getDealerSlot()).contains(slotRank);
-    }
-
-    @Test
-    public void createPatchPropertiesForDealerSlot_whenPropertiesExist_shouldKeepCurrentValues() {
-        // GIVEN
-        int slotRank = 2;
-
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setDealerReferenceIfNotExists(DEALERREF);
-        patchProperties.setDealerSlotIfNotExists(slotRank);
-        DealerSlotData.DealerDataItem dealerItem = new DealerSlotData.DealerDataItem();
-        dealerItem.referenceProperty().setValue("2222");
-        DealerSlotData.SlotDataItem slotItem = new DealerSlotData.SlotDataItem();
-        slotItem.rankProperty().setValue(4);
-        DealerSlotData dealerSlotData = DealerSlotData.from(dealerItem, slotItem);
-
+        patchProperties.setDealerSlotIfNotExists(1);
+        DatabaseContext databaseContext = new DatabaseContext(new ArrayList<>(0), "");
+        databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
 
         // WHEN
-        DealerSlotUserInputHelper.createPatchPropertiesForDealerSlot(dealerSlotData, patchProperties);
+        DealerSlotUserInputHelper.selectAndDefineDealerSlot(databaseContext, null);
 
-
-        // THEN
-        assertThat(patchProperties.getDealerReference()).contains(DEALERREF);
-        assertThat(patchProperties.getDealerSlot()).contains(slotRank);
+        // THEN: no FX calls
     }
 }
