@@ -104,9 +104,9 @@ public class PatchEnhancer {
     void enhancePatchObjectWithRims(VehicleSlot vehicleSlot) {
         Log.info(THIS_CLASS_NAME, "->Adding rim changes to initial patch");
 
-        AtomicInteger rimIndex = new AtomicInteger(1);
+        AtomicInteger rimIndex = new AtomicInteger(0);
         List<DbPatchDto.DbChangeDto> changeObjectsForRims = vehicleSlot.getRims().stream()
-                .flatMap(rimSlot -> createChangeObjectsForRims(vehicleSlot, rimSlot, rimIndex))
+                .flatMap(rimSlot -> createChangeObjectsForRims(vehicleSlot, rimSlot, rimIndex.getAndIncrement()))
                 .collect(toList());
 
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForRims);
@@ -221,49 +221,43 @@ public class PatchEnhancer {
     }
 
     private void enhancePatchObjectWithExteriors(VehicleSlot vehicleSlot) {
-        AtomicInteger exteriorIndex = new AtomicInteger(1);
+        AtomicInteger exteriorIndex = new AtomicInteger(0);
         List<DbPatchDto.DbChangeDto> changeObjectsForPaintJobs = vehicleSlot.getPaintJobs().stream()
-
-                .flatMap(paintJob -> createChangeObjectsForExterior(vehicleSlot, paintJob, exteriorIndex))
-
+                .flatMap(paintJob -> createChangeObjectsForExterior(vehicleSlot, paintJob, exteriorIndex.getAndIncrement()))
                 .collect(toList());
 
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForPaintJobs);
     }
 
     private void enhancePatchObjectWithInteriors(List<String> interiorPatternRefs) {
-        AtomicInteger interiorIndex = new AtomicInteger(1);
+        AtomicInteger interiorIndex = new AtomicInteger(0);
         List<DbPatchDto.DbChangeDto> changeObjectsForInteriors = interiorPatternRefs.stream()
-
                 .filter(intRef -> !DatabaseConstants.REF_NO_INTERIOR.equals(intRef))
-
-                .map(intRef -> createChangeObjectForInterior(intRef, interiorIndex))
-
+                .map(intRef -> createChangeObjectForInterior(intRef, interiorIndex.getAndIncrement()))
                 .collect(toList());
 
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForInteriors);
     }
 
-    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsForExterior(VehicleSlot vehicleSlot, PaintJob paintJob, AtomicInteger exteriorIndex) {
-        if (!databaseContext.getPatchProperties().getExteriorMainColorId(paintJob.getRank()).isPresent()) {
+    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsForExterior(VehicleSlot vehicleSlot, PaintJob paintJob, int exteriorIndex) {
+        if (!databaseContext.getPatchProperties().getExteriorMainColorId(paintJob.getRank() - 1).isPresent()) {
             return Stream.empty();
         }
 
         List<String> interiorRefs = new ArrayList<>(paintJob.getInteriorPatternRefs());
-        try (IntStream stream = rangeClosed(interiorRefs.size(), 15)) {
-            stream.forEach(index -> interiorRefs.add(DatabaseConstants.REF_NO_INTERIOR));
+        try (IntStream stream = rangeClosed(interiorRefs.size(), DatabaseConstants.COUNT_INTERIORS)) {
+            stream.forEach(i -> interiorRefs.add(DatabaseConstants.REF_NO_INTERIOR));
         }
 
-        int index = exteriorIndex.getAndIncrement();
         DbPatchDto.DbChangeDto entryUpdateChange = DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE)
                 .forTopic(CAR_COLORS)
                 .withEntryValues(asList(
                         vehicleSlot.getRef(),
-                        PlaceholderConstants.getPlaceHolderForExteriorMainColor(index),
-                        PlaceholderConstants.getPlaceHolderForExteriorNameResource(index),
-                        PlaceholderConstants.getPlaceHolderForExteriorSecondaryColor(index),
-                        PlaceholderConstants.getPlaceHolderForExteriorCalipersColor(index),
+                        PlaceholderConstants.getPlaceHolderForExteriorMainColor(exteriorIndex),
+                        PlaceholderConstants.getPlaceHolderForExteriorNameResource(exteriorIndex),
+                        PlaceholderConstants.getPlaceHolderForExteriorSecondaryColor(exteriorIndex),
+                        PlaceholderConstants.getPlaceHolderForExteriorCalipersColor(exteriorIndex),
                         "0",
                         "0",
                         interiorRefs.get(0),
@@ -294,8 +288,7 @@ public class PatchEnhancer {
         return Stream.of(entryUpdateChange, resourceUpdateChange);
     }
 
-    private DbPatchDto.DbChangeDto createChangeObjectForInterior(String intRef, AtomicInteger interiorIndex) {
-        int index = interiorIndex.getAndIncrement();
+    private DbPatchDto.DbChangeDto createChangeObjectForInterior(String intRef, int interiorIndex) {
         return DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE)
                 .forTopic(INTERIOR)
@@ -304,18 +297,17 @@ public class PatchEnhancer {
                         intRef,
                         DatabaseConstants.REF_DEFAULT_BRAND,
                         DatabaseConstants.RESOURCE_REF_NONE_INTERIOR_NAME,
-                        PlaceholderConstants.getPlaceHolderForInteriorMainColor(index),
-                        PlaceholderConstants.getPlaceHolderForInteriorSecondaryColor(index),
-                        PlaceholderConstants.getPlaceHolderForInteriorMaterial(index),
+                        PlaceholderConstants.getPlaceHolderForInteriorMainColor(interiorIndex),
+                        PlaceholderConstants.getPlaceHolderForInteriorSecondaryColor(interiorIndex),
+                        PlaceholderConstants.getPlaceHolderForInteriorMaterial(interiorIndex),
                         "0"
                 ))
                 .build();
     }
 
-    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsForRims(VehicleSlot vehicleSlot, RimSlot rimSlot, AtomicInteger rimIndex) {
-        int index = rimIndex.getAndIncrement();
+    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsForRims(VehicleSlot vehicleSlot, RimSlot rimSlot, int rimIndex) {
         final PatchProperties patchProperties = databaseContext.getPatchProperties();
-        if (!patchProperties.getRimSlotReference(index).isPresent()) {
+        if (!patchProperties.getRimSlotReference(rimIndex).isPresent()) {
             return Stream.empty();
         }
 
@@ -324,8 +316,8 @@ public class PatchEnhancer {
                 .forTopic(CAR_RIMS)
                 .withEntryValues( asList(
                         vehicleSlot.getRef(),
-                        patchProperties.getRimSlotReference(index)
-                            .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Rim slot reference not found in properties: for set " + index))
+                        patchProperties.getRimSlotReference(rimIndex)
+                            .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Rim slot reference not found in properties: for set " + rimIndex))
                 ))
                 .build();
 
@@ -335,20 +327,20 @@ public class PatchEnhancer {
                 .asReference(rimSlot.getRef())
                 .withEntryValues( asList(
                         rimSlot.getRef(),
-                        PlaceholderConstants.getPlaceHolderForRimBrand(index),
+                        PlaceholderConstants.getPlaceHolderForRimBrand(rimIndex),
                         DatabaseConstants.RESOURCE_REF_NO_RIM_NAME,
-                        PlaceholderConstants.getPlaceHolderForRimNameResource(index),
-                        PlaceholderConstants.getPlaceHolderForFrontRimWidth(index),
-                        PlaceholderConstants.getPlaceHolderForFrontRimHeight(index),
-                        PlaceholderConstants.getPlaceHolderForFrontRimDiameter(index),
-                        PlaceholderConstants.getPlaceHolderForRearRimWidth(index),
-                        PlaceholderConstants.getPlaceHolderForRearRimHeight(index),
-                        PlaceholderConstants.getPlaceHolderForRearRimDiameter(index),
+                        PlaceholderConstants.getPlaceHolderForRimNameResource(rimIndex),
+                        PlaceholderConstants.getPlaceHolderForFrontRimWidth(rimIndex),
+                        PlaceholderConstants.getPlaceHolderForFrontRimHeight(rimIndex),
+                        PlaceholderConstants.getPlaceHolderForFrontRimDiameter(rimIndex),
+                        PlaceholderConstants.getPlaceHolderForRearRimWidth(rimIndex),
+                        PlaceholderConstants.getPlaceHolderForRearRimHeight(rimIndex),
+                        PlaceholderConstants.getPlaceHolderForRearRimDiameter(rimIndex),
                         "0",
                         "0",
-                        PlaceholderConstants.getPlaceHolderForRimBrand(index),
-                        PlaceholderConstants.getPlaceHolderForFrontRimFileNameResource(index),
-                        PlaceholderConstants.getPlaceHolderForRearRimFileNameResource(index),
+                        PlaceholderConstants.getPlaceHolderForRimBrand(rimIndex),
+                        PlaceholderConstants.getPlaceHolderForFrontRimFileNameResource(rimIndex),
+                        PlaceholderConstants.getPlaceHolderForRearRimFileNameResource(rimIndex),
                         "0"
                 ))
                 .build();
@@ -356,22 +348,22 @@ public class PatchEnhancer {
         DbPatchDto.DbChangeDto slotNameResourceUpdate = DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE_RES)
                 .forTopic(RIMS)
-                .asReference(PlaceholderConstants.getPlaceHolderForRimNameResource(index))
-                .withValue(PlaceholderConstants.getPlaceHolderForRimName(index))
+                .asReference(PlaceholderConstants.getPlaceHolderForRimNameResource(rimIndex))
+                .withValue(PlaceholderConstants.getPlaceHolderForRimName(rimIndex))
                 .build();
 
         DbPatchDto.DbChangeDto slotFrontFileNameResourceUpdate = DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE_RES)
                 .forTopic(RIMS)
-                .asReference(PlaceholderConstants.getPlaceHolderForFrontRimFileNameResource(index))
-                .withValue(PlaceholderConstants.getPlaceHolderForFrontRimFileName(index))
+                .asReference(PlaceholderConstants.getPlaceHolderForFrontRimFileNameResource(rimIndex))
+                .withValue(PlaceholderConstants.getPlaceHolderForFrontRimFileName(rimIndex))
                 .build();
 
         DbPatchDto.DbChangeDto slotRearNameResourceUpdate = DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE_RES)
                 .forTopic(RIMS)
-                .asReference(PlaceholderConstants.getPlaceHolderForRearRimFileNameResource(index))
-                .withValue(PlaceholderConstants.getPlaceHolderForRearRimFileName(index))
+                .asReference(PlaceholderConstants.getPlaceHolderForRearRimFileNameResource(rimIndex))
+                .withValue(PlaceholderConstants.getPlaceHolderForRearRimFileName(rimIndex))
                 .build();
 
         return Stream.of(associationEntryUpdate, slotEntryUpdate, slotNameResourceUpdate, slotFrontFileNameResourceUpdate, slotRearNameResourceUpdate);

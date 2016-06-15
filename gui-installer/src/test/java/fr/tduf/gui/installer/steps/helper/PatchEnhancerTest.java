@@ -250,23 +250,39 @@ public class PatchEnhancerTest {
     @Test
     public void enhancePatchObjectWithPaintJobs_withPaintJobProperties_shouldAddCarColors_andInterior_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
-        String mainColorId = "1111";
-        String secColorId = "2222";
-        String calColorId = "3333";
-        String nameId = "4444";
-        String name = "PJ name";
-        String intId = "5555";
+        String mainColorId1 = "1111";
+        String mainColorId2 = "1111-2";
+        String secColorId1 = "2222";
+        String secColorId2 = "2222-2";
+        String calColorId1 = "3333";
+        String calColorId2 = "3333-2";
+        String nameId1 = "4444";
+        String nameId2 = "4444-2";
+        String name1 = "PJ name 1";
+        String name2 = "PJ name 2";
+        String intId1 = "5555";
+        String intId2 = "5555-2";
         String intManufacturerId = "62938337";
         String intNameId = "53365512";
 
-        patchProperties.setExteriorMainColorIdIfNotExists(mainColorId, 1);
+        patchProperties.setExteriorMainColorIdIfNotExists(mainColorId1, 0);
+        patchProperties.setExteriorMainColorIdIfNotExists(mainColorId2, 1);
 
         final VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef(SLOT_REFERENCE)
                 .addPaintJob(PaintJob.builder()
-                        .withName(Resource.from(nameId, name))
-                        .withColors(Resource.from(mainColorId, ""), Resource.from(secColorId, ""), Resource.from(calColorId, ""))
-                        .addInteriorPattern(intId)
+                        .atRank(1)
+                        .withName(Resource.from(nameId1, name1))
+                        .withColors(Resource.from(mainColorId1, ""), Resource.from(secColorId1, ""), Resource.from(calColorId1, ""))
+                        .addInteriorPattern(intId1)
+                        .addInteriorPattern(intId2)
+                        .build())
+                .addPaintJob(PaintJob.builder()
+                        .atRank(2)
+                        .withName(Resource.from(nameId2, name2))
+                        .withColors(Resource.from(mainColorId2, ""), Resource.from(secColorId2, ""), Resource.from(calColorId2, ""))
+                        .addInteriorPattern(intId1)
+                        .addInteriorPattern(intId2)
                         .build())
                 .build();
 
@@ -277,21 +293,21 @@ public class PatchEnhancerTest {
 
         // THEN
         DbPatchDto patchObject = databaseContext.getPatchObject();
-        assertThat(patchObject.getChanges()).hasSize(3);
+        assertThat(patchObject.getChanges()).hasSize(3 * 2); // 2 per paint job + 2 interiors
         assertThat(patchObject.getChanges()).extracting("type").containsOnly(UPDATE, UPDATE_RES);
         assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_COLORS, INTERIOR);
-        assertThat(patchObject.getChanges()).extracting("ref").containsOnly(null, nameId, intId);
+        assertThat(patchObject.getChanges()).extracting("ref").containsOnly(null, nameId1, intId1, nameId2, intId2);
         assertThat(patchObject.getChanges()).extracting("values").containsOnly(
                 asList(
                         SLOT_REFERENCE,
-                        "{COLORID.M.1}",
-                        "{RES_COLORNAME.1}",
-                        "{COLORID.S.1}",
-                        "{CALLIPERSID.1}",
+                        "{COLORID.M.0}",
+                        "{RES_COLORNAME.0}",
+                        "{COLORID.S.0}",
+                        "{CALLIPERSID.0}",
                         "0",
                         "0",
-                        intId,
-                        "11319636",
+                        intId1,
+                        intId2,
                         "11319636",
                         "11319636",
                         "11319636",
@@ -308,7 +324,41 @@ public class PatchEnhancerTest {
                 ),
                 null,
                 asList(
-                        intId,
+                        SLOT_REFERENCE,
+                        "{COLORID.M.1}",
+                        "{RES_COLORNAME.1}",
+                        "{COLORID.S.1}",
+                        "{CALLIPERSID.1}",
+                        "0",
+                        "0",
+                        intId1,
+                        intId2,
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636"
+                ),
+                null,
+                asList(
+                        intId1,
+                        intManufacturerId,
+                        intNameId,
+                        "{INTCOLORID.M.0}",
+                        "{INTCOLORID.S.0}",
+                        "{INTMATERIALID.0}",
+                        "0"
+                ),
+                asList(
+                        intId2,
                         intManufacturerId,
                         intNameId,
                         "{INTCOLORID.M.1}",
@@ -316,29 +366,27 @@ public class PatchEnhancerTest {
                         "{INTMATERIALID.1}",
                         "0"
                 ));
-        assertThat(patchObject.getChanges()).extracting("value").containsOnly(null, name);
+        assertThat(patchObject.getChanges()).extracting("value").containsOnly(null, name1, name2);
     }
-
 
     @Test
     public void enhancePatchObjectWithRims_withRimProperties_shouldAddCarRims_andRims_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
+        String rimId0 = "0000";
         String rimId1 = "1111";
         String rimId2 = "2222";
 
+        patchProperties.setRimsSlotReferenceIfNotExists(rimId0, 0);
         patchProperties.setRimsSlotReferenceIfNotExists(rimId1, 1);
         patchProperties.setRimsSlotReferenceIfNotExists(rimId2, 2);
 
-        final RimSlot rimSlot1 = RimSlot.builder()
-                .withRef(rimId1)
-                .build();
-        final RimSlot rimSlot2 = RimSlot.builder()
-                .withRef(rimId2)
-                .build();
+        final RimSlot rimSlot0 = createDefaultRimSlot(rimId0);
+        final RimSlot rimSlot1 = createDefaultRimSlot(rimId1);
+        final RimSlot rimSlot2 = createDefaultRimSlot(rimId2);
         final VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef(SLOT_REFERENCE)
-                .withDefaultRims(rimSlot1)
-                .addRim(rimSlot2)
+                .withDefaultRims(rimSlot0)
+                .addRims(asList(rimSlot1, rimSlot2))
                 .build();
 
 
@@ -348,11 +396,15 @@ public class PatchEnhancerTest {
 
         // THEN
         DbPatchDto patchObject = databaseContext.getPatchObject();
-        assertThat(patchObject.getChanges()).hasSize(10); // 5 per rim set
+        assertThat(patchObject.getChanges()).hasSize(3 * 5); // 5 per rim set
         assertThat(patchObject.getChanges()).extracting("type").containsOnly(UPDATE, UPDATE_RES);
         assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_RIMS, RIMS);
         assertThat(patchObject.getChanges()).extracting("ref").containsOnly(
                 null,
+                rimId0,
+                "{RES_RIMNAME.0}",
+                "{RES_BANKNAME.FR.0}",
+                "{RES_BANKNAME.RR.0}",
                 rimId1,
                 "{RES_RIMNAME.1}",
                 "{RES_BANKNAME.FR.1}",
@@ -363,6 +415,24 @@ public class PatchEnhancerTest {
                 "{RES_BANKNAME.RR.2}"
         );
         assertThat(patchObject.getChanges()).extracting("values").containsOnly(
+                asList(SLOT_REFERENCE, rimId0),
+                asList(
+                        rimId0,
+                        "{RIMBRANDREF.0}",
+                        "54276512",
+                        "{RES_RIMNAME.0}",
+                        "{RIMWIDTH.FR.0}",
+                        "{RIMHEIGHT.FR.0}",
+                        "{RIMDIAM.FR.0}",
+                        "{RIMWIDTH.RR.0}",
+                        "{RIMHEIGHT.RR.0}",
+                        "{RIMDIAM.RR.0}",
+                        "0",
+                        "0",
+                        "{RIMBRANDREF.0}",
+                        "{RES_BANKNAME.FR.0}",
+                        "{RES_BANKNAME.RR.0}",
+                        "0"),
                 asList(SLOT_REFERENCE, rimId1),
                 asList(
                         rimId1,
@@ -402,6 +472,9 @@ public class PatchEnhancerTest {
                         "0"));
         assertThat(patchObject.getChanges()).extracting("value").containsOnly(
                 null,
+                "{RIMNAME.0}",
+                "{BANKNAME.FR.0}",
+                "{BANKNAME.RR.0}",
                 "{RIMNAME.1}",
                 "{BANKNAME.FR.1}",
                 "{BANKNAME.RR.1}",
@@ -447,6 +520,12 @@ public class PatchEnhancerTest {
 
     private PatchEnhancer createDefaultEnhancer() {
         return new PatchEnhancer(databaseContext);
+    }
+
+    private static RimSlot createDefaultRimSlot(String rimId) {
+        return RimSlot.builder()
+                .withRef(rimId)
+                .build();
     }
 
     private static VehicleSlot createVehicleSlot() {

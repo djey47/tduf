@@ -11,6 +11,7 @@ public class DatabaseConstants {
     public static final int FIELD_RANK_COLOR_NAME = 3;                              // CAR COLORS
     public static final int FIELD_RANK_INTERIOR_1 = 8;
     public static final int FIELD_RANK_INTERIOR_15 = 22;
+    public static final int COUNT_INTERIORS = 15;
 
     public static final int FIELD_RANK_CAR_BRAND = 2;                               // CAR PHYSICS
     public static final int FIELD_RANK_GROUP = 5;
