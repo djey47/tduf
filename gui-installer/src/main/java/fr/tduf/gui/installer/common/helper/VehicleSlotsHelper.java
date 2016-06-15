@@ -5,6 +5,7 @@ import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.domain.*;
+import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -190,6 +191,32 @@ public class VehicleSlotsHelper extends CommonHelper {
         }
 
         return String.format("%s%s%s", vehicleSlot.getFileName().getValue(), suffix, extension);
+    }
+
+    /**
+     * @param rimBankFileType  : type of bank file to be resolved
+     * @param withExtension : true to append appropriate extension, false otherwise
+     * @return simple file name
+     */
+    // TODO test
+    public static String getRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType, int rimIndex, boolean withExtension) {
+        if (FRONT_RIM != rimBankFileType &&
+                REAR_RIM != rimBankFileType) {
+            return "";
+        }
+
+        final List<RimSlot> declaredRims = vehicleSlot.getRims();
+        if (rimIndex > declaredRims.size()) {
+            throw new IllegalArgumentException("Vehicle slot has not enough rims: asked index: " + rimIndex + ", max: " + declaredRims.size());
+        }
+
+        final String extension = withExtension ? "." + GenuineBnkGateway.EXTENSION_BANKS : "";
+        final RimSlot rimSlot = declaredRims.get(rimIndex - 1);
+        RimSlot.RimInfo rimInfo = FRONT_RIM == rimBankFileType? rimSlot.getFrontRimInfo() : rimSlot.getRearRimInfo();
+
+        return of(rimInfo.getFileName().getValue())
+                .map(rimBankSimpleName -> String.format("%s%s", rimBankSimpleName, extension))
+                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 
     /**
