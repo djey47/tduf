@@ -6,6 +6,7 @@ import fr.tduf.gui.installer.domain.*;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import org.junit.Before;
@@ -22,6 +23,7 @@ import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChange
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -72,7 +74,7 @@ public class PatchEnhancerTest {
         patchProperties.clear();
 
         // WHEN
-        new PatchEnhancer(databaseContext).enhancePatchProperties(patchProperties);
+        createDefaultEnhancer().enhancePatchProperties(patchProperties);
 
         // THEN: IAE
     }
@@ -82,7 +84,7 @@ public class PatchEnhancerTest {
         // GIVEN
         databaseContext.getUserSelection().resetVehicleSlot();
 
-        final PatchEnhancer patchEnhancer = new PatchEnhancer(databaseContext);
+        final PatchEnhancer patchEnhancer = createDefaultEnhancer();
         patchEnhancer.overrideVehicleSlotsHelper(vehicleSlotsHelperMock);
 
         when(vehicleSlotsHelperMock.getVehicleSlotFromReference(SLOT_REFERENCE)).thenReturn(of(createVehicleSlot()));
@@ -133,7 +135,7 @@ public class PatchEnhancerTest {
         patchProperties.setResourceFrontRimBankIfNotExists(frontRimResource, 1);
         patchProperties.setRearRimBankNameIfNotExists(rearRimBankName, 1);
         patchProperties.setResourceRearRimBankIfNotExists(rearRimResource, 1);
-        final PatchEnhancer patchEnhancer = new PatchEnhancer(databaseContext);
+        final PatchEnhancer patchEnhancer = createDefaultEnhancer();
         patchEnhancer.overrideVehicleSlotsHelper(vehicleSlotsHelperMock);
 
         when(vehicleSlotsHelperMock.getVehicleSlotFromReference(slotReference)).thenReturn(of(createVehicleSlot()));
@@ -160,7 +162,7 @@ public class PatchEnhancerTest {
     @Test
     public void enhancePatchProperties_whenNoDealerSlotSelected_shouldNotAddProperties() {
         // GIVEN-WHEN
-        new PatchEnhancer(databaseContext).enhancePatchProperties(patchProperties);
+        createDefaultEnhancer().enhancePatchProperties(patchProperties);
 
         // THEN
         assertThat(patchProperties.getDealerReference()).isEmpty();
@@ -181,7 +183,7 @@ public class PatchEnhancerTest {
                         .build())));
 
         // WHEN
-        new PatchEnhancer(databaseContext).enhancePatchProperties(patchProperties);
+        createDefaultEnhancer().enhancePatchProperties(patchProperties);
 
         // THEN
         assertThat(patchProperties.getDealerReference()).contains("1111");
@@ -204,11 +206,45 @@ public class PatchEnhancerTest {
                         .build())));
 
         // WHEN
-        new PatchEnhancer(databaseContext).enhancePatchProperties(patchProperties);
+        createDefaultEnhancer().enhancePatchProperties(patchProperties);
 
         // THEN
         assertThat(patchProperties.getDealerReference()).contains("1111");
         assertThat(patchProperties.getDealerSlot()).contains(1);
+    }
+
+    @Test(expected = InternalStepException.class)
+    public void enhancePatchObject_withoutProperties_withoutSelectedSlot_shouldThrowException() {
+        // GIVEN
+        patchProperties.clear();
+        databaseContext.getUserSelection().resetVehicleSlot();
+
+        // WHEN
+        createDefaultEnhancer().enhancePatchObject();
+
+        // THEN: ISE
+    }
+
+    @Test
+    public void enhancePatchObject_withoutProperties_shouldGenerateSlotRefFromSelectedSlot() {
+        // GIVEN
+        patchProperties.clear();
+
+        // WHEN
+        createDefaultEnhancer().enhancePatchObject();
+
+        // THEN
+        assertThat(patchProperties.getVehicleSlotReference()).contains(SLOT_REFERENCE);
+    }
+
+    @Test
+    public void enhancePatchObject_withoutDealerProperties_shoulNotAddCarShops_updateInstruction() {
+        // GIVEN-WHEN
+        createDefaultEnhancer().enhancePatchObject();
+
+        // THEN
+        DbPatchDto patchObject = databaseContext.getPatchObject();
+        assertThat(patchObject.getChanges()).extracting("topic").doesNotContain(CAR_SHOPS);
     }
 
     @Test
@@ -236,7 +272,7 @@ public class PatchEnhancerTest {
 
 
         // WHEN
-        new PatchEnhancer(databaseContext).enhancePatchObjectWithPaintJobs(vehicleSlot);
+        createDefaultEnhancer().enhancePatchObjectWithPaintJobs(vehicleSlot);
 
 
         // THEN
@@ -283,6 +319,7 @@ public class PatchEnhancerTest {
         assertThat(patchObject.getChanges()).extracting("value").containsOnly(null, name);
     }
 
+
     @Test
     public void enhancePatchObjectWithRims_withRimProperties_shouldAddCarRims_andRims_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
@@ -306,7 +343,7 @@ public class PatchEnhancerTest {
 
 
         // WHEN
-        new PatchEnhancer(databaseContext).enhancePatchObjectWithRims(vehicleSlot);
+        createDefaultEnhancer().enhancePatchObjectWithRims(vehicleSlot);
 
 
         // THEN
@@ -371,6 +408,45 @@ public class PatchEnhancerTest {
                 "{RIMNAME.2}",
                 "{BANKNAME.FR.2}",
                 "{BANKNAME.RR.2}");
+    }
+
+    @Test
+    public void enhancePatchObjectWithLocationChange_withDealerProperties_shouldAddCarShops_updateInstruction() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
+        // GIVEN
+        String dealerRef = "0000";
+        patchProperties.setDealerReferenceIfNotExists(dealerRef);
+        patchProperties.setDealerSlotIfNotExists(10);
+
+
+        // WHEN
+        createDefaultEnhancer().enhancePatchObjectWithLocationChange(SLOT_REFERENCE);
+
+
+        // THEN
+        DbPatchDto patchObject = databaseContext.getPatchObject();
+        assertThat(patchObject.getChanges()).extracting("type").containsOnly(UPDATE);
+        assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_SHOPS);
+        assertThat(patchObject.getChanges()).extracting("ref").containsOnly(dealerRef);
+        assertThat(patchObject.getChanges()).extracting("partialValues").containsOnly(
+                singletonList(DbFieldValueDto.fromCouple(13, SLOT_REFERENCE)));
+    }
+
+    @Test
+    public void enhancePatchObjectWithInstallFlag_shouldAddCarPhysics_updateInstruction() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
+        // GIVEN-WHEN
+        createDefaultEnhancer().enhancePatchObjectWithInstallFlag(SLOT_REFERENCE);
+
+        // THEN
+        DbPatchDto patchObject = databaseContext.getPatchObject();
+        assertThat(patchObject.getChanges()).extracting("type").containsOnly(UPDATE);
+        assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_PHYSICS_DATA);
+        assertThat(patchObject.getChanges()).extracting("ref").containsOnly(SLOT_REFERENCE);
+        assertThat(patchObject.getChanges()).extracting("partialValues").containsOnly(
+                singletonList(DbFieldValueDto.fromCouple(100, "100")));
+    }
+
+    private PatchEnhancer createDefaultEnhancer() {
+        return new PatchEnhancer(databaseContext);
     }
 
     private static VehicleSlot createVehicleSlot() {

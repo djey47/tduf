@@ -112,6 +112,39 @@ public class PatchEnhancer {
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForRims);
     }
 
+    void enhancePatchObjectWithLocationChange(String vehicleSlotReference) {
+        Log.info(THIS_CLASS_NAME, "->Adding dealer slot change to initial patch");
+
+        PatchProperties patchProperties = databaseContext.getPatchProperties();
+        int effectiveFieldRank = patchProperties.getDealerSlot()
+                .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected dealer slot index not found in properties"))
+                + DatabaseConstants.DELTA_RANK_DEALER_SLOTS;
+
+        DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
+                .forTopic(CAR_SHOPS)
+                .withType(UPDATE)
+                .asReference(patchProperties.getDealerReference()
+                        .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected dealer reference not found in properties")))
+                .withPartialEntryValues(singletonList(DbFieldValueDto.fromCouple(effectiveFieldRank, vehicleSlotReference)))
+                .build();
+
+        databaseContext.getPatchObject().getChanges().add(changeObject);
+    }
+
+    void enhancePatchObjectWithInstallFlag(String vehicleSlotReference) {
+        Log.info(THIS_CLASS_NAME, "->Adding install flag change to initial patch");
+
+        final String secuOneRawValue = SecurityOptions.INSTALLED.setScale(0, RoundingMode.UNNECESSARY).toString();
+        DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
+                .forTopic(CAR_PHYSICS_DATA)
+                .withType(UPDATE)
+                .asReference(vehicleSlotReference)
+                .withPartialEntryValues(singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_SECU1, secuOneRawValue)))
+                .build();
+
+        databaseContext.getPatchObject().getChanges().add(changeObject);
+    }
+
     private void createPatchPropertiesForVehicleSlot(VehicleSlot effectiveSlot, PatchProperties patchProperties) {
         Log.info(THIS_CLASS_NAME, "->Resolving missing properties with slot information");
 
@@ -185,39 +218,6 @@ public class PatchEnhancer {
 
         return paintJobs.get(0).getInteriorPatternRefs().stream()
                 .findFirst();
-    }
-
-    private void enhancePatchObjectWithLocationChange(String vehicleSlotReference) {
-        Log.info(THIS_CLASS_NAME, "->Adding dealer slot change to initial patch");
-
-        PatchProperties patchProperties = databaseContext.getPatchProperties();
-        int effectiveFieldRank = patchProperties.getDealerSlot()
-                .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected dealer slot index not found in properties"))
-                + DatabaseConstants.DELTA_RANK_DEALER_SLOTS;
-
-        DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
-                .forTopic(CAR_SHOPS)
-                .withType(UPDATE)
-                .asReference(patchProperties.getDealerReference()
-                        .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected dealer reference not found in properties")))
-                .withPartialEntryValues(singletonList(DbFieldValueDto.fromCouple(effectiveFieldRank, vehicleSlotReference)))
-                .build();
-
-        databaseContext.getPatchObject().getChanges().add(changeObject);
-    }
-
-    private void enhancePatchObjectWithInstallFlag(String vehicleSlotReference) {
-        Log.info(THIS_CLASS_NAME, "->Adding install flag change to initial patch");
-
-        final String secuOneRawValue = SecurityOptions.INSTALLED.setScale(0, RoundingMode.UNNECESSARY).toString();
-        DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
-                .forTopic(CAR_PHYSICS_DATA)
-                .withType(UPDATE)
-                .asReference(vehicleSlotReference)
-                .withPartialEntryValues(singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_SECU1, secuOneRawValue)))
-                .build();
-
-        databaseContext.getPatchObject().getChanges().add(changeObject);
     }
 
     private void enhancePatchObjectWithExteriors(VehicleSlot vehicleSlot) {
