@@ -1,0 +1,59 @@
+{
+  "version" : "1,2",
+  "categoryCount" : 2,
+  "entries" : [ {
+    "items" : [ {
+      "locale" : "ch",
+      "value" : "ERROR"
+    }, {
+      "locale" : "ko",
+      "value" : "ERROR"
+    }, {
+      "locale" : "ge",
+      "value" : "ERROR"
+    }, {
+      "locale" : "us",
+      "value" : "ERROR"
+    }, {
+      "locale" : "sp",
+      "value" : "ERROR"
+    }, {
+      "locale" : "fr",
+      "value" : "ERREUR!!"
+    }, {
+      "locale" : "it",
+      "value" : "ERROR"
+    }, {
+      "locale" : "ja",
+      "value" : "ERROR"
+    } ],
+    "ref" : "909787"
+  }, {
+    "items" : [ {
+      "locale" : "ch",
+      "value" : "Main"
+    }, {
+      "locale" : "ko",
+      "value" : "Main"
+    }, {
+      "locale" : "ge",
+      "value" : "Main"
+    }, {
+      "locale" : "us",
+      "value" : "Main"
+    }, {
+      "locale" : "sp",
+      "value" : "Main"
+    }, {
+      "locale" : "fr",
+      "value" : "Main"
+    }, {
+      "locale" : "it",
+      "value" : "Main"
+    }, {
+      "locale" : "ja",
+      "value" : "Main"
+    } ],
+    "ref" : "86037407"
+  } ]
+}

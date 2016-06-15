@@ -5,7 +5,6 @@ import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.domain.*;
-import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -135,12 +134,14 @@ public class VehicleSlotsHelper extends CommonHelper {
         Optional<Integer> carIdentifier = getIntValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_ID_CAR);
         Optional<Integer> cameraIdentifier = getIntValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_ID_CAM);
 
-        final Optional<RimSlot> defaultRims = getDefaultRimEntryForVehicle(slotReference);
+        final Optional<RimSlot> defaultRims = getDefaultRimsForVehicle(slotReference);
 
         Optional<Float> secuOptionOne = getFloatValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_SECU1);
         Optional<Integer> secuOptionTwo = getIntValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_SECU2);
 
         List<PaintJob> paintJobs = getPaintJobsForVehicle(slotReference);
+
+        List<RimSlot> rims = getAllRimsForVehicle(slotReference);
 
         return of(VehicleSlot.builder()
                 .withRef(slotReference)
@@ -154,6 +155,7 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .withCameraIdentifier(cameraIdentifier.orElse(DEFAULT_CAM_ID))
                 .withSecurityOptions(secuOptionOne.orElse(SecurityOptions.ONE_DEFAULT), secuOptionTwo.orElse(SecurityOptions.TWO_DEFAULT))
                 .addPaintJobs(paintJobs)
+                .addRims(rims)
                 .build());
     }
 
@@ -278,7 +280,7 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .collect(toList());
     }
 
-    private Optional<RimSlot> getDefaultRimEntryForVehicle(String slotReference) {
+    private Optional<RimSlot> getDefaultRimsForVehicle(String slotReference) {
         return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
 
                 .flatMap(entry -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEFAULT_RIMS))
@@ -288,6 +290,20 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .flatMap(rimSlotReference -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS))
 
                 .map(this::getRimSlotFromDatabaseEntry);
+    }
+
+    private List<RimSlot> getAllRimsForVehicle(String slotReference) {
+        return miner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference), CAR_RIMS)
+
+                .map(entry -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_RIM_ASSO_REF).get())
+
+                .map(DbDataDto.Item::getRawValue)
+
+                .map(rimSlotReference -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS).get())
+
+                .map(this::getRimSlotFromDatabaseEntry)
+
+                .collect(toList());
     }
 
     // Ignore warning (method reference)

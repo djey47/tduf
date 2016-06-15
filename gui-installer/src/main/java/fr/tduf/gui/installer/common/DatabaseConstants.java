@@ -25,6 +25,8 @@ public class DatabaseConstants {
     public static final int FIELD_RANK_SECU2 = 101;
     public static final int FIELD_RANK_ID_CAR = 102;
 
+    public static final int FIELD_RANK_RIM_ASSO_REF = 2;                            // CAR RIMS
+
     public static final int FIELD_RANK_DEALER_REF = 1;                              // CAR SHOPS
     public static final int FIELD_RANK_DEALER_NAME = 2;
     public static final int FIELD_RANK_DEALER_LIBELLE = 3;

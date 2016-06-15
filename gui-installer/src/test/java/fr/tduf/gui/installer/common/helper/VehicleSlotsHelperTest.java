@@ -17,18 +17,19 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.SlotKind.ALL;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.VehicleKind.DRIVABLE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 
@@ -71,7 +72,8 @@ public class VehicleSlotsHelperTest {
     public void getVehicleSlotFromReference() {
         // GIVEN
         String slotRef = "REF";
-        String rimSlotRef = "RIMREF";
+        String rimSlotRef1 = "RIMREF1";
+        String rimSlotRef2 = "RIMREF2";
         String brandSlotRef = "BRANDREF";
         String directoryRef = "0000";
         String directory = "DIR";
@@ -85,10 +87,14 @@ public class VehicleSlotsHelperTest {
         String modelName = "MODELNAME";
         String versionNameRef = "6666";
         String versionName = "VERSIONNAME";
-        String frontRimFileNameRef = "1111";
-        String frontRimFileName = "FILE_F";
-        String rearRimFileNameRef = "2222";
-        String rearRimFileName = "FILE_R";
+        String frontRimFileNameRef1 = "1111-1";
+        String frontRimFileName1 = "FILE_F1";
+        String rearRimFileNameRef1 = "2222-1";
+        String rearRimFileName1 = "FILE_R1";
+        String frontRimFileNameRef2 = "1111-2";
+        String frontRimFileName2 = "FILE_F2";
+        String rearRimFileNameRef2 = "2222-2";
+        String rearRimFileName2 = "FILE_R2";
         String interiorRef = "7777";
         String colorNameRef = "8888";
         String colorName = "Azzuro";
@@ -101,12 +107,22 @@ public class VehicleSlotsHelperTest {
                 .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(brandSlotRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(3).withRawValue(brandNameRef).build())
                 .build();
+        DbDataDto.Entry carRimsEntry1 = DbDataDto.Entry.builder()
+                .forId(0)
+                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(2).withRawValue(rimSlotRef1).build())
+                .build();
+        DbDataDto.Entry carRimsEntry2 = DbDataDto.Entry.builder()
+                .forId(1)
+                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(2).withRawValue(rimSlotRef2).build())
+                .build();
         DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
                 .forId(0)
                 .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(slotRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(2).withRawValue(brandSlotRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(9).withRawValue(fileNameRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(10).withRawValue(rimSlotRef).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(10).withRawValue(rimSlotRef1).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(12).withRawValue(realNameRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(13).withRawValue(modelNameRef).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(14).withRawValue(versionNameRef).build())
@@ -115,12 +131,19 @@ public class VehicleSlotsHelperTest {
                 .addItem(DbDataDto.Item.builder().ofFieldRank(101).withRawValue(Integer.toString(secuTwo)).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(102).withRawValue(Integer.toString(idCar)).build())
                 .build();
-        DbDataDto.Entry rimsEntry = DbDataDto.Entry.builder()
+        DbDataDto.Entry rimsEntry1 = DbDataDto.Entry.builder()
                 .forId(0)
-                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(rimSlotRef).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(rimSlotRef1).build())
                 .addItem(DbDataDto.Item.builder().ofFieldRank(13).withRawValue(directoryRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(14).withRawValue(frontRimFileNameRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(15).withRawValue(rearRimFileNameRef).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(14).withRawValue(frontRimFileNameRef1).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(15).withRawValue(rearRimFileNameRef1).build())
+                .build();
+        DbDataDto.Entry rimsEntry2 = DbDataDto.Entry.builder()
+                .forId(0)
+                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(rimSlotRef2).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(13).withRawValue(directoryRef).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(14).withRawValue(frontRimFileNameRef2).build())
+                .addItem(DbDataDto.Item.builder().ofFieldRank(15).withRawValue(rearRimFileNameRef2).build())
                 .build();
         DbDataDto.Entry carColorsEntry = DbDataDto.Entry.builder()
                 .forId(0)
@@ -144,7 +167,12 @@ public class VehicleSlotsHelperTest {
                 .build();
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(brandSlotRef, BRANDS)).thenReturn(of(brandsEntry));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotRef, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef, RIMS)).thenReturn(of(rimsEntry));
+        when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotRef), CAR_RIMS)).thenReturn(asList(
+                carRimsEntry1,
+                carRimsEntry2
+        ).stream());
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef1, RIMS)).thenReturn(of(rimsEntry1));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef2, RIMS)).thenReturn(of(rimsEntry2));
         when(bulkDatabaseMinerMock.getContentEntriesMatchingCriteria(anyListOf(DbFieldValueDto.class), eq(CAR_COLORS))).thenReturn(singletonList(carColorsEntry));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(colorNameRef, CAR_COLORS, UNITED_STATES)).thenReturn(of(colorName));
@@ -153,8 +181,10 @@ public class VehicleSlotsHelperTest {
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(modelNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(versionNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(versionName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(directoryRef, RIMS, UNITED_STATES)).thenReturn(of(directory));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(frontRimFileNameRef, RIMS, UNITED_STATES)).thenReturn(of(frontRimFileName));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(rearRimFileNameRef, RIMS, UNITED_STATES)).thenReturn(of(rearRimFileName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(frontRimFileNameRef1, RIMS, UNITED_STATES)).thenReturn(of(frontRimFileName1));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(rearRimFileNameRef1, RIMS, UNITED_STATES)).thenReturn(of(rearRimFileName1));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(frontRimFileNameRef2, RIMS, UNITED_STATES)).thenReturn(of(frontRimFileName2));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(rearRimFileNameRef2, RIMS, UNITED_STATES)).thenReturn(of(rearRimFileName2));
 
 
         // WHEN
@@ -178,10 +208,10 @@ public class VehicleSlotsHelperTest {
         assertThat(vehicleSlot.getSecurityOptions()).isEqualTo(SecurityOptions.fromValues(secuOne, secuTwo));
 
         RimSlot actualDefaultRims = vehicleSlot.getDefaultRims();
-        assertThat(actualDefaultRims.getRef()).isEqualTo(rimSlotRef);
+        assertThat(actualDefaultRims.getRef()).isEqualTo(rimSlotRef1);
         assertThat(actualDefaultRims.getParentDirectoryName()).isEqualTo(Resource.from(directoryRef, directory));
-        assertThat(actualDefaultRims.getFrontRimInfo().getFileName()).isEqualTo(Resource.from(frontRimFileNameRef, frontRimFileName));
-        assertThat(actualDefaultRims.getRearRimInfo().getFileName()).isEqualTo(Resource.from(rearRimFileNameRef, rearRimFileName));
+        assertThat(actualDefaultRims.getFrontRimInfo().getFileName()).isEqualTo(Resource.from(frontRimFileNameRef1, frontRimFileName1));
+        assertThat(actualDefaultRims.getRearRimInfo().getFileName()).isEqualTo(Resource.from(rearRimFileNameRef1, rearRimFileName1));
 
         assertThat(vehicleSlot.getPaintJobs()).extracting("rank").containsExactly(1);
         assertThat(vehicleSlot.getPaintJobs()).extracting("name").containsExactly(Resource.from(colorNameRef, colorName));
@@ -267,6 +297,7 @@ public class VehicleSlotsHelperTest {
         when(bulkDatabaseMinerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(of(topicObject));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(undrivableRef, CAR_PHYSICS_DATA)).thenReturn(of(undrivableEntry));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(drivableRef, CAR_PHYSICS_DATA)).thenReturn(of(drivableEntry));
+        when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(any(DbFieldValueDto.class), any(DbDto.Topic.class))).thenReturn(Stream.empty());
 
 
         // WHEN
