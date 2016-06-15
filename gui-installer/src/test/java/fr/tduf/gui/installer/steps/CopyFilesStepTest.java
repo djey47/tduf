@@ -50,7 +50,7 @@ public class CopyFilesStepTest {
         Path lowHudBanksPath = banksPath.resolve("FrontEnd").resolve("LowRes").resolve("Gauges");
         Path rimBanksPath = vehicleBanksPath.resolve("Rim").resolve("AC");
 
-        InstallerConfiguration configuration = createConfigurationForCar();
+        InstallerConfiguration configuration = createConfigurationForCarSingleRimSet();
 
         DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
         PatchProperties patchProperties = new PatchProperties();
@@ -111,7 +111,7 @@ public class CopyFilesStepTest {
         existingFile.setWritable(false);
         existingFile.setReadable(false);
 
-        InstallerConfiguration configuration = createConfigurationForCar();
+        InstallerConfiguration configuration = createConfigurationForCarSingleRimSet();
 
         DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
         PatchProperties patchProperties = new PatchProperties();
@@ -181,11 +181,40 @@ public class CopyFilesStepTest {
     }
 
     @Test
+    public void copyFilesStep_withTwoRims_shouldCopyAllFiles() throws Exception {
+        // GIVEN
+        System.out.println("Testing TDU directory: " + tempDirectory);
+
+        InstallerConfiguration configuration = createConfigurationForCarTwoRimSets();
+        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        PatchProperties patchProperties = new PatchProperties();
+        patchProperties.setVehicleSlotReferenceIfNotExists("699437593");
+        databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
+
+
+        // WHEN
+        GenericStep.starterStep(configuration, databaseContext)
+                .nextStep(COPY_FILES).start();
+
+
+        // THEN
+        Path rimBanksPath = getTargetCarRimPath();
+
+        Path rimAssetsPath = Paths.get(configuration.getAssetsDirectory(), "3D", "RIMS");
+        assertThat(rimBanksPath.resolve("DB9_Cpe_F_01.bnk").toFile())
+                .exists()
+                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
+        assertThat(rimBanksPath.resolve("DB9_Vol_F_02.bnk").toFile())
+                .exists()
+                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_02.bnk").toFile());
+    }
+
+    @Test
     public void copyFilesStep_withSameRimsFrontRear_andSlotHasDifferentFileNameForFrontAndRear_shouldCopyOnlyFrontRim() throws Exception {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
-        InstallerConfiguration configuration = createConfigurationForCar();
+        InstallerConfiguration configuration = createConfigurationForCarSingleRimSet();
         DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("1208897332"); // Triumph Daytona (bike)
@@ -213,7 +242,7 @@ public class CopyFilesStepTest {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
-        InstallerConfiguration configuration = createConfigurationForCar();
+        InstallerConfiguration configuration = createConfigurationForCarSingleRimSet();
         DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("1208897332"); // Triumph Daytona (bike)
@@ -245,8 +274,22 @@ public class CopyFilesStepTest {
         return Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules", "Rim", "Triumph");
     }
 
-    private InstallerConfiguration createConfigurationForCar() throws URISyntaxException {
+    private Path getTargetCarRimPath() {
+        return Paths.get(tempDirectory, "Euro", "Bnk", "Vehicules", "Rim", "Aston");
+    }
+
+    private InstallerConfiguration createConfigurationForCarSingleRimSet() throws URISyntaxException {
         String assetsDirectory = new File(thisClass.getResource("/assets-all/car").toURI()).getAbsolutePath();
+        final InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tempDirectory)
+                .withAssetsDirectory(assetsDirectory)
+                .build();
+        installerConfiguration.setBackupDirectory(backupPath.toString());
+        return installerConfiguration;
+    }
+
+    private InstallerConfiguration createConfigurationForCarTwoRimSets() throws URISyntaxException {
+        String assetsDirectory = new File(thisClass.getResource("/assets-all/car-2rims").toURI()).getAbsolutePath();
         final InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tempDirectory)
                 .withAssetsDirectory(assetsDirectory)
