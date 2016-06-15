@@ -93,6 +93,7 @@ public class VehicleSlot {
         return paintJobs;
     }
 
+    // TODO use set instead and remove unicity checks
     public List<RimSlot> getRims() {
         return rims;
     }
@@ -144,10 +145,7 @@ public class VehicleSlot {
 
         public VehicleSlotBuilder withDefaultRims(RimSlot rim) {
             this.defaultRims = rim;
-            if (!rims.contains(rim)) {
-                rims.add(rim);
-            }
-            return this;
+            return addRim(rim);
         }
 
         public VehicleSlotBuilder withCarIdentifier(int id) {
@@ -175,8 +173,10 @@ public class VehicleSlot {
             return this;
         }
 
-        public VehicleSlotBuilder addRim(RimSlot rimSlot) {
-            this.rims.add(rimSlot);
+        public VehicleSlotBuilder addRim(RimSlot rim) {
+            if (!rims.contains(rim)) {
+                rims.add(rim);
+            }
             return this;
         }
 
