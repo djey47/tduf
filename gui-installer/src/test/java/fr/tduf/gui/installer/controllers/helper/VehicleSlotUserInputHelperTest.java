@@ -25,5 +25,4 @@ public class VehicleSlotUserInputHelperTest {
 
         // THEN: no FX calls
     }
-
 }
