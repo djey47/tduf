@@ -9,7 +9,6 @@ import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.controllers.converter.VehicleKindToStringConverter;
 import fr.tduf.gui.installer.controllers.converter.VehicleSlotDataItemToStringConverter;
 import fr.tduf.gui.installer.controllers.helper.TableCellFactoryHelper;
-import fr.tduf.gui.installer.domain.SecurityOptions;
 import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -179,18 +178,7 @@ public class VehicleSlotsStageController extends AbstractGuiController {
         slotsData.clear();
 
         slotsData.addAll(vehicleSlotsHelper.getVehicleSlots(slotKind, vehicleKind).stream()
-
-                .map(vehicleSlot -> {
-                    VehicleSlotDataItem dataItem = new VehicleSlotDataItem();
-
-                    dataItem.setReference(vehicleSlot.getRef());
-                    dataItem.setName(VehicleSlotsHelper.getVehicleName(vehicleSlot));
-                    dataItem.setCarId(vehicleSlot.getCarIdentifier());
-                    dataItem.setModded(SecurityOptions.INSTALLED.equals(vehicleSlot.getSecurityOptions().getOptionOne()));
-
-                    return dataItem;
-                })
-
+                .map(VehicleSlotDataItem::new)
                 .collect(toList()));
     }
 
