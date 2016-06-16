@@ -2,10 +2,12 @@ package fr.tduf.gui.installer.common.helper;
 
 import fr.tduf.gui.installer.domain.Dealer;
 import fr.tduf.gui.installer.domain.Resource;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -13,13 +15,15 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
-import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 
@@ -28,6 +32,12 @@ public class DealerHelperTest {
 
     @Mock
     private BulkDatabaseMiner minerMock;
+
+    @Before
+    public void setUp() {
+        when(minerMock.getContentEntryStreamMatchingSimpleCondition(any(DbFieldValueDto.class), any(DbDto.Topic.class))).thenReturn(Stream.empty(), Stream.empty());
+    }
+
 
     @Test
     public void getDealers_whenMetaDataUnavailable() throws Exception {
@@ -63,7 +73,7 @@ public class DealerHelperTest {
                 .forId(1)
                 .build();
         DbDataDto.Entry carSlotEntry2 = DbDataDto.Entry.builder()
-                .forId(1)
+                .forId(2)
                 .build();
         when(minerMock.getContentEntryFromTopicWithReference("SLOTREF1", CAR_PHYSICS_DATA)).thenReturn(Optional.of(carSlotEntry1));
         when(minerMock.getContentEntryFromTopicWithReference("SLOTREF2", CAR_PHYSICS_DATA)).thenReturn(Optional.of(carSlotEntry2));
