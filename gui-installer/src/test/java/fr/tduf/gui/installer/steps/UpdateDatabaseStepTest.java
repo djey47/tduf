@@ -36,11 +36,6 @@ public class UpdateDatabaseStepTest {
     private static final String RIMREF_1 = "3000000001";
     private static final String RES_RIMBRAND_1 = "654857";
     private static final String RIMBRAND_1 = "Default";
-    private static final String RES_COLORNAME_1 = "4607167";
-    private static final String COLORNAME_1 = "Nero";
-    private static final String RES_COLORNAME_2 = "4607267";
-    private static final String COLORNAME_2 = "Blau";
-    private static final String INTREF_1 = "5000000001";
 
     @Mock
     private BankSupport bankSupportMock;
@@ -136,16 +131,6 @@ public class UpdateDatabaseStepTest {
                                 RimSlot.RimInfo.builder()
                                         .withFileName(Resource.from(RES_BANKNAME_RR_1, BANKNAME_RR_1))
                                         .build())
-                        .build())
-                .addPaintJob(PaintJob.builder()
-                        .atRank(1)
-                        .withName(Resource.from(RES_COLORNAME_1, COLORNAME_1))
-                        .addInteriorPattern(INTREF_1)
-                        .build())
-                .addPaintJob(PaintJob.builder()
-                        .atRank(2)
-                        .withName(Resource.from(RES_COLORNAME_2, COLORNAME_2))
-                        .addInteriorPattern(INTREF_1)
                         .build())
                 .build();
     }
