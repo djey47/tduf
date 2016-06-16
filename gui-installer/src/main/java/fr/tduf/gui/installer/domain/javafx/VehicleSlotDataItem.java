@@ -17,6 +17,7 @@ public class VehicleSlotDataItem {
     private IntegerProperty carId = new SimpleIntegerProperty();
     private BooleanProperty modded = new SimpleBooleanProperty();
 
+    // TODO replace by static initializer
     public VehicleSlotDataItem(VehicleSlot vehicleSlot) {
         this.vehicleSlot.set(vehicleSlot);
         reference.setValue(vehicleSlot.getRef());
