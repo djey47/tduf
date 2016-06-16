@@ -1,7 +1,5 @@
 package fr.tduf.gui.installer.domain;
 
-import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
-
 import java.util.Optional;
 
 import static java.util.Optional.empty;
@@ -12,7 +10,8 @@ import static java.util.Optional.of;
  */
 public class UserSelection {
     private Optional<VehicleSlot> vehicleSlot = empty();
-    private Optional<DealerSlotData> dealerSlot = empty();
+    private Optional<Dealer> dealer = empty();
+    private int dealerSlotRank = 0;
 
     private UserSelection() {}
 
@@ -20,8 +19,12 @@ public class UserSelection {
         return vehicleSlot;
     }
 
-    public Optional<DealerSlotData> getDealerSlot() {
-        return dealerSlot;
+    public Optional<Dealer> getDealer() {
+        return dealer;
+    }
+
+    public int getDealerSlotRank() {
+        return dealerSlotRank;
     }
 
     public void selectVehicleSlot(VehicleSlot vehicleSlot) {
@@ -32,8 +35,9 @@ public class UserSelection {
         this.vehicleSlot = empty();
     }
 
-    public void selectDealerSlot(DealerSlotData dealerSlotData) {
-        this.dealerSlot = of(dealerSlotData);
+    public void selectDealerSlot(Dealer dealer, int slotRank) {
+        this.dealer = of(dealer);
+        this.dealerSlotRank = slotRank;
     }
 
     public static UserSelection none() {

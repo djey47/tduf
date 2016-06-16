@@ -5,7 +5,6 @@ import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.*;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
-import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -172,15 +171,11 @@ public class PatchEnhancerTest {
     @Test
     public void enhancePatchProperties_whenDealerSlotSelected_shouldAddProperties() {
         // GIVEN
-        databaseContext.getUserSelection().selectDealerSlot(DealerSlotData.from(
-                DealerSlotData.DealerDataItem.fromDealer(Dealer.builder()
-                        .withRef("1111")
-                        .withDisplayedName(Resource.from("", ""))
-                        .withSlots(new ArrayList<>(0))
-                        .build()),
-                DealerSlotData.SlotDataItem.fromDealerSlot(Dealer.Slot.builder()
-                        .withRank(1)
-                        .build())));
+        Dealer dealer = Dealer.builder()
+                .withRef("1111")
+                .withSlots(new ArrayList<>(0))
+                .build();
+        databaseContext.getUserSelection().selectDealerSlot(dealer, 1);
 
         // WHEN
         createDefaultEnhancer().enhancePatchProperties(patchProperties);
@@ -193,17 +188,13 @@ public class PatchEnhancerTest {
     @Test
     public void enhancePatchProperties_whenDealerSlotSelected_andPropertiesAlreadyExist_shouldKeepProperties() {
         // GIVEN
+        Dealer dealer = Dealer.builder()
+                .withRef("2222")
+                .withSlots(new ArrayList<>(0))
+                .build();
         patchProperties.setDealerReferenceIfNotExists("1111");
         patchProperties.setDealerSlotIfNotExists(1);
-        databaseContext.getUserSelection().selectDealerSlot(DealerSlotData.from(
-                DealerSlotData.DealerDataItem.fromDealer(Dealer.builder()
-                        .withRef("2222")
-                        .withDisplayedName(Resource.from("", ""))
-                        .withSlots(new ArrayList<>(0))
-                        .build()),
-                DealerSlotData.SlotDataItem.fromDealerSlot(Dealer.Slot.builder()
-                        .withRank(2)
-                        .build())));
+        databaseContext.getUserSelection().selectDealerSlot(dealer, 2);
 
         // WHEN
         createDefaultEnhancer().enhancePatchProperties(patchProperties);

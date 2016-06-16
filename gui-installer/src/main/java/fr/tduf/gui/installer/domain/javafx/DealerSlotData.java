@@ -53,6 +53,7 @@ public class DealerSlotData {
 
     public static class DealerDataItem {
 
+        private ObjectProperty<Dealer> dealer = new SimpleObjectProperty<>();
         private StringProperty reference = new SimpleStringProperty();
         private ObjectProperty<List<Dealer.Slot>> slots = new SimpleObjectProperty<>();
         private StringProperty name = new SimpleStringProperty();
@@ -62,6 +63,7 @@ public class DealerSlotData {
         public static DealerDataItem fromDealer(Dealer dealer) {
             DealerDataItem item = new DealerDataItem();
 
+            item.dealer.setValue(dealer);
             item.reference.setValue(dealer.getRef());
             item.slots.setValue(dealer.getSlots());
             item.name.setValue(dealer.getDisplayedName().getValue());
@@ -69,6 +71,10 @@ public class DealerSlotData {
             item.location.setValue(dealer.getLocation());
 
             return item;
+        }
+
+        public ObjectProperty<Dealer> dealerProperty() {
+            return dealer;
         }
 
         public StringProperty referenceProperty() {

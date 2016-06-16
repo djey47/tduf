@@ -43,8 +43,10 @@ public class DealerSlotUserInputHelper {
 
         Log.info(THIS_CLASS_NAME, "->Using dealer slot: " + selectedItem);
 
-        // TODO see to set Dealer slot domain object in context instead of data item
-        selectedItem.ifPresent(context.getUserSelection()::selectDealerSlot);
+        selectedItem
+                .ifPresent(dealerItem -> context.getUserSelection().selectDealerSlot(
+                        dealerItem.getDealerDataItem().dealerProperty().getValue(),
+                        dealerItem.getSlotDataItem().rankProperty().get()));
         if (!selectedItem.isPresent()) {
             Log.info(THIS_CLASS_NAME, "->No dealer slot selected, will not locate vehicle.");
         }

@@ -6,7 +6,6 @@ import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.*;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
-import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -86,8 +85,9 @@ public class PatchEnhancer {
                 });
         createPatchPropertiesForVehicleSlot(effectiveSlot, patchProperties);
 
-        databaseContext.getUserSelection().getDealerSlot()
-                .ifPresent(dealerSlotData -> createPatchPropertiesForDealerSlot(dealerSlotData, patchProperties));
+        if (databaseContext.getUserSelection().getDealer().isPresent()) {
+            createPatchPropertiesForDealerSlot(databaseContext.getUserSelection(), patchProperties);
+        }
     }
 
     void enhancePatchObjectWithPaintJobs(VehicleSlot vehicleSlot) {
@@ -203,11 +203,13 @@ public class PatchEnhancer {
         patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, 1);
     }
 
-    private void createPatchPropertiesForDealerSlot(DealerSlotData dealerSlotData, PatchProperties patchProperties) {
+    private void createPatchPropertiesForDealerSlot(UserSelection userSelection, PatchProperties patchProperties) {
         Log.info(THIS_CLASS_NAME, "->Resolving missing properties with dealer slot information");
 
-        patchProperties.setDealerReferenceIfNotExists(dealerSlotData.getDealerDataItem().referenceProperty().get());
-        patchProperties.setDealerSlotIfNotExists(dealerSlotData.getSlotDataItem().rankProperty().get());
+        patchProperties.setDealerReferenceIfNotExists(userSelection.getDealer()
+                .map(Dealer::getRef)
+                .orElseThrow(() -> new IllegalArgumentException("No dealer reference was selected!")));
+        patchProperties.setDealerSlotIfNotExists(userSelection.getDealerSlotRank());
     }
 
     private Optional<String> searchFirstInteriorPatternReference(VehicleSlot vehicleSlot) {
