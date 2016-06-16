@@ -408,4 +408,64 @@ public class VehicleSlotsHelperTest {
         // THEN
         assertThat(actualBankFileName).isEqualTo("RX8_R_01.bnk");
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getRimBankFileName_whenNoRimBankType_shouldThrowException() {
+        // GIVEN-WHEN
+        VehicleSlotsHelper.getRimBankFileName(null, EXTERIOR_MODEL, 0, true);
+
+        // THEN:IAE
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getRimBankFileName_whenNotEnoughRims_shouldThrowException() {
+        // GIVEN
+        String slotReference = "11111111";
+        VehicleSlot vehicleSlot = VehicleSlot.builder()
+                .withRef(slotReference)
+                .build();
+
+        // WHEN
+        VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, 1, true);
+
+        // THEN:IAE
+    }
+
+    @Test
+    public void getRimBankFileName_forFrontRims() {
+        // GIVEN
+        String slotReference = "11111111";
+        String rimSlotReference1 = "22222222";
+        String rimSlotReference2 = "22222222-2";
+        String resourceRef1 = "33333333";
+        String resourceRef2 = "33333333-2";
+        String rimsResourceValue1 = "RX8_F_01";
+        String rimsResourceValue2 = "RX8_F_02";
+
+        RimSlot.RimInfo frontRimInfo = RimSlot.RimInfo.builder()
+                .withFileName(Resource.from(resourceRef1, rimsResourceValue1))
+                .build();
+        RimSlot.RimInfo frontRimInfo2 = RimSlot.RimInfo.builder()
+                .withFileName(Resource.from(resourceRef2, rimsResourceValue2))
+                .build();
+        RimSlot rims1 = RimSlot.builder()
+                .withRef(rimSlotReference1)
+                .withRimsInformation(frontRimInfo, null)
+                .build();
+        RimSlot rims2 = RimSlot.builder()
+                .withRef(rimSlotReference2)
+                .withRimsInformation(frontRimInfo2, null)
+                .build();
+        VehicleSlot vehicleSlot = VehicleSlot.builder()
+                .withRef(slotReference)
+                .withDefaultRims(rims1)
+                .addRim(rims2)
+                .build();
+
+        // WHEN
+        final String actualFileName = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, 2, true);
+
+        // THEN
+        assertThat(actualFileName).isEqualTo("RX8_F_02.bnk");
+    }
 }

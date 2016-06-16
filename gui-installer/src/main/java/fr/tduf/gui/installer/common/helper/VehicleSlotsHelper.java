@@ -200,11 +200,11 @@ public class VehicleSlotsHelper extends CommonHelper {
      * @param withExtension : true to append appropriate extension, false otherwise
      * @return simple file name
      */
-    // TODO test
+    // TODO remove withExtension parameter
     public static String getRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType, int rimIndex, boolean withExtension) {
         if (FRONT_RIM != rimBankFileType &&
                 REAR_RIM != rimBankFileType) {
-            return "";
+            throw new IllegalArgumentException("Not a valid rim bank type: " + rimBankFileType);
         }
 
         final List<RimSlot> declaredRims = vehicleSlot.getRims();
