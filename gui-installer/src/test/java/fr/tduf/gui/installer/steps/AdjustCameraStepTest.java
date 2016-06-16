@@ -28,6 +28,7 @@ import java.util.List;
 import static fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto.GenuineCamViewDto.Type.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_COLORS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,12 +67,11 @@ public class AdjustCameraStepTest {
 
         DbDto carPhysicsObject = createCarPhysicsObject("999999");
         DbDto carColorsObject = createDefaultTopicObject(CAR_COLORS);
+        DbDto carRimsObject = createDefaultTopicObject(CAR_RIMS);
         PatchProperties patchProperties = new PatchProperties();
-        databaseContext = new DatabaseContext(asList(carPhysicsObject, carColorsObject), "");
+        databaseContext = new DatabaseContext(asList(carPhysicsObject, carColorsObject, carRimsObject), "");
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
     }
-
-
 
     @Test
     public void perform_whenCameraIdInProperties_andNoCustomization_shouldNotCallBankSupportComponent() throws StepException, IOException {
