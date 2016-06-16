@@ -144,8 +144,8 @@ class CopyFilesStep extends GenericStep {
             int rimIndex = Integer.parseInt(matcher.group(2));
 
             VehicleSlotsHelper.BankFileType rimBankFileType = FileConstants.INDICATOR_FRONT_RIMS.equalsIgnoreCase(typeGroupValue) ? FRONT_RIM : REAR_RIM;
-            String targetFileNameForFrontRim = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, rimIndex, true);
-            String targetFileNameForRearRim = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, REAR_RIM, rimIndex, true);
+            String targetFileNameForFrontRim = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, rimIndex);
+            String targetFileNameForRearRim = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, REAR_RIM, rimIndex);
 
             if (targetFileNameForFrontRim.equals(targetFileNameForRearRim)) {
                 if (REAR_RIM == rimBankFileType) {
