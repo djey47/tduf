@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.steps;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
+import fr.tduf.gui.installer.domain.RimSlot;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
@@ -113,8 +114,7 @@ class CopyFilesStep extends GenericStep {
                 targetFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, HUD, true);
                 break;
             case DIRECTORY_RIMS:
-                // FIXME use targetPath from corresponding rim slot instead of default
-                effectiveTargetPath = targetPath.resolve(vehicleSlot.getDefaultRims().get().getParentDirectoryName().getValue());
+                effectiveTargetPath = getTargetPathForRims(assetPath, targetPath, vehicleSlot);
                 targetFileName = getTargetFileNameForRims(vehicleSlot, assetPath);
                 break;
             default:
@@ -136,32 +136,41 @@ class CopyFilesStep extends GenericStep {
         return targetFileName;
     }
 
-    private String getTargetFileNameForRims(VehicleSlot vehicleSlot, Path assetPath) throws IOException {
-        String targetFileName = null;
-
-        Matcher matcher = FileConstants.PATTERN_RIM_BANK_FILE_NAME.matcher(assetPath.getFileName().toString());
-        if (matcher.matches()) {
-            String typeGroupValue = matcher.group(1);
-            int rimIndex = Integer.parseInt(matcher.group(2));
-
-            VehicleSlotsHelper.BankFileType rimBankFileType = FileConstants.INDICATOR_FRONT_RIMS.equalsIgnoreCase(typeGroupValue) ? FRONT_RIM : REAR_RIM;
-            String targetFileNameForFrontRim = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, rimIndex);
-            String targetFileNameForRearRim = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, REAR_RIM, rimIndex);
-
-            if (targetFileNameForFrontRim.equals(targetFileNameForRearRim)) {
-                if (REAR_RIM == rimBankFileType) {
-                    throw new IllegalArgumentException("Target slot does only accept single rim model for front/rear. Please remove rear rims file from assets.");
-                }
-                targetFileName = targetFileNameForFrontRim;
-            } else {
-                if (FRONT_RIM == rimBankFileType) {
-                    targetFileName = targetFileNameForFrontRim;
-                } else {
-                    targetFileName = targetFileNameForRearRim;
-                }
-            }
+    private Path getTargetPathForRims(Path rimAssetPath, Path targetPath, VehicleSlot vehicleSlot) {
+        Matcher matcher = FileConstants.PATTERN_RIM_BANK_FILE_NAME.matcher(rimAssetPath.getFileName().toString());
+        if (!matcher.matches()) {
+            return null;
         }
-        return targetFileName;
+
+        int rimRank = Integer.parseInt(matcher.group(2));
+        final RimSlot rimSlot = vehicleSlot.getRimAtRank(rimRank)
+                .orElseThrow(() -> new IllegalArgumentException("Vehicle slot hasn't required rim at rank: " + rimRank));
+
+        return targetPath.resolve(rimSlot.getParentDirectoryName().getValue());
+    }
+
+    private String getTargetFileNameForRims(VehicleSlot vehicleSlot, Path assetPath) throws IOException {
+        Matcher matcher = FileConstants.PATTERN_RIM_BANK_FILE_NAME.matcher(assetPath.getFileName().toString());
+        if (!matcher.matches()) {
+            return null;
+        }
+
+        String typeGroupValue = matcher.group(1);
+        int rimIndex = Integer.parseInt(matcher.group(2));
+
+        VehicleSlotsHelper.BankFileType rimBankFileType = FileConstants.INDICATOR_FRONT_RIMS.equalsIgnoreCase(typeGroupValue) ? FRONT_RIM : REAR_RIM;
+        String targetFileNameForFrontRim = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, rimIndex);
+        String targetFileNameForRearRim = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, REAR_RIM, rimIndex);
+
+        if (targetFileNameForFrontRim.equals(targetFileNameForRearRim)) {
+            if (REAR_RIM == rimBankFileType) {
+                throw new IllegalArgumentException("Target slot does only accept single rim model for front/rear. Please remove rear rims file from assets.");
+            }
+            return targetFileNameForFrontRim;
+        } else {
+            return FRONT_RIM == rimBankFileType ?
+                    targetFileNameForFrontRim : targetFileNameForRearRim;
+        }
     }
 
     private void copySingleAssetWithBackup(Path assetPath, Path targetPath, String targetFileName) throws IOException {
