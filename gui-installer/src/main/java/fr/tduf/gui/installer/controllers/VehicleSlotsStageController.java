@@ -178,7 +178,7 @@ public class VehicleSlotsStageController extends AbstractGuiController {
         slotsData.clear();
 
         slotsData.addAll(vehicleSlotsHelper.getVehicleSlots(slotKind, vehicleKind).stream()
-                .map(VehicleSlotDataItem::new)
+                .map(VehicleSlotDataItem::fromVehicleSlot)
                 .collect(toList()));
     }
 

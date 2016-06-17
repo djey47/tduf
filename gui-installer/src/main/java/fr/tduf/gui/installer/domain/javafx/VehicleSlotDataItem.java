@@ -6,6 +6,8 @@ import fr.tduf.gui.installer.domain.VehicleSlot;
 import javafx.beans.property.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Represents data to be displayed in a TableView.
  * Only applies to a vehicle slot.
@@ -17,13 +19,20 @@ public class VehicleSlotDataItem {
     private IntegerProperty carId = new SimpleIntegerProperty();
     private BooleanProperty modded = new SimpleBooleanProperty();
 
-    // TODO replace by static initializer
-    public VehicleSlotDataItem(VehicleSlot vehicleSlot) {
+    private VehicleSlotDataItem(VehicleSlot vehicleSlot) {
         this.vehicleSlot.set(vehicleSlot);
         reference.setValue(vehicleSlot.getRef());
         name.setValue(VehicleSlotsHelper.getVehicleName(vehicleSlot));
         carId.set(vehicleSlot.getCarIdentifier());
         modded.setValue(SecurityOptions.INSTALLED.equals(vehicleSlot.getSecurityOptions().getOptionOne()));
+    }
+
+    /**
+     * @param vehicleSlot   : vehicle slot to be shown in a TableView
+     * @return a data item instance based on provided slot
+     */
+    public static VehicleSlotDataItem fromVehicleSlot(VehicleSlot vehicleSlot) {
+        return new VehicleSlotDataItem(requireNonNull(vehicleSlot, "Vehicle slot instance is required"));
     }
 
     public StringProperty referenceProperty() {
