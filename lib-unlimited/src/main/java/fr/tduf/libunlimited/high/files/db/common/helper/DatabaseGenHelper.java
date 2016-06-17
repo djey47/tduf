@@ -6,10 +6,7 @@ import fr.tduf.libunlimited.low.files.db.dto.*;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import org.apache.commons.lang3.Range;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -203,7 +200,7 @@ public class DatabaseGenHelper {
     }
 
     private static Set<String> extractResourceEntryReferences(DbDto topicObject) {
-        final Set<DbResourceDto.Entry> entries = topicObject.getResource().getEntries();
+        final Collection<DbResourceDto.Entry> entries = topicObject.getResource().getEntries();
         if(entries == null) {
             return new HashSet<>();
         }
@@ -220,7 +217,7 @@ public class DatabaseGenHelper {
     }
 
     private static Optional<DbResourceDto.Entry> findDefaultResourceEntry(DbDto topicObject) {
-        final Set<DbResourceDto.Entry> entries = topicObject.getResource().getEntries();
+        final Collection<DbResourceDto.Entry> entries = topicObject.getResource().getEntries();
         if (entries == null) {
             return Optional.empty();
         }

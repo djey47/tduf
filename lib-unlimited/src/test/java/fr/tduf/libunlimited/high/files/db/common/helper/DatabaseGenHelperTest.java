@@ -413,7 +413,7 @@ public class DatabaseGenHelperTest {
     }
 
     private static void assertResourceExistsWithDefaultItem(DbDto topicObject) {
-        final Set<DbResourceDto.Entry> actualEntries = topicObject.getResource().getEntries();
+        final Collection<DbResourceDto.Entry> actualEntries = topicObject.getResource().getEntries();
         assertThat(actualEntries).hasSize(1);
         final DbResourceDto.Entry uniqueEntry = actualEntries.stream().findAny().get();
         assertThat(uniqueEntry.getItemCount()).isEqualTo(8);

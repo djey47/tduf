@@ -6,10 +6,13 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -25,26 +28,33 @@ public class DbResourceDto {
     @JsonProperty("categoryCount")
     private Integer categoryCount;
 
-    @JsonProperty("entries")
-    private LinkedHashSet<Entry> entries;
+    @JsonIgnore
+    private Map<String, Entry> entriesByReference = new LinkedHashMap<>();
 
     private DbResourceDto() {}
+
+    private static Map<String, Entry> createResourceIndex(Collection<Entry> entries) {
+        return entries.stream()
+                .collect(Collectors.toMap(
+                        Entry::getReference,
+                        Function.identity(),
+                        (u, v) -> {
+                            throw new IllegalStateException(String.format("Duplicate key %s", u));
+                        },
+                        LinkedHashMap::new));
+    }
 
     public static DbResourceDto.DbResourceEnhancedDtoBuilder builder() {
         return new DbResourceDto.DbResourceEnhancedDtoBuilder();
     }
 
     public Optional<DbResourceDto.Entry> getEntryByReference(String reference) {
-        return entries.stream()
-
-                .filter((entry -> entry.getReference().equals(reference)))
-
-                .findAny();
+        return ofNullable(entriesByReference.get(reference));
     }
 
     public Entry addEntryByReference(String reference) {
         getEntryByReference(reference)
-                .ifPresent((entry) -> {
+                .ifPresent(entry -> {
                     throw new IllegalArgumentException("An entry with given reference already exists: " + reference);
                 });
 
@@ -52,13 +62,13 @@ public class DbResourceDto {
                 .forReference(reference)
                 .build();
 
-        entries.add(newEntry);
+        entriesByReference.put(reference, newEntry);
 
         return newEntry;
     }
 
     public void removeEntryByReference(String reference) {
-        entries.removeIf((entry) -> entry.getReference().equals(reference));
+        entriesByReference.remove(reference);
     }
 
     @Override
@@ -76,8 +86,14 @@ public class DbResourceDto {
         return reflectionToString(this);
     }
 
-    public Set<Entry> getEntries() {
-        return entries;
+    @JsonProperty("entries")
+    public Collection<Entry> getEntries() {
+        return entriesByReference.values();
+    }
+
+    @JsonSetter("entries")
+    public void setEntries(Collection<Entry> entries) {
+        entriesByReference = createResourceIndex(entries);
     }
 
     public String getVersion() {
@@ -114,7 +130,7 @@ public class DbResourceDto {
 
             dbResourceDto.categoryCount = requireNonNull(categoryCount, "Category count is required.");
             dbResourceDto.version = requireNonNull(version, "Version is required.");
-            dbResourceDto.entries = this.entries;
+            dbResourceDto.entriesByReference = createResourceIndex(entries);
 
             return dbResourceDto;
         }

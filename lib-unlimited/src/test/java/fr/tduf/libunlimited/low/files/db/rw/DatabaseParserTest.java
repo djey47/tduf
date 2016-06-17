@@ -266,7 +266,7 @@ public class DatabaseParserTest {
         assertThat(actualDbResource.getCategoryCount()).isEqualTo(6);
         assertThat(actualDbResource.getVersion()).isEqualTo("1,2");
 
-        final Set<DbResourceDto.Entry> actualEntries = actualDbResource.getEntries();
+        final Collection<DbResourceDto.Entry> actualEntries = actualDbResource.getEntries();
         assertThat(actualEntries).hasSize(2);
         assertThat(actualEntries).extracting("reference").containsOnly("53410835", "70410835");
         Set<DbResourceDto.Item> item1 = new HashSet<>(asList(
