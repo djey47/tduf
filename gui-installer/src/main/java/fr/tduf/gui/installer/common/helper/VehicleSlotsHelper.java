@@ -160,12 +160,8 @@ public class VehicleSlotsHelper extends CommonHelper {
      */
     public static String getBankFileName(VehicleSlot vehicleSlot, BankFileType bankFileType, boolean withExtension) {
 
-        final String extension = withExtension ? "." + GenuineBnkGateway.EXTENSION_BANKS : "";
-
-        if (FRONT_RIM == bankFileType ||
-                REAR_RIM == bankFileType) {
-            return getDefaultRimBankFileName(vehicleSlot, bankFileType, extension);
-        }
+        final String extension = withExtension ?
+                "." + GenuineBnkGateway.EXTENSION_BANKS : "";
 
         String suffix;
         switch (bankFileType) {
@@ -193,7 +189,9 @@ public class VehicleSlotsHelper extends CommonHelper {
      * @param rimBankFileType  : type of bank file to be resolved
      * @return simple file name
      */
-    public static String getRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType, int rimRank) {
+    public static String getRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType, int rimRank, boolean withExtension) {
+        String extension = withExtension ?
+                "." + GenuineBnkGateway.EXTENSION_BANKS : "";
         if (FRONT_RIM != rimBankFileType &&
                 REAR_RIM != rimBankFileType) {
             throw new IllegalArgumentException("Not a valid rim bank type: " + rimBankFileType);
@@ -205,7 +203,7 @@ public class VehicleSlotsHelper extends CommonHelper {
                 rimSlot.getFrontRimInfo() : rimSlot.getRearRimInfo();
 
         return of(rimInfo.getFileName().getValue())
-                .map(rimBankSimpleName -> String.format("%s.%s", rimBankSimpleName, GenuineBnkGateway.EXTENSION_BANKS))
+                .map(rimBankSimpleName -> String.format("%s%s", rimBankSimpleName, extension))
                 .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
 

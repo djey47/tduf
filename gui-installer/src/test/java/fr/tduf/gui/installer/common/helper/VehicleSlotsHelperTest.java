@@ -362,66 +362,48 @@ public class VehicleSlotsHelperTest {
         assertThat(actualBankFileName).isEqualTo("RX8_I.bnk");
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void getBankFileName_forFrontRimsModel_shouldReturnDefaultFrontRimFileName() {
         // GIVEN
-        String slotReference = "11111111";
-        String rimSlotReference = "22222222";
-        String resourceRef = "33333333";
-        String rimsResourceValue = "RX8_F_01";
-        RimSlot.RimInfo frontRimInfo = RimSlot.RimInfo.builder()
-                .withFileName(Resource.from(resourceRef, rimsResourceValue))
-                .build();
         RimSlot rims = RimSlot.builder()
                 .atRank(0)
-                .withRef(rimSlotReference)
-                .withRimsInformation(frontRimInfo, null)
+                .withRef("22222222")
                 .setDefaultRims(true)
                 .build();
         VehicleSlot vehicleSlot = VehicleSlot.builder()
-                .withRef(slotReference)
+                .withRef("11111111")
                 .addRim(rims)
                 .build();
 
         // WHEN
-        String actualBankFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, FRONT_RIM, true);
+        VehicleSlotsHelper.getBankFileName(vehicleSlot, FRONT_RIM, true);
 
-        // THEN
-        assertThat(actualBankFileName).isEqualTo("RX8_F_01.bnk");
+        // THEN: IAE
     }
 
-    @Test
-    public void getBankFileName_forRearRimsModel_shouldReturnDefaultRearRimFileName() {
+    @Test(expected = IllegalArgumentException.class)
+    public void getBankFileName_forRearRimsModel_shouldThrowException() {
         // GIVEN
-        String slotReference = "11111111";
-        String rimSlotReference = "22222222";
-        String resourceRef = "33333333";
-        String rimsResourceValue = "RX8_R_01";
-        RimSlot.RimInfo rearRimInfo = RimSlot.RimInfo.builder()
-                .withFileName(Resource.from(resourceRef, rimsResourceValue))
-                .build();
         RimSlot rims = RimSlot.builder()
-                .withRef(rimSlotReference)
+                .withRef("22222222")
                 .atRank(0)
-                .withRimsInformation(null, rearRimInfo)
                 .setDefaultRims(true)
                 .build();
         VehicleSlot vehicleSlot = VehicleSlot.builder()
-                .withRef(slotReference)
+                .withRef("11111111")
                 .addRim(rims)
                 .build();
 
         // WHEN
-        String actualBankFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIM, true);
+        VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIM, true);
 
-        // THEN
-        assertThat(actualBankFileName).isEqualTo("RX8_R_01.bnk");
+        // THEN: IAE
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void getRimBankFileName_whenNoRimBankType_shouldThrowException() {
         // GIVEN-WHEN
-        VehicleSlotsHelper.getRimBankFileName(null, EXTERIOR_MODEL, 0);
+        VehicleSlotsHelper.getRimBankFileName(null, EXTERIOR_MODEL, 0, false);
 
         // THEN:IAE
     }
@@ -434,7 +416,7 @@ public class VehicleSlotsHelperTest {
                 .build();
 
         // WHEN
-        VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, 1);
+        VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, 1, false);
 
         // THEN:IAE
     }
@@ -469,7 +451,7 @@ public class VehicleSlotsHelperTest {
                 .build();
 
         // WHEN
-        final String actualFileName = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, 2);
+        final String actualFileName = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, 2, true);
 
         // THEN
         assertThat(actualFileName).isEqualTo("RX8_F_02.bnk");

@@ -182,27 +182,28 @@ public class PatchEnhancer {
         searchFirstInteriorPatternReference(vehicleSlot).ifPresent(ref -> patchProperties.setInteriorReferenceIfNotExists(ref, 1));
     }
 
-    // TODO handle all declared rims
     private void createPatchPropertiesForRims(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
-        final RimSlot defaultRimSlot = vehicleSlot.getDefaultRims().get();
-        String selectedRimReference = defaultRimSlot.getRef();
-        String selectedResourceRimBrandReference = defaultRimSlot.getParentDirectoryName().getRef();
-        String selectedFrontRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, FRONT_RIM, false);
-        String selectedResourceFrontRimBankName = defaultRimSlot.getFrontRimInfo().getFileName().getRef();
-        String selectedRearRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIM, false);
-        String selectedResourceRearRimBankName = defaultRimSlot.getRearRimInfo().getFileName().getRef();
+        vehicleSlot.getAllRimsSorted()
+                .forEach(rimSlot -> {
+                    String selectedRimReference = rimSlot.getRef();
+                    String selectedResourceRimBrandReference = rimSlot.getParentDirectoryName().getRef();
+                    String selectedFrontRimBank = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, rimSlot.getRank(), false);
+                    String selectedResourceFrontRimBankName = rimSlot.getFrontRimInfo().getFileName().getRef();
+                    String selectedRearRimBank = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, REAR_RIM, rimSlot.getRank(), false);
+                    String selectedResourceRearRimBankName = rimSlot.getRearRimInfo().getFileName().getRef();
 
-        List<String> values = asList(selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);
-        if (values.contains(DisplayConstants.ITEM_UNAVAILABLE)) {
-            throw new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, vehicleSlot.getRef()));
-        }
+                    List<String> values = asList(selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);
+                    if (values.contains(DisplayConstants.ITEM_UNAVAILABLE)) {
+                        throw new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, vehicleSlot.getRef()));
+                    }
 
-        patchProperties.setRimsSlotReferenceIfNotExists(selectedRimReference, 1);
-        patchProperties.setResourceRimsBrandIfNotExists(selectedResourceRimBrandReference, 1);
-        patchProperties.setFrontRimBankNameIfNotExists(selectedFrontRimBank, 1);
-        patchProperties.setResourceFrontRimBankIfNotExists(selectedResourceFrontRimBankName, 1);
-        patchProperties.setRearRimBankNameIfNotExists(selectedRearRimBank, 1);
-        patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, 1);
+                    patchProperties.setRimsSlotReferenceIfNotExists(selectedRimReference, 1);
+                    patchProperties.setResourceRimsBrandIfNotExists(selectedResourceRimBrandReference, 1);
+                    patchProperties.setFrontRimBankNameIfNotExists(selectedFrontRimBank, 1);
+                    patchProperties.setResourceFrontRimBankIfNotExists(selectedResourceFrontRimBankName, 1);
+                    patchProperties.setRearRimBankNameIfNotExists(selectedRearRimBank, 1);
+                    patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, 1);
+                });
     }
 
     private void createPatchPropertiesForDealerSlot(UserSelection userSelection, PatchProperties patchProperties) {
