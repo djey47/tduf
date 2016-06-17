@@ -12,10 +12,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -199,18 +196,14 @@ public class VehicleSlotsHelper extends CommonHelper {
      * @param rimBankFileType  : type of bank file to be resolved
      * @return simple file name
      */
-    public static String getRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType, int rimIndex) {
+    public static String getRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType, int rimRank) {
         if (FRONT_RIM != rimBankFileType &&
                 REAR_RIM != rimBankFileType) {
             throw new IllegalArgumentException("Not a valid rim bank type: " + rimBankFileType);
         }
 
-        final List<RimSlot> declaredRims = vehicleSlot.getRims();
-        if (rimIndex > declaredRims.size()) {
-            throw new IllegalArgumentException("Vehicle slot has not enough rims: asked index: " + rimIndex + ", max: " + declaredRims.size());
-        }
-
-        final RimSlot rimSlot = declaredRims.get(rimIndex - 1);
+        final RimSlot rimSlot = vehicleSlot.getRimAtRank(rimRank)
+                .orElseThrow(() -> new IllegalArgumentException("Vehicle slot hasn't required rim at rank: " + rimRank));
         RimSlot.RimInfo rimInfo = FRONT_RIM == rimBankFileType ?
                 rimSlot.getFrontRimInfo() : rimSlot.getRearRimInfo();
 
@@ -278,34 +271,28 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .collect(toList());
     }
 
+    // TODO Merge two following methods in one (default attribute on rims ?)
     private Optional<RimSlot> getDefaultRimsForVehicle(String slotReference) {
         return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
-
                 .flatMap(entry -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEFAULT_RIMS))
-
                 .map(DbDataDto.Item::getRawValue)
-
-                .flatMap(rimSlotReference -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS))
-
-                .map(this::getRimSlotFromDatabaseEntry);
+                .flatMap(defaultRimsRef -> getAllRimsForVehicle(slotReference).stream()
+                    .filter(rim -> rim.getRef().equals(defaultRimsRef))
+                    .findAny());
     }
 
     private List<RimSlot> getAllRimsForVehicle(String slotReference) {
+        AtomicInteger rimRank = new AtomicInteger(1);
         return miner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference), CAR_RIMS)
-
                 .map(entry -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_RIM_ASSO_REF).get())
-
                 .map(DbDataDto.Item::getRawValue)
-
                 .map(rimSlotReference -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS).get())
-
-                .map(this::getRimSlotFromDatabaseEntry)
-
+                .map(rimEntry -> getRimSlotFromDatabaseEntry(rimEntry, rimRank.getAndIncrement()))
                 .collect(toList());
     }
 
     // Ignore warning (method reference)
-    private RimSlot getRimSlotFromDatabaseEntry(DbDataDto.Entry rimEntry) {
+    private RimSlot getRimSlotFromDatabaseEntry(DbDataDto.Entry rimEntry, int rimRank) {
         String defaultRimsReference = getStringValueFromDatabaseEntry(rimEntry, DatabaseConstants.FIELD_RANK_RIM_REF).get();
         Optional<Resource> defaulRimsParentDirectory = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_PATH);
         Optional<Resource> frontFileName = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT);
@@ -323,6 +310,7 @@ public class VehicleSlotsHelper extends CommonHelper {
         return RimSlot
                 .builder()
                 .withRef(defaultRimsReference)
+                .atRank(rimRank)
                 .withParentDirectoryName(defaulRimsParentDirectory.orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
                 .withRimsInformation(frontInfo, rearInfo)
                 .build();

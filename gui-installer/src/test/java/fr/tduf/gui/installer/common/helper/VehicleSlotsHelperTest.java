@@ -167,10 +167,15 @@ public class VehicleSlotsHelperTest {
                 .build();
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(brandSlotRef, BRANDS)).thenReturn(of(brandsEntry));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotRef, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
-        when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotRef), CAR_RIMS)).thenReturn(asList(
-                carRimsEntry1,
-                carRimsEntry2
-        ).stream());
+        when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotRef), CAR_RIMS)).thenReturn(
+                asList(
+                    carRimsEntry1,
+                    carRimsEntry2
+                ).stream(),
+                asList(
+                    carRimsEntry1,
+                    carRimsEntry2
+                ).stream());
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef1, RIMS)).thenReturn(of(rimsEntry1));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef2, RIMS)).thenReturn(of(rimsEntry2));
         when(bulkDatabaseMinerMock.getContentEntriesMatchingCriteria(anyListOf(DbFieldValueDto.class), eq(CAR_COLORS))).thenReturn(singletonList(carColorsEntry));
@@ -297,7 +302,7 @@ public class VehicleSlotsHelperTest {
         when(bulkDatabaseMinerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(of(topicObject));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(undrivableRef, CAR_PHYSICS_DATA)).thenReturn(of(undrivableEntry));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(drivableRef, CAR_PHYSICS_DATA)).thenReturn(of(drivableEntry));
-        when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(any(DbFieldValueDto.class), any(DbDto.Topic.class))).thenReturn(Stream.empty());
+        when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(any(DbFieldValueDto.class), any(DbDto.Topic.class))).thenReturn(Stream.empty(), Stream.empty());
 
 
         // WHEN
@@ -368,6 +373,7 @@ public class VehicleSlotsHelperTest {
                 .withFileName(Resource.from(resourceRef, rimsResourceValue))
                 .build();
         RimSlot rims = RimSlot.builder()
+                .atRank(0)
                 .withRef(rimSlotReference)
                 .withRimsInformation(frontRimInfo, null)
                 .build();
@@ -395,6 +401,7 @@ public class VehicleSlotsHelperTest {
                 .build();
         RimSlot rims = RimSlot.builder()
                 .withRef(rimSlotReference)
+                .atRank(0)
                 .withRimsInformation(null, rearRimInfo)
                 .build();
         VehicleSlot vehicleSlot = VehicleSlot.builder()
@@ -443,10 +450,12 @@ public class VehicleSlotsHelperTest {
                 .withFileName(Resource.from("33333333-2", rimsResourceValue2))
                 .build();
         RimSlot rims1 = RimSlot.builder()
+                .atRank(1)
                 .withRef("22222222")
                 .withRimsInformation(frontRimInfo, null)
                 .build();
         RimSlot rims2 = RimSlot.builder()
+                .atRank(2)
                 .withRef("22222222-2")
                 .withRimsInformation(frontRimInfo2, null)
                 .build();

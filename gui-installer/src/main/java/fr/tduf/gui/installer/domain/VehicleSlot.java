@@ -1,7 +1,7 @@
 package fr.tduf.gui.installer.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
@@ -17,7 +17,7 @@ public class VehicleSlot {
     private Resource fileName;
 
     private RimSlot defaultRims;
-    private List<RimSlot> rims;
+    private Set<RimSlot> rims;
 
     private int carIdentifier;
     private Resource brandName;
@@ -93,9 +93,16 @@ public class VehicleSlot {
         return paintJobs;
     }
 
-    // TODO use set instead and remove unicity checks
-    public List<RimSlot> getRims() {
-        return rims;
+    public List<RimSlot> getAllRimsSorted() {
+        return rims.stream()
+                .sorted((rim1, rim2) -> Integer.compare(rim1.getRank(), rim2.getRank()))
+                .collect(Collectors.toList());
+    }
+
+    public Optional<RimSlot> getRimAtRank(int rank) {
+        return rims.stream()
+                .filter(rim -> rim.getRank() == rank)
+                .findAny();
     }
 
     /**
@@ -105,7 +112,7 @@ public class VehicleSlot {
         private String ref;
         private Resource fileName;
         private RimSlot defaultRims;
-        private List<RimSlot> rims = new ArrayList<>();
+        private Set<RimSlot> rims = new HashSet<>();
         private int carIdentifier;
         private Resource realName;
         private Resource brandName;
@@ -174,13 +181,11 @@ public class VehicleSlot {
         }
 
         public VehicleSlotBuilder addRim(RimSlot rim) {
-            if (!rims.contains(rim)) {
-                rims.add(rim);
-            }
+            rims.add(rim);
             return this;
         }
 
-        public VehicleSlotBuilder addRims(List<RimSlot> rimSlots) {
+        public VehicleSlotBuilder addRims(Collection<RimSlot> rimSlots) {
             this.rims.addAll(rimSlots);
             return this;
         }

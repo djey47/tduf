@@ -124,6 +124,7 @@ public class UpdateDatabaseStepTest {
                 .withFileName(Resource.from(RES_BANKNAME, BANKNAME))
                 .withDefaultRims(RimSlot.builder()
                         .withRef(RIMREF_1)
+                        .atRank(1)
                         .withParentDirectoryName(Resource.from(RES_RIMBRAND_1, RIMBRAND_1))
                         .withRimsInformation(RimSlot.RimInfo.builder()
                                         .withFileName(Resource.from(RES_BANKNAME_FR_1, BANKNAME_FR_1))

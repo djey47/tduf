@@ -371,9 +371,9 @@ public class PatchEnhancerTest {
         patchProperties.setRimsSlotReferenceIfNotExists(rimId1, 1);
         patchProperties.setRimsSlotReferenceIfNotExists(rimId2, 2);
 
-        final RimSlot rimSlot0 = createDefaultRimSlot(rimId0);
-        final RimSlot rimSlot1 = createDefaultRimSlot(rimId1);
-        final RimSlot rimSlot2 = createDefaultRimSlot(rimId2);
+        final RimSlot rimSlot0 = createDefaultRimSlot(rimId0, 0);
+        final RimSlot rimSlot1 = createDefaultRimSlot(rimId1, 1);
+        final RimSlot rimSlot2 = createDefaultRimSlot(rimId2, 2);
         final VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef(SLOT_REFERENCE)
                 .withDefaultRims(rimSlot0)
@@ -513,9 +513,10 @@ public class PatchEnhancerTest {
         return new PatchEnhancer(databaseContext);
     }
 
-    private static RimSlot createDefaultRimSlot(String rimId) {
+    private static RimSlot createDefaultRimSlot(String rimId, int rank) {
         return RimSlot.builder()
                 .withRef(rimId)
+                .atRank(rank)
                 .build();
     }
 
@@ -526,6 +527,7 @@ public class PatchEnhancerTest {
                 .withFileName(Resource.from(RES_BANKNAME, BANKNAME))
                 .withDefaultRims(RimSlot.builder()
                         .withRef(RIMREF_1)
+                        .atRank(1)
                         .withParentDirectoryName(Resource.from(RES_RIMBRAND_1, RIMBRAND_1))
                         .withRimsInformation(RimSlot.RimInfo.builder()
                                         .withFileName(Resource.from(RES_BANKNAME_FR_1, BANKNAME_FR_1))

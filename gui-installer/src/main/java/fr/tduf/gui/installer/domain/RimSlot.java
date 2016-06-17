@@ -10,13 +10,14 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  */
 public class RimSlot {
     private String ref;
-
+    private int rank;
     private Resource parentDirectoryName;
     private RimInfo frontRimInfo;
     private RimInfo rearRimInfo;
 
-    private RimSlot(String ref) {
+    private RimSlot(String ref, int rank) {
         this.ref = requireNonNull(ref, "Slot reference is required.");
+        this.rank = requireNonNull(rank, "Rim rank is required.");
     }
 
     public static RimSlotBuilder builder() {
@@ -40,6 +41,10 @@ public class RimSlot {
         return ref;
     }
 
+    public int getRank() {
+        return rank;
+    }
+
     public Resource getParentDirectoryName() {
         return parentDirectoryName;
     }
@@ -52,17 +57,24 @@ public class RimSlot {
         return rearRimInfo;
     }
 
+
     /**
      * Creates custom RimSlot instances.
      */
     public static class RimSlotBuilder {
         private String ref;
+        private Integer rank;
         private Resource parentDirectoryName;
         private RimInfo frontRimInfo;
         private RimInfo rearRimInfo;
 
         public RimSlotBuilder withRef(String ref) {
             this.ref = ref;
+            return this;
+        }
+
+        public RimSlotBuilder atRank(int rank) {
+            this.rank = rank;
             return this;
         }
 
@@ -78,7 +90,7 @@ public class RimSlot {
         }
 
         public RimSlot build() {
-            final RimSlot rimSlot = new RimSlot(ref);
+            final RimSlot rimSlot = new RimSlot(ref, rank);
 
             rimSlot.parentDirectoryName = parentDirectoryName;
             rimSlot.frontRimInfo = frontRimInfo;
