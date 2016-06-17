@@ -194,6 +194,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
                 .collect(toList());
 
+        // TODO replace by a search in a dedicated method using values hashcode
         return databaseMiner.getContentEntriesMatchingCriteria(fullCriteria, changedTopic).stream().findAny();
     }
 
