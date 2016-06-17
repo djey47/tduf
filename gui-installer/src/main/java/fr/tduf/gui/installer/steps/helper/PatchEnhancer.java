@@ -182,13 +182,15 @@ public class PatchEnhancer {
         searchFirstInteriorPatternReference(vehicleSlot).ifPresent(ref -> patchProperties.setInteriorReferenceIfNotExists(ref, 1));
     }
 
+    // TODO handle all declared rims
     private void createPatchPropertiesForRims(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
-        String selectedRimReference = vehicleSlot.getDefaultRims().getRef();
-        String selectedResourceRimBrandReference = vehicleSlot.getDefaultRims().getParentDirectoryName().getRef();
+        final RimSlot defaultRimSlot = vehicleSlot.getDefaultRims().get();
+        String selectedRimReference = defaultRimSlot.getRef();
+        String selectedResourceRimBrandReference = defaultRimSlot.getParentDirectoryName().getRef();
         String selectedFrontRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, FRONT_RIM, false);
-        String selectedResourceFrontRimBankName = vehicleSlot.getDefaultRims().getFrontRimInfo().getFileName().getRef();
+        String selectedResourceFrontRimBankName = defaultRimSlot.getFrontRimInfo().getFileName().getRef();
         String selectedRearRimBank = VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIM, false);
-        String selectedResourceRearRimBankName = vehicleSlot.getDefaultRims().getRearRimInfo().getFileName().getRef();
+        String selectedResourceRearRimBankName = defaultRimSlot.getRearRimInfo().getFileName().getRef();
 
         List<String> values = asList(selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);
         if (values.contains(DisplayConstants.ITEM_UNAVAILABLE)) {

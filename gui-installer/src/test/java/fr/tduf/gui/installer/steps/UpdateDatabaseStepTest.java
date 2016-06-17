@@ -122,7 +122,7 @@ public class UpdateDatabaseStepTest {
                 .withRef(SLOT_REFERENCE)
                 .withCarIdentifier(Integer.valueOf(CARID))
                 .withFileName(Resource.from(RES_BANKNAME, BANKNAME))
-                .withDefaultRims(RimSlot.builder()
+                .addRim(RimSlot.builder()
                         .withRef(RIMREF_1)
                         .atRank(1)
                         .withParentDirectoryName(Resource.from(RES_RIMBRAND_1, RIMBRAND_1))
@@ -132,6 +132,7 @@ public class UpdateDatabaseStepTest {
                                 RimSlot.RimInfo.builder()
                                         .withFileName(Resource.from(RES_BANKNAME_RR_1, BANKNAME_RR_1))
                                         .build())
+                        .setDefaultRims(true)
                         .build())
                 .build();
     }

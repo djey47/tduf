@@ -212,7 +212,7 @@ public class VehicleSlotsHelperTest {
         assertThat(vehicleSlot.getCameraIdentifier()).isEqualTo(idCam);
         assertThat(vehicleSlot.getSecurityOptions()).isEqualTo(SecurityOptions.fromValues(secuOne, secuTwo));
 
-        RimSlot actualDefaultRims = vehicleSlot.getDefaultRims();
+        RimSlot actualDefaultRims = vehicleSlot.getDefaultRims().get();
         assertThat(actualDefaultRims.getRef()).isEqualTo(rimSlotRef1);
         assertThat(actualDefaultRims.getParentDirectoryName()).isEqualTo(Resource.from(directoryRef, directory));
         assertThat(actualDefaultRims.getFrontRimInfo().getFileName()).isEqualTo(Resource.from(frontRimFileNameRef1, frontRimFileName1));
@@ -376,10 +376,11 @@ public class VehicleSlotsHelperTest {
                 .atRank(0)
                 .withRef(rimSlotReference)
                 .withRimsInformation(frontRimInfo, null)
+                .setDefaultRims(true)
                 .build();
         VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef(slotReference)
-                .withDefaultRims(rims)
+                .addRim(rims)
                 .build();
 
         // WHEN
@@ -403,10 +404,11 @@ public class VehicleSlotsHelperTest {
                 .withRef(rimSlotReference)
                 .atRank(0)
                 .withRimsInformation(null, rearRimInfo)
+                .setDefaultRims(true)
                 .build();
         VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef(slotReference)
-                .withDefaultRims(rims)
+                .addRim(rims)
                 .build();
 
         // WHEN
@@ -453,6 +455,7 @@ public class VehicleSlotsHelperTest {
                 .atRank(1)
                 .withRef("22222222")
                 .withRimsInformation(frontRimInfo, null)
+                .setDefaultRims(true)
                 .build();
         RimSlot rims2 = RimSlot.builder()
                 .atRank(2)
@@ -461,7 +464,7 @@ public class VehicleSlotsHelperTest {
                 .build();
         VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef("11111111")
-                .withDefaultRims(rims1)
+                .addRim(rims1)
                 .addRim(rims2)
                 .build();
 

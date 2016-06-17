@@ -14,6 +14,7 @@ public class RimSlot {
     private Resource parentDirectoryName;
     private RimInfo frontRimInfo;
     private RimInfo rearRimInfo;
+    private boolean defaultRims;
 
     private RimSlot(String ref, int rank) {
         this.ref = requireNonNull(ref, "Slot reference is required.");
@@ -57,6 +58,10 @@ public class RimSlot {
         return rearRimInfo;
     }
 
+    public boolean isDefault() {
+        return defaultRims;
+    }
+
 
     /**
      * Creates custom RimSlot instances.
@@ -67,6 +72,7 @@ public class RimSlot {
         private Resource parentDirectoryName;
         private RimInfo frontRimInfo;
         private RimInfo rearRimInfo;
+        private boolean defaultRims = false;
 
         public RimSlotBuilder withRef(String ref) {
             this.ref = ref;
@@ -89,12 +95,18 @@ public class RimSlot {
             return this;
         }
 
+        public RimSlotBuilder setDefaultRims(boolean defaultRims) {
+            this.defaultRims = defaultRims;
+            return this;
+        }
+
         public RimSlot build() {
             final RimSlot rimSlot = new RimSlot(ref, rank);
 
             rimSlot.parentDirectoryName = parentDirectoryName;
             rimSlot.frontRimInfo = frontRimInfo;
             rimSlot.rearRimInfo = rearRimInfo;
+            rimSlot.defaultRims = defaultRims;
 
             return rimSlot;
         }

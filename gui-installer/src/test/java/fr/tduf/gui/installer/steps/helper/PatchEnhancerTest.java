@@ -372,12 +372,11 @@ public class PatchEnhancerTest {
         patchProperties.setRimsSlotReferenceIfNotExists(rimId2, 2);
 
         final RimSlot rimSlot0 = createDefaultRimSlot(rimId0, 0);
-        final RimSlot rimSlot1 = createDefaultRimSlot(rimId1, 1);
-        final RimSlot rimSlot2 = createDefaultRimSlot(rimId2, 2);
+        final RimSlot rimSlot1 = createRimSlot(rimId1, 1);
+        final RimSlot rimSlot2 = createRimSlot(rimId2, 2);
         final VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef(SLOT_REFERENCE)
-                .withDefaultRims(rimSlot0)
-                .addRims(asList(rimSlot1, rimSlot2))
+                .addRims(asList(rimSlot0, rimSlot1, rimSlot2))
                 .build();
 
 
@@ -517,6 +516,14 @@ public class PatchEnhancerTest {
         return RimSlot.builder()
                 .withRef(rimId)
                 .atRank(rank)
+                .setDefaultRims(true)
+                .build();
+    }
+
+    private static RimSlot createRimSlot(String rimId, int rank) {
+        return RimSlot.builder()
+                .withRef(rimId)
+                .atRank(rank)
                 .build();
     }
 
@@ -525,7 +532,7 @@ public class PatchEnhancerTest {
                 .withRef(SLOT_REFERENCE)
                 .withCarIdentifier(Integer.valueOf(CARID))
                 .withFileName(Resource.from(RES_BANKNAME, BANKNAME))
-                .withDefaultRims(RimSlot.builder()
+                .addRim(RimSlot.builder()
                         .withRef(RIMREF_1)
                         .atRank(1)
                         .withParentDirectoryName(Resource.from(RES_RIMBRAND_1, RIMBRAND_1))
@@ -535,6 +542,7 @@ public class PatchEnhancerTest {
                                 RimSlot.RimInfo.builder()
                                         .withFileName(Resource.from(RES_BANKNAME_RR_1, BANKNAME_RR_1))
                                         .build())
+                        .setDefaultRims(true)
                         .build())
                 .addPaintJob(PaintJob.builder()
                         .atRank(1)

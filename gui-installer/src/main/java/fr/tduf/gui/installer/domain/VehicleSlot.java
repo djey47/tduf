@@ -16,7 +16,6 @@ public class VehicleSlot {
 
     private Resource fileName;
 
-    private RimSlot defaultRims;
     private Set<RimSlot> rims;
 
     private int carIdentifier;
@@ -57,8 +56,10 @@ public class VehicleSlot {
         return fileName;
     }
 
-    public RimSlot getDefaultRims() {
-        return defaultRims;
+    public Optional<RimSlot> getDefaultRims() {
+        return rims.stream()
+                .filter(RimSlot::isDefault)
+                .findAny();
     }
 
     public int getCarIdentifier() {
@@ -111,7 +112,6 @@ public class VehicleSlot {
     public static class VehicleSlotBuilder {
         private String ref;
         private Resource fileName;
-        private RimSlot defaultRims;
         private Set<RimSlot> rims = new HashSet<>();
         private int carIdentifier;
         private Resource realName;
@@ -148,11 +148,6 @@ public class VehicleSlot {
         public VehicleSlotBuilder withVersionName(Resource versionName) {
             this.versionName = versionName;
             return this;
-        }
-
-        public VehicleSlotBuilder withDefaultRims(RimSlot rim) {
-            this.defaultRims = rim;
-            return addRim(rim);
         }
 
         public VehicleSlotBuilder withCarIdentifier(int id) {
@@ -193,7 +188,6 @@ public class VehicleSlot {
         public VehicleSlot build() {
             final VehicleSlot vehicleSlot = new VehicleSlot(this.ref);
 
-            vehicleSlot.defaultRims = defaultRims;
             vehicleSlot.rims = rims;
             vehicleSlot.fileName = fileName;
             vehicleSlot.carIdentifier = carIdentifier;

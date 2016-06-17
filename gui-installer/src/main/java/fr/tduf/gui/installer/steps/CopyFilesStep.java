@@ -113,7 +113,8 @@ class CopyFilesStep extends GenericStep {
                 targetFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, HUD, true);
                 break;
             case DIRECTORY_RIMS:
-                effectiveTargetPath = targetPath.resolve(vehicleSlot.getDefaultRims().getParentDirectoryName().getValue());
+                // FIXME use targetPath from corresponding rim slot instead of default
+                effectiveTargetPath = targetPath.resolve(vehicleSlot.getDefaultRims().get().getParentDirectoryName().getValue());
                 targetFileName = getTargetFileNameForRims(vehicleSlot, assetPath);
                 break;
             default:

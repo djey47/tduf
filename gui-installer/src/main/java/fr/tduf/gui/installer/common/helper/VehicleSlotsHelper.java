@@ -131,8 +131,6 @@ public class VehicleSlotsHelper extends CommonHelper {
         Optional<Integer> carIdentifier = getIntValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_ID_CAR);
         Optional<Integer> cameraIdentifier = getIntValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_ID_CAM);
 
-        final Optional<RimSlot> defaultRims = getDefaultRimsForVehicle(slotReference);
-
         Optional<Float> secuOptionOne = getFloatValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_SECU1);
         Optional<Integer> secuOptionTwo = getIntValueFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_SECU2);
 
@@ -147,7 +145,6 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .withRealName(realName.orElse(null))
                 .withModelName(modelName.orElse(null))
                 .withVersionName(versionName.orElse(null))
-                .withDefaultRims(defaultRims.orElse(null))
                 .withBrandName(brandName.orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
                 .withCameraIdentifier(cameraIdentifier.orElse(DEFAULT_CAM_ID))
                 .withSecurityOptions(secuOptionOne.orElse(SecurityOptions.ONE_DEFAULT), secuOptionTwo.orElse(SecurityOptions.TWO_DEFAULT))
@@ -271,29 +268,22 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .collect(toList());
     }
 
-    // TODO Merge two following methods in one (default attribute on rims ?)
-    private Optional<RimSlot> getDefaultRimsForVehicle(String slotReference) {
-        return miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
-                .flatMap(entry -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEFAULT_RIMS))
-                .map(DbDataDto.Item::getRawValue)
-                .flatMap(defaultRimsRef -> getAllRimsForVehicle(slotReference).stream()
-                    .filter(rim -> rim.getRef().equals(defaultRimsRef))
-                    .findAny());
-    }
-
     private List<RimSlot> getAllRimsForVehicle(String slotReference) {
+        final Optional<String> defaultRimsReference = miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
+                .flatMap(entry -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEFAULT_RIMS))
+                .map(DbDataDto.Item::getRawValue);
+
         AtomicInteger rimRank = new AtomicInteger(1);
         return miner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference), CAR_RIMS)
                 .map(entry -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_RIM_ASSO_REF).get())
                 .map(DbDataDto.Item::getRawValue)
                 .map(rimSlotReference -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS).get())
-                .map(rimEntry -> getRimSlotFromDatabaseEntry(rimEntry, rimRank.getAndIncrement()))
+                .map(rimEntry -> getRimSlotFromDatabaseEntry(rimEntry, rimRank.getAndIncrement(), defaultRimsReference.orElse(null)))
                 .collect(toList());
     }
 
-    // Ignore warning (method reference)
-    private RimSlot getRimSlotFromDatabaseEntry(DbDataDto.Entry rimEntry, int rimRank) {
-        String defaultRimsReference = getStringValueFromDatabaseEntry(rimEntry, DatabaseConstants.FIELD_RANK_RIM_REF).get();
+    private RimSlot getRimSlotFromDatabaseEntry(DbDataDto.Entry rimEntry, int rimRank, String defaultRimsReference) {
+        String rimsReference = getStringValueFromDatabaseEntry(rimEntry, DatabaseConstants.FIELD_RANK_RIM_REF).get();
         Optional<Resource> defaulRimsParentDirectory = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_PATH);
         Optional<Resource> frontFileName = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT);
         Optional<Resource> rearFileName = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR);
@@ -307,26 +297,34 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .withFileName(rearFileName.orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
                 .build();
 
+        boolean defaultRims = ofNullable(defaultRimsReference)
+                .map(ref -> ref.equals(rimsReference))
+                .orElse(false);
+
         return RimSlot
                 .builder()
-                .withRef(defaultRimsReference)
+                .withRef(rimsReference)
                 .atRank(rimRank)
                 .withParentDirectoryName(defaulRimsParentDirectory.orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
                 .withRimsInformation(frontInfo, rearInfo)
+                .setDefaultRims(defaultRims)
                 .build();
     }
 
     private static String getDefaultRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType, String extension) {
-        RimSlot.RimInfo rimInfo;
+        Optional<RimSlot.RimInfo> rimInfo;
         if (FRONT_RIM == rimBankFileType) {
-            rimInfo = vehicleSlot.getDefaultRims().getFrontRimInfo();
+            rimInfo = vehicleSlot.getDefaultRims()
+                    .map(RimSlot::getFrontRimInfo);
         } else if (REAR_RIM == rimBankFileType) {
-            rimInfo = vehicleSlot.getDefaultRims().getRearRimInfo();
+            rimInfo = vehicleSlot.getDefaultRims()
+                    .map(RimSlot::getRearRimInfo);
         } else {
             throw new IllegalArgumentException("Invalid bank file type: " + rimBankFileType);
         }
 
-        return of(rimInfo.getFileName().getValue())
+        return rimInfo
+                .map(info -> info.getFileName().getValue())
                 .map(rimBankSimpleName -> String.format("%s%s", rimBankSimpleName, extension))
                 .orElse(DisplayConstants.ITEM_UNAVAILABLE);
     }
