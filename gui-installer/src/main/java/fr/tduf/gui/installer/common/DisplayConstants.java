@@ -28,7 +28,7 @@ public class DisplayConstants {
     public static final String MESSAGE_DB_CHECK_KO = "Database could not be checked.";
     public static final String MESSAGE_DB_FIX_OK = "Database was fixed succesfully.";
     public static final String MESSAGE_DB_FIX_KO = "Database could not be fixed.";
-    public static final String MESSAGE_DB_LOAD_KO = "Database could not be losded.";
+    public static final String MESSAGE_DB_LOAD_KO = "Database could not be loaded.";
     public static final String MESSAGE_DB_ZERO_ERROR = "No integrity error was found.";
     public static final String MESSAGE_DB_REMAINING_ERRORS = "Integrity error(s) do remain.\nGame might be playable, though.";
     public static final String MESSAGE_ABORTED_USER = "Aborted by user";
