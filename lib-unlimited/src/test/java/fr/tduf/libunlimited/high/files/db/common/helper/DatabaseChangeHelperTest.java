@@ -91,9 +91,15 @@ public class DatabaseChangeHelperTest {
     public void removeEntryWithIdentifier_whenEntryExists_shouldDeleteIt_andUpdateIds() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        dataObject.addEntry(createDefaultContentEntry(1));
-        dataObject.addEntry(createDefaultContentEntry(2));
-        dataObject.addEntry(createDefaultContentEntry(3));
+        DbDataDto.Entry entry1 = createDefaultContentEntry(1);
+        entry1.appendItem(createEntryItemAtRank(1));
+        dataObject.addEntry(entry1);
+        DbDataDto.Entry entry2 = createDefaultContentEntry(2);
+        entry2.appendItem(createEntryItemAtRank(1));
+        dataObject.addEntry(entry2);
+        DbDataDto.Entry entry3 = createDefaultContentEntry(3);
+        entry3.appendItem(createEntryItemAtRank(1));
+        dataObject.addEntry(entry3);
 
         DbDto topicObject = createDatabaseObject(dataObject, createDefaultStructureObject());
 
@@ -199,19 +205,23 @@ public class DatabaseChangeHelperTest {
     public void duplicateEntryWithIdentifier_whenEntryExists_shouldDuplicateItAndAddItToTopic() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        dataObject.addEntry(createDefaultContentEntry(0));
+        DbDataDto.Entry entry0 = createDefaultContentEntry(0);
+        entry0.appendItem(createEntryItemAtRank(1));
+        dataObject.addEntry(entry0);
 
         DbDataDto.Entry defaultContentEntry = createDefaultContentEntry(1);
-        defaultContentEntry.appendItem(createDefaultEntryItem());
+        defaultContentEntry.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(defaultContentEntry);
 
-        dataObject.addEntry(createDefaultContentEntry(2));
+        DbDataDto.Entry entryToBeCloned = createDefaultContentEntry(2);
+        entryToBeCloned.appendItem(createEntryItemAtRank(1));
+        dataObject.addEntry(entryToBeCloned);
 
         DbStructureDto stuctureObject = createDefaultStructureObject();
 
         DbDto topicObject = createDatabaseObject(dataObject, stuctureObject);
 
-        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(of(defaultContentEntry));
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(of(entryToBeCloned));
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
 
 
@@ -226,7 +236,7 @@ public class DatabaseChangeHelperTest {
     }
 
     @Test
-    public void duplicateEntryWithIdentifier_whenEntryExists_withSignleBitfieldItem_shouldDuplicateItAndAddItToTopic() {
+    public void duplicateEntryWithIdentifier_whenEntryExists_withSingleBitfieldItem_shouldDuplicateItAndAddItToTopic() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
 
@@ -302,9 +312,14 @@ public class DatabaseChangeHelperTest {
     public void moveEntryWithIdentifier_whenEntryExists_andStepNotInRange_shouldDoNothing() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        dataObject.addEntry(createDefaultContentEntry(0));
-        dataObject.addEntry(createDefaultContentEntry(1));
+        DbDataDto.Entry entry0 = createDefaultContentEntry(0);
+        entry0.appendItem(createEntryItemAtRank(1));
+        dataObject.addEntry(entry0);
+        DbDataDto.Entry entry1 = createDefaultContentEntry(1);
+        entry1.appendItem(createEntryItemAtRank(1));
+        dataObject.addEntry(entry1);
         final DbDataDto.Entry movedEntry = createDefaultContentEntry(2);
+        movedEntry.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(movedEntry);
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
@@ -324,9 +339,14 @@ public class DatabaseChangeHelperTest {
     public void moveEntryWithIdentifier_whenEntryExists_andStepInRange_shouldUpdateEntryRank() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        dataObject.addEntry(createDefaultContentEntry(0));
-        dataObject.addEntry(createDefaultContentEntry(1));
+        DbDataDto.Entry entry0 = createDefaultContentEntry(0);
+        entry0.appendItem(createEntryItemAtRank(1));
+        dataObject.addEntry(entry0);
+        DbDataDto.Entry entry1 = createDefaultContentEntry(1);
+        entry1.appendItem(createEntryItemAtRank(1));
+        dataObject.addEntry(entry1);
         final DbDataDto.Entry movedEntry = createDefaultContentEntry(2);
+        movedEntry.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(movedEntry);
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
@@ -472,9 +492,9 @@ public class DatabaseChangeHelperTest {
                 .build();
     }
 
-    private static DbDataDto.Item createDefaultEntryItem() {
+    private static DbDataDto.Item createEntryItemAtRank(int rank) {
         return DbDataDto.Item.builder()
-                .ofFieldRank(1)
+                .ofFieldRank(rank)
                 .build();
     }
 

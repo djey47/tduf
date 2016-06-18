@@ -102,13 +102,8 @@ public class BulkDatabaseMiner {
         Log.trace(THIS_CLASS_NAME, "getContentEntryFromTopicWithReference(" + ref + ", " + topic + ")");
 
         return getDatabaseTopic(topic)
-                .map(topicObject -> topicObject.getData().getEntries().stream()
-
-                        .filter(entry -> contentEntryHasForReference(entry, ref, topicObject.getStructure().getFields()))
-
-                        .findAny()
-
-                        .orElse(null));
+                .orElseThrow(() -> new NoSuchElementException("No database object found for topic: " + topic))
+                .getData().getEntryWithReference(ref);
     }
 
     /**

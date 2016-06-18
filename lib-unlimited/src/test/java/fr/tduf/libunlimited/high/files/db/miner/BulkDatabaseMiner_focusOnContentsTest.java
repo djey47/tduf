@@ -90,13 +90,15 @@ public class BulkDatabaseMiner_focusOnContentsTest {
         assertThat(actualEntries).isEmpty();
     }
 
-    @Test
-    public void getContentEntryFromTopicWithRef_whenTopicNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
+    @Test(expected = NoSuchElementException.class)
+    public void getContentEntryFromTopicWithRef_whenTopicNotFound_shouldThrowException() throws IOException, URISyntaxException {
         // GIVEN
         List<DbDto> topicObjects = createTopicObjectsFromResources();
 
-        // WHEN-THEN
+        // WHEN
         assertThat(BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithReference("", DbDto.Topic.RIMS)).isEmpty();
+
+        // THEN: NSE
     }
 
     @Test

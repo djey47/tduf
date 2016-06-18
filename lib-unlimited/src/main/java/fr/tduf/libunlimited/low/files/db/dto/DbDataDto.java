@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 import org.codehaus.jackson.annotate.*;
@@ -24,11 +25,16 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 @JsonTypeName("db")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class DbDataDto implements Serializable {
+    private static final String THIS_CLASS_NAME = DbDataDto.class.getSimpleName();
+
     @JsonProperty("entries")
     private List<Entry> entries;
 
     @JsonIgnore
     private Map<Long, Entry> entriesByInternalIdentifier;
+
+    @JsonIgnore
+    private Map<String, Entry> entriesByReference;
 
     @JsonTypeName("dbEntry")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
@@ -333,6 +339,16 @@ public class DbDataDto implements Serializable {
         return ofNullable(entriesByInternalIdentifier.get(internalId));
     }
 
+    public Optional<Entry> getEntryWithReference(String ref) {
+        if (entriesByReference == null) {
+            Log.warn(THIS_CLASS_NAME, "Will process entry search without index. Please fix contents.");
+            return entries.stream()
+                    .filter(entry -> entry.getItemAtRank(1).get().getRawValue().equals(ref))
+                    .findFirst();
+        }
+        return ofNullable(entriesByReference.get(ref));
+    }
+
     /**
      * @return builder, used to generate custom values.
      */
@@ -343,6 +359,7 @@ public class DbDataDto implements Serializable {
     public void addEntry(Entry entry) {
         entries.add(entry);
         updateEntryIndexWithNewEntry(entry);
+        updateEntryIndexByReferenceWithNewEntry(entry);
     }
 
     public void addEntryWithItems(List<Item> items) {
@@ -355,6 +372,7 @@ public class DbDataDto implements Serializable {
     public void removeEntry(Entry entry) {
         entries.remove(entry);
         removeEntryFromIndex(entry);
+        removeEntryFromIndexByReference(entry);
 
         // Fix identifiers of next entries
         entries.stream()
@@ -365,7 +383,6 @@ public class DbDataDto implements Serializable {
                     e.shiftIdUp();
                     updateEntryIndexWithNewEntry(e);
                 });
-
     }
 
     public void moveEntryUp(Entry entry) {
@@ -423,6 +440,7 @@ public class DbDataDto implements Serializable {
     private void setEntries(Collection<Entry> entries) {
         this.entries = new ArrayList<>(entries);
         entriesByInternalIdentifier = createEntryIndex(entries);
+        entriesByReference = createEntryIndexByReference(entries);
     }
 
     private void sortEntriesByIdentifier() {
@@ -433,14 +451,42 @@ public class DbDataDto implements Serializable {
         entriesByInternalIdentifier.put(entry.getId(), entry);
     }
 
+    private void updateEntryIndexByReferenceWithNewEntry(Entry entry) {
+        if (entriesByReference != null) {
+            // TODO create method to get ref
+            entriesByReference.put(entry.getItemAtRank(1).get().getRawValue(), entry);
+        }
+    }
+
     private void removeEntryFromIndex(Entry entry) {
         entriesByInternalIdentifier.remove(entry.getId());
+    }
+
+    private void removeEntryFromIndexByReference(Entry entry) {
+        if (entriesByReference != null) {
+            // TODO create method to get ref
+            entriesByReference.remove(entry.getItemAtRank(1).get().getRawValue());
+        }
     }
 
     private static Map<Long, Entry> createEntryIndex(Collection<Entry> entries) {
         return new HashMap<>(entries.stream()
                 .parallel()
                 .collect(Collectors.toConcurrentMap(Entry::getId, identity())));
+    }
+
+    private static Map<String, Entry> createEntryIndexByReference(Collection<Entry> entries) {
+        try {
+            return new HashMap<>(entries.stream()
+                    .parallel()
+                    .collect(Collectors.toConcurrentMap(
+                            e -> e.getItemAtRank(1)
+                                    .orElseThrow(IllegalArgumentException::new)
+                                    .getRawValue(),
+                            identity())));
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return null;
+        }
     }
 
     public static class DbDataDtoBuilder {
@@ -460,6 +506,7 @@ public class DbDataDto implements Serializable {
 
             dbDataDto.entries = this.entries;
             dbDataDto.entriesByInternalIdentifier = createEntryIndex(this.entries);
+            dbDataDto.entriesByReference = createEntryIndexByReference(this.entries);
 
             return dbDataDto;
         }
