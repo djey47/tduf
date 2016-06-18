@@ -44,37 +44,7 @@ public class DbDataDto implements Serializable {
          * @return builder, used to generate custom values.
          */
         public static EntryBuilder builder() {
-            return new EntryBuilder() {
-                private final List<Item> items = new ArrayList<>();
-                private long id;
-
-                @Override
-                public EntryBuilder forId(long id) {
-                    this.id = id;
-                    return this;
-                }
-
-                @Override
-                public EntryBuilder addItem(Item... item) {
-                    return addItems(asList(item));
-                }
-
-                @Override
-                public EntryBuilder addItems(List<Item> items) {
-                    this.items.addAll(items);
-                    return this;
-                }
-
-                @Override
-                public Entry build() {
-                    Entry entry = new Entry();
-
-                    entry.id = this.id;
-                    entry.items = this.items;
-
-                    return entry;
-                }
-            };
+            return new EntryBuilder();
         }
 
         public void addItemAtRank(int fieldRank, Item item) {
@@ -137,16 +107,32 @@ public class DbDataDto implements Serializable {
             id++;
         }
 
-        public interface EntryBuilder {
+        public static class EntryBuilder {
+            private final List<Item> items = new ArrayList<>();
+            private long id;
 
-            EntryBuilder forId(long id);
+            public EntryBuilder forId(long id) {
+                this.id = id;
+                return this;
+            }
 
-            EntryBuilder addItem(Item... item);
+            public EntryBuilder addItem(Item... item) {
+                return addItems(asList(item));
+            }
 
-            EntryBuilder addItems(List<Item> items);
+            public EntryBuilder addItems(List<Item> items) {
+                this.items.addAll(items);
+                return this;
+            }
 
-            Entry build();
+            public Entry build() {
+                Entry entry = new Entry();
 
+                entry.id = this.id;
+                entry.items = this.items;
+
+                return entry;
+            }
         }
     }
 
@@ -165,89 +151,7 @@ public class DbDataDto implements Serializable {
         private int fieldRank;
 
         public static ItemBuilder builder() {
-            return new ItemBuilder() {
-                private Integer fieldRank;
-                private String raw;
-
-                private boolean isBitField = false;
-                private DbDto.Topic topicForBitField;
-
-                @Override
-                public ItemBuilder bitFieldForTopic(boolean isBitField, DbDto.Topic topic) {
-                    this.isBitField = isBitField;
-                    this.topicForBitField = topic;
-                    return this;
-                }
-
-                @Override
-                public ItemBuilder fromStructureFieldAndTopic(DbStructureDto.Field field, DbDto.Topic topic) {
-                    this.fieldRank = field.getRank();
-
-                    boolean isBitfield = field.getFieldType() == BITFIELD;
-                    this.isBitField = isBitfield;
-                    this.topicForBitField = isBitfield ? topic : null;
-
-                    return this;
-                }
-
-                @Override
-                public ItemBuilder withRawValue(String rawValue) {
-                    this.raw = rawValue;
-                    return this;
-                }
-
-                @Override
-                public ItemBuilder ofFieldRank(int fieldRank) {
-                    this.fieldRank = fieldRank;
-                    return this;
-                }
-
-                @Override
-                public ItemBuilder fromExisting(Item contentItem, DbDto.Topic topic) {
-                    return DbDataDto.Item.builder()
-                            .ofFieldRank(contentItem.getFieldRank())
-                            .withRawValue(contentItem.getRawValue())
-                            .bitFieldForTopic(contentItem.isBitfield(), topic);
-                }
-
-                @Override
-                public Item build() {
-                    requireNonNull(fieldRank, "Rank of associated field must be specified.");
-
-                    Item item = new Item();
-
-                    item.rawValue = this.raw;
-                    item.fieldRank = this.fieldRank;
-
-                    if (isBitField) {
-                        item.switchValues = buildSwitchValues();
-                    }
-
-                    return item;
-                }
-
-                private List<SwitchValue> buildSwitchValues() {
-                    requireNonNull(raw, "A raw value is required");
-                    requireNonNull(topicForBitField, "A database topic is required");
-
-                    BitfieldHelper bitfieldHelper = new BitfieldHelper();
-                    Optional<List<DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto>> bitfieldReference = bitfieldHelper.getBitfieldReferenceForTopic(topicForBitField);
-
-                    List<DbDataDto.SwitchValue> switchValues = new ArrayList<>();
-                    bitfieldReference.ifPresent((refs) -> {
-
-                        List<Boolean> values = bitfieldHelper.resolve(topicForBitField, raw).get();
-                        refs.stream()
-
-                                .forEach((ref) -> {
-                                    boolean switchState = values.get(ref.getIndex() - 1);
-                                    switchValues.add(new DbDataDto.SwitchValue(ref.getIndex(), ref.getLabel(), switchState));
-                                });
-                    });
-
-                    return switchValues;
-                }
-            };
+            return new ItemBuilder();
         }
 
         public String getRawValue() {
@@ -290,18 +194,82 @@ public class DbDataDto implements Serializable {
             this.fieldRank++;
         }
 
-        public interface ItemBuilder {
-            ItemBuilder bitFieldForTopic(boolean isBitField, DbDto.Topic topic);
+        public static class ItemBuilder {
+            private Integer fieldRank;
+            private String raw;
 
-            ItemBuilder fromStructureFieldAndTopic(DbStructureDto.Field field, DbDto.Topic topic);
+            private boolean isBitField = false;
+            private DbDto.Topic topicForBitField;
 
-            ItemBuilder withRawValue(String singleValue);
+            public ItemBuilder bitFieldForTopic(boolean isBitField, DbDto.Topic topic) {
+                this.isBitField = isBitField;
+                this.topicForBitField = topic;
+                return this;
+            }
 
-            ItemBuilder ofFieldRank(int fieldRank);
+            public ItemBuilder fromStructureFieldAndTopic(DbStructureDto.Field field, DbDto.Topic topic) {
+                this.fieldRank = field.getRank();
 
-            ItemBuilder fromExisting(Item contentItem, DbDto.Topic topic);
+                boolean isBitfield = field.getFieldType() == BITFIELD;
+                this.isBitField = isBitfield;
+                this.topicForBitField = isBitfield ? topic : null;
 
-            Item build();
+                return this;
+            }
+
+            public ItemBuilder withRawValue(String rawValue) {
+                this.raw = rawValue;
+                return this;
+            }
+
+            public ItemBuilder ofFieldRank(int fieldRank) {
+                this.fieldRank = fieldRank;
+                return this;
+            }
+
+            public ItemBuilder fromExisting(Item contentItem, DbDto.Topic topic) {
+                return DbDataDto.Item.builder()
+                        .ofFieldRank(contentItem.getFieldRank())
+                        .withRawValue(contentItem.getRawValue())
+                        .bitFieldForTopic(contentItem.isBitfield(), topic);
+            }
+
+            public Item build() {
+                requireNonNull(fieldRank, "Rank of associated field must be specified.");
+
+                Item item = new Item();
+
+                item.rawValue = this.raw;
+                item.fieldRank = this.fieldRank;
+
+                if (isBitField) {
+                    item.switchValues = buildSwitchValues();
+                }
+
+                return item;
+            }
+
+            private List<SwitchValue> buildSwitchValues() {
+                requireNonNull(raw, "A raw value is required");
+                requireNonNull(topicForBitField, "A database topic is required");
+
+                BitfieldHelper bitfieldHelper = new BitfieldHelper();
+                Optional<List<DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto>> bitfieldReference = bitfieldHelper.getBitfieldReferenceForTopic(topicForBitField);
+
+                List<DbDataDto.SwitchValue> switchValues = new ArrayList<>();
+                bitfieldReference.ifPresent((refs) -> {
+
+                    List<Boolean> values = bitfieldHelper.resolve(topicForBitField, raw).get();
+                    refs.stream()
+
+                            .forEach((ref) -> {
+                                boolean switchState = values.get(ref.getIndex() - 1);
+                                switchValues.add(new DbDataDto.SwitchValue(ref.getIndex(), ref.getLabel(), switchState));
+                            });
+                });
+
+                return switchValues;
+            }
         }
     }
 
@@ -369,30 +337,7 @@ public class DbDataDto implements Serializable {
      * @return builder, used to generate custom values.
      */
     public static DbDataDtoBuilder builder() {
-        return new DbDataDtoBuilder() {
-            private List<Entry> entries = new ArrayList<>();
-
-            @Override
-            public DbDataDtoBuilder addEntry(Entry... entry) {
-                return addEntries(asList(entry));
-            }
-
-            @Override
-            public DbDataDtoBuilder addEntries(List<Entry> entries) {
-                this.entries.addAll(entries);
-                return this;
-            }
-
-            @Override
-            public DbDataDto build() {
-                DbDataDto dbDataDto = new DbDataDto();
-
-                dbDataDto.entries = this.entries;
-                dbDataDto.entriesByInternalIdentifier = createEntryIndex(this.entries);
-
-                return dbDataDto;
-            }
-        };
+        return new DbDataDtoBuilder();
     }
 
     public void addEntry(Entry entry) {
@@ -498,12 +443,25 @@ public class DbDataDto implements Serializable {
                 .collect(Collectors.toConcurrentMap(Entry::getId, identity())));
     }
 
-    // TODO remove interface
-    public interface DbDataDtoBuilder {
-        DbDataDtoBuilder addEntry(Entry... entry);
+    public static class DbDataDtoBuilder {
+        private List<Entry> entries = new ArrayList<>();
 
-        DbDataDtoBuilder addEntries(List<Entry> entries);
+        public DbDataDtoBuilder addEntry(Entry... entry) {
+            return addEntries(asList(entry));
+        }
 
-        DbDataDto build();
+        public DbDataDtoBuilder addEntries(List<Entry> entries) {
+            this.entries.addAll(entries);
+            return this;
+        }
+
+        public DbDataDto build() {
+            DbDataDto dbDataDto = new DbDataDto();
+
+            dbDataDto.entries = this.entries;
+            dbDataDto.entriesByInternalIdentifier = createEntryIndex(this.entries);
+
+            return dbDataDto;
+        }
     }
 }
