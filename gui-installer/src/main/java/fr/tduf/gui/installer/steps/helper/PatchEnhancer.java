@@ -104,7 +104,8 @@ public class PatchEnhancer {
     void enhancePatchObjectWithRims(VehicleSlot vehicleSlot) {
         Log.info(THIS_CLASS_NAME, "->Adding rim changes to initial patch");
 
-        AtomicInteger rimIndex = new AtomicInteger(0);
+        // TODO handle rims at index 0??
+        AtomicInteger rimIndex = new AtomicInteger(1);
         List<DbPatchDto.DbChangeDto> changeObjectsForRims = vehicleSlot.getAllRimsSorted().stream()
                 .flatMap(rimSlot -> createChangeObjectsForRims(vehicleSlot, rimSlot, rimIndex.getAndIncrement()))
                 .collect(toList());

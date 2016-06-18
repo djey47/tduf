@@ -367,16 +367,16 @@ public class PatchEnhancerTest {
         String rimId1 = "1111";
         String rimId2 = "2222";
 
-        patchProperties.setRimsSlotReferenceIfNotExists(rimId0, 0);
+//        patchProperties.setRimsSlotReferenceIfNotExists(rimId0, 0);
         patchProperties.setRimsSlotReferenceIfNotExists(rimId1, 1);
         patchProperties.setRimsSlotReferenceIfNotExists(rimId2, 2);
 
-        final RimSlot rimSlot0 = createDefaultRimSlot(rimId0, 0);
+//        final RimSlot rimSlot0 = createDefaultRimSlot(rimId0, 0);
         final RimSlot rimSlot1 = createRimSlot(rimId1, 1);
         final RimSlot rimSlot2 = createRimSlot(rimId2, 2);
         final VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef(SLOT_REFERENCE)
-                .addRims(asList(rimSlot0, rimSlot1, rimSlot2))
+                .addRims(asList(/*rimSlot0,*/ rimSlot1, rimSlot2))
                 .build();
 
 
@@ -386,15 +386,15 @@ public class PatchEnhancerTest {
 
         // THEN
         DbPatchDto patchObject = databaseContext.getPatchObject();
-        assertThat(patchObject.getChanges()).hasSize(3 * 5); // 5 per rim set
+        assertThat(patchObject.getChanges()).hasSize(2 * 5); // 5 per rim set
         assertThat(patchObject.getChanges()).extracting("type").containsOnly(UPDATE, UPDATE_RES);
         assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_RIMS, RIMS);
         assertThat(patchObject.getChanges()).extracting("ref").containsOnly(
                 null,
-                rimId0,
-                "{RES_RIMNAME.0}",
-                "{RES_BANKNAME.FR.0}",
-                "{RES_BANKNAME.RR.0}",
+//                rimId0,
+//                "{RES_RIMNAME.0}",
+//                "{RES_BANKNAME.FR.0}",
+//                "{RES_BANKNAME.RR.0}",
                 rimId1,
                 "{RES_RIMNAME.1}",
                 "{RES_BANKNAME.FR.1}",
@@ -405,24 +405,24 @@ public class PatchEnhancerTest {
                 "{RES_BANKNAME.RR.2}"
         );
         assertThat(patchObject.getChanges()).extracting("values").containsOnly(
-                asList(SLOT_REFERENCE, rimId0),
-                asList(
-                        rimId0,
-                        "{RIMBRANDREF.0}",
-                        "54276512",
-                        "{RES_RIMNAME.0}",
-                        "{RIMWIDTH.FR.0}",
-                        "{RIMHEIGHT.FR.0}",
-                        "{RIMDIAM.FR.0}",
-                        "{RIMWIDTH.RR.0}",
-                        "{RIMHEIGHT.RR.0}",
-                        "{RIMDIAM.RR.0}",
-                        "0",
-                        "0",
-                        "{RIMBRANDREF.0}",
-                        "{RES_BANKNAME.FR.0}",
-                        "{RES_BANKNAME.RR.0}",
-                        "0"),
+//                asList(SLOT_REFERENCE, rimId0),
+//                asList(
+//                        rimId0,
+//                        "{RIMBRANDREF.0}",
+//                        "54276512",
+//                        "{RES_RIMNAME.0}",
+//                        "{RIMWIDTH.FR.0}",
+//                        "{RIMHEIGHT.FR.0}",
+//                        "{RIMDIAM.FR.0}",
+//                        "{RIMWIDTH.RR.0}",
+//                        "{RIMHEIGHT.RR.0}",
+//                        "{RIMDIAM.RR.0}",
+//                        "0",
+//                        "0",
+//                        "{RIMBRANDREF.0}",
+//                        "{RES_BANKNAME.FR.0}",
+//                        "{RES_BANKNAME.RR.0}",
+//                        "0"),
                 asList(SLOT_REFERENCE, rimId1),
                 asList(
                         rimId1,
@@ -462,9 +462,9 @@ public class PatchEnhancerTest {
                         "0"));
         assertThat(patchObject.getChanges()).extracting("value").containsOnly(
                 null,
-                "{RIMNAME.0}",
-                "{BANKNAME.FR.0}",
-                "{BANKNAME.RR.0}",
+//                "{RIMNAME.0}",
+//                "{BANKNAME.FR.0}",
+//                "{BANKNAME.RR.0}",
                 "{RIMNAME.1}",
                 "{BANKNAME.FR.1}",
                 "{BANKNAME.RR.1}",
