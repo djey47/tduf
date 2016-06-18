@@ -34,6 +34,7 @@ public class DbResourceDto {
     private DbResourceDto() {}
 
     private static Map<String, Entry> createResourceIndex(Collection<Entry> entries) {
+        // TODO set to parallel
         return entries.stream()
                 .collect(Collectors.toMap(
                         Entry::getReference,
@@ -88,10 +89,12 @@ public class DbResourceDto {
 
     @JsonProperty("entries")
     public Collection<Entry> getEntries() {
+        // TODO return unmodifiable list instead
         return entriesByReference.values();
     }
 
     @JsonSetter("entries")
+    // TODO set to private if possible
     public void setEntries(Collection<Entry> entries) {
         entriesByReference = createResourceIndex(entries);
     }
