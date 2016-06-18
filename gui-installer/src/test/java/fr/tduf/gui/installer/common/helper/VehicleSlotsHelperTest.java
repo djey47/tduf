@@ -294,8 +294,8 @@ public class VehicleSlotsHelperTest {
         DbDataDto.Item groupItem1 = DbDataDto.Item.builder().ofFieldRank(5).withRawValue("92900264").build();
         DbDataDto.Item refItem2 = DbDataDto.Item.builder().ofFieldRank(1).withRawValue(drivableRef).build();
         DbDataDto.Item groupItem2 = DbDataDto.Item.builder().ofFieldRank(5).withRawValue("77800264").build();
-        DbDataDto.Entry undrivableEntry = DbDataDto.Entry.builder().addItem(refItem1, groupItem1).build();
-        DbDataDto.Entry drivableEntry = DbDataDto.Entry.builder().addItem(refItem2, groupItem2).build();
+        DbDataDto.Entry undrivableEntry = DbDataDto.Entry.builder().forId(0).addItem(refItem1, groupItem1).build();
+        DbDataDto.Entry drivableEntry = DbDataDto.Entry.builder().forId(1).addItem(refItem2, groupItem2).build();
         DbDataDto dataObject = DbDataDto.builder().addEntry(undrivableEntry, drivableEntry).build();
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 

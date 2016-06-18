@@ -2,21 +2,18 @@ package fr.tduf.libunlimited.low.files.db.dto;
 
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
+import org.codehaus.jackson.annotate.*;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.BITFIELD;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
+import static java.util.function.Function.identity;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -29,6 +26,9 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 public class DbDataDto implements Serializable {
     @JsonProperty("entries")
     private List<Entry> entries;
+
+    @JsonIgnore
+    private Map<Long, Entry> entriesByInternalIdentifier;
 
     @JsonTypeName("dbEntry")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
@@ -361,6 +361,10 @@ public class DbDataDto implements Serializable {
         return Collections.unmodifiableList(entries);
     }
 
+    public Optional<Entry> getEntryWithInternalIdentifier(long internalId) {
+        return ofNullable(entriesByInternalIdentifier.get(internalId));
+    }
+
     /**
      * @return builder, used to generate custom values.
      */
@@ -384,6 +388,7 @@ public class DbDataDto implements Serializable {
                 DbDataDto dbDataDto = new DbDataDto();
 
                 dbDataDto.entries = this.entries;
+                dbDataDto.entriesByInternalIdentifier = createEntryIndex(this.entries);
 
                 return dbDataDto;
             }
@@ -392,6 +397,7 @@ public class DbDataDto implements Serializable {
 
     public void addEntry(Entry entry) {
         entries.add(entry);
+        updateEntryIndexWithNewEntry(entry);
     }
 
     public void addEntryWithItems(List<Item> items) {
@@ -403,41 +409,52 @@ public class DbDataDto implements Serializable {
 
     public void removeEntry(Entry entry) {
         entries.remove(entry);
+        removeEntryFromIndex(entry);
 
         // Fix identifiers of next entries
         entries.stream()
+                .filter(e -> e.getId() > entry.getId())
+                .forEach(e -> {
+                    // TODO method
+                    removeEntryFromIndex(e);
+                    e.shiftIdUp();
+                    updateEntryIndexWithNewEntry(e);
+                });
 
-                .filter((e) -> e.getId() > entry.getId())
-
-                .forEach(DbDataDto.Entry::shiftIdUp);
     }
 
     public void moveEntryUp(Entry entry) {
         // Moves down previous entry
-        entries.stream()
+        getEntryWithInternalIdentifier(entry.getId() - 1)
+                .ifPresent((e) -> {
+                    // TODO method
+                    removeEntryFromIndex(e);
+                    e.shiftIdDown();
+                    updateEntryIndexWithNewEntry(e);
+                });
 
-                .filter((e) -> e.getId() == entry.getId() - 1)
-
-                .findAny()
-
-                .ifPresent(Entry::shiftIdDown);
-
+        // TODO method
+        removeEntryFromIndex(entry);
         entry.shiftIdUp();
+        updateEntryIndexWithNewEntry(entry);
 
         sortEntriesByIdentifier();
     }
 
     public void moveEntryDown(Entry entry) {
         // Moves up next entry
-        entries.stream()
+        getEntryWithInternalIdentifier(entry.getId() + 1)
+                .ifPresent(e -> {
+                    // TODO method
+                    removeEntryFromIndex(e);
+                    e.shiftIdUp();
+                    updateEntryIndexWithNewEntry(e);
+                });
 
-                .filter((e) -> e.getId() == entry.getId() + 1)
-
-                .findAny()
-
-                .ifPresent(Entry::shiftIdUp);
-
+        // TODO method
+        removeEntryFromIndex(entry);
         entry.shiftIdDown();
+        updateEntryIndexWithNewEntry(entry);
 
         sortEntriesByIdentifier();
     }
@@ -457,10 +474,31 @@ public class DbDataDto implements Serializable {
         return reflectionToString(this);
     }
 
+    @JsonSetter("entries")
+    private void setEntries(Collection<Entry> entries) {
+        this.entries = new ArrayList<>(entries);
+        entriesByInternalIdentifier = createEntryIndex(entries);
+    }
+
     private void sortEntriesByIdentifier() {
         entries.sort((e1, e2) -> Long.compare(e1.getId(), e2.getId()));
     }
 
+    private void updateEntryIndexWithNewEntry(Entry entry) {
+        entriesByInternalIdentifier.put(entry.getId(), entry);
+    }
+
+    private void removeEntryFromIndex(Entry entry) {
+        entriesByInternalIdentifier.remove(entry.getId());
+    }
+
+    private static Map<Long, Entry> createEntryIndex(Collection<Entry> entries) {
+        return new HashMap<>(entries.stream()
+                .parallel()
+                .collect(Collectors.toConcurrentMap(Entry::getId, identity())));
+    }
+
+    // TODO remove interface
     public interface DbDataDtoBuilder {
         DbDataDtoBuilder addEntry(Entry... entry);
 

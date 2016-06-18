@@ -88,11 +88,9 @@ public class BulkDatabaseMiner {
     public Optional<DbDataDto.Entry> getContentEntryFromTopicWithInternalIdentifier(long entryIdentifier, DbDto.Topic topic) {
         Log.trace(THIS_CLASS_NAME, "getContentEntryFromTopicWithInternalIdentifier(" + entryIdentifier + ", " + topic + ")");
 
-        return getDatabaseTopic(topic).get().getData().getEntries().stream()
-
-                .filter(entry -> entry.getId() == entryIdentifier)
-
-                .findAny();
+        return getDatabaseTopic(topic)
+                .orElseThrow(() -> new NoSuchElementException("No database object found for topic: " + topic))
+                .getData().getEntryWithInternalIdentifier(entryIdentifier);
     }
 
     /**
