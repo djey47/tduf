@@ -114,14 +114,11 @@ public class BulkDatabaseMiner {
     public Optional<DbDataDto.Entry> getContentEntryFromTopicWithItemValues(List<String> values, DbDto.Topic topic) {
         Log.trace(THIS_CLASS_NAME, "getContentEntryFromTopicWithItemValues(" + values + ", " + topic + ")");
 
-        int valuesHashCode = Objects.hashCode(values);
-
-        // TODO cache hashcode by entry
         return getDatabaseTopic(topic)
                 .orElseThrow(() -> new NoSuchElementException("No database object found for topic: " + topic))
                 .getData().getEntries().stream()
                 .parallel()
-                .filter(entry -> entry.getValuesHash() == valuesHashCode)
+                .filter(entry -> entry.getValuesHash() == Objects.hashCode(values))
                 .findFirst();
     }
 
