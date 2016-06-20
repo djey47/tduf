@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.BITFIELD;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -62,7 +64,7 @@ public class DbDataDto implements Serializable {
 
             // Rank update
             item.fieldRank = fieldRank;
-            for (int i = fieldRank ; i < items.size() ; i++) {
+            for (int i = fieldRank; i < items.size(); i++) {
                 if (items.get(i).fieldRank != fieldRank + 1) {
                     items.get(i).shiftFieldRankRight();
                 }
@@ -92,6 +94,21 @@ public class DbDataDto implements Serializable {
             return items.stream()
                     .filter(item -> item.fieldRank == fieldRank)
                     .findAny();
+        }
+
+        public Optional<Item> updateItemValueAtRank(String newValue, int fieldRank) {
+            Item i = getItemAtRank(fieldRank)
+                    .orElseThrow(() -> new IllegalArgumentException("No item at field rank: " + fieldRank));
+
+            if (newValue.equals(i.getRawValue())) {
+                return empty();
+            }
+
+            i.setRawValue(newValue);
+
+            computeValuesHash();
+
+            return of(i);
         }
 
         public long getId() {
@@ -133,7 +150,7 @@ public class DbDataDto implements Serializable {
 
         private String getFirstItemValue() {
             return getItemAtRank(1)
-                    .orElseThrow(() -> new IllegalArgumentException("Entry has no item at fiend rank 1"))
+                    .orElseThrow(() -> new IllegalArgumentException("Entry has no item at field rank 1"))
                     .getRawValue();
         }
 
@@ -197,10 +214,6 @@ public class DbDataDto implements Serializable {
             return rawValue;
         }
 
-        public void setRawValue(String rawValue) {
-            this.rawValue = rawValue;
-        }
-
         public int getFieldRank() {
             return fieldRank;
         }
@@ -227,6 +240,10 @@ public class DbDataDto implements Serializable {
         @Override
         public String toString() {
             return reflectionToString(this);
+        }
+
+        private void setRawValue(String rawValue) {
+            this.rawValue = rawValue;
         }
 
         private void shiftFieldRankRight() {

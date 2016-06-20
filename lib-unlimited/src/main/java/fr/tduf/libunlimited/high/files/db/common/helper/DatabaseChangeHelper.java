@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -85,15 +84,8 @@ public class DatabaseChangeHelper {
      * @return updated item if value has changed, empty otherwise.
      */
     public Optional<DbDataDto.Item> updateItemRawValueAtIndexAndFieldRank(DbDto.Topic topic, long entryIndex, int fieldRank, String newRawValue) {
-        DbDataDto.Item contentItem = databaseMiner.getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, entryIndex).get();
-        if (contentItem.getRawValue().equals(newRawValue)) {
-            return empty();
-        }
-
-        // FIXME do not set value directly, create and use entry method instead
-        contentItem.setRawValue(newRawValue);
-
-        return Optional.of(contentItem);
+        return databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic)
+                .flatMap(entry -> entry.updateItemValueAtRank(newRawValue, fieldRank));
     }
 
     /**
@@ -184,15 +176,13 @@ public class DatabaseChangeHelper {
                 .addItems(clonedItems)
                 .build();
 
-        DatabaseStructureQueryHelper.getUidFieldRank(topicObject.getStructure().getFields())
-                .ifPresent((uidFieldRank) -> {
-                    String newReference = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
-                    DbDataDto.Item uidContentItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(newEntry, uidFieldRank).get();
-                    // FIXME do not set value directly, create and use entry method instead
-                    uidContentItem.setRawValue(newReference);
-                });
-
         topicDataObject.addEntry(newEntry);
+
+        DatabaseStructureQueryHelper.getUidFieldRank(topicObject.getStructure().getFields())
+                .ifPresent(uidFieldRank -> {
+                    String newReference = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
+                    updateItemRawValueAtIndexAndFieldRank(topic, newEntry.getId(), uidFieldRank, newReference);
+                });
 
         return newEntry;
     }
@@ -262,13 +252,10 @@ public class DatabaseChangeHelper {
     public static void updateAssociationEntryWithSourceAndTargetReferences(DbDataDto.Entry entry, String sourceEntryRef, Optional<String> potentialTargetEntryRef) {
         requireNonNull(entry, "A content entry is required.");
 
-        List<DbDataDto.Item> entryItems = entry.getItems();
-
         // We assume source reference is first field ... target reference (if any) is second field  ...
-        // FIXME do not set value directly, create and use entry method instead
-        entryItems.get(0).setRawValue(sourceEntryRef);
+        entry.updateItemValueAtRank(sourceEntryRef, 1);
         potentialTargetEntryRef
-                .ifPresent(ref -> entryItems.get(1).setRawValue(ref));
+                .ifPresent(ref -> entry.updateItemValueAtRank(ref, 2));
     }
 
     private void checkResourceValueDoesNotExistWithReference(DbDto.Topic topic, Locale locale, String resourceReference) {

@@ -270,12 +270,15 @@ public class DatabaseChangeHelperTest {
         DbDataDto.Entry defaultContentEntry = createDefaultContentEntry(0);
         defaultContentEntry.appendItem(createEntryItemForUidField());
         dataObject.addEntry(defaultContentEntry);
+        DbDataDto.Entry cloneContentEntry = createDefaultContentEntry(1);
+        cloneContentEntry.appendItem(createEntryItemForUidField());
 
         DbStructureDto stuctureObject = createStructureObjectWithUidField();
 
         DbDto topicObject = createDatabaseObject(dataObject, stuctureObject);
 
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC)).thenReturn(of(defaultContentEntry));
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(1, TOPIC)).thenReturn(of(cloneContentEntry));
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
 
 
@@ -286,14 +289,15 @@ public class DatabaseChangeHelperTest {
         //THEN
         assertThat(dataObject.getEntries()).hasSize(2);
         assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L);
-        assertThat(dataObject.getEntries().get(1).getItems()).extracting("fieldRank").containsExactly(1);
-        assertThat(dataObject.getEntries().get(1).getItems()).extracting("rawValue").doesNotContain(ENTRY_REFERENCE);
+
+        assertThat(cloneContentEntry.getItems()).extracting("fieldRank").containsExactly(1);
+        assertThat(cloneContentEntry.getItems()).extracting("rawValue").doesNotContain(ENTRY_REFERENCE);
 
         Condition<String> betweenMinAndMaxRefValues = new Condition<>(o -> {
             int i = Integer.parseInt(o);
             return i >= 10000000 && i <= 99999999;
         }, "between 10000000 and 99999999 (inclusive)");
-        assertThat(dataObject.getEntries().get(1).getItemAtRank(1).get().getRawValue()).is(betweenMinAndMaxRefValues);
+        assertThat(cloneContentEntry.getItemAtRank(1).get().getRawValue()).is(betweenMinAndMaxRefValues);
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -433,7 +437,10 @@ public class DatabaseChangeHelperTest {
     public void updateItemRawValueAtIndexAndFieldRank_whenRawValueUnchanged_shouldReturnEmpty() {
         // GIVEN
         DbDataDto.Item item = createEntryItemForBitField();
-        when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(TOPIC, 1, 1)).thenReturn(of(item));
+        DbDataDto.Entry entry = createDefaultContentEntry(1);
+        entry.appendItem(item);
+
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(1, TOPIC)).thenReturn(of(entry));
 
         // WHEN
         Optional<DbDataDto.Item> updatedItem = changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, ENTRY_BITFIELD);
@@ -446,25 +453,30 @@ public class DatabaseChangeHelperTest {
     public void updateItemRawValueAtIndexAndFieldRank_whenRawValueChanged_shouldReturnUpdatedItem() {
         // GIVEN
         DbDataDto.Item item = createEntryItemForBitField();
-        when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(TOPIC, 1, 1)).thenReturn(of(item));
+        DbDataDto.Entry entry = createDefaultContentEntry(1);
+        entry.appendItem(item);
+
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(1, TOPIC)).thenReturn(of(entry));
+
 
         // WHEN
-        Optional<DbDataDto.Item> updatedItem = changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, "NEW_VALUE");
+        Optional<DbDataDto.Item> updatedItem = changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, "80");
+
 
         // THEN
         assertThat(updatedItem).isPresent();
-        assertThat(updatedItem.get().getRawValue()).isEqualTo("NEW_VALUE");
+        assertThat(updatedItem.get().getRawValue()).isEqualTo("80");
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void updateItemRawValueAtIndexAndFieldRank_whenItemDoesNotExist_shouldThrowException() {
         // GIVEN
-        when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(TOPIC, 1, 1)).thenReturn(empty());
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(1, TOPIC)).thenReturn(of(createDefaultContentEntry(1)));
 
         // WHEN
         changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, "NEW_VALUE");
 
-        // THEN: NSE
+        // THEN: IAE
     }
 
     private static DbDto createDatabaseObject(DbDataDto dataObject, DbStructureDto stuctureObject) {
