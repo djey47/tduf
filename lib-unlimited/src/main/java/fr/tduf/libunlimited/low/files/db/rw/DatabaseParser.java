@@ -87,33 +87,30 @@ public class DatabaseParser {
     }
 
     private DbResourceDto parseAllResourcesEnhancedFromTopic(DbDto.Topic topic) {
-        Set<DbResourceDto.Entry> entries = new LinkedHashSet<>();
+        Map<String, DbResourceDto.Entry> readEntries = new LinkedHashMap<>();
         AtomicInteger categoryCount = new AtomicInteger();
         AtomicReference<String> version = new AtomicReference<>();
 
         Locale.valuesAsStream()
-
                 .filter(resources::containsKey)
+                .filter(locale -> !resources.get(locale).isEmpty())
+                .forEach(locale -> parseResourcesEnhancedForLocale(locale, readEntries, categoryCount, version));
 
-                .filter((locale) -> !resources.get(locale).isEmpty())
-
-                .forEach((locale) -> parseResourcesEnhancedForLocale(locale, entries, categoryCount, version));
-
-        if (entries.isEmpty()) {
+        if (readEntries.isEmpty()) {
             return null;
         }
 
-        checkItemCountBetweenResourcesEnhanced(topic, entries);
+        checkItemCountBetweenResourcesEnhanced(topic, readEntries.values());
 
         return  DbResourceDto.builder()
                 .atVersion(version.get())
                 .withCategoryCount(categoryCount.get())
-                .containingEntries(entries)
+                .containingEntries(readEntries.values())
                 .build();
     }
 
-    private void parseResourcesEnhancedForLocale(Locale locale, Set<DbResourceDto.Entry> entries, AtomicInteger categoryCount, AtomicReference<String> version) {
-        requireNonNull(entries, "A set of entries (even empty) is required.");
+    private void parseResourcesEnhancedForLocale(Locale locale, Map<String, DbResourceDto.Entry> readEntriesByRef, AtomicInteger categoryCount, AtomicReference<String> version) {
+        requireNonNull(readEntriesByRef, "A map of entries (even empty) is required.");
 
         for (String line : resources.get(locale)) {
             Matcher matcher = META_VERSION_PATTERN.matcher(line);
@@ -135,21 +132,11 @@ public class DatabaseParser {
             matcher = RES_ENTRY_PATTERN.matcher(line);
             if (matcher.matches()) {
                 final String ref = matcher.group(3);
-                final DbResourceDto tempResource = DbResourceDto.builder()
-                        .atVersion("")
-                        .withCategoryCount(0)
-                        .containingEntries(entries)
-                        .build();
-                DbResourceDto.Entry entry =  tempResource.getEntryByReference(matcher.group(3))
-                        .orElseGet(() -> {
-                            final DbResourceDto.Entry newEntry = DbResourceDto.Entry.builder()
-                                    .forReference(ref)
-                                    .build();
-                            entries.add(newEntry);
-                            return newEntry;
-                        });
-
+                DbResourceDto.Entry entry = readEntriesByRef.getOrDefault(ref, DbResourceDto.Entry.builder()
+                        .forReference(ref)
+                        .build());
                 entry.setValueForLocale(matcher.group(1), locale);
+                readEntriesByRef.putIfAbsent(ref, entry);
             }
         }
     }
@@ -321,7 +308,7 @@ public class DatabaseParser {
         }
     }
 
-    private void checkItemCountBetweenResourcesEnhanced(DbDto.Topic topic, Set<DbResourceDto.Entry> entries) {
+    private void checkItemCountBetweenResourcesEnhanced(DbDto.Topic topic, Collection<DbResourceDto.Entry> entries) {
         entries.stream()
 
                 .forEach((entry) -> {
