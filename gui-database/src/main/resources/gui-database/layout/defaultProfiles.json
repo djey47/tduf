@@ -88,6 +88,7 @@
         {
           "name": "Default_Rims",
           "label": "Default Rims",
+          "priority": 1000,
           "rank": 10,
           "group": "Wheels",
           "remoteReferenceProfile": "Rims"
@@ -115,12 +116,14 @@
         {
           "name": "Engine_Localisation",
           "rank": 15,
-          "group": "Datasheet"
+          "group": "Datasheet",
+          "label": "Engine location"
         },
         {
           "name": "Engine_Type",
           "rank": 16,
-          "group": "Datasheet"
+          "group": "Datasheet",
+          "label": "Engine"
         },
         {
           "name": "Displacement",
@@ -132,27 +135,31 @@
           "name": "Power_bhp",
           "rank": 18,
           "group": "Datasheet",
-          "label": "Power (BHP)"
+          "label": "Max horsepower (BHP)"
         },
         {
           "name": "Power_RPM",
           "rank": 19,
-          "group": "Datasheet"
+          "group": "Datasheet",
+          "label": "@ rpm"
         },
         {
           "name": "Torque_Nm",
           "rank": 20,
-          "group": "Datasheet"
+          "group": "Datasheet",
+          "label": "Max. torque (nm)"
         },
         {
           "name": "Torque_RPM",
           "rank": 21,
-          "group": "Datasheet"
+          "group": "Datasheet",
+          "label": "@ rpm"
         },
         {
           "name": "Red_Line",
           "rank": 22,
-          "group": "Datasheet"
+          "group": "Datasheet",
+          "label": "RedLine (rpm)"
         },
         {
           "name": "Drive",
@@ -228,32 +235,43 @@
         {
           "name": "Brakes_Characteristics_Front",
           "rank": 35,
-          "group": "Wheels"
+          "priority": 10000,
+          "group": "Wheels",
+          "label": "Front brakes type"
         },
         {
           "name": "Brakes_Dim_Front",
           "rank": 36,
-          "group": "Wheels"
+          "priority": 9000,
+          "group": "Wheels",
+          "label": "Front brakes dimensions"
         },
         {
           "name": "Brakes_Dim_Rear",
           "rank": 37,
-          "group": "Wheels"
+          "priority": 7000,
+          "group": "Wheels",
+          "label": "Rear brakes dimensions"
         },
         {
           "name": "Brakes_Characteristics_Rear",
           "rank": 38,
-          "group": "Wheels"
+          "priority": 8000,
+          "group": "Wheels",
+          "label": "Rear brakes type"
         },
         {
           "name": "Tires_Type",
           "rank": 39,
-          "group": "Wheels"
+          "priority": 11000,
+          "group": "Wheels",
+          "label": "Tires"
         },
         {
           "name": "Nb_Turbos",
           "rank": 40,
-          "group": "Datasheet"
+          "group": "Datasheet",
+          "label": "Turbos"
         },
         {
           "name": "Width",
@@ -263,7 +281,8 @@
         {
           "name": "Lenght",
           "rank": 42,
-          "group": "Datasheet"
+          "group": "Datasheet",
+          "label": "Length"
         },
         {
           "name": "Height",
@@ -299,7 +318,8 @@
         {
           "name": "Weight_Kg",
           "rank": 49,
-          "group": "Datasheet"
+          "group": "Datasheet",
+          "label": "Weight (kg)"
         },
         {
           "name": "Ride_Height_Front",
@@ -354,12 +374,14 @@
         {
           "name": "Engine_Inertia",
           "rank": 60,
-          "group": "Transmission"
+          "group": "Transmission",
+          "label": "Flywheel inertia"
         },
         {
           "name": "Gearbox_Inertia",
           "rank": 61,
-          "group": "Transmission"
+          "group": "Transmission",
+          "label": "Gear box inertia"
         },
         {
           "name": "Gravity_Center_Length",
@@ -384,64 +406,77 @@
         {
           "name": "SteerLock",
           "rank": 66,
-          "group": "Wheels"
+          "group": "Wheels",
+          "label": "Steer lock angle",
+          "priority": 2000
         },
         {
           "name": "Transmission_Primacy",
           "rank": 67,
           "group": "Transmission",
-          "label": "Front/rear ratio",
+          "label": "F/R ratio",
           "priority": 9990
         },
         {
           "name": "Brake_Balance",
           "rank": 68,
-          "group": "Wheels"
+          "group": "Wheels",
+          "label": "F/R brake balance",
+          "priority": 11000
         },
         {
           "name": "Ignition_Time_Ignite",
           "rank": 69,
-          "group": "Sound"
+          "group": "Sound",
+          "label": "Ignite time (s)"
         },
         {
           "name": "Ignition_Time_RevUp",
           "rank": 70,
-          "group": "Sound"
+          "group": "Sound",
+          "label": "RevUp time (s)"
         },
         {
           "name": "Ignition_Time_RevDown",
           "rank": 71,
-          "group": "Sound"
+          "group": "Sound",
+          "label": "RevDown time (s)"
         },
         {
           "name": "Ignition_RPM",
           "rank": 72,
-          "group": "Sound"
+          "group": "Sound",
+          "label": "Ignite @ rpm"
         },
         {
           "name": "DoorMaxAngle",
           "rank": 73,
-          "group": "Exterior"
+          "group": "Exterior",
+          "label": "Max door angle (°)"
         },
         {
           "name": "Windows_Type",
           "rank": 74,
-          "group": "Exterior"
+          "group": "Exterior",
+          "label": "Windows"
         },
         {
           "name": "Belt_Type",
           "rank": 75,
-          "group": "Interior"
+          "group": "Interior",
+          "label": "Seatbelts"
         },
         {
           "name": "Nb_Seats",
           "rank": 76,
-          "group": "Interior"
+          "group": "Interior",
+          "label": "Seats"
         },
         {
           "name": "Car_Body",
           "rank": 77,
-          "group": "Exterior"
+          "group": "Exterior",
+          "label": "Body"
         },
         {
           "name": "Acceleration_0_100_kmh",
