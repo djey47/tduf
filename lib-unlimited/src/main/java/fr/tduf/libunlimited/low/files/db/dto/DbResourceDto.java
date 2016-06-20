@@ -95,8 +95,7 @@ public class DbResourceDto {
     }
 
     @JsonSetter("entries")
-    // TODO set to private if possible
-    public void setEntries(Collection<Entry> entries) {
+    private void setEntries(Collection<Entry> entries) {
         entriesByReference = createResourceIndex(entries);
     }
 
@@ -336,7 +335,7 @@ public class DbResourceDto {
         }
 
         @JsonSetter("locale")
-        public void setLocaleFromCode(String localeCode) {
+        private void setLocaleFromCode(String localeCode) {
             locale = Locale.fromCode(localeCode);
         }
 
