@@ -334,23 +334,6 @@ public class BulkDatabaseMiner {
         return getContentItemFromEntryAtFieldRank(entry, uidFieldRank).get().getRawValue();
     }
 
-    static String getCacheKey(String... items) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0 ; i < items.length ; i++) {
-            sb.append(items[i]);
-            if (i < items.length - 1) {
-                sb.append(":");
-            }
-        }
-        return sb.toString();
-    }
-
-    private String getStoreName(String methodName) {
-        requireNonNull(methodName, "Method name is required.");
-
-        return String.format("%s:%s", id.toString(), methodName);
-    }
-
     private String getRawValueAtEntryIndexAndRank(DbDto.Topic topic, int fieldRank, long entryIndex) {
         DbDataDto.Entry contentEntry = getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic).get();
         return getContentItemFromEntryAtFieldRank(contentEntry, fieldRank).get().getRawValue();
@@ -369,17 +352,6 @@ public class BulkDatabaseMiner {
                 })
 
                 .collect(toList());
-    }
-
-    private static boolean contentEntryHasForReference(DbDataDto.Entry entry, String ref, List<DbStructureDto.Field> structureFields) {
-        OptionalInt potentialUidFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(structureFields);
-        return potentialUidFieldRank.isPresent()
-                && entry.getItems().stream()
-
-                .filter(item -> item.getFieldRank() == potentialUidFieldRank.getAsInt()
-                        && item.getRawValue().equals(ref))
-
-                .findAny().isPresent();
     }
 
     List<DbDto> getTopicObjects() {

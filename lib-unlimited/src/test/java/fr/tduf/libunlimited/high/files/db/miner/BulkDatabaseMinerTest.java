@@ -60,15 +60,6 @@ public class BulkDatabaseMinerTest {
     }
 
     @Test
-    public void getCacheKey_whenThreeItems_shouldReturnFormattedKey() {
-        // GIVEN-WHEN
-        String actualKey = BulkDatabaseMiner.getCacheKey("a", "b", "c");
-
-        // THEN
-        assertThat(actualKey).isEqualTo("a:b:c");
-    }
-
-    @Test
     public void getDatabaseTopic_whenNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
         // GIVEN-WHEN
         Optional<DbDto> actualResult = BulkDatabaseMiner.load(topicObjectsFromResources).getDatabaseTopic(ACHIEVEMENTS);
