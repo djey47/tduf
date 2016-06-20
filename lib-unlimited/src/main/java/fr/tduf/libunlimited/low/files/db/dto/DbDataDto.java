@@ -47,6 +47,9 @@ public class DbDataDto implements Serializable {
         @JsonProperty("items")
         private List<Item> items;
 
+        @JsonIgnore
+        private int valuesHash;
+
         /**
          * @return builder, used to generate custom values.
          */
@@ -64,23 +67,25 @@ public class DbDataDto implements Serializable {
                     items.get(i).shiftFieldRankRight();
                 }
             }
+
+            computeValuesHash();
         }
 
         public void appendItem(Item item) {
             items.add(item);
+
+            computeValuesHash();
         }
 
         public void replaceItems(List<Item> newItems) {
             items.clear();
             items.addAll(newItems);
+
+            computeValuesHash();
         }
 
         public List<Item> getItems() {
             return Collections.unmodifiableList(items);
-        }
-
-        public long getId() {
-            return id;
         }
 
         public Optional<Item> getItemAtRank(int fieldRank) {
@@ -89,13 +94,16 @@ public class DbDataDto implements Serializable {
                     .findAny();
         }
 
-        public int valuesHash() {
-            // TODO use cache
-            // TODO add to cache when adding/deleting entry, changing items
-            return Objects.hashCode(items.stream()
-                    .map(Item::getRawValue)
-                    .collect(toList())
-            );
+        public long getId() {
+            return id;
+        }
+
+        @JsonIgnore
+        public int getValuesHash() {
+            if (valuesHash == 0) {
+                computeValuesHash();
+            }
+            return valuesHash;
         }
 
         @Override
@@ -129,6 +137,13 @@ public class DbDataDto implements Serializable {
                     .getRawValue();
         }
 
+        private void computeValuesHash() {
+            valuesHash = Objects.hashCode(items.stream()
+                    .map(Item::getRawValue)
+                    .collect(toList())
+            );
+        }
+
         public static class EntryBuilder {
             private final List<Item> items = new ArrayList<>();
             private long id;
@@ -152,6 +167,8 @@ public class DbDataDto implements Serializable {
 
                 entry.id = this.id;
                 entry.items = this.items;
+
+                entry.computeValuesHash();
 
                 return entry;
             }
@@ -448,6 +465,8 @@ public class DbDataDto implements Serializable {
         this.entries = new ArrayList<>(entries);
         entriesByInternalIdentifier = createEntryIndex(entries);
         entriesByReference = createEntryIndexByReference(entries);
+
+        entries.forEach(Entry::computeValuesHash);
     }
 
     private void sortEntriesByIdentifier() {

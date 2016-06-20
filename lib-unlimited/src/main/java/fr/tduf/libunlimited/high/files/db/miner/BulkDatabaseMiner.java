@@ -121,7 +121,7 @@ public class BulkDatabaseMiner {
                 .orElseThrow(() -> new NoSuchElementException("No database object found for topic: " + topic))
                 .getData().getEntries().stream()
                 .parallel()
-                .filter(entry -> entry.valuesHash() == valuesHashCode)
+                .filter(entry -> entry.getValuesHash() == valuesHashCode)
                 .findFirst();
     }
 

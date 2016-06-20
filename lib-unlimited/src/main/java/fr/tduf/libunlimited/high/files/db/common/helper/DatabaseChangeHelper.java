@@ -90,6 +90,7 @@ public class DatabaseChangeHelper {
             return empty();
         }
 
+        // FIXME do not set value directly, create and use entry method instead
         contentItem.setRawValue(newRawValue);
 
         return Optional.of(contentItem);
@@ -187,6 +188,7 @@ public class DatabaseChangeHelper {
                 .ifPresent((uidFieldRank) -> {
                     String newReference = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
                     DbDataDto.Item uidContentItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(newEntry, uidFieldRank).get();
+                    // FIXME do not set value directly, create and use entry method instead
                     uidContentItem.setRawValue(newReference);
                 });
 
@@ -263,6 +265,7 @@ public class DatabaseChangeHelper {
         List<DbDataDto.Item> entryItems = entry.getItems();
 
         // We assume source reference is first field ... target reference (if any) is second field  ...
+        // FIXME do not set value directly, create and use entry method instead
         entryItems.get(0).setRawValue(sourceEntryRef);
         potentialTargetEntryRef
                 .ifPresent(ref -> entryItems.get(1).setRawValue(ref));
