@@ -256,8 +256,8 @@ public class PatchEnhancerTest {
         String intManufacturerId = "62938337";
         String intNameId = "53365512";
 
-        patchProperties.setExteriorMainColorIdIfNotExists(mainColorId1, 0);
-        patchProperties.setExteriorMainColorIdIfNotExists(mainColorId2, 1);
+        patchProperties.setExteriorMainColorIdIfNotExists(mainColorId1, 1);
+        patchProperties.setExteriorMainColorIdIfNotExists(mainColorId2, 2);
 
         final VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef(SLOT_REFERENCE)
@@ -284,7 +284,7 @@ public class PatchEnhancerTest {
 
         // THEN
         DbPatchDto patchObject = databaseContext.getPatchObject();
-        assertThat(patchObject.getChanges()).hasSize(3 * 2); // 2 per paint job + 2 interiors
+        assertThat(patchObject.getChanges()).hasSize(4 + 2); // 2 per paint job + 2 interiors
         assertThat(patchObject.getChanges()).extracting("type").containsOnly(UPDATE, UPDATE_RES);
         assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_COLORS, INTERIOR);
         assertThat(patchObject.getChanges()).extracting("ref").containsOnly(null, nameId1, intId1, nameId2, intId2);

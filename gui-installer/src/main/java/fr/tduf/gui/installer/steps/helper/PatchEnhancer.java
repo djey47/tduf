@@ -248,7 +248,7 @@ public class PatchEnhancer {
     }
 
     private Stream<DbPatchDto.DbChangeDto> createChangeObjectsForExterior(VehicleSlot vehicleSlot, PaintJob paintJob, int exteriorIndex) {
-        if (!databaseContext.getPatchProperties().getExteriorMainColorId(paintJob.getRank() - 1).isPresent()) {
+        if (!databaseContext.getPatchProperties().getExteriorMainColorId(paintJob.getRank()).isPresent()) {
             return Stream.empty();
         }
 
