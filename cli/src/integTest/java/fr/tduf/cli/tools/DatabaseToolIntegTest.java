@@ -38,6 +38,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.common.game.domain.Locale.*;
@@ -158,7 +159,7 @@ public class DatabaseToolIntegTest {
 
         // THEN: car rims must be deleted for a particular slot
         DbFieldValueDto criteria = DbFieldValueDto.fromCouple(1, "63518960");
-        List<DbDataDto.Entry> carRims = miner.getContentEntriesMatchingCriteria(singletonList(criteria), CAR_RIMS);
+        List<DbDataDto.Entry> carRims = miner.getContentEntriesMatchingSimpleCondition(criteria, CAR_RIMS);
         assertThat(carRims).isEmpty();
 
 

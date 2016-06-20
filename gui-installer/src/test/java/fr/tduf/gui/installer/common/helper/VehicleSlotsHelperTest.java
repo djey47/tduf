@@ -178,7 +178,7 @@ public class VehicleSlotsHelperTest {
                 ).stream());
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef1, RIMS)).thenReturn(of(rimsEntry1));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef2, RIMS)).thenReturn(of(rimsEntry2));
-        when(bulkDatabaseMinerMock.getContentEntriesMatchingCriteria(anyListOf(DbFieldValueDto.class), eq(CAR_COLORS))).thenReturn(singletonList(carColorsEntry));
+        when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(any(DbFieldValueDto.class), eq(CAR_COLORS))).thenReturn(Stream.of(carColorsEntry));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(colorNameRef, CAR_COLORS, UNITED_STATES)).thenReturn(of(colorName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(fileNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(fileName));

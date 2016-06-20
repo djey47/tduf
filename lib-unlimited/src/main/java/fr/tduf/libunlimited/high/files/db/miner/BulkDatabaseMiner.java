@@ -126,15 +126,21 @@ public class BulkDatabaseMiner {
                 .findFirst();
     }
 
+    /**
+     */
+    public List<DbDataDto.Entry> getContentEntriesMatchingSimpleCondition(DbFieldValueDto condition, DbDto.Topic topic) {
+        return getContentEntryStreamMatchingSimpleCondition(condition, topic)
+                .collect(toList());
+    }
 
     /**
+     * Warning! CPU intensive method. Should not be used on a wide (>2) field range
      * @param criteria      : list of conditions to select content entries
      * @param topic         : topic in TDU Database to search
      * @return all database entries satisfying all conditions.
      */
     public List<DbDataDto.Entry> getContentEntriesMatchingCriteria(List<DbFieldValueDto> criteria, DbDto.Topic topic) {
         return getContentEntryStreamMatchingCriteria(criteria, topic)
-
                 .collect(toList());
     }
 
@@ -148,6 +154,7 @@ public class BulkDatabaseMiner {
     }
 
     /**
+     * Warning! CPU intensive method. Should not be used on a wide (>2) field range
      * @param criteria      : list of conditions to select content entries
      * @param topic         : topic in TDU Database to search
      * @return a stream of all database entries satisfying all conditions.

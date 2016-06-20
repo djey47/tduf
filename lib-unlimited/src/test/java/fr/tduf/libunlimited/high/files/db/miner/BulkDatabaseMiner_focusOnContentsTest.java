@@ -15,7 +15,6 @@ import static fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMinerTest.cre
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BulkDatabaseMiner_focusOnContentsTest {
@@ -66,10 +65,10 @@ public class BulkDatabaseMiner_focusOnContentsTest {
     public void getContentEntriesMatchingCriteria_whenEntryFound_shouldReturnIt() throws IOException, URISyntaxException {
         // GIVEN
         List<DbDto> topicObjects = createTopicObjectsFromResources();
-        List<DbFieldValueDto> criteria = singletonList(DbFieldValueDto.fromCouple(1, "606298799"));
+        DbFieldValueDto criteria = DbFieldValueDto.fromCouple(1, "606298799");
 
         // WHEN
-        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getContentEntriesMatchingCriteria(criteria, BOTS);
+        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getContentEntriesMatchingSimpleCondition(criteria, BOTS);
 
         // THEN
         assertThat(actualEntries)
@@ -81,10 +80,10 @@ public class BulkDatabaseMiner_focusOnContentsTest {
     public void getContentEntriesMatchingCriteria_whenEntryNotFound_shouldReturnEmptyList() throws IOException, URISyntaxException {
         // GIVEN
         List<DbDto> topicObjects = createTopicObjectsFromResources();
-        List<DbFieldValueDto> criteria = singletonList(DbFieldValueDto.fromCouple(1, "0000000"));
+        DbFieldValueDto criteria = DbFieldValueDto.fromCouple(1, "0000000");
 
         // WHEN
-        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getContentEntriesMatchingCriteria(criteria, BOTS);
+        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getContentEntriesMatchingSimpleCondition(criteria, BOTS);
 
         // THEN
         assertThat(actualEntries).isEmpty();

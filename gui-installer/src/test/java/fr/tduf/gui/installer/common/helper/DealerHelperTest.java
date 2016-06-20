@@ -35,9 +35,8 @@ public class DealerHelperTest {
 
     @Before
     public void setUp() {
-        when(minerMock.getContentEntryStreamMatchingSimpleCondition(any(DbFieldValueDto.class), any(DbDto.Topic.class))).thenReturn(Stream.empty(), Stream.empty());
+        when(minerMock.getContentEntryStreamMatchingSimpleCondition(any(DbFieldValueDto.class), any(DbDto.Topic.class))).thenReturn(Stream.empty(), Stream.empty(), Stream.empty(), Stream.empty());
     }
-
 
     @Test
     public void getDealers_whenMetaDataUnavailable() throws Exception {

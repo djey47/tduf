@@ -12,7 +12,10 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -23,7 +26,6 @@ import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileTyp
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.REAR_RIM;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;
@@ -247,7 +249,7 @@ public class VehicleSlotsHelper extends CommonHelper {
 
     private List<PaintJob> getPaintJobsForVehicle(String slotReference) {
         AtomicInteger paintJobIndex = new AtomicInteger(1);
-        return miner.getContentEntriesMatchingCriteria(singletonList(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference)), CAR_COLORS).stream()
+        return miner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference), CAR_COLORS)
 
                 .map(entry -> {
                     final Optional<Resource> nameResource = getResourceFromDatabaseEntry(entry, CAR_COLORS, DatabaseConstants.FIELD_RANK_COLOR_NAME);
