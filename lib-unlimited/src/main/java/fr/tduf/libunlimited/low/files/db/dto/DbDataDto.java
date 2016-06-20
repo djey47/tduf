@@ -15,6 +15,7 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -84,8 +85,17 @@ public class DbDataDto implements Serializable {
 
         public Optional<Item> getItemAtRank(int fieldRank) {
             return items.stream()
-                    .filter((item) -> item.fieldRank == fieldRank)
+                    .filter(item -> item.fieldRank == fieldRank)
                     .findAny();
+        }
+
+        public int valuesHash() {
+            // TODO use cache
+            // TODO add to cache when adding/deleting entry, changing items
+            return Objects.hashCode(items.stream()
+                    .map(Item::getRawValue)
+                    .collect(toList())
+            );
         }
 
         @Override

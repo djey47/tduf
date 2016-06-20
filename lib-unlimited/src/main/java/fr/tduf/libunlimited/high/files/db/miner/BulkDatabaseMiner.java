@@ -107,6 +107,27 @@ public class BulkDatabaseMiner {
     }
 
     /**
+     * @param values    : items values to search for
+     * @param topic     : topic in TDU Database to search
+     * @return first entry having specified item values.
+     */
+    // TODO test
+    public Optional<DbDataDto.Entry> getContentEntryFromTopicWithItemValues(List<String> values, DbDto.Topic topic) {
+        Log.trace(THIS_CLASS_NAME, "getContentEntryFromTopicWithItemValues(" + values + ", " + topic + ")");
+
+        int valuesHashCode = Objects.hashCode(values);
+
+        // TODO cache hashcode by entry
+        return getDatabaseTopic(topic)
+                .orElseThrow(() -> new NoSuchElementException("No database object found for topic: " + topic))
+                .getData().getEntries().stream()
+                .parallel()
+                .filter(entry -> entry.valuesHash() == valuesHashCode)
+                .findFirst();
+    }
+
+
+    /**
      * @param criteria      : list of conditions to select content entries
      * @param topic         : topic in TDU Database to search
      * @return all database entries satisfying all conditions.

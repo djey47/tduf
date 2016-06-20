@@ -187,15 +187,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
             return empty();
         }
 
-        AtomicInteger fieldRank = new AtomicInteger(1);
-        List<DbFieldValueDto> fullCriteria = changeObject.getValues().stream()
-
-                .map((rawValue) -> DbFieldValueDto.fromCouple(fieldRank.getAndIncrement(), rawValue))
-
-                .collect(toList());
-
-        // TODO replace by a search in a dedicated method using values hashcode
-        return databaseMiner.getContentEntriesMatchingCriteria(fullCriteria, changedTopic).stream().findAny();
+        return databaseMiner.getContentEntryFromTopicWithItemValues(changeObject.getValues(), changedTopic);
     }
 
     private void addOrUpdateEntryWithFullChanges(Optional<DbDataDto.Entry> existingEntry, DbDto topicObject, DbPatchDto.DbChangeDto changeObject) {
