@@ -12,15 +12,18 @@ import java.net.URISyntaxException;
 import java.util.*;
 
 import static fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMinerTest.createTopicObjectsFromResources;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BulkDatabaseMiner_focusOnContentsTest {
 
+    private List<DbDto> topicObjectsFromResources;
+
     @Before
-    public void setUp() {
+    public void setUp() throws IOException, URISyntaxException {
+        topicObjectsFromResources = createTopicObjectsFromResources();
+
         // Set level to TRACE to get performance information
 //        Log.set(LEVEL_DEBUG);
 //        Log.setLogger(new PerformanceLogger(Paths.get("perfs").toAbsolutePath()));
@@ -28,22 +31,16 @@ public class BulkDatabaseMiner_focusOnContentsTest {
 
     @Test(expected = NoSuchElementException.class)
     public void getContentEntryFromTopicWithInternalIdentifier_whenTopicNotFound_shouldThrowException() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithInternalIdentifier(1, ACHIEVEMENTS);
+        // GIVEN-WHEN
+        BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryFromTopicWithInternalIdentifier(1, ACHIEVEMENTS);
 
         // THEN: exception
     }
 
     @Test
     public void getContentEntryFromTopicWithInternalIdentifier_whenEntryNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithInternalIdentifier(10, BOTS);
+        // GIVEN-WHEN
+        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryFromTopicWithInternalIdentifier(10, BOTS);
 
         // THEN
         assertThat(actualEntry).isEmpty();
@@ -51,11 +48,8 @@ public class BulkDatabaseMiner_focusOnContentsTest {
 
     @Test
     public void getContentEntryFromTopicWithInternalIdentifier_whenEntryFound_shouldReturnIt() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithInternalIdentifier(0, BOTS);
+        // GIVEN-WHEN
+        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryFromTopicWithInternalIdentifier(0, BOTS);
 
         // THEN
         assertThat(actualEntry).isPresent();
@@ -64,11 +58,10 @@ public class BulkDatabaseMiner_focusOnContentsTest {
     @Test
     public void getContentEntriesMatchingCriteria_whenEntryFound_shouldReturnIt() throws IOException, URISyntaxException {
         // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
         DbFieldValueDto criteria = DbFieldValueDto.fromCouple(1, "606298799");
 
         // WHEN
-        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getContentEntriesMatchingSimpleCondition(criteria, BOTS);
+        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntriesMatchingSimpleCondition(criteria, BOTS);
 
         // THEN
         assertThat(actualEntries)
@@ -79,11 +72,10 @@ public class BulkDatabaseMiner_focusOnContentsTest {
     @Test
     public void getContentEntriesMatchingCriteria_whenEntryNotFound_shouldReturnEmptyList() throws IOException, URISyntaxException {
         // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
         DbFieldValueDto criteria = DbFieldValueDto.fromCouple(1, "0000000");
 
         // WHEN
-        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjects).getContentEntriesMatchingSimpleCondition(criteria, BOTS);
+        List<DbDataDto.Entry> actualEntries = BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntriesMatchingSimpleCondition(criteria, BOTS);
 
         // THEN
         assertThat(actualEntries).isEmpty();
@@ -91,36 +83,59 @@ public class BulkDatabaseMiner_focusOnContentsTest {
 
     @Test(expected = NoSuchElementException.class)
     public void getContentEntryFromTopicWithRef_whenTopicNotFound_shouldThrowException() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        assertThat(BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithReference("", DbDto.Topic.RIMS)).isEmpty();
+        // GIVEN-WHEN
+        assertThat(BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryFromTopicWithReference("", DbDto.Topic.RIMS)).isEmpty();
 
         // THEN: NSE
     }
 
     @Test
     public void getContentEntryFromTopicWithRef_whenRefNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN-THEN
-        assertThat(BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithReference("1500", BOTS)).isEmpty();
+        // GIVEN-WHEN-THEN
+        assertThat(BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryFromTopicWithReference("1500", BOTS)).isEmpty();
     }
 
     @Test
     public void getContentEntryFromTopicWithRef_whenRefFound_shouldReturnIt() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjects).getContentEntryFromTopicWithReference("606298799", BOTS);
+        // GIVEN-WHEN
+        Optional<DbDataDto.Entry> actualEntry = BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryFromTopicWithReference("606298799", BOTS);
 
         // THEN
         assertThat(actualEntry).isPresent();
         assertThat(actualEntry.get().getId()).isEqualTo(0);
         assertThat(actualEntry.get().getItemAtRank(1).get().getRawValue()).isEqualTo("606298799");
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void getContentEntryFromTopicWithItemValues_whenTopicNotFound_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN-WHEN
+        BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryFromTopicWithItemValues(
+                null,
+                TUTORIALS);
+
+        // THEN: NSE
+    }
+
+    @Test
+    public void getContentEntryFromTopicWithItemValues_whenNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
+        // GIVEN-WHEN-THEN
+        assertThat(BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryFromTopicWithItemValues(
+                asList("540091906" ,"824778956"),
+                PNJ)
+        ).isEmpty();
+    }
+
+    @Test
+    public void getContentEntryFromTopicWithItemValues_whenFound_shouldReturnIt() throws IOException, URISyntaxException {
+        // GIVEN-WHEN
+        final DbDataDto.Entry actualEntry = BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryFromTopicWithItemValues(
+                asList("540091906", "82477895"),
+                PNJ)
+                .get();
+
+        // THEN
+        assertThat(actualEntry.getId()).isEqualTo(0);
+        assertThat(actualEntry.getItems()).hasSize(2);
     }
 
     @Test
@@ -267,11 +282,8 @@ public class BulkDatabaseMiner_focusOnContentsTest {
 
     @Test
     public void getContentItemWithEntryIdentifierAndFieldRank_whenEntryDoesNotExist_shouldReturnEmpty() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.load(topicObjects).getContentItemWithEntryIdentifierAndFieldRank(BOTS, 1, 10);
+        // GIVEN-WHEN
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.load(topicObjectsFromResources).getContentItemWithEntryIdentifierAndFieldRank(BOTS, 1, 10);
 
         // THEN
         assertThat(potentialItem).isEmpty();
@@ -279,11 +291,8 @@ public class BulkDatabaseMiner_focusOnContentsTest {
 
     @Test
     public void getContentItemWithEntryIdentifierAndFieldRank_whenItemDoesNotExist_shouldReturnEmpty() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.load(topicObjects).getContentItemWithEntryIdentifierAndFieldRank(BOTS, 10, 0);
+        // GIVEN-WHEN
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.load(topicObjectsFromResources).getContentItemWithEntryIdentifierAndFieldRank(BOTS, 10, 0);
 
         // THEN
         assertThat(potentialItem).isEmpty();
@@ -292,11 +301,10 @@ public class BulkDatabaseMiner_focusOnContentsTest {
     @Test
     public void getContentItemWithEntryIdentifierAndFieldRank_whenItemExists_shouldReturnIt() throws IOException, URISyntaxException {
         // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-        DbDataDto.Item expectedItem = topicObjects.get(0).getData().getEntries().get(0).getItems().get(0);
+        DbDataDto.Item expectedItem = topicObjectsFromResources.get(0).getData().getEntries().get(0).getItems().get(0);
 
         // WHEN
-        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.load(topicObjects).getContentItemWithEntryIdentifierAndFieldRank(BOTS, 1, 0);
+        Optional<DbDataDto.Item> potentialItem = BulkDatabaseMiner.load(topicObjectsFromResources).getContentItemWithEntryIdentifierAndFieldRank(BOTS, 1, 0);
 
         // THEN
         assertThat(potentialItem).contains(expectedItem);
@@ -304,11 +312,8 @@ public class BulkDatabaseMiner_focusOnContentsTest {
 
     @Test
     public void getContentEntryInternalIdentifierWithReference_whenEntryDoesNotExist_shouldReturnEmpty() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        OptionalLong potentialInternalId = BulkDatabaseMiner.load(topicObjects).getContentEntryInternalIdentifierWithReference("REF", BOTS);
+        // GIVEN-WHEN
+        OptionalLong potentialInternalId = BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryInternalIdentifierWithReference("REF", BOTS);
 
         // THEN
         assertThat(potentialInternalId).isEmpty();
@@ -316,11 +321,8 @@ public class BulkDatabaseMiner_focusOnContentsTest {
 
     @Test
     public void getContentEntryInternalIdentifierWithReference_whenEntryExists_shouldReturnInternalId() throws IOException, URISyntaxException {
-        // GIVEN
-        List<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        OptionalLong potentialInternalId = BulkDatabaseMiner.load(topicObjects).getContentEntryInternalIdentifierWithReference("606298799", BOTS);
+        // GIVEN-WHEN
+        OptionalLong potentialInternalId = BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryInternalIdentifierWithReference("606298799", BOTS);
 
         // THEN
         assertThat(potentialInternalId).hasValue(0);

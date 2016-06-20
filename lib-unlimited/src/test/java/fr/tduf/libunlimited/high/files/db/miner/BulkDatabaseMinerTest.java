@@ -9,17 +9,23 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BulkDatabaseMinerTest {
 
+    private List<DbDto> topicObjectsFromResources;
+
     @Before
-    public void setUp() {}
+    public void setUp() throws IOException, URISyntaxException {
+        topicObjectsFromResources = createTopicObjectsFromResources();
+    }
 
     @Test(expected = NullPointerException.class)
     public void load_whenNullDatabaseObjects_shouldThrowNullPointerException() {
@@ -64,11 +70,8 @@ public class BulkDatabaseMinerTest {
 
     @Test
     public void getDatabaseTopic_whenNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
-        // GIVEN
-        ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        Optional<DbDto> actualResult = BulkDatabaseMiner.load(topicObjects).getDatabaseTopic(ACHIEVEMENTS);
+        // GIVEN-WHEN
+        Optional<DbDto> actualResult = BulkDatabaseMiner.load(topicObjectsFromResources).getDatabaseTopic(ACHIEVEMENTS);
 
         // THEN
         StrictAssertions.assertThat(actualResult).isEmpty();
@@ -76,11 +79,8 @@ public class BulkDatabaseMinerTest {
 
     @Test
     public void getDatabaseTopic_whenExists_shouldReturnIt() throws IOException, URISyntaxException {
-        // GIVEN
-        ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        DbDto actualTopicObject = BulkDatabaseMiner.load(topicObjects).getDatabaseTopic(BOTS).get();
+        // GIVEN-WHEN
+        DbDto actualTopicObject = BulkDatabaseMiner.load(topicObjectsFromResources).getDatabaseTopic(BOTS).get();
 
         // THEN
         assertThat(actualTopicObject).isNotNull();
@@ -88,32 +88,24 @@ public class BulkDatabaseMinerTest {
 
     @Test(expected = NoSuchElementException.class)
     public void getDatabaseTopicFromReference_whenNotFound_shouldThrowException() throws IOException, URISyntaxException {
-        // GIVEN
-        ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        BulkDatabaseMiner.load(topicObjects).getDatabaseTopicFromReference("000");
+        // GIVEN-WHEN
+        BulkDatabaseMiner.load(topicObjectsFromResources).getDatabaseTopicFromReference("000");
 
         // THEN: exception
     }
 
     @Test
     public void getDatabaseTopicFromReference_whenExists_shouldReturnIt() throws IOException, URISyntaxException {
-        // GIVEN
-        ArrayList<DbDto> topicObjects = createTopicObjectsFromResources();
-
-        // WHEN
-        DbDto actualTopicObject = BulkDatabaseMiner.load(topicObjects).getDatabaseTopicFromReference("111");
+        // GIVEN-WHEN
+        DbDto actualTopicObject = BulkDatabaseMiner.load(topicObjectsFromResources).getDatabaseTopicFromReference("111");
 
         // THEN
         assertThat(actualTopicObject).isNotNull();
     }
 
-    static ArrayList<DbDto> createTopicObjectsFromResources() throws IOException, URISyntaxException {
-        ArrayList<DbDto> dbDtos = new ArrayList<>();
-
-        dbDtos.add(FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/miner/TDU_Bots_FAKE.json"));
-
-        return dbDtos;
+    static List<DbDto> createTopicObjectsFromResources() throws IOException, URISyntaxException {
+        return asList(
+                FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/miner/TDU_Bots_FAKE.json"),
+                FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/miner/TDU_PNJ_FAKE.json"));
     }
 }

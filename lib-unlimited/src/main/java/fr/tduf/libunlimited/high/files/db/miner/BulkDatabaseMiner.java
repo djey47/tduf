@@ -111,7 +111,6 @@ public class BulkDatabaseMiner {
      * @param topic     : topic in TDU Database to search
      * @return first entry having specified item values.
      */
-    // TODO test
     public Optional<DbDataDto.Entry> getContentEntryFromTopicWithItemValues(List<String> values, DbDto.Topic topic) {
         Log.trace(THIS_CLASS_NAME, "getContentEntryFromTopicWithItemValues(" + values + ", " + topic + ")");
 
@@ -127,6 +126,9 @@ public class BulkDatabaseMiner {
     }
 
     /**
+     * @param condition : conditions to select content entries
+     * @param topic     : topic in TDU Database to search
+     * @return all database entries satisfying all conditions.
      */
     public List<DbDataDto.Entry> getContentEntriesMatchingSimpleCondition(DbFieldValueDto condition, DbDto.Topic topic) {
         return getContentEntryStreamMatchingSimpleCondition(condition, topic)
