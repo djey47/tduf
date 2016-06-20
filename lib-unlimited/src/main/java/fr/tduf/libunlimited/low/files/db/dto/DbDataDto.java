@@ -251,6 +251,8 @@ public class DbDataDto implements Serializable {
         }
 
         public static class ItemBuilder {
+            private static BitfieldHelper bitfieldHelper = new BitfieldHelper();
+
             private Integer fieldRank;
             private String raw;
 
@@ -309,7 +311,6 @@ public class DbDataDto implements Serializable {
                 requireNonNull(raw, "A raw value is required");
                 requireNonNull(topicForBitField, "A database topic is required");
 
-                BitfieldHelper bitfieldHelper = new BitfieldHelper();
                 Optional<List<DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto>> bitfieldReference = bitfieldHelper.getBitfieldReferenceForTopic(topicForBitField);
 
                 List<DbDataDto.SwitchValue> switchValues = new ArrayList<>();
