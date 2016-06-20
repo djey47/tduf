@@ -1,18 +1,21 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
 import fr.tduf.libunlimited.common.game.domain.Locale;
-import org.codehaus.jackson.annotate.*;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonSetter;
+import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -34,15 +37,13 @@ public class DbResourceDto {
     private DbResourceDto() {}
 
     private static Map<String, Entry> createResourceIndex(Collection<Entry> entries) {
-        // TODO set to parallel
         return entries.stream()
-                .collect(Collectors.toMap(
+                .collect(toMap(
                         Entry::getReference,
                         Function.identity(),
-                        (u, v) -> {
-                            throw new IllegalStateException(String.format("Duplicate key %s", u));
-                        },
-                        LinkedHashMap::new));
+                        (u, v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u)); },
+                        LinkedHashMap::new)
+                );
     }
 
     public static DbResourceDto.DbResourceEnhancedDtoBuilder builder() {
