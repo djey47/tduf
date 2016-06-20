@@ -227,7 +227,8 @@ public class PatchEnhancer {
     }
 
     private void enhancePatchObjectWithExteriors(VehicleSlot vehicleSlot) {
-        AtomicInteger exteriorIndex = new AtomicInteger(0);
+        // TODO handle pj at index 0??
+        AtomicInteger exteriorIndex = new AtomicInteger(1);
         List<DbPatchDto.DbChangeDto> changeObjectsForPaintJobs = vehicleSlot.getPaintJobs().stream()
                 .flatMap(paintJob -> createChangeObjectsForExterior(vehicleSlot, paintJob, exteriorIndex.getAndIncrement()))
                 .collect(toList());
@@ -236,7 +237,8 @@ public class PatchEnhancer {
     }
 
     private void enhancePatchObjectWithInteriors(List<String> interiorPatternRefs) {
-        AtomicInteger interiorIndex = new AtomicInteger(0);
+        // TODO handle int at index 0??
+        AtomicInteger interiorIndex = new AtomicInteger(1);
         List<DbPatchDto.DbChangeDto> changeObjectsForInteriors = interiorPatternRefs.stream()
                 .filter(intRef -> !DatabaseConstants.REF_NO_INTERIOR.equals(intRef))
                 .map(intRef -> createChangeObjectForInterior(intRef, interiorIndex.getAndIncrement()))

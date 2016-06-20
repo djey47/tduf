@@ -291,31 +291,6 @@ public class PatchEnhancerTest {
         assertThat(patchObject.getChanges()).extracting("values").containsOnly(
                 asList(
                         SLOT_REFERENCE,
-                        "{COLORID.M.0}",
-                        "{RES_COLORNAME.0}",
-                        "{COLORID.S.0}",
-                        "{CALLIPERSID.0}",
-                        "0",
-                        "0",
-                        intId1,
-                        intId2,
-                        "11319636",
-                        "11319636",
-                        "11319636",
-                        "11319636",
-                        "11319636",
-                        "11319636",
-                        "11319636",
-                        "11319636",
-                        "11319636",
-                        "11319636",
-                        "11319636",
-                        "11319636",
-                        "11319636"
-                ),
-                null,
-                asList(
-                        SLOT_REFERENCE,
                         "{COLORID.M.1}",
                         "{RES_COLORNAME.1}",
                         "{COLORID.S.1}",
@@ -340,21 +315,46 @@ public class PatchEnhancerTest {
                 ),
                 null,
                 asList(
+                        SLOT_REFERENCE,
+                        "{COLORID.M.2}",
+                        "{RES_COLORNAME.2}",
+                        "{COLORID.S.2}",
+                        "{CALLIPERSID.2}",
+                        "0",
+                        "0",
+                        intId1,
+                        intId2,
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636",
+                        "11319636"
+                ),
+                null,
+                asList(
                         intId1,
                         intManufacturerId,
                         intNameId,
-                        "{INTCOLORID.M.0}",
-                        "{INTCOLORID.S.0}",
-                        "{INTMATERIALID.0}",
+                        "{INTCOLORID.M.1}",
+                        "{INTCOLORID.S.1}",
+                        "{INTMATERIALID.1}",
                         "0"
                 ),
                 asList(
                         intId2,
                         intManufacturerId,
                         intNameId,
-                        "{INTCOLORID.M.1}",
-                        "{INTCOLORID.S.1}",
-                        "{INTMATERIALID.1}",
+                        "{INTCOLORID.M.2}",
+                        "{INTCOLORID.S.2}",
+                        "{INTMATERIALID.2}",
                         "0"
                 ));
         assertThat(patchObject.getChanges()).extracting("value").containsOnly(null, name1, name2);
@@ -363,7 +363,7 @@ public class PatchEnhancerTest {
     @Test
     public void enhancePatchObjectWithRims_withRimProperties_shouldAddCarRims_andRims_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
-        String rimId0 = "0000";
+//        String rimId0 = "0000";
         String rimId1 = "1111";
         String rimId2 = "2222";
 
