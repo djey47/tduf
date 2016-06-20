@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.function.Function;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
@@ -90,8 +91,7 @@ public class DbResourceDto {
 
     @JsonProperty("entries")
     public Collection<Entry> getEntries() {
-        // TODO return unmodifiable list instead
-        return entriesByReference.values();
+        return unmodifiableCollection(entriesByReference.values());
     }
 
     @JsonSetter("entries")
