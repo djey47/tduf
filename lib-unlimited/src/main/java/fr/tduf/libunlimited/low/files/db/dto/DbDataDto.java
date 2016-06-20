@@ -123,6 +123,12 @@ public class DbDataDto implements Serializable {
             id++;
         }
 
+        private String getFirstItemValue() {
+            return getItemAtRank(1)
+                    .orElseThrow(() -> new IllegalArgumentException("Entry has no item at fiend rank 1"))
+                    .getRawValue();
+        }
+
         public static class EntryBuilder {
             private final List<Item> items = new ArrayList<>();
             private long id;
@@ -353,7 +359,7 @@ public class DbDataDto implements Serializable {
         if (entriesByReference == null) {
             Log.warn(THIS_CLASS_NAME, "Will process entry search without index. Please fix contents.");
             return entries.stream()
-                    .filter(entry -> entry.getItemAtRank(1).get().getRawValue().equals(ref))
+                    .filter(entry -> entry.getFirstItemValue().equals(ref))
                     .findFirst();
         }
         return ofNullable(entriesByReference.get(ref));
@@ -387,28 +393,15 @@ public class DbDataDto implements Serializable {
         // Fix identifiers of next entries
         entries.stream()
                 .filter(e -> e.getId() > entry.getId())
-                .forEach(e -> {
-                    // TODO method
-                    removeEntryFromIndex(e);
-                    e.shiftIdUp();
-                    updateEntryIndexWithNewEntry(e);
-                });
+                .forEach(this::shiftEntryIdUp);
     }
 
     public void moveEntryUp(Entry entry) {
         // Moves down previous entry
         getEntryWithInternalIdentifier(entry.getId() - 1)
-                .ifPresent((e) -> {
-                    // TODO method
-                    removeEntryFromIndex(e);
-                    e.shiftIdDown();
-                    updateEntryIndexWithNewEntry(e);
-                });
+                .ifPresent(this::shiftEntryIdDown);
 
-        // TODO method
-        removeEntryFromIndex(entry);
-        entry.shiftIdUp();
-        updateEntryIndexWithNewEntry(entry);
+        shiftEntryIdUp(entry);
 
         sortEntriesByIdentifier();
     }
@@ -416,19 +409,23 @@ public class DbDataDto implements Serializable {
     public void moveEntryDown(Entry entry) {
         // Moves up next entry
         getEntryWithInternalIdentifier(entry.getId() + 1)
-                .ifPresent(e -> {
-                    // TODO method
-                    removeEntryFromIndex(e);
-                    e.shiftIdUp();
-                    updateEntryIndexWithNewEntry(e);
-                });
+                .ifPresent(this::shiftEntryIdUp);
 
-        // TODO method
+        shiftEntryIdDown(entry);
+
+        sortEntriesByIdentifier();
+    }
+
+    private void shiftEntryIdUp(Entry entry) {
+        removeEntryFromIndex(entry);
+        entry.shiftIdUp();
+        updateEntryIndexWithNewEntry(entry);
+    }
+
+    private void shiftEntryIdDown(Entry entry) {
         removeEntryFromIndex(entry);
         entry.shiftIdDown();
         updateEntryIndexWithNewEntry(entry);
-
-        sortEntriesByIdentifier();
     }
 
     @Override
@@ -463,8 +460,7 @@ public class DbDataDto implements Serializable {
 
     private void updateEntryIndexByReferenceWithNewEntry(Entry entry) {
         if (entriesByReference != null) {
-            // TODO create method to get ref
-            entriesByReference.put(entry.getItemAtRank(1).get().getRawValue(), entry);
+            entriesByReference.put(entry.getFirstItemValue(), entry);
         }
     }
 
@@ -474,8 +470,7 @@ public class DbDataDto implements Serializable {
 
     private void removeEntryFromIndexByReference(Entry entry) {
         if (entriesByReference != null) {
-            // TODO create method to get ref
-            entriesByReference.remove(entry.getItemAtRank(1).get().getRawValue());
+            entriesByReference.remove(entry.getFirstItemValue());
         }
     }
 
@@ -490,11 +485,10 @@ public class DbDataDto implements Serializable {
             return new HashMap<>(entries.stream()
                     .parallel()
                     .collect(Collectors.toConcurrentMap(
-                            e -> e.getItemAtRank(1)
-                                    .orElseThrow(IllegalArgumentException::new)
-                                    .getRawValue(),
+                            Entry::getFirstItemValue,
                             identity())));
         } catch (IllegalArgumentException | IllegalStateException e) {
+            Log.debug("Could not build entry index by reference", e);
             return null;
         }
     }
