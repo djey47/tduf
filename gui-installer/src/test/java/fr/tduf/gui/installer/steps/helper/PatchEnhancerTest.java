@@ -98,12 +98,12 @@ public class PatchEnhancerTest {
         assertThat(patchProperties.getCarIdentifier()).contains(CARID);
         assertThat(patchProperties.getBankFileName()).contains(BANKNAME);
         assertThat(patchProperties.getBankFileNameResource()).contains(RES_BANKNAME);
-        assertThat(patchProperties.getRimSlotReference(1)).contains(RIMREF_1);
-        assertThat(patchProperties.getRimBrandNameResource(1)).contains(RES_RIMBRAND_1);
-        assertThat(patchProperties.getFrontRimBankFileName(1)).contains(BANKNAME_FR_1);
-        assertThat(patchProperties.getRearRimBankFileName(1)).contains(BANKNAME_RR_1);
-        assertThat(patchProperties.getFrontRimBankFileNameResource(1)).contains(RES_BANKNAME_FR_1);
-        assertThat(patchProperties.getRearRimBankFileNameResource(1)).contains(RES_BANKNAME_RR_1);
+        assertThat(patchProperties.getRimSlotReference(1)).isEmpty();
+        assertThat(patchProperties.getRimBrandNameResource(1)).isEmpty();
+        assertThat(patchProperties.getFrontRimBankFileName(1)).isEmpty();
+        assertThat(patchProperties.getRearRimBankFileName(1)).isEmpty();
+        assertThat(patchProperties.getFrontRimBankFileNameResource(1)).isEmpty();
+        assertThat(patchProperties.getRearRimBankFileNameResource(1)).isEmpty();
         assertThat(patchProperties.getExteriorColorNameResource(1)).contains(RES_COLORNAME_1);
         assertThat(patchProperties.getExteriorColorNameResource(2)).contains(RES_COLORNAME_2);
     }
