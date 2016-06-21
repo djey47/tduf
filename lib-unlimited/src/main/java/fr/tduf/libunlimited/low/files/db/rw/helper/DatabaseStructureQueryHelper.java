@@ -1,6 +1,8 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseStructureHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 
 import java.util.List;
@@ -13,6 +15,9 @@ import static java.util.Objects.requireNonNull;
  * Class providing methods to query database structure.
  */
 public class DatabaseStructureQueryHelper {
+    private static final DatabaseStructureHelper structureHelper = new DatabaseStructureHelper();
+
+    private DatabaseStructureQueryHelper() {}
 
     /**
      * Finds structure field used for entry identification.
@@ -54,8 +59,15 @@ public class DatabaseStructureQueryHelper {
 
         return structureFields.stream()
 
-                .filter((field) -> field.getRank() == item.getFieldRank())
+                .filter(field -> field.getRank() == item.getFieldRank())
 
                 .findAny().get();
+    }
+
+    /**
+     * @return true if specified topic supports entry UID feature (REF)
+     */
+    public static boolean isUidSupportForTopic(DbDto.Topic topic) {
+        return structureHelper.isRefSupportForTopic(topic);
     }
 }
