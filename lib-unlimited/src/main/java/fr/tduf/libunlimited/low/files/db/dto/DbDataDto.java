@@ -464,13 +464,15 @@ public class DbDataDto implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        return reflectionEquals(this, o, false);
+    public boolean equals(Object that) {
+        return that != null
+                && that.getClass() == getClass()
+                && Objects.equals(entries, ((DbDataDto) that).entries);
     }
 
     @Override
     public int hashCode() {
-        return reflectionHashCode(this);
+        return Objects.hash(entries);
     }
 
     @Override
@@ -482,6 +484,7 @@ public class DbDataDto implements Serializable {
     private void setEntries(Collection<Entry> entries) {
         this.entries = new ArrayList<>(entries);
         entriesByInternalIdentifier = createEntryIndex(entries);
+        // FIXME see to determine current topic for REF support
         entriesByReference = createEntryIndexByReference(entries);
 
         entries.forEach(Entry::computeValuesHash);
@@ -518,17 +521,13 @@ public class DbDataDto implements Serializable {
     }
 
     private static Map<String, Entry> createEntryIndexByReference(Collection<Entry> entries) {
-        try {
-            // TODO handle topics with duplicated REFS: take first one
-            return new HashMap<>(entries.stream()
-                    .parallel()
-                    .collect(Collectors.toConcurrentMap(
-                            Entry::getFirstItemValue,
-                            identity())));
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            Log.debug(THIS_CLASS_NAME, "Could not build entry index by reference");
-            return null;
-        }
+        return new HashMap<>(entries.stream()
+                .parallel()
+                .collect(Collectors.toConcurrentMap(
+                        Entry::getFirstItemValue,
+                        identity(),
+                        (e1, e2) -> e2)
+                ));
     }
 
     public static class DbDataDtoBuilder {
