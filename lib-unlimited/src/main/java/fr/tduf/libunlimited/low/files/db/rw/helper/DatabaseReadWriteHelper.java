@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
@@ -33,12 +34,14 @@ public class DatabaseReadWriteHelper {
 
     static final String EXTENSION_DB_CONTENTS = "db";
 
-    private  static final String FMT_FILENAME_EXTENSION = "%s.%s";
+    private static final String THIS_CLASS_NAME = DatabaseReadWriteHelper.class.getSimpleName();
+
+    private static final String FMT_FILENAME_EXTENSION = "%s.%s";
 
     private static final String ENCODING_UTF_8 = "UTF-8";
     private static final String ENCODING_UTF_16 = "UTF-16";
 
-    private  static final String LINE_ENDING_WINDOWS_CRLF = "\r\n";
+    private static final String LINE_ENDING_WINDOWS_CRLF = "\r\n";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -134,7 +137,7 @@ public class DatabaseReadWriteHelper {
                     try {
                         return readDatabaseTopicFromJson(topic, jsonDirectory);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Log.warn(THIS_CLASS_NAME, "Unable to read database topic: " + topic, e);
                         return Optional.<DbDto>empty();
                     }
                 })
@@ -195,7 +198,7 @@ public class DatabaseReadWriteHelper {
                             .load(dbDto)
                             .writeAllAsJson(outputDirectory);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.warn(THIS_CLASS_NAME, "Unable to write database topic: " + dbDto.getTopic(), e);
             return new ArrayList<>(0);
         }
     }
@@ -245,14 +248,14 @@ public class DatabaseReadWriteHelper {
     private static Map<Locale, List<String>> readLinesFromResourceFiles(String databaseDirectory, DbDto.Topic topic) throws FileNotFoundException {
         Map<Locale, List<String>> resourcesLinesByLocale = new ConcurrentHashMap<>();
         Locale.valuesAsStream()
-                .forEach((currentLocale) -> {
+                .forEach(currentLocale -> {
                     String resourceFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, currentLocale.getCode());
 
                     List<String> readLines = null;
                     try {
                         readLines = parseLinesInFile(resourceFileName, ENCODING_UTF_16);
                     } catch (FileNotFoundException fnfe) {
-                        fnfe.printStackTrace();
+                        Log.warn(THIS_CLASS_NAME, "Unable to parse resource file: " + resourceFileName, fnfe);
                         throw new RuntimeException(fnfe);
                     }
 
@@ -266,11 +269,11 @@ public class DatabaseReadWriteHelper {
 
         integrityErrors.addAll(resourcesLinesByLocale.entrySet().stream()
 
-                .filter((entry) -> entry.getValue().isEmpty())
+                .filter(entry -> entry.getValue().isEmpty())
 
-                .map((entry) -> {
+                .map(entry -> {
                     Locale locale = entry.getKey();
-                    Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+                    Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap(IntegrityError.ErrorInfoEnum.class);
                     info.put(SOURCE_TOPIC, topic);
                     info.put(FILE, String.format(FMT_FILENAME_EXTENSION, topic.getLabel(), locale.getCode()));
                     info.put(LOCALE, locale);
@@ -292,7 +295,7 @@ public class DatabaseReadWriteHelper {
             return contentsFile.getAbsolutePath();
         }
 
-        Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+        Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap(IntegrityError.ErrorInfoEnum.class);
         info.put(SOURCE_TOPIC, topic);
         info.put(FILE, contentsFile.getAbsolutePath());
         IntegrityError integrityError = IntegrityError.builder()
@@ -340,8 +343,9 @@ public class DatabaseReadWriteHelper {
             ByteArrayOutputStream outputStream = CryptoHelper.decryptXTEA(inputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
             Files.write(outputFile.toPath(), outputStream.toByteArray(), StandardOpenOption.CREATE);
         } catch (Exception e) {
+            Log.warn(THIS_CLASS_NAME, "Can't unencrypt file: " + contentsFileName, e);
 
-            Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+            Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap(IntegrityError.ErrorInfoEnum.class);
             info.put(FILE, contentsFileName);
             IntegrityError integrityError = IntegrityError.builder()
                     .ofType(IntegrityError.ErrorTypeEnum.CONTENTS_ENCRYPTION_NOT_SUPPORTED)
@@ -358,11 +362,11 @@ public class DatabaseReadWriteHelper {
     private static void encryptContents(String outputDirectory, List<String> writtenFileNames) throws IOException {
         writtenFileNames.stream()
 
-                .filter( (fileName) -> fileName.toUpperCase().endsWith(EXTENSION_DB_CONTENTS.toUpperCase()))
+                .filter(fileName -> fileName.toUpperCase().endsWith(EXTENSION_DB_CONTENTS.toUpperCase()))
 
                 .findFirst()
 
-                .ifPresent( (contentsFileName) -> {
+                .ifPresent(contentsFileName -> {
                     try {
                         File inputFile = new File(contentsFileName);
                         File outputFile = new File(createTempDirectory(), inputFile.getName());
@@ -375,7 +379,7 @@ public class DatabaseReadWriteHelper {
                         Path target = Paths.get(outputDirectory, source.getFileName().toString());
                         Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Log.warn(THIS_CLASS_NAME, "Can't encrypt file: " + contentsFileName, e);
                     }
                 });
     }
