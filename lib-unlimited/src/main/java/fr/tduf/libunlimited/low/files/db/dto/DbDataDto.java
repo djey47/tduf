@@ -519,6 +519,7 @@ public class DbDataDto implements Serializable {
 
     private static Map<String, Entry> createEntryIndexByReference(Collection<Entry> entries) {
         try {
+            // TODO handle topics with duplicated REFS: take first one
             return new HashMap<>(entries.stream()
                     .parallel()
                     .collect(Collectors.toConcurrentMap(
@@ -532,6 +533,7 @@ public class DbDataDto implements Serializable {
 
     public static class DbDataDtoBuilder {
         private List<Entry> entries = new ArrayList<>();
+        private boolean refIndexSupport = false;
 
         public DbDataDtoBuilder addEntry(Entry... entry) {
             return addEntries(asList(entry));
@@ -542,12 +544,20 @@ public class DbDataDto implements Serializable {
             return this;
         }
 
+        public DbDataDtoBuilder supportingReferenceIndex(boolean refSupport) {
+            this.refIndexSupport = refSupport;
+            return this;
+        }
+
         public DbDataDto build() {
             DbDataDto dbDataDto = new DbDataDto();
 
             dbDataDto.entries = this.entries;
             dbDataDto.entriesByInternalIdentifier = createEntryIndex(this.entries);
-            dbDataDto.entriesByReference = createEntryIndexByReference(this.entries);
+
+            if (refIndexSupport) {
+                dbDataDto.entriesByReference = createEntryIndexByReference(this.entries);
+            }
 
             return dbDataDto;
         }
