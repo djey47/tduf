@@ -525,7 +525,7 @@ public class DbDataDto implements Serializable {
                             Entry::getFirstItemValue,
                             identity())));
         } catch (IllegalArgumentException | IllegalStateException e) {
-            Log.debug("Could not build entry index by reference", e);
+            Log.debug(THIS_CLASS_NAME, "Could not build entry index by reference");
             return null;
         }
     }

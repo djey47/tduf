@@ -27,6 +27,8 @@ public class DatabaseParser {
 
     public static final String VALUE_DELIMITER = ";";
 
+    private static final String THIS_CLASS_NAME = DatabaseParser.class.getSimpleName();
+
     private static final Pattern COMMENT_PATTERN = compile("^// (.*)$");                                //e.g // Blabla
     private static final Pattern ITEM_REF_PATTERN = compile("^\\{(.*)\\} (\\d*)$");                     //e.g {TDU_Achievements} 2442784645
     private static final Pattern ITEM_PATTERN = compile("^\\{(.*)\\} (.)( (\\d+))?$");                  //e.g {Nb_Achievement_Points_} i OR {Car_Brand} r 1209165514
@@ -113,7 +115,21 @@ public class DatabaseParser {
         requireNonNull(readEntriesByRef, "A map of entries (even empty) is required.");
 
         for (String line : resources.get(locale)) {
-            Matcher matcher = META_VERSION_PATTERN.matcher(line);
+            Matcher matcher = RES_ENTRY_PATTERN.matcher(line);
+            if (matcher.matches()) {
+                final String ref = matcher.group(3);
+                DbResourceDto.Entry entry = readEntriesByRef.get(ref);
+                if (entry == null) {
+                    entry = DbResourceDto.Entry.builder()
+                            .forReference(ref)
+                            .build();
+                    readEntriesByRef.put(ref, entry);
+                }
+                entry.setValueForLocale(matcher.group(1), locale);
+                continue;
+            }
+
+            matcher = META_VERSION_PATTERN.matcher(line);
             if (matcher.matches()) {
                 version.set(matcher.group(1));
                 continue;
@@ -122,21 +138,6 @@ public class DatabaseParser {
             matcher = META_CATEGORY_COUNT_PATTERN.matcher(line);
             if (matcher.matches()) {
                 categoryCount.set(valueOf(matcher.group(1)));
-                continue;
-            }
-
-            if (COMMENT_PATTERN.matcher(line).matches()) {
-                continue;
-            }
-
-            matcher = RES_ENTRY_PATTERN.matcher(line);
-            if (matcher.matches()) {
-                final String ref = matcher.group(3);
-                DbResourceDto.Entry entry = readEntriesByRef.getOrDefault(ref, DbResourceDto.Entry.builder()
-                        .forReference(ref)
-                        .build());
-                entry.setValueForLocale(matcher.group(1), locale);
-                readEntriesByRef.putIfAbsent(ref, entry);
             }
         }
     }

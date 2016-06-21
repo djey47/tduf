@@ -97,9 +97,9 @@ public class DatabaseReadWriteHelper {
         }
 
         DbDto topicObject = DbDto.builder()
-                .withData(objectMapper.readValue(jsonDataFile, DbDataDto.class))
+                .withData(getDbDataDto(jsonDataFile))
                 .withStructure(objectMapper.readValue(jsonStructureFile, DbStructureDto.class))
-                .withResource(objectMapper.readValue(jsonResourceFile, DbResourceDto.class))
+                .withResource(getDbResourceDto(jsonResourceFile))
                 .build();
 
         return Optional.of(topicObject);
@@ -195,8 +195,8 @@ public class DatabaseReadWriteHelper {
     public static List<String> writeDatabaseTopicToJson(DbDto dbDto, String outputDirectory) {
         try {
             return DatabaseWriter
-                            .load(dbDto)
-                            .writeAllAsJson(outputDirectory);
+                    .load(dbDto)
+                    .writeAllAsJson(outputDirectory);
         } catch (IOException e) {
             Log.warn(THIS_CLASS_NAME, "Unable to write database topic: " + dbDto.getTopic(), e);
             return new ArrayList<>(0);
@@ -223,6 +223,20 @@ public class DatabaseReadWriteHelper {
         checkResourcesLines(resourcesLinesByLocale, topic, integrityErrors);
 
         return resourcesLinesByLocale;
+    }
+
+    private static DbResourceDto getDbResourceDto(File jsonResourceFile) throws IOException {
+        Log.trace(THIS_CLASS_NAME, "Reading resource: " + jsonResourceFile);
+        final DbResourceDto dbResourceDto = objectMapper.readValue(jsonResourceFile, DbResourceDto.class);
+        Log.trace(THIS_CLASS_NAME, "Done reading resource: " + jsonResourceFile);
+        return dbResourceDto;
+    }
+
+    private static DbDataDto getDbDataDto(File jsonDataFile) throws IOException {
+        Log.trace(THIS_CLASS_NAME, "Reading contents: " + jsonDataFile);
+        final DbDataDto dbDataDto = objectMapper.readValue(jsonDataFile, DbDataDto.class);
+        Log.trace(THIS_CLASS_NAME, "Done reading contents: " + jsonDataFile);
+        return dbDataDto;
     }
 
     private static File getJsonFileFromDirectory(DbDto.Topic topic, String jsonDirectory) {
