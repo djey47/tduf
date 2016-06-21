@@ -1,7 +1,20 @@
 {
   "topics": [
     {
+      "topicName": "ACHIEVEMENTS",
+      "refSupport": false
+    },
+    {
+      "topicName": "AFTER_MARKET_PACKS",
+      "refSupport": true
+    },
+    {
+      "topicName": "BOTS",
+      "refSupport": false
+    },
+    {
       "topicName": "BRANDS",
+      "refSupport": true,
       "bitfieldReference": [
         {
           "index": 1,
@@ -15,7 +28,16 @@
       ]
     },
     {
+      "topicName": "CAR_COLORS",
+      "refSupport": false
+    },
+    {
+      "topicName": "CAR_PACKS",
+      "refSupport": false
+    },
+    {
       "topicName": "CAR_PHYSICS_DATA",
+      "refSupport": true,
       "bitfieldReference": [
         {
           "index": 1,
@@ -55,7 +77,12 @@
       ]
     },
     {
+      "topicName": "CAR_RIMS",
+      "refSupport": false
+    },
+    {
       "topicName": "CAR_SHOPS",
+      "refSupport": true,
       "bitfieldReference": [
         {
           "index": 1,
@@ -151,6 +178,7 @@
     },
     {
       "topicName": "CLOTHES",
+      "refSupport": true,
       "bitfieldReference": [
         {
           "index": 1,
@@ -160,7 +188,20 @@
       ]
     },
     {
+      "topicName": "HAIR",
+      "refSupport": true
+    },
+    {
+      "topicName": "HOUSES",
+      "refSupport": true
+    },
+    {
+      "topicName": "INTERIOR",
+      "refSupport": true
+    },
+    {
       "topicName": "MENUS",
+      "refSupport": false,
       "bitfieldReference": [
         {
           "index": 1,
@@ -216,6 +257,7 @@
     },
     {
       "topicName": "PNJ",
+      "refSupport": true,
       "bitfieldReference": [
         {
           "index": 1,
@@ -226,6 +268,7 @@
     },
     {
       "topicName": "RIMS",
+      "refSupport": true,
       "bitfieldReference": [
         {
           "index": 1,
@@ -236,6 +279,7 @@
     },
     {
       "topicName": "SUB_TITLES",
+      "refSupport": false,
       "bitfieldReference": [
         {
           "index": 1,
@@ -243,6 +287,10 @@
           "comment": "Always ON"
         }
       ]
+    },
+    {
+      "topicName": "TUTORIALS",
+      "refSupport": false
     }
   ],
   "dealers": [

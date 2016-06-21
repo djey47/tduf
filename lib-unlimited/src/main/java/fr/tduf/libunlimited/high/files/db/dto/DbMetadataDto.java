@@ -37,6 +37,9 @@ public class DbMetadataDto {
         @JsonProperty("bitfieldReference")
         private List<BitfieldMetadataDto> bitfields;
 
+        @JsonProperty("refSupport")
+        private boolean refSupport;
+
         public TopicMetadataDto() {}
 
         public DbDto.Topic getTopic() {
@@ -45,6 +48,10 @@ public class DbMetadataDto {
 
         public List<BitfieldMetadataDto> getBitfields() {
             return bitfields;
+        }
+
+        public boolean isRefSupport() {
+            return refSupport;
         }
 
         @JsonTypeName("bitfieldMetadata")

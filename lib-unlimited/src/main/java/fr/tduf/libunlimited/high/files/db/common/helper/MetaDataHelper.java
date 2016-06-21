@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.common.helper;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 
@@ -10,6 +11,7 @@ import java.net.URISyntaxException;
  * Parent class for all helpers based on metadata resource
  */
 public abstract class MetaDataHelper {
+    private static final String THIS_CLASS_NAME = MetaDataHelper.class.getSimpleName();
 
     protected DbMetadataDto databaseMetadataObject;
 
@@ -17,7 +19,7 @@ public abstract class MetaDataHelper {
         try {
             loadDatabaseReference();
         } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
+            Log.error(THIS_CLASS_NAME, "Unable to load database metadata resource", e);
         }
     }
 
