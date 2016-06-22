@@ -104,8 +104,8 @@ public class PatchEnhancerTest {
         assertThat(patchProperties.getRearRimBankFileName(1)).isEmpty();
         assertThat(patchProperties.getFrontRimBankFileNameResource(1)).isEmpty();
         assertThat(patchProperties.getRearRimBankFileNameResource(1)).isEmpty();
-        assertThat(patchProperties.getExteriorColorNameResource(1)).contains(RES_COLORNAME_1);
-        assertThat(patchProperties.getExteriorColorNameResource(2)).contains(RES_COLORNAME_2);
+        assertThat(patchProperties.getExteriorColorNameResource(1)).isEmpty();
+        assertThat(patchProperties.getExteriorColorNameResource(2)).isEmpty();
     }
 
     @Test
@@ -123,6 +123,8 @@ public class PatchEnhancerTest {
         final String frontRimResource = "12345568";
         final String rearRimResource = "12345569";
         final String rimBrandReference = "664857";
+        final String colorName1 = "Red";
+        final String colorName2 = "Black";
         patchProperties.clear();
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
         patchProperties.setCarIdentifierIfNotExists(carIdentifier);
@@ -134,6 +136,8 @@ public class PatchEnhancerTest {
         patchProperties.setResourceFrontRimBankIfNotExists(frontRimResource, 1);
         patchProperties.setRearRimBankNameIfNotExists(rearRimBankName, 1);
         patchProperties.setResourceRearRimBankIfNotExists(rearRimResource, 1);
+        patchProperties.setExteriorColorNameIfNotExists(colorName1, 1);
+        patchProperties.setExteriorColorNameIfNotExists(colorName2, 2);
         final PatchEnhancer patchEnhancer = createDefaultEnhancer();
         patchEnhancer.overrideVehicleSlotsHelper(vehicleSlotsHelperMock);
 
@@ -155,8 +159,9 @@ public class PatchEnhancerTest {
         assertThat(patchProperties.getRearRimBankFileName(1)).contains(rearRimBankName);
         assertThat(patchProperties.getFrontRimBankFileNameResource(1)).contains(frontRimResource);
         assertThat(patchProperties.getRearRimBankFileNameResource(1)).contains(rearRimResource);
+        assertThat(patchProperties.getExteriorColorNameResource(1)).contains(RES_COLORNAME_1);
+        assertThat(patchProperties.getExteriorColorNameResource(2)).contains(RES_COLORNAME_2);
     }
-
 
     @Test
     public void enhancePatchProperties_whenNoDealerSlotSelected_shouldNotAddProperties() {
@@ -510,14 +515,6 @@ public class PatchEnhancerTest {
 
     private PatchEnhancer createDefaultEnhancer() {
         return new PatchEnhancer(databaseContext);
-    }
-
-    private static RimSlot createDefaultRimSlot(String rimId, int rank) {
-        return RimSlot.builder()
-                .withRef(rimId)
-                .atRank(rank)
-                .setDefaultRims(true)
-                .build();
     }
 
     private static RimSlot createRimSlot(String rimId, int rank) {

@@ -175,12 +175,19 @@ public class PatchEnhancer {
     private void createPatchPropertiesForPaintJobs(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
         AtomicInteger paintJobIndex = new AtomicInteger(1);
         vehicleSlot.getPaintJobs()
-                .forEach(paintJob -> {
-                    String nameRef = paintJob.getName().getRef();
-                    patchProperties.setExteriorColorNameResourceIfNotExists(nameRef, paintJobIndex.getAndIncrement());
-                });
+                .forEach(paintJob -> createPatchProperiesForPaintJobAtRank(paintJob, paintJobIndex.getAndIncrement(), patchProperties));
 
         searchFirstInteriorPatternReference(vehicleSlot).ifPresent(ref -> patchProperties.setInteriorReferenceIfNotExists(ref, 1));
+    }
+
+    private void createPatchProperiesForPaintJobAtRank(PaintJob paintJob, int rank, PatchProperties patchProperties) {
+        if (!patchProperties.getExteriorColorName(rank).isPresent()) {
+            return;
+        }
+
+        String nameRef = paintJob.getName().getRef();
+
+        patchProperties.setExteriorColorNameResourceIfNotExists(nameRef, rank);
     }
 
     private void createPatchPropertiesForRims(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
