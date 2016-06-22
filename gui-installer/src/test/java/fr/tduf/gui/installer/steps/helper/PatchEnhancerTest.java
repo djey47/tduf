@@ -109,20 +109,11 @@ public class PatchEnhancerTest {
         final String carIdentifier = "197";
         final String bankName = "A3_V6";
         final String bankResource = "12345567";
-        final String colorName1 = "Red";
-        final String colorName2 = "Black";
-        String interiorMainColorId = "53364643";
         patchProperties.clear();
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
         patchProperties.setCarIdentifierIfNotExists(carIdentifier);
         patchProperties.setBankNameIfNotExists(bankName);
         patchProperties.setResourceBankNameIfNotExists(bankResource);
-        patchProperties.setExteriorColorNameIfNotExists(colorName1, 1);
-        patchProperties.setExteriorColorNameResourceIfNotExists(RES_COLORNAME_1, 1);
-        patchProperties.setExteriorColorNameIfNotExists(colorName2, 2);
-        patchProperties.setExteriorColorNameResourceIfNotExists(RES_COLORNAME_2, 2);
-        patchProperties.setInteriorReferenceIfNotExists(INTREF_1, 1);
-        patchProperties.setInteriorMainColorIdIfNotExists(interiorMainColorId, 1);
         final PatchEnhancer patchEnhancer = createDefaultEnhancer();
         patchEnhancer.overrideVehicleSlotsHelper(vehicleSlotsHelperMock);
 
@@ -239,11 +230,16 @@ public class PatchEnhancerTest {
         String intNameId = "53365512";
         String customColorName1 = "Red";
         String customColorName2 = "Black";
+        String intMainColorId1 = "6666";
+        String intMainColorId2 = "666-2";
 
         patchProperties.setExteriorColorNameIfNotExists(customColorName1, 1);
         patchProperties.setExteriorColorNameIfNotExists(customColorName2, 2);
         // Won't create additional properties and change objects as current slot does not handle more than 2 paint jobs
         patchProperties.setExteriorColorNameIfNotExists("Gray", 3);
+
+        patchProperties.setInteriorMainColorIdIfNotExists(intMainColorId1, 1);
+        patchProperties.setInteriorMainColorIdIfNotExists(intMainColorId2, 2);
 
         final VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef(SLOT_REFERENCE)
@@ -272,9 +268,10 @@ public class PatchEnhancerTest {
         assertThat(patchProperties.getExteriorColorNameResource(1)).contains(nameId1);
         assertThat(patchProperties.getExteriorColorName(1)).contains(customColorName1);
         assertThat(patchProperties.getExteriorColorName(2)).contains(customColorName2);
-        // FIXME
-//        assertThat(patchProperties.getInteriorReference(1)).contains(intId1);
-//        assertThat(patchProperties.getInteriorReference(2)).contains(intId2);
+        assertThat(patchProperties.getInteriorReference(1)).contains(intId1);
+        assertThat(patchProperties.getInteriorMainColorId(1)).contains(intMainColorId1);
+        assertThat(patchProperties.getInteriorReference(2)).contains(intId2);
+        assertThat(patchProperties.getInteriorMainColorId(2)).contains(intMainColorId2);
 
         DbPatchDto patchObject = databaseContext.getPatchObject();
         assertThat(patchObject.getChanges()).hasSize(4 + 2); // 2 per paint job + 2 interiors

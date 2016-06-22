@@ -167,14 +167,6 @@ public class PatchEnhancer {
         patchProperties.setResourceBankNameIfNotExists(selectedResourceBankName);
     }
 
-    private void createPatchPropertiesForInteriorAtRank(String intRef, int rank, PatchProperties patchProperties) {
-        if (!patchProperties.getInteriorMainColorId(rank).isPresent()) {
-            return;
-        }
-
-        patchProperties.setInteriorReferenceIfNotExists(intRef, rank);
-    }
-
     private void createPatchPropertiesForDealerSlot(UserSelection userSelection, PatchProperties patchProperties) {
         Log.info(THIS_CLASS_NAME, "->Resolving missing properties with dealer slot information");
 
@@ -182,15 +174,6 @@ public class PatchEnhancer {
                 .map(Dealer::getRef)
                 .orElseThrow(() -> new IllegalArgumentException("No dealer reference was selected!")));
         patchProperties.setDealerSlotIfNotExists(userSelection.getDealerSlotRank());
-    }
-
-    private List<String> searchInteriorPatternReferences(VehicleSlot vehicleSlot) {
-        List<PaintJob> paintJobs = vehicleSlot.getPaintJobs();
-        if (paintJobs.isEmpty()) {
-            return new ArrayList<>(0);
-        }
-
-        return paintJobs.get(0).getInteriorPatternRefs();
     }
 
     private void enhancePatchObjectWithExteriors(VehicleSlot vehicleSlot) {
@@ -208,7 +191,7 @@ public class PatchEnhancer {
         AtomicInteger interiorIndex = new AtomicInteger(1);
         List<DbPatchDto.DbChangeDto> changeObjectsForInteriors = interiorPatternRefs.stream()
                 .filter(intRef -> !DatabaseConstants.REF_NO_INTERIOR.equals(intRef))
-                .map(intRef -> createChangeObjectForInterior(intRef, interiorIndex.getAndIncrement()))
+                .flatMap(intRef -> createChangeObjectAndPropertiesForInterior(intRef, interiorIndex.getAndIncrement()))
                 .collect(toList());
 
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForInteriors);
@@ -266,8 +249,15 @@ public class PatchEnhancer {
         return Stream.of(entryUpdateChange, resourceUpdateChange);
     }
 
-    private DbPatchDto.DbChangeDto createChangeObjectForInterior(String intRef, int interiorIndex) {
-        return DbPatchDto.DbChangeDto.builder()
+    private Stream<DbPatchDto.DbChangeDto> createChangeObjectAndPropertiesForInterior(String intRef, int interiorRank) {
+        final PatchProperties patchProperties = databaseContext.getPatchProperties();
+        if (!patchProperties.getInteriorMainColorId(interiorRank).isPresent()) {
+            return Stream.empty();
+        }
+
+        createPatchPropertiesForInteriorAtRank(intRef, interiorRank, patchProperties);
+
+        return Stream.of(DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE)
                 .forTopic(INTERIOR)
                 .asReference(intRef)
@@ -275,12 +265,12 @@ public class PatchEnhancer {
                         intRef,
                         DatabaseConstants.REF_DEFAULT_BRAND,
                         DatabaseConstants.RESOURCE_REF_NONE_INTERIOR_NAME,
-                        PlaceholderConstants.getPlaceHolderForInteriorMainColor(interiorIndex),
-                        PlaceholderConstants.getPlaceHolderForInteriorSecondaryColor(interiorIndex),
-                        PlaceholderConstants.getPlaceHolderForInteriorMaterial(interiorIndex),
+                        PlaceholderConstants.getPlaceHolderForInteriorMainColor(interiorRank),
+                        PlaceholderConstants.getPlaceHolderForInteriorSecondaryColor(interiorRank),
+                        PlaceholderConstants.getPlaceHolderForInteriorMaterial(interiorRank),
                         "0"
                 ))
-                .build();
+                .build());
     }
 
     private Stream<DbPatchDto.DbChangeDto> createChangeObjectsAndPropertiesForRims(VehicleSlot vehicleSlot, RimSlot rimSlot, int rimRank) {
@@ -349,10 +339,14 @@ public class PatchEnhancer {
         return Stream.of(associationEntryUpdate, slotEntryUpdate, slotNameResourceUpdate, slotFrontFileNameResourceUpdate, slotRearNameResourceUpdate);
     }
 
-    private void createPatchPropertiesForPaintJobAtRank(PaintJob paintJob, int rank, PatchProperties patchProperties) {
+    private void createPatchPropertiesForPaintJobAtRank(PaintJob paintJob, int paintJobRank, PatchProperties patchProperties) {
         String nameRef = paintJob.getName().getRef();
 
-        patchProperties.setExteriorColorNameResourceIfNotExists(nameRef, rank);
+        patchProperties.setExteriorColorNameResourceIfNotExists(nameRef, paintJobRank);
+    }
+
+    private void createPatchPropertiesForInteriorAtRank(String intRef, int interiorRank, PatchProperties patchProperties) {
+        patchProperties.setInteriorReferenceIfNotExists(intRef, interiorRank);
     }
 
     private void createPatchPropertiesForRimSetAtRank(VehicleSlot vehicleSlot, RimSlot rimSlot, int rank, PatchProperties patchProperties) {
