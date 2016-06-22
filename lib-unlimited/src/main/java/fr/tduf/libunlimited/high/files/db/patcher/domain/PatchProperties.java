@@ -213,6 +213,10 @@ public class PatchProperties extends Properties {
         return retrieve(format(PLACEHOLDER_NAME_FMT_RESOURCE_COLOR, exteriorSet));
     }
 
+    public Optional<String> getExteriorColorName(int exteriorSet) {
+        return retrieve(format(PLACEHOLDER_NAME_FMT_COLOR, exteriorSet));
+    }
+
     private void registerIfNotExists(String placeholderName, String value) {
         if (retrieve(placeholderName).isPresent()) {
             return;
