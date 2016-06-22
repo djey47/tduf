@@ -59,6 +59,14 @@ public class PlaceholderConstants {
         return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_RESOURCE_COLOR, exteriorIndex));
     }
 
+    public static String getPlaceHolderForExteriorName(int exteriorIndex) {
+        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_COLOR, exteriorIndex));
+    }
+
+    public static String getPlaceHolderForInteriorReference(int interiorIndex) {
+        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_INTERIOR_REFERENCE, interiorIndex));
+    }
+
     public static String getPlaceHolderForInteriorMainColor(int interiorIndex) {
         return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_INTERIOR_ID_COLOR, SUFFIX_MAIN_COLOR, interiorIndex));
     }
