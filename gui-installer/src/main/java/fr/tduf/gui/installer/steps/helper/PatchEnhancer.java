@@ -66,6 +66,7 @@ public class PatchEnhancer {
 
         enhancePatchObjectWithInstallFlag(vehicleSlotReference);
 
+        // TODO add patch properties in parameters
         databaseContext.getUserSelection().getVehicleSlot()
                 .ifPresent(vehicleSlot -> {
                     enhancePatchObjectWithPaintJobs(vehicleSlot);
@@ -89,7 +90,7 @@ public class PatchEnhancer {
     }
 
     void enhancePatchObjectWithPaintJobs(VehicleSlot vehicleSlot) {
-        Log.info(THIS_CLASS_NAME, "->Adding paint jobs changes to initial patch");
+        Log.info(THIS_CLASS_NAME, "->Adding paint jobs properties and changes to initial patch");
 
         enhancePatchObjectWithExteriors(vehicleSlot);
 
@@ -164,28 +165,6 @@ public class PatchEnhancer {
         patchProperties.setCarIdentifierIfNotExists(Integer.toString(selectedCarIdentifier));
         patchProperties.setBankNameIfNotExists(selectedBankName);
         patchProperties.setResourceBankNameIfNotExists(selectedResourceBankName);
-
-        createPatchPropertiesForPaintJobs(effectiveSlot, patchProperties);
-    }
-
-    private void createPatchPropertiesForPaintJobs(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
-        AtomicInteger paintJobIndex = new AtomicInteger(1);
-        vehicleSlot.getPaintJobs()
-                .forEach(paintJob -> createPatchProperiesForPaintJobAtRank(paintJob, paintJobIndex.getAndIncrement(), patchProperties));
-
-        AtomicInteger interiorIndex = new AtomicInteger(1);
-        searchInteriorPatternReferences(vehicleSlot).stream()
-            .forEach(intRef -> createPatchPropertiesForInteriorAtRank(intRef, interiorIndex.getAndIncrement(), patchProperties));
-    }
-
-    private void createPatchProperiesForPaintJobAtRank(PaintJob paintJob, int rank, PatchProperties patchProperties) {
-        if (!patchProperties.getExteriorColorName(rank).isPresent()) {
-            return;
-        }
-
-        String nameRef = paintJob.getName().getRef();
-
-        patchProperties.setExteriorColorNameResourceIfNotExists(nameRef, rank);
     }
 
     private void createPatchPropertiesForInteriorAtRank(String intRef, int rank, PatchProperties patchProperties) {
@@ -218,7 +197,7 @@ public class PatchEnhancer {
         // TODO handle pj at index 0??
         AtomicInteger exteriorIndex = new AtomicInteger(1);
         List<DbPatchDto.DbChangeDto> changeObjectsForPaintJobs = vehicleSlot.getPaintJobs().stream()
-                .flatMap(paintJob -> createChangeObjectsForExterior(vehicleSlot, paintJob, exteriorIndex.getAndIncrement()))
+                .flatMap(paintJob -> createChangeObjectsAndPropertiesForExterior(vehicleSlot, paintJob, exteriorIndex.getAndIncrement()))
                 .collect(toList());
 
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForPaintJobs);
@@ -235,10 +214,13 @@ public class PatchEnhancer {
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForInteriors);
     }
 
-    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsForExterior(VehicleSlot vehicleSlot, PaintJob paintJob, int exteriorIndex) {
-        if (!databaseContext.getPatchProperties().getExteriorMainColorId(paintJob.getRank()).isPresent()) {
+    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsAndPropertiesForExterior(VehicleSlot vehicleSlot, PaintJob paintJob, int exteriorRank) {
+        final PatchProperties patchProperties = databaseContext.getPatchProperties();
+        if (!patchProperties.getExteriorColorName(exteriorRank).isPresent()) {
             return Stream.empty();
         }
+
+        createPatchPropertiesForPaintJobAtRank(paintJob, exteriorRank, patchProperties);
 
         List<String> interiorRefs = new ArrayList<>(paintJob.getInteriorPatternRefs());
         try (IntStream stream = rangeClosed(interiorRefs.size(), DatabaseConstants.COUNT_INTERIORS)) {
@@ -250,10 +232,10 @@ public class PatchEnhancer {
                 .forTopic(CAR_COLORS)
                 .withEntryValues(asList(
                         vehicleSlot.getRef(),
-                        PlaceholderConstants.getPlaceHolderForExteriorMainColor(exteriorIndex),
-                        PlaceholderConstants.getPlaceHolderForExteriorNameResource(exteriorIndex),
-                        PlaceholderConstants.getPlaceHolderForExteriorSecondaryColor(exteriorIndex),
-                        PlaceholderConstants.getPlaceHolderForExteriorCalipersColor(exteriorIndex),
+                        PlaceholderConstants.getPlaceHolderForExteriorMainColor(exteriorRank),
+                        PlaceholderConstants.getPlaceHolderForExteriorNameResource(exteriorRank),
+                        PlaceholderConstants.getPlaceHolderForExteriorSecondaryColor(exteriorRank),
+                        PlaceholderConstants.getPlaceHolderForExteriorCalipersColor(exteriorRank),
                         "0",
                         "0",
                         interiorRefs.get(0),
@@ -365,6 +347,12 @@ public class PatchEnhancer {
                 .build();
 
         return Stream.of(associationEntryUpdate, slotEntryUpdate, slotNameResourceUpdate, slotFrontFileNameResourceUpdate, slotRearNameResourceUpdate);
+    }
+
+    private void createPatchPropertiesForPaintJobAtRank(PaintJob paintJob, int rank, PatchProperties patchProperties) {
+        String nameRef = paintJob.getName().getRef();
+
+        patchProperties.setExteriorColorNameResourceIfNotExists(nameRef, rank);
     }
 
     private void createPatchPropertiesForRimSetAtRank(VehicleSlot vehicleSlot, RimSlot rimSlot, int rank, PatchProperties patchProperties) {

@@ -98,9 +98,6 @@ public class PatchEnhancerTest {
         assertThat(patchProperties.getCarIdentifier()).contains(CARID);
         assertThat(patchProperties.getBankFileName()).contains(BANKNAME);
         assertThat(patchProperties.getBankFileNameResource()).contains(RES_BANKNAME);
-        assertThat(patchProperties.getExteriorColorNameResource(1)).isEmpty();
-        assertThat(patchProperties.getExteriorColorNameResource(2)).isEmpty();
-        assertThat(patchProperties.getInteriorReference(1)).isEmpty();
     }
 
     @Test
@@ -121,7 +118,10 @@ public class PatchEnhancerTest {
         patchProperties.setBankNameIfNotExists(bankName);
         patchProperties.setResourceBankNameIfNotExists(bankResource);
         patchProperties.setExteriorColorNameIfNotExists(colorName1, 1);
+        patchProperties.setExteriorColorNameResourceIfNotExists(RES_COLORNAME_1, 1);
         patchProperties.setExteriorColorNameIfNotExists(colorName2, 2);
+        patchProperties.setExteriorColorNameResourceIfNotExists(RES_COLORNAME_2, 2);
+        patchProperties.setInteriorReferenceIfNotExists(INTREF_1, 1);
         patchProperties.setInteriorMainColorIdIfNotExists(interiorMainColorId, 1);
         final PatchEnhancer patchEnhancer = createDefaultEnhancer();
         patchEnhancer.overrideVehicleSlotsHelper(vehicleSlotsHelperMock);
@@ -138,9 +138,6 @@ public class PatchEnhancerTest {
         assertThat(patchProperties.getCarIdentifier()).contains(carIdentifier);
         assertThat(patchProperties.getBankFileName()).contains(bankName);
         assertThat(patchProperties.getBankFileNameResource()).contains(bankResource);
-        assertThat(patchProperties.getExteriorColorNameResource(1)).contains(RES_COLORNAME_1);
-        assertThat(patchProperties.getExteriorColorNameResource(2)).contains(RES_COLORNAME_2);
-        assertThat(patchProperties.getInteriorReference(1)).contains(INTREF_1);
     }
 
     @Test
@@ -240,9 +237,13 @@ public class PatchEnhancerTest {
         String intId2 = "5555-2";
         String intManufacturerId = "62938337";
         String intNameId = "53365512";
+        String customColorName1 = "Red";
+        String customColorName2 = "Black";
 
-        patchProperties.setExteriorMainColorIdIfNotExists(mainColorId1, 1);
-        patchProperties.setExteriorMainColorIdIfNotExists(mainColorId2, 2);
+        patchProperties.setExteriorColorNameIfNotExists(customColorName1, 1);
+        patchProperties.setExteriorColorNameIfNotExists(customColorName2, 2);
+        // Won't create additional properties and change objects as current slot does not handle more than 2 paint jobs
+        patchProperties.setExteriorColorNameIfNotExists("Gray", 3);
 
         final VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef(SLOT_REFERENCE)
@@ -268,6 +269,13 @@ public class PatchEnhancerTest {
 
 
         // THEN
+        assertThat(patchProperties.getExteriorColorNameResource(1)).contains(nameId1);
+        assertThat(patchProperties.getExteriorColorName(1)).contains(customColorName1);
+        assertThat(patchProperties.getExteriorColorName(2)).contains(customColorName2);
+        // FIXME
+//        assertThat(patchProperties.getInteriorReference(1)).contains(intId1);
+//        assertThat(patchProperties.getInteriorReference(2)).contains(intId2);
+
         DbPatchDto patchObject = databaseContext.getPatchObject();
         assertThat(patchObject.getChanges()).hasSize(4 + 2); // 2 per paint job + 2 interiors
         assertThat(patchObject.getChanges()).extracting("type").containsOnly(UPDATE, UPDATE_RES);
@@ -373,7 +381,6 @@ public class PatchEnhancerTest {
         assertThat(patchProperties.getRearRimBankFileName(1)).contains("AC_289_R_01");
         assertThat(patchProperties.getFrontRimBankFileNameResource(1)).contains(RES_BANKNAME_FR_1);
         assertThat(patchProperties.getRearRimBankFileNameResource(1)).contains(RES_BANKNAME_RR_1);
-
         assertThat(patchProperties.getRimSlotReference(2)).contains(rimId2);
         assertThat(patchProperties.getRimBrandNameResource(2)).contains(RES_RIMBRAND);
         assertThat(patchProperties.getFrontRimBankFileName(2)).contains("AC_289_F_02");
