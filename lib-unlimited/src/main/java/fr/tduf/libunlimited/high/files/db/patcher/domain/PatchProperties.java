@@ -69,6 +69,10 @@ public class PatchProperties extends Properties {
         registerIfNotExists(placeholderName, rimsSlotReference);
     }
 
+    public void setRimNameIfNotExists(String rimName, int rimSet) {
+        registerIfNotExists(format(PLACEHOLDER_NAME_FMT_RIM_NAME, rimSet), rimName);
+    }
+
     public void setResourceRimsBrandIfNotExists(String rimBrandReference, int rimSet) {
         registerIfNotExists(format(PLACEHOLDER_NAME_FMT_RESOURCE_RIMS_BRAND, rimSet), rimBrandReference);
     }
