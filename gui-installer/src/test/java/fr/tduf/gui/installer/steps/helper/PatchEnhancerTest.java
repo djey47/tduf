@@ -30,6 +30,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PatchEnhancerTest {
 
+    // TODO change objects should contain placeholders whenever possible
+
     private static final String SLOT_REFERENCE = "30000000";
     private static final String CARID = "3000";
     private static final String BANKNAME = "TDUCP_3000";
@@ -46,6 +48,7 @@ public class PatchEnhancerTest {
     private static final String RES_COLORNAME_2 = "4607267";
     private static final String COLORNAME_2 = "Blau";
     private static final String INTREF_1 = "5000000001";
+    private static final String INTREF_2 = "5000000002";
 
     private DatabaseContext databaseContext;
     private PatchProperties patchProperties;
@@ -214,18 +217,6 @@ public class PatchEnhancerTest {
     @Test
     public void enhancePatchObjectWithPaintJobs_withPaintJobProperties_shouldAddCarColors_andInterior_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
-        String mainColorId1 = "1111";
-        String mainColorId2 = "1111-2";
-        String secColorId1 = "2222";
-        String secColorId2 = "2222-2";
-        String calColorId1 = "3333";
-        String calColorId2 = "3333-2";
-        String nameId1 = "4444";
-        String nameId2 = "4444-2";
-        String name1 = "PJ name 1";
-        String name2 = "PJ name 2";
-        String intId1 = "5555";
-        String intId2 = "5555-2";
         String intManufacturerId = "62938337";
         String intNameId = "53365512";
         String customColorName1 = "Red";
@@ -241,23 +232,7 @@ public class PatchEnhancerTest {
         patchProperties.setInteriorMainColorIdIfNotExists(intMainColorId1, 1);
         patchProperties.setInteriorMainColorIdIfNotExists(intMainColorId2, 2);
 
-        final VehicleSlot vehicleSlot = VehicleSlot.builder()
-                .withRef(SLOT_REFERENCE)
-                .addPaintJob(PaintJob.builder()
-                        .atRank(1)
-                        .withName(Resource.from(nameId1, name1))
-                        .withColors(Resource.from(mainColorId1, ""), Resource.from(secColorId1, ""), Resource.from(calColorId1, ""))
-                        .addInteriorPattern(intId1)
-                        .addInteriorPattern(intId2)
-                        .build())
-                .addPaintJob(PaintJob.builder()
-                        .atRank(2)
-                        .withName(Resource.from(nameId2, name2))
-                        .withColors(Resource.from(mainColorId2, ""), Resource.from(secColorId2, ""), Resource.from(calColorId2, ""))
-                        .addInteriorPattern(intId1)
-                        .addInteriorPattern(intId2)
-                        .build())
-                .build();
+        final VehicleSlot vehicleSlot = createVehicleSlot();
 
 
         // WHEN
@@ -265,19 +240,25 @@ public class PatchEnhancerTest {
 
 
         // THEN
-        assertThat(patchProperties.getExteriorColorNameResource(1)).contains(nameId1);
+        assertThat(patchProperties.getExteriorColorNameResource(1)).contains(RES_COLORNAME_1);
+        assertThat(patchProperties.getExteriorColorNameResource(2)).contains(RES_COLORNAME_2);
         assertThat(patchProperties.getExteriorColorName(1)).contains(customColorName1);
         assertThat(patchProperties.getExteriorColorName(2)).contains(customColorName2);
-        assertThat(patchProperties.getInteriorReference(1)).contains(intId1);
+        assertThat(patchProperties.getInteriorReference(1)).contains(INTREF_1);
         assertThat(patchProperties.getInteriorMainColorId(1)).contains(intMainColorId1);
-        assertThat(patchProperties.getInteriorReference(2)).contains(intId2);
+        assertThat(patchProperties.getInteriorReference(2)).contains(INTREF_2);
         assertThat(patchProperties.getInteriorMainColorId(2)).contains(intMainColorId2);
 
         DbPatchDto patchObject = databaseContext.getPatchObject();
         assertThat(patchObject.getChanges()).hasSize(4 + 2); // 2 per paint job + 2 interiors
         assertThat(patchObject.getChanges()).extracting("type").containsOnly(UPDATE, UPDATE_RES);
         assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_COLORS, INTERIOR);
-        assertThat(patchObject.getChanges()).extracting("ref").containsOnly(null, nameId1, intId1, nameId2, intId2);
+        assertThat(patchObject.getChanges()).extracting("ref").containsOnly(
+                null,
+                "{RES_COLORNAME.1}",
+                "{INTREF.1}",
+                "{RES_COLORNAME.2}",
+                "{INTREF.2}");
         assertThat(patchObject.getChanges()).extracting("values").containsOnly(
                 asList(
                         SLOT_REFERENCE,
@@ -287,8 +268,8 @@ public class PatchEnhancerTest {
                         "{CALLIPERSID.1}",
                         "0",
                         "0",
-                        intId1,
-                        intId2,
+                        INTREF_1,
+                        INTREF_2,
                         "11319636",
                         "11319636",
                         "11319636",
@@ -312,8 +293,8 @@ public class PatchEnhancerTest {
                         "{CALLIPERSID.2}",
                         "0",
                         "0",
-                        intId1,
-                        intId2,
+                        INTREF_1,
+                        INTREF_2,
                         "11319636",
                         "11319636",
                         "11319636",
@@ -330,7 +311,7 @@ public class PatchEnhancerTest {
                 ),
                 null,
                 asList(
-                        intId1,
+                        "{INTREF.1}",
                         intManufacturerId,
                         intNameId,
                         "{INTCOLORID.M.1}",
@@ -339,7 +320,7 @@ public class PatchEnhancerTest {
                         "0"
                 ),
                 asList(
-                        intId2,
+                        "{INTREF.2}",
                         intManufacturerId,
                         intNameId,
                         "{INTCOLORID.M.2}",
@@ -347,7 +328,11 @@ public class PatchEnhancerTest {
                         "{INTMATERIALID.2}",
                         "0"
                 ));
-        assertThat(patchObject.getChanges()).extracting("value").containsOnly(null, name1, name2);
+        assertThat(patchObject.getChanges()).extracting("value").containsOnly(
+                null,
+                "{COLORNAME.1}",
+                "{COLORNAME.2}"
+        );
     }
 
     @Test
@@ -523,11 +508,13 @@ public class PatchEnhancerTest {
                         .atRank(1)
                         .withName(Resource.from(RES_COLORNAME_1, COLORNAME_1))
                         .addInteriorPattern(INTREF_1)
+                        .addInteriorPattern(INTREF_2)
                         .build())
                 .addPaintJob(PaintJob.builder()
                         .atRank(2)
                         .withName(Resource.from(RES_COLORNAME_2, COLORNAME_2))
                         .addInteriorPattern(INTREF_1)
+                        .addInteriorPattern(INTREF_2)
                         .build())
                 .build();
     }

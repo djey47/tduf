@@ -242,8 +242,8 @@ public class PatchEnhancer {
         DbPatchDto.DbChangeDto resourceUpdateChange = DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE_RES)
                 .forTopic(CAR_COLORS)
-                .asReference(paintJob.getName().getRef())
-                .withValue(paintJob.getName().getValue())
+                .asReference(PlaceholderConstants.getPlaceHolderForExteriorNameResource(exteriorRank))
+                .withValue(PlaceholderConstants.getPlaceHolderForExteriorName(exteriorRank))
                 .build();
 
         return Stream.of(entryUpdateChange, resourceUpdateChange);
@@ -260,9 +260,9 @@ public class PatchEnhancer {
         return Stream.of(DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE)
                 .forTopic(INTERIOR)
-                .asReference(intRef)
+                .asReference(PlaceholderConstants.getPlaceHolderForInteriorReference(interiorRank))
                 .withEntryValues(asList(
-                        intRef,
+                        PlaceholderConstants.getPlaceHolderForInteriorReference(interiorRank),
                         DatabaseConstants.REF_DEFAULT_BRAND,
                         DatabaseConstants.RESOURCE_REF_NONE_INTERIOR_NAME,
                         PlaceholderConstants.getPlaceHolderForInteriorMainColor(interiorRank),
