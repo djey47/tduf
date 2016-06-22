@@ -39,8 +39,8 @@ public class PatchEnhancerTest {
     private static final String RES_BANKNAME_FR_1 = "3000000010";
     private static final String RES_BANKNAME_RR_1 = "3000000011";
     private static final String RIMREF_1 = "3000000001";
-    private static final String RES_RIMBRAND_1 = "654857";
-    private static final String RIMBRAND_1 = "Default";
+    private static final String RES_RIMBRAND = "654857";
+    private static final String RIMBRAND = "Default";
     private static final String RES_COLORNAME_1 = "4607167";
     private static final String COLORNAME_1 = "Nero";
     private static final String RES_COLORNAME_2 = "4607267";
@@ -98,12 +98,6 @@ public class PatchEnhancerTest {
         assertThat(patchProperties.getCarIdentifier()).contains(CARID);
         assertThat(patchProperties.getBankFileName()).contains(BANKNAME);
         assertThat(patchProperties.getBankFileNameResource()).contains(RES_BANKNAME);
-        assertThat(patchProperties.getRimSlotReference(1)).isEmpty();
-        assertThat(patchProperties.getRimBrandNameResource(1)).isEmpty();
-        assertThat(patchProperties.getFrontRimBankFileName(1)).isEmpty();
-        assertThat(patchProperties.getRearRimBankFileName(1)).isEmpty();
-        assertThat(patchProperties.getFrontRimBankFileNameResource(1)).isEmpty();
-        assertThat(patchProperties.getRearRimBankFileNameResource(1)).isEmpty();
         assertThat(patchProperties.getExteriorColorNameResource(1)).isEmpty();
         assertThat(patchProperties.getExteriorColorNameResource(2)).isEmpty();
         assertThat(patchProperties.getInteriorReference(1)).isEmpty();
@@ -118,12 +112,6 @@ public class PatchEnhancerTest {
         final String carIdentifier = "197";
         final String bankName = "A3_V6";
         final String bankResource = "12345567";
-        final String frontRimBankName = "A3_V6_F_01";
-        final String rimSlotReference = "1111111";
-        final String rearRimBankName = "A3_V6_R_01";
-        final String frontRimResource = "12345568";
-        final String rearRimResource = "12345569";
-        final String rimBrandReference = "664857";
         final String colorName1 = "Red";
         final String colorName2 = "Black";
         String interiorMainColorId = "53364643";
@@ -131,13 +119,7 @@ public class PatchEnhancerTest {
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
         patchProperties.setCarIdentifierIfNotExists(carIdentifier);
         patchProperties.setBankNameIfNotExists(bankName);
-        patchProperties.setRimsSlotReferenceIfNotExists(rimSlotReference, 1);
-        patchProperties.setResourceRimsBrandIfNotExists(rimBrandReference, 1);
         patchProperties.setResourceBankNameIfNotExists(bankResource);
-        patchProperties.setFrontRimBankNameIfNotExists(frontRimBankName, 1);
-        patchProperties.setResourceFrontRimBankIfNotExists(frontRimResource, 1);
-        patchProperties.setRearRimBankNameIfNotExists(rearRimBankName, 1);
-        patchProperties.setResourceRearRimBankIfNotExists(rearRimResource, 1);
         patchProperties.setExteriorColorNameIfNotExists(colorName1, 1);
         patchProperties.setExteriorColorNameIfNotExists(colorName2, 2);
         patchProperties.setInteriorMainColorIdIfNotExists(interiorMainColorId, 1);
@@ -156,12 +138,6 @@ public class PatchEnhancerTest {
         assertThat(patchProperties.getCarIdentifier()).contains(carIdentifier);
         assertThat(patchProperties.getBankFileName()).contains(bankName);
         assertThat(patchProperties.getBankFileNameResource()).contains(bankResource);
-        assertThat(patchProperties.getRimSlotReference(1)).contains(rimSlotReference);
-        assertThat(patchProperties.getRimBrandNameResource(1)).contains(rimBrandReference);
-        assertThat(patchProperties.getFrontRimBankFileName(1)).contains(frontRimBankName);
-        assertThat(patchProperties.getRearRimBankFileName(1)).contains(rearRimBankName);
-        assertThat(patchProperties.getFrontRimBankFileNameResource(1)).contains(frontRimResource);
-        assertThat(patchProperties.getRearRimBankFileNameResource(1)).contains(rearRimResource);
         assertThat(patchProperties.getExteriorColorNameResource(1)).contains(RES_COLORNAME_1);
         assertThat(patchProperties.getExteriorColorNameResource(2)).contains(RES_COLORNAME_2);
         assertThat(patchProperties.getInteriorReference(1)).contains(INTREF_1);
@@ -372,20 +348,17 @@ public class PatchEnhancerTest {
     @Test
     public void enhancePatchObjectWithRims_withRimProperties_shouldAddCarRims_andRims_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
-//        String rimId0 = "0000";
         String rimId1 = "1111";
         String rimId2 = "2222";
 
-//        patchProperties.setRimsSlotReferenceIfNotExists(rimId0, 0);
-        patchProperties.setRimsSlotReferenceIfNotExists(rimId1, 1);
-        patchProperties.setRimsSlotReferenceIfNotExists(rimId2, 2);
+        patchProperties.setRimNameIfNotExists("RIM SET 1", 1);
+        patchProperties.setRimNameIfNotExists("RIM SET 2", 2);
 
-//        final RimSlot rimSlot0 = createDefaultRimSlot(rimId0, 0);
         final RimSlot rimSlot1 = createRimSlot(rimId1, 1);
         final RimSlot rimSlot2 = createRimSlot(rimId2, 2);
         final VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef(SLOT_REFERENCE)
-                .addRims(asList(/*rimSlot0,*/ rimSlot1, rimSlot2))
+                .addRims(asList(rimSlot1, rimSlot2))
                 .build();
 
 
@@ -394,16 +367,26 @@ public class PatchEnhancerTest {
 
 
         // THEN
+        assertThat(patchProperties.getRimSlotReference(1)).contains(rimId1);
+        assertThat(patchProperties.getRimBrandNameResource(1)).contains(RES_RIMBRAND);
+        assertThat(patchProperties.getFrontRimBankFileName(1)).contains("AC_289_F_01");
+        assertThat(patchProperties.getRearRimBankFileName(1)).contains("AC_289_R_01");
+        assertThat(patchProperties.getFrontRimBankFileNameResource(1)).contains(RES_BANKNAME_FR_1);
+        assertThat(patchProperties.getRearRimBankFileNameResource(1)).contains(RES_BANKNAME_RR_1);
+
+        assertThat(patchProperties.getRimSlotReference(2)).contains(rimId2);
+        assertThat(patchProperties.getRimBrandNameResource(2)).contains(RES_RIMBRAND);
+        assertThat(patchProperties.getFrontRimBankFileName(2)).contains("AC_289_F_02");
+        assertThat(patchProperties.getRearRimBankFileName(2)).contains("AC_289_R_02");
+        assertThat(patchProperties.getFrontRimBankFileNameResource(2)).contains(RES_BANKNAME_FR_1);
+        assertThat(patchProperties.getRearRimBankFileNameResource(2)).contains(RES_BANKNAME_RR_1);
+
         DbPatchDto patchObject = databaseContext.getPatchObject();
         assertThat(patchObject.getChanges()).hasSize(2 * 5); // 5 per rim set
         assertThat(patchObject.getChanges()).extracting("type").containsOnly(UPDATE, UPDATE_RES);
         assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_RIMS, RIMS);
         assertThat(patchObject.getChanges()).extracting("ref").containsOnly(
                 null,
-//                rimId0,
-//                "{RES_RIMNAME.0}",
-//                "{RES_BANKNAME.FR.0}",
-//                "{RES_BANKNAME.RR.0}",
                 rimId1,
                 "{RES_RIMNAME.1}",
                 "{RES_BANKNAME.FR.1}",
@@ -414,24 +397,6 @@ public class PatchEnhancerTest {
                 "{RES_BANKNAME.RR.2}"
         );
         assertThat(patchObject.getChanges()).extracting("values").containsOnly(
-//                asList(SLOT_REFERENCE, rimId0),
-//                asList(
-//                        rimId0,
-//                        "{RIMBRANDREF.0}",
-//                        "54276512",
-//                        "{RES_RIMNAME.0}",
-//                        "{RIMWIDTH.FR.0}",
-//                        "{RIMHEIGHT.FR.0}",
-//                        "{RIMDIAM.FR.0}",
-//                        "{RIMWIDTH.RR.0}",
-//                        "{RIMHEIGHT.RR.0}",
-//                        "{RIMDIAM.RR.0}",
-//                        "0",
-//                        "0",
-//                        "{RIMBRANDREF.0}",
-//                        "{RES_BANKNAME.FR.0}",
-//                        "{RES_BANKNAME.RR.0}",
-//                        "0"),
                 asList(SLOT_REFERENCE, rimId1),
                 asList(
                         rimId1,
@@ -471,9 +436,6 @@ public class PatchEnhancerTest {
                         "0"));
         assertThat(patchObject.getChanges()).extracting("value").containsOnly(
                 null,
-//                "{RIMNAME.0}",
-//                "{BANKNAME.FR.0}",
-//                "{BANKNAME.RR.0}",
                 "{RIMNAME.1}",
                 "{BANKNAME.FR.1}",
                 "{BANKNAME.RR.1}",
@@ -522,8 +484,16 @@ public class PatchEnhancerTest {
     }
 
     private static RimSlot createRimSlot(String rimId, int rank) {
+        RimSlot.RimInfo frontInfo = RimSlot.RimInfo.builder()
+                .withFileName(Resource.from(RES_BANKNAME_FR_1, "AC_289_F_0" + rank))
+                .build();
+        RimSlot.RimInfo rearInfo = RimSlot.RimInfo.builder()
+                .withFileName(Resource.from(RES_BANKNAME_RR_1, "AC_289_R_0" + rank))
+                .build();
         return RimSlot.builder()
                 .withRef(rimId)
+                .withParentDirectoryName(Resource.from(RES_RIMBRAND, RIMBRAND))
+                .withRimsInformation(frontInfo, rearInfo)
                 .atRank(rank)
                 .build();
     }
@@ -536,7 +506,7 @@ public class PatchEnhancerTest {
                 .addRim(RimSlot.builder()
                         .withRef(RIMREF_1)
                         .atRank(1)
-                        .withParentDirectoryName(Resource.from(RES_RIMBRAND_1, RIMBRAND_1))
+                        .withParentDirectoryName(Resource.from(RES_RIMBRAND, RIMBRAND))
                         .withRimsInformation(RimSlot.RimInfo.builder()
                                         .withFileName(Resource.from(RES_BANKNAME_FR_1, BANKNAME_FR_1))
                                         .build(),

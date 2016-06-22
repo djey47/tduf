@@ -100,12 +100,12 @@ public class PatchEnhancer {
 
     // TODO see if bikes support more than 1 rim set
     void enhancePatchObjectWithRims(VehicleSlot vehicleSlot) {
-        Log.info(THIS_CLASS_NAME, "->Adding rim changes to initial patch");
+        Log.info(THIS_CLASS_NAME, "->Adding rim properties and changes to initial patch");
 
         // TODO handle rims at index 0??
         AtomicInteger rimIndex = new AtomicInteger(1);
         List<DbPatchDto.DbChangeDto> changeObjectsForRims = vehicleSlot.getAllRimsSorted().stream()
-                .flatMap(rimSlot -> createChangeObjectsForRims(vehicleSlot, rimSlot, rimIndex.getAndIncrement()))
+                .flatMap(rimSlot -> createChangeObjectsAndPropertiesForRims(vehicleSlot, rimSlot, rimIndex.getAndIncrement()))
                 .collect(toList());
 
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForRims);
@@ -165,8 +165,6 @@ public class PatchEnhancer {
         patchProperties.setBankNameIfNotExists(selectedBankName);
         patchProperties.setResourceBankNameIfNotExists(selectedResourceBankName);
 
-        createPatchPropertiesForRims(effectiveSlot, patchProperties);
-
         createPatchPropertiesForPaintJobs(effectiveSlot, patchProperties);
     }
 
@@ -196,37 +194,6 @@ public class PatchEnhancer {
         }
 
         patchProperties.setInteriorReferenceIfNotExists(intRef, rank);
-    }
-
-    private void createPatchPropertiesForRims(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
-        AtomicInteger rimIndex = new AtomicInteger(1);
-        vehicleSlot.getAllRimsSorted()
-                .forEach(rimSlot -> createPatchPropertiesForRimSetAtRank(vehicleSlot, rimSlot, rimIndex.getAndIncrement(), patchProperties));
-    }
-
-    private void createPatchPropertiesForRimSetAtRank(VehicleSlot vehicleSlot, RimSlot rimSlot, int rank, PatchProperties patchProperties) {
-        if (!patchProperties.getRimName(rank).isPresent()) {
-            return;
-        }
-
-        String selectedRimReference = rimSlot.getRef();
-        String selectedResourceRimBrandReference = rimSlot.getParentDirectoryName().getRef();
-        String selectedFrontRimBank = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, rimSlot.getRank(), false);
-        String selectedResourceFrontRimBankName = rimSlot.getFrontRimInfo().getFileName().getRef();
-        String selectedRearRimBank = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, REAR_RIM, rimSlot.getRank(), false);
-        String selectedResourceRearRimBankName = rimSlot.getRearRimInfo().getFileName().getRef();
-
-        List<String> values = asList(selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);
-        if (values.contains(DisplayConstants.ITEM_UNAVAILABLE)) {
-            throw new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, vehicleSlot.getRef()));
-        }
-
-        patchProperties.setRimsSlotReferenceIfNotExists(selectedRimReference, rank);
-        patchProperties.setResourceRimsBrandIfNotExists(selectedResourceRimBrandReference, rank);
-        patchProperties.setFrontRimBankNameIfNotExists(selectedFrontRimBank, rank);
-        patchProperties.setResourceFrontRimBankIfNotExists(selectedResourceFrontRimBankName, rank);
-        patchProperties.setRearRimBankNameIfNotExists(selectedRearRimBank, rank);
-        patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, rank);
     }
 
     private void createPatchPropertiesForDealerSlot(UserSelection userSelection, PatchProperties patchProperties) {
@@ -334,19 +301,21 @@ public class PatchEnhancer {
                 .build();
     }
 
-    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsForRims(VehicleSlot vehicleSlot, RimSlot rimSlot, int rimIndex) {
+    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsAndPropertiesForRims(VehicleSlot vehicleSlot, RimSlot rimSlot, int rimRank) {
         final PatchProperties patchProperties = databaseContext.getPatchProperties();
-        if (!patchProperties.getRimSlotReference(rimIndex).isPresent()) {
+        if (!patchProperties.getRimName(rimRank).isPresent()) {
             return Stream.empty();
         }
+
+        createPatchPropertiesForRimSetAtRank(vehicleSlot, rimSlot, rimRank, patchProperties);
 
         DbPatchDto.DbChangeDto associationEntryUpdate = DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE)
                 .forTopic(CAR_RIMS)
                 .withEntryValues( asList(
                         vehicleSlot.getRef(),
-                        patchProperties.getRimSlotReference(rimIndex)
-                            .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Rim slot reference not found in properties: for set " + rimIndex))
+                        patchProperties.getRimSlotReference(rimRank)
+                            .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Rim slot reference not found in properties: for set " + rimRank))
                 ))
                 .build();
 
@@ -356,20 +325,20 @@ public class PatchEnhancer {
                 .asReference(rimSlot.getRef())
                 .withEntryValues( asList(
                         rimSlot.getRef(),
-                        PlaceholderConstants.getPlaceHolderForRimBrand(rimIndex),
+                        PlaceholderConstants.getPlaceHolderForRimBrand(rimRank),
                         DatabaseConstants.RESOURCE_REF_NO_RIM_NAME,
-                        PlaceholderConstants.getPlaceHolderForRimNameResource(rimIndex),
-                        PlaceholderConstants.getPlaceHolderForFrontRimWidth(rimIndex),
-                        PlaceholderConstants.getPlaceHolderForFrontRimHeight(rimIndex),
-                        PlaceholderConstants.getPlaceHolderForFrontRimDiameter(rimIndex),
-                        PlaceholderConstants.getPlaceHolderForRearRimWidth(rimIndex),
-                        PlaceholderConstants.getPlaceHolderForRearRimHeight(rimIndex),
-                        PlaceholderConstants.getPlaceHolderForRearRimDiameter(rimIndex),
+                        PlaceholderConstants.getPlaceHolderForRimNameResource(rimRank),
+                        PlaceholderConstants.getPlaceHolderForFrontRimWidth(rimRank),
+                        PlaceholderConstants.getPlaceHolderForFrontRimHeight(rimRank),
+                        PlaceholderConstants.getPlaceHolderForFrontRimDiameter(rimRank),
+                        PlaceholderConstants.getPlaceHolderForRearRimWidth(rimRank),
+                        PlaceholderConstants.getPlaceHolderForRearRimHeight(rimRank),
+                        PlaceholderConstants.getPlaceHolderForRearRimDiameter(rimRank),
                         "0",
                         "0",
-                        PlaceholderConstants.getPlaceHolderForRimBrand(rimIndex),
-                        PlaceholderConstants.getPlaceHolderForFrontRimFileNameResource(rimIndex),
-                        PlaceholderConstants.getPlaceHolderForRearRimFileNameResource(rimIndex),
+                        PlaceholderConstants.getPlaceHolderForRimBrand(rimRank),
+                        PlaceholderConstants.getPlaceHolderForFrontRimFileNameResource(rimRank),
+                        PlaceholderConstants.getPlaceHolderForRearRimFileNameResource(rimRank),
                         "0"
                 ))
                 .build();
@@ -377,25 +346,46 @@ public class PatchEnhancer {
         DbPatchDto.DbChangeDto slotNameResourceUpdate = DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE_RES)
                 .forTopic(RIMS)
-                .asReference(PlaceholderConstants.getPlaceHolderForRimNameResource(rimIndex))
-                .withValue(PlaceholderConstants.getPlaceHolderForRimName(rimIndex))
+                .asReference(PlaceholderConstants.getPlaceHolderForRimNameResource(rimRank))
+                .withValue(PlaceholderConstants.getPlaceHolderForRimName(rimRank))
                 .build();
 
         DbPatchDto.DbChangeDto slotFrontFileNameResourceUpdate = DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE_RES)
                 .forTopic(RIMS)
-                .asReference(PlaceholderConstants.getPlaceHolderForFrontRimFileNameResource(rimIndex))
-                .withValue(PlaceholderConstants.getPlaceHolderForFrontRimFileName(rimIndex))
+                .asReference(PlaceholderConstants.getPlaceHolderForFrontRimFileNameResource(rimRank))
+                .withValue(PlaceholderConstants.getPlaceHolderForFrontRimFileName(rimRank))
                 .build();
 
         DbPatchDto.DbChangeDto slotRearNameResourceUpdate = DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE_RES)
                 .forTopic(RIMS)
-                .asReference(PlaceholderConstants.getPlaceHolderForRearRimFileNameResource(rimIndex))
-                .withValue(PlaceholderConstants.getPlaceHolderForRearRimFileName(rimIndex))
+                .asReference(PlaceholderConstants.getPlaceHolderForRearRimFileNameResource(rimRank))
+                .withValue(PlaceholderConstants.getPlaceHolderForRearRimFileName(rimRank))
                 .build();
 
         return Stream.of(associationEntryUpdate, slotEntryUpdate, slotNameResourceUpdate, slotFrontFileNameResourceUpdate, slotRearNameResourceUpdate);
+    }
+
+    private void createPatchPropertiesForRimSetAtRank(VehicleSlot vehicleSlot, RimSlot rimSlot, int rank, PatchProperties patchProperties) {
+        String selectedRimReference = rimSlot.getRef();
+        String selectedResourceRimBrandReference = rimSlot.getParentDirectoryName().getRef();
+        String selectedFrontRimBank = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, rimSlot.getRank(), false);
+        String selectedResourceFrontRimBankName = rimSlot.getFrontRimInfo().getFileName().getRef();
+        String selectedRearRimBank = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, REAR_RIM, rimSlot.getRank(), false);
+        String selectedResourceRearRimBankName = rimSlot.getRearRimInfo().getFileName().getRef();
+
+        List<String> values = asList(selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);
+        if (values.contains(DisplayConstants.ITEM_UNAVAILABLE)) {
+            throw new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, vehicleSlot.getRef()));
+        }
+
+        patchProperties.setRimsSlotReferenceIfNotExists(selectedRimReference, rank);
+        patchProperties.setResourceRimsBrandIfNotExists(selectedResourceRimBrandReference, rank);
+        patchProperties.setFrontRimBankNameIfNotExists(selectedFrontRimBank, rank);
+        patchProperties.setResourceFrontRimBankIfNotExists(selectedResourceFrontRimBankName, rank);
+        patchProperties.setRearRimBankNameIfNotExists(selectedRearRimBank, rank);
+        patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, rank);
     }
 
     // For testing only
