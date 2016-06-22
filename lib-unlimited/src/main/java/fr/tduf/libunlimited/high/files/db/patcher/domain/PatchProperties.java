@@ -217,6 +217,14 @@ public class PatchProperties extends Properties {
         return retrieve(format(PLACEHOLDER_NAME_FMT_COLOR, exteriorSet));
     }
 
+    public Optional<String> getInteriorReference(int interiorSet) {
+        return retrieve(format(PLACEHOLDER_NAME_FMT_INTERIOR_REFERENCE, interiorSet));
+    }
+
+    public Optional<String> getInteriorMainColorId(int interiorSet) {
+        return retrieve(format(PLACEHOLDER_NAME_FMT_ID_INT_COLOR, SUFFIX_MAIN_COLOR, interiorSet));
+    }
+
     private void registerIfNotExists(String placeholderName, String value) {
         if (retrieve(placeholderName).isPresent()) {
             return;

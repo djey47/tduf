@@ -30,6 +30,7 @@ public class PlaceholderConstants {
     public static final String PLACEHOLDER_NAME_FMT_INTERIOR_ID_COLOR = "INTCOLORID.%s.%d";
     public static final String PLACEHOLDER_NAME_FMT_INTERIOR_MATERIAL = "INTMATERIALID.%d";
     public static final String PLACEHOLDER_NAME_FMT_ID_COLOR = "COLORID.%s.%d";
+    public static final String PLACEHOLDER_NAME_FMT_ID_INT_COLOR = "INTCOLORID.%s.%d";
     public static final String PLACEHOLDER_NAME_FMT_ID_CALIPERS_COLOR = "CALLIPERSID.%d";
     public static final String PLACEHOLDER_NAME_FMT_RESOURCE_COLOR = "RES_COLORNAME.%d";
     public static final String PLACEHOLDER_NAME_FMT_COLOR = "COLORNAME.%d";
