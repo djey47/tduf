@@ -14,7 +14,6 @@ import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderConstants;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -27,7 +26,6 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.rangeClosed;
 
@@ -177,7 +175,9 @@ public class PatchEnhancer {
         vehicleSlot.getPaintJobs()
                 .forEach(paintJob -> createPatchProperiesForPaintJobAtRank(paintJob, paintJobIndex.getAndIncrement(), patchProperties));
 
-        searchFirstInteriorPatternReference(vehicleSlot).ifPresent(ref -> patchProperties.setInteriorReferenceIfNotExists(ref, 1));
+        AtomicInteger interiorIndex = new AtomicInteger(1);
+        searchInteriorPatternReferences(vehicleSlot).stream()
+            .forEach(intRef -> createPatchPropertiesForInteriorAtRank(intRef, interiorIndex.getAndIncrement(), patchProperties));
     }
 
     private void createPatchProperiesForPaintJobAtRank(PaintJob paintJob, int rank, PatchProperties patchProperties) {
@@ -188,6 +188,14 @@ public class PatchEnhancer {
         String nameRef = paintJob.getName().getRef();
 
         patchProperties.setExteriorColorNameResourceIfNotExists(nameRef, rank);
+    }
+
+    private void createPatchPropertiesForInteriorAtRank(String intRef, int rank, PatchProperties patchProperties) {
+        if (!patchProperties.getInteriorMainColorId(rank).isPresent()) {
+            return;
+        }
+
+        patchProperties.setInteriorReferenceIfNotExists(intRef, rank);
     }
 
     private void createPatchPropertiesForRims(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
@@ -230,14 +238,13 @@ public class PatchEnhancer {
         patchProperties.setDealerSlotIfNotExists(userSelection.getDealerSlotRank());
     }
 
-    private Optional<String> searchFirstInteriorPatternReference(VehicleSlot vehicleSlot) {
+    private List<String> searchInteriorPatternReferences(VehicleSlot vehicleSlot) {
         List<PaintJob> paintJobs = vehicleSlot.getPaintJobs();
         if (paintJobs.isEmpty()) {
-            return empty();
+            return new ArrayList<>(0);
         }
 
-        return paintJobs.get(0).getInteriorPatternRefs().stream()
-                .findFirst();
+        return paintJobs.get(0).getInteriorPatternRefs();
     }
 
     private void enhancePatchObjectWithExteriors(VehicleSlot vehicleSlot) {

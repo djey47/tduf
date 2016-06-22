@@ -106,6 +106,7 @@ public class PatchEnhancerTest {
         assertThat(patchProperties.getRearRimBankFileNameResource(1)).isEmpty();
         assertThat(patchProperties.getExteriorColorNameResource(1)).isEmpty();
         assertThat(patchProperties.getExteriorColorNameResource(2)).isEmpty();
+        assertThat(patchProperties.getInteriorReference(1)).isEmpty();
     }
 
     @Test
@@ -125,6 +126,7 @@ public class PatchEnhancerTest {
         final String rimBrandReference = "664857";
         final String colorName1 = "Red";
         final String colorName2 = "Black";
+        String interiorMainColorId = "53364643";
         patchProperties.clear();
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
         patchProperties.setCarIdentifierIfNotExists(carIdentifier);
@@ -138,6 +140,7 @@ public class PatchEnhancerTest {
         patchProperties.setResourceRearRimBankIfNotExists(rearRimResource, 1);
         patchProperties.setExteriorColorNameIfNotExists(colorName1, 1);
         patchProperties.setExteriorColorNameIfNotExists(colorName2, 2);
+        patchProperties.setInteriorMainColorIdIfNotExists(interiorMainColorId, 1);
         final PatchEnhancer patchEnhancer = createDefaultEnhancer();
         patchEnhancer.overrideVehicleSlotsHelper(vehicleSlotsHelperMock);
 
@@ -161,6 +164,7 @@ public class PatchEnhancerTest {
         assertThat(patchProperties.getRearRimBankFileNameResource(1)).contains(rearRimResource);
         assertThat(patchProperties.getExteriorColorNameResource(1)).contains(RES_COLORNAME_1);
         assertThat(patchProperties.getExteriorColorNameResource(2)).contains(RES_COLORNAME_2);
+        assertThat(patchProperties.getInteriorReference(1)).contains(INTREF_1);
     }
 
     @Test
