@@ -192,6 +192,7 @@ public class DatabaseParser {
         checkContentItemsCount(topic, itemCount, entries);
 
         return DbDataDto.builder()
+                .forTopic(topic)
                 .addEntries(entries)
                 .supportingReferenceIndex(DatabaseStructureQueryHelper.isUidSupportForTopic(topic))
                 .build();

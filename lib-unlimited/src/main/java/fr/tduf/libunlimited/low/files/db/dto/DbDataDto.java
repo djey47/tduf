@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.low.files.db.dto;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import org.codehaus.jackson.annotate.*;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -29,6 +30,9 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class DbDataDto implements Serializable {
     private static final String THIS_CLASS_NAME = DbDataDto.class.getSimpleName();
+
+    @JsonProperty("topic")
+    private DbDto.Topic topic;
 
     @JsonProperty("entries")
     private List<Entry> entries;
@@ -484,8 +488,10 @@ public class DbDataDto implements Serializable {
     private void setEntries(Collection<Entry> entries) {
         this.entries = new ArrayList<>(entries);
         entriesByInternalIdentifier = createEntryIndex(entries);
-        // FIXME see to determine current topic for REF support
-        entriesByReference = createEntryIndexByReference(entries);
+
+        if (topic == null || DatabaseStructureQueryHelper.isUidSupportForTopic(topic)) {
+            entriesByReference = createEntryIndexByReference(entries);
+        }
 
         entries.forEach(Entry::computeValuesHash);
     }
@@ -533,6 +539,7 @@ public class DbDataDto implements Serializable {
     public static class DbDataDtoBuilder {
         private List<Entry> entries = new ArrayList<>();
         private boolean refIndexSupport = false;
+        private DbDto.Topic topic;
 
         public DbDataDtoBuilder addEntry(Entry... entry) {
             return addEntries(asList(entry));
@@ -548,14 +555,20 @@ public class DbDataDto implements Serializable {
             return this;
         }
 
+        public DbDataDtoBuilder forTopic(DbDto.Topic topic) {
+            this.topic = topic;
+            return this;
+        }
+
         public DbDataDto build() {
             DbDataDto dbDataDto = new DbDataDto();
 
-            dbDataDto.entries = this.entries;
-            dbDataDto.entriesByInternalIdentifier = createEntryIndex(this.entries);
+            dbDataDto.entries = entries;
+            dbDataDto.entriesByInternalIdentifier = createEntryIndex(entries);
+            dbDataDto.topic = topic;
 
             if (refIndexSupport) {
-                dbDataDto.entriesByReference = createEntryIndexByReference(this.entries);
+                dbDataDto.entriesByReference = createEntryIndexByReference(entries);
             }
 
             return dbDataDto;
