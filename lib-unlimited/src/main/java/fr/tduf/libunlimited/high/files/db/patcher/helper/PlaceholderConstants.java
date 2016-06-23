@@ -43,6 +43,10 @@ public class PlaceholderConstants {
 
     private PlaceholderConstants() {}
 
+    public static String getPlaceHolderForVehicleSlotReference() {
+        return toFormattedPlaceHolder(PLACEHOLDER_NAME_SLOT_REFERENCE);
+    }
+
     public static String getPlaceHolderForExteriorMainColor(int exteriorIndex) {
         return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_ID_COLOR, SUFFIX_MAIN_COLOR, exteriorIndex));
     }
