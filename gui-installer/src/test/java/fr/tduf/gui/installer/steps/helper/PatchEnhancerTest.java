@@ -52,13 +52,14 @@ public class PatchEnhancerTest {
     private static final String COLORNAME_2 = "Blau";
     private static final String INTREF_1 = "5000000001";
     private static final String INTREF_2 = "5000000002";
+    private static final String INT_NAME_ID = "53365512";
+    private static final String INT_MANUFACTURER_ID = "62938337";
 
     private DatabaseContext databaseContext;
     private PatchProperties patchProperties;
 
     @Mock
     private VehicleSlotsHelper vehicleSlotsHelperMock;
-
 
     @Before
     public void setUp() throws IOException, URISyntaxException {
@@ -220,8 +221,6 @@ public class PatchEnhancerTest {
     @Test
     public void enhancePatchObjectWithPaintJobs_withPaintJobProperties_shouldAddCarColors_andInterior_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
-        String intManufacturerId = "62938337";
-        String intNameId = "53365512";
         String customColorName1 = "Red";
         String customColorName2 = "Black";
         String intMainColorId1 = "6666";
@@ -315,8 +314,8 @@ public class PatchEnhancerTest {
                 null,
                 asList(
                         "{INTREF.1}",
-                        intManufacturerId,
-                        intNameId,
+                        INT_MANUFACTURER_ID,
+                        INT_NAME_ID,
                         "{INTCOLORID.M.1}",
                         "{INTCOLORID.S.1}",
                         "{INTMATERIALID.1}",
@@ -324,8 +323,8 @@ public class PatchEnhancerTest {
                 ),
                 asList(
                         "{INTREF.2}",
-                        intManufacturerId,
-                        intNameId,
+                        INT_MANUFACTURER_ID,
+                        INT_NAME_ID,
                         "{INTCOLORID.M.2}",
                         "{INTCOLORID.S.2}",
                         "{INTMATERIALID.2}",
@@ -379,11 +378,11 @@ public class PatchEnhancerTest {
         assertThat(patchObject.getChanges()).extracting("topic").containsOnly(CAR_RIMS, RIMS);
         assertThat(patchObject.getChanges()).extracting("ref").containsOnly(
                 null,
-                rimId1,
+                "{RIMREF.1}",
                 "{RES_RIMNAME.1}",
                 "{RES_BANKNAME.FR.1}",
                 "{RES_BANKNAME.RR.1}",
-                rimId2,
+                "{RIMREF.2}",
                 "{RES_RIMNAME.2}",
                 "{RES_BANKNAME.FR.2}",
                 "{RES_BANKNAME.RR.2}"
@@ -391,7 +390,7 @@ public class PatchEnhancerTest {
         assertThat(patchObject.getChanges()).extracting("values").containsOnly(
                 asList(SLOT_REFERENCE, rimId1),
                 asList(
-                        rimId1,
+                        "{RIMREF.1}",
                         "{RIMBRANDREF.1}",
                         "54276512",
                         "{RES_RIMNAME.1}",
@@ -410,7 +409,7 @@ public class PatchEnhancerTest {
                 null,
                 asList(SLOT_REFERENCE, rimId2),
                 asList(
-                        rimId2,
+                        "{RIMREF.2}",
                         "{RIMBRANDREF.2}",
                         "54276512",
                         "{RES_RIMNAME.2}",

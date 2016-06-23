@@ -294,9 +294,9 @@ public class PatchEnhancer {
         DbPatchDto.DbChangeDto slotEntryUpdate = DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE)
                 .forTopic(RIMS)
-                .asReference(rimSlot.getRef())
+                .asReference(PlaceholderConstants.getPlaceHolderForRimSlotReference(rimRank))
                 .withEntryValues( asList(
-                        rimSlot.getRef(),
+                        PlaceholderConstants.getPlaceHolderForRimSlotReference(rimRank),
                         PlaceholderConstants.getPlaceHolderForRimBrand(rimRank),
                         DatabaseConstants.RESOURCE_REF_NO_RIM_NAME,
                         PlaceholderConstants.getPlaceHolderForRimNameResource(rimRank),
