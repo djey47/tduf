@@ -161,7 +161,7 @@ public class DbResourceDto {
         public Optional<Item> getItemForLocale(Locale locale) {
             return items.stream()
 
-                    .filter((item) -> item.locale == locale)
+                    .filter(item -> item.locale == locale)
 
                     .findAny();
         }
@@ -180,7 +180,7 @@ public class DbResourceDto {
          */
         public Optional<String> getValueForLocale(fr.tduf.libunlimited.common.game.domain.Locale locale) {
             return getItemForLocale(locale)
-                    .map((item) -> item.value);
+                    .map(item -> item.value);
         }
 
         /**
@@ -189,7 +189,7 @@ public class DbResourceDto {
          */
         public Entry setValue(String value) {
             fr.tduf.libunlimited.common.game.domain.Locale.valuesAsStream()
-                    .forEach((locale) -> setValueForLocale(value, locale));
+                    .forEach(locale -> setValueForLocale(value, locale));
 
             return this;
         }
@@ -222,7 +222,7 @@ public class DbResourceDto {
          * @return current entry
          */
         public Entry removeValueForLocale(fr.tduf.libunlimited.common.game.domain.Locale locale) {
-            items.removeIf((item) -> item.locale == locale);
+            items.removeIf(item -> item.locale == locale);
 
             return this;
         }
@@ -236,7 +236,7 @@ public class DbResourceDto {
         public Set<Locale> getPresentLocales() {
             return items.stream()
 
-                    .map((item) -> item.locale)
+                    .map(item -> item.locale)
 
                     .collect(toSet());
         }
@@ -298,6 +298,7 @@ public class DbResourceDto {
     @JsonTypeName("dbResourceEnhancedEntryItem")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public static class Item implements Serializable {
+        @JsonProperty("locale")
         private Locale locale;
 
         @JsonProperty("value")
