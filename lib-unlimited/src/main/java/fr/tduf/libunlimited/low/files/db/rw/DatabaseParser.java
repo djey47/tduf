@@ -20,6 +20,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.BIT
 import static java.lang.Integer.valueOf;
 import static java.util.Objects.requireNonNull;
 import static java.util.regex.Pattern.compile;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Helper class to extract database structure and contents from clear db file.
@@ -90,43 +91,51 @@ public class DatabaseParser {
     }
 
     private DbResourceDto parseAllResourcesEnhancedFromTopic(DbDto.Topic topic) {
-        Map<String, DbResourceDto.Entry> readEntries = new LinkedHashMap<>();
+        Map<String, Set<DbResourceDto.Item>> readItems = new LinkedHashMap<>();
         AtomicInteger categoryCount = new AtomicInteger();
         AtomicReference<String> version = new AtomicReference<>();
 
         Locale.valuesAsStream()
                 .filter(resources::containsKey)
                 .filter(locale -> !resources.get(locale).isEmpty())
-                .forEach(locale -> parseResourcesEnhancedForLocale(locale, readEntries, categoryCount, version));
+                .forEach(locale -> parseResourcesEnhancedForLocale(locale, readItems, categoryCount, version));
 
-        if (readEntries.isEmpty()) {
+        if (readItems.isEmpty()) {
             return null;
         }
 
-        checkItemCountBetweenResourcesEnhanced(topic, readEntries.values());
+        final List<DbResourceDto.Entry> readEntries = readItems.entrySet().stream()
+                .map(e -> DbResourceDto.Entry.builder()
+                        .forReference(e.getKey())
+                        .withItems(e.getValue())
+                        .build())
+                .collect(toList());
+
+        checkItemCountBetweenResourcesEnhanced(topic, readEntries);
 
         return  DbResourceDto.builder()
                 .atVersion(version.get())
                 .withCategoryCount(categoryCount.get())
-                .containingEntries(readEntries.values())
+                .containingEntries(readEntries)
                 .build();
     }
 
-    private void parseResourcesEnhancedForLocale(Locale locale, Map<String, DbResourceDto.Entry> readEntriesByRef, AtomicInteger categoryCount, AtomicReference<String> version) {
-        requireNonNull(readEntriesByRef, "A map of entries (even empty) is required.");
+    private void parseResourcesEnhancedForLocale(Locale locale, Map<String, Set<DbResourceDto.Item>> readItemsByRef, AtomicInteger categoryCount, AtomicReference<String> version) {
+        requireNonNull(readItemsByRef, "A map of resource items (even empty) is required.");
 
         for (String line : resources.get(locale)) {
             Matcher matcher = RES_ENTRY_PATTERN.matcher(line);
             if (matcher.matches()) {
                 final String ref = matcher.group(3);
-                DbResourceDto.Entry entry = readEntriesByRef.get(ref);
-                if (entry == null) {
-                    entry = DbResourceDto.Entry.builder()
-                            .forReference(ref)
-                            .build();
-                    readEntriesByRef.put(ref, entry);
+                Set<DbResourceDto.Item> items = readItemsByRef.get(ref);
+                if (items == null) {
+                    items = new LinkedHashSet<>(8);
+                    readItemsByRef.put(ref, items);
                 }
-                entry.setValueForLocale(matcher.group(1), locale);
+                items.add(DbResourceDto.Item.builder()
+                        .withLocale(locale)
+                        .withValue(matcher.group(1))
+                        .build());
                 continue;
             }
 
