@@ -180,7 +180,7 @@ public class PatchEnhancer {
         // TODO handle pj at index 0??
         AtomicInteger exteriorIndex = new AtomicInteger(1);
         List<DbPatchDto.DbChangeDto> changeObjectsForPaintJobs = vehicleSlot.getPaintJobs().stream()
-                .flatMap(paintJob -> createChangeObjectsAndPropertiesForExterior(vehicleSlot, paintJob, exteriorIndex.getAndIncrement()))
+                .flatMap(paintJob -> createChangeObjectsAndPropertiesForExterior(paintJob, exteriorIndex.getAndIncrement()))
                 .collect(toList());
 
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForPaintJobs);
@@ -197,7 +197,7 @@ public class PatchEnhancer {
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForInteriors);
     }
 
-    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsAndPropertiesForExterior(VehicleSlot vehicleSlot, PaintJob paintJob, int exteriorRank) {
+    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsAndPropertiesForExterior(PaintJob paintJob, int exteriorRank) {
         final PatchProperties patchProperties = databaseContext.getPatchProperties();
         if (!patchProperties.getExteriorColorName(exteriorRank).isPresent()) {
             return Stream.empty();
@@ -214,28 +214,28 @@ public class PatchEnhancer {
                 .withType(UPDATE)
                 .forTopic(CAR_COLORS)
                 .withEntryValues(asList(
-                        vehicleSlot.getRef(),
+                        PlaceholderConstants.getPlaceHolderForVehicleSlotReference(),
                         PlaceholderConstants.getPlaceHolderForExteriorMainColor(exteriorRank),
                         PlaceholderConstants.getPlaceHolderForExteriorNameResource(exteriorRank),
                         PlaceholderConstants.getPlaceHolderForExteriorSecondaryColor(exteriorRank),
                         PlaceholderConstants.getPlaceHolderForExteriorCalipersColor(exteriorRank),
                         "0",
                         "0",
-                        interiorRefs.get(0),
-                        interiorRefs.get(1),
-                        interiorRefs.get(2),
-                        interiorRefs.get(3),
-                        interiorRefs.get(4),
-                        interiorRefs.get(5),
-                        interiorRefs.get(6),
-                        interiorRefs.get(7),
-                        interiorRefs.get(8),
-                        interiorRefs.get(9),
-                        interiorRefs.get(10),
-                        interiorRefs.get(11),
-                        interiorRefs.get(12),
-                        interiorRefs.get(13),
-                        interiorRefs.get(14)
+                        getEffectiveInteriorReferenceAtRank(interiorRefs, 1),
+                        getEffectiveInteriorReferenceAtRank(interiorRefs, 2),
+                        getEffectiveInteriorReferenceAtRank(interiorRefs, 3),
+                        getEffectiveInteriorReferenceAtRank(interiorRefs, 4),
+                        getEffectiveInteriorReferenceAtRank(interiorRefs, 5),
+                        getEffectiveInteriorReferenceAtRank(interiorRefs, 6),
+                        getEffectiveInteriorReferenceAtRank(interiorRefs, 7),
+                        getEffectiveInteriorReferenceAtRank(interiorRefs, 8),
+                        getEffectiveInteriorReferenceAtRank(interiorRefs, 9),
+                        getEffectiveInteriorReferenceAtRank(interiorRefs, 10),
+                        getEffectiveInteriorReferenceAtRank(interiorRefs, 11),
+                        getEffectiveInteriorReferenceAtRank(interiorRefs, 12),
+                        getEffectiveInteriorReferenceAtRank(interiorRefs, 13),
+                        getEffectiveInteriorReferenceAtRank(interiorRefs, 14),
+                        getEffectiveInteriorReferenceAtRank(interiorRefs, 15)
                 ))
                 .build();
 
@@ -368,6 +368,17 @@ public class PatchEnhancer {
         patchProperties.setResourceFrontRimBankIfNotExists(selectedResourceFrontRimBankName, rank);
         patchProperties.setRearRimBankNameIfNotExists(selectedRearRimBank, rank);
         patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, rank);
+    }
+
+    static String getEffectiveInteriorReferenceAtRank(List<String> interiorRefs, int intRank) {
+        if (intRank > interiorRefs.size()) {
+            return DatabaseConstants.REF_NO_INTERIOR;
+        }
+
+        final String interiorRefFromSlot = interiorRefs.get(intRank - 1);
+
+        return DatabaseConstants.REF_NO_INTERIOR.equals(interiorRefFromSlot) ?
+                DatabaseConstants.REF_NO_INTERIOR : PlaceholderConstants.getPlaceHolderForInteriorReference(intRank);
     }
 
     // For testing only

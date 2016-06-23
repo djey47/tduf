@@ -17,6 +17,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
@@ -24,6 +26,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.of;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -261,15 +264,15 @@ public class PatchEnhancerTest {
                 "{INTREF.2}");
         assertThat(patchObject.getChanges()).extracting("values").containsOnly(
                 asList(
-                        SLOT_REFERENCE,
+                        "{SLOTREF}",
                         "{COLORID.M.1}",
                         "{RES_COLORNAME.1}",
                         "{COLORID.S.1}",
                         "{CALLIPERSID.1}",
                         "0",
                         "0",
-                        INTREF_1,
-                        INTREF_2,
+                        "{INTREF.1}",
+                        "{INTREF.2}",
                         "11319636",
                         "11319636",
                         "11319636",
@@ -286,15 +289,15 @@ public class PatchEnhancerTest {
                 ),
                 null,
                 asList(
-                        SLOT_REFERENCE,
+                        "{SLOTREF}",
                         "{COLORID.M.2}",
                         "{RES_COLORNAME.2}",
                         "{COLORID.S.2}",
                         "{CALLIPERSID.2}",
                         "0",
                         "0",
-                        INTREF_1,
-                        INTREF_2,
+                        "{INTREF.1}",
+                        "{INTREF.2}",
                         "11319636",
                         "11319636",
                         "11319636",
@@ -466,6 +469,41 @@ public class PatchEnhancerTest {
         assertThat(patchObject.getChanges()).extracting("ref").containsOnly(SLOT_REFERENCE);
         assertThat(patchObject.getChanges()).extracting("partialValues").containsOnly(
                 singletonList(DbFieldValueDto.fromCouple(100, "100")));
+    }
+
+    @Test
+    public void getEffectiveInteriorReferenceAtRank() {
+        // GIVEN
+        List<String> interiorRefs = asList(
+                "15623",
+                "62315",
+                "11319636",
+                "11319636"
+        );
+
+        // WHEN
+        final List<String> actualReferences = IntStream.rangeClosed(1, 15)
+                .mapToObj(rank -> PatchEnhancer.getEffectiveInteriorReferenceAtRank(interiorRefs, rank))
+                .collect(toList());
+
+        // THEN
+        assertThat(actualReferences).containsExactly(
+                "{INTREF.1}",
+                "{INTREF.2}",
+                "11319636",
+                "11319636",
+                "11319636",
+                "11319636",
+                "11319636",
+                "11319636",
+                "11319636",
+                "11319636",
+                "11319636",
+                "11319636",
+                "11319636",
+                "11319636",
+                "11319636"
+        );
     }
 
     private PatchEnhancer createDefaultEnhancer() {
