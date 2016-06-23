@@ -83,6 +83,10 @@ public class PlaceholderConstants {
         return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_INTERIOR_MATERIAL, interiorIndex));
     }
 
+    public static String getPlaceHolderForRimSlotReference(int rimIndex) {
+        return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_RIMS_REFERENCE, rimIndex));
+    }
+
     public static String getPlaceHolderForRimBrand(int rimIndex) {
         return toFormattedPlaceHolder(format(PLACEHOLDER_NAME_FMT_RIM_BRAND_REFERENCE, rimIndex));
     }
