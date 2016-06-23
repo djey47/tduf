@@ -66,11 +66,10 @@ public class PatchEnhancer {
 
         enhancePatchObjectWithInstallFlag(vehicleSlotReference);
 
-        // TODO add patch properties in parameters
         databaseContext.getUserSelection().getVehicleSlot()
                 .ifPresent(vehicleSlot -> {
-                    enhancePatchObjectWithPaintJobs(vehicleSlot);
-                    enhancePatchObjectWithRims(vehicleSlot);
+                    enhancePatchObjectWithPaintJobs(vehicleSlot, patchProperties);
+                    enhancePatchObjectWithRims(vehicleSlot, patchProperties);
                 });
     }
 
@@ -89,24 +88,24 @@ public class PatchEnhancer {
         }
     }
 
-    void enhancePatchObjectWithPaintJobs(VehicleSlot vehicleSlot) {
+    void enhancePatchObjectWithPaintJobs(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
         Log.info(THIS_CLASS_NAME, "->Adding paint jobs properties and changes to initial patch");
 
-        enhancePatchObjectWithExteriors(vehicleSlot);
+        enhancePatchObjectWithExteriors(vehicleSlot, patchProperties);
 
         if (!vehicleSlot.getPaintJobs().isEmpty()) {
-            enhancePatchObjectWithInteriors(vehicleSlot.getPaintJobs().get(0).getInteriorPatternRefs());
+            enhancePatchObjectWithInteriors(vehicleSlot.getPaintJobs().get(0).getInteriorPatternRefs(), patchProperties);
         }
     }
 
     // TODO see if bikes support more than 1 rim set
-    void enhancePatchObjectWithRims(VehicleSlot vehicleSlot) {
+    void enhancePatchObjectWithRims(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
         Log.info(THIS_CLASS_NAME, "->Adding rim properties and changes to initial patch");
 
         // TODO handle rims at index 0??
         AtomicInteger rimIndex = new AtomicInteger(1);
         List<DbPatchDto.DbChangeDto> changeObjectsForRims = vehicleSlot.getAllRimsSorted().stream()
-                .flatMap(rimSlot -> createChangeObjectsAndPropertiesForRims(vehicleSlot, rimSlot, rimIndex.getAndIncrement()))
+                .flatMap(rimSlot -> createChangeObjectsAndPropertiesForRims(vehicleSlot, rimSlot, rimIndex.getAndIncrement(), patchProperties))
                 .collect(toList());
 
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForRims);
@@ -176,29 +175,28 @@ public class PatchEnhancer {
         patchProperties.setDealerSlotIfNotExists(userSelection.getDealerSlotRank());
     }
 
-    private void enhancePatchObjectWithExteriors(VehicleSlot vehicleSlot) {
+    private void enhancePatchObjectWithExteriors(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
         // TODO handle pj at index 0??
         AtomicInteger exteriorIndex = new AtomicInteger(1);
         List<DbPatchDto.DbChangeDto> changeObjectsForPaintJobs = vehicleSlot.getPaintJobs().stream()
-                .flatMap(paintJob -> createChangeObjectsAndPropertiesForExterior(paintJob, exteriorIndex.getAndIncrement()))
+                .flatMap(paintJob -> createChangeObjectsAndPropertiesForExterior(paintJob, exteriorIndex.getAndIncrement(), patchProperties))
                 .collect(toList());
 
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForPaintJobs);
     }
 
-    private void enhancePatchObjectWithInteriors(List<String> interiorPatternRefs) {
+    private void enhancePatchObjectWithInteriors(List<String> interiorPatternRefs, PatchProperties patchProperties) {
         // TODO handle int at index 0??
         AtomicInteger interiorIndex = new AtomicInteger(1);
         List<DbPatchDto.DbChangeDto> changeObjectsForInteriors = interiorPatternRefs.stream()
                 .filter(intRef -> !DatabaseConstants.REF_NO_INTERIOR.equals(intRef))
-                .flatMap(intRef -> createChangeObjectAndPropertiesForInterior(intRef, interiorIndex.getAndIncrement()))
+                .flatMap(intRef -> createChangeObjectAndPropertiesForInterior(intRef, interiorIndex.getAndIncrement(), patchProperties))
                 .collect(toList());
 
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForInteriors);
     }
 
-    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsAndPropertiesForExterior(PaintJob paintJob, int exteriorRank) {
-        final PatchProperties patchProperties = databaseContext.getPatchProperties();
+    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsAndPropertiesForExterior(PaintJob paintJob, int exteriorRank, PatchProperties patchProperties) {
         if (!patchProperties.getExteriorColorName(exteriorRank).isPresent()) {
             return Stream.empty();
         }
@@ -249,8 +247,7 @@ public class PatchEnhancer {
         return Stream.of(entryUpdateChange, resourceUpdateChange);
     }
 
-    private Stream<DbPatchDto.DbChangeDto> createChangeObjectAndPropertiesForInterior(String intRef, int interiorRank) {
-        final PatchProperties patchProperties = databaseContext.getPatchProperties();
+    private Stream<DbPatchDto.DbChangeDto> createChangeObjectAndPropertiesForInterior(String intRef, int interiorRank, PatchProperties patchProperties) {
         if (!patchProperties.getInteriorMainColorId(interiorRank).isPresent()) {
             return Stream.empty();
         }
@@ -273,8 +270,7 @@ public class PatchEnhancer {
                 .build());
     }
 
-    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsAndPropertiesForRims(VehicleSlot vehicleSlot, RimSlot rimSlot, int rimRank) {
-        final PatchProperties patchProperties = databaseContext.getPatchProperties();
+    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsAndPropertiesForRims(VehicleSlot vehicleSlot, RimSlot rimSlot, int rimRank, PatchProperties patchProperties) {
         if (!patchProperties.getRimName(rimRank).isPresent()) {
             return Stream.empty();
         }

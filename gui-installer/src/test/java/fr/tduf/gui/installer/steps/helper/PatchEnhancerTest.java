@@ -33,8 +33,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PatchEnhancerTest {
 
-    // TODO change objects should contain placeholders whenever possible
-
     private static final String SLOT_REFERENCE = "30000000";
     private static final String CARID = "3000";
     private static final String BANKNAME = "TDUCP_3000";
@@ -238,7 +236,7 @@ public class PatchEnhancerTest {
 
 
         // WHEN
-        createDefaultEnhancer().enhancePatchObjectWithPaintJobs(vehicleSlot);
+        createDefaultEnhancer().enhancePatchObjectWithPaintJobs(vehicleSlot, patchProperties);
 
 
         // THEN
@@ -355,7 +353,7 @@ public class PatchEnhancerTest {
 
 
         // WHEN
-        createDefaultEnhancer().enhancePatchObjectWithRims(vehicleSlot);
+        createDefaultEnhancer().enhancePatchObjectWithRims(vehicleSlot, patchProperties);
 
 
         // THEN
