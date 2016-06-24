@@ -4,9 +4,11 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceItemDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.json.JSONException;
@@ -47,9 +49,9 @@ public class DbMapperTest {
                 .withResource(DbResourceDto.builder()
                         .atVersion("1,2")
                         .withCategoryCount(6)
-                        .containingEntries(singletonList(DbResourceDto.Entry.builder()
+                        .containingEntries(singletonList(ResourceEntryDto.builder()
                                 .forReference("REF")
-                                .withItems(singletonList(DbResourceDto.Item.builder()
+                                .withItems(singletonList(ResourceItemDto.builder()
                                         .withLocale(Locale.FRANCE)
                                         .withValue("VAL")
                                         .build()))

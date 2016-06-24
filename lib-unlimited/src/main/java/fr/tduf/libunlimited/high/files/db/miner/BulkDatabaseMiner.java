@@ -4,10 +4,12 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.*;
@@ -272,7 +274,7 @@ public class BulkDatabaseMiner {
 
                 .flatMap(entry -> entry.getItemForLocale(locale))
 
-                .map(DbResourceDto.Item::getValue);
+                .map(ResourceItemDto::getValue);
     }
 
     /**
@@ -304,7 +306,7 @@ public class BulkDatabaseMiner {
     /**
      * @return entry having given reference for specified topic, empty otherwise
      */
-    public Optional<DbResourceDto.Entry> getResourceEntryFromTopicAndReference(DbDto.Topic topic, String reference) {
+    public Optional<ResourceEntryDto> getResourceEntryFromTopicAndReference(DbDto.Topic topic, String reference) {
         return getResourceEnhancedFromTopic(topic)
 
                 .flatMap(resource -> resource.getEntryByReference(reference));

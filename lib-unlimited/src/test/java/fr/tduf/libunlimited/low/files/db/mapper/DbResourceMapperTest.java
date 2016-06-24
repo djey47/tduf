@@ -2,7 +2,9 @@ package fr.tduf.libunlimited.low.files.db.mapper;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceItemDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.json.JSONException;
@@ -32,27 +34,27 @@ public class DbResourceMapperTest {
     @Test
     public void serialize_shouldWriteProperJson() throws IOException, JSONException, URISyntaxException {
         //GIVEN
-        DbResourceDto.Item item1 = DbResourceDto.Item.builder()
+        ResourceItemDto item1 = ResourceItemDto.builder()
                 .withLocale(FRANCE)
                 .withValue("VAL1_FR")
                 .build();
-        DbResourceDto.Item item2 = DbResourceDto.Item.builder()
+        ResourceItemDto item2 = ResourceItemDto.builder()
                 .withLocale(ITALY)
                 .withValue("VAL1_IT")
                 .build();
-        DbResourceDto.Entry entry1 = DbResourceDto.Entry.builder()
+        ResourceEntryDto entry1 = ResourceEntryDto.builder()
                 .forReference("53410835")
                 .withItems(asList(item1, item2))
                 .build();
-        DbResourceDto.Item item3 = DbResourceDto.Item.builder()
+        ResourceItemDto item3 = ResourceItemDto.builder()
                 .withLocale(FRANCE)
                 .withValue("VAL2_FR")
                 .build();
-        DbResourceDto.Item item4 = DbResourceDto.Item.builder()
+        ResourceItemDto item4 = ResourceItemDto.builder()
                 .withLocale(ITALY)
                 .withValue("VAL2_IT")
                 .build();
-        DbResourceDto.Entry entry2 = DbResourceDto.Entry.builder()
+        ResourceEntryDto entry2 = ResourceEntryDto.builder()
                 .forReference("54410835")
                 .withItems(asList(item3, item4))
                 .build();

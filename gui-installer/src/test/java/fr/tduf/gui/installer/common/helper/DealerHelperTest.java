@@ -5,10 +5,11 @@ import fr.tduf.gui.installer.domain.Resource;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,9 +50,9 @@ public class DealerHelperTest {
         final String fileNameResourceReference = "1111";
         final String fileNameResourceValue = "ECD_B028";
 
-        DbResourceDto.Entry dealerNameResourceEntry = DbResourceDto.Entry.builder().forReference(nameResourceReference).build();
+        ResourceEntryDto dealerNameResourceEntry = ResourceEntryDto.builder().forReference(nameResourceReference).build();
         dealerNameResourceEntry.setValue(nameResourceValue);
-        DbResourceDto.Entry dealerFileNameResourceEntry = DbResourceDto.Entry.builder().forReference(fileNameResourceReference).build();
+        ResourceEntryDto dealerFileNameResourceEntry = ResourceEntryDto.builder().forReference(fileNameResourceReference).build();
         dealerFileNameResourceEntry.setValue(fileNameResourceValue);
         DbDto carShopsTopicObject = DbDto.builder()
                 .withData(DbDataDto.builder()
@@ -103,7 +104,7 @@ public class DealerHelperTest {
         final String nameResourceReference = "0000";
         final String nameResourceValue = "DEALER";
 
-        DbResourceDto.Entry dealerNameResourceEntry = DbResourceDto.Entry.builder().forReference(nameResourceReference).build();
+        ResourceEntryDto dealerNameResourceEntry = ResourceEntryDto.builder().forReference(nameResourceReference).build();
         dealerNameResourceEntry.setValue(nameResourceValue);
         DbDto carShopsTopicObject = DbDto.builder()
                 .withData(DbDataDto.builder()

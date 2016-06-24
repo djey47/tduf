@@ -5,12 +5,14 @@ import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.SwitchValueDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceItemDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Before;
@@ -269,27 +271,27 @@ public class DatabaseParserTest {
         assertThat(actualDbResource.getCategoryCount()).isEqualTo(6);
         assertThat(actualDbResource.getVersion()).isEqualTo("1,2");
 
-        final Collection<DbResourceDto.Entry> actualEntries = actualDbResource.getEntries();
+        final Collection<ResourceEntryDto> actualEntries = actualDbResource.getEntries();
         assertThat(actualEntries).hasSize(2);
         assertThat(actualEntries).extracting("reference").containsOnly("53410835", "70410835");
-        Set<DbResourceDto.Item> item1 = new HashSet<>(asList(
-                DbResourceDto.Item.builder().withLocale(FRANCE).withValue("??").build(),
-                DbResourceDto.Item.builder().withLocale(GERMANY).withValue("??").build(),
-                DbResourceDto.Item.builder().withLocale(UNITED_STATES).withValue("??").build(),
-                DbResourceDto.Item.builder().withLocale(KOREA).withValue("??").build(),
-                DbResourceDto.Item.builder().withLocale(CHINA).withValue("??").build(),
-                DbResourceDto.Item.builder().withLocale(JAPAN).withValue("??").build(),
-                DbResourceDto.Item.builder().withLocale(SPAIN).withValue("??").build(),
-                DbResourceDto.Item.builder().withLocale(ITALY).withValue("??").build()));
-        Set<DbResourceDto.Item> item2 = new HashSet<>(asList(
-                DbResourceDto.Item.builder().withLocale(FRANCE).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
-                DbResourceDto.Item.builder().withLocale(GERMANY).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
-                DbResourceDto.Item.builder().withLocale(UNITED_STATES).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
-                DbResourceDto.Item.builder().withLocale(KOREA).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
-                DbResourceDto.Item.builder().withLocale(CHINA).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
-                DbResourceDto.Item.builder().withLocale(JAPAN).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
-                DbResourceDto.Item.builder().withLocale(SPAIN).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
-                DbResourceDto.Item.builder().withLocale(ITALY).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build()));
+        Set<ResourceItemDto> item1 = new HashSet<>(asList(
+                ResourceItemDto.builder().withLocale(FRANCE).withValue("??").build(),
+                ResourceItemDto.builder().withLocale(GERMANY).withValue("??").build(),
+                ResourceItemDto.builder().withLocale(UNITED_STATES).withValue("??").build(),
+                ResourceItemDto.builder().withLocale(KOREA).withValue("??").build(),
+                ResourceItemDto.builder().withLocale(CHINA).withValue("??").build(),
+                ResourceItemDto.builder().withLocale(JAPAN).withValue("??").build(),
+                ResourceItemDto.builder().withLocale(SPAIN).withValue("??").build(),
+                ResourceItemDto.builder().withLocale(ITALY).withValue("??").build()));
+        Set<ResourceItemDto> item2 = new HashSet<>(asList(
+                ResourceItemDto.builder().withLocale(FRANCE).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
+                ResourceItemDto.builder().withLocale(GERMANY).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
+                ResourceItemDto.builder().withLocale(UNITED_STATES).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
+                ResourceItemDto.builder().withLocale(KOREA).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
+                ResourceItemDto.builder().withLocale(CHINA).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
+                ResourceItemDto.builder().withLocale(JAPAN).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
+                ResourceItemDto.builder().withLocale(SPAIN).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
+                ResourceItemDto.builder().withLocale(ITALY).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build()));
         assertThat(actualEntries).extracting("items").contains(item1, item2);
     }
 
@@ -345,12 +347,12 @@ public class DatabaseParserTest {
 
         DbResourceDto actualResource = actualDb.getResource();
         assertThat(actualResource.getEntries()).hasSize(2);
-        final Optional<DbResourceDto.Entry> entry1 = actualResource.getEntryByReference("53410835");
+        final Optional<ResourceEntryDto> entry1 = actualResource.getEntryByReference("53410835");
         assertThat(entry1).isPresent();
         assertThat(entry1.get().getItemCount()).isEqualTo(2);
         assertThat(entry1.get().getItemForLocale(FRANCE)).isPresent();
         assertThat(entry1.get().getItemForLocale(ITALY)).isPresent();
-        final Optional<DbResourceDto.Entry> entry2 = actualResource.getEntryByReference("70410835");
+        final Optional<ResourceEntryDto> entry2 = actualResource.getEntryByReference("70410835");
         assertThat(entry2).isPresent();
         assertThat(entry2.get().getItemCount()).isEqualTo(2);
         assertThat(entry2.get().getItemForLocale(FRANCE)).isPresent();

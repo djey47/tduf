@@ -3,9 +3,10 @@ package fr.tduf.libunlimited.high.files.db.integrity;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 
 import java.util.*;
 
@@ -123,9 +124,9 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         Set<IntegrityError> integrityErrors = new HashSet<>();
 
         DbDto.Topic currentTopic = topicObject.getTopic();
-        final Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(currentTopic, reference);
+        final Optional<ResourceEntryDto> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(currentTopic, reference);
         if (potentialResourceEntry.isPresent()) {
-            final DbResourceDto.Entry resourceEntry = potentialResourceEntry.get();
+            final ResourceEntryDto resourceEntry = potentialResourceEntry.get();
 
             checkForMissingLocalizedValues(resourceEntry, sourceTopic, currentTopic, integrityErrors);
 
@@ -209,7 +210,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
                 .collect(toMap(DbStructureDto.Field::getRank, (field) -> field));
     }
 
-    private static void checkForMissingLocalizedValues(DbResourceDto.Entry resourceEntry, DbDto.Topic sourceTopic, DbDto.Topic remoteTopic, Set<IntegrityError> integrityErrors) {
+    private static void checkForMissingLocalizedValues(ResourceEntryDto resourceEntry, DbDto.Topic sourceTopic, DbDto.Topic remoteTopic, Set<IntegrityError> integrityErrors) {
         final Set<fr.tduf.libunlimited.common.game.domain.Locale> missingLocales = resourceEntry.getMissingLocales();
         if (missingLocales.isEmpty()) {
             return;
@@ -238,7 +239,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
         resourceValueCounter.put(resourceValue, ++valueCount);
     }
 
-    private static void checkResourceValuesForReference(DbResourceDto.Entry resourceEntry, DbDto.Topic sourceTopic, Set<IntegrityError> integrityErrors) {
+    private static void checkResourceValuesForReference(ResourceEntryDto resourceEntry, DbDto.Topic sourceTopic, Set<IntegrityError> integrityErrors) {
         Map<String, Integer> resourceValueCounter = new HashMap<>();
         resourceEntry.getPresentLocales()
                 .forEach((presentLocale) -> {

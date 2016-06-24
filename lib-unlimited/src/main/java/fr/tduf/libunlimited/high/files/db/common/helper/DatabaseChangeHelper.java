@@ -4,10 +4,11 @@ import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
@@ -101,7 +102,7 @@ public class DatabaseChangeHelper {
      * @throws IllegalArgumentException when source entry does not exist or target reference belongs to an already existing entry.
      */
     public void updateResourceItemWithReference(DbDto.Topic topic, Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
-        DbResourceDto.Entry existingEntry = checkResourceEntryExistsWithReference(topic, oldResourceReference);
+        ResourceEntryDto existingEntry = checkResourceEntryExistsWithReference(topic, oldResourceReference);
 
         if (!oldResourceReference.equals(newResourceReference)) {
             checkResourceEntryDoesNotExistWithReference(topic, newResourceReference);
@@ -267,7 +268,7 @@ public class DatabaseChangeHelper {
                 });
     }
 
-    private DbResourceDto.Entry checkResourceEntryExistsWithReference(DbDto.Topic topic, String resourceReference) {
+    private ResourceEntryDto checkResourceEntryExistsWithReference(DbDto.Topic topic, String resourceReference) {
         return databaseMiner.getResourceEntryFromTopicAndReference(topic, resourceReference)
                 .orElseThrow(() -> new IllegalArgumentException("Resource does not exist with reference: " + resourceReference));
     }

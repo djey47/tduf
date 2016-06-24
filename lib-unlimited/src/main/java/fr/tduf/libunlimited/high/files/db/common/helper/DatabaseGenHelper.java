@@ -3,9 +3,10 @@ package fr.tduf.libunlimited.high.files.db.common.helper;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import org.apache.commons.lang3.Range;
 
@@ -173,11 +174,11 @@ public class DatabaseGenHelper {
     String generateDefaultResourceReference(DbDto topicObject) {
         return findDefaultResourceEntry(topicObject)
 
-                .map(DbResourceDto.Entry::getReference)
+                .map(ResourceEntryDto::getReference)
 
                 .orElseGet(() -> {
                     String newResourceReference = generateUniqueResourceEntryIdentifier(topicObject);
-                    final DbResourceDto.Entry newEntry = topicObject.getResource().addEntryByReference(newResourceReference);
+                    final ResourceEntryDto newEntry = topicObject.getResource().addEntryByReference(newResourceReference);
 
                     Locale.valuesAsStream().forEach((locale) -> newEntry.setValueForLocale(RESOURCE_VALUE_DEFAULT, locale));
 
@@ -204,14 +205,14 @@ public class DatabaseGenHelper {
     }
 
     private static Set<String> extractResourceEntryReferences(DbDto topicObject) {
-        final Collection<DbResourceDto.Entry> entries = topicObject.getResource().getEntries();
+        final Collection<ResourceEntryDto> entries = topicObject.getResource().getEntries();
         if(entries == null) {
             return new HashSet<>();
         }
 
         return entries.stream()
 
-                .map(DbResourceDto.Entry::getReference)
+                .map(ResourceEntryDto::getReference)
 
                 .collect(toSet());
     }
@@ -220,8 +221,8 @@ public class DatabaseGenHelper {
         return Integer.valueOf((int) (Math.random() * (range.getMaximum() - range.getMinimum()) + range.getMinimum())).toString();
     }
 
-    private static Optional<DbResourceDto.Entry> findDefaultResourceEntry(DbDto topicObject) {
-        final Collection<DbResourceDto.Entry> entries = topicObject.getResource().getEntries();
+    private static Optional<ResourceEntryDto> findDefaultResourceEntry(DbDto topicObject) {
+        final Collection<ResourceEntryDto> entries = topicObject.getResource().getEntries();
         if (entries == null) {
             return Optional.empty();
         }

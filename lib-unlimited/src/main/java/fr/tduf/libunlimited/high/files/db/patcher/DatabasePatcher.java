@@ -9,10 +9,11 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderResolver;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
@@ -29,6 +30,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Used to apply patches to an existing database.
  */
+// TODO apply code rules
 public class DatabasePatcher extends AbstractDatabaseHolder {
 
     private DatabaseChangeHelper databaseChangeHelper;
@@ -252,12 +254,12 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         String ref = changeObject.getRef();
         DbDto.Topic topic = changeObject.getTopic();
 
-        final Optional<DbResourceDto.Entry> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(topic, ref);
+        final Optional<ResourceEntryDto> potentialResourceEntry = databaseMiner.getResourceEntryFromTopicAndReference(topic, ref);
         if (potentialResourceEntry.isPresent() && changeObject.isStrictMode()) {
             return;
         }
 
-        DbResourceDto.Entry resourceEntry = potentialResourceEntry
+        ResourceEntryDto resourceEntry = potentialResourceEntry
                 .orElseGet(() -> databaseMiner.getResourceEnhancedFromTopic(topic).get().addEntryByReference(ref));
         String value = changeObject.getValue();
         Optional<Locale> potentialLocale = ofNullable(changeObject.getLocale());

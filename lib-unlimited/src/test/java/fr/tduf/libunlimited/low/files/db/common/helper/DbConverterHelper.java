@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.common.helper;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Ignore;

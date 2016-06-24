@@ -3,11 +3,13 @@ package fr.tduf.libunlimited.low.files.db.rw;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.*;
@@ -93,7 +95,7 @@ public class DatabaseParser {
     }
 
     private DbResourceDto parseAllResourcesEnhancedFromTopic(DbDto.Topic topic) {
-        Map<String, Set<DbResourceDto.Item>> readItems = new LinkedHashMap<>();
+        Map<String, Set<ResourceItemDto>> readItems = new LinkedHashMap<>();
         AtomicInteger categoryCount = new AtomicInteger();
         AtomicReference<String> version = new AtomicReference<>();
 
@@ -106,7 +108,7 @@ public class DatabaseParser {
             return null;
         }
 
-        final List<DbResourceDto.Entry> readEntries = createResourceEntriesFromReadItems(readItems);
+        final List<ResourceEntryDto> readEntries = createResourceEntriesFromReadItems(readItems);
         checkItemCountBetweenResources(topic, readEntries);
 
         return DbResourceDto.builder()
@@ -116,7 +118,7 @@ public class DatabaseParser {
                 .build();
     }
 
-    private void parseResourcesForLocale(Locale locale, Map<String, Set<DbResourceDto.Item>> readItemsByRef, AtomicInteger categoryCount, AtomicReference<String> version) {
+    private void parseResourcesForLocale(Locale locale, Map<String, Set<ResourceItemDto>> readItemsByRef, AtomicInteger categoryCount, AtomicReference<String> version) {
         requireNonNull(readItemsByRef, "A map of resource items (even empty) is required.");
 
         for (String line : resources.get(locale)) {
@@ -141,18 +143,18 @@ public class DatabaseParser {
         }
     }
 
-    private void addResourceItemForLocale(Locale locale, String ref, String value, Map<String, Set<DbResourceDto.Item>> readItemsByRef) {
-        Set<DbResourceDto.Item> items = readItemsByRef.getOrDefault(ref, new LinkedHashSet<>(8));
-        items.add(DbResourceDto.Item.builder()
+    private void addResourceItemForLocale(Locale locale, String ref, String value, Map<String, Set<ResourceItemDto>> readItemsByRef) {
+        Set<ResourceItemDto> items = readItemsByRef.getOrDefault(ref, new LinkedHashSet<>(8));
+        items.add(ResourceItemDto.builder()
                 .withLocale(locale)
                 .withValue(value)
                 .build());
         readItemsByRef.put(ref, items);
     }
 
-    private List<DbResourceDto.Entry> createResourceEntriesFromReadItems(Map<String, Set<DbResourceDto.Item>> readItems) {
+    private List<ResourceEntryDto> createResourceEntriesFromReadItems(Map<String, Set<ResourceItemDto>> readItems) {
         return readItems.entrySet().stream()
-                .map(e -> DbResourceDto.Entry.builder()
+                .map(e -> ResourceEntryDto.builder()
                         .forReference(e.getKey())
                         .withItems(e.getValue())
                         .build())
@@ -330,7 +332,7 @@ public class DatabaseParser {
         }
     }
 
-    private void checkItemCountBetweenResources(DbDto.Topic topic, Collection<DbResourceDto.Entry> entries) {
+    private void checkItemCountBetweenResources(DbDto.Topic topic, Collection<ResourceEntryDto> entries) {
         entries.stream()
 
                 .forEach((entry) -> {

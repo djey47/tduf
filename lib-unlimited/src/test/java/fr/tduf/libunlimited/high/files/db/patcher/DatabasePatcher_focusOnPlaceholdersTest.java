@@ -3,10 +3,11 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -193,7 +194,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
         databasePatcher.applyWithProperties(patchObject, patchProperties);
 
         // THEN
-        Optional<DbResourceDto.Entry> potentialEntry = databaseObject.getResource().getEntryByReference("000000");
+        Optional<ResourceEntryDto> potentialEntry = databaseObject.getResource().getEntryByReference("000000");
         assertThat(potentialEntry).isPresent();
         assertThat(potentialEntry.get().getItemCount()).isEqualTo(1);
         assertThat(potentialEntry.get().getItemForLocale(FRANCE).get().getValue()).isEqualTo("Text");
@@ -225,7 +226,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
         assertThat(databaseObject.getResource().getEntries()).hasSize(1);
 
         final String generatedValue = actualProperties.getProperty("MYRESREF");
-        final DbResourceDto.Entry resourceEntry = databaseObject.getResource().getEntryByReference(generatedValue).get();
+        final ResourceEntryDto resourceEntry = databaseObject.getResource().getEntryByReference(generatedValue).get();
         assertThat(resourceEntry.getValueForLocale(FRANCE)).contains("Text");
     }
 

@@ -2,10 +2,11 @@ package fr.tduf.libunlimited.high.files.db.miner;
 
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import org.junit.Test;
 
 import java.util.List;
@@ -65,7 +66,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
         List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
 
         //WHEN
-        final Optional<DbResourceDto.Entry> potentialEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndReference(PNJ, RESOURCE_REF);
+        final Optional<ResourceEntryDto> potentialEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndReference(PNJ, RESOURCE_REF);
 
         //THEN
         assertThat(potentialEntry).isEmpty();
@@ -77,7 +78,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
         List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
 
         //WHEN
-        final Optional<DbResourceDto.Entry> potentialEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REF);
+        final Optional<ResourceEntryDto> potentialEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REF);
 
         //THEN
         assertThat(potentialEntry).isEmpty();
@@ -87,11 +88,11 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     public void getResourceEntryFromTopicAndReference_whenEntryExists_shouldReturnIt() {
         //GIVEN
         final DbDto topicObject = createDefaultTopicObject(TOPIC);
-        final DbResourceDto.Entry entry = topicObject.getResource().addEntryByReference(RESOURCE_REF);
+        final ResourceEntryDto entry = topicObject.getResource().addEntryByReference(RESOURCE_REF);
         List<DbDto> topicObjects = singletonList(topicObject);
 
         //WHEN
-        final Optional<DbResourceDto.Entry> potentialEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REF);
+        final Optional<ResourceEntryDto> potentialEntry = BulkDatabaseMiner.load(topicObjects).getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REF);
 
         //THEN
         assertThat(potentialEntry)

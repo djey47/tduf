@@ -5,11 +5,12 @@ import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
@@ -196,7 +197,7 @@ public class DiffPatchesGenerator {
                 .build();
     }
 
-    private Stream<? extends DbPatchDto.DbChangeDto> createLocalizedResourceUpdates(DbDto.Topic currentTopic, DbResourceDto.Entry resourceEntry) {
+    private Stream<? extends DbPatchDto.DbChangeDto> createLocalizedResourceUpdates(DbDto.Topic currentTopic, ResourceEntryDto resourceEntry) {
         return Locale.valuesAsStream()
                 .map((locale) -> DbPatchDto.DbChangeDto.builder()
                         .withType(UPDATE_RES)
@@ -208,7 +209,7 @@ public class DiffPatchesGenerator {
                         .build());
     }
 
-    private Stream<? extends DbPatchDto.DbChangeDto> createGlobalizedResourceUpdate(DbDto.Topic currentTopic, DbResourceDto.Entry resourceEntry) {
+    private Stream<? extends DbPatchDto.DbChangeDto> createGlobalizedResourceUpdate(DbDto.Topic currentTopic, ResourceEntryDto resourceEntry) {
         return Stream.of(DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE_RES)
                 .enableStrictMode(true)
@@ -230,7 +231,7 @@ public class DiffPatchesGenerator {
                 .build();
     }
 
-    private static boolean isGlobalizedResource(DbResourceDto.Entry resourceEntry) {
+    private static boolean isGlobalizedResource(ResourceEntryDto resourceEntry) {
         return 1 == resourceEntry.getPresentLocales().stream()
 
                 .map(resourceEntry::getValueForLocale)

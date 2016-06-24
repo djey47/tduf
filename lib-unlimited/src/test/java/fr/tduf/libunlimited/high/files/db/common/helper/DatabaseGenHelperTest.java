@@ -2,11 +2,12 @@ package fr.tduf.libunlimited.high.files.db.common.helper;
 
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import org.apache.commons.lang3.Range;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -418,9 +419,9 @@ public class DatabaseGenHelperTest {
     }
 
     private static void assertResourceExistsWithDefaultItem(DbDto topicObject) {
-        final Collection<DbResourceDto.Entry> actualEntries = topicObject.getResource().getEntries();
+        final Collection<ResourceEntryDto> actualEntries = topicObject.getResource().getEntries();
         assertThat(actualEntries).hasSize(1);
-        final DbResourceDto.Entry uniqueEntry = actualEntries.stream().findAny().get();
+        final ResourceEntryDto uniqueEntry = actualEntries.stream().findAny().get();
         assertThat(uniqueEntry.getItemCount()).isEqualTo(8);
         assertThat(uniqueEntry.pickValue()).contains("??");
     }

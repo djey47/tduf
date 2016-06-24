@@ -6,11 +6,12 @@ import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 
 import java.util.*;
 
@@ -195,7 +196,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
         Locale referenceLocale = pickAvailableLocaleOrElseWhatever(UNITED_STATES, validResourceLocales);
         DbResourceDto resourceObject = databaseMiner.getResourceEnhancedFromTopic(topic).get();
-        DbResourceDto.Entry entry = resourceObject
+        ResourceEntryDto entry = resourceObject
                 .getEntryByReference(reference)
                 // Use supplier to only invoke addEntry when result is absent
                 .orElseGet(() -> resourceObject.addEntryByReference(reference));
