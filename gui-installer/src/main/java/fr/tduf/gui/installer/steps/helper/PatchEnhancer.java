@@ -98,7 +98,6 @@ public class PatchEnhancer {
         }
     }
 
-    // TODO see if bikes support more than 1 rim set
     void enhancePatchObjectWithRims(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
         Log.info(THIS_CLASS_NAME, "->Adding rim properties and changes to initial patch");
 
