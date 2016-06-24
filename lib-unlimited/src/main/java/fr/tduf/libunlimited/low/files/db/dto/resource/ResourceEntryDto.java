@@ -6,6 +6,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import java.io.Serializable;
 import java.util.*;
 
 import static java.util.Arrays.asList;
@@ -17,7 +18,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 
 @JsonTypeName("dbResourceEnhancedEntry")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class ResourceEntryDto {
+public class ResourceEntryDto implements Serializable {
     @JsonProperty("ref")
     private String reference;
 

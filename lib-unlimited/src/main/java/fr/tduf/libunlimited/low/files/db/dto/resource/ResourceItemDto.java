@@ -7,6 +7,8 @@ import org.codehaus.jackson.annotate.JsonSetter;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import java.io.Serializable;
+
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
@@ -14,7 +16,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 
 @JsonTypeName("dbResourceEnhancedResourceEntryDtoItem")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class ResourceItemDto {
+public class ResourceItemDto implements Serializable {
     @JsonProperty("locale")
     private Locale locale;
 

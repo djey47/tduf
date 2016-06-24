@@ -66,50 +66,47 @@ public class DbStructureDto implements Serializable {
          * @return builder, used to generate custom values.
          */
         public static FieldBuilder builder() {
-            return new FieldBuilder() {
-                private Integer rank;
-                private String name;
-                private FieldType fieldType;
-                private String targetRef;
+            return new FieldBuilder();
+        }
 
-                @Override
-                public FieldBuilder forName(String name) {
-                    this.name = name;
-                    return this;
-                }
+        public static class FieldBuilder {
+            private Integer rank;
+            private String name;
+            private FieldType fieldType;
+            private String targetRef;
 
-                @Override
-                public FieldBuilder fromType(FieldType fieldType) {
-                    this.fieldType = fieldType;
-                    return this;
-                }
+            public FieldBuilder forName(String name) {
+                this.name = name;
+                return this;
+            }
 
-                @Override
-                public FieldBuilder toTargetReference(String targetRef) {
-                    this.targetRef = targetRef;
-                    return this;
-                }
+            public FieldBuilder fromType(FieldType fieldType) {
+                this.fieldType = fieldType;
+                return this;
+            }
 
-                @Override
-                public FieldBuilder ofRank(int rank) {
-                    this.rank = rank;
-                    return this;
-                }
+            public FieldBuilder toTargetReference(String targetRef) {
+                this.targetRef = targetRef;
+                return this;
+            }
 
-                @Override
-                public Field build() {
-                    requireNonNull(rank, "Field rank must be specified.");
+            public FieldBuilder ofRank(int rank) {
+                this.rank = rank;
+                return this;
+            }
 
-                    Field field = new Field();
+            public Field build() {
+                requireNonNull(rank, "Field rank must be specified.");
 
-                    field.name = this.name;
-                    field.fieldType = this.fieldType;
-                    field.targetRef = this.targetRef;
-                    field.rank = this.rank;
+                Field field = new Field();
 
-                    return field;
-                }
-            };
+                field.name = this.name;
+                field.fieldType = this.fieldType;
+                field.targetRef = this.targetRef;
+                field.rank = this.rank;
+
+                return field;
+            }
         }
 
         public String getName() {
@@ -141,19 +138,6 @@ public class DbStructureDto implements Serializable {
         @Override
         public String toString() {
             return reflectionToString(this);
-        }
-
-        public interface FieldBuilder {
-
-            FieldBuilder forName(String name);
-
-            FieldBuilder fromType(FieldType fieldType);
-
-            FieldBuilder toTargetReference(String targetRef);
-
-            FieldBuilder ofRank(int rank);
-
-            Field build();
         }
     }
 
@@ -248,61 +232,56 @@ public class DbStructureDto implements Serializable {
      * @return builder, used to generate custom values.
      */
     public static DbStructureDtoBuilder builder() {
-        return new DbStructureDtoBuilder() {
-            private int categoryCount;
-            private String version;
-            private DbDto.Topic topic;
-            private String ref;
-            private final List<Field> fields = new ArrayList<>();
+        return new DbStructureDtoBuilder();
+    }
 
-            @Override
-            public DbStructureDtoBuilder forReference(String reference) {
-                this.ref = reference;
-                return this;
-            }
+    public static class DbStructureDtoBuilder {
+        private int categoryCount;
+        private String version;
+        private DbDto.Topic topic;
+        private String ref;
+        private final List<Field> fields = new ArrayList<>();
 
-            @Override
-            public DbStructureDtoBuilder addItem(Field... fields) {
-                return addItems(asList(fields));
-            }
+        public DbStructureDtoBuilder forReference(String reference) {
+            this.ref = reference;
+            return this;
+        }
 
-            @Override
-            public DbStructureDtoBuilder addItems(List<Field> fields) {
-                this.fields.addAll(fields);
-                return this;
-            }
+        public DbStructureDtoBuilder addItem(Field... fields) {
+            return addItems(asList(fields));
+        }
 
-            @Override
-            public DbStructureDtoBuilder forTopic(DbDto.Topic topic) {
-                this.topic = topic;
-                return this;
-            }
+        public DbStructureDtoBuilder addItems(List<Field> fields) {
+            this.fields.addAll(fields);
+            return this;
+        }
 
-            @Override
-            public DbStructureDtoBuilder atVersion(String version) {
-                this.version = version;
-                return this;
-            }
+        public DbStructureDtoBuilder forTopic(DbDto.Topic topic) {
+            this.topic = topic;
+            return this;
+        }
 
-            @Override
-            public DbStructureDtoBuilder withCategoryCount(int categoryCount) {
-                this.categoryCount = categoryCount;
-                return this;
-            }
+        public DbStructureDtoBuilder atVersion(String version) {
+            this.version = version;
+            return this;
+        }
 
-            @Override
-            public DbStructureDto build() {
-                DbStructureDto dbStructureDto = new DbStructureDto();
+        public DbStructureDtoBuilder withCategoryCount(int categoryCount) {
+            this.categoryCount = categoryCount;
+            return this;
+        }
 
-                dbStructureDto.topic = this.topic;
-                dbStructureDto.ref = this.ref;
-                dbStructureDto.fields = this.fields;
-                dbStructureDto.version = this.version;
-                dbStructureDto.categoryCount = this.categoryCount;
+        public DbStructureDto build() {
+            DbStructureDto dbStructureDto = new DbStructureDto();
 
-                return dbStructureDto;
-            }
-        };
+            dbStructureDto.topic = this.topic;
+            dbStructureDto.ref = this.ref;
+            dbStructureDto.fields = this.fields;
+            dbStructureDto.version = this.version;
+            dbStructureDto.categoryCount = this.categoryCount;
+
+            return dbStructureDto;
+        }
     }
 
     @Override
@@ -318,21 +297,5 @@ public class DbStructureDto implements Serializable {
     @Override
     public String toString() {
         return reflectionToString(this);
-    }
-
-    public interface DbStructureDtoBuilder {
-        DbStructureDtoBuilder forReference(String reference);
-
-        DbStructureDtoBuilder addItem(Field... fields);
-
-        DbStructureDtoBuilder addItems(List<Field> fields);
-
-        DbStructureDtoBuilder forTopic(DbDto.Topic topic);
-
-        DbStructureDtoBuilder atVersion(String version);
-
-        DbStructureDtoBuilder withCategoryCount(int categoryCount);
-
-        DbStructureDto build();
     }
 }

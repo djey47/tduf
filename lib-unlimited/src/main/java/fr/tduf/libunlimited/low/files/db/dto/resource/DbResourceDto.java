@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonSetter;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.function.Function;
 
@@ -18,7 +19,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 /**
  * Represents contents of TDU database resources (multilingual)
  */
-public class DbResourceDto {
+public class DbResourceDto implements Serializable {
     @JsonProperty("version")
     private String version;
 

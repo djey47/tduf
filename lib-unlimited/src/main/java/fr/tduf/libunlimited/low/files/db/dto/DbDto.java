@@ -67,8 +67,8 @@ public class DbDto implements Serializable {
          */
         public static Topic fromLabel(String label) {
 
-            for(Topic topic : Topic.values()) {
-                if(topic.getLabel().equals(label)) {
+            for (Topic topic : Topic.values()) {
+                if (topic.getLabel().equals(label)) {
                     return topic;
                 }
             }
@@ -88,40 +88,38 @@ public class DbDto implements Serializable {
      * @return builder, used to generate custom values.
      */
     public static DbDtoBuilder builder() {
-        return new DbDtoBuilder() {
-            private DbDataDto data;
-            private DbStructureDto structure;
-            private DbResourceDto resource;
+        return new DbDtoBuilder();
+    }
 
-            @Override
-            public DbDtoBuilder withStructure(DbStructureDto dbStructureDto) {
-                this.structure = dbStructureDto;
-                return this;
-            }
+    public static class DbDtoBuilder {
+        private DbDataDto data;
+        private DbStructureDto structure;
+        private DbResourceDto resource;
 
-            @Override
-            public DbDtoBuilder withData(DbDataDto dbDataDto) {
-                this.data = dbDataDto;
-                return this;
-            }
+        public DbDtoBuilder withStructure(DbStructureDto dbStructureDto) {
+            this.structure = dbStructureDto;
+            return this;
+        }
 
-            @Override
-            public DbDtoBuilder withResource(DbResourceDto dbResourceDto) {
-                this.resource = dbResourceDto;
-                return this;
-            }
+        public DbDtoBuilder withData(DbDataDto dbDataDto) {
+            this.data = dbDataDto;
+            return this;
+        }
 
-            @Override
-            public DbDto build() {
-                DbDto dbDto = new DbDto();
+        public DbDtoBuilder withResource(DbResourceDto dbResourceDto) {
+            this.resource = dbResourceDto;
+            return this;
+        }
 
-                dbDto.structure = structure;
-                dbDto.data = data;
-                dbDto.resource = resource;
+        public DbDto build() {
+            DbDto dbDto = new DbDto();
 
-                return dbDto;
-            }
-        };
+            dbDto.structure = structure;
+            dbDto.data = data;
+            dbDto.resource = resource;
+
+            return dbDto;
+        }
     }
 
     /**
@@ -160,15 +158,5 @@ public class DbDto implements Serializable {
     @Override
     public String toString() {
         return reflectionToString(this);
-    }
-
-    public interface DbDtoBuilder {
-        DbDtoBuilder withStructure(DbStructureDto dbStructureDto);
-
-        DbDtoBuilder withData(DbDataDto dbDataDto);
-
-        DbDtoBuilder withResource(DbResourceDto dbResourceDto);
-
-        DbDto build();
     }
 }
