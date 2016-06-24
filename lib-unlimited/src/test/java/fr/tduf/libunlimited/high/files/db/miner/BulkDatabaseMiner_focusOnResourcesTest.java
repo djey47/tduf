@@ -1,10 +1,11 @@
 package fr.tduf.libunlimited.high.files.db.miner;
 
 import fr.tduf.libunlimited.common.game.domain.Locale;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.junit.Test;
 
 import java.util.List;
@@ -12,10 +13,10 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.PNJ;
 import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.PNJ;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -341,23 +342,23 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
                 .build();
         DbDataDto dataObject = DbDataDto.builder().build();
         dataObject.addEntryWithItems(asList(
-                DbDataDto.Item.builder()
+                ContentItemDto.builder()
                         .ofFieldRank(1)
                         .withRawValue("108")
                         .build(),
-                DbDataDto.Item.builder()
+                ContentItemDto.builder()
                         .ofFieldRank(2)
                         .withRawValue(RESOURCE_REF)
                         .build(),
-                DbDataDto.Item.builder()
+                ContentItemDto.builder()
                         .ofFieldRank(3)
                         .withRawValue(RESOURCE_REF)
                         .build(),
-                DbDataDto.Item.builder()
+                ContentItemDto.builder()
                         .ofFieldRank(4)
                         .withRawValue(RESOURCE_REF)
                         .build(),
-                DbDataDto.Item.builder()
+                ContentItemDto.builder()
                         .ofFieldRank(5)
                         .withRawValue(RESOURCE_REF)
                         .build()));

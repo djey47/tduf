@@ -5,16 +5,18 @@ import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 
 import java.util.*;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
-import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
@@ -148,14 +150,14 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
     private void addMissingContentsFields(long entryInternalIdentifier, DbDto.Topic topic) {
         DbDto topicObject = databaseMiner.getDatabaseTopic(topic).get();
 
-        DbDataDto.Entry invalidEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryInternalIdentifier, topic).get();
+        ContentEntryDto invalidEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryInternalIdentifier, topic).get();
 
         // Structure is the reference
         topicObject.getStructure().getFields().stream()
 
                 .filter(field -> invalidEntry.getItems().stream()
 
-                        .map(DbDataDto.Item::getFieldRank)
+                        .map(ContentItemDto::getFieldRank)
 
                         .filter(rank -> rank == field.getRank())
 
@@ -179,9 +181,9 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                 .setValue(mostFrequentValue);
     }
 
-    private void addContentItem(DbStructureDto.Field missingField, DbDataDto.Entry invalidEntry, DbDto topicObject) {
+    private void addContentItem(DbStructureDto.Field missingField, ContentEntryDto invalidEntry, DbDto topicObject) {
         int newFieldRank = missingField.getRank();
-        DbDataDto.Item newItem = genHelper.buildDefaultContentItem(Optional.empty(), missingField, topicObject, true);
+        ContentItemDto newItem = genHelper.buildDefaultContentItem(Optional.empty(), missingField, topicObject, true);
         invalidEntry.addItemAtRank(newFieldRank, newItem);
     }
 
@@ -212,7 +214,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
         DbDataDto dataDto = topicObject.getData();
 
-        DbDataDto.Entry newEntry = DbDataDto.Entry.builder()
+        ContentEntryDto newEntry = ContentEntryDto.builder()
                 .forId(dataDto.getEntries().size())
                 .addItems(genHelper.buildDefaultContentItems(reference, topicObject))
                 .build();

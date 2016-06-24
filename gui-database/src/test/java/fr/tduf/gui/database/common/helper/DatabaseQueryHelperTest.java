@@ -1,7 +1,7 @@
 package fr.tduf.gui.database.common.helper;
 
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static fr.tduf.libunlimited.framework.primitives.Ints.asList;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -59,7 +59,7 @@ public class DatabaseQueryHelperTest {
         // GIVEN
         List<Integer> fieldRanks = asList(3, 4);
         String resValue1 = "RES1";
-        DbDataDto.Item item2 = DbDataDto.Item.builder()
+        ContentItemDto item2 = ContentItemDto.builder()
                 .ofFieldRank(4)
                 .withRawValue("85467580")
                 .build();

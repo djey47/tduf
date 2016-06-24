@@ -3,9 +3,11 @@ package fr.tduf.libunlimited.high.files.db.common.helper;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
@@ -59,13 +61,13 @@ public class DatabaseChangeHelper {
      * @return created content entry with items having default values
      * @throws java.util.NoSuchElementException when specified topic has no loaded content.
      */
-    public DbDataDto.Entry addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {
+    public ContentEntryDto addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {
 
         DbDto topicObject = databaseMiner.getDatabaseTopic(topic).get();
 
         DbDataDto dataDto = topicObject.getData();
 
-        DbDataDto.Entry newEntry = DbDataDto.Entry.builder()
+        ContentEntryDto newEntry = ContentEntryDto.builder()
                 .forId(dataDto.getEntries().size())
                 .addItems(genHelper.buildDefaultContentItems(reference, topicObject))
                 .build();
@@ -83,7 +85,7 @@ public class DatabaseChangeHelper {
      * @param newRawValue   : value to apply
      * @return updated item if value has changed, empty otherwise.
      */
-    public Optional<DbDataDto.Item> updateItemRawValueAtIndexAndFieldRank(DbDto.Topic topic, long entryIndex, int fieldRank, String newRawValue) {
+    public Optional<ContentItemDto> updateItemRawValueAtIndexAndFieldRank(DbDto.Topic topic, long entryIndex, int fieldRank, String newRawValue) {
         return databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic)
                 .flatMap(entry -> entry.updateItemValueAtRank(newRawValue, fieldRank));
     }
@@ -119,7 +121,7 @@ public class DatabaseChangeHelper {
      */
     public void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
         DbDataDto topicDataObject = databaseMiner.getDatabaseTopic(topic).get().getData();
-        List<DbDataDto.Entry> topicEntries = topicDataObject.getEntries();
+        List<ContentEntryDto> topicEntries = topicDataObject.getEntries();
 
         topicEntries.stream()
 
@@ -162,16 +164,16 @@ public class DatabaseChangeHelper {
      * @return a clone of entry with given identifier in specified topic and added to this topic.
      * If a REF field is present, a random, unique identifier will be generated.
      */
-    public DbDataDto.Entry duplicateEntryWithIdentifier(long entryId, DbDto.Topic topic) {
-        DbDataDto.Entry sourceEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic).get();
+    public ContentEntryDto duplicateEntryWithIdentifier(long entryId, DbDto.Topic topic) {
+        ContentEntryDto sourceEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic).get();
 
         DbDto topicObject = databaseMiner.getDatabaseTopic(topic).get();
         DbDataDto topicDataObject = topicObject.getData();
-        List<DbDataDto.Entry> currentContentEntries = topicDataObject.getEntries();
+        List<ContentEntryDto> currentContentEntries = topicDataObject.getEntries();
 
         long newIdentifier = currentContentEntries.size();
-        List<DbDataDto.Item> clonedItems = cloneContentItems(sourceEntry, topic);
-        DbDataDto.Entry newEntry = DbDataDto.Entry.builder()
+        List<ContentItemDto> clonedItems = cloneContentItems(sourceEntry, topic);
+        ContentEntryDto newEntry = ContentEntryDto.builder()
                 .forId(newIdentifier)
                 .addItems(clonedItems)
                 .build();
@@ -204,7 +206,7 @@ public class DatabaseChangeHelper {
             return;
         }
 
-        DbDataDto.Entry entry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic).get();
+        ContentEntryDto entry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic).get();
         for (int i = 0; i < absoluteSteps; i++) {
             if (step < 0) {
                 dataObject.moveEntryUp(entry);
@@ -249,7 +251,7 @@ public class DatabaseChangeHelper {
      * @param sourceEntryRef          : reference of source entry (REF field for source topic)
      * @param potentialTargetEntryRef : reference of target entry (REF field for target topic). Mandatory.
      */
-    public static void updateAssociationEntryWithSourceAndTargetReferences(DbDataDto.Entry entry, String sourceEntryRef, Optional<String> potentialTargetEntryRef) {
+    public static void updateAssociationEntryWithSourceAndTargetReferences(ContentEntryDto entry, String sourceEntryRef, Optional<String> potentialTargetEntryRef) {
         requireNonNull(entry, "A content entry is required.");
 
         // We assume source reference is first field ... target reference (if any) is second field  ...
@@ -277,10 +279,10 @@ public class DatabaseChangeHelper {
                 });
     }
 
-    private static List<DbDataDto.Item> cloneContentItems(DbDataDto.Entry entry, DbDto.Topic topic) {
+    private static List<ContentItemDto> cloneContentItems(ContentEntryDto entry, DbDto.Topic topic) {
         return entry.getItems().stream()
 
-                .map((contentItem) -> DbDataDto.Item.builder().fromExisting(contentItem, topic).build())
+                .map((contentItem) -> ContentItemDto.builder().fromExisting(contentItem, topic).build())
 
                 .collect(toList());
     }

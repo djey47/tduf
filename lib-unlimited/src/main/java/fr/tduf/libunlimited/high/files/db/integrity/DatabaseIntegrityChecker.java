@@ -2,7 +2,10 @@ package fr.tduf.libunlimited.high.files.db.integrity;
 
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import fr.tduf.libunlimited.low.files.db.dto.*;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 
 import java.util.*;
 
@@ -16,6 +19,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Class providing methods to check Database integrity.
  */
+// TODO apply code rules
 public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
 
     private Map<String, DbDto> topicObjectsByReferences;
@@ -86,7 +90,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
                         .forEach((item) -> checkContentsItem(item, contentsObject, fieldsByRankIndex, integrityErrors)));
     }
 
-    private void checkContentsItem(DbDataDto.Item item, DbDto localTopicObject, Map<Integer, DbStructureDto.Field> fieldsByRanksIndex, Set<IntegrityError> integrityErrors) {
+    private void checkContentsItem(ContentItemDto item, DbDto localTopicObject, Map<Integer, DbStructureDto.Field> fieldsByRanksIndex, Set<IntegrityError> integrityErrors) {
         DbStructureDto.Field field = fieldsByRanksIndex.get(item.getFieldRank());
         String targetRef = field.getTargetRef();
 

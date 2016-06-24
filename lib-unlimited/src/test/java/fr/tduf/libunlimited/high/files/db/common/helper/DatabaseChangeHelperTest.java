@@ -2,9 +2,11 @@ package fr.tduf.libunlimited.high.files.db.common.helper;
 
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.assertj.core.api.Condition;
 import org.junit.After;
 import org.junit.Test;
@@ -55,8 +57,8 @@ public class DatabaseChangeHelperTest {
         DbDataDto dataObject = createDefaultDataObject();
         DbStructureDto stuctureObject = createDefaultStructureObject();
         DbDto databaseObject = createDatabaseObject(dataObject, stuctureObject);
-        List<DbDataDto.Item> contentItems = new ArrayList<>();
-        contentItems.add(DbDataDto.Item.builder()
+        List<ContentItemDto> contentItems = new ArrayList<>();
+        contentItems.add(ContentItemDto.builder()
                 .ofFieldRank(1)
                 .build());
 
@@ -65,7 +67,7 @@ public class DatabaseChangeHelperTest {
 
 
         // WHEN
-        DbDataDto.Entry actualEntry = changeHelper.addContentsEntryWithDefaultItems(of(ENTRY_REFERENCE), TOPIC);
+        ContentEntryDto actualEntry = changeHelper.addContentsEntryWithDefaultItems(of(ENTRY_REFERENCE), TOPIC);
 
 
         // THEN
@@ -91,13 +93,13 @@ public class DatabaseChangeHelperTest {
     public void removeEntryWithIdentifier_whenEntryExists_shouldDeleteIt_andUpdateIds() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        DbDataDto.Entry entry1 = createDefaultContentEntry(1);
+        ContentEntryDto entry1 = createDefaultContentEntry(1);
         entry1.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(entry1);
-        DbDataDto.Entry entry2 = createDefaultContentEntry(2);
+        ContentEntryDto entry2 = createDefaultContentEntry(2);
         entry2.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(entry2);
-        DbDataDto.Entry entry3 = createDefaultContentEntry(3);
+        ContentEntryDto entry3 = createDefaultContentEntry(3);
         entry3.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(entry3);
 
@@ -130,7 +132,7 @@ public class DatabaseChangeHelperTest {
     public void removeEntryWithReference_whenEntryExists_shouldDeleteIt() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        DbDataDto.Entry contentEntryWithUidItem = createContentEntryWithUidItem(1);
+        ContentEntryDto contentEntryWithUidItem = createContentEntryWithUidItem(1);
         dataObject.addEntry(contentEntryWithUidItem);
 
         DbDto topicObject = createDatabaseObject(dataObject, createDefaultStructureObject());
@@ -162,7 +164,7 @@ public class DatabaseChangeHelperTest {
     public void removeEntriesMatchingCriteria_whenOneEntryMatches_shouldDeleteIt() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        DbDataDto.Entry contentEntryWithUidItem = createContentEntryWithUidItem(1);
+        ContentEntryDto contentEntryWithUidItem = createContentEntryWithUidItem(1);
         dataObject.addEntry(contentEntryWithUidItem);
 
         DbDto topicObject = createDatabaseObject(dataObject, createDefaultStructureObject());
@@ -185,7 +187,7 @@ public class DatabaseChangeHelperTest {
     public void removeEntriesMatchingCriteria_whenNoEntryMatches_shouldDoNothing() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        DbDataDto.Entry contentEntryWithUidItem = createContentEntryWithUidItem(1);
+        ContentEntryDto contentEntryWithUidItem = createContentEntryWithUidItem(1);
         dataObject.addEntry(contentEntryWithUidItem);
 
         List<DbFieldValueDto> criteria = singletonList(DbFieldValueDto.fromCouple(1, "111111"));
@@ -205,15 +207,15 @@ public class DatabaseChangeHelperTest {
     public void duplicateEntryWithIdentifier_whenEntryExists_shouldDuplicateItAndAddItToTopic() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        DbDataDto.Entry entry0 = createDefaultContentEntry(0);
+        ContentEntryDto entry0 = createDefaultContentEntry(0);
         entry0.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(entry0);
 
-        DbDataDto.Entry defaultContentEntry = createDefaultContentEntry(1);
+        ContentEntryDto defaultContentEntry = createDefaultContentEntry(1);
         defaultContentEntry.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(defaultContentEntry);
 
-        DbDataDto.Entry entryToBeCloned = createDefaultContentEntry(2);
+        ContentEntryDto entryToBeCloned = createDefaultContentEntry(2);
         entryToBeCloned.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(entryToBeCloned);
 
@@ -240,7 +242,7 @@ public class DatabaseChangeHelperTest {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
 
-        DbDataDto.Entry defaultContentEntry = createDefaultContentEntry(0);
+        ContentEntryDto defaultContentEntry = createDefaultContentEntry(0);
         defaultContentEntry.appendItem(createEntryItemForBitField());
         dataObject.addEntry(defaultContentEntry);
 
@@ -267,10 +269,10 @@ public class DatabaseChangeHelperTest {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
 
-        DbDataDto.Entry defaultContentEntry = createDefaultContentEntry(0);
+        ContentEntryDto defaultContentEntry = createDefaultContentEntry(0);
         defaultContentEntry.appendItem(createEntryItemForUidField());
         dataObject.addEntry(defaultContentEntry);
-        DbDataDto.Entry cloneContentEntry = createDefaultContentEntry(1);
+        ContentEntryDto cloneContentEntry = createDefaultContentEntry(1);
         cloneContentEntry.appendItem(createEntryItemForUidField());
 
         DbStructureDto stuctureObject = createStructureObjectWithUidField();
@@ -316,13 +318,13 @@ public class DatabaseChangeHelperTest {
     public void moveEntryWithIdentifier_whenEntryExists_andStepNotInRange_shouldDoNothing() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        DbDataDto.Entry entry0 = createDefaultContentEntry(0);
+        ContentEntryDto entry0 = createDefaultContentEntry(0);
         entry0.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(entry0);
-        DbDataDto.Entry entry1 = createDefaultContentEntry(1);
+        ContentEntryDto entry1 = createDefaultContentEntry(1);
         entry1.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(entry1);
-        final DbDataDto.Entry movedEntry = createDefaultContentEntry(2);
+        final ContentEntryDto movedEntry = createDefaultContentEntry(2);
         movedEntry.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(movedEntry);
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
@@ -343,13 +345,13 @@ public class DatabaseChangeHelperTest {
     public void moveEntryWithIdentifier_whenEntryExists_andStepInRange_shouldUpdateEntryRank() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        DbDataDto.Entry entry0 = createDefaultContentEntry(0);
+        ContentEntryDto entry0 = createDefaultContentEntry(0);
         entry0.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(entry0);
-        DbDataDto.Entry entry1 = createDefaultContentEntry(1);
+        ContentEntryDto entry1 = createDefaultContentEntry(1);
         entry1.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(entry1);
-        final DbDataDto.Entry movedEntry = createDefaultContentEntry(2);
+        final ContentEntryDto movedEntry = createDefaultContentEntry(2);
         movedEntry.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(movedEntry);
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
@@ -399,9 +401,9 @@ public class DatabaseChangeHelperTest {
     @Test
     public void updateAssociationEntryWithSourceAndTargetReferences_whenNoTargetReference_shouldOnlyApplySourceRef() {
         // GIVEN
-        DbDataDto.Entry associationEntry = createDefaultContentEntry(0);
-        associationEntry.appendItem(DbDataDto.Item.builder().ofFieldRank(1).build());
-        associationEntry.appendItem(DbDataDto.Item.builder().ofFieldRank(2).build());
+        ContentEntryDto associationEntry = createDefaultContentEntry(0);
+        associationEntry.appendItem(ContentItemDto.builder().ofFieldRank(1).build());
+        associationEntry.appendItem(ContentItemDto.builder().ofFieldRank(2).build());
 
         // WHEN
         DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, empty());
@@ -413,10 +415,10 @@ public class DatabaseChangeHelperTest {
     @Test
     public void updateAssociationEntryWithSourceAndTargetReferences_whenTargetReference_shouldApplySourceAndTargetRefs() {
         // GIVEN
-        DbDataDto.Entry associationEntry = createDefaultContentEntry(0);
-        associationEntry.appendItem(DbDataDto.Item.builder().ofFieldRank(1).build());
-        associationEntry.appendItem(DbDataDto.Item.builder().ofFieldRank(2).build());
-        associationEntry.appendItem(DbDataDto.Item.builder().ofFieldRank(3).build());
+        ContentEntryDto associationEntry = createDefaultContentEntry(0);
+        associationEntry.appendItem(ContentItemDto.builder().ofFieldRank(1).build());
+        associationEntry.appendItem(ContentItemDto.builder().ofFieldRank(2).build());
+        associationEntry.appendItem(ContentItemDto.builder().ofFieldRank(3).build());
 
         // WHEN
         DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, of(ENTRY_REFERENCE_BIS));
@@ -436,14 +438,14 @@ public class DatabaseChangeHelperTest {
     @Test
     public void updateItemRawValueAtIndexAndFieldRank_whenRawValueUnchanged_shouldReturnEmpty() {
         // GIVEN
-        DbDataDto.Item item = createEntryItemForBitField();
-        DbDataDto.Entry entry = createDefaultContentEntry(1);
+        ContentItemDto item = createEntryItemForBitField();
+        ContentEntryDto entry = createDefaultContentEntry(1);
         entry.appendItem(item);
 
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(1, TOPIC)).thenReturn(of(entry));
 
         // WHEN
-        Optional<DbDataDto.Item> updatedItem = changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, ENTRY_BITFIELD);
+        Optional<ContentItemDto> updatedItem = changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, ENTRY_BITFIELD);
 
         // THEN
         assertThat(updatedItem).isEmpty();
@@ -452,15 +454,15 @@ public class DatabaseChangeHelperTest {
     @Test
     public void updateItemRawValueAtIndexAndFieldRank_whenRawValueChanged_shouldReturnUpdatedItem() {
         // GIVEN
-        DbDataDto.Item item = createEntryItemForBitField();
-        DbDataDto.Entry entry = createDefaultContentEntry(1);
+        ContentItemDto item = createEntryItemForBitField();
+        ContentEntryDto entry = createDefaultContentEntry(1);
         entry.appendItem(item);
 
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(1, TOPIC)).thenReturn(of(entry));
 
 
         // WHEN
-        Optional<DbDataDto.Item> updatedItem = changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, "80");
+        Optional<ContentItemDto> updatedItem = changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, "80");
 
 
         // THEN
@@ -491,34 +493,34 @@ public class DatabaseChangeHelperTest {
                 .build();
     }
 
-    private static DbDataDto.Entry createDefaultContentEntry(long internalId) {
-        return DbDataDto.Entry.builder()
+    private static ContentEntryDto createDefaultContentEntry(long internalId) {
+        return ContentEntryDto.builder()
                 .forId(internalId)
                 .build();
     }
 
-    private static DbDataDto.Entry createContentEntryWithUidItem(long internalId) {
-        return DbDataDto.Entry.builder()
+    private static ContentEntryDto createContentEntryWithUidItem(long internalId) {
+        return ContentEntryDto.builder()
                 .forId(internalId)
                 .addItem(createEntryItemForUidField())
                 .build();
     }
 
-    private static DbDataDto.Item createEntryItemAtRank(int rank) {
-        return DbDataDto.Item.builder()
+    private static ContentItemDto createEntryItemAtRank(int rank) {
+        return ContentItemDto.builder()
                 .ofFieldRank(rank)
                 .build();
     }
 
-    private static DbDataDto.Item createEntryItemForUidField() {
-        return DbDataDto.Item.builder()
+    private static ContentItemDto createEntryItemForUidField() {
+        return ContentItemDto.builder()
                 .ofFieldRank(1)
                 .withRawValue(ENTRY_REFERENCE)
                 .build();
     }
 
-    private static DbDataDto.Item createEntryItemForBitField() {
-        return DbDataDto.Item.builder()
+    private static ContentItemDto createEntryItemForBitField() {
+        return ContentItemDto.builder()
                 .ofFieldRank(1)
                 .withRawValue(ENTRY_BITFIELD)
                 .bitFieldForTopic(true, TOPIC)

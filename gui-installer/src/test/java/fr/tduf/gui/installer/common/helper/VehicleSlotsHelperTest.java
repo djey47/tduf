@@ -7,8 +7,10 @@ import fr.tduf.gui.installer.domain.SecurityOptions;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -22,14 +24,15 @@ import java.util.stream.Stream;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.SlotKind.ALL;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.VehicleKind.DRIVABLE;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 
@@ -102,68 +105,68 @@ public class VehicleSlotsHelperTest {
         int idCam = 200;
         float secuOne = 100;
         int secuTwo = 101;
-        DbDataDto.Entry brandsEntry = DbDataDto.Entry.builder()
+        ContentEntryDto brandsEntry = ContentEntryDto.builder()
                 .forId(0)
-                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(brandSlotRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(3).withRawValue(brandNameRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(brandSlotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(brandNameRef).build())
                 .build();
-        DbDataDto.Entry carRimsEntry1 = DbDataDto.Entry.builder()
+        ContentEntryDto carRimsEntry1 = ContentEntryDto.builder()
                 .forId(0)
-                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(slotRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(2).withRawValue(rimSlotRef1).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(rimSlotRef1).build())
                 .build();
-        DbDataDto.Entry carRimsEntry2 = DbDataDto.Entry.builder()
+        ContentEntryDto carRimsEntry2 = ContentEntryDto.builder()
                 .forId(1)
-                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(slotRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(2).withRawValue(rimSlotRef2).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(rimSlotRef2).build())
                 .build();
-        DbDataDto.Entry physicsEntry = DbDataDto.Entry.builder()
+        ContentEntryDto physicsEntry = ContentEntryDto.builder()
                 .forId(0)
-                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(slotRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(2).withRawValue(brandSlotRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(9).withRawValue(fileNameRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(10).withRawValue(rimSlotRef1).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(12).withRawValue(realNameRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(13).withRawValue(modelNameRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(14).withRawValue(versionNameRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(98).withRawValue(Integer.toString(idCam)).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(100).withRawValue(Float.toString(secuOne)).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(101).withRawValue(Integer.toString(secuTwo)).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(102).withRawValue(Integer.toString(idCar)).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(brandSlotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(9).withRawValue(fileNameRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(10).withRawValue(rimSlotRef1).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(12).withRawValue(realNameRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(13).withRawValue(modelNameRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(14).withRawValue(versionNameRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(98).withRawValue(Integer.toString(idCam)).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(100).withRawValue(Float.toString(secuOne)).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(101).withRawValue(Integer.toString(secuTwo)).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(102).withRawValue(Integer.toString(idCar)).build())
                 .build();
-        DbDataDto.Entry rimsEntry1 = DbDataDto.Entry.builder()
+        ContentEntryDto rimsEntry1 = ContentEntryDto.builder()
                 .forId(0)
-                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(rimSlotRef1).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(13).withRawValue(directoryRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(14).withRawValue(frontRimFileNameRef1).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(15).withRawValue(rearRimFileNameRef1).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(rimSlotRef1).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(13).withRawValue(directoryRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(14).withRawValue(frontRimFileNameRef1).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(15).withRawValue(rearRimFileNameRef1).build())
                 .build();
-        DbDataDto.Entry rimsEntry2 = DbDataDto.Entry.builder()
+        ContentEntryDto rimsEntry2 = ContentEntryDto.builder()
                 .forId(0)
-                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(rimSlotRef2).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(13).withRawValue(directoryRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(14).withRawValue(frontRimFileNameRef2).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(15).withRawValue(rearRimFileNameRef2).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(rimSlotRef2).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(13).withRawValue(directoryRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(14).withRawValue(frontRimFileNameRef2).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(15).withRawValue(rearRimFileNameRef2).build())
                 .build();
-        DbDataDto.Entry carColorsEntry = DbDataDto.Entry.builder()
+        ContentEntryDto carColorsEntry = ContentEntryDto.builder()
                 .forId(0)
-                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(slotRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(3).withRawValue(colorNameRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(8).withRawValue(interiorRef).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(9).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(10).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(11).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(12).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(13).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(14).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(15).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(16).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(17).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(18).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(19).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(20).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(21).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(22).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(colorNameRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(8).withRawValue(interiorRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(9).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(10).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(11).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(12).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(13).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(14).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(15).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(16).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(17).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(18).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(19).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(20).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(21).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(22).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
                 .build();
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(brandSlotRef, BRANDS)).thenReturn(of(brandsEntry));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotRef, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
@@ -267,9 +270,9 @@ public class VehicleSlotsHelperTest {
     public void getVehicleSlots_whenNoDrivableVehicle_shouldReturnEmptyList() {
         // GIVEN
         String undrivableRef = "00000000";
-        DbDataDto.Item refItem = DbDataDto.Item.builder().ofFieldRank(1).withRawValue(undrivableRef).build();
-        DbDataDto.Item groupItem = DbDataDto.Item.builder().ofFieldRank(5).withRawValue("92900264").build();
-        DbDataDto.Entry undrivableEntry = DbDataDto.Entry.builder().addItem(refItem, groupItem).build();
+        ContentItemDto refItem = ContentItemDto.builder().ofFieldRank(1).withRawValue(undrivableRef).build();
+        ContentItemDto groupItem = ContentItemDto.builder().ofFieldRank(5).withRawValue("92900264").build();
+        ContentEntryDto undrivableEntry = ContentEntryDto.builder().addItem(refItem, groupItem).build();
         DbDataDto dataObject = DbDataDto.builder().addEntry(undrivableEntry).build();
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
@@ -290,12 +293,12 @@ public class VehicleSlotsHelperTest {
         // GIVEN
         String undrivableRef = "00000000";
         String drivableRef = "11111111";
-        DbDataDto.Item refItem1 = DbDataDto.Item.builder().ofFieldRank(1).withRawValue(undrivableRef).build();
-        DbDataDto.Item groupItem1 = DbDataDto.Item.builder().ofFieldRank(5).withRawValue("92900264").build();
-        DbDataDto.Item refItem2 = DbDataDto.Item.builder().ofFieldRank(1).withRawValue(drivableRef).build();
-        DbDataDto.Item groupItem2 = DbDataDto.Item.builder().ofFieldRank(5).withRawValue("77800264").build();
-        DbDataDto.Entry undrivableEntry = DbDataDto.Entry.builder().forId(0).addItem(refItem1, groupItem1).build();
-        DbDataDto.Entry drivableEntry = DbDataDto.Entry.builder().forId(1).addItem(refItem2, groupItem2).build();
+        ContentItemDto refItem1 = ContentItemDto.builder().ofFieldRank(1).withRawValue(undrivableRef).build();
+        ContentItemDto groupItem1 = ContentItemDto.builder().ofFieldRank(5).withRawValue("92900264").build();
+        ContentItemDto refItem2 = ContentItemDto.builder().ofFieldRank(1).withRawValue(drivableRef).build();
+        ContentItemDto groupItem2 = ContentItemDto.builder().ofFieldRank(5).withRawValue("77800264").build();
+        ContentEntryDto undrivableEntry = ContentEntryDto.builder().forId(0).addItem(refItem1, groupItem1).build();
+        ContentEntryDto drivableEntry = ContentEntryDto.builder().forId(1).addItem(refItem2, groupItem2).build();
         DbDataDto dataObject = DbDataDto.builder().addEntry(undrivableEntry, drivableEntry).build();
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 

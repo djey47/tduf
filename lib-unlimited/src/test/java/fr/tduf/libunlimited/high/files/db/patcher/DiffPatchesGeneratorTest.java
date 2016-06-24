@@ -3,8 +3,8 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,9 +17,7 @@ import java.util.Set;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.HAIR;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DiffPatchesGeneratorTest {
@@ -86,7 +84,7 @@ public class DiffPatchesGeneratorTest {
         final List<String> actualValues = actualChangeObject.getValues();
         assertThat(actualValues).hasSize(103);
 
-        final DbDataDto.Entry addedEntry = generator.getDatabaseMiner().getContentEntryFromTopicWithReference("99999999", CAR_PHYSICS_DATA).get();
+        final ContentEntryDto addedEntry = generator.getDatabaseMiner().getContentEntryFromTopicWithReference("99999999", CAR_PHYSICS_DATA).get();
         for (int i = 0; i < actualValues.size() ; i++) {
             assertThat(actualValues.get(i)).isEqualTo(addedEntry.getItems().get(i).getRawValue());
         }

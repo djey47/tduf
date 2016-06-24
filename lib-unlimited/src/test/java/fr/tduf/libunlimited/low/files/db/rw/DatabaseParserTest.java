@@ -4,10 +4,13 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.SwitchValueDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Before;
@@ -17,9 +20,9 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import java.io.IOException;
 import java.util.*;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
-import static fr.tduf.libunlimited.common.game.domain.Locale.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
@@ -199,7 +202,7 @@ public class DatabaseParserTest {
 
         assertThat(actualDb.getData().getEntries()).hasSize(1);
         assertThat(actualDb.getData().getEntries().get(0).getItems()).hasSize(1);
-        DbDataDto.Item item = actualDb.getData().getEntries().get(0).getItems().get(0);
+        ContentItemDto item = actualDb.getData().getEntries().get(0).getItems().get(0);
         assertThat(item.getFieldRank()).isEqualTo(1);
         assertThat(item.getRawValue()).isEqualTo("-33,33");
     }
@@ -242,7 +245,7 @@ public class DatabaseParserTest {
 
         assertThat(actualDb.getData().getEntries()).hasSize(1);
         assertThat(actualDb.getData().getEntries().get(0).getItems()).hasSize(3);
-        DbDataDto.Item item = actualDb.getData().getEntries().get(0).getItems().get(1);
+        ContentItemDto item = actualDb.getData().getEntries().get(0).getItems().get(1);
         assertThat(item.getFieldRank()).isEqualTo(2);
         assertThat(item.getRawValue()).isEqualTo("");
     }
@@ -306,11 +309,11 @@ public class DatabaseParserTest {
         assertThat(actualDb).isNotNull();
 
         DbDataDto actualContents = actualDb.getData();
-        List<DbDataDto.Entry> actualEntries = actualContents.getEntries();
+        List<ContentEntryDto> actualEntries = actualContents.getEntries();
         assertThat(actualEntries).hasSize(1);
         assertThat(actualEntries.get(0).getItems()).hasSize(1);
 
-        List<DbDataDto.SwitchValue> actualSwitchValues = actualEntries.get(0).getItems().get(0).getSwitchValues();
+        List<SwitchValueDto> actualSwitchValues = actualEntries.get(0).getItems().get(0).getSwitchValues();
         assertThat(actualSwitchValues).isNotNull();
         assertThat(actualSwitchValues).extracting("index").containsExactly(1, 2, 3, 4, 5, 6, 7);
         assertThat(actualSwitchValues).extracting("name").containsOnly("Vehicle slot enabled", "?", "?", "?", "?", "Add-on key required", "Car Paint Luxe enabled");

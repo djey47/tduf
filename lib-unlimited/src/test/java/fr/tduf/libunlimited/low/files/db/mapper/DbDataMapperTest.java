@@ -2,7 +2,9 @@ package fr.tduf.libunlimited.low.files.db.mapper;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.json.JSONException;
@@ -30,37 +32,37 @@ public class DbDataMapperTest {
     @Test
     public void serialize_shouldWriteProperJson() throws IOException, JSONException, URISyntaxException {
         //GIVEN
-        DbDataDto.Item item11 = DbDataDto.Item.builder()
+        ContentItemDto item11 = ContentItemDto.builder()
                 .ofFieldRank(1)
                 .withRawValue("111111")
                 .build();
-        DbDataDto.Item item12 = DbDataDto.Item.builder()
+        ContentItemDto item12 = ContentItemDto.builder()
                 .ofFieldRank(2)
                 .withRawValue("111")
                 .build();
-        DbDataDto.Item item13 = DbDataDto.Item.builder()
+        ContentItemDto item13 = ContentItemDto.builder()
                 .ofFieldRank(3)
                 .withRawValue("1")
                 .build();
-        DbDataDto.Item item21 = DbDataDto.Item.builder()
+        ContentItemDto item21 = ContentItemDto.builder()
                 .ofFieldRank(1)
                 .withRawValue("222222")
                 .build();
-        DbDataDto.Item item22 = DbDataDto.Item.builder()
+        ContentItemDto item22 = ContentItemDto.builder()
                 .ofFieldRank(2)
                 .withRawValue("222")
                 .build();
-        DbDataDto.Item item23 = DbDataDto.Item.builder()
+        ContentItemDto item23 = ContentItemDto.builder()
                 .ofFieldRank(3)
                 .withRawValue("0")
                 .build();
-        DbDataDto.Entry entry1 = DbDataDto.Entry.builder()
+        ContentEntryDto entry1 = ContentEntryDto.builder()
                 .forId(1L)
                 .addItem(item11)
                 .addItem(item12)
                 .addItem(item13)
                 .build();
-        DbDataDto.Entry entry2 = DbDataDto.Entry.builder()
+        ContentEntryDto entry2 = ContentEntryDto.builder()
                 .forId(2L)
                 .addItem(item21)
                 .addItem(item22)

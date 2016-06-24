@@ -4,9 +4,11 @@ import fr.tduf.gui.installer.domain.Dealer;
 import fr.tduf.gui.installer.domain.Resource;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,12 +55,12 @@ public class DealerHelperTest {
         dealerFileNameResourceEntry.setValue(fileNameResourceValue);
         DbDto carShopsTopicObject = DbDto.builder()
                 .withData(DbDataDto.builder()
-                        .addEntry(DbDataDto.Entry.builder()
-                                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(dealerReference).build())
-                                .addItem(DbDataDto.Item.builder().ofFieldRank(2).withRawValue(fileNameResourceReference).build())
-                                .addItem(DbDataDto.Item.builder().ofFieldRank(3).withRawValue(nameResourceReference).build())
-                                .addItem(DbDataDto.Item.builder().ofFieldRank(4).withRawValue("SLOTREF1").build())
-                                .addItem(DbDataDto.Item.builder().ofFieldRank(5).withRawValue("SLOTREF2").build())
+                        .addEntry(ContentEntryDto.builder()
+                                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(dealerReference).build())
+                                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(fileNameResourceReference).build())
+                                .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(nameResourceReference).build())
+                                .addItem(ContentItemDto.builder().ofFieldRank(4).withRawValue("SLOTREF1").build())
+                                .addItem(ContentItemDto.builder().ofFieldRank(5).withRawValue("SLOTREF2").build())
                                 .build())
                         .build())
                 .withResource(DbResourceDto.builder()
@@ -68,10 +70,10 @@ public class DealerHelperTest {
                 )
                 .build();
         when(minerMock.getDatabaseTopic(CAR_SHOPS)).thenReturn(Optional.of(carShopsTopicObject));
-        DbDataDto.Entry carSlotEntry1 = DbDataDto.Entry.builder()
+        ContentEntryDto carSlotEntry1 = ContentEntryDto.builder()
                 .forId(1)
                 .build();
-        DbDataDto.Entry carSlotEntry2 = DbDataDto.Entry.builder()
+        ContentEntryDto carSlotEntry2 = ContentEntryDto.builder()
                 .forId(2)
                 .build();
         when(minerMock.getContentEntryFromTopicWithReference("SLOTREF1", CAR_PHYSICS_DATA)).thenReturn(Optional.of(carSlotEntry1));
@@ -105,10 +107,10 @@ public class DealerHelperTest {
         dealerNameResourceEntry.setValue(nameResourceValue);
         DbDto carShopsTopicObject = DbDto.builder()
                 .withData(DbDataDto.builder()
-                        .addEntry(DbDataDto.Entry.builder()
-                                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(dealerReference).build())
-                                .addItem(DbDataDto.Item.builder().ofFieldRank(3).withRawValue(nameResourceReference).build())
-                                .addItem(DbDataDto.Item.builder().ofFieldRank(4).withRawValue("SLOTREF1").build())
+                        .addEntry(ContentEntryDto.builder()
+                                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(dealerReference).build())
+                                .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(nameResourceReference).build())
+                                .addItem(ContentItemDto.builder().ofFieldRank(4).withRawValue("SLOTREF1").build())
                                 .build())
                         .build())
                 .withResource(DbResourceDto.builder()
@@ -118,7 +120,7 @@ public class DealerHelperTest {
                 )
                 .build();
         when(minerMock.getDatabaseTopic(CAR_SHOPS)).thenReturn(Optional.of(carShopsTopicObject));
-        DbDataDto.Entry carSlotEntry1 = DbDataDto.Entry.builder()
+        ContentEntryDto carSlotEntry1 = ContentEntryDto.builder()
                 .forId(1)
                 .build();
         when(minerMock.getContentEntryFromTopicWithReference("SLOTREF1", CAR_PHYSICS_DATA)).thenReturn(Optional.of(carSlotEntry1));

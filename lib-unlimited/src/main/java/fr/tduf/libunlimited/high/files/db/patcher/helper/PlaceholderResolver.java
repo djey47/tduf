@@ -5,8 +5,8 @@ import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import org.apache.commons.lang3.Range;
 
 import java.util.HashSet;
@@ -25,6 +25,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Component to handle placeholder values in patch instructions.
  */
+// TODO apply code rules
 public class PlaceholderResolver {
 
     private static final Pattern PATTERN_PLACEHOLDER = Pattern.compile("\\{(.+)\\}");
@@ -228,7 +229,7 @@ public class PlaceholderResolver {
 
                 .map((entry) -> entry.getItemAtRank(10).get())
 
-                .map(DbDataDto.Item::getRawValue)
+                .map(ContentItemDto::getRawValue)
 
                 .collect(toSet());
 

@@ -8,7 +8,8 @@ import fr.tduf.gui.installer.domain.*;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -116,12 +117,12 @@ public class VehicleSlotsHelper extends CommonHelper {
         requireNonNull(slotReference, "Slot reference is required.");
         requireNonNull(miner, "Database miner instance is required.");
 
-        final Optional<DbDataDto.Entry> potentialPhysicsEntry = miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA);
+        final Optional<ContentEntryDto> potentialPhysicsEntry = miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA);
         if (!potentialPhysicsEntry.isPresent()) {
             return empty();
         }
 
-        final DbDataDto.Entry physicsEntry = potentialPhysicsEntry.get();
+        final ContentEntryDto physicsEntry = potentialPhysicsEntry.get();
 
         Optional<Resource> brandName = getResourceFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_CAR_BRAND, BRANDS, DatabaseConstants.FIELD_RANK_MANUFACTURER_NAME);
 
@@ -271,18 +272,18 @@ public class VehicleSlotsHelper extends CommonHelper {
     private List<RimSlot> getAllRimsForVehicle(String slotReference) {
         final Optional<String> defaultRimsReference = miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
                 .flatMap(entry -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEFAULT_RIMS))
-                .map(DbDataDto.Item::getRawValue);
+                .map(ContentItemDto::getRawValue);
 
         AtomicInteger rimRank = new AtomicInteger(1);
         return miner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference), CAR_RIMS)
                 .map(entry -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_RIM_ASSO_REF).get())
-                .map(DbDataDto.Item::getRawValue)
+                .map(ContentItemDto::getRawValue)
                 .map(rimSlotReference -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS).get())
                 .map(rimEntry -> getRimSlotFromDatabaseEntry(rimEntry, rimRank.getAndIncrement(), defaultRimsReference.orElse(null)))
                 .collect(toList());
     }
 
-    private RimSlot getRimSlotFromDatabaseEntry(DbDataDto.Entry rimEntry, int rimRank, String defaultRimsReference) {
+    private RimSlot getRimSlotFromDatabaseEntry(ContentEntryDto rimEntry, int rimRank, String defaultRimsReference) {
         String rimsReference = getStringValueFromDatabaseEntry(rimEntry, DatabaseConstants.FIELD_RANK_RIM_REF).get();
         Optional<Resource> defaulRimsParentDirectory = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_PATH);
         Optional<Resource> frontFileName = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT);
@@ -337,7 +338,7 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .orElse(defaultValue);
     }
 
-    private static boolean byVehicleKind(DbDataDto.Entry slotEntry, VehicleKind vehicleKind) {
+    private static boolean byVehicleKind(ContentEntryDto slotEntry, VehicleKind vehicleKind) {
         final String groupRawValue = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_GROUP).get().getRawValue();
         switch (vehicleKind) {
             case DRIVABLE:
@@ -351,7 +352,7 @@ public class VehicleSlotsHelper extends CommonHelper {
         }
     }
 
-    private static boolean bySlotKind(DbDataDto.Entry slotEntry, SlotKind slotKind) {
+    private static boolean bySlotKind(ContentEntryDto slotEntry, SlotKind slotKind) {
         final String slotReference = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REF).get().getRawValue();
         switch (slotKind) {
             case ALL:

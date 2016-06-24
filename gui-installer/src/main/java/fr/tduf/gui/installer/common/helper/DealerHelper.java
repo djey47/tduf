@@ -7,20 +7,16 @@ import fr.tduf.gui.installer.domain.Resource;
 import fr.tduf.libunlimited.high.files.db.common.helper.CarShopsHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static fr.tduf.gui.installer.common.DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER;
-import static fr.tduf.gui.installer.common.DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER;
-import static fr.tduf.gui.installer.common.DatabaseConstants.RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_RENTAL;
+import static fr.tduf.gui.installer.common.DatabaseConstants.*;
 import static fr.tduf.gui.installer.common.DisplayConstants.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
@@ -84,7 +80,7 @@ public class DealerHelper extends CommonHelper {
                 .collect(toList());
     }
 
-    private boolean entryMatchesDealerKind(DbDataDto.Entry carShopsEntry, DealerKind dealerkind) {
+    private boolean entryMatchesDealerKind(ContentEntryDto carShopsEntry, DealerKind dealerkind) {
         if (DealerKind.ALL == dealerkind) {
             return true;
         }
@@ -107,7 +103,7 @@ public class DealerHelper extends CommonHelper {
     }
 
     // Ignore warning: method reference
-    private Dealer dealerEntryToDomainObject(DbDataDto.Entry dealerEntry) {
+    private Dealer dealerEntryToDomainObject(ContentEntryDto dealerEntry) {
         String dealerReference = dealerEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEALER_REF).get().getRawValue();
 
         Optional<Resource> displayedName = getResourceFromDatabaseEntry(dealerEntry, CAR_SHOPS, DatabaseConstants.FIELD_RANK_DEALER_LIBELLE);
@@ -124,7 +120,7 @@ public class DealerHelper extends CommonHelper {
                 .build();
     }
 
-    private List<Dealer.Slot> getActualSlots(DbDataDto.Entry carShopsEntry, Optional<DbMetadataDto.DealerMetadataDto> carShopsReference) {
+    private List<Dealer.Slot> getActualSlots(ContentEntryDto carShopsEntry, Optional<DbMetadataDto.DealerMetadataDto> carShopsReference) {
 
         return carShopsEntry.getItems().stream()
 
@@ -142,7 +138,7 @@ public class DealerHelper extends CommonHelper {
                 .collect(toList());
     }
 
-    private static int getSlotRankFromFieldRank(DbDataDto.Item slotItem) {
+    private static int getSlotRankFromFieldRank(ContentItemDto slotItem) {
         return slotItem.getFieldRank() - DatabaseConstants.FIELD_RANK_DEALER_SLOT_1 + 1;
     }
 }

@@ -3,8 +3,8 @@ package fr.tduf.libunlimited.high.files.db.interop.tdupe;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 
 import java.util.HashSet;
 import java.util.List;
@@ -23,10 +23,11 @@ import static java.util.stream.Collectors.toList;
  * Utility class allowing to convert performance packs between TDUPE and TDUF systems.
  */
 public class TdupePerformancePackConverter {
-
     private static final String REGEX_SEPARATOR_ITEMS = ";";
 
     private static final Set<Integer> FIELD_RANKS_NON_PHYSICAL = new HashSet<>(asList(1, 2, 3, 4, 9, 10, 11, 12, 13, 14, 100, 101, 102, 103));
+
+    private TdupePerformancePackConverter() {}
 
     /**
      * Converts a performance pack line (aka. CarPhysics entry)
@@ -51,7 +52,7 @@ public class TdupePerformancePackConverter {
         List<String> packValues = asList(contentsEntry.split(REGEX_SEPARATOR_ITEMS));
         String slotReference = carPhysicsRef.orElse(packValues.get(0));
 
-        Optional<DbDataDto.Entry> carPhysicsEntry = BulkDatabaseMiner.load(singletonList(carPhysicsTopicObject))
+        Optional<ContentEntryDto> carPhysicsEntry = BulkDatabaseMiner.load(singletonList(carPhysicsTopicObject))
                 .getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA);
 
         if (carPhysicsEntry.isPresent()) {
@@ -77,9 +78,9 @@ public class TdupePerformancePackConverter {
         AtomicInteger rank = new AtomicInteger(0);
         return packValues.stream()
 
-                .filter((packValue) -> !FIELD_RANKS_NON_PHYSICAL.contains(rank.incrementAndGet()))
+                .filter(packValue -> !FIELD_RANKS_NON_PHYSICAL.contains(rank.incrementAndGet()))
 
-                .map((physicsValue) -> DbFieldValueDto.fromCouple(rank.get(), physicsValue))
+                .map(physicsValue -> DbFieldValueDto.fromCouple(rank.get(), physicsValue))
 
                 .collect(toList());
     }

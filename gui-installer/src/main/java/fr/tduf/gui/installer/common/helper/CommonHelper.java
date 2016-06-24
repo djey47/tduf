@@ -4,8 +4,9 @@ import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.domain.Resource;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 
 import java.util.Optional;
 
@@ -22,36 +23,36 @@ abstract class CommonHelper {
         this.miner = requireNonNull(miner, "Database miner instance is required.");
     }
 
-    protected Optional<Resource> getResourceFromDatabaseEntry(DbDataDto.Entry entry, DbDto.Topic topic, int fieldRank) {
+    protected Optional<Resource> getResourceFromDatabaseEntry(ContentEntryDto entry, DbDto.Topic topic, int fieldRank) {
         return entry.getItemAtRank(fieldRank)
-                .map((item) -> {
+                .map(item -> {
                     String value = miner.getLocalizedResourceValueFromTopicAndReference(item.getRawValue(), topic, DEFAULT_LOCALE)
                             .orElse(DatabaseConstants.RESOURCE_VALUE_DEFAULT);
                     return Resource.from(item.getRawValue(), value);
                 });
     }
 
-    protected Optional<Resource> getResourceFromDatabaseEntry(DbDataDto.Entry entry, int sourceFieldRank, DbDto.Topic targetTopic, int targetFieldRank) {
+    protected Optional<Resource> getResourceFromDatabaseEntry(ContentEntryDto entry, int sourceFieldRank, DbDto.Topic targetTopic, int targetFieldRank) {
         return entry.getItemAtRank(sourceFieldRank)
-                .flatMap((sourceItem) -> miner.getContentEntryFromTopicWithReference(sourceItem.getRawValue(), targetTopic))
-                .flatMap((targetEntry) -> miner.getLocalizedResourceValueFromContentEntry(targetEntry.getId(), targetFieldRank, targetTopic, DEFAULT_LOCALE))
-                .map((value) -> Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT, value));
+                .flatMap(sourceItem -> miner.getContentEntryFromTopicWithReference(sourceItem.getRawValue(), targetTopic))
+                .flatMap(targetEntry -> miner.getLocalizedResourceValueFromContentEntry(targetEntry.getId(), targetFieldRank, targetTopic, DEFAULT_LOCALE))
+                .map(value -> Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT, value));
     }
 
-    protected static Optional<Integer> getIntValueFromDatabaseEntry(DbDataDto.Entry entry, int fieldRank) {
+    protected static Optional<Integer> getIntValueFromDatabaseEntry(ContentEntryDto entry, int fieldRank) {
         return entry.getItemAtRank(fieldRank)
-                .map(DbDataDto.Item::getRawValue)
+                .map(ContentItemDto::getRawValue)
                 .map(Integer::valueOf);
     }
 
-    protected static Optional<Float> getFloatValueFromDatabaseEntry(DbDataDto.Entry entry, int fieldRank) {
+    protected static Optional<Float> getFloatValueFromDatabaseEntry(ContentEntryDto entry, int fieldRank) {
         return entry.getItemAtRank(fieldRank)
-                .map(DbDataDto.Item::getRawValue)
+                .map(ContentItemDto::getRawValue)
                 .map(Float::valueOf);
     }
 
-    protected static Optional<String> getStringValueFromDatabaseEntry(DbDataDto.Entry entry, int fieldRank) {
+    protected static Optional<String> getStringValueFromDatabaseEntry(ContentEntryDto entry, int fieldRank) {
         return entry.getItemAtRank(fieldRank)
-                .map(DbDataDto.Item::getRawValue);
+                .map(ContentItemDto::getRawValue);
     }
 }

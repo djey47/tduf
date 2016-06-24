@@ -3,8 +3,9 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,7 +49,7 @@ public class DatabasePatcher_focusOnContentsTest {
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(DbDto.Topic.BOTS).get().getData().getEntries();
+        List<ContentEntryDto> topicEntries = databaseMiner.getDatabaseTopic(DbDto.Topic.BOTS).get().getData().getEntries();
         int previousEntryCount = topicEntries.size();
 
 
@@ -61,7 +62,7 @@ public class DatabasePatcher_focusOnContentsTest {
         int actualEntryIndex = actualEntryCount - 1;
         assertThat(actualEntryCount).isEqualTo(previousEntryCount + 1);
 
-        DbDataDto.Entry actualCreatedEntry = topicEntries.get(actualEntryIndex);
+        ContentEntryDto actualCreatedEntry = topicEntries.get(actualEntryIndex);
         assertThat(actualCreatedEntry.getId()).isEqualTo(actualEntryIndex);
 
         assertThat(actualCreatedEntry.getItems()).hasSize(8);
@@ -79,7 +80,7 @@ public class DatabasePatcher_focusOnContentsTest {
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(DbDto.Topic.BOTS).get().getData().getEntries();
+        List<ContentEntryDto> topicEntries = databaseMiner.getDatabaseTopic(DbDto.Topic.BOTS).get().getData().getEntries();
         int previousEntryCount = topicEntries.size();
 
 
@@ -92,7 +93,7 @@ public class DatabasePatcher_focusOnContentsTest {
         int actualEntryIndex = actualEntryCount - 2;
         assertThat(actualEntryCount).isEqualTo(previousEntryCount + 2);
 
-        DbDataDto.Entry actualCreatedEntry = topicEntries.get(actualEntryIndex);
+        ContentEntryDto actualCreatedEntry = topicEntries.get(actualEntryIndex);
         assertThat(actualCreatedEntry.getId()).isEqualTo(actualEntryIndex);
 
         assertThat(actualCreatedEntry.getItems()).hasSize(8);
@@ -115,7 +116,7 @@ public class DatabasePatcher_focusOnContentsTest {
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(DbDto.Topic.BOTS).get().getData().getEntries();
+        List<ContentEntryDto> topicEntries = databaseMiner.getDatabaseTopic(DbDto.Topic.BOTS).get().getData().getEntries();
         int previousEntryCount = topicEntries.size();
 
 
@@ -138,7 +139,7 @@ public class DatabasePatcher_focusOnContentsTest {
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
+        List<ContentEntryDto> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
         int previousEntryCount = topicEntries.size();
 
 
@@ -151,13 +152,13 @@ public class DatabasePatcher_focusOnContentsTest {
         int actualEntryIndex = actualEntryCount - 1;
         assertThat(actualEntryCount).isEqualTo(previousEntryCount + 1);
 
-        DbDataDto.Entry actualCreatedEntry = topicEntries.get(actualEntryIndex);
+        ContentEntryDto actualCreatedEntry = topicEntries.get(actualEntryIndex);
         assertThat(actualCreatedEntry.getId()).isEqualTo(actualEntryIndex);
 
         assertThat(actualCreatedEntry.getItems()).hasSize(103);
         assertThat(actualCreatedEntry.getItems().get(0).getRawValue()).isEqualTo("1221657049");
 
-        DbDataDto.Entry actualUpdatedEntry = databaseMiner.getContentEntryFromTopicWithReference("606298799", CAR_PHYSICS_DATA).get();
+        ContentEntryDto actualUpdatedEntry = databaseMiner.getContentEntryFromTopicWithReference("606298799", CAR_PHYSICS_DATA).get();
         assertThat(actualUpdatedEntry.getId()).isEqualTo(0);
 
         assertThat(actualUpdatedEntry.getItems()).hasSize(103);
@@ -173,7 +174,7 @@ public class DatabasePatcher_focusOnContentsTest {
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
+        List<ContentEntryDto> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
         int previousEntryCount = topicEntries.size();
 
 
@@ -186,13 +187,13 @@ public class DatabasePatcher_focusOnContentsTest {
         int actualEntryIndex = actualEntryCount - 1;
         assertThat(actualEntryCount).isEqualTo(previousEntryCount + 1);
 
-        DbDataDto.Entry actualCreatedEntry = topicEntries.get(actualEntryIndex);
+        ContentEntryDto actualCreatedEntry = topicEntries.get(actualEntryIndex);
         assertThat(actualCreatedEntry.getId()).isEqualTo(actualEntryIndex);
 
         assertThat(actualCreatedEntry.getItems()).hasSize(103);
         assertThat(actualCreatedEntry.getItems().get(0).getRawValue()).isEqualTo("1221657049");
 
-        DbDataDto.Entry actualUpdatedEntry = databaseMiner.getContentEntryFromTopicWithReference("606298799", CAR_PHYSICS_DATA).get();
+        ContentEntryDto actualUpdatedEntry = databaseMiner.getContentEntryFromTopicWithReference("606298799", CAR_PHYSICS_DATA).get();
         assertThat(actualUpdatedEntry.getId()).isEqualTo(0);
 
         assertThat(actualUpdatedEntry.getItems()).hasSize(103);
@@ -215,11 +216,11 @@ public class DatabasePatcher_focusOnContentsTest {
         DatabasePatcher patcher = createPatcher(databaseObjects);
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(databaseObjects);
-        List<DbDataDto.Entry> carRimsTopicEntries = databaseMiner.getDatabaseTopic(CAR_RIMS).get().getData().getEntries();
+        List<ContentEntryDto> carRimsTopicEntries = databaseMiner.getDatabaseTopic(CAR_RIMS).get().getData().getEntries();
         int carRimsPreviousEntryCount = carRimsTopicEntries.size();
-        List<DbDataDto.Entry> carColorsTopicEntries = databaseMiner.getDatabaseTopic(CAR_COLORS).get().getData().getEntries();
+        List<ContentEntryDto> carColorsTopicEntries = databaseMiner.getDatabaseTopic(CAR_COLORS).get().getData().getEntries();
         int carColorsPreviousEntryCount = carColorsTopicEntries.size();
-        List<DbDataDto.Entry> carPacksTopicEntries = databaseMiner.getDatabaseTopic(CAR_PACKS).get().getData().getEntries();
+        List<ContentEntryDto> carPacksTopicEntries = databaseMiner.getDatabaseTopic(CAR_PACKS).get().getData().getEntries();
         int carPacksPreviousEntryCount = carPacksTopicEntries.size();
 
 
@@ -249,12 +250,12 @@ public class DatabasePatcher_focusOnContentsTest {
 
 
         // THEN
-        DbDataDto.Entry actualModifiedEntry = databaseMiner.getContentEntryFromTopicWithReference("589356824", CAR_SHOPS).get();
+        ContentEntryDto actualModifiedEntry = databaseMiner.getContentEntryFromTopicWithReference("589356824", CAR_SHOPS).get();
         assertThat(actualModifiedEntry.getItems().get(18).getSwitchValues())
                 .isNotNull()
                 .isNotEmpty();
 
-        DbDataDto.Entry actualCreatedEntry = databaseMiner.getContentEntryFromTopicWithReference("00000000", CAR_SHOPS).get();
+        ContentEntryDto actualCreatedEntry = databaseMiner.getContentEntryFromTopicWithReference("00000000", CAR_SHOPS).get();
         assertThat(actualCreatedEntry.getItems().get(18).getSwitchValues())
                 .isNotNull()
                 .isNotEmpty();
@@ -269,7 +270,7 @@ public class DatabasePatcher_focusOnContentsTest {
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
+        List<ContentEntryDto> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
         int previousEntryCount = topicEntries.size();
 
 
@@ -291,7 +292,7 @@ public class DatabasePatcher_focusOnContentsTest {
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
+        List<ContentEntryDto> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
         int previousEntryCount = topicEntries.size();
         int previousHashCode = getEntryHashCode(databaseMiner, "1139121456", CAR_PHYSICS_DATA);
 
@@ -318,7 +319,7 @@ public class DatabasePatcher_focusOnContentsTest {
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
 
-        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
+        List<ContentEntryDto> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
         int previousEntryCount = topicEntries.size();
         int previousHashCode = getEntryHashCode(databaseMiner, "1139121456", CAR_PHYSICS_DATA);
 
@@ -345,7 +346,7 @@ public class DatabasePatcher_focusOnContentsTest {
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
 
-        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
+        List<ContentEntryDto> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
         int previousEntryCount = topicEntries.size();
         List<String> previousValues = extractAllItemsFromCarPhysicsEntryExceptedLastOne(databaseMiner, "1139121456");
 
@@ -379,7 +380,7 @@ public class DatabasePatcher_focusOnContentsTest {
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
 
-        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(ACHIEVEMENTS).get().getData().getEntries();
+        List<ContentEntryDto> topicEntries = databaseMiner.getDatabaseTopic(ACHIEVEMENTS).get().getData().getEntries();
         int previousEntryCount = topicEntries.size();
 
 
@@ -408,7 +409,7 @@ public class DatabasePatcher_focusOnContentsTest {
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
 
-        List<DbDataDto.Entry> topicEntries = databaseMiner.getDatabaseTopic(ACHIEVEMENTS).get().getData().getEntries();
+        List<ContentEntryDto> topicEntries = databaseMiner.getDatabaseTopic(ACHIEVEMENTS).get().getData().getEntries();
         int previousEntryCount = topicEntries.size();
 
 
@@ -478,7 +479,7 @@ public class DatabasePatcher_focusOnContentsTest {
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
 
-        List<DbDataDto.Entry> actualEntries = databaseMiner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(1, "55736935"), ACHIEVEMENTS)
+        List<ContentEntryDto> actualEntries = databaseMiner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(1, "55736935"), ACHIEVEMENTS)
                 .collect(toList());
         assertThat(actualEntries)
                 .hasSize(4);
@@ -505,7 +506,7 @@ public class DatabasePatcher_focusOnContentsTest {
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
 
-        List<DbDataDto.Entry> actualEntries = databaseMiner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(1, "632098801"), CAR_COLORS)
+        List<ContentEntryDto> actualEntries = databaseMiner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(1, "632098801"), CAR_COLORS)
                 .collect(toList());
         assertThat(actualEntries)
                 .hasSize(8);
@@ -532,7 +533,7 @@ public class DatabasePatcher_focusOnContentsTest {
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
 
-        List<DbDataDto.Entry> actualEntries = databaseMiner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(1, "632098801"), CAR_COLORS)
+        List<ContentEntryDto> actualEntries = databaseMiner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(1, "632098801"), CAR_COLORS)
                 .collect(toList());
         assertThat(actualEntries)
                 .hasSize(8);
@@ -559,7 +560,7 @@ public class DatabasePatcher_focusOnContentsTest {
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
 
-        List<DbDataDto.Entry> actualEntries = databaseMiner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(1, "632098801"), CAR_COLORS)
+        List<ContentEntryDto> actualEntries = databaseMiner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(1, "632098801"), CAR_COLORS)
                 .collect(toList());
         assertThat(actualEntries)
                 .hasSize(8);
@@ -581,11 +582,11 @@ public class DatabasePatcher_focusOnContentsTest {
                 .getContentEntryFromTopicWithReference(ref, CAR_PHYSICS_DATA).get()
                 .getItems().stream()
                 .filter((item) -> item.getFieldRank() != 103)
-                .map(DbDataDto.Item::getRawValue)
+                .map(ContentItemDto::getRawValue)
                 .collect(toList());
     }
 
-    private static void assertAllEntriesHaveFirstItem(List<DbDataDto.Entry> actualEntries, String firstItemValue) {
+    private static void assertAllEntriesHaveFirstItem(List<ContentEntryDto> actualEntries, String firstItemValue) {
         assertThat(actualEntries.stream()
 
                 .map ( (entry) -> entry.getItems().get(0).getRawValue() )
@@ -595,7 +596,7 @@ public class DatabasePatcher_focusOnContentsTest {
                 .containsOnly(firstItemValue);
     }
 
-    private static void assertEntriesHaveSecondItems(List<DbDataDto.Entry> actualEntries, String... secondItemValues) {
+    private static void assertEntriesHaveSecondItems(List<ContentEntryDto> actualEntries, String... secondItemValues) {
         assertThat(actualEntries.stream()
 
                 .sorted( (entry1, entry2) -> Long.valueOf(entry1.getId()).compareTo(entry2.getId()))

@@ -2,20 +2,21 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto.fromCouple;
 import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.createPatcher;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
 import static java.util.Arrays.asList;
@@ -92,11 +93,11 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
         patchProperties.register(placeholderName2, "111111");
 
         databaseObject.getData().addEntryWithItems(asList(
-                DbDataDto.Item.builder()
+                ContentItemDto.builder()
                         .ofFieldRank(1)
                         .withRawValue("000000")
                         .build(),
-                DbDataDto.Item.builder()
+                ContentItemDto.builder()
                         .ofFieldRank(2)
                         .withRawValue("103")
                         .build()));
@@ -154,11 +155,11 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
         patchProperties.register(placeholderName, "000000");
 
         databaseObject.getData().addEntryWithItems(asList(
-                DbDataDto.Item.builder()
+                ContentItemDto.builder()
                         .ofFieldRank(1)
                         .withRawValue("000000")
                         .build(),
-                DbDataDto.Item.builder()
+                ContentItemDto.builder()
                         .ofFieldRank(2)
                         .build()));
 

@@ -7,7 +7,11 @@ import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import fr.tduf.libunlimited.low.files.db.dto.*;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.*;
@@ -24,6 +28,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Used to generate patches from an existing database.
  */
+// TODO apply code rules
 public class PatchGenerator extends AbstractDatabaseHolder {
 
     private static final Set<DbDto.Topic> CAR_PHYSICS_ASSOCIATION_TOPICS = new HashSet<>(asList(CAR_RIMS, CAR_PACKS, CAR_COLORS));
@@ -151,19 +156,19 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .build();
     }
 
-    private DbPatchDto.DbChangeDto makeChangeObjectForEntry(DbDto.Topic topic, DbDataDto.Entry entry, OptionalInt potentialRefFieldRank, List<DbStructureDto.Field> structureFields, ItemRange fieldRange, RequiredReferences requiredReferences) {
+    private DbPatchDto.DbChangeDto makeChangeObjectForEntry(DbDto.Topic topic, ContentEntryDto entry, OptionalInt potentialRefFieldRank, List<DbStructureDto.Field> structureFields, ItemRange fieldRange, RequiredReferences requiredReferences) {
         String entryReference = potentialRefFieldRank.isPresent() ?
                 BulkDatabaseMiner.getContentEntryReference(entry, potentialRefFieldRank.getAsInt()) :
                 null;
 
-        List<DbDataDto.Item> items = entry.getItems();
+        List<ContentItemDto> items = entry.getItems();
         return fieldRange.isGlobal() ?
                 makeGlobalChangeObject(entryReference, topic, items, structureFields, requiredReferences) :
                 makePartialChangeObject(entryReference, topic, items, structureFields, fieldRange, requiredReferences);
 
     }
 
-    private DbPatchDto.DbChangeDto makeGlobalChangeObject(String entryReference, DbDto.Topic topic, List<DbDataDto.Item> entryItems, List<DbStructureDto.Field> structureFields, RequiredReferences requiredReferences) {
+    private DbPatchDto.DbChangeDto makeGlobalChangeObject(String entryReference, DbDto.Topic topic, List<ContentItemDto> entryItems, List<DbStructureDto.Field> structureFields, RequiredReferences requiredReferences) {
         if (CAR_PHYSICS_DATA == topic) {
             addCarPhysicsAssociatedEntriesToRequiredContents(entryReference, requiredReferences);
         }
@@ -185,7 +190,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .build();
     }
 
-    private DbPatchDto.DbChangeDto makePartialChangeObject(String entryReference, DbDto.Topic topic, List<DbDataDto.Item> entryItems, List<DbStructureDto.Field> structureFields, ItemRange fieldRange, RequiredReferences requiredReferences) {
+    private DbPatchDto.DbChangeDto makePartialChangeObject(String entryReference, DbDto.Topic topic, List<ContentItemDto> entryItems, List<DbStructureDto.Field> structureFields, ItemRange fieldRange, RequiredReferences requiredReferences) {
         requireNonNull(entryReference, "Entry reference is required for partial change object.");
 
         List<DbFieldValueDto> partialValues = entryItems.stream()
@@ -219,7 +224,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 );
     }
 
-    private String fetchItemValue(DbDto.Topic topic, DbStructureDto.Field structureField, DbDataDto.Item entryItem, RequiredReferences requiredReferences) {
+    private String fetchItemValue(DbDto.Topic topic, DbStructureDto.Field structureField, ContentItemDto entryItem, RequiredReferences requiredReferences) {
         DbStructureDto.FieldType fieldType = structureField.getFieldType();
         if (RESOURCE_CURRENT_GLOBALIZED == fieldType
                 || RESOURCE_CURRENT_LOCALIZED == fieldType) {
@@ -248,7 +253,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         }
     }
 
-    private static boolean isInRange(DbDataDto.Entry entry, OptionalInt potentialRefFieldRank, ItemRange range) {
+    private static boolean isInRange(ContentEntryDto entry, OptionalInt potentialRefFieldRank, ItemRange range) {
 
         String entryRef;
         if (potentialRefFieldRank.isPresent()) {

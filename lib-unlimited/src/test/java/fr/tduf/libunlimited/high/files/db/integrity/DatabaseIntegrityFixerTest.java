@@ -1,12 +1,17 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import fr.tduf.libunlimited.low.files.db.dto.*;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic;
-import fr.tduf.libunlimited.common.game.domain.Locale;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,11 +21,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.AFTER_MARKET_PACKS;
-import static fr.tduf.libunlimited.common.game.domain.Locale.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -157,19 +162,19 @@ public class DatabaseIntegrityFixerTest {
 
         DbDto remoteTopicObject = dbDtos.get(1);
         List<DbStructureDto.Field> remoteStructureFields = remoteTopicObject.getStructure().getFields();
-        DbDataDto.Item fixedItem1 = DbDataDto.Item.builder()
+        ContentItemDto fixedItem1 = ContentItemDto.builder()
                 .fromStructureFieldAndTopic(remoteStructureFields.get(0), AFTER_MARKET_PACKS)
                 .withRawValue("11111111")
                 .build();
-        DbDataDto.Item fixedItem2 = DbDataDto.Item.builder()
+        ContentItemDto fixedItem2 = ContentItemDto.builder()
                 .fromStructureFieldAndTopic(remoteStructureFields.get(1), AFTER_MARKET_PACKS)
                 .withRawValue("0")
                 .build();
-        DbDataDto.Item fixedItem3 = DbDataDto.Item.builder()
+        ContentItemDto fixedItem3 = ContentItemDto.builder()
                 .fromStructureFieldAndTopic(remoteStructureFields.get(2), AFTER_MARKET_PACKS)
                 .withRawValue("REF")
                 .build();
-        List<DbDataDto.Item> fixedItems = asList(fixedItem1, fixedItem2, fixedItem3);
+        List<ContentItemDto> fixedItems = asList(fixedItem1, fixedItem2, fixedItem3);
         when(genHelperMock.buildDefaultContentItems(Optional.of("11111111"), remoteTopicObject)).thenReturn(fixedItems);
 
 
@@ -184,22 +189,22 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        List<DbDataDto.Entry> allEntries = searchContentsEntries(AFTER_MARKET_PACKS, fixedDatabaseObjects);
+        List<ContentEntryDto> allEntries = searchContentsEntries(AFTER_MARKET_PACKS, fixedDatabaseObjects);
         assertThat(allEntries).hasSize(1);
-        DbDataDto.Entry createdEntry = allEntries.get(0);
+        ContentEntryDto createdEntry = allEntries.get(0);
         assertThat(createdEntry.getId()).isEqualTo(0);
 
         assertThat(createdEntry.getItems()).hasSize(3);
 
-        DbDataDto.Item item1 = createdEntry.getItems().get(0);
+        ContentItemDto item1 = createdEntry.getItems().get(0);
         assertThat(item1.getFieldRank()).isEqualTo(1);
         assertThat(item1.getRawValue()).isEqualTo("11111111");
 
-        DbDataDto.Item item2 = createdEntry.getItems().get(1);
+        ContentItemDto item2 = createdEntry.getItems().get(1);
         assertThat(item2.getFieldRank()).isEqualTo(2);
         assertThat(item2.getRawValue()).isEqualTo("0");
 
-        DbDataDto.Item item3 = createdEntry.getItems().get(2);
+        ContentItemDto item3 = createdEntry.getItems().get(2);
         assertThat(item3.getFieldRank()).isEqualTo(3);
         assertThat(item3.getRawValue()).isEqualTo("REF");
     }
@@ -219,11 +224,11 @@ public class DatabaseIntegrityFixerTest {
         DbDto topicObject = dbDtos.get(1);
         DbStructureDto.Field firstStructureField = topicObject.getStructure().getFields().get(0);
         DbStructureDto.Field thirdStructureField = topicObject.getStructure().getFields().get(2);
-        DbDataDto.Item firstItem = DbDataDto.Item.builder()
+        ContentItemDto firstItem = ContentItemDto.builder()
                 .fromStructureFieldAndTopic(firstStructureField, AFTER_MARKET_PACKS)
                 .withRawValue("11111111")
                 .build();
-        DbDataDto.Item thirdItem = DbDataDto.Item.builder()
+        ContentItemDto thirdItem = ContentItemDto.builder()
                 .fromStructureFieldAndTopic(thirdStructureField, AFTER_MARKET_PACKS)
                 .withRawValue("200")
                 .build();
@@ -243,23 +248,23 @@ public class DatabaseIntegrityFixerTest {
 
         assertThat(fixedDatabaseObjects).isNotEmpty();
 
-        List<DbDataDto.Entry> allEntries = searchContentsEntries(AFTER_MARKET_PACKS, fixedDatabaseObjects);
+        List<ContentEntryDto> allEntries = searchContentsEntries(AFTER_MARKET_PACKS, fixedDatabaseObjects);
         assertThat(allEntries).hasSize(1);
-        DbDataDto.Entry createdEntry = allEntries.get(0);
+        ContentEntryDto createdEntry = allEntries.get(0);
         assertThat(createdEntry).isNotNull();
         assertThat(createdEntry.getId()).isEqualTo(0);
 
         assertThat(createdEntry.getItems()).hasSize(3);
 
-        DbDataDto.Item item1 = createdEntry.getItems().get(0);
+        ContentItemDto item1 = createdEntry.getItems().get(0);
         assertThat(item1.getFieldRank()).isEqualTo(1);
         assertThat(item1.getRawValue()).isEqualTo("11111111");
 
-        DbDataDto.Item item2 = createdEntry.getItems().get(1);
+        ContentItemDto item2 = createdEntry.getItems().get(1);
         assertThat(item2.getFieldRank()).isEqualTo(2);
         assertThat(item2.getRawValue()).isEqualTo("100");
 
-        DbDataDto.Item item3 = createdEntry.getItems().get(2);
+        ContentItemDto item3 = createdEntry.getItems().get(2);
         assertThat(item3.getFieldRank()).isEqualTo(3);
         assertThat(item3.getRawValue()).isEqualTo("200");
     }
@@ -522,8 +527,8 @@ public class DatabaseIntegrityFixerTest {
     private static DbDataDto createContentsObjectWithTwoFieldsMissing() {
         // Missing: Field 1 = ID, Field 3 = RemoteRef
         return DbDataDto.builder()
-                .addEntry(DbDataDto.Entry.builder()
-                        .addItem(DbDataDto.Item.builder()
+                .addEntry(ContentEntryDto.builder()
+                        .addItem(ContentItemDto.builder()
                                 .ofFieldRank(2)
                                 .withRawValue("100")
                                 .build())
@@ -569,7 +574,7 @@ public class DatabaseIntegrityFixerTest {
                 .contains(value);
     }
 
-    private static List<DbDataDto.Entry> searchContentsEntries(Topic topic, List<DbDto> databaseObjects) {
+    private static List<ContentEntryDto> searchContentsEntries(Topic topic, List<DbDto> databaseObjects) {
         return BulkDatabaseMiner.load(databaseObjects)
                 .getDatabaseTopic(topic)
                 .get()

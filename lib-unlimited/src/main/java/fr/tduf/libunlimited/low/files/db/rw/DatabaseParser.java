@@ -2,10 +2,12 @@ package fr.tduf.libunlimited.low.files.db.rw;
 
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.*;
@@ -159,7 +161,7 @@ public class DatabaseParser {
 
     private DbDataDto parseContents(DbStructureDto structure) {
 
-        List<DbDataDto.Entry> entries = new ArrayList<>();
+        List<ContentEntryDto> entries = new ArrayList<>();
         long id = 0;
         long itemCount = 0;
 
@@ -179,7 +181,7 @@ public class DatabaseParser {
                 continue;
             }
 
-            entries.add(DbDataDto.Entry.builder()
+            entries.add(ContentEntryDto.builder()
                     .forId(id)
                     .addItems(parseContentItems(structure, line, id))
                     .build());
@@ -198,14 +200,14 @@ public class DatabaseParser {
                 .build();
     }
 
-    private List<DbDataDto.Item> parseContentItems(DbStructureDto structure, String line, long entryIdentifier) {
+    private List<ContentItemDto> parseContentItems(DbStructureDto structure, String line, long entryIdentifier) {
 
-        List<DbDataDto.Item> items = new ArrayList<>();
+        List<ContentItemDto> items = new ArrayList<>();
         int fieldIndex = 0;
         for (String itemValue : line.split(VALUE_DELIMITER)) {
             DbStructureDto.Field fieldInformation = structure.getFields().get(fieldIndex++);
 
-            items.add(DbDataDto.Item.builder()
+            items.add(ContentItemDto.builder()
                     .ofFieldRank(fieldInformation.getRank())
                     .withRawValue(itemValue)
                     .bitFieldForTopic(fieldInformation.getFieldType() == BITFIELD, structure.getTopic())
@@ -295,7 +297,7 @@ public class DatabaseParser {
                 .build();
     }
 
-    private void checkContentItemsCount(DbDto.Topic topic, long expectedItemCount, List<DbDataDto.Entry> actualEntries) {
+    private void checkContentItemsCount(DbDto.Topic topic, long expectedItemCount, List<ContentEntryDto> actualEntries) {
         checkCount(CONTENT_ITEMS_COUNT_MISMATCH, topic, expectedItemCount, actualEntries.size());
     }
 
@@ -314,7 +316,7 @@ public class DatabaseParser {
         }
     }
 
-    private void checkFieldCountInContents(DbStructureDto structureObject, long entryIdentifier, List<DbDataDto.Item> items) {
+    private void checkFieldCountInContents(DbStructureDto structureObject, long entryIdentifier, List<ContentItemDto> items) {
         int expectedFieldCount = structureObject.getFields().size();
 
         if (expectedFieldCount != items.size()) {

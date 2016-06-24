@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;

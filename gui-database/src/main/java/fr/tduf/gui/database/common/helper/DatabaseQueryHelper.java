@@ -3,8 +3,8 @@ package fr.tduf.gui.database.common.helper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class DatabaseQueryHelper {
                 .map((fieldRank) -> databaseMiner.getLocalizedResourceValueFromContentEntry(entryId, fieldRank, topic, locale)
                         .orElseGet(() -> {
                             final String rawValue = databaseMiner.getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, entryId)
-                                    .map(DbDataDto.Item::getRawValue)
+                                    .map(ContentItemDto::getRawValue)
                                     .get();
                             return String.format(DisplayConstants.VALUE_UNKNOWN, rawValue);
                         }))

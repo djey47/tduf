@@ -2,10 +2,12 @@ package fr.tduf.libunlimited.low.files.db.rw;
 
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 
 import java.io.BufferedWriter;
@@ -123,9 +125,9 @@ public class DatabaseWriter {
     private long writeItemContents(DbDataDto dbDataDto, BufferedWriter bufferedWriter) throws IOException {
         long writtenSize = writeAndEndWithCRLF(
                 format(COMMENT_INFO_PATTERN, "items", dbDataDto.getEntries().size()), bufferedWriter);
-        for (DbDataDto.Entry entry : dbDataDto.getEntries()) {
+        for (ContentEntryDto entry : dbDataDto.getEntries()) {
 
-            for (DbDataDto.Item item : entry.getItems()) {
+            for (ContentItemDto item : entry.getItems()) {
                 bufferedWriter.write(item.getRawValue());
                 bufferedWriter.write(DatabaseParser.VALUE_DELIMITER);
 

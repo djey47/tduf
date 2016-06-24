@@ -11,9 +11,10 @@ import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -104,7 +105,7 @@ class MainStageViewDataController {
         mainStageController.getResourceListByTopicLink().entrySet().forEach(this::updateLinkProperties);
     }
 
-    void updateItemProperties(DbDataDto.Item item) {
+    void updateItemProperties(ContentItemDto item) {
         mainStageController.rawValuePropertyByFieldRank.get(item.getFieldRank()).set(item.getRawValue());
 
         DbDto currentTopicObject = mainStageController.getCurrentTopicObject();
@@ -277,7 +278,7 @@ class MainStageViewDataController {
         mainStageController.currentEntryLabelProperty.setValue(entryLabel);
     }
 
-    private ContentEntryDataItem getDisplayableEntryForCurrentLocale(DbDataDto.Entry topicEntry, List<Integer> labelFieldRanks, DbDto.Topic topic) {
+    private ContentEntryDataItem getDisplayableEntryForCurrentLocale(ContentEntryDto topicEntry, List<Integer> labelFieldRanks, DbDto.Topic topic) {
         ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
 
         long entryInternalIdentifier = topicEntry.getId();
@@ -296,7 +297,7 @@ class MainStageViewDataController {
         return contentEntryDataItem;
     }
 
-    private void updateResourceProperties(DbDataDto.Item resourceItem, DbStructureDto.Field structureField) {
+    private void updateResourceProperties(ContentItemDto resourceItem, DbStructureDto.Field structureField) {
         Locale locale = mainStageController.currentLocaleProperty.getValue();
         DbDto.Topic resourceTopic = mainStageController.getCurrentTopicObject().getTopic();
         if (structureField.getTargetRef() != null) {
@@ -327,7 +328,7 @@ class MainStageViewDataController {
                 .forEach(values::add);
     }
 
-    private void updateReferenceProperties(DbDataDto.Item referenceItem, DbStructureDto.Field structureField) {
+    private void updateReferenceProperties(ContentItemDto referenceItem, DbStructureDto.Field structureField) {
         DbDto.Topic remoteTopic = getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
 
         List<Integer> remoteFieldRanks = new ArrayList<>();
@@ -343,7 +344,7 @@ class MainStageViewDataController {
         mainStageController.resolvedValuePropertyByFieldRank.get(referenceItem.getFieldRank()).set(remoteContents);
     }
 
-    private ContentEntryDataItem fetchLinkResourceFromContentEntry(DbDto topicObject, DbDataDto.Entry contentEntry, TopicLinkDto linkObject) {
+    private ContentEntryDataItem fetchLinkResourceFromContentEntry(DbDto topicObject, ContentEntryDto contentEntry, TopicLinkDto linkObject) {
         List<Integer> remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(linkObject.getRemoteReferenceProfile(), mainStageController.getLayoutObject());
         ContentEntryDataItem databaseEntry = new ContentEntryDataItem();
         long entryId = contentEntry.getId();

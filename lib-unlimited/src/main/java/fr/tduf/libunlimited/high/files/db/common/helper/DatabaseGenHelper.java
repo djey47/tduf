@@ -2,7 +2,10 @@ package fr.tduf.libunlimited.high.files.db.common.helper;
 
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.*;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import org.apache.commons.lang3.Range;
 
@@ -14,6 +17,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Class providing methods to generate database contents and resources.
  */
+// TODO Apply code rules
 public class DatabaseGenHelper {
 
     public static final String RESOURCE_VALUE_DEFAULT = "??";
@@ -45,7 +49,7 @@ public class DatabaseGenHelper {
      * @param topicObject : database contents hosting items to be created
      * @return created items list with default values.
      */
-    public List<DbDataDto.Item> buildDefaultContentItems(Optional<String> reference, DbDto topicObject) {
+    public List<ContentItemDto> buildDefaultContentItems(Optional<String> reference, DbDto topicObject) {
 
         return topicObject.getStructure().getFields().stream()
 
@@ -61,7 +65,7 @@ public class DatabaseGenHelper {
      * @param createTargetEntries : true to generate target resource and contents entries, false to leave raw values empty.
      * @return created item with default value.
      */
-    public DbDataDto.Item buildDefaultContentItem(Optional<String> entryReference, DbStructureDto.Field field, DbDto topicObject, boolean createTargetEntries) {
+    public ContentItemDto buildDefaultContentItem(Optional<String> entryReference, DbStructureDto.Field field, DbDto topicObject, boolean createTargetEntries) {
         String rawValue;
         DbDto remoteTopicObject = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef());
 
@@ -101,7 +105,7 @@ public class DatabaseGenHelper {
         }
 
         DbDto.Topic topic = topicObject.getTopic();
-        return DbDataDto.Item.builder()
+        return ContentItemDto.builder()
                 .fromStructureFieldAndTopic(field, topic)
                 .withRawValue(rawValue)
                 .build();

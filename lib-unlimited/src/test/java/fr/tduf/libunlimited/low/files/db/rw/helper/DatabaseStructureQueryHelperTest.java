@@ -1,9 +1,9 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class DatabaseStructureQueryHelperTest {
     @Test(expected = NoSuchElementException.class)
     public void getStructureField_whenNotFound_shouldThrowException() throws Exception {
         // GIVEN
-        DbDataDto.Item contentsItem = DbDataDto.Item.builder()
+        ContentItemDto contentsItem = ContentItemDto.builder()
                 .ofFieldRank(2)
                 .build();
         DbStructureDto structureObject = createStructureWithTwoFields(createIdentifierField());
@@ -75,7 +75,7 @@ public class DatabaseStructureQueryHelperTest {
     @Test
     public void getStructureField_whenFound_shouldReturnIt() throws Exception {
         // GIVEN
-        DbDataDto.Item contentsItem = DbDataDto.Item.builder()
+        ContentItemDto contentsItem = ContentItemDto.builder()
                 .ofFieldRank(0)
                 .build();
         DbStructureDto.Field identifierField = createIdentifierField();

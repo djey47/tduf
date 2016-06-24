@@ -8,9 +8,11 @@ import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,9 +28,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto.GenuineCamViewDto.Type.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_COLORS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -207,9 +207,9 @@ public class AdjustCameraStepTest {
                                 .build())
                         .build())
                 .withData(DbDataDto.builder()
-                        .addEntry(DbDataDto.Entry.builder()
-                                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue(slotReference).build())
-                                .addItem(DbDataDto.Item.builder().ofFieldRank(98).withRawValue("200").build())
+                        .addEntry(ContentEntryDto.builder()
+                                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotReference).build())
+                                .addItem(ContentItemDto.builder().ofFieldRank(98).withRawValue("200").build())
                                 .build())
                         .build())
                 .build();

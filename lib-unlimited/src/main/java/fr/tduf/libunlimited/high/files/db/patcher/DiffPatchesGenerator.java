@@ -4,10 +4,12 @@ import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
@@ -124,9 +126,9 @@ public class DiffPatchesGenerator {
                 .collect(toSet());
     }
 
-    private DbPatchDto.DbChangeDto handleTopicWithREF(DbDto.Topic currentTopic, DbDataDto.Entry entry, int refFieldRank) {
+    private DbPatchDto.DbChangeDto handleTopicWithREF(DbDto.Topic currentTopic, ContentEntryDto entry, int refFieldRank) {
         String entryRef = BulkDatabaseMiner.getContentEntryReference(entry, refFieldRank);
-        final Optional<DbDataDto.Entry> potentialReferenceEntry = getReferenceDatabaseMiner().getContentEntryFromTopicWithReference(entryRef, currentTopic);
+        final Optional<ContentEntryDto> potentialReferenceEntry = getReferenceDatabaseMiner().getContentEntryFromTopicWithReference(entryRef, currentTopic);
 
         if (potentialReferenceEntry.isPresent()) {
             return createPartialContentsUpdate(currentTopic, entryRef, entry, potentialReferenceEntry.get());
@@ -135,14 +137,14 @@ public class DiffPatchesGenerator {
         }
     }
 
-    private DbPatchDto.DbChangeDto handleTopicWithoutREF(DbDto.Topic currentTopic, DbDataDto.Entry entry) {
+    private DbPatchDto.DbChangeDto handleTopicWithoutREF(DbDto.Topic currentTopic, ContentEntryDto entry) {
         List<DbFieldValueDto> criteria = entry.getItems().stream()
 
                 .map((item) -> fromCouple(item.getFieldRank(), item.getRawValue()))
 
                 .collect(toList());
 
-        List<DbDataDto.Entry> existingEntries = getReferenceDatabaseMiner().getContentEntriesMatchingCriteria(criteria, currentTopic);
+        List<ContentEntryDto> existingEntries = getReferenceDatabaseMiner().getContentEntriesMatchingCriteria(criteria, currentTopic);
         if (!existingEntries.isEmpty()) {
             return null;
         }
@@ -150,7 +152,7 @@ public class DiffPatchesGenerator {
         return createFullContentsUpdate(currentTopic, entry, null);
     }
 
-    private DbPatchDto.DbChangeDto createPartialContentsUpdate(DbDto.Topic currentTopic, String entryReference, DbDataDto.Entry entry, DbDataDto.Entry referenceEntry) {
+    private DbPatchDto.DbChangeDto createPartialContentsUpdate(DbDto.Topic currentTopic, String entryReference, ContentEntryDto entry, ContentEntryDto referenceEntry) {
         List<DbFieldValueDto> partialEntryValues = entry.getItems().stream()
 
                 .map((entryItem) -> {
@@ -180,9 +182,9 @@ public class DiffPatchesGenerator {
                 .build();
     }
 
-    private DbPatchDto.DbChangeDto createFullContentsUpdate(DbDto.Topic currentTopic, DbDataDto.Entry entry, String entryRef) {
+    private DbPatchDto.DbChangeDto createFullContentsUpdate(DbDto.Topic currentTopic, ContentEntryDto entry, String entryRef) {
         List<String> entryValues = entry.getItems().stream()
-                .map(DbDataDto.Item::getRawValue)
+                .map(ContentItemDto::getRawValue)
                 .collect(toList());
 
         return DbPatchDto.DbChangeDto.builder()

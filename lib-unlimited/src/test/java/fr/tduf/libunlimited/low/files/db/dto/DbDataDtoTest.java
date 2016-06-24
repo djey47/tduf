@@ -1,5 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.SwitchValueDto;
 import org.junit.Test;
 
 import java.util.List;
@@ -13,7 +15,7 @@ public class DbDataDtoTest {
     @Test(expected = NullPointerException.class)
     public void buildItem_whenNullRawValue_andBitfield_shouldThrowException() {
         // GIVEN-WHEN
-        DbDataDto.Item.builder()
+        ContentItemDto.builder()
                 .ofFieldRank(101)
                 .withRawValue(null)
                 .bitFieldForTopic(true, CAR_PHYSICS_DATA)
@@ -25,7 +27,7 @@ public class DbDataDtoTest {
     @Test(expected = NullPointerException.class)
     public void buildItem_whenNullTopic_andBitfield_shouldThrowException() {
         // GIVEN-WHEN
-        DbDataDto.Item.builder()
+        ContentItemDto.builder()
                 .ofFieldRank(101)
                 .withRawValue("111")
                 .bitFieldForTopic(true, null)
@@ -37,7 +39,7 @@ public class DbDataDtoTest {
     @Test
     public void buildItem_whenNullRawValueAndNullTopic_andNoBitfield_shouldNotSetSwitchValues() {
         // GIVEN-WHEN
-        DbDataDto.Item actualItem = DbDataDto.Item.builder()
+        ContentItemDto actualItem = ContentItemDto.builder()
                 .ofFieldRank(101)
                 .withRawValue(null)
                 .build();
@@ -49,7 +51,7 @@ public class DbDataDtoTest {
     @Test
     public void buildItem_whenBitfield_shouldReturnCorrectSwitchValues() {
         // GIVEN-WHEN
-        List<DbDataDto.SwitchValue> actualValues = DbDataDto.Item.builder()
+        List<SwitchValueDto> actualValues = ContentItemDto.builder()
                 .ofFieldRank(101)
                 .withRawValue("111")
                 .bitFieldForTopic(true, CAR_PHYSICS_DATA)
@@ -66,7 +68,7 @@ public class DbDataDtoTest {
     @Test
     public void prepareSwitchValues_whenBitfield_andReferenceNotFound_shouldReturnEmptyList() {
         // GIVEN-WHEN
-        List<DbDataDto.SwitchValue> actualValues = DbDataDto.Item.builder()
+        List<SwitchValueDto> actualValues = ContentItemDto.builder()
                 .ofFieldRank(101)
                 .withRawValue("111")
                 .bitFieldForTopic(true, CAR_RIMS)

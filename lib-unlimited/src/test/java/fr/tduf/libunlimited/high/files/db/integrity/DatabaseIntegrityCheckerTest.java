@@ -2,10 +2,12 @@ package fr.tduf.libunlimited.high.files.db.integrity;
 
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.assertj.core.data.MapEntry;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.CHINA;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.PER_VALUE_COUNT;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
-import static fr.tduf.libunlimited.common.game.domain.Locale.CHINA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -288,40 +290,40 @@ public class DatabaseIntegrityCheckerTest {
 
     private DbDataDto createContentsOneEntryEightItems(String entryUniqueIdentifier) {
         return DbDataDto.builder()
-                                .addEntry(DbDataDto.Entry.builder()
-                                        .addItem(DbDataDto.Item.builder()
+                                .addEntry(ContentEntryDto.builder()
+                                        .addItem(ContentItemDto.builder()
                                                 .withRawValue(entryUniqueIdentifier)
                                                 .ofFieldRank(1)
                                                 .build())
-                                        .addItem(DbDataDto.Item.builder()
+                                        .addItem(ContentItemDto.builder()
                                                 .withRawValue("100")
                                                 .ofFieldRank(2)
                                                 .build())
-                                        .addItem(DbDataDto.Item.builder()
+                                        .addItem(ContentItemDto.builder()
                                                 .withRawValue("100")
                                                 .ofFieldRank(3)
                                                 .build())
-                                        .addItem(DbDataDto.Item.builder()
+                                        .addItem(ContentItemDto.builder()
                                                 .withRawValue("200")
                                                 .ofFieldRank(4)
                                                 .build())
-                                        .addItem(DbDataDto.Item.builder()
+                                        .addItem(ContentItemDto.builder()
                                                 .withRawValue("300")
                                                 .ofFieldRank(5)
                                                 .build())
-                                        .addItem(DbDataDto.Item.builder()
+                                        .addItem(ContentItemDto.builder()
                                                 .withRawValue("400")
                                                 .ofFieldRank(6)
                                                 .build())
-                                        .addItem(DbDataDto.Item.builder()
+                                        .addItem(ContentItemDto.builder()
                                                 .withRawValue("001")
                                                 .ofFieldRank(7)
                                                 .build())
-                                        .addItem(DbDataDto.Item.builder()
+                                        .addItem(ContentItemDto.builder()
                                                 .withRawValue("value1")
                                                 .ofFieldRank(8)
                                                 .build())
-                                        .addItem(DbDataDto.Item.builder()
+                                        .addItem(ContentItemDto.builder()
                                                 .withRawValue("value2")
                                                 .ofFieldRank(9)
                                                 .build())

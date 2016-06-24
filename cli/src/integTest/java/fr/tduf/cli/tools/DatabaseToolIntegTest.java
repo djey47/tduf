@@ -1,15 +1,15 @@
 package fr.tduf.cli.tools;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.libtesting.common.helper.ConsoleHelper;
 import fr.tduf.libtesting.common.helper.AssertionsHelper;
+import fr.tduf.libtesting.common.helper.ConsoleHelper;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Condition;
@@ -38,12 +38,10 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.common.game.domain.Locale.*;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -159,7 +157,7 @@ public class DatabaseToolIntegTest {
 
         // THEN: car rims must be deleted for a particular slot
         DbFieldValueDto criteria = DbFieldValueDto.fromCouple(1, "63518960");
-        List<DbDataDto.Entry> carRims = miner.getContentEntriesMatchingSimpleCondition(criteria, CAR_RIMS);
+        List<ContentEntryDto> carRims = miner.getContentEntriesMatchingSimpleCondition(criteria, CAR_RIMS);
         assertThat(carRims).isEmpty();
 
 
@@ -491,7 +489,7 @@ public class DatabaseToolIntegTest {
     }
 
     private static void assertCarPhysicsEntryWithRefHasFieldValue(String ref, int fieldRank, String expectedValue, String label, BulkDatabaseMiner miner) {
-        Optional<DbDataDto.Entry> potentialEntry = miner.getContentEntryFromTopicWithReference(ref, CAR_PHYSICS_DATA);
+        Optional<ContentEntryDto> potentialEntry = miner.getContentEntryFromTopicWithReference(ref, CAR_PHYSICS_DATA);
 
         assertThat(potentialEntry)
                 .isPresent()

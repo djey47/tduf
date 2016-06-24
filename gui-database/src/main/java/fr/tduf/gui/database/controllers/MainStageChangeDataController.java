@@ -14,8 +14,9 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -84,14 +85,14 @@ public class MainStageChangeDataController {
 
     long addEntryForCurrentTopic() {
         requireNonNull(getChangeHelper());
-        DbDataDto.Entry newEntry = getChangeHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), mainStageController.currentTopicProperty.getValue());
+        ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), mainStageController.currentTopicProperty.getValue());
 
         return newEntry.getId();
     }
 
     long duplicateCurrentEntry() {
         requireNonNull(getChangeHelper());
-        DbDataDto.Entry newEntry = getChangeHelper().duplicateEntryWithIdentifier(
+        ContentEntryDto newEntry = getChangeHelper().duplicateEntryWithIdentifier(
                 mainStageController.currentEntryIndexProperty.getValue(),
                 mainStageController.currentTopicProperty.getValue());
 
@@ -100,7 +101,7 @@ public class MainStageChangeDataController {
 
     void addLinkedEntry(String sourceEntryRef, Optional<String> targetEntryRef, DbDto.Topic targetTopic) {
         requireNonNull(getChangeHelper());
-        DbDataDto.Entry newEntry = getChangeHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), targetTopic);
+        ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), targetTopic);
         DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
     }
 
@@ -159,12 +160,12 @@ public class MainStageChangeDataController {
     }
 
     private List<String> getRawValuesFromCurrentEntry() {
-        DbDataDto.Entry currentEntry = getMiner().getContentEntryFromTopicWithInternalIdentifier(
+        ContentEntryDto currentEntry = getMiner().getContentEntryFromTopicWithInternalIdentifier(
                 mainStageController.getCurrentEntryIndex(),
                 mainStageController.getCurrentTopic()).get();
         return currentEntry.getItems().stream()
 
-                .map(DbDataDto.Item::getRawValue)
+                .map(ContentItemDto::getRawValue)
 
                 .collect(toList());
     }

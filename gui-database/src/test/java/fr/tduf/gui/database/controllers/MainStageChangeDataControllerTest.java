@@ -4,8 +4,9 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -148,10 +149,10 @@ public class MainStageChangeDataControllerTest {
     @Test
     public void exportCurrentEntryAsLine_should_generate_line_with_trailing_semicolon() {
         // GIVEN
-        DbDataDto.Entry entry = DbDataDto.Entry.builder()
+        ContentEntryDto entry = ContentEntryDto.builder()
                 .forId(1)
-                .addItem(DbDataDto.Item.builder().ofFieldRank(1).withRawValue("25").build())
-                .addItem(DbDataDto.Item.builder().ofFieldRank(2).withRawValue("36").build())
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue("25").build())
+                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue("36").build())
                 .build();
         when(mainStageController.getCurrentEntryIndex()).thenReturn(1L);
         when(mainStageController.getCurrentTopic()).thenReturn(CAR_PHYSICS_DATA);

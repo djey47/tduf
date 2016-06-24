@@ -1,9 +1,9 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseStructureHelper;
-import fr.tduf.libunlimited.low.files.db.dto.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +53,7 @@ public class DatabaseStructureQueryHelper {
      * @param structureFields   : list of topic fields to search for such a field
      * @return corresponding structure field.
      */
-    public static DbStructureDto.Field getStructureField(DbDataDto.Item item, List<DbStructureDto.Field> structureFields) {
+    public static DbStructureDto.Field getStructureField(ContentItemDto item, List<DbStructureDto.Field> structureFields) {
         requireNonNull(item, "A content entry item is required.");
         requireNonNull(structureFields, "A list of fields is required.");
 
