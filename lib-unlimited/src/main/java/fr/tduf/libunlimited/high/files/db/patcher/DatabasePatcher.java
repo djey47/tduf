@@ -9,7 +9,6 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderResolver;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
@@ -30,7 +29,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Used to apply patches to an existing database.
  */
-// TODO apply code rules
 public class DatabasePatcher extends AbstractDatabaseHolder {
 
     private DatabaseChangeHelper databaseChangeHelper;
@@ -42,14 +40,6 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
      */
     public PatchProperties apply(DbPatchDto patchObject) {
         return applyWithProperties(patchObject, new PatchProperties());
-    }
-
-    /**
-     * Execute provided patches onto current database
-     */
-    public void batchApply(List<DbPatchDto> patchObjects) {
-        requireNonNull(patchObjects, "A list of patch objects is required.")
-                .forEach(this::apply);
     }
 
     /**
@@ -86,6 +76,14 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     @Override
     protected void postPrepare() {
         databaseChangeHelper = new DatabaseChangeHelper(databaseMiner);
+    }
+
+    /**
+     * Execute provided patches onto current database
+     */
+    void batchApply(List<DbPatchDto> patchObjects) {
+        requireNonNull(patchObjects, "A list of patch objects is required.")
+                .forEach(this::apply);
     }
 
     private void applyChange(DbPatchDto.DbChangeDto changeObject) {
@@ -244,7 +242,9 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
                     } else {
 
-                        databaseMiner.getResourceEnhancedFromTopic(topic).get().removeEntryByReference(ref);
+                        databaseMiner.getResourceEnhancedFromTopic(topic)
+                                .orElseThrow(() -> new IllegalStateException("No resource object for topic: " + topic))
+                                .removeEntryByReference(ref);
 
                     }
                 });
@@ -260,7 +260,9 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
 
         ResourceEntryDto resourceEntry = potentialResourceEntry
-                .orElseGet(() -> databaseMiner.getResourceEnhancedFromTopic(topic).get().addEntryByReference(ref));
+                .orElseGet(() -> databaseMiner.getResourceEnhancedFromTopic(topic)
+                        .orElseThrow(() -> new IllegalStateException("No resource object for topic: " + topic))
+                        .addEntryByReference(ref));
         String value = changeObject.getValue();
         Optional<Locale> potentialLocale = ofNullable(changeObject.getLocale());
         if (potentialLocale.isPresent()) {

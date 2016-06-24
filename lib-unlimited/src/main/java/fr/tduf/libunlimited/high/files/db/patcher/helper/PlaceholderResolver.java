@@ -25,15 +25,21 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Component to handle placeholder values in patch instructions.
  */
-// TODO apply code rules
 public class PlaceholderResolver {
 
     private static final Pattern PATTERN_PLACEHOLDER = Pattern.compile("\\{(.+)\\}");
+    private static final int FIELD_RANK_ID_CAR = 102;
 
     private final DbPatchDto patchObject;
     private final PatchProperties patchProperties;
     private final BulkDatabaseMiner databaseMiner;
     private final Set<String> generatedIdentifiers = new HashSet<>();
+
+    private PlaceholderResolver(DbPatchDto patchObject, PatchProperties patchProperties, BulkDatabaseMiner databaseMiner) {
+        this.patchObject = patchObject;
+        this.patchProperties = patchProperties;
+        this.databaseMiner = databaseMiner;
+    }
 
     /**
      * @param patchObject         : patch to be processed
@@ -48,14 +54,8 @@ public class PlaceholderResolver {
                 requireNonNull(databaseMiner, "Database miner is required."));
     }
 
-    private PlaceholderResolver(DbPatchDto patchObject, PatchProperties patchProperties, BulkDatabaseMiner databaseMiner) {
-        this.patchObject = patchObject;
-        this.patchProperties = patchProperties;
-        this.databaseMiner = databaseMiner;
-    }
-
     /**
-     *
+     * Main component entry point
      */
     public void resolveAllPlaceholders() {
         generatedIdentifiers.clear();
@@ -70,45 +70,38 @@ public class PlaceholderResolver {
     }
 
     private void resolveContentsReferencePlaceholders() {
-
         patchObject.getChanges().stream()
-
-                .filter((changeObject) -> DELETE == changeObject.getType()
+                .filter(changeObject -> DELETE == changeObject.getType()
                         || UPDATE == changeObject.getType())
-
-                .filter((changeObject) -> changeObject.getRef() != null)
-
-                .forEach((changeObject) -> {
-                    DbDto topicObject = databaseMiner.getDatabaseTopic(changeObject.getTopic()).get();
+                .filter(changeObject -> changeObject.getRef() != null)
+                .forEach(changeObject -> {
+                    final DbDto.Topic currentTopic = changeObject.getTopic();
+                    DbDto topicObject = databaseMiner.getDatabaseTopic(currentTopic)
+                            .orElseThrow(() -> new IllegalStateException("No database object found for topic: " + currentTopic));
                     String effectiveReference = resolveReferencePlaceholder(true, changeObject.getRef(), patchProperties, topicObject, generatedIdentifiers);
                     changeObject.setRef(effectiveReference);
                 });
     }
 
     private void resolveResourceReferencePlaceholders() {
-
         patchObject.getChanges().stream()
-
-                .filter((changeObject) -> DELETE_RES == changeObject.getType()
+                .filter(changeObject -> DELETE_RES == changeObject.getType()
                         || UPDATE_RES == changeObject.getType())
-
-                .filter((changeObject) -> changeObject.getRef() != null)
-
-                .forEach((changeObject) -> {
-                    DbDto topicObject = databaseMiner.getDatabaseTopic(changeObject.getTopic()).get();
+                .filter(changeObject -> changeObject.getRef() != null)
+                .forEach(changeObject -> {
+                    final DbDto.Topic currentTopic = changeObject.getTopic();
+                    DbDto topicObject = databaseMiner.getDatabaseTopic(changeObject.getTopic())
+                            .orElseThrow(() -> new IllegalStateException("No database object found for topic: " + currentTopic));
                     String effectiveReference = resolveReferencePlaceholder(false, changeObject.getRef(), patchProperties, topicObject, generatedIdentifiers);
                     changeObject.setRef(effectiveReference);
                 });
     }
 
     private void resolveAllContentsValuesPlaceholders() {
-
         patchObject.getChanges().stream()
-
-                .filter((changeObject) -> UPDATE == changeObject.getType()
+                .filter(changeObject -> UPDATE == changeObject.getType()
                         || DELETE == changeObject.getType())
-
-                .forEach((changeObject) -> {
+                .forEach(changeObject -> {
                     resolveContentsValuesPlaceholders(changeObject);
                     resolveContentsPartialValuesPlaceholders(changeObject);
                     resolveContentsFilterValuesPlaceholders(changeObject);
@@ -116,14 +109,10 @@ public class PlaceholderResolver {
     }
 
     private void resolveResourceValuePlaceholders() {
-
         patchObject.getChanges().stream()
-
-                .filter((changeObject) -> UPDATE_RES == changeObject.getType())
-
-                .filter((changeObject) -> changeObject.getValue() != null)
-
-                .forEach((changeObject) -> {
+                .filter(changeObject -> UPDATE_RES == changeObject.getType())
+                .filter(changeObject -> changeObject.getValue() != null)
+                .forEach(changeObject -> {
                     String effectiveValue = resolveValuePlaceholder(changeObject.getValue(), patchProperties, databaseMiner);
                     changeObject.setValue(effectiveValue);
                 });
@@ -135,9 +124,7 @@ public class PlaceholderResolver {
         }
 
         List<String> effectiveValues = changeObject.getValues().stream()
-
-                .map((value) -> resolveValuePlaceholder(value, patchProperties, databaseMiner))
-
+                .map(value -> resolveValuePlaceholder(value, patchProperties, databaseMiner))
                 .collect(toList());
 
         changeObject.setValues(effectiveValues);
@@ -161,12 +148,10 @@ public class PlaceholderResolver {
         }
 
         return fieldValues.stream()
-
-                .map((partialValue) -> {
+                .map(partialValue -> {
                     String effectiveValue = resolveValuePlaceholder(partialValue.getValue(), patchProperties, databaseMiner);
                     return DbFieldValueDto.fromCouple(partialValue.getRank(), effectiveValue);
                 })
-
                 .collect(toList());
     }
 
@@ -224,13 +209,14 @@ public class PlaceholderResolver {
     }
 
     private static String generateValueForCARIDPlaceholder(BulkDatabaseMiner miner) {
-        final DbDto topicObject = miner.getDatabaseTopic(CAR_PHYSICS_DATA).get();
+        final DbDto topicObject = miner.getDatabaseTopic(CAR_PHYSICS_DATA)
+                .orElseThrow(() -> new IllegalStateException("No database object found for topic: CAR_PHYSICS_DATA"));
         final Set<String> allIdCars = topicObject.getData().getEntries().stream()
-
-                .map((entry) -> entry.getItemAtRank(10).get())
-
+                .map(entry -> entry.getItemAtRank(FIELD_RANK_ID_CAR)
+                        // FIXME remove unnecessary type parameter after jdk upgrade
+                        .<RuntimeException>orElseThrow(() -> new IllegalStateException("No ID_CAR item found for entry id: " + entry.getId()))
+                )
                 .map(ContentItemDto::getRawValue)
-
                 .collect(toSet());
 
         return DatabaseGenHelper.generateUniqueIdentifier(allIdCars, Range.between(8000, 9000));

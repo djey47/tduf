@@ -3,7 +3,6 @@ package fr.tduf.libunlimited.high.files.db.common.helper;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
@@ -18,7 +17,6 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Class providing methods to generate database contents and resources.
  */
-// TODO Apply code rules
 public class DatabaseGenHelper {
 
     public static final String RESOURCE_VALUE_DEFAULT = "??";
@@ -32,6 +30,10 @@ public class DatabaseGenHelper {
 
     private final DatabaseChangeHelper changeHelper;
 
+    /**
+     * Main constructor
+     * @param databaseMiner
+     */
     public DatabaseGenHelper(BulkDatabaseMiner databaseMiner) {
         this.databaseMiner = databaseMiner;
         this.changeHelper = new DatabaseChangeHelper(this, databaseMiner);
@@ -51,11 +53,8 @@ public class DatabaseGenHelper {
      * @return created items list with default values.
      */
     public List<ContentItemDto> buildDefaultContentItems(Optional<String> reference, DbDto topicObject) {
-
         return topicObject.getStructure().getFields().stream()
-
-                .map((structureField) -> buildDefaultContentItem(reference, structureField, topicObject, false))
-
+                .map(structureField -> buildDefaultContentItem(reference, structureField, topicObject, false))
                 .collect(toList());
     }
 
@@ -73,11 +72,8 @@ public class DatabaseGenHelper {
         DbStructureDto.FieldType fieldType = field.getFieldType();
         switch (fieldType) {
             case UID:
-                if (entryReference.isPresent()) {
-                    rawValue = entryReference.get();
-                } else {
-                    rawValue = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
-                }
+                rawValue = entryReference
+                        .orElseGet(() -> DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject));
                 break;
             case BITFIELD:
                 rawValue = BITFIELD_VALUE_DEFAULT;
@@ -92,14 +88,17 @@ public class DatabaseGenHelper {
                 rawValue = "1";
                 break;
             case REFERENCE:
-                rawValue = (createTargetEntries ? generateDefaultContentsReference(remoteTopicObject) : "");
+                rawValue = createTargetEntries ?
+                        generateDefaultContentsReference(remoteTopicObject) : "";
                 break;
             case RESOURCE_CURRENT_GLOBALIZED:
             case RESOURCE_CURRENT_LOCALIZED:
-                rawValue = (createTargetEntries ? generateDefaultResourceReference(topicObject) : "");
+                rawValue = createTargetEntries ?
+                        generateDefaultResourceReference(topicObject) : "";
                 break;
             case RESOURCE_REMOTE:
-                rawValue = (createTargetEntries ? generateDefaultResourceReference(remoteTopicObject) : "");
+                rawValue = createTargetEntries ?
+                        generateDefaultResourceReference(remoteTopicObject) : "";
                 break;
             default:
                 throw new IllegalArgumentException("Unhandled field type: " + fieldType);
@@ -173,14 +172,12 @@ public class DatabaseGenHelper {
      */
     String generateDefaultResourceReference(DbDto topicObject) {
         return findDefaultResourceEntry(topicObject)
-
                 .map(ResourceEntryDto::getReference)
-
                 .orElseGet(() -> {
                     String newResourceReference = generateUniqueResourceEntryIdentifier(topicObject);
                     final ResourceEntryDto newEntry = topicObject.getResource().addEntryByReference(newResourceReference);
 
-                    Locale.valuesAsStream().forEach((locale) -> newEntry.setValueForLocale(RESOURCE_VALUE_DEFAULT, locale));
+                    Locale.valuesAsStream().forEach(locale -> newEntry.setValueForLocale(RESOURCE_VALUE_DEFAULT, locale));
 
                     return newResourceReference;
                 });
@@ -194,12 +191,12 @@ public class DatabaseGenHelper {
 
     private static Set<String> extractContentEntryReferences(DbStructureDto.Field identifierField, DbDto topicObject) {
         return topicObject.getData().getEntries().stream()
-
-                .map((entry) -> entry.getItems().stream()
-
-                        .filter((item) -> item.getFieldRank() == identifierField.getRank())
-
-                        .findAny().get().getRawValue())
+                .map(entry -> entry.getItems().stream()
+                        .filter(item -> item.getFieldRank() == identifierField.getRank())
+                        .findAny()
+                        .map(ContentItemDto::getRawValue)
+                        // FIXME remove unnecessary type parameter after jdk upgrade
+                        .<RuntimeException>orElseThrow(() -> new IllegalStateException("No identifier field for topic object: " + topicObject.getTopic())))
 
                 .collect(toSet());
     }
@@ -211,14 +208,13 @@ public class DatabaseGenHelper {
         }
 
         return entries.stream()
-
                 .map(ResourceEntryDto::getReference)
-
                 .collect(toSet());
     }
 
     private static String generateIdentifier(Range<Integer> range) {
-        return Integer.valueOf((int) (Math.random() * (range.getMaximum() - range.getMinimum()) + range.getMinimum())).toString();
+        final int identifier = new Random().nextInt(range.getMaximum() - range.getMinimum()) + range.getMinimum();
+        return Integer.toString(identifier);
     }
 
     private static Optional<ResourceEntryDto> findDefaultResourceEntry(DbDto topicObject) {
@@ -228,9 +224,9 @@ public class DatabaseGenHelper {
         }
 
         return entries.stream()
-
-                .filter((entry) -> RESOURCE_VALUE_DEFAULT.equals(entry.pickValue().get()))
-
+                .filter(entry -> RESOURCE_VALUE_DEFAULT.equals(entry.pickValue()
+                        // FIXME remove unnecessary type parameter after jdk upgrade
+                        .<RuntimeException>orElseThrow(() -> new IllegalStateException("No resource value for entry at ref: " + entry.getReference()))))
                 .findAny();
     }
 
