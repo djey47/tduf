@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
@@ -77,7 +76,7 @@ public class BulkDatabaseMinerTest {
         assertThat(actualTopicObject).isNotNull();
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalStateException.class)
     public void getDatabaseTopicFromReference_whenNotFound_shouldThrowException() throws IOException, URISyntaxException {
         // GIVEN-WHEN
         BulkDatabaseMiner.load(topicObjectsFromResources).getDatabaseTopicFromReference("000");

@@ -139,32 +139,6 @@ public class BulkDatabaseMiner_focusOnContentsTest {
         assertThat(actualEntry.getItems()).hasSize(2);
     }
 
-    @Test
-    public void getContentItemFromEntryAtFieldRank_whenNoItem_shouldReturnAbsent() {
-        // GIVEN
-        ContentEntryDto entry = ContentEntryDto.builder().build();
-
-        // WHEN
-        Optional<ContentItemDto> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(entry, 1);
-
-        // THEN
-        assertThat(potentialItem).isEmpty();
-    }
-
-    @Test
-    public void getContentItemFromEntryAtFieldRank_whenItemAtSameRank_shouldReturnIt() {
-        // GIVEN
-        ContentItemDto expectedItem = createContentItemWithRank(1);
-        ContentItemDto otherItem = createContentItemWithRank(2);
-        ContentEntryDto entry = createContentEntryWithItems(asList(expectedItem, otherItem));
-
-        // WHEN
-        Optional<ContentItemDto> potentialItem = BulkDatabaseMiner.getContentItemFromEntryAtFieldRank(entry, 1);
-
-        // THEN
-        assertThat(potentialItem).contains(expectedItem);
-    }
-
     @Test(expected = NullPointerException.class)
     public void getContentEntryReference_whenNullEntry_shouldThrowException() {
         // GIVEN-WHEN
@@ -173,7 +147,7 @@ public class BulkDatabaseMiner_focusOnContentsTest {
         // THEN: NPE
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalStateException.class)
     public void getContentEntryReference_whenUidFieldNotAvailable_shouldThrowException() {
         // GIVEN
         ContentItemDto item  = createContentItemWithRank(1);
@@ -203,7 +177,7 @@ public class BulkDatabaseMiner_focusOnContentsTest {
         assertThat(actualEntryReference).isEqualTo("123456789");
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalStateException.class)
     public void getRemoteContentEntryWithInternalIdentifier_whenEntryInternalIdentifierDoesNotExist_shouldThrowException() throws IOException, URISyntaxException {
         // GIVEN
         List<DbDto> topicObjects = createTopicObjectsWithRemoteReferencesFromResources();

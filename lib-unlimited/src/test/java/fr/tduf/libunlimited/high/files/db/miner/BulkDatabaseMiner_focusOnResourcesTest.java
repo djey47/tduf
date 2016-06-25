@@ -2,15 +2,14 @@ package fr.tduf.libunlimited.high.files.db.miner;
 
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -169,7 +168,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
         assertThat(potentialValue).isEmpty();
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalStateException.class)
     public void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_butFieldRankDoesNot_shouldThrowException() {
         // GIVEN
         final DbDto topicObject = createDefaultTopicObject(TOPIC);
@@ -226,7 +225,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
                 .contains(RESOURCE_VALUE);
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalStateException.class)
     public void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExistsAsRemoteResourceField_butRemoteTopicDoesNotExist_shouldThrowException() {
         // GIVEN
         List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
