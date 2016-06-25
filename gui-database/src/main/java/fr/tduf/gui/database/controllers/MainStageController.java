@@ -606,6 +606,7 @@ public class MainStageController extends AbstractGuiController {
                 } else {
                     CommonDialogsHelper.showDialog(WARNING, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_REMAINING_ERRORS);
                 }
+                // FIXME update contents
             } else if (FAILED == newState) {
                 CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, databaseFixer.getException().getMessage());
             }
