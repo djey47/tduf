@@ -242,7 +242,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
                     } else {
 
-                        databaseMiner.getResourceEnhancedFromTopic(topic)
+                        databaseMiner.getResourcesFromTopic(topic)
                                 .orElseThrow(() -> new IllegalStateException("No resource object for topic: " + topic))
                                 .removeEntryByReference(ref);
 
@@ -260,7 +260,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
 
         ResourceEntryDto resourceEntry = potentialResourceEntry
-                .orElseGet(() -> databaseMiner.getResourceEnhancedFromTopic(topic)
+                .orElseGet(() -> databaseMiner.getResourcesFromTopic(topic)
                         .orElseThrow(() -> new IllegalStateException("No resource object for topic: " + topic))
                         .addEntryByReference(ref));
         String value = changeObject.getValue();

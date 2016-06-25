@@ -140,7 +140,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         }
 
         Locale referenceLocale = pickAvailableLocaleOrElseWhatever(UNITED_STATES, validResourceLocales);
-        databaseMiner.getResourceEnhancedFromTopic(topic).get().getEntries()
+        databaseMiner.getResourcesFromTopic(topic).get().getEntries()
                 .forEach((entry) -> {
                     String referenceValue = entry.getValueForLocale(referenceLocale)
                             .orElse(RESOURCE_VALUE_DEFAULT);
@@ -175,7 +175,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
                 .get().getKey();
 
-        databaseMiner.getResourceEnhancedFromTopic(topic).get()
+        databaseMiner.getResourcesFromTopic(topic).get()
 
                 .getEntryByReference(resourceReference).get()
 
@@ -195,7 +195,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         }
 
         Locale referenceLocale = pickAvailableLocaleOrElseWhatever(UNITED_STATES, validResourceLocales);
-        DbResourceDto resourceObject = databaseMiner.getResourceEnhancedFromTopic(topic).get();
+        DbResourceDto resourceObject = databaseMiner.getResourcesFromTopic(topic).get();
         ResourceEntryDto entry = resourceObject
                 .getEntryByReference(reference)
                 // Use supplier to only invoke addEntry when result is absent

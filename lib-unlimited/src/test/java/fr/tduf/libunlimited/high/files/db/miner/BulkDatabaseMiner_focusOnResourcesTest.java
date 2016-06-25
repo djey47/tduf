@@ -39,7 +39,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
         List<DbDto> topicObjects = asList(topicObject1, topicObject2);
 
         //WHEN
-        final Optional<DbResourceDto> potentialResource = BulkDatabaseMiner.load(topicObjects).getResourceEnhancedFromTopic(TOPIC);
+        final Optional<DbResourceDto> potentialResource = BulkDatabaseMiner.load(topicObjects).getResourcesFromTopic(TOPIC);
 
         //THEN
         assertThat(potentialResource)
@@ -53,7 +53,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
         List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
 
         //WHEN
-        final Optional<DbResourceDto> potentialResource = BulkDatabaseMiner.load(topicObjects).getResourceEnhancedFromTopic(PNJ);
+        final Optional<DbResourceDto> potentialResource = BulkDatabaseMiner.load(topicObjects).getResourcesFromTopic(PNJ);
 
         //THEN
         assertThat(potentialResource).isEmpty();

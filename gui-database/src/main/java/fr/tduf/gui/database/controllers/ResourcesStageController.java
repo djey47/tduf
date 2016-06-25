@@ -270,7 +270,7 @@ public class ResourcesStageController extends AbstractGuiController {
         resourceData.clear();
 
         DbDto.Topic currentTopic = getCurrentTopic();
-        List<ResourceEntryDataItem> resourceEntryDataItems = getMiner().getResourceEnhancedFromTopic(currentTopic)
+        List<ResourceEntryDataItem> resourceEntryDataItems = getMiner().getResourcesFromTopic(currentTopic)
                 .map(resourceObject -> resourceObject.getEntries().stream()
                         .map(entry -> {
                             ResourceEntryDataItem tableResource = new ResourceEntryDataItem();

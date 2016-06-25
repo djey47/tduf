@@ -50,7 +50,7 @@ public class DatabaseChangeHelper {
     public void addResourceValueWithReference(DbDto.Topic topic, Locale locale, String resourceReference, String resourceValue) {
         checkResourceValueDoesNotExistWithReference(topic, locale, resourceReference);
 
-        final DbResourceDto resourceEnhancedFromTopic = databaseMiner.getResourceEnhancedFromTopic(topic)
+        final DbResourceDto resourceEnhancedFromTopic = databaseMiner.getResourcesFromTopic(topic)
                 .orElseThrow(() -> new IllegalStateException("No resource for topic: " + topic));
         resourceEnhancedFromTopic.getEntryByReference(resourceReference)
                 .orElseGet(() -> resourceEnhancedFromTopic.addEntryByReference(resourceReference))
@@ -234,7 +234,7 @@ public class DatabaseChangeHelper {
                     affectedLocales.forEach(entry::removeValueForLocale);
 
                     if (entry.getItemCount() == 0) {
-                        databaseMiner.getResourceEnhancedFromTopic(topic)
+                        databaseMiner.getResourcesFromTopic(topic)
                                 .orElseThrow(() -> new IllegalStateException("No resource for topic: " + topic))
                                 .removeEntryByReference(resourceReference);
                     }
@@ -248,7 +248,7 @@ public class DatabaseChangeHelper {
      * @param resourceReference : identifier of resource entry to be deleted
      */
     public void removeResourceWithReference(DbDto.Topic topic, String resourceReference) {
-        databaseMiner.getResourceEnhancedFromTopic(topic)
+        databaseMiner.getResourcesFromTopic(topic)
                 .ifPresent(resource -> resource.removeEntryByReference(resourceReference));
     }
 

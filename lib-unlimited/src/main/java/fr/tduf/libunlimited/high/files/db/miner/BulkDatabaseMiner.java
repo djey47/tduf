@@ -244,8 +244,7 @@ public class BulkDatabaseMiner {
      * @param topic : topic in TDU Database to search resources from
      * @return an optional value: either such a resource object if it exists, else empty.
      */
-    // TODO rename
-    public Optional<DbResourceDto> getResourceEnhancedFromTopic(DbDto.Topic topic) {
+    public Optional<DbResourceDto> getResourcesFromTopic(DbDto.Topic topic) {
         return topicObjects.stream()
                 .filter(databaseObject -> databaseObject.getTopic() == topic)
                 .findAny()
@@ -298,7 +297,7 @@ public class BulkDatabaseMiner {
      * @return entry having given reference for specified topic, empty otherwise
      */
     public Optional<ResourceEntryDto> getResourceEntryFromTopicAndReference(DbDto.Topic topic, String reference) {
-        return getResourceEnhancedFromTopic(topic)
+        return getResourcesFromTopic(topic)
                 .flatMap(resource -> resource.getEntryByReference(reference));
     }
 

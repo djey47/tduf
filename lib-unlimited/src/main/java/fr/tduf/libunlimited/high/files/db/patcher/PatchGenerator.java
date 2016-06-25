@@ -113,7 +113,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     }
 
     private Stream<DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesInTopic(DbDto.Topic topic, Set<String> resources) {
-        DbResourceDto resourceFromTopic = databaseMiner.getResourceEnhancedFromTopic(topic)
+        DbResourceDto resourceFromTopic = databaseMiner.getResourcesFromTopic(topic)
                 .orElseThrow(() -> new IllegalStateException("No resource object found for topic: " + topic));
 
         Set<String> globalizedResourceRefs = new HashSet<>();

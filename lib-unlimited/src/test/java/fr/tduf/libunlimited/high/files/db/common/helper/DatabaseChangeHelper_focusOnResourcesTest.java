@@ -52,7 +52,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
         DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
 
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
-        when(minerMock.getResourceEnhancedFromTopic(TOPIC)).thenReturn(of(resourceObject));
+        when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(of(resourceObject));
 
 
         // WHEN
@@ -72,7 +72,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
                 .setValueForLocale("", FRANCE);
 
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
-        when(minerMock.getResourceEnhancedFromTopic(TOPIC)).thenReturn(of(resourceObject));
+        when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(of(resourceObject));
 
 
         // WHEN
@@ -105,7 +105,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     public void addResourceValueWithReference_andNoResource_shouldThrowException() throws Exception {
         // GIVEN
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
-        when(minerMock.getResourceEnhancedFromTopic(TOPIC)).thenReturn(empty());
+        when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(empty());
 
         // WHEN
         changeHelper.addResourceValueWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE);
@@ -125,7 +125,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(empty());
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(initialReference, TOPIC, LOCALE)).thenReturn(of(initialValue));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
-        when(minerMock.getResourceEnhancedFromTopic(TOPIC)).thenReturn(of(resourceObject));
+        when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(of(resourceObject));
 
 
         // WHEN
@@ -179,7 +179,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
         DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
         resourceObject.addEntryByReference(RESOURCE_REFERENCE);
 
-        when(minerMock.getResourceEnhancedFromTopic(TOPIC)).thenReturn(of(resourceObject));
+        when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(of(resourceObject));
 
 
         // WHEN
@@ -235,7 +235,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
                 .setValue(RESOURCE_VALUE);
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
-        when(minerMock.getResourceEnhancedFromTopic(TOPIC)).thenReturn(of(resourceObject));
+        when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(of(resourceObject));
 
 
         // WHEN
