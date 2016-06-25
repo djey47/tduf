@@ -285,21 +285,26 @@ public class DatabaseChangeHelperTest {
 
 
         // WHEN
-        changeHelper.duplicateEntryWithIdentifier(0, TOPIC);
+        ContentEntryDto actualCloneEntry = changeHelper.duplicateEntryWithIdentifier(0, TOPIC);
 
 
         //THEN
         assertThat(dataObject.getEntries()).hasSize(2);
         assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L);
 
-        assertThat(cloneContentEntry.getItems()).extracting("fieldRank").containsExactly(1);
-        assertThat(cloneContentEntry.getItems()).extracting("rawValue").doesNotContain(ENTRY_REFERENCE);
-
+        String cloneEntryReference = actualCloneEntry.getItemAtRank(1).get().getRawValue();
         Condition<String> betweenMinAndMaxRefValues = new Condition<>(o -> {
             int i = Integer.parseInt(o);
             return i >= 10000000 && i <= 99999999;
         }, "between 10000000 and 99999999 (inclusive)");
-        assertThat(cloneContentEntry.getItemAtRank(1).get().getRawValue()).is(betweenMinAndMaxRefValues);
+
+        assertThat(cloneEntryReference).is(betweenMinAndMaxRefValues);
+
+        assertThat(dataObject.getEntryWithReference(ENTRY_REFERENCE)).contains(defaultContentEntry);
+        assertThat(dataObject.getEntryWithReference(cloneEntryReference)).contains(actualCloneEntry);
+
+        assertThat(actualCloneEntry.getItems()).extracting("fieldRank").containsExactly(1);
+        assertThat(actualCloneEntry.getItems()).extracting("rawValue").containsExactly(cloneEntryReference);
     }
 
     @Test(expected = NoSuchElementException.class)
