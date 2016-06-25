@@ -88,7 +88,6 @@ public class DatabaseChangeHelper {
      * @param newRawValue   : value to apply
      * @return updated item if value has changed, empty otherwise.
      */
-    // FIXME check usages
     public Optional<ContentItemDto> updateItemRawValueAtIndexAndFieldRank(DbDto.Topic topic, long entryIndex, int fieldRank, String newRawValue) {
         return databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic)
                 .flatMap(entry -> entry.updateItemValueAtRank(newRawValue, fieldRank));
