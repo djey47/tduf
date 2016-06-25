@@ -50,7 +50,8 @@ public class DatabaseChangeHelper {
     public void addResourceValueWithReference(DbDto.Topic topic, Locale locale, String resourceReference, String resourceValue) {
         checkResourceValueDoesNotExistWithReference(topic, locale, resourceReference);
 
-        final DbResourceDto resourceEnhancedFromTopic = databaseMiner.getResourceEnhancedFromTopic(topic).get();
+        final DbResourceDto resourceEnhancedFromTopic = databaseMiner.getResourceEnhancedFromTopic(topic)
+                .orElseThrow(() -> new IllegalStateException("No resource for topic: " + topic));
         resourceEnhancedFromTopic.getEntryByReference(resourceReference)
                 .orElseGet(() -> resourceEnhancedFromTopic.addEntryByReference(resourceReference))
                 .setValueForLocale(resourceValue, locale);
@@ -64,7 +65,8 @@ public class DatabaseChangeHelper {
      */
     public ContentEntryDto addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {
 
-        DbDto topicObject = databaseMiner.getDatabaseTopic(topic).get();
+        DbDto topicObject = databaseMiner.getDatabaseTopic(topic)
+                .orElseThrow(() -> new IllegalStateException("No object for topic: " + topic));
 
         DbDataDto dataDto = topicObject.getData();
 
@@ -122,16 +124,14 @@ public class DatabaseChangeHelper {
      * @throws java.util.NoSuchElementException when entry to delete does not exist.
      */
     public void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
-        DbDataDto topicDataObject = databaseMiner.getDatabaseTopic(topic).get().getData();
-        List<ContentEntryDto> topicEntries = topicDataObject.getEntries();
+        DbDataDto topicDataObject = databaseMiner.getDatabaseTopic(topic)
+                .map(DbDto::getData)
+                .orElseThrow(() -> new IllegalStateException("No data for topic: " + topic));
 
-        topicEntries.stream()
-
+        topicDataObject.getEntries().stream()
                 .filter((entry) -> entry.getId() == entryId)
-
                 .findAny()
-
-                .ifPresent((entryToDelete) -> topicDataObject.removeEntry(entryToDelete));
+                .ifPresent(topicDataObject::removeEntry);
     }
 
     /**
@@ -143,7 +143,6 @@ public class DatabaseChangeHelper {
      */
     public void removeEntryWithReference(String entryRef, DbDto.Topic topic) {
         databaseMiner.getContentEntryFromTopicWithReference(entryRef, topic)
-
                 .ifPresent(entry -> removeEntryWithIdentifier(entry.getId(), topic));
     }
 
@@ -156,7 +155,6 @@ public class DatabaseChangeHelper {
      */
     public void removeEntriesMatchingCriteria(List<DbFieldValueDto> criteria, DbDto.Topic topic) {
         databaseMiner.getContentEntryStreamMatchingCriteria(criteria, topic)
-
                 .forEach((entry) -> removeEntryWithIdentifier(entry.getId(), topic));
     }
 
@@ -167,13 +165,14 @@ public class DatabaseChangeHelper {
      * If a REF field is present, a random, unique identifier will be generated.
      */
     public ContentEntryDto duplicateEntryWithIdentifier(long entryId, DbDto.Topic topic) {
-        ContentEntryDto sourceEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic).get();
+        DbDto topicObject = databaseMiner.getDatabaseTopic(topic)
+                .orElseThrow(() -> new IllegalStateException("No data for topic: " + topic));
 
-        DbDto topicObject = databaseMiner.getDatabaseTopic(topic).get();
         DbDataDto topicDataObject = topicObject.getData();
-        List<ContentEntryDto> currentContentEntries = topicDataObject.getEntries();
+        ContentEntryDto sourceEntry = topicDataObject.getEntryWithInternalIdentifier(entryId)
+                .orElseThrow(() -> new IllegalStateException("No source entry found at id: " + entryId));
+        long newIdentifier = topicDataObject.getEntries().size();
 
-        long newIdentifier = currentContentEntries.size();
         List<ContentItemDto> clonedItems = cloneContentItems(sourceEntry, topic);
         ContentEntryDto newEntry = ContentEntryDto.builder()
                 .forId(newIdentifier)
@@ -184,7 +183,6 @@ public class DatabaseChangeHelper {
                 .ifPresent(uidFieldRank -> {
                     String newReference = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
                     newEntry.updateItemValueAtRank(newReference, uidFieldRank);
-//                    updateItemRawValueAtIndexAndFieldRank(topic, newEntry.getId(), uidFieldRank, newReference);
                 });
 
 
@@ -201,7 +199,9 @@ public class DatabaseChangeHelper {
      * @param topic   : database topic where entry should be moved
      */
     public void moveEntryWithIdentifier(int step, long entryId, DbDto.Topic topic) {
-        final DbDataDto dataObject = databaseMiner.getDatabaseTopic(topic).get().getData();
+        final DbDataDto dataObject = databaseMiner.getDatabaseTopic(topic)
+                .map(DbDto::getData)
+                .orElseThrow(() -> new IllegalStateException("No data for topic: " + topic));
 
         int absoluteSteps = Math.abs(step);
         if (step == 0
@@ -210,7 +210,8 @@ public class DatabaseChangeHelper {
             return;
         }
 
-        ContentEntryDto entry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic).get();
+        ContentEntryDto entry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topic)
+                .orElseThrow(() -> new IllegalStateException("No content entry for topic: " + topic + " at id: " + entryId));
         for (int i = 0; i < absoluteSteps; i++) {
             if (step < 0) {
                 dataObject.moveEntryUp(entry);
@@ -234,7 +235,9 @@ public class DatabaseChangeHelper {
                     affectedLocales.forEach(entry::removeValueForLocale);
 
                     if (entry.getItemCount() == 0) {
-                        databaseMiner.getResourceEnhancedFromTopic(topic).get().removeEntryByReference(resourceReference);
+                        databaseMiner.getResourceEnhancedFromTopic(topic)
+                                .orElseThrow(() -> new IllegalStateException("No resource for topic: " + topic))
+                                .removeEntryByReference(resourceReference);
                     }
                 });
     }
@@ -285,9 +288,7 @@ public class DatabaseChangeHelper {
 
     private static List<ContentItemDto> cloneContentItems(ContentEntryDto entry, DbDto.Topic topic) {
         return entry.getItems().stream()
-
                 .map((contentItem) -> ContentItemDto.builder().fromExisting(contentItem, topic).build())
-
                 .collect(toList());
     }
 }

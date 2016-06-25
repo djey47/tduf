@@ -17,7 +17,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -77,7 +76,7 @@ public class DatabaseChangeHelperTest {
         assertThat(actualEntry.getItems()).extracting("fieldRank").containsExactly(1);
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalStateException.class)
     public void addContentsEntryWithDefaultItems_whenTopicObjectUnavailable_shouldThrowException() {
         // GIVEN
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(empty());
@@ -117,7 +116,7 @@ public class DatabaseChangeHelperTest {
         assertThat(dataObject.getEntries()).extracting("id").containsExactly(1L, 2L);
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalStateException.class)
     public void removeEntryWithIdentifier_whenEntryDoesNotExist_shouldThrowException() {
         // GIVEN
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(empty());
@@ -307,9 +306,10 @@ public class DatabaseChangeHelperTest {
         assertThat(actualCloneEntry.getItems()).extracting("rawValue").containsExactly(cloneEntryReference);
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalStateException.class)
     public void duplicateEntryWithIdentifier_whenEntryDoesNotExist_shouldThrowException() {
         // GIVEN
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(createDatabaseObject(createDefaultDataObject(), createDefaultStructureObject())));
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(empty());
 
         // WHEN
@@ -374,7 +374,7 @@ public class DatabaseChangeHelperTest {
         assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L, 2L);
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalStateException.class)
     public void moveEntryWithIdentifier_whenTopicDoesNotExist_shouldThrowException() {
         // GIVEN
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(empty());
@@ -386,7 +386,7 @@ public class DatabaseChangeHelperTest {
         verifyNoMoreInteractions(minerMock);
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalStateException.class)
     public void moveEntryWithIdentifier_whenEntryDoesNotExist_shouldThrowException() {
         // GIVEN
         DbDto topicObject = DbDto.builder().withData(createDefaultDataObject()).build();
