@@ -149,24 +149,9 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
     }
 
     private Set<IntegrityError> checkContentsReference(String reference, DbDto topicObject, DbDto.Topic sourceTopic) {
-        Map<Integer, DbStructureDto.Field> fieldsByRanks = fieldsByRanksByTopicObjects.get(topicObject);
-
         Set<IntegrityError> integrityErrors = new HashSet<>();
 
-        boolean isReferenceFound = topicObject.getData().getEntries().stream()
-                .filter(entry -> entry.getItems().stream()
-
-                        .filter(item -> fieldsByRanks
-                                .get(item.getFieldRank())
-                                .getFieldType() == DbStructureDto.FieldType.UID
-                                && item.getRawValue().equals(reference))
-                        .findFirst()
-                        .isPresent()
-                )
-                .findFirst()
-                .isPresent();
-
-        if (!isReferenceFound) {
+        if (!topicObject.getData().getEntryWithReference(reference).isPresent()) {
             Map<IntegrityError.ErrorInfoEnum, Object> informations = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
             informations.put(SOURCE_TOPIC, sourceTopic);
             informations.put(REMOTE_TOPIC, topicObject.getTopic());
