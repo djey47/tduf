@@ -41,4 +41,8 @@ public abstract class AbstractDatabaseService extends Service<Void> {
     public ObjectProperty<Set<IntegrityError>> integrityErrorsProperty() {
         return integrityErrors;
     }
+
+    public ObjectProperty<List<DbDto>> loadedDatabaseObjectsProperty() {
+        return loadedDatabaseObjects;
+    }
 }

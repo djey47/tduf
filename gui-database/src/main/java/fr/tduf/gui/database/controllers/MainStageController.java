@@ -148,7 +148,7 @@ public class MainStageController extends AbstractGuiController {
 
     private Map<String, VBox> tabContentByName = new HashMap<>();
 
-    private List<DbDto> databaseObjects = new ArrayList<>();
+    private List<DbDto> databaseObjects = new ArrayList<>(18);
     private DbDto currentTopicObject;
 
     private EditorLayoutDto layoutObject;
@@ -973,6 +973,9 @@ public class MainStageController extends AbstractGuiController {
 
         statusLabel.textProperty().bind(databaseChecker.messageProperty());
 
+        if (!databaseObjects.isEmpty()) {
+            databaseChecker.loadedDatabaseObjectsProperty().setValue(databaseObjects);
+        }
         databaseChecker.databaseLocationProperty().setValue(databaseLocation);
         databaseChecker.bankSupportProperty().setValue(bankSupport);
 
