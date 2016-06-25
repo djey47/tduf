@@ -195,8 +195,7 @@ public class DatabaseGenHelper {
                         .filter(item -> item.getFieldRank() == identifierField.getRank())
                         .findAny()
                         .map(ContentItemDto::getRawValue)
-                        // FIXME remove unnecessary type parameter after jdk upgrade
-                        .<RuntimeException>orElseThrow(() -> new IllegalStateException("No identifier field for topic object: " + topicObject.getTopic())))
+                        .orElseThrow(() -> new IllegalStateException("No identifier field for topic object: " + topicObject.getTopic())))
 
                 .collect(toSet());
     }
@@ -225,8 +224,7 @@ public class DatabaseGenHelper {
 
         return entries.stream()
                 .filter(entry -> RESOURCE_VALUE_DEFAULT.equals(entry.pickValue()
-                        // FIXME remove unnecessary type parameter after jdk upgrade
-                        .<RuntimeException>orElseThrow(() -> new IllegalStateException("No resource value for entry at ref: " + entry.getReference()))))
+                        .orElseThrow(() -> new IllegalStateException("No resource value for entry at ref: " + entry.getReference()))))
                 .findAny();
     }
 

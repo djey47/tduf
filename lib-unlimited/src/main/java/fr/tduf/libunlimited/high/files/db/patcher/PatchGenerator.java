@@ -96,8 +96,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                             .map(entryId -> databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topicEntry.getKey())
                                     .flatMap(entry -> entry.getItemAtRank(1))
                                     .map(ContentItemDto::getRawValue)
-                                    // FIXME remove unnecessary type parameter after jdk upgrade
-                                    .<RuntimeException>orElseThrow(() -> new IllegalStateException("No value at rank 1 for entry id: " + entryId))
+                                    .orElseThrow(() -> new IllegalStateException("No value at rank 1 for entry id: " + entryId))
                             )
                             .collect(toSet());
 

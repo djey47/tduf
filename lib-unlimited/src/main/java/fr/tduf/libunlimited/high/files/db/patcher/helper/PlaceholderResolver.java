@@ -213,8 +213,7 @@ public class PlaceholderResolver {
                 .orElseThrow(() -> new IllegalStateException("No database object found for topic: CAR_PHYSICS_DATA"));
         final Set<String> allIdCars = topicObject.getData().getEntries().stream()
                 .map(entry -> entry.getItemAtRank(FIELD_RANK_ID_CAR)
-                        // FIXME remove unnecessary type parameter after jdk upgrade
-                        .<RuntimeException>orElseThrow(() -> new IllegalStateException("No ID_CAR item found for entry id: " + entry.getId()))
+                        .orElseThrow(() -> new IllegalStateException("No ID_CAR item found for entry id: " + entry.getId()))
                 )
                 .map(ContentItemDto::getRawValue)
                 .collect(toSet());
