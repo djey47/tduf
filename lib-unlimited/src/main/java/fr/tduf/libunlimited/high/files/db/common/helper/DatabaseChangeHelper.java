@@ -127,10 +127,10 @@ public class DatabaseChangeHelper {
                 .map(DbDto::getData)
                 .orElseThrow(() -> new IllegalStateException("No data for topic: " + topic));
 
-        topicDataObject.getEntries().stream()
-                .filter((entry) -> entry.getId() == entryId)
-                .findAny()
-                .ifPresent(topicDataObject::removeEntry);
+        ContentEntryDto entryToDelete = topicDataObject.getEntryWithInternalIdentifier(entryId)
+                .orElseThrow(() -> new IllegalStateException("No entry for topic: " + topic + " at id: " + entryId));
+
+        topicDataObject.removeEntry(entryToDelete);
     }
 
     /**
