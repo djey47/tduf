@@ -1,10 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.dto.resource;
 
 import fr.tduf.libunlimited.common.game.domain.Locale;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonSetter;
-import org.codehaus.jackson.annotate.JsonTypeName;
+import org.codehaus.jackson.annotate.*;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
@@ -16,6 +13,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 
 @JsonTypeName("dbResourceEnhancedResourceEntryDtoItem")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@JsonPropertyOrder({ "value", "locale"})
 public class ResourceItemDto implements Serializable {
     @JsonProperty("locale")
     private Locale locale;
