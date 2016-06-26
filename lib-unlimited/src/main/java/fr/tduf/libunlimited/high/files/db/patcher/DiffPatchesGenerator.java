@@ -13,10 +13,8 @@ import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto.fromCouple;
@@ -109,7 +107,7 @@ public class DiffPatchesGenerator {
 
                 .filter((changeObject) -> changeObject != null)
 
-                .collect(toSet());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private Set<DbPatchDto.DbChangeDto> seekForContentsChanges(DbDataDto dataObjects, List<DbStructureDto.Field> structureFields, DbDto.Topic currentTopic) {
@@ -124,7 +122,7 @@ public class DiffPatchesGenerator {
 
                 .filter((changeObject) -> changeObject != null)
 
-                .collect(toSet());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private DbPatchDto.DbChangeDto handleTopicWithREF(DbDto.Topic currentTopic, ContentEntryDto entry, int refFieldRank) {
