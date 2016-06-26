@@ -36,8 +36,9 @@ public class DatabaseChecker extends AbstractDatabaseService {
                     updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "2/3"));
                     databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
 
-                    // FIXME what if jsonDatabaseLocation not set (database already loaded)??
                     jsonDatabaseLocation.setValue(jsonDirectory);
+                } else {
+                    jsonDatabaseLocation.setValue(databaseLocation.get());
                 }
 
                 updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "3/3"));
