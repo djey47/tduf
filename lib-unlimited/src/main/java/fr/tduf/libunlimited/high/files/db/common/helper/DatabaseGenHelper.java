@@ -54,7 +54,7 @@ public class DatabaseGenHelper {
      */
     public List<ContentItemDto> buildDefaultContentItems(Optional<String> reference, DbDto topicObject) {
         return topicObject.getStructure().getFields().stream()
-                .map(structureField -> buildDefaultContentItem(reference, structureField, topicObject, false))
+                .map(structureField -> buildDefaultContentItem(reference, structureField, topicObject))
                 .collect(toList());
     }
 
@@ -62,10 +62,9 @@ public class DatabaseGenHelper {
      * @param entryReference      : unique reference of entry to create. If empty, a new one will be generated when necessary
      * @param field               : structure field to create item from
      * @param topicObject         : database contents hosting items to be created
-     * @param createTargetEntries : true to generate target resource and contents entries, false to leave raw values empty.
      * @return created item with default value.
      */
-    public ContentItemDto buildDefaultContentItem(Optional<String> entryReference, DbStructureDto.Field field, DbDto topicObject, boolean createTargetEntries) {
+    public ContentItemDto buildDefaultContentItem(Optional<String> entryReference, DbStructureDto.Field field, DbDto topicObject) {
         String rawValue;
         DbDto remoteTopicObject = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef());
 
@@ -88,17 +87,14 @@ public class DatabaseGenHelper {
                 rawValue = "1";
                 break;
             case REFERENCE:
-                rawValue = createTargetEntries ?
-                        generateDefaultContentsReference(remoteTopicObject) : "";
+                rawValue = generateDefaultContentsReference(remoteTopicObject);
                 break;
             case RESOURCE_CURRENT_GLOBALIZED:
             case RESOURCE_CURRENT_LOCALIZED:
-                rawValue = createTargetEntries ?
-                        generateDefaultResourceReference(topicObject) : "";
+                rawValue = generateDefaultResourceReference(topicObject);
                 break;
             case RESOURCE_REMOTE:
-                rawValue = createTargetEntries ?
-                        generateDefaultResourceReference(remoteTopicObject) : "";
+                rawValue = generateDefaultResourceReference(remoteTopicObject);
                 break;
             default:
                 throw new IllegalArgumentException("Unhandled field type: " + fieldType);

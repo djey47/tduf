@@ -128,7 +128,7 @@ public class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.BITFIELD);
 
         // WHEN
-        genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject, true);
+        genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
 
         // THEN
     }
@@ -140,7 +140,7 @@ public class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.BITFIELD);
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject, true);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
 
         // THEN
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
@@ -154,7 +154,7 @@ public class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.FLOAT);
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject, true);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
 
         // THEN
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
@@ -168,7 +168,7 @@ public class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.INTEGER);
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject, true);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
 
         // THEN
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
@@ -182,7 +182,7 @@ public class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.PERCENT);
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject, true);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
 
         // THEN
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
@@ -200,7 +200,7 @@ public class DatabaseGenHelperTest {
 
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject, true);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
 
 
         // THEN
@@ -211,25 +211,6 @@ public class DatabaseGenHelperTest {
     }
 
     @Test
-    public void buildDefaultContentItem_whenReference_andTargetGenerationDisabled_shouldNotAddRemoteEntry() {
-        // GIVEN
-        DbStructureDto.Field field = createStructureFieldForRemoteContent();
-        DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.REFERENCE);
-        DbDto remoteTopicObject = createRemoteTopicObjectOneField(DbStructureDto.FieldType.UID);
-
-        when(minerMock.getDatabaseTopicFromReference("TARGET_REF")).thenReturn(remoteTopicObject);
-
-
-        // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject, false);
-
-
-        // THEN
-        assertThat(actualItem).isNotNull();
-        verify(changeHelperMock, never()).addContentsEntryWithDefaultItems(anyObject(), eq(BRANDS));
-    }
-
-    @Test
     public void buildDefaultContentItem_whenResource_shouldCreateItem_andResource() {
         // GIVEN
         DbStructureDto.Field field = createSingleStructureField(DbStructureDto.FieldType.RESOURCE_CURRENT_GLOBALIZED);
@@ -237,7 +218,7 @@ public class DatabaseGenHelperTest {
 
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject, true);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
 
 
         // THEN
@@ -260,7 +241,7 @@ public class DatabaseGenHelperTest {
 
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject, true);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
 
 
         // THEN
@@ -283,7 +264,7 @@ public class DatabaseGenHelperTest {
 
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject, false);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
 
 
         // THEN

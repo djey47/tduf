@@ -26,6 +26,7 @@ import static java.util.stream.Collectors.*;
 /**
  * Class providing method to repair Database.
  */
+// TODO apply code rules
 public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
     private static final String RESOURCE_VALUE_DEFAULT = "-FIXED BY TDUF-";
@@ -184,7 +185,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
     private void addContentItem(DbStructureDto.Field missingField, ContentEntryDto invalidEntry, DbDto topicObject) {
         int newFieldRank = missingField.getRank();
-        ContentItemDto newItem = genHelper.buildDefaultContentItem(Optional.empty(), missingField, topicObject, true);
+        ContentItemDto newItem = genHelper.buildDefaultContentItem(Optional.empty(), missingField, topicObject);
         invalidEntry.addItemAtRank(newFieldRank, newItem);
     }
 
