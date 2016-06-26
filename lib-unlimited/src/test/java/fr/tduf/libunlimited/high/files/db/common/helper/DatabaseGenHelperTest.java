@@ -18,6 +18,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.*;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
+import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -114,7 +115,7 @@ public class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneUIDField();
 
         // WHEN
-        List<ContentItemDto> actualItems = genHelper.buildDefaultContentItems(Optional.empty(), topicObject);
+        List<ContentItemDto> actualItems = genHelper.buildDefaultContentItems(empty(), topicObject);
 
         // THEN
         assertThat(actualItems).hasSize(1);
@@ -128,7 +129,7 @@ public class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.BITFIELD);
 
         // WHEN
-        genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+        genHelper.buildDefaultContentItem(empty(), field, topicObject);
 
         // THEN
     }
@@ -140,7 +141,7 @@ public class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.BITFIELD);
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
 
         // THEN
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
@@ -154,7 +155,7 @@ public class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.FLOAT);
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
 
         // THEN
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
@@ -168,7 +169,7 @@ public class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.INTEGER);
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
 
         // THEN
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
@@ -182,7 +183,7 @@ public class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.PERCENT);
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
 
         // THEN
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
@@ -200,7 +201,7 @@ public class DatabaseGenHelperTest {
 
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
 
 
         // THEN
@@ -218,7 +219,7 @@ public class DatabaseGenHelperTest {
 
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
 
 
         // THEN
@@ -241,7 +242,7 @@ public class DatabaseGenHelperTest {
 
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
 
 
         // THEN
@@ -264,7 +265,7 @@ public class DatabaseGenHelperTest {
 
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(Optional.<String>empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
 
 
         // THEN
