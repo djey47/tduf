@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
+import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
@@ -23,9 +24,12 @@ import java.io.IOException;
 import java.util.*;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.*;
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.MISSING_LOCALES;
+import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.REFERENCE;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.SOURCE_TOPIC;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
@@ -88,7 +92,10 @@ public class DatabaseParserTest {
         //GIVEN : fr resource count  != it resource
         List<String> dbLines = createValidContentsWithOneItem();
         Map<Locale, List<String>> resourceLines = new HashMap<>();
-        resourceLines.put(FRANCE, createValidResourcesWithTwoItemsForLocale(FRANCE));
+
+        Locale.valuesAsStream()
+                .filter(locale -> locale != ITALY)
+                .forEach(locale -> resourceLines.put(locale, createValidResourcesWithTwoItemsForLocale(locale)));
         resourceLines.put(ITALY,
                 asList(
                         "// TDU_Achievements.it",
@@ -105,10 +112,30 @@ public class DatabaseParserTest {
 
         //THEN
         assertThat(actualDb).isNotNull();
-        assertThat(databaseParser.getIntegrityErrors()).hasSize(2);
+        assertThat(databaseParser.getIntegrityErrors()).hasSize(1);
         /** {@link fr.tduf.libunlimited.low.files.db.domain.IntegrityError#getError()} */
         assertThat(databaseParser.getIntegrityErrors()).extracting("error").containsOnly("RESOURCE_REFERENCE_NOT_FOUND");
-        assertThat(databaseParser.getIntegrityErrors().get(0).getInformation().get(SOURCE_TOPIC)).isEqualTo(ACHIEVEMENTS);
+        Map<IntegrityError.ErrorInfoEnum, Object> actualInfo = databaseParser.getIntegrityErrors().get(0).getInformation();
+        assertThat(actualInfo.get(SOURCE_TOPIC)).isEqualTo(ACHIEVEMENTS);
+        assertThat(actualInfo.get(MISSING_LOCALES)).isEqualTo(new HashSet<>(singletonList(ITALY)));
+        assertThat(actualInfo.get(REFERENCE)).isEqualTo("53410835");
+    }
+
+    @Test
+    public void parseAll_whenProvidedContents_andDuplicateResourceReference_shouldNotReturnError() throws Exception {
+        //GIVEN : duplicate ref
+        List<String> dbLines = createValidContentsWithOneItem();
+        Map<Locale, List<String>> resourceLines = new HashMap<>();
+        Locale.valuesAsStream()
+                .forEach(locale -> resourceLines.put(locale, createInvalidResourcesWithReferenceDuplicate(locale)));
+
+        //WHEN
+        DatabaseParser databaseParser = DatabaseParser.load(dbLines, resourceLines);
+        DbDto actualDb = databaseParser.parseAll();
+
+        //THEN
+        assertThat(actualDb).isNotNull();
+        assertThat(databaseParser.getIntegrityErrors()).isEmpty();
     }
 
     @Test
@@ -486,6 +513,18 @@ public class DatabaseParserTest {
                 "// Explanation",
                 "{??} 53410835",
                 "{Bravo ! Vous recevez §NB_PTS§ points.} 70410835"
+        );
+    }
+
+    private List<String> createInvalidResourcesWithReferenceDuplicate(Locale locale) {
+        return asList(
+                "// TDU_Achievements." + locale.getCode(),
+                "// version: 1,2",
+                "// categories: 6",
+                "// Explanation",
+                "{??} 53410835",
+                "{Bravo ! Vous recevez §NB_PTS§ points.} 70410835",
+                "{(clone)Bravo ! Vous recevez §NB_PTS§ points.} 70410835"
         );
     }
 

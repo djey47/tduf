@@ -30,10 +30,7 @@ import static java.util.stream.Collectors.toList;
  * Helper class to extract database structure and contents from clear db file.
  */
 public class DatabaseParser {
-
     public static final String VALUE_DELIMITER = ";";
-
-    private static final String THIS_CLASS_NAME = DatabaseParser.class.getSimpleName();
 
     private static final Pattern COMMENT_PATTERN = compile("^// (.*)$");                                //e.g // Blabla
     private static final Pattern ITEM_REF_PATTERN = compile("^\\{(.*)\\} (\\d*)$");                     //e.g {TDU_Achievements} 2442784645
@@ -337,7 +334,7 @@ public class DatabaseParser {
 
                 .forEach((entry) -> {
 
-                    if (entry.getItemCount() != Locale.values().length) {
+                    if (entry.getItemCount() < Locale.values().length) {
                         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
                         info.put(SOURCE_TOPIC, topic);
                         info.put(REFERENCE, entry.getReference());
