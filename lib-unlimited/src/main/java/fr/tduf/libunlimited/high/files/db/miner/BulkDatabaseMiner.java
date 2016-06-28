@@ -219,11 +219,10 @@ public class BulkDatabaseMiner {
     public OptionalLong getContentEntryInternalIdentifierWithReference(String ref, DbDto.Topic topic) {
         Log.trace(THIS_CLASS_NAME, "getContentEntryInternalIdentifierWithReference(" + ref + ", " + topic + ")");
 
-        Optional<ContentEntryDto> potentialEntry = getContentEntryFromTopicWithReference(ref, topic);
-        if (potentialEntry.isPresent()) {
-            return OptionalLong.of(potentialEntry.get().getId());
-        }
-        return OptionalLong.empty();
+        return getContentEntryFromTopicWithReference(ref, topic)
+                .map(ContentEntryDto::getId)
+                .map(OptionalLong::of)
+                .orElse(OptionalLong.empty());
     }
 
     /**
