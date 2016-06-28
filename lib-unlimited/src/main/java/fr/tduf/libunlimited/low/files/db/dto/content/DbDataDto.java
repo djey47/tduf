@@ -48,7 +48,7 @@ public class DbDataDto implements Serializable {
 
     public Optional<ContentEntryDto> getEntryWithReference(String ref) {
         if (entriesByReference == null) {
-            Log.warn(THIS_CLASS_NAME, "Will process entry search without index. Please fix contents.");
+            Log.warn(THIS_CLASS_NAME, "Will process entry search without index. Please fix contents for topic: " + topic);
             return entries.stream()
                     .filter(entry -> entry.getFirstItemValue().equals(ref))
                     .findFirst();
