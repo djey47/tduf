@@ -38,14 +38,12 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     /**
-     *
-     * @param profileObject
+     * Create FX controls for linked entries
+     * @param profileObject : selected profile
      */
     public void addAllLinksControls(EditorLayoutDto.EditorProfileDto profileObject) {
         profileObject.getTopicLinks().stream()
-
                 .sorted((topicLinkObject1, topicLinkObject2) -> Integer.compare(topicLinkObject2.getPriority(), topicLinkObject1.getPriority()))
-
                 .forEach(topicLinkObject -> addLinkControls(controller.getDefaultTab(), topicLinkObject, controller.getResourceListByTopicLink()));
     }
 
@@ -71,7 +69,6 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     private TableView<ContentEntryDataItem> addTableViewForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject, ObservableList<ContentEntryDataItem> resourceData, DbDto.Topic targetTopic) {
-        // TODO if target entry has REF, display REF column and not Identifier. And vice versa.
         TableView<ContentEntryDataItem> tableView = new TableView<>();
         tableView.setPrefWidth(560);
 
@@ -148,7 +145,10 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     private DbDto.Topic retrieveTargetTopicForLink(TopicLinkDto topicLinkObject) {
-        List<DbStructureDto.Field> structureFields = getMiner().getDatabaseTopic(topicLinkObject.getTopic()).get().getStructure().getFields();
+        List<DbStructureDto.Field> structureFields = getMiner().getDatabaseTopic(topicLinkObject.getTopic())
+                .orElseThrow(() -> new IllegalStateException("No database object for topic: " + topicLinkObject.getTopic()))
+                .getStructure()
+                .getFields();
         DbDto.Topic targetTopic = topicLinkObject.getTopic();
         if (structureFields.size() == 2) {
             String targetRef = structureFields.get(1).getTargetRef();
