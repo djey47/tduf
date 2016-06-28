@@ -26,12 +26,12 @@ import java.util.*;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
 /**
  * Specialized controller to display database contents.
  */
-// TODO apply code rules
 class MainStageViewDataController {
 
     private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
@@ -52,24 +52,16 @@ class MainStageViewDataController {
         final DbDto.Topic currentTopic = mainStageController.getCurrentTopicObject().getTopic();
         mainStageController.browsableEntries.setAll(
                 getMiner().getDatabaseTopic(currentTopic)
-
-                .map(topicObject -> topicObject.getData().getEntries().stream()
-
-                        .map(topicEntry -> getDisplayableEntryForCurrentLocale(topicEntry, labelFieldRanks, currentTopic))
-
-                        .collect(toList()))
-
-                .orElse(new ArrayList<>()));
+                        .map(topicObject -> topicObject.getData().getEntries().stream()
+                                .map(topicEntry -> getDisplayableEntryForCurrentLocale(topicEntry, labelFieldRanks, currentTopic))
+                                .collect(toList()))
+                        .orElse(new ArrayList<>()));
     }
 
-    // FIXME item not refreshed in combo until scrolling make it disappear/appear again....
     void updateBrowsableEntryLabel(long internalEntryId) {
         mainStageController.browsableEntries.stream()
-
                 .filter(entry -> entry.internalEntryIdProperty().get() == internalEntryId)
-
                 .findAny()
-
                 .ifPresent(entry -> {
                     final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
                             mainStageController.getCurrentProfileObject().getName(),
@@ -82,8 +74,8 @@ class MainStageViewDataController {
     }
 
     void fillLocales() {
-        fr.tduf.libunlimited.common.game.domain.Locale.valuesAsStream()
-                .forEach(locale -> mainStageController.localesChoiceBox.getItems().add(locale));
+        Locale.valuesAsStream()
+                .collect(toCollection(() -> mainStageController.localesChoiceBox.getItems()));
 
         mainStageController.currentLocaleProperty = new SimpleObjectProperty<>(UNITED_STATES);
         mainStageController.localesChoiceBox.valueProperty().bindBidirectional(mainStageController.currentLocaleProperty);
@@ -241,7 +233,8 @@ class MainStageViewDataController {
     }
 
     List<String> selectEntriesFromTopic(DbDto.Topic topic, String profileName) {
-        DbDto databaseObject = getMiner().getDatabaseTopic(topic).get();
+        DbDto databaseObject = getMiner().getDatabaseTopic(topic)
+                .orElseThrow(() -> new IllegalStateException("No database object for topic: " + topic));
 
         final Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getUidField(databaseObject.getStructure().getFields());
         if (potentialUidField.isPresent()) {
@@ -318,14 +311,20 @@ class MainStageViewDataController {
         ObservableList<ContentEntryDataItem> values = remoteEntry.getValue();
         values.clear();
 
-        String currentEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(mainStageController.currentEntryIndexProperty.getValue(), mainStageController.currentTopicProperty.getValue()).get();
-        DbDto linkedTopicObject = getMiner().getDatabaseTopic(linkObject.getTopic()).get();
+        final Long currentEntryIndex = mainStageController.currentEntryIndexProperty.getValue();
+        String currentEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndex, mainStageController.currentTopicProperty.getValue())
+                .orElseThrow(() -> new IllegalStateException("No REF available for entry at id: " + currentEntryIndex));
+
+        final DbDto.Topic linkTopic = linkObject.getTopic();
+        DbDto linkedTopicObject = getMiner().getDatabaseTopic(linkTopic)
+                .orElseThrow(() -> new IllegalStateException("No database object for topic: " + linkTopic));
+
         linkedTopicObject.getData().getEntries().stream()
-
-                .filter(contentEntry -> currentEntryRef.equals(contentEntry.getItems().get(0).getRawValue()))
-
+                .filter(contentEntry -> currentEntryRef.equals(contentEntry.getItemAtRank(1)
+                        .orElseThrow(() -> new IllegalStateException("No content item at rank 1 for entry id: " + contentEntry.getId()))
+                        .getRawValue())
+                )
                 .map(contentEntry -> fetchLinkResourceFromContentEntry(linkedTopicObject, contentEntry, linkObject))
-
                 .forEach(values::add);
     }
 
