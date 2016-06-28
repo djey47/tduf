@@ -65,7 +65,7 @@ class MainStageViewDataController {
     void updateBrowsableEntryLabel(long internalEntryId) {
         mainStageController.browsableEntries.stream()
 
-                .filter(entry -> entry.getInternalEntryId() == internalEntryId)
+                .filter(entry -> entry.internalEntryIdProperty().get() == internalEntryId)
 
                 .findAny()
 
@@ -137,6 +137,7 @@ class MainStageViewDataController {
     }
 
     void switchToSelectedResourceForLinkedTopic(ContentEntryDataItem selectedResource, DbDto.Topic targetTopic, String targetProfileName) {
+        // TODO do not search entry ref if topic does not support it; use id directly
         ofNullable(selectedResource)
                 .ifPresent(resource -> {
                     String entryReference = selectedResource.referenceProperty().get();

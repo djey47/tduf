@@ -1,5 +1,7 @@
 package fr.tduf.gui.database.domain.javafx;
 
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -13,7 +15,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  * Also includes database entry identifier (optional).
  */
 public class ContentEntryDataItem {
-    private OptionalLong internalEntryId;
+    private LongProperty internalEntryId = new SimpleLongProperty();
 
     private StringProperty reference = new SimpleStringProperty();
 
@@ -21,6 +23,10 @@ public class ContentEntryDataItem {
 
     public StringProperty referenceProperty() {
         return reference;
+    }
+
+    public LongProperty internalEntryIdProperty() {
+        return internalEntryId;
     }
 
     public StringProperty valueProperty() {
@@ -35,12 +41,8 @@ public class ContentEntryDataItem {
         this.value.set(value);
     }
 
-    public long getInternalEntryId() {
-        return internalEntryId.getAsLong();
-    }
-
     public void setInternalEntryId(long internalEntryId) {
-        this.internalEntryId = OptionalLong.of(internalEntryId);
+        this.internalEntryId.set(internalEntryId);
     }
 
     @Override

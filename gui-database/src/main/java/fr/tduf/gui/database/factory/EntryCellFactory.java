@@ -16,7 +16,7 @@ public class EntryCellFactory implements Callback<ListView<ContentEntryDataItem>
                 if (item == null) {
                     setText(null);
                 } else {
-                    setText(String.format(DisplayConstants.VALUE_ENTRY_CELL, item.getInternalEntryId() + 1, item.valueProperty().get()));
+                    setText(String.format(DisplayConstants.VALUE_ENTRY_CELL, item.internalEntryIdProperty().get() + 1, item.valueProperty().get()));
                 }
 
                 super.updateItem(item, empty);

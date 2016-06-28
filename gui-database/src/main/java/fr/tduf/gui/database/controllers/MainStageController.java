@@ -562,7 +562,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleEntryChoiceChanged: " + newEntry);
 
         ofNullable(newEntry)
-                .map(ContentEntryDataItem::getInternalEntryId)
+                .map(entry -> entry.internalEntryIdProperty().get())
                 .ifPresent(viewDataController::switchToContentEntry);
     }
 
@@ -837,7 +837,7 @@ public class MainStageController extends AbstractGuiController {
         int initialRowIndex = tableViewSelectionModel.getSelectedIndex();
         ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
 
-        changeDataController.removeEntryWithIdentifier(selectedItem.getInternalEntryId(), topicLinkObject.getTopic());
+        changeDataController.removeEntryWithIdentifier(selectedItem.internalEntryIdProperty().get(), topicLinkObject.getTopic());
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
@@ -853,7 +853,7 @@ public class MainStageController extends AbstractGuiController {
 
         ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
 
-        changeDataController.moveEntryWithIdentifier(-1, selectedItem.getInternalEntryId(), topicLinkObject.getTopic());
+        changeDataController.moveEntryWithIdentifier(-1, selectedItem.internalEntryIdProperty().get(), topicLinkObject.getTopic());
 
         viewDataController.updateLinkProperties(topicLinkObject);
 
@@ -869,7 +869,7 @@ public class MainStageController extends AbstractGuiController {
 
         ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
 
-        changeDataController.moveEntryWithIdentifier(1, selectedItem.getInternalEntryId(), topicLinkObject.getTopic());
+        changeDataController.moveEntryWithIdentifier(1, selectedItem.internalEntryIdProperty().get(), topicLinkObject.getTopic());
 
         viewDataController.updateLinkProperties(topicLinkObject);
 

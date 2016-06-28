@@ -28,10 +28,18 @@ import static javafx.geometry.Orientation.VERTICAL;
  */
 public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
+    /**
+     * Main constructor
+     * @param controller    : main controller
+     */
     public DynamicLinkControlsHelper(MainStageController controller) {
         super(controller);
     }
 
+    /**
+     *
+     * @param currentProfileObject
+     */
     public void addAllLinksControls(EditorLayoutDto.EditorProfileDto currentProfileObject) {
         currentProfileObject.getTopicLinks().stream()
 
@@ -62,11 +70,16 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     private TableView<ContentEntryDataItem> addTableViewForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject, ObservableList<ContentEntryDataItem> resourceData, DbDto.Topic targetTopic) {
+        // TODO if target entry has REF, display REF column and not Identifier. And vice versa.
         TableView<ContentEntryDataItem> tableView = new TableView<>();
         tableView.setPrefWidth(560);
 
         String toolTipText = ofNullable(topicLinkObject.getToolTip()).orElse("");
         tableView.setTooltip(new Tooltip(toolTipText));
+
+        TableColumn<ContentEntryDataItem, Number> idColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_ID);
+        idColumn.setCellValueFactory(cellData -> cellData.getValue().internalEntryIdProperty());
+        idColumn.setPrefWidth(50);
 
         TableColumn<ContentEntryDataItem, String> refColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_REF);
         refColumn.setCellValueFactory(cellData -> cellData.getValue().referenceProperty());
@@ -76,6 +89,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         valueColumn.setCellValueFactory(cellData -> cellData.getValue().valueProperty());
         valueColumn.setPrefWidth(455);
 
+        tableView.getColumns().add(idColumn);
         tableView.getColumns().add(refColumn);
         tableView.getColumns().add(valueColumn);
 

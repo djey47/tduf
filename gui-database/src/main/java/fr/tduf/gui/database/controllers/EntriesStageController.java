@@ -28,6 +28,7 @@ import java.util.OptionalInt;
 
 import static java.util.stream.Collectors.toList;
 
+// TODO apply code rules
 public class EntriesStageController extends AbstractGuiController {
 
     private static final String THIS_CLASS_NAME = EntriesStageController.class.getSimpleName();
@@ -155,10 +156,10 @@ public class EntriesStageController extends AbstractGuiController {
 
     private void initTablePane() {
         TableColumn<ContentEntryDataItem, ?> refColumn = entriesTableView.getColumns().get(0);
-        refColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().referenceProperty());
+        refColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().referenceProperty());
 
         TableColumn<ContentEntryDataItem, ?> valueColumn = entriesTableView.getColumns().get(1);
-        valueColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().valueProperty());
+        valueColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().valueProperty());
 
         entriesTableView.setItems(entriesData);
     }
@@ -181,9 +182,9 @@ public class EntriesStageController extends AbstractGuiController {
 
         DbDto.Topic topic = currentTopicProperty.getValue();
         getMiner().getDatabaseTopic(topic)
-                .ifPresent((topicObject) -> entriesData.addAll(topicObject.getData().getEntries().stream()
+                .ifPresent(topicObject -> entriesData.addAll(topicObject.getData().getEntries().stream()
 
-                                .map((entry) -> {
+                                .map(entry -> {
                                     ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
 
                                     long entryInternalIdentifier = entry.getId();
@@ -192,8 +193,8 @@ public class EntriesStageController extends AbstractGuiController {
                                     String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
                                     contentEntryDataItem.setValue(entryValue);
 
-                                    String entryReference = getMiner().getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, topic).get();
-                                    contentEntryDataItem.setReference(entryReference);
+                                    getMiner().getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, topic)
+                                            .ifPresent(contentEntryDataItem::setReference);
 
                                     return contentEntryDataItem;
                                 })

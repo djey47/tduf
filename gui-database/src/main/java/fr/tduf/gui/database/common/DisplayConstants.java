@@ -54,7 +54,8 @@ public class DisplayConstants {
 
 
     public static final String COLUMN_HEADER_DATA = "Linked data";
-    public static final String COLUMN_HEADER_REF = "#";
+    public static final String COLUMN_HEADER_ID = "#";
+    public static final String COLUMN_HEADER_REF = "REF";
 
     public static final String TITLE_APPLICATION = "TDUF Database Editor";
     public static final String TITLE_SUB_ENTRIES = " : Content entries";
