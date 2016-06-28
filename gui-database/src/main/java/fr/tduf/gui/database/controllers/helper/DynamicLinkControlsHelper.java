@@ -8,6 +8,7 @@ import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Separator;
@@ -38,10 +39,10 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
     /**
      *
-     * @param currentProfileObject
+     * @param profileObject
      */
-    public void addAllLinksControls(EditorLayoutDto.EditorProfileDto currentProfileObject) {
-        currentProfileObject.getTopicLinks().stream()
+    public void addAllLinksControls(EditorLayoutDto.EditorProfileDto profileObject) {
+        profileObject.getTopicLinks().stream()
 
                 .sorted((topicLinkObject1, topicLinkObject2) -> Integer.compare(topicLinkObject2.getPriority(), topicLinkObject1.getPriority()))
 
@@ -79,7 +80,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
         TableColumn<ContentEntryDataItem, Number> idColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_ID);
         idColumn.setCellValueFactory(cellData -> cellData.getValue().internalEntryIdProperty());
-        idColumn.setPrefWidth(50);
+        idColumn.setPrefWidth(100);
 
         TableColumn<ContentEntryDataItem, String> refColumn = new TableColumn<>(DisplayConstants.COLUMN_HEADER_REF);
         refColumn.setCellValueFactory(cellData -> cellData.getValue().referenceProperty());
@@ -89,8 +90,12 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         valueColumn.setCellValueFactory(cellData -> cellData.getValue().valueProperty());
         valueColumn.setPrefWidth(455);
 
-        tableView.getColumns().add(idColumn);
-        tableView.getColumns().add(refColumn);
+        if (DatabaseStructureQueryHelper.isUidSupportForTopic(targetTopic)) {
+            tableView.getColumns().add(refColumn);
+        } else {
+            tableView.getColumns().add(idColumn);
+        }
+
         tableView.getColumns().add(valueColumn);
 
         tableView.setItems(resourceData);
