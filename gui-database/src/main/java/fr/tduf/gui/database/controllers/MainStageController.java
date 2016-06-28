@@ -503,7 +503,8 @@ public class MainStageController extends AbstractGuiController {
         return mouseEvent -> {
             Log.trace(THIS_CLASS_NAME, "->handleLinkTableMouseClick, targetProfileName:" + targetProfileName + ", targetTopic:" + targetTopic);
 
-            if (MouseButton.PRIMARY == mouseEvent.getButton() && mouseEvent.getClickCount() == 2) {
+            if (MouseButton.PRIMARY == mouseEvent.getButton()
+                    && mouseEvent.getClickCount() == 2) {
                 TableViewHelper.getMouseSelectedItem(mouseEvent, ContentEntryDataItem.class)
                         .ifPresent(selectedResource -> viewDataController.switchToSelectedResourceForLinkedTopic(selectedResource, targetTopic, targetProfileName));
             }

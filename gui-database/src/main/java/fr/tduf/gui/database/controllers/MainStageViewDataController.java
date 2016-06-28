@@ -31,6 +31,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Specialized controller to display database contents.
  */
+// TODO apply code rules
 class MainStageViewDataController {
 
     private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
@@ -137,16 +138,15 @@ class MainStageViewDataController {
     }
 
     void switchToSelectedResourceForLinkedTopic(ContentEntryDataItem selectedResource, DbDto.Topic targetTopic, String targetProfileName) {
-        // TODO do not search entry ref if topic does not support it; use id directly
         ofNullable(selectedResource)
                 .ifPresent(resource -> {
-                    String entryReference = selectedResource.referenceProperty().get();
                     long remoteContentEntryId;
-                    OptionalLong potentialEntryId = getMiner().getContentEntryInternalIdentifierWithReference(entryReference, targetTopic);
-                    if (potentialEntryId.isPresent()) {
-                        remoteContentEntryId = potentialEntryId.getAsLong();
+                    String entryReference = selectedResource.referenceProperty().get();
+                    if (entryReference == null) {
+                        remoteContentEntryId = selectedResource.internalEntryIdProperty().get();
                     } else {
-                        remoteContentEntryId = Long.valueOf(entryReference);
+                        remoteContentEntryId = getMiner().getContentEntryInternalIdentifierWithReference(entryReference, targetTopic)
+                                .orElseThrow(() -> new IllegalStateException("No entry with ref: " + entryReference + " for topic: " + targetTopic));
                     }
 
                     switchToProfileAndEntry(targetProfileName, remoteContentEntryId, true);
@@ -357,10 +357,11 @@ class MainStageViewDataController {
 
             String remoteEntryReference = contentEntry.getItems().get(1).getRawValue();
             databaseEntry.setReference(remoteEntryReference);
+            databaseEntry.setInternalEntryId(contentEntry.getId());
             databaseEntry.setValue(fetchRemoteContentsWithEntryRef(remoteTopic, remoteEntryReference, remoteFieldRanks));
         } else {
             // Classic topic (e.g. Car_Colors)
-            databaseEntry.setReference(Long.toString(entryId));
+            databaseEntry.setInternalEntryId(entryId);
             databaseEntry.setValue(DatabaseQueryHelper.fetchResourceValuesWithEntryId(
                     entryId, linkObject.getTopic(),
                     mainStageController.currentLocaleProperty.getValue(),
