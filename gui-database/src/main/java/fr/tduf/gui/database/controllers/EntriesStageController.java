@@ -28,10 +28,12 @@ import java.util.OptionalInt;
 
 import static java.util.stream.Collectors.toList;
 
-// TODO apply code rules
+/**
+ * FX Controller for content entry selection dialog
+ */
 public class EntriesStageController extends AbstractGuiController {
-
     private static final String THIS_CLASS_NAME = EntriesStageController.class.getSimpleName();
+
     @FXML
     private Label currentTopicLabel;
 
@@ -166,12 +168,9 @@ public class EntriesStageController extends AbstractGuiController {
 
     private void selectEntryInTableAndScroll(String entryReference) {
         entriesData.stream()
-
-                .filter((resource) -> resource.referenceProperty().get().equals(entryReference))
-
+                .filter(resource -> resource.referenceProperty().get().equals(entryReference))
                 .findAny()
-
-                .ifPresent((browsedResource) -> {
+                .ifPresent(browsedResource -> {
                     entriesTableView.getSelectionModel().select(browsedResource);
                     entriesTableView.scrollTo(browsedResource);
                 });
@@ -183,7 +182,6 @@ public class EntriesStageController extends AbstractGuiController {
         DbDto.Topic topic = currentTopicProperty.getValue();
         getMiner().getDatabaseTopic(topic)
                 .ifPresent(topicObject -> entriesData.addAll(topicObject.getData().getEntries().stream()
-
                                 .map(entry -> {
                                     ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
 
@@ -203,10 +201,11 @@ public class EntriesStageController extends AbstractGuiController {
                 );
     }
 
+    // Ignore warning (method reference)
     private void applySingleEntrySelectionToMainStageAndClose(ContentEntryDataItem selectedEntry) {
         selectedEntries.add(selectedEntry);
 
-        fieldRankForUpdate.ifPresent((fieldRank) -> {
+        fieldRankForUpdate.ifPresent(fieldRank -> {
             // Update mode: will update a particular field in main stage
             String entryReference = selectedEntry.referenceProperty().getValue();
             mainStageController.getChangeDataController().updateContentItem(mainStageController.getCurrentTopicObject().getTopic(), fieldRank, entryReference);
@@ -220,12 +219,12 @@ public class EntriesStageController extends AbstractGuiController {
                 DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SEARCH_ENTRY,
                 DisplayConstants.LABEL_SEARCH_ENTRY)
 
-                .ifPresent((entryReference) -> TableViewHelper.selectItemAndScroll(
+                .ifPresent(entryReference -> TableViewHelper.selectItemAndScroll(
                         oneItem -> oneItem.referenceProperty().getValue().equals(entryReference),
                         entriesTableView));
     }
 
-    public void setMainStageController(MainStageController mainStageController) {
+    void setMainStageController(MainStageController mainStageController) {
         this.mainStageController = mainStageController;
     }
 
