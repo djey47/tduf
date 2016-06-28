@@ -90,11 +90,15 @@ public class PatchEnhancer {
     void enhancePatchObjectWithPaintJobs(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
         Log.info(THIS_CLASS_NAME, "->Adding paint jobs properties and changes to initial patch");
 
-        enhancePatchObjectWithExteriors(vehicleSlot, patchProperties);
-
-        if (!vehicleSlot.getPaintJobs().isEmpty()) {
-            enhancePatchObjectWithInteriors(vehicleSlot.getPaintJobs().get(0).getInteriorPatternRefs(), patchProperties);
+        if (vehicleSlot.getPaintJobs().isEmpty()) {
+            return;
         }
+
+        final List<String> availableInteriorRefs = vehicleSlot.getPaintJobs().get(0).getInteriorPatternRefs();
+        List<String> effectiveInteriorRefs = getEffectiveInteriorReferences(availableInteriorRefs, patchProperties);
+
+        enhancePatchObjectWithExteriors(vehicleSlot, effectiveInteriorRefs, patchProperties);
+        enhancePatchObjectWithInteriors(availableInteriorRefs, patchProperties);
     }
 
     void enhancePatchObjectWithRims(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
@@ -173,11 +177,11 @@ public class PatchEnhancer {
         patchProperties.setDealerSlotIfNotExists(userSelection.getDealerSlotRank());
     }
 
-    private void enhancePatchObjectWithExteriors(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
+    private void enhancePatchObjectWithExteriors(VehicleSlot vehicleSlot, List<String> interiorPatternRefs, PatchProperties patchProperties) {
         // TODO handle pj at index 0??
         AtomicInteger exteriorIndex = new AtomicInteger(1);
         List<DbPatchDto.DbChangeDto> changeObjectsForPaintJobs = vehicleSlot.getPaintJobs().stream()
-                .flatMap(paintJob -> createChangeObjectsAndPropertiesForExterior(paintJob, exteriorIndex.getAndIncrement(), patchProperties))
+                .flatMap(paintJob -> createChangeObjectsAndPropertiesForExterior(paintJob, exteriorIndex.getAndIncrement(), interiorPatternRefs, patchProperties))
                 .collect(toList());
 
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForPaintJobs);
@@ -194,14 +198,12 @@ public class PatchEnhancer {
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForInteriors);
     }
 
-    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsAndPropertiesForExterior(PaintJob paintJob, int exteriorRank, PatchProperties patchProperties) {
+    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsAndPropertiesForExterior(PaintJob paintJob, int exteriorRank, List<String> interiorPatternRefs, PatchProperties patchProperties) {
         if (!patchProperties.getExteriorColorName(exteriorRank).isPresent()) {
             return Stream.empty();
         }
 
         createPatchPropertiesForPaintJobAtRank(paintJob, exteriorRank, patchProperties);
-
-        List<String> interiorRefs = getEffectiveInteriorReferences(paintJob.getInteriorPatternRefs(), patchProperties);
 
         DbPatchDto.DbChangeDto entryUpdateChange = DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE)
@@ -214,21 +216,21 @@ public class PatchEnhancer {
                         PlaceholderConstants.getPlaceHolderForExteriorCalipersColor(exteriorRank),
                         "0",
                         "0",
-                        interiorRefs.get(0),
-                        interiorRefs.get(1),
-                        interiorRefs.get(2),
-                        interiorRefs.get(3),
-                        interiorRefs.get(4),
-                        interiorRefs.get(5),
-                        interiorRefs.get(6),
-                        interiorRefs.get(7),
-                        interiorRefs.get(8),
-                        interiorRefs.get(9),
-                        interiorRefs.get(10),
-                        interiorRefs.get(11),
-                        interiorRefs.get(12),
-                        interiorRefs.get(13),
-                        interiorRefs.get(14)
+                        interiorPatternRefs.get(0),
+                        interiorPatternRefs.get(1),
+                        interiorPatternRefs.get(2),
+                        interiorPatternRefs.get(3),
+                        interiorPatternRefs.get(4),
+                        interiorPatternRefs.get(5),
+                        interiorPatternRefs.get(6),
+                        interiorPatternRefs.get(7),
+                        interiorPatternRefs.get(8),
+                        interiorPatternRefs.get(9),
+                        interiorPatternRefs.get(10),
+                        interiorPatternRefs.get(11),
+                        interiorPatternRefs.get(12),
+                        interiorPatternRefs.get(13),
+                        interiorPatternRefs.get(14)
                 ))
                 .build();
 
