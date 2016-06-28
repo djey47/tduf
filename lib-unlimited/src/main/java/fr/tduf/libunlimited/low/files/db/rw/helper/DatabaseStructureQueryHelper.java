@@ -9,12 +9,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
 import static java.util.Objects.requireNonNull;
 
 /**
  * Class providing methods to query database structure.
  */
 public class DatabaseStructureQueryHelper {
+    private static final String MESSAGE_ERR_FIELDS = "A list of fields is required.";
+
     private static final DatabaseStructureHelper structureHelper = new DatabaseStructureHelper();
 
     private DatabaseStructureQueryHelper() {}
@@ -25,12 +28,8 @@ public class DatabaseStructureQueryHelper {
      * @return searched field, or empty if it does not exist.
      */
     public static Optional<DbStructureDto.Field> getUidField(List<DbStructureDto.Field> structureFields) {
-        requireNonNull(structureFields, "A list of fields is required.");
-
-        return structureFields.stream()
-
-                .filter((field) -> field.getFieldType() == DbStructureDto.FieldType.UID)
-
+        return requireNonNull(structureFields, MESSAGE_ERR_FIELDS).stream()
+                .filter(field -> UID == field.getFieldType())
                 .findAny();
     }
 
@@ -39,9 +38,7 @@ public class DatabaseStructureQueryHelper {
      * @return rank of UID field in structure if such a field exists, empty otherwise.
      */
     public static OptionalInt getUidFieldRank(List<DbStructureDto.Field> structureFields) {
-        requireNonNull(structureFields, "A list of fields is required.");
-
-        Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getUidField(structureFields);
+        Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getUidField(requireNonNull(structureFields, MESSAGE_ERR_FIELDS));
         if (potentialUidField.isPresent()) {
             return OptionalInt.of(potentialUidField.get().getRank());
         }
@@ -55,16 +52,15 @@ public class DatabaseStructureQueryHelper {
      */
     public static DbStructureDto.Field getStructureField(ContentItemDto item, List<DbStructureDto.Field> structureFields) {
         requireNonNull(item, "A content entry item is required.");
-        requireNonNull(structureFields, "A list of fields is required.");
 
-        return structureFields.stream()
-
+        return requireNonNull(structureFields, MESSAGE_ERR_FIELDS).stream()
                 .filter(field -> field.getRank() == item.getFieldRank())
-
-                .findAny().get();
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("No structure field for item at rank: " + item.getFieldRank()));
     }
 
     /**
+     * @param topic : database topic
      * @return true if specified topic supports entry UID feature (REF)
      */
     public static boolean isUidSupportForTopic(DbDto.Topic topic) {

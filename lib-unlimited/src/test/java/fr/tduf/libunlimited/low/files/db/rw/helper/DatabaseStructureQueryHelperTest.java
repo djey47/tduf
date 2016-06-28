@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,7 +57,7 @@ public class DatabaseStructureQueryHelperTest {
         // THEN: NPE
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalStateException.class)
     public void getStructureField_whenNotFound_shouldThrowException() throws Exception {
         // GIVEN
         ContentItemDto contentsItem = ContentItemDto.builder()
