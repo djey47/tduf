@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
@@ -26,7 +25,6 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.of;
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -50,6 +48,7 @@ public class PatchEnhancerTest {
     private static final String COLORNAME_2 = "Blau";
     private static final String INTREF_1 = "5000000001";
     private static final String INTREF_2 = "5000000002";
+    private static final String INTREF_3 = "5000000003";
     private static final String INT_NAME_ID = "53365512";
     private static final String INT_MANUFACTURER_ID = "62938337";
 
@@ -469,19 +468,20 @@ public class PatchEnhancerTest {
     }
 
     @Test
-    public void getEffectiveInteriorReferenceAtRank() {
+    public void getEffectiveInteriorReferences() {
         // GIVEN
         List<String> interiorRefs = asList(
                 "15623",
                 "62315",
+                "78891",
                 "11319636",
                 "11319636"
         );
+        patchProperties.setInteriorMainColorIdIfNotExists("INTID1", 1);
+        patchProperties.setInteriorMainColorIdIfNotExists("INTID2", 2);
 
         // WHEN
-        final List<String> actualReferences = IntStream.rangeClosed(1, 15)
-                .mapToObj(rank -> PatchEnhancer.getEffectiveInteriorReferenceAtRank(interiorRefs, rank))
-                .collect(toList());
+        final List<String> actualReferences = PatchEnhancer.getEffectiveInteriorReferences(interiorRefs, patchProperties);
 
         // THEN
         assertThat(actualReferences).containsExactly(
@@ -544,12 +544,14 @@ public class PatchEnhancerTest {
                         .withName(Resource.from(RES_COLORNAME_1, COLORNAME_1))
                         .addInteriorPattern(INTREF_1)
                         .addInteriorPattern(INTREF_2)
+                        .addInteriorPattern(INTREF_3)
                         .build())
                 .addPaintJob(PaintJob.builder()
                         .atRank(2)
                         .withName(Resource.from(RES_COLORNAME_2, COLORNAME_2))
                         .addInteriorPattern(INTREF_1)
                         .addInteriorPattern(INTREF_2)
+                        .addInteriorPattern(INTREF_3)
                         .build())
                 .build();
     }

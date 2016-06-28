@@ -12,7 +12,6 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderConstants;
 
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -27,7 +26,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.IntStream.rangeClosed;
+import static java.util.stream.IntStream.range;
 
 /**
  * Utility class to add instructions and properties over an existing install patch template
@@ -202,10 +201,7 @@ public class PatchEnhancer {
 
         createPatchPropertiesForPaintJobAtRank(paintJob, exteriorRank, patchProperties);
 
-        List<String> interiorRefs = new ArrayList<>(paintJob.getInteriorPatternRefs());
-        try (IntStream stream = rangeClosed(interiorRefs.size(), DatabaseConstants.COUNT_INTERIORS)) {
-            stream.forEach(i -> interiorRefs.add(DatabaseConstants.REF_NO_INTERIOR));
-        }
+        List<String> interiorRefs = getEffectiveInteriorReferences(paintJob.getInteriorPatternRefs(), patchProperties);
 
         DbPatchDto.DbChangeDto entryUpdateChange = DbPatchDto.DbChangeDto.builder()
                 .withType(UPDATE)
@@ -218,21 +214,21 @@ public class PatchEnhancer {
                         PlaceholderConstants.getPlaceHolderForExteriorCalipersColor(exteriorRank),
                         "0",
                         "0",
-                        getEffectiveInteriorReferenceAtRank(interiorRefs, 1),
-                        getEffectiveInteriorReferenceAtRank(interiorRefs, 2),
-                        getEffectiveInteriorReferenceAtRank(interiorRefs, 3),
-                        getEffectiveInteriorReferenceAtRank(interiorRefs, 4),
-                        getEffectiveInteriorReferenceAtRank(interiorRefs, 5),
-                        getEffectiveInteriorReferenceAtRank(interiorRefs, 6),
-                        getEffectiveInteriorReferenceAtRank(interiorRefs, 7),
-                        getEffectiveInteriorReferenceAtRank(interiorRefs, 8),
-                        getEffectiveInteriorReferenceAtRank(interiorRefs, 9),
-                        getEffectiveInteriorReferenceAtRank(interiorRefs, 10),
-                        getEffectiveInteriorReferenceAtRank(interiorRefs, 11),
-                        getEffectiveInteriorReferenceAtRank(interiorRefs, 12),
-                        getEffectiveInteriorReferenceAtRank(interiorRefs, 13),
-                        getEffectiveInteriorReferenceAtRank(interiorRefs, 14),
-                        getEffectiveInteriorReferenceAtRank(interiorRefs, 15)
+                        interiorRefs.get(0),
+                        interiorRefs.get(1),
+                        interiorRefs.get(2),
+                        interiorRefs.get(3),
+                        interiorRefs.get(4),
+                        interiorRefs.get(5),
+                        interiorRefs.get(6),
+                        interiorRefs.get(7),
+                        interiorRefs.get(8),
+                        interiorRefs.get(9),
+                        interiorRefs.get(10),
+                        interiorRefs.get(11),
+                        interiorRefs.get(12),
+                        interiorRefs.get(13),
+                        interiorRefs.get(14)
                 ))
                 .build();
 
@@ -365,16 +361,23 @@ public class PatchEnhancer {
         patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, rank);
     }
 
-    static String getEffectiveInteriorReferenceAtRank(List<String> interiorRefs, int intRank) {
-        if (intRank > interiorRefs.size()) {
-            return DatabaseConstants.REF_NO_INTERIOR;
+    static List<String> getEffectiveInteriorReferences(List<String> interiorRefs, PatchProperties patchProperties) {
+        AtomicInteger interiorRank = new AtomicInteger(1);
+        List<String> interiorPatternRefs = interiorRefs.stream()
+                .map(ref -> {
+                    int rank = interiorRank.getAndIncrement();
+                    return patchProperties.getInteriorMainColorId(rank).isPresent() ?
+                            PlaceholderConstants.getPlaceHolderForInteriorReference(rank) : DatabaseConstants.REF_NO_INTERIOR;
+                })
+                .collect(toList());
+
+        try (IntStream stream = range(interiorPatternRefs.size(), DatabaseConstants.COUNT_INTERIORS)) {
+            stream.forEach(i -> interiorPatternRefs.add(DatabaseConstants.REF_NO_INTERIOR));
         }
-
-        final String interiorRefFromSlot = interiorRefs.get(intRank - 1);
-
-        return DatabaseConstants.REF_NO_INTERIOR.equals(interiorRefFromSlot) ?
-                DatabaseConstants.REF_NO_INTERIOR : PlaceholderConstants.getPlaceHolderForInteriorReference(intRank);
+        
+        return interiorPatternRefs;
     }
+
 
     // For testing only
     void overrideVehicleSlotsHelper(VehicleSlotsHelper vehicleSlotsHelper) {
