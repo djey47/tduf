@@ -72,7 +72,6 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
-    // TODO assert rim options
     public void getVehicleSlotFromReference() {
         // GIVEN
         String slotRef = "REF";
@@ -221,6 +220,11 @@ public class VehicleSlotsHelperTest {
         assertThat(actualDefaultRims.getParentDirectoryName()).isEqualTo(Resource.from(directoryRef, directory));
         assertThat(actualDefaultRims.getFrontRimInfo().getFileName()).isEqualTo(Resource.from(frontRimFileNameRef1, frontRimFileName1));
         assertThat(actualDefaultRims.getRearRimInfo().getFileName()).isEqualTo(Resource.from(rearRimFileNameRef1, rearRimFileName1));
+
+        assertThat(vehicleSlot.getAllRimOptionsSorted())
+                .hasSize(2)
+                .extracting("ref").containsExactly(rimSlotRef1, rimSlotRef2);
+        assertThat(vehicleSlot.getAllRimCandidatesSorted()).isEmpty();
 
         assertThat(vehicleSlot.getPaintJobs()).extracting("rank").containsExactly(1);
         assertThat(vehicleSlot.getPaintJobs()).extracting("name").containsExactly(Resource.from(colorNameRef, colorName));
