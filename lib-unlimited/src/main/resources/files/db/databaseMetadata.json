@@ -349,6 +349,13 @@
       "location": "SMid, Shafter University",
       "slotCount": 15,
       "availableSlots": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+    },
+    {
+      "ref": "611473716",
+      "name": "LAMBORGHINI",
+      "location": "SE, Maunalua",
+      "slotCount": 8,
+      "availableSlots": [1,2,3,4,5,6,7,8]
     }
   ]
 }
