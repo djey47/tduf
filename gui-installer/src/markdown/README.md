@@ -146,6 +146,6 @@ If you wish to donate, please head to [this](http://bit.ly/13YI3bP)
 ### Contact & useful links
 
 * [Project homepage @ TurboDuck community](http://forum.turboduck.net/forums/57-Mod-Tools-Support)
-
+* [Tools Reference: TDUCP WIKI @ GitHub](https://github.com/djey47/tdu-cp/wiki/Tools-reference)
 
 -[Djey, *core* tools developer](https://github.com/djey47)-
