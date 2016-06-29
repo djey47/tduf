@@ -1,10 +1,16 @@
 package fr.tduf.libunlimited.high.files.common.interop;
 
-import fr.tduf.libunlimited.common.system.domain.ProcessResult;
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
+import fr.tduf.libunlimited.common.system.domain.ProcessResult;
+import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +21,9 @@ import static java.util.Arrays.asList;
  * Uses TDUMT-CLI application to provide genuine services.
  */
 public abstract class GenuineGateway {
-    public static final String EXE_TDUMT_CLI = Paths.get(".", "tools", "tdumt-cli", "tdumt-cli.exe").toString();
+    private static final String THIS_CLASS_NAME = GenuineBnkGateway.class.getSimpleName();
+
+    private static final Path EXE_TDUMT_CLI = Paths.get("tools", "tdumt-cli", "tdumt-cli.exe");
 
     /**
      * Describes all available operations.
@@ -58,10 +66,36 @@ public abstract class GenuineGateway {
         allArguments.add(operation.command);
         allArguments.addAll(asList(args));
 
-        ProcessResult processResult = commandLineHelper.runCliCommand(EXE_TDUMT_CLI, allArguments.toArray(new String[allArguments.size()]));
+        String binaryPath = getExecutableDirectory().resolve(EXE_TDUMT_CLI).toString();
+
+        Log.debug(THIS_CLASS_NAME, "TDUMT-CLI Binary path: " + binaryPath);
+
+        ProcessResult processResult = commandLineHelper.runCliCommand(binaryPath, allArguments.toArray(new String[allArguments.size()]));
         handleCommandLineErrors(processResult);
 
         return processResult.getOut();
+    }
+
+    static Path getExecutableDirectory() throws IOException {
+        CodeSource codeSource = GenuineGateway.class.getProtectionDomain().getCodeSource();
+
+        File sourceLocation;
+        try {
+            sourceLocation = new File(codeSource.getLocation().toURI().getPath());
+        } catch (URISyntaxException e) {
+            throw new IOException("Unable to resolve executable directory", e);
+        }
+
+        final Path sourcePath = sourceLocation.toPath();
+        Log.debug(THIS_CLASS_NAME, "Source location: " + sourcePath);
+
+        if (sourcePath.endsWith(Paths.get("build", "classes", "main"))) {
+            // Run from IDE
+            return sourcePath.getParent().getParent().getParent().getParent();
+        } else {
+            // Run from JAR
+            return sourcePath.getParent().getParent().getParent();
+        }
     }
 
     private static void handleCommandLineErrors(ProcessResult processResult) throws IOException {
