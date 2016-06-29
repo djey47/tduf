@@ -13,10 +13,7 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -29,6 +26,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.*;
+import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -139,7 +137,8 @@ public class VehicleSlotsHelper extends CommonHelper {
 
         List<PaintJob> paintJobs = getPaintJobsForVehicle(slotReference);
 
-        List<RimSlot> rims = getAllRimsForVehicle(slotReference);
+        List<RimSlot> rimOptions = getAllRimOptionsForVehicle(slotReference);
+        List<RimSlot> rimCandidates = getAllRimCandidatesForVehicle(slotReference, rimOptions);
 
         return of(VehicleSlot.builder()
                 .withRef(slotReference)
@@ -152,7 +151,8 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .withCameraIdentifier(cameraIdentifier.orElse(DEFAULT_CAM_ID))
                 .withSecurityOptions(secuOptionOne.orElse(SecurityOptions.ONE_DEFAULT), secuOptionTwo.orElse(SecurityOptions.TWO_DEFAULT))
                 .addPaintJobs(paintJobs)
-                .addRims(rims)
+                .addRimOptions(rimOptions)
+                .addRimCandidates(rimCandidates)
                 .build());
     }
 
@@ -269,7 +269,7 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .collect(toList());
     }
 
-    private List<RimSlot> getAllRimsForVehicle(String slotReference) {
+    private List<RimSlot> getAllRimOptionsForVehicle(String slotReference) {
         final Optional<String> defaultRimsReference = miner.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)
                 .flatMap(entry -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEFAULT_RIMS))
                 .map(ContentItemDto::getRawValue);
@@ -281,6 +281,29 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .map(rimSlotReference -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS).get())
                 .map(rimEntry -> getRimSlotFromDatabaseEntry(rimEntry, rimRank.getAndIncrement(), defaultRimsReference.orElse(null)))
                 .collect(toList());
+    }
+
+    private List<RimSlot> getAllRimCandidatesForVehicle(String slotReference, List<RimSlot> rimOptions) {
+        if (!isTDUCPNewVehicleSlot(slotReference)) {
+            return new ArrayList<>(0);
+        }
+
+        final RimSlot defaultRims = rimOptions.stream()
+                .filter(RimSlot::isDefault)
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("No default rims for slot ref: " + slotReference));
+        final String defaultRimsReference = defaultRims.getRef();
+
+        List<RimSlot> rimCandidates = new ArrayList<>(9);
+        rimCandidates.add(defaultRims);
+
+        AtomicInteger rimRank = new AtomicInteger(2);
+        return IntStream.rangeClosed(2, 9)
+                .mapToObj(index -> defaultRimsReference.substring(0, 8) + Integer.toString(index))
+                .map(potentialRimRef -> miner.getContentEntryFromTopicWithReference(potentialRimRef, RIMS))
+                .filter(Optional::isPresent)
+                .map(rimEntry -> getRimSlotFromDatabaseEntry(rimEntry.get(), rimRank.getAndIncrement(), defaultRimsReference))
+                .collect(toCollection(() -> rimCandidates));
     }
 
     private RimSlot getRimSlotFromDatabaseEntry(ContentEntryDto rimEntry, int rimRank, String defaultRimsReference) {
@@ -370,6 +393,11 @@ public class VehicleSlotsHelper extends CommonHelper {
         return tducpCarSlotPattern.matcher(slotReference).matches()
                 || tducpBikeSlotPattern.matcher(slotReference).matches()
                 || tducpUnlockedSlotRefs.contains(slotReference);
+    }
+
+    private static boolean isTDUCPNewVehicleSlot(String slotReference) {
+        return tducpCarSlotPattern.matcher(slotReference).matches()
+                || tducpBikeSlotPattern.matcher(slotReference).matches();
     }
 
     private static void loadProperties() {

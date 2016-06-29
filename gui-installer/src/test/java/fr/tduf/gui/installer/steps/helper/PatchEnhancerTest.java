@@ -31,7 +31,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PatchEnhancerTest {
 
-    private static final String SLOT_REFERENCE = "30000000";
+    private static final String SLOT_REFERENCE = "12345678";
+    private static final String TDUCP_SLOT_REFERENCE = "30000000";
     private static final String CARID = "3000";
     private static final String BANKNAME = "TDUCP_3000";
     private static final String RES_BANKNAME = "30000567";
@@ -343,11 +344,11 @@ public class PatchEnhancerTest {
         patchProperties.setRimNameIfNotExists("RIM SET 1", 1);
         patchProperties.setRimNameIfNotExists("RIM SET 2", 2);
 
-        final RimSlot rimSlot1 = createRimSlot(rimId1, 1);
+        final RimSlot rimSlot1 = createDefaultRimSlot(rimId1, 1);
         final RimSlot rimSlot2 = createRimSlot(rimId2, 2);
         final VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef(SLOT_REFERENCE)
-                .addRims(asList(rimSlot1, rimSlot2))
+                .addRimOptions(asList(rimSlot1, rimSlot2))
                 .build();
 
 
@@ -433,6 +434,55 @@ public class PatchEnhancerTest {
     }
 
     @Test
+    public void enhancePatchObjectWithRims_withRimCandidates_shouldAddCarRims_andRims_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
+        // GIVEN
+        String rimId1 = "1111";
+        String rimId2 = "2222";
+        String rimId3 = "3333";
+
+        patchProperties.setRimNameIfNotExists("RIM SET 1", 1);
+        patchProperties.setRimNameIfNotExists("RIM SET 2", 2);
+        patchProperties.setRimNameIfNotExists("RIM SET 3", 3);
+
+        final RimSlot rimSlot1 = createDefaultRimSlot(rimId1, 1);
+        final RimSlot rimSlot2 = createDefaultRimSlot(rimId2, 2);
+        final RimSlot rimSlot3 = createDefaultRimSlot(rimId3, 3);
+        final VehicleSlot vehicleSlot = VehicleSlot.builder()
+                .withRef(TDUCP_SLOT_REFERENCE)
+                .addRimOptions(singletonList(rimSlot1))
+                .addRimCandidates(asList(rimSlot1, rimSlot2, rimSlot3))
+                .build();
+
+
+        // WHEN
+        createDefaultEnhancer().enhancePatchObjectWithRims(vehicleSlot, patchProperties);
+
+
+        // THEN
+        assertThat(patchProperties.getRimSlotReference(1)).contains(rimId1);
+        assertThat(patchProperties.getRimBrandNameResource(1)).contains(RES_RIMBRAND);
+        assertThat(patchProperties.getFrontRimBankFileName(1)).contains("AC_289_F_01");
+        assertThat(patchProperties.getRearRimBankFileName(1)).contains("AC_289_R_01");
+        assertThat(patchProperties.getFrontRimBankFileNameResource(1)).contains(RES_BANKNAME_FR_1);
+        assertThat(patchProperties.getRearRimBankFileNameResource(1)).contains(RES_BANKNAME_RR_1);
+        assertThat(patchProperties.getRimSlotReference(2)).contains(rimId2);
+        assertThat(patchProperties.getRimBrandNameResource(2)).contains(RES_RIMBRAND);
+        assertThat(patchProperties.getFrontRimBankFileName(2)).contains("AC_289_F_02");
+        assertThat(patchProperties.getRearRimBankFileName(2)).contains("AC_289_R_02");
+        assertThat(patchProperties.getFrontRimBankFileNameResource(2)).contains(RES_BANKNAME_FR_1);
+        assertThat(patchProperties.getRearRimBankFileNameResource(2)).contains(RES_BANKNAME_RR_1);
+        assertThat(patchProperties.getRimSlotReference(3)).contains(rimId3);
+        assertThat(patchProperties.getRimBrandNameResource(3)).contains(RES_RIMBRAND);
+        assertThat(patchProperties.getFrontRimBankFileName(3)).contains("AC_289_F_03");
+        assertThat(patchProperties.getRearRimBankFileName(3)).contains("AC_289_R_03");
+        assertThat(patchProperties.getFrontRimBankFileNameResource(3)).contains(RES_BANKNAME_FR_1);
+        assertThat(patchProperties.getRearRimBankFileNameResource(3)).contains(RES_BANKNAME_RR_1);
+
+        DbPatchDto patchObject = databaseContext.getPatchObject();
+        assertThat(patchObject.getChanges()).hasSize(3 * 5); // 5 per rim set
+    }
+
+    @Test
     public void enhancePatchObjectWithLocationChange_withDealerProperties_shouldAddCarShops_updateInstruction() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
         String dealerRef = "0000";
@@ -508,6 +558,17 @@ public class PatchEnhancerTest {
     }
 
     private static RimSlot createRimSlot(String rimId, int rank) {
+        return createRims(rimId, rank)
+                .build();
+    }
+
+    private static RimSlot createDefaultRimSlot(String rimId, int rank) {
+        return createRims(rimId, rank)
+                .setDefaultRims(true)
+                .build();
+    }
+
+    private static RimSlot.RimSlotBuilder createRims(String rimId, int rank) {
         RimSlot.RimInfo frontInfo = RimSlot.RimInfo.builder()
                 .withFileName(Resource.from(RES_BANKNAME_FR_1, "AC_289_F_0" + rank))
                 .build();
@@ -518,8 +579,7 @@ public class PatchEnhancerTest {
                 .withRef(rimId)
                 .withParentDirectoryName(Resource.from(RES_RIMBRAND, RIMBRAND))
                 .withRimsInformation(frontInfo, rearInfo)
-                .atRank(rank)
-                .build();
+                .atRank(rank);
     }
 
     private static VehicleSlot createVehicleSlot() {

@@ -16,7 +16,8 @@ public class VehicleSlot {
 
     private Resource fileName;
 
-    private Set<RimSlot> rims;
+    private Set<RimSlot> rimOptions;
+    private Set<RimSlot> rimCandidates;
 
     private int carIdentifier;
     private Resource brandName;
@@ -57,7 +58,7 @@ public class VehicleSlot {
     }
 
     public Optional<RimSlot> getDefaultRims() {
-        return rims.stream()
+        return rimOptions.stream()
                 .filter(RimSlot::isDefault)
                 .findAny();
     }
@@ -94,14 +95,28 @@ public class VehicleSlot {
         return paintJobs;
     }
 
-    public List<RimSlot> getAllRimsSorted() {
-        return rims.stream()
+    public List<RimSlot> getAllRimOptionsSorted() {
+        return rimOptions.stream()
+                .sorted((rim1, rim2) -> Integer.compare(rim1.getRank(), rim2.getRank()))
+                .collect(Collectors.toList());
+    }
+
+    public List<RimSlot> getAllRimCandidatesSorted() {
+        return rimCandidates.stream()
                 .sorted((rim1, rim2) -> Integer.compare(rim1.getRank(), rim2.getRank()))
                 .collect(Collectors.toList());
     }
 
     public Optional<RimSlot> getRimAtRank(int rank) {
-        return rims.stream()
+        Optional<RimSlot> rimFromOptions = rimOptions.stream()
+                .filter(rim -> rim.getRank() == rank)
+                .findAny();
+
+        if (rimFromOptions.isPresent()) {
+            return rimFromOptions;
+        }
+
+        return rimCandidates.stream()
                 .filter(rim -> rim.getRank() == rank)
                 .findAny();
     }
@@ -112,7 +127,8 @@ public class VehicleSlot {
     public static class VehicleSlotBuilder {
         private String ref;
         private Resource fileName;
-        private Set<RimSlot> rims = new HashSet<>();
+        private Set<RimSlot> rimOptions = new HashSet<>();
+        private Set<RimSlot> rimCandidates = new HashSet<>();
         private int carIdentifier;
         private Resource realName;
         private Resource brandName;
@@ -176,19 +192,25 @@ public class VehicleSlot {
         }
 
         public VehicleSlotBuilder addRim(RimSlot rim) {
-            rims.add(rim);
+            rimOptions.add(rim);
             return this;
         }
 
-        public VehicleSlotBuilder addRims(Collection<RimSlot> rimSlots) {
-            this.rims.addAll(rimSlots);
+        public VehicleSlotBuilder addRimOptions(Collection<RimSlot> rimSlots) {
+            this.rimOptions.addAll(rimSlots);
+            return this;
+        }
+
+        public VehicleSlotBuilder addRimCandidates(Collection<RimSlot> rimSlots) {
+            this.rimCandidates.addAll(rimSlots);
             return this;
         }
 
         public VehicleSlot build() {
             final VehicleSlot vehicleSlot = new VehicleSlot(this.ref);
 
-            vehicleSlot.rims = rims;
+            vehicleSlot.rimOptions = rimOptions;
+            vehicleSlot.rimCandidates = rimCandidates;
             vehicleSlot.fileName = fileName;
             vehicleSlot.carIdentifier = carIdentifier;
             vehicleSlot.realName = realName;

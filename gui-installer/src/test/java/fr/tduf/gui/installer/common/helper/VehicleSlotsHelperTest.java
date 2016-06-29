@@ -72,6 +72,7 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
+    // TODO assert rim options
     public void getVehicleSlotFromReference() {
         // GIVEN
         String slotRef = "REF";
@@ -224,6 +225,151 @@ public class VehicleSlotsHelperTest {
         assertThat(vehicleSlot.getPaintJobs()).extracting("rank").containsExactly(1);
         assertThat(vehicleSlot.getPaintJobs()).extracting("name").containsExactly(Resource.from(colorNameRef, colorName));
         assertThat(vehicleSlot.getPaintJobs()).extracting("interiorPatternRefs").containsExactly(singletonList(interiorRef));
+    }
+
+    @Test
+    public void getVehicleSlotFromReference_whenNewTDUCPSlot_shouldLoadRimCandidates() {
+        // GIVEN
+        String slotRef = "300000000";
+        String rimSlotRef1 = "000030001";
+        String rimSlotRef2 = "000030002";
+        String rimSlotRef3 = "000030003";
+        String rimSlotRef4 = "000030004";
+        String rimSlotRef5 = "000030005";
+        String rimSlotRef6 = "000030006";
+        String rimSlotRef7 = "000030007";
+        String rimSlotRef8 = "000030008";
+        String rimSlotRef9 = "000030009";
+        String brandSlotRef = "BRANDREF";
+        String directoryRef = "0000";
+        String directory = "DIR";
+        String fileNameRef = "1111";
+        String fileName = "FILE";
+        String brandNameRef = "3333";
+        String brandName = "BRAND";
+        String realNameRef = "4444";
+        String realName = "REALNAME";
+        String modelNameRef = "5555";
+        String modelName = "MODELNAME";
+        String versionNameRef = "6666";
+        String versionName = "VERSIONNAME";
+        String frontRimFileNameRef1 = "1111-1";
+        String frontRimFileName1 = "FILE_F1";
+        String rearRimFileNameRef1 = "2222-1";
+        String rearRimFileName1 = "FILE_R1";
+        String frontRimFileNameRef2 = "1111-2";
+        String frontRimFileName2 = "FILE_F2";
+        String rearRimFileNameRef2 = "2222-2";
+        String rearRimFileName2 = "FILE_R2";
+        String interiorRef = "7777";
+        String colorNameRef = "8888";
+        String colorName = "Azzuro";
+        int idCar = 222;
+        int idCam = 200;
+        float secuOne = 100;
+        int secuTwo = 101;
+        ContentEntryDto brandsEntry = ContentEntryDto.builder()
+                .forId(0)
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(brandSlotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(brandNameRef).build())
+                .build();
+        ContentEntryDto carRimsEntry1 = ContentEntryDto.builder()
+                .forId(0)
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(rimSlotRef1).build())
+                .build();
+        ContentEntryDto physicsEntry = ContentEntryDto.builder()
+                .forId(0)
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(brandSlotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(9).withRawValue(fileNameRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(10).withRawValue(rimSlotRef1).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(12).withRawValue(realNameRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(13).withRawValue(modelNameRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(14).withRawValue(versionNameRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(98).withRawValue(Integer.toString(idCam)).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(100).withRawValue(Float.toString(secuOne)).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(101).withRawValue(Integer.toString(secuTwo)).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(102).withRawValue(Integer.toString(idCar)).build())
+                .build();
+        ContentEntryDto rimsEntry1 = ContentEntryDto.builder()
+                .forId(0)
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(rimSlotRef1).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(13).withRawValue(directoryRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(14).withRawValue(frontRimFileNameRef1).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(15).withRawValue(rearRimFileNameRef1).build())
+                .build();
+        ContentEntryDto rimsEntry2 = ContentEntryDto.builder()
+                .forId(1)
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(rimSlotRef2).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(13).withRawValue(directoryRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(14).withRawValue(frontRimFileNameRef2).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(15).withRawValue(rearRimFileNameRef2).build())
+                .build();
+        ContentEntryDto carColorsEntry = ContentEntryDto.builder()
+                .forId(0)
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(colorNameRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(8).withRawValue(interiorRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(9).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(10).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(11).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(12).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(13).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(14).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(15).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(16).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(17).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(18).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(19).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(20).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(21).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(22).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
+                .build();
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(brandSlotRef, BRANDS)).thenReturn(of(brandsEntry));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotRef, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
+        when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotRef), CAR_RIMS)).thenReturn(
+                singletonList(carRimsEntry1).stream(),
+                singletonList(carRimsEntry1).stream());
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef1, RIMS)).thenReturn(of(rimsEntry1));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef2, RIMS)).thenReturn(of(rimsEntry2));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef3, RIMS)).thenReturn(empty());
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef4, RIMS)).thenReturn(empty());
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef5, RIMS)).thenReturn(empty());
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef6, RIMS)).thenReturn(empty());
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef7, RIMS)).thenReturn(empty());
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef8, RIMS)).thenReturn(empty());
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef9, RIMS)).thenReturn(empty());
+        when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(any(DbFieldValueDto.class), eq(CAR_COLORS))).thenReturn(Stream.of(carColorsEntry));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(colorNameRef, CAR_COLORS, UNITED_STATES)).thenReturn(of(colorName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(fileNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(fileName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(realNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(realName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(modelNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(modelName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(versionNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(versionName));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(directoryRef, RIMS, UNITED_STATES)).thenReturn(of(directory));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(frontRimFileNameRef1, RIMS, UNITED_STATES)).thenReturn(of(frontRimFileName1));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(rearRimFileNameRef1, RIMS, UNITED_STATES)).thenReturn(of(rearRimFileName1));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(frontRimFileNameRef2, RIMS, UNITED_STATES)).thenReturn(of(frontRimFileName2));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(rearRimFileNameRef2, RIMS, UNITED_STATES)).thenReturn(of(rearRimFileName2));
+
+
+        // WHEN
+        final Optional<VehicleSlot> actualSlot = VehicleSlotsHelper
+                .load(bulkDatabaseMinerMock)
+                .getVehicleSlotFromReference(slotRef);
+
+
+        // THEN
+        assertThat(actualSlot).isPresent();
+
+        VehicleSlot vehicleSlot = actualSlot.get();
+        assertThat(vehicleSlot.getAllRimOptionsSorted())
+                .hasSize(1)
+                .extracting("ref").containsExactly(rimSlotRef1);
+        assertThat(vehicleSlot.getAllRimCandidatesSorted())
+                .hasSize(2)
+                .extracting("ref").containsExactly(rimSlotRef1, rimSlotRef2);
     }
 
     @Test

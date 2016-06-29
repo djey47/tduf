@@ -104,9 +104,12 @@ public class PatchEnhancer {
     void enhancePatchObjectWithRims(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
         Log.info(THIS_CLASS_NAME, "->Adding rim properties and changes to initial patch");
 
+        final List<RimSlot> rims = vehicleSlot.getAllRimCandidatesSorted().isEmpty() ?
+                vehicleSlot.getAllRimOptionsSorted() : vehicleSlot.getAllRimCandidatesSorted();
+
         // TODO handle rims at index 0??
         AtomicInteger rimIndex = new AtomicInteger(1);
-        List<DbPatchDto.DbChangeDto> changeObjectsForRims = vehicleSlot.getAllRimsSorted().stream()
+        List<DbPatchDto.DbChangeDto> changeObjectsForRims = rims.stream()
                 .flatMap(rimSlot -> createChangeObjectsAndPropertiesForRims(vehicleSlot, rimSlot, rimIndex.getAndIncrement(), patchProperties))
                 .collect(toList());
 
