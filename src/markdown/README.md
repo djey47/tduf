@@ -31,25 +31,13 @@ TDUF aims at making Test Drive Unlmited modding easier:
 
 
 
-### What's in this version ? (1.6.0)
+### What's in this version ? (1.7.0)
 
-* DatabaseTool: due to changes in library internals, please clear database cache (Advanced Settings)
-* DatabaseTool: (ResourceEditor) now proposes to affect all resource locales by default, instead of only current one
-
-* Library: major changes in database files structure to lower disk usage 
-* Library: misc. performance improvements
-* Library: cut dependency with Google Guava Library, some required features have been imported from it
-* Library: TDUMT-CLI path is now absolute, allowing to execute TDUF from any location (useful for scripting use).
 
 
 
 ### Fixed issues
 
-* DatabaseTool: fixed missing entry had no resources attached
-* DatabaseTool: fixed resources entries had no value displayed
-* DatabaseTool: fixed items did not appear
-* DatabaseTool: removed entries were displayed still
-* DatabaseTool: cloned entries could not be dipsplayed in topic link.
 
 
 
