@@ -90,7 +90,14 @@ public class VehicleSlotsStageController extends AbstractGuiController {
     private void handleOkButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleOkButtonAction");
 
-        returnedSlot = selectedSlotProperty.getValue();
+        final VehicleSlotDataItem slotDataItem = selectedSlotProperty.getValue();
+
+        if (slotDataItem.moddedProperty().get()) {
+            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, "A mod is already installed onto this slot.", "Please uninstall it first.");
+            return;
+        }
+
+        returnedSlot = slotDataItem;
 
         closeWindow();
     }
