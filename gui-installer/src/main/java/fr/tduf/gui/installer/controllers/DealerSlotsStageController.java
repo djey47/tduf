@@ -3,9 +3,9 @@ package fr.tduf.gui.installer.controllers;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
-import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.helper.DealerHelper;
 import fr.tduf.gui.installer.domain.Dealer;
+import fr.tduf.gui.installer.domain.exceptions.AbortedInteractiveStepException;
 import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import javafx.beans.property.Property;
@@ -110,7 +110,7 @@ public class DealerSlotsStageController extends AbstractGuiController {
         initTablePane();
     }
 
-    public Optional<DealerSlotData> initAndShowModalDialog(BulkDatabaseMiner miner) throws Exception {
+    public Optional<DealerSlotData> initAndShowModalDialog(BulkDatabaseMiner miner) throws AbortedInteractiveStepException {
         requireNonNull(miner, "Database miner instance is required.");
 
         dealerHelper = DealerHelper.load(miner);
@@ -122,7 +122,7 @@ public class DealerSlotsStageController extends AbstractGuiController {
         showModalWindow();
 
         if (returnedSlot == null) {
-            throw new Exception(DisplayConstants.MESSAGE_ABORTED_USER);
+            throw new AbortedInteractiveStepException();
         }
 
         return returnedSlot;

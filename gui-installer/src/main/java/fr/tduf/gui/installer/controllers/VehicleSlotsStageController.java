@@ -9,6 +9,7 @@ import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.controllers.converter.VehicleKindToStringConverter;
 import fr.tduf.gui.installer.controllers.converter.VehicleSlotDataItemToStringConverter;
 import fr.tduf.gui.installer.controllers.helper.TableCellFactoryHelper;
+import fr.tduf.gui.installer.domain.exceptions.AbortedInteractiveStepException;
 import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -75,7 +76,7 @@ public class VehicleSlotsStageController extends AbstractGuiController {
 
         if (MouseButton.PRIMARY == mouseEvent.getButton()) {
             TableViewHelper.getMouseSelectedItem(mouseEvent, VehicleSlotDataItem.class)
-                    .ifPresent((item) -> selectedSlotProperty.setValue(item));
+                    .ifPresent(selectedSlotProperty::setValue);
         }
     }
 
@@ -108,7 +109,7 @@ public class VehicleSlotsStageController extends AbstractGuiController {
      * @param miner                  : instance of database miner to parse contents
      * @return selected item, if any.
      */
-    public VehicleSlotDataItem initAndShowModalDialog(BulkDatabaseMiner miner) throws Exception {
+    public VehicleSlotDataItem initAndShowModalDialog(BulkDatabaseMiner miner) throws AbortedInteractiveStepException {
         requireNonNull(miner, "Database miner instance is required.");
 
         vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
@@ -122,7 +123,7 @@ public class VehicleSlotsStageController extends AbstractGuiController {
         showModalWindow();
 
         if (returnedSlot == null) {
-            throw new Exception(DisplayConstants.MESSAGE_ABORTED_USER);
+            throw new AbortedInteractiveStepException();
         }
 
         return returnedSlot;
