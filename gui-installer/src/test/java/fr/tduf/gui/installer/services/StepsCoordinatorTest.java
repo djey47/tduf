@@ -8,6 +8,7 @@ import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.concurrent.Task;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,6 +24,8 @@ public class StepsCoordinatorTest {
 
     @Rule
     public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
+
+    private StepsCoordinator coordinator = new StepsCoordinator();
 
     private String tempDirectory;
 
@@ -64,6 +67,30 @@ public class StepsCoordinatorTest {
             assertThat(se).isEqualTo(stepException);
             throw se;
         }
+    }
+
+    @Test
+    public void createTask_whenInstall_shouldReturnInstallTask() {
+        // GIVEN
+        coordinator.uninstallProperty().set(false);
+
+        // WHEN
+        final Task<Void> actualTask = coordinator.createTask();
+
+        // THEN
+        assertThat(actualTask).isOfAnyClassIn(StepsCoordinator.InstallTask.class);
+    }
+
+    @Test
+    public void createTask_whenUninstall_shouldReturnUninstallTask() {
+        // GIVEN
+        coordinator.uninstallProperty().set(true);
+
+        // WHEN
+        final Task<Void> actualTask = coordinator.createTask();
+
+        // THEN
+        assertThat(actualTask).isOfAnyClassIn(StepsCoordinator.UninstallTask.class);
     }
 
     private ObjectProperty<DatabaseContext> createDatabaseContext() {

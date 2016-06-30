@@ -51,6 +51,7 @@ public class DisplayConstants {
     public static final String STATUS_INSTALL_DONE = "Done installing.";
     public static final String STATUS_UNINSTALL_DONE = "Done uninstalling.";
     public static final String STATUS_INSTALL_KO = "Done installing with error(s).";
+    public static final String STATUS_UNINSTALL_KO = "Done uninstalling with error(s).";
 
     public static final String ITEM_UNAVAILABLE = "N/A";
     public static final String ITEM_DEALER_KIND_ALL = "All";

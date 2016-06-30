@@ -106,7 +106,7 @@ public class StepsCoordinator extends Service<Void> {
 
             updateMessage(DisplayConstants.STATUS_UNINSTALL_IN_PROGRESS);
 
-            callStepChain();
+            callStepChain(RETRIEVE_BACKUP);
 
             updateMessage(DisplayConstants.STATUS_UNINSTALL_DONE);
 
@@ -118,30 +118,9 @@ public class StepsCoordinator extends Service<Void> {
 
         @Override
         protected void handleStepException(StepException se) throws StepException {
-            switch (se.getStepType()) {
-                case UPDATE_DATABASE:
-                case SAVE_DATABASE:
-                    Log.error(THIS_CLASS_NAME, "->Critical failure detected, rollbacking database...");
-                    GenericStep.starterStep(configuration.get(), context.get())
-                            .nextStep(RESTORE_DATABASE).start()
-                            .nextStep(REMOVE_BACKUP).start();
-                    break;
-                case ADJUST_CAMERA:
-                case COPY_FILES:
-                case UPDATE_MAGIC_MAP:
-                    Log.error(THIS_CLASS_NAME, "->Critical failure detected, rollbacking database and restoring backup files...");
-                    GenericStep.starterStep(configuration.get(), context.get())
-                            .nextStep(RESTORE_DATABASE).start()
-                            .nextStep(RESTORE_FILES).start()
-                            .nextStep(REMOVE_BACKUP).start();
-                    break;
-                default:
-                    Log.error(THIS_CLASS_NAME, "->Critical failure detected, no action will be intended yet.");
-            }
+            updateMessage(DisplayConstants.STATUS_UNINSTALL_KO);
 
-            updateMessage(DisplayConstants.STATUS_INSTALL_KO);
-
-            Log.error(THIS_CLASS_NAME, "->Done installing with error(s)");
+            Log.error(THIS_CLASS_NAME, "->Done uninstalling with error(s)");
 
             throw se;
         }
