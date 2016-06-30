@@ -19,7 +19,6 @@ cli/integ-tests/patcher/effective-mini-template.json.properties
 cli/integ-tests/patcher/tdumt/out*/
 cli/perfs/
 gui-installer/assets/DATABASE/hidden
-gui-installer/backup
 lib-unlimited/perfs/
 pack/
 tmp-jarContents/
