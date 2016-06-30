@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Represents a range of items for patch generation (references, field indexes...)
  */
+// TODO adfd method to generate a range from single item
 public class ItemRange {
 
     /** Unique range, accepting all values **/
