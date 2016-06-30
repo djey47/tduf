@@ -14,7 +14,6 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.*;
-import static java.util.Arrays.asList;
 
 /**
  * Background service to orchestrate all operations to install vehicle mod.
@@ -32,17 +31,12 @@ public class StepsCoordinator extends Service<Void> {
                 new UninstallTask(configuration, context) : new InstallTask(configuration, context);
     }
 
-    // TODO create abstract Task to extend from
     /**
      * Orchestrates all steps for install and handles errors
      */
-    static class InstallTask extends Task<Void> {
-        private final ObjectProperty<InstallerConfiguration> configuration;
-        private final ObjectProperty<DatabaseContext> context;
-
+    static class InstallTask extends InstallerTask {
         InstallTask(ObjectProperty<InstallerConfiguration> configuration, ObjectProperty<DatabaseContext> context) {
-            this.configuration = configuration;
-            this.context = context;
+            super(configuration, context);
         }
 
         @Override
@@ -67,18 +61,8 @@ public class StepsCoordinator extends Service<Void> {
             return null;
         }
 
-        void callStepChain(GenericStep.StepType... steps) throws StepException {
-            try {
-                GenericStep currentStep = GenericStep.starterStep(configuration.get(), context.get());
-                for (GenericStep.StepType stepType : asList(steps)) {
-                    currentStep = currentStep.nextStep(stepType).start();
-                }
-            } catch (StepException se) {
-                handleStepException(se);
-            }
-        }
-
-        void handleStepException(StepException se) throws StepException {
+        @Override
+        protected void handleStepException(StepException se) throws StepException {
             switch (se.getStepType()) {
                 case UPDATE_DATABASE:
                 case SAVE_DATABASE:
@@ -111,13 +95,9 @@ public class StepsCoordinator extends Service<Void> {
     /**
      * Orchestrates all steps for uninstall and handles errors
      */
-    static class UninstallTask extends Task<Void> {
-        private final ObjectProperty<InstallerConfiguration> configuration;
-        private final ObjectProperty<DatabaseContext> context;
-
+    static class UninstallTask extends InstallerTask {
         UninstallTask(ObjectProperty<InstallerConfiguration> configuration, ObjectProperty<DatabaseContext> context) {
-            this.configuration = configuration;
-            this.context = context;
+            super(configuration, context);
         }
 
         @Override
@@ -132,21 +112,12 @@ public class StepsCoordinator extends Service<Void> {
 
             Log.info(THIS_CLASS_NAME, "->Done uninstalling");
 
+            succeeded();
             return null;
         }
 
-        void callStepChain(GenericStep.StepType... steps) throws StepException {
-            try {
-                GenericStep currentStep = GenericStep.starterStep(configuration.get(), context.get());
-                for (GenericStep.StepType stepType : asList(steps)) {
-                    currentStep = currentStep.nextStep(stepType).start();
-                }
-            } catch (StepException se) {
-                handleStepException(se);
-            }
-        }
-
-        void handleStepException(StepException se) throws StepException {
+        @Override
+        protected void handleStepException(StepException se) throws StepException {
             switch (se.getStepType()) {
                 case UPDATE_DATABASE:
                 case SAVE_DATABASE:
