@@ -354,8 +354,15 @@
       "ref": "611473716",
       "name": "LAMBORGHINI",
       "location": "SE, Maunalua",
-      "slotCount": 8,
-      "availableSlots": [1,2,3,4,5,6,7,8]
+      "slotCount": 7,
+      "availableSlots": [1,2,3,4,5,6,7]
+    },
+    {
+      "ref": "557973712",
+      "name": "LAMBORGHINI",
+      "location": "Heart, Mililani",
+      "slotCount": 7,
+      "availableSlots": [1,2,3,4,5,6,7]
     }
   ]
 }
