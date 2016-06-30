@@ -14,12 +14,16 @@ import static java.util.Objects.requireNonNull;
  * Parent of all install steps
  */
 public abstract class GenericStep {
+    /**
+     * All available steps
+     */
     public enum StepType {
         UNDEFINED,
         LOAD_DATABASE,
         LOAD_PATCH,
         SELECT_SLOTS,
         INIT_BACKUP(new InitBackupStep()),
+        RETRIEVE_BACKUP(new RetrieveBackupStep()),
         BACKUP_DATABASE(new BackupDatabaseStep()),
         UPDATE_DATABASE(new UpdateDatabaseStep()),
         SAVE_DATABASE(new SaveDatabaseStep()),
