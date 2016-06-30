@@ -18,6 +18,7 @@ public class FileConstants {
 
     public static final String FILE_NAME_EFFECTIVE_PROPERTIES = "installed.properties";
     public static final String FILE_NAME_EFFECTIVE_PATCH = "installed.mini.json";
+    public static final String FILE_NAME_SNAPSHOT_PATCH = "before.mini.json";
 
     public static final String DIRECTORY_NAME_VEHICLES = "Vehicules";
     public static final String DIRECTORY_NAME_FRONT_END = "FrontEnd";

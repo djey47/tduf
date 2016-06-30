@@ -5,6 +5,7 @@ import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.gui.installer.steps.helper.PatchEnhancer;
+import fr.tduf.gui.installer.steps.helper.SnapshotBuilder;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
@@ -35,6 +36,8 @@ class UpdateDatabaseStep extends GenericStep {
         requireNonNull(getDatabaseContext(), "Database context is required.");
 
         new PatchEnhancer(getDatabaseContext()).enhancePatchObject();
+
+        new SnapshotBuilder(getDatabaseContext()).take(getInstallerConfiguration().getBackupDirectory());
 
         applyMiniPatch();
 
