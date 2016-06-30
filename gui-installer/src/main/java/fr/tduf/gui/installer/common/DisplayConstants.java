@@ -8,6 +8,7 @@ public class DisplayConstants {
 
     public static final String TITLE_APPLICATION = "TDUF Vehicle Installer";
     public static final String TITLE_SUB_INSTALL = " : Install";
+    public static final String TITLE_SUB_UNINSTALL = " : Uninstall";
     public static final String TITLE_SUB_MAP_UPDATE = " : Update Magic Map";
     public static final String TITLE_SUB_RESET_DB_CACHE = " : Reset database cache";
     public static final String TITLE_SUB_CHECK_DB = " : Check database";
@@ -21,7 +22,9 @@ public class DisplayConstants {
     public static final String LABEL_STEP_UNKNOWN = "<Uncategorized>";
 
     public static final String MESSAGE_INSTALLED = "All install tasks went succesfully!";
+    public static final String MESSAGE_UNINSTALLED = "All uninstall tasks went succesfully!";
     public static final String MESSAGE_NOT_INSTALLED = "An issue occured while installing!";
+    public static final String MESSAGE_NOT_UNINSTALLED = "An issue occured while uninstalling!";
     public static final String MESSAGE_UPDATED_MAP = "Magic map was updated to take new files into account:";
     public static final String MESSAGE_DELETED_CACHE = "Database cache directory was deleted succesfully:";
     public static final String MESSAGE_DB_CHECK_OK = "Database was checked succesfully.";
@@ -44,7 +47,9 @@ public class DisplayConstants {
     public static final String STATUS_FMT_LOAD_IN_PROGRESS = "Performing database load %s, please wait...";
     public static final String STATUS_LOAD_DONE = "Done loading database.";
     public static final String STATUS_INSTALL_IN_PROGRESS = "Performing install, please wait...";
+    public static final String STATUS_UNINSTALL_IN_PROGRESS = "Performing uninstall, please wait...";
     public static final String STATUS_INSTALL_DONE = "Done installing.";
+    public static final String STATUS_UNINSTALL_DONE = "Done uninstalling.";
     public static final String STATUS_INSTALL_KO = "Done installing with error(s).";
 
     public static final String ITEM_UNAVAILABLE = "N/A";

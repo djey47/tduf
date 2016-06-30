@@ -153,7 +153,18 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        loadDatabase();
+        loadDatabaseForInstall();
+    }
+
+    @FXML
+    public void handleUninstallButtonAction() throws Exception {
+        Log.trace(THIS_CLASS_NAME, "->handleUninstallButtonAction");
+
+        if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
+            return;
+        }
+
+        loadDatabaseForUninstall();
     }
 
     private void initReadme() throws IOException {
@@ -182,7 +193,7 @@ public class MainStageController extends AbstractGuiController {
                     fixDatabase();
                 }
             } else if (FAILED == newState) {
-                handleServiceFailure(databaseChecker.exceptionProperty().get(), DisplayConstants.MESSAGE_DB_CHECK_KO);
+                handleServiceFailure(databaseChecker.exceptionProperty().get(), DisplayConstants.TITLE_SUB_CHECK_DB, DisplayConstants.MESSAGE_DB_CHECK_KO);
             }
         });
 
@@ -195,15 +206,15 @@ public class MainStageController extends AbstractGuiController {
                     CommonDialogsHelper.showDialog(WARNING, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIX_DB, DisplayConstants.MESSAGE_DB_FIX_KO, DisplayConstants.MESSAGE_DB_REMAINING_ERRORS);
                 }
             } else if (FAILED == newState) {
-                handleServiceFailure(databaseFixer.exceptionProperty().get(), DisplayConstants.MESSAGE_DB_FIX_KO);
+                handleServiceFailure(databaseFixer.exceptionProperty().get(), DisplayConstants.TITLE_SUB_FIX_DB, DisplayConstants.MESSAGE_DB_FIX_KO);
             }
         });
 
         stepsCoordinator.stateProperty().addListener((observable, oldValue, newState) -> {
             if (SUCCEEDED == newState) {
-                CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "");
+                handleCoordinatorSuccess();
             } else if (FAILED == newState) {
-                handleServiceFailure(stepsCoordinator.exceptionProperty().get(), DisplayConstants.MESSAGE_NOT_INSTALLED);
+                handleCoordinatorFailure();
             }
 
             if (SUCCEEDED == newState || FAILED == newState) {
@@ -211,14 +222,21 @@ public class MainStageController extends AbstractGuiController {
                 installProgressProperty.setValue(0);
                 statusLabel.textProperty().unbind();
             }
-
         });
 
         databaseLoader.stateProperty().addListener((observable, oldValue, newState) -> {
             if (SUCCEEDED == newState) {
-                install(databaseLoader.getValue());
+                if (databaseLoader.uninstallProperty().get()) {
+                    uninstall(databaseLoader.getValue());
+                } else {
+                    install(databaseLoader.getValue());
+                }
             } else if (FAILED == newState) {
-                handleServiceFailure(databaseLoader.exceptionProperty().get(), DisplayConstants.MESSAGE_DB_LOAD_KO);
+                if (databaseLoader.uninstallProperty().get()) {
+                    handleServiceFailure(databaseLoader.exceptionProperty().get(), DisplayConstants.TITLE_SUB_UNINSTALL, DisplayConstants.MESSAGE_DB_LOAD_KO);
+                } else {
+                    handleServiceFailure(databaseLoader.exceptionProperty().get(), DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_DB_LOAD_KO);
+                }
             }
         });
     }
@@ -300,11 +318,27 @@ public class MainStageController extends AbstractGuiController {
         databaseFixer.restart();
     }
 
-    private void loadDatabase() throws IOException, ReflectiveOperationException {
+    private void loadDatabaseForInstall() throws IOException, ReflectiveOperationException {
         if (runningServiceProperty.get()) {
             return;
         }
 
+        databaseLoader.uninstallProperty().setValue(false);
+
+        loadDatabase();
+    }
+
+    private void loadDatabaseForUninstall() throws IOException, ReflectiveOperationException {
+        if (runningServiceProperty.get()) {
+            return;
+        }
+
+        databaseLoader.uninstallProperty().setValue(true);
+
+        loadDatabase();
+    }
+
+    private void loadDatabase() {
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
                 .withAssetsDirectory(InstallerConstants.DIRECTORY_ASSETS)
@@ -333,7 +367,7 @@ public class MainStageController extends AbstractGuiController {
             loadCurrentPatch(configuration, context);
         } catch (IOException ioe) {
             StepException se = new StepException(GenericStep.StepType.LOAD_PATCH, DisplayConstants.MESSAGE_PATCH_LOAD_KO, ioe);
-            handleServiceFailure(se, DisplayConstants.MESSAGE_NOT_INSTALLED);
+            handleServiceFailure(se, DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED);
 
             installProgressProperty.setValue(0);
             return;
@@ -345,7 +379,7 @@ public class MainStageController extends AbstractGuiController {
             DealerSlotUserInputHelper.selectAndDefineDealerSlot(context, getWindow());
         } catch (Exception e) {
             StepException se = new StepException(GenericStep.StepType.SELECT_SLOTS, DisplayConstants.MESSAGE_INSTALL_ABORTED, e);
-            handleServiceFailure(se, DisplayConstants.MESSAGE_NOT_INSTALLED);
+            handleServiceFailure(se, DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED);
 
             installProgressProperty.setValue(0);
             return;
@@ -356,8 +390,46 @@ public class MainStageController extends AbstractGuiController {
 
         stepsCoordinator.configurationProperty().setValue(configuration);
         stepsCoordinator.contextProperty().setValue(context);
+        stepsCoordinator.uninstallProperty().set(false);
 
         stepsCoordinator.restart();
+    }
+
+    private void uninstall(DatabaseContext context) {
+        // Do not check for service here, as loader may still be in running state.
+        requireNonNull(context, "Database context is required. Please load database first.");
+
+        installProgressProperty.setValue(-1);
+
+        InstallerConfiguration configuration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
+                .withAssetsDirectory(InstallerConstants.DIRECTORY_ASSETS)
+                .build();
+
+        statusLabel.textProperty().bind(stepsCoordinator.messageProperty());
+        installProgressProperty.bind(stepsCoordinator.progressProperty());
+
+        stepsCoordinator.configurationProperty().setValue(configuration);
+        stepsCoordinator.contextProperty().setValue(context);
+        stepsCoordinator.uninstallProperty().set(true);
+
+        stepsCoordinator.restart();
+    }
+
+    private void handleCoordinatorFailure() {
+        if (stepsCoordinator.uninstallProperty().get()) {
+            handleServiceFailure(stepsCoordinator.exceptionProperty().get(), DisplayConstants.TITLE_SUB_UNINSTALL, DisplayConstants.MESSAGE_NOT_UNINSTALLED);
+        } else {
+            handleServiceFailure(stepsCoordinator.exceptionProperty().get(), DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED);
+        }
+    }
+
+    private void handleCoordinatorSuccess() {
+        if (stepsCoordinator.uninstallProperty().get()) {
+            CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_UNINSTALL, DisplayConstants.MESSAGE_UNINSTALLED, "");
+        } else {
+            CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "");
+        }
     }
 
     private static void loadCurrentPatch(InstallerConfiguration configuration, DatabaseContext context) throws IOException {
@@ -366,15 +438,10 @@ public class MainStageController extends AbstractGuiController {
         File patchFile;
         try (Stream<Path> pathStream = Files.walk(patchPath, 1)) {
             patchFile = pathStream
-
                     .filter(Files::isRegularFile)
-
                     .filter(path -> EXTENSION_JSON.equalsIgnoreCase(FilesHelper.getExtension(path.toString())))
-
                     .findFirst()
-
                     .orElseThrow(() -> new IOException(String.format(DisplayConstants.MESSAGE_FMT_PATCH_NOT_FOUND, DIRECTORY_DATABASE)))
-
                     .toFile();
         }
 
@@ -388,7 +455,7 @@ public class MainStageController extends AbstractGuiController {
         context.setPatch(patchObject, patchProperties);
     }
 
-    private static void handleServiceFailure(Throwable throwable, String mainMessage) {
+    private static void handleServiceFailure(Throwable throwable, String subTitle, String mainMessage) {
         Log.error(THIS_CLASS_NAME, ExceptionUtils.getStackTrace(throwable));
 
         String stepName = DisplayConstants.LABEL_STEP_UNKNOWN;
@@ -403,6 +470,6 @@ public class MainStageController extends AbstractGuiController {
         }
 
         final String errorMessage = String.format(DisplayConstants.MESSAGE_FMT_ERROR, throwable.getMessage(), causeMessage, stepName);
-        CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, mainMessage, errorMessage);
+        CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + subTitle, mainMessage, errorMessage);
     }
 }

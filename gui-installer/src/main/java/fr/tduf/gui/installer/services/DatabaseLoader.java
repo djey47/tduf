@@ -8,10 +8,7 @@ import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
@@ -24,6 +21,7 @@ import java.util.List;
 public class DatabaseLoader extends Service<DatabaseContext> {
     private StringProperty databaseLocation = new SimpleStringProperty();
     private ObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
+    private BooleanProperty uninstall = new SimpleBooleanProperty(false);
 
     @Override
     protected Task<DatabaseContext> createTask() {
@@ -53,5 +51,9 @@ public class DatabaseLoader extends Service<DatabaseContext> {
 
     public ObjectProperty<BankSupport> bankSupportProperty() {
         return bankSupport;
+    }
+
+    public BooleanProperty uninstallProperty() {
+        return uninstall;
     }
 }
