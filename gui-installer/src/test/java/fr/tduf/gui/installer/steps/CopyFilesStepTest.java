@@ -210,7 +210,7 @@ public class CopyFilesStepTest {
     }
 
     @Test
-    public void copyFilesStep_withSameRimsFrontRear_andSlotHasDifferentFileNameForFrontAndRear_shouldCopyOnlyFrontRim() throws Exception {
+    public void copyFilesStep_withSameRimsFrontRear_andSlotHasDifferentFileNameForFrontAndRear_shouldCopyFrontAndRearRims() throws Exception {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
@@ -234,11 +234,12 @@ public class CopyFilesStepTest {
                 .exists()
                 .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
         assertThat(rimBanksPath.resolve("DAYTONA_955I_R.bnk").toFile())
-                .doesNotExist();
+                .exists()
+                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
     }
 
     @Test
-    public void copyFilesStep_withSameRimsFrontRear_andSlotHasDifferentFileNameForFrontAndRear_andTargetFilesAlreadyExist_shouldCopyOnlyFrontRim() throws Exception {
+    public void copyFilesStep_withSameRimsFrontRear_andSlotHasDifferentFileNameForFrontAndRear_andTargetFilesAlreadyExist_shouldCopyFrontAndRearRim() throws Exception {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
@@ -267,7 +268,7 @@ public class CopyFilesStepTest {
                 .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
         assertThat(rimBanksPath.resolve("DAYTONA_955I_R.bnk").toFile())
                 .exists()
-                .hasContent("");
+                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
     }
 
     private Path getTargetBikeRimPath() {

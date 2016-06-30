@@ -15,11 +15,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.regex.Matcher;
 
 import static fr.tduf.gui.installer.common.InstallerConstants.*;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -101,28 +103,28 @@ class CopyFilesStep extends GenericStep {
                 .orElseThrow(() -> new InternalStepException(getType(), "No vehicle slot found for reference: " + slotReference));
 
         Path effectiveTargetPath = targetPath;
-        String targetFileName;
+        List<String> targetFileNames;
         switch (assetDirectoryName) {
             case DIRECTORY_3D:
-                targetFileName = getTargetFileNameForExteriorAndInterior(vehicleSlot, assetPath.getFileName().toString());
+                targetFileNames = singletonList(getTargetFileNameForExteriorAndInterior(vehicleSlot, assetPath.getFileName().toString()));
                 break;
             case DIRECTORY_SOUND:
-                targetFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, SOUND, true);
+                targetFileNames = singletonList(VehicleSlotsHelper.getBankFileName(vehicleSlot, SOUND, true));
                 break;
             case DIRECTORY_GAUGES_LOW:
             case DIRECTORY_GAUGES_HIGH:
-                targetFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, HUD, true);
+                targetFileNames = singletonList(VehicleSlotsHelper.getBankFileName(vehicleSlot, HUD, true));
                 break;
             case DIRECTORY_RIMS:
                 effectiveTargetPath = getTargetPathForRims(assetPath, targetPath, vehicleSlot);
-                targetFileName = getTargetFileNameForRims(vehicleSlot, assetPath);
+                targetFileNames = getTargetFileNamesForRims(vehicleSlot, assetPath);
                 break;
             default:
                 throw new IllegalArgumentException("Unhandled asset type: " + assetDirectoryName);
         }
 
-        if (targetFileName != null) {
-            copySingleAssetWithBackup(assetPath, effectiveTargetPath, targetFileName);
+        if (!targetFileNames.isEmpty()) {
+            copySingleAssetWithBackup(assetPath, effectiveTargetPath, targetFileNames);
         }
     }
 
@@ -149,7 +151,7 @@ class CopyFilesStep extends GenericStep {
         return targetPath.resolve(rimSlot.getParentDirectoryName().getValue());
     }
 
-    private String getTargetFileNameForRims(VehicleSlot vehicleSlot, Path assetPath) throws IOException {
+    private List<String> getTargetFileNamesForRims(VehicleSlot vehicleSlot, Path assetPath) throws IOException {
         Matcher matcher = FileConstants.PATTERN_RIM_BANK_FILE_NAME.matcher(assetPath.getFileName().toString());
         if (!matcher.matches()) {
             return null;
@@ -166,32 +168,40 @@ class CopyFilesStep extends GenericStep {
             if (REAR_RIM == rimBankFileType) {
                 throw new IllegalArgumentException("Target slot does only accept single rim model for front/rear. Please remove rear rims file from assets.");
             }
-            return targetFileNameForFrontRim;
+            return singletonList(targetFileNameForFrontRim);
         } else {
             return FRONT_RIM == rimBankFileType ?
-                    targetFileNameForFrontRim : targetFileNameForRearRim;
+                     asList(targetFileNameForFrontRim, targetFileNameForRearRim) : singletonList(targetFileNameForRearRim);
         }
     }
 
-    private void copySingleAssetWithBackup(Path assetPath, Path targetPath, String targetFileName) throws IOException {
+    private void copySingleAssetWithBackup(Path assetPath, Path targetPath, List<String> targetFileNames) throws IOException {
         FilesHelper.createDirectoryIfNotExists(targetPath.toString());
 
-        Path finalPath = targetPath.resolve(targetFileName);
-        if (Files.exists(finalPath)) {
-            final Path subTree = Paths.get(getInstallerConfiguration().resolveBanksDirectory()).relativize(finalPath);
-            final Path backupFinalPath = Paths.get(getInstallerConfiguration().resolveFilesBackupDirectory()).resolve(subTree);
+        targetFileNames
+                .forEach(targetFileName -> {
 
-            Log.info(THIS_CLASS_NAME, "*> BACKUP " + finalPath + " to " + backupFinalPath);
-            Files.createDirectories(backupFinalPath.getParent());
+                    try {
+                        Path finalPath = targetPath.resolve(targetFileName);
+                        if (Files.exists(finalPath)) {
+                            final Path subTree = Paths.get(getInstallerConfiguration().resolveBanksDirectory()).relativize(finalPath);
+                            final Path backupFinalPath = Paths.get(getInstallerConfiguration().resolveFilesBackupDirectory()).resolve(subTree);
 
-            final File finalFile = finalPath.toFile();
-            finalFile.setWritable(true);
-            finalFile.setReadable(true);
+                            Log.info(THIS_CLASS_NAME, "*> BACKUP " + finalPath + " to " + backupFinalPath);
+                            Files.createDirectories(backupFinalPath.getParent());
 
-            Files.copy(finalPath, backupFinalPath);
-        }
+                            final File finalFile = finalPath.toFile();
+                            finalFile.setWritable(true);
+                            finalFile.setReadable(true);
 
-        Log.info(THIS_CLASS_NAME, "*> INSTALL " + assetPath + " to " + finalPath);
-        Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
+                            Files.copy(finalPath, backupFinalPath);
+                        }
+
+                        Log.info(THIS_CLASS_NAME, "*> INSTALL " + assetPath + " to " + finalPath);
+                        Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException ioe) {
+                        throw new IllegalArgumentException("Unable to copy asset with backup: " + assetPath.toString());
+                    }
+                });
     }
 }
