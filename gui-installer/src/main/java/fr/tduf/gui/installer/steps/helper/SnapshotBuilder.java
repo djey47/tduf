@@ -9,23 +9,28 @@ import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Helper class to take database snapshot before applying mini patch.
  */
 public class SnapshotBuilder {
     private static final String THIS_CLASS_NAME = SnapshotBuilder.class.getSimpleName();
+
+    private static final Set<DbDto.Topic> TOPICS_FOR_SNAPSHOT = new HashSet<>(asList(
+            CAR_COLORS, CAR_PACKS, CAR_PHYSICS_DATA, CAR_PACKS, CAR_RIMS, RIMS
+    ));
 
     private final DatabaseContext databaseContext;
 
@@ -52,14 +57,17 @@ public class SnapshotBuilder {
         final DbPatchDto cleanPatchTemplate = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/gui-installer/templates/clean-slot.mini.json");
         List<DbPatchDto.DbChangeDto> cleaningOps = cleanPatchTemplate.getChanges();
 
-        // TODO Filter rawSnapshot (no brand, carshops, ...)
-        List<DbPatchDto.DbChangeDto> snapshotOps = generator.makePatch(
+        List<DbPatchDto.DbChangeDto> rawSnapshotOps = generator.makePatch(
                 CAR_PHYSICS_DATA,
                 ItemRange.fromCollection(Collections.singletonList(vehicleSlotRef)),
                 ItemRange.ALL)
                 .getChanges();
 
-        // TODO paintjobs, interiors, dealer location...
+        List<DbPatchDto.DbChangeDto> snapshotOps = rawSnapshotOps.stream()
+                .filter(op -> TOPICS_FOR_SNAPSHOT.contains(op.getTopic()))
+                .collect(toList());
+
+        // TODO interiors, dealer location...
         List<DbPatchDto.DbChangeDto> additionalOps = new ArrayList<>();
 
         DbPatchDto snapshotPatch = DbPatchDto.builder()

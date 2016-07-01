@@ -35,6 +35,6 @@ public class SnapshotBuilderTest {
         assertThat(actualSnapshot).exists();
 
         final DbPatchDto actualSnapshotPatch = new ObjectMapper().readValue(actualSnapshot, DbPatchDto.class);
-        assertThat(actualSnapshotPatch.getChanges()).hasSize(87); // Clean (3) + Snapshot (84) + Additional (0)
+        assertThat(actualSnapshotPatch.getChanges()).hasSize(84); // Clean (3) + Snapshot (81) + Additional (0)
     }
 }
