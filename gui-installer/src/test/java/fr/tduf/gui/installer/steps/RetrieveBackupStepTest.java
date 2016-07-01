@@ -24,8 +24,8 @@ public class RetrieveBackupStepTest {
         genericStep.perform();
 
         // THEN
-        assertThat(configuration.getBackupDirectory()).isEqualTo("./backup/16-06-28 13-12-49");
+        assertThat(configuration.getBackupDirectory()).isEqualTo("./backup/99-12-31 23-59-00");
         assertThat(context.getPatchObject()).isNotNull();
-        assertThat(context.getPatchProperties()).isNotNull();
+        assertThat(context.getPatchProperties().getVehicleSlotReference()).contains("300000001");
     }
 }
