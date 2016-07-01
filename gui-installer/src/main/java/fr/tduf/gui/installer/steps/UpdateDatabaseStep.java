@@ -16,6 +16,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,7 +32,7 @@ class UpdateDatabaseStep extends GenericStep {
     private static final String THIS_CLASS_NAME = UpdateDatabaseStep.class.getSimpleName();
 
     @Override
-    protected void perform() throws IOException, ReflectiveOperationException {
+    protected void perform() throws IOException, ReflectiveOperationException, URISyntaxException {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
 

@@ -1,0 +1,34 @@
+{
+  "changes": [
+    {
+      "type": "DELETE",
+      "topic": "CAR_COLORS",
+      "filter": [
+        {
+          "rank": 1,
+          "value": "{SLOTREF}"
+        }
+      ]
+    },
+    {
+      "type": "DELETE",
+      "topic": "CAR_PACKS",
+      "filter": [
+        {
+          "rank": 1,
+          "value": "{SLOTREF}"
+        }
+      ]
+    },
+    {
+      "type": "DELETE",
+      "topic": "CAR_RIMS",
+      "filter": [
+        {
+          "rank": 1,
+          "value": "{SLOTREF}"
+        }
+      ]
+    }
+  ]
+}

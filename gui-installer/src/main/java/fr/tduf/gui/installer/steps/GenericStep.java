@@ -7,6 +7,7 @@ import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -83,7 +84,7 @@ public abstract class GenericStep {
      * @throws IOException
      * @throws ReflectiveOperationException
      */
-    protected abstract void perform() throws IOException, ReflectiveOperationException;
+    protected abstract void perform() throws IOException, ReflectiveOperationException, URISyntaxException;
 
     /**
      * @return a reference of step to continue process

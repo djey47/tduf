@@ -11,6 +11,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class SnapshotBuilder {
      * Takes snapshot of entries which will be modified
      * @param backupDirectory
      */
-    public void take(String backupDirectory) throws IOException, ReflectiveOperationException {
+    public void take(String backupDirectory) throws IOException, ReflectiveOperationException, URISyntaxException {
         final PatchProperties effectiveProperties = requireNonNull(databaseContext.getPatchProperties(), "Patch properties are required.");
 
         PatchGenerator generator = AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseContext.getTopicObjects());
@@ -48,24 +49,24 @@ public class SnapshotBuilder {
         String vehicleSlotRef = effectiveProperties.getVehicleSlotReference()
                 .orElseThrow(() -> new IllegalStateException("Vehicle slot reference not found in properties"));
 
-        // TODO prepend cleaning changes (carpacks, carrims, carcolors)
-        List<DbPatchDto.DbChangeDto> cleaning = new ArrayList<>();
+        final DbPatchDto cleanPatchTemplate = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/gui-installer/templates/clean-slot.mini.json");
+        List<DbPatchDto.DbChangeDto> cleaningOps = cleanPatchTemplate.getChanges();
 
         // TODO Filter rawSnapshot (no brand, carshops, ...)
-        List<DbPatchDto.DbChangeDto> rawSnapshot = generator.makePatch(
+        List<DbPatchDto.DbChangeDto> snapshotOps = generator.makePatch(
                 CAR_PHYSICS_DATA,
                 ItemRange.fromCollection(Collections.singletonList(vehicleSlotRef)),
                 ItemRange.ALL)
                 .getChanges();
 
         // TODO paintjobs, interiors, dealer location...
-        List<DbPatchDto.DbChangeDto> additional = new ArrayList<>();
+        List<DbPatchDto.DbChangeDto> additionalOps = new ArrayList<>();
 
         DbPatchDto snapshotPatch = DbPatchDto.builder()
                 .withComment("Vehicle rawSnapshot for slot: " + vehicleSlotRef)
-                .addChanges(cleaning)
-                .addChanges(rawSnapshot)
-                .addChanges(additional)
+                .addChanges(cleaningOps)
+                .addChanges(snapshotOps)
+                .addChanges(additionalOps)
                 .build();
 
         writeSnapshotPatch(Paths.get(backupDirectory), snapshotPatch);
