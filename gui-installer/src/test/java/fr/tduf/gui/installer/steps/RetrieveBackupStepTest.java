@@ -25,5 +25,7 @@ public class RetrieveBackupStepTest {
 
         // THEN
         assertThat(configuration.getBackupDirectory()).isEqualTo("./backup/16-06-28 13-12-49");
+        assertThat(context.getPatchObject()).isNotNull();
+        assertThat(context.getPatchProperties()).isNotNull();
     }
 }
