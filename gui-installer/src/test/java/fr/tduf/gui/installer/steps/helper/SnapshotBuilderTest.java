@@ -31,10 +31,10 @@ public class SnapshotBuilderTest {
 
 
         // THEN
-        final File actualSnapshot = new File(backupDirectory, "before.mini.json");
+        final File actualSnapshot = new File(backupDirectory, "SNAPSHOT.mini.json");
         assertThat(actualSnapshot).exists();
 
         final DbPatchDto actualSnapshotPatch = new ObjectMapper().readValue(actualSnapshot, DbPatchDto.class);
-        assertThat(actualSnapshotPatch.getChanges()).hasSize(84); // Clean (3) + Snapshot (81) + Additional (0)
+        assertThat(actualSnapshotPatch.getChanges()).hasSize(87); // Clean (3) + Snapshot (84) + Additional (0)
     }
 }

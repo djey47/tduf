@@ -1,7 +1,6 @@
 package fr.tduf.gui.installer.steps.helper;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
@@ -30,7 +29,7 @@ public class SnapshotBuilder {
     private static final String THIS_CLASS_NAME = SnapshotBuilder.class.getSimpleName();
 
     private static final Set<DbDto.Topic> TOPICS_FOR_SNAPSHOT = new HashSet<>(asList(
-            CAR_COLORS, CAR_PACKS, CAR_PHYSICS_DATA, CAR_PACKS, CAR_RIMS, RIMS
+            CAR_COLORS, CAR_PACKS, CAR_PHYSICS_DATA, CAR_RIMS, INTERIOR, RIMS
     ));
 
     private final DatabaseContext databaseContext;
@@ -45,7 +44,7 @@ public class SnapshotBuilder {
 
     /**
      * Takes snapshot of entries which will be modified
-     * @param backupDirectory
+     * @param backupDirectory   : directory where to create snapshot file. Must exist.
      */
     public void take(String backupDirectory) throws IOException, ReflectiveOperationException, URISyntaxException {
         final PatchProperties effectiveProperties = requireNonNull(databaseContext.getPatchProperties(), "Patch properties are required.");
@@ -68,11 +67,11 @@ public class SnapshotBuilder {
                 .filter(op -> TOPICS_FOR_SNAPSHOT.contains(op.getTopic()))
                 .collect(toList());
 
-        // TODO interiors, dealer location...
+        // TODO dealer location...
         List<DbPatchDto.DbChangeDto> additionalOps = new ArrayList<>();
 
         DbPatchDto snapshotPatch = DbPatchDto.builder()
-                .withComment("Vehicle rawSnapshot for slot: " + vehicleSlotRef)
+                .withComment("Vehicle raw snapshot for slot: " + vehicleSlotRef)
                 .addChanges(cleaningOps)
                 .addChanges(snapshotOps)
                 .addChanges(additionalOps)
