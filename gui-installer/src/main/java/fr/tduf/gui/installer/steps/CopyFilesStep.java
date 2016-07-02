@@ -180,13 +180,13 @@ class CopyFilesStep extends GenericStep {
 
         targetFileNames
                 .forEach(targetFileName -> {
-
                     try {
-                        Path finalPath = targetPath.resolve(targetFileName);
-                        if (Files.exists(finalPath)) {
-                            final Path subTree = Paths.get(getInstallerConfiguration().resolveBanksDirectory()).relativize(finalPath);
-                            final Path backupFinalPath = Paths.get(getInstallerConfiguration().resolveFilesBackupDirectory()).resolve(subTree);
+                        final Path finalPath = targetPath.resolve(targetFileName);
+                        final Path subTree = Paths.get(getInstallerConfiguration().resolveBanksDirectory()).relativize(finalPath);
+                        final Path backupFinalPath = Paths.get(getInstallerConfiguration().resolveFilesBackupDirectory()).resolve(subTree);
 
+                        if (Files.exists(finalPath)
+                                && !Files.exists(backupFinalPath)) {
                             Log.info(THIS_CLASS_NAME, "*> BACKUP " + finalPath + " to " + backupFinalPath);
                             Files.createDirectories(backupFinalPath.getParent());
 
@@ -200,7 +200,7 @@ class CopyFilesStep extends GenericStep {
                         Log.info(THIS_CLASS_NAME, "*> INSTALL " + assetPath + " to " + finalPath);
                         Files.copy(assetPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
                     } catch (IOException ioe) {
-                        throw new IllegalArgumentException("Unable to copy asset with backup: " + assetPath.toString());
+                        throw new IllegalArgumentException("Unable to copy asset with backup: " + assetPath.toString(), ioe);
                     }
                 });
     }

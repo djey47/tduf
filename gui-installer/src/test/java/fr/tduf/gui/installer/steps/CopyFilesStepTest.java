@@ -158,6 +158,40 @@ public class CopyFilesStepTest {
                 .hasSameContentAs(rimAssetsPath.resolve("BIKE_R_01.bnk").toFile());
     }
 
+    @Test
+    public void copyFilesStep_withDifferentRimsFrontRear_andTargetFilesAlreadyExist_shouldNotCrashWhileBackup() throws Exception {
+        // GIVEN
+        System.out.println("Testing TDU directory: " + tempDirectory);
+
+        InstallerConfiguration configuration = createConfigurationForBike();
+        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        PatchProperties patchProperties = new PatchProperties();
+        patchProperties.setVehicleSlotReferenceIfNotExists("1208897332"); // Triumph Daytona (bike)
+        databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
+
+        Path rimBanksPath = getTargetBikeRimPath();
+        Path frontRimBankPath = rimBanksPath.resolve("DAYTONA_955I_F.bnk");
+        Path rearRimBankPath = rimBanksPath.resolve("DAYTONA_955I_R.bnk");
+        Files.createDirectories(rimBanksPath);
+        Files.createFile(frontRimBankPath);
+        Files.createFile(rearRimBankPath);
+
+
+        // WHEN
+        GenericStep.starterStep(configuration, databaseContext)
+                .nextStep(COPY_FILES).start();
+
+
+        // THEN
+        Path rimAssetsPath = Paths.get(configuration.getAssetsDirectory(), "3D", "RIMS");
+        assertThat(frontRimBankPath.toFile())
+                .exists()
+                .hasSameContentAs(rimAssetsPath.resolve("BIKE_F_01.bnk").toFile());
+        assertThat(rearRimBankPath.toFile())
+                .exists()
+                .hasSameContentAs(rimAssetsPath.resolve("BIKE_R_01.bnk").toFile());
+    }
+
     @Test(expected = StepException.class)
     public void copyFilesStep_withDifferentRimsFrontRear_andSlotHasSameFileNameForFrontAndRear_shouldThrowException() throws Exception {
         // GIVEN
