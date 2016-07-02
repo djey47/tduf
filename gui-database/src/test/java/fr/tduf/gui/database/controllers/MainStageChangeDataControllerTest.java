@@ -92,7 +92,7 @@ public class MainStageChangeDataControllerTest {
         // THEN
         assertThat(result).isTrue();
         final DbPatchDto patchObject = objectMapper.readValue(patchPath.toFile(), DbPatchDto.class);
-        assertThat(patchObject.getChanges()).hasSize(128);
+        assertThat(patchObject.getChanges()).hasSize(132); //7 BRANDS + 5 CAR_COLORS + 105 CAR_PHYSICS_DATA + 1 CAR_RIMS + 3 INTERIOR + 11 RIMS
     }
 
     @Test
@@ -165,7 +165,6 @@ public class MainStageChangeDataControllerTest {
         // THEN
         assertThat(actualEntry).isEqualTo("25;36;");
     }
-
 
     private static String createTempDirectory() throws IOException {
         return FilesHelper.createTempDirectoryForDatabaseEditor();

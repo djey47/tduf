@@ -506,9 +506,9 @@ public class PatchGeneratorTest {
         assertThat(patchObject).isNotNull();
 
         List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
-        assertThat(actualChanges).hasSize(84);
-        // 9 UPDATE (1 CAR_PHYSICS, 1 BRANDS, 1 CAR_RIMS, 1 RIMS, 4 CAR_COLORS, 1 CAR_PACKS)
-        // 75 UPDATE_RES (60 CAR_PHYSICS, 1 BRANDS, 5 RIMS, 9 CAR_COLORS)
+        assertThat(actualChanges).hasSize(96);
+        // 13 UPDATE (1 CAR_PHYSICS, 1 BRANDS, 1 CAR_RIMS, 1 RIMS, 4 CAR_COLORS, 1 CAR_PACKS, 3 AFTERMARKET_PACKS, 1 INTERIOR)
+        // 83 UPDATE_RES (60 CAR_PHYSICS, 1 BRANDS, 4 RIMS, 9 CAR_COLORS, 6 AFTERMARKET_PACKS, 2 INTERIOR, 1 CAR SHOPS)
 
         String jsonPatch = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(patchObject);
         Log.debug(PatchGeneratorTest.class.getSimpleName(), jsonPatch);

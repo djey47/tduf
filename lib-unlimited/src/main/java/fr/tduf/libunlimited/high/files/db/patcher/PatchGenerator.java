@@ -15,6 +15,7 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.*;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
@@ -70,10 +71,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
         changesObjects.addAll(makeChangesObjectsForRequiredResources(requiredReferences));
 
-        // To prevent recursivity issues
-        if (!CAR_PHYSICS_ASSOCIATION_TOPICS.contains(topic)) {
-            changesObjects.addAll(makeChangesObjectsForRequiredContents(requiredReferences));
-        }
+        changesObjects.addAll(makeChangesObjectsForRequiredContents(topic, requiredReferences));
 
         return changesObjects;
     }
@@ -87,9 +85,13 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .collect(toSet());
     }
 
-    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForRequiredContents(RequiredReferences requiredReferences) {
+    private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForRequiredContents(DbDto.Topic topic, RequiredReferences requiredReferences) {
+        // To prevent recursivity issues
+        DbDto.Topic ignoredTopic = CAR_PHYSICS_ASSOCIATION_TOPICS.contains(topic) ?
+                CAR_PHYSICS_DATA : null;
 
         return requiredReferences.requiredContentsIds.entrySet().stream()
+                .filter(entry -> entry.getKey() != ignoredTopic)
                 .flatMap(topicEntry -> {
 
                     Set<String> refs = topicEntry.getValue().stream()
@@ -172,6 +174,9 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         if (CAR_PHYSICS_DATA == topic) {
             addCarPhysicsAssociatedEntriesToRequiredContents(entryReference, requiredReferences);
         }
+        if (CAR_COLORS == topic) {
+            addRelatedInteriorEntriesToRequiredContents(entryItems, structureFields.get(7), requiredReferences);
+        }
 
         List<String> entryValues = entryItems.stream()
                 .map(entryItem -> {
@@ -219,6 +224,14 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
                         .forEach(associationEntry -> requiredReferences.updateRequiredContentsIds(topic, associationEntry.getId()))
                 );
+    }
+
+    private void addRelatedInteriorEntriesToRequiredContents(List<ContentItemDto> carColorsItems, DbStructureDto.Field structureField, RequiredReferences requiredReferences) {
+        IntStream.rangeClosed(1, 15)
+                .forEach(interiorIndex -> {
+                    String interiorReference = carColorsItems.get(6 + interiorIndex).getRawValue();
+                    updateRequiredRemoteReferences(interiorReference, structureField, requiredReferences);
+                });
     }
 
     private String fetchItemValue(DbDto.Topic topic, DbStructureDto.Field structureField, ContentItemDto entryItem, RequiredReferences requiredReferences) {
