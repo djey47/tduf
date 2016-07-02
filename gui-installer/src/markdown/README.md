@@ -62,32 +62,33 @@ Using this with TDUCP 2.00A is strongly recommended.
 
 #### CUSTOMIZATION
 
-- Edit assets\README\README.txt file and put all important information (with a proper text editor)
+*Use proper text editor, not crappy Windows notepad*
+
+- Edit assets\README\README.txt file and put all important information
 
 - Copy files: *tools\patchTemplates\xxx-default.mini.json* and *xxxx-default.mini.json.properties* matching mod type
 to:  *assets\DATABASE*
 
-- Edit *assets\DATABASE\xxx-default.mini.json.properties* for wanted values (with a proper text editor):
+- Edit *assets\DATABASE\xxx-default.mini.json.properties* for wanted values:
     - General information:
         - **BRANDREF**: brand identifier (lookup in BRANDS)
-        - **MODELNAME**, VERSION NAME: displayed names
+        - **MODELNAME/VERSION NAME**: displayed names
         - **PRICE/CAMERA/IK**: useful when TDUPE Pack is not used (see next step)
-    - Paintjobs:
+    - Paintjobs (x=1 to number of paintjobs):
         - **COLORID.M.x/COLORID.S.x/CALLIPERSID.x**: to update CAR_COLORS (M=Main, S=Secondary)
         - **INTCOLORID.M.x/INTCOLORID.S.x/INTMATERIALID.x**: to update INTERIOR (M=Main, S=Secondary)
-    - Rims:
+    - Rims (x=1 to number of rims):
         - **RIMNAME.x**: displayed name
-        - **RIMBRANDREF.x**: rim manufacturer (lookup in BRANDS)
         - **RIMWIDTH.FR.x/RIMHEIGHT.FR.x/RIMDIAM.FR.x**: data for front RIMS
         - **RIMWIDTH.RR.x/RIMHEIGHT.RR.x/RIMDIAM.RR.x**: data for rear RIMS
-    - Location (optional):
+    - Selling location (optional):
         - **DEALERREF**: force using a CAR_SHOPS. If enabled, Installer will not ask
         - **DEALERSLOT**: force using a slot in a shop. If enabled, Installer will not ask
     - Advanced (optional):
-        - **SLOTREF**: force using a CAR_PHYSICS slot. If enabled, Installer will not ask
+        - **SLOTREF**: force using a CAR_PHYSICS slot. If enabled, Installer will not ask for it
+        - **CAMERA.COCKPIT/COCKPITBACK/HOOD/HOODBACK**: force using customized camera settings.
         - **RIMBRANDREF.x**: force using a particular brand for rims
         - **FILENAME/BANKNAME.FR.x/BANKNAME.RR.x**: force using a particular bank file
-        - **CAMERA.COCKPIT/COCKPITBACK/HOOD/HOODBACK**: force using customized camera settings.
 
 - (Optional) Copy a TDUPE Pack to *assets\DATABASE* directory.
 
@@ -100,17 +101,17 @@ to:  *assets\DATABASE*
 
 - Click Install.
 
-- Select target vehicle slot
+- Select target vehicle slot (if enabled)
 
-- Select dealer slot to locate freshly installed vehicle
+- Select dealer slot to locate freshly installed vehicle (if enabled)
 
 - TDUPK file (if provided) will be applied after JSON mini patch
 
-- Installer will look unresponsive for a few seconds
+- Installer will look unresponsive for a few seconds, so please wait
 
 - Check install events in logs\TDUF-Installer.log file
 
-- Check for generated values in effective properties file: assets\DATABASE\effective-xxxxx.mini.json.properties
+- Check for generated values in effective properties file: backup\DATE\installed.properties
 
 
 #### FINAL STEP: release your mod!
