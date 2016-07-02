@@ -50,8 +50,8 @@ class RetrieveBackupStep extends GenericStep {
     }
 
     private void loadSnapshotPatchAndProperties(String backupDirectory) throws IOException {
-        Path snapshotPatchFilePath = Paths.get(backupDirectory, FileConstants.FILE_NAME_SNAPSHOT_PATCH);
-        Path effectivePatchFilePath = Paths.get(backupDirectory, FileConstants.FILE_NAME_EFFECTIVE_PATCH);
+        Path snapshotPatchFilePath = Paths.get(backupDirectory, InstallerConstants.FILE_NAME_SNAPSHOT_PATCH);
+        Path effectivePatchFilePath = Paths.get(backupDirectory, InstallerConstants.FILE_NAME_EFFECTIVE_PATCH);
 
         DbPatchDto patchObject = new ObjectMapper().readValue(snapshotPatchFilePath.toFile(), DbPatchDto.class);
 

@@ -2,6 +2,7 @@ package fr.tduf.gui.installer.steps.helper;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.FileConstants;
+import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
@@ -81,7 +82,7 @@ public class SnapshotBuilder {
     }
 
     private void writeSnapshotPatch(Path backupPath, DbPatchDto patchObject) throws IOException {
-        String targetPatchFile = backupPath.resolve(FileConstants.FILE_NAME_SNAPSHOT_PATCH).toString();
+        String targetPatchFile = backupPath.resolve(InstallerConstants.FILE_NAME_SNAPSHOT_PATCH).toString();
 
         Log.info(THIS_CLASS_NAME, "->Writing snapshot patch to " + targetPatchFile + "...");
 

@@ -84,7 +84,7 @@ class UpdateDatabaseStep extends GenericStep {
     }
 
     private void writeEffectivePatch(Path backupPath, DbPatchDto patchObject) throws IOException {
-        String targetPatchFile = backupPath.resolve(FileConstants.FILE_NAME_EFFECTIVE_PATCH).toString();
+        String targetPatchFile = backupPath.resolve(InstallerConstants.FILE_NAME_EFFECTIVE_PATCH).toString();
 
         Log.info(THIS_CLASS_NAME, "->Writing effective patch to " + targetPatchFile + "...");
 
@@ -92,7 +92,7 @@ class UpdateDatabaseStep extends GenericStep {
     }
 
     private void writeEffectiveProperties(Path backupPath, PatchProperties patchProperties) throws IOException {
-        String targetPropertyFile = backupPath.resolve(FileConstants.FILE_NAME_EFFECTIVE_PROPERTIES).toString();
+        String targetPropertyFile = backupPath.resolve(InstallerConstants.FILE_NAME_EFFECTIVE_PROPERTIES).toString();
 
         Log.info(THIS_CLASS_NAME, "->Writing effective properties to " + targetPropertyFile + "...");
 
