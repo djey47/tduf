@@ -51,11 +51,11 @@ Using this with TDUCP 2.00A is strongly recommended.
 
 - **3D**: exterior and interior MOD.BNK, MOD_I.BNK
 
-- **3D\RIMS**: Single rim set for front/rear: MOD_F_01.BNK, MOD_R_01.BNK (optional, if target slot needs it)
+- **3D\RIMS**: Rim sets for front/rear: MOD_F_0x.BNK, MOD_R_0x.BNK (rear is optional, if target slot needs it) (x=1 to number of rims)
 
 - **GAUGES\HIGH**: MOD.BNK (high-res hud)
 
-- **GAUGES\LOW**: MOD.BNK (low-res hud)
+- **GAUGES\LOW**: MOD.BNK (low-res hud, optional)
 
 - **SOUND**: MOD_audio.BNK
 
