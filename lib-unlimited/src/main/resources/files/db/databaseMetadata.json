@@ -363,6 +363,20 @@
       "location": "Heart, Mililani",
       "slotCount": 7,
       "availableSlots": [1,2,3,4,5,6,7]
+    },
+    {
+      "ref": "592136824",
+      "name": "GERMAN INDEPENDENTS",
+      "location": "EMid, Ahuimanu",
+      "slotCount": 15,
+      "availableSlots": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+    },
+    {
+      "ref": "612136821",
+      "name": "GERMAN INDEPENDENTS",
+      "location": "Honolulu Downtown: Kapalama",
+      "slotCount": 15,
+      "availableSlots": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
     }
   ]
 }
