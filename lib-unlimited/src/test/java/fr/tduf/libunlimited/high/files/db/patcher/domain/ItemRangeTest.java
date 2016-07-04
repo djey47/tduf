@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
+import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ItemRangeTest {
@@ -13,7 +14,7 @@ public class ItemRangeTest {
     @Test
     public void isGlobal_whenBothMinAndMaxEmpty_shouldReturnTrue() {
         // GIVEN-WHEN
-        ItemRange actualRange = new ItemRange(Optional.<Long>empty(), Optional.<Long>empty());
+        ItemRange actualRange = new ItemRange(empty(), empty());
 
         //THEN
         assertThat(actualRange.isGlobal()).isTrue();
@@ -22,7 +23,7 @@ public class ItemRangeTest {
     @Test
     public void isGlobal_whenMinEmpty_shouldReturnFalse() {
         // GIVEN-WHEN
-        ItemRange actualRange = new ItemRange(Optional.<Long>empty(), Optional.of(1000000L));
+        ItemRange actualRange = new ItemRange(empty(), Optional.of(1000000L));
 
         //THEN
         assertThat(actualRange.isGlobal()).isFalse();
@@ -135,7 +136,7 @@ public class ItemRangeTest {
     @Test
     public void accepts_whenGlobalRange_shouldReturnTrue(){
         // Long
-        ItemRange actualRange = new ItemRange(Optional.<Long>empty(), Optional.<Long>empty());
+        ItemRange actualRange = new ItemRange(empty(), empty());
 
         // WHEN-THEN
         assertThat(actualRange.accepts("12345678")).isTrue();
@@ -171,7 +172,7 @@ public class ItemRangeTest {
     @Test
     public void accepts_whenLowerUnbounded_andRefInRange_shouldReturnTrue(){
         // GIVEN
-        ItemRange actualRange = new ItemRange(Optional.empty(), Optional.of(1000L));
+        ItemRange actualRange = new ItemRange(empty(), Optional.of(1000L));
 
         // WHEN-THEN
         assertThat(actualRange.accepts("500")).isTrue();
@@ -180,7 +181,7 @@ public class ItemRangeTest {
     @Test
     public void accepts_whenUpperUnbounded_andRefInRange_shouldReturnTrue(){
         // GIVEN
-        ItemRange actualRange = new ItemRange(Optional.of(1L), Optional.empty());
+        ItemRange actualRange = new ItemRange(Optional.of(1L), empty());
 
         // WHEN-THEN
         assertThat(actualRange.accepts("12345678")).isTrue();

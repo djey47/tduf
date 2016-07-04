@@ -23,9 +23,19 @@ public class ItemRange {
     private final RangeBounds bounds;
     private final List<String> enumeratedItems;
 
+    ItemRange(Collection<String> enumeratedItems) {
+        this.enumeratedItems = new ArrayList<>(enumeratedItems);
+        bounds = null;
+    }
+
+    ItemRange(Optional<Long> lowerBound, Optional<Long> upperBound) {
+        enumeratedItems = null;
+        bounds = RangeBounds.fromBounds(lowerBound, upperBound);
+    }
+
     /**
-     * Creates a range from a command-line option.
-     * e.g: 1,2,3 or 1..3
+     * @param potentialRangeOptionValue     : if present, a range under the forms 1,2,3 or 1..3
+     * @return a range from a command-line option.
      */
     public static ItemRange fromCliOption(Optional<String> potentialRangeOptionValue) {
         if (!potentialRangeOptionValue.isPresent()) {
@@ -43,7 +53,8 @@ public class ItemRange {
     }
 
     /**
-     * Creates a range from a list of values.
+     * @param itemValues    : a list of values populating this range
+     * @return  a range from a list of values.
      */
     public static ItemRange fromCollection(Collection<String> itemValues) {
         requireNonNull(itemValues, "A collection of item values is required.");
@@ -66,7 +77,8 @@ public class ItemRange {
     }
 
     /**
-     * @return true if provided item values enters current range, false otherwise.
+     * @param itemValue : value to test
+     * @return true if provided item value enters current range, false otherwise.
      */
     public boolean accepts(String itemValue) {
 
@@ -86,16 +98,6 @@ public class ItemRange {
         return bounds != null
                 && bounds.isGlobal()
                 && enumeratedItems == null;
-    }
-
-    ItemRange(Collection<String> enumeratedItems) {
-        this.enumeratedItems = new ArrayList<>(enumeratedItems);
-        bounds = null;
-    }
-
-    ItemRange(Optional<Long> lowerBound, Optional<Long> upperBound) {
-        enumeratedItems = null;
-        bounds = RangeBounds.fromBounds(lowerBound, upperBound);
     }
 
     private static void checkValueFormat(String rangeOptionValue) {
@@ -129,12 +131,12 @@ public class ItemRange {
 
     Optional<Long> fetchLowerBound() {
         return Optional.ofNullable(bounds)
-                .flatMap((bounds) -> bounds.lowerBound);
+                .flatMap(bounds -> bounds.lowerBound);
     }
 
     Optional<Long> fetchUpperBound() {
         return Optional.ofNullable(bounds)
-                .flatMap((bounds) -> bounds.upperBound);
+                .flatMap(bounds -> bounds.upperBound);
     }
 
     List<String> getEnumeratedItems() {
@@ -159,9 +161,28 @@ public class ItemRange {
         }
 
         private boolean accept(long value) {
-            return (!lowerBound.isPresent() && value <= upperBound.get())
-                    || (!upperBound.isPresent() && value >= lowerBound.get())
-                    || (value >= lowerBound.get() && value <= upperBound.get());
+            return valueAboveUpperBound(value)
+                    || valueBelowLowerBound(value)
+                    || valueInBounds(value);
+        }
+
+        private boolean valueBelowLowerBound(long value) {
+            return !upperBound.isPresent()
+                    && lowerBound.isPresent()
+                    && value >= lowerBound.get();
+        }
+
+        private boolean valueAboveUpperBound(long value) {
+            return !lowerBound.isPresent()
+                    && upperBound.isPresent()
+                    && value <= upperBound.get();
+        }
+
+        private boolean valueInBounds(long value) {
+            return lowerBound.isPresent()
+                    && upperBound.isPresent()
+                    && value >= lowerBound.get()
+                    && value <= upperBound.get();
         }
     }
 }
