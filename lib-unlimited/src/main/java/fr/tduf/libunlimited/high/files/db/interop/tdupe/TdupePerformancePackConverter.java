@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.toList;
 public class TdupePerformancePackConverter {
     private static final String REGEX_SEPARATOR_ITEMS = ";";
 
-    private static final Set<Integer> FIELD_RANKS_NON_PHYSICAL = new HashSet<>(asList(1, 2, 3, 4, 9, 10, 11, 12, 13, 14, 100, 101, 102, 103));
+    private static final Set<Integer> FIELD_RANKS_NON_PHYSICAL = new HashSet<>(asList(1, 2, 3, 4, 7, 9, 10, 11, 12, 13, 14, 100, 101, 102, 103));
 
     private TdupePerformancePackConverter() {}
 

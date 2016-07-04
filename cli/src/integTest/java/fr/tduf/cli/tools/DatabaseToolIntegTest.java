@@ -408,7 +408,6 @@ public class DatabaseToolIntegTest {
         assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 2, "735", "non-physical contents NOT patched at field rank 2", miner);
         assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 5, "78900265", "physical contents patched at field rank 5", miner);
         assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 6, "1", "physical contents patched at field rank 6", miner);
-        assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 7, "43055", "physical contents patched at field rank 7", miner);
         assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 8, "59368917", "physical contents patched at field rank 8", miner);
         assertCarPhysicsEntryWithRefHasFieldValue(vehicleSlotReference, 99, "238", "physical contents patched at field rank 99", miner);
     }
