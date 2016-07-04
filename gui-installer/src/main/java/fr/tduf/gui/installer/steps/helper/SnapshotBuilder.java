@@ -89,7 +89,7 @@ public class SnapshotBuilder {
             PatchGenerator generator = AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseContext.getTopicObjects());
             List<DbPatchDto.DbChangeDto> rawSnapshotOps = generator.makePatch(
                     CAR_PHYSICS_DATA,
-                    ItemRange.fromCollection(singletonList(vehicleSlotRef)),
+                    ItemRange.fromSingleValue(vehicleSlotRef),
                     ItemRange.ALL)
                     .getChanges();
 
