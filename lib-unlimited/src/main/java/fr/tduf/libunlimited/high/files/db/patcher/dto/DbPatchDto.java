@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.OptionalInt;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.renderComparator;
+import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -323,8 +324,8 @@ public class DbPatchDto {
 
                     DbChangeDto changeObject = new DbChangeDto();
 
-                    changeObject.type = type;
-                    changeObject.topic = topic;
+                    changeObject.type = requireNonNull(type, "Instruction type is required");
+                    changeObject.topic = requireNonNull(topic, "Instruction topic is required");
                     changeObject.ref = reference;
                     changeObject.values = entryValues;
                     changeObject.filterCompounds = filterCompounds;
