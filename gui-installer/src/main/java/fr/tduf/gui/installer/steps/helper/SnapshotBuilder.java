@@ -51,29 +51,57 @@ public class SnapshotBuilder {
      * Takes snapshot of entries which will be modified
      * @param backupDirectory   : directory where to create snapshot file. Must exist.
      */
-    public void take(String backupDirectory) throws IOException, ReflectiveOperationException, URISyntaxException {
-        // TODO extract methods
+    public void take(String backupDirectory) throws IOException {
         final PatchProperties effectiveProperties = requireNonNull(databaseContext.getPatchProperties(), "Patch properties are required.");
-
-        PatchGenerator generator = AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseContext.getTopicObjects());
-
         String vehicleSlotRef = effectiveProperties.getVehicleSlotReference()
                 .orElseThrow(() -> new IllegalStateException("Vehicle slot reference not found in properties"));
 
-        final DbPatchDto cleanPatchTemplate = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/gui-installer/templates/clean-slot.mini.json");
-        List<DbPatchDto.DbChangeDto> cleaningOps = cleanPatchTemplate.getChanges();
+        List<DbPatchDto.DbChangeDto> cleaningOps = generateCleaningOperationsTemplates();
+        List<DbPatchDto.DbChangeDto> snapshotOps = generateSnapshotOperationsForVehicleSlot(vehicleSlotRef);
+        List<DbPatchDto.DbChangeDto> additionalOps = generateAdditionalOperationsFromProperties(effectiveProperties);
 
-        List<DbPatchDto.DbChangeDto> rawSnapshotOps = generator.makePatch(
-                CAR_PHYSICS_DATA,
-                ItemRange.fromCollection(singletonList(vehicleSlotRef)),
-                ItemRange.ALL)
-                .getChanges();
+        DbPatchDto snapshotPatch = DbPatchDto.builder()
+                .withComment("Vehicle raw snapshot for slot: " + vehicleSlotRef)
+                .addChanges(cleaningOps)
+                .addChanges(snapshotOps)
+                .addChanges(additionalOps)
+                .build();
 
-        List<DbPatchDto.DbChangeDto> snapshotOps = rawSnapshotOps.stream()
-                .filter(op -> TOPICS_FOR_SNAPSHOT.contains(op.getTopic()))
-                .collect(toList());
+        writeSnapshotPatch(Paths.get(backupDirectory), snapshotPatch);
+    }
 
+    private List<DbPatchDto.DbChangeDto> generateAdditionalOperationsFromProperties(PatchProperties effectiveProperties) {
         List<DbPatchDto.DbChangeDto> additionalOps = new ArrayList<>();
+        addDealerLocationOperationsIfNecessary(effectiveProperties, additionalOps);
+        return additionalOps;
+    }
+
+    private List<DbPatchDto.DbChangeDto> generateCleaningOperationsTemplates() throws IOException {
+        try {
+            return FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/gui-installer/templates/clean-slot.mini.json").getChanges();
+        } catch (URISyntaxException use) {
+            throw new IOException("Unable to generate cleaning operations", use);
+        }
+    }
+
+    private List<DbPatchDto.DbChangeDto> generateSnapshotOperationsForVehicleSlot(String vehicleSlotRef) throws IOException {
+        try {
+            PatchGenerator generator = AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseContext.getTopicObjects());
+            List<DbPatchDto.DbChangeDto> rawSnapshotOps = generator.makePatch(
+                    CAR_PHYSICS_DATA,
+                    ItemRange.fromCollection(singletonList(vehicleSlotRef)),
+                    ItemRange.ALL)
+                    .getChanges();
+
+            return rawSnapshotOps.stream()
+                    .filter(op -> TOPICS_FOR_SNAPSHOT.contains(op.getTopic()))
+                    .collect(toList());
+        } catch (ReflectiveOperationException roe) {
+            throw new IOException("Unable to generate snapshot operations", roe);
+        }
+    }
+
+    private void addDealerLocationOperationsIfNecessary(PatchProperties effectiveProperties, List<DbPatchDto.DbChangeDto> additionalOps) {
         effectiveProperties.getDealerReference()
                 .ifPresent(dealerRef -> {
                     final int slotRank = DatabaseConstants.FIELD_RANK_DEALER_SLOT_1
@@ -93,15 +121,6 @@ public class SnapshotBuilder {
                             .build();
                     additionalOps.add(dbChangeDto);
                 });
-
-        DbPatchDto snapshotPatch = DbPatchDto.builder()
-                .withComment("Vehicle raw snapshot for slot: " + vehicleSlotRef)
-                .addChanges(cleaningOps)
-                .addChanges(snapshotOps)
-                .addChanges(additionalOps)
-                .build();
-
-        writeSnapshotPatch(Paths.get(backupDirectory), snapshotPatch);
     }
 
     private void writeSnapshotPatch(Path backupPath, DbPatchDto patchObject) throws IOException {
