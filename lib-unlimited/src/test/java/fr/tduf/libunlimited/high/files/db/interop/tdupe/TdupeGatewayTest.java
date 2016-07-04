@@ -61,7 +61,7 @@ public class TdupeGatewayTest {
 
         DbDto carPhysicsDataTopicObject = loadCarPhysicsTopicFromResources();
         when(minerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(Optional.of(carPhysicsDataTopicObject));
-        when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, CAR_PHYSICS_DATA)).thenReturn(Optional.<String>empty());
+        when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, CAR_PHYSICS_DATA)).thenReturn(Optional.empty());
 
 
         // WHEN

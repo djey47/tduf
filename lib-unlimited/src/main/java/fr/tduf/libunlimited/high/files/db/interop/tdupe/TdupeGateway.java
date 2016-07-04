@@ -42,7 +42,8 @@ public class TdupeGateway extends AbstractDatabaseHolder {
         String packLine = readLineFromPerformancePack(performancePackFile);
         checkCarPhysicsDataLine(packLine);
 
-        DbDto carPhysicsDataTopicObject = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get();
+        DbDto carPhysicsDataTopicObject = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA)
+                .orElseThrow(() -> new IllegalStateException("Car physics topic absent from database"));
         DbPatchDto patchObject = TdupePerformancePackConverter.tdupkToJson(packLine, potentialCarPhysicsRef, carPhysicsDataTopicObject);
 
         databasePatcher.apply(patchObject);
@@ -53,7 +54,7 @@ public class TdupeGateway extends AbstractDatabaseHolder {
         try {
             databasePatcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseObjects());
         } catch (ReflectiveOperationException roe) {
-            throw new RuntimeException("Unable to initialize database patcher for TDUPE Gateway.", roe);
+            throw new IllegalStateException("Unable to initialize database patcher for TDUPE Gateway.", roe);
         }
     }
 
@@ -61,7 +62,7 @@ public class TdupeGateway extends AbstractDatabaseHolder {
         Pattern linePattern = Pattern.compile("^([0-9\\-\\.,]*;){103}$");
 
         if (!linePattern.matcher(carPhysicsDataLine).matches()) {
-            throw new RuntimeException("Unrecognized Car Physics line: " + carPhysicsDataLine);
+            throw new IllegalArgumentException("Unrecognized Car Physics line: " + carPhysicsDataLine);
         }
     }
 
@@ -70,7 +71,7 @@ public class TdupeGateway extends AbstractDatabaseHolder {
         try {
             lines = Files.readAllLines(Paths.get(ppFile));
         } catch (IOException ioe) {
-            throw new RuntimeException("Unable to read performance pack file: " + ppFile, ioe);
+            throw new IllegalArgumentException("Unable to read performance pack file: " + ppFile, ioe);
         }
 
         return lines.get(0);
