@@ -1,15 +1,18 @@
 package fr.tduf.gui.installer.steps.helper;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -17,8 +20,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -47,6 +52,7 @@ public class SnapshotBuilder {
      * @param backupDirectory   : directory where to create snapshot file. Must exist.
      */
     public void take(String backupDirectory) throws IOException, ReflectiveOperationException, URISyntaxException {
+        // TODO extract methods
         final PatchProperties effectiveProperties = requireNonNull(databaseContext.getPatchProperties(), "Patch properties are required.");
 
         PatchGenerator generator = AbstractDatabaseHolder.prepare(PatchGenerator.class, databaseContext.getTopicObjects());
@@ -59,7 +65,7 @@ public class SnapshotBuilder {
 
         List<DbPatchDto.DbChangeDto> rawSnapshotOps = generator.makePatch(
                 CAR_PHYSICS_DATA,
-                ItemRange.fromCollection(Collections.singletonList(vehicleSlotRef)),
+                ItemRange.fromCollection(singletonList(vehicleSlotRef)),
                 ItemRange.ALL)
                 .getChanges();
 
@@ -67,8 +73,26 @@ public class SnapshotBuilder {
                 .filter(op -> TOPICS_FOR_SNAPSHOT.contains(op.getTopic()))
                 .collect(toList());
 
-        // TODO dealer location...
         List<DbPatchDto.DbChangeDto> additionalOps = new ArrayList<>();
+        effectiveProperties.getDealerReference()
+                .ifPresent(dealerRef -> {
+                    final int slotRank = DatabaseConstants.FIELD_RANK_DEALER_SLOT_1
+                            + effectiveProperties.getDealerSlot()
+                            .orElseThrow(() -> new IllegalStateException("No dealer slot rank provided."))
+                            - 1;
+                    final String currentVehicleRef = databaseContext.getMiner().getContentEntryFromTopicWithReference(dealerRef, CAR_SHOPS)
+                            .flatMap(entry -> entry.getItemAtRank(slotRank))
+                            .map(ContentItemDto::getRawValue)
+                            .orElseThrow(() -> new IllegalStateException("No dealer at ref: " + dealerRef));
+                    DbFieldValueDto partialValue = DbFieldValueDto.fromCouple(slotRank, currentVehicleRef);
+                    final DbPatchDto.DbChangeDto dbChangeDto = DbPatchDto.DbChangeDto.builder()
+                            .forTopic(CAR_SHOPS)
+                            .withType(UPDATE)
+                            .asReference(dealerRef)
+                            .withPartialEntryValues(singletonList(partialValue))
+                            .build();
+                    additionalOps.add(dbChangeDto);
+                });
 
         DbPatchDto snapshotPatch = DbPatchDto.builder()
                 .withComment("Vehicle raw snapshot for slot: " + vehicleSlotRef)
