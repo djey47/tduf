@@ -115,6 +115,24 @@ public class ItemRangeTest {
     }
 
     @Test
+    public void fromSingleValue_shouldReturnRange() {
+        // GIVEN-WHEN
+        ItemRange actualRange = ItemRange.fromSingleValue("1");
+
+        // THEN
+        assertThat(actualRange.isGlobal()).isFalse();
+        assertThat(actualRange.getEnumeratedItems()).containsExactly("1");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void fromSingleValue_whenNullArgument_shouldThrowException() {
+        // GIVEN-WHEN
+        ItemRange.fromSingleValue(null);
+
+        // THEN: NPE
+    }
+
+    @Test
     public void accepts_whenGlobalRange_shouldReturnTrue(){
         // Long
         ItemRange actualRange = new ItemRange(Optional.<Long>empty(), Optional.<Long>empty());

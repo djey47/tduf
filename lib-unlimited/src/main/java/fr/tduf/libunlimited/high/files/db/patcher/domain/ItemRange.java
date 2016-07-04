@@ -7,12 +7,12 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a range of items for patch generation (references, field indexes...)
  */
-// TODO adfd method to generate a range from single item
 public class ItemRange {
 
     /** Unique range, accepting all values **/
@@ -53,6 +53,16 @@ public class ItemRange {
         }
 
         return new ItemRange(itemValues);
+    }
+
+    /**
+     * @param itemValue : value to which range will be restricted
+     * @return  a range from a single value.
+     */
+    public static ItemRange fromSingleValue(String itemValue) {
+        requireNonNull(itemValue, "An item value is required.");
+
+        return new ItemRange(singletonList(itemValue));
     }
 
     /**
