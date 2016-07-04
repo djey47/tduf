@@ -106,7 +106,7 @@ public class StepsCoordinator extends Service<Void> {
 
             updateMessage(DisplayConstants.STATUS_UNINSTALL_IN_PROGRESS);
 
-            callStepChain(RETRIEVE_BACKUP/*, REMOVE_BACKUP*/);
+            callStepChain(RETRIEVE_BACKUP/*RESTORE_SNAPSHOT, DAVE_DATABASE, REMOVE_BACKUP*/);
 
             updateMessage(DisplayConstants.STATUS_UNINSTALL_DONE);
 
