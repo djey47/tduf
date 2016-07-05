@@ -55,8 +55,8 @@ class AdjustCameraStep extends GenericStep {
         return genuineCamViewsDto;
     }
 
+    // Ignore warning: method ref
     private Optional<GenuineCamViewsDto.GenuineCamViewDto> buildCustomViewFromProperties(CustomizableCameraView cameraView) {
-
         return getDatabaseContext().getPatchProperties().getCustomizedCameraView(cameraView)
 
                 .map(prop -> {
@@ -76,6 +76,7 @@ class AdjustCameraStep extends GenericStep {
                 });
     }
 
+    // Ignore warning: method ref
     private int getCameraIdentifierFromDatabase() {
         String slotReference = getDatabaseContext().getPatchProperties().getVehicleSlotReference().orElseThrow(() -> new IllegalStateException("Slot reference is unknown at this point. Cannot continue."));
 
