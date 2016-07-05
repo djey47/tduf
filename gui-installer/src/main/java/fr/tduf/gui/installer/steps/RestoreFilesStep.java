@@ -1,13 +1,15 @@
 package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
+import static fr.tduf.gui.installer.steps.GenericStep.StepType.RESTORE_FILES;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -31,9 +33,9 @@ class RestoreFilesStep extends GenericStep {
                     final Path subTree = backupPath.relativize(bankFilePath);
                     final Path originalFilePath = banksPath.resolve(subTree);
                     try {
-                        Files.copy(bankFilePath, originalFilePath, StandardCopyOption.REPLACE_EXISTING);
+                        Files.copy(bankFilePath, originalFilePath, REPLACE_EXISTING);
                     } catch (IOException ioe) {
-                        throw new RuntimeException("Unable to restore backup: " + bankFilePath, ioe);
+                        throw new InternalStepException(RESTORE_FILES, "Unable to copy backup file: " + bankFilePath + " to " + originalFilePath, ioe);
                     }
                 });
     }
