@@ -31,6 +31,7 @@ public abstract class GenericStep {
         RESTORE_DATABASE(new RestoreDatabaseStep()),
         RESTORE_SNAPSHOT(new RestoreSnapshotStep()),
         ADJUST_CAMERA(new AdjustCameraStep()),
+        REVERT_CAMERA(new RevertCameraStep()),
         COPY_FILES(new CopyFilesStep()),
         RESTORE_FILES(new RestoreFilesStep()),
         UPDATE_MAGIC_MAP(new UpdateMagicMapStep()),
