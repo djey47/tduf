@@ -106,7 +106,11 @@ public class StepsCoordinator extends Service<Void> {
 
             updateMessage(DisplayConstants.STATUS_UNINSTALL_IN_PROGRESS);
 
-            callStepChain(RETRIEVE_BACKUP, RESTORE_SNAPSHOT/*, SAVE_DATABASE, REMOVE_BACKUP*/);
+            callStepChain(
+                    RETRIEVE_BACKUP,
+                    /*REVERT_CAMERA,*/
+                    RESTORE_SNAPSHOT
+                    /*, SAVE_DATABASE, RESTORE_FILES, REMOVE_BACKUP*/);
 
             updateMessage(DisplayConstants.STATUS_UNINSTALL_DONE);
 
@@ -118,6 +122,8 @@ public class StepsCoordinator extends Service<Void> {
 
         @Override
         protected void handleStepException(StepException se) throws StepException {
+            // TODO
+
             updateMessage(DisplayConstants.STATUS_UNINSTALL_KO);
 
             Log.error(THIS_CLASS_NAME, "->Done uninstalling with error(s)");
