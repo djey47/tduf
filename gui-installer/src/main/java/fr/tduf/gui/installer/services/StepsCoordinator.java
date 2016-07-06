@@ -108,9 +108,11 @@ public class StepsCoordinator extends Service<Void> {
 
             callStepChain(
                     RETRIEVE_BACKUP,
-                    /*REVERT_CAMERA,*/
-                    RESTORE_SNAPSHOT
-                    /*, SAVE_DATABASE, RESTORE_FILES, REMOVE_BACKUP*/);
+                    REVERT_CAMERA,
+                    RESTORE_SNAPSHOT,
+                    RESTORE_FILES,
+                    SAVE_DATABASE,
+                    REMOVE_BACKUP);
 
             updateMessage(DisplayConstants.STATUS_UNINSTALL_DONE);
 
@@ -122,7 +124,7 @@ public class StepsCoordinator extends Service<Void> {
 
         @Override
         protected void handleStepException(StepException se) throws StepException {
-            // TODO
+            Log.error(THIS_CLASS_NAME, "->Critical failure detected, no action will be intended yet.");
 
             updateMessage(DisplayConstants.STATUS_UNINSTALL_KO);
 
