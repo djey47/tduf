@@ -23,18 +23,17 @@ public class RevertCameraStep extends GenericStep {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
 
-        int cameraId = getDatabaseContext().getPatchProperties().getCameraIdentifier().orElseGet(this::getCameraIdentifierFromDatabase);
-
         final boolean customizedViews = Stream.of(CustomizableCameraView.values())
                 .filter(cameraView -> getDatabaseContext().getPatchProperties().getCustomizedCameraView(cameraView).isPresent())
                 .count() != 0;
         if (!customizedViews) {
-            Log.info(THIS_CLASS_NAME, "->No customization for camera id " + cameraId);
+            Log.info(THIS_CLASS_NAME, "->No customization for camera");
             return;
         }
 
         String cameraFileName = Paths.get(getInstallerConfiguration().resolveDatabaseDirectory(), "Cameras.bin").toString();
 
+        int cameraId = getDatabaseContext().getPatchProperties().getCameraIdentifier().orElseGet(this::getCameraIdentifierFromDatabase);
         Log.info(THIS_CLASS_NAME, "->Reverting camera id " + cameraId + ": " + cameraFileName);
         getInstallerConfiguration().getCameraSupport().resetCamera(cameraFileName, cameraId);
     }
