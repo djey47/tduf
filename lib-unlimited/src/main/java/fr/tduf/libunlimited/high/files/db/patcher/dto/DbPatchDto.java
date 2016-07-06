@@ -50,51 +50,43 @@ public class DbPatchDto {
         return reflectionToString(this);
     }
 
-    private DbPatchDto() {}
+    private DbPatchDto() {
+    }
 
     /**
      * Allows to generate custom instances.
      */
     public static DbPatchDtoBuilder builder() {
-        return new DbPatchDtoBuilder() {
-            private List<DbChangeDto> changes = new ArrayList<>();
-            private String comment = null;
+        return new DbPatchDtoBuilder();
+    }
 
-            @Override
-            public DbPatchDtoBuilder withComment(String comment) {
-                this.comment = comment;
-                return this;
-            }
+    public static class DbPatchDtoBuilder {
+        private List<DbChangeDto> changes = new ArrayList<>();
+        private String comment = null;
 
-            @Override
-            public DbPatchDtoBuilder addChanges(Collection<DbChangeDto> changes) {
-                this.changes.addAll(changes);
-                return this;
-            }
+        public DbPatchDtoBuilder withComment(String comment) {
+            this.comment = comment;
+            return this;
+        }
 
-            @Override
-            public DbPatchDto build() {
-                DbPatchDto patchObject = new DbPatchDto();
+        public DbPatchDtoBuilder addChanges(Collection<DbChangeDto> changes) {
+            this.changes.addAll(changes);
+            return this;
+        }
 
-                changes.sort(renderComparator());
-                patchObject.changes = changes;
-                patchObject.comment = comment;
+        public DbPatchDto build() {
+            DbPatchDto patchObject = new DbPatchDto();
 
-                return patchObject;
-            }
-        };
+            changes.sort(renderComparator());
+            patchObject.changes = changes;
+            patchObject.comment = comment;
+
+            return patchObject;
+        }
     }
 
     public String getComment() {
         return comment;
-    }
-
-    public interface DbPatchDtoBuilder {
-        DbPatchDtoBuilder withComment(String comment);
-
-        DbPatchDtoBuilder addChanges(Collection<DbChangeDto> changes);
-
-        DbPatchDto build();
     }
 
     public List<DbChangeDto> getChanges() {
@@ -230,150 +222,111 @@ public class DbPatchDto {
         }
 
         public static DbChangeDtoBuilder builder() {
-            return new DbChangeDtoBuilder() {
-                private Locale locale;
-                private String value;
-                private List<String> entryValues;
-                private List<DbFieldValueDto> filterCompounds;
-                private List<DbFieldValueDto> partialEntryValues;
-                private String reference;
-                private DbDto.Topic topic;
-                private ChangeTypeEnum type;
-                private DirectionEnum moveDirection;
-                private Integer moveSteps;
-                private Boolean strictMode;
-
-                @Override
-                public DbChangeDtoBuilder withType(ChangeTypeEnum type) {
-                    this.type = type;
-                    return this;
-                }
-
-                @Override
-                public DbChangeDtoBuilder enableStrictMode(boolean strictMode) {
-                    this.strictMode = strictMode ? true : null;
-                    return this;
-                }
-
-                @Override
-                public DbChangeDtoBuilder forTopic(DbDto.Topic topic) {
-                    this.topic = topic;
-                    return this;
-                }
-
-                @Override
-                public DbChangeDtoBuilder asReference(String entryReference) {
-                    this.reference = entryReference;
-                    return this;
-                }
-
-                @Override
-                public DbChangeDtoBuilder asReferencePlaceholder(String name) {
-                    this.reference = String.format(FORMAT_PLACEHOLDER, name);
-                    return this;
-                }
-
-                @Override
-                public DbChangeDtoBuilder withEntryValues(List<String> entryValues) {
-                    this.entryValues = entryValues;
-                    return this;
-                }
-
-                @Override
-                public DbChangeDtoBuilder filteredBy(List<DbFieldValueDto> filterCompounds) {
-                    this.filterCompounds = filterCompounds;
-                    return this;
-                }
-
-                @Override
-                public DbChangeDtoBuilder withPartialEntryValues(List<DbFieldValueDto> partialEntryValues) {
-                    this.partialEntryValues = partialEntryValues;
-                    return this;
-                }
-
-                @Override
-                public DbChangeDtoBuilder withValue(String value) {
-                    this.value = value;
-                    return this;
-                }
-
-                @Override
-                public DbChangeDtoBuilder withValuePlaceholder(String name) {
-                    this.value = String.format(FORMAT_PLACEHOLDER, name);
-                    return this;
-                }
-
-                @Override
-                public DbChangeDtoBuilder forLocale(Locale locale) {
-                    this.locale = locale;
-                    return this;
-                }
-
-                @Override
-                public DbChangeDtoBuilder moveForDirection(DirectionEnum direction, OptionalInt steps) {
-                    this.moveDirection = direction;
-                    this.moveSteps = steps.orElse(1);
-                    return this;
-                }
-
-                @Override
-                public DbChangeDto build() {
-                    if (partialEntryValues != null && entryValues != null) {
-                        throw new IllegalStateException("Conflict in change: can't have partialEntryValues and entryValues at the same time");
-                    }
-
-                    DbChangeDto changeObject = new DbChangeDto();
-
-                    changeObject.type = requireNonNull(type, "Instruction type is required");
-                    changeObject.topic = requireNonNull(topic, "Instruction topic is required");
-                    changeObject.ref = reference;
-                    changeObject.values = entryValues;
-                    changeObject.filterCompounds = filterCompounds;
-                    changeObject.partialValues = partialEntryValues;
-                    changeObject.value = value;
-                    changeObject.locale = locale;
-                    changeObject.direction = moveDirection;
-                    changeObject.steps = moveSteps;
-                    changeObject.strictMode = strictMode;
-
-                    return changeObject;
-                }
-            };
-        }
-
-        public static DbChangeDtoRenderComparator renderComparator() {
-            return new DbChangeDtoRenderComparator();
+            return new DbChangeDtoBuilder();
         }
 
         /**
          * Allows to build custom instances.
          */
-        public interface DbChangeDtoBuilder {
-            DbChangeDto build();
+        public static class DbChangeDtoBuilder {
+            private Locale locale;
+            private String value;
+            private List<String> entryValues;
+            private List<DbFieldValueDto> filterCompounds;
+            private List<DbFieldValueDto> partialEntryValues;
+            private String reference;
+            private DbDto.Topic topic;
+            private ChangeTypeEnum type;
+            private DirectionEnum moveDirection;
+            private Integer moveSteps;
+            private Boolean strictMode;
 
-            DbChangeDtoBuilder withType(ChangeTypeEnum update);
+            public DbChangeDtoBuilder withType(ChangeTypeEnum type) {
+                this.type = type;
+                return this;
+            }
 
-            DbChangeDtoBuilder enableStrictMode(boolean strictMode);
+            public DbChangeDtoBuilder enableStrictMode(boolean strictMode) {
+                this.strictMode = strictMode ? true : null;
+                return this;
+            }
 
-            DbChangeDtoBuilder forTopic(DbDto.Topic topic);
+            public DbChangeDtoBuilder forTopic(DbDto.Topic topic) {
+                this.topic = topic;
+                return this;
+            }
 
-            DbChangeDtoBuilder asReference(String entryReference);
+            public DbChangeDtoBuilder asReference(String entryReference) {
+                this.reference = entryReference;
+                return this;
+            }
 
-            DbChangeDtoBuilder asReferencePlaceholder(String name);
+            public DbChangeDtoBuilder asReferencePlaceholder(String name) {
+                this.reference = String.format(FORMAT_PLACEHOLDER, name);
+                return this;
+            }
 
-            DbChangeDtoBuilder withEntryValues(List<String> entryValues);
+            public DbChangeDtoBuilder withEntryValues(List<String> entryValues) {
+                this.entryValues = entryValues;
+                return this;
+            }
 
-            DbChangeDtoBuilder filteredBy(List<DbFieldValueDto> filterCompounds);
+            public DbChangeDtoBuilder filteredBy(List<DbFieldValueDto> filterCompounds) {
+                this.filterCompounds = filterCompounds;
+                return this;
+            }
 
-            DbChangeDtoBuilder withPartialEntryValues(List<DbFieldValueDto> partialEntryValues);
+            public DbChangeDtoBuilder withPartialEntryValues(List<DbFieldValueDto> partialEntryValues) {
+                this.partialEntryValues = partialEntryValues;
+                return this;
+            }
 
-            DbChangeDtoBuilder withValue(String resourceValue);
+            public DbChangeDtoBuilder withValue(String value) {
+                this.value = value;
+                return this;
+            }
 
-            DbChangeDtoBuilder withValuePlaceholder(String name);
+            public DbChangeDtoBuilder withValuePlaceholder(String name) {
+                this.value = String.format(FORMAT_PLACEHOLDER, name);
+                return this;
+            }
 
-            DbChangeDtoBuilder forLocale(Locale locale);
+            public DbChangeDtoBuilder forLocale(Locale locale) {
+                this.locale = locale;
+                return this;
+            }
 
-            DbChangeDtoBuilder moveForDirection(DirectionEnum direction, OptionalInt steps);
+            public DbChangeDtoBuilder moveForDirection(DirectionEnum direction, OptionalInt steps) {
+                this.moveDirection = direction;
+                this.moveSteps = steps.orElse(1);
+                return this;
+            }
+
+            public DbChangeDto build() {
+                if (partialEntryValues != null && entryValues != null) {
+                    throw new IllegalStateException("Conflict in change: can't have partialEntryValues and entryValues at the same time");
+                }
+
+                DbChangeDto changeObject = new DbChangeDto();
+
+                changeObject.type = requireNonNull(type, "Instruction type is required");
+                changeObject.topic = requireNonNull(topic, "Instruction topic is required");
+                changeObject.ref = reference;
+                changeObject.values = entryValues;
+                changeObject.filterCompounds = filterCompounds;
+                changeObject.partialValues = partialEntryValues;
+                changeObject.value = value;
+                changeObject.locale = locale;
+                changeObject.direction = moveDirection;
+                changeObject.steps = moveSteps;
+                changeObject.strictMode = strictMode;
+
+                return changeObject;
+            }
+        }
+
+        public static DbChangeDtoRenderComparator renderComparator() {
+            return new DbChangeDtoRenderComparator();
         }
 
         /**
