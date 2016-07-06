@@ -81,7 +81,7 @@ public class InstallerConfiguration {
 
     public static class InstallerConfigurationBuilder {
         private String testDriveUnlimitedDirectory;
-        private String assetsDirectory;
+        private String assetsDirectory = InstallerConstants.DIRECTORY_ASSETS;
         private String installerDirectory = ".";
         private BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
         private GenuineCamGateway cameraSupport = new GenuineCamGateway(new CommandLineHelper());
