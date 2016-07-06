@@ -78,7 +78,7 @@ public class InstallerConfiguration {
     public static InstallerConfigurationBuilder builder() {
         return new InstallerConfigurationBuilder() {
             private String testDriveUnlimitedDirectory;
-            private String assetsDirectory = ".";
+            private String assetsDirectory;
             private String installerDirectory = ".";
             private BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
             private GenuineCamGateway cameraSupport = new GenuineCamGateway(new CommandLineHelper());
@@ -91,7 +91,7 @@ public class InstallerConfiguration {
 
             @Override
             public InstallerConfigurationBuilder withAssetsDirectory(String assetsDirectory) {
-                this.assetsDirectory = assetsDirectory;
+                this.assetsDirectory = Paths.get(installerDirectory).resolve(assetsDirectory).toString();
                 return this;
             }
 

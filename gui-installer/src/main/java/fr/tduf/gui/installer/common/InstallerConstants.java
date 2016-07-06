@@ -12,8 +12,7 @@ public class InstallerConstants {
     public static final String DIRECTORY_SUB_BACKUP_DATABASE = "database";
     public static final String DIRECTORY_SUB_BACKUP_FILES = "files";
 
-    // TODO remove ./ when possible
-    public static final String DIRECTORY_ASSETS = "./assets";
+    public static final String DIRECTORY_ASSETS = "assets";
     public static final String DIRECTORY_README = "README";
     public static final String DIRECTORY_3D = "3D";
     public static final String DIRECTORY_DATABASE = "DATABASE";
