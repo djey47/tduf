@@ -41,7 +41,7 @@ public class DisplayConstants {
     public static final String MESSAGE_INSTALL_ABORTED = "Install cannot continue";
     public static final String MESSAGE_BACKUP_NOT_FOUND = "No backup found.\nUse advanced operations to restore a vehicle slot.";
 
-    public static final String MESSAGE_FMT_ERROR = "%s (%s)\nIn %s step.";
+    public static final String MESSAGE_FMT_ERROR = "%s\n%s\n[Step: %s]";
     public static final String MESSAGE_FMT_INVALID_SLOT_INFO = "Unable to get valid information for vehicle slot, as it does not exist: %s";
     public static final String MESSAGE_FMT_PATCH_NOT_FOUND = "Patch file not found in %s subdirectory.";
 
