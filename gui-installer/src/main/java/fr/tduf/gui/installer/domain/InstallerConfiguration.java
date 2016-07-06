@@ -76,61 +76,45 @@ public class InstallerConfiguration {
      * @return builder, to create custom instances.
      */
     public static InstallerConfigurationBuilder builder() {
-        return new InstallerConfigurationBuilder() {
-            private String testDriveUnlimitedDirectory;
-            private String assetsDirectory;
-            private String installerDirectory = ".";
-            private BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
-            private GenuineCamGateway cameraSupport = new GenuineCamGateway(new CommandLineHelper());
-
-            @Override
-            public InstallerConfigurationBuilder withTestDriveUnlimitedDirectory(String testDriveUnlimitedDirectory) {
-                this.testDriveUnlimitedDirectory = testDriveUnlimitedDirectory;
-                return this;
-            }
-
-            @Override
-            public InstallerConfigurationBuilder withAssetsDirectory(String assetsDirectory) {
-                this.assetsDirectory = Paths.get(installerDirectory).resolve(assetsDirectory).toString();
-                return this;
-            }
-
-            @Override
-            public InstallerConfigurationBuilder overridingCameraSupport(GenuineCamGateway cameraSupport) {
-                this.cameraSupport = cameraSupport;
-                return this;
-            }
-
-            @Override
-            public InstallerConfigurationBuilder overridingInstallerDirectory(String installerDirectory) {
-                this.installerDirectory = installerDirectory;
-                return this;
-            }
-
-            @Override
-            public InstallerConfiguration build() {
-                InstallerConfiguration installerConfiguration = new InstallerConfiguration();
-                installerConfiguration.testDriveUnlimitedDirectory = requireNonNull(testDriveUnlimitedDirectory, "TDU directory is required.");
-                installerConfiguration.assetsDirectory = requireNonNull(assetsDirectory, "Assets directory is required.");
-                installerConfiguration.bankSupport = requireNonNull(bankSupport, "Bank Support component is required.");
-                installerConfiguration.cameraSupport = requireNonNull(cameraSupport, "Camera Support component is required.");
-                installerConfiguration.installerDirectory = requireNonNull(installerDirectory, "Installer directory is required.");
-
-                return installerConfiguration;
-            }
-        };
+        return new InstallerConfigurationBuilder();
     }
 
-    // TODO remove interface
-    public interface InstallerConfigurationBuilder {
-        InstallerConfigurationBuilder withTestDriveUnlimitedDirectory(String testDriveUnlimitedDirectory);
+    public static class InstallerConfigurationBuilder {
+        private String testDriveUnlimitedDirectory;
+        private String assetsDirectory;
+        private String installerDirectory = ".";
+        private BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
+        private GenuineCamGateway cameraSupport = new GenuineCamGateway(new CommandLineHelper());
 
-        InstallerConfigurationBuilder withAssetsDirectory(String assetsDirectory);
+        public InstallerConfigurationBuilder withTestDriveUnlimitedDirectory(String testDriveUnlimitedDirectory) {
+            this.testDriveUnlimitedDirectory = testDriveUnlimitedDirectory;
+            return this;
+        }
 
-        InstallerConfigurationBuilder overridingCameraSupport(GenuineCamGateway cameraSupport);
+        public InstallerConfigurationBuilder withAssetsDirectory(String assetsDirectory) {
+            this.assetsDirectory = Paths.get(installerDirectory).resolve(assetsDirectory).toString();
+            return this;
+        }
 
-        InstallerConfigurationBuilder overridingInstallerDirectory(String installerDirectory);
+        public InstallerConfigurationBuilder overridingCameraSupport(GenuineCamGateway cameraSupport) {
+            this.cameraSupport = cameraSupport;
+            return this;
+        }
 
-        InstallerConfiguration build();
+        public InstallerConfigurationBuilder overridingInstallerDirectory(String installerDirectory) {
+            this.installerDirectory = installerDirectory;
+            return this;
+        }
+
+        public InstallerConfiguration build() {
+            InstallerConfiguration installerConfiguration = new InstallerConfiguration();
+            installerConfiguration.testDriveUnlimitedDirectory = requireNonNull(testDriveUnlimitedDirectory, "TDU directory is required.");
+            installerConfiguration.assetsDirectory = requireNonNull(assetsDirectory, "Assets directory is required.");
+            installerConfiguration.bankSupport = requireNonNull(bankSupport, "Bank Support component is required.");
+            installerConfiguration.cameraSupport = requireNonNull(cameraSupport, "Camera Support component is required.");
+            installerConfiguration.installerDirectory = requireNonNull(installerDirectory, "Installer directory is required.");
+
+            return installerConfiguration;
+        }
     }
 }
