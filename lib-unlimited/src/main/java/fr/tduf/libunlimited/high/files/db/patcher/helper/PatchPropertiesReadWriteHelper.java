@@ -48,7 +48,20 @@ public class PatchPropertiesReadWriteHelper {
      * @return path of effective property file if any, otherwise empty
      * @throws IOException
      */
+    public static Optional<String> writeEffectivePatchProperties(PatchProperties patchProperties, String patchFile) throws IOException {
+        return writeEffectivePatchPropertiesWithPrefix(patchProperties, patchFile, "effective-");
+    }
+
+    /**
+     * @param patchFile : JSON mini patch file which has just been applied
+     * @return path of property file if any, otherwise empty
+     * @throws IOException
+     */
     public static Optional<String> writePatchProperties(PatchProperties patchProperties, String patchFile) throws IOException {
+        return writeEffectivePatchPropertiesWithPrefix(patchProperties, patchFile, "");
+    }
+
+    private static Optional<String> writeEffectivePatchPropertiesWithPrefix(PatchProperties patchProperties, String patchFile, String prefix) throws IOException {
         if (patchProperties.isEmpty()) {
             return empty();
         }
@@ -56,7 +69,7 @@ public class PatchPropertiesReadWriteHelper {
         final Path patchPath = Paths.get(patchFile);
         Path patchParentPath = patchPath.getParent();
         String patchFileName = patchPath.getFileName().toString();
-        final String targetFileName = "effective-" + patchFileName + ".properties";
+        final String targetFileName = prefix + patchFileName + ".properties";
         String targetPropertyFile = patchParentPath.resolve(targetFileName).toString();
 
         Log.info(THIS_CLASS_NAME, "Writing properties file: " + targetPropertyFile);
@@ -66,4 +79,5 @@ public class PatchPropertiesReadWriteHelper {
 
         return of(targetPropertyFile);
     }
+
 }

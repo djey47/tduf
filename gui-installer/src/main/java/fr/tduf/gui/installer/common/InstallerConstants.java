@@ -21,7 +21,6 @@ public class InstallerConstants {
     public static final String DIRECTORY_RIMS = "3D/RIMS";
     public static final String DIRECTORY_SOUND = "SOUND";
 
-    public static final String FILE_NAME_EFFECTIVE_PROPERTIES = "installed.properties";
     public static final String FILE_NAME_EFFECTIVE_PATCH = "installed.mini.json";
     public static final String FILE_NAME_SNAPSHOT_PATCH = "SNAPSHOT.mini.json";
 

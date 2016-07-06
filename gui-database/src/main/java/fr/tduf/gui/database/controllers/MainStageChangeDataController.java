@@ -150,7 +150,7 @@ public class MainStageChangeDataController {
 
         final PatchProperties effectiveProperties = patcher.applyWithProperties(patchObject, patchProperties);
 
-        return PatchPropertiesReadWriteHelper.writePatchProperties(effectiveProperties, patchFile.getAbsolutePath());
+        return PatchPropertiesReadWriteHelper.writeEffectivePatchProperties(effectiveProperties, patchFile.getAbsolutePath());
     }
 
     void importPerformancePack(String packFile) throws ReflectiveOperationException {

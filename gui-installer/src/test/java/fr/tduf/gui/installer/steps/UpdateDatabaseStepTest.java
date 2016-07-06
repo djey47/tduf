@@ -86,7 +86,7 @@ public class UpdateDatabaseStepTest {
         updateDatabaseStep.perform();
 
         // THEN
-        assertThat(Paths.get(installerConfiguration.getBackupDirectory(), "installed.properties")).exists();
+        assertThat(Paths.get(installerConfiguration.getBackupDirectory(), "installed.mini.json.properties")).exists();
         assertThat(Paths.get(installerConfiguration.getBackupDirectory(), "installed.mini.json")).exists();
     }
 
