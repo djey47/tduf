@@ -5,7 +5,7 @@ package fr.tduf.gui.installer.common;
  */
 public class InstallerConstants {
 
-    public static final String FILE_README = "./assets/README/README.txt";
+    public static final String FILE_README = "README.txt";
 
     public static final String PATTERN_BACKUP_DIRECTORY = "uu-MM-dd HH-mm-ss";
     public static final String DIRECTORY_BACKUP = "backup";
@@ -14,6 +14,7 @@ public class InstallerConstants {
 
     // TODO remove ./ when possible
     public static final String DIRECTORY_ASSETS = "./assets";
+    public static final String DIRECTORY_README = "README";
     public static final String DIRECTORY_3D = "3D";
     public static final String DIRECTORY_DATABASE = "DATABASE";
     public static final String DIRECTORY_GAUGES_LOW = "GAUGES/LOW";
