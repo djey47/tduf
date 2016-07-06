@@ -2,14 +2,38 @@ package fr.tduf.gui.installer.steps;
 
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
+import fr.tduf.libtesting.common.helper.FilesHelper;
 import org.junit.Test;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class RetrieveBackupStepTest {
+    @Test(expected = InternalStepException.class)
+    public void perform_whenBackupDirectoryDoestNotExist_shouldThrowException() throws Exception {
+        // GIVEN
+        final Path fakeInstallerPath = Paths.get(FilesHelper.createTempDirectoryForInstaller());
+        Files.createDirectory(fakeInstallerPath.resolve("backup"));
+        InstallerConfiguration configuration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory("")
+                .overridingInstallerDirectory(fakeInstallerPath.toString())
+                .build();
+        DatabaseContext context = new DatabaseContext(new ArrayList<>(0), "");
+        final GenericStep genericStep = GenericStep.starterStep(configuration, context)
+                .nextStep(GenericStep.StepType.RETRIEVE_BACKUP);
+
+        // WHEN
+        genericStep.perform();
+
+        // THEN: ISE
+    }
+
     @Test
     public void perform_whenBackupDirectoriesExist_shouldReturnLatest() throws Exception {
         // GIVEN

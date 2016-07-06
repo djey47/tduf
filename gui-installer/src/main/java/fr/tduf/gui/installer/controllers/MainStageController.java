@@ -339,6 +339,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void loadDatabase() {
+        // TODO use installer directory from configuration
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
                 .withAssetsDirectory(InstallerConstants.DIRECTORY_ASSETS)
@@ -358,6 +359,7 @@ public class MainStageController extends AbstractGuiController {
 
         installProgressProperty.setValue(-1);
 
+        // TODO use installer directory from configuration
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
                 .withAssetsDirectory(InstallerConstants.DIRECTORY_ASSETS)
@@ -401,6 +403,7 @@ public class MainStageController extends AbstractGuiController {
 
         installProgressProperty.setValue(-1);
 
+        // TODO use installer directory from configuration
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
                 .withAssetsDirectory(InstallerConstants.DIRECTORY_ASSETS)

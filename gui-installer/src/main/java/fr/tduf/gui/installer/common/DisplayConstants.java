@@ -39,6 +39,7 @@ public class DisplayConstants {
     public static final String MESSAGE_STEP_KO = "Current step could not be performed";
     public static final String MESSAGE_PATCH_LOAD_KO = "Install patch could not be loaded";
     public static final String MESSAGE_INSTALL_ABORTED = "Install cannot continue";
+    public static final String MESSAGE_BACKUP_NOT_FOUND = "No backup found.\nUse advanced operations to restore a vehicle slot.";
 
     public static final String MESSAGE_FMT_ERROR = "%s (%s)\nIn %s step.";
     public static final String MESSAGE_FMT_INVALID_SLOT_INFO = "Unable to get valid information for vehicle slot, as it does not exist: %s";

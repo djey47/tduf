@@ -2,8 +2,8 @@ package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DisplayConstants;
-import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
+import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+import static fr.tduf.gui.installer.steps.GenericStep.StepType.RETRIEVE_BACKUP;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -28,10 +29,11 @@ class RetrieveBackupStep extends GenericStep {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
 
-        Path backupRootPath = Paths.get(InstallerConstants.DIRECTORY_BACKUP);
+        Path backupRootPath = Paths.get(getInstallerConfiguration().getInstallerDirectory()).resolve(InstallerConstants.DIRECTORY_BACKUP);
 
         try (Stream<Path> stream = Files.walk(backupRootPath, 1)) {
             stream
+                    .filter(path -> path != backupRootPath)
                     .filter(Files::isDirectory)
                     .sorted( (path1, path2) -> path2.toString().compareTo(path1.toString()) )
                     .findFirst()
@@ -40,8 +42,8 @@ class RetrieveBackupStep extends GenericStep {
 
         String backupDirectory = getInstallerConfiguration().getBackupDirectory();
         if (backupDirectory == null) {
-            Log.info(THIS_CLASS_NAME, "->No backup found, will revert vehicle slot if possible");
-            return;
+            Log.info(THIS_CLASS_NAME, "->No backup found");
+            throw new InternalStepException(RETRIEVE_BACKUP, DisplayConstants.MESSAGE_BACKUP_NOT_FOUND);
         }
 
         Log.info(THIS_CLASS_NAME, "->Using backup directory: " + backupDirectory);

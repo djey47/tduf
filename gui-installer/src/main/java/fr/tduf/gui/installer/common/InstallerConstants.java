@@ -8,10 +8,11 @@ public class InstallerConstants {
     public static final String FILE_README = "./assets/README/README.txt";
 
     public static final String PATTERN_BACKUP_DIRECTORY = "uu-MM-dd HH-mm-ss";
-    public static final String DIRECTORY_BACKUP = "./backup";
+    public static final String DIRECTORY_BACKUP = "backup";
     public static final String DIRECTORY_SUB_BACKUP_DATABASE = "database";
     public static final String DIRECTORY_SUB_BACKUP_FILES = "files";
 
+    // TODO remove ./ when possible
     public static final String DIRECTORY_ASSETS = "./assets";
     public static final String DIRECTORY_3D = "3D";
     public static final String DIRECTORY_DATABASE = "DATABASE";

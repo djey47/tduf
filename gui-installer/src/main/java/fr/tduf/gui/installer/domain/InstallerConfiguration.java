@@ -22,6 +22,8 @@ public class InstallerConfiguration {
 
     private String backupDirectory;
 
+    private String installerDirectory;
+
     private BankSupport bankSupport;
 
     private GenuineCamGateway cameraSupport;
@@ -66,6 +68,10 @@ public class InstallerConfiguration {
         return cameraSupport;
     }
 
+    public String getInstallerDirectory() {
+        return installerDirectory;
+    }
+
     /**
      * @return builder, to create custom instances.
      */
@@ -73,6 +79,7 @@ public class InstallerConfiguration {
         return new InstallerConfigurationBuilder() {
             private String testDriveUnlimitedDirectory;
             private String assetsDirectory = ".";
+            private String installerDirectory = ".";
             private BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
             private GenuineCamGateway cameraSupport = new GenuineCamGateway(new CommandLineHelper());
 
@@ -95,24 +102,34 @@ public class InstallerConfiguration {
             }
 
             @Override
+            public InstallerConfigurationBuilder overridingInstallerDirectory(String installerDirectory) {
+                this.installerDirectory = installerDirectory;
+                return this;
+            }
+
+            @Override
             public InstallerConfiguration build() {
                 InstallerConfiguration installerConfiguration = new InstallerConfiguration();
                 installerConfiguration.testDriveUnlimitedDirectory = requireNonNull(testDriveUnlimitedDirectory, "TDU directory is required.");
                 installerConfiguration.assetsDirectory = requireNonNull(assetsDirectory, "Assets directory is required.");
                 installerConfiguration.bankSupport = requireNonNull(bankSupport, "Bank Support component is required.");
                 installerConfiguration.cameraSupport = requireNonNull(cameraSupport, "Camera Support component is required.");
+                installerConfiguration.installerDirectory = requireNonNull(installerDirectory, "Installer directory is required.");
 
                 return installerConfiguration;
             }
         };
     }
 
+    // TODO remove interface
     public interface InstallerConfigurationBuilder {
         InstallerConfigurationBuilder withTestDriveUnlimitedDirectory(String testDriveUnlimitedDirectory);
 
-        InstallerConfigurationBuilder withAssetsDirectory(String testDriveUnlimitedDirectory);
+        InstallerConfigurationBuilder withAssetsDirectory(String assetsDirectory);
 
         InstallerConfigurationBuilder overridingCameraSupport(GenuineCamGateway cameraSupport);
+
+        InstallerConfigurationBuilder overridingInstallerDirectory(String installerDirectory);
 
         InstallerConfiguration build();
     }

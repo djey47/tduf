@@ -25,7 +25,7 @@ class InitBackupStep extends GenericStep {
 
         LocalDateTime now = LocalDateTime.now();
 
-        Path backupRootPath = Paths.get(InstallerConstants.DIRECTORY_BACKUP);
+        Path backupRootPath = Paths.get(getInstallerConfiguration().getInstallerDirectory()).resolve(InstallerConstants.DIRECTORY_BACKUP);
 
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(InstallerConstants.PATTERN_BACKUP_DIRECTORY);
         Path backupCurrentPath = backupRootPath.resolve(formatter.format(now)).toAbsolutePath();
