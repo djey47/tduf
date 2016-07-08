@@ -1,0 +1,56 @@
+package fr.tduf.gui.installer.controllers;
+
+
+import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.installer.stages.QuickVehicleSlotsStageDesigner;
+import fr.tduf.gui.installer.stages.VehicleSlotsStageDesigner;
+import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import javafx.stage.Stage;
+import javafx.stage.Window;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
+/**
+ * To display stage without running whole application.
+ */
+@Ignore
+public class QuickVehicleSlotsStageControllerTest {
+
+    private static final Class<QuickVehicleSlotsStageControllerTest> thisClass = QuickVehicleSlotsStageControllerTest.class;
+
+    @Rule
+    public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
+
+    private List<DbDto> databaseObjects;
+
+    @Before
+    public void setUp() {
+        Log.set(Log.LEVEL_TRACE);
+
+        Path jsonDatabasePath = Paths.get(thisClass.getResource("/db-json").getFile());
+        databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabasePath.toString());
+    }
+
+    @Test
+    public void display() throws Exception {
+        // GIVEN-WHEN
+        initQuickSlotsBrowserStageController(null).initAndShowModalDialog(BulkDatabaseMiner.load(databaseObjects));
+    }
+
+    private static QuickVehicleSlotsStageController initQuickSlotsBrowserStageController(Window mainWindow) throws IOException {
+        Stage stage = new Stage();
+        stage.initOwner(mainWindow);
+
+        return QuickVehicleSlotsStageDesigner.init(stage);
+    }
+}
