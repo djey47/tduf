@@ -117,6 +117,17 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
+    public void handleResetSlotMenuItemAction() throws StepException {
+        Log.trace(THIS_CLASS_NAME, "->handleResetSlotMenuItemAction");
+
+        if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
+            return;
+        }
+
+        resetSlot();
+    }
+
+    @FXML
     public void handleResetDatabaseCacheMenuItemAction() throws Exception {
         Log.trace(THIS_CLASS_NAME, "->handleResetDatabaseCacheMenuItemAction");
 
@@ -279,6 +290,11 @@ public class MainStageController extends AbstractGuiController {
 
         String magicMapFile = configuration.resolveMagicMapFile();
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE, DisplayConstants.MESSAGE_UPDATED_MAP, magicMapFile);
+    }
+
+    private void resetSlot() {
+        String slotReference = "1001" ;
+        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_RESET_SLOT, slotReference);
     }
 
     private void resetDatabaseCache() throws IOException, ReflectiveOperationException {

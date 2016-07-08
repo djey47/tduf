@@ -36,6 +36,8 @@
                     <items>
                       <MenuItem mnemonicParsing="false" onAction="#handleUpdateMagicMapMenuItemAction" text="Update Magic Map" />
                         <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleResetSlotMenuItemAction" text="Reset TDUCP slot..." />
+                        <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#handleCheckDatabaseMenuItemAction" text="Check database..." />
                         <MenuItem mnemonicParsing="false" onAction="#handleResetDatabaseCacheMenuItemAction" text="Reset database cache" />
                     </items>

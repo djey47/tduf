@@ -10,6 +10,7 @@ public class DisplayConstants {
     public static final String TITLE_SUB_INSTALL = " : Install";
     public static final String TITLE_SUB_UNINSTALL = " : Uninstall";
     public static final String TITLE_SUB_MAP_UPDATE = " : Update Magic Map";
+    public static final String TITLE_SUB_RESET_TDUCP_SLOT = " : Reset TDUCP slot";
     public static final String TITLE_SUB_RESET_DB_CACHE = " : Reset database cache";
     public static final String TITLE_SUB_CHECK_DB = " : Check database";
     public static final String TITLE_SUB_FIX_DB = " : Fix database";
@@ -27,6 +28,7 @@ public class DisplayConstants {
     public static final String MESSAGE_NOT_UNINSTALLED = "An issue occured while uninstalling!";
     public static final String MESSAGE_UPDATED_MAP = "Magic map was updated to take new files into account:";
     public static final String MESSAGE_DELETED_CACHE = "Database cache directory was deleted succesfully:";
+    public static final String MESSAGE_RESET_SLOT = "New TDUCP slot was reverted succesfully:";
     public static final String MESSAGE_DB_CHECK_OK = "Database was checked succesfully.";
     public static final String MESSAGE_DB_CHECK_KO = "Database could not be checked.";
     public static final String MESSAGE_DB_FIX_OK = "Database was fixed succesfully.";
