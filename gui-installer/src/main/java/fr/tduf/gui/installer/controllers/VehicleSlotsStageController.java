@@ -12,7 +12,6 @@ import fr.tduf.gui.installer.controllers.helper.TableCellFactoryHelper;
 import fr.tduf.gui.installer.domain.exceptions.AbortedInteractiveStepException;
 import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -24,7 +23,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -56,8 +54,6 @@ public class VehicleSlotsStageController extends AbstractGuiController {
     private VehicleSlotsHelper vehicleSlotsHelper;
 
     private ObservableList<VehicleSlotDataItem> slotsData = FXCollections.observableArrayList();
-
-    private Property<DbDto.Topic> currentTopicProperty;
 
     private Property<VehicleSlotDataItem> selectedSlotProperty;
 
@@ -116,8 +112,6 @@ public class VehicleSlotsStageController extends AbstractGuiController {
 
         selectedSlotProperty.setValue(null);
 
-        currentTopicProperty.setValue(CAR_PHYSICS_DATA);
-
         updateSlotsStageData(VehicleSlotsHelper.SlotKind.TDUCP, VehicleSlotsHelper.VehicleKind.DRIVABLE);
 
         showModalWindow();
@@ -130,7 +124,6 @@ public class VehicleSlotsStageController extends AbstractGuiController {
     }
 
     private void initHeaderPane() {
-        currentTopicProperty = new SimpleObjectProperty<>();
         selectedSlotProperty = new SimpleObjectProperty<>();
 
         slotRefTextField.textProperty().bindBidirectional(selectedSlotProperty, new VehicleSlotDataItemToStringConverter());
@@ -198,5 +191,9 @@ public class VehicleSlotsStageController extends AbstractGuiController {
                 .ifPresent(entryReference -> TableViewHelper.selectItemAndScroll(
                         oneItem -> oneItem.referenceProperty().getValue().equals(entryReference),
                         slotsTableView));
+    }
+
+    public Property<VehicleSlotDataItem> selectedSlotProperty() {
+        return selectedSlotProperty;
     }
 }
