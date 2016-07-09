@@ -1,0 +1,905 @@
+{
+  "comment": "Patch template for TDUCP BIKE SLOT",
+  "changes": [
+    {
+      "type": "UPDATE",
+      "topic": "CAR_COLORS",
+      "values": [
+        "{SLOTREF}",
+        "{COLORID.M.1}",
+        "{RES_COLORNAME.1}",
+        "{COLORID.S.1}",
+        "{CALLIPERSID.1}",
+        "0",
+        "0",
+        "{INTREF.1}",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636"
+      ]
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_COLORS",
+      "values": [
+        "{SLOTREF}",
+        "{COLORID.M.2}",
+        "{RES_COLORNAME.2}",
+        "{COLORID.S.2}",
+        "{CALLIPERSID.2}",
+        "0",
+        "0",
+        "{INTREF.1}",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636"
+      ]
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_COLORS",
+      "values": [
+        "{SLOTREF}",
+        "{COLORID.M.3}",
+        "{RES_COLORNAME.3}",
+        "{COLORID.S.3}",
+        "{CALLIPERSID.3}",
+        "0",
+        "0",
+        "{INTREF.1}",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636"
+      ]
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_COLORS",
+      "values": [
+        "{SLOTREF}",
+        "{COLORID.M.4}",
+        "{RES_COLORNAME.4}",
+        "{COLORID.S.4}",
+        "{CALLIPERSID.4}",
+        "0",
+        "0",
+        "{INTREF.1}",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636"
+      ]
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_COLORS",
+      "values": [
+        "{SLOTREF}",
+        "{COLORID.M.5}",
+        "{RES_COLORNAME.5}",
+        "{COLORID.S.5}",
+        "{CALLIPERSID.5}",
+        "0",
+        "0",
+        "{INTREF.1}",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636"
+      ]
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_COLORS",
+      "values": [
+        "{SLOTREF}",
+        "{COLORID.M.6}",
+        "{RES_COLORNAME.6}",
+        "{COLORID.S.6}",
+        "{CALLIPERSID.6}",
+        "0",
+        "0",
+        "{INTREF.1}",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636"
+      ]
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_COLORS",
+      "values": [
+        "{SLOTREF}",
+        "{COLORID.M.7}",
+        "{RES_COLORNAME.7}",
+        "{COLORID.S.7}",
+        "{CALLIPERSID.7}",
+        "0",
+        "0",
+        "{INTREF.1}",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636"
+      ]
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_COLORS",
+      "values": [
+        "{SLOTREF}",
+        "{COLORID.M.8}",
+        "{RES_COLORNAME.8}",
+        "{COLORID.S.8}",
+        "{CALLIPERSID.8}",
+        "0",
+        "0",
+        "{INTREF.1}",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636"
+      ]
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_COLORS",
+      "values": [
+        "{SLOTREF}",
+        "{COLORID.M.9}",
+        "{RES_COLORNAME.9}",
+        "{COLORID.S.9}",
+        "{CALLIPERSID.9}",
+        "0",
+        "0",
+        "{INTREF.1}",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636"
+      ]
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_COLORS",
+      "values": [
+        "{SLOTREF}",
+        "{COLORID.M.0}",
+        "{RES_COLORNAME.0}",
+        "{COLORID.S.0}",
+        "{CALLIPERSID.0}",
+        "0",
+        "0",
+        "{INTREF.1}",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636",
+        "11319636"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "{RES_COLORNAME.1}",
+      "value": "{COLORNAME.1}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "{RES_COLORNAME.2}",
+      "value": "{COLORNAME.2}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "{RES_COLORNAME.3}",
+      "value": "{COLORNAME.3}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "{RES_COLORNAME.4}",
+      "value": "{COLORNAME.4}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "{RES_COLORNAME.5}",
+      "value": "{COLORNAME.5}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "{RES_COLORNAME.6}",
+      "value": "{COLORNAME.6}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "{RES_COLORNAME.7}",
+      "value": "{COLORNAME.7}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "{RES_COLORNAME.8}",
+      "value": "{COLORNAME.8}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "{RES_COLORNAME.9}",
+      "value": "{COLORNAME.9}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_COLORS",
+      "ref": "{RES_COLORNAME.0}",
+      "value": "{COLORNAME.0}"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "{SLOTREF}",
+      "values": [
+        "{SLOTREF}",
+        "91197",
+        "{RES_MODELNAME}",
+        "61933427",
+        "76800264",
+        "1",
+        "5000",
+        "56468917",
+        "{RES_BANKNAME}",
+        "{RIMREF.1}",
+        "{RES_BANKNAME}",
+        "53338427",
+        "{RES_MODELNAME}",
+        "{RES_VERSIONNAME}",
+        "553629",
+        "563709",
+        "998",
+        "184",
+        "11700",
+        "115",
+        "9500",
+        "13000",
+        "55356917",
+        "573531",
+        "6",
+        "2,53",
+        "2,94",
+        "2,06",
+        "1,52",
+        "1,18",
+        "1,03",
+        "0,91",
+        "0",
+        "2",
+        "5535936",
+        "335",
+        "335",
+        "5535936",
+        "53338427",
+        "0",
+        "812",
+        "2010",
+        "1176",
+        "0",
+        "0",
+        "1398",
+        "310",
+        "326",
+        "200",
+        "154",
+        "154",
+        "0",
+        "0",
+        "100",
+        "100",
+        "100",
+        "100",
+        "100",
+        "100",
+        "100",
+        "50",
+        "55",
+        "40",
+        "0,35",
+        "0,5",
+        "45",
+        "30",
+        "60",
+        "1,1",
+        "0,45",
+        "0,9",
+        "0,7",
+        "1",
+        "77678427",
+        "92261406",
+        "55533427",
+        "57356917",
+        "4",
+        "9,1",
+        "332",
+        "100",
+        "21,3",
+        "241",
+        "0",
+        "12,1",
+        "0",
+        "121",
+        "1000",
+        "100",
+        "100",
+        "100",
+        "230",
+        "70",
+        "100",
+        "100",
+        "-1",
+        "1",
+        "666",
+        "666",
+        "1",
+        "100",
+        "{CARID}",
+        "95"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "{RES_BANKNAME}",
+      "value": "{BANKNAME}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "{RES_MODELNAME}",
+      "value": "{MODELNAME}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "CAR_PHYSICS_DATA",
+      "ref": "{RES_VERSIONNAME}",
+      "value": "{VERSIONNAME}"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "CAR_RIMS",
+      "values": [
+        "{SLOTREF}",
+        "{RIMREF.1}"
+      ]
+    },
+    {
+      "type": "UPDATE",
+      "topic": "INTERIOR",
+      "ref": "{INTREF.1}",
+      "values": [
+        "{INTREF.1}",
+        "62938337",
+        "53365512",
+        "{INTCOLORID.M.1}",
+        "{INTCOLORID.S.1}",
+        "{INTMATERIALID.1}",
+        "0"
+      ]
+    },
+    {
+      "type": "UPDATE",
+      "topic": "RIMS",
+      "ref": "{RIMREF.1}",
+      "values": [
+        "{RIMREF.1}",
+        "55765512",
+        "58376512",
+        "{RES_RIMNAME.1}",
+        "120",
+        "70",
+        "17",
+        "190",
+        "55",
+        "17",
+        "0",
+        "5",
+        "55765512",
+        "{RES_BANKNAME.FR.1}",
+        "{RES_BANKNAME.RR.1}",
+        "0"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_RIMNAME.1}",
+      "value": "{RIMNAME.1}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.FR.1}",
+      "value": "{BANKNAME.FR.1}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.RR.1}",
+      "value": "{BANKNAME.RR.1}"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "RIMS",
+      "ref": "{RIMREF.2}",
+      "values": [
+        "{RIMREF.2}",
+        "55765512",
+        "54276512",
+        "{RES_RIMNAME.2}",
+        "225",
+        "45",
+        "18",
+        "225",
+        "45",
+        "18",
+        "0",
+        "5",
+        "55765512",
+        "{RES_BANKNAME.FR.2}",
+        "{RES_BANKNAME.RR.2}",
+        "0"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_RIMNAME.2}",
+      "value": "{RIMNAME.2}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.FR.2}",
+      "value": "{BANKNAME.FR.2}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.RR.2}",
+      "value": "{BANKNAME.RR.2}"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "RIMS",
+      "ref": "{RIMREF.3}",
+      "values": [
+        "{RIMREF.3}",
+        "55765512",
+        "54276512",
+        "{RES_RIMNAME.3}",
+        "225",
+        "45",
+        "18",
+        "225",
+        "45",
+        "18",
+        "0",
+        "5",
+        "55765512",
+        "{RES_BANKNAME.FR.3}",
+        "{RES_BANKNAME.RR.3}",
+        "0"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_RIMNAME.3}",
+      "value": "{RIMNAME.3}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.FR.3}",
+      "value": "{BANKNAME.FR.3}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.RR.3}",
+      "value": "{BANKNAME.RR.3}"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "RIMS",
+      "ref": "{RIMREF.4}",
+      "values": [
+        "{RIMREF.4}",
+        "55765512",
+        "54276512",
+        "{RES_RIMNAME.4}",
+        "225",
+        "45",
+        "18",
+        "225",
+        "45",
+        "18",
+        "0",
+        "5",
+        "55765512",
+        "{RES_BANKNAME.FR.4}",
+        "{RES_BANKNAME.RR.4}",
+        "0"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_RIMNAME.4}",
+      "value": "{RIMNAME.4}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.FR.4}",
+      "value": "{BANKNAME.FR.4}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.RR.4}",
+      "value": "{BANKNAME.RR.4}"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "RIMS",
+      "ref": "{RIMREF.5}",
+      "values": [
+        "{RIMREF.5}",
+        "55765512",
+        "54276512",
+        "{RES_RIMNAME.5}",
+        "225",
+        "45",
+        "18",
+        "225",
+        "45",
+        "18",
+        "0",
+        "5",
+        "55765512",
+        "{RES_BANKNAME.FR.5}",
+        "{RES_BANKNAME.RR.5}",
+        "0"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_RIMNAME.5}",
+      "value": "{RIMNAME.5}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.FR.5}",
+      "value": "{BANKNAME.FR.5}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.RR.5}",
+      "value": "{BANKNAME.RR.5}"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "RIMS",
+      "ref": "{RIMREF.6}",
+      "values": [
+        "{RIMREF.6}",
+        "55765512",
+        "54276512",
+        "{RES_RIMNAME.6}",
+        "225",
+        "45",
+        "18",
+        "225",
+        "45",
+        "18",
+        "0",
+        "5",
+        "55765512",
+        "{RES_BANKNAME.FR.6}",
+        "{RES_BANKNAME.RR.6}",
+        "0"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_RIMNAME.6}",
+      "value": "{RIMNAME.6}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.FR.6}",
+      "value": "{BANKNAME.FR.6}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.RR.6}",
+      "value": "{BANKNAME.RR.6}"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "RIMS",
+      "ref": "{RIMREF.7}",
+      "values": [
+        "{RIMREF.7}",
+        "55765512",
+        "54276512",
+        "{RES_RIMNAME.7}",
+        "225",
+        "45",
+        "18",
+        "225",
+        "45",
+        "18",
+        "0",
+        "5",
+        "55765512",
+        "{RES_BANKNAME.FR.7}",
+        "{RES_BANKNAME.RR.7}",
+        "0"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_RIMNAME.7}",
+      "value": "{RIMNAME.7}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.FR.7}",
+      "value": "{BANKNAME.FR.7}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.RR.7}",
+      "value": "{BANKNAME.RR.7}"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "RIMS",
+      "ref": "{RIMREF.8}",
+      "values": [
+        "{RIMREF.8}",
+        "55765512",
+        "54276512",
+        "{RES_RIMNAME.8}",
+        "225",
+        "45",
+        "18",
+        "225",
+        "45",
+        "18",
+        "0",
+        "5",
+        "55765512",
+        "{RES_BANKNAME.FR.8}",
+        "{RES_BANKNAME.RR.8}",
+        "0"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_RIMNAME.8}",
+      "value": "{RIMNAME.8}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.FR.8}",
+      "value": "{BANKNAME.FR.8}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.RR.8}",
+      "value": "{BANKNAME.RR.8}"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "RIMS",
+      "ref": "{RIMREF.9}",
+      "values": [
+        "{RIMREF.9}",
+        "55765512",
+        "54276512",
+        "{RES_RIMNAME.9}",
+        "225",
+        "45",
+        "18",
+        "225",
+        "45",
+        "18",
+        "0",
+        "5",
+        "55765512",
+        "{RES_BANKNAME.FR.9}",
+        "{RES_BANKNAME.RR.9}",
+        "0"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_RIMNAME.9}",
+      "value": "{RIMNAME.9}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.FR.9}",
+      "value": "{BANKNAME.FR.9}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.RR.9}",
+      "value": "{BANKNAME.RR.2}"
+    },
+    {
+      "type": "UPDATE",
+      "topic": "RIMS",
+      "ref": "{RIMREF.0}",
+      "values": [
+        "{RIMREF.0}",
+        "55765512",
+        "54276512",
+        "{RES_RIMNAME.0}",
+        "225",
+        "45",
+        "18",
+        "225",
+        "45",
+        "18",
+        "0",
+        "5",
+        "55765512",
+        "{RES_BANKNAME.FR.0}",
+        "{RES_BANKNAME.RR.0}",
+        "0"
+      ]
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_RIMNAME.0}",
+      "value": "{RIMNAME.0}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.FR.0}",
+      "value": "{BANKNAME.FR.0}"
+    },
+    {
+      "type": "UPDATE_RES",
+      "topic": "RIMS",
+      "ref": "{RES_BANKNAME.RR.0}",
+      "value": "{BANKNAME.RR.0}"
+    }
+  ]
+}
