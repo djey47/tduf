@@ -20,5 +20,9 @@ public class FileConstants {
     public static final String DIRECTORY_NAME_FRONT_END = "FrontEnd";
     public static final String DIRECTORY_NAME_HUDS = "Gauges";
 
+    public static final String RESOURCE_NAME_CLEAN_PATCH = "clean-slot.mini.json";
+    public static final String RESOURCE_NAME_TDUCP_CAR_PATCH = "tducp-car-slot.mini.json";
+    public static final String RESOURCE_NAME_TDUCP_BIKE_PATCH = "tducp-bike-slot.mini.json";
+
     private FileConstants() {}
 }
