@@ -87,7 +87,8 @@ public class VehicleSlotsHelper extends CommonHelper {
     public enum SlotKind {
         ALL(ITEM_SLOT_KIND_ALL),
         GENUINE(ITEM_SLOT_KIND_GENUINE),
-        TDUCP(ITEM_SLOT_KIND_TDUCP);
+        TDUCP(ITEM_SLOT_KIND_TDUCP),
+        TDUCP_NEW(ITEM_SLOT_KIND_TDUCP_NEW);
         private final String label;
 
         SlotKind(String label) {
@@ -384,6 +385,8 @@ public class VehicleSlotsHelper extends CommonHelper {
                 return !isTDUCPVehicleSlot(slotReference);
             case TDUCP:
                 return isTDUCPVehicleSlot(slotReference);
+            case TDUCP_NEW:
+                return isTDUCPNewVehicleSlot(slotReference);
             default:
                 return false;
         }

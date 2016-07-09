@@ -11,7 +11,6 @@ import fr.tduf.gui.installer.controllers.helper.TableCellFactoryHelper;
 import fr.tduf.gui.installer.domain.exceptions.AbortedInteractiveStepException;
 import fr.tduf.gui.installer.domain.javafx.VehicleSlotDataItem;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -23,7 +22,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -98,7 +96,7 @@ public class QuickVehicleSlotsStageController extends AbstractGuiController {
 
         selectedSlotProperty.setValue(null);
 
-        updateSlotsStageData(VehicleSlotsHelper.SlotKind.TDUCP, VehicleSlotsHelper.VehicleKind.DRIVABLE);
+        updateSlotsStageData(slotKindProperty.getValue(), VehicleSlotsHelper.VehicleKind.DRIVABLE);
 
         showModalWindow();
 
@@ -110,6 +108,7 @@ public class QuickVehicleSlotsStageController extends AbstractGuiController {
     }
 
     private void initHeaderPane() {
+        slotKindProperty.setValue(VehicleSlotsHelper.SlotKind.ALL);
         selectedSlotProperty = new SimpleObjectProperty<>();
 
         vehicleKindFilterChoiceBox.setConverter(new VehicleKindToStringConverter());

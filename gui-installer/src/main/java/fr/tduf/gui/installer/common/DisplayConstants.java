@@ -66,7 +66,8 @@ public class DisplayConstants {
     public static final String ITEM_VEHICLE_KIND_BIKE = "Bike";
     public static final String ITEM_SLOT_KIND_ALL = "All";
     public static final String ITEM_SLOT_KIND_GENUINE = "Genuine";
-    public static final String ITEM_SLOT_KIND_TDUCP = "TDUCP";
+    public static final String ITEM_SLOT_KIND_TDUCP = "TDUCP (all)";
+    public static final String ITEM_SLOT_KIND_TDUCP_NEW = "TDUCP (new)";
 
     private DisplayConstants() {}
 }
