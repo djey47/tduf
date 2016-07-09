@@ -49,6 +49,7 @@ public class VehicleSlotDataItem {
 
     public BooleanProperty moddedProperty() { return modded; }
 
+    // TODO typo
     public ObjectProperty<VehicleSlot> vehicleSlotPoperty() {
         return vehicleSlot;
     }
