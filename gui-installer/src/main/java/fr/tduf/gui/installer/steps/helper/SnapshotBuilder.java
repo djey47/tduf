@@ -2,6 +2,7 @@ package fr.tduf.gui.installer.steps.helper;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DatabaseConstants;
+import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
@@ -78,7 +79,7 @@ public class SnapshotBuilder {
 
     private List<DbPatchDto.DbChangeDto> generateCleaningOperationsTemplates() throws IOException {
         try {
-            return FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/gui-installer/templates/clean-slot.mini.json").getChanges();
+            return FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, FileConstants.RESOURCE_NAME_CLEAN_PATCH).getChanges();
         } catch (URISyntaxException use) {
             throw new IOException("Unable to generate cleaning operations", use);
         }
