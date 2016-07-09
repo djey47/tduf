@@ -7,7 +7,9 @@ import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.common.services.DatabaseFixer;
 import fr.tduf.gui.installer.common.DisplayConstants;
+import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
+import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.controllers.helper.DealerSlotUserInputHelper;
 import fr.tduf.gui.installer.controllers.helper.VehicleSlotUserInputHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
@@ -19,10 +21,13 @@ import fr.tduf.gui.installer.services.StepsCoordinator;
 import fr.tduf.gui.installer.steps.GenericStep;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -37,6 +42,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -460,7 +466,7 @@ public class MainStageController extends AbstractGuiController {
 
         VehicleSlot selectedSlot;
         try {
-            selectedSlot = VehicleSlotUserInputHelper.quickSelectVehicleSlot(context, getWindow());
+            selectedSlot = VehicleSlotUserInputHelper.quickSelectVehicleSlot(VehicleSlotsHelper.SlotKind.TDUCP_NEW, context, getWindow());
         } catch (Exception e) {
             StepException se = new StepException(GenericStep.StepType.SELECT_SLOTS, DisplayConstants.MESSAGE_OPERATION_ABORTED, e);
             handleServiceFailure(se, DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_NOT_RESET);
@@ -468,7 +474,7 @@ public class MainStageController extends AbstractGuiController {
         }
 
         try {
-            resetSlot(selectedSlot.getRef());
+            resetSlot(selectedSlot.getRef(), context.getTopicObjects());
         } catch (Exception e) {
             StepException se = new StepException(GenericStep.StepType.RESET_SLOT, DisplayConstants.MESSAGE_RESET_SLOT_KO, e);
             handleServiceFailure(se, DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_NOT_RESET);
@@ -478,9 +484,30 @@ public class MainStageController extends AbstractGuiController {
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_RESET_SLOT, selectedSlot.toString());
     }
 
-    private void resetSlot(String slotReference) {
+    private void resetSlot(String slotReference, List<DbDto> topicObjects) throws IOException, URISyntaxException, ReflectiveOperationException {
 
+        boolean carSlotFlag;
+        if (VehicleSlotsHelper.isTDUCPNewCarSlot(slotReference)) {
+            carSlotFlag = true;
+        } else if (VehicleSlotsHelper.isTDUCPNewBikeSlot(slotReference)) {
+            carSlotFlag = false;
+        } else {
+            throw new IllegalArgumentException("Not a TDUCP new slot: " + slotReference);
+        }
+
+        DbPatchDto cleanSlotPatch = FilesHelper.readObjectFromJsonResourceFile(
+                DbPatchDto.class,
+                FileConstants.RESOURCE_NAME_CLEAN_PATCH);
+        DbPatchDto resetSlotPatch = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class,
+                carSlotFlag ? FileConstants.RESOURCE_NAME_TDUCP_CAR_PATCH : FileConstants.RESOURCE_NAME_TDUCP_BIKE_PATCH);
+
+        PatchProperties patchProperties = new PatchProperties();
+
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, topicObjects);
+        patcher.applyWithProperties(cleanSlotPatch, patchProperties);
+        patcher.applyWithProperties(resetSlotPatch, patchProperties);
     }
+
 
     private void handleCoordinatorFailure() {
         if (stepsCoordinator.uninstallProperty().get()) {

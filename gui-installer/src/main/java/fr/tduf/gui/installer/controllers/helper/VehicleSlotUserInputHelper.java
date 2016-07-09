@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.controllers.helper;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.controllers.QuickVehicleSlotsStageController;
 import fr.tduf.gui.installer.controllers.VehicleSlotsStageController;
 import fr.tduf.gui.installer.domain.DatabaseContext;
@@ -51,16 +52,18 @@ public class VehicleSlotUserInputHelper {
 
     /**
      * Invokes slot dialog to select one to perform quick operation.
+     * @param slotKind      : kind of vehicle slots to be displayed
      * @param context       : information about loaded database
      * @param parentWindow  : container to host selection dialog
      * @return selected vehicle slot
      */
-    public static VehicleSlot quickSelectVehicleSlot(DatabaseContext context, Window parentWindow) throws Exception {
+    public static VehicleSlot quickSelectVehicleSlot(VehicleSlotsHelper.SlotKind slotKind, DatabaseContext context, Window parentWindow) throws Exception {
         requireNonNull(context, "Database context is required.");
 
         Log.info(THIS_CLASS_NAME, "->Quick selecting vehicle slot");
 
         QuickVehicleSlotsStageController slotsBrowserController = initQuickSlotsBrowserController(parentWindow);
+        slotsBrowserController.slotKindProperty().setValue(slotKind);
         VehicleSlotDataItem selectedItem = slotsBrowserController.initAndShowModalDialog(context.getMiner());
 
         Log.info(THIS_CLASS_NAME, "->Using vehicle slot: " + selectedItem);

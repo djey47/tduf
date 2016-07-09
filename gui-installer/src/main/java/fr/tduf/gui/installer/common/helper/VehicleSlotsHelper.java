@@ -229,6 +229,20 @@ public class VehicleSlotsHelper extends CommonHelper {
     }
 
     /**
+     * @return true if specified slot reference is for a TDUCP new car, false otherwise.
+     */
+    public static boolean isTDUCPNewCarSlot(String slotReference) {
+        return tducpCarSlotPattern.matcher(slotReference).matches();
+    }
+
+    /**
+     * @return true if specified slot reference is for a TDUCP new bike, false otherwise.
+     */
+    public static boolean isTDUCPNewBikeSlot(String slotReference) {
+        return tducpBikeSlotPattern.matcher(slotReference).matches();
+    }
+
+    /**
      * @return list of car physics entries following criteria
      */
     public List<VehicleSlot> getVehicleSlots(SlotKind slotKind, VehicleKind vehicleKind) {
