@@ -27,8 +27,7 @@ public class InstallerTestsHelper {
     public static DatabaseContext createDatabaseContext() throws IOException {
         String jsonDatabaseDirectory = InstallerTestsHelper.createTempDirectory();
 
-        Path jsonDatabasePath = Paths.get(thisClass.getResource("/db-json").getFile());
-        Files.walk(jsonDatabasePath, 1)
+        Files.walk(getJsonDatabasePath(), 1)
 
                 .filter((path) -> Files.isRegularFile(path))
 
@@ -48,7 +47,10 @@ public class InstallerTestsHelper {
     }
 
     public static List<DbDto> createDatabaseForReadOnly() {
-        Path jsonDatabasePath = Paths.get(thisClass.getResource("/db-json").getFile());
-        return DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabasePath.toString());
+        return DatabaseReadWriteHelper.readFullDatabaseFromJson(getJsonDatabasePath().toString());
+    }
+
+    private static Path getJsonDatabasePath() {
+        return Paths.get(thisClass.getResource("/db-json").getFile());
     }
 }
