@@ -474,7 +474,7 @@ public class MainStageController extends AbstractGuiController {
         }
 
         try {
-            resetSlot(selectedSlot.getRef(), context.getTopicObjects());
+            resetSlot(selectedSlot, context.getTopicObjects());
         } catch (Exception e) {
             StepException se = new StepException(GenericStep.StepType.RESET_SLOT, DisplayConstants.MESSAGE_RESET_SLOT_KO, e);
             handleServiceFailure(se, DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_NOT_RESET);
@@ -484,7 +484,9 @@ public class MainStageController extends AbstractGuiController {
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_RESET_SLOT, selectedSlot.toString());
     }
 
-    private void resetSlot(String slotReference, List<DbDto> topicObjects) throws IOException, URISyntaxException, ReflectiveOperationException {
+    private void resetSlot(VehicleSlot slot, List<DbDto> topicObjects) throws IOException, URISyntaxException, ReflectiveOperationException {
+
+        final String slotReference = slot.getRef();
 
         boolean carSlotFlag;
         if (VehicleSlotsHelper.isTDUCPNewCarSlot(slotReference)) {
@@ -502,6 +504,7 @@ public class MainStageController extends AbstractGuiController {
                 carSlotFlag ? FileConstants.RESOURCE_NAME_TDUCP_CAR_PATCH : FileConstants.RESOURCE_NAME_TDUCP_BIKE_PATCH);
 
         PatchProperties patchProperties = new PatchProperties();
+        patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
 
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, topicObjects);
         patcher.applyWithProperties(cleanSlotPatch, patchProperties);
