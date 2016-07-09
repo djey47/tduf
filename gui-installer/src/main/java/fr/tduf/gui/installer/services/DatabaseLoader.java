@@ -19,9 +19,18 @@ import java.util.List;
  * Background service to load TDU database from banks directory.
  */
 public class DatabaseLoader extends Service<DatabaseContext> {
+    /**
+     * Enables switching to a proper method on loading success
+     */
+    public enum Objective {
+        INSTALL,
+        UNINSTALL,
+        RESET_SLOT
+    }
+
     private StringProperty databaseLocation = new SimpleStringProperty();
     private ObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
-    private BooleanProperty uninstall = new SimpleBooleanProperty(false);
+    private ObjectProperty<Objective> objective = new SimpleObjectProperty<>(Objective.INSTALL);
 
     @Override
     protected Task<DatabaseContext> createTask() {
@@ -53,7 +62,7 @@ public class DatabaseLoader extends Service<DatabaseContext> {
         return bankSupport;
     }
 
-    public BooleanProperty uninstallProperty() {
-        return uninstall;
+    public ObjectProperty<Objective> objectiveProperty() {
+        return objective;
     }
 }

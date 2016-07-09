@@ -12,6 +12,7 @@ import fr.tduf.gui.installer.controllers.helper.DealerSlotUserInputHelper;
 import fr.tduf.gui.installer.controllers.helper.VehicleSlotUserInputHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.gui.installer.services.DatabaseLoader;
 import fr.tduf.gui.installer.services.StepsCoordinator;
@@ -117,14 +118,14 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleResetSlotMenuItemAction() throws StepException {
+    public void handleResetSlotMenuItemAction() throws Exception {
         Log.trace(THIS_CLASS_NAME, "->handleResetSlotMenuItemAction");
 
         if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
             return;
         }
 
-        resetSlot();
+        loadDatabaseForResetSlot();
     }
 
     @FXML
@@ -240,17 +241,30 @@ public class MainStageController extends AbstractGuiController {
         });
 
         databaseLoader.stateProperty().addListener((observable, oldValue, newState) -> {
+            DatabaseLoader.Objective objective = databaseLoader.objectiveProperty().get();
             if (SUCCEEDED == newState) {
-                if (databaseLoader.uninstallProperty().get()) {
-                    uninstall(databaseLoader.getValue());
-                } else {
-                    install(databaseLoader.getValue());
+                switch(objective) {
+                    case INSTALL:
+                        install(databaseLoader.getValue());
+                        break;
+                    case UNINSTALL:
+                        uninstall(databaseLoader.getValue());
+                        break;
+                    case RESET_SLOT:
+                        resetSlot(databaseLoader.getValue());
+                        break;
                 }
             } else if (FAILED == newState) {
-                if (databaseLoader.uninstallProperty().get()) {
-                    handleServiceFailure(databaseLoader.exceptionProperty().get(), DisplayConstants.TITLE_SUB_UNINSTALL, DisplayConstants.MESSAGE_DB_LOAD_KO);
-                } else {
-                    handleServiceFailure(databaseLoader.exceptionProperty().get(), DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_DB_LOAD_KO);
+                switch(objective) {
+                    case INSTALL:
+                        handleServiceFailure(databaseLoader.exceptionProperty().get(), DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_DB_LOAD_KO);
+                        break;
+                    case UNINSTALL:
+                        handleServiceFailure(databaseLoader.exceptionProperty().get(), DisplayConstants.TITLE_SUB_UNINSTALL, DisplayConstants.MESSAGE_DB_LOAD_KO);
+                        break;
+                    case RESET_SLOT:
+                        handleServiceFailure(databaseLoader.exceptionProperty().get(), DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_DB_LOAD_KO);
+                        break;
                 }
             }
         });
@@ -290,11 +304,6 @@ public class MainStageController extends AbstractGuiController {
 
         String magicMapFile = configuration.resolveMagicMapFile();
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE, DisplayConstants.MESSAGE_UPDATED_MAP, magicMapFile);
-    }
-
-    private void resetSlot() {
-        String slotReference = "1001" ;
-        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_RESET_SLOT, slotReference);
     }
 
     private void resetDatabaseCache() throws IOException, ReflectiveOperationException {
@@ -338,22 +347,32 @@ public class MainStageController extends AbstractGuiController {
         databaseFixer.restart();
     }
 
+    // TODO create single method with objective as param
     private void loadDatabaseForInstall() throws IOException, ReflectiveOperationException {
         if (runningServiceProperty.get()) {
             return;
         }
 
-        databaseLoader.uninstallProperty().setValue(false);
+        databaseLoader.objectiveProperty().setValue(DatabaseLoader.Objective.INSTALL);
 
         loadDatabase();
     }
-
     private void loadDatabaseForUninstall() throws IOException, ReflectiveOperationException {
         if (runningServiceProperty.get()) {
             return;
         }
 
-        databaseLoader.uninstallProperty().setValue(true);
+        databaseLoader.objectiveProperty().setValue(DatabaseLoader.Objective.UNINSTALL);
+
+        loadDatabase();
+    }
+
+    private void loadDatabaseForResetSlot() throws IOException, ReflectiveOperationException {
+        if (runningServiceProperty.get()) {
+            return;
+        }
+
+        databaseLoader.objectiveProperty().setValue(DatabaseLoader.Objective.RESET_SLOT);
 
         loadDatabase();
     }
@@ -434,6 +453,21 @@ public class MainStageController extends AbstractGuiController {
         stepsCoordinator.uninstallProperty().set(true);
 
         stepsCoordinator.restart();
+    }
+
+    private void resetSlot(DatabaseContext context) {
+        requireNonNull(context, "Database context is required. Please load database first.");
+
+        VehicleSlot selectedSlot;
+        try {
+            selectedSlot = VehicleSlotUserInputHelper.quickSelectVehicleSlot(context, getWindow());
+        } catch (Exception e) {
+            StepException se = new StepException(GenericStep.StepType.SELECT_SLOTS, DisplayConstants.MESSAGE_OPERATION_ABORTED, e);
+            handleServiceFailure(se, DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_NOT_RESET);
+            return;
+        }
+
+        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_RESET_SLOT, selectedSlot.toString());
     }
 
     private void handleCoordinatorFailure() {

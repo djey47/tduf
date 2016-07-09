@@ -26,6 +26,7 @@ public class DisplayConstants {
     public static final String MESSAGE_UNINSTALLED = "All uninstall tasks went succesfully!";
     public static final String MESSAGE_NOT_INSTALLED = "An issue occured while installing!";
     public static final String MESSAGE_NOT_UNINSTALLED = "An issue occured while uninstalling!";
+    public static final String MESSAGE_NOT_RESET = "An issue occured while resetting TDUCP slot!";
     public static final String MESSAGE_UPDATED_MAP = "Magic map was updated to take new files into account:";
     public static final String MESSAGE_DELETED_CACHE = "Database cache directory was deleted succesfully:";
     public static final String MESSAGE_RESET_SLOT = "New TDUCP slot was reverted succesfully:";
@@ -41,6 +42,7 @@ public class DisplayConstants {
     public static final String MESSAGE_STEP_KO = "Current step could not be performed";
     public static final String MESSAGE_PATCH_LOAD_KO = "Install patch could not be loaded";
     public static final String MESSAGE_INSTALL_ABORTED = "Install cannot continue";
+    public static final String MESSAGE_OPERATION_ABORTED = "Current operation cannot continue";
     public static final String MESSAGE_BACKUP_NOT_FOUND = "No backup found.\nUse advanced operations to restore a vehicle slot.";
 
     public static final String MESSAGE_FMT_ERROR = "%s\n%s\n[Step: %s]";
