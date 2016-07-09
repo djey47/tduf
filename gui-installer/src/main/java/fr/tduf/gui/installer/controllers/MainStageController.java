@@ -26,6 +26,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
+import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderConstants;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.*;
@@ -49,6 +50,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static fr.tduf.gui.installer.common.InstallerConstants.DIRECTORY_DATABASE;
@@ -481,9 +483,10 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_RESET_SLOT, selectedSlot.toString());
+        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_RESET_SLOT, selectedSlot.getRef());
     }
 
+    // TODO externalize to TDUCP Helper class
     private void resetSlot(VehicleSlot slot, List<DbDto> topicObjects) throws IOException, URISyntaxException, ReflectiveOperationException {
 
         final String slotReference = slot.getRef();
@@ -503,8 +506,47 @@ public class MainStageController extends AbstractGuiController {
         DbPatchDto resetSlotPatch = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class,
                 carSlotFlag ? FileConstants.RESOURCE_NAME_TDUCP_CAR_PATCH : FileConstants.RESOURCE_NAME_TDUCP_BIKE_PATCH);
 
+        // TODO use format constants (create TDUCP constants class)
+        String carIdentifier = Integer.toString(slot.getCarIdentifier());
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
+        patchProperties.setCarIdentifierIfNotExists(carIdentifier);
+        patchProperties.setResourceBankNameIfNotExists(carIdentifier + "567");
+        patchProperties.register(PlaceholderConstants.PLACEHOLDER_NAME_RESOURCE_MODEL, carIdentifier + "3407");
+        patchProperties.register(PlaceholderConstants.PLACEHOLDER_NAME_RESOURCE_VERSION, carIdentifier + "8427");
+        patchProperties.setBankNameIfNotExists("TDUCP_" + carIdentifier);
+        patchProperties.register(PlaceholderConstants.PLACEHOLDER_NAME_MODEL, "TDUCP Model " + carIdentifier);
+        patchProperties.register(PlaceholderConstants.PLACEHOLDER_NAME_VERSION, "Version " + carIdentifier );
+
+        IntStream.rangeClosed(0, 9)
+                .forEach(rimRank -> {
+                    patchProperties.setRimsSlotReferenceIfNotExists("0000" + carIdentifier + rimRank, rimRank);
+                    patchProperties.register(
+                            String.format(PlaceholderConstants.PLACEHOLDER_NAME_FMT_RESOURCE_RIM_NAME, rimRank),
+                            carIdentifier + rimRank + "562");
+                    patchProperties.setResourceFrontRimBankIfNotExists(carIdentifier + rimRank + "1512", rimRank);
+                    patchProperties.setResourceRearRimBankIfNotExists(carIdentifier + rimRank + "2512", rimRank);
+                    patchProperties.setRimNameIfNotExists("TDUCP " + carIdentifier + " - rim set " + rimRank, rimRank);
+                    patchProperties.setFrontRimBankNameIfNotExists("TDUCP_" + carIdentifier + "_F_0" + rimRank, rimRank);
+                    patchProperties.setRearRimBankNameIfNotExists("TDUCP_" + carIdentifier + "_R_0" + rimRank, rimRank);
+                });
+
+        IntStream.rangeClosed(0, 9)
+                .forEach(pjRank -> {
+                    patchProperties.setExteriorMainColorIdIfNotExists("54356127", pjRank);
+                    patchProperties.setExteriorSecondaryColorIdIfNotExists("53356127", pjRank);
+                    patchProperties.setCalipersColorIdIfNotExists("53356127", pjRank);
+                    patchProperties.setExteriorColorNameResourceIfNotExists(carIdentifier + pjRank + "457", pjRank);
+                    patchProperties.setExteriorColorNameIfNotExists("TDUCP_" + carIdentifier + " exterior color " + pjRank, pjRank);
+                });
+
+        IntStream.rangeClosed(0, 9)
+                .forEach(intRank -> {
+                    patchProperties.setInteriorReferenceIfNotExists(carIdentifier + intRank + "9636", intRank);
+                    patchProperties.setInteriorMainColorIdIfNotExists("53364643", intRank);
+                    patchProperties.setInteriorSecondaryColorIdIfNotExists("53364643", intRank);
+                    patchProperties.setInteriorMaterialIdIfNotExists("53364643", intRank);
+                });
 
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, topicObjects);
         patcher.applyWithProperties(cleanSlotPatch, patchProperties);

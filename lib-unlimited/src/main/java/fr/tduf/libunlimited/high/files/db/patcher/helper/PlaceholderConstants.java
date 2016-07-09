@@ -11,7 +11,11 @@ public class PlaceholderConstants {
     public static final String PLACEHOLDER_NAME_SLOT_REFERENCE = "SLOTREF";
     public static final String PLACEHOLDER_NAME_ID_CAR = "CARID";
     public static final String PLACEHOLDER_NAME_BANK = "BANKNAME";
+    public static final String PLACEHOLDER_NAME_MODEL = "MODELNAME";
+    public static final String PLACEHOLDER_NAME_VERSION = "VERSIONNAME";
     public static final String PLACEHOLDER_NAME_RESOURCE_BANK = "RES_BANKNAME";
+    public static final String PLACEHOLDER_NAME_RESOURCE_MODEL = "RES_MODELNAME";
+    public static final String PLACEHOLDER_NAME_RESOURCE_VERSION = "RES_VERSIONNAME";
     public static final String PLACEHOLDER_NAME_DEALER_REFERENCE = "DEALERREF";
     public static final String PLACEHOLDER_NAME_DEALER_SLOT = "DEALERSLOT";
     public static final String PLACEHOLDER_NAME_CAMERA = "CAMERA";
