@@ -475,6 +475,7 @@ public class DatabaseTool extends GenericTool {
 
         List<DbDto> allTopicObjects = loadDatabaseFromJsonFiles(sourceJsonDirectory);
 
+        // TODO use Linked Map to preserve sorting order
         final Map<DbPatchDto, PatchProperties> patchObjectsAndProps = Files.walk(Paths.get(sourcePatchesDirectory))
 
                 .filter((path) -> Files.isRegularFile(path))
