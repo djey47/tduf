@@ -3,7 +3,6 @@ package fr.tduf.gui.installer.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.stages.QuickVehicleSlotsStageDesigner;
-import fr.tduf.gui.installer.stages.VehicleSlotsStageDesigner;
 import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -43,8 +42,14 @@ public class QuickVehicleSlotsStageControllerTest {
 
     @Test
     public void display() throws Exception {
-        // GIVEN-WHEN
-        initQuickSlotsBrowserStageController(null).initAndShowModalDialog(BulkDatabaseMiner.load(databaseObjects));
+        // GIVEN
+        QuickVehicleSlotsStageController controller = initQuickSlotsBrowserStageController(null);
+
+        // WHEN
+        controller.initAndShowModalDialog(BulkDatabaseMiner.load(databaseObjects));
+
+        // THEN
+        System.out.println("Selected slot: " + controller.selectedSlotProperty().getValue());
     }
 
     private static QuickVehicleSlotsStageController initQuickSlotsBrowserStageController(Window mainWindow) throws IOException {

@@ -21,7 +21,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -48,13 +47,11 @@ public class QuickVehicleSlotsStageController extends AbstractGuiController {
 
     private ObservableList<VehicleSlotDataItem> slotsData = FXCollections.observableArrayList();
 
-    private Property<DbDto.Topic> currentTopicProperty;
-
     private Property<VehicleSlotDataItem> selectedSlotProperty;
 
-    private Property<VehicleSlotsHelper.SlotKind> slotKindProperty;
+    private Property<VehicleSlotsHelper.SlotKind> slotKindProperty = new SimpleObjectProperty<>();
 
-    private VehicleSlotDataItem returnedSlot;
+    private VehicleSlotDataItem currentSlot;
 
     @Override
     public void init() {
@@ -67,10 +64,8 @@ public class QuickVehicleSlotsStageController extends AbstractGuiController {
     private void handleSlotsTableMouseClick(MouseEvent mouseEvent) {
         Log.trace(THIS_CLASS_NAME, "->handleSlotsTableMouseClick");
 
-        if (MouseButton.PRIMARY == mouseEvent.getButton()) {
-            TableViewHelper.getMouseSelectedItem(mouseEvent, VehicleSlotDataItem.class)
-                    .ifPresent(selectedSlotProperty::setValue);
-        }
+        TableViewHelper.getMouseSelectedItem(mouseEvent, VehicleSlotDataItem.class)
+                .ifPresent(item -> currentSlot = item);
     }
 
     @FXML
@@ -78,6 +73,16 @@ public class QuickVehicleSlotsStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleSearchSlotButtonAction");
 
         askForReferenceAndSelectItem();
+    }
+
+    @FXML
+    private void handleResetButtonAction() {
+        Log.trace(THIS_CLASS_NAME, "->handleResetButtonAction");
+
+        if (currentSlot != null) {
+            selectedSlotProperty.setValue(currentSlot);
+            closeWindow();
+        }
     }
 
     /**
@@ -93,21 +98,18 @@ public class QuickVehicleSlotsStageController extends AbstractGuiController {
 
         selectedSlotProperty.setValue(null);
 
-        currentTopicProperty.setValue(CAR_PHYSICS_DATA);
-
         updateSlotsStageData(VehicleSlotsHelper.SlotKind.TDUCP, VehicleSlotsHelper.VehicleKind.DRIVABLE);
 
         showModalWindow();
 
-        if (returnedSlot == null) {
+        if (selectedSlotProperty.getValue() == null) {
             throw new AbortedInteractiveStepException();
         }
 
-        return returnedSlot;
+        return selectedSlotProperty.getValue();
     }
 
     private void initHeaderPane() {
-        currentTopicProperty = new SimpleObjectProperty<>();
         selectedSlotProperty = new SimpleObjectProperty<>();
 
         vehicleKindFilterChoiceBox.setConverter(new VehicleKindToStringConverter());
@@ -155,7 +157,11 @@ public class QuickVehicleSlotsStageController extends AbstractGuiController {
                         slotsTableView));
     }
 
-    public Property<VehicleSlotsHelper.SlotKind> slotKindPropertyProperty() {
+    public Property<VehicleSlotsHelper.SlotKind> slotKindProperty() {
         return slotKindProperty;
+    }
+
+    public Property<VehicleSlotDataItem> selectedSlotProperty() {
+        return selectedSlotProperty;
     }
 }

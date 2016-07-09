@@ -19,6 +19,8 @@
                <items>
                   <Label alignment="TOP_CENTER" text="Filter by vehicle kind:" />
                   <ChoiceBox fx:id="vehicleKindFilterChoiceBox" prefWidth="150.0" />
+                  <Separator orientation="VERTICAL" />
+                  <Button mnemonicParsing="false" onAction="#handleResetButtonAction" text="Reset" />
                </items>
             </ToolBar>
             <AnchorPane VBox.vgrow="ALWAYS">
