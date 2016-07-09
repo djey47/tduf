@@ -100,7 +100,8 @@ public abstract class GenericStep {
 
         if (StepType.LOAD_DATABASE == stepType
                 || StepType.LOAD_PATCH == stepType
-                || StepType.SELECT_SLOTS == stepType) {
+                || StepType.SELECT_SLOTS == stepType
+                || StepType.RESET_SLOT == stepType) {
             throw new IllegalArgumentException("Step type requires interactive processing and as such can't be dealt with orchestrator: " + stepType);
         }
 
