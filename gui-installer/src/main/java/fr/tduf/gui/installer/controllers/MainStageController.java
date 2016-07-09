@@ -251,7 +251,7 @@ public class MainStageController extends AbstractGuiController {
                         uninstall(databaseLoader.getValue());
                         break;
                     case RESET_SLOT:
-                        resetSlot(databaseLoader.getValue());
+                        selectAndResetSlot(databaseLoader.getValue());
                         break;
                 }
             } else if (FAILED == newState) {
@@ -455,7 +455,7 @@ public class MainStageController extends AbstractGuiController {
         stepsCoordinator.restart();
     }
 
-    private void resetSlot(DatabaseContext context) {
+    private void selectAndResetSlot(DatabaseContext context) {
         requireNonNull(context, "Database context is required. Please load database first.");
 
         VehicleSlot selectedSlot;
@@ -467,7 +467,19 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
+        try {
+            resetSlot(selectedSlot.getRef());
+        } catch (Exception e) {
+            StepException se = new StepException(GenericStep.StepType.RESET_SLOT, DisplayConstants.MESSAGE_RESET_SLOT_KO, e);
+            handleServiceFailure(se, DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_NOT_RESET);
+            return;
+        }
+
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_RESET_SLOT, selectedSlot.toString());
+    }
+
+    private void resetSlot(String slotReference) {
+
     }
 
     private void handleCoordinatorFailure() {

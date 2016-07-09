@@ -23,6 +23,7 @@ public abstract class GenericStep {
         LOAD_DATABASE,
         LOAD_PATCH,
         SELECT_SLOTS,
+        RESET_SLOT,
         INIT_BACKUP(new InitBackupStep()),
         RETRIEVE_BACKUP(new RetrieveBackupStep()),
         BACKUP_DATABASE(new BackupDatabaseStep()),
