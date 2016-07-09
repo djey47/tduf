@@ -57,7 +57,6 @@ public class VehicleSlotUserInputHelper {
      */
     public static VehicleSlot quickSelectVehicleSlot(DatabaseContext context, Window parentWindow) throws Exception {
         requireNonNull(context, "Database context is required.");
-        requireNonNull(context.getPatchProperties(), "Patch properties are required.");
 
         Log.info(THIS_CLASS_NAME, "->Quick selecting vehicle slot");
 
