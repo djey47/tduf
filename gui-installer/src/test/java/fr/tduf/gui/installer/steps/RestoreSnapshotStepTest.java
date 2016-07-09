@@ -29,7 +29,7 @@ public class RestoreSnapshotStepTest {
         DbPatchDto snapshotObject = new ObjectMapper().readValue(THIS_CLASS.getResource("/snapshots/SNAPSHOT-simple.mini.json"), DbPatchDto.class);
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.register("RESREF", RESREF);
-        final DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        final DatabaseContext databaseContext = InstallerTestsHelper.createDatabaseContext();
         databaseContext.setPatch(snapshotObject, patchProperties);
         final GenericStep genericStep = GenericStep.starterStep(installerConfiguration, databaseContext)
                 .nextStep(GenericStep.StepType.RESTORE_SNAPSHOT);

@@ -57,7 +57,7 @@ public class RevertCameraStepTest {
                 .withTestDriveUnlimitedDirectory("./")
                 .overridingCameraSupport(camGatewayMock)
                 .build();
-        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        DatabaseContext databaseContext = InstallerTestsHelper.createDatabaseContext();
         patchProperties.register("CAMERA.BUMPER", "240|22");
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
         GenericStep genericStep = GenericStep.starterStep(installerConfiguration, databaseContext)
@@ -76,7 +76,7 @@ public class RevertCameraStepTest {
                 .withTestDriveUnlimitedDirectory("./")
                 .overridingCameraSupport(camGatewayMock)
                 .build();
-        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        DatabaseContext databaseContext = InstallerTestsHelper.createDatabaseContext();
         patchProperties.setVehicleSlotReferenceIfNotExists("606298799");
         patchProperties.register("CAMERA.BUMPER", "240|22");
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);

@@ -24,7 +24,7 @@ public class InstallerTestsHelper {
         return fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForInstaller();
     }
 
-    public static DatabaseContext createJsonDatabase() throws IOException {
+    public static DatabaseContext createDatabaseContext() throws IOException {
         String jsonDatabaseDirectory = InstallerTestsHelper.createTempDirectory();
 
         Path jsonDatabasePath = Paths.get(thisClass.getResource("/db-json").getFile());
@@ -45,5 +45,10 @@ public class InstallerTestsHelper {
         List<DbDto> topicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseDirectory);
 
         return new DatabaseContext(topicObjects, jsonDatabaseDirectory);
+    }
+
+    public static List<DbDto> createDatabaseForReadOnly() {
+        Path jsonDatabasePath = Paths.get(thisClass.getResource("/db-json").getFile());
+        return DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabasePath.toString());
     }
 }

@@ -2,11 +2,11 @@ package fr.tduf.gui.installer.controllers;
 
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.stages.DealerSlotsStageDesigner;
 import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.junit.Before;
@@ -15,8 +15,6 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -24,8 +22,6 @@ import java.util.List;
  */
 @Ignore
 public class DealerSlotsStageControllerTest {
-    private static final Class<VehicleSlotsStageControllerTest> thisClass = VehicleSlotsStageControllerTest.class;
-
     @Rule
     public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
 
@@ -35,8 +31,7 @@ public class DealerSlotsStageControllerTest {
     public void setUp() {
         Log.set(Log.LEVEL_TRACE);
 
-        Path jsonDatabasePath = Paths.get(thisClass.getResource("/db-json").getFile());
-        databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabasePath.toString());
+        databaseObjects = InstallerTestsHelper.createDatabaseForReadOnly();
     }
 
     @Test

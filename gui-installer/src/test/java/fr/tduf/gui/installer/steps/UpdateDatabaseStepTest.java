@@ -63,7 +63,7 @@ public class UpdateDatabaseStepTest {
         patchProperties.register("RIMDIAM.RR.1", "0");
         patchProperties.register("RIMNAME.1", "");
 
-        databaseContext = InstallerTestsHelper.createJsonDatabase();
+        databaseContext = InstallerTestsHelper.createDatabaseContext();
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
         databaseContext.getUserSelection().selectVehicleSlot(createVehicleSlot());
 

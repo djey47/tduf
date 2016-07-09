@@ -28,7 +28,7 @@ public class SnapshotBuilderTest {
         patchProperties.setVehicleSlotReferenceIfNotExists(SLOTREF);
         patchProperties.setDealerReferenceIfNotExists(DEALERREF);
         patchProperties.setDealerSlotIfNotExists(DEALERSLOT);
-        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        DatabaseContext databaseContext = InstallerTestsHelper.createDatabaseContext();
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
         final SnapshotBuilder snapshotBuilder = new SnapshotBuilder(databaseContext);
         String backupDirectory = FilesHelper.createTempDirectoryForInstaller();

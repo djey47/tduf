@@ -52,7 +52,7 @@ public class CopyFilesStepTest {
 
         InstallerConfiguration configuration = createConfigurationForCarSingleRimSet();
 
-        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        DatabaseContext databaseContext = InstallerTestsHelper.createDatabaseContext();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("606298799"); // AC427 (car)
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
@@ -113,7 +113,7 @@ public class CopyFilesStepTest {
 
         InstallerConfiguration configuration = createConfigurationForCarSingleRimSet();
 
-        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        DatabaseContext databaseContext = InstallerTestsHelper.createDatabaseContext();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("606298799"); // AC427 (car)
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
@@ -135,7 +135,7 @@ public class CopyFilesStepTest {
         System.out.println("Testing TDU directory: " + tempDirectory);
 
         InstallerConfiguration configuration = createConfigurationForBike();
-        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        DatabaseContext databaseContext = InstallerTestsHelper.createDatabaseContext();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("1208897332"); // Triumph Daytona (bike)
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
@@ -164,7 +164,7 @@ public class CopyFilesStepTest {
         System.out.println("Testing TDU directory: " + tempDirectory);
 
         InstallerConfiguration configuration = createConfigurationForBike();
-        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        DatabaseContext databaseContext = InstallerTestsHelper.createDatabaseContext();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("1208897332"); // Triumph Daytona (bike)
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
@@ -198,7 +198,7 @@ public class CopyFilesStepTest {
         System.out.println("Testing TDU directory: " + tempDirectory);
 
         InstallerConfiguration configuration = createConfigurationForBike();
-        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        DatabaseContext databaseContext = InstallerTestsHelper.createDatabaseContext();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("606298799"); // AC427 (car)
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
@@ -220,7 +220,7 @@ public class CopyFilesStepTest {
         System.out.println("Testing TDU directory: " + tempDirectory);
 
         InstallerConfiguration configuration = createConfigurationForCarTwoRimSets();
-        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        DatabaseContext databaseContext = InstallerTestsHelper.createDatabaseContext();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("699437593");
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
@@ -249,7 +249,7 @@ public class CopyFilesStepTest {
         System.out.println("Testing TDU directory: " + tempDirectory);
 
         InstallerConfiguration configuration = createConfigurationForCarSingleRimSet();
-        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        DatabaseContext databaseContext = InstallerTestsHelper.createDatabaseContext();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("1208897332"); // Triumph Daytona (bike)
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
@@ -278,7 +278,7 @@ public class CopyFilesStepTest {
         System.out.println("Testing TDU directory: " + tempDirectory);
 
         InstallerConfiguration configuration = createConfigurationForCarSingleRimSet();
-        DatabaseContext databaseContext = InstallerTestsHelper.createJsonDatabase();
+        DatabaseContext databaseContext = InstallerTestsHelper.createDatabaseContext();
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists("1208897332"); // Triumph Daytona (bike)
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
