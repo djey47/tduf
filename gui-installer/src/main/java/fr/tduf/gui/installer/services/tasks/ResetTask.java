@@ -7,9 +7,19 @@ import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
 import javafx.beans.property.ObjectProperty;
 
+import static fr.tduf.gui.installer.steps.GenericStep.StepType.RESTORE_SLOT;
+import static fr.tduf.gui.installer.steps.GenericStep.StepType.REVERT_CAMERA;
+import static fr.tduf.gui.installer.steps.GenericStep.StepType.SAVE_DATABASE;
+
+/**
+ * Orchestrates all steps for slot resetting and handles errors
+ */
 public class ResetTask extends InstallerTask {
     private static final String THIS_CLASS_NAME = ResetTask.class.getSimpleName();
 
+    /**
+     * Main constructor
+     */
     public ResetTask(ObjectProperty<InstallerConfiguration> configuration, ObjectProperty<DatabaseContext> context) {
         super(configuration, context);
     }
@@ -20,8 +30,11 @@ public class ResetTask extends InstallerTask {
 
         updateMessage(DisplayConstants.STATUS_RESET_IN_PROGRESS);
 
-        // TODO
-        callStepChain();
+        // TODO add all steps
+        callStepChain(
+                REVERT_CAMERA,
+                RESTORE_SLOT,
+                SAVE_DATABASE);
 
         updateMessage(DisplayConstants.STATUS_RESET_DONE);
 
