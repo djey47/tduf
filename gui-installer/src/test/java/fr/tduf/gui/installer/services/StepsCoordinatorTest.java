@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.services;
 
 import fr.tduf.gui.installer.services.tasks.InstallTask;
+import fr.tduf.gui.installer.services.tasks.ResetTask;
 import fr.tduf.gui.installer.services.tasks.TaskType;
 import fr.tduf.gui.installer.services.tasks.UninstallTask;
 import javafx.concurrent.Task;
@@ -34,5 +35,17 @@ public class StepsCoordinatorTest {
 
         // THEN
         assertThat(actualTask).isOfAnyClassIn(UninstallTask.class);
+    }
+
+    @Test
+    public void createTask_whenResetSlot_shouldReturnResetTask() {
+        // GIVEN
+        coordinator.taskTypeProperty().setValue(TaskType.RESET_SLOT);
+
+        // WHEN
+        final Task<Void> actualTask = coordinator.createTask();
+
+        // THEN
+        assertThat(actualTask).isOfAnyClassIn(ResetTask.class);
     }
 }
