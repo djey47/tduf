@@ -13,6 +13,8 @@ import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderConstants;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static java.util.Objects.requireNonNull;
@@ -97,10 +99,11 @@ public class RestoreSlotStep extends GenericStep {
             databasePatcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseContext().getTopicObjects());
         }
 
-        // TODO merge change objects and apply single patch object
         // TODO create change objects to remove slot from dealers
-        databasePatcher.applyWithProperties(cleanSlotPatch, patchProperties);
-        databasePatcher.applyWithProperties(resetSlotPatch, patchProperties);
+        DbPatchDto restorePatchObject = DbPatchDto.builder().build();
+        restorePatchObject.getChanges().addAll(cleanSlotPatch.getChanges());
+        restorePatchObject.getChanges().addAll(resetSlotPatch.getChanges());
+        databasePatcher.applyWithProperties(restorePatchObject, patchProperties);
     }
 
     // For testing use

@@ -21,7 +21,6 @@ import java.net.URISyntaxException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 
@@ -85,7 +84,7 @@ public class RestoreSlotStepTest {
         step.perform();
 
         // THEN
-        verify(databasePatcher, times(2)).applyWithProperties(any(DbPatchDto.class), patchPropertiesCaptor.capture());
+        verify(databasePatcher).applyWithProperties(any(DbPatchDto.class), patchPropertiesCaptor.capture());
         final PatchProperties actualProperties = patchPropertiesCaptor.getValue();
         assertThat(actualProperties.getVehicleSlotReference()).contains("300000000");
     }
