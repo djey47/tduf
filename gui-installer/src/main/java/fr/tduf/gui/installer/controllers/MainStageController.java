@@ -7,7 +7,6 @@ import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.common.services.DatabaseFixer;
 import fr.tduf.gui.installer.common.DisplayConstants;
-import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.controllers.helper.DealerSlotUserInputHelper;
@@ -22,14 +21,10 @@ import fr.tduf.gui.installer.services.tasks.TaskType;
 import fr.tduf.gui.installer.steps.GenericStep;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
-import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
-import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderConstants;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -51,7 +46,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static fr.tduf.gui.installer.common.InstallerConstants.DIRECTORY_DATABASE;
@@ -70,6 +64,7 @@ public class MainStageController extends AbstractGuiController {
 
     private SimpleStringProperty tduDirectoryProperty;
 
+    // TODO rename to more generic term
     private LongProperty installProgressProperty = new SimpleLongProperty();
     private BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
     private DatabaseLoader databaseLoader = new DatabaseLoader();
@@ -471,6 +466,7 @@ public class MainStageController extends AbstractGuiController {
         VehicleSlot selectedSlot;
         try {
             selectedSlot = VehicleSlotUserInputHelper.quickSelectVehicleSlot(VehicleSlotsHelper.SlotKind.TDUCP_NEW, context, getWindow());
+            context.getUserSelection().selectVehicleSlot(selectedSlot);
         } catch (Exception e) {
             StepException se = new StepException(GenericStep.StepType.SELECT_SLOTS, DisplayConstants.MESSAGE_OPERATION_ABORTED, e);
             handleServiceFailure(se, DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_NOT_RESET);
@@ -478,7 +474,7 @@ public class MainStageController extends AbstractGuiController {
         }
 
         try {
-            resetSlot(selectedSlot, context.getTopicObjects());
+            resetSlot(context);
         } catch (Exception e) {
             StepException se = new StepException(GenericStep.StepType.RESTORE_SLOT, DisplayConstants.MESSAGE_RESET_SLOT_KO, e);
             handleServiceFailure(se, DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_NOT_RESET);
@@ -488,73 +484,25 @@ public class MainStageController extends AbstractGuiController {
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_RESET_SLOT, selectedSlot.getRef());
     }
 
-    // TODO externalize to TDUCP Helper class
-    private void resetSlot(VehicleSlot slot, List<DbDto> topicObjects) throws IOException, URISyntaxException, ReflectiveOperationException {
+    private void resetSlot(DatabaseContext context) throws IOException, URISyntaxException, ReflectiveOperationException {
+        // Do not check for service here, as loader may still be in running state.
+        requireNonNull(context, "Database context is required. Please load database first.");
 
-        final String slotReference = slot.getRef();
+        installProgressProperty.setValue(-1);
 
-        boolean carSlotFlag;
-        if (VehicleSlotsHelper.isTDUCPNewCarSlot(slotReference)) {
-            carSlotFlag = true;
-        } else if (VehicleSlotsHelper.isTDUCPNewBikeSlot(slotReference)) {
-            carSlotFlag = false;
-        } else {
-            throw new IllegalArgumentException("Not a TDUCP new slot: " + slotReference);
-        }
+        InstallerConfiguration configuration = InstallerConfiguration.builder()
+                .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
+                .build();
 
-        DbPatchDto cleanSlotPatch = FilesHelper.readObjectFromJsonResourceFile(
-                DbPatchDto.class,
-                FileConstants.RESOURCE_NAME_CLEAN_PATCH);
-        DbPatchDto resetSlotPatch = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class,
-                carSlotFlag ? FileConstants.RESOURCE_NAME_TDUCP_CAR_PATCH : FileConstants.RESOURCE_NAME_TDUCP_BIKE_PATCH);
+        statusLabel.textProperty().bind(stepsCoordinator.messageProperty());
+        installProgressProperty.bind(stepsCoordinator.progressProperty());
 
-        // TODO use format constants (create TDUCP constants class)
-        String carIdentifier = Integer.toString(slot.getCarIdentifier());
-        PatchProperties patchProperties = new PatchProperties();
-        patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
-        patchProperties.setCarIdentifierIfNotExists(carIdentifier);
-        patchProperties.setResourceBankNameIfNotExists(carIdentifier + "567");
-        patchProperties.register(PlaceholderConstants.PLACEHOLDER_NAME_RESOURCE_MODEL, carIdentifier + "3407");
-        patchProperties.register(PlaceholderConstants.PLACEHOLDER_NAME_RESOURCE_VERSION, carIdentifier + "8427");
-        patchProperties.setBankNameIfNotExists("TDUCP_" + carIdentifier);
-        patchProperties.register(PlaceholderConstants.PLACEHOLDER_NAME_MODEL, "TDUCP Model " + carIdentifier);
-        patchProperties.register(PlaceholderConstants.PLACEHOLDER_NAME_VERSION, "Version " + carIdentifier );
+        stepsCoordinator.configurationProperty().setValue(configuration);
+        stepsCoordinator.contextProperty().setValue(context);
+        stepsCoordinator.taskTypeProperty().setValue(TaskType.RESET_SLOT);
 
-        IntStream.rangeClosed(0, 9)
-                .forEach(rimRank -> {
-                    patchProperties.setRimsSlotReferenceIfNotExists("0000" + carIdentifier + rimRank, rimRank);
-                    patchProperties.register(
-                            String.format(PlaceholderConstants.PLACEHOLDER_NAME_FMT_RESOURCE_RIM_NAME, rimRank),
-                            carIdentifier + rimRank + "562");
-                    patchProperties.setResourceFrontRimBankIfNotExists(carIdentifier + rimRank + "1512", rimRank);
-                    patchProperties.setResourceRearRimBankIfNotExists(carIdentifier + rimRank + "2512", rimRank);
-                    patchProperties.setRimNameIfNotExists("TDUCP " + carIdentifier + " - rim set " + rimRank, rimRank);
-                    patchProperties.setFrontRimBankNameIfNotExists("TDUCP_" + carIdentifier + "_F_0" + rimRank, rimRank);
-                    patchProperties.setRearRimBankNameIfNotExists("TDUCP_" + carIdentifier + "_R_0" + rimRank, rimRank);
-                });
-
-        IntStream.rangeClosed(0, 9)
-                .forEach(pjRank -> {
-                    patchProperties.setExteriorMainColorIdIfNotExists("54356127", pjRank);
-                    patchProperties.setExteriorSecondaryColorIdIfNotExists("53356127", pjRank);
-                    patchProperties.setCalipersColorIdIfNotExists("53356127", pjRank);
-                    patchProperties.setExteriorColorNameResourceIfNotExists(carIdentifier + pjRank + "457", pjRank);
-                    patchProperties.setExteriorColorNameIfNotExists("TDUCP_" + carIdentifier + " exterior color " + pjRank, pjRank);
-                });
-
-        IntStream.rangeClosed(0, 9)
-                .forEach(intRank -> {
-                    patchProperties.setInteriorReferenceIfNotExists(carIdentifier + intRank + "9636", intRank);
-                    patchProperties.setInteriorMainColorIdIfNotExists("53364643", intRank);
-                    patchProperties.setInteriorSecondaryColorIdIfNotExists("53364643", intRank);
-                    patchProperties.setInteriorMaterialIdIfNotExists("53364643", intRank);
-                });
-
-        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, topicObjects);
-        patcher.applyWithProperties(cleanSlotPatch, patchProperties);
-        patcher.applyWithProperties(resetSlotPatch, patchProperties);
+        stepsCoordinator.restart();
     }
-
 
     private void handleCoordinatorFailure() {
         if (TaskType.UNINSTALL == stepsCoordinator.taskTypeProperty().getValue()) {
@@ -562,6 +510,7 @@ public class MainStageController extends AbstractGuiController {
         } else if (TaskType.INSTALL == stepsCoordinator.taskTypeProperty().getValue()) {
             handleServiceFailure(stepsCoordinator.exceptionProperty().get(), DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED);
         }
+        // TODO reset case
     }
 
     private void handleCoordinatorSuccess() {
@@ -570,6 +519,7 @@ public class MainStageController extends AbstractGuiController {
         } else if (TaskType.INSTALL == stepsCoordinator.taskTypeProperty().getValue()) {
             CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "");
         }
+        // TODO reset case
     }
 
     private static void loadCurrentPatch(InstallerConfiguration configuration, DatabaseContext context) throws IOException {
