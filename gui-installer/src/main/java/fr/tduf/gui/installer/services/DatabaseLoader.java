@@ -8,7 +8,10 @@ import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
@@ -19,6 +22,7 @@ import java.util.List;
  * Background service to load TDU database from banks directory.
  */
 public class DatabaseLoader extends Service<DatabaseContext> {
+    // TODO use TaskType enum
     /**
      * Enables switching to a proper method on loading success
      */

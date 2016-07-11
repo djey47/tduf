@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.services;
 
 import fr.tduf.gui.installer.services.tasks.InstallTask;
+import fr.tduf.gui.installer.services.tasks.TaskType;
 import fr.tduf.gui.installer.services.tasks.UninstallTask;
 import javafx.concurrent.Task;
 import org.junit.Test;
@@ -14,7 +15,7 @@ public class StepsCoordinatorTest {
     @Test
     public void createTask_whenInstall_shouldReturnInstallTask() {
         // GIVEN
-        coordinator.uninstallProperty().set(false);
+        coordinator.taskTypeProperty().setValue(TaskType.INSTALL);
 
         // WHEN
         final Task<Void> actualTask = coordinator.createTask();
@@ -26,7 +27,7 @@ public class StepsCoordinatorTest {
     @Test
     public void createTask_whenUninstall_shouldReturnUninstallTask() {
         // GIVEN
-        coordinator.uninstallProperty().set(true);
+        coordinator.taskTypeProperty().setValue(TaskType.UNINSTALL);
 
         // WHEN
         final Task<Void> actualTask = coordinator.createTask();

@@ -18,6 +18,7 @@ import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.gui.installer.services.DatabaseLoader;
 import fr.tduf.gui.installer.services.StepsCoordinator;
+import fr.tduf.gui.installer.services.tasks.TaskType;
 import fr.tduf.gui.installer.steps.GenericStep;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
@@ -114,6 +115,7 @@ public class MainStageController extends AbstractGuiController {
         initActionToolbar();
     }
 
+    // TODO change to private visibility
     @FXML
     public void handleUpdateMagicMapMenuItemAction() throws StepException {
         Log.trace(THIS_CLASS_NAME, "->handleUpdateMagicMapMenuItemAction");
@@ -437,7 +439,7 @@ public class MainStageController extends AbstractGuiController {
 
         stepsCoordinator.configurationProperty().setValue(configuration);
         stepsCoordinator.contextProperty().setValue(context);
-        stepsCoordinator.uninstallProperty().set(false);
+        stepsCoordinator.taskTypeProperty().setValue(TaskType.INSTALL);
 
         stepsCoordinator.restart();
     }
@@ -458,7 +460,7 @@ public class MainStageController extends AbstractGuiController {
 
         stepsCoordinator.configurationProperty().setValue(configuration);
         stepsCoordinator.contextProperty().setValue(context);
-        stepsCoordinator.uninstallProperty().set(true);
+        stepsCoordinator.taskTypeProperty().setValue(TaskType.UNINSTALL);
 
         stepsCoordinator.restart();
     }
@@ -555,17 +557,17 @@ public class MainStageController extends AbstractGuiController {
 
 
     private void handleCoordinatorFailure() {
-        if (stepsCoordinator.uninstallProperty().get()) {
+        if (TaskType.UNINSTALL == stepsCoordinator.taskTypeProperty().getValue()) {
             handleServiceFailure(stepsCoordinator.exceptionProperty().get(), DisplayConstants.TITLE_SUB_UNINSTALL, DisplayConstants.MESSAGE_NOT_UNINSTALLED);
-        } else {
+        } else if (TaskType.INSTALL == stepsCoordinator.taskTypeProperty().getValue()) {
             handleServiceFailure(stepsCoordinator.exceptionProperty().get(), DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED);
         }
     }
 
     private void handleCoordinatorSuccess() {
-        if (stepsCoordinator.uninstallProperty().get()) {
+        if (TaskType.UNINSTALL == stepsCoordinator.taskTypeProperty().getValue()) {
             CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_UNINSTALL, DisplayConstants.MESSAGE_UNINSTALLED, "");
-        } else {
+        } else if (TaskType.INSTALL == stepsCoordinator.taskTypeProperty().getValue()) {
             CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "");
         }
     }
