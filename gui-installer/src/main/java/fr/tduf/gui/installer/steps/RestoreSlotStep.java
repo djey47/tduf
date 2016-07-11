@@ -97,6 +97,8 @@ public class RestoreSlotStep extends GenericStep {
             databasePatcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseContext().getTopicObjects());
         }
 
+        // TODO merge change objects and apply single patch object
+        // TODO create change objects to remove slot from dealers
         databasePatcher.applyWithProperties(cleanSlotPatch, patchProperties);
         databasePatcher.applyWithProperties(resetSlotPatch, patchProperties);
     }
