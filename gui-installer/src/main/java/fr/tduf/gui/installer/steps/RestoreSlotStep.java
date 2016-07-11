@@ -23,11 +23,12 @@ import static java.util.Objects.requireNonNull;
 public class RestoreSlotStep extends GenericStep {
     private static final String THIS_CLASS_NAME = RestoreSlotStep.class.getSimpleName();
 
+    private DatabasePatcher databasePatcher;
+
+    // TODO extract methods
     @Override
     protected void perform() throws IOException, ReflectiveOperationException, URISyntaxException {
         requireNonNull(getDatabaseContext(), "Database context is required.");
-        requireNonNull(getDatabaseContext().getPatchObject(), "Snapshot is required.");
-        requireNonNull(getDatabaseContext().getPatchProperties(), "Effective patch properties are required.");
         requireNonNull(getDatabaseContext().getUserSelection(), "User selection is required.");
 
         final VehicleSlot slot = getDatabaseContext().getUserSelection().getVehicleSlot()
@@ -92,8 +93,16 @@ public class RestoreSlotStep extends GenericStep {
                 });
 
         Log.info(THIS_CLASS_NAME, "->Restoring TDUCP slot...");
-        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseContext().getTopicObjects());
-        patcher.applyWithProperties(cleanSlotPatch, patchProperties);
-        patcher.applyWithProperties(resetSlotPatch, patchProperties);
+        if(databasePatcher == null) {
+            databasePatcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseContext().getTopicObjects());
+        }
+
+        databasePatcher.applyWithProperties(cleanSlotPatch, patchProperties);
+        databasePatcher.applyWithProperties(resetSlotPatch, patchProperties);
+    }
+
+    // For testing use
+    void setPatcherComponent(DatabasePatcher patcher) {
+        databasePatcher = patcher;
     }
 }
