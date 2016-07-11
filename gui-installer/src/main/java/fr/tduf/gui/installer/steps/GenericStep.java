@@ -23,7 +23,6 @@ public abstract class GenericStep {
         LOAD_DATABASE,
         LOAD_PATCH,
         SELECT_SLOTS,
-        RESET_SLOT,
         INIT_BACKUP(new InitBackupStep()),
         RETRIEVE_BACKUP(new RetrieveBackupStep()),
         BACKUP_DATABASE(new BackupDatabaseStep()),
@@ -31,6 +30,7 @@ public abstract class GenericStep {
         SAVE_DATABASE(new SaveDatabaseStep()),
         RESTORE_DATABASE(new RestoreDatabaseStep()),
         RESTORE_SNAPSHOT(new RestoreSnapshotStep()),
+        RESTORE_SLOT( new RestoreSlotStep()),
         ADJUST_CAMERA(new AdjustCameraStep()),
         REVERT_CAMERA(new RevertCameraStep()),
         COPY_FILES(new CopyFilesStep()),
@@ -101,7 +101,7 @@ public abstract class GenericStep {
         if (StepType.LOAD_DATABASE == stepType
                 || StepType.LOAD_PATCH == stepType
                 || StepType.SELECT_SLOTS == stepType
-                || StepType.RESET_SLOT == stepType) {
+                || StepType.RESTORE_SLOT == stepType) {
             throw new IllegalArgumentException("Step type requires interactive processing and as such can't be dealt with orchestrator: " + stepType);
         }
 

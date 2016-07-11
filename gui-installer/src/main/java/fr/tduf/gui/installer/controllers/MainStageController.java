@@ -480,7 +480,7 @@ public class MainStageController extends AbstractGuiController {
         try {
             resetSlot(selectedSlot, context.getTopicObjects());
         } catch (Exception e) {
-            StepException se = new StepException(GenericStep.StepType.RESET_SLOT, DisplayConstants.MESSAGE_RESET_SLOT_KO, e);
+            StepException se = new StepException(GenericStep.StepType.RESTORE_SLOT, DisplayConstants.MESSAGE_RESET_SLOT_KO, e);
             handleServiceFailure(se, DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_NOT_RESET);
             return;
         }
