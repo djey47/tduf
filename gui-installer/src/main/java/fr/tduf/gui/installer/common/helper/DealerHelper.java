@@ -11,14 +11,17 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 import static fr.tduf.gui.installer.common.DatabaseConstants.*;
 import static fr.tduf.gui.installer.common.DisplayConstants.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
 import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 /**
  * Component to get advanced information on vehicle dealers.
@@ -68,7 +71,7 @@ public class DealerHelper extends CommonHelper {
     }
 
     /**
-     * @return all dealers mathcing dealerKind criteria.
+     * @return all dealers matching dealerKind criteria.
      */
     public List<Dealer> getDealers(DealerKind dealerKind) {
         return miner.getDatabaseTopic(CAR_SHOPS).get().getData().getEntries().stream()
@@ -78,6 +81,17 @@ public class DealerHelper extends CommonHelper {
                 .map(this::dealerEntryToDomainObject)
 
                 .collect(toList());
+    }
+
+    /**
+     * @return all dealer slots used by specified vehicle.
+     */
+    public Map<Dealer, Set<Dealer.Slot>> searchForVehicleSlot(String vehicleSlotReference) {
+        return getDealers(DealerKind.ALL).stream()
+                .parallel()
+                .collect(toConcurrentMap(
+                        Function.identity(),
+                        dealer -> getDealerSlotsHostingVehicle(dealer, vehicleSlotReference)));
     }
 
     private boolean entryMatchesDealerKind(ContentEntryDto carShopsEntry, DealerKind dealerkind) {
@@ -140,5 +154,12 @@ public class DealerHelper extends CommonHelper {
 
     private static int getSlotRankFromFieldRank(ContentItemDto slotItem) {
         return slotItem.getFieldRank() - DatabaseConstants.FIELD_RANK_DEALER_SLOT_1 + 1;
+    }
+
+    private static Set<Dealer.Slot> getDealerSlotsHostingVehicle(Dealer dealer, String vehicleSlotReference) {
+        return dealer.getSlots().stream()
+                .filter(slot -> slot.getVehicleSlot().isPresent())
+                .filter(slot -> slot.getVehicleSlot().get().getRef().equals(vehicleSlotReference))
+                .collect(toSet());
     }
 }
