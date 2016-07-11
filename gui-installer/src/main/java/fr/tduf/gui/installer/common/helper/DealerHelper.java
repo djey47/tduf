@@ -91,7 +91,9 @@ public class DealerHelper extends CommonHelper {
                 .parallel()
                 .collect(toConcurrentMap(
                         Function.identity(),
-                        dealer -> getDealerSlotsHostingVehicle(dealer, vehicleSlotReference)));
+                        dealer -> getDealerSlotsHostingVehicle(dealer, vehicleSlotReference))).entrySet().stream()
+                .filter(entry -> !entry.getValue().isEmpty())
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private boolean entryMatchesDealerKind(ContentEntryDto carShopsEntry, DealerKind dealerkind) {

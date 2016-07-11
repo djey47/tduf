@@ -140,7 +140,7 @@ public class DealerHelperTest {
     }
 
     @Test
-    public void searchForVehicleSlot() {
+    public void searchForVehicleSlot_whenSameVehicleLocatedThreeTimesInSingleDealer_shouldReturnOneEntryWithThreeSlots() {
         // GIVEN
         final String slotRef = "3000000000";
         final String dealerReference = "541293706";
@@ -183,5 +183,44 @@ public class DealerHelperTest {
         assertThat(actualSet).hasSize(3);
         assertThat(actualSet).extracting("rank").containsOnly(1, 2, 3);
         assertThat(actualSet.stream().findAny().get().getVehicleSlot().get().getRef()).isEqualTo(slotRef);
+    }
+
+    @Test
+    public void searchForVehicleSlot_whenUnlocatedVehicle_shouldReturnEmptyMap() {
+        // GIVEN
+        final String slotRef = "3000000000";
+        final String dealerReference = "541293706";
+        final String nameResourceReference = "0000";
+        final String nameResourceValue = "DEALER";
+
+        ResourceEntryDto dealerNameResourceEntry = ResourceEntryDto.builder().forReference(nameResourceReference).build();
+        DbDto carShopsTopicObject = DbDto.builder()
+                .withData(DbDataDto.builder()
+                        .addEntry(ContentEntryDto.builder()
+                                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(dealerReference).build())
+                                .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(nameResourceReference).build())
+                                .build())
+                        .build())
+                .withResource(DbResourceDto.builder()
+                        .atVersion("1.0")
+                        .containingEntries(singletonList(dealerNameResourceEntry))
+                        .build()
+                )
+                .build();
+        ContentEntryDto carSlotEntry = ContentEntryDto.builder()
+                .forId(1)
+                .build();
+
+        when(minerMock.getDatabaseTopic(CAR_SHOPS)).thenReturn(Optional.of(carShopsTopicObject));
+        when(minerMock.getContentEntryFromTopicWithReference(slotRef, CAR_PHYSICS_DATA)).thenReturn(Optional.of(carSlotEntry));
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(nameResourceReference, CAR_SHOPS, UNITED_STATES)).thenReturn(Optional.of(nameResourceValue));
+
+
+        // WHEN
+        final Map<Dealer, Set<Dealer.Slot>> actualSlots = DealerHelper.load(minerMock).searchForVehicleSlot(slotRef);
+
+
+        // THEN
+        assertThat(actualSlots).isEmpty();
     }
 }
