@@ -1,11 +1,14 @@
 package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.FileConstants;
+import fr.tduf.gui.installer.common.helper.DealerHelper;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -13,11 +16,12 @@ import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderConstants;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Apply reference patch using generated properties to restore a TDUCP slot to genuine state.
@@ -99,11 +103,26 @@ public class RestoreSlotStep extends GenericStep {
             databasePatcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseContext().getTopicObjects());
         }
 
-        // TODO create change objects to remove slot from dealers
         DbPatchDto restorePatchObject = DbPatchDto.builder().build();
         restorePatchObject.getChanges().addAll(cleanSlotPatch.getChanges());
         restorePatchObject.getChanges().addAll(resetSlotPatch.getChanges());
+        enhancePatchWithDealerOps(restorePatchObject, slotReference);
         databasePatcher.applyWithProperties(restorePatchObject, patchProperties);
+    }
+
+    private void enhancePatchWithDealerOps(DbPatchDto patchObject, String vehicleSlotReference) {
+        DealerHelper.load(getDatabaseContext().getMiner()).searchForVehicleSlot(vehicleSlotReference)
+                .forEach( (dealer, slots) -> {
+                    List<DbFieldValueDto> partialEntryValues = slots.stream()
+                            .map(slot -> DbFieldValueDto.fromCouple(slot.getRank() + DatabaseConstants.DELTA_RANK_DEALER_SLOTS, vehicleSlotReference))
+                            .collect(toList());
+                    DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
+                            .asReference(dealer.getRef())
+                            .forTopic(CAR_SHOPS)
+                            .withPartialEntryValues(partialEntryValues)
+                            .build();
+                    patchObject.getChanges().add(changeObject);
+                });
     }
 
     // For testing use

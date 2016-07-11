@@ -1,13 +1,18 @@
 package fr.tduf.gui.installer.steps;
 
+import fr.tduf.gui.installer.common.DatabaseConstants;
+import fr.tduf.gui.installer.common.helper.DealerHelper;
 import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,12 +75,17 @@ public class RestoreSlotStepTest {
     }
 
     @Test
-    public void perform_shouldApplyPatchesWithProperties() throws ReflectiveOperationException, IOException, URISyntaxException, StepException {
+    public void perform_shouldApplyPatchesWithProperties_andRemoveFromDealer() throws ReflectiveOperationException, IOException, URISyntaxException, StepException {
         // GIVEN
+        String vehicleSlotRef = "300000000";
         VehicleSlot vehicleSlot = VehicleSlot.builder()
-                .withRef("300000000")
+                .withRef(vehicleSlotRef)
                 .build();
         context.getUserSelection().selectVehicleSlot(vehicleSlot);
+        DatabaseChangeHelper changeHelper = new DatabaseChangeHelper(context.getMiner());
+        changeHelper.updateItemRawValueAtIndexAndFieldRank(DbDto.Topic.CAR_SHOPS, 0, DatabaseConstants.DELTA_RANK_DEALER_SLOTS + 1, vehicleSlotRef);
+        changeHelper.updateItemRawValueAtIndexAndFieldRank(DbDto.Topic.CAR_SHOPS, 0, DatabaseConstants.DELTA_RANK_DEALER_SLOTS + 2, vehicleSlotRef);
+        changeHelper.updateItemRawValueAtIndexAndFieldRank(DbDto.Topic.CAR_SHOPS, 0, DatabaseConstants.DELTA_RANK_DEALER_SLOTS + 3, vehicleSlotRef);
         RestoreSlotStep step = (RestoreSlotStep) GenericStep.starterStep(configuration, context)
                 .nextStep(GenericStep.StepType.RESTORE_SLOT);
         step.setPatcherComponent(databasePatcher);
@@ -86,6 +96,7 @@ public class RestoreSlotStepTest {
         // THEN
         verify(databasePatcher).applyWithProperties(any(DbPatchDto.class), patchPropertiesCaptor.capture());
         final PatchProperties actualProperties = patchPropertiesCaptor.getValue();
-        assertThat(actualProperties.getVehicleSlotReference()).contains("300000000");
+        assertThat(actualProperties.getVehicleSlotReference()).contains(vehicleSlotRef);
+        assertThat(DealerHelper.load(context.getMiner()).searchForVehicleSlot(vehicleSlotRef)).isEmpty();
     }
 }
