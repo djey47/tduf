@@ -24,5 +24,9 @@ public class InstallerConstants {
     public static final String FILE_NAME_EFFECTIVE_PATCH = "installed.mini.json";
     public static final String FILE_NAME_SNAPSHOT_PATCH = "SNAPSHOT.mini.json";
 
+    public static final String RESOURCE_NAME_CLEAN_PATCH = "/gui-installer/templates/clean-slot.mini.json";
+    public static final String RESOURCE_NAME_TDUCP_CAR_PATCH = "/gui-installer/templates/tducp-car-slot.mini.json";
+    public static final String RESOURCE_NAME_TDUCP_BIKE_PATCH = "/gui-installer/templates/tducp-bike-slot.mini.json";
+
     private InstallerConstants() {}
 }

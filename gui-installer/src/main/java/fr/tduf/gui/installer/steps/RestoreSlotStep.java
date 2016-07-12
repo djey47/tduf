@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.steps;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.FileConstants;
+import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.common.helper.DealerHelper;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.VehicleSlot;
@@ -53,9 +54,9 @@ public class RestoreSlotStep extends GenericStep {
 
         DbPatchDto cleanSlotPatch = FilesHelper.readObjectFromJsonResourceFile(
                 DbPatchDto.class,
-                FileConstants.RESOURCE_NAME_CLEAN_PATCH);
+                InstallerConstants.RESOURCE_NAME_CLEAN_PATCH);
         DbPatchDto resetSlotPatch = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class,
-                carSlotFlag ? FileConstants.RESOURCE_NAME_TDUCP_CAR_PATCH : FileConstants.RESOURCE_NAME_TDUCP_BIKE_PATCH);
+                carSlotFlag ? InstallerConstants.RESOURCE_NAME_TDUCP_CAR_PATCH : InstallerConstants.RESOURCE_NAME_TDUCP_BIKE_PATCH);
 
         // TODO use format constants (create TDUCP constants class)
         String carIdentifier = Integer.toString(slot.getCarIdentifier());

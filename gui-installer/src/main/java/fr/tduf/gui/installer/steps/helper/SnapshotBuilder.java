@@ -79,7 +79,7 @@ public class SnapshotBuilder {
 
     private List<DbPatchDto.DbChangeDto> generateCleaningOperationsTemplates() throws IOException {
         try {
-            return FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, FileConstants.RESOURCE_NAME_CLEAN_PATCH).getChanges();
+            return FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, InstallerConstants.RESOURCE_NAME_CLEAN_PATCH).getChanges();
         } catch (URISyntaxException use) {
             throw new IOException("Unable to generate cleaning operations", use);
         }
