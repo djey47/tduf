@@ -109,9 +109,8 @@ public class MainStageController extends AbstractGuiController {
         initActionToolbar();
     }
 
-    // TODO change to private visibility
     @FXML
-    public void handleUpdateMagicMapMenuItemAction() throws StepException {
+    private void handleUpdateMagicMapMenuItemAction() throws StepException {
         Log.trace(THIS_CLASS_NAME, "->handleUpdateMagicMapMenuItemAction");
 
         if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
@@ -122,7 +121,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleResetSlotMenuItemAction() throws Exception {
+    private void handleResetSlotMenuItemAction() throws Exception {
         Log.trace(THIS_CLASS_NAME, "->handleResetSlotMenuItemAction");
 
         if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
@@ -133,7 +132,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleResetDatabaseCacheMenuItemAction() throws Exception {
+    private void handleResetDatabaseCacheMenuItemAction() throws Exception {
         Log.trace(THIS_CLASS_NAME, "->handleResetDatabaseCacheMenuItemAction");
 
         if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
@@ -144,7 +143,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleCheckDatabaseMenuItemAction() throws Exception {
+    private void handleCheckDatabaseMenuItemAction() throws Exception {
         Log.trace(THIS_CLASS_NAME, "->handleCheckDatabaseMenuItemAction");
 
         if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
@@ -155,14 +154,14 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleBrowseTduLocationButtonAction() {
+    private void handleBrowseTduLocationButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleBrowseTduLocationButtonAction");
 
         browseForTduDirectory();
     }
 
     @FXML
-    public void handleInstallButtonAction() throws Exception {
+    private void handleInstallButtonAction() throws Exception {
         Log.trace(THIS_CLASS_NAME, "->handleInstallButtonAction");
 
         if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
@@ -173,7 +172,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleUninstallButtonAction() throws Exception {
+    private void handleUninstallButtonAction() throws Exception {
         Log.trace(THIS_CLASS_NAME, "->handleUninstallButtonAction");
 
         if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
