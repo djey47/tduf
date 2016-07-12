@@ -39,7 +39,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -434,10 +433,12 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void selectAndResetSlot(DatabaseContext context) {
+        // Do not check for service here, as loader may still be in running state.
         requireNonNull(context, "Database context is required. Please load database first.");
 
         VehicleSlot selectedSlot;
         try {
+            // TODO set user selection in helper
             selectedSlot = VehicleSlotUserInputHelper.quickSelectVehicleSlot(VehicleSlotsHelper.SlotKind.TDUCP_NEW, context, getWindow());
             context.getUserSelection().selectVehicleSlot(selectedSlot);
         } catch (Exception e) {
@@ -445,21 +446,6 @@ public class MainStageController extends AbstractGuiController {
             handleServiceFailure(se, DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_NOT_RESET);
             return;
         }
-
-        try {
-            resetSlot(context);
-        } catch (Exception e) {
-            StepException se = new StepException(GenericStep.StepType.RESTORE_SLOT, DisplayConstants.MESSAGE_RESET_SLOT_KO, e);
-            handleServiceFailure(se, DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_NOT_RESET);
-            return;
-        }
-
-        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_RESET_SLOT, selectedSlot.getRef());
-    }
-
-    private void resetSlot(DatabaseContext context) throws IOException, URISyntaxException, ReflectiveOperationException {
-        // Do not check for service here, as loader may still be in running state.
-        requireNonNull(context, "Database context is required. Please load database first.");
 
         progressProperty.setValue(-1);
 
