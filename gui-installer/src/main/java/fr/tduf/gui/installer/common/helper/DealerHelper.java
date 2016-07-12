@@ -23,7 +23,6 @@ import static java.util.stream.Collectors.*;
 /**
  * Component to get advanced information on vehicle dealers.
  */
-// TODO apply code rules
 public class DealerHelper extends CommonHelper {
     /**
      * Criteria for dealer lookups
@@ -69,15 +68,15 @@ public class DealerHelper extends CommonHelper {
     }
 
     /**
+     * @param dealerKind : kind of dealers to be returned
      * @return all dealers matching dealerKind criteria.
      */
     public List<Dealer> getDealers(DealerKind dealerKind) {
-        return miner.getDatabaseTopic(CAR_SHOPS).get().getData().getEntries().stream()
-
+        return miner.getDatabaseTopic(CAR_SHOPS)
+                .orElseThrow(() -> new IllegalStateException("No data for car shops topic"))
+                .getData().getEntries().stream()
                 .filter(carShopsEntry -> entryMatchesDealerKind(carShopsEntry, dealerKind))
-
                 .map(this::dealerEntryToDomainObject)
-
                 .collect(toList());
     }
 
@@ -86,7 +85,9 @@ public class DealerHelper extends CommonHelper {
      * @return all dealer slots ranks (by dealer reference) used by specified vehicle.
      */
     public Map<String, List<Integer>> searchForVehicleSlot(String vehicleSlotReference) {
-        return miner.getDatabaseTopic(CAR_SHOPS).get().getData().getEntries().stream()
+        return miner.getDatabaseTopic(CAR_SHOPS)
+                .orElseThrow(() -> new IllegalStateException("No data for car shops topic"))
+                .getData().getEntries().stream()
                 .parallel()
                 .collect(toConcurrentMap(
                         DealerHelper::getDealerReferenceFromEntry,
@@ -148,17 +149,12 @@ public class DealerHelper extends CommonHelper {
     }
 
     private List<Dealer.Slot> getActualSlots(ContentEntryDto carShopsEntry, Optional<DbMetadataDto.DealerMetadataDto> carShopsReference) {
-
         return carShopsEntry.getItems().stream()
-
                 .filter(item -> item.getFieldRank() >= DatabaseConstants.FIELD_RANK_DEALER_SLOT_1
                         && item.getFieldRank() <= DatabaseConstants.FIELD_RANK_DEALER_SLOT_15)
-
                 .filter(slotItem -> ! carShopsReference.isPresent()
                         || carShopsReference.get().getAvailableSlots().contains(getSlotRankFromFieldRank(slotItem)))
-
                 .map(this::slotItemToDomainObject)
-
                 .collect(toList());
     }
 
