@@ -43,7 +43,9 @@ public class DatabaseConstants {
 
     public static final String REF_DEFAULT_BRAND = "62938337";                      // BRANDS
 
-    public static final String RESOURCE_REF_UNKNOWN_COLOR_NAME = "53366457";        // CAR COLORS
+    public static final String CODE_EXTERIOR_COLOR_NONE = "53356127";               // CAR COLORS
+    public static final String CODE_EXTERIOR_COLOR_BLUE_01 = "54356127";
+    public static final String RESOURCE_REF_UNKNOWN_COLOR_NAME = "53366457";
 
     public static final String RESOURCE_REF_UNKNOWN_VEHICLE_NAME = "53338427";      // CAR PHYSICS
     public static final String RESOURCE_REF_GROUP_A = "73900264";
@@ -62,7 +64,8 @@ public class DatabaseConstants {
     public static final String RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER = "EBD_";
     public static final String RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_RENTAL = "ECR_";
 
-    public static final String REF_NO_INTERIOR = "11319636";        // INTERIOR
+    public static final String REF_NO_INTERIOR = "11319636";                        // INTERIOR
+    public static final String CODE_INTERIOR_COLOR_NONE = "53364643";
     public static final String RESOURCE_REF_NONE_INTERIOR_NAME = "53365512";
 
     public static final String RESOURCE_REF_DEFAULT_RIM_BRAND = "55765512";         // RIMS

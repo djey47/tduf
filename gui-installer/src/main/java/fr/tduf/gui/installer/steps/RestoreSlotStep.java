@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.steps;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
+import fr.tduf.gui.installer.common.TDUCPConstants;
 import fr.tduf.gui.installer.common.helper.DealerHelper;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.VehicleSlot;
@@ -27,7 +28,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Apply reference patch using generated properties to restore a TDUCP slot to genuine state.
  */
-public class RestoreSlotStep extends GenericStep {
+class RestoreSlotStep extends GenericStep {
     private static final String THIS_CLASS_NAME = RestoreSlotStep.class.getSimpleName();
 
     private DatabasePatcher databasePatcher;
@@ -94,17 +95,26 @@ public class RestoreSlotStep extends GenericStep {
     }
 
     private static PatchProperties createPatchProperties(String slotReference, String carIdentifier) {
-        // TODO use format constants (create TDUCP constants class)
         PatchProperties patchProperties = new PatchProperties();
 
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
         patchProperties.setCarIdentifierIfNotExists(carIdentifier);
-        patchProperties.setResourceBankNameIfNotExists(carIdentifier + "567");
-        patchProperties.register(PlaceholderConstants.PLACEHOLDER_NAME_RESOURCE_MODEL, carIdentifier + "3407");
-        patchProperties.register(PlaceholderConstants.PLACEHOLDER_NAME_RESOURCE_VERSION, carIdentifier + "8427");
-        patchProperties.setBankNameIfNotExists("TDUCP_" + carIdentifier);
-        patchProperties.register(PlaceholderConstants.PLACEHOLDER_NAME_MODEL, "TDUCP Model " + carIdentifier);
-        patchProperties.register(PlaceholderConstants.PLACEHOLDER_NAME_VERSION, "Version " + carIdentifier );
+        patchProperties.setResourceBankNameIfNotExists(
+                String.format(TDUCPConstants.FMT_RES_BANK_FILENAME, carIdentifier));
+        patchProperties.register(
+                PlaceholderConstants.PLACEHOLDER_NAME_RESOURCE_MODEL,
+                String.format(TDUCPConstants.FMT_RES_MODEL, carIdentifier));
+        patchProperties.register(
+                PlaceholderConstants.PLACEHOLDER_NAME_RESOURCE_VERSION,
+                String.format(TDUCPConstants.FMT_RES_VERSION, carIdentifier));
+        patchProperties.setBankNameIfNotExists(
+                String.format(TDUCPConstants.FMT_BANK_FILENAME, carIdentifier));
+        patchProperties.register(
+                PlaceholderConstants.PLACEHOLDER_NAME_MODEL,
+                String.format(TDUCPConstants.FMT_MODEL, carIdentifier));
+        patchProperties.register(
+                PlaceholderConstants.PLACEHOLDER_NAME_VERSION,
+                String.format(TDUCPConstants.FMT_VERSION, carIdentifier));
 
         enhancePropertiesForRims(carIdentifier, patchProperties);
 
@@ -118,36 +128,51 @@ public class RestoreSlotStep extends GenericStep {
     private static void enhancePropertiesForInteriors(String carIdentifier, PatchProperties patchProperties) {
         IntStream.rangeClosed(0, 9)
                 .forEach(intRank -> {
-                    patchProperties.setInteriorReferenceIfNotExists(carIdentifier + intRank + "9636", intRank);
-                    patchProperties.setInteriorMainColorIdIfNotExists("53364643", intRank);
-                    patchProperties.setInteriorSecondaryColorIdIfNotExists("53364643", intRank);
-                    patchProperties.setInteriorMaterialIdIfNotExists("53364643", intRank);
+                    patchProperties.setInteriorReferenceIfNotExists(
+                            String.format(TDUCPConstants.FMT_REF_INTERIOR, carIdentifier, intRank), intRank);
+                    patchProperties.setInteriorMainColorIdIfNotExists(
+                            DatabaseConstants.CODE_INTERIOR_COLOR_NONE, intRank);
+                    patchProperties.setInteriorSecondaryColorIdIfNotExists(
+                            DatabaseConstants.CODE_INTERIOR_COLOR_NONE, intRank);
+                    patchProperties.setInteriorMaterialIdIfNotExists(
+                            DatabaseConstants.CODE_INTERIOR_COLOR_NONE, intRank);
                 });
     }
 
     private static void enhancePropertiesForPaintJobs(String carIdentifier, PatchProperties patchProperties) {
         IntStream.rangeClosed(0, 9)
                 .forEach(pjRank -> {
-                    patchProperties.setExteriorMainColorIdIfNotExists("54356127", pjRank);
-                    patchProperties.setExteriorSecondaryColorIdIfNotExists("53356127", pjRank);
-                    patchProperties.setCalipersColorIdIfNotExists("53356127", pjRank);
-                    patchProperties.setExteriorColorNameResourceIfNotExists(carIdentifier + pjRank + "457", pjRank);
-                    patchProperties.setExteriorColorNameIfNotExists("TDUCP_" + carIdentifier + " exterior color " + pjRank, pjRank);
+                    patchProperties.setExteriorMainColorIdIfNotExists(
+                            DatabaseConstants.CODE_EXTERIOR_COLOR_BLUE_01, pjRank);
+                    patchProperties.setExteriorSecondaryColorIdIfNotExists(
+                            DatabaseConstants.CODE_EXTERIOR_COLOR_NONE, pjRank);
+                    patchProperties.setCalipersColorIdIfNotExists(
+                            DatabaseConstants.CODE_EXTERIOR_COLOR_NONE, pjRank);
+                    patchProperties.setExteriorColorNameResourceIfNotExists(
+                            String.format(TDUCPConstants.FMT_RES_EXT_COLOR, carIdentifier, pjRank), pjRank);
+                    patchProperties.setExteriorColorNameIfNotExists(
+                            String.format(TDUCPConstants.FMT_EXT_COLOR, carIdentifier, pjRank), pjRank);
                 });
     }
 
     private static void enhancePropertiesForRims(String carIdentifier, PatchProperties patchProperties) {
         IntStream.rangeClosed(0, 9)
                 .forEach(rimRank -> {
-                    patchProperties.setRimsSlotReferenceIfNotExists("0000" + carIdentifier + rimRank, rimRank);
+                    patchProperties.setRimsSlotReferenceIfNotExists(
+                            String.format(TDUCPConstants.FMT_REF_RIM, carIdentifier, rimRank), rimRank);
                     patchProperties.register(
                             String.format(PlaceholderConstants.PLACEHOLDER_NAME_FMT_RESOURCE_RIM_NAME, rimRank),
-                            carIdentifier + rimRank + "562");
-                    patchProperties.setResourceFrontRimBankIfNotExists(carIdentifier + rimRank + "1512", rimRank);
-                    patchProperties.setResourceRearRimBankIfNotExists(carIdentifier + rimRank + "2512", rimRank);
-                    patchProperties.setRimNameIfNotExists("TDUCP " + carIdentifier + " - rim set " + rimRank, rimRank);
-                    patchProperties.setFrontRimBankNameIfNotExists("TDUCP_" + carIdentifier + "_F_0" + rimRank, rimRank);
-                    patchProperties.setRearRimBankNameIfNotExists("TDUCP_" + carIdentifier + "_R_0" + rimRank, rimRank);
+                            String.format(TDUCPConstants.FMT_RES_RIM_NAME, carIdentifier, rimRank));
+                    patchProperties.setResourceFrontRimBankIfNotExists(
+                            String.format(TDUCPConstants.FMT_RES_RIM_FRONT_BANK_FILENAME, carIdentifier, rimRank), rimRank);
+                    patchProperties.setResourceRearRimBankIfNotExists(
+                            String.format(TDUCPConstants.FMT_RES_RIM_REAR_BANK_FILENAME, carIdentifier, rimRank), rimRank);
+                    patchProperties.setRimNameIfNotExists(
+                            String.format(TDUCPConstants.FMT_RIM_NAME, carIdentifier, rimRank), rimRank);
+                    patchProperties.setFrontRimBankNameIfNotExists(
+                            String.format(TDUCPConstants.FMT_RIM_FRONT_BANK_FILENAME, carIdentifier, rimRank), rimRank);
+                    patchProperties.setRearRimBankNameIfNotExists(
+                            String.format(TDUCPConstants.FMT_RIM_REAR_BANK_FILENAME, carIdentifier, rimRank), rimRank);
                 });
     }
 
