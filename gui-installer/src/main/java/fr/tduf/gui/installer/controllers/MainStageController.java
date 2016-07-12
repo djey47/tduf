@@ -355,11 +355,6 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        databaseLoader.objectiveProperty().setValue(objective);
-        loadDatabase();
-    }
-
-    private void loadDatabase() {
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
                 .withAssetsDirectory(InstallerConstants.DIRECTORY_ASSETS)
@@ -369,6 +364,7 @@ public class MainStageController extends AbstractGuiController {
 
         databaseLoader.databaseLocationProperty().setValue(configuration.resolveDatabaseDirectory());
         databaseLoader.bankSupportProperty().setValue(configuration.getBankSupport());
+        databaseLoader.objectiveProperty().setValue(objective);
 
         databaseLoader.restart();
     }
@@ -482,21 +478,26 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void handleCoordinatorFailure() {
-        if (TaskType.UNINSTALL == stepsCoordinator.taskTypeProperty().getValue()) {
-            handleServiceFailure(stepsCoordinator.exceptionProperty().get(), DisplayConstants.TITLE_SUB_UNINSTALL, DisplayConstants.MESSAGE_NOT_UNINSTALLED);
-        } else if (TaskType.INSTALL == stepsCoordinator.taskTypeProperty().getValue()) {
-            handleServiceFailure(stepsCoordinator.exceptionProperty().get(), DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED);
+        TaskType currentTask = stepsCoordinator.taskTypeProperty().getValue();
+        Throwable currentException = stepsCoordinator.exceptionProperty().get();
+        if (TaskType.UNINSTALL == currentTask) {
+            handleServiceFailure(currentException, DisplayConstants.TITLE_SUB_UNINSTALL, DisplayConstants.MESSAGE_NOT_UNINSTALLED);
+        } else if (TaskType.INSTALL == currentTask) {
+            handleServiceFailure(currentException, DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED);
+        } else if(TaskType.RESET_SLOT == currentTask) {
+            handleServiceFailure(currentException, DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_NOT_RESET);
         }
-        // TODO reset case
     }
 
     private void handleCoordinatorSuccess() {
-        if (TaskType.UNINSTALL == stepsCoordinator.taskTypeProperty().getValue()) {
+        TaskType currentTask = stepsCoordinator.taskTypeProperty().getValue();
+        if (TaskType.UNINSTALL == currentTask) {
             CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_UNINSTALL, DisplayConstants.MESSAGE_UNINSTALLED, "");
-        } else if (TaskType.INSTALL == stepsCoordinator.taskTypeProperty().getValue()) {
+        } else if (TaskType.INSTALL == currentTask) {
             CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "");
+        } else if(TaskType.RESET_SLOT == currentTask) {
+            CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_RESET_SLOT, "");
         }
-        // TODO reset case
     }
 
     private static void loadCurrentPatch(InstallerConfiguration configuration, DatabaseContext context) throws IOException {
