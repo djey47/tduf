@@ -13,7 +13,6 @@ import fr.tduf.gui.installer.controllers.helper.DealerSlotUserInputHelper;
 import fr.tduf.gui.installer.controllers.helper.VehicleSlotUserInputHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
-import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.gui.installer.services.DatabaseLoader;
 import fr.tduf.gui.installer.services.StepsCoordinator;
@@ -436,11 +435,8 @@ public class MainStageController extends AbstractGuiController {
         // Do not check for service here, as loader may still be in running state.
         requireNonNull(context, "Database context is required. Please load database first.");
 
-        VehicleSlot selectedSlot;
         try {
-            // TODO set user selection in helper
-            selectedSlot = VehicleSlotUserInputHelper.quickSelectVehicleSlot(VehicleSlotsHelper.SlotKind.TDUCP_NEW, context, getWindow());
-            context.getUserSelection().selectVehicleSlot(selectedSlot);
+            VehicleSlotUserInputHelper.quickSelectVehicleSlot(VehicleSlotsHelper.SlotKind.TDUCP_NEW, context, getWindow());
         } catch (Exception e) {
             StepException se = new StepException(GenericStep.StepType.SELECT_SLOTS, DisplayConstants.MESSAGE_OPERATION_ABORTED, e);
             handleServiceFailure(se, DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_NOT_RESET);
