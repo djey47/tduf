@@ -59,8 +59,7 @@ public class DatabaseConstants {
     public static final String RESOURCE_REF_GROUP_MB = "77800264";
     public static final String RESOURCE_REF_GROUP_Z = "92900264";
 
-    // TODO rename
-    public static final String REF_FREE_DEALER_SLOT = "61085282";                   // CAR SHOPS
+    public static final String CODE_FREE_DEALER_SLOT = "61085282";                   // CAR SHOPS
     public static final String RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_DEALER = "ECD_";
     public static final String RESOURCE_VALUE_PREFIX_FILE_NAME_BIKE_DEALER = "EBD_";
     public static final String RESOURCE_VALUE_PREFIX_FILE_NAME_CAR_RENTAL = "ECR_";
