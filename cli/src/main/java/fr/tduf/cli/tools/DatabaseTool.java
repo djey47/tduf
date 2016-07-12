@@ -53,9 +53,7 @@ import static java.util.Collections.synchronizedSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 
 /**
  * Command line interface for handling TDU database.
@@ -475,16 +473,12 @@ public class DatabaseTool extends GenericTool {
 
         List<DbDto> allTopicObjects = loadDatabaseFromJsonFiles(sourceJsonDirectory);
 
-        // TODO use Linked Map to preserve sorting order
         final Map<DbPatchDto, PatchProperties> patchObjectsAndProps = Files.walk(Paths.get(sourcePatchesDirectory))
-
-                .filter((path) -> Files.isRegularFile(path))
-
-                .filter((path) -> EXTENSION_JSON.equalsIgnoreCase(FilesHelper.getExtension(path.toString())))
-
+                .filter(Files::isRegularFile)
+                .filter(path -> EXTENSION_JSON.equalsIgnoreCase(FilesHelper.getExtension(path.toString())))
                 .sorted(Path::compareTo)
-
-                .collect(toMap(patchPath -> {
+                .collect(toMap(
+                        patchPath -> {
                             outLine("-> Mini patch file: " + patchPath.toString());
 
                             try {
@@ -499,8 +493,9 @@ public class DatabaseTool extends GenericTool {
                             } catch (IOException ioe) {
                                 throw new RuntimeException(ioe);
                             }
-                        }
-                ));
+                        },
+                        (u,v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u)); },
+                        LinkedHashMap::new));
 
         AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).batchApplyWithProperties(patchObjectsAndProps);
 
