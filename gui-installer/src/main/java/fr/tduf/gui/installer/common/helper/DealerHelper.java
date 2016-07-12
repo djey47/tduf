@@ -12,8 +12,6 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static fr.tduf.gui.installer.common.DatabaseConstants.*;
 import static fr.tduf.gui.installer.common.DisplayConstants.*;
@@ -24,6 +22,7 @@ import static java.util.stream.Collectors.*;
 /**
  * Component to get advanced information on vehicle dealers.
  */
+// TODO apply code rules
 public class DealerHelper extends CommonHelper {
     /**
      * Criteria for dealer lookups
@@ -88,19 +87,13 @@ public class DealerHelper extends CommonHelper {
         return miner.getDatabaseTopic(CAR_SHOPS).get().getData().getEntries().stream()
                 .parallel()
                 .collect(toConcurrentMap(
-                        Function.identity(),
-                        entry -> {
-                            final String dealerReference = entry.getItemAtRank(1).get().getRawValue();
-                            Optional<DbMetadataDto.DealerMetadataDto> carShopsReference = carShopsMetaDataHelper.getCarShopsReferenceForDealerReference(dealerReference);
-                            return getSlotItemsForVehicle(entry, vehicleSlotReference, carShopsReference);
-                        })).entrySet().stream()
+                        DealerHelper::getDealerReferenceFromEntry,
+                        entry -> getSlotItemsForVehicle(vehicleSlotReference, entry))).entrySet().stream()
                 .filter(mapEntry -> !mapEntry.getValue().isEmpty())
-                .collect(Collectors.toMap(
-                        mapEntry -> mapEntry.getKey().getItemAtRank(1).get().getRawValue(),
+                .collect(toMap(
+                        Map.Entry::getKey,
                         mapEntry -> new HashSet<>(slotItemsToDomainObjects(mapEntry.getValue()))));
     }
-
-    // TODO simplify!
 
     private boolean entryMatchesDealerKind(ContentEntryDto carShopsEntry, DealerKind dealerkind) {
         if (DealerKind.ALL == dealerkind) {
@@ -171,11 +164,10 @@ public class DealerHelper extends CommonHelper {
                 .collect(toList());
     }
 
-    private static int getSlotRankFromFieldRank(ContentItemDto slotItem) {
-        return slotItem.getFieldRank() - DatabaseConstants.FIELD_RANK_DEALER_SLOT_1 + 1;
-    }
+    private List<ContentItemDto> getSlotItemsForVehicle(String vehicleSlotReference, ContentEntryDto carShopsEntry) {
+        final String dealerReference = getDealerReferenceFromEntry(carShopsEntry);
+        Optional<DbMetadataDto.DealerMetadataDto> carShopsReference = carShopsMetaDataHelper.getCarShopsReferenceForDealerReference(dealerReference);
 
-    private static List<ContentItemDto> getSlotItemsForVehicle(ContentEntryDto carShopsEntry, String vehicleSlotReference, Optional<DbMetadataDto.DealerMetadataDto> carShopsReference) {
         return carShopsEntry.getItems().stream()
                 .filter(item -> item.getFieldRank() >= DatabaseConstants.FIELD_RANK_DEALER_SLOT_1
                         && item.getFieldRank() <= DatabaseConstants.FIELD_RANK_DEALER_SLOT_15)
@@ -185,4 +177,12 @@ public class DealerHelper extends CommonHelper {
                 .collect(toList());
     }
 
+    private static int getSlotRankFromFieldRank(ContentItemDto slotItem) {
+        return slotItem.getFieldRank() - DatabaseConstants.FIELD_RANK_DEALER_SLOT_1 + 1;
+    }
+
+    private static String getDealerReferenceFromEntry(ContentEntryDto entry) {
+        return getStringValueFromDatabaseEntry(entry, 1)
+                .orElseThrow(() -> new IllegalStateException("No item at rank 1"));
+    }
 }
