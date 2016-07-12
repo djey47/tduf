@@ -47,7 +47,7 @@ public class VehicleSlotUserInputHelper {
 
         Log.info(THIS_CLASS_NAME, "->Using vehicle slot: " + selectedItem);
 
-        context.getUserSelection().selectVehicleSlot(selectedItem.vehicleSlotPoperty().getValue());
+        context.getUserSelection().selectVehicleSlot(selectedItem.vehicleSlotProperty().getValue());
     }
 
     /**
@@ -68,7 +68,7 @@ public class VehicleSlotUserInputHelper {
 
         Log.info(THIS_CLASS_NAME, "->Using vehicle slot: " + selectedItem);
 
-        return selectedItem.vehicleSlotPoperty().getValue();
+        return selectedItem.vehicleSlotProperty().getValue();
     }
 
     private static VehicleSlotsStageController initSlotsBrowserController(Window mainWindow) throws IOException {
