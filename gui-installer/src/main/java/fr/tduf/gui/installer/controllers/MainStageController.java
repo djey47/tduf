@@ -64,8 +64,7 @@ public class MainStageController extends AbstractGuiController {
 
     private SimpleStringProperty tduDirectoryProperty;
 
-    // TODO rename to more generic term
-    private LongProperty installProgressProperty = new SimpleLongProperty();
+    private LongProperty progressProperty = new SimpleLongProperty();
     private BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
     private DatabaseLoader databaseLoader = new DatabaseLoader();
     private DatabaseChecker databaseChecker = new DatabaseChecker();
@@ -100,8 +99,8 @@ public class MainStageController extends AbstractGuiController {
                         .then(Cursor.WAIT)
                         .otherwise(Cursor.DEFAULT)
         );
-        uProgressBar.progressProperty().bind(installProgressProperty);
-        lProgressBar.progressProperty().bind(installProgressProperty);
+        uProgressBar.progressProperty().bind(progressProperty);
+        lProgressBar.progressProperty().bind(progressProperty);
 
         initServiceListeners();
 
@@ -239,8 +238,8 @@ public class MainStageController extends AbstractGuiController {
             }
 
             if (SUCCEEDED == newState || FAILED == newState) {
-                installProgressProperty.unbind();
-                installProgressProperty.setValue(0);
+                progressProperty.unbind();
+                progressProperty.setValue(0);
                 statusLabel.textProperty().unbind();
             }
         });
@@ -400,7 +399,7 @@ public class MainStageController extends AbstractGuiController {
         // Do not check for service here, as loader may still be in running state.
         requireNonNull(context, "Database context is required. Please load database first.");
 
-        installProgressProperty.setValue(-1);
+        progressProperty.setValue(-1);
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
@@ -413,7 +412,7 @@ public class MainStageController extends AbstractGuiController {
             StepException se = new StepException(GenericStep.StepType.LOAD_PATCH, DisplayConstants.MESSAGE_PATCH_LOAD_KO, ioe);
             handleServiceFailure(se, DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED);
 
-            installProgressProperty.setValue(0);
+            progressProperty.setValue(0);
             return;
         }
 
@@ -425,12 +424,12 @@ public class MainStageController extends AbstractGuiController {
             StepException se = new StepException(GenericStep.StepType.SELECT_SLOTS, DisplayConstants.MESSAGE_INSTALL_ABORTED, e);
             handleServiceFailure(se, DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED);
 
-            installProgressProperty.setValue(0);
+            progressProperty.setValue(0);
             return;
         }
 
         statusLabel.textProperty().bind(stepsCoordinator.messageProperty());
-        installProgressProperty.bind(stepsCoordinator.progressProperty());
+        progressProperty.bind(stepsCoordinator.progressProperty());
 
         stepsCoordinator.configurationProperty().setValue(configuration);
         stepsCoordinator.contextProperty().setValue(context);
@@ -443,7 +442,7 @@ public class MainStageController extends AbstractGuiController {
         // Do not check for service here, as loader may still be in running state.
         requireNonNull(context, "Database context is required. Please load database first.");
 
-        installProgressProperty.setValue(-1);
+        progressProperty.setValue(-1);
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
@@ -451,7 +450,7 @@ public class MainStageController extends AbstractGuiController {
                 .build();
 
         statusLabel.textProperty().bind(stepsCoordinator.messageProperty());
-        installProgressProperty.bind(stepsCoordinator.progressProperty());
+        progressProperty.bind(stepsCoordinator.progressProperty());
 
         stepsCoordinator.configurationProperty().setValue(configuration);
         stepsCoordinator.contextProperty().setValue(context);
@@ -488,14 +487,14 @@ public class MainStageController extends AbstractGuiController {
         // Do not check for service here, as loader may still be in running state.
         requireNonNull(context, "Database context is required. Please load database first.");
 
-        installProgressProperty.setValue(-1);
+        progressProperty.setValue(-1);
 
         InstallerConfiguration configuration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduDirectoryProperty.getValue())
                 .build();
 
         statusLabel.textProperty().bind(stepsCoordinator.messageProperty());
-        installProgressProperty.bind(stepsCoordinator.progressProperty());
+        progressProperty.bind(stepsCoordinator.progressProperty());
 
         stepsCoordinator.configurationProperty().setValue(configuration);
         stepsCoordinator.contextProperty().setValue(context);
