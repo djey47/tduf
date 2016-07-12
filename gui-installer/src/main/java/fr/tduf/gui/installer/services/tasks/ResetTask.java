@@ -19,6 +19,8 @@ public class ResetTask extends InstallerTask {
 
     /**
      * Main constructor
+     * @param configuration : configuration of installer application
+     * @param context       : information about loaded database
      */
     public ResetTask(ObjectProperty<InstallerConfiguration> configuration, ObjectProperty<DatabaseContext> context) {
         super(configuration, context);
@@ -30,7 +32,6 @@ public class ResetTask extends InstallerTask {
 
         updateMessage(DisplayConstants.STATUS_RESET_IN_PROGRESS);
 
-        // TODO add all steps
         callStepChain(
                 REVERT_CAMERA,
                 RESTORE_SLOT,
