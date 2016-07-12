@@ -21,7 +21,7 @@ public class DatabaseContext {
 
     private DbPatchDto patchObject;
 
-    private PatchProperties patchProperties;
+    private PatchProperties patchProperties = new PatchProperties();
 
     private String backupDatabaseDirectory;
 
