@@ -19,7 +19,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -174,17 +173,16 @@ public class DealerHelperTest {
 
 
         // WHEN
-        final Map<String, Set<Dealer.Slot>> actualSlots = DealerHelper.load(minerMock).searchForVehicleSlot(slotRef);
+        final Map<String, List<Integer>> actualSlots = DealerHelper.load(minerMock).searchForVehicleSlot(slotRef);
 
 
         // THEN
         assertThat(actualSlots).hasSize(1);
         final String actualRef = actualSlots.keySet().stream().findAny().get();
         assertThat(actualRef).isEqualTo(dealerReference);
-        final Set<Dealer.Slot> actualSet = actualSlots.values().stream().findAny().get();
-        assertThat(actualSet).hasSize(3);
-        assertThat(actualSet).extracting("rank").containsOnly(1, 2, 3);
-        assertThat(actualSet.stream().findAny().get().getVehicleSlot().get().getRef()).isEqualTo(slotRef);
+        final List<Integer> actualList = actualSlots.get(dealerReference);
+        assertThat(actualList).hasSize(3);
+        assertThat(actualList).contains(1, 2, 3);
     }
 
     @Test
@@ -219,7 +217,7 @@ public class DealerHelperTest {
 
 
         // WHEN
-        final Map<String, Set<Dealer.Slot>> actualSlots = DealerHelper.load(minerMock).searchForVehicleSlot(slotRef);
+        final Map<String, List<Integer>> actualSlots = DealerHelper.load(minerMock).searchForVehicleSlot(slotRef);
 
 
         // THEN

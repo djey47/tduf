@@ -12,6 +12,7 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import static fr.tduf.gui.installer.common.DatabaseConstants.*;
 import static fr.tduf.gui.installer.common.DisplayConstants.*;
@@ -81,9 +82,10 @@ public class DealerHelper extends CommonHelper {
     }
 
     /**
-     * @return all dealer slots used by specified vehicle.
+     * @param vehicleSlotReference : reference of vehicle slot to be retrieved
+     * @return all dealer slots ranks (by dealer reference) used by specified vehicle.
      */
-    public Map<String, Set<Dealer.Slot>> searchForVehicleSlot(String vehicleSlotReference) {
+    public Map<String, List<Integer>> searchForVehicleSlot(String vehicleSlotReference) {
         return miner.getDatabaseTopic(CAR_SHOPS).get().getData().getEntries().stream()
                 .parallel()
                 .collect(toConcurrentMap(
@@ -92,7 +94,9 @@ public class DealerHelper extends CommonHelper {
                 .filter(mapEntry -> !mapEntry.getValue().isEmpty())
                 .collect(toMap(
                         Map.Entry::getKey,
-                        mapEntry -> new HashSet<>(slotItemsToDomainObjects(mapEntry.getValue()))));
+                        mapEntry -> mapEntry.getValue().stream()
+                                .map(DealerHelper::getSlotRankFromFieldRank)
+                                .collect(Collectors.toList())));
     }
 
     private boolean entryMatchesDealerKind(ContentEntryDto carShopsEntry, DealerKind dealerkind) {
@@ -133,12 +137,6 @@ public class DealerHelper extends CommonHelper {
                 .withLocation(location.orElse(DisplayConstants.LABEL_UNKNOWN))
                 .withSlots(getActualSlots(dealerEntry, carShopsReference))
                 .build();
-    }
-
-    private List<Dealer.Slot> slotItemsToDomainObjects(List<ContentItemDto> slotItems) {
-        return slotItems.stream()
-                .map(this::slotItemToDomainObject)
-                .collect(toList());
     }
 
     // Ignore warning: method reference

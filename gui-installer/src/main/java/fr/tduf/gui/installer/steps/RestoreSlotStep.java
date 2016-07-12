@@ -113,9 +113,9 @@ public class RestoreSlotStep extends GenericStep {
 
     private void enhancePatchWithDealerOps(DbPatchDto patchObject, String vehicleSlotReference) {
         DealerHelper.load(getDatabaseContext().getMiner()).searchForVehicleSlot(vehicleSlotReference)
-                .forEach( (dealerReference, slots) -> {
-                    List<DbFieldValueDto> partialEntryValues = slots.stream()
-                            .map(slot -> DbFieldValueDto.fromCouple(slot.getRank() + DatabaseConstants.DELTA_RANK_DEALER_SLOTS, vehicleSlotReference))
+                .forEach( (dealerReference, ranks) -> {
+                    List<DbFieldValueDto> partialEntryValues = ranks.stream()
+                            .map(rank -> DbFieldValueDto.fromCouple(rank + DatabaseConstants.DELTA_RANK_DEALER_SLOTS, vehicleSlotReference))
                             .collect(toList());
                     DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
                             .withType(UPDATE)
