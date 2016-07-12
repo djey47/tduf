@@ -245,7 +245,7 @@ public class MainStageController extends AbstractGuiController {
         });
 
         databaseLoader.stateProperty().addListener((observable, oldValue, newState) -> {
-            DatabaseLoader.Objective objective = databaseLoader.objectiveProperty().get();
+            TaskType objective = databaseLoader.objectiveProperty().get();
             if (SUCCEEDED == newState) {
                 switch(objective) {
                     case INSTALL:
@@ -357,7 +357,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        databaseLoader.objectiveProperty().setValue(DatabaseLoader.Objective.INSTALL);
+        databaseLoader.objectiveProperty().setValue(TaskType.INSTALL);
 
         loadDatabase();
     }
@@ -366,7 +366,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        databaseLoader.objectiveProperty().setValue(DatabaseLoader.Objective.UNINSTALL);
+        databaseLoader.objectiveProperty().setValue(TaskType.UNINSTALL);
 
         loadDatabase();
     }
@@ -376,7 +376,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        databaseLoader.objectiveProperty().setValue(DatabaseLoader.Objective.RESET_SLOT);
+        databaseLoader.objectiveProperty().setValue(TaskType.RESET_SLOT);
 
         loadDatabase();
     }

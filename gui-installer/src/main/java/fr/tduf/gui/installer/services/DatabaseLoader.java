@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.services;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
+import fr.tduf.gui.installer.services.tasks.TaskType;
 import fr.tduf.gui.installer.steps.GenericStep;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
@@ -22,19 +23,9 @@ import java.util.List;
  * Background service to load TDU database from banks directory.
  */
 public class DatabaseLoader extends Service<DatabaseContext> {
-    // TODO use TaskType enum
-    /**
-     * Enables switching to a proper method on loading success
-     */
-    public enum Objective {
-        INSTALL,
-        UNINSTALL,
-        RESET_SLOT
-    }
-
     private StringProperty databaseLocation = new SimpleStringProperty();
     private ObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
-    private ObjectProperty<Objective> objective = new SimpleObjectProperty<>(Objective.INSTALL);
+    private ObjectProperty<TaskType> objective = new SimpleObjectProperty<>(TaskType.INSTALL);
 
     @Override
     protected Task<DatabaseContext> createTask() {
@@ -66,7 +57,7 @@ public class DatabaseLoader extends Service<DatabaseContext> {
         return bankSupport;
     }
 
-    public ObjectProperty<Objective> objectiveProperty() {
+    public ObjectProperty<TaskType> objectiveProperty() {
         return objective;
     }
 }
