@@ -99,6 +99,9 @@ public class RestoreSlotStepTest {
 
         // THEN
         verify(databasePatcher).applyWithProperties(patchCaptor.capture(), patchPropertiesCaptor.capture());
+        final PatchProperties actualProperties = patchPropertiesCaptor.getValue();
+        assertThat(actualProperties.getVehicleSlotReference()).contains(vehicleSlotRef);
+
         final DbPatchDto actualPatchObject = patchCaptor.getValue();
         assertThat(actualPatchObject.getChanges()).hasSize(79);
 
@@ -113,9 +116,7 @@ public class RestoreSlotStepTest {
         assertThat(actualPartialValues)
                 .extracting("rank").containsOnly(4, 5, 6);
         assertThat(actualPartialValues)
-                .extracting("value").containsOnly(vehicleSlotRef);
+                .extracting("value").containsOnly("61085282");
 
-        final PatchProperties actualProperties = patchPropertiesCaptor.getValue();
-        assertThat(actualProperties.getVehicleSlotReference()).contains(vehicleSlotRef);
     }
 }
