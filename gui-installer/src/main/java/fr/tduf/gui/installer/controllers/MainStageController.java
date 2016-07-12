@@ -129,7 +129,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        loadDatabaseForResetSlot();
+        loadDatabaseForObjective(TaskType.RESET_SLOT);
     }
 
     @FXML
@@ -169,7 +169,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        loadDatabaseForInstall();
+        loadDatabaseForObjective(TaskType.INSTALL);
     }
 
     @FXML
@@ -180,7 +180,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        loadDatabaseForUninstall();
+        loadDatabaseForObjective(TaskType.UNINSTALL);
     }
 
     private void initReadme() throws IOException {
@@ -351,33 +351,12 @@ public class MainStageController extends AbstractGuiController {
         databaseFixer.restart();
     }
 
-    // TODO create single method with objective as param
-    private void loadDatabaseForInstall() throws IOException, ReflectiveOperationException {
+    private void loadDatabaseForObjective(TaskType objective) throws IOException, ReflectiveOperationException {
         if (runningServiceProperty.get()) {
             return;
         }
 
-        databaseLoader.objectiveProperty().setValue(TaskType.INSTALL);
-
-        loadDatabase();
-    }
-    private void loadDatabaseForUninstall() throws IOException, ReflectiveOperationException {
-        if (runningServiceProperty.get()) {
-            return;
-        }
-
-        databaseLoader.objectiveProperty().setValue(TaskType.UNINSTALL);
-
-        loadDatabase();
-    }
-
-    private void loadDatabaseForResetSlot() throws IOException, ReflectiveOperationException {
-        if (runningServiceProperty.get()) {
-            return;
-        }
-
-        databaseLoader.objectiveProperty().setValue(TaskType.RESET_SLOT);
-
+        databaseLoader.objectiveProperty().setValue(objective);
         loadDatabase();
     }
 
