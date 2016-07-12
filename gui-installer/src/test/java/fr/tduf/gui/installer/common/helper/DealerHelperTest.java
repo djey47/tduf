@@ -174,11 +174,13 @@ public class DealerHelperTest {
 
 
         // WHEN
-        final Map<Dealer, Set<Dealer.Slot>> actualSlots = DealerHelper.load(minerMock).searchForVehicleSlot(slotRef);
+        final Map<String, Set<Dealer.Slot>> actualSlots = DealerHelper.load(minerMock).searchForVehicleSlot(slotRef);
 
 
         // THEN
         assertThat(actualSlots).hasSize(1);
+        final String actualRef = actualSlots.keySet().stream().findAny().get();
+        assertThat(actualRef).isEqualTo(dealerReference);
         final Set<Dealer.Slot> actualSet = actualSlots.values().stream().findAny().get();
         assertThat(actualSet).hasSize(3);
         assertThat(actualSet).extracting("rank").containsOnly(1, 2, 3);
@@ -217,7 +219,7 @@ public class DealerHelperTest {
 
 
         // WHEN
-        final Map<Dealer, Set<Dealer.Slot>> actualSlots = DealerHelper.load(minerMock).searchForVehicleSlot(slotRef);
+        final Map<String, Set<Dealer.Slot>> actualSlots = DealerHelper.load(minerMock).searchForVehicleSlot(slotRef);
 
 
         // THEN

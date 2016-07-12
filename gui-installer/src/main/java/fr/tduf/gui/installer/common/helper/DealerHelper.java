@@ -10,12 +10,10 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static fr.tduf.gui.installer.common.DatabaseConstants.*;
 import static fr.tduf.gui.installer.common.DisplayConstants.*;
@@ -86,15 +84,23 @@ public class DealerHelper extends CommonHelper {
     /**
      * @return all dealer slots used by specified vehicle.
      */
-    public Map<Dealer, Set<Dealer.Slot>> searchForVehicleSlot(String vehicleSlotReference) {
-        return getDealers(DealerKind.ALL).stream()
+    public Map<String, Set<Dealer.Slot>> searchForVehicleSlot(String vehicleSlotReference) {
+        return miner.getDatabaseTopic(CAR_SHOPS).get().getData().getEntries().stream()
                 .parallel()
                 .collect(toConcurrentMap(
                         Function.identity(),
-                        dealer -> getDealerSlotsHostingVehicle(dealer, vehicleSlotReference))).entrySet().stream()
-                .filter(entry -> !entry.getValue().isEmpty())
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+                        entry -> {
+                            final String dealerReference = entry.getItemAtRank(1).get().getRawValue();
+                            Optional<DbMetadataDto.DealerMetadataDto> carShopsReference = carShopsMetaDataHelper.getCarShopsReferenceForDealerReference(dealerReference);
+                            return getSlotItemsForVehicle(entry, vehicleSlotReference, carShopsReference);
+                        })).entrySet().stream()
+                .filter(mapEntry -> !mapEntry.getValue().isEmpty())
+                .collect(Collectors.toMap(
+                        mapEntry -> mapEntry.getKey().getItemAtRank(1).get().getRawValue(),
+                        mapEntry -> new HashSet<>(slotItemsToDomainObjects(mapEntry.getValue()))));
     }
+
+    // TODO simplify!
 
     private boolean entryMatchesDealerKind(ContentEntryDto carShopsEntry, DealerKind dealerkind) {
         if (DealerKind.ALL == dealerkind) {
@@ -136,6 +142,20 @@ public class DealerHelper extends CommonHelper {
                 .build();
     }
 
+    private List<Dealer.Slot> slotItemsToDomainObjects(List<ContentItemDto> slotItems) {
+        return slotItems.stream()
+                .map(this::slotItemToDomainObject)
+                .collect(toList());
+    }
+
+    // Ignore warning: method reference
+    private Dealer.Slot slotItemToDomainObject(ContentItemDto slotItem) {
+        return Dealer.Slot.builder()
+                .withRank(getSlotRankFromFieldRank(slotItem))
+                .havingVehicle(vehicleSlotsHelper.getVehicleSlotFromReference(slotItem.getRawValue()).orElse(null))
+                .build();
+    }
+
     private List<Dealer.Slot> getActualSlots(ContentEntryDto carShopsEntry, Optional<DbMetadataDto.DealerMetadataDto> carShopsReference) {
 
         return carShopsEntry.getItems().stream()
@@ -146,10 +166,7 @@ public class DealerHelper extends CommonHelper {
                 .filter(slotItem -> ! carShopsReference.isPresent()
                         || carShopsReference.get().getAvailableSlots().contains(getSlotRankFromFieldRank(slotItem)))
 
-                .map(slotItem -> Dealer.Slot.builder()
-                        .withRank(getSlotRankFromFieldRank(slotItem))
-                        .havingVehicle(vehicleSlotsHelper.getVehicleSlotFromReference(slotItem.getRawValue()).orElse(null))
-                        .build())
+                .map(this::slotItemToDomainObject)
 
                 .collect(toList());
     }
@@ -158,10 +175,14 @@ public class DealerHelper extends CommonHelper {
         return slotItem.getFieldRank() - DatabaseConstants.FIELD_RANK_DEALER_SLOT_1 + 1;
     }
 
-    private static Set<Dealer.Slot> getDealerSlotsHostingVehicle(Dealer dealer, String vehicleSlotReference) {
-        return dealer.getSlots().stream()
-                .filter(slot -> slot.getVehicleSlot().isPresent())
-                .filter(slot -> slot.getVehicleSlot().get().getRef().equals(vehicleSlotReference))
-                .collect(toSet());
+    private static List<ContentItemDto> getSlotItemsForVehicle(ContentEntryDto carShopsEntry, String vehicleSlotReference, Optional<DbMetadataDto.DealerMetadataDto> carShopsReference) {
+        return carShopsEntry.getItems().stream()
+                .filter(item -> item.getFieldRank() >= DatabaseConstants.FIELD_RANK_DEALER_SLOT_1
+                        && item.getFieldRank() <= DatabaseConstants.FIELD_RANK_DEALER_SLOT_15)
+                .filter(slotItem -> ! carShopsReference.isPresent()
+                        || carShopsReference.get().getAvailableSlots().contains(getSlotRankFromFieldRank(slotItem)))
+                .filter(availableSlotItem -> vehicleSlotReference.equals(availableSlotItem.getRawValue()))
+                .collect(toList());
     }
+
 }
