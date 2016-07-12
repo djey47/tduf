@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -117,8 +118,9 @@ public class RestoreSlotStep extends GenericStep {
                             .map(slot -> DbFieldValueDto.fromCouple(slot.getRank() + DatabaseConstants.DELTA_RANK_DEALER_SLOTS, vehicleSlotReference))
                             .collect(toList());
                     DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
-                            .asReference(dealerReference)
+                            .withType(UPDATE)
                             .forTopic(CAR_SHOPS)
+                            .asReference(dealerReference)
                             .withPartialEntryValues(partialEntryValues)
                             .build();
                     patchObject.getChanges().add(changeObject);

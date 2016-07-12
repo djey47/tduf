@@ -8,11 +8,11 @@ import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
+import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +23,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -33,6 +36,9 @@ import static org.mockito.Mockito.verify;
 public class RestoreSlotStepTest {
     @Mock
     private DatabasePatcher databasePatcher;
+
+    @Captor
+    private ArgumentCaptor<DbPatchDto> patchCaptor;
 
     @Captor
     private ArgumentCaptor<PatchProperties> patchPropertiesCaptor;
@@ -78,14 +84,15 @@ public class RestoreSlotStepTest {
     public void perform_shouldApplyPatchesWithProperties_andRemoveFromDealer() throws ReflectiveOperationException, IOException, URISyntaxException, StepException {
         // GIVEN
         String vehicleSlotRef = "300000000";
+        String dealerRef = "550413704";
         VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef(vehicleSlotRef)
                 .build();
         context.getUserSelection().selectVehicleSlot(vehicleSlot);
         DatabaseChangeHelper changeHelper = new DatabaseChangeHelper(context.getMiner());
-        changeHelper.updateItemRawValueAtIndexAndFieldRank(DbDto.Topic.CAR_SHOPS, 0, DatabaseConstants.DELTA_RANK_DEALER_SLOTS + 1, vehicleSlotRef);
-        changeHelper.updateItemRawValueAtIndexAndFieldRank(DbDto.Topic.CAR_SHOPS, 0, DatabaseConstants.DELTA_RANK_DEALER_SLOTS + 2, vehicleSlotRef);
-        changeHelper.updateItemRawValueAtIndexAndFieldRank(DbDto.Topic.CAR_SHOPS, 0, DatabaseConstants.DELTA_RANK_DEALER_SLOTS + 3, vehicleSlotRef);
+        changeHelper.updateItemRawValueAtIndexAndFieldRank(CAR_SHOPS, 0, DatabaseConstants.DELTA_RANK_DEALER_SLOTS + 1, vehicleSlotRef);
+        changeHelper.updateItemRawValueAtIndexAndFieldRank(CAR_SHOPS, 0, DatabaseConstants.DELTA_RANK_DEALER_SLOTS + 2, vehicleSlotRef);
+        changeHelper.updateItemRawValueAtIndexAndFieldRank(CAR_SHOPS, 0, DatabaseConstants.DELTA_RANK_DEALER_SLOTS + 3, vehicleSlotRef);
         RestoreSlotStep step = (RestoreSlotStep) GenericStep.starterStep(configuration, context)
                 .nextStep(GenericStep.StepType.RESTORE_SLOT);
         step.setPatcherComponent(databasePatcher);
@@ -94,9 +101,24 @@ public class RestoreSlotStepTest {
         step.perform();
 
         // THEN
-        verify(databasePatcher).applyWithProperties(any(DbPatchDto.class), patchPropertiesCaptor.capture());
+        verify(databasePatcher).applyWithProperties(patchCaptor.capture(), patchPropertiesCaptor.capture());
+        final DbPatchDto actualPatchObject = patchCaptor.getValue();
+        assertThat(actualPatchObject.getChanges()).hasSize(79);
+
+        final Optional<DbPatchDto.DbChangeDto> carShopsChangeObject = actualPatchObject.getChanges().stream()
+                .filter(changeObject -> CAR_SHOPS == changeObject.getTopic())
+                .findAny();
+        assertThat(carShopsChangeObject).isPresent();
+        final DbPatchDto.DbChangeDto actualDealerChangeObject = carShopsChangeObject.get();
+        final List<DbFieldValueDto> actualPartialValues = actualDealerChangeObject.getPartialValues();
+        assertThat(actualDealerChangeObject.getRef()).isEqualTo(dealerRef);
+        assertThat(actualPartialValues).hasSize(3);
+        assertThat(actualPartialValues)
+                .extracting("rank").containsOnly(4, 5, 6);
+        assertThat(actualPartialValues)
+                .extracting("value").containsOnly(vehicleSlotRef);
+
         final PatchProperties actualProperties = patchPropertiesCaptor.getValue();
         assertThat(actualProperties.getVehicleSlotReference()).contains(vehicleSlotRef);
-        assertThat(DealerHelper.load(context.getMiner()).searchForVehicleSlot(vehicleSlotRef)).isEmpty();
     }
 }
