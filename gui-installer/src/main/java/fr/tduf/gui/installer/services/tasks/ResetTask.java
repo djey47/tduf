@@ -33,7 +33,6 @@ public class ResetTask extends InstallerTask {
         updateMessage(DisplayConstants.STATUS_RESET_IN_PROGRESS);
 
         callStepChain(
-                REVERT_CAMERA,
                 RESTORE_SLOT,
                 SAVE_DATABASE);
 
