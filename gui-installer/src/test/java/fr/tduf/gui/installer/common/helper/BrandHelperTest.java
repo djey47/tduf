@@ -131,14 +131,45 @@ public class BrandHelperTest {
                 .withDisplayedName(BRAND_NAME_RESOURCE_1)
                 .build();
         assertThat(actualBrand).contains(expectedBrand);
+    }
 
+    @Test
+    public void getBrandFromIdentifierOrName_whenNonExisting_shouldReturnEmpty() throws Exception {
+        // GIVEN-WHEN-THEN
+        assertThat(brandHelper.getBrandFromIdentifierOrName("azerty")).isEmpty();
+    }
+
+    @Test
+    public void getBrandFromIdentifierOrName_whenExistingId_shouldReturnBrand() throws Exception {
+        // GIVEN-WHEN
+        Optional<Brand> actualBrand = brandHelper.getBrandFromIdentifierOrName("honda");
+
+        // THEN
+        Brand expectedBrand = Brand.builder()
+                .withReference(BRAND_REF_2)
+                .withIdentifier(BRAND_ID_RESOURCE_2)
+                .withDisplayedName(BRAND_NAME_RESOURCE_2)
+                .build();
+        assertThat(actualBrand).contains(expectedBrand);
+    }
+
+    @Test
+    public void getBrandFromIdentifierOrName_whenExistingName_shouldReturnBrand() throws Exception {
+        // GIVEN-WHEN
+        Optional<Brand> actualBrand = brandHelper.getBrandFromIdentifierOrName("alfa ROMEO");
+
+        // THEN
+        Brand expectedBrand = Brand.builder()
+                .withReference(BRAND_REF_1)
+                .withIdentifier(BRAND_ID_RESOURCE_1)
+                .withDisplayedName(BRAND_NAME_RESOURCE_1)
+                .build();
+        assertThat(actualBrand).contains(expectedBrand);
     }
 
     @Test
     public void getAllBrands_shouldReturnAllEntries() throws Exception {
-        // GIVEN
-
-        // WHEN
+        // GIVEN-WHEN
         List<Brand> actualBrands = brandHelper.getAllBrands();
 
         // THEN

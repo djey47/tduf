@@ -8,6 +8,7 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static java.util.stream.Collectors.toList;
@@ -38,14 +39,29 @@ public class BrandHelper extends CommonHelper {
     }
 
     /**
+     * @param criteria    : manufacturer id or displayed name
+     * @return any brand information about provided criteria (case-insensitive), or empty if none has been found.
+     */
+    public Optional<Brand> getBrandFromIdentifierOrName(String criteria) {
+        return getAllBrandsStream()
+                .filter(brand -> brand.getIdentifier().getValue().equalsIgnoreCase(criteria)
+                        || brand.getDisplayedName().getValue().equalsIgnoreCase(criteria))
+                .findAny();
+    }
+
+    /**
      * @return all available brands in database
      */
     public List<Brand> getAllBrands() {
+        return getAllBrandsStream()
+                .collect(toList());
+    }
+
+    private Stream<Brand> getAllBrandsStream() {
         return miner.getDatabaseTopic(BRANDS)
                 .orElseThrow(() -> new IllegalStateException("No brands information was found in database"))
                 .getData().getEntries().stream()
-                .map(this::brandEntryToDomainObject)
-                .collect(toList());
+                .map(this::brandEntryToDomainObject);
     }
 
     private Brand brandEntryToDomainObject(ContentEntryDto brandEntry) {
