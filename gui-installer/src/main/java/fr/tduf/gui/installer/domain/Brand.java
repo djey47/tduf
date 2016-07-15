@@ -1,5 +1,6 @@
 package fr.tduf.gui.installer.domain;
 
+import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -69,7 +70,7 @@ public class Brand {
         public Brand build() {
             Brand brand = new Brand();
 
-            brand.ref = brandRef;
+            brand.ref = requireNonNull(brandRef, "Brand reference is required");
             brand.identifier = brandId;
             brand.displayedName = brandName;
 
