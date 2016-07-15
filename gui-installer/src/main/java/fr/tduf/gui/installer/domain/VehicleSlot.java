@@ -11,9 +11,10 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 /**
  * Domain object representing slot information for a particular vehicle.
  */
-// TODO add brand info
 public class VehicleSlot {
     private String ref;
+
+    private Brand brand;
 
     private Resource fileName;
 
@@ -21,6 +22,7 @@ public class VehicleSlot {
     private Set<RimSlot> rimCandidates;
 
     private int carIdentifier;
+    // TODO remove
     private Resource brandName;
     private Resource realName;
     private Resource modelName;
@@ -122,6 +124,10 @@ public class VehicleSlot {
                 .findAny();
     }
 
+    public Brand getBrand() {
+        return brand;
+    }
+
     /**
      * Creates custom VehicleSlot instances.
      */
@@ -138,6 +144,7 @@ public class VehicleSlot {
         private int cameraIdentifier;
         private SecurityOptions securityOptions;
         private List<PaintJob> paintJobs = new ArrayList<>(20);
+        private Brand brand;
 
         public VehicleSlotBuilder withRef(String ref) {
             this.ref = ref;
@@ -207,6 +214,11 @@ public class VehicleSlot {
             return this;
         }
 
+        public VehicleSlotBuilder withBrand(Brand brand) {
+            this.brand = brand;
+            return this;
+        }
+
         public VehicleSlot build() {
             final VehicleSlot vehicleSlot = new VehicleSlot(this.ref);
 
@@ -221,6 +233,7 @@ public class VehicleSlot {
             vehicleSlot.cameraIdentifier = cameraIdentifier;
             vehicleSlot.securityOptions = securityOptions;
             vehicleSlot.paintJobs = paintJobs;
+            vehicleSlot.brand = brand;
 
             return vehicleSlot;
         }
