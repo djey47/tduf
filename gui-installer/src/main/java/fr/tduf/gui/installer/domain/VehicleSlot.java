@@ -11,6 +11,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 /**
  * Domain object representing slot information for a particular vehicle.
  */
+// TODO add brand info
 public class VehicleSlot {
     private String ref;
 
