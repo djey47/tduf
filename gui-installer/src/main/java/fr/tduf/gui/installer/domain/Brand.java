@@ -10,8 +10,8 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  */
 public class Brand {
     private String ref;
-    private String identifier;
-    private String displayedName;
+    private Resource identifier;
+    private Resource displayedName;
 
     private Brand() {}
 
@@ -39,30 +39,30 @@ public class Brand {
         return ref;
     }
 
-    public String getIdentifier() {
+    public Resource getIdentifier() {
         return identifier;
     }
 
-    public String getDisplayedName() {
+    public Resource getDisplayedName() {
         return displayedName;
     }
 
     public static class BrandBuilder {
         private String brandRef;
-        private String brandId;
-        private String brandName;
+        private Resource brandId;
+        private Resource brandName;
 
         public BrandBuilder withReference(String brandRef) {
             this.brandRef = brandRef;
             return this;
         }
 
-        public BrandBuilder withIdentifier(String brandId) {
+        public BrandBuilder withIdentifier(Resource brandId) {
             this.brandId = brandId;
             return this;
         }
 
-        public BrandBuilder withDisplayedName(String brandName) {
+        public BrandBuilder withDisplayedName(Resource brandName) {
             this.brandName = brandName;
             return this;
         }
