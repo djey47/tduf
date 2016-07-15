@@ -56,6 +56,14 @@ public class PatchProperties extends Properties {
         registerIfNotExists(PLACEHOLDER_NAME_SLOT_REFERENCE, slotReference);
     }
 
+    public void setBrandReferenceIfNotExists(String brandReference) {
+        registerIfNotExists(PLACEHOLDER_NAME_BRAND_REFERENCE, brandReference);
+    }
+
+    public void setBrandIfNotExists(String brand) {
+        registerIfNotExists(PLACEHOLDER_NAME_BRAND, brand);
+    }
+
     public void setBankNameIfNotExists(String bankName) {
         registerIfNotExists(PLACEHOLDER_NAME_BANK, bankName);
     }
@@ -155,6 +163,14 @@ public class PatchProperties extends Properties {
 
     public Optional<String> getCarIdentifier() {
         return retrieve(PLACEHOLDER_NAME_ID_CAR);
+    }
+
+    public Optional<String> getBrandReference() {
+        return retrieve(PLACEHOLDER_NAME_BRAND_REFERENCE);
+    }
+
+    public Optional<String> getBrand() {
+        return retrieve(PLACEHOLDER_NAME_BRAND);
     }
 
     public Optional<String> getBankFileName() {

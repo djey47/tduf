@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.steps.helper;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
+import fr.tduf.gui.installer.common.helper.BrandHelper;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.*;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
@@ -37,6 +38,7 @@ public class PatchEnhancer {
     private final DatabaseContext databaseContext;
 
     private VehicleSlotsHelper vehicleSlotsHelper;
+    private BrandHelper brandHelper;
 
     /**
      * Unique way to get an instance.
@@ -45,6 +47,7 @@ public class PatchEnhancer {
     public PatchEnhancer(DatabaseContext databaseContext) {
         this.databaseContext = requireNonNull(databaseContext, "Database context is required");
         this.vehicleSlotsHelper = VehicleSlotsHelper.load(databaseContext.getMiner());
+        this.brandHelper = BrandHelper.load(databaseContext.getMiner());
     }
 
     /**
@@ -84,6 +87,12 @@ public class PatchEnhancer {
 
         if (databaseContext.getUserSelection().getDealer().isPresent()) {
             createPatchPropertiesForDealerSlot(databaseContext.getUserSelection(), patchProperties);
+        }
+
+        if (patchProperties.getBrand().isPresent()) {
+            createPatchPropertiesForBrand(patchProperties.getBrand().get(), patchProperties);
+        } else if (!patchProperties.getBrandReference().isPresent()) {
+            throw new IllegalArgumentException("BRAND or BRANDREF properties not found");
         }
     }
 
@@ -178,6 +187,16 @@ public class PatchEnhancer {
                 .map(Dealer::getRef)
                 .orElseThrow(() -> new IllegalArgumentException("No dealer reference was selected!")));
         patchProperties.setDealerSlotIfNotExists(userSelection.getDealerSlotRank());
+    }
+
+    private void createPatchPropertiesForBrand(String brand, PatchProperties patchProperties) {
+        Log.info(THIS_CLASS_NAME, "->Resolving missing properties with brand information");
+
+        String brandReference = brandHelper.getBrandFromIdentifierOrName(brand)
+                .map(Brand::getRef)
+                .orElseThrow(() -> new IllegalArgumentException("Brand not found with identifier or name: " + brand));
+
+        patchProperties.setBrandReferenceIfNotExists(brandReference);
     }
 
     private void enhancePatchObjectWithExteriors(VehicleSlot vehicleSlot, List<String> interiorPatternRefs, PatchProperties patchProperties) {
@@ -387,5 +406,9 @@ public class PatchEnhancer {
     // For testing only
     void overrideVehicleSlotsHelper(VehicleSlotsHelper vehicleSlotsHelper) {
         this.vehicleSlotsHelper = vehicleSlotsHelper;
+    }
+
+    void overrideBrandHelper(BrandHelper brandHelper) {
+        this.brandHelper = brandHelper;
     }
 }

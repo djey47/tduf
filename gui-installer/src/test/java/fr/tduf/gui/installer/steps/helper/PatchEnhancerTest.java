@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.steps.helper;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.installer.common.helper.BrandHelper;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.*;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
@@ -24,6 +25,7 @@ import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChange
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -33,6 +35,7 @@ public class PatchEnhancerTest {
 
     private static final String SLOT_REFERENCE = "12345678";
     private static final String TDUCP_SLOT_REFERENCE = "30000000";
+    private static final String BRAND_REFERENCE = "789";
     private static final String CARID = "3000";
     private static final String BANKNAME = "TDUCP_3000";
     private static final String RES_BANKNAME = "30000567";
@@ -59,12 +62,16 @@ public class PatchEnhancerTest {
     @Mock
     private VehicleSlotsHelper vehicleSlotsHelperMock;
 
+    @Mock
+    private BrandHelper brandHelperMock;
+
     @Before
     public void setUp() throws IOException, URISyntaxException {
         Log.set(Log.LEVEL_DEBUG);
 
         patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists(SLOT_REFERENCE);
+        patchProperties.setBrandReferenceIfNotExists(BRAND_REFERENCE);
 
         databaseContext = new DatabaseContext(new ArrayList<>(0), "");
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
@@ -119,6 +126,7 @@ public class PatchEnhancerTest {
         patchProperties.setCarIdentifierIfNotExists(carIdentifier);
         patchProperties.setBankNameIfNotExists(bankName);
         patchProperties.setResourceBankNameIfNotExists(bankResource);
+        patchProperties.setBrandReferenceIfNotExists(BRAND_REFERENCE);
         final PatchEnhancer patchEnhancer = createDefaultEnhancer();
         patchEnhancer.overrideVehicleSlotsHelper(vehicleSlotsHelperMock);
 
@@ -182,6 +190,55 @@ public class PatchEnhancerTest {
         assertThat(patchProperties.getDealerSlot()).contains(1);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void enhancePatchProperties_whenBrandReferenceNotSpecified_andNoBrandName_shouldThrowException() {
+        // GIVEN
+        patchProperties.clear();
+
+        // WHEN
+        createDefaultEnhancer().enhancePatchProperties(patchProperties);
+
+        // THEN: IAE
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void enhancePatchProperties_whenBrandReferenceNotSpecified_andBrandNamePresent_butNotAvailableInDatabase_shouldThrowException() {
+        // GIVEN
+        patchProperties.setBrandIfNotExists("MDR");
+        PatchEnhancer patchEnhancer = createDefaultEnhancer();
+        patchEnhancer.overrideBrandHelper(brandHelperMock);
+
+        when(brandHelperMock.getBrandFromIdentifierOrName("MDR")).thenReturn(empty());
+
+
+        // WHEN
+        patchEnhancer.enhancePatchProperties(patchProperties);
+
+
+        // THEN: IAE
+    }
+
+    @Test
+    public void enhancePatchProperties_whenBrandReferenceNotSpecified_andBrandNamePresent_shouldResolveBrandReference() {
+        // GIVEN
+        patchProperties.clear();
+        patchProperties.setBrandIfNotExists("ALFA");
+        PatchEnhancer patchEnhancer = createDefaultEnhancer();
+        patchEnhancer.overrideBrandHelper(brandHelperMock);
+
+        Brand brand = Brand.builder().withReference("1111").build();
+
+        when(brandHelperMock.getBrandFromIdentifierOrName("ALFA")).thenReturn(of(brand));
+
+
+        // WHEN
+        patchEnhancer.enhancePatchProperties(patchProperties);
+
+
+        // THEN
+        assertThat(patchProperties.getBrandReference()).contains("1111");
+    }
+
     @Test(expected = InternalStepException.class)
     public void enhancePatchObject_withoutProperties_withoutSelectedSlot_shouldThrowException() {
         // GIVEN
@@ -198,6 +255,7 @@ public class PatchEnhancerTest {
     public void enhancePatchObject_withoutProperties_shouldGenerateSlotRefFromSelectedSlot() {
         // GIVEN
         patchProperties.clear();
+        patchProperties.setBrandReferenceIfNotExists(BRAND_REFERENCE);
 
         // WHEN
         createDefaultEnhancer().enhancePatchObject();

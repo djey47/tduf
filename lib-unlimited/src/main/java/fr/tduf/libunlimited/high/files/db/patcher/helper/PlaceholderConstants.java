@@ -19,6 +19,8 @@ public class PlaceholderConstants {
     public static final String PLACEHOLDER_NAME_DEALER_REFERENCE = "DEALERREF";
     public static final String PLACEHOLDER_NAME_DEALER_SLOT = "DEALERSLOT";
     public static final String PLACEHOLDER_NAME_CAMERA = "CAMERA";
+    public static final String PLACEHOLDER_NAME_BRAND_REFERENCE = "BRANDREF";
+    public static final String PLACEHOLDER_NAME_BRAND = "BRAND";
 
     public static final String PLACEHOLDER_NAME_FMT_RIMS_REFERENCE = "RIMREF.%d";
     public static final String PLACEHOLDER_NAME_FMT_RIM_BRAND_REFERENCE = "RIMBRANDREF.%d";
