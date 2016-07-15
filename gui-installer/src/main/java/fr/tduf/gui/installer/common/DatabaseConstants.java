@@ -6,7 +6,9 @@ package fr.tduf.gui.installer.common;
 public class DatabaseConstants {
     public static final int FIELD_RANK_CAR_REF = 1;                                 // CAR PHYSICS, CAR RIMS, CAR COLORS
 
-    public static final int FIELD_RANK_MANUFACTURER_NAME = 3;                       // BRANDS
+    public static final int FIELD_RANK_BRAND_REF = 1;                               // BRANDS
+    public static final int FIELD_RANK_MANUFACTURER_ID = 2;
+    public static final int FIELD_RANK_MANUFACTURER_NAME = 3;
 
     public static final int FIELD_RANK_COLOR_NAME = 3;                              // CAR COLORS
     public static final int FIELD_RANK_INTERIOR_1 = 8;
