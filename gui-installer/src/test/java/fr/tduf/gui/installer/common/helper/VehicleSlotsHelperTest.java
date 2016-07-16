@@ -1,16 +1,14 @@
 package fr.tduf.gui.installer.common.helper;
 
 import fr.tduf.gui.installer.common.DatabaseConstants;
-import fr.tduf.gui.installer.domain.Resource;
-import fr.tduf.gui.installer.domain.RimSlot;
-import fr.tduf.gui.installer.domain.SecurityOptions;
-import fr.tduf.gui.installer.domain.VehicleSlot;
+import fr.tduf.gui.installer.domain.*;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -24,6 +22,7 @@ import java.util.stream.Stream;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.SlotKind.ALL;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.VehicleKind.DRIVABLE;
+import static fr.tduf.gui.installer.domain.Resource.from;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
@@ -35,15 +34,30 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
-
 @RunWith(MockitoJUnitRunner.class)
 public class VehicleSlotsHelperTest {
+    private static String SLOTREF = "REF";
+    private static String SLOTREF_TDUCP = "300000000";
+    private static String BRANDREF = "81940960";
+    private static String BRAND_ID_REF = "0000";
+    private static String BRAND_ID = "FORZA";
+    private static String BRAND_NAME_REF = "3333";
+    private static String BRAND_NAME = "FERRARI";
 
     @Mock
     private BulkDatabaseMiner bulkDatabaseMinerMock;
 
+    @Mock
+    private BrandHelper brandHelperMock;
+
     @InjectMocks
     private VehicleSlotsHelper vehicleSlotsHelper;
+
+    @Before
+    public void setUp() {
+        mockBrandHelper();
+        mockMinerForBrands();
+    }
 
     @Test
     public void classInitializer_shouldPopulateDataFromProps() {
@@ -59,13 +73,12 @@ public class VehicleSlotsHelperTest {
     @Test
     public void getVehicleSlotFromReference_whenSlotNotAvailable_shouldReturnEmpty() {
         // GIVEN
-        String slotReference = "REF";
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA)).thenReturn(empty());
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(SLOTREF, CAR_PHYSICS_DATA)).thenReturn(empty());
 
         // WHEN
         final Optional<VehicleSlot> actualSlot = VehicleSlotsHelper
                 .load(bulkDatabaseMinerMock)
-                .getVehicleSlotFromReference(slotReference);
+                .getVehicleSlotFromReference(SLOTREF);
 
         // THEN
         assertThat(actualSlot).isEmpty();
@@ -74,16 +87,12 @@ public class VehicleSlotsHelperTest {
     @Test
     public void getVehicleSlotFromReference() {
         // GIVEN
-        String slotRef = "REF";
         String rimSlotRef1 = "RIMREF1";
         String rimSlotRef2 = "RIMREF2";
-        String brandSlotRef = "BRANDREF";
         String directoryRef = "0000";
         String directory = "DIR";
         String fileNameRef = "1111";
         String fileName = "FILE";
-        String brandNameRef = "3333";
-        String brandName = "BRAND";
         String realNameRef = "4444";
         String realName = "REALNAME";
         String modelNameRef = "5555";
@@ -105,25 +114,20 @@ public class VehicleSlotsHelperTest {
         int idCam = 200;
         float secuOne = 100;
         int secuTwo = 101;
-        ContentEntryDto brandsEntry = ContentEntryDto.builder()
-                .forId(0)
-                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(brandSlotRef).build())
-                .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(brandNameRef).build())
-                .build();
         ContentEntryDto carRimsEntry1 = ContentEntryDto.builder()
                 .forId(0)
-                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(rimSlotRef1).build())
                 .build();
         ContentEntryDto carRimsEntry2 = ContentEntryDto.builder()
                 .forId(1)
-                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(rimSlotRef2).build())
                 .build();
         ContentEntryDto physicsEntry = ContentEntryDto.builder()
                 .forId(0)
-                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotRef).build())
-                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(brandSlotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(BRANDREF).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(9).withRawValue(fileNameRef).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(10).withRawValue(rimSlotRef1).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(12).withRawValue(realNameRef).build())
@@ -150,7 +154,7 @@ public class VehicleSlotsHelperTest {
                 .build();
         ContentEntryDto carColorsEntry = ContentEntryDto.builder()
                 .forId(0)
-                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(colorNameRef).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(8).withRawValue(interiorRef).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(9).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
@@ -168,9 +172,8 @@ public class VehicleSlotsHelperTest {
                 .addItem(ContentItemDto.builder().ofFieldRank(21).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(22).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
                 .build();
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(brandSlotRef, BRANDS)).thenReturn(of(brandsEntry));
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotRef, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
-        when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotRef), CAR_RIMS)).thenReturn(
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(SLOTREF, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
+        when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, SLOTREF), CAR_RIMS)).thenReturn(
                 asList(
                     carRimsEntry1,
                     carRimsEntry2
@@ -182,7 +185,6 @@ public class VehicleSlotsHelperTest {
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef1, RIMS)).thenReturn(of(rimsEntry1));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef2, RIMS)).thenReturn(of(rimsEntry2));
         when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(any(DbFieldValueDto.class), eq(CAR_COLORS))).thenReturn(Stream.of(carColorsEntry));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(colorNameRef, CAR_COLORS, UNITED_STATES)).thenReturn(of(colorName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(fileNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(fileName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(realNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(realName));
@@ -196,30 +198,28 @@ public class VehicleSlotsHelperTest {
 
 
         // WHEN
-        final Optional<VehicleSlot> actualSlot = VehicleSlotsHelper
-                .load(bulkDatabaseMinerMock)
-                .getVehicleSlotFromReference(slotRef);
+        final Optional<VehicleSlot> actualSlot = vehicleSlotsHelper.getVehicleSlotFromReference(SLOTREF);
 
 
         // THEN
         assertThat(actualSlot).isPresent();
 
         VehicleSlot vehicleSlot = actualSlot.get();
-        assertThat(vehicleSlot.getRef()).isEqualTo(slotRef);
+        assertThat(vehicleSlot.getRef()).isEqualTo(SLOTREF);
         assertThat(vehicleSlot.getCarIdentifier()).isEqualTo(idCar);
-        assertThat(vehicleSlot.getFileName()).isEqualTo(Resource.from(fileNameRef, fileName));
-        assertThat(vehicleSlot.getBrandName()).isEqualTo(Resource.from("", brandName));
-        assertThat(vehicleSlot.getRealName()).isEqualTo(Resource.from(realNameRef, realName));
-        assertThat(vehicleSlot.getModelName()).isEqualTo(Resource.from(modelNameRef, modelName));
-        assertThat(vehicleSlot.getVersionName()).isEqualTo(Resource.from(versionNameRef, versionName));
+        assertThat(vehicleSlot.getFileName()).isEqualTo(from(fileNameRef, fileName));
+        assertThat(vehicleSlot.getBrandName()).isEqualTo(from("", BRAND_NAME));
+        assertThat(vehicleSlot.getRealName()).isEqualTo(from(realNameRef, realName));
+        assertThat(vehicleSlot.getModelName()).isEqualTo(from(modelNameRef, modelName));
+        assertThat(vehicleSlot.getVersionName()).isEqualTo(from(versionNameRef, versionName));
         assertThat(vehicleSlot.getCameraIdentifier()).isEqualTo(idCam);
         assertThat(vehicleSlot.getSecurityOptions()).isEqualTo(SecurityOptions.fromValues(secuOne, secuTwo));
 
         RimSlot actualDefaultRims = vehicleSlot.getDefaultRims().get();
         assertThat(actualDefaultRims.getRef()).isEqualTo(rimSlotRef1);
-        assertThat(actualDefaultRims.getParentDirectoryName()).isEqualTo(Resource.from(directoryRef, directory));
-        assertThat(actualDefaultRims.getFrontRimInfo().getFileName()).isEqualTo(Resource.from(frontRimFileNameRef1, frontRimFileName1));
-        assertThat(actualDefaultRims.getRearRimInfo().getFileName()).isEqualTo(Resource.from(rearRimFileNameRef1, rearRimFileName1));
+        assertThat(actualDefaultRims.getParentDirectoryName()).isEqualTo(from(directoryRef, directory));
+        assertThat(actualDefaultRims.getFrontRimInfo().getFileName()).isEqualTo(from(frontRimFileNameRef1, frontRimFileName1));
+        assertThat(actualDefaultRims.getRearRimInfo().getFileName()).isEqualTo(from(rearRimFileNameRef1, rearRimFileName1));
 
         assertThat(vehicleSlot.getAllRimOptionsSorted())
                 .hasSize(2)
@@ -227,14 +227,16 @@ public class VehicleSlotsHelperTest {
         assertThat(vehicleSlot.getAllRimCandidatesSorted()).isEmpty();
 
         assertThat(vehicleSlot.getPaintJobs()).extracting("rank").containsExactly(1);
-        assertThat(vehicleSlot.getPaintJobs()).extracting("name").containsExactly(Resource.from(colorNameRef, colorName));
+        assertThat(vehicleSlot.getPaintJobs()).extracting("name").containsExactly(from(colorNameRef, colorName));
         assertThat(vehicleSlot.getPaintJobs()).extracting("interiorPatternRefs").containsExactly(singletonList(interiorRef));
+
+        Brand expectedBrand = createBrandInformation();
+        assertThat(vehicleSlot.getBrand()).isEqualTo(expectedBrand);
     }
 
     @Test
     public void getVehicleSlotFromReference_whenNewTDUCPSlot_shouldLoadRimCandidates() {
         // GIVEN
-        String slotRef = "300000000";
         String rimSlotRef1 = "000030001";
         String rimSlotRef2 = "000030002";
         String rimSlotRef3 = "000030003";
@@ -244,13 +246,10 @@ public class VehicleSlotsHelperTest {
         String rimSlotRef7 = "000030007";
         String rimSlotRef8 = "000030008";
         String rimSlotRef9 = "000030009";
-        String brandSlotRef = "BRANDREF";
         String directoryRef = "0000";
         String directory = "DIR";
         String fileNameRef = "1111";
         String fileName = "FILE";
-        String brandNameRef = "3333";
-        String brandName = "BRAND";
         String realNameRef = "4444";
         String realName = "REALNAME";
         String modelNameRef = "5555";
@@ -272,20 +271,15 @@ public class VehicleSlotsHelperTest {
         int idCam = 200;
         float secuOne = 100;
         int secuTwo = 101;
-        ContentEntryDto brandsEntry = ContentEntryDto.builder()
-                .forId(0)
-                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(brandSlotRef).build())
-                .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(brandNameRef).build())
-                .build();
         ContentEntryDto carRimsEntry1 = ContentEntryDto.builder()
                 .forId(0)
-                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF_TDUCP).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(rimSlotRef1).build())
                 .build();
         ContentEntryDto physicsEntry = ContentEntryDto.builder()
                 .forId(0)
-                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotRef).build())
-                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(brandSlotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF_TDUCP).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(BRANDREF).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(9).withRawValue(fileNameRef).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(10).withRawValue(rimSlotRef1).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(12).withRawValue(realNameRef).build())
@@ -312,7 +306,7 @@ public class VehicleSlotsHelperTest {
                 .build();
         ContentEntryDto carColorsEntry = ContentEntryDto.builder()
                 .forId(0)
-                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotRef).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF_TDUCP).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(colorNameRef).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(8).withRawValue(interiorRef).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(9).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
@@ -330,9 +324,8 @@ public class VehicleSlotsHelperTest {
                 .addItem(ContentItemDto.builder().ofFieldRank(21).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(22).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
                 .build();
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(brandSlotRef, BRANDS)).thenReturn(of(brandsEntry));
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(slotRef, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
-        when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotRef), CAR_RIMS)).thenReturn(
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(SLOTREF_TDUCP, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
+        when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, SLOTREF_TDUCP), CAR_RIMS)).thenReturn(
                 singletonList(carRimsEntry1).stream(),
                 singletonList(carRimsEntry1).stream());
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef1, RIMS)).thenReturn(of(rimsEntry1));
@@ -345,7 +338,6 @@ public class VehicleSlotsHelperTest {
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef8, RIMS)).thenReturn(empty());
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef9, RIMS)).thenReturn(empty());
         when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(any(DbFieldValueDto.class), eq(CAR_COLORS))).thenReturn(Stream.of(carColorsEntry));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 3, BRANDS, UNITED_STATES)).thenReturn(of(brandName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(colorNameRef, CAR_COLORS, UNITED_STATES)).thenReturn(of(colorName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(fileNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(fileName));
         when(bulkDatabaseMinerMock.getLocalizedResourceValueFromTopicAndReference(realNameRef, CAR_PHYSICS_DATA, UNITED_STATES)).thenReturn(of(realName));
@@ -359,9 +351,7 @@ public class VehicleSlotsHelperTest {
 
 
         // WHEN
-        final Optional<VehicleSlot> actualSlot = VehicleSlotsHelper
-                .load(bulkDatabaseMinerMock)
-                .getVehicleSlotFromReference(slotRef);
+        final Optional<VehicleSlot> actualSlot = vehicleSlotsHelper.getVehicleSlotFromReference(SLOTREF_TDUCP);
 
 
         // THEN
@@ -379,13 +369,12 @@ public class VehicleSlotsHelperTest {
     @Test
     public void getVehicleName_whenRealNameAvailable() throws Exception {
         // GIVEN
-        String slotReference = "REF";
         String realName = "realName";
         VehicleSlot vehicleSlot = VehicleSlot.builder()
-                .withRef(slotReference)
-                .withRealName(Resource.from("", realName))
-                .withModelName(Resource.from(DatabaseConstants.RESOURCE_REF_UNKNOWN_VEHICLE_NAME, DatabaseConstants.RESOURCE_VALUE_NONE))
-                .withVersionName(Resource.from(DatabaseConstants.RESOURCE_REF_UNKNOWN_VEHICLE_NAME, DatabaseConstants.RESOURCE_VALUE_NONE))
+                .withRef(SLOTREF)
+                .withRealName(from("", realName))
+                .withModelName(from(DatabaseConstants.RESOURCE_REF_UNKNOWN_VEHICLE_NAME, DatabaseConstants.RESOURCE_VALUE_NONE))
+                .withVersionName(from(DatabaseConstants.RESOURCE_REF_UNKNOWN_VEHICLE_NAME, DatabaseConstants.RESOURCE_VALUE_NONE))
                 .build();
 
         // WHEN
@@ -398,15 +387,14 @@ public class VehicleSlotsHelperTest {
     @Test
     public void getVehicleName_whenRealNameUnavailable() throws Exception {
         // GIVEN
-        String slotReference = "REF";
         String brandName = "Alfa-Romeo";
         String modelName = "Brera";
         String versionName = "2.0 SkyView";
         VehicleSlot vehicleSlot = VehicleSlot.builder()
-                .withRef(slotReference)
-                .withBrandName(Resource.from("", brandName))
-                .withModelName(Resource.from("", modelName))
-                .withVersionName(Resource.from("", versionName))
+                .withRef(SLOTREF)
+                .withBrandName(from("", brandName))
+                .withModelName(from("", modelName))
+                .withVersionName(from("", versionName))
                 .build();
 
         // WHEN
@@ -441,14 +429,16 @@ public class VehicleSlotsHelperTest {
     @Test
     public void getVehicleSlots_when1DrivableVehicle_shouldReturnIt() {
         // GIVEN
+        String drivableRef = SLOTREF;
         String undrivableRef = "00000000";
-        String drivableRef = "11111111";
         ContentItemDto refItem1 = ContentItemDto.builder().ofFieldRank(1).withRawValue(undrivableRef).build();
+        ContentItemDto brandItem1 = ContentItemDto.builder().ofFieldRank(2).withRawValue(BRANDREF).build();
         ContentItemDto groupItem1 = ContentItemDto.builder().ofFieldRank(5).withRawValue("92900264").build();
         ContentItemDto refItem2 = ContentItemDto.builder().ofFieldRank(1).withRawValue(drivableRef).build();
+        ContentItemDto brandItem2 = ContentItemDto.builder().ofFieldRank(2).withRawValue(BRANDREF).build();
         ContentItemDto groupItem2 = ContentItemDto.builder().ofFieldRank(5).withRawValue("77800264").build();
-        ContentEntryDto undrivableEntry = ContentEntryDto.builder().forId(0).addItem(refItem1, groupItem1).build();
-        ContentEntryDto drivableEntry = ContentEntryDto.builder().forId(1).addItem(refItem2, groupItem2).build();
+        ContentEntryDto undrivableEntry = ContentEntryDto.builder().forId(0).addItem(refItem1, brandItem1, groupItem1).build();
+        ContentEntryDto drivableEntry = ContentEntryDto.builder().forId(1).addItem(refItem2, brandItem2, groupItem2).build();
         DbDataDto dataObject = DbDataDto.builder().addEntry(undrivableEntry, drivableEntry).build();
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
@@ -470,11 +460,10 @@ public class VehicleSlotsHelperTest {
     @Test
     public void getBankFileName_forExteriorModel() {
         // GIVEN
-        String slotReference = "11111111";
         String resourceValue = "RX8";
         VehicleSlot vehicleSlot = VehicleSlot.builder()
-                .withRef(slotReference)
-                .withFileName(Resource.from("", resourceValue)).build();
+                .withRef(SLOTREF)
+                .withFileName(from("", resourceValue)).build();
 
         // WHEN
         String actualBankFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, EXTERIOR_MODEL, true);
@@ -486,11 +475,10 @@ public class VehicleSlotsHelperTest {
     @Test
     public void getBankFileName_forAudio() {
         // GIVEN
-        String slotReference = "11111111";
         String resourceValue = "RX8";
         VehicleSlot vehicleSlot = VehicleSlot.builder()
-                .withRef(slotReference)
-                .withFileName(Resource.from("", resourceValue)).build();
+                .withRef(SLOTREF)
+                .withFileName(from("", resourceValue)).build();
 
         // WHEN
         String actualBankFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, SOUND, true);
@@ -502,11 +490,10 @@ public class VehicleSlotsHelperTest {
     @Test
     public void getBankFileName_forInteriorModel() {
         // GIVEN
-        String slotReference = "11111111";
         String resourceValue = "RX8";
         VehicleSlot vehicleSlot = VehicleSlot.builder()
-                .withRef(slotReference)
-                .withFileName(Resource.from("", resourceValue)).build();
+                .withRef(SLOTREF)
+                .withFileName(from("", resourceValue)).build();
 
         // WHEN
         String actualBankFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, INTERIOR_MODEL, true);
@@ -581,10 +568,10 @@ public class VehicleSlotsHelperTest {
         String rimsResourceValue2 = "RX8_F_02";
 
         RimSlot.RimInfo frontRimInfo = RimSlot.RimInfo.builder()
-                .withFileName(Resource.from("33333333", rimsResourceValue1))
+                .withFileName(from("33333333", rimsResourceValue1))
                 .build();
         RimSlot.RimInfo frontRimInfo2 = RimSlot.RimInfo.builder()
-                .withFileName(Resource.from("33333333-2", rimsResourceValue2))
+                .withFileName(from("33333333-2", rimsResourceValue2))
                 .build();
         RimSlot rims1 = RimSlot.builder()
                 .atRank(1)
@@ -608,5 +595,31 @@ public class VehicleSlotsHelperTest {
 
         // THEN
         assertThat(actualFileName).isEqualTo("RX8_F_02.bnk");
+    }
+
+    private void mockMinerForBrands() {
+        ContentEntryDto brandsEntry = ContentEntryDto.builder()
+                .forId(0)
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(BRANDREF).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(BRAND_ID_REF).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(BRAND_NAME_REF).build())
+                .build();
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(BRANDREF, BRANDS)).thenReturn(of(brandsEntry));
+        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 3, BRANDS, UNITED_STATES)).thenReturn(of(BRAND_NAME));
+    }
+
+    private void mockBrandHelper() {
+        vehicleSlotsHelper.setBrandHelper(brandHelperMock);
+
+        Brand brand = createBrandInformation();
+        when(brandHelperMock.getBrandFromReference(BRANDREF)).thenReturn(of(brand));
+    }
+
+    private static Brand createBrandInformation() {
+        return Brand.builder()
+                .withReference(BRANDREF)
+                .withIdentifier(from(BRAND_ID_REF, BRAND_ID))
+                .withDisplayedName(from(BRAND_NAME_REF, BRAND_NAME))
+                .build();
     }
 }

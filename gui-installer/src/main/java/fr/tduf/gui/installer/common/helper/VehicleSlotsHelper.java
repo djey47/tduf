@@ -32,6 +32,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Component to get advanced information on vehicle slots.
  */
+// TODO apply code rules
 public class VehicleSlotsHelper extends CommonHelper {
     private static final String THIS_CLASS_NAME = VehicleSlotsHelper.class.getSimpleName();
     private static final Class<VehicleSlotsHelper> thisClass = VehicleSlotsHelper.class;
@@ -51,8 +52,11 @@ public class VehicleSlotsHelper extends CommonHelper {
         loadProperties();
     }
 
+    private BrandHelper brandHelper;
+
     private VehicleSlotsHelper(BulkDatabaseMiner miner) {
         super(miner);
+        brandHelper = BrandHelper.load(miner);
     }
 
     /**
@@ -78,7 +82,6 @@ public class VehicleSlotsHelper extends CommonHelper {
         public String getLabel() {
             return label;
         }
-
     }
 
     /**
@@ -98,7 +101,6 @@ public class VehicleSlotsHelper extends CommonHelper {
         public String getLabel() {
             return label;
         }
-
     }
 
     /**
@@ -141,9 +143,15 @@ public class VehicleSlotsHelper extends CommonHelper {
         List<RimSlot> rimOptions = getAllRimOptionsForVehicle(slotReference);
         List<RimSlot> rimCandidates = getAllRimCandidatesForVehicle(slotReference, rimOptions);
 
+        Brand brand = physicsEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_BRAND)
+                .map(ContentItemDto::getRawValue)
+                .flatMap(rawValue -> brandHelper.getBrandFromReference(rawValue))
+                .orElseThrow(() -> new IllegalStateException("No brand reference at rank 2"));
+
         return of(VehicleSlot.builder()
                 .withRef(slotReference)
                 .withCarIdentifier(carIdentifier.orElse(DEFAULT_VEHICLE_ID))
+                .withBrand(brand)
                 .withFileName(fileName.orElse(null))
                 .withRealName(realName.orElse(null))
                 .withModelName(modelName.orElse(null))
@@ -448,5 +456,10 @@ public class VehicleSlotsHelper extends CommonHelper {
 
     static Pattern getTducpBikeSlotPattern() {
         return tducpBikeSlotPattern;
+    }
+
+    // For testing use
+    void setBrandHelper(BrandHelper brandHelper) {
+        this.brandHelper = brandHelper;
     }
 }
