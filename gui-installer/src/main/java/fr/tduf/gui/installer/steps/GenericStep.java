@@ -81,6 +81,14 @@ public abstract class GenericStep {
     }
 
     /**
+     * How a particular step should initialize. Can be overriden if necessary.
+     * Do not call it directly, use {@link GenericStep#nextStep(StepType)} method instead
+     */
+    protected void onInit() {
+        // Nothing to do for now...
+    }
+
+    /**
      * What a particular step should do.
      * Do not call it directly, use {@link GenericStep#start()} method instead
      *
@@ -88,6 +96,7 @@ public abstract class GenericStep {
      * @throws ReflectiveOperationException
      */
     protected abstract void perform() throws IOException, ReflectiveOperationException, URISyntaxException;
+
 
     /**
      * @return a reference of step to continue process
@@ -107,6 +116,8 @@ public abstract class GenericStep {
         stepType.stepInstance.setType(stepType);
 
         shareContext(stepType.stepInstance);
+
+        stepType.stepInstance.onInit();
 
         return stepType.stepInstance;
     }
