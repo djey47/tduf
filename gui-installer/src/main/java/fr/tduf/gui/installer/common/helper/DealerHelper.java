@@ -50,12 +50,12 @@ public class DealerHelper extends CommonHelper {
         }
     }
 
-    private final VehicleSlotsHelper vehicleSlotsHelper;
+    private VehicleSlotsHelper vehicleSlotsHelper;
     private final CarShopsHelper carShopsMetaDataHelper;
 
     private DealerHelper(BulkDatabaseMiner miner) {
         super(miner);
-        this.vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
+        vehicleSlotsHelper = VehicleSlotsHelper.load(miner);
         carShopsMetaDataHelper = new CarShopsHelper();
     }
 
@@ -178,5 +178,10 @@ public class DealerHelper extends CommonHelper {
     private static String getDealerReferenceFromEntry(ContentEntryDto entry) {
         return getStringValueFromDatabaseEntry(entry, 1)
                 .orElseThrow(() -> new IllegalStateException("No item at rank 1"));
+    }
+
+    // For testing use
+    void setVehicleSlotsHelper(VehicleSlotsHelper vehicleSlotsHelper) {
+        this.vehicleSlotsHelper = vehicleSlotsHelper;
     }
 }
