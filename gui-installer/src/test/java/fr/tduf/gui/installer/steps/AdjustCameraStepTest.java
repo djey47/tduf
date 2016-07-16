@@ -1,7 +1,9 @@
 package fr.tduf.gui.installer.steps;
 
+import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
+import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
@@ -25,23 +27,29 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import static fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto.GenuineCamViewDto.Type.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
-import static java.util.Arrays.asList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AdjustCameraStepTest {
+    private static final String SLOTREF_1 = "999999";
+    private static final String SLOTREF_2 = "999998";
 
     @Mock
     private GenuineCamGateway cameraSupportMock;
+
+    @Mock
+    private VehicleSlotsHelper vehicleSlotsHelperMock;
 
     @Captor
     private ArgumentCaptor<String> camFileCaptor;
@@ -50,10 +58,14 @@ public class AdjustCameraStepTest {
     private ArgumentCaptor<GenuineCamViewsDto> customizeCamCaptor;
 
     private InstallerConfiguration installerConfiguration;
+
     private DatabaseContext databaseContext;
 
+    private AdjustCameraStep adjustCameraStep;
+
+
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws IOException, StepException {
         final String tduTempDirectory = FilesHelper.createTempDirectoryForInstaller();
         final Path tduDatabasePath = FilesHelper.getTduDatabasePath(tduTempDirectory);
 
@@ -65,23 +77,22 @@ public class AdjustCameraStepTest {
                 .overridingCameraSupport(cameraSupportMock)
                 .build();
 
-        DbDto carPhysicsObject = createCarPhysicsObject("999999");
-        DbDto carColorsObject = createDefaultTopicObject(CAR_COLORS);
-        DbDto carRimsObject = createDefaultTopicObject(CAR_RIMS);
-        PatchProperties patchProperties = new PatchProperties();
-        databaseContext = new DatabaseContext(asList(carPhysicsObject, carColorsObject, carRimsObject), "");
-        databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
+        databaseContext = new DatabaseContext(new ArrayList<>(0), "");
+        databaseContext.setPatch(DbPatchDto.builder().build(), new PatchProperties());
+
+        adjustCameraStep = (AdjustCameraStep) GenericStep.starterStep(installerConfiguration, databaseContext)
+                .nextStep(GenericStep.StepType.ADJUST_CAMERA);
+
+        mockVehicleSlots();
     }
 
     @Test
     public void perform_whenCameraIdInProperties_andNoCustomization_shouldNotCallBankSupportComponent() throws StepException, IOException {
         // GIVEN
         databaseContext.getPatchProperties().register("CAMERA", "200");
-        final GenericStep step = GenericStep.starterStep(installerConfiguration, databaseContext)
-                .nextStep(GenericStep.StepType.ADJUST_CAMERA);
 
         // WHEN
-        step.start();
+        adjustCameraStep.start();
 
         // THEN
         verifyZeroInteractions(cameraSupportMock);
@@ -92,12 +103,10 @@ public class AdjustCameraStepTest {
         // GIVEN
         databaseContext.getPatchProperties().register("CAMERA", "200");
         databaseContext.getPatchProperties().register("CAMERA.HOOD", "201^25");
-        final GenericStep step = GenericStep.starterStep(installerConfiguration, databaseContext)
-                .nextStep(GenericStep.StepType.ADJUST_CAMERA);
 
         // WHEN-THEN
         try {
-            step.start();
+            adjustCameraStep.start();
         } catch (StepException se) {
             assertThat(se).hasCauseExactlyInstanceOf(IllegalArgumentException.class);
             throw se;
@@ -109,11 +118,9 @@ public class AdjustCameraStepTest {
         // GIVEN
         databaseContext.getPatchProperties().register("CAMERA", "200");
         databaseContext.getPatchProperties().register("CAMERA.HOOD", "201|HOOD");
-        final GenericStep step = GenericStep.starterStep(installerConfiguration, databaseContext)
-                .nextStep(GenericStep.StepType.ADJUST_CAMERA);
 
         // WHEN
-        step.start();
+        adjustCameraStep.start();
 
         // THEN
         verify(cameraSupportMock).customizeCamera(camFileCaptor.capture(), eq(200), customizeCamCaptor.capture());
@@ -132,11 +139,9 @@ public class AdjustCameraStepTest {
         databaseContext.getPatchProperties().register("CAMERA.HOODBACK", "202|HOODBACK");
         databaseContext.getPatchProperties().register("CAMERA.COCKPIT", "203|COCKPIT");
         databaseContext.getPatchProperties().register("CAMERA.COCKPITBACK", "204|COCKPITBACK");
-        final GenericStep step = GenericStep.starterStep(installerConfiguration, databaseContext)
-                .nextStep(GenericStep.StepType.ADJUST_CAMERA);
 
         // WHEN
-        step.start();
+        adjustCameraStep.start();
 
         // THEN
         verify(cameraSupportMock).customizeCamera(anyString(), eq(200), customizeCamCaptor.capture());
@@ -149,13 +154,11 @@ public class AdjustCameraStepTest {
     @Test(expected = StepException.class)
     public void perform_whenCameraIdNotInProperties_andSlotNotInDatabase_shouldThrowException() throws StepException, IOException {
         // GIVEN
-        databaseContext.getPatchProperties().register("SLOTREF", "999998");
-        final GenericStep step = GenericStep.starterStep(installerConfiguration, databaseContext)
-                .nextStep(GenericStep.StepType.ADJUST_CAMERA);
+        databaseContext.getPatchProperties().register("SLOTREF", SLOTREF_2);
 
         // WHEN-THEN
         try {
-            step.start();
+            adjustCameraStep.start();
         } catch (StepException se) {
             assertThat(se).hasCauseExactlyInstanceOf(IllegalStateException.class);
             throw se;
@@ -164,13 +167,9 @@ public class AdjustCameraStepTest {
 
     @Test(expected = StepException.class)
     public void perform_whenCameraIdAndSlotNotInProperties_shouldThrowException() throws StepException, IOException {
-        // GIVEN
-        final GenericStep step = GenericStep.starterStep(installerConfiguration, databaseContext)
-                .nextStep(GenericStep.StepType.ADJUST_CAMERA);
-
-        // WHEN-THEN
+        // GIVEN-WHEN-THEN
         try {
-            step.start();
+            adjustCameraStep.start();
         } catch (StepException se) {
             assertThat(se).hasCauseExactlyInstanceOf(IllegalStateException.class);
             throw se;
@@ -180,13 +179,11 @@ public class AdjustCameraStepTest {
     @Test
     public void perform_whenCameraIdNotInProperties_andSingleCustomization_shouldFetchFromDatabase_andCallBankSupportComponent() throws StepException, IOException {
         // GIVEN
-        databaseContext.getPatchProperties().register("SLOTREF", "999999");
+        databaseContext.getPatchProperties().register("SLOTREF", SLOTREF_1);
         databaseContext.getPatchProperties().register("CAMERA.HOOD", "201|HOOD");
-        final GenericStep step = GenericStep.starterStep(installerConfiguration, databaseContext)
-                .nextStep(GenericStep.StepType.ADJUST_CAMERA);
 
         // WHEN
-        step.start();
+        adjustCameraStep.start();
 
         // THEN
         verify(cameraSupportMock).customizeCamera(camFileCaptor.capture(), eq(200), customizeCamCaptor.capture());
@@ -197,30 +194,15 @@ public class AdjustCameraStepTest {
         assertThat(actualViews).extracting("viewId").containsOnly(24);
     }
 
-    private static DbDto createCarPhysicsObject(String slotReference) {
-        return DbDto.builder()
-                .withStructure(DbStructureDto.builder()
-                        .forTopic(CAR_PHYSICS_DATA)
-                        .addItem(DbStructureDto.Field.builder()
-                                .ofRank(1)
-                                .fromType(UID)
-                                .build())
-                        .build())
-                .withData(DbDataDto.builder()
-                        .addEntry(ContentEntryDto.builder()
-                                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(slotReference).build())
-                                .addItem(ContentItemDto.builder().ofFieldRank(98).withRawValue("200").build())
-                                .build())
-                        .build())
-                .build();
-    }
+    private void mockVehicleSlots() {
+        adjustCameraStep.setVehicleSlotsHelper(vehicleSlotsHelperMock);
 
-    private static DbDto createDefaultTopicObject(DbDto.Topic topic) {
-        return DbDto.builder()
-                .withStructure(DbStructureDto.builder()
-                        .forTopic(topic)
-                        .build())
-                .withData(DbDataDto.builder().build())
+        VehicleSlot vehicleSlot = VehicleSlot.builder()
+                .withRef(SLOTREF_1)
+                .withCameraIdentifier(200)
                 .build();
+
+        when(vehicleSlotsHelperMock.getVehicleSlotFromReference(SLOTREF_1)).thenReturn(of(vehicleSlot));
+        when(vehicleSlotsHelperMock.getVehicleSlotFromReference(SLOTREF_2)).thenReturn(empty());
     }
 }

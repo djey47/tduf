@@ -22,11 +22,18 @@ class AdjustCameraStep extends GenericStep {
 
     private static final String REGEX_SEPARATOR_CAM_VIEW = "\\|";
 
+    private VehicleSlotsHelper vehicleSlotsHelper;
+
     @Override
-    protected void perform() throws IOException, ReflectiveOperationException {
+    protected void onInit() {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
 
+        vehicleSlotsHelper = VehicleSlotsHelper.load(getDatabaseContext().getMiner());
+    }
+
+    @Override
+    protected void perform() throws IOException, ReflectiveOperationException {
         int cameraId = getDatabaseContext().getPatchProperties().getCameraIdentifier().orElseGet(this::getCameraIdentifierFromDatabase);
         String cameraFileName = Paths.get(getInstallerConfiguration().resolveDatabaseDirectory(), "Cameras.bin").toString();
         GenuineCamViewsDto customViewsObject = buildCustomViewsFromProperties();
@@ -80,9 +87,13 @@ class AdjustCameraStep extends GenericStep {
     private int getCameraIdentifierFromDatabase() {
         String slotReference = getDatabaseContext().getPatchProperties().getVehicleSlotReference().orElseThrow(() -> new IllegalStateException("Slot reference is unknown at this point. Cannot continue."));
 
-        return VehicleSlotsHelper.load(getDatabaseContext().getMiner())
-                .getVehicleSlotFromReference(slotReference)
+        return vehicleSlotsHelper.getVehicleSlotFromReference(slotReference)
                 .map (VehicleSlot::getCameraIdentifier)
                 .orElseThrow(() -> new IllegalStateException("Vehicle slot should exist in database at this point. Cannot continue."));
+    }
+
+    // For testing use
+    void setVehicleSlotsHelper(VehicleSlotsHelper vehicleSlotsHelper) {
+        this.vehicleSlotsHelper = vehicleSlotsHelper;
     }
 }
