@@ -22,8 +22,6 @@ public class VehicleSlot {
     private Set<RimSlot> rimCandidates;
 
     private int carIdentifier;
-    // TODO remove
-    private Resource brandName;
     private Resource realName;
     private Resource modelName;
     private Resource versionName;
@@ -72,10 +70,6 @@ public class VehicleSlot {
 
     public Resource getRealName() {
         return realName;
-    }
-
-    public Resource getBrandName() {
-        return brandName;
     }
 
     public Resource getModelName() {
@@ -138,7 +132,6 @@ public class VehicleSlot {
         private Set<RimSlot> rimCandidates = new HashSet<>();
         private int carIdentifier;
         private Resource realName;
-        private Resource brandName;
         private Resource modelName;
         private Resource versionName;
         private int cameraIdentifier;
@@ -161,10 +154,6 @@ public class VehicleSlot {
             return this;
         }
 
-        public VehicleSlotBuilder withBrandName(Resource brandName) {
-            this.brandName = brandName;
-            return this;
-        }
         public VehicleSlotBuilder withModelName(Resource modelName) {
             this.modelName = modelName;
             return this;
@@ -227,7 +216,6 @@ public class VehicleSlot {
             vehicleSlot.fileName = fileName;
             vehicleSlot.carIdentifier = carIdentifier;
             vehicleSlot.realName = realName;
-            vehicleSlot.brandName = brandName;
             vehicleSlot.modelName = modelName;
             vehicleSlot.versionName = versionName;
             vehicleSlot.cameraIdentifier = cameraIdentifier;

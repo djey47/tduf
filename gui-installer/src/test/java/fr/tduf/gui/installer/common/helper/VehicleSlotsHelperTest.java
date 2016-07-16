@@ -36,13 +36,14 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class VehicleSlotsHelperTest {
-    private static String SLOTREF = "REF";
-    private static String SLOTREF_TDUCP = "300000000";
-    private static String BRANDREF = "81940960";
-    private static String BRAND_ID_REF = "0000";
-    private static String BRAND_ID = "FORZA";
-    private static String BRAND_NAME_REF = "3333";
-    private static String BRAND_NAME = "FERRARI";
+    private static final String SLOTREF = "REF";
+    private static final String SLOTREF_TDUCP = "300000000";
+    private static final String SLOTREF_UNDRIVABLE = "00000000";
+    private static final String BRANDREF = "81940960";
+    private static final String BRAND_ID_REF = "0000";
+    private static final String BRAND_ID = "FORZA";
+    private static final String BRAND_NAME_REF = "3333";
+    private static final String BRAND_NAME = "FERRARI";
 
     @Mock
     private BulkDatabaseMiner bulkDatabaseMinerMock;
@@ -208,7 +209,7 @@ public class VehicleSlotsHelperTest {
         assertThat(vehicleSlot.getRef()).isEqualTo(SLOTREF);
         assertThat(vehicleSlot.getCarIdentifier()).isEqualTo(idCar);
         assertThat(vehicleSlot.getFileName()).isEqualTo(from(fileNameRef, fileName));
-        assertThat(vehicleSlot.getBrandName()).isEqualTo(from("", BRAND_NAME));
+        assertThat(vehicleSlot.getBrand().getDisplayedName()).isEqualTo(from(BRAND_NAME_REF, BRAND_NAME));
         assertThat(vehicleSlot.getRealName()).isEqualTo(from(realNameRef, realName));
         assertThat(vehicleSlot.getModelName()).isEqualTo(from(modelNameRef, modelName));
         assertThat(vehicleSlot.getVersionName()).isEqualTo(from(versionNameRef, versionName));
@@ -387,12 +388,11 @@ public class VehicleSlotsHelperTest {
     @Test
     public void getVehicleName_whenRealNameUnavailable() throws Exception {
         // GIVEN
-        String brandName = "Alfa-Romeo";
-        String modelName = "Brera";
-        String versionName = "2.0 SkyView";
+        String modelName = "360";
+        String versionName = "Challenge Stradale";
         VehicleSlot vehicleSlot = VehicleSlot.builder()
                 .withRef(SLOTREF)
-                .withBrandName(from("", brandName))
+                .withBrand(createBrandInformation())
                 .withModelName(from("", modelName))
                 .withVersionName(from("", versionName))
                 .build();
@@ -401,21 +401,20 @@ public class VehicleSlotsHelperTest {
         final String actualName = VehicleSlotsHelper.getVehicleName(vehicleSlot);
 
         // THEN
-        assertThat(actualName).isEqualTo("Alfa-Romeo Brera 2.0 SkyView");
+        assertThat(actualName).isEqualTo("FERRARI 360 Challenge Stradale");
     }
 
     @Test
     public void getVehicleSlots_whenNoDrivableVehicle_shouldReturnEmptyList() {
         // GIVEN
-        String undrivableRef = "00000000";
-        ContentItemDto refItem = ContentItemDto.builder().ofFieldRank(1).withRawValue(undrivableRef).build();
+        ContentItemDto refItem = ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF_UNDRIVABLE).build();
         ContentItemDto groupItem = ContentItemDto.builder().ofFieldRank(5).withRawValue("92900264").build();
         ContentEntryDto undrivableEntry = ContentEntryDto.builder().addItem(refItem, groupItem).build();
         DbDataDto dataObject = DbDataDto.builder().addEntry(undrivableEntry).build();
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
         when(bulkDatabaseMinerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(of(topicObject));
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(undrivableRef, CAR_PHYSICS_DATA)).thenReturn(of(undrivableEntry));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(SLOTREF_UNDRIVABLE, CAR_PHYSICS_DATA)).thenReturn(of(undrivableEntry));
 
 
         // WHEN
@@ -429,12 +428,10 @@ public class VehicleSlotsHelperTest {
     @Test
     public void getVehicleSlots_when1DrivableVehicle_shouldReturnIt() {
         // GIVEN
-        String drivableRef = SLOTREF;
-        String undrivableRef = "00000000";
-        ContentItemDto refItem1 = ContentItemDto.builder().ofFieldRank(1).withRawValue(undrivableRef).build();
+        ContentItemDto refItem1 = ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF_UNDRIVABLE).build();
         ContentItemDto brandItem1 = ContentItemDto.builder().ofFieldRank(2).withRawValue(BRANDREF).build();
         ContentItemDto groupItem1 = ContentItemDto.builder().ofFieldRank(5).withRawValue("92900264").build();
-        ContentItemDto refItem2 = ContentItemDto.builder().ofFieldRank(1).withRawValue(drivableRef).build();
+        ContentItemDto refItem2 = ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF).build();
         ContentItemDto brandItem2 = ContentItemDto.builder().ofFieldRank(2).withRawValue(BRANDREF).build();
         ContentItemDto groupItem2 = ContentItemDto.builder().ofFieldRank(5).withRawValue("77800264").build();
         ContentEntryDto undrivableEntry = ContentEntryDto.builder().forId(0).addItem(refItem1, brandItem1, groupItem1).build();
@@ -443,8 +440,8 @@ public class VehicleSlotsHelperTest {
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
         when(bulkDatabaseMinerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(of(topicObject));
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(undrivableRef, CAR_PHYSICS_DATA)).thenReturn(of(undrivableEntry));
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(drivableRef, CAR_PHYSICS_DATA)).thenReturn(of(drivableEntry));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(SLOTREF_UNDRIVABLE, CAR_PHYSICS_DATA)).thenReturn(of(undrivableEntry));
+        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(SLOTREF, CAR_PHYSICS_DATA)).thenReturn(of(drivableEntry));
         when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(any(DbFieldValueDto.class), any(DbDto.Topic.class))).thenReturn(Stream.empty(), Stream.empty());
 
 
@@ -454,7 +451,7 @@ public class VehicleSlotsHelperTest {
 
         // THEN
         assertThat(actualSlots).hasSize(1);
-        assertThat(actualSlots.get(0).getRef()).isEqualTo(drivableRef);
+        assertThat(actualSlots.get(0).getRef()).isEqualTo(SLOTREF);
     }
 
     @Test

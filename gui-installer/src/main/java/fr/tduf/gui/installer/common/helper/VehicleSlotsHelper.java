@@ -22,6 +22,7 @@ import static fr.tduf.gui.installer.common.DatabaseConstants.*;
 import static fr.tduf.gui.installer.common.DisplayConstants.*;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.FRONT_RIM;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.REAR_RIM;
+import static fr.tduf.gui.installer.domain.Resource.from;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -125,8 +126,6 @@ public class VehicleSlotsHelper extends CommonHelper {
 
         final ContentEntryDto physicsEntry = potentialPhysicsEntry.get();
 
-        Optional<Resource> brandName = getResourceFromDatabaseEntry(physicsEntry, DatabaseConstants.FIELD_RANK_CAR_BRAND, BRANDS, DatabaseConstants.FIELD_RANK_MANUFACTURER_NAME);
-
         Optional<Resource> fileName = getResourceFromDatabaseEntry(physicsEntry, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_FILE_NAME);
         Optional<Resource> realName = getResourceFromDatabaseEntry(physicsEntry, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_REAL_NAME);
         Optional<Resource> modelName = getResourceFromDatabaseEntry(physicsEntry, CAR_PHYSICS_DATA, DatabaseConstants.FIELD_RANK_CAR_MODEL_NAME);
@@ -146,7 +145,7 @@ public class VehicleSlotsHelper extends CommonHelper {
         Brand brand = physicsEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_BRAND)
                 .map(ContentItemDto::getRawValue)
                 .flatMap(rawValue -> brandHelper.getBrandFromReference(rawValue))
-                .orElseThrow(() -> new IllegalStateException("No brand reference at rank 2"));
+                .orElseGet(VehicleSlotsHelper::createDefaultBrand);
 
         return of(VehicleSlot.builder()
                 .withRef(slotReference)
@@ -156,7 +155,6 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .withRealName(realName.orElse(null))
                 .withModelName(modelName.orElse(null))
                 .withVersionName(versionName.orElse(null))
-                .withBrandName(brandName.orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
                 .withCameraIdentifier(cameraIdentifier.orElse(DEFAULT_CAM_ID))
                 .withSecurityOptions(secuOptionOne.orElse(SecurityOptions.ONE_DEFAULT), secuOptionTwo.orElse(SecurityOptions.TWO_DEFAULT))
                 .addPaintJobs(paintJobs)
@@ -197,6 +195,7 @@ public class VehicleSlotsHelper extends CommonHelper {
         return String.format("%s%s%s", vehicleSlot.getFileName().getValue(), suffix, extension);
     }
 
+
     /**
      * @param rimBankFileType  : type of bank file to be resolved
      * @return simple file name
@@ -229,7 +228,7 @@ public class VehicleSlotsHelper extends CommonHelper {
             return realName.getValue();
         }
 
-        final String brandName = getNameFromLocalResourceValue(ofNullable(vehicleSlot.getBrandName().getValue()), "");
+        final String brandName = getNameFromLocalResourceValue(ofNullable(vehicleSlot.getBrand().getDisplayedName().getValue()), "");
         final String modelName = getNameFromLocalResourceValue(ofNullable(vehicleSlot.getModelName().getValue()), "");
         final String versionName = getNameFromLocalResourceValue(ofNullable(vehicleSlot.getVersionName().getValue()), "");
 
@@ -337,11 +336,11 @@ public class VehicleSlotsHelper extends CommonHelper {
 
         RimSlot.RimInfo frontInfo = RimSlot.RimInfo
                 .builder()
-                .withFileName(frontFileName.orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
+                .withFileName(frontFileName.orElse(from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
                 .build();
         RimSlot.RimInfo rearInfo = RimSlot.RimInfo
                 .builder()
-                .withFileName(rearFileName.orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
+                .withFileName(rearFileName.orElse(from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
                 .build();
 
         boolean defaultRims = ofNullable(defaultRimsReference)
@@ -352,9 +351,17 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .builder()
                 .withRef(rimsReference)
                 .atRank(rimRank)
-                .withParentDirectoryName(defaulRimsParentDirectory.orElse(Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
+                .withParentDirectoryName(defaulRimsParentDirectory.orElse(from(DatabaseConstants.RESOURCE_REF_DEFAULT_RIM_BRAND, DatabaseConstants.RESOURCE_VALUE_DEFAULT)))
                 .withRimsInformation(frontInfo, rearInfo)
                 .setDefaultRims(defaultRims)
+                .build();
+    }
+
+    private static Brand createDefaultBrand() {
+        return Brand.builder()
+                .withReference(DisplayConstants.ITEM_UNAVAILABLE)
+                .withIdentifier(from(DatabaseConstants.RESOURCE_REF_DEFAULT, DatabaseConstants.RESOURCE_VALUE_DEFAULT))
+                .withDisplayedName(from(DatabaseConstants.RESOURCE_REF_DEFAULT, DatabaseConstants.RESOURCE_VALUE_DEFAULT))
                 .build();
     }
 
