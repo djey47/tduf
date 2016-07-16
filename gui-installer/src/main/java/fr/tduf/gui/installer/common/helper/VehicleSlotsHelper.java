@@ -33,7 +33,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Component to get advanced information on vehicle slots.
  */
-// TODO apply code rules
 public class VehicleSlotsHelper extends CommonHelper {
     private static final String THIS_CLASS_NAME = VehicleSlotsHelper.class.getSimpleName();
     private static final Class<VehicleSlotsHelper> thisClass = VehicleSlotsHelper.class;
@@ -197,7 +196,7 @@ public class VehicleSlotsHelper extends CommonHelper {
 
 
     /**
-     * @param rimBankFileType  : type of bank file to be resolved
+     * @param rimBankFileType : type of bank file to be resolved
      * @return simple file name
      */
     public static String getRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType, int rimRank, boolean withExtension) {
@@ -253,20 +252,16 @@ public class VehicleSlotsHelper extends CommonHelper {
      * @return list of car physics entries following criteria
      */
     public List<VehicleSlot> getVehicleSlots(SlotKind slotKind, VehicleKind vehicleKind) {
-        return miner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries().stream()
-
+        return miner.getDatabaseTopic(CAR_PHYSICS_DATA)
+                .orElseThrow(() -> new IllegalStateException("Database topic not found: CAR_PHYSICS_DATA"))
+                .getData().getEntries().stream()
                 .filter(slotEntry -> byVehicleKind(slotEntry, vehicleKind))
-
                 .filter(slotEntry -> bySlotKind(slotEntry, slotKind))
-
-                .map(drivableSlotEntry -> drivableSlotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REF).get())
-
+                .map(drivableSlotEntry -> drivableSlotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REF)
+                        .orElseThrow(() -> new IllegalStateException("No item at rank 1: slot reference")))
                 .map(drivableSlotItem -> getVehicleSlotFromReference(drivableSlotItem.getRawValue()))
-
                 .filter(Optional::isPresent)
-
                 .map(Optional::get)
-
                 .collect(toList());
     }
 
@@ -281,7 +276,9 @@ public class VehicleSlotsHelper extends CommonHelper {
                             .withName(nameResource.orElse(null));
 
                     IntStream.rangeClosed(DatabaseConstants.FIELD_RANK_INTERIOR_1, DatabaseConstants.FIELD_RANK_INTERIOR_15)
-                            .mapToObj(rank -> entry.getItemAtRank(rank).get().getRawValue())
+                            .mapToObj(rank -> entry.getItemAtRank(rank)
+                                    .orElseThrow(() -> new IllegalStateException("No INTERIOR item at rank: " + rank))
+                                    .getRawValue())
                             .filter(interiorPatternRef -> !DatabaseConstants.REF_NO_INTERIOR.equals(interiorPatternRef))
                             .forEach(paintJobBuilder::addInteriorPattern);
 
@@ -298,9 +295,11 @@ public class VehicleSlotsHelper extends CommonHelper {
 
         AtomicInteger rimRank = new AtomicInteger(1);
         return miner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference), CAR_RIMS)
-                .map(entry -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_RIM_ASSO_REF).get())
+                .map(entry -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_RIM_ASSO_REF)
+                        .orElseThrow(() -> new IllegalStateException("No CAR_RIMS item at rank 2")))
                 .map(ContentItemDto::getRawValue)
-                .map(rimSlotReference -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS).get())
+                .map(rimSlotReference -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS)
+                        .orElseThrow(() -> new IllegalStateException("No RIMS entry at ref: " + rimSlotReference)))
                 .map(rimEntry -> getRimSlotFromDatabaseEntry(rimEntry, rimRank.getAndIncrement(), defaultRimsReference.orElse(null)))
                 .collect(toList());
     }
@@ -324,12 +323,14 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .mapToObj(index -> defaultRimsReference.substring(0, 8) + Integer.toString(index))
                 .map(potentialRimRef -> miner.getContentEntryFromTopicWithReference(potentialRimRef, RIMS))
                 .filter(Optional::isPresent)
-                .map(rimEntry -> getRimSlotFromDatabaseEntry(rimEntry.get(), rimRank.getAndIncrement(), defaultRimsReference))
+                .map(Optional::get)
+                .map(rimEntry -> getRimSlotFromDatabaseEntry(rimEntry, rimRank.getAndIncrement(), defaultRimsReference))
                 .collect(toCollection(() -> rimCandidates));
     }
 
     private RimSlot getRimSlotFromDatabaseEntry(ContentEntryDto rimEntry, int rimRank, String defaultRimsReference) {
-        String rimsReference = getStringValueFromDatabaseEntry(rimEntry, DatabaseConstants.FIELD_RANK_RIM_REF).get();
+        String rimsReference = getStringValueFromDatabaseEntry(rimEntry, DatabaseConstants.FIELD_RANK_RIM_REF)
+                .orElseThrow(() -> new IllegalStateException("No RIMS entry ref at rank 1"));
         Optional<Resource> defaulRimsParentDirectory = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_PATH);
         Optional<Resource> frontFileName = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT);
         Optional<Resource> rearFileName = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR);
@@ -365,24 +366,6 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .build();
     }
 
-    private static String getDefaultRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType, String extension) {
-        Optional<RimSlot.RimInfo> rimInfo;
-        if (FRONT_RIM == rimBankFileType) {
-            rimInfo = vehicleSlot.getDefaultRims()
-                    .map(RimSlot::getFrontRimInfo);
-        } else if (REAR_RIM == rimBankFileType) {
-            rimInfo = vehicleSlot.getDefaultRims()
-                    .map(RimSlot::getRearRimInfo);
-        } else {
-            throw new IllegalArgumentException("Invalid bank file type: " + rimBankFileType);
-        }
-
-        return rimInfo
-                .map(info -> info.getFileName().getValue())
-                .map(rimBankSimpleName -> String.format("%s%s", rimBankSimpleName, extension))
-                .orElse(DisplayConstants.ITEM_UNAVAILABLE);
-    }
-
     private static String getNameFromLocalResourceValue(Optional<String> potentialValue, String defaultValue) {
         return potentialValue
 
@@ -392,7 +375,9 @@ public class VehicleSlotsHelper extends CommonHelper {
     }
 
     private static boolean byVehicleKind(ContentEntryDto slotEntry, VehicleKind vehicleKind) {
-        final String groupRawValue = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_GROUP).get().getRawValue();
+        final String groupRawValue = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_GROUP)
+                .orElseThrow(() -> new IllegalStateException("No CAR_PHYSICS_DATA entry item at rank 5"))
+                .getRawValue();
         switch (vehicleKind) {
             case DRIVABLE:
                 return !DatabaseConstants.RESOURCE_REF_GROUP_Z.equals(groupRawValue);
@@ -406,7 +391,9 @@ public class VehicleSlotsHelper extends CommonHelper {
     }
 
     private static boolean bySlotKind(ContentEntryDto slotEntry, SlotKind slotKind) {
-        final String slotReference = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REF).get().getRawValue();
+        final String slotReference = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REF)
+                .orElseThrow(() -> new IllegalStateException("No CAR_PHYSICS_DATA entry REF at rank 1"))
+                .getRawValue();
         switch (slotKind) {
             case ALL:
                 return true;
