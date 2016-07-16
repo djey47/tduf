@@ -26,6 +26,7 @@ public class UpdateDatabaseStepTest {
     private static final Class<UpdateDatabaseStepTest> thisClass = UpdateDatabaseStepTest.class;
 
     private static final String SLOT_REFERENCE = "30000000";
+    private static final String BRAND_REFERENCE = "81940960";
     private static final String CARID = "3000";
     private static final String BANKNAME = "TDUCP_3000";
     private static final String RES_BANKNAME = "30000567";
@@ -52,6 +53,7 @@ public class UpdateDatabaseStepTest {
 
         PatchProperties patchProperties = new PatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists(SLOT_REFERENCE);
+        patchProperties.setBrandReferenceIfNotExists(BRAND_REFERENCE);
         patchProperties.setInteriorMainColorIdIfNotExists("", 1);
         patchProperties.setInteriorSecondaryColorIdIfNotExists("", 1);
         patchProperties.setInteriorMaterialIdIfNotExists("", 1);
@@ -120,6 +122,7 @@ public class UpdateDatabaseStepTest {
     private static VehicleSlot createVehicleSlot() {
         return VehicleSlot.builder()
                 .withRef(SLOT_REFERENCE)
+                .withBrand(createBrandSlot())
                 .withCarIdentifier(Integer.valueOf(CARID))
                 .withFileName(Resource.from(RES_BANKNAME, BANKNAME))
                 .addRim(RimSlot.builder()
@@ -135,5 +138,9 @@ public class UpdateDatabaseStepTest {
                         .setDefaultRims(true)
                         .build())
                 .build();
+    }
+
+    private static Brand createBrandSlot() {
+        return Brand.builder().withReference(BRAND_REFERENCE).build();
     }
 }
