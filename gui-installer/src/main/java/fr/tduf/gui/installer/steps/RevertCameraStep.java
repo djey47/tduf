@@ -40,11 +40,11 @@ public class RevertCameraStep extends GenericStep {
 
     // Ignore warning: method ref
     private int getCameraIdentifierFromDatabase() {
-        String slotReference = getDatabaseContext().getPatchProperties().getVehicleSlotReference().orElseThrow(() -> new IllegalStateException("Slot reference is unknown at this point. Cannot continue."));
+        String slotReference = getDatabaseContext().getPatchProperties().getVehicleSlotReference().<IllegalStateException>orElseThrow(() -> new IllegalStateException("Slot reference is unknown at this point. Cannot continue."));
 
         return VehicleSlotsHelper.load(getDatabaseContext().getMiner())
                 .getVehicleSlotFromReference(slotReference)
                 .map (VehicleSlot::getCameraIdentifier)
-                .orElseThrow(() -> new IllegalStateException("Vehicle slot should exist in database at this point. Cannot continue."));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Vehicle slot should exist in database at this point. Cannot continue."));
     }
 }

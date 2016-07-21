@@ -491,7 +491,7 @@ public class MainStageController extends AbstractGuiController {
                     .filter(Files::isRegularFile)
                     .filter(path -> EXTENSION_JSON.equalsIgnoreCase(FilesHelper.getExtension(path.toString())))
                     .findFirst()
-                    .orElseThrow(() -> new IOException(String.format(DisplayConstants.MESSAGE_FMT_PATCH_NOT_FOUND, DIRECTORY_DATABASE)))
+                    .<IOException>orElseThrow(() -> new IOException(String.format(DisplayConstants.MESSAGE_FMT_PATCH_NOT_FOUND, DIRECTORY_DATABASE)))
                     .toFile();
         }
 

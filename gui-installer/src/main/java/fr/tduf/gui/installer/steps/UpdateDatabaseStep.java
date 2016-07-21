@@ -41,7 +41,7 @@ class UpdateDatabaseStep extends GenericStep {
         applyMiniPatch();
 
         applyPerformancePackage(getDatabaseContext().getPatchProperties().getVehicleSlotReference()
-                .orElseThrow(() -> new InternalStepException(getType(), "Vehicle slot reference not found in properties")));
+                .<InternalStepException>orElseThrow(() -> new InternalStepException(getType(), "Vehicle slot reference not found in properties")));
     }
 
     private void applyMiniPatch() throws ReflectiveOperationException, IOException {

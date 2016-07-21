@@ -112,7 +112,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                     break;
                 case CONTENTS_REFERENCE_NOT_FOUND:
                     addContentsEntryWithDefaultItems(Optional.of(reference), remoteTopic
-                            .orElseThrow(() -> new IllegalStateException("No remote topic for a contents reference"))
+                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No remote topic for a contents reference"))
                     );
                     break;
                 case CONTENTS_FIELDS_COUNT_MISMATCH:
@@ -143,7 +143,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
         Locale referenceLocale = pickAvailableLocaleOrElseWhatever(UNITED_STATES, validResourceLocales);
         databaseMiner.getResourcesFromTopic(topic)
-                .orElseThrow(() -> new IllegalStateException("No resources for topic: " + topic))
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resources for topic: " + topic))
                 .getEntries()
                 .forEach(entry -> {
                     String referenceValue = entry.getValueForLocale(referenceLocale)
@@ -154,10 +154,10 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
     private void addMissingContentsFields(long entryInternalIdentifier, DbDto.Topic topic) {
         DbDto topicObject = databaseMiner.getDatabaseTopic(topic)
-                .orElseThrow(() -> new IllegalStateException("No contents for topic: " + topic));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No contents for topic: " + topic));
 
         ContentEntryDto invalidEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryInternalIdentifier, topic)
-                .orElseThrow(() -> new IllegalStateException("Invalid entry not found at id: " + entryInternalIdentifier));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Invalid entry not found at id: " + entryInternalIdentifier));
 
         // Structure is the reference
         topicObject.getStructure().getFields().stream()
@@ -171,12 +171,12 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
     private void fixAllResourceEntryValues(String resourceReference, Map<String, Integer> perValueCount, DbDto.Topic topic) {
         String mostFrequentValue = perValueCount.entrySet().stream()
                 .max(comparing(Map.Entry::getValue))
-                .orElseThrow(() -> new IllegalStateException("No maximum per-value entry count in topic: " + topic))
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No maximum per-value entry count in topic: " + topic))
                 .getKey();
 
         databaseMiner.getResourcesFromTopic(topic)
                 .flatMap(resources -> resources.getEntryByReference(resourceReference))
-                .orElseThrow(() -> new IllegalStateException("No resource from topic: " + topic + " at ref: " + resourceReference))
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource from topic: " + topic + " at ref: " + resourceReference))
                 .setValue(mostFrequentValue);
     }
 
@@ -194,7 +194,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
         Locale referenceLocale = pickAvailableLocaleOrElseWhatever(UNITED_STATES, validResourceLocales);
         DbResourceDto resourceObject = databaseMiner.getResourcesFromTopic(topic)
-                .orElseThrow(() -> new IllegalStateException("No resources for topic: " + topic));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resources for topic: " + topic));
         ResourceEntryDto entry = resourceObject
                 .getEntryByReference(reference)
                 // Use supplier to only invoke addEntry when result is absent
@@ -210,7 +210,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
     private void addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {
         DbDto topicObject = databaseMiner.getDatabaseTopic(topic)
-                .orElseThrow(() -> new IllegalStateException("No contents for topic: " + topic));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No contents for topic: " + topic));
 
         DbDataDto dataDto = topicObject.getData();
 
@@ -239,7 +239,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         }
 
         return validResourceLocales.stream().findFirst()
-                .orElseThrow(() -> new IllegalStateException("No valid resource locale available"));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No valid resource locale available"));
     }
 
     Set<IntegrityError> getIntegrityErrors() {

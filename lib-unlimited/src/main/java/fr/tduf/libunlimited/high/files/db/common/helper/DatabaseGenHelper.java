@@ -191,7 +191,7 @@ public class DatabaseGenHelper {
                         .filter(item -> item.getFieldRank() == identifierField.getRank())
                         .findAny()
                         .map(ContentItemDto::getRawValue)
-                        .orElseThrow(() -> new IllegalStateException("No identifier field for topic object: " + topicObject.getTopic())))
+                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No identifier field for topic object: " + topicObject.getTopic())))
 
                 .collect(toSet());
     }
@@ -220,7 +220,7 @@ public class DatabaseGenHelper {
 
         return entries.stream()
                 .filter(entry -> RESOURCE_VALUE_DEFAULT.equals(entry.pickValue()
-                        .orElseThrow(() -> new IllegalStateException("No resource value for entry at ref: " + entry.getReference()))))
+                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource value for entry at ref: " + entry.getReference()))))
                 .findAny();
     }
 

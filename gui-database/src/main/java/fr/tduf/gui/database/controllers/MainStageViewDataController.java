@@ -138,7 +138,7 @@ class MainStageViewDataController {
                         remoteContentEntryId = selectedResource.internalEntryIdProperty().get();
                     } else {
                         remoteContentEntryId = getMiner().getContentEntryInternalIdentifierWithReference(entryReference, targetTopic)
-                                .orElseThrow(() -> new IllegalStateException("No entry with ref: " + entryReference + " for topic: " + targetTopic));
+                                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No entry with ref: " + entryReference + " for topic: " + targetTopic));
                     }
 
                     switchToProfileAndEntry(targetProfileName, remoteContentEntryId, true);
@@ -234,7 +234,7 @@ class MainStageViewDataController {
 
     List<String> selectEntriesFromTopic(DbDto.Topic topic, String profileName) {
         DbDto databaseObject = getMiner().getDatabaseTopic(topic)
-                .orElseThrow(() -> new IllegalStateException("No database object for topic: " + topic));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No database object for topic: " + topic));
 
         final Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getUidField(databaseObject.getStructure().getFields());
         if (potentialUidField.isPresent()) {
@@ -313,15 +313,15 @@ class MainStageViewDataController {
 
         final Long currentEntryIndex = mainStageController.currentEntryIndexProperty.getValue();
         String currentEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndex, mainStageController.currentTopicProperty.getValue())
-                .orElseThrow(() -> new IllegalStateException("No REF available for entry at id: " + currentEntryIndex));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No REF available for entry at id: " + currentEntryIndex));
 
         final DbDto.Topic linkTopic = linkObject.getTopic();
         DbDto linkedTopicObject = getMiner().getDatabaseTopic(linkTopic)
-                .orElseThrow(() -> new IllegalStateException("No database object for topic: " + linkTopic));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No database object for topic: " + linkTopic));
 
         linkedTopicObject.getData().getEntries().stream()
                 .filter(contentEntry -> currentEntryRef.equals(contentEntry.getItemAtRank(1)
-                        .orElseThrow(() -> new IllegalStateException("No content item at rank 1 for entry id: " + contentEntry.getId()))
+                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content item at rank 1 for entry id: " + contentEntry.getId()))
                         .getRawValue())
                 )
                 .map(contentEntry -> fetchLinkResourceFromContentEntry(linkedTopicObject, contentEntry, linkObject))

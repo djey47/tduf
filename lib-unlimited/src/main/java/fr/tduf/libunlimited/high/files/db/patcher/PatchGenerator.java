@@ -98,7 +98,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                             .map(entryId -> databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryId, topicEntry.getKey())
                                     .flatMap(entry -> entry.getItemAtRank(1))
                                     .map(ContentItemDto::getRawValue)
-                                    .orElseThrow(() -> new IllegalStateException("No value at rank 1 for entry id: " + entryId))
+                                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No value at rank 1 for entry id: " + entryId))
                             )
                             .collect(toSet());
 
@@ -116,7 +116,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
     private Stream<DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesInTopic(DbDto.Topic topic, Set<String> resources) {
         DbResourceDto resourceFromTopic = databaseMiner.getResourcesFromTopic(topic)
-                .orElseThrow(() -> new IllegalStateException("No resource object found for topic: " + topic));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource object found for topic: " + topic));
 
         Set<String> globalizedResourceRefs = new HashSet<>();
         Set<String> localizedResourceRefs = new HashSet<>();
@@ -259,7 +259,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
             requiredReferences.updateRequiredResourceReferences(remoteTopic, reference);
         } else {
             Long entryId = databaseMiner.getContentEntryInternalIdentifierWithReference(reference, remoteTopic)
-                    .orElseThrow(() -> new IllegalStateException("No entry id at ref: " + reference));
+                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No entry id at ref: " + reference));
             requiredReferences.updateRequiredContentsIds(remoteTopic, entryId);
         }
     }
@@ -272,7 +272,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
             // For topics without REF
             entryRef = entry.getItemAtRank(1)
                     .map(ContentItemDto::getRawValue)
-                    .orElseThrow(() -> new IllegalStateException("No item at rank 1 for entry id: " + entry.getId()));
+                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No item at rank 1 for entry id: " + entry.getId()));
         }
         return range.accepts(entryRef);
     }

@@ -97,10 +97,10 @@ class CopyFilesStep extends GenericStep {
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(getDatabaseContext().getMiner());
 
         String slotReference = getDatabaseContext().getPatchProperties().getVehicleSlotReference()
-                .orElseThrow(() -> new InternalStepException(getType(), "No slot reference provided in properties."));
+                .<InternalStepException>orElseThrow(() -> new InternalStepException(getType(), "No slot reference provided in properties."));
 
         VehicleSlot vehicleSlot = vehicleSlotsHelper.getVehicleSlotFromReference(slotReference)
-                .orElseThrow(() -> new InternalStepException(getType(), "No vehicle slot found for reference: " + slotReference));
+                .<InternalStepException>orElseThrow(() -> new InternalStepException(getType(), "No vehicle slot found for reference: " + slotReference));
 
         Path effectiveTargetPath = targetPath;
         List<String> targetFileNames;
@@ -146,7 +146,7 @@ class CopyFilesStep extends GenericStep {
 
         int rimRank = Integer.parseInt(matcher.group(2));
         final RimSlot rimSlot = vehicleSlot.getRimAtRank(rimRank)
-                .orElseThrow(() -> new IllegalArgumentException("Vehicle slot hasn't required rim at rank: " + rimRank));
+                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Vehicle slot hasn't required rim at rank: " + rimRank));
 
         return targetPath.resolve(rimSlot.getParentDirectoryName().getValue());
     }

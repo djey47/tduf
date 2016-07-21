@@ -77,7 +77,7 @@ public class PlaceholderResolver {
                 .forEach(changeObject -> {
                     final DbDto.Topic currentTopic = changeObject.getTopic();
                     DbDto topicObject = databaseMiner.getDatabaseTopic(currentTopic)
-                            .orElseThrow(() -> new IllegalStateException("No database object found for topic: " + currentTopic));
+                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No database object found for topic: " + currentTopic));
                     String effectiveReference = resolveReferencePlaceholder(true, changeObject.getRef(), patchProperties, topicObject, generatedIdentifiers);
                     changeObject.setRef(effectiveReference);
                 });
@@ -91,7 +91,7 @@ public class PlaceholderResolver {
                 .forEach(changeObject -> {
                     final DbDto.Topic currentTopic = changeObject.getTopic();
                     DbDto topicObject = databaseMiner.getDatabaseTopic(changeObject.getTopic())
-                            .orElseThrow(() -> new IllegalStateException("No database object found for topic: " + currentTopic));
+                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No database object found for topic: " + currentTopic));
                     String effectiveReference = resolveReferencePlaceholder(false, changeObject.getRef(), patchProperties, topicObject, generatedIdentifiers);
                     changeObject.setRef(effectiveReference);
                 });
@@ -210,10 +210,10 @@ public class PlaceholderResolver {
 
     private static String generateValueForCARIDPlaceholder(BulkDatabaseMiner miner) {
         final DbDto topicObject = miner.getDatabaseTopic(CAR_PHYSICS_DATA)
-                .orElseThrow(() -> new IllegalStateException("No database object found for topic: CAR_PHYSICS_DATA"));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No database object found for topic: CAR_PHYSICS_DATA"));
         final Set<String> allIdCars = topicObject.getData().getEntries().stream()
                 .map(entry -> entry.getItemAtRank(FIELD_RANK_ID_CAR)
-                        .orElseThrow(() -> new IllegalStateException("No ID_CAR item found for entry id: " + entry.getId()))
+                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No ID_CAR item found for entry id: " + entry.getId()))
                 )
                 .map(ContentItemDto::getRawValue)
                 .collect(toSet());

@@ -15,6 +15,6 @@ public class DatabaseStructureHelper extends MetaDataHelper {
                 .filter(topicMetaData -> topicMetaData.getTopic() == topic)
                 .findAny()
                 .map(DbMetadataDto.TopicMetadataDto::isRefSupport)
-                .orElseThrow(() -> new IllegalStateException("No metadata found for topic: " + topic));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No metadata found for topic: " + topic));
     }
 }

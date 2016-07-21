@@ -74,7 +74,7 @@ public class ContentEntryDto {
 
     public Optional<ContentItemDto> updateItemValueAtRank(String newValue, int fieldRank) {
         ContentItemDto i = getItemAtRank(fieldRank)
-                .orElseThrow(() -> new IllegalArgumentException("No item at field rank: " + fieldRank));
+                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("No item at field rank: " + fieldRank));
 
         if (newValue.equals(i.getRawValue())) {
             return empty();
@@ -126,7 +126,7 @@ public class ContentEntryDto {
 
     String getFirstItemValue() {
         return getItemAtRank(1)
-                .orElseThrow(() -> new IllegalArgumentException("Entry has no item at field rank 1"))
+                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Entry has no item at field rank 1"))
                 .getRawValue();
     }
 

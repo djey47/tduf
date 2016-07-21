@@ -70,6 +70,6 @@ public class FormulaHelper {
 
         return storedValue
                 .map(Object::toString)
-                .orElseThrow(() -> new IllegalArgumentException("Such an item does not exist in store: " + pointerReference));
+                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Such an item does not exist in store: " + pointerReference));
     }
 }

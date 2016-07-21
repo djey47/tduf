@@ -45,7 +45,7 @@ public class GenuineCamViewsDto {
                 return Stream.of(values())
                         .filter(type -> type.internalId == internalId)
                         .findAny()
-                        .orElseThrow(() -> new IllegalArgumentException("Unknown view type identifier: " + internalId));
+                        .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Unknown view type identifier: " + internalId));
             }
 
             public int getInternalId() {

@@ -146,7 +146,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
     private DbDto.Topic retrieveTargetTopicForLink(TopicLinkDto topicLinkObject) {
         List<DbStructureDto.Field> structureFields = getMiner().getDatabaseTopic(topicLinkObject.getTopic())
-                .orElseThrow(() -> new IllegalStateException("No database object for topic: " + topicLinkObject.getTopic()))
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No database object for topic: " + topicLinkObject.getTopic()))
                 .getStructure()
                 .getFields();
         DbDto.Topic targetTopic = topicLinkObject.getTopic();

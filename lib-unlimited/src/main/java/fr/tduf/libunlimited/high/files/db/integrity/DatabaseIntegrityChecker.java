@@ -218,7 +218,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
                 .forEach(presentLocale -> {
                     final Optional<String> resourceValue = resourceEntry.getValueForLocale(presentLocale);
                     updateResourceValueCounter(resourceValueCounter, resourceValue
-                            .orElseThrow(() -> new IllegalStateException("No resource value for locale: " + presentLocale + ", at ref: " + resourceEntry.getReference())));
+                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource value for locale: " + presentLocale + ", at ref: " + resourceEntry.getReference())));
                 });
 
         if (resourceValueCounter.size() > 1) {

@@ -79,7 +79,7 @@ public class BulkDatabaseMiner {
         return topicObjects.stream()
                 .filter(databaseObject -> databaseObject.getStructure().getRef().equals(topicReference))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("No topic for topic ref: " + topicReference));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No topic for topic ref: " + topicReference));
     }
 
     /**
@@ -91,7 +91,7 @@ public class BulkDatabaseMiner {
         Log.trace(THIS_CLASS_NAME, "getContentEntryFromTopicWithInternalIdentifier(" + entryIdentifier + ", " + topic + ")");
 
         return getDatabaseTopic(topic)
-                .orElseThrow(() -> new NoSuchElementException("No database object found for topic: " + topic))
+                .<NoSuchElementException>orElseThrow(() -> new NoSuchElementException("No database object found for topic: " + topic))
                 .getData().getEntryWithInternalIdentifier(entryIdentifier);
     }
 
@@ -104,7 +104,7 @@ public class BulkDatabaseMiner {
         Log.trace(THIS_CLASS_NAME, "getContentEntryFromTopicWithReference(" + ref + ", " + topic + ")");
 
         return getDatabaseTopic(topic)
-                .orElseThrow(() -> new NoSuchElementException("No database object found for topic: " + topic))
+                .<NoSuchElementException>orElseThrow(() -> new NoSuchElementException("No database object found for topic: " + topic))
                 .getData().getEntryWithReference(ref);
     }
 
@@ -117,7 +117,7 @@ public class BulkDatabaseMiner {
         Log.trace(THIS_CLASS_NAME, "getContentEntryFromTopicWithItemValues(" + values + ", " + topic + ")");
 
         return getDatabaseTopic(topic)
-                .orElseThrow(() -> new NoSuchElementException("No database object found for topic: " + topic))
+                .<NoSuchElementException>orElseThrow(() -> new NoSuchElementException("No database object found for topic: " + topic))
                 .getData().getEntries().stream()
                 .parallel()
                 .filter(entry -> entry.getValuesHash() == Objects.hashCode(values))
@@ -199,7 +199,7 @@ public class BulkDatabaseMiner {
 
         List<DbStructureDto.Field> structureFields = getDatabaseTopic(topic)
                 .map(databaseTopic -> databaseTopic.getStructure().getFields())
-                .orElseThrow(() -> new IllegalStateException("No topic in database: " + topic));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No topic in database: " + topic));
 
         OptionalInt potentialRefFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(structureFields);
         if (potentialRefFieldRank.isPresent()) {
@@ -269,14 +269,14 @@ public class BulkDatabaseMiner {
     public Optional<String> getLocalizedResourceValueFromContentEntry(long sourceEntryIndex, int sourceFieldRank, DbDto.Topic sourceTopic, Locale locale) {
         List<DbStructureDto.Field> sourceTopicStructureFields = getDatabaseTopic(sourceTopic)
                 .map(topicObject -> topicObject.getStructure().getFields())
-                .orElseThrow(() -> new IllegalStateException("No source topic object: " + sourceTopic));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No source topic object: " + sourceTopic));
 
         return getContentEntryFromTopicWithInternalIdentifier(sourceEntryIndex, sourceTopic)
 
                 .flatMap(contentEntry -> {
                     DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(
                             contentEntry.getItemAtRank(sourceFieldRank)
-                                    .orElseThrow(() -> new IllegalStateException("No item at rank: " + sourceEntryIndex + " for source entry id: " + contentEntry.getId())),
+                                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No item at rank: " + sourceEntryIndex + " for source entry id: " + contentEntry.getId())),
                             sourceTopicStructureFields);
 
                     if (structureField.isAResourceField()) {
@@ -322,19 +322,19 @@ public class BulkDatabaseMiner {
 
         return entry.getItemAtRank(uidFieldRank)
                 .map(ContentItemDto::getRawValue)
-                .orElseThrow(() -> new IllegalStateException("No REF item for entry at id: " + entry.getId()));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No REF item for entry at id: " + entry.getId()));
     }
 
     private String getRawValueAtEntryIndexAndRank(DbDto.Topic topic, int fieldRank, long entryIndex) {
         return getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic)
                 .flatMap(contentEntry -> contentEntry.getItemAtRank(fieldRank))
                 .map(ContentItemDto::getRawValue)
-                .orElseThrow(() -> new IllegalStateException("No item at entry id: " + entryIndex + ", rank: " + fieldRank));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No item at entry id: " + entryIndex + ", rank: " + fieldRank));
     }
 
     private List<ContentEntryDto> getAllContentEntriesFromTopicWithItemValueAtFieldRank(int fieldRank, String itemValue, DbDto.Topic topic) {
         return getDatabaseTopic(topic)
-                .orElseThrow(() -> new IllegalStateException("No topic in database: " + topic))
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No topic in database: " + topic))
                 .getData().getEntries().stream()
                 .filter(entry -> {
                     Optional<ContentItemDto> contentItemFromEntryAtFieldRank = entry.getItemAtRank(fieldRank);
