@@ -24,7 +24,7 @@ import static java.util.Arrays.asList;
 public abstract class GenuineGateway {
     private static final String THIS_CLASS_NAME = GenuineBnkGateway.class.getSimpleName();
 
-    private static final String INTERPRETER_BINARY = "/usr/bin/mono";
+    private static final String INTERPRETER_BINARY = "mono";
     private static final Path EXE_TDUMT_CLI = Paths.get("tools", "tdumt-cli", "tdumt-cli.exe");
 
     /**
@@ -75,7 +75,7 @@ public abstract class GenuineGateway {
         allArguments.add(operation.command);
         allArguments.addAll(asList(args));
 
-        Log.debug(THIS_CLASS_NAME, "TDUMT-CLI Binary path: " + binaryPath);
+        Log.debug(THIS_CLASS_NAME, "TDUMT-CLI Binary or interpreter path: " + binaryPath);
 
         ProcessResult processResult = commandLineHelper.runCliCommand(binaryPath, allArguments.toArray(new String[allArguments.size()]));
         handleCommandLineErrors(processResult);

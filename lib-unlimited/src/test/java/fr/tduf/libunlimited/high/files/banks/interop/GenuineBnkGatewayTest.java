@@ -75,7 +75,7 @@ public class GenuineBnkGatewayTest {
     @Test(expected = IOException.class)
     public void getBankInfo_whenSystemFailure_shouldInvokeCommandLineCorrectly_andThrowException() throws IOException, URISyntaxException {
         // GIVEN
-        when(commandLineHelperMock.runCliCommand(anyString(), eq("BANK-I"), eq(bankFileName))).thenThrow(new IOException());
+        when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("BANK-I"), eq(bankFileName))).thenThrow(new IOException());
 
         // WHEN
         genuineBnkGateway.getBankInfo(bankFileName);
@@ -113,7 +113,7 @@ public class GenuineBnkGatewayTest {
         Path targetParentPath = Paths.get(tempDirectory, "4Build", "PC", "EURO", "Vehicules", "Cars", "Mercedes", "CLK_55");
         assertThat(targetParentPath).exists();
 
-        verify(commandLineHelperMock, times(1)).runCliCommand(anyString(), eq("BANK-UX"), eq(bankFileName), commandArgumentsCaptor.capture());
+        verify(commandLineHelperMock, times(1)).runCliCommand(eq("mono"), anyString(), eq("BANK-UX"), eq(bankFileName), commandArgumentsCaptor.capture());
 
         assertBatchInputFileExists();
     }
@@ -139,7 +139,7 @@ public class GenuineBnkGatewayTest {
 
         assertThat(new File(outputBankFileName)).exists();
 
-        verify(commandLineHelperMock, times(1)).runCliCommand(anyString(), eq("BANK-RX"), eq(outputBankFileName),  commandArgumentsCaptor.capture());
+        verify(commandLineHelperMock, times(1)).runCliCommand(eq("mono"), anyString(), eq("BANK-RX"), eq(outputBankFileName),  commandArgumentsCaptor.capture());
 
         assertBatchInputFileExists();
     }
@@ -219,26 +219,26 @@ public class GenuineBnkGatewayTest {
     private void mockCommandLineHelperToReturnBankInformationSuccess(String bankFileName) throws URISyntaxException, IOException {
         String jsonOutput = FilesHelper.readTextFromResourceFile("/files/interop/tdumt-cli/BANK-I.output.json");
         ProcessResult processResult = new ProcessResult("BANK-I", 0, jsonOutput, "");
-        when(commandLineHelperMock.runCliCommand(anyString(), eq("BANK-I"), eq(bankFileName))).thenReturn(processResult);
+        when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("BANK-I"), eq(bankFileName))).thenReturn(processResult);
     }
 
     private void mockCommandLineHelperToReturnBankInformationFailure(String bankFileName) throws IOException {
         ProcessResult processResult = new ProcessResult("BANK-I", 1, "", "Failure!");
-        when(commandLineHelperMock.runCliCommand(anyString(), eq("BANK-I"), eq(bankFileName))).thenReturn(processResult);
+        when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("BANK-I"), eq(bankFileName))).thenReturn(processResult);
     }
 
     private void mockCommandLineHelperToReturnExtractionSuccess(String bankFileName) throws IOException {
         ProcessResult processResult = new ProcessResult("BANK-UX", 0, "{}", "");
-        when(commandLineHelperMock.runCliCommand(anyString(), eq("BANK-UX"), eq(bankFileName), anyString())).thenReturn(processResult);
+        when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("BANK-UX"), eq(bankFileName), anyString())).thenReturn(processResult);
     }
 
     private void mockCommandLineHelperToReturnReplaceSuccess(String bankFileName) throws IOException {
         ProcessResult processResult = new ProcessResult("BANK-RX", 0, "{}", "");
-        when(commandLineHelperMock.runCliCommand(anyString(), eq("BANK-RX"), eq(bankFileName), anyString())).thenReturn(processResult);
+        when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("BANK-RX"), eq(bankFileName), anyString())).thenReturn(processResult);
     }
 
     private void assertBatchInputFileExists() throws IOException {
-        String batchInputFileName = commandArgumentsCaptor.getAllValues().get(2);
+        String batchInputFileName = commandArgumentsCaptor.getAllValues().get(3);
         final Path batchInputPath = Paths.get(batchInputFileName);
         assertThat(batchInputPath).exists();
 
