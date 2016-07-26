@@ -40,7 +40,8 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
     private static final String PREFIX_PACKED_FILE_PATH = join(SEPARATOR_PACKED_PATH, "D:", "Eden-Prog", "Games", "TestDrive", "Resources", "");
 
     /**
-     * Main Constructor with mandatory command-line helper.
+     * Main Constructor
+     * @param commandLineHelper     : mandatory command-line helper.
      */
     public GenuineBnkGateway(CommandLineHelper commandLineHelper) {
         super(commandLineHelper);
