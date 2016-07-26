@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.system.domain.ProcessResult;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import static java.util.Arrays.asList;
 public abstract class GenuineGateway {
     private static final String THIS_CLASS_NAME = GenuineBnkGateway.class.getSimpleName();
 
+    private static final String INTERPRETER_BINARY = "/usr/bin/mono";
     private static final Path EXE_TDUMT_CLI = Paths.get("tools", "tdumt-cli", "tdumt-cli.exe");
 
     /**
@@ -62,11 +64,16 @@ public abstract class GenuineGateway {
      * @return result of execution as standard output.
      */
     protected String callCommandLineInterface(CommandLineOperation operation, String... args) throws IOException {
-        List<String> allArguments = new ArrayList<>(args.length + 1);
+        final String interpreterCommand = getInterpreterCommand();
+        final String cliCommand = getExecutableDirectory().resolve(EXE_TDUMT_CLI).toString();
+        final String binaryPath = interpreterCommand.isEmpty() ? cliCommand : interpreterCommand;
+
+        List<String> allArguments = new ArrayList<>(args.length + 2);
+        if (!interpreterCommand.isEmpty()) {
+            allArguments.add(cliCommand);
+        }
         allArguments.add(operation.command);
         allArguments.addAll(asList(args));
-
-        String binaryPath = getExecutableDirectory().resolve(EXE_TDUMT_CLI).toString();
 
         Log.debug(THIS_CLASS_NAME, "TDUMT-CLI Binary path: " + binaryPath);
 
@@ -96,6 +103,10 @@ public abstract class GenuineGateway {
             // Run from JAR
             return sourcePath.getParent().getParent().getParent();
         }
+    }
+
+    private static String getInterpreterCommand() {
+        return SystemUtils.IS_OS_WINDOWS ? "" : INTERPRETER_BINARY;
     }
 
     private static void handleCommandLineErrors(ProcessResult processResult) throws IOException {
