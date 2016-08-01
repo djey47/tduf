@@ -1,16 +1,13 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.common.AppConstants;
 import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.common.services.DatabaseFixer;
-import fr.tduf.gui.database.DatabaseEditor;
 import fr.tduf.gui.database.common.DisplayConstants;
-import fr.tduf.gui.database.common.SettingsConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.controllers.helper.DynamicFieldControlsHelper;
@@ -28,6 +25,7 @@ import fr.tduf.gui.database.stages.EntriesDesigner;
 import fr.tduf.gui.database.stages.FieldsBrowserDesigner;
 import fr.tduf.gui.database.stages.ResourcesDesigner;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
+import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
@@ -157,8 +155,12 @@ public class MainStageController extends AbstractGuiController {
 
     private Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
 
+    private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+
     @Override
     protected void init() throws IOException {
+        applicationConfiguration.load();
+
         viewDataController = new MainStageViewDataController(this);
         changeDataController = new MainStageChangeDataController(this);
 
@@ -177,18 +179,9 @@ public class MainStageController extends AbstractGuiController {
 
         initTopToolbar();
 
-        AtomicBoolean databaseAutoLoad = new AtomicBoolean(false);
-        String initialDatabaseDirectory = DatabaseEditor.getCommandLineParameters().stream()
-                .filter(p -> !p.startsWith(AppConstants.SWITCH_PREFIX))
-
-                .findAny()
-
-                .map(p -> {
-                    databaseAutoLoad.set(true);
-                    return p;
-                })
-
-                .orElseGet(() -> SettingsConstants.DATABASE_DIRECTORY_DEFAULT);
+        // TODO Do not use AtomicBoolean, use Optional location instead
+        AtomicBoolean databaseAutoLoad = new AtomicBoolean(true);
+        String initialDatabaseDirectory = viewDataController.resolveInitialDatabaseDirectory(databaseAutoLoad);
 
         initSettingsPane(initialDatabaseDirectory);
 
@@ -1036,6 +1029,10 @@ public class MainStageController extends AbstractGuiController {
 
     void setLayoutObject(EditorLayoutDto layoutObject) {
         this.layoutObject = layoutObject;
+    }
+
+    ApplicationConfiguration getApplicationConfiguration() {
+        return applicationConfiguration;
     }
 
     Deque<EditorLocation> getNavigationHistory() {

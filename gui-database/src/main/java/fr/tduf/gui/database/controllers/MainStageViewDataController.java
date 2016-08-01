@@ -1,5 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.common.AppConstants;
+import fr.tduf.gui.database.DatabaseEditor;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.SettingsConstants;
 import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
@@ -21,7 +23,9 @@ import javafx.collections.ObservableList;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static java.util.Objects.requireNonNull;
@@ -270,6 +274,18 @@ class MainStageViewDataController {
                 labelFieldRanks,
                 getMiner());
         mainStageController.currentEntryLabelProperty.setValue(entryLabel);
+    }
+
+    String resolveInitialDatabaseDirectory(AtomicBoolean databaseAutoLoad) {
+        return DatabaseEditor.getCommandLineParameters().stream()
+                .filter(p -> !p.startsWith(AppConstants.SWITCH_PREFIX))
+                .findAny()
+                .orElseGet(() -> mainStageController.getApplicationConfiguration().getDatabasePath()
+                        .map(Path::toString)
+                        .orElseGet(() -> {
+                            databaseAutoLoad.set(false);
+                            return SettingsConstants.DATABASE_DIRECTORY_DEFAULT;
+                        }));
     }
 
     private ContentEntryDataItem getDisplayableEntryForCurrentLocale(ContentEntryDto topicEntry, List<Integer> labelFieldRanks, DbDto.Topic topic) {
