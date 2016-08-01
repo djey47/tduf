@@ -4,14 +4,18 @@ import com.esotericsoftware.minlog.Log;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static fr.tduf.gui.common.AppConstants.SWITCH_VERBOSE;
 
+/**
+ * Parent of all GUI applications. Provides base services (logging, params...)
+ */
 public abstract class AbstractGuiApp extends Application {
 
-    private static List<String> parameters;
+    private static List<String> parameters = new ArrayList<>(0);
 
     @Override
     public void start(Stage primaryStage) throws Exception {
