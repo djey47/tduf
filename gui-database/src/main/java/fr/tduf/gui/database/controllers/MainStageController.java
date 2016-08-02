@@ -8,6 +8,7 @@ import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.common.services.DatabaseFixer;
 import fr.tduf.gui.database.common.DisplayConstants;
+import fr.tduf.gui.database.common.SettingsConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.controllers.helper.DynamicFieldControlsHelper;
@@ -177,13 +178,11 @@ public class MainStageController extends AbstractGuiController {
                         .otherwise(Cursor.DEFAULT)
         );
 
+        Optional<String> initialDatabaseDirectory = viewDataController.resolveInitialDatabaseDirectory();
+
         initTopToolbar();
 
-        // TODO Do not use AtomicBoolean, use Optional location instead
-        AtomicBoolean databaseAutoLoad = new AtomicBoolean(true);
-        String initialDatabaseDirectory = viewDataController.resolveInitialDatabaseDirectory(databaseAutoLoad);
-
-        initSettingsPane(initialDatabaseDirectory);
+        initSettingsPane(initialDatabaseDirectory.orElse(SettingsConstants.DATABASE_DIRECTORY_DEFAULT));
 
         initResourcesStageController();
 
@@ -197,10 +196,14 @@ public class MainStageController extends AbstractGuiController {
 
         initServiceListeners();
 
-        if (databaseAutoLoad.get()) {
+        initialDatabaseDirectory.ifPresent(databaseLocation -> {
             Log.trace(THIS_CLASS_NAME, "->init: database auto load");
-            loadDatabaseFromDirectory(initialDatabaseDirectory);
-        }
+            try {
+                loadDatabaseFromDirectory(databaseLocation);
+            } catch (IOException ioe) {
+                Log.error(THIS_CLASS_NAME, "Unable to load database at location: " + databaseLocation, ioe);
+            }
+        });
     }
 
     @FXML

@@ -11,7 +11,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.nio.file.Paths;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -35,27 +34,21 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void resolveInitialDatabaseDirectory_whenNoCommandLineParameter_andNoConfiguration_shouldReturnEmptyString() throws Exception {
+    public void resolveInitialDatabaseDirectory_whenNoCommandLineParameter_andNoConfiguration_shouldReturnEmpty() throws Exception {
         // GIVEN
-        AtomicBoolean databaseAutoLoad = new AtomicBoolean(true);
-
         when(mainStageControllerMock.getApplicationConfiguration()).thenReturn(applicationConfigurationMock);
         when(applicationConfigurationMock.getDatabasePath()).thenReturn(Optional.empty());
 
-
         // WHEN
-        final String actualDirectory = controller.resolveInitialDatabaseDirectory(databaseAutoLoad);
-
+        final Optional<String> actualDirectory = controller.resolveInitialDatabaseDirectory();
 
         // THEN
         assertThat(actualDirectory).isEmpty();
-        assertThat(databaseAutoLoad.get()).isFalse();
     }
 
     @Test
-    public void resolveInitialDatabaseDirectory_whenWrongCommandLineParameter_andNoConfiguration_shouldReturnLocation() throws Exception {
+    public void resolveInitialDatabaseDirectory_whenWrongCommandLineParameter_andNoConfiguration_shouldReturnEmpty() throws Exception {
         // GIVEN
-        AtomicBoolean databaseAutoLoad = new AtomicBoolean(true);
         DatabaseEditor.getCommandLineParameters().add("-p");
 
         when(mainStageControllerMock.getApplicationConfiguration()).thenReturn(applicationConfigurationMock);
@@ -63,28 +56,25 @@ public class MainStageViewDataControllerTest {
 
 
         // WHEN
-        final String actualDirectory = controller.resolveInitialDatabaseDirectory(databaseAutoLoad);
+        final Optional<String> actualDirectory = controller.resolveInitialDatabaseDirectory();
 
 
         // THEN
         assertThat(actualDirectory).isEmpty();
-        assertThat(databaseAutoLoad.get()).isFalse();
     }
 
     @Test
     public void resolveInitialDatabaseDirectory_whenRightCommandLineParameter_shouldReturnLocation() throws Exception {
         // GIVEN
-        AtomicBoolean databaseAutoLoad = new AtomicBoolean(true);
         DatabaseEditor.getCommandLineParameters().add("/tdu/euro/bnk/database");
 
 
         // WHEN
-        final String actualDirectory = controller.resolveInitialDatabaseDirectory(databaseAutoLoad);
+        final Optional<String> actualDirectory = controller.resolveInitialDatabaseDirectory();
 
 
         // THEN
-        assertThat(actualDirectory).isEqualTo("/tdu/euro/bnk/database");
-        assertThat(databaseAutoLoad.get()).isTrue();
+        assertThat(actualDirectory).contains("/tdu/euro/bnk/database");
 
         verifyZeroInteractions(mainStageControllerMock, applicationConfigurationMock);
     }
@@ -92,18 +82,15 @@ public class MainStageViewDataControllerTest {
     @Test
     public void resolveInitialDatabaseDirectory_whenNoCommandLineParameter_andConfiguration_shouldReturnSavedLocation() throws Exception {
         // GIVEN
-        AtomicBoolean databaseAutoLoad = new AtomicBoolean(true);
-
         when(mainStageControllerMock.getApplicationConfiguration()).thenReturn(applicationConfigurationMock);
         when(applicationConfigurationMock.getDatabasePath()).thenReturn(Optional.of(Paths.get("/tdu/euro/bnk/database")));
 
 
         // WHEN
-        final String actualDirectory = controller.resolveInitialDatabaseDirectory(databaseAutoLoad);
+        final Optional<String> actualDirectory = controller.resolveInitialDatabaseDirectory();
 
 
         // THEN
-        assertThat(actualDirectory).isEqualTo("/tdu/euro/bnk/database");
-        assertThat(databaseAutoLoad.get()).isTrue();
+        assertThat(actualDirectory).contains("/tdu/euro/bnk/database");
     }
 }

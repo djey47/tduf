@@ -25,7 +25,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static java.util.Objects.requireNonNull;
@@ -276,16 +275,17 @@ class MainStageViewDataController {
         mainStageController.currentEntryLabelProperty.setValue(entryLabel);
     }
 
-    String resolveInitialDatabaseDirectory(AtomicBoolean databaseAutoLoad) {
-        return DatabaseEditor.getCommandLineParameters().stream()
+    Optional<String> resolveInitialDatabaseDirectory() {
+        final Optional<String> pathParameter = DatabaseEditor.getCommandLineParameters().stream()
                 .filter(p -> !p.startsWith(AppConstants.SWITCH_PREFIX))
-                .findAny()
-                .orElseGet(() -> mainStageController.getApplicationConfiguration().getDatabasePath()
-                        .map(Path::toString)
-                        .orElseGet(() -> {
-                            databaseAutoLoad.set(false);
-                            return SettingsConstants.DATABASE_DIRECTORY_DEFAULT;
-                        }));
+                .findAny();
+
+        if (pathParameter.isPresent()) {
+            return pathParameter;
+        }
+
+        return mainStageController.getApplicationConfiguration().getDatabasePath()
+                .map(Path::toString);
     }
 
     private ContentEntryDataItem getDisplayableEntryForCurrentLocale(ContentEntryDto topicEntry, List<Integer> labelFieldRanks, DbDto.Topic topic) {
