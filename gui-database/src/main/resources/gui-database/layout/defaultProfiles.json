@@ -1306,6 +1306,84 @@
       "topic": "TUTORIALS",
       "entryLabelFieldRanks": [3,1,2],
       "fieldSettings": []
+    },
+
+    {
+      "name": "TDUCP-Rim options",
+      "topic": "CAR_PHYSICS_DATA",
+      "entryLabelFieldRanks": [3,4,12,9],
+      "groups": [],
+      "topicLinks": [
+        {
+          "topic": "CAR_RIMS",
+          "label": "Available Rims",
+          "remoteReferenceProfile": "Rims",
+          "toolTip": "List of applicable rims to current vehicle"
+        }
+      ],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "priority": 10000,
+          "readOnly": "true",
+          "label": "(REF) Slot #",
+          "toolTip": "Unique slot number"
+        },
+        {
+          "name": "Car_Brand",
+          "rank": 2,
+          "remoteReferenceProfile": "Brands",
+          "label": "Brand"
+        },
+        {
+          "rank": 3,
+          "hidden": true
+        },
+        {
+          "rank": 4,
+          "hidden": true
+        },
+        {
+          "rank": 5,
+          "hidden": true
+        },
+        {
+          "rank": 6,
+          "hidden": true
+        },
+        {
+          "rank": 7,
+          "hidden": true
+        },
+        {
+          "rank": 8,
+          "hidden": true
+        },
+        {
+          "rank": 9,
+          "hidden": true
+        },
+        {
+          "name": "Default_Rims",
+          "label": "Default Rims",
+          "priority": 1000,
+          "rank": 10,
+          "remoteReferenceProfile": "Rims"
+        },
+        {
+          "name": "Car_RealName",
+          "rank": 12
+        },
+        {
+          "name": "Model_Name",
+          "rank": 13
+        },
+        {
+          "name": "Version_Name",
+          "rank": 14
+        }
+      ]
     }
   ]
 }
