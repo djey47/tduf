@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.AppConstants;
 import fr.tduf.gui.database.DatabaseEditor;
 import fr.tduf.gui.database.common.DisplayConstants;
@@ -36,7 +37,7 @@ import static java.util.stream.Collectors.toList;
  * Specialized controller to display database contents.
  */
 class MainStageViewDataController {
-
+    private static final String THIS_CLASS_NAME = MainStageViewDataController.class.getSimpleName();
     private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
 
     private final MainStageController mainStageController;
@@ -45,6 +46,21 @@ class MainStageViewDataController {
         requireNonNull(mainStageController, "Main stage controller is required.");
 
         this.mainStageController = mainStageController;
+    }
+
+    void updateDisplayWithLoadedObjects() {
+        if (!mainStageController.getDatabaseObjects().isEmpty()) {
+            mainStageController.setMiner(BulkDatabaseMiner.load(mainStageController.getDatabaseObjects()));
+
+            mainStageController.profilesChoiceBox.getSelectionModel().clearSelection(); // ensures event will be fired even though 1st item is selected
+            mainStageController.profilesChoiceBox.getSelectionModel().selectFirst();
+
+            mainStageController.navigationHistory.clear();
+
+            mainStageController.loadDatabaseButton.disableProperty().setValue(true);
+
+            updateConfiguration();
+        }
     }
 
     void fillBrowsableEntries() {
@@ -286,6 +302,15 @@ class MainStageViewDataController {
 
         return mainStageController.getApplicationConfiguration().getDatabasePath()
                 .map(Path::toString);
+    }
+
+    private void updateConfiguration() {
+        try {
+            mainStageController.getApplicationConfiguration().setDatabasePath(mainStageController.databaseLocationTextField.getText());
+            mainStageController.getApplicationConfiguration().store();
+        } catch (IOException ioe) {
+            Log.warn(THIS_CLASS_NAME, "Unable to save application configuration", ioe);
+        }
     }
 
     private ContentEntryDataItem getDisplayableEntryForCurrentLocale(ContentEntryDto topicEntry, List<Integer> labelFieldRanks, DbDto.Topic topic) {

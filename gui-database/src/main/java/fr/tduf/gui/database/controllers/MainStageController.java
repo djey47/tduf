@@ -59,7 +59,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
@@ -104,7 +103,7 @@ public class MainStageController extends AbstractGuiController {
     private DatabaseFixer databaseFixer = new DatabaseFixer();
 
     @FXML
-    private Button loadDatabaseButton;
+    Button loadDatabaseButton;
 
     @FXML
     private Label creditsLabel;
@@ -131,7 +130,7 @@ public class MainStageController extends AbstractGuiController {
     private VBox defaultTab;
 
     @FXML
-    private TextField databaseLocationTextField;
+    TextField databaseLocationTextField;
 
     @FXML
     private TextField entryNumberTextField;
@@ -145,6 +144,10 @@ public class MainStageController extends AbstractGuiController {
     @FXML
     private Label statusLabel;
 
+    Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
+
+    ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+
     private Map<String, VBox> tabContentByName = new HashMap<>();
 
     private List<DbDto> databaseObjects = new ArrayList<>(18);
@@ -154,9 +157,6 @@ public class MainStageController extends AbstractGuiController {
     private EditorLayoutDto.EditorProfileDto profileObject;
     private BulkDatabaseMiner databaseMiner;
 
-    private Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
-
-    private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 
     @Override
     protected void init() throws IOException {
@@ -566,7 +566,8 @@ public class MainStageController extends AbstractGuiController {
     private void initServiceListeners() {
         databaseLoader.stateProperty().addListener((observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
-                updateDisplayWithLoadedObjects(databaseLoader.getValue());
+                databaseObjects = databaseLoader.getValue();
+                viewDataController.updateDisplayWithLoadedObjects();
             } else if (FAILED == newState) {
                 CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_LOAD, DisplayConstants.MESSAGE_DATABASE_LOAD_KO, databaseLoader.getException().getMessage());
             }
@@ -762,33 +763,6 @@ public class MainStageController extends AbstractGuiController {
         databaseLoader.databaseLocationProperty().setValue(databaseLocation);
 
         databaseLoader.restart();
-    }
-
-    // TODO move to to view data controller
-    private void updateDisplayWithLoadedObjects(List<DbDto> loadedDatabaseObjects) {
-        this.databaseObjects = loadedDatabaseObjects;
-        if (!loadedDatabaseObjects.isEmpty()) {
-            databaseMiner = BulkDatabaseMiner.load(loadedDatabaseObjects);
-
-            profilesChoiceBox.getSelectionModel().clearSelection(); // ensures event will be fired even though 1st item is selected
-            profilesChoiceBox.getSelectionModel().selectFirst();
-
-            navigationHistory.clear();
-
-            loadDatabaseButton.disableProperty().setValue(true);
-
-            updateConfiguration();
-        }
-    }
-
-    // TODO move to to view data controller
-    private void updateConfiguration() {
-        try {
-            applicationConfiguration.setDatabasePath(databaseLocationTextField.getText());
-            applicationConfiguration.store();
-        } catch (IOException ioe) {
-            Log.warn(THIS_CLASS_NAME, "Unable to save application configuration", ioe);
-        }
     }
 
     private void saveDatabaseToDirectory(String databaseLocation) throws IOException {
@@ -1033,6 +1007,10 @@ public class MainStageController extends AbstractGuiController {
 
     public BulkDatabaseMiner getMiner() {
         return databaseMiner;
+    }
+
+    void setMiner(BulkDatabaseMiner databaseMiner) {
+        this.databaseMiner = databaseMiner;
     }
 
     public Map<Integer, SimpleStringProperty> getRawValuePropertyByFieldRank() {
