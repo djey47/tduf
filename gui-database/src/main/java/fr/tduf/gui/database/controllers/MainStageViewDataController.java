@@ -19,6 +19,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -34,6 +35,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Specialized controller to display database contents.
  */
+// FIXME profile switch to a profile with hidden fields causes ClassCast exceptions!
 class MainStageViewDataController extends AbstractMainStageSubController {
     private static final String THIS_CLASS_NAME = MainStageViewDataController.class.getSimpleName();
     private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
@@ -112,15 +114,17 @@ class MainStageViewDataController extends AbstractMainStageSubController {
     }
 
     void updateItemProperties(ContentItemDto item) {
-        rawValuePropertyByFieldRank().get(item.getFieldRank()).set(item.getRawValue());
+        final int fieldRank = item.getFieldRank();
+        rawValuePropertyByFieldRank().get(fieldRank).set(item.getRawValue());
 
         DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, getCurrentTopicObject().getStructure().getFields());
-        if (structureField.isAResourceField()) {
+        if (structureField.isAResourceField()
+                && resolvedValuePropertyByFieldRank().get(fieldRank) != null ) {
             updateResourceProperties(item, structureField);
         }
 
         if (DbStructureDto.FieldType.REFERENCE == structureField.getFieldType()
-                && resolvedValuePropertyByFieldRank().containsKey(item.getFieldRank())) {
+                && resolvedValuePropertyByFieldRank().containsKey(fieldRank)) {
             updateReferenceProperties(item, structureField);
         }
     }
@@ -334,8 +338,8 @@ class MainStageViewDataController extends AbstractMainStageSubController {
         String resourceReference = resourceItem.getRawValue();
         String resourceValue = getMiner().getLocalizedResourceValueFromTopicAndReference(resourceReference, resourceTopic, locale)
                 .orElse(DisplayConstants.VALUE_ERROR_RESOURCE_NOT_FOUND);
-
-        resolvedValuePropertyByFieldRank().get(resourceItem.getFieldRank()).set(resourceValue);
+        final SimpleStringProperty valueProperty = resolvedValuePropertyByFieldRank().get(resourceItem.getFieldRank());
+        valueProperty.set(resourceValue);
     }
 
     // Ignore this warning (usage as method reference)
