@@ -563,7 +563,7 @@ public class MainStageController extends AbstractGuiController {
     private void initServiceListeners() {
         databaseLoader.stateProperty().addListener((observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
-                loadDatabaseObjects(databaseLoader.getValue());
+                updateDisplayWithLoadedObjects(databaseLoader.getValue());
             } else if (FAILED == newState) {
                 CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_LOAD, DisplayConstants.MESSAGE_DATABASE_LOAD_KO, databaseLoader.getException().getMessage());
             }
@@ -761,7 +761,8 @@ public class MainStageController extends AbstractGuiController {
         databaseLoader.restart();
     }
 
-    private void loadDatabaseObjects(List<DbDto> loadedDatabaseObjects) {
+    // TODO move to to view data controller
+    private void updateDisplayWithLoadedObjects(List<DbDto> loadedDatabaseObjects) {
         this.databaseObjects = loadedDatabaseObjects;
         if (!loadedDatabaseObjects.isEmpty()) {
             databaseMiner = BulkDatabaseMiner.load(loadedDatabaseObjects);
@@ -772,6 +773,18 @@ public class MainStageController extends AbstractGuiController {
             navigationHistory.clear();
 
             loadDatabaseButton.disableProperty().setValue(true);
+
+            updateConfiguration();
+        }
+    }
+
+    // TODO move to to view data controller
+    private void updateConfiguration() {
+        try {
+            applicationConfiguration.setDatabasePath(databaseLocationTextField.getText());
+            applicationConfiguration.store();
+        } catch (IOException ioe) {
+            Log.warn(THIS_CLASS_NAME, "Unable to save application configuration", ioe);
         }
     }
 
