@@ -22,8 +22,7 @@ public class ApplicationConfiguration extends Properties {
     private static final String KEY_TDU_DIR = "tdu.root.directory";
 
     /**
-     *
-     * @return
+     * @return full path to game database if it exists, else return default location from game directory, or empty otherwise
      */
     public Optional<Path> getDatabasePath() {
         if (getPathProperty(KEY_DATABASE_DIR).isPresent()) {
@@ -37,9 +36,16 @@ public class ApplicationConfiguration extends Properties {
                         .resolve("Database"));
     }
 
+
     /**
-     *
-     * @return
+     * @param databaseLocation  : path to game database
+     */
+    public void setDatabasePath(String databaseLocation) {
+        setProperty(KEY_DATABASE_DIR, databaseLocation);
+    }
+
+    /**
+     * @return full path to game if it exists, or empty otherwise
      */
     public Optional<Path> getGamePath() {
         return ofNullable(getProperty(KEY_TDU_DIR))
@@ -48,7 +54,7 @@ public class ApplicationConfiguration extends Properties {
 
     /**
      * Saves current configuration into user home directory.
-     * @throws IOException
+     * @throws IOException when storage error occurs
      */
     public void store() throws IOException {
         OutputStream os = new FileOutputStream(configurationFile);
@@ -57,7 +63,7 @@ public class ApplicationConfiguration extends Properties {
 
     /**
      * Loads configuration from user home directory.
-     * @throws IOException
+     * @throws IOException when access error occurs
      */
     public void load() throws IOException {
         try {
