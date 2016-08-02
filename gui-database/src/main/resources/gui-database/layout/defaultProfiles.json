@@ -980,131 +980,175 @@
         {
           "name": "Car",
           "rank": 1,
-          "remoteReferenceProfile": "Vehicle slots"
+          "remoteReferenceProfile": "Vehicle slots",
+          "priority": 10000
         },
         {
           "name": "Brand",
           "rank": 2,
-          "remoteReferenceProfile": "Brands"
+          "remoteReferenceProfile": "Brands",
+          "priority": 9980
         },
         {
           "name": "Car_File_Name_Swap",
-          "rank": 3
+          "rank": 3,
+          "priority": 0
         },
         {
           "name": "Libelle",
-          "rank": 4
+          "rank": 4,
+          "label": "Tuning Shop",
+          "priority": 9990
         },
         {
           "name": "Pack_1",
           "rank": 5,
           "group": "Pack 1",
-          "remoteReferenceProfile": "AMPacks"
+          "remoteReferenceProfile": "AMPacks",
+          "label": "Tuning Pack",
+          "priority": 9970
         },
         {
           "name": "Group_1",
           "rank": 6,
-          "group": "Pack 1"
+          "group": "Pack 1",
+          "label": "Category"
         },
         {
           "name": "Car_1",
           "rank": 7,
           "group": "Pack 1",
-          "remoteReferenceProfile": "Vehicle slots"
+          "label": "Model change",
+          "remoteReferenceProfile": "Vehicle slots",
+          "priority": 9960
         },
         {
           "name": "Price_1",
           "rank": 8,
-          "group": "Pack 1"
+          "group": "Pack 1",
+          "label": "Price ($)",
+          "priority": 9950
         },
         {
           "name": "Accel_0_100_1",
           "rank": 9,
-          "group": "Pack 1"
+          "group": "Pack 1",
+          "label": "Acceleration (0...60mph)",
+          "priority": 9940
         },
         {
           "name": "BrakingDist_1",
           "rank": 10,
-          "group": "Pack 1"
+          "group": "Pack 1",
+          "label": "Braking distance",
+          "priority": 9930
         },
         {
           "name": "Handling_1",
           "rank": 11,
-          "group": "Pack 1"
+          "group": "Pack 1",
+          "label": "Handling",
+          "priority": 9920
         },
         {
           "name": "Pack_2",
           "rank": 12,
           "group": "Pack 2",
-          "remoteReferenceProfile": "AMPacks"
+          "remoteReferenceProfile": "AMPacks",
+          "label": "Tuning Pack",
+          "priority": 9910
         },
         {
           "name": "Group_2",
           "rank": 13,
-          "group": "Pack 2"
+          "group": "Pack 2",
+          "label": "Category"
         },
         {
           "name": "Car_2",
           "rank": 14,
           "group": "Pack 2",
-          "remoteReferenceProfile": "Vehicle slots"
+          "remoteReferenceProfile": "Vehicle slots",
+          "label": "Model change",
+          "priority": 9900
         },
         {
           "name": "Price_2",
           "rank": 15,
-          "group": "Pack 2"
+          "group": "Pack 2",
+          "label": "Price ($)",
+          "priority": 9890
         },
         {
           "name": "Accel_0_100_2",
           "rank": 16,
-          "group": "Pack 2"
+          "group": "Pack 2",
+          "label": "Acceleration (0...60mph)",
+          "priority": 9880
         },
         {
           "name": "BrakingDist_2",
           "rank": 17,
-          "group": "Pack 2"
+          "group": "Pack 2",
+          "label": "Braking distance",
+          "priority": 9870
         },
         {
           "name": "Handling_2",
           "rank": 18,
-          "group": "Pack 2"
+          "group": "Pack 2",
+          "label": "Handling",
+          "priority": 9860
         },
         {
           "name": "Pack_3",
           "rank": 19,
           "group": "Pack 3",
-          "remoteReferenceProfile": "AMPacks"
+          "remoteReferenceProfile": "AMPacks",
+          "label": "Tuning Pack",
+          "priority": 9850
         },
         {
           "name": "Group_3",
           "rank": 20,
-          "group": "Pack 3"
+          "group": "Pack 3",
+          "label": "Category"
         },
         {
           "name": "Car_3",
           "rank": 21,
           "group": "Pack 3",
-          "remoteReferenceProfile": "Vehicle slots"
+          "remoteReferenceProfile": "Vehicle slots",
+          "label": "Model change",
+          "priority": 9840
         },
         {
           "name": "Price_3",
           "rank": 22,
-          "group": "Pack 3"
+          "group": "Pack 3",
+          "label": "Price ($)",
+          "priority": 9830
         },
         {
           "name": "Accel_0_100_3",
           "rank": 23,
-          "group": "Pack 3"
+          "group": "Pack 3",
+          "label": "Acceleration (0...60mph)",
+          "priority": 9820
         },
         {
           "name": "BrakingDist_3",
           "rank": 24,
-          "group": "Pack 3"
+          "group": "Pack 3",
+          "label": "Braking distance",
+          "priority": 9810
         },
         {
           "name": "Handling_3",
           "rank": 25,
-          "group": "Pack 3"
+          "group": "Pack 3",
+          "label": "Handling",
+          "priority": 9800
         }
       ]
     },
